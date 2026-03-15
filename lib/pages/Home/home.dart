@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:luminous/api/home_api.dart';
 import 'package:luminous/components/home.dart';
@@ -7,9 +8,10 @@ import 'package:luminous/viewmodels/home.dart';
 // 首页
 //
 // 设计要点：
-// - “常用功能”是本地静态入口（纯 UI）
-// - “今日提醒”来自后端接口 today-reminders（便于后续按 userId/date 落库）
-// - 为了保证 UI 稳定：接口失败时回退到本地 _fallbackReminders
+// - 顶部色块展示随机温馨提示（10条本地文案，每次启动随机一条）
+// - "常用功能"是本地静态入口（纯 UI）
+// - "今日提醒"来自后端接口 today-reminders
+// - 接口失败时回退到本地 _fallbackReminders
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -18,6 +20,22 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  // 10 条温馨提示，每次应用启动随机选一条
+  static const List<String> _healthTips = [
+    '按时服药是控制慢性病的第一步，别让遗忘成为健康的绊脚石。',
+    '药物与食物的相互作用不可忽视，服药前记得查阅注意事项。',
+    '多喝水有助于药物吸收，除非医嘱有特别限制。',
+    '漏服一次怎么办？不要加倍补服，请参照说明书或咨询药师。',
+    '储存药品请避光、防潮、防高温，不要放在浴室或车内。',
+    '抗生素需完整疗程服用，症状好转后擅自停药可能导致耐药。',
+    '服药期间如出现皮疹、呼吸困难等异常，请立即就医。',
+    '定期整理家中药箱，清理过期药品，安全处置是对环境的负责。',
+    '有些药需要饭前服，有些需要饭后服，请仔细阅读说明书。',
+    '良好的作息和均衡饮食是辅助药物发挥最佳效果的基础。',
+  ];
+
+  late final String _todayTip;
+
   final List<HomeFeatureItemData> _entries = const [
     HomeFeatureItemData(
       id: 'drugScan',
@@ -92,6 +110,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
+    // 随机选取一条温馨提示
+    _todayTip = _healthTips[Random().nextInt(_healthTips.length)];
     _fetchTodayReminders();
   }
 
@@ -133,6 +153,7 @@ class _HomeViewState extends State<HomeView> {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
+              // 主页保留绿色渐变
               colors: [Color(0xFF0F766E), Color(0xFF14B8A6)],
             ),
             boxShadow: const [
@@ -175,18 +196,20 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
               const SizedBox(height: 16),
-              const Text(
-                '今天也要按时用药',
-                style: TextStyle(
+              // 随机温馨提示
+              Text(
+                _todayTip,
+                style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 22,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
+                  height: 1.5,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 nextText,
-                style: TextStyle(color: Color(0xE6FFFFFF), fontSize: 14),
+                style: const TextStyle(color: Color(0xE6FFFFFF), fontSize: 14),
               ),
               const SizedBox(height: 14),
               Row(
@@ -197,7 +220,7 @@ class _HomeViewState extends State<HomeView> {
                         : '今日提醒 ${_reminders.length} 条',
                   ),
                   const SizedBox(width: 8),
-                  _buildInfoPill('功能持续完善中'),
+                  _buildInfoPill('健康小贴士'),
                 ],
               ),
             ],

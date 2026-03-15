@@ -2,18 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:luminous/api/medicine_api.dart';
 import 'package:luminous/components/search.dart';
 import 'package:luminous/pages/Drug/medicine_detail.dart';
+import 'package:luminous/stores/app_database.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 
 // 手动搜索页（对接 MySQL 药品库）
 //
-// 设计要点：
-// - _draftKeyword：输入框实时内容（用户还没“确认搜索”）
-// - _keyword：当前已提交的搜索关键词（真正触发请求的关键词）
-//   这样做的好处：避免用户每输入一个字符就请求一次接口（减少后端压力与费用）
+// 数据库字段说明：
+//   productName         - 产品名称（主搜索字段）
+//   approvalNo          - 批准文号（国药准字 HXXXXXXXX）
+//   manufacturer        - 生产单位
+//   marketingAuthorization - 上市许可持有人
+//   dosageForm          - 剂型（片剂/胶囊/注射液等）
+//   specification       - 规格（如 0.5g、10ml 等）
+//   drugCode            - 药品编码（本位码）
+//   serialNo            - 序号
 //
-// - 分页加载：滚动接近底部时触发 _search(reset:false) 拉下一页
-// - 点击结果进入 MedicineDetailPage，并预留 AI 详细信息入口
+// 搜索逻辑：
+// - _draftKeyword：输入框实时内容（未提交）
+// - _keyword：已提交的搜索关键词（触发请求）
+// - 滚动到底部自动加载下一页
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
 
@@ -25,7 +33,14 @@ class _SearchViewState extends State<SearchView> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  final List<String> _quickTags = const ['退烧', '抗生素', '止咳', '过敏', '胃药', '维生素'];
+  final List<String> _quickTags = const [
+    '阿莫西林',
+    '布洛芬',
+    '维生素D',
+    '头孢',
+    '抗生素',
+    '胃药',
+  ];
 
   final List<String> _recentKeywords = ['阿莫西林', '布洛芬', '维生素D'];
 
@@ -34,6 +49,8 @@ class _SearchViewState extends State<SearchView> {
   String? _lastError;
 
   final List<MedicineItem> _results = [];
+  // 记录哪些药品已添加（identityKey 集合）
+  final Set<String> _addedKeys = {};
   bool _loading = false;
   bool _loadingMore = false;
   bool _hasMore = false;
@@ -43,6 +60,7 @@ class _SearchViewState extends State<SearchView> {
   @override
   void initState() {
     super.initState();
+    _loadAddedKeys();
     _scrollController.addListener(() {
       if (!_scrollController.hasClients) {
         return;
@@ -56,6 +74,21 @@ class _SearchViewState extends State<SearchView> {
         _search(reset: false);
       }
     });
+  }
+
+  Future<void> _loadAddedKeys() async {
+    try {
+      final db = await AppDatabase.instance.database;
+      final rows = await db.query('my_medicines', columns: ['identityKey']);
+      if (!mounted) return;
+      setState(() {
+        _addedKeys.clear();
+        for (final row in rows) {
+          final key = row['identityKey']?.toString() ?? '';
+          if (key.isNotEmpty) _addedKeys.add(key);
+        }
+      });
+    } catch (_) {}
   }
 
   @override
@@ -139,7 +172,7 @@ class _SearchViewState extends State<SearchView> {
             ),
             const SizedBox(height: 4),
             const Text(
-              '输入药名、成分或症状快速查找',
+              '支持按药品名称、批准文号、生产单位搜索',
               style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
             ),
           ],
@@ -167,7 +200,7 @@ class _SearchViewState extends State<SearchView> {
                     },
                     onSubmitted: (_) => _commitSearch(),
                     decoration: InputDecoration(
-                      hintText: '请输入药名/症状/成分',
+                      hintText: '产品名称 / 批准文号 / 生产单位',
                       hintStyle: const TextStyle(
                         color: Color(0xFF94A3B8),
                         fontSize: 14,
@@ -231,7 +264,7 @@ class _SearchViewState extends State<SearchView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  '快捷搜索',
+                  '常用搜索',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -395,12 +428,15 @@ class _SearchViewState extends State<SearchView> {
         itemBuilder: (context, index) {
           final item = _results[index];
           final cardData = _toCardData(item);
+          final identityKey = _buildIdentityKey(item);
+          final isAdded = _addedKeys.contains(identityKey);
           return Padding(
             padding: EdgeInsets.only(
               bottom: index == _results.length - 1 ? 0 : 10,
             ),
             child: SearchResultCard(
               item: cardData,
+              isAdded: isAdded,
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
@@ -408,6 +444,7 @@ class _SearchViewState extends State<SearchView> {
                   ),
                 );
               },
+              onAdd: isAdded ? null : () => _addToMyMedicines(item),
             ),
           );
         },
@@ -422,21 +459,33 @@ class _SearchViewState extends State<SearchView> {
         child: SearchSurfaceCard(
           child: Padding(
             padding: EdgeInsets.fromLTRB(14, 14, 14, 14),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.tips_and_updates_rounded, color: Color(0xFF0EA5E9)),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    '输入药品名称、批准文号或生产单位后点击搜索，即可从药品数据库查询信息。',
-                    style: TextStyle(
-                      color: Color(0xFF475569),
-                      fontSize: 13,
-                      height: 1.5,
-                      fontWeight: FontWeight.w600,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.tips_and_updates_rounded,
+                      color: Color(0xFF0EA5E9),
                     ),
-                  ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        '搜索提示',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF0F172A),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+                SizedBox(height: 10),
+                _TipRow(label: '产品名称', example: '阿莫西林胶囊、布洛芬片'),
+                _TipRow(label: '批准文号', example: '国药准字 H20013191'),
+                _TipRow(label: '生产单位', example: '石药集团、华润三九'),
+                _TipRow(label: '药品编码', example: '86901000000000(本位码)'),
               ],
             ),
           ),
@@ -458,7 +507,7 @@ class _SearchViewState extends State<SearchView> {
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    '按下“搜索”开始查询药品数据库。',
+                    '按下"搜索"或回车键开始查询药品数据库',
                     style: TextStyle(
                       color: Color(0xFF475569),
                       fontSize: 13,
@@ -528,7 +577,7 @@ class _SearchViewState extends State<SearchView> {
               ),
               SizedBox(height: 2),
               Text(
-                '可尝试更换关键词重新搜索',
+                '可尝试产品名称、批准文号或生产单位重新搜索',
                 style: TextStyle(fontSize: 12.5, color: Color(0xFF94A3B8)),
               ),
             ],
@@ -617,7 +666,7 @@ class _SearchViewState extends State<SearchView> {
   void _commitSearch() {
     final keyword = _searchController.text.trim();
     if (keyword.isEmpty) {
-      ToastUtils.instance.show(context, '请输入药名、成分或症状后再搜索');
+      ToastUtils.instance.show(context, '请输入产品名称、批准文号或生产单位后再搜索');
       return;
     }
     setState(() {
@@ -669,6 +718,48 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
+  String _buildIdentityKey(MedicineItem item) {
+    if (item.drugCode.isNotEmpty) return 'drugCode:${item.drugCode}';
+    if (item.approvalNo.isNotEmpty) return 'approvalNo:${item.approvalNo}';
+    return 'name:${item.productName}';
+  }
+
+  Future<void> _addToMyMedicines(MedicineItem item) async {
+    final identityKey = _buildIdentityKey(item);
+    try {
+      final db = await AppDatabase.instance.database;
+      await db.insert('my_medicines', {
+        'identityKey': identityKey,
+        'drugCode': item.drugCode,
+        'approvalNo': item.approvalNo,
+        'productName': item.productName,
+        'dosageForm': item.dosageForm,
+        'specification': item.specification,
+        'manufacturer': item.manufacturer.isNotEmpty
+            ? item.manufacturer
+            : item.marketingAuthorizationHolder,
+        'source': 'search',
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+      });
+      if (!mounted) return;
+      setState(() {
+        _addedKeys.add(identityKey);
+      });
+      ToastUtils.instance.show(context, '已添加到我的药品');
+    } catch (e) {
+      if (!mounted) return;
+      final msg = e.toString();
+      if (msg.contains('UNIQUE')) {
+        ToastUtils.instance.show(context, '该药品已在我的药品列表中');
+        setState(() {
+          _addedKeys.add(identityKey);
+        });
+      } else {
+        ToastUtils.instance.show(context, '添加失败，请重试');
+      }
+    }
+  }
+
   Future<void> _search({required bool reset}) async {
     final keyword = _keyword.trim();
     if (keyword.isEmpty) {
@@ -697,7 +788,6 @@ class _SearchViewState extends State<SearchView> {
     }
 
     try {
-      // 约定：后端返回 code/msg/result，result 为分页结构 {items,total,page,pageSize}
       final response = await MedicineApi.search(
         keyword: keyword,
         page: _page,
@@ -733,5 +823,52 @@ class _SearchViewState extends State<SearchView> {
         });
       }
     }
+  }
+}
+
+// ── 搜索提示行 ────────────────────────────────────────────────────────────────
+
+class _TipRow extends StatelessWidget {
+  const _TipRow({required this.label, required this.example});
+
+  final String label;
+  final String example;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0EA5E9).withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF0369A1),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              example,
+              style: const TextStyle(
+                fontSize: 12.5,
+                color: Color(0xFF475569),
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
