@@ -28,7 +28,7 @@ class ToastUtils {
           margin: const EdgeInsets.fromLTRB(56, 0, 56, 20),
           duration: toastduration,
           elevation: 0,
-          backgroundColor: const Color.fromARGB(230, 51, 113, 113),
+          backgroundColor: const Color.fromARGB(230, 35, 150, 150),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),

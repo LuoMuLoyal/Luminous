@@ -39,10 +39,22 @@ class SearchSurfaceCard extends StatelessWidget {
 }
 
 class SearchResultCard extends StatelessWidget {
-  const SearchResultCard({super.key, required this.item, required this.onTap});
+  const SearchResultCard({
+    super.key,
+    required this.item,
+    required this.onTap,
+    this.isAdded = false,
+    this.onAdd,
+  });
 
   final SearchResultItemData item;
   final VoidCallback onTap;
+
+  /// 是否已添加到"我的药品"
+  final bool isAdded;
+
+  /// 点击"添加"回调；传 null 表示禁用（已添加）
+  final VoidCallback? onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +67,7 @@ class SearchResultCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 药品图标
               Container(
                 width: 40,
                 height: 40,
@@ -69,6 +82,7 @@ class SearchResultCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
+              // 药品信息
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,6 +149,55 @@ class SearchResultCard extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 8),
+                    // 添加到我的药品按钮
+                    GestureDetector(
+                      onTap: onAdd,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isAdded
+                              ? const Color(0xFFEFFCF5)
+                              : const Color(0xFF0EA5E9).withValues(alpha: 0.10),
+                          borderRadius: BorderRadius.circular(999),
+                          border: Border.all(
+                            color: isAdded
+                                ? const Color(0xFF86EFAC)
+                                : const Color(
+                                    0xFF0EA5E9,
+                                  ).withValues(alpha: 0.30),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isAdded
+                                  ? Icons.check_circle_rounded
+                                  : Icons.add_circle_outline_rounded,
+                              size: 14,
+                              color: isAdded
+                                  ? const Color(0xFF16A34A)
+                                  : const Color(0xFF0EA5E9),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              isAdded ? '已添加' : '添加到我的药品',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: isAdded
+                                    ? const Color(0xFF16A34A)
+                                    : const Color(0xFF0EA5E9),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
