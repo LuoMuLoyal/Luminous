@@ -4,6 +4,10 @@ import 'package:luminous/pages/Main/main.dart';
 import 'package:luminous/pages/Register/register.dart';
 import 'package:luminous/pages/Search/search.dart';
 import 'package:luminous/utils/loading_utils.dart';
+import 'package:luminous/pages/CheckIn/checkin.dart';
+import 'package:luminous/pages/Reminders/reminder_list.dart';
+import 'package:luminous/pages/Safety/safety_assist.dart';
+import 'package:luminous/pages/Scan/medicine_scan.dart';
 
 // routes.dart：应用路由表
 //
@@ -25,5 +29,9 @@ Map<String, Widget Function(BuildContext)> getRootRoutes() {
     '/login': (context) => const LoginPage(),
     '/register': (context) => const RegisterView(),
     '/search': (context) => const SearchView(),
+    '/scan': (context) => const MedicineScanPage(mode: ScanEntryMode.result),
+    '/reminders': (context) => const ReminderListPage(),
+    '/checkin': (context) => const CheckInPage(),
+    '/safety': (context) => const SafetyAssistPage(),
   };
 }

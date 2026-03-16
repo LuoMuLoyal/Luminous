@@ -3,6 +3,8 @@ import 'package:luminous/stores/app_database.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:luminous/pages/Drug/medicine_detail.dart';
+import 'package:luminous/pages/Picker/medicine_picker.dart';
+import 'package:luminous/pages/Scan/medicine_scan.dart';
 
 // 药品页
 //
@@ -222,22 +224,23 @@ class _DrugViewState extends State<DrugView> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Row(
-                  children: _quickEntries
-                      .map(
-                        (item) => Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              right: item == _quickEntries.last ? 0 : 10,
-                            ),
-                            child: _QuickEntryCard(
-                              item: item,
-                              onTap: () => _onTapQuick(item),
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _quickEntries.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 0.96,
+                  ),
+                  itemBuilder: (context, index) {
+                    final item = _quickEntries[index];
+                    return _QuickEntryCard(
+                      item: item,
+                      onTap: () => _onTapQuick(item),
+                    );
+                  },
                 ),
               ],
             ),
@@ -406,131 +409,32 @@ class _DrugViewState extends State<DrugView> {
       return;
     }
     if (entry.title == '药物识别') {
-      _showCameraScanSheet();
+      Navigator.of(context)
+          .push(
+            MaterialPageRoute<void>(
+              builder: (_) => const MedicineScanPage(mode: ScanEntryMode.actions),
+            ),
+          )
+          .then((_) => _loadMyMedicines());
+      return;
+    }
+    if (entry.title == 'AI 解读') {
+      _pickAndOpenDetail();
       return;
     }
     ToastUtils.instance.show(context, '功能开发中');
   }
 
-  void _showCameraScanSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+  Future<void> _pickAndOpenDetail() async {
+    final item = await Navigator.of(context).push<MedicineItem>(
+      MaterialPageRoute<MedicineItem>(
+        builder: (_) => const MedicinePickerPage(title: '选择药品'),
       ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF10B981).withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(
-                        Icons.camera_alt_outlined,
-                        color: Color(0xFF10B981),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '药物识别',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF0F172A),
-                            ),
-                          ),
-                          Text(
-                            '拍照上传，后端 AI 识别药品信息',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF64748B),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                _SheetAction(
-                  icon: Icons.camera_alt_rounded,
-                  color: const Color(0xFF10B981),
-                  label: '拍照识别',
-                  subtitle: '调用相机拍摄药品',
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    ToastUtils.instance.show(context, '拍照识别功能开发中');
-                  },
-                ),
-                const SizedBox(height: 10),
-                _SheetAction(
-                  icon: Icons.add_circle_outline_rounded,
-                  color: const Color(0xFF0EA5E9),
-                  label: '添加到我的药品',
-                  subtitle: '识别后直接加入药品列表',
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    ToastUtils.instance.show(context, '请先完成拍照识别');
-                  },
-                ),
-                const SizedBox(height: 10),
-                _SheetAction(
-                  icon: Icons.photo_library_outlined,
-                  color: const Color(0xFF6366F1),
-                  label: '保存到相册',
-                  subtitle: '将拍摄的照片保存至相册',
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    ToastUtils.instance.show(context, '相册功能开发中');
-                  },
-                ),
-                const SizedBox(height: 10),
-                _SheetAction(
-                  icon: Icons.info_outline_rounded,
-                  color: const Color(0xFFF59E0B),
-                  label: '查看详细信息',
-                  subtitle: '识别后查看 AI 解读与基础信息',
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    ToastUtils.instance.show(context, '请先完成拍照识别');
-                  },
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF64748B),
-                      side: const BorderSide(color: Color(0xFFE2E8F0)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      minimumSize: const Size(double.infinity, 48),
-                    ),
-                    child: const Text('取消'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    );
+    if (!mounted) return;
+    if (item == null) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => MedicineDetailPage(initialItem: item)),
     );
   }
 }
@@ -708,81 +612,6 @@ class _MyMedicineCard extends StatelessWidget {
   }
 }
 
-// ── 底部弹窗操作项 ──────────────────────────────────────────────────────────────
-
-class _SheetAction extends StatelessWidget {
-  const _SheetAction({
-    required this.icon,
-    required this.color,
-    required this.label,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final Color color;
-  final String label;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: onTap,
-      child: Ink(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF8FAFC),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: color, size: 20),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF0F172A),
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF64748B),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: Color(0xFF94A3B8),
-              size: 18,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 // ── 快捷入口卡片 ────────────────────────────────────────────────────────────────
 
 class _QuickEntryCard extends StatelessWidget {
@@ -797,41 +626,48 @@ class _QuickEntryCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Ink(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+        padding: const EdgeInsets.fromLTRB(10, 12, 10, 12),
         decoration: BoxDecoration(
           color: const Color(0xFFF8FAFC),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 74,
+              height: 74,
               decoration: BoxDecoration(
                 color: item.color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(22),
               ),
-              child: Icon(item.icon, color: item.color),
+              child: Icon(item.icon, color: item.color, size: 38),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Text(
               item.title,
+              textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 14.5,
                 fontWeight: FontWeight.w800,
                 color: Color(0xFF0F172A),
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
             Text(
               item.subtitle,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF64748B),
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

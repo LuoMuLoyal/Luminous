@@ -1,0 +1,508 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:luminous/api/reminder_api.dart';
+import 'package:luminous/pages/Reminders/reminder_edit.dart';
+import 'package:luminous/stores/app_database.dart';
+import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/utils/notification_service.dart';
+import 'package:luminous/utils/toast_utils.dart';
+import 'package:luminous/viewmodels/reminder.dart';
+import 'package:sqflite/sqflite.dart';
+
+class ReminderListPage extends StatefulWidget {
+  const ReminderListPage({super.key});
+
+  @override
+  State<ReminderListPage> createState() => _ReminderListPageState();
+}
+
+class _ReminderListPageState extends State<ReminderListPage> {
+  final UserController _userController = Get.find<UserController>();
+
+  bool _loading = false;
+  String? _error;
+  List<ReminderPlan> _items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  String get _userId => _userController.user.value?.id ?? '';
+
+  Future<void> _load() async {
+    final userId = _userId;
+    if (userId.trim().isEmpty) {
+      return;
+    }
+    if (_loading) return;
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      final response = await ReminderApi.list(userId: userId);
+      if (!mounted) return;
+      final items = response.result.items;
+      setState(() {
+        _items = List<ReminderPlan>.from(items)..sort((a, b) => a.time.compareTo(b.time));
+      });
+      await _cacheToLocal(userId, _items);
+      await NotificationService.instance.rescheduleAll(_items);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+      // fallback: load local cache
+      await _loadLocal(userId);
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _loadLocal(String userId) async {
+    try {
+      final db = await AppDatabase.instance.database;
+      final rows = await db.query(
+        'reminders',
+        where: 'userId = ?',
+        whereArgs: [userId],
+        orderBy: 'time ASC',
+      );
+      final items = rows.map(_rowToPlan).toList();
+      if (!mounted) return;
+      setState(() {
+        _items = items;
+      });
+    } catch (_) {}
+  }
+
+  ReminderPlan _rowToPlan(Map<String, dynamic> row) {
+    return ReminderPlan(
+      id: (row['remoteId'] ?? '').toString(),
+      userId: (row['userId'] ?? '').toString(),
+      time: (row['time'] ?? '').toString(),
+      drugCode: (row['drugCode'] ?? '').toString(),
+      approvalNo: (row['approvalNo'] ?? '').toString(),
+      productName: (row['productName'] ?? '').toString(),
+      subtitle: (row['subtitle'] ?? '').toString(),
+      enabled: (row['enabled'] ?? 1) == 1,
+      repeatRule: (row['repeatRule'] ?? 'daily').toString(),
+      method: (row['method'] ?? 'notification').toString(),
+    );
+  }
+
+  Future<void> _cacheToLocal(String userId, List<ReminderPlan> items) async {
+    final db = await AppDatabase.instance.database;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    for (final r in items) {
+      if (r.id.trim().isEmpty) continue;
+      await db.insert(
+        'reminders',
+        {
+          'remoteId': r.id,
+          'userId': userId,
+          'time': r.time,
+          'drugCode': r.drugCode,
+          'approvalNo': r.approvalNo,
+          'productName': r.productName,
+          'subtitle': r.subtitle,
+          'enabled': r.enabled ? 1 : 0,
+          'repeatRule': r.repeatRule,
+          'method': r.method,
+          'updatedAt': now,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loggedIn = _userController.isLoggedIn && _userId.isNotEmpty;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF3F7FB),
+      appBar: AppBar(
+        title: const Text('用药提醒'),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: loggedIn && !_loading ? _load : null,
+            icon: _loading
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.refresh_rounded),
+          ),
+        ],
+      ),
+      floatingActionButton: loggedIn
+          ? FloatingActionButton.extended(
+              onPressed: _openCreate,
+              backgroundColor: const Color(0xFF10B981),
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('新增提醒'),
+            )
+          : null,
+      body: !loggedIn
+          ? _buildNeedLogin()
+          : RefreshIndicator(
+              onRefresh: _load,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                children: [
+                  if (_error != null) _buildErrorBanner(_error!),
+                  if (_items.isEmpty && !_loading) _buildEmpty(),
+                  ..._items.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final item = entry.value;
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: index == _items.length - 1 ? 0 : 10),
+                      child: _ReminderCard(
+                        item: item,
+                        onTap: () => _openEdit(item),
+                        onToggle: (value) => _toggleEnabled(item, value),
+                        onDelete: () => _delete(item),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+    );
+  }
+
+  Widget _buildNeedLogin() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 22),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981).withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.alarm_rounded, color: Color(0xFF10B981), size: 30),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                '请先登录',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                '登录后可同步提醒计划，并在到点收到系统通知。',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.5,
+                  color: Color(0xFF64748B),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 14),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => Navigator.pushNamed(context, '/login'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0EA5E9),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 46),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  child: const Text('去登录'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorBanner(String text) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFBEB),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFFDE68A)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.warning_amber_rounded, color: Color(0xFFF59E0B)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 12.5,
+                height: 1.45,
+                color: Color(0xFF92400E),
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmpty() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 42),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: const Column(
+        children: [
+          Icon(Icons.alarm_off_rounded, size: 42, color: Color(0xFF94A3B8)),
+          SizedBox(height: 10),
+          Text(
+            '暂无提醒',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF0F172A),
+            ),
+          ),
+          SizedBox(height: 6),
+          Text(
+            '点击右下角“新增提醒”开始设置',
+            style: TextStyle(
+              fontSize: 13,
+              color: Color(0xFF64748B),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openCreate() async {
+    final plan = await Navigator.of(context).push<ReminderPlan>(
+      MaterialPageRoute<ReminderPlan>(
+        builder: (_) => const ReminderEditPage(),
+      ),
+    );
+    if (!mounted) return;
+    if (plan == null) return;
+    setState(() {
+      _items.removeWhere((e) => e.id == plan.id);
+      _items.add(plan);
+      _items.sort((a, b) => a.time.compareTo(b.time));
+    });
+    await _cacheToLocal(_userId, _items);
+    await NotificationService.instance.rescheduleAll(_items);
+  }
+
+  Future<void> _openEdit(ReminderPlan plan) async {
+    final next = await Navigator.of(context).push<ReminderPlan>(
+      MaterialPageRoute<ReminderPlan>(
+        builder: (_) => ReminderEditPage(initial: plan),
+      ),
+    );
+    if (!mounted) return;
+    if (next == null) return;
+    setState(() {
+      _items.removeWhere((e) => e.id == next.id);
+      _items.add(next);
+      _items.sort((a, b) => a.time.compareTo(b.time));
+    });
+    await _cacheToLocal(_userId, _items);
+    await NotificationService.instance.rescheduleAll(_items);
+  }
+
+  Future<void> _toggleEnabled(ReminderPlan plan, bool enabled) async {
+    try {
+      final next = await ReminderApi.upsert(
+        userId: _userId,
+        id: plan.id,
+        time: plan.time,
+        drugCode: plan.drugCode,
+        approvalNo: plan.approvalNo,
+        productName: plan.productName,
+        subtitle: plan.subtitle,
+        enabled: enabled,
+        repeatRule: plan.repeatRule,
+        method: plan.method,
+      );
+      if (!mounted) return;
+      setState(() {
+        _items = _items.map((e) => e.id == plan.id ? next.result : e).toList()
+          ..sort((a, b) => a.time.compareTo(b.time));
+      });
+      await _cacheToLocal(_userId, _items);
+      await NotificationService.instance.rescheduleAll(_items);
+    } catch (e) {
+      if (mounted) {
+        ToastUtils.instance.show(context, e.toString().replaceFirst('Exception: ', ''));
+      }
+    }
+  }
+
+  Future<void> _delete(ReminderPlan plan) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('删除提醒'),
+          content: Text('确定要删除“${plan.productName} ${plan.time}”吗？'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('删除'),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true) return;
+
+    try {
+      await ReminderApi.delete(userId: _userId, id: plan.id);
+      if (!mounted) return;
+      setState(() {
+        _items.removeWhere((e) => e.id == plan.id);
+      });
+      final db = await AppDatabase.instance.database;
+      await db.delete('reminders', where: 'remoteId = ?', whereArgs: [plan.id]);
+      await NotificationService.instance.rescheduleAll(_items);
+      if (mounted) ToastUtils.instance.show(context, '已删除');
+    } catch (e) {
+      if (mounted) {
+        ToastUtils.instance.show(context, e.toString().replaceFirst('Exception: ', ''));
+      }
+    }
+  }
+}
+
+class _ReminderCard extends StatelessWidget {
+  const _ReminderCard({
+    required this.item,
+    required this.onTap,
+    required this.onToggle,
+    required this.onDelete,
+  });
+
+  final ReminderPlan item;
+  final VoidCallback onTap;
+  final ValueChanged<bool> onToggle;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0F000000),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: (item.enabled ? const Color(0xFF10B981) : const Color(0xFF94A3B8))
+                      .withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  Icons.alarm_rounded,
+                  color: item.enabled ? const Color(0xFF10B981) : const Color(0xFF94A3B8),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.displayTitle,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item.subtitle.trim().isEmpty ? '系统通知提醒' : item.subtitle.trim(),
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        height: 1.4,
+                        color: Color(0xFF64748B),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Switch(
+                          value: item.enabled,
+                          onChanged: onToggle,
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: onDelete,
+                          icon: const Icon(Icons.delete_outline_rounded),
+                          color: Colors.red.shade300,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+

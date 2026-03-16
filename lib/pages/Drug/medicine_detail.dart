@@ -338,7 +338,7 @@ class _AiCard extends StatelessWidget {
       ),
       child: result == null || !result!.hasText
           ? const Text(
-              '即将接入 AI：点击“获取详细信息”后将由后端调用 AI 查询更详细的用法用量、禁忌、相互作用等内容。',
+              '点击“获取详细信息”后将由后端调用腾讯云智能问药能力，返回更详细的用法用量、禁忌、相互作用等内容。',
               style: TextStyle(
                 fontSize: 13,
                 height: 1.55,

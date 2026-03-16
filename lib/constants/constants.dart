@@ -20,4 +20,16 @@ class HttpConstants {
   static const String MEDICINE_SEARCH = '/medicine-search';
   static const String MEDICINE_DETAIL = '/medicine-detail';
   static const String MEDICINE_AI_DETAIL = '/medicine-ai-detail';
+
+  static const String MEDICINE_SCAN = '/medicine-scan';
+  static const String SCAN_RECORD_CREATE = '/scan-record-create';
+  static const String SCAN_RECORD_LIST = '/scan-record-list';
+
+  static const String REMINDER_UPSERT = '/reminder-upsert';
+  static const String REMINDER_DELETE = '/reminder-delete';
+  static const String REMINDER_LIST = '/reminder-list';
+
+  static const String CHECKIN_CREATE = '/checkin-create';
+
+  static const String MEDICINE_AI_SAFETY = '/medicine-ai-safety';
 }

@@ -19,6 +19,29 @@ class MineView extends StatefulWidget {
 
 class _MineViewState extends State<MineView> {
   final UserController _userController = Get.find<UserController>();
+  final List<_MineQuickAction> _quickActions = const [
+    _MineQuickAction(
+      icon: Icons.alarm_rounded,
+      title: '今日提醒',
+      subtitle: '查看计划',
+      color: Color(0xFF10B981),
+      id: 'reminders',
+    ),
+    _MineQuickAction(
+      icon: Icons.search_rounded,
+      title: '手动搜索',
+      subtitle: '药品信息',
+      color: Color(0xFF0EA5E9),
+      id: 'search',
+    ),
+    _MineQuickAction(
+      icon: Icons.settings_rounded,
+      title: '设置',
+      subtitle: '偏好选项',
+      color: Color(0xFF6366F1),
+      id: 'settings',
+    ),
+  ];
 
   Future<void> _onTapProfile() async {
     if (!_userController.isLoggedIn) {
@@ -118,39 +141,39 @@ class _MineViewState extends State<MineView> {
   }
 
   Widget _buildQuickActions() {
-    return Row(
-      children: [
-        Expanded(
-          child: _QuickActionCard(
-            icon: Icons.alarm_rounded,
-            title: '今日提醒',
-            subtitle: '查看计划',
-            color: const Color(0xFF10B981),
-            onTap: () => ToastUtils.instance.show(context, '功能开发中'),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _QuickActionCard(
-            icon: Icons.search_rounded,
-            title: '手动搜索',
-            subtitle: '药品信息',
-            color: const Color(0xFF0EA5E9),
-            onTap: () => Navigator.pushNamed(context, '/search'),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _QuickActionCard(
-            icon: Icons.settings_rounded,
-            title: '设置',
-            subtitle: '偏好选项',
-            color: const Color(0xFF6366F1),
-            onTap: () => ToastUtils.instance.show(context, '功能开发中'),
-          ),
-        ),
-      ],
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _quickActions.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 0.96,
+      ),
+      itemBuilder: (context, index) {
+        final item = _quickActions[index];
+        return _QuickActionCard(
+          icon: item.icon,
+          title: item.title,
+          subtitle: item.subtitle,
+          color: item.color,
+          onTap: () => _onTapQuickAction(item.id),
+        );
+      },
     );
+  }
+
+  void _onTapQuickAction(String id) {
+    if (id == 'search') {
+      Navigator.pushNamed(context, '/search');
+      return;
+    }
+    if (id == 'reminders') {
+      Navigator.pushNamed(context, '/reminders');
+      return;
+    }
+    ToastUtils.instance.show(context, '功能开发中');
   }
 
   Widget _buildMenuCard() {
@@ -270,45 +293,68 @@ class _QuickActionCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
       child: Ink(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+        padding: const EdgeInsets.fromLTRB(10, 12, 10, 12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 74,
+              height: 74,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(22),
               ),
-              child: Icon(icon, color: color),
+              child: Icon(icon, color: color, size: 38),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Text(
               title,
+              textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 14.5,
                 fontWeight: FontWeight.w800,
                 color: Color(0xFF0F172A),
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
             Text(
               subtitle,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF64748B),
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
       ),
     );
   }
+}
+
+class _MineQuickAction {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final String id;
+
+  const _MineQuickAction({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.id,
+  });
 }
