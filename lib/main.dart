@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:luminous/routes/routes.dart';
 import 'package:luminous/stores/token_manager.dart';
 import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/utils/notification_service.dart';
 
 // 入口文件说明：
 // 1) 初始化 Flutter Binding，确保插件（SharedPreferences 等）可用
@@ -14,6 +15,7 @@ import 'package:luminous/stores/user_controller.dart';
 // - 详细架构与演进过程见：lib/project_guide.dart
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.instance.init();
   await tokenManager.init();
   final userController = Get.put(UserController(), permanent: true);
   await userController.init();

@@ -15,7 +15,7 @@ class AppDatabase {
   static final AppDatabase instance = AppDatabase._();
 
   static const String _dbName = 'luminous.db';
-  static const int _version = 1;
+  static const int _version = 2;
 
   Database? _db;
 
@@ -32,6 +32,9 @@ class AppDatabase {
       version: _version,
       onCreate: (db, version) async {
         await _createTables(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        await _upgradeTables(db, oldVersion, newVersion);
       },
     );
   }
@@ -60,11 +63,14 @@ class AppDatabase {
     await db.execute('''
       CREATE TABLE IF NOT EXISTS album_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        remoteId TEXT,
         identityKey TEXT,
         drugCode TEXT,
         approvalNo TEXT,
         productName TEXT,
         filePath TEXT,
+        thumbBase64 TEXT,
+        takenAt INTEGER,
         source TEXT,
         createdAt INTEGER NOT NULL
       )
@@ -72,6 +78,62 @@ class AppDatabase {
     await db.execute(
       'CREATE INDEX IF NOT EXISTS idx_album_items_createdAt ON album_items(createdAt DESC)',
     );
+
+    // reminders：提醒计划缓存（后端同步源）
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS reminders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        remoteId TEXT NOT NULL UNIQUE,
+        userId TEXT NOT NULL,
+        time TEXT NOT NULL,
+        drugCode TEXT,
+        approvalNo TEXT,
+        productName TEXT NOT NULL,
+        subtitle TEXT,
+        enabled INTEGER NOT NULL,
+        repeatRule TEXT NOT NULL,
+        method TEXT NOT NULL,
+        updatedAt INTEGER NOT NULL
+      )
+    ''');
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_reminders_userId_time ON reminders(userId, time)',
+    );
+
+    // checkins：打卡记录缓存
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS checkins (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        remoteId TEXT,
+        userId TEXT NOT NULL,
+        reminderRemoteId TEXT NOT NULL,
+        takenAt INTEGER NOT NULL,
+        createdAt INTEGER NOT NULL
+      )
+    ''');
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_checkins_userId_takenAt ON checkins(userId, takenAt DESC)',
+    );
+  }
+
+  Future<void> _upgradeTables(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // album_items 新增字段：remoteId/thumbBase64/takenAt
+      await _tryExecute(db, 'ALTER TABLE album_items ADD COLUMN remoteId TEXT');
+      await _tryExecute(db, 'ALTER TABLE album_items ADD COLUMN thumbBase64 TEXT');
+      await _tryExecute(db, 'ALTER TABLE album_items ADD COLUMN takenAt INTEGER');
+
+      // 新表：reminders/checkins
+      await _createTables(db);
+    }
+  }
+
+  Future<void> _tryExecute(Database db, String sql) async {
+    try {
+      await db.execute(sql);
+    } catch (_) {
+      // Ignore: column/table might already exist on some devices.
+    }
   }
 
   Future<void> close() async {

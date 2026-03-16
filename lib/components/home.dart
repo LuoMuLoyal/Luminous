@@ -64,20 +64,20 @@ class HomeFeatureSection extends StatelessWidget {
               itemCount: items.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: 0.92,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 0.96,
               ),
               itemBuilder: (context, index) {
                 final item = items[index];
                 return InkWell(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(16),
                   onTap: () => onTap(item),
                   child: Ink(
-                    padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                    padding: const EdgeInsets.fromLTRB(10, 12, 10, 12),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF8FAFC),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: const Color(0xFFE2E8F0)),
                     ),
                     child: Column(
@@ -85,33 +85,38 @@ class HomeFeatureSection extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 64,
-                          height: 64,
+                          width: 74,
+                          height: 74,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: item.color.withValues(alpha: 0.14),
-                            borderRadius: BorderRadius.circular(18),
+                            borderRadius: BorderRadius.circular(22),
                           ),
-                          child: Icon(item.icon, size: 34, color: item.color),
+                          child: Icon(item.icon, size: 38, color: item.color),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 12),
                         Text(
                           item.title,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w800,
                             color: Color(0xFF0F172A),
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 3),
                         Text(
                           item.subtitle,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 11.5,
+                            fontSize: 12,
                             color: Color(0xFF64748B),
+                            fontWeight: FontWeight.w600,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),

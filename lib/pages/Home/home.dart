@@ -1,9 +1,15 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:luminous/api/home_api.dart';
 import 'package:luminous/components/home.dart';
+import 'package:luminous/pages/Drug/medicine_detail.dart';
+import 'package:luminous/pages/Picker/medicine_picker.dart';
+import 'package:luminous/stores/app_database.dart';
+import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/home.dart';
+import 'package:luminous/viewmodels/medicine.dart';
 
 // 首页
 //
@@ -20,6 +26,8 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final UserController _userController = Get.find<UserController>();
+
   // 10 条温馨提示，每次应用启动随机选一条
   static const List<String> _healthTips = [
     '按时服药是控制慢性病的第一步，别让遗忘成为健康的绊脚石。',
@@ -235,7 +243,51 @@ class _HomeViewState extends State<HomeView> {
       Navigator.pushNamed(context, '/search');
       return;
     }
+
+    if (item.id == 'drugScan') {
+      Navigator.pushNamed(context, '/scan');
+      return;
+    }
+
+    if (item.id == 'reminder') {
+      Navigator.pushNamed(context, '/reminders').then((_) {
+        _fetchTodayReminders();
+      });
+      return;
+    }
+
+    if (item.id == 'checkIn') {
+      Navigator.pushNamed(context, '/checkin').then((_) {
+        _fetchTodayReminders();
+      });
+      return;
+    }
+
+    if (item.id == 'safety') {
+      Navigator.pushNamed(context, '/safety');
+      return;
+    }
+
+    if (item.id == 'drugInfo') {
+      _pickAndOpenMedicineDetail();
+      return;
+    }
+
     ToastUtils.instance.show(context, '功能开发中');
+  }
+
+  Future<void> _pickAndOpenMedicineDetail() async {
+    final item = await Navigator.of(context).push<MedicineItem>(
+      MaterialPageRoute<MedicineItem>(
+        builder: (_) => const MedicinePickerPage(title: '选择药品'),
+      ),
+    );
+    if (!mounted) return;
+    if (item == null) return;
+
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => MedicineDetailPage(initialItem: item)),
+    );
   }
 
   Widget _buildStatusChip(String text) {
@@ -283,17 +335,20 @@ class _HomeViewState extends State<HomeView> {
     });
 
     try {
-      final response = await HomeApi.fetchTodayReminders();
+      final userId = _userController.user.value?.id;
+      final response = await HomeApi.fetchTodayReminders(userId: userId);
       if (!mounted) {
         return;
       }
-      final items = response.result.items;
-      if (items.isEmpty) {
-        return;
+      final local = await _loadLocalTodayReminders(userId);
+      final items = local.isNotEmpty ? local : response.result.items.map(_toReminderUi).toList();
+
+      if (!mounted) return;
+      if (items.isNotEmpty) {
+        setState(() {
+          _reminders = items;
+        });
       }
-      setState(() {
-        _reminders = items.map(_toReminderUi).toList();
-      });
     } catch (e) {
       if (!mounted) {
         return;
@@ -308,6 +363,60 @@ class _HomeViewState extends State<HomeView> {
           _loadingReminders = false;
         });
       }
+    }
+  }
+
+  Future<List<HomeReminderItemData>> _loadLocalTodayReminders(String? userId) async {
+    final uid = (userId ?? '').trim();
+    if (uid.isEmpty) {
+      return const [];
+    }
+
+    try {
+      final db = await AppDatabase.instance.database;
+      final now = DateTime.now();
+      final start = DateTime(now.year, now.month, now.day).millisecondsSinceEpoch;
+      final end = start + const Duration(days: 1).inMilliseconds;
+
+      final checkinRows = await db.query(
+        'checkins',
+        columns: ['reminderRemoteId'],
+        where: 'userId = ? AND takenAt >= ? AND takenAt < ?',
+        whereArgs: [uid, start, end],
+      );
+      final doneSet = <String>{};
+      for (final row in checkinRows) {
+        final id = (row['reminderRemoteId'] ?? '').toString().trim();
+        if (id.isNotEmpty) doneSet.add(id);
+      }
+
+      final reminderRows = await db.query(
+        'reminders',
+        where: 'userId = ? AND enabled = 1',
+        whereArgs: [uid],
+        orderBy: 'time ASC',
+      );
+      if (reminderRows.isEmpty) {
+        return const [];
+      }
+
+      return reminderRows.map((row) {
+        final remoteId = (row['remoteId'] ?? '').toString();
+        final time = (row['time'] ?? '').toString().trim();
+        final title = (row['productName'] ?? '').toString().trim();
+        final subtitle = (row['subtitle'] ?? '').toString().trim();
+        final done = remoteId.isNotEmpty && doneSet.contains(remoteId);
+
+        final combinedTitle = time.isEmpty ? title : '$time $title';
+        return HomeReminderItemData(
+          icon: Icons.access_time_rounded,
+          title: combinedTitle.isEmpty ? '用药提醒' : combinedTitle,
+          subtitle: subtitle.isEmpty ? '系统通知提醒' : subtitle,
+          done: done,
+        );
+      }).toList();
+    } catch (_) {
+      return const [];
     }
   }
 

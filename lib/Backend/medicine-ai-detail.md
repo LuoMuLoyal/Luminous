@@ -3,7 +3,7 @@
 公网访问路径: https://wty10hv6az.sealosbja.site/medicine-ai-detail
 
 用途:
-- 药品详情页: 点击“获取详细信息”后，由后端调用 AI 查询更详细信息并返回
+- 药品详情页: 点击“获取详细信息”后，由后端调用「腾讯云 智能导诊-大模型问药」生成更详细解读并返回
 
 请求体(二选一即可，推荐 drugCode):
 - drugCode: string
@@ -16,15 +16,27 @@
   - text: string
 
 说明:
-- 该接口是为后续接入 AI 预留的。你也可以先按下面的示例返回占位内容，保证前端 UI 联调可用。
+- 后端建议先查 MySQL 基础信息（产品名/剂型/规格/厂家等），再拼接 prompt 调用腾讯云 `GetLLMDiagnosisDrugChat`
+- 该接口输出仍为 text（前端现阶段按纯文本展示）
+
+参考接口文档:
+- GetLLMDiagnosisDrugChat: https://cloud.tencent.com/document/product/1273/128048
 
 ```typescript
+import { Client } from 'tencentcloud-sdk-nodejs-ig'
+
 function success(result: any, msg = '') {
   return { code: '1', msg, result }
 }
 
 function fail(msg: string, code = '0') {
   return { code, msg, result: null }
+}
+
+function mustEnv(name: string) {
+  const v = String(process.env[name] || '').trim()
+  if (!v) throw new Error(`缺少环境变量: ${name}`)
+  return v
 }
 
 export async function main(ctx: FunctionContext) {
@@ -38,10 +50,48 @@ export async function main(ctx: FunctionContext) {
     return fail('drugCode 或 approvalNo 不能为空')
   }
 
-  // TODO: 在这里接入 AI (例如: 根据 drugCode/approvalNo 查询基础信息后拼 prompt，再调用模型)
+  // TODO: 复用现有 /medicine-detail 的 MySQL 查询逻辑，得到基础信息 detail
+  const detail = {
+    productName: '示例药品',
+    dosageForm: '片剂',
+    specification: '0.5g*20片',
+    manufacturer: '示例制药',
+    approvalNo,
+    drugCode,
+  }
+
+  const ig = new Client({
+    credential: {
+      secretId: mustEnv('TENCENTCLOUD_SECRET_ID'),
+      secretKey: mustEnv('TENCENTCLOUD_SECRET_KEY'),
+    },
+    region: mustEnv('TENCENTCLOUD_REGION'),
+    profile: { httpProfile: { endpoint: 'ig.tencentcloudapi.com' } },
+  })
+
+  const prompt = [
+    '你是一名药学问答助手，请根据以下药品基础信息返回中文说明。',
+    `产品名称: ${detail.productName}`,
+    `剂型: ${detail.dosageForm}`,
+    `规格: ${detail.specification}`,
+    `生产单位: ${detail.manufacturer}`,
+    `批准文号: ${detail.approvalNo}`,
+    `药品编码: ${detail.drugCode}`,
+    '请分点说明：适应症、常见用法用量提示、常见不良反应、禁忌、注意事项、特殊人群提示。',
+    '输出纯文本，不要输出 markdown 代码块。',
+  ].join('\n')
+
+  const resp = await ig.GetLLMDiagnosisDrugChat({
+    PartnerId: mustEnv('IG_PARTNER_ID'),
+    PartnerSecret: mustEnv('IG_PARTNER_SECRET'),
+    HospitalAppId: mustEnv('IG_HOSPITAL_APP_ID'),
+    DialogueId: `${Date.now()}`,
+    ResultType: 0,
+    Message: prompt,
+  })
+
   return success({
-    text: 'AI 接口尚未接入：这里会返回更详细的用法用量、禁忌、相互作用、特殊人群提示等内容。',
+    text: String(resp?.Data?.Content || '').trim(),
   })
 }
 ```
-

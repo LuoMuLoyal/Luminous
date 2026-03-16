@@ -23,7 +23,9 @@ import 'package:luminous/viewmodels/medicine.dart';
 // - _keyword：已提交的搜索关键词（触发请求）
 // - 滚动到底部自动加载下一页
 class SearchView extends StatefulWidget {
-  const SearchView({super.key});
+  const SearchView({super.key, this.pickerMode = false});
+
+  final bool pickerMode;
 
   @override
   State<SearchView> createState() => _SearchViewState();
@@ -158,9 +160,9 @@ class _SearchViewState extends State<SearchView> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    '手动搜索',
+                    widget.pickerMode ? '选择药品' : '手动搜索',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
@@ -171,9 +173,9 @@ class _SearchViewState extends State<SearchView> {
               ],
             ),
             const SizedBox(height: 4),
-            const Text(
-              '支持按药品名称、批准文号、生产单位搜索',
-              style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+            Text(
+              widget.pickerMode ? '从后端药品库搜索并选择' : '支持按药品名称、批准文号、生产单位搜索',
+              style: const TextStyle(fontSize: 13, color: Color(0xFF64748B)),
             ),
           ],
         ),
@@ -438,11 +440,15 @@ class _SearchViewState extends State<SearchView> {
               item: cardData,
               isAdded: isAdded,
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => MedicineDetailPage(initialItem: item),
-                  ),
-                );
+                if (widget.pickerMode) {
+                  Navigator.pop(context, item);
+                } else {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => MedicineDetailPage(initialItem: item),
+                    ),
+                  );
+                }
               },
               onAdd: isAdded ? null : () => _addToMyMedicines(item),
             ),
