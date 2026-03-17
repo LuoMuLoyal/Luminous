@@ -1,9 +1,8 @@
 import 'package:luminous/api/reminder_api.dart';
-import 'package:luminous/stores/app_database.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
+import 'package:luminous/stores/reminder_local_store.dart';
 import 'package:luminous/utils/notification_service.dart';
 import 'package:luminous/viewmodels/reminder.dart';
-import 'package:sqflite/sqflite.dart';
 
 /// 当前用户登录后的会话同步服务。
 ///
@@ -58,36 +57,8 @@ class SessionSyncService {
     final response = await ReminderApi.list(userId: userId);
     final items = List<ReminderPlan>.from(response.result.items)
       ..sort((a, b) => a.time.compareTo(b.time));
-    await _cacheRemindersToLocal(userId, items);
+    await reminderLocalStore.replaceForUser(userId, items);
     await NotificationService.instance.rescheduleAll(items);
-  }
-
-  /// 把提醒计划列表写入本地缓存。
-  Future<void> _cacheRemindersToLocal(
-    String userId,
-    List<ReminderPlan> items,
-  ) async {
-    final db = await AppDatabase.instance.database;
-    final now = DateTime.now().millisecondsSinceEpoch;
-    await db.transaction((txn) async {
-      await txn.delete('reminders', where: 'userId = ?', whereArgs: [userId]);
-      for (final item in items) {
-        if (item.id.trim().isEmpty) continue;
-        await txn.insert('reminders', {
-          'remoteId': item.id,
-          'userId': userId,
-          'time': item.time,
-          'drugCode': item.drugCode,
-          'approvalNo': item.approvalNo,
-          'productName': item.productName,
-          'subtitle': item.subtitle,
-          'enabled': item.enabled ? 1 : 0,
-          'repeatRule': item.repeatRule,
-          'method': item.method,
-          'updatedAt': now,
-        }, conflictAlgorithm: ConflictAlgorithm.replace);
-      }
-    });
   }
 
   /// 生成同步失败提示文案。

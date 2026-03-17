@@ -49,6 +49,12 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
   /// 与 `drugCode` 一起作为“这个提醒关联的是哪款药”的身份信息。
   String _approvalNo = '';
 
+  /// 当前名称字段所对应的“已确认药品名”。
+  ///
+  /// 当用户手动改名后，如果名称和这个值不一致，就说明身份字段已经不再可信，
+  /// 需要把 `drugCode/approvalNo` 一并清空，避免名称和身份错配。
+  String _selectedProductName = '';
+
   /// 当前选择的提醒时间（HH:mm）。
   ///
   /// 页面内部统一保留为字符串，便于直接回填 UI、写入接口和本地缓存。
@@ -78,6 +84,7 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
     _subtitleController = TextEditingController(text: init?.subtitle ?? '');
     _drugCode = init?.drugCode ?? '';
     _approvalNo = init?.approvalNo ?? '';
+    _selectedProductName = init?.productName.trim() ?? '';
     _time = init?.time ?? '08:00';
     _enabled = init?.enabled ?? true;
   }
@@ -146,7 +153,19 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
                     labelText: '药品名称(必填)',
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (_) => setState(() {}),
+                  onChanged: (value) {
+                    final nextName = value.trim();
+                    final shouldClearIdentity =
+                        _selectedProductName.isNotEmpty &&
+                        nextName != _selectedProductName;
+                    setState(() {
+                      if (shouldClearIdentity) {
+                        _selectedProductName = '';
+                        _drugCode = '';
+                        _approvalNo = '';
+                      }
+                    });
+                  },
                 ),
                 const SizedBox(height: 10),
                 TextField(
@@ -332,6 +351,7 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
       _subtitleController.text = _subtitleController.text.trim();
       _drugCode = item.drugCode;
       _approvalNo = item.approvalNo;
+      _selectedProductName = item.productName.trim();
     });
   }
 
