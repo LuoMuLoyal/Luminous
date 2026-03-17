@@ -10,7 +10,11 @@ import 'package:luminous/viewmodels/album.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:sqflite/sqflite.dart';
 
+/// 识别相册页。
+///
+/// 用于展示历史识别记录，并在本地缓存与远端记录之间做一次轻量合并。
 class AlbumView extends StatefulWidget {
+  /// 创建识别相册页组件。
   const AlbumView({super.key});
 
   /// 创建相册页对应的状态对象。
@@ -18,6 +22,11 @@ class AlbumView extends StatefulWidget {
   State<AlbumView> createState() => _AlbumViewState();
 }
 
+/// 相册页状态对象。
+///
+/// 主要负责两件事：
+/// - 先读本地缓存，保证页面能尽快出内容；
+/// - 已登录时再拉远端记录并合并，补齐跨设备/跨会话同步的数据。
 class _AlbumViewState extends State<AlbumView> {
   /// 全局用户控制器。
   ///

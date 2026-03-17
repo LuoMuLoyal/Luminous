@@ -9,7 +9,11 @@ import 'package:luminous/pages/Mine/mine.dart';
 // 注意：
 // - 这里用 IndexedStack 保持每个 Tab 的状态（避免切换时重复 initState）
 // - 不要在这里再包 SafeArea（单页自己负责），否则容易出现双重 padding
+/// 主页面底部 Tab 容器。
+///
+/// 只负责一级页面切换与状态保活，不承担各业务页的数据逻辑。
 class MainPage extends StatefulWidget {
+  /// 创建主页面 Tab 容器组件。
   const MainPage({super.key});
 
   /// 创建底部 Tab 主页面对应的状态对象。
@@ -17,6 +21,9 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
+/// 底部 Tab 容器状态对象。
+///
+/// 这里只维护当前选中的 Tab 下标，不承载任何业务数据，业务状态由各子页面自己保存。
 class _MainPageState extends State<MainPage> {
   /// 底部导航栏配置列表。
   ///

@@ -9,7 +9,11 @@ import 'package:luminous/utils/toast_utils.dart';
 // - 邮箱注册：send-code(type=2) 发送 6 位验证码，再 register-user(type=2)
 // - SVG 注册：send-code(type=1) 获取 4 位 SVG 验证码，再 register-user(type=1)
 // - 可复用组件抽取到 components/auth.dart（协议行、切换器、SVG验证码卡、Hero 卡）
+/// 注册页。
+///
+/// 支持邮箱验证码注册与 SVG 测试注册两种流程。
 class RegisterView extends StatefulWidget {
+  /// 创建注册页组件。
   const RegisterView({super.key});
 
   /// 创建注册页对应的状态对象。
@@ -20,6 +24,9 @@ class RegisterView extends StatefulWidget {
 /// 注册页支持的两种方式。
 enum _RegisterMethod { email, svg }
 
+/// 注册页状态对象。
+///
+/// 除了管理表单输入外，还负责处理验证码拉取、方式切换和提交防重入。
 class _RegisterViewState extends State<RegisterView> {
   /// 表单 key，用于触发表单校验。
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();

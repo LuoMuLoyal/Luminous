@@ -7,7 +7,11 @@ import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:luminous/viewmodels/reminder.dart';
 
+/// 提醒编辑页。
+///
+/// 同时承载“新增提醒”和“编辑提醒”两种场景，是否编辑由 `initial` 是否为空决定。
 class ReminderEditPage extends StatefulWidget {
+  /// 创建提醒编辑页。
   const ReminderEditPage({super.key, this.initial});
 
   /// 编辑时传入的初始提醒计划。
@@ -21,6 +25,10 @@ class ReminderEditPage extends StatefulWidget {
   State<ReminderEditPage> createState() => _ReminderEditPageState();
 }
 
+/// 提醒编辑页状态对象。
+///
+/// 这里把“表单显示值”和“接口提交所需身份字段”一起维护，避免只靠药品名称提交导致
+/// 后续无法和详情、提醒、打卡等功能对齐。
 class _ReminderEditPageState extends State<ReminderEditPage> {
   /// 全局用户控制器，用于读取当前 userId。
   final UserController _userController = Get.find<UserController>();
@@ -32,18 +40,28 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
   late final TextEditingController _subtitleController;
 
   /// 当前选中药品的 drugCode。
+  ///
+  /// 单独保存它是因为药品名称输入框允许手动编辑，但接口提交和后续跳转更依赖稳定的身份字段。
   String _drugCode = '';
 
   /// 当前选中药品的 approvalNo。
+  ///
+  /// 与 `drugCode` 一起作为“这个提醒关联的是哪款药”的身份信息。
   String _approvalNo = '';
 
   /// 当前选择的提醒时间（HH:mm）。
+  ///
+  /// 页面内部统一保留为字符串，便于直接回填 UI、写入接口和本地缓存。
   String _time = '08:00';
 
   /// 当前提醒是否启用。
+  ///
+  /// 之所以作为表单状态保存，是因为新增时就允许用户决定这条计划是否立即生效。
   bool _enabled = true;
 
   /// 当前是否正在保存。
+  ///
+  /// 用于避免重复点击“保存”导致重复 upsert。
   bool _saving = false;
 
   /// 当前登录用户 id（未登录时为空字符串）。

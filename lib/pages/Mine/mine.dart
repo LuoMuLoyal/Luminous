@@ -11,7 +11,11 @@ import 'package:luminous/viewmodels/mine.dart';
 // - 页面只负责交互/登录态判断
 // - 具体 UI（背景、卡片布局、QuickActions/Menu）拆到 components/mine.dart
 // - QuickAction 卡片等小组件下沉到 viewmodels/mine.dart
+/// 我的页。
+///
+/// 负责登录态相关交互，以及“提醒/搜索/设置”等个人中心入口。
 class MineView extends StatefulWidget {
+  /// 创建我的页组件。
   const MineView({super.key});
 
   /// 创建我的页对应的状态对象。
@@ -19,6 +23,9 @@ class MineView extends StatefulWidget {
   State<MineView> createState() => _MineViewState();
 }
 
+/// 我的页状态对象。
+///
+/// 页面主要围绕登录态工作：同一套 UI 会根据是否登录切换为“去登录”或“查看个人中心”。
 class _MineViewState extends State<MineView> {
   /// 全局用户控制器。
   ///

@@ -14,7 +14,11 @@ import 'package:luminous/pages/Scan/medicine_scan.dart';
 // - 无顶部色块，直接展示搜索入口 + 快捷入口
 // - 下方为"我的药品"列表，使用 SliverList.builder 按需加载
 // - 药品可通过手动搜索或拍照识别两种方式添加
+/// 药品页。
+///
+/// 页面上半部分提供药品相关快捷入口，下半部分展示本地“我的药品”列表。
 class DrugView extends StatefulWidget {
+  /// 创建药品页组件。
   const DrugView({super.key});
 
   /// 创建药品页对应的状态对象。
@@ -22,6 +26,9 @@ class DrugView extends StatefulWidget {
   State<DrugView> createState() => _DrugViewState();
 }
 
+/// 药品页状态对象。
+///
+/// 页面本身不维护复杂业务计算，核心是把顶部快捷入口和本地“我的药品”列表串起来。
 class _DrugViewState extends State<DrugView> {
   /// 药品页顶部“快捷入口”的固定配置列表。
   final List<DrugQuickEntry> _quickEntries = const [

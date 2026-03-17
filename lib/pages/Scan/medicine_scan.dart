@@ -32,7 +32,12 @@ enum ScanEntryMode {
   actions,
 }
 
+/// 药物识别页入口组件。
+///
+/// 该页面既可以作为“识别结果展示页”，也可以作为“识别后动作面板”。
+/// 两种入口通过 `mode` 控制 UI 结构与按钮行为。
 class MedicineScanPage extends StatefulWidget {
+  /// 创建药物识别页面。
   const MedicineScanPage({
     super.key,
     this.mode = ScanEntryMode.result,
@@ -48,42 +53,79 @@ class MedicineScanPage extends StatefulWidget {
   /// 是否在页面首次展示后自动启动一次拍照识别流程。
   final bool autoStart;
 
+  /// 创建药物识别页对应的状态对象。
   @override
   State<MedicineScanPage> createState() => _MedicineScanPageState();
 }
 
+/// 药物识别页的状态对象。
+///
+/// 这个页面的状态不是单纯的“拍一张照然后显示结果”，而是同时在维护：
+/// - 视觉状态：`_sheetSize` 决定底部面板展开程度和照片区域收缩效果；
+/// - 识别状态：`_photoBytes/_photoMimeType/_scanning/_scanResult/_selectedIndex`；
+/// - 后处理状态：`_savingToGallery` 和本地/远端识别记录落库流程。
 class _MedicineScanPageState extends State<MedicineScanPage> {
   /// 全局用户控制器，用于读取 userId（决定是否同步远端识别记录）。
   final UserController _userController = Get.find<UserController>();
 
   /// 底部拖拽面板控制器。
+  ///
+  /// 它不仅负责拖拽本身，也承担“首次自动展开面板”的动画入口。
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
   /// 当前底部面板占屏幕高度比例（用于驱动图片区域的“收缩效果”）。
+  ///
+  /// 页面把“面板展开程度”映射成顶部图片区域高度，形成“照片被面板顶上去”
+  /// 的联动效果，所以这里必须作为独立状态保留下来。
   double _sheetSize = 0.36;
 
   /// 当前拍摄照片的字节内容。
+  ///
+  /// 这份原始 bytes 会被多处复用：
+  /// - 顶部直接预览；
+  /// - 上传到后端做识别；
+  /// - 生成缩略图并写入本地相册表。
   Uint8List? _photoBytes;
 
   /// 当前照片的 MIME 类型（用于上传接口与保存到相册）。
+  ///
+  /// 单独保存是因为同一份图片数据会流向多个下游环节，后端识别接口和相册
+  /// 保存都需要明确知道图片类型。
   String _photoMimeType = 'image/jpeg';
 
   /// 是否正在把图片保存到系统相册。
+  ///
+  /// 相册保存是 best-effort 的后台动作，但仍需要一个状态来避免重复点击“保存”。
   bool _savingToGallery = false;
 
   /// 是否正在请求后端识别。
+  ///
+  /// 识别是页面的主耗时流程，这个状态负责：
+  /// - 禁用重拍/底部操作按钮，避免并发请求；
+  /// - 切换标题、副标题和结果区域的 loading 展示。
   bool _scanning = false;
 
   /// 当前识别结果（包含候选列表与缩略图 base64）。
+  ///
+  /// - null：尚未开始识别，或用户已重置状态；
+  /// - 非 null：驱动候选列表渲染，并决定底部操作是否可用。
   MedicineScanResult? _scanResult;
 
   /// 当前选中的候选下标。
+  ///
+  /// 识别结果可能返回多个候选，页面后续的“查看详情/添加到我的药品/同步相册记录”
+  /// 都围绕当前选中项展开，所以这里必须独立保存用户选择。
   int _selectedIndex = 0;
 
   /// 最近一次错误文案（用于在 UI 中展示错误卡片）。
+  ///
+  /// 错误不会“锁死”页面，用户仍然可以通过“重拍”重新走一次识别流程。
   String? _lastError;
 
+  /// 页面初始化时接入两个启动动作：
+  /// 1. 监听面板尺寸，驱动照片区域联动；
+  /// 2. 首帧后自动展开面板，并按需自动拉起拍照识别。
   @override
   void initState() {
     super.initState();
@@ -98,6 +140,9 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     });
   }
 
+  /// 页面销毁时释放控制器资源。
+  ///
+  /// 必须移除 `_sheetController` 的监听，避免在销毁后仍触发 setState。
   @override
   void dispose() {
     // 释放 controller，避免内存泄漏。
@@ -106,6 +151,10 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     super.dispose();
   }
 
+  /// 监听底部面板尺寸变化并同步到 `_sheetSize`。
+  ///
+  /// 这个方法只做一件事：把底部面板的真实尺寸反映到状态层，供 `build`
+  /// 中计算图片区域高度，不在这里混入其他业务逻辑。
   void _onSheetChanged() {
     final next = _sheetController.size;
     if ((next - _sheetSize).abs() < 0.001) {
@@ -116,6 +165,11 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     });
   }
 
+  /// 首次进入页面后自动把底部面板拉到中间位置。
+  ///
+  /// 这样用户一进来就能同时看到：
+  /// - 顶部照片区域；
+  /// - 下方即将出现的识别结果/操作区。
   Future<void> _autoExpandSheet() async {
     try {
       await Future<void>.delayed(const Duration(milliseconds: 60));
@@ -130,6 +184,11 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     }
   }
 
+  /// 构建药物识别页 UI。
+  ///
+  /// 页面由两层结构叠放：
+  /// - 顶部照片预览区：根据 `_sheetSize` 动态收缩；
+  /// - 底部拖拽面板：承载错误提示、操作入口与识别候选列表。
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -245,6 +304,9 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   /// 面板里会根据模式显示：
   /// - actions：操作入口区 + 结果列表（紧凑版）；
   /// - result：结果列表为主 + 底部按钮。
+  ///
+  /// 它承担的是“内容编排”职责，不直接处理拍照或识别，只根据当前状态把各块 UI
+  /// 组装出来。
   Widget _buildSheet(ScrollController scrollController) {
     return DecoratedBox(
       decoration: const BoxDecoration(
@@ -418,6 +480,9 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   ///
   /// - `compact = false`：普通模式，结果区域作为主内容；
   /// - `compact = true`：操作模式下作为辅助紧凑列表展示。
+  ///
+  /// 这里统一处理四种结果态：识别中、未开始、无结果、有结果，保证页面在不同入口
+  /// 模式下共用同一套候选渲染逻辑。
   Widget _buildResultSection({bool compact = false}) {
     /// 当前识别结果对象。
     final result = _scanResult;
@@ -600,6 +665,9 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   /// 构建底部按钮区域。
+  ///
+  /// 在 `result` 模式下，这里提供“添加到我的药品/查看详细信息/取消”；
+  /// 在 `actions` 模式下，则只保留收尾动作“取消”，主要操作放到上面的 action tiles。
   Widget _buildBottomButtons() {
     /// 当前是否存在可用的识别结果。
     final canUseResult =
@@ -667,6 +735,9 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   /// 4. 读取图片字节；
   /// 5. 后台保存到系统相册；
   /// 6. 上传后端识别。
+  ///
+  /// 这里把“拍照”和“识别”串成同一个流程，是为了让页面始终围绕同一张最新
+  /// 照片工作，避免旧照片结果和新拍照片预览混在一起。
   Future<void> _retakeAndScan() async {
     setState(() {
       _lastError = null;
@@ -751,6 +822,12 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   /// 上传图片到后端并获取识别结果。
+  ///
+  /// 该方法只负责“识别主链路”：
+  /// 1. base64 编码图片；
+  /// 2. 调识别接口；
+  /// 3. 选出默认候选；
+  /// 4. 把结果交给 `_persistAlbumRecord` 做记录落库。
   Future<void> _scan(Uint8List bytes) async {
     if (_scanning) return;
     setState(() => _scanning = true);
@@ -788,6 +865,9 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   /// 把识别结果记录到本地相册表，并尽量同步到远端。
+  ///
+  /// 页面之所以在识别成功后立刻落库，是为了保证“相册”能作为识别历史入口
+  /// 使用，即使稍后页面被关闭、网络同步失败，用户仍然能在本地看到刚刚的结果。
   Future<void> _persistAlbumRecord(
     Uint8List bytes,
     MedicineScanResult result,
@@ -860,6 +940,9 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   /// 获取当前被选中的候选结果。
   ///
   /// 如果没有结果或下标越界，则返回 null。
+  ///
+  /// 页面上的多个动作按钮都通过这个方法拿“当前选择”，避免每个入口都重复
+  /// 处理空结果和越界保护。
   ScanCandidate? _getSelectedCandidateOrNull() {
     final result = _scanResult;
     if (result == null) return null;
@@ -869,6 +952,9 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   /// 把当前选中的候选药品加入“我的药品”。
+  ///
+  /// 这里会先把扫描候选转换为统一的 `MedicineItem` 结构，再按与搜索页一致的
+  /// 本地表字段写入，保证不同入口添加的药品记录结构保持一致。
   Future<void> _addSelectedToMyMedicines() async {
     /// 当前选中的候选药品。
     final c = _getSelectedCandidateOrNull();
@@ -917,6 +1003,8 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   /// 打开当前选中候选的药品详情页。
+  ///
+  /// 详情页需要的是统一药品对象，因此这里会先把扫描候选映射为 `MedicineItem`。
   Future<void> _openSelectedDetail() async {
     /// 当前选中的候选药品。
     final c = _getSelectedCandidateOrNull();
@@ -979,6 +1067,8 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   /// 根据文件路径猜测 MIME 类型。
+  ///
+  /// 当前拍照流程主要会产出 jpeg，但仍保留 png 判断，兼容未来改成相册选择等入口。
   String _guessMimeType(String path) {
     final lower = path.toLowerCase();
     if (lower.endsWith('.png')) return 'image/png';
@@ -986,7 +1076,12 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 }
 
+/// 操作模式下使用的统一动作卡片。
+///
+/// 用同一套视觉结构承载“添加到我的药品 / 保存到相册 / 查看详细信息”三种动作，
+/// 只通过图标、颜色、文案和回调区分具体行为。
 class _ActionTile extends StatelessWidget {
+  /// 创建操作模式下的动作卡片。
   const _ActionTile({
     required this.icon,
     required this.color,
@@ -1010,6 +1105,7 @@ class _ActionTile extends StatelessWidget {
   /// 点击回调；为 null 时表示不可用。
   final VoidCallback? onTap;
 
+  /// 构建统一样式的动作卡片。
   @override
   Widget build(BuildContext context) {
     return InkWell(
