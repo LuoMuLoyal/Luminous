@@ -81,16 +81,20 @@ class DioRequest {
               text: options.extra[_loadingTextKey]?.toString() ?? '加载中...',
             );
           }
-          debugPrint('[DIO][REQ] ${options.method} ${options.uri}');
+          if (kDebugMode) {
+            debugPrint('[DIO][REQ] ${options.method} ${options.uri}');
+          }
           handler.next(options);
         },
         onResponse: (response, handler) {
           if (response.requestOptions.extra[_showLoadingKey] == true) {
             LoadingUtils.hide();
           }
-          debugPrint(
-            '[DIO][RES] ${response.statusCode} ${response.requestOptions.uri}',
-          );
+          if (kDebugMode) {
+            debugPrint(
+              '[DIO][RES] ${response.statusCode} ${response.requestOptions.uri}',
+            );
+          }
           handler.next(response);
         },
         onError: (error, handler) {
@@ -104,7 +108,11 @@ class DioRequest {
           /// 当前异常对应的 HTTP 状态码。
           final statusCode = error.response?.statusCode;
 
-          debugPrint('[DIO][ERR] $uri status=$statusCode msg=${error.message}');
+          if (kDebugMode) {
+            debugPrint(
+              '[DIO][ERR] $uri status=$statusCode msg=${error.message}',
+            );
+          }
           handler.reject(error);
         },
       ),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -155,6 +156,12 @@ class _HomeViewState extends State<HomeView> {
   /// 2. 顶部卡片展示“提醒加载中...”文案。
   bool _loadingReminders = false;
 
+  /// 当前是否有新的提醒刷新请求在排队。
+  bool _refreshQueued = false;
+
+  /// 当前活跃提醒请求的编号。
+  int _reminderRequestId = 0;
+
   /// 页面初始化时完成一次性数据准备。
   ///
   /// 这里做两件事：
@@ -297,25 +304,23 @@ class _HomeViewState extends State<HomeView> {
   /// 4. 否则使用接口返回的数据。
   Future<void> _fetchTodayReminders() async {
     if (_loadingReminders) {
+      _refreshQueued = true;
       return;
     }
+
+    final requestId = ++_reminderRequestId;
+    final userId = (_userController.user.value?.id ?? '').trim();
     setState(() {
       _loadingReminders = true;
     });
 
     try {
-      /// 当前登录用户 id。
-      ///
-      /// 如果用户未登录，这里会是 `null`，接口和本地查询都会按未登录场景处理。
-      final userId = _userController.user.value?.id;
-
       /// 后端返回的“今日提醒”结果。
       ///
       /// 作为网络数据来源，当本地没有可用数据时会回退使用这里的内容。
-      final response = await HomeApi.fetchTodayReminders(userId: userId);
-      if (!mounted) {
-        return;
-      }
+      final response = await HomeApi.fetchTodayReminders(
+        userId: userId.isEmpty ? null : userId,
+      );
 
       /// 从本地数据库中整理出来的“今天的提醒 UI 数据”。
       ///
@@ -329,13 +334,16 @@ class _HomeViewState extends State<HomeView> {
           ? local
           : response.result.items.map(_toReminderUi).toList();
 
-      if (!mounted) return;
-      if (items.isNotEmpty) {
-        setState(() {
-          _reminders = items;
-        });
-      }
+      if (!_canApplyReminderResult(requestId, userId)) return;
+      setState(() {
+        _reminders = items.isEmpty
+            ? List<HomeReminderItemData>.from(_fallbackReminders)
+            : items;
+      });
     } catch (e) {
+      if (!_canApplyReminderResult(requestId, userId)) {
+        return;
+      }
       if (!mounted) {
         return;
       }
@@ -344,12 +352,28 @@ class _HomeViewState extends State<HomeView> {
         e.toString().replaceFirst('Exception: ', ''),
       );
     } finally {
-      if (mounted) {
+      if (_isActiveReminderRequest(requestId) && mounted) {
         setState(() {
           _loadingReminders = false;
         });
       }
+      if (_isActiveReminderRequest(requestId) && _refreshQueued && mounted) {
+        _refreshQueued = false;
+        unawaited(_fetchTodayReminders());
+      }
     }
+  }
+
+  /// 当前提醒请求结果是否仍然可以落到页面上。
+  bool _canApplyReminderResult(int requestId, String userId) {
+    return mounted &&
+        _isActiveReminderRequest(requestId) &&
+        userId == (_userController.user.value?.id ?? '').trim();
+  }
+
+  /// 当前请求是否仍然是活跃请求。
+  bool _isActiveReminderRequest(int requestId) {
+    return requestId == _reminderRequestId;
   }
 
   /// 从本地数据库读取“今天的提醒”并组装成首页 UI 需要的数据结构。

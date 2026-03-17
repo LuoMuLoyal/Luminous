@@ -1,13 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/reminder_api.dart';
 import 'package:luminous/pages/Reminders/reminder_edit.dart';
-import 'package:luminous/stores/app_database.dart';
+import 'package:luminous/stores/reminder_local_store.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/notification_service.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/reminder.dart';
-import 'package:sqflite/sqflite.dart';
 
 /// 用药提醒列表页。
 ///
@@ -41,6 +42,12 @@ class _ReminderListPageState extends State<ReminderListPage> {
   /// 当前提醒计划列表。
   List<ReminderPlan> _items = [];
 
+  /// 当前是否有一次新的刷新请求在排队。
+  bool _reloadQueued = false;
+
+  /// 当前活跃加载请求的编号。
+  int _loadRequestId = 0;
+
   /// 页面初始化时先拉取一次提醒列表。
   @override
   void initState() {
@@ -65,7 +72,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
   /// - 成功：写入本地缓存，并重新调度系统通知；
   /// - 失败：回退读取本地缓存。
   Future<void> _load() async {
-    final userId = _userId;
+    final userId = _userId.trim();
     if (userId.trim().isEmpty) {
       if (mounted) {
         setState(() {
@@ -76,92 +83,79 @@ class _ReminderListPageState extends State<ReminderListPage> {
       }
       return;
     }
-    if (_loading) return;
+    if (_loading) {
+      _reloadQueued = true;
+      return;
+    }
+
+    final requestId = ++_loadRequestId;
     setState(() {
       _loading = true;
       _error = null;
     });
 
     try {
-      // 1) 从后端拉取提醒计划列表。
       final response = await ReminderApi.list(userId: userId);
-      if (!mounted) return;
-      // 2) 拿到提醒计划列表并按时间排序，便于页面展示。
-      final items = response.result.items;
+      final items = _sortedPlans(response.result.items);
+      if (!_canApplyLoadResult(requestId, userId)) return;
       setState(() {
-        _items = List<ReminderPlan>.from(items)
-          ..sort((a, b) => a.time.compareTo(b.time));
+        _items = items;
       });
-      // 3) 写入本地缓存，便于离线展示与首页拼装“今日提醒”。
-      await _cacheToLocal(userId, _items);
-      // 4) 根据最新计划重新调度系统通知。
-      await NotificationService.instance.rescheduleAll(_items);
+      await reminderLocalStore.replaceForUser(userId, items);
+      if (!_canApplyLoadResult(requestId, userId)) return;
+      await NotificationService.instance.rescheduleAll(items);
     } catch (e) {
-      if (!mounted) return;
+      if (!_canApplyLoadResult(requestId, userId)) return;
       setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
-      // fallback: load local cache
-      await _loadLocal(userId);
+      await _loadLocal(userId, requestId: requestId);
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (_isActiveLoadRequest(requestId) && mounted) {
+        setState(() => _loading = false);
+      }
+      if (_isActiveLoadRequest(requestId) && _reloadQueued && mounted) {
+        _reloadQueued = false;
+        unawaited(_load());
+      }
     }
   }
 
   /// 从本地缓存读取提醒计划列表（网络失败时回退使用）。
-  Future<void> _loadLocal(String userId) async {
-    try {
-      final db = await AppDatabase.instance.database;
-      final rows = await db.query(
-        'reminders',
-        where: 'userId = ?',
-        whereArgs: [userId],
-        orderBy: 'time ASC',
-      );
-      final items = rows.map(_rowToPlan).toList();
-      if (!mounted) return;
-      setState(() {
-        _items = items;
-      });
-    } catch (_) {}
-  }
-
-  /// 把 reminders 表的一行记录转换为 `ReminderPlan`。
-  ReminderPlan _rowToPlan(Map<String, dynamic> row) {
-    return ReminderPlan(
-      id: (row['remoteId'] ?? '').toString(),
-      userId: (row['userId'] ?? '').toString(),
-      time: (row['time'] ?? '').toString(),
-      drugCode: (row['drugCode'] ?? '').toString(),
-      approvalNo: (row['approvalNo'] ?? '').toString(),
-      productName: (row['productName'] ?? '').toString(),
-      subtitle: (row['subtitle'] ?? '').toString(),
-      enabled: (row['enabled'] ?? 1) == 1,
-      repeatRule: (row['repeatRule'] ?? 'daily').toString(),
-      method: (row['method'] ?? 'notification').toString(),
-    );
-  }
-
-  /// 将提醒计划列表写入本地 reminders 表缓存。
-  ///
-  /// 使用 replace 覆盖写入，保证本地缓存与远端结果一致。
-  Future<void> _cacheToLocal(String userId, List<ReminderPlan> items) async {
-    final db = await AppDatabase.instance.database;
-    final now = DateTime.now().millisecondsSinceEpoch;
-    for (final r in items) {
-      if (r.id.trim().isEmpty) continue;
-      await db.insert('reminders', {
-        'remoteId': r.id,
-        'userId': userId,
-        'time': r.time,
-        'drugCode': r.drugCode,
-        'approvalNo': r.approvalNo,
-        'productName': r.productName,
-        'subtitle': r.subtitle,
-        'enabled': r.enabled ? 1 : 0,
-        'repeatRule': r.repeatRule,
-        'method': r.method,
-        'updatedAt': now,
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+  Future<void> _loadLocal(String userId, {required int requestId}) async {
+    final items = await reminderLocalStore.loadForUser(userId);
+    if (!_canApplyLoadResult(requestId, userId)) {
+      return;
     }
+    setState(() {
+      _items = items;
+    });
+  }
+
+  /// 当前请求结果是否仍然可以安全落到界面上。
+  bool _canApplyLoadResult(int requestId, String userId) {
+    return mounted &&
+        _isActiveLoadRequest(requestId) &&
+        userId == _userId.trim();
+  }
+
+  /// 当前请求是否仍然是活跃请求。
+  bool _isActiveLoadRequest(int requestId) {
+    return requestId == _loadRequestId;
+  }
+
+  /// 对提醒计划列表做稳定排序。
+  List<ReminderPlan> _sortedPlans(Iterable<ReminderPlan> items) {
+    return List<ReminderPlan>.from(items)
+      ..sort((a, b) => a.time.compareTo(b.time));
+  }
+
+  /// 把当前页面上的提醒列表持久化到本地缓存。
+  Future<void> _persistCurrentItems({String? userId}) async {
+    final provided = (userId ?? '').trim();
+    final uid = provided.isNotEmpty ? provided : _userId.trim();
+    if (uid.isEmpty) {
+      return;
+    }
+    await reminderLocalStore.replaceForUser(uid, _sortedPlans(_items));
   }
 
   /// 构建提醒列表页 UI。
@@ -376,7 +370,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
       _items.add(plan);
       _items.sort((a, b) => a.time.compareTo(b.time));
     });
-    await _cacheToLocal(_userId, _items);
+    await _persistCurrentItems(userId: plan.userId);
     await NotificationService.instance.rescheduleAll(_items);
   }
 
@@ -394,7 +388,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
       _items.add(next);
       _items.sort((a, b) => a.time.compareTo(b.time));
     });
-    await _cacheToLocal(_userId, _items);
+    await _persistCurrentItems(userId: next.userId);
     await NotificationService.instance.rescheduleAll(_items);
   }
 
@@ -418,7 +412,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
         _items = _items.map((e) => e.id == plan.id ? next.result : e).toList()
           ..sort((a, b) => a.time.compareTo(b.time));
       });
-      await _cacheToLocal(_userId, _items);
+      await _persistCurrentItems(userId: next.result.userId);
       await NotificationService.instance.rescheduleAll(_items);
     } catch (e) {
       if (mounted) {
@@ -459,8 +453,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
       setState(() {
         _items.removeWhere((e) => e.id == plan.id);
       });
-      final db = await AppDatabase.instance.database;
-      await db.delete('reminders', where: 'remoteId = ?', whereArgs: [plan.id]);
+      await _persistCurrentItems(userId: plan.userId);
       await NotificationService.instance.rescheduleAll(_items);
       if (mounted) ToastUtils.instance.show(context, '已删除');
     } catch (e) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/auth_api.dart';
@@ -144,6 +146,9 @@ class _LoginPageState extends State<LoginPage> {
   ///
   /// 当切换到 SVG 模式且当前还没有验证码时，会自动触发一次验证码获取。
   void _onMethodChanged(_LoginMethod method) {
+    if (_submitting) {
+      return;
+    }
     FocusScope.of(context).unfocus();
     setState(() {
       _method = method;
@@ -228,12 +233,15 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    final loginMethod = _method;
+    final svgCodeId = _svgCodeId;
+
     setState(() {
       _submitting = true;
     });
 
     try {
-      final response = _method == _LoginMethod.email
+      final response = loginMethod == _LoginMethod.email
           ? await AuthApi.loginWithEmail(
               email: _emailController.text.trim(),
               password: _passwordController.text,
@@ -242,7 +250,7 @@ class _LoginPageState extends State<LoginPage> {
               username: _svgUserController.text.trim(),
               password: _passwordController.text,
               code: _svgCodeController.text.trim(),
-              uuid: _svgCodeId!,
+              uuid: svgCodeId!,
             );
 
       final loginResult = response.result;
@@ -286,9 +294,9 @@ class _LoginPageState extends State<LoginPage> {
           _submitting = false;
         });
       }
-      if (_method == _LoginMethod.svg) {
+      if (mounted && loginMethod == _LoginMethod.svg) {
         _svgCodeController.clear();
-        _onFetchSvg();
+        unawaited(_onFetchSvg());
       }
     }
   }
