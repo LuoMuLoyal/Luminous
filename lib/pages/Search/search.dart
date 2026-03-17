@@ -22,7 +22,11 @@ import 'package:luminous/viewmodels/medicine.dart';
 // - _draftKeyword：输入框实时内容（未提交）
 // - _keyword：已提交的搜索关键词（触发请求）
 // - 滚动到底部自动加载下一页
+/// 手动搜索页。
+///
+/// 页面支持药品库关键词搜索、最近搜索、快捷标签，以及滚动分页加载。
 class SearchView extends StatefulWidget {
+  /// 创建手动搜索页组件。
   const SearchView({super.key, this.pickerMode = false});
 
   /// 是否以“选择器模式”打开。
@@ -36,6 +40,12 @@ class SearchView extends StatefulWidget {
   State<SearchView> createState() => _SearchViewState();
 }
 
+/// 手动搜索页的状态对象。
+///
+/// 这个状态类同时维护三条主线：
+/// - 搜索输入链路：`_draftKeyword -> _keyword -> _search(reset: true)`；
+/// - 分页链路：`_hasMore/_page/_loadingMore` 控制滚动到底后的下一页请求；
+/// - 本地联动链路：`_addedKeys` 用于把搜索结果和“我的药品”列表对齐。
 class _SearchViewState extends State<SearchView> {
   /// 搜索输入框控制器。
   final TextEditingController _searchController = TextEditingController();
@@ -61,30 +71,59 @@ class _SearchViewState extends State<SearchView> {
   final List<String> _recentKeywords = ['阿莫西林', '布洛芬', '维生素D'];
 
   /// 已提交并用于实际请求的搜索关键词。
+  ///
+  /// 之所以单独维护 `_keyword`，是为了把“输入态”和“请求态”解耦：
+  /// 用户在输入框里继续编辑时（`_draftKeyword` 变化）不会立刻触发搜索，
+  /// 只有点击“搜索/回车”后才会把输入提交到 `_keyword` 并发起请求。
   String _keyword = '';
 
   /// 输入框当前实时内容（尚未真正发起请求）。
+  ///
+  /// 这个状态主要用于驱动 UI：
+  /// - 决定“搜索提示/准备搜索/结果列表”这些 Sliver 的展示分支；
+  /// - 控制输入框右侧清除按钮是否出现。
   String _draftKeyword = '';
 
   /// 最近一次搜索失败时的错误文案。
   String? _lastError;
 
   /// 当前已加载出来的搜索结果列表。
+  ///
+  /// - reset 搜索时会清空；
+  /// - 分页加载时会在原列表尾部追加，保证滚动位置与已有内容不被打断。
   final List<MedicineItem> _results = [];
-  // 记录哪些药品已添加（identityKey 集合）
+
   /// 已经添加到“我的药品”的 identityKey 集合。
+  ///
+  /// 用 Set 的目的是：
+  /// - O(1) 判断某条搜索结果是否已添加（用于禁用“添加”按钮/展示已添加状态）；
+  /// - 避免重复插入本地数据库。
   final Set<String> _addedKeys = {};
 
   /// 是否正在执行“首屏/重置搜索”。
+  ///
+  /// 与 `_loadingMore` 分开是因为两者的 UI 与行为不同：
+  /// - `_loading=true` 通常意味着清空结果并重新请求，需要展示首屏 loading；
+  /// - `_loadingMore=true` 则保留现有结果，只在底部展示分页 loading。
   bool _loading = false;
 
   /// 是否正在加载下一页。
+  ///
+  /// 该状态用于：
+  /// - 防止滚动到底部时重复触发并发分页请求；
+  /// - 控制底部“加载更多”进度条显示。
   bool _loadingMore = false;
 
   /// 当前是否还有下一页结果。
+  ///
+  /// 由后端分页结果返回，用于决定是否继续触发滚动加载。
   bool _hasMore = false;
 
   /// 下一次请求要使用的页码。
+  ///
+  /// 这里保存的是“下一页页码”（next page），而不是“当前页”：
+  /// - reset 时回到 1；
+  /// - 每次请求成功后会根据返回的 `result.page` 推进到 `result.page + 1`。
   int _page = 1;
 
   /// 每页大小常量。
@@ -115,6 +154,9 @@ class _SearchViewState extends State<SearchView> {
   }
 
   /// 读取本地“我的药品”列表里的 identityKey，用于标记哪些搜索结果已添加。
+  ///
+  /// 这一步单独放在页面初始化时做，是为了让搜索结果一出现就知道哪些药
+  /// 已经存在于本地列表里，避免用户重复点击“添加”。
   Future<void> _loadAddedKeys() async {
     try {
       /// 本地数据库实例。
@@ -144,6 +186,9 @@ class _SearchViewState extends State<SearchView> {
   }
 
   /// 构建搜索页整体 UI。
+  ///
+  /// 页面会根据 `_keyword/_draftKeyword/_loading/_lastError/_results`
+  /// 的组合状态，在“提示态 / 待提交态 / 加载态 / 错误态 / 结果态”之间切换。
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -720,6 +765,12 @@ class _SearchViewState extends State<SearchView> {
   }
 
   /// 点击快捷标签/历史记录时直接应用关键词并触发搜索。
+  ///
+  /// 与手动输入再提交相比，这里会一步完成：
+  /// 1. 回填输入框；
+  /// 2. 同步 `_draftKeyword/_keyword`；
+  /// 3. 更新最近搜索；
+  /// 4. 直接发起 reset 搜索。
   void _applyQuickTag(String tag) {
     _searchController.text = tag;
     _searchController.selection = TextSelection.collapsed(offset: tag.length);
@@ -734,7 +785,8 @@ class _SearchViewState extends State<SearchView> {
 
   /// 提交搜索。
   ///
-  /// 该方法会把输入框内容同步到 `_keyword`，再触发一次重置搜索。
+  /// 该方法是“用户确认搜索”的入口，会把输入框内容从 `_draftKeyword`
+  /// 提交到 `_keyword`，再触发一次重置搜索。
   void _commitSearch() {
     /// 输入框中当前的关键词。
     final keyword = _searchController.text.trim();
@@ -753,6 +805,12 @@ class _SearchViewState extends State<SearchView> {
   }
 
   /// 清空当前搜索内容与结果列表。
+  ///
+  /// 这是一次完整的“回到初始搜索态”：
+  /// - 输入态清空；
+  /// - 请求态清空；
+  /// - 错误态清空；
+  /// - 分页态重置。
   void _clearKeyword() {
     _searchController.clear();
     setState(() {
@@ -810,6 +868,9 @@ class _SearchViewState extends State<SearchView> {
   }
 
   /// 将一条搜索结果加入“我的药品”。
+  ///
+  /// 成功后除了写库，还会立即把 identityKey 放进 `_addedKeys`，
+  /// 这样当前页面不需要重新查库就能同步按钮状态。
   Future<void> _addToMyMedicines(MedicineItem item) async {
     /// 当前药品的唯一 identityKey。
     final identityKey = _buildIdentityKey(item);
@@ -852,6 +913,15 @@ class _SearchViewState extends State<SearchView> {
   ///
   /// - `reset=true`：重置结果并从第一页开始搜；
   /// - `reset=false`：在已有结果后继续加载下一页。
+  ///
+  /// 这里把“首屏搜索”和“分页搜索”合并在一个方法里，核心原因是它们共用：
+  /// - 同一组接口参数；
+  /// - 同一套结果合并逻辑；
+  /// - 同一套异常处理。
+  ///
+  /// 区别主要体现在进入方法前如何准备状态：
+  /// - reset：清空旧结果、页码回到 1、展示首屏 loading；
+  /// - load more：保留旧结果、只打开底部 loading。
   Future<void> _search({required bool reset}) async {
     /// 真正用于请求的关键词。
     final keyword = _keyword.trim();
@@ -921,14 +991,20 @@ class _SearchViewState extends State<SearchView> {
   }
 }
 
-// ── 搜索提示行 ────────────────────────────────────────────────────────────────
-
+/// 搜索提示卡片中的单行说明。
+///
+/// 用于统一渲染“字段名 + 示例值”的展示样式，避免在页面主体里重复写布局。
 class _TipRow extends StatelessWidget {
+  /// 创建搜索提示行（字段标签 + 示例值）。
   const _TipRow({required this.label, required this.example});
 
+  /// 左侧字段标签文案（例如“产品名称”）。
   final String label;
+
+  /// 右侧示例文案（例如“阿莫西林胶囊、布洛芬片”）。
   final String example;
 
+  /// 构建单行“字段标签 + 示例值”说明。
   @override
   Widget build(BuildContext context) {
     return Padding(

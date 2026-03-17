@@ -18,7 +18,11 @@ import 'package:luminous/viewmodels/medicine.dart';
 // - "常用功能"是本地静态入口（纯 UI）
 // - "今日提醒"来自后端接口 today-reminders
 // - 接口失败时回退到本地 _fallbackReminders
+/// 首页。
+///
+/// 作为应用一级入口，负责把高频功能、今日提醒和健康提示组合在同一屏展示。
 class HomeView extends StatefulWidget {
+  /// 创建首页组件。
   const HomeView({super.key});
 
   /// 创建首页对应的状态对象，所有首页数据加载与交互都在状态类里完成。
@@ -26,6 +30,12 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
+/// 首页状态对象。
+///
+/// 主要维护三类首页信息：
+/// - 顶部温馨提示；
+/// - 中部固定功能入口；
+/// - 底部今日提醒及其本地/远端回退逻辑。
 class _HomeViewState extends State<HomeView> {
   /// 当前登录用户控制器。
   ///

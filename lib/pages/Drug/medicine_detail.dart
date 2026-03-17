@@ -12,7 +12,13 @@ import 'package:luminous/viewmodels/medicine.dart';
 // 设计注意：
 // - 详情与 AI 是两个请求：detail 用于补齐基础信息，ai-detail 用于后续扩展
 // - AI 内容是高风险区域：后续接入时应加免责声明、过滤与超时策略（后端更关键）
+/// 药品详情页。
+///
+/// 用于展示基础药品信息，并在用户需要时进一步拉取 AI 解读内容。
 class MedicineDetailPage extends StatefulWidget {
+  /// 创建药品详情页，并指定初始药品对象。
+  ///
+  /// 初始对象可能来自列表点击，字段不一定完整，页面会在 `initState` 再拉取一次详情补齐。
   const MedicineDetailPage({super.key, required this.initialItem});
 
   /// 详情页的初始药品对象。
@@ -25,6 +31,9 @@ class MedicineDetailPage extends StatefulWidget {
   State<MedicineDetailPage> createState() => _MedicineDetailPageState();
 }
 
+/// 药品详情页状态对象。
+///
+/// 同时维护“基础详情”与“AI 解读”两条独立请求链路，避免二者互相阻塞。
 class _MedicineDetailPageState extends State<MedicineDetailPage> {
   /// 当前展示的药品对象。
   ///
@@ -173,6 +182,7 @@ class _MedicineDetailPageState extends State<MedicineDetailPage> {
 ///
 /// 展示药品名称、规格信息与关键身份字段（批准文号/药品编码），并提供“刷新”按钮。
 class _HeaderCard extends StatelessWidget {
+  /// 创建详情页顶部基础信息卡片。
   const _HeaderCard({
     required this.item,
     required this.loading,
@@ -188,6 +198,7 @@ class _HeaderCard extends StatelessWidget {
   /// 点击刷新回调。
   final VoidCallback onRefresh;
 
+  /// 构建顶部基础信息卡片 UI。
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -306,11 +317,13 @@ class _HeaderCard extends StatelessWidget {
 
 /// 详情页“基础信息”卡片。
 class _InfoCard extends StatelessWidget {
+  /// 创建详情页“基础信息”卡片。
   const _InfoCard({required this.item});
 
   /// 当前药品对象。
   final MedicineItem item;
 
+  /// 构建基础信息卡片 UI。
   @override
   Widget build(BuildContext context) {
     return _SurfaceCard(
@@ -333,6 +346,7 @@ class _InfoCard extends StatelessWidget {
 
 /// 详情页“AI 智能解读”卡片。
 class _AiCard extends StatelessWidget {
+  /// 创建详情页“AI 智能解读”卡片。
   const _AiCard({
     required this.hasIdentity,
     required this.loading,
@@ -352,6 +366,7 @@ class _AiCard extends StatelessWidget {
   /// 点击“获取详细信息”回调。
   final VoidCallback onFetch;
 
+  /// 构建 AI 解读卡片 UI。
   @override
   Widget build(BuildContext context) {
     return _SurfaceCard(
@@ -402,8 +417,10 @@ class _AiCard extends StatelessWidget {
 
 /// 详情页底部免责声明卡片。
 class _DisclaimerCard extends StatelessWidget {
+  /// 创建详情页底部免责声明卡片。
   const _DisclaimerCard();
 
+  /// 构建免责声明卡片 UI。
   @override
   Widget build(BuildContext context) {
     return _SurfaceCard(
@@ -426,6 +443,7 @@ class _DisclaimerCard extends StatelessWidget {
 ///
 /// 用于保持“基础信息/AI 解读/免责声明”等区域的视觉一致性。
 class _SurfaceCard extends StatelessWidget {
+  /// 创建详情页统一使用的白色表面卡片容器。
   const _SurfaceCard({required this.title, required this.child, this.trailing});
 
   /// 卡片标题。
@@ -437,6 +455,7 @@ class _SurfaceCard extends StatelessWidget {
   /// 右上角 trailing 区域（可选），例如按钮。
   final Widget? trailing;
 
+  /// 构建表面卡片 UI。
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -482,6 +501,7 @@ class _SurfaceCard extends StatelessWidget {
 
 /// “基础信息”卡片中的一行字段展示。
 class _InfoRow extends StatelessWidget {
+  /// 创建“基础信息”卡片中的单行字段展示。
   const _InfoRow({required this.label, required this.value});
 
   /// 字段名称。
@@ -490,6 +510,7 @@ class _InfoRow extends StatelessWidget {
   /// 字段值。
   final String value;
 
+  /// 构建字段行 UI。
   @override
   Widget build(BuildContext context) {
     /// 经过兜底处理的展示文本。

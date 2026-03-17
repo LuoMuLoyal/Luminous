@@ -7,7 +7,11 @@ import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/home.dart';
 
+/// 用药打卡页。
+///
+/// 页面聚焦“今天要不要打卡、是否已完成”，数据来源是今日提醒接口。
 class CheckInPage extends StatefulWidget {
+  /// 创建用药打卡页组件。
   const CheckInPage({super.key});
 
   /// 创建用药打卡页对应的状态对象。
@@ -15,6 +19,9 @@ class CheckInPage extends StatefulWidget {
   State<CheckInPage> createState() => _CheckInPageState();
 }
 
+/// 用药打卡页状态对象。
+///
+/// 会把 today-reminders 的结果渲染成可打卡列表，并在打卡成功后同步刷新。
 class _CheckInPageState extends State<CheckInPage> {
   /// 全局用户控制器，用于获取 userId 与判断登录态。
   final UserController _userController = Get.find<UserController>();
@@ -310,7 +317,11 @@ class _CheckInPageState extends State<CheckInPage> {
   }
 }
 
+/// 单条打卡提醒卡片。
+///
+/// 负责展示提醒时间、说明文案和“打卡/已完成”按钮，不参与任何数据请求。
 class _CheckInCard extends StatelessWidget {
+  /// 创建单条打卡提醒卡片。
   const _CheckInCard({required this.item, required this.onCheckIn});
 
   /// 当前提醒条目。
@@ -319,6 +330,7 @@ class _CheckInCard extends StatelessWidget {
   /// 点击“打卡”按钮回调；为 null 表示禁用（已完成）。
   final VoidCallback? onCheckIn;
 
+  /// 构建单条打卡提醒卡片 UI。
   @override
   Widget build(BuildContext context) {
     /// 当前是否已完成。

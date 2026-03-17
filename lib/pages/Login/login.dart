@@ -11,7 +11,11 @@ import 'package:luminous/utils/toast_utils.dart';
 // - 邮箱登录：只校验邮箱 + 密码（不要求 SVG 验证码）
 // - SVG 测试登录：用于联调验证码流程（type=1，需要 uuid + code）
 // - 用户态写入：登录成功后写入 UserController 并持久化（shared_preferences）
+/// 登录页。
+///
+/// 支持正式邮箱登录与 SVG 验证码测试登录两种方式。
 class LoginPage extends StatefulWidget {
+  /// 创建登录页组件。
   const LoginPage({super.key});
 
   /// 创建登录页对应的状态对象。
@@ -22,6 +26,9 @@ class LoginPage extends StatefulWidget {
 /// 登录页支持的两种方式。
 enum _LoginMethod { email, svg }
 
+/// 登录页状态对象。
+///
+/// 这里集中维护登录方式切换、输入校验、协议勾选以及提交中的禁用状态。
 class _LoginPageState extends State<LoginPage> {
   /// 表单 key，用于触发表单校验。
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();

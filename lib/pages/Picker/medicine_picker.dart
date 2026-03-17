@@ -4,7 +4,11 @@ import 'package:luminous/stores/app_database.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 
+/// 药品选择器页面。
+///
+/// 统一承接“从我的药品选择”与“跳转搜索库选择”两种入口，并把结果返回给上层页面。
 class MedicinePickerPage extends StatefulWidget {
+  /// 创建药品选择器页面。
   const MedicinePickerPage({super.key, this.title = '选择药品'});
 
   /// 顶部 AppBar 标题。
@@ -15,6 +19,9 @@ class MedicinePickerPage extends StatefulWidget {
   State<MedicinePickerPage> createState() => _MedicinePickerPageState();
 }
 
+/// 药品选择器状态对象。
+///
+/// 页面会先展示本地“我的药品”，必要时再跳到搜索页做更大范围的选择。
 class _MedicinePickerPageState extends State<MedicinePickerPage> {
   /// 当前是否正在加载“我的药品”列表。
   bool _loading = false;

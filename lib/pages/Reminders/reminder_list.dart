@@ -9,7 +9,11 @@ import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/reminder.dart';
 import 'package:sqflite/sqflite.dart';
 
+/// 用药提醒列表页。
+///
+/// 页面负责展示提醒计划、进入新增/编辑页，并把结果同步到本地缓存与系统通知。
 class ReminderListPage extends StatefulWidget {
+  /// 创建用药提醒列表页组件。
   const ReminderListPage({super.key});
 
   /// 创建提醒列表页对应的状态对象。
@@ -17,6 +21,10 @@ class ReminderListPage extends StatefulWidget {
   State<ReminderListPage> createState() => _ReminderListPageState();
 }
 
+/// 提醒列表页状态对象。
+///
+/// 这里维护的是“提醒计划清单”本身，任何对计划的新增、编辑、启停、删除
+/// 都会在这里更新 `_items`，并重新调度系统通知。
 class _ReminderListPageState extends State<ReminderListPage> {
   /// 全局用户控制器，用于判断登录态与获取 userId。
   final UserController _userController = Get.find<UserController>();
@@ -447,7 +455,11 @@ class _ReminderListPageState extends State<ReminderListPage> {
   }
 }
 
+/// 提醒计划列表中的单条卡片。
+///
+/// 负责展示时间、药品名、启用状态和删除入口，不直接访问接口。
 class _ReminderCard extends StatelessWidget {
+  /// 创建提醒计划卡片。
   const _ReminderCard({
     required this.item,
     required this.onTap,
@@ -467,6 +479,7 @@ class _ReminderCard extends StatelessWidget {
   /// 删除回调。
   final VoidCallback onDelete;
 
+  /// 构建提醒计划卡片 UI。
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -7,7 +7,11 @@ import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:luminous/viewmodels/safety.dart';
 
+/// 安全辅助页。
+///
+/// 页面允许用户选择一款或两款药品，并调用 AI 接口生成用药建议或相互作用提示。
 class SafetyAssistPage extends StatefulWidget {
+  /// 创建安全辅助页组件。
   const SafetyAssistPage({super.key});
 
   /// 创建安全辅助页对应的状态对象。
@@ -15,6 +19,12 @@ class SafetyAssistPage extends StatefulWidget {
   State<SafetyAssistPage> createState() => _SafetyAssistPageState();
 }
 
+/// 安全辅助页状态对象。
+///
+/// 状态核心在于：
+/// - 当前查询模式（单药 / 两药）；
+/// - 已选择的药品；
+/// - AI 返回的结果文本。
 class _SafetyAssistPageState extends State<SafetyAssistPage> {
   /// 全局用户控制器，用于获取 userId（可选）与判断登录态。
   final UserController _userController = Get.find<UserController>();
@@ -22,6 +32,8 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
   /// 当前查询模式：
   /// - single：单药建议
   /// - pair：两药相互作用
+  ///
+  /// 该状态决定页面要渲染几个药品选择入口，以及请求时要组装几条 medicine 数据。
   String _mode = 'single'; // single | pair
 
   /// 药品 A（单药模式仅使用 A）。
@@ -373,7 +385,11 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
   }
 }
 
+/// 安全辅助页统一使用的白色 section 卡片。
+///
+/// 通过统一容器包裹不同区域，保持“模式/选药/结果/免责声明”视觉一致。
 class _SectionCard extends StatelessWidget {
+  /// 创建统一风格的白色 section 卡片。
   const _SectionCard({required this.title, required this.child});
 
   /// 卡片标题。
@@ -382,6 +398,7 @@ class _SectionCard extends StatelessWidget {
   /// 卡片主体内容。
   final Widget child;
 
+  /// 构建 section 卡片 UI。
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -417,9 +434,12 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
+/// 安全辅助页底部免责声明卡片。
 class _DisclaimerCard extends StatelessWidget {
+  /// 创建安全辅助页免责声明卡片。
   const _DisclaimerCard();
 
+  /// 构建免责声明卡片 UI。
   @override
   Widget build(BuildContext context) {
     return _SectionCard(
