@@ -4,6 +4,37 @@
 /// - 验证码接口返回的数据结构；
 /// - 注册接口返回的数据结构；
 /// - 登录后用于前端展示与本地持久化的安全用户对象（不包含敏感 token）。
+enum AuthIdentifierType { phone, email }
+
+enum AuthCodeScene { register, login }
+
+enum AuthLoginMode { password, code }
+
+extension AuthIdentifierTypeValue on AuthIdentifierType {
+  String get backendValue =>
+      this == AuthIdentifierType.phone ? 'phone' : 'email';
+
+  String get label => this == AuthIdentifierType.phone ? '手机号' : '邮箱';
+
+  String get alternateActionText =>
+      this == AuthIdentifierType.phone ? '切换邮箱登录' : '切换手机号登录';
+
+  String get registerLabel =>
+      this == AuthIdentifierType.phone ? '手机号注册' : '邮箱注册';
+}
+
+extension AuthCodeSceneValue on AuthCodeScene {
+  String get backendValue =>
+      this == AuthCodeScene.register ? 'register' : 'login';
+}
+
+extension AuthLoginModeValue on AuthLoginMode {
+  String get label => this == AuthLoginMode.password ? '密码登录' : '验证码登录';
+
+  String get backendValue =>
+      this == AuthLoginMode.password ? 'password' : 'code';
+}
+
 class SvgCodeResult {
   /// 验证码记录 id（后端可能返回 `id` 或 `_id`）。
   final String id;
@@ -25,16 +56,16 @@ class SvgCodeResult {
   }
 }
 
-class EmailCodeResult {
-  /// 邮箱验证码发送记录 id（后端可能返回 `id` 或 `_id`）。
+class CodeTicketResult {
+  /// 验证码发送记录 id（后端可能返回 `id` 或 `_id`）。
   final String id;
 
-  /// 创建一个邮箱验证码发送结果对象。
-  const EmailCodeResult({required this.id});
+  /// 创建一个验证码发送结果对象。
+  const CodeTicketResult({required this.id});
 
-  /// 从后端 JSON 反序列化为 `EmailCodeResult`。
-  factory EmailCodeResult.fromJson(Map<String, dynamic> json) {
-    return EmailCodeResult(id: (json['id'] ?? json['_id'] ?? '').toString());
+  /// 从后端 JSON 反序列化为 `CodeTicketResult`。
+  factory CodeTicketResult.fromJson(Map<String, dynamic> json) {
+    return CodeTicketResult(id: (json['id'] ?? json['_id'] ?? '').toString());
   }
 }
 

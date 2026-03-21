@@ -3,34 +3,50 @@
 公网访问路径: https://wty10hv6az.sealosbja.site/medicine-ai-safety
 
 用途:
-- 安全辅助:
-  - 单药: 查询用药建议、注意事项、特殊人群提示
-  - 双药: 查询两种药是否有相互作用/联合用药建议
+- 安全辅助页调用
+- 单药模式返回用药建议、注意事项、特殊人群提示
+- 双药模式返回相互作用、联用风险与建议
 
 请求体:
-- userId: string (可选)
-- mode: 'single' | 'pair'
-- medicines: MedicineRef[] (single=1个，pair=2个)
+- `userId`: string (可选)
+- `mode`: `'single' | 'pair'`
+- `medicines`: MedicineRef[] (`single=1 个`, `pair=2 个`)
 
 MedicineRef 字段:
-- drugCode: string
-- approvalNo: string
-- productName: string
+- `drugCode`: string
+- `approvalNo`: string
+- `productName`: string
 
 返回体:
-- code: string
-- msg: string
-- result: { text: string }
+- `code`: string
+- `msg`: string
+- `result`
+  - `text`: string
 
-说明:
-- 推荐后端先用 drugCode/approvalNo 查询基础信息，再拼 prompt 调腾讯云 `GetLLMDiagnosisDrugChat`
-- 输出先用 text，后续可升级为 sections JSON，前端更好排版
+设计约束:
+- 前端继续消费纯文本 `text`
+- 不引入结构化 JSON 返回，避免额外 UI 改造
+- 推荐后端先查基础信息，再把基础信息和用户传入字段一起交给豆包文本模型
 
-参考接口文档:
-- GetLLMDiagnosisDrugChat: https://cloud.tencent.com/document/product/1273/128048
+所需环境变量:
+- `MYSQL_HOST`
+- `MYSQL_PORT`
+- `MYSQL_USER`
+- `MYSQL_PASSWORD`
+- `MYSQL_DATABASE`
+- `DOUBAO_API_KEY`
+- `DOUBAO_BASE_URL`
+- `DOUBAO_TEXT_ENDPOINT_ID`
+- `DOUBAO_TEXT_MODEL_ID`
 
+参考资料:
+- 对话(Chat)-文本 API: https://doubao.apifox.cn/265892759e0.md
+- 火山方舟文本生成接入说明: https://www.volcengine.com/docs/82379/1399009
+- 共享 helper: `doubao-ark-helper.md`
+
+示例代码（Laf 云函数，TypeScript）
 ```typescript
-import { Client } from 'tencentcloud-sdk-nodejs-ig'
+import { callTextModel } from './doubao-ark-helper'
 
 function success(result: any, msg = '') {
   return { code: '1', msg, result }
@@ -38,12 +54,6 @@ function success(result: any, msg = '') {
 
 function fail(msg: string, code = '0') {
   return { code, msg, result: null }
-}
-
-function mustEnv(name: string) {
-  const v = String(process.env[name] || '').trim()
-  if (!v) throw new Error(`缺少环境变量: ${name}`)
-  return v
 }
 
 export async function main(ctx: FunctionContext) {
@@ -59,7 +69,6 @@ export async function main(ctx: FunctionContext) {
   if (!['single', 'pair'].includes(mode)) {
     return fail('mode 必须是 single 或 pair')
   }
-
   if (mode === 'single' && medicines.length !== 1) {
     return fail('single 模式 medicines 必须为 1 个')
   }
@@ -67,42 +76,23 @@ export async function main(ctx: FunctionContext) {
     return fail('pair 模式 medicines 必须为 2 个')
   }
 
-  const ig = new Client({
-    credential: {
-      secretId: mustEnv('TENCENTCLOUD_SECRET_ID'),
-      secretKey: mustEnv('TENCENTCLOUD_SECRET_KEY'),
-    },
-    region: mustEnv('TENCENTCLOUD_REGION'),
-    profile: { httpProfile: { endpoint: 'ig.tencentcloudapi.com' } },
-  })
-
   const prompt =
     mode === 'pair'
       ? [
-          '你是一名药学问答助手，请评估以下两种药物是否存在相互作用，并给出中文建议。',
+          '你是一名联合用药风险提示助手，请评估以下两种药物是否存在相互作用，并给出中文建议。',
           `药品A: ${JSON.stringify(medicines[0])}`,
           `药品B: ${JSON.stringify(medicines[1])}`,
-          '请输出：是否存在相互作用、可能风险、联用建议、什么情况下需要咨询医生或药师。',
+          '请输出：是否存在相互作用、可能风险、联用建议、何时需要咨询医生或药师。',
           '输出纯文本，不要输出 markdown 代码块。',
         ].join('\n')
       : [
-          '你是一名药学问答助手，请根据以下药物信息返回中文用药建议。',
+          '你是一名用药建议助手，请根据以下药物信息返回中文说明。',
           `药品: ${JSON.stringify(medicines[0])}`,
-          '请输出：常见用途、禁忌/慎用人群、注意事项、什么情况下需要咨询医生或药师。',
+          '请输出：常见用途、禁忌/慎用人群、注意事项、何时需要咨询医生或药师。',
           '输出纯文本，不要输出 markdown 代码块。',
         ].join('\n')
 
-  const resp = await ig.GetLLMDiagnosisDrugChat({
-    PartnerId: mustEnv('IG_PARTNER_ID'),
-    PartnerSecret: mustEnv('IG_PARTNER_SECRET'),
-    HospitalAppId: mustEnv('IG_HOSPITAL_APP_ID'),
-    DialogueId: `${Date.now()}`,
-    ResultType: 0,
-    Message: prompt,
-  })
-
-  return success({
-    text: String(resp?.Data?.Content || '').trim(),
-  })
+  const text = await callTextModel(prompt)
+  return success({ text })
 }
 ```

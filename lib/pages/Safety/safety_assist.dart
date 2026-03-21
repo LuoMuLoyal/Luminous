@@ -288,7 +288,7 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
       title: 'AI 结果',
       child: _result == null || !_result!.hasText
           ? const Text(
-              '选择药品后点击“开始查询”，后端会调用腾讯云智能问药能力返回相关建议/相互作用提示。',
+              '选择药品后点击“开始查询”，后端会调用 AI 模型返回用药建议或相互作用提示。',
               style: TextStyle(
                 fontSize: 13,
                 height: 1.55,

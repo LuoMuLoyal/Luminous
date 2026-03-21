@@ -35,7 +35,10 @@ Map<String, Widget Function(BuildContext)> getRootRoutes() {
     '/login': (context) => const LoginPage(),
     '/register': (context) => const RegisterView(),
     '/search': (context) => const SearchView(),
-    '/scan': (context) => const MedicineScanPage(mode: ScanEntryMode.result),
+    '/scan': (context) => const MedicineScanPage(
+      mode: ScanEntryMode.result,
+      promptSourceOnStart: true,
+    ),
     '/reminders': (context) => const ReminderListPage(),
     '/checkin': (context) => const CheckInPage(),
     '/safety': (context) => const SafetyAssistPage(),

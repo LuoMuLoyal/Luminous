@@ -2,22 +2,32 @@
 函数路径: POST /login-user
 公网访问路径: https://wty10hv6az.sealosbja.site/login-user
 
+用途:
+- 支持手机号/邮箱双栈登录
+- 每种账号类型都支持：
+  - 密码登录
+  - 验证码登录
+
 请求体:
-- type: 1 (SVG登录) 或 2 (邮箱登录)
-- username: string
-- email: string (邮箱登录可传，和 username 二选一即可)
-- password: string
-- uuid: string (仅 SVG 登录时必填, send-code(type=1) 返回的 id)
-- code: string|number (仅 SVG 登录时必填)
+- `identifierType`: `'email' | 'phone'`
+- `loginMode`: `'password' | 'code'`
+- `identifier`: string
+- `password`: string（密码登录必填）
+- `code`: string（验证码登录必填）
+- `codeId`: string（验证码登录必填）
 
 返回体:
-- code: string
-- msg: string
-- result: user (脱敏)
+- `code`: string
+- `msg`: string
+- `result`: `user`（脱敏）
 
-说明:
-- 邮箱登录(type=2) 不需要传 uuid 和 code
+特殊业务码:
+- `NOT_REGISTERED`
+  - 仅验证码登录时使用
+  - 表示验证码校验通过，但当前手机号/邮箱尚未注册
+  - 此时不要消费验证码，允许前端跳转注册页继续复用
 
+示例代码（Laf 云函数，TypeScript）
 ```typescript
 import cloud from '@lafjs/cloud'
 import { createHash } from 'crypto'
@@ -37,91 +47,149 @@ export async function main(ctx: FunctionContext) {
     return fail('请求参数格式错误')
   }
 
-  const { type, username, email, password, code, uuid } = ctx.body
+  const identifierType = String((ctx.body as any).identifierType || '').trim()
+  const loginMode = String((ctx.body as any).loginMode || '').trim()
+  const identifier = String((ctx.body as any).identifier || '').trim()
+  const password = String((ctx.body as any).password || '')
+  const code = String((ctx.body as any).code || '').trim()
+  const codeId = String((ctx.body as any).codeId || '').trim()
 
-  const loginType = Number(type || 2)
-  const currentUsername = String(username || email || '').trim()
-  const currentPassword = String(password || '')
-  const currentUuid = String(uuid || '')
-  const currentCode = String(code || '')
-
-  if (![1, 2].includes(loginType)) {
-    return fail('无效的登录类型')
+  if (!['email', 'phone'].includes(identifierType)) {
+    return fail('identifierType 无效')
+  }
+  if (!['password', 'code'].includes(loginMode)) {
+    return fail('loginMode 无效')
+  }
+  if (!identifier) {
+    return fail(identifierType === 'email' ? '邮箱不能为空' : '手机号不能为空')
   }
 
-  if (loginType === 1) {
-    const { deleted } = await db
-      .collection('codes')
-      .where({
-        type: 1,
-        _id: currentUuid,
-        code: Number(currentCode),
-      })
-      .remove()
-    if (deleted !== 1) {
-      return fail('验证码不正确！')
-    }
+  if (loginMode === 'password') {
+    return loginWithPassword({ identifierType, identifier, password })
   }
+  return loginWithCode({ identifierType, identifier, code, codeId })
+}
 
-  if (!currentUsername || !currentPassword) {
-    return fail('用户名或密码不能为空')
+async function loginWithPassword({
+  identifierType,
+  identifier,
+  password,
+}: {
+  identifierType: string
+  identifier: string
+  password: string
+}) {
+  if (!password) {
+    return fail('密码不能为空')
   }
 
   const encryptedPassword = createHash('sha256')
-    .update(currentPassword)
+    .update(password)
     .digest('hex')
 
-  let user = (
+  const user = (
     await db
       .collection('users')
-      .where({
-        email: currentUsername,
-        password: encryptedPassword,
-      })
+      .where(
+        identifierType === 'email'
+          ? { email: identifier, password: encryptedPassword }
+          : { phone: identifier, password: encryptedPassword },
+      )
       .getOne()
   ).data
 
   if (!user) {
-    user = (
-      await db
-        .collection('users')
-        .where({
-          username: currentUsername,
-          password: encryptedPassword,
-        })
-        .getOne()
-    ).data
+    return fail('账号或密码错误')
   }
-
-  if (!user) {
-    user = (
-      await db
-        .collection('users')
-        .where({
-          phone: currentUsername,
-          password: encryptedPassword,
-        })
-        .getOne()
-    ).data
-  }
-
-  if (!user) {
-    return fail('用户名或密码错误')
-  }
-
   if (user.lock === 1) {
-    return fail('用户已被锁定，请联系管理员！')
+    return fail('用户已被锁定，请联系管理员')
   }
 
+  await touchLoginMeta(user._id)
+  return success(toSafeUser(user), '登录成功')
+}
+
+async function loginWithCode({
+  identifierType,
+  identifier,
+  code,
+  codeId,
+}: {
+  identifierType: string
+  identifier: string
+  code: string
+  codeId: string
+}) {
+  const isValid = await peekBusinessCode({
+    codeId,
+    channel: identifierType,
+    target: identifier,
+    scene: 'login',
+    code,
+  })
+  if (!isValid) {
+    return fail('验证码不正确或已过期')
+  }
+
+  const user = (
+    await db
+      .collection('users')
+      .where(identifierType === 'email' ? { email: identifier } : { phone: identifier })
+      .getOne()
+  ).data
+
+  if (!user) {
+    return fail('该账号尚未注册，是否前往注册？', 'NOT_REGISTERED')
+  }
+  if (user.lock === 1) {
+    return fail('用户已被锁定，请联系管理员')
+  }
+
+  await consumeBusinessCode(codeId)
+  await touchLoginMeta(user._id)
+  return success(toSafeUser(user), '登录成功')
+}
+
+async function peekBusinessCode({
+  codeId,
+  channel,
+  target,
+  scene,
+  code,
+}: {
+  codeId: string
+  channel: string
+  target: string
+  scene: string
+  code: string
+}) {
+  if (!codeId || !target || !code) return false
+  const record = await db.collection('codes').where({
+    _id: codeId,
+    channel,
+    target,
+    scene,
+    code: Number(code),
+  }).getOne()
+  return !!record.data
+}
+
+async function consumeBusinessCode(codeId: string) {
+  if (!codeId) return
+  await db.collection('codes').where({ _id: codeId }).remove()
+}
+
+async function touchLoginMeta(userId: string) {
   await db
     .collection('users')
-    .where({ _id: user._id })
+    .where({ _id: userId })
     .update({
-      lastIp: ctx.headers['x-real-ip'],
       lastLoginTime: Date.now(),
     })
+}
 
-  const safeUser = {
+function toSafeUser(user: any) {
+  return {
     _id: user._id,
     username: user.username,
     email: user.email,
@@ -129,8 +197,5 @@ export async function main(ctx: FunctionContext) {
     name: user.name,
     type: user.type,
   }
-
-  return success(safeUser, '登录成功！')
 }
 ```
-

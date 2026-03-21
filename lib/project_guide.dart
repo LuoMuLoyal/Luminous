@@ -36,7 +36,7 @@
   B) 认证阶段（最先打通“用户能登录注册”，以便后续功能基于登录态扩展）
   - 后端 3 个接口：send-code / register-user / login-user
   - 前端页面：Login/Register
-  - 重点：验证码流程 + 表单校验 + Loading/Toast + 错误展示
+  - 重点：手机号/邮箱双栈、验证码登录、注册 SVG 校验、自动注册跳转、Loading/Toast + 错误展示
 
   C) 协议统一阶段（工程可维护性拐点：把不稳定性压到“最少的地方”）
   - 后端返回结构统一为 code/msg/result
@@ -140,7 +140,7 @@
 
   API 层是“协议集中地”，它的价值是：
   - 页面不写接口路径字符串
-  - 页面不关心字段名、type=1/2 这些协议细节
+  - 页面不关心字段名、channel/scene/loginMode 这些协议细节
   - 页面拿到的是强类型对象，不碰 Map
 
   例如 medicine-search：
@@ -256,6 +256,7 @@
 
   认证接口（你已更新）：
   - /send-code /register-user /login-user：必须返回 code/msg/result
+  - 手机验证码固定走阿里云“短信认证”
 
   药品接口（新增）：
   - /medicine-search /medicine-detail /medicine-ai-detail
@@ -263,6 +264,7 @@
 
   部署前必查：
   - 环境变量：MYSQL_HOST/PORT/USER/PASSWORD/DATABASE
+  - 认证环境变量：邮箱发送配置 + 阿里云短信认证 AccessKey / Endpoint / Scene
   - mysql2 依赖是否安装
   - BASE_URL 是否更新到 constants.dart
   - 云函数路径与前端 HttpConstants 是否一致
@@ -331,7 +333,7 @@
   (6) lib/api/auth_api.dart
   - fetchSvgCode / sendEmailCode / registerWithEmail / registerWithSvg
   - loginWithEmail / loginWithSvg
-  - 这些方法把“接口字段细节”集中在一起，页面不用记 type=1/2 等细节
+  - 这些方法把“接口字段细节”集中在一起，页面不用记 channel/scene/loginMode 等细节
 
   (7) lib/viewmodels/auth.dart
   - SvgCodeResult / EmailCodeResult / RegisterResult / UserSafe

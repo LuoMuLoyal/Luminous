@@ -6,93 +6,103 @@ import 'package:luminous/viewmodels/auth.dart';
 ///
 /// 页面不会直接拼接认证接口路径或业务字段，而是统一通过这个类调用。
 class AuthApi {
-  /// 私有构造函数，当前类只作为静态方法容器使用。
-  AuthApi._();
+  const AuthApi();
 
   /// 请求 SVG 验证码。
-  ///
-  /// 用于“SVG 测试登录/注册”流程，后端约定 `type = 1` 表示 SVG 验证码。
-  static Future<ApiResult<SvgCodeResult>> fetchSvgCode() {
+  Future<ApiResult<SvgCodeResult>> fetchSvgCode({
+    AuthCodeScene scene = AuthCodeScene.register,
+  }) {
     return dioRequest.post<SvgCodeResult>(
       HttpConstants.SEND_CODE,
-      data: const {'type': 1},
+      data: {'channel': 'svg', 'scene': scene.backendValue},
       decoder: (json) => SvgCodeResult.fromJson(_asMap(json)),
     );
   }
 
-  /// 向指定邮箱发送邮箱验证码。
-  ///
-  /// 后端约定 `type = 2` 表示邮箱验证码发送流程。
-  static Future<ApiResult<EmailCodeResult>> sendEmailCode(String email) {
-    return dioRequest.post<EmailCodeResult>(
+  /// 向指定邮箱发送验证码。
+  Future<ApiResult<CodeTicketResult>> sendEmailCode({
+    required String email,
+    required AuthCodeScene scene,
+  }) {
+    return dioRequest.post<CodeTicketResult>(
       HttpConstants.SEND_CODE,
-      data: {'type': 2, 'value': email},
-      decoder: (json) => EmailCodeResult.fromJson(_asMap(json)),
-    );
-  }
-
-  /// 使用邮箱验证码完成注册。
-  ///
-  /// 这里会统一把注册接口所需的 `type/codeType/username/email` 等协议字段封装好。
-  static Future<ApiResult<RegisterResult>> registerWithEmail({
-    required String email,
-    required String password,
-    required String code,
-  }) {
-    return dioRequest.post<RegisterResult>(
-      HttpConstants.REGISTER_USER,
       data: {
-        'type': 2,
-        'username': email,
-        'email': email,
-        'password': password,
-        'code': code,
-        'codeType': 2,
+        'channel': 'email',
+        'scene': scene.backendValue,
+        'target': email.trim(),
       },
-      showLoading: true,
-      loadingText: '注册中...',
-      decoder: (json) => RegisterResult.fromJson(_asMap(json)),
+      decoder: (json) => CodeTicketResult.fromJson(_asMap(json)),
     );
   }
 
-  /// 使用 SVG 验证码完成注册。
-  ///
-  /// 适用于测试账号联调场景，必须同时传入验证码和对应的 `uuid`。
-  static Future<ApiResult<RegisterResult>> registerWithSvg({
-    required String username,
-    required String password,
-    required String code,
-    required String uuid,
+  /// 向指定手机号发送验证码。
+  Future<ApiResult<CodeTicketResult>> sendPhoneCode({
+    required String phone,
+    required AuthCodeScene scene,
   }) {
-    return dioRequest.post<RegisterResult>(
-      HttpConstants.REGISTER_USER,
+    return dioRequest.post<CodeTicketResult>(
+      HttpConstants.SEND_CODE,
       data: {
-        'type': 1,
-        'username': username,
-        'password': password,
-        'code': code,
-        'codeType': 1,
-        'uuid': uuid,
+        'channel': 'phone',
+        'scene': scene.backendValue,
+        'target': phone.trim(),
       },
-      showLoading: true,
-      loadingText: '注册中...',
-      decoder: (json) => RegisterResult.fromJson(_asMap(json)),
+      decoder: (json) => CodeTicketResult.fromJson(_asMap(json)),
     );
   }
 
-  /// 使用邮箱密码登录。
-  ///
-  /// 接口返回值会被解析为 `LoginResult`，兼容“仅用户信息”与“用户+token”两种结构。
-  static Future<ApiResult<LoginResult>> loginWithEmail({
+  /// 使用邮箱完成注册。
+  Future<ApiResult<RegisterResult>> registerWithEmail({
     required String email,
+    required String code,
+    required String codeId,
+    required String svgCode,
+    required String svgId,
+    required String password,
+  }) {
+    return _register(
+      identifierType: AuthIdentifierType.email,
+      identifier: email,
+      code: code,
+      codeId: codeId,
+      svgCode: svgCode,
+      svgId: svgId,
+      password: password,
+    );
+  }
+
+  /// 使用手机号完成注册。
+  Future<ApiResult<RegisterResult>> registerWithPhone({
+    required String phone,
+    required String code,
+    required String codeId,
+    required String svgCode,
+    required String svgId,
+    required String password,
+  }) {
+    return _register(
+      identifierType: AuthIdentifierType.phone,
+      identifier: phone,
+      code: code,
+      codeId: codeId,
+      svgCode: svgCode,
+      svgId: svgId,
+      password: password,
+    );
+  }
+
+  /// 使用密码登录。
+  Future<ApiResult<LoginResult>> loginWithPassword({
+    required AuthIdentifierType identifierType,
+    required String identifier,
     required String password,
   }) {
     return dioRequest.post<LoginResult>(
       HttpConstants.LOGIN_USER,
       data: {
-        'type': 2,
-        'username': email,
-        'email': email,
+        'identifierType': identifierType.backendValue,
+        'loginMode': AuthLoginMode.password.backendValue,
+        'identifier': identifier.trim(),
         'password': password,
       },
       showLoading: true,
@@ -101,33 +111,62 @@ class AuthApi {
     );
   }
 
-  /// 使用 SVG 验证码登录。
-  ///
-  /// 主要用于验证码联调场景，与邮箱登录的区别是必须附带 `code` 和 `uuid`。
-  static Future<ApiResult<LoginResult>> loginWithSvg({
-    required String username,
-    required String password,
+  /// 使用验证码登录。
+  Future<ApiResult<LoginResult>> loginWithCode({
+    required AuthIdentifierType identifierType,
+    required String identifier,
     required String code,
-    required String uuid,
+    required String codeId,
   }) {
     return dioRequest.post<LoginResult>(
       HttpConstants.LOGIN_USER,
       data: {
-        'type': 1,
-        'username': username,
-        'password': password,
-        'code': code,
-        'uuid': uuid,
+        'identifierType': identifierType.backendValue,
+        'loginMode': AuthLoginMode.code.backendValue,
+        'identifier': identifier.trim(),
+        'code': code.trim(),
+        'codeId': codeId.trim(),
       },
       showLoading: true,
       loadingText: '登录中...',
       decoder: (json) => LoginResult.fromJson(_asMap(json)),
+    );
+  }
+
+  Future<ApiResult<RegisterResult>> _register({
+    required AuthIdentifierType identifierType,
+    required String identifier,
+    required String code,
+    required String codeId,
+    required String svgCode,
+    required String svgId,
+    required String password,
+  }) {
+    final trimmedIdentifier = identifier.trim();
+
+    return dioRequest.post<RegisterResult>(
+      HttpConstants.REGISTER_USER,
+      data: {
+        'identifierType': identifierType.backendValue,
+        'email': identifierType == AuthIdentifierType.email
+            ? trimmedIdentifier
+            : '',
+        'phone': identifierType == AuthIdentifierType.phone
+            ? trimmedIdentifier
+            : '',
+        'code': code.trim(),
+        'codeId': codeId.trim(),
+        'svgCode': svgCode.trim(),
+        'svgId': svgId.trim(),
+        'password': password,
+      },
+      showLoading: true,
+      loadingText: '注册中...',
+      decoder: (json) => RegisterResult.fromJson(_asMap(json)),
     );
   }
 
   /// 把不稳定的动态 JSON 数据安全转换为 `Map<String, dynamic>`。
-  ///
-  /// 统一在 API 层做这一步，避免页面和模型层直接处理 `dynamic`。
   static Map<String, dynamic> _asMap(dynamic json) {
     if (json is Map<String, dynamic>) {
       return json;
@@ -138,3 +177,5 @@ class AuthApi {
     return <String, dynamic>{};
   }
 }
+
+const authApi = AuthApi();

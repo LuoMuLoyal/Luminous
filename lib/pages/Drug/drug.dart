@@ -202,14 +202,9 @@ class _DrugViewState extends State<DrugView> {
       return;
     }
     if (entry.title == '药物识别') {
-      Navigator.of(context)
-          .push(
-            MaterialPageRoute<void>(
-              builder: (_) =>
-                  const MedicineScanPage(mode: ScanEntryMode.actions),
-            ),
-          )
-          .then((_) => _loadMyMedicines());
+      openMedicineScanFlow(context, mode: ScanEntryMode.actions).then((_) {
+        _loadMyMedicines();
+      });
       return;
     }
     if (entry.title == 'AI 解读') {

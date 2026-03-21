@@ -36,8 +36,11 @@ class ApiException implements Exception {
   /// 具体错误消息。
   final String message;
 
+  /// 业务错误码。
+  final String? code;
+
   /// 创建一个接口异常对象。
-  const ApiException(this.message);
+  const ApiException(this.message, {this.code});
 
   /// 返回可读的错误字符串。
   @override
@@ -229,7 +232,7 @@ class DioRequest {
       }
 
       if (code != GlobalConstants.SUCCESS_CODE) {
-        throw ApiException(msg.isEmpty ? '请求失败' : msg);
+        throw ApiException(msg.isEmpty ? '请求失败' : msg, code: code);
       }
 
       return ApiResult<T>(

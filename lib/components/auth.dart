@@ -8,7 +8,7 @@ import 'package:luminous/components/soft_banner.dart';
 /// - 登录页与注册页共用相同风格的 Hero 卡、方法切换器、验证码卡、协议行；
 /// - 页面本身只负责状态与交互，把可复用 UI 抽到 components 层。
 class AuthMethodItem {
-  /// 选项显示文本（例如“邮箱登录”“SVG 测试登录”）。
+  /// 选项显示文本（例如“密码登录”“验证码登录”）。
   final String label;
 
   /// 当前选项是否处于选中状态。
