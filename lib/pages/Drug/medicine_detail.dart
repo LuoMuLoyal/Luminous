@@ -7,7 +7,7 @@ import 'package:luminous/viewmodels/medicine.dart';
 //
 // 页面职责：
 // - 展示基础信息（来自 MySQL 查询）
-// - 预留 AI 详细信息 UI：点击“获取详细信息”调用后端 /medicine-ai-detail
+// - 预留 AI 详细信息 UI：点击“尝试获取更详细信息”调用后端 /medicine-ai-detail
 //
 // 设计注意：
 // - 详情与 AI 是两个请求：detail 用于补齐基础信息，ai-detail 用于后续扩展
@@ -361,12 +361,14 @@ class _AiCard extends StatelessWidget {
   /// AI 解读结果。
   final MedicineAiDetailResult? result;
 
-  /// 点击“获取详细信息”回调。
+  /// 点击“尝试获取更详细信息”回调。
   final VoidCallback onFetch;
 
   /// 构建 AI 解读卡片 UI。
   @override
   Widget build(BuildContext context) {
+    final hasFetched = result != null;
+
     return _SurfaceCard(
       title: 'AI 智能解读',
       trailing: FilledButton(
@@ -388,11 +390,11 @@ class _AiCard extends StatelessWidget {
                   color: Colors.white,
                 ),
               )
-            : const Text('获取详细信息'),
+            : Text(hasFetched ? '再次获取' : '获取更详细信息'),
       ),
       child: result == null || !result!.hasText
           ? const Text(
-              '点击“获取详细信息”后将由后端调用腾讯云智能问药能力，返回更详细的用法用量、禁忌、相互作用等内容。',
+              '点击“尝试获取更详细信息”后，后端会调用 AI 模型补充数据库里未保存的说明书信息，例如成分、禁忌、注意事项等。',
               style: TextStyle(
                 fontSize: 13,
                 height: 1.55,

@@ -9,6 +9,13 @@ import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 
+typedef MedicineSearchExecutor =
+    Future<MedicineSearchResult> Function({
+      required String keyword,
+      required int page,
+      required int pageSize,
+    });
+
 // 手动搜索页（对接 MySQL 药品库）
 //
 // 数据库字段说明：
@@ -30,13 +37,28 @@ import 'package:luminous/viewmodels/medicine.dart';
 /// 页面支持药品库关键词搜索、最近搜索、快捷标签，以及滚动分页加载。
 class SearchView extends StatefulWidget {
   /// 创建手动搜索页组件。
-  const SearchView({super.key, this.pickerMode = false});
+  const SearchView({
+    super.key,
+    this.pickerMode = false,
+    this.initialKeyword = '',
+    this.autoSearchOnInit = false,
+    this.searchExecutor,
+  });
 
   /// 是否以“选择器模式”打开。
   ///
   /// - false：普通搜索页，点击结果进入详情页；
   /// - true：药品选择器模式，点击结果直接 `Navigator.pop(item)` 返回给上层。
   final bool pickerMode;
+
+  /// 页面初始关键词。
+  final String initialKeyword;
+
+  /// 是否在首帧后自动执行一次搜索。
+  final bool autoSearchOnInit;
+
+  /// 搜索执行器（默认走 [MedicineApi.search]）。
+  final MedicineSearchExecutor? searchExecutor;
 
   /// 创建搜索页对应的状态对象。
   @override
@@ -142,6 +164,18 @@ class _SearchViewState extends State<SearchView> {
   @override
   void initState() {
     super.initState();
+    final initialKeyword = widget.initialKeyword.trim();
+    if (initialKeyword.isNotEmpty) {
+      _searchController.text = initialKeyword;
+      _searchController.selection = TextSelection.collapsed(
+        offset: initialKeyword.length,
+      );
+      _draftKeyword = initialKeyword;
+      if (widget.autoSearchOnInit) {
+        _keyword = initialKeyword;
+        _updateRecentKeywords(initialKeyword);
+      }
+    }
     _loadAddedKeys();
     _userWorker = ever<dynamic>(_userController.user, (_) {
       _loadAddedKeys();
@@ -163,6 +197,13 @@ class _SearchViewState extends State<SearchView> {
         _search(reset: false);
       }
     });
+    if (widget.autoSearchOnInit && initialKeyword.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _search(reset: true);
+        }
+      });
+    }
   }
 
   /// 读取本地“我的药品”列表里的 identityKey，用于标记哪些搜索结果已添加。
@@ -960,18 +1001,22 @@ class _SearchViewState extends State<SearchView> {
 
     try {
       /// 调用药品搜索接口获取当前页结果。
-      final response = await MedicineApi.search(
-        keyword: keyword,
-        page: _page,
-        pageSize: _pageSize,
-      );
+      final result = widget.searchExecutor != null
+          ? await widget.searchExecutor!(
+              keyword: keyword,
+              page: _page,
+              pageSize: _pageSize,
+            )
+          : (await MedicineApi.search(
+              keyword: keyword,
+              page: _page,
+              pageSize: _pageSize,
+            )).result;
 
       if (!mounted) {
         return;
       }
 
-      /// 当前页返回的分页结果对象。
-      final result = response.result;
       setState(() {
         _results.addAll(result.items);
         _hasMore = result.hasMore;

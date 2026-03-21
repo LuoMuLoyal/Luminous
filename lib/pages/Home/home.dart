@@ -7,6 +7,7 @@ import 'package:luminous/components/home.dart';
 import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/pages/Drug/medicine_detail.dart';
 import 'package:luminous/pages/Picker/medicine_picker.dart';
+import 'package:luminous/pages/Scan/medicine_scan.dart';
 import 'package:luminous/stores/app_database.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
@@ -245,7 +246,7 @@ class _HomeViewState extends State<HomeView> {
     }
 
     if (item.id == 'drugScan') {
-      Navigator.pushNamed(context, '/scan');
+      unawaited(openMedicineScanFlow(context, mode: ScanEntryMode.result));
       return;
     }
 

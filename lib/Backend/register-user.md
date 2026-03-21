@@ -2,15 +2,34 @@
 函数路径: POST /register-user
 公网访问路径: https://wty10hv6az.sealosbja.site/register-user
 
-支持方式:
-- 邮箱注册: type=2, codeType=2
-- SVG注册: type=1, codeType=1, 额外传 uuid
+用途:
+- 手机号注册或邮箱注册
+- 注册时必须同时通过：
+  - 业务验证码（邮箱或手机）
+  - SVG 验证码
+  - 密码与确认密码由前端校验一致性
+
+请求体:
+- `identifierType`: `'email' | 'phone'`
+- `email`: string
+- `phone`: string
+- `code`: string
+- `codeId`: string
+- `svgCode`: string
+- `svgId`: string
+- `password`: string
 
 返回体:
-- code: string
-- msg: string
-- result: { id: string }
+- `code`: string
+- `msg`: string
+- `result`: `{ id: string }`
 
+约束:
+- `email` / `phone` 二选一且只能有一个有效值
+- 用户名 `username` 直接等于当前注册标识（手机号或邮箱）
+- `name` 使用脱敏规则生成默认展示名称
+
+示例代码（Laf 云函数，TypeScript）
 ```typescript
 import cloud from '@lafjs/cloud'
 import { createHash } from 'crypto'
@@ -30,112 +49,104 @@ export async function main(ctx: FunctionContext) {
     return fail('请求参数格式错误')
   }
 
-  const {
-    type,
-    username,
-    phone,
-    email,
-    password,
+  const identifierType = String((ctx.body as any).identifierType || '').trim()
+  const email = String((ctx.body as any).email || '').trim()
+  const phone = String((ctx.body as any).phone || '').trim()
+  const code = String((ctx.body as any).code || '').trim()
+  const codeId = String((ctx.body as any).codeId || '').trim()
+  const svgCode = String((ctx.body as any).svgCode || '').trim()
+  const svgId = String((ctx.body as any).svgId || '').trim()
+  const password = String((ctx.body as any).password || '')
+
+  if (!['email', 'phone'].includes(identifierType)) {
+    return fail('identifierType 无效')
+  }
+  if (!password || password.length < 6) {
+    return fail('密码不能小于6位')
+  }
+
+  const identifier = identifierType === 'email' ? email : phone
+  if (!identifier) {
+    return fail(identifierType === 'email' ? '邮箱不能为空' : '手机号不能为空')
+  }
+
+  const exists = await db
+    .collection('users')
+    .where(identifierType === 'email' ? { email: identifier } : { phone: identifier })
+    .getOne()
+  if (exists.data) {
+    return fail(identifierType === 'email' ? '邮箱已经注册' : '手机号已经注册')
+  }
+
+  const codeValid = await consumeBusinessCode({
+    codeId,
+    channel: identifierType,
+    target: identifier,
+    scene: 'register',
     code,
-    codeType,
-    uuid,
-  } = ctx.body
-
-  const registerType = Number(type)
-  const currentCodeType = Number(codeType)
-  const currentUsername = String(username || '').trim()
-  const currentEmail = String(email || '').trim()
-  const currentPhone = String(phone || '').trim()
-  const currentPassword = String(password || '')
-
-  if (![1, 2].includes(registerType)) {
-    return fail('无效的注册类型')
+  })
+  if (!codeValid) {
+    return fail('业务验证码不正确或已过期')
   }
 
-  if (registerType === 1 && currentCodeType && currentCodeType !== 1) {
-    return fail('codeType 与 type 不匹配')
-  }
-  if (registerType === 2 && currentCodeType && currentCodeType !== 2) {
-    return fail('codeType 与 type 不匹配')
-  }
-
-  if (!currentUsername && !currentPhone && !currentEmail) {
-    return fail('用户名/手机号/邮箱不能为空')
-  }
-
-  if (!currentPassword || currentPassword.length < 6) {
-    return fail('密码不能小于6位!')
+  const svgValid = await consumeSvgCode(svgId, svgCode)
+  if (!svgValid) {
+    return fail('SVG验证码不正确或已过期')
   }
 
   const encryptedPassword = createHash('sha256')
-    .update(currentPassword)
+    .update(password)
     .digest('hex')
 
-  const existedByUsername = await db
-    .collection('users')
-    .where({ username: currentUsername })
-    .getOne()
-  if (existedByUsername.data) {
-    return fail('用户名已经存在！')
-  }
-
-  if (registerType === 2 && currentEmail) {
-    const existedByEmail = await db
-      .collection('users')
-      .where({ email: currentEmail })
-      .getOne()
-    if (existedByEmail.data) {
-      return fail('邮箱已经注册！')
-    }
-  }
-
-  const isCodeValid =
-    registerType === 1
-      ? await consumeSvgCode(String(uuid || ''), String(code || ''))
-      : await consumeEmailCode(
-          currentEmail || currentUsername,
-          String(code || ''),
-        )
-
-  if (!isCodeValid) {
-    return fail('验证码不正确！')
-  }
-
-  const displayName = currentUsername || currentEmail || currentPhone
   const { id } = await db.collection('users').add({
-    username: currentUsername,
-    email: registerType === 2 ? currentEmail : '',
-    phone: currentPhone,
-    type: registerType,
-    name: maskName(displayName),
+    username: identifier,
+    email: identifierType === 'email' ? email : '',
+    phone: identifierType === 'phone' ? phone : '',
+    type: identifierType === 'email' ? 2 : 3,
+    name: maskName(identifier),
     password: encryptedPassword,
     createTime: Date.now(),
   })
 
-  return success({ id }, '用户注册成功！')
+  return success({ id }, '用户注册成功')
 }
 
-async function consumeEmailCode(email: string, code: string) {
-  if (!email || !code) return false
+async function consumeBusinessCode({
+  codeId,
+  channel,
+  target,
+  scene,
+  code,
+}: {
+  codeId: string
+  channel: string
+  target: string
+  scene: string
+  code: string
+}) {
+  if (!codeId || !target || !code) return false
   const { deleted } = await db
     .collection('codes')
     .where({
-      type: 2,
-      name: email,
+      _id: codeId,
+      channel,
+      target,
+      scene,
       code: Number(code),
     })
     .remove()
   return deleted === 1
 }
 
-async function consumeSvgCode(uuid: string, code: string) {
-  if (!uuid || !code) return false
+async function consumeSvgCode(svgId: string, svgCode: string) {
+  if (!svgId || !svgCode) return false
   const { deleted } = await db
     .collection('codes')
     .where({
-      _id: uuid,
-      type: 1,
-      code: Number(code),
+      _id: svgId,
+      channel: 'svg',
+      scene: 'register',
+      code: Number(svgCode),
     })
     .remove()
   return deleted === 1
@@ -152,4 +163,3 @@ function maskName(name: string) {
   return name
 }
 ```
-
