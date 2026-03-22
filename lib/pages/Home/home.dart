@@ -10,9 +10,13 @@ import 'package:luminous/pages/Picker/medicine_picker.dart';
 import 'package:luminous/pages/Scan/medicine_scan.dart';
 import 'package:luminous/stores/today_reminder_local_store.dart';
 import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/utils/DioRequest.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/home.dart';
 import 'package:luminous/viewmodels/medicine.dart';
+
+typedef FetchTodayReminders =
+    Future<ApiResult<TodayRemindersResult>> Function({String? userId});
 
 const List<String> _localHealthTips = [
   '按时服药，别漏别补',
@@ -36,13 +40,20 @@ final String _startupHealthTip =
 // - 顶部色块展示随机温馨提示（纯本地，每次启动应用随机一条）
 // - "常用功能"是本地静态入口（纯 UI）
 // - "今日提醒"来自后端接口 today-reminders
-// - 接口失败时回退到本地 _fallbackReminders
+// - 请求成功后覆盖当天快照，失败时回退到当天快照或首页兜底数据
 /// 首页。
 ///
 /// 作为应用一级入口，负责把高频功能、今日提醒和健康提示组合在同一屏展示。
 class HomeView extends StatefulWidget {
   /// 创建首页组件。
-  const HomeView({super.key});
+  const HomeView({
+    super.key,
+    this.fetchTodayReminders,
+    this.todayReminderStore,
+  });
+
+  final FetchTodayReminders? fetchTodayReminders;
+  final TodayReminderStore? todayReminderStore;
 
   /// 创建首页对应的状态对象，所有首页数据加载与交互都在状态类里完成。
   @override
@@ -61,8 +72,15 @@ class _HomeViewState extends State<HomeView> {
   /// 用来读取用户 id，以便请求“今日提醒”接口和查询本地提醒/打卡数据。
   final UserController _userController = Get.find<UserController>();
 
+  FetchTodayReminders get _fetchTodayRemindersApi =>
+      widget.fetchTodayReminders ?? HomeApi.fetchTodayReminders;
+
+  TodayReminderStore get _todayReminderStore =>
+      widget.todayReminderStore ?? todayReminderLocalStore;
+
   /// 监听登录用户变化的 worker。
   Worker? _userWorker;
+  Worker? _sessionReadyWorker;
 
   /// 当前首页顶部展示的小贴士文案监听器。
   late final ValueNotifier<String> _todayTipNotifier;
@@ -161,6 +179,9 @@ class _HomeViewState extends State<HomeView> {
   /// 当前活跃提醒请求的编号。
   int _reminderRequestId = 0;
 
+  /// 最近一次已经按当前用户态发起过的提醒请求 userId。
+  String? _lastRequestedUserId;
+
   /// 页面初始化时完成一次性数据准备。
   ///
   /// 这里做两件事：
@@ -171,16 +192,42 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     _todayTipNotifier = ValueNotifier<String>(_startupHealthTip);
     _userWorker = ever<dynamic>(_userController.user, (_) {
-      _fetchTodayReminders();
+      _refreshRemindersIfReady();
     });
-    _fetchTodayReminders();
+    _sessionReadyWorker = ever<bool>(_userController.sessionReady, (ready) {
+      if (ready) {
+        _lastRequestedUserId = null;
+        _refreshRemindersIfReady();
+      }
+    });
+    _refreshRemindersIfReady();
   }
 
   @override
   void dispose() {
     _userWorker?.dispose();
+    _sessionReadyWorker?.dispose();
     _todayTipNotifier.dispose();
     super.dispose();
+  }
+
+  void _refreshRemindersIfReady({bool force = false}) {
+    if (!_userController.sessionReady.value) {
+      return;
+    }
+    final userId = (_userController.user.value?.id ?? '').trim();
+    if (_lastRequestedUserId != null &&
+        _lastRequestedUserId != userId &&
+        mounted) {
+      setState(() {
+        _reminders = List<HomeReminderItemData>.from(_fallbackReminders);
+      });
+    }
+    if (!force && _lastRequestedUserId == userId) {
+      return;
+    }
+    _lastRequestedUserId = userId;
+    unawaited(_fetchTodayReminders());
   }
 
   /// 构建首页整体 UI。
@@ -305,9 +352,9 @@ class _HomeViewState extends State<HomeView> {
   ///
   /// 加载顺序是：
   /// 1. 先请求后端 today-reminders；
-  /// 2. 再尝试读取本地今天的提醒与打卡结果；
-  /// 3. 如果本地有数据，优先使用本地数据；
-  /// 4. 否则使用接口返回的数据。
+  /// 2. 请求成功后用完整远端结果覆盖当天快照；
+  /// 3. 再统一从“当天快照 + 本地打卡 / override”组合出 UI；
+  /// 4. 请求失败时回退到当天快照，没有快照再用首页兜底数据。
   Future<void> _fetchTodayReminders() async {
     if (_loadingReminders) {
       _refreshQueued = true;
@@ -324,37 +371,28 @@ class _HomeViewState extends State<HomeView> {
       /// 后端返回的“今日提醒”结果。
       ///
       /// 作为网络数据来源，当本地没有可用数据时会回退使用这里的内容。
-      final response = await HomeApi.fetchTodayReminders(
+      final response = await _fetchTodayRemindersApi(
         userId: userId.isEmpty ? null : userId,
       );
 
-      final overrides = await todayReminderLocalStore.loadTodayOverrides(
-        userId,
+      await _todayReminderStore.replaceTodaySnapshot(
+        userId: userId,
+        date: response.result.date,
+        items: response.result.items,
       );
 
-      /// 从本地数据库中整理出来的“今天的提醒 UI 数据”。
-      ///
-      /// 它会把 reminders 表和 checkins 表拼起来，得出哪些提醒已经完成。
-      final local = await todayReminderLocalStore.loadReminderItems(
+      final overrides = await _todayReminderStore.loadTodayOverrides(userId);
+
+      /// 从“今日提醒快照 + 本地打卡状态”组合出来的 UI 数据。
+      final snapshot = await _todayReminderStore.loadTodaySnapshotItems(
         userId,
+        date: response.result.date,
         overrides: overrides,
       );
 
-      /// 本次最终准备渲染到页面上的提醒列表。
-      ///
-      /// 优先级：本地数据 > 接口数据。
-      final items = local.isNotEmpty
-          ? local
-                .map((item) => _toReminderUi(item, doneOverride: item.done))
-                .toList()
-          : response.result.items
-                .map(
-                  (item) => _toReminderUi(
-                    item,
-                    doneOverride: overrides[item.id.trim()],
-                  ),
-                )
-                .toList();
+      final items = snapshot
+          .map((item) => _toReminderUi(item, doneOverride: item.done))
+          .toList();
 
       if (!_canApplyReminderResult(requestId, userId)) return;
       setState(() {
@@ -366,18 +404,20 @@ class _HomeViewState extends State<HomeView> {
       if (!_canApplyReminderResult(requestId, userId)) {
         return;
       }
-      final overrides = await todayReminderLocalStore.loadTodayOverrides(
-        userId,
-      );
-      final local = await todayReminderLocalStore.loadReminderItems(
+      final overrides = await _todayReminderStore.loadTodayOverrides(userId);
+      final snapshot = await _todayReminderStore.loadTodaySnapshotItems(
         userId,
         overrides: overrides,
       );
-      if (_canApplyReminderResult(requestId, userId) && local.isNotEmpty) {
+      if (_canApplyReminderResult(requestId, userId) && snapshot.isNotEmpty) {
         setState(() {
-          _reminders = local
+          _reminders = snapshot
               .map((item) => _toReminderUi(item, doneOverride: item.done))
               .toList();
+        });
+      } else if (_canApplyReminderResult(requestId, userId)) {
+        setState(() {
+          _reminders = List<HomeReminderItemData>.from(_fallbackReminders);
         });
       }
       if (!mounted) {

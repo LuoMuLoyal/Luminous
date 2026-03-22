@@ -90,6 +90,11 @@ Flutter 当前请求地址配置在：
 - `BackendMd/` 负责学习和查文档
 - `backend/` 负责真正的代码实现和后续迁移基础
 
+和这个后端现状直接相关的，还有一条当前前端实现需要记住：
+
+- 现在“用药打卡”已经改成纯本地功能，只会读取本地提醒计划，并把打卡状态保存在当前设备
+- 当前没有打卡相关的后端接口依赖，所以这条功能不会参与云端同步
+
 ## 后端学习路径
 
 推荐你按这个顺序看：
@@ -126,16 +131,15 @@ Flutter 侧已经对接了这几个 AI / 药品相关接口：
 
 - 上面这 5 个接口，是当前 `backend/` 里已经整理成正式代码并可直接打包的部分
 - 但 App 运行时目前还会继续用到一些还没整理进 `backend/` 的云函数，例如：
-  - `scan-record-create`
-  - `scan-record-list`
-  - `today-reminders`
-  - `reminder-upsert`
-  - `reminder-delete`
-  - `reminder-list`
-  - `checkin-create`
-  - `send-code`
-  - `login-user`
-  - `register-user`
+- `scan-record-create`
+- `scan-record-list`
+- `today-reminders`
+- `reminder-upsert`
+- `reminder-delete`
+- `reminder-list`
+- `send-code`
+- `login-user`
+- `register-user`
   - `my-medicine-*`
 - 所以如果你现在只部署 `backend/` 这 5 个 bundle，药品搜索和 AI 相关功能可以先跑起来，但相册同步、提醒、登录注册等功能仍然要继续依赖你现有的 Sealos 云函数
 
@@ -221,7 +225,7 @@ npm run build:cloud
 - `my-medicine`
 - `today-reminders`
 - `reminder`
-- `checkin-create`
+- `checkin(local-only)`
 
 ## 文档入口
 

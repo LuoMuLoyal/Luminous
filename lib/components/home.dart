@@ -250,38 +250,44 @@ class HomeTopSection extends StatelessWidget {
                   ValueListenableBuilder<String>(
                     valueListenable: todayTipListenable,
                     builder: (context, todayTip, _) {
-                      return AnimatedSize(
-                        duration: const Duration(milliseconds: 220),
-                        curve: Curves.easeOutCubic,
-                        alignment: Alignment.topLeft,
+                      final minTipHeight = compact ? 24.0 : 26.0;
+
+                      return ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: minTipHeight),
                         child: ClipRect(
                           child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 260),
+                            duration: const Duration(milliseconds: 240),
                             switchInCurve: Curves.easeOutCubic,
                             switchOutCurve: Curves.easeInCubic,
                             layoutBuilder: (currentChild, previousChildren) {
+                              final currentChildren = currentChild == null
+                                  ? null
+                                  : <Widget>[currentChild];
+
                               return Stack(
                                 alignment: Alignment.topLeft,
-                                children: <Widget>[
+                                children: [
                                   ...previousChildren,
-                                  ?currentChild,
+                                  ...?currentChildren,
                                 ],
                               );
                             },
                             transitionBuilder: (child, animation) {
-                              final position = Tween<Offset>(
-                                begin: const Offset(0, 0.28),
-                                end: Offset.zero,
-                              ).animate(animation);
-                              final opacity = CurvedAnimation(
-                                parent: animation,
-                                curve: Curves.easeOut,
+                              final isIncoming =
+                                  child.key == ValueKey<String>(todayTip);
+                              final offsetAnimation = animation.drive(
+                                Tween<Offset>(
+                                  begin: isIncoming
+                                      ? const Offset(0, 0.35)
+                                      : const Offset(0, -0.22),
+                                  end: Offset.zero,
+                                ),
                               );
 
                               return FadeTransition(
-                                opacity: opacity,
+                                opacity: animation,
                                 child: SlideTransition(
-                                  position: position,
+                                  position: offsetAnimation,
                                   child: child,
                                 ),
                               );

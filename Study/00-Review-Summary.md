@@ -1,43 +1,55 @@
 # 全仓库 Review 总结
 
-本轮 review 覆盖了 `lib/`、`backend/src/`、关键 `android/` 启动文件、`test/` 和现有开发文档，重点只看 correctness、回归风险、结构风险、测试缺口和文档漂移。
+这份总结保留第一次 review 的问题视角，但状态已经同步到当前代码。下面每条 finding 都会明确标出 `已解决`、`已缓解` 或 `仍待处理`，方便你后面继续对照消化。
 
 ## Findings
 
-### P1. 取消打卡只删本地记录，没有回写服务端，跨设备会出现状态反转
+### P1. 用药打卡原来依赖远端创建记录，撤销时却只改本地，状态口径不一致
 
-- 问题描述
-  `CheckInPage._markUndone()` 只删除本地 `checkins` 记录并写本地 override，没有调用任何远端撤销接口。
+- 状态
+  已解决
+- 当前实现
+  用药打卡已经改成纯本地链路：打卡页直接读取本地 `reminders` 计划，打卡和撤销都只写 `checkins / checkin_overrides`，不再调用 `checkin-create`，也不再把“远端已打卡 / 本地撤销”混在一起。
 - 风险 / 影响
-  当前设备上会显示“未打卡”，但服务端和其他设备仍可能保留“已打卡”；下次重新拉取今日提醒后，也可能再次被远端状态改回“已打卡”。
+  这条“本地打卡、云端撤销缺失”的一致性问题已经消失；当前产品语义就是“打卡状态只保存在本机”。
 - 触发条件或复现线索
-  登录用户先打卡，再点击“取消打卡”，然后在另一台设备查看或重新同步今日提醒即可复现状态不一致。
+  现在进入打卡页时，即使不请求后端，也能直接从本地提醒计划生成当天条目；点击打卡 / 撤销后只会影响当前设备显示。
 - 文件与位置
-  `lib/pages/CheckIn/checkin.dart:364`
-  `lib/stores/today_reminder_local_store.dart:86`
-  `lib/api/checkin_api.dart:15`
-- 简短修复方向
-  增加服务端“撤销打卡 / 删除今日打卡”接口，前端在 `_markUndone()` 中先回写远端，再更新本地缓存和 override。
+  `lib/pages/CheckIn/checkin.dart:17`
+  `lib/pages/CheckIn/checkin.dart:67`
+  `lib/pages/CheckIn/checkin.dart:336`
+  `lib/pages/CheckIn/checkin.dart:373`
+  `lib/stores/today_reminder_local_store.dart:210`
+- 后续修复方向
+  如果以后又想做跨设备同步，再重新定义“打卡是否需要上云”的产品语义，并单独补完整的远端增删接口，不要再落回“创建走云端、撤销只改本地”的中间态。
 
 ### P1. 首页和打卡页都会优先吃本地提醒缓存，远端改动很容易被旧本地数据盖住
 
-- 问题描述
-  首页 `_fetchTodayReminders()` 和打卡页 `_load()` 都在请求成功后优先使用 `todayReminderLocalStore.loadReminderItems()` 的结果，只要本地不为空，就忽略本次服务端返回的 `today-reminders` 数据。
+- 状态
+  已解决
+- 当前实现
+  首页和打卡页现在都会先请求 `today-reminders`，成功后把完整结果覆盖到 `today_reminder_snapshots`，再统一从“当天快照 + checkins + checkin_overrides”读取最终 UI 数据；失败时只回退到当天快照，不再回退到 `reminders` 表去“猜今天该显示什么”。
 - 风险 / 影响
-  远端刚删除、修改、禁用提醒时，首页和打卡页仍可能展示旧计划；跨设备修改提醒后，本机 UI 会长期被旧本地缓存“锁住”。
+  这条高优覆盖问题已经收口；后续只有在把 `reminders` 表重新接回首页/打卡页主渲染链路时，才会再次引入回归风险。
 - 触发条件或复现线索
-  先让本地存在 reminders/checkins 缓存，再从另一端修改今日提醒，回到首页或打卡页刷新即可看到旧数据继续占优。
+  现在即使本地旧计划仍留在 `reminders` 表里，只要这次 `today-reminders` 请求成功，首页和打卡页都会显示新的远端结果。
 - 文件与位置
-  `lib/pages/Home/home.dart:311`
-  `lib/pages/Home/home.dart:346`
-  `lib/pages/CheckIn/checkin.dart:75`
-  `lib/pages/CheckIn/checkin.dart:85`
-  `lib/stores/today_reminder_local_store.dart:100`
-- 简短修复方向
-  让今日提醒接口成功结果先落本地再统一从单一来源渲染，或者至少用远端结果校正本地 reminders 表后再读本地。
+  `lib/pages/Home/home.dart:328`
+  `lib/pages/Home/home.dart:348`
+  `lib/pages/Home/home.dart:357`
+  `lib/pages/CheckIn/checkin.dart:67`
+  `lib/pages/CheckIn/checkin.dart:93`
+  `lib/pages/CheckIn/checkin.dart:101`
+  `lib/stores/today_reminder_local_store.dart:68`
+  `lib/stores/today_reminder_local_store.dart:185`
+  `lib/stores/app_database.dart:176`
+- 后续修复方向
+  继续保持“远端成功结果优先 + 单一当天快照源”的口径，不要把 `reminders` 表直接当成首页/打卡页当天展示真相。
 
 ### P2. 相册远端同步在服务端返回空列表时不会清理本地旧远端记录，跨设备删除后会一直残留旧数据
 
+- 状态
+  仍待处理
 - 问题描述
   `AlbumLocalStore.syncRemoteForUser()` 拉完整个远端列表后只会调用 `upsertRemoteRecords()` 做增量回写；而 `upsertRemoteRecords()` 在 `remoteItems.isEmpty` 时直接 `return`，不会删除当前用户本地已经同步过的远端记录。
 - 风险 / 影响
@@ -53,6 +65,8 @@
 
 ### P3. `medicine-ai-safety` 只会用 `drugCode/approvalNo` 回查药库，传入仅有 `productName` 的药品时会静默丢掉数据库补充信息
 
+- 状态
+  仍待处理
 - 问题描述
   `handleMedicineAiSafety()` 已接收 `productName`，但 enrich 阶段调用 `findMedicine()` 时完全没使用它。
 - 风险 / 影响
@@ -60,31 +74,35 @@
 - 触发条件或复现线索
   用只包含 `productName` 的 medicines 调 `/medicine-ai-safety`，`detail` 会恒为 `null`。
 - 文件与位置
-  `backend/src/handlers/medicine-ai-safety.ts:52`
+  `backend/src/handlers/medicine-ai-safety.ts:55`
   `backend/src/db/medicine-repository.ts:92`
 - 简短修复方向
   为安全辅助补一个按 `productName` 的回查分支，或在当前 handler 里显式声明只有 `drugCode/approvalNo` 会参与库内 enrichment。
 
 ### P3. 当前测试覆盖不到“今日提醒数据源优先级”和“取消打卡”这两条高风险路径，上面两个问题都会漏过 CI
 
-- 问题描述
-  现有代表性测试主要覆盖首页顶部文案、登录注册、扫描入口、提醒编辑 identity 清理和相册本地存储，但没有任何测试覆盖 `CheckInPage._markUndone()` 或首页/打卡页“本地缓存覆盖远端结果”的分支。
+- 状态
+  已解决
+- 当前实现
+  现在已经补了 3 组测试：
+  `test/home_today_reminders_test.dart` 覆盖“远端结果覆盖旧快照并渲染新提醒”；
+  `test/checkin_page_test.dart` 覆盖打卡页从本地提醒计划构建列表，以及“取消打卡”本地提示和 override 写入；
+  `test/today_reminder_local_store_test.dart` 覆盖日期解析与 done 状态优先级 helper。
 - 风险 / 影响
-  提醒/打卡同步行为回归后，`flutter test` 仍然会全部通过，CI 不能替你兜底这类状态一致性问题。
-- 触发条件或复现线索
-  查看当前测试文件即可发现没有 `checkin`、`today-reminders` 数据源优先级相关用例。
+  提醒 / 打卡这两条高风险路径已经进入 `flutter test` 回归保护。
 - 文件与位置
-  `test/home_top_section_test.dart:1`
-  `test/login_page_test.dart:13`
-  `test/ai_scan_flow_test.dart:11`
-  `test/reminder_edit_page_test.dart:9`
-  `lib/pages/Home/home.dart:311`
-  `lib/pages/CheckIn/checkin.dart:319`
-- 简短修复方向
-  增加两个 widget/unit 测试：一个覆盖“远端返回新提醒但本地有旧缓存”的渲染优先级，一个覆盖“取消打卡需要远端同步”的行为契约。
+  `test/home_today_reminders_test.dart:36`
+  `test/checkin_page_test.dart:38`
+  `test/checkin_page_test.dart:91`
+  `test/today_reminder_local_store_test.dart:6`
+  `test/today_reminder_local_store_test.dart:20`
+- 后续修复方向
+  如果以后重新引入云端打卡，再追加一条“本地状态与远端状态必须保持同一口径”的行为契约测试。
 
 ### P3. Android 原生启动屏现在是固定尺寸 PNG 配合 `bitmap fill` 整屏拉伸，换到非常规比例设备时容易出现视觉变形
 
+- 状态
+  仍待处理
 - 问题描述
   当前启动屏是 `drawable-nodpi/native_launch_screen.png`，并通过 `launch_background.xml` 的 `<bitmap android:gravity="fill" .../>` 直接整屏铺满。
 - 风险 / 影响
@@ -100,17 +118,19 @@
 
 ## 优先级建议
 
-1. 先修 `P1` 的打卡撤销一致性问题。
-2. 再统一今日提醒的数据源口径，避免首页和打卡页继续被本地旧缓存盖住。
-3. 然后修相册远端全量同步逻辑，避免跨设备删除后本地继续残留旧记录。
-4. 最后补对应测试，把上面两类状态问题纳入回归保护。
+1. 先补 `P2` 的相册全量同步，避免跨设备删除后本地继续残留旧记录。
+2. 继续保持打卡纯本地这一条产品口径；如果以后改回云端同步，再把增删接口和一致性测试一次补齐。
+3. 然后修 `medicine-ai-safety` 的按药名回查分支。
+4. 最后再优化 Android 启动屏的资源策略，减少非常规比例设备上的拉伸感。
 
 ## 本轮附带收口
 
-- 根 `README.md` 已补充说明：`backend/` 当前正式整理的是 5 个药品接口，但 App 运行仍依赖其他现有 Sealos 云函数。
+- `Study/04-Home-and-Today-Reminders.md` 已同步到“远端成功后覆盖当天快照，再统一从快照渲染”的新口径。
+- `Study/07-Reminders-and-CheckIn.md` 已同步到“打卡纯本地、状态只保存在当前设备”的新口径。
+- `Study/08-Local-Storage-and-Sync.md` 已补充 `today_reminder_snapshots` 表和它与 `reminders / checkins / checkin_overrides` 的职责边界。
+- 根 `README.md` 已补充说明：用药打卡当前是纯本地功能，不依赖打卡后端接口。
 
 ## 本轮验证
 
 - `flutter analyze`
-- `flutter test test/home_top_section_test.dart test/login_page_test.dart test/ai_scan_flow_test.dart test/reminder_edit_page_test.dart test/album_local_store_test.dart`
-- `npm run build`（在 `backend/`）
+- `flutter test`

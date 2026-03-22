@@ -201,6 +201,6 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
-    expect(find.widgetWithText(FilledButton, '退出登录'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, '设置'), findsOneWidget);
   });
 }

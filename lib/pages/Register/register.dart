@@ -78,7 +78,11 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   void _onTapAgreement() {
-    ToastUtils.instance.show(context, '功能开发中');
+    Navigator.pushNamed(context, '/user-agreement');
+  }
+
+  void _onTapPrivacy() {
+    Navigator.pushNamed(context, '/privacy-policy');
   }
 
   String? _identifierValidator(String? value) {
@@ -367,7 +371,7 @@ class _RegisterViewState extends State<RegisterView> {
             });
           },
           onTapAgreement: _onTapAgreement,
-          onTapPrivacy: _onTapAgreement,
+          onTapPrivacy: _onTapPrivacy,
         ),
         const SizedBox(height: 18),
         _buildRegisterButton(),
@@ -378,6 +382,7 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   Widget _buildTopBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
         InkWell(
@@ -387,24 +392,24 @@ class _RegisterViewState extends State<RegisterView> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF162033) : Colors.white,
               borderRadius: BorderRadius.circular(999),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.arrow_back_ios_new_rounded,
               size: 18,
-              color: Color(0xFF0F172A),
+              color: isDark ? Colors.white : const Color(0xFF0F172A),
             ),
           ),
         ),
         const SizedBox(width: 10),
-        const Expanded(
+        Expanded(
           child: Text(
             '注册',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF0F172A),
+              color: isDark ? Colors.white : const Color(0xFF0F172A),
             ),
           ),
         ),
@@ -413,14 +418,17 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   Widget _buildFormCard() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF162033) : Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: const [
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+        ),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x14000000),
+            color: Colors.black.withValues(alpha: isDark ? 0.0 : 0.08),
             blurRadius: 14,
             offset: Offset(0, 6),
           ),
@@ -583,13 +591,14 @@ class _RegisterViewState extends State<RegisterView> {
     required IconData prefixIcon,
     Widget? suffixIcon,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InputDecoration(
       labelText: labelText,
       hintText: hintText,
       prefixIcon: Icon(prefixIcon),
       suffixIcon: suffixIcon,
       filled: true,
-      fillColor: const Color(0xFFF8FAFC),
+      fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide.none,

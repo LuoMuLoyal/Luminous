@@ -19,6 +19,7 @@ class MineProfileCard extends StatelessWidget {
     required this.user,
     required this.onTapProfile,
     required this.onTapAction,
+    this.loggedInActionLabel = '设置',
   });
 
   /// 顶部横幅配色。
@@ -32,6 +33,9 @@ class MineProfileCard extends StatelessWidget {
 
   /// 点击右侧按钮回调（登录时为“退出登录”，未登录时为“去登录”）。
   final VoidCallback onTapAction;
+
+  /// 登录后的右侧按钮文案。
+  final String loggedInActionLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +122,7 @@ class MineProfileCard extends StatelessWidget {
                       horizontal: compact ? 14 : 16,
                     ),
                   ),
-                  child: Text(isLoggedIn ? '退出登录' : '去登录'),
+                  child: Text(isLoggedIn ? loggedInActionLabel : '去登录'),
                 ),
               ],
             );
@@ -168,12 +172,15 @@ class MinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final compact = isCompactLayoutWidth(MediaQuery.sizeOf(context).width);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final topDecorColor = headerPalette.accentColor.withValues(alpha: 0.10);
     final bottomDecorColor = headerPalette.endColor.withValues(alpha: 0.24);
 
     return SafeArea(
       child: DecoratedBox(
-        decoration: const BoxDecoration(color: Color(0xFFF3F7FB)),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF3F7FB),
+        ),
         child: Stack(
           children: [
             Positioned(
@@ -279,19 +286,24 @@ class MineMenuCard extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final compact = isCompactLayoutWidth(constraints.maxWidth);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
 
         return DecoratedBox(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF162033) : Colors.white,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x0F000000),
-                blurRadius: 12,
-                offset: Offset(0, 6),
-              ),
-            ],
+            border: Border.all(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+            ),
+            boxShadow: isDark
+                ? const []
+                : const [
+                    BoxShadow(
+                      color: Color(0x0F000000),
+                      blurRadius: 12,
+                      offset: Offset(0, 6),
+                    ),
+                  ],
           ),
           child: Column(
             children: [
@@ -302,7 +314,12 @@ class MineMenuCard extends StatelessWidget {
                 subtitle: '你最近查看过的药品',
                 onTap: onTapBrowseHistory,
               ),
-              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              Divider(
+                height: 1,
+                color: isDark
+                    ? const Color(0xFF334155)
+                    : const Color(0xFFE2E8F0),
+              ),
               _MineMenuItem(
                 compact: compact,
                 icon: Icons.shield_rounded,
@@ -310,7 +327,12 @@ class MineMenuCard extends StatelessWidget {
                 subtitle: '隐私设置与安全选项',
                 onTap: onTapSecurity,
               ),
-              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              Divider(
+                height: 1,
+                color: isDark
+                    ? const Color(0xFF334155)
+                    : const Color(0xFFE2E8F0),
+              ),
               _MineMenuItem(
                 compact: compact,
                 icon: Icons.info_rounded,
@@ -371,6 +393,7 @@ class _MineMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
@@ -385,12 +408,14 @@ class _MineMenuItem extends StatelessWidget {
               width: compact ? 36 : 40,
               height: compact ? 36 : 40,
               decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
+                color: isDark
+                    ? const Color(0xFF1E293B)
+                    : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(compact ? 12 : 14),
               ),
               child: Icon(
                 icon,
-                color: const Color(0xFF0F172A),
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
                 size: compact ? 20 : 24,
               ),
             ),
@@ -404,7 +429,7 @@ class _MineMenuItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: compact ? 14 : 14.5,
                       fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0F172A),
+                      color: isDark ? Colors.white : const Color(0xFF0F172A),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -414,7 +439,9 @@ class _MineMenuItem extends StatelessWidget {
                     subtitle,
                     style: TextStyle(
                       fontSize: compact ? 12 : 12.5,
-                      color: const Color(0xFF64748B),
+                      color: isDark
+                          ? const Color(0xFFCBD5E1)
+                          : const Color(0xFF64748B),
                       fontWeight: FontWeight.w600,
                       height: compact ? 1.25 : 1.3,
                     ),

@@ -2,19 +2,25 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:luminous/api/checkin_api.dart';
-import 'package:luminous/api/home_api.dart';
+import 'package:luminous/stores/reminder_local_store.dart';
 import 'package:luminous/stores/today_reminder_local_store.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/home.dart';
+import 'package:luminous/viewmodels/reminder.dart';
+
+typedef LoadLocalCheckInPlans =
+    Future<List<ReminderPlan>> Function(String userId);
 
 /// 用药打卡页。
 ///
-/// 页面聚焦“今天要不要打卡、是否已完成”，数据来源是今日提醒接口。
+/// 页面聚焦“今天要不要打卡、是否已完成”，数据来源是本地提醒计划和本地打卡状态。
 class CheckInPage extends StatefulWidget {
-  const CheckInPage({super.key});
+  const CheckInPage({super.key, this.todayReminderStore, this.loadLocalPlans});
+
+  final TodayReminderStore? todayReminderStore;
+  final LoadLocalCheckInPlans? loadLocalPlans;
 
   @override
   State<CheckInPage> createState() => _CheckInPageState();
@@ -23,6 +29,12 @@ class CheckInPage extends StatefulWidget {
 class _CheckInPageState extends State<CheckInPage> {
   final UserController _userController = Get.find<UserController>();
   Worker? _userWorker;
+
+  TodayReminderStore get _todayReminderStore =>
+      widget.todayReminderStore ?? todayReminderLocalStore;
+
+  LoadLocalCheckInPlans get _loadLocalPlans =>
+      widget.loadLocalPlans ?? reminderLocalStore.loadForUser;
 
   bool _loading = false;
   String? _error;
@@ -72,38 +84,23 @@ class _CheckInPageState extends State<CheckInPage> {
     });
 
     try {
-      final response = await HomeApi.fetchTodayReminders(userId: userId);
-      final overrides = await todayReminderLocalStore.loadTodayOverrides(
+      final plans = await _loadLocalPlans(userId);
+      final overrides = await _todayReminderStore.loadTodayOverrides(userId);
+      final localItems = await _todayReminderStore.applyTodayState(
         userId,
-      );
-      final local = await todayReminderLocalStore.loadReminderItems(
-        userId,
+        items: _buildCheckInItems(plans),
         overrides: overrides,
       );
       if (!_canApplyLoadResult(requestId, userId)) return;
 
       setState(() {
-        _items = local.isNotEmpty
-            ? local
-            : response.result.items
-                  .map(
-                    (item) => ReminderItem(
-                      id: item.id,
-                      time: item.time,
-                      title: item.title,
-                      subtitle: item.subtitle,
-                      done: overrides[item.id.trim()] ?? item.done,
-                    ),
-                  )
-                  .toList();
+        _items = localItems;
       });
     } catch (e) {
       if (!_canApplyLoadResult(requestId, userId)) return;
-      final local = await todayReminderLocalStore.loadReminderItems(userId);
-      if (!_canApplyLoadResult(requestId, userId)) return;
       setState(() {
         _error = MessageUtils.extractError(e);
-        _items = local;
+        _items = const [];
       });
     } finally {
       if (_isActiveLoadRequest(requestId) && mounted) {
@@ -217,7 +214,7 @@ class _CheckInPageState extends State<CheckInPage> {
               ),
               const SizedBox(height: 6),
               const Text(
-                '登录后可同步打卡记录，并自动影响首页今日提醒状态。',
+                '登录后可读取当前设备上的提醒计划，并在本机记录今日打卡状态。',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
@@ -334,26 +331,19 @@ class _CheckInPageState extends State<CheckInPage> {
 
     try {
       final now = DateTime.now().millisecondsSinceEpoch;
-      final response = await CheckinApi.create(
+      await _todayReminderStore.replaceTodayCheckin(
         userId: userId,
         reminderId: item.id,
         takenAt: now,
       );
-
-      await todayReminderLocalStore.replaceTodayCheckin(
-        userId: userId,
-        reminderId: item.id,
-        remoteId: response.result.id,
-        takenAt: now,
-      );
-      await todayReminderLocalStore.saveTodayOverride(
+      await _todayReminderStore.saveTodayOverride(
         userId: userId,
         reminderId: item.id,
         done: true,
       );
 
       if (!mounted) return;
-      ToastUtils.instance.show(context, '打卡成功');
+      ToastUtils.instance.show(context, '已记录到当前设备');
       _setLocalDone(item.id, true);
     } catch (e) {
       if (!mounted) return;
@@ -371,12 +361,36 @@ class _CheckInPageState extends State<CheckInPage> {
       return;
     }
 
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('撤销本地打卡'),
+          content: const Text('当前用药打卡只保存在本机，撤销后会立即修改当前设备显示。确定继续吗？'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('取消'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('撤销本地打卡'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) {
+      return;
+    }
+
     try {
-      await todayReminderLocalStore.deleteTodayCheckin(
+      await _todayReminderStore.deleteTodayCheckin(
         userId: userId,
         reminderId: item.id.trim(),
       );
-      await todayReminderLocalStore.saveTodayOverride(
+      await _todayReminderStore.saveTodayOverride(
         userId: userId,
         reminderId: item.id,
         done: false,
@@ -407,6 +421,29 @@ class _CheckInPageState extends State<CheckInPage> {
           )
           .toList();
     });
+  }
+
+  List<ReminderItem> _buildCheckInItems(List<ReminderPlan> plans) {
+    return plans
+        .where((plan) => plan.enabled)
+        .where(_supportsLocalCheckIn)
+        .map(
+          (plan) => ReminderItem(
+            id: plan.id.trim(),
+            time: plan.time.trim(),
+            title: plan.productName.trim().isEmpty
+                ? '用药提醒'
+                : plan.productName.trim(),
+            subtitle: plan.subtitle.trim(),
+            done: false,
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  bool _supportsLocalCheckIn(ReminderPlan plan) {
+    final repeatRule = plan.repeatRule.trim().toLowerCase();
+    return repeatRule.isEmpty || repeatRule == 'daily';
   }
 }
 

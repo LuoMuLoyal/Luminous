@@ -60,52 +60,24 @@ class _MineViewState extends State<MineView> {
 
   /// 点击 Profile 区域（头像/昵称）回调。
   ///
-  /// 未登录：跳转登录页；已登录：目前占位提示。
+  /// 未登录：跳转登录页；已登录：进入设置页。
   Future<void> _onTapProfile() async {
     if (!_userController.isLoggedIn) {
       Navigator.pushNamed(context, '/login');
       return;
     }
-    ToastUtils.instance.show(context, '功能开发中');
+    Navigator.pushNamed(context, '/settings');
   }
 
   /// 点击 Profile 右侧按钮回调。
   ///
-  /// 未登录：跳转登录页；已登录：弹出确认框后退出登录。
+  /// 未登录：跳转登录页；已登录：进入设置页。
   Future<void> _onTapAction() async {
     if (!_userController.isLoggedIn) {
       Navigator.pushNamed(context, '/login');
       return;
     }
-
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('提示'),
-          content: const Text('确定要退出登录吗？'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('取消'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('确定'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmed != true) {
-      return;
-    }
-
-    await _userController.logout();
-    if (mounted) {
-      ToastUtils.instance.show(context, '已退出登录');
-    }
+    Navigator.pushNamed(context, '/settings');
   }
 
   /// 点击快捷入口卡片回调。
@@ -118,6 +90,10 @@ class _MineViewState extends State<MineView> {
     }
     if (id == 'reminders') {
       Navigator.pushNamed(context, '/reminders');
+      return;
+    }
+    if (id == 'settings') {
+      Navigator.pushNamed(context, '/settings');
       return;
     }
     ToastUtils.instance.show(context, '功能开发中');
@@ -136,13 +112,19 @@ class _MineViewState extends State<MineView> {
           user: _userController.user.value,
           onTapProfile: _onTapProfile,
           onTapAction: _onTapAction,
+          loggedInActionLabel: '设置',
         ),
       ),
       quickActions: _quickActions,
       onTapQuickAction: _onTapQuickAction,
       onTapBrowseHistory: () => ToastUtils.instance.show(context, '功能开发中'),
-      onTapSecurity: () => ToastUtils.instance.show(context, '功能开发中'),
-      onTapAbout: () => ToastUtils.instance.show(context, '功能开发中'),
+      onTapSecurity: () => Navigator.pushNamed(context, '/settings'),
+      onTapAbout: () => showAboutDialog(
+        context: context,
+        applicationName: 'Luminous',
+        applicationVersion: '2.32.0+32',
+        applicationLegalese: '健康助手与药品信息辅助应用',
+      ),
     );
   }
 }

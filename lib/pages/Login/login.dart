@@ -91,8 +91,16 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  void _onTapAgreement() {
-    ToastUtils.instance.show(context, '功能开发中');
+  void _openUserAgreement() {
+    Navigator.pushNamed(context, '/user-agreement');
+  }
+
+  void _openPrivacyPolicy() {
+    Navigator.pushNamed(context, '/privacy-policy');
+  }
+
+  void _onTapForgotPassword() {
+    ToastUtils.instance.show(context, '找回密码功能稍后补充，当前可先注册新账号或联系人工支持');
   }
 
   void _toggleIdentifierType() {
@@ -334,11 +342,17 @@ class _LoginPageState extends State<LoginPage> {
         _buildLoginButton(),
         const SizedBox(height: 10),
         _buildHelperText(),
+        const SizedBox(height: 10),
+        AuthLegalHint(
+          onTapAgreement: _openUserAgreement,
+          onTapPrivacy: _openPrivacyPolicy,
+        ),
       ],
     );
   }
 
   Widget _buildTopBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
         InkWell(
@@ -348,13 +362,13 @@ class _LoginPageState extends State<LoginPage> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF162033) : Colors.white,
               borderRadius: BorderRadius.circular(999),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.arrow_back_ios_new_rounded,
               size: 18,
-              color: Color(0xFF0F172A),
+              color: isDark ? Colors.white : const Color(0xFF0F172A),
             ),
           ),
         ),
@@ -385,14 +399,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildFormCard() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF162033) : Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: const [
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+        ),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x14000000),
+            color: Colors.black.withValues(alpha: isDark ? 0.0 : 0.08),
             blurRadius: 14,
             offset: Offset(0, 6),
           ),
@@ -526,7 +543,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         const Spacer(),
         TextButton(
-          onPressed: _onTapAgreement,
+          onPressed: _onTapForgotPassword,
           style: TextButton.styleFrom(
             padding: EdgeInsets.zero,
             minimumSize: Size.zero,
@@ -545,13 +562,14 @@ class _LoginPageState extends State<LoginPage> {
     required IconData prefixIcon,
     Widget? suffixIcon,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InputDecoration(
       labelText: labelText,
       hintText: hintText,
       prefixIcon: Icon(prefixIcon),
       suffixIcon: suffixIcon,
       filled: true,
-      fillColor: const Color(0xFFF8FAFC),
+      fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide.none,

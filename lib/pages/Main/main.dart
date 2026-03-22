@@ -61,23 +61,26 @@ class _MainPageState extends State<MainPage> {
 
   /// 与底部 Tab 一一对应的页面实例列表。
   ///
-  /// 使用 `const` + `IndexedStack` 组合，保证切换 Tab 时页面状态不丢失。
-  final List<Widget> _children = const [
+  /// 页面本身仍然通过 `IndexedStack` 保活，但改成按需挂载，
+  /// 避免应用启动时把所有一级页都一起初始化。
+  static const List<Widget> _pages = [
     HomeView(),
     DrugView(),
     AlbumView(),
     MineView(),
   ];
 
+  /// 已经真正挂载过的 Tab 下标。
+  final Set<int> _loadedIndexes = <int>{0};
+
   /// 根据 `_tablist` 构建 BottomNavigationBarItem 列表。
-  List<BottomNavigationBarItem> _getTabBarWidget() {
+  List<BottomNavigationBarItem> _getTabBarWidget({
+    required Color inactiveColor,
+  }) {
     return List.generate(_tablist.length, (index) {
       final item = _tablist[index];
       return BottomNavigationBarItem(
-        icon: _buildTabIcon(
-          assetPath: item.icon,
-          color: AppUiConstants.TAB_INACTIVE,
-        ),
+        icon: _buildTabIcon(assetPath: item.icon, color: inactiveColor),
         activeIcon: _buildTabIcon(
           assetPath: item.activeIcon,
           color: item.color,
@@ -104,29 +107,49 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final currentColor = _tablist[_currentIndex].color;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final tabBarBackground = isDark
+        ? const Color(0xFF111C2E)
+        : AppUiConstants.TAB_BAR_BACKGROUND;
+    final tabBarBorder = isDark
+        ? const Color(0xFF243246)
+        : AppUiConstants.TAB_BAR_BORDER;
+    final inactiveColor = isDark
+        ? const Color(0xFF94A3B8)
+        : AppUiConstants.TAB_INACTIVE;
 
     return Scaffold(
-      backgroundColor: AppUiConstants.PAGE_BACKGROUND,
-      body: IndexedStack(index: _currentIndex, children: _children),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: IndexedStack(
+        index: _currentIndex,
+        children: List<Widget>.generate(
+          _tablist.length,
+          (index) => _loadedIndexes.contains(index)
+              ? _pages[index]
+              : const SizedBox.shrink(),
+        ),
+      ),
       bottomNavigationBar: DecoratedBox(
-        decoration: const BoxDecoration(
-          color: AppUiConstants.TAB_BAR_BACKGROUND,
-          border: Border(top: BorderSide(color: AppUiConstants.TAB_BAR_BORDER)),
+        decoration: BoxDecoration(
+          color: tabBarBackground,
+          border: Border(top: BorderSide(color: tabBarBorder)),
         ),
         child: BottomNavigationBar(
           onTap: (index) {
             /// 更新当前选中的 Tab 下标。
             setState(() {
+              _loadedIndexes.add(index);
               _currentIndex = index;
             });
           },
           currentIndex: _currentIndex,
-          items: _getTabBarWidget(),
+          items: _getTabBarWidget(inactiveColor: inactiveColor),
           type: BottomNavigationBarType.fixed,
-          backgroundColor: AppUiConstants.TAB_BAR_BACKGROUND,
+          backgroundColor: tabBarBackground,
           selectedItemColor: currentColor,
           showUnselectedLabels: true,
-          unselectedItemColor: AppUiConstants.TAB_INACTIVE,
+          unselectedItemColor: inactiveColor,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700),
           unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
           elevation: 0,

@@ -34,11 +34,11 @@ class AuthPageScaffold extends StatelessWidget {
   const AuthPageScaffold({
     super.key,
     required this.children,
-    this.backgroundColor = const Color(0xFFF3F7FB),
+    this.backgroundColor,
   });
 
   final List<Widget> children;
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +46,10 @@ class AuthPageScaffold extends StatelessWidget {
     final isWide = screenWidth >= 600;
     final horizontalPadding = screenWidth < 600 ? 16.0 : 24.0;
     final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? theme.scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         bottom: false,
@@ -78,6 +79,69 @@ class AuthPageScaffold extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// 登录页底部的协议提示文本。
+class AuthLegalHint extends StatelessWidget {
+  const AuthLegalHint({
+    super.key,
+    required this.onTapAgreement,
+    required this.onTapPrivacy,
+  });
+
+  final VoidCallback onTapAgreement;
+  final VoidCallback onTapPrivacy;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(
+          '登录即代表你已阅读并同意',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        GestureDetector(
+          onTap: onTapAgreement,
+          child: const Text(
+            '《用户协议》',
+            style: TextStyle(
+              fontSize: 12,
+              color: Color(0xFF0284C7),
+              fontWeight: FontWeight.w700,
+              height: 1.4,
+            ),
+          ),
+        ),
+        Text(
+          '和',
+          style: TextStyle(
+            fontSize: 12,
+            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+            fontWeight: FontWeight.w600,
+            height: 1.4,
+          ),
+        ),
+        GestureDetector(
+          onTap: onTapPrivacy,
+          child: const Text(
+            '《隐私政策》',
+            style: TextStyle(
+              fontSize: 12,
+              color: Color(0xFF0284C7),
+              fontWeight: FontWeight.w700,
+              height: 1.4,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -169,9 +233,10 @@ class AuthMethodSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF162033) : Colors.white,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Padding(
@@ -195,7 +260,9 @@ class AuthMethodSwitcher extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: entry.value.selected
                               ? const Color(0xFF0EA5E9)
-                              : const Color(0xFFF1F5F9),
+                              : (isDark
+                                    ? const Color(0xFF1E293B)
+                                    : const Color(0xFFF1F5F9)),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
@@ -204,7 +271,9 @@ class AuthMethodSwitcher extends StatelessWidget {
                             style: TextStyle(
                               color: entry.value.selected
                                   ? Colors.white
-                                  : const Color(0xFF334155),
+                                  : (isDark
+                                        ? const Color(0xFFE2E8F0)
+                                        : const Color(0xFF334155)),
                               fontWeight: FontWeight.w700,
                               fontSize: 13,
                             ),
@@ -252,13 +321,16 @@ class AuthSvgCaptchaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+        ),
       ),
       child: Row(
         children: [
@@ -275,8 +347,10 @@ class AuthSvgCaptchaCard extends StatelessWidget {
                     : svgContent == null || svgContent!.isEmpty
                     ? Text(
                         emptyText,
-                        style: const TextStyle(
-                          color: Color(0xFF64748B),
+                        style: TextStyle(
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF64748B),
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
@@ -329,6 +403,7 @@ class AuthAgreementRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -342,11 +417,11 @@ class AuthAgreementRow extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () => onChanged(!agreed),
-                child: const Text(
+                child: Text(
                   '我已阅读并同意',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF334155),
+                    color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155),
                     fontWeight: FontWeight.w600,
                     height: 1.4,
                   ),
@@ -366,11 +441,11 @@ class AuthAgreementRow extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () => onChanged(!agreed),
-                child: const Text(
+                child: Text(
                   '和',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF334155),
+                    color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155),
                     fontWeight: FontWeight.w600,
                     height: 1.4,
                   ),
