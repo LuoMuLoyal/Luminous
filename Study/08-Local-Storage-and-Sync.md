@@ -14,7 +14,7 @@
 
 - 数据库：`lib/stores/app_database.dart`
 - 我的药品：`lib/stores/my_medicine_repository.dart`
-- 提醒缓存：`lib/stores/reminder_local_store.dart`
+- 提醒计划缓存：`lib/stores/reminder_local_store.dart`
 - 今日提醒状态：`lib/stores/today_reminder_local_store.dart`
 - 相册缓存：`lib/stores/album_local_store.dart`
 - 会话同步：`lib/stores/session_sync_service.dart`
@@ -34,7 +34,9 @@
 ### 网络 / 本地存储 / 后端流转
 
 - 我的药品：本地先写，登录用户再尽量 upsert 到远端
-- 提醒：登录后全量拉远端列表覆盖本地
+- 提醒计划：登录后全量拉远端列表覆盖 `reminders`
+- 今日提醒：页面请求 `today-reminders` 后，全量覆盖 `today_reminder_snapshots`
+- 打卡状态：打卡页直接读取本地 `reminders`，`checkins` 记录本地完成，`checkin_overrides` 记录当天本地覆盖
 - 相册：本地 pending 先补推远端，再拉远端记录回写本地
 - 会话同步统一在 `SessionSyncService` 里串起来
 
@@ -43,16 +45,31 @@
 - 页面重新读取本地仓库后重建 UI
 - 用户态变化会触发很多页面的 `ever` 监听，自动切到对应作用域的数据
 
+## 当前和“提醒 / 打卡”最相关的表职责
+
+- `reminders`
+  提醒计划缓存，只保存提醒计划本身，不再作为首页 / 打卡页当天展示真相。
+- `today_reminder_snapshots`
+  `today-reminders` 当天接口快照，按 `userId + dateKey` 全量覆盖。
+- `checkins`
+  本地今天已打卡记录，首页会把它叠加到当天快照上，打卡页也会把它叠加到本地提醒计划上。
+- `checkin_overrides`
+  当天本地覆盖状态，优先级高于 `checkins` 和快照里的 `serverDone`。
+
 ## 关键代码位置
 
-- `lib/stores/app_database.dart:43`
+- `lib/stores/app_database.dart:27`
+  当前数据库 schema 版本。
+- `lib/stores/app_database.dart:35`
   打开数据库。
 - `lib/stores/app_database.dart:62`
   创建所有表结构。
-- `lib/stores/app_database.dart:178`
+- `lib/stores/app_database.dart:176`
+  `today_reminder_snapshots` 表定义。
+- `lib/stores/app_database.dart:202`
   数据库升级迁移。
 - `lib/stores/my_medicine_repository.dart:36`
-  构建带用户作用域的 identityKey。
+  构建带用户作用域的 `identityKey`。
 - `lib/stores/my_medicine_repository.dart:91`
   新增“我的药品”。
 - `lib/stores/my_medicine_repository.dart:163`
@@ -60,32 +77,51 @@
 - `lib/stores/my_medicine_repository.dart:244`
   游客药品迁移到登录用户作用域。
 - `lib/stores/reminder_local_store.dart:19`
-  读取提醒缓存。
+  读取提醒计划缓存。
 - `lib/stores/reminder_local_store.dart:40`
-  用完整列表覆盖提醒缓存。
-- `lib/stores/today_reminder_local_store.dart:22`
-  读取今日打卡 override。
-- `lib/stores/today_reminder_local_store.dart:100`
-  从本地 reminders/checkins 组装今日提醒。
+  用完整列表覆盖提醒计划缓存。
+- `lib/stores/today_reminder_local_store.dart:68`
+  用远端结果覆盖当天快照。
+- `lib/stores/today_reminder_local_store.dart:103`
+  读取今日 override。
+- `lib/stores/today_reminder_local_store.dart:129`
+  保存今日 override。
+- `lib/stores/today_reminder_local_store.dart:146`
+  写入今日 checkin。
+- `lib/stores/today_reminder_local_store.dart:170`
+  删除今日 checkin。
+- `lib/stores/today_reminder_local_store.dart:185`
+  从“快照 + checkins + overrides”组装最终提醒。
+- `lib/stores/today_reminder_local_store.dart:217`
+  给任意提醒条目叠加“今日是否完成”的本地状态。
 - `lib/stores/album_local_store.dart:99`
   相册远端同步入口。
-- `lib/stores/session_sync_service.dart:40`
-  登录后的统一同步调度。
+- `lib/stores/session_sync_service.dart:29`
+  登录后的统一同步调度入口。
 
 ## 容易忽略的实现细节
 
 - `identityKey` 都带了用户作用域，避免游客和登录用户数据混淆
-- 相册同步会把游客 legacy 记录并入登录用户
-- 提醒本地缓存采用“整表覆盖”的口径，不是增量 merge
+- `today_reminder_snapshots` 是“按天全量覆盖”，不是增量 merge
+- `checkin_overrides` 优先级最高，所以当前本地打卡 / 撤销都能稳定覆盖同设备当天 UI
+- `reminders` 表虽然还是本地缓存的一部分，但现在只负责提醒计划，不再负责首页 / 打卡页当天真相
 
 ## 如果以后要改，优先改哪里
 
 - 改表结构：先看 `lib/stores/app_database.dart`
-- 改同步顺序：看 `lib/stores/session_sync_service.dart`
-- 改数据隔离规则：看 `my_medicine_repository.dart` 和 `album_local_store.dart`
+- 改提醒 / 打卡当天口径：看 `lib/stores/today_reminder_local_store.dart`
+- 改提醒计划同步：看 `lib/stores/reminder_local_store.dart` 和 `lib/stores/session_sync_service.dart`
+- 改相册同步：看 `album_local_store.dart`
 
 ## 相关测试在哪
 
 - `test/album_local_store_test.dart:23`
-  覆盖相册本地写入、远端回写、游客记录迁移
-- 当前没有专门覆盖 reminders/checkins SQLite 组合读取的测试
+  覆盖相册本地写入、远端回写、游客记录迁移。
+- `test/today_reminder_local_store_test.dart:6`
+  覆盖日期解析和 done 状态优先级 helper。
+- `test/home_today_reminders_test.dart:36`
+  覆盖首页“远端结果覆盖旧快照”。
+- `test/checkin_page_test.dart:38`
+  覆盖打卡页“从本地提醒计划构建列表并叠加本地完成状态”。
+- `test/checkin_page_test.dart:91`
+  覆盖取消打卡的本地提示和 override 写入。

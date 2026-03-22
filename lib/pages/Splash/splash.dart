@@ -19,34 +19,10 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _fadeIn;
-  late final Animation<double> _slideUp;
-  late final Animation<double> _iconScale;
-
+class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-
-    _fadeIn = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
-    _slideUp = Tween<double>(
-      begin: 32,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
-    _iconScale = Tween<double>(
-      begin: 0.6,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut));
-
-    _ctrl.forward();
-
     // 2 秒后跳转
     Future.delayed(const Duration(milliseconds: 2200), _navigate);
   }
@@ -56,12 +32,6 @@ class _SplashPageState extends State<SplashPage>
     final userController = Get.find<UserController>();
     final isLoggedIn = (userController.user.value?.id ?? '').trim().isNotEmpty;
     Navigator.of(context).pushReplacementNamed(isLoggedIn ? '/' : '/login');
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
   }
 
   @override
@@ -82,36 +52,15 @@ class _SplashPageState extends State<SplashPage>
 
           // ── 主内容 ────────────────────────────────────────────────
           SafeArea(
-            child: FadeTransition(
-              opacity: _fadeIn,
-              child: Column(
-                children: [
-                  SizedBox(height: size.height * 0.10),
-
-                  // 大标题区
-                  AnimatedBuilder(
-                    animation: _slideUp,
-                    builder: (context, child) => Transform.translate(
-                      offset: Offset(0, _slideUp.value),
-                      child: child,
-                    ),
-                    child: const _SplashTitle(),
-                  ),
-
-                  SizedBox(height: size.height * 0.06),
-
-                  // 中央吉祥物 / 图标区
-                  ScaleTransition(
-                    scale: _iconScale,
-                    child: const _SplashMascot(),
-                  ),
-
-                  const Spacer(),
-
-                  // 底部品牌信息
-                  _SplashFooter(bottomPadding: bottomPadding),
-                ],
-              ),
+            child: Column(
+              children: [
+                SizedBox(height: size.height * 0.10),
+                const _SplashTitle(),
+                SizedBox(height: size.height * 0.06),
+                const _SplashMascot(),
+                const Spacer(),
+                _SplashFooter(bottomPadding: bottomPadding),
+              ],
             ),
           ),
         ],

@@ -24,7 +24,7 @@ class AppDatabase {
   /// 当前数据库 schema 版本号。
   ///
   /// 版本变更时需要同步更新 `_upgradeTables` 中的迁移逻辑。
-  static const int _version = 7;
+  static const int _version = 8;
 
   /// 已打开的数据库实例缓存。
   Database? _db;
@@ -170,6 +170,30 @@ class AppDatabase {
       'CREATE INDEX IF NOT EXISTS idx_checkin_overrides_userId_dateKey '
       'ON checkin_overrides(userId, dateKey)',
     );
+
+    // today_reminder_snapshots：当天提醒接口快照
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS today_reminder_snapshots (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId TEXT NOT NULL DEFAULT '',
+        dateKey TEXT NOT NULL,
+        remoteId TEXT NOT NULL,
+        time TEXT NOT NULL,
+        title TEXT NOT NULL,
+        subtitle TEXT,
+        serverDone INTEGER NOT NULL,
+        position INTEGER NOT NULL,
+        updatedAt INTEGER NOT NULL
+      )
+    ''');
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_today_reminder_snapshots_userId_dateKey_position '
+      'ON today_reminder_snapshots(userId, dateKey, position)',
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_today_reminder_snapshots_userId_dateKey_remoteId '
+      'ON today_reminder_snapshots(userId, dateKey, remoteId)',
+    );
   }
 
   /// 执行数据库升级迁移。
@@ -242,6 +266,10 @@ class AppDatabase {
         db,
         'ALTER TABLE album_items ADD COLUMN imageMimeType TEXT',
       );
+      await _createTables(db);
+    }
+
+    if (oldVersion < 8) {
       await _createTables(db);
     }
   }

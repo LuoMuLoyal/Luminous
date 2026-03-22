@@ -34,6 +34,9 @@ class GlobalConstants {
   ///
   /// `UserController` 会使用这个 key 持久化登录用户信息。
   static const String USER_KEY = 'luminous_user';
+
+  /// 本地存储暗黑模式偏好时使用的 key。
+  static const String DARK_MODE_KEY = 'luminous_dark_mode';
 }
 
 /// 后端接口路径常量集合。
@@ -87,9 +90,6 @@ class HttpConstants {
 
   /// 提醒计划列表接口。
   static const String REMINDER_LIST = '/reminder-list';
-
-  /// 用药打卡创建接口。
-  static const String CHECKIN_CREATE = '/checkin-create';
 
   /// 安全辅助 AI 查询接口。
   static const String MEDICINE_AI_SAFETY = '/medicine-ai-safety';

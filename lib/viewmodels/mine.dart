@@ -58,6 +58,7 @@ class MineQuickActionCard extends StatelessWidget {
               metrics ??
               ResponsiveQuickGridMetrics.fromWidth(constraints.maxWidth);
           final compact = resolvedMetrics.isCompact;
+          final isDark = Theme.of(context).brightness == Brightness.dark;
 
           return InkWell(
             onTap: onTap,
@@ -65,9 +66,13 @@ class MineQuickActionCard extends StatelessWidget {
             child: Ink(
               padding: resolvedMetrics.itemPadding,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF162033) : Colors.white,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                border: Border.all(
+                  color: isDark
+                      ? const Color(0xFF334155)
+                      : const Color(0xFFE2E8F0),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -103,7 +108,9 @@ class MineQuickActionCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: compact ? 14 : 14.5,
                             fontWeight: FontWeight.w800,
-                            color: const Color(0xFF0F172A),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF0F172A),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -116,7 +123,9 @@ class MineQuickActionCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: compact ? 11.5 : 12,
                               fontWeight: FontWeight.w600,
-                              color: const Color(0xFF64748B),
+                              color: isDark
+                                  ? const Color(0xFFCBD5E1)
+                                  : const Color(0xFF64748B),
                               height: compact ? 1.2 : 1.25,
                             ),
                             maxLines: 2,

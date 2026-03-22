@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:luminous/routes/routes.dart';
 import 'package:luminous/startup/app_startup_warmup.dart';
+import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
 
 /// 应用入口函数。
@@ -14,6 +15,9 @@ Future<void> main() async {
 
   // 只保留真正必须在 runApp 前完成的轻量依赖注入。
   final userController = Get.put(UserController(), permanent: true);
+  userController.markSessionPending();
+  final themeController = Get.put(ThemeController(), permanent: true);
+  await themeController.init();
   runApp(LuminousApp(userController: userController));
 }
 
