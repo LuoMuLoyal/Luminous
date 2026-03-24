@@ -253,6 +253,7 @@ class AuthMethodSwitcher extends StatelessWidget {
     final accent = accentColor ?? scheme.primary;
     final selectedStart = Color.lerp(accent, scheme.secondary, 0.16)!;
     final selectedEnd = Color.lerp(accent, scheme.tertiary, 0.10)!;
+    const segmentSpacing = 8.0;
     final outerBackground = Color.alphaBlend(
       accent.withValues(alpha: isDark ? 0.07 : 0.032),
       theme.cardTheme.color ?? theme.colorScheme.surface,
@@ -261,6 +262,8 @@ class AuthMethodSwitcher extends StatelessWidget {
       accent.withValues(alpha: isDark ? 0.16 : 0.10),
       scheme.outline,
     );
+    final selectedIndex = items.indexWhere((item) => item.selected);
+    final resolvedSelectedIndex = selectedIndex < 0 ? 0 : selectedIndex;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -279,89 +282,102 @@ class AuthMethodSwitcher extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(5),
-        child: Row(
-          children: items
-              .asMap()
-              .entries
-              .map(
-                (entry) => Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      right: entry.key == items.length - 1 ? 0 : 8,
-                    ),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: entry.value.onTap,
-                      child: AnimatedScale(
-                        scale: entry.value.selected ? 1 : 0.985,
-                        duration: const Duration(milliseconds: 180),
-                        curve: Curves.easeOutCubic,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 180),
-                          height: 38,
-                          decoration: BoxDecoration(
-                            gradient: entry.value.selected
-                                ? LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [selectedStart, selectedEnd],
-                                  )
-                                : null,
-                            color: entry.value.selected
-                                ? null
-                                : Color.alphaBlend(
-                                    accent.withValues(
-                                      alpha: isDark ? 0.08 : 0.035,
-                                    ),
-                                    isDark
-                                        ? const Color(0xFF1A2335)
-                                        : const Color(0xFFF3F6FA),
-                                  ),
-                            borderRadius: BorderRadius.circular(11),
-                            border: Border.all(
-                              color: entry.value.selected
-                                  ? accent.withValues(
-                                      alpha: isDark ? 0.28 : 0.18,
-                                    )
-                                  : Colors.white.withValues(
-                                      alpha: isDark ? 0.04 : 0.24,
-                                    ),
-                            ),
-                            boxShadow: entry.value.selected
-                                ? [
-                                    BoxShadow(
-                                      color: accent.withValues(
-                                        alpha: isDark ? 0.18 : 0.22,
-                                      ),
-                                      blurRadius: 14,
-                                      offset: const Offset(0, 6),
-                                    ),
-                                  ]
-                                : const [],
-                          ),
-                          child: Center(
-                            child: Text(
-                              entry.value.label,
-                              style: TextStyle(
-                                color: entry.value.selected
-                                    ? Colors.white
-                                    : (isDark
-                                          ? scheme.onSurface
-                                          : scheme.onSurface.withValues(
-                                              alpha: 0.84,
-                                            )),
-                                fontWeight: FontWeight.w700,
-                                fontSize: 12.5,
-                              ),
-                            ),
-                          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final segmentWidth =
+                (constraints.maxWidth - (items.length - 1) * segmentSpacing) /
+                items.length;
+            final selectedLeft =
+                resolvedSelectedIndex * (segmentWidth + segmentSpacing);
+
+            return SizedBox(
+              height: 38,
+              child: Stack(
+                children: [
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeOutCubic,
+                    left: selectedLeft,
+                    top: 0,
+                    width: segmentWidth,
+                    height: 38,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [selectedStart, selectedEnd],
                         ),
+                        borderRadius: BorderRadius.circular(11),
+                        border: Border.all(
+                          color: accent.withValues(alpha: isDark ? 0.28 : 0.18),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: accent.withValues(
+                              alpha: isDark ? 0.16 : 0.20,
+                            ),
+                            blurRadius: 14,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              )
-              .toList(),
+                  Row(
+                    children: items
+                        .asMap()
+                        .entries
+                        .map(
+                          (entry) => Padding(
+                            padding: EdgeInsets.only(
+                              right: entry.key == items.length - 1
+                                  ? 0
+                                  : segmentSpacing,
+                            ),
+                            child: SizedBox(
+                              width: segmentWidth,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(11),
+                                  overlayColor:
+                                      const WidgetStatePropertyAll<Color>(
+                                        Colors.transparent,
+                                      ),
+                                  splashFactory: NoSplash.splashFactory,
+                                  onTap: entry.value.onTap,
+                                  child: Center(
+                                    child: AnimatedDefaultTextStyle(
+                                      duration: const Duration(
+                                        milliseconds: 160,
+                                      ),
+                                      curve: Curves.easeOutCubic,
+                                      style: TextStyle(
+                                        color: entry.value.selected
+                                            ? Colors.white
+                                            : (isDark
+                                                  ? scheme.onSurface
+                                                  : scheme.onSurface.withValues(
+                                                      alpha: 0.84,
+                                                    )),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 12.5,
+                                      ),
+                                      child: Text(entry.value.label),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

@@ -297,16 +297,16 @@ _AppThemeSpec _themeSpecFor(AppThemeStyle style) {
       );
     case AppThemeStyle.moonMist:
       return const _AppThemeSpec(
-        lightPrimary: Color(0xFF6A84E8),
-        lightSecondary: Color(0xFF8D79D9),
-        lightTertiary: Color(0xFF7DB8CF),
-        lightBackground: Color(0xFFF3F6FC),
-        darkPrimary: Color(0xFFB0C2FF),
-        darkSecondary: Color(0xFFD0C0FF),
-        darkTertiary: Color(0xFF8CC8D8),
-        darkBackground: Color(0xFF07101A),
-        darkSurface: Color(0xFF0F1D31),
-        darkSurfaceAlt: Color(0xFF172942),
+        lightPrimary: Color(0xFF5F8FF0),
+        lightSecondary: Color(0xFF79B6E8),
+        lightTertiary: Color(0xFF91B2EA),
+        lightBackground: Color(0xFFF2F7FD),
+        darkPrimary: Color(0xFFB6D5FF),
+        darkSecondary: Color(0xFF8EC5F2),
+        darkTertiary: Color(0xFF7EA6E4),
+        darkBackground: Color(0xFF06111C),
+        darkSurface: Color(0xFF0D1C30),
+        darkSurfaceAlt: Color(0xFF162A44),
       );
     case AppThemeStyle.divineTree:
       return const _AppThemeSpec(
@@ -320,6 +320,19 @@ _AppThemeSpec _themeSpecFor(AppThemeStyle style) {
         darkBackground: Color(0xFF09130D),
         darkSurface: Color(0xFF13231A),
         darkSurfaceAlt: Color(0xFF1B3124),
+      );
+    case AppThemeStyle.illusion:
+      return const _AppThemeSpec(
+        lightPrimary: Color(0xFFA37AF4),
+        lightSecondary: Color(0xFFC596FF),
+        lightTertiary: Color(0xFF7C5CD4),
+        lightBackground: Color(0xFFF9F4FF),
+        darkPrimary: Color(0xFFD6BBFF),
+        darkSecondary: Color(0xFFAA8EF2),
+        darkTertiary: Color(0xFF7B63D6),
+        darkBackground: Color(0xFF11091D),
+        darkSurface: Color(0xFF1A1229),
+        darkSurfaceAlt: Color(0xFF26193B),
       );
   }
 }

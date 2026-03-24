@@ -37,25 +37,21 @@ class _MainPageState extends State<MainPage> {
       icon: 'lib/assets/home.png',
       activeIcon: 'lib/assets/home-full.png',
       text: '主页',
-      color: Color(0xFF0EA5E9),
     ),
     _MainTabItem(
       icon: 'lib/assets/drug.png',
       activeIcon: 'lib/assets/drug-full.png',
       text: '药品',
-      color: Color(0xFF10B981),
     ),
     _MainTabItem(
       icon: 'lib/assets/picture.png',
       activeIcon: 'lib/assets/picture-full.png',
       text: '相册',
-      color: Color(0xFFF59E0B),
     ),
     _MainTabItem(
       icon: 'lib/assets/mine.png',
       activeIcon: 'lib/assets/mine-full.png',
       text: '我的',
-      color: Color(0xFFE77AA6),
     ),
   ];
 
@@ -73,6 +69,21 @@ class _MainPageState extends State<MainPage> {
   /// 当前选中的底部 Tab 下标。
   int _currentIndex = 0;
 
+  List<Color> _resolvedTabColors(ThemeData theme) {
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final colors = <Color>[
+      scheme.primary,
+      Color.lerp(scheme.secondary, scheme.primary, 0.34)!,
+      Color.lerp(scheme.tertiary, scheme.secondary, 0.26)!,
+      Color.lerp(scheme.secondary, scheme.tertiary, 0.58)!,
+    ];
+
+    return colors
+        .map((color) => isDark ? Color.lerp(color, Colors.white, 0.08)! : color)
+        .toList();
+  }
+
   Widget _buildTabIcon({required String assetPath, required Color color}) {
     return ColorFiltered(
       colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
@@ -82,14 +93,17 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final currentColor = _tablist[_currentIndex].color;
-    final secondaryColor =
-        _tablist[(_currentIndex + 1) % _tablist.length].color;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final tabBarBackground = isDark
-        ? const Color(0xFF111C2E)
-        : AppUiConstants.TAB_BAR_BACKGROUND;
+    final tabColors = _resolvedTabColors(theme);
+    final currentColor = tabColors[_currentIndex];
+    final secondaryColor = tabColors[(_currentIndex + 1) % tabColors.length];
+    final tabBarBackground = Color.alphaBlend(
+      (isDark ? secondaryColor : currentColor).withValues(
+        alpha: isDark ? 0.08 : 0.04,
+      ),
+      theme.cardTheme.color ?? theme.colorScheme.surface,
+    );
     final bottomBedColor = Color.alphaBlend(
       currentColor.withValues(alpha: isDark ? 0.12 : 0.055),
       theme.scaffoldBackgroundColor,
@@ -150,6 +164,7 @@ class _MainPageState extends State<MainPage> {
             minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
             child: _MainBottomBar(
               items: _tablist,
+              itemColors: tabColors,
               currentIndex: _currentIndex,
               backgroundColor: tabBarBackground,
               inactiveColor: inactiveColor,
@@ -171,6 +186,7 @@ class _MainPageState extends State<MainPage> {
 class _MainBottomBar extends StatelessWidget {
   const _MainBottomBar({
     required this.items,
+    required this.itemColors,
     required this.currentIndex,
     required this.backgroundColor,
     required this.inactiveColor,
@@ -179,6 +195,7 @@ class _MainBottomBar extends StatelessWidget {
   });
 
   final List<_MainTabItem> items;
+  final List<Color> itemColors;
   final int currentIndex;
   final Color backgroundColor;
   final Color inactiveColor;
@@ -190,8 +207,8 @@ class _MainBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final ornamentController = Get.find<OrnamentController>();
-    final currentColor = items[currentIndex].color;
-    final secondaryColor = items[(currentIndex + 1) % items.length].color;
+    final currentColor = itemColors[currentIndex];
+    final secondaryColor = itemColors[(currentIndex + 1) % itemColors.length];
 
     return Obx(() {
       ornamentController.revision.value;
@@ -320,6 +337,7 @@ class _MainBottomBar extends StatelessWidget {
                 child: Row(
                   children: List<Widget>.generate(items.length, (index) {
                     final item = items[index];
+                    final itemColor = itemColors[index];
                     final selected = index == currentIndex;
 
                     return Expanded(
@@ -341,10 +359,10 @@ class _MainBottomBar extends StatelessWidget {
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                       colors: [
-                                        item.color.withValues(
+                                        itemColor.withValues(
                                           alpha: isDark ? 0.26 : 0.19,
                                         ),
-                                        item.color.withValues(
+                                        itemColor.withValues(
                                           alpha: isDark ? 0.16 : 0.11,
                                         ),
                                       ],
@@ -354,7 +372,7 @@ class _MainBottomBar extends StatelessWidget {
                               borderRadius: BorderRadius.circular(22),
                               border: Border.all(
                                 color: selected
-                                    ? item.color.withValues(
+                                    ? itemColor.withValues(
                                         alpha: isDark ? 0.24 : 0.14,
                                       )
                                     : Colors.transparent,
@@ -362,7 +380,7 @@ class _MainBottomBar extends StatelessWidget {
                               boxShadow: selected
                                   ? [
                                       BoxShadow(
-                                        color: item.color.withValues(
+                                        color: itemColor.withValues(
                                           alpha: isDark ? 0.16 : 0.12,
                                         ),
                                         blurRadius: 16,
@@ -378,7 +396,7 @@ class _MainBottomBar extends StatelessWidget {
                                   assetPath: selected
                                       ? item.activeIcon
                                       : item.icon,
-                                  color: selected ? item.color : inactiveColor,
+                                  color: selected ? itemColor : inactiveColor,
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
@@ -388,9 +406,7 @@ class _MainBottomBar extends StatelessWidget {
                                     fontWeight: selected
                                         ? FontWeight.w800
                                         : FontWeight.w700,
-                                    color: selected
-                                        ? item.color
-                                        : inactiveColor,
+                                    color: selected ? itemColor : inactiveColor,
                                   ),
                                 ),
                               ],
@@ -588,11 +604,9 @@ class _MainTabItem {
     required this.icon,
     required this.activeIcon,
     required this.text,
-    required this.color,
   });
 
   final String icon;
   final String activeIcon;
   final String text;
-  final Color color;
 }

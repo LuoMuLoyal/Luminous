@@ -19,7 +19,8 @@ enum AppThemeModePreference {
 enum AppThemeStyle {
   softGlow,
   moonMist,
-  divineTree;
+  divineTree,
+  illusion;
 
   static AppThemeStyle fromStorage(String? value) {
     return AppThemeStyle.values.firstWhere(

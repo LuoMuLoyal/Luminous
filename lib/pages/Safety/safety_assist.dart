@@ -73,13 +73,14 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
+      appBarSpacing: 44,
       accentColor: scheme.primary,
       secondaryAccentColor: secondaryAccent,
       child: RefreshIndicator(
         onRefresh: _refreshResult,
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+          padding: const EdgeInsets.fromLTRB(16, 6, 16, 24),
           children: [
             _buildHeroCard(),
             const SizedBox(height: 12),

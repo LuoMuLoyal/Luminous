@@ -124,6 +124,7 @@ class AppCanvasPageScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.reserveAppBarSpace = true,
     this.safeAreaBottom = false,
+    this.appBarSpacing,
   });
 
   final Widget child;
@@ -136,6 +137,7 @@ class AppCanvasPageScaffold extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final bool reserveAppBarSpace;
   final bool safeAreaBottom;
+  final double? appBarSpacing;
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +145,7 @@ class AppCanvasPageScaffold extends StatelessWidget {
     final background = baseColor ?? theme.scaffoldBackgroundColor;
     final topSpacing = appBar == null || !reserveAppBarSpace
         ? 0.0
-        : appBar!.preferredSize.height;
+        : (appBarSpacing ?? appBar!.preferredSize.height);
     final isDark = theme.brightness == Brightness.dark;
     final overlayStyle =
         (isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
