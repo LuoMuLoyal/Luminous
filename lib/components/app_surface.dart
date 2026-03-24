@@ -67,23 +67,61 @@ class AppSurfaceCard extends StatelessWidget {
     final background =
         color ?? (theme.cardTheme.color ?? theme.colorScheme.surface);
     final outline = borderColor ?? theme.colorScheme.outline;
+    final highlight = Colors.white.withValues(alpha: isDark ? 0.035 : 0.11);
+    final boxShadows = shadow
+        ? (isDark
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.20),
+                    blurRadius: 18,
+                    offset: const Offset(0, 10),
+                  ),
+                ]
+              : const [
+                  BoxShadow(
+                    color: Color(0x0F0F172A),
+                    blurRadius: 16,
+                    offset: Offset(0, 7),
+                  ),
+                ])
+        : const <BoxShadow>[];
 
     return DecoratedBox(
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(color: outline),
-        boxShadow: !shadow || isDark
-            ? const []
-            : const [
-                BoxShadow(
-                  color: Color(0x0C0F172A),
-                  blurRadius: 14,
-                  offset: Offset(0, 6),
-                ),
-              ],
+        boxShadow: boxShadows,
       ),
-      child: padding == null ? child : Padding(padding: padding!, child: child),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: const [0, 0.16, 0.52],
+                      colors: [
+                        highlight,
+                        highlight.withValues(alpha: isDark ? 0.015 : 0.046),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (padding == null)
+              child
+            else
+              Padding(padding: padding!, child: child),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -176,6 +214,46 @@ class AppSectionCard extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [startColor, endColor],
+                  ),
+                ),
+              ),
+            ),
+            Positioned.fill(
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: const [0, 0.24, 0.74, 1],
+                      colors: [
+                        Colors.white.withValues(alpha: isDark ? 0.032 : 0.085),
+                        Colors.white.withValues(alpha: isDark ? 0.012 : 0.024),
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: isDark ? 0.016 : 0.008),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: -34,
+              right: -12,
+              child: IgnorePointer(
+                child: Container(
+                  width: 132,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        accentColor.withValues(alpha: isDark ? 0.08 : 0.11),
+                        accentColor.withValues(alpha: 0),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(999),
                   ),
                 ),
               ),

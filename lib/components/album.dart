@@ -47,33 +47,57 @@ class AlbumPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final originalCount = entries
+        .where((entry) => entry.hasOriginalImage)
+        .length;
+
     return SafeArea(
       child: RefreshIndicator(
         onRefresh: onRefresh,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            AlbumHeaderSliver(palette: headerPalette, loading: loading),
+            AlbumHeaderSliver(
+              palette: headerPalette,
+              loading: loading,
+              entryCount: entries.length,
+              originalCount: originalCount,
+              isLoggedIn: isLoggedIn,
+            ),
             if (!isLoggedIn) AlbumLoginBannerSliver(onTapLogin: onTapLogin),
             if (error != null) AlbumErrorBannerSliver(text: error!),
             if (entries.isEmpty && !loading)
               const AlbumEmptySliver()
             else
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                sliver: SliverGrid.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 0.92,
-                  ),
-                  itemCount: entries.length,
-                  itemBuilder: (context, index) {
-                    final e = entries[index];
-                    return AlbumCard(entry: e, onTap: () => onTapEntry(e));
-                  },
-                ),
+              SliverLayoutBuilder(
+                builder: (context, constraints) {
+                  final width = constraints.crossAxisExtent;
+                  final crossAxisCount = width >= 1100
+                      ? 4
+                      : (width >= 760 ? 3 : 2);
+                  final spacing = width >= 760 ? 12.0 : 10.0;
+                  final aspectRatio = width >= 760 ? 0.96 : 0.90;
+
+                  return SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                    sliver: SliverGrid.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: spacing,
+                        crossAxisSpacing: spacing,
+                        childAspectRatio: aspectRatio,
+                      ),
+                      itemCount: entries.length,
+                      itemBuilder: (context, index) {
+                        final entry = entries[index];
+                        return AlbumCard(
+                          entry: entry,
+                          onTap: () => onTapEntry(entry),
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             const SliverToBoxAdapter(child: SizedBox(height: 12)),
           ],
@@ -89,6 +113,9 @@ class AlbumHeaderSliver extends StatelessWidget {
     super.key,
     required this.palette,
     required this.loading,
+    required this.entryCount,
+    required this.originalCount,
+    required this.isLoggedIn,
   });
 
   /// 顶部横幅配色。
@@ -96,6 +123,15 @@ class AlbumHeaderSliver extends StatelessWidget {
 
   /// 是否正在加载，用于显示右侧进度圈。
   final bool loading;
+
+  /// 当前记录总数。
+  final int entryCount;
+
+  /// 当前保留了本地原图的记录数。
+  final int originalCount;
+
+  /// 当前是否已登录。
+  final bool isLoggedIn;
 
   @override
   Widget build(BuildContext context) {
@@ -107,55 +143,92 @@ class AlbumHeaderSliver extends StatelessWidget {
           ornamentKey: 'album.banner',
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
           builder: (context, theme) {
-            return Row(
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: theme.surfaceColor,
-                    border: Border.all(color: theme.borderColor),
-                  ),
-                  child: Icon(
-                    Icons.photo_library_outlined,
-                    color: theme.accentColor,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '识别相册',
-                        style: TextStyle(
-                          color: theme.textColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
+                Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: theme.surfaceColor,
+                        border: Border.all(color: theme.borderColor),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '本地保存原图，云端仅同步轻量结果',
-                        style: TextStyle(
-                          color: theme.secondaryTextColor,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      child: Icon(
+                        Icons.photo_library_outlined,
+                        color: theme.accentColor,
                       ),
-                    ],
-                  ),
-                ),
-                if (loading)
-                  SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: theme.accentColor,
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '识别相册',
+                            style: TextStyle(
+                              color: theme.textColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            entryCount == 0
+                                ? '新的识别记录会自动归档到这里'
+                                : '本地保存原图，云端仅同步缩略图和识别结果',
+                            style: TextStyle(
+                              color: theme.secondaryTextColor,
+                              fontSize: 13,
+                              height: 1.4,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (loading)
+                      SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: theme.accentColor,
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _AlbumInfoChip(
+                      icon: Icons.grid_view_rounded,
+                      text: entryCount == 0 ? '等待第一条记录' : '$entryCount 条记录',
+                      backgroundColor: theme.surfaceColor,
+                      foregroundColor: theme.surfaceTextColor,
+                    ),
+                    _AlbumInfoChip(
+                      icon: Icons.hd_rounded,
+                      text: originalCount == 0
+                          ? '暂无原图归档'
+                          : '原图 $originalCount 条',
+                      backgroundColor: theme.surfaceColor,
+                      foregroundColor: theme.surfaceTextColor,
+                    ),
+                    _AlbumInfoChip(
+                      icon: isLoggedIn
+                          ? Icons.cloud_done_rounded
+                          : Icons.cloud_off_rounded,
+                      text: isLoggedIn ? '云端轻同步' : '当前仅本地保存',
+                      backgroundColor: theme.surfaceColor,
+                      foregroundColor: theme.surfaceTextColor,
+                    ),
+                  ],
+                ),
               ],
             );
           },
@@ -174,29 +247,61 @@ class AlbumErrorBannerSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFFBEB),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFFDE68A)),
-          ),
+        child: AppSectionCard(
+          accentColor: scheme.error,
+          secondaryColor: Color.lerp(scheme.error, scheme.secondary, 0.24)!,
+          ornamentKey: 'album.error',
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+          radius: 16,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.warning_amber_rounded, color: Color(0xFFF59E0B)),
-              const SizedBox(width: 8),
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: scheme.error.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.warning_amber_rounded, color: scheme.error),
+              ),
+              const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  text,
-                  style: const TextStyle(
-                    fontSize: 12.5,
-                    height: 1.45,
-                    color: Color(0xFF92400E),
-                    fontWeight: FontWeight.w700,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '相册同步出了点问题',
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w800,
+                        color: scheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        height: 1.45,
+                        color: scheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '下拉刷新后会再次尝试读取本地记录',
+                      style: TextStyle(
+                        fontSize: 11.8,
+                        color: scheme.error,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -226,20 +331,28 @@ class AlbumEmptySliver extends StatelessWidget {
           accentColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.35)!,
           secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.35)!,
           ornamentKey: 'album.empty',
-          padding: const EdgeInsets.fromLTRB(16, 44, 16, 44),
+          padding: const EdgeInsets.fromLTRB(16, 36, 16, 36),
           radius: 18,
           child: Column(
             children: [
-              const Icon(
-                Icons.photo_outlined,
-                size: 44,
-                color: Color(0xFF94A3B8),
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: scheme.secondary.withValues(alpha: 0.10),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.photo_outlined,
+                  size: 28,
+                  color: scheme.secondary,
+                ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 14),
               Text(
                 '暂无记录',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 15.5,
                   fontWeight: FontWeight.w800,
                   color: titleColor,
                 ),
@@ -250,9 +363,30 @@ class AlbumEmptySliver extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
+                  height: 1.45,
                   color: subtitleColor,
                   fontWeight: FontWeight.w600,
                 ),
+              ),
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  _AlbumInfoChip(
+                    icon: Icons.photo_camera_back_outlined,
+                    text: '拍照后自动归档',
+                    backgroundColor: themeChipColor(context, scheme.primary),
+                    foregroundColor: scheme.primary,
+                  ),
+                  _AlbumInfoChip(
+                    icon: Icons.lock_outline_rounded,
+                    text: '原图仅保存在本机',
+                    backgroundColor: themeChipColor(context, scheme.secondary),
+                    foregroundColor: scheme.secondary,
+                  ),
+                ],
               ),
             ],
           ),
@@ -271,60 +405,135 @@ class AlbumLoginBannerSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final scheme = Theme.of(context).colorScheme;
-    final textColor = isDark
-        ? const Color(0xFFE2E8F0)
-        : const Color(0xFF475569);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final accent = Color.lerp(scheme.secondary, scheme.primary, 0.3)!;
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
         child: AppSectionCard(
-          accentColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.35)!,
-          secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.35)!,
+          accentColor: accent,
+          secondaryColor: scheme.tertiary,
           ornamentKey: 'album.login',
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
           radius: 16,
-          child: Row(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0EA5E9).withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.lock_outline_rounded,
-                  color: Color(0xFF0EA5E9),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  '登录后可把缩略图和识别结果同步到云端',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    height: 1.45,
-                    color: textColor,
-                    fontWeight: FontWeight.w700,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final compact = constraints.maxWidth < 430;
+              final info = Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '开启轻量同步',
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w800,
+                      color: scheme.onSurface,
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: onTapLogin,
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF0EA5E9),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(78, 40),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                  const SizedBox(height: 4),
+                  Text(
+                    '登录后可把缩略图和识别结果同步到云端，原图继续留在本机',
+                    style: TextStyle(
+                      fontSize: 12.8,
+                      height: 1.45,
+                      color: scheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                child: const Text('登录'),
-              ),
-            ],
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _AlbumInfoChip(
+                        icon: Icons.image_not_supported_outlined,
+                        text: '原图不上传',
+                        backgroundColor: themeChipColor(context, accent),
+                        foregroundColor: accent,
+                      ),
+                      _AlbumInfoChip(
+                        icon: Icons.cloud_upload_outlined,
+                        text: '只同步轻量结果',
+                        backgroundColor: themeChipColor(
+                          context,
+                          scheme.primary,
+                        ),
+                        foregroundColor: scheme.primary,
+                      ),
+                    ],
+                  ),
+                ],
+              );
+
+              if (compact) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: accent.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.lock_outline_rounded,
+                            color: accent,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(child: info),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    FilledButton(
+                      onPressed: onTapLogin,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: accent,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 44),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: const Text('登录后同步'),
+                    ),
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: accent.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(Icons.lock_outline_rounded, color: accent),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: info),
+                  const SizedBox(width: 12),
+                  FilledButton(
+                    onPressed: onTapLogin,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: accent,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(96, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Text('登录'),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -341,9 +550,17 @@ class AlbumCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final background = isDark ? const Color(0xFF162033) : Colors.white;
-    final border = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final accent = entry.hasOriginalImage ? scheme.tertiary : scheme.secondary;
+    final background = theme.cardTheme.color ?? theme.colorScheme.surface;
+    final border = appTintedBorder(
+      context,
+      accent,
+      lightAlpha: 0.12,
+      darkAlpha: 0.20,
+    );
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
     final subtitleColor = isDark
         ? const Color(0xFFCBD5E1)
@@ -351,6 +568,8 @@ class AlbumCard extends StatelessWidget {
     final placeholderColor = isDark
         ? const Color(0xFF1E293B)
         : const Color(0xFFF1F5F9);
+    final statusText = entry.hasOriginalImage ? '本地原图' : '仅缩略图';
+
     return RepaintBoundary(
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
@@ -364,9 +583,9 @@ class AlbumCard extends StatelessWidget {
                 ? const []
                 : const [
                     BoxShadow(
-                      color: Color(0x0F000000),
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
+                      color: Color(0x120F172A),
+                      blurRadius: 14,
+                      offset: Offset(0, 7),
                     ),
                   ],
           ),
@@ -378,26 +597,68 @@ class AlbumCard extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(18),
                   ),
-                  child: AlbumFileImage(
-                    path: entry.thumbnailPath,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                    cacheWidth: 640,
-                    placeholder: Container(
-                      color: placeholderColor,
-                      alignment: Alignment.center,
-                      child: const Icon(
-                        Icons.photo_outlined,
-                        color: Color(0xFF94A3B8),
-                        size: 34,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      AlbumFileImage(
+                        path: entry.thumbnailPath,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        cacheWidth: 640,
+                        placeholder: Container(
+                          color: placeholderColor,
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.photo_outlined,
+                            color: Color(0xFF94A3B8),
+                            size: 34,
+                          ),
+                        ),
                       ),
-                    ),
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                stops: const [0, 0.52, 1],
+                                colors: [
+                                  Colors.black.withValues(alpha: 0.05),
+                                  Colors.transparent,
+                                  Colors.black.withValues(alpha: 0.16),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: _AlbumOverlayBadge(
+                          icon: entry.hasOriginalImage
+                              ? Icons.hd_rounded
+                              : Icons.photo_size_select_small_rounded,
+                          text: statusText,
+                        ),
+                      ),
+                      if (entry.takenAt > 0)
+                        Positioned(
+                          right: 10,
+                          bottom: 10,
+                          child: _AlbumOverlayBadge(
+                            icon: Icons.schedule_rounded,
+                            text: _formatAlbumDate(entry.takenAt),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -406,22 +667,31 @@ class AlbumCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 13.5,
+                        fontSize: 13.8,
                         fontWeight: FontWeight.w800,
                         color: titleColor,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 3),
                     Text(
                       entry.approvalNo.trim().isEmpty
-                          ? '点击查看详情'
+                          ? '点击查看识别结果与药品详情'
                           : '批准文号: ${entry.approvalNo}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 11.5,
+                        fontSize: 11.8,
                         color: subtitleColor,
                         fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      entry.hasOriginalImage ? '可再次识别' : '当前为轻量记录',
+                      style: TextStyle(
+                        fontSize: 11.8,
+                        color: accent,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                   ],
@@ -433,6 +703,94 @@ class AlbumCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _AlbumInfoChip extends StatelessWidget {
+  const _AlbumInfoChip({
+    required this.icon,
+    required this.text,
+    required this.backgroundColor,
+    required this.foregroundColor,
+  });
+
+  final IconData icon;
+  final String text;
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: foregroundColor),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: TextStyle(
+              color: foregroundColor,
+              fontSize: 12.3,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AlbumOverlayBadge extends StatelessWidget {
+  const _AlbumOverlayBadge({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.34),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 13, color: Colors.white),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 11.3,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Color themeChipColor(BuildContext context, Color accent) {
+  final theme = Theme.of(context);
+  return Color.alphaBlend(
+    accent.withValues(alpha: theme.brightness == Brightness.dark ? 0.16 : 0.10),
+    theme.cardTheme.color ?? theme.colorScheme.surface,
+  );
+}
+
+String _formatAlbumDate(int takenAt) {
+  final date = DateTime.fromMillisecondsSinceEpoch(takenAt);
+  final month = date.month.toString().padLeft(2, '0');
+  final day = date.day.toString().padLeft(2, '0');
+  return '$month/$day';
 }
 
 /// 以本地文件路径展示图片。

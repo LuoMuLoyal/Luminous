@@ -205,6 +205,11 @@ class HomeTopSection extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final compact = isCompactLayoutWidth(constraints.maxWidth);
+          final statusText = loadingReminders
+              ? '同步中'
+              : reminderCount == 0
+              ? '今天较轻松'
+              : '已整理';
 
           return SoftBannerCard(
             palette: palette,
@@ -257,13 +262,22 @@ class HomeTopSection extends StatelessWidget {
                         ),
                       ),
                       HomeStatusChip(
-                        text: '已同步',
+                        text: statusText,
                         backgroundColor: theme.surfaceColor,
                         textColor: theme.surfaceTextColor,
                       ),
                     ],
                   ),
                   SizedBox(height: compact ? 14 : 16),
+                  Text(
+                    '今天已经为你整理好',
+                    style: TextStyle(
+                      color: theme.secondaryTextColor,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: compact ? 5 : 6),
                   ValueListenableBuilder<String>(
                     valueListenable: todayTipListenable,
                     builder: (context, todayTip, _) {
@@ -314,9 +328,9 @@ class HomeTopSection extends StatelessWidget {
                               key: ValueKey<String>(todayTip),
                               style: TextStyle(
                                 color: theme.textColor,
-                                fontSize: compact ? 15 : 16,
-                                fontWeight: FontWeight.w700,
-                                height: 1.45,
+                                fontSize: compact ? 16 : 17,
+                                fontWeight: FontWeight.w800,
+                                height: 1.4,
                               ),
                             ),
                           ),
@@ -324,14 +338,13 @@ class HomeTopSection extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(height: compact ? 6 : 8),
-                  Text(
-                    nextText,
-                    style: TextStyle(
-                      color: theme.secondaryTextColor,
-                      fontSize: compact ? 13.5 : 14,
-                      height: 1.4,
-                    ),
+                  SizedBox(height: compact ? 12 : 14),
+                  _HomeTopSummaryCard(
+                    bannerTheme: theme,
+                    compact: compact,
+                    nextText: nextText,
+                    loadingReminders: loadingReminders,
+                    reminderCount: reminderCount,
                   ),
                   SizedBox(height: compact ? 12 : 14),
                   compact
@@ -348,6 +361,129 @@ class HomeTopSection extends StatelessWidget {
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class _HomeTopSummaryCard extends StatelessWidget {
+  const _HomeTopSummaryCard({
+    required this.bannerTheme,
+    required this.compact,
+    required this.nextText,
+    required this.loadingReminders,
+    required this.reminderCount,
+  });
+
+  final SoftBannerTheme bannerTheme;
+  final bool compact;
+  final String nextText;
+  final bool loadingReminders;
+  final int reminderCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = loadingReminders
+        ? '正在整理提醒'
+        : reminderCount == 0
+        ? '今日状态'
+        : '下一条提醒';
+    final detail = loadingReminders
+        ? '正在同步今天的提醒安排，请稍等一下'
+        : reminderCount == 0
+        ? '今天暂无待完成提醒，可以安心继续当前节奏'
+        : nextText.replaceFirst('下一次提醒: ', '');
+    final badgeText = loadingReminders
+        ? '同步中'
+        : reminderCount == 0
+        ? '轻松日'
+        : '$reminderCount 条安排';
+    final icon = loadingReminders
+        ? Icons.sync_rounded
+        : reminderCount == 0
+        ? Icons.done_all_rounded
+        : Icons.alarm_rounded;
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+        compact ? 12 : 14,
+        compact ? 12 : 13,
+        compact ? 12 : 14,
+        compact ? 12 : 13,
+      ),
+      decoration: BoxDecoration(
+        color: bannerTheme.surfaceColor.withValues(alpha: 0.78),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: bannerTheme.borderColor),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: compact ? 34 : 36,
+            height: compact ? 34 : 36,
+            decoration: BoxDecoration(
+              color: bannerTheme.accentColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              icon,
+              size: compact ? 18 : 19,
+              color: bannerTheme.accentColor,
+            ),
+          ),
+          SizedBox(width: compact ? 10 : 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: bannerTheme.textColor,
+                        fontSize: compact ? 13.5 : 14,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: bannerTheme.accentColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        badgeText,
+                        style: TextStyle(
+                          color: bannerTheme.accentColor,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  detail,
+                  style: TextStyle(
+                    color: bannerTheme.secondaryTextColor,
+                    fontSize: compact ? 13 : 13.5,
+                    height: 1.45,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

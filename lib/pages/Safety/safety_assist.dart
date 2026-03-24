@@ -4,6 +4,7 @@ import 'package:luminous/api/safety_api.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/auth.dart';
+import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/pages/Picker/medicine_picker.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
@@ -58,31 +59,135 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(title: const Text('安全辅助'), centerTitle: true),
-      body: AppCanvas(
-        accentColor: scheme.secondary,
-        secondaryAccentColor: Color.lerp(scheme.primary, scheme.tertiary, 0.5)!,
-        child: RefreshIndicator(
-          onRefresh: _refreshResult,
-          child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            children: [
-              _buildModeCard(),
-              const SizedBox(height: 12),
-              _buildPickCard(),
-              const SizedBox(height: 12),
-              _buildActionCard(),
-              const SizedBox(height: 12),
-              _buildResultCard(),
-              const SizedBox(height: 12),
-              const _DisclaimerCard(),
-            ],
-          ),
+    final secondaryAccent = Color.lerp(
+      scheme.secondary,
+      scheme.tertiary,
+      0.52,
+    )!;
+    return AppCanvasPageScaffold(
+      appBar: AppBar(
+        title: const Text('安全辅助'),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
+      accentColor: scheme.primary,
+      secondaryAccentColor: secondaryAccent,
+      child: RefreshIndicator(
+        onRefresh: _refreshResult,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+          children: [
+            _buildHeroCard(),
+            const SizedBox(height: 12),
+            _buildModeCard(),
+            const SizedBox(height: 12),
+            _buildPickCard(),
+            const SizedBox(height: 12),
+            _buildActionCard(),
+            const SizedBox(height: 12),
+            _buildResultCard(),
+            const SizedBox(height: 12),
+            const _DisclaimerCard(),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHeroCard() {
+    final loggedIn = _userController.isLoggedIn;
+    final selectedCount =
+        1 + (_mode == 'pair' ? (_b == null ? 0 : 1) : 0) - (_a == null ? 1 : 0);
+
+    return SoftBannerCard(
+      palette: SoftBannerPalettes.drugOf(context),
+      ornamentKey: 'safety.hero',
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      builder: (context, theme) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: theme.surfaceColor,
+                    border: Border.all(color: theme.borderColor),
+                  ),
+                  child: Icon(
+                    Icons.health_and_safety_outlined,
+                    color: theme.accentColor,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '安全辅助',
+                        style: TextStyle(
+                          color: theme.textColor,
+                          fontSize: 18.5,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '用更柔和的方式整理单药建议和两药相互作用提示',
+                        style: TextStyle(
+                          color: theme.secondaryTextColor,
+                          fontSize: 13,
+                          height: 1.4,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _SafetyInfoChip(
+                  icon: _mode == 'pair'
+                      ? Icons.compare_arrows_rounded
+                      : Icons.auto_awesome_rounded,
+                  text: _mode == 'pair' ? '两药相互作用' : '单药建议',
+                  backgroundColor: theme.surfaceColor,
+                  foregroundColor: theme.surfaceTextColor,
+                ),
+                _SafetyInfoChip(
+                  icon: Icons.medication_outlined,
+                  text: selectedCount == 0
+                      ? '等待选择药品'
+                      : '已选择 $selectedCount 个药品',
+                  backgroundColor: theme.surfaceColor,
+                  foregroundColor: theme.surfaceTextColor,
+                ),
+                _SafetyInfoChip(
+                  icon: loggedIn
+                      ? Icons.cloud_done_rounded
+                      : Icons.phone_android_rounded,
+                  text: loggedIn ? '可附带账号上下文' : '本机直接查询',
+                  backgroundColor: theme.surfaceColor,
+                  foregroundColor: theme.surfaceTextColor,
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -122,6 +227,8 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
   /// 构建“选择药品”卡片。
   Widget _buildPickCard() {
     final scheme = Theme.of(context).colorScheme;
+    final tileAColor = scheme.primary;
+    final tileBColor = Color.lerp(scheme.secondary, scheme.tertiary, 0.35)!;
     return _SectionCard(
       title: '选择药品',
       accentColor: scheme.primary,
@@ -132,16 +239,20 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
           _pickTile(
             label: _a?.displayName ?? '请选择药品 A',
             subtitle: _a?.displaySubtitle ?? '从我的药品/搜索库选择',
-            color: const Color(0xFF0EA5E9),
+            color: tileAColor,
             onTap: () => _pickMedicine(slot: 0),
+            badge: '药品 A',
+            note: _a?.displayTips,
           ),
           if (_mode == 'pair') ...[
             const SizedBox(height: 10),
             _pickTile(
               label: _b?.displayName ?? '请选择药品 B',
               subtitle: _b?.displaySubtitle ?? '从我的药品/搜索库选择',
-              color: const Color(0xFF10B981),
+              color: tileBColor,
               onTap: () => _pickMedicine(slot: 1),
+              badge: '药品 B',
+              note: _b?.displayTips,
             ),
           ],
         ],
@@ -155,6 +266,8 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
     required String subtitle,
     required Color color,
     required VoidCallback onTap,
+    required String badge,
+    String? note,
   }) {
     final scheme = Theme.of(context).colorScheme;
     return InkWell(
@@ -180,10 +293,11 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
           ),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(14),
@@ -195,26 +309,72 @@ class _SafetyAssistPageState extends State<SafetyAssistPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w800,
-                      color: scheme.onSurface,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          label,
+                          style: TextStyle(
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w800,
+                            color: scheme.onSurface,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: appTintedSurface(
+                            context,
+                            color,
+                            lightAlpha: 0.08,
+                            darkAlpha: 0.16,
+                          ),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          badge,
+                          style: TextStyle(
+                            fontSize: 10.8,
+                            fontWeight: FontWeight.w700,
+                            color: color,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 4),
                   Text(
                     subtitle,
                     style: TextStyle(
                       fontSize: 12.5,
                       color: scheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,
+                      height: 1.35,
                     ),
                   ),
+                  if (note != null && note.trim().isNotEmpty) ...[
+                    const SizedBox(height: 7),
+                    Text(
+                      note.trim(),
+                      style: TextStyle(
+                        fontSize: 11.8,
+                        color: scheme.onSurfaceVariant.withValues(alpha: 0.88),
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ],
               ),
             ),
+            const SizedBox(width: 10),
             Icon(Icons.chevron_right_rounded, color: scheme.onSurfaceVariant),
           ],
         ),
@@ -449,6 +609,46 @@ class _DisclaimerCard extends StatelessWidget {
           color: Theme.of(context).colorScheme.onSurfaceVariant,
           fontWeight: FontWeight.w600,
         ),
+      ),
+    );
+  }
+}
+
+class _SafetyInfoChip extends StatelessWidget {
+  const _SafetyInfoChip({
+    required this.icon,
+    required this.text,
+    required this.backgroundColor,
+    required this.foregroundColor,
+  });
+
+  final IconData icon;
+  final String text;
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: foregroundColor),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: TextStyle(
+              color: foregroundColor,
+              fontSize: 12.3,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }
