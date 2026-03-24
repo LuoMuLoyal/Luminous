@@ -3,22 +3,19 @@
 公网访问地址: https://wty10hv6az.sealosbja.site/send-code
 
 用途:
-- 统一发送三类验证码：
-  - `svg`: 注册阶段的人机校验
+- 统一发送两类业务验证码：
   - `email`: 邮箱登录/注册验证码
   - `phone`: 手机号登录/注册验证码（阿里云短信认证）
 
 请求体:
-- `channel`: `'svg' | 'email' | 'phone'`
+- `channel`: `'email' | 'phone'`
 - `scene`: `'register' | 'login'`
-- `target`: string（`email/phone` 必填，`svg` 不传）
+- `target`: string（必填）
 
 返回体:
 - `code`: string
 - `msg`: string
-- `result`
-  - `channel=svg`: `{ id: string, svg: string }`
-  - `channel=email|phone`: `{ id: string }`
+- `result`: `{ id: string }`
 
 说明:
 - 邮箱验证码继续走现有邮件发送方案
@@ -34,7 +31,6 @@
 示例代码（Laf 云函数，TypeScript）
 ```typescript
 import cloud from '@lafjs/cloud'
-import captcha from 'svg-captcha'
 import nodemailer from 'nodemailer'
 import { sendPhoneAuthCode } from './aliyun-sms-auth'
 
@@ -57,15 +53,11 @@ export async function main(ctx: FunctionContext) {
   const scene = String((ctx.body as any).scene || 'login').trim()
   const target = String((ctx.body as any).target || '').trim()
 
-  if (!['svg', 'email', 'phone'].includes(channel)) {
+  if (!['email', 'phone'].includes(channel)) {
     return fail('channel 无效')
   }
   if (!['register', 'login'].includes(scene)) {
     return fail('scene 无效')
-  }
-
-  if (channel === 'svg') {
-    return createSvgCode(scene)
   }
   if (!target) {
     return fail('target 不能为空')
@@ -75,28 +67,6 @@ export async function main(ctx: FunctionContext) {
     return await sendEmailCode(target, scene as 'register' | 'login')
   }
   return await sendPhoneCode(target, scene as 'register' | 'login')
-}
-
-async function createSvgCode(scene: string) {
-  const captchaData = captcha.create({
-    size: 4,
-    ignoreChars: '0oO1IiLl',
-    noise: 3,
-    color: true,
-    background: '#EEE',
-    charPreset: '12345689',
-  })
-
-  const { id } = await db.collection('codes').add({
-    channel: 'svg',
-    scene,
-    target: '',
-    code: Number(captchaData.text),
-    createdAt: new Date(),
-    expiredAt: new Date(Date.now() + 5 * 60 * 1000),
-  })
-
-  return success({ id, svg: captchaData.data })
 }
 
 async function sendEmailCode(email: string, scene: 'register' | 'login') {

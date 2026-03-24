@@ -8,17 +8,6 @@ import 'package:luminous/viewmodels/auth.dart';
 class AuthApi {
   const AuthApi();
 
-  /// 请求 SVG 验证码。
-  Future<ApiResult<SvgCodeResult>> fetchSvgCode({
-    AuthCodeScene scene = AuthCodeScene.register,
-  }) {
-    return dioRequest.post<SvgCodeResult>(
-      HttpConstants.SEND_CODE,
-      data: {'channel': 'svg', 'scene': scene.backendValue},
-      decoder: (json) => SvgCodeResult.fromJson(_asMap(json)),
-    );
-  }
-
   /// 向指定邮箱发送验证码。
   Future<ApiResult<CodeTicketResult>> sendEmailCode({
     required String email,
@@ -56,8 +45,6 @@ class AuthApi {
     required String email,
     required String code,
     required String codeId,
-    required String svgCode,
-    required String svgId,
     required String password,
   }) {
     return _register(
@@ -65,8 +52,6 @@ class AuthApi {
       identifier: email,
       code: code,
       codeId: codeId,
-      svgCode: svgCode,
-      svgId: svgId,
       password: password,
     );
   }
@@ -76,8 +61,6 @@ class AuthApi {
     required String phone,
     required String code,
     required String codeId,
-    required String svgCode,
-    required String svgId,
     required String password,
   }) {
     return _register(
@@ -85,8 +68,6 @@ class AuthApi {
       identifier: phone,
       code: code,
       codeId: codeId,
-      svgCode: svgCode,
-      svgId: svgId,
       password: password,
     );
   }
@@ -138,8 +119,6 @@ class AuthApi {
     required String identifier,
     required String code,
     required String codeId,
-    required String svgCode,
-    required String svgId,
     required String password,
   }) {
     final trimmedIdentifier = identifier.trim();
@@ -156,8 +135,6 @@ class AuthApi {
             : '',
         'code': code.trim(),
         'codeId': codeId.trim(),
-        'svgCode': svgCode.trim(),
-        'svgId': svgId.trim(),
         'password': password,
       },
       showLoading: true,

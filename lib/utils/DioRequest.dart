@@ -275,14 +275,27 @@ class DioRequest {
     /// 从服务端错误体中提取出的消息。
     final serverMessage = _extractServerMessage(serverData);
     if (serverMessage != null && serverMessage.trim().isNotEmpty) {
-      return serverMessage;
+      if (_containsChinese(serverMessage)) {
+        return serverMessage;
+      }
+      return _messageForStatusCode(statusCode);
     }
 
-    if (statusCode == 404) {
-      return '接口不存在(404)，请检查请求路径和后端部署';
+    switch (error.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        return '网络请求超时';
+      case DioExceptionType.badCertificate:
+      case DioExceptionType.connectionError:
+        return '网络请求错误';
+      case DioExceptionType.cancel:
+        return '请求已取消';
+      case DioExceptionType.badResponse:
+        return _messageForStatusCode(statusCode);
+      case DioExceptionType.unknown:
+        return '网络请求错误';
     }
-
-    return '网络请求失败${statusCode == null ? '' : '($statusCode)'}：${error.message}';
   }
 
   /// 尝试从服务端错误响应中提取可读错误消息。
@@ -312,6 +325,23 @@ class DioRequest {
     }
 
     return null;
+  }
+
+  String _messageForStatusCode(int? statusCode) {
+    if (statusCode == 404) {
+      return '接口不存在';
+    }
+    if (statusCode != null && statusCode >= 500) {
+      return '服务器开小差了';
+    }
+    if (statusCode != null && statusCode >= 400) {
+      return '请求失败';
+    }
+    return '网络请求错误';
+  }
+
+  bool _containsChinese(String text) {
+    return RegExp(r'[\u4e00-\u9fff]').hasMatch(text);
   }
 }
 

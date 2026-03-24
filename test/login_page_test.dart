@@ -65,7 +65,7 @@ void main() {
 
       final fields = find.byType(TextFormField);
       await tester.enterText(fields.at(0), '13800138000');
-      await tester.tap(find.text('发送验证码'));
+      await tester.tap(find.text('发送'));
       await tester.pump();
       ToastUtils.instance.dismiss();
       await tester.pump();
@@ -89,13 +89,40 @@ void main() {
     },
   );
 
+  testWidgets('send code enters cooldown after success', (tester) async {
+    await tester.pumpWidget(createLoginWidget());
+
+    await tester.tap(find.text('验证码登录'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField).at(0), '13800138000');
+    await tester.tap(find.text('发送'));
+    await tester.pump();
+
+    expect(find.text('60s'), findsOneWidget);
+
+    final cooldownButton = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, '60s'),
+    );
+    expect(cooldownButton.onPressed, isNull);
+
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('59s'), findsOneWidget);
+
+    ToastUtils.instance.dismiss();
+    await tester.pump();
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+  });
+
   testWidgets(
-    'register blocks submit without svg code even with business code',
+    'register submits without extra svg captcha when business code session exists',
     (tester) async {
+      final fakeAuth = FakeAuthApi();
       await tester.pumpWidget(
         MaterialApp(
           home: RegisterView(
-            authApi: FakeAuthApi(),
+            authApi: fakeAuth,
             initialIdentifierType: AuthIdentifierType.phone,
             initialIdentifier: '13800138000',
             initialCode: '123456',
@@ -106,8 +133,8 @@ void main() {
       await tester.pumpAndSettle();
 
       final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(2), 'Abc123');
       await tester.enterText(fields.at(3), 'Abc123');
-      await tester.enterText(fields.at(4), 'Abc123');
       await tester.ensureVisible(find.byType(Checkbox));
       await tester.tap(find.byType(Checkbox), warnIfMissed: false);
       await tester.pump();
@@ -115,9 +142,11 @@ void main() {
       final submitButton = find.widgetWithText(FilledButton, '注册');
       await tester.ensureVisible(submitButton);
       await tester.tap(submitButton);
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.text('请输入SVG验证码'), findsWidgets);
+      expect(fakeAuth.lastRegisteredPhone, '13800138000');
+      ToastUtils.instance.dismiss();
+      await tester.pump();
     },
   );
 
@@ -137,9 +166,8 @@ void main() {
 
     final fields = find.byType(TextFormField);
     await tester.enterText(fields.at(1), '123456');
-    await tester.enterText(fields.at(2), '1234');
+    await tester.enterText(fields.at(2), 'Abc123');
     await tester.enterText(fields.at(3), 'Abc123');
-    await tester.enterText(fields.at(4), 'Abc123');
     await tester.ensureVisible(find.byType(Checkbox));
     await tester.tap(find.byType(Checkbox), warnIfMissed: false);
     await tester.pump();
@@ -159,21 +187,8 @@ class FakeAuthApi extends AuthApi {
   FakeAuthApi({this.throwNotRegisteredOnCodeLogin = false});
 
   final bool throwNotRegisteredOnCodeLogin;
-
-  @override
-  Future<ApiResult<SvgCodeResult>> fetchSvgCode({
-    AuthCodeScene scene = AuthCodeScene.register,
-  }) async {
-    return const ApiResult<SvgCodeResult>(
-      code: '1',
-      msg: 'ok',
-      result: SvgCodeResult(
-        id: 'svg-code-1',
-        svg:
-            '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="50"><text x="12" y="32">1234</text></svg>',
-      ),
-    );
-  }
+  String lastRegisteredPhone = '';
+  String lastRegisteredEmail = '';
 
   @override
   Future<ApiResult<CodeTicketResult>> sendEmailCode({
@@ -255,10 +270,9 @@ class FakeAuthApi extends AuthApi {
     required String email,
     required String code,
     required String codeId,
-    required String svgCode,
-    required String svgId,
     required String password,
   }) async {
+    lastRegisteredEmail = email;
     return const ApiResult<RegisterResult>(
       code: '1',
       msg: '注册成功',
@@ -271,10 +285,9 @@ class FakeAuthApi extends AuthApi {
     required String phone,
     required String code,
     required String codeId,
-    required String svgCode,
-    required String svgId,
     required String password,
   }) async {
+    lastRegisteredPhone = phone;
     return const ApiResult<RegisterResult>(
       code: '1',
       msg: '注册成功',

@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:luminous/components/soft_banner.dart';
@@ -6,7 +6,7 @@ import 'package:luminous/viewmodels/album.dart';
 
 /// 相册页（Album）的大块 UI 组件集合。
 ///
-/// 页面层负责数据加载与合并（本地 + 远端），这里负责具体的 UI 结构与展示样式。
+/// 页面层负责本地数据加载，这里负责具体的 UI 结构与展示样式。
 class AlbumPage extends StatelessWidget {
   const AlbumPage({
     super.key,
@@ -47,39 +47,35 @@ class AlbumPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Container(
-        color: const Color(0xFFF3F7FB),
-        child: RefreshIndicator(
-          onRefresh: onRefresh,
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              AlbumHeaderSliver(palette: headerPalette, loading: loading),
-              if (!isLoggedIn) AlbumLoginBannerSliver(onTapLogin: onTapLogin),
-              if (error != null) AlbumErrorBannerSliver(text: error!),
-              if (entries.isEmpty && !loading)
-                const AlbumEmptySliver()
-              else
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                  sliver: SliverGrid.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                          childAspectRatio: 0.92,
-                        ),
-                    itemCount: entries.length,
-                    itemBuilder: (context, index) {
-                      final e = entries[index];
-                      return AlbumCard(entry: e, onTap: () => onTapEntry(e));
-                    },
+      child: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            AlbumHeaderSliver(palette: headerPalette, loading: loading),
+            if (!isLoggedIn) AlbumLoginBannerSliver(onTapLogin: onTapLogin),
+            if (error != null) AlbumErrorBannerSliver(text: error!),
+            if (entries.isEmpty && !loading)
+              const AlbumEmptySliver()
+            else
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                sliver: SliverGrid.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 0.92,
                   ),
+                  itemCount: entries.length,
+                  itemBuilder: (context, index) {
+                    final e = entries[index];
+                    return AlbumCard(entry: e, onTap: () => onTapEntry(e));
+                  },
                 ),
-              const SliverToBoxAdapter(child: SizedBox(height: 12)),
-            ],
-          ),
+              ),
+            const SliverToBoxAdapter(child: SizedBox(height: 12)),
+          ],
         ),
       ),
     );
@@ -139,7 +135,7 @@ class AlbumHeaderSliver extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '同步缩略图与识别结果',
+                        '本地保存原图，云端仅同步轻量结果',
                         style: TextStyle(
                           color: theme.secondaryTextColor,
                           fontSize: 13,
@@ -239,7 +235,7 @@ class AlbumEmptySliver extends StatelessWidget {
               ),
               SizedBox(height: 6),
               Text(
-                '去“药物识别”拍照后会自动同步到这里',
+                '去“药物识别”拍照后会自动保存到这里',
                 style: TextStyle(
                   fontSize: 13,
                   color: Color(0xFF64748B),
@@ -290,7 +286,7 @@ class AlbumLoginBannerSliver extends StatelessWidget {
               const SizedBox(width: 10),
               const Expanded(
                 child: Text(
-                  '登录后可同步识别记录并跨设备查看缩略图',
+                  '登录后可把缩略图和识别结果同步到云端',
                   style: TextStyle(
                     fontSize: 12.5,
                     height: 1.45,
@@ -354,8 +350,8 @@ class AlbumCard extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(18),
                   ),
-                  child: Base64MemoryImage(
-                    base64: entry.thumbBase64,
+                  child: AlbumFileImage(
+                    path: entry.thumbnailPath,
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,
@@ -411,11 +407,11 @@ class AlbumCard extends StatelessWidget {
   }
 }
 
-/// 按需解码 base64 并以 `Image.memory` 展示。
-class Base64MemoryImage extends StatefulWidget {
-  const Base64MemoryImage({
+/// 以本地文件路径展示图片。
+class AlbumFileImage extends StatelessWidget {
+  const AlbumFileImage({
     super.key,
-    required this.base64,
+    required this.path,
     required this.fit,
     required this.placeholder,
     this.width,
@@ -423,7 +419,7 @@ class Base64MemoryImage extends StatefulWidget {
     this.cacheWidth,
   });
 
-  final String base64;
+  final String path;
   final BoxFit fit;
   final Widget placeholder;
   final double? width;
@@ -431,47 +427,21 @@ class Base64MemoryImage extends StatefulWidget {
   final int? cacheWidth;
 
   @override
-  State<Base64MemoryImage> createState() => _Base64MemoryImageState();
-}
-
-class _Base64MemoryImageState extends State<Base64MemoryImage> {
-  Uint8List? _bytes;
-  String _decodedSource = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshDecodedBytes();
-  }
-
-  @override
-  void didUpdateWidget(covariant Base64MemoryImage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.base64 != widget.base64) {
-      _refreshDecodedBytes();
-    }
-  }
-
-  void _refreshDecodedBytes() {
-    final nextSource = widget.base64.trim();
-    _decodedSource = nextSource;
-    _bytes = decodeBase64Bytes(nextSource);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final bytes = _bytes;
-    if (bytes == null || _decodedSource.isEmpty) {
-      return widget.placeholder;
+    final normalizedPath = path.trim();
+    if (normalizedPath.isEmpty) {
+      return placeholder;
     }
-    return Image.memory(
-      bytes,
-      fit: widget.fit,
-      width: widget.width,
-      height: widget.height,
-      cacheWidth: widget.cacheWidth,
+
+    return Image.file(
+      File(normalizedPath),
+      fit: fit,
+      width: width,
+      height: height,
+      cacheWidth: cacheWidth,
       gaplessPlayback: true,
       filterQuality: FilterQuality.medium,
+      errorBuilder: (_, _, _) => placeholder,
     );
   }
 }
@@ -508,8 +478,8 @@ class AlbumPreviewPage extends StatelessWidget {
                 child: InteractiveViewer(
                   minScale: 1,
                   maxScale: 4,
-                  child: Base64MemoryImage(
-                    base64: entry.previewBase64,
+                  child: AlbumFileImage(
+                    path: entry.previewPath,
                     fit: BoxFit.contain,
                     width: double.infinity,
                     placeholder: const Icon(
@@ -560,7 +530,7 @@ class AlbumPreviewPage extends StatelessWidget {
                         border: Border.all(color: const Color(0xFFFDE68A)),
                       ),
                       child: const Text(
-                        '该旧记录仅有缩略图，无法高质量重识别。',
+                        '当前记录仅保存缩略图，无法高质量重识别。',
                         style: TextStyle(
                           fontSize: 12.5,
                           height: 1.45,

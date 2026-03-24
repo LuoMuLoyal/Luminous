@@ -26,6 +26,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  static const int _codeCooldownSeconds = 60;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _identifierController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -39,6 +41,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _submitting = false;
   String _codeId = '';
   String _codeTarget = '';
+  Timer? _codeCountdownTimer;
+  int _codeCountdownSeconds = 0;
 
   static final RegExp _emailRegExp = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
   static final RegExp _phoneRegExp = RegExp(r'^1[3-9]\d{9}$');
@@ -47,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
+    _codeCountdownTimer?.cancel();
     _identifierController.dispose();
     _passwordController.dispose();
     _codeController.dispose();
@@ -125,6 +130,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _clearCodeSession({required bool clearInput}) {
+    _resetCodeCooldown();
     _codeId = '';
     _codeTarget = '';
     if (clearInput) {
@@ -132,9 +138,41 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _startCodeCooldown() {
+    _codeCountdownTimer?.cancel();
+    setState(() {
+      _codeCountdownSeconds = _codeCooldownSeconds;
+    });
+    _codeCountdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_codeCountdownSeconds <= 1) {
+        timer.cancel();
+        setState(() {
+          _codeCountdownSeconds = 0;
+        });
+        return;
+      }
+      setState(() {
+        _codeCountdownSeconds -= 1;
+      });
+    });
+  }
+
+  void _resetCodeCooldown() {
+    _codeCountdownTimer?.cancel();
+    _codeCountdownTimer = null;
+    if (_codeCountdownSeconds == 0) {
+      return;
+    }
+    _codeCountdownSeconds = 0;
+  }
+
   Future<void> _onSendCode() async {
     FocusScope.of(context).unfocus();
-    if (_sendingCode) {
+    if (_sendingCode || _codeCountdownSeconds > 0) {
       return;
     }
 
@@ -168,6 +206,7 @@ class _LoginPageState extends State<LoginPage> {
         _codeId = response.result.id.trim();
         _codeTarget = identifier;
       });
+      _startCodeCooldown();
       ToastUtils.instance.show(
         context,
         response.msg.isEmpty ? '验证码发送成功' : response.msg,
@@ -313,7 +352,7 @@ class _LoginPageState extends State<LoginPage> {
     return AuthPageScaffold(
       children: [
         _buildTopBar(),
-        const SizedBox(height: 14),
+        const SizedBox(height: 10),
         AuthHeroCard(
           palette: SoftBannerPalettes.auth,
           icon: Icons.health_and_safety_rounded,
@@ -321,7 +360,7 @@ class _LoginPageState extends State<LoginPage> {
           subtitle:
               '${_identifierType.label}${_loginMode == AuthLoginMode.password ? '密码登录' : '验证码登录'}',
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         AuthMethodSwitcher(
           items: [
             AuthMethodItem(
@@ -336,13 +375,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 14),
         _buildFormCard(),
-        const SizedBox(height: 18),
+        const SizedBox(height: 14),
         _buildLoginButton(),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         _buildHelperText(),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         AuthLegalHint(
           onTapAgreement: _openUserAgreement,
           onTapPrivacy: _openPrivacyPolicy,
@@ -359,15 +398,15 @@ class _LoginPageState extends State<LoginPage> {
           onTap: () => Navigator.maybePop(context),
           borderRadius: BorderRadius.circular(999),
           child: Container(
-            width: 34,
-            height: 34,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF162033) : Colors.white,
               borderRadius: BorderRadius.circular(999),
             ),
             child: Icon(
               Icons.arrow_back_ios_new_rounded,
-              size: 18,
+              size: 16,
               color: isDark ? Colors.white : const Color(0xFF0F172A),
             ),
           ),
@@ -385,10 +424,10 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
           style: TextButton.styleFrom(
-            minimumSize: const Size(56, 34),
+            minimumSize: const Size(52, 32),
             foregroundColor: const Color(0xFF0369A1),
             textStyle: const TextStyle(
-              fontSize: 14,
+              fontSize: 13.5,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -410,13 +449,13 @@ class _LoginPageState extends State<LoginPage> {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.0 : 0.08),
-            blurRadius: 14,
-            offset: Offset(0, 6),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
         child: Form(
           key: _formKey,
           child: Column(
@@ -448,7 +487,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               if (_loginMode == AuthLoginMode.password)
                 TextFormField(
                   controller: _passwordController,
@@ -476,7 +515,7 @@ class _LoginPageState extends State<LoginPage> {
                 )
               else
                 _buildCodeRow(),
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               _buildActionLinks(),
             ],
           ),
@@ -504,13 +543,16 @@ class _LoginPageState extends State<LoginPage> {
         ),
         const SizedBox(width: 10),
         FilledButton(
-          onPressed: _sendingCode ? null : _onSendCode,
+          onPressed: (_sendingCode || _codeCountdownSeconds > 0)
+              ? null
+              : _onSendCode,
           style: FilledButton.styleFrom(
             backgroundColor: const Color(0xFF0EA5E9),
             foregroundColor: Colors.white,
-            minimumSize: const Size(96, 48),
+            minimumSize: const Size(78, 42),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(13),
             ),
           ),
           child: _sendingCode
@@ -522,7 +564,15 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.white,
                   ),
                 )
-              : const Text('发送验证码'),
+              : Text(
+                  _codeCountdownSeconds > 0
+                      ? '${_codeCountdownSeconds}s'
+                      : '发送',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
         ),
       ],
     );
@@ -566,26 +616,49 @@ class _LoginPageState extends State<LoginPage> {
     return InputDecoration(
       labelText: labelText,
       hintText: hintText,
-      prefixIcon: Icon(prefixIcon),
+      prefixIcon: Icon(prefixIcon, size: 22),
       suffixIcon: suffixIcon,
+      isDense: true,
       filled: true,
-      fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+      fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF6F8FC),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14),
+      prefixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 44),
+      suffixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(13),
         borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide.none,
+      ),
+      labelStyle: TextStyle(
+        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+        fontSize: 13.5,
+        fontWeight: FontWeight.w600,
+      ),
+      hintStyle: TextStyle(
+        color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
       ),
     );
   }
 
   Widget _buildLoginButton() {
     return SizedBox(
-      height: 48,
+      height: 46,
       child: FilledButton(
         onPressed: _submitting ? null : _onLoginPressed,
         style: FilledButton.styleFrom(
           backgroundColor: const Color(0xFF0EA5E9),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(13),
           ),
         ),
         child: _submitting
@@ -599,7 +672,7 @@ class _LoginPageState extends State<LoginPage> {
               )
             : const Text(
                 '登录',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+                style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w800),
               ),
       ),
     );
@@ -609,12 +682,13 @@ class _LoginPageState extends State<LoginPage> {
     return Text(
       _loginMode == AuthLoginMode.password
           ? '支持手机号或邮箱搭配密码登录。'
-          : '支持手机号或邮箱接收验证码登录；未注册时可直接跳转注册。',
+          : '支持手机号或邮箱验证码登录，未注册可直接去注册。',
       textAlign: TextAlign.center,
       style: const TextStyle(
         color: Color(0xFF64748B),
-        fontSize: 12,
+        fontSize: 11.5,
         fontWeight: FontWeight.w600,
+        height: 1.45,
       ),
     );
   }

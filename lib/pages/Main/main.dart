@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/constants/constants.dart';
 import 'package:luminous/pages/Album/album.dart';
 import 'package:luminous/pages/Drug/drug.dart';
@@ -73,15 +74,15 @@ class _MainPageState extends State<MainPage> {
   /// 已经真正挂载过的 Tab 下标。
   final Set<int> _loadedIndexes = <int>{0};
 
-  /// 根据 `_tablist` 构建 BottomNavigationBarItem 列表。
-  List<BottomNavigationBarItem> _getTabBarWidget({
+  /// 根据 `_tablist` 构建导航目的地列表。
+  List<NavigationDestination> _buildDestinations({
     required Color inactiveColor,
   }) {
     return List.generate(_tablist.length, (index) {
       final item = _tablist[index];
-      return BottomNavigationBarItem(
+      return NavigationDestination(
         icon: _buildTabIcon(assetPath: item.icon, color: inactiveColor),
-        activeIcon: _buildTabIcon(
+        selectedIcon: _buildTabIcon(
           assetPath: item.activeIcon,
           color: item.color,
         ),
@@ -103,10 +104,12 @@ class _MainPageState extends State<MainPage> {
   /// 构建主页面 UI。
   ///
   /// 上半部分使用 `IndexedStack` 承载四个一级页面，
-  /// 下半部分使用 `BottomNavigationBar` 负责切换。
+  /// 下半部分使用 Material 3 `NavigationBar` 负责切换。
   @override
   Widget build(BuildContext context) {
     final currentColor = _tablist[_currentIndex].color;
+    final secondaryColor =
+        _tablist[(_currentIndex + 1) % _tablist.length].color;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final tabBarBackground = isDark
@@ -120,39 +123,72 @@ class _MainPageState extends State<MainPage> {
         : AppUiConstants.TAB_INACTIVE;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: List<Widget>.generate(
-          _tablist.length,
-          (index) => _loadedIndexes.contains(index)
-              ? _pages[index]
-              : const SizedBox.shrink(),
+      backgroundColor: Colors.transparent,
+      body: AppCanvas(
+        accentColor: currentColor,
+        secondaryAccentColor: secondaryColor,
+        child: IndexedStack(
+          index: _currentIndex,
+          children: List<Widget>.generate(
+            _tablist.length,
+            (index) => _loadedIndexes.contains(index)
+                ? _pages[index]
+                : const SizedBox.shrink(),
+          ),
         ),
       ),
-      bottomNavigationBar: DecoratedBox(
-        decoration: BoxDecoration(
-          color: tabBarBackground,
-          border: Border(top: BorderSide(color: tabBarBorder)),
-        ),
-        child: BottomNavigationBar(
-          onTap: (index) {
-            /// 更新当前选中的 Tab 下标。
-            setState(() {
-              _loadedIndexes.add(index);
-              _currentIndex = index;
-            });
-          },
-          currentIndex: _currentIndex,
-          items: _getTabBarWidget(inactiveColor: inactiveColor),
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: tabBarBackground,
-          selectedItemColor: currentColor,
-          showUnselectedLabels: true,
-          unselectedItemColor: inactiveColor,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700),
-          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-          elevation: 0,
+      bottomNavigationBar: SafeArea(
+        top: false,
+        minimum: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: tabBarBackground.withValues(alpha: isDark ? 0.96 : 0.94),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: tabBarBorder),
+            boxShadow: isDark
+                ? const []
+                : const [
+                    BoxShadow(
+                      color: Color(0x140F172A),
+                      blurRadius: 20,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(28),
+            child: NavigationBarTheme(
+              data: NavigationBarThemeData(
+                backgroundColor: Colors.transparent,
+                indicatorColor: currentColor.withValues(
+                  alpha: isDark ? 0.22 : 0.14,
+                ),
+                labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((
+                  states,
+                ) {
+                  final selected = states.contains(WidgetState.selected);
+                  return TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
+                    color: selected ? currentColor : inactiveColor,
+                  );
+                }),
+              ),
+              child: NavigationBar(
+                selectedIndex: _currentIndex,
+                height: 70,
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+                animationDuration: const Duration(milliseconds: 280),
+                destinations: _buildDestinations(inactiveColor: inactiveColor),
+                onDestinationSelected: (index) {
+                  setState(() {
+                    _loadedIndexes.add(index);
+                    _currentIndex = index;
+                  });
+                },
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -4,10 +4,8 @@
 
 用途:
 - 手机号注册或邮箱注册
-- 注册时必须同时通过：
-  - 业务验证码（邮箱或手机）
-  - SVG 验证码
-  - 密码与确认密码由前端校验一致性
+- 注册时只校验业务验证码（邮箱或手机）
+- 密码与确认密码由前端校验一致性
 
 请求体:
 - `identifierType`: `'email' | 'phone'`
@@ -15,8 +13,6 @@
 - `phone`: string
 - `code`: string
 - `codeId`: string
-- `svgCode`: string
-- `svgId`: string
 - `password`: string
 
 返回体:
@@ -54,8 +50,6 @@ export async function main(ctx: FunctionContext) {
   const phone = String((ctx.body as any).phone || '').trim()
   const code = String((ctx.body as any).code || '').trim()
   const codeId = String((ctx.body as any).codeId || '').trim()
-  const svgCode = String((ctx.body as any).svgCode || '').trim()
-  const svgId = String((ctx.body as any).svgId || '').trim()
   const password = String((ctx.body as any).password || '')
 
   if (!['email', 'phone'].includes(identifierType)) {
@@ -87,11 +81,6 @@ export async function main(ctx: FunctionContext) {
   })
   if (!codeValid) {
     return fail('业务验证码不正确或已过期')
-  }
-
-  const svgValid = await consumeSvgCode(svgId, svgCode)
-  if (!svgValid) {
-    return fail('SVG验证码不正确或已过期')
   }
 
   const encryptedPassword = createHash('sha256')
@@ -138,20 +127,6 @@ async function consumeBusinessCode({
   return deleted === 1
 }
 
-async function consumeSvgCode(svgId: string, svgCode: string) {
-  if (!svgId || !svgCode) return false
-  const { deleted } = await db
-    .collection('codes')
-    .where({
-      _id: svgId,
-      channel: 'svg',
-      scene: 'register',
-      code: Number(svgCode),
-    })
-    .remove()
-  return deleted === 1
-}
-
 function maskName(name: string) {
   if (!name) return ''
   if (name.length > 10) {
@@ -167,7 +142,7 @@ function maskName(name: string) {
 ## 当前项目对应关系
 
 - 接口用途:
-  支持邮箱或手机号注册，同时校验业务验证码和 SVG 验证码。
+  支持邮箱或手机号注册，只校验业务验证码。
 - Flutter 端调用入口:
   `lib/api/auth_api.dart` 的 `registerWithEmail()` 和 `registerWithPhone()`。
 - `backend/src/handlers` 对应实现:

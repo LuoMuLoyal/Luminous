@@ -16,7 +16,7 @@ import 'package:luminous/viewmodels/medicine.dart';
 
 /// 识别相册页。
 ///
-/// 用于展示历史识别记录，并在本地缓存与远端记录之间做一次轻量合并。
+/// 用于展示当前用户作用域下的本地识别记录。
 class AlbumView extends StatefulWidget {
   /// 创建识别相册页组件。
   const AlbumView({super.key});
@@ -28,9 +28,10 @@ class AlbumView extends StatefulWidget {
 
 /// 相册页状态对象。
 ///
-/// 主要负责两件事：
-/// - 先读本地缓存，保证页面能尽快出内容；
-/// - 已登录时再拉远端记录并合并，补齐跨设备/跨会话同步的数据。
+/// 主要负责：
+/// - 监听登录状态变化，切换本地作用域；
+/// - 读取本地相册记录并展示；
+/// - 读取原图以支持再次识别。
 class _AlbumViewState extends State<AlbumView> {
   /// 全局用户控制器。
   ///
@@ -82,12 +83,6 @@ class _AlbumViewState extends State<AlbumView> {
   }
 
   /// 加载相册页数据。
-  ///
-  /// 顺序是：
-  /// 1. 先读本地数据库；
-  /// 2. 如果已登录，再拉远端识别记录；
-  /// 3. 合并本地与远端结果；
-  /// 4. 再把远端数据回写缓存到本地。
   Future<void> _load() async {
     final userId = _userId.trim();
     if (_loading) {
@@ -102,20 +97,9 @@ class _AlbumViewState extends State<AlbumView> {
     });
 
     try {
-      /// 先从本地数据库读取的相册记录。
       final local = await _loadLocal(userId: userId);
       if (!_canApplyLoadResult(requestId, userId)) return;
       setState(() => _entries = local);
-
-      /// 当前是否满足拉远端记录的前提：已登录且有有效 userId。
-      final loggedIn = _userController.isLoggedIn && userId.isNotEmpty;
-      if (loggedIn) {
-        await _albumLocalStore.syncRemoteForUser(userId);
-        if (!_canApplyLoadResult(requestId, userId)) return;
-        final refreshedLocal = await _loadLocal(userId: userId);
-        if (!_canApplyLoadResult(requestId, userId)) return;
-        setState(() => _entries = refreshedLocal);
-      }
     } catch (e) {
       if (!_canApplyLoadResult(requestId, userId)) return;
       setState(() => _error = MessageUtils.extractError(e));
@@ -198,14 +182,16 @@ class _AlbumViewState extends State<AlbumView> {
   }
 
   Future<void> _rescanEntry(AlbumEntry entry) async {
-    final imageBase64 = entry.imageBase64.trim();
-    if (imageBase64.isEmpty) {
-      ToastUtils.instance.show(context, '该旧记录仅有缩略图，无法高质量重识别');
+    if (!entry.hasOriginalImage) {
+      ToastUtils.instance.show(context, '当前记录仅保存缩略图，无法高质量重识别');
       return;
     }
 
-    final bytes = decodeBase64Bytes(imageBase64);
-    if (bytes == null || !mounted) {
+    final bytes = await _albumLocalStore.readImageBytes(entry.imagePath);
+    if (!mounted) {
+      return;
+    }
+    if (bytes == null) {
       ToastUtils.instance.show(context, '原图读取失败，无法重识别');
       return;
     }
@@ -218,7 +204,7 @@ class _AlbumViewState extends State<AlbumView> {
             bytes: bytes,
             mimeType: entry.imageMimeType.trim().isNotEmpty
                 ? entry.imageMimeType.trim()
-                : guessImageMimeType(bytes),
+                : 'image/jpeg',
             source: ImageSource.gallery,
           ),
         ),

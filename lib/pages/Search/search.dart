@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/medicine_api.dart';
+import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/search.dart';
 import 'package:luminous/pages/Drug/medicine_detail.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
@@ -264,24 +265,28 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F7FB),
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _refreshSearch,
-          child: CustomScrollView(
-            controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              _buildHeaderSliver(),
-              _buildSearchBarSliver(),
-              _buildQuickTagsSliver(),
-              _buildHistorySliver(),
-              _buildResultTitleSliver(),
-              _buildContentSliver(),
-              if (_keyword.isNotEmpty && _loadingMore)
-                _buildLoadingMoreSliver(),
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
-            ],
+      backgroundColor: Colors.transparent,
+      body: AppCanvas(
+        accentColor: const Color(0xFF0EA5E9),
+        secondaryAccentColor: const Color(0xFFDCCEFF),
+        child: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: _refreshSearch,
+            child: CustomScrollView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                _buildHeaderSliver(),
+                _buildSearchBarSliver(),
+                _buildQuickTagsSliver(),
+                _buildHistorySliver(),
+                _buildResultTitleSliver(),
+                _buildContentSliver(),
+                if (_keyword.isNotEmpty && _loadingMore)
+                  _buildLoadingMoreSliver(),
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
+              ],
+            ),
           ),
         ),
       ),

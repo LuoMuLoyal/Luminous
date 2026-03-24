@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/stores/reminder_local_store.dart';
 import 'package:luminous/stores/today_reminder_local_store.dart';
 import 'package:luminous/stores/user_controller.dart';
@@ -128,12 +129,12 @@ class _CheckInPageState extends State<CheckInPage> {
     final loggedIn = _userController.isLoggedIn && _userId.isNotEmpty;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F7FB),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('用药打卡'),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         actions: [
           IconButton(
             onPressed: loggedIn && !_loading ? _load : null,
@@ -147,32 +148,36 @@ class _CheckInPageState extends State<CheckInPage> {
           ),
         ],
       ),
-      body: !loggedIn
-          ? _buildNeedLogin()
-          : RefreshIndicator(
-              onRefresh: _load,
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                children: [
-                  if (_error != null) _buildErrorBanner(_error!),
-                  if (_items.isEmpty && !_loading) _buildEmpty(),
-                  ..._items.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final item = entry.value;
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        bottom: index == _items.length - 1 ? 0 : 10,
-                      ),
-                      child: _CheckInCard(
-                        item: item,
-                        onCheckIn: () => _toggleCheckIn(item),
-                      ),
-                    );
-                  }),
-                ],
+      body: AppCanvas(
+        accentColor: const Color(0xFFF59E0B),
+        secondaryAccentColor: const Color(0xFFBFD8FF),
+        child: !loggedIn
+            ? _buildNeedLogin()
+            : RefreshIndicator(
+                onRefresh: _load,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                  children: [
+                    if (_error != null) _buildErrorBanner(_error!),
+                    if (_items.isEmpty && !_loading) _buildEmpty(),
+                    ..._items.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final item = entry.value;
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: index == _items.length - 1 ? 0 : 10,
+                        ),
+                        child: _CheckInCard(
+                          item: item,
+                          onCheckIn: () => _toggleCheckIn(item),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 

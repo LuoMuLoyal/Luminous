@@ -743,41 +743,16 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     MedicineScanResult result,
   ) async {
     final selected = _getSelectedCandidateOrNull();
-    final imagePayload = await buildAlbumImagePayload(
-      bytes: bytes,
-      preferredThumbBase64: result.thumbBase64,
-    );
-    final thumbBase64 = imagePayload['thumbBase64'] ?? '';
-    final imageBase64 = imagePayload['imageBase64'] ?? '';
     final now = DateTime.now().millisecondsSinceEpoch;
-
-    String? remoteId;
     final userId = _userController.user.value?.id ?? '';
-    if (userId.isNotEmpty && thumbBase64.isNotEmpty) {
-      try {
-        final remote = await ScanApi.createScanRecord(
-          userId: userId,
-          thumbBase64: thumbBase64,
-          drugCode: selected?.drugCode,
-          approvalNo: selected?.approvalNo,
-          productName: selected?.productName,
-          takenAt: now,
-        );
-        remoteId = remote.result.id;
-      } catch (_) {
-        // Remote sync is best-effort.
-      }
-    }
-
     await albumLocalStore.saveScanRecord(
       userId: userId,
-      remoteId: remoteId,
       drugCode: selected?.drugCode,
       approvalNo: selected?.approvalNo,
       productName: selected?.productName,
-      thumbBase64: thumbBase64,
-      imageBase64: imageBase64,
+      imageBytes: bytes,
       imageMimeType: _photoMimeType,
+      preferredThumbBase64: result.thumbBase64,
       takenAt: now,
     );
   }
