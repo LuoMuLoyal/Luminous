@@ -52,79 +52,111 @@ class MineProfileCard extends StatelessWidget {
           ornamentKey: 'mine.profile',
           padding: EdgeInsets.all(compact ? 16 : 18),
           builder: (context, theme) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: onTapProfile,
-                  child: Container(
-                    width: compact ? 52 : 56,
-                    height: compact ? 52 : 56,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: theme.surfaceColor,
-                      border: Border.all(color: theme.borderColor),
-                    ),
-                    child: Icon(
-                      isLoggedIn
-                          ? Icons.verified_user_rounded
-                          : Icons.person_outline_rounded,
-                      color: theme.accentColor,
-                      size: compact ? 26 : 28,
-                    ),
-                  ),
-                ),
-                SizedBox(width: compact ? 12 : 14),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: onTapProfile,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          isLoggedIn ? displayUser!.displayTitle : '立即登录',
-                          style: TextStyle(
-                            color: theme.textColor,
-                            fontSize: compact ? 18 : 20,
-                            fontWeight: FontWeight.w800,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: onTapProfile,
+                      child: Container(
+                        width: compact ? 52 : 56,
+                        height: compact ? 52 : 56,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: theme.surfaceColor,
+                          border: Border.all(color: theme.borderColor),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
+                        child: Icon(
                           isLoggedIn
-                              ? displayUser!.displaySubtitle
-                              : '登录后可管理账号信息与同步个人数据',
-                          style: TextStyle(
-                            color: theme.secondaryTextColor,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            height: 1.35,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                              ? Icons.verified_user_rounded
+                              : Icons.person_outline_rounded,
+                          color: theme.accentColor,
+                          size: compact ? 26 : 28,
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    SizedBox(width: compact ? 12 : 14),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: onTapProfile,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              isLoggedIn ? displayUser!.displayTitle : '立即登录',
+                              style: TextStyle(
+                                color: theme.textColor,
+                                fontSize: compact ? 18 : 20,
+                                fontWeight: FontWeight.w800,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              isLoggedIn
+                                  ? displayUser!.displaySubtitle
+                                  : '登录后可管理账号信息与同步个人数据',
+                              style: TextStyle(
+                                color: theme.secondaryTextColor,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                height: 1.35,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: compact ? 8 : 10),
+                    FilledButton(
+                      onPressed: onTapAction,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: theme.surfaceColor,
+                        foregroundColor: theme.surfaceTextColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        minimumSize: Size(compact ? 72 : 88, compact ? 36 : 40),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: compact ? 14 : 16,
+                        ),
+                      ),
+                      child: Text(isLoggedIn ? loggedInActionLabel : '去登录'),
+                    ),
+                  ],
                 ),
-                SizedBox(width: compact ? 8 : 10),
-                FilledButton(
-                  onPressed: onTapAction,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: theme.surfaceColor,
-                    foregroundColor: theme.surfaceTextColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(999),
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _MineInfoChip(
+                      icon: isLoggedIn
+                          ? Icons.cloud_done_rounded
+                          : Icons.phone_android_rounded,
+                      text: isLoggedIn ? '账号已连接' : '当前本地体验',
+                      backgroundColor: theme.surfaceColor,
+                      foregroundColor: theme.surfaceTextColor,
                     ),
-                    minimumSize: Size(compact ? 72 : 88, compact ? 36 : 40),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: compact ? 14 : 16,
+                    _MineInfoChip(
+                      icon: Icons.image_outlined,
+                      text: '原图仅本机保存',
+                      backgroundColor: theme.surfaceColor,
+                      foregroundColor: theme.surfaceTextColor,
                     ),
-                  ),
-                  child: Text(isLoggedIn ? loggedInActionLabel : '去登录'),
+                    _MineInfoChip(
+                      icon: Icons.auto_awesome_rounded,
+                      text: isLoggedIn ? '可同步轻量结果' : '登录后开启轻同步',
+                      backgroundColor: theme.surfaceColor,
+                      foregroundColor: theme.surfaceTextColor,
+                    ),
+                  ],
                 ),
               ],
             );
@@ -179,7 +211,7 @@ class MinePage extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.fromLTRB(
           16,
-          compact ? 10 : 12,
+          compact ? 8 : 10,
           16,
           compact ? 20 : 24,
         ),
@@ -240,9 +272,13 @@ class MineQuickActionsSection extends StatelessWidget {
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 2),
-              const Text(
+              Text(
                 '把账号、同步和设备相关入口集中到一起',
-                style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: scheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               SizedBox(height: compact ? 12 : 14),
               GridView.builder(
@@ -301,11 +337,47 @@ class MineMenuCard extends StatelessWidget {
           radius: 18,
           child: Column(
             children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  14,
+                  compact ? 12 : 14,
+                  14,
+                  compact ? 10 : 12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '更多设置',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      '把浏览记录、账号安全和版本信息收拢到一个区域',
+                      style: TextStyle(
+                        fontSize: 12.8,
+                        color: scheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 1,
+                color: isDark
+                    ? const Color(0xFF334155)
+                    : const Color(0xFFE2E8F0),
+              ),
               _MineMenuItem(
                 compact: compact,
                 icon: Icons.history_rounded,
                 title: '浏览记录',
                 subtitle: '你最近查看过的药品',
+                accentColor: scheme.secondary,
                 onTap: onTapBrowseHistory,
               ),
               Divider(
@@ -319,6 +391,7 @@ class MineMenuCard extends StatelessWidget {
                 icon: Icons.shield_rounded,
                 title: '账号与安全',
                 subtitle: '隐私设置与安全选项',
+                accentColor: scheme.primary,
                 onTap: onTapSecurity,
               ),
               Divider(
@@ -332,6 +405,7 @@ class MineMenuCard extends StatelessWidget {
                 icon: Icons.info_rounded,
                 title: '关于 Luminous',
                 subtitle: '版本信息与使用说明',
+                accentColor: scheme.tertiary,
                 onTap: onTapAbout,
               ),
             ],
@@ -348,6 +422,7 @@ class _MineMenuItem extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
+    required this.accentColor,
     required this.onTap,
   });
 
@@ -363,12 +438,15 @@ class _MineMenuItem extends StatelessWidget {
   /// 副标题。
   final String subtitle;
 
+  final Color accentColor;
+
   /// 点击回调。
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
@@ -383,16 +461,15 @@ class _MineMenuItem extends StatelessWidget {
               width: compact ? 36 : 40,
               height: compact ? 36 : 40,
               decoration: BoxDecoration(
-                color: isDark
-                    ? const Color(0xFF1E293B)
-                    : const Color(0xFFF1F5F9),
+                color: appTintedSurface(
+                  context,
+                  accentColor,
+                  lightAlpha: 0.10,
+                  darkAlpha: 0.18,
+                ),
                 borderRadius: BorderRadius.circular(compact ? 12 : 14),
               ),
-              child: Icon(
-                icon,
-                color: isDark ? Colors.white : const Color(0xFF0F172A),
-                size: compact ? 20 : 24,
-              ),
+              child: Icon(icon, color: accentColor, size: compact ? 20 : 24),
             ),
             SizedBox(width: compact ? 10 : 12),
             Expanded(
@@ -426,9 +503,54 @@ class _MineMenuItem extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded, color: Color(0xFF94A3B8)),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: isDark
+                  ? accentColor.withValues(alpha: 0.84)
+                  : accentColor.withValues(alpha: 0.76),
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _MineInfoChip extends StatelessWidget {
+  const _MineInfoChip({
+    required this.icon,
+    required this.text,
+    required this.backgroundColor,
+    required this.foregroundColor,
+  });
+
+  final IconData icon;
+  final String text;
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: foregroundColor),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: TextStyle(
+              color: foregroundColor,
+              fontSize: 12.2,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }

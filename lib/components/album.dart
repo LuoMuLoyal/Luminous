@@ -848,6 +848,14 @@ class AlbumPreviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasOriginalImage = entry.hasOriginalImage;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final panelColor = theme.cardTheme.color ?? scheme.surface;
+    final titleColor = scheme.onSurface;
+    final subtitleColor = scheme.onSurfaceVariant;
+    final primaryActionColor = scheme.primary;
+    final tonalColor = Color.lerp(scheme.secondary, scheme.tertiary, 0.28)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
@@ -880,8 +888,8 @@ class AlbumPreviewPage extends StatelessWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
-              decoration: const BoxDecoration(
-                color: Color(0xFFF3F7FB),
+              decoration: BoxDecoration(
+                color: panelColor,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
               ),
               child: Column(
@@ -889,10 +897,10 @@ class AlbumPreviewPage extends StatelessWidget {
                 children: [
                   Text(
                     entry.displayName,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF0F172A),
+                      color: titleColor,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -900,27 +908,71 @@ class AlbumPreviewPage extends StatelessWidget {
                     entry.approvalNo.trim().isEmpty
                         ? '暂无批准文号'
                         : '批准文号: ${entry.approvalNo}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF64748B),
+                      color: subtitleColor,
                       fontWeight: FontWeight.w600,
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _AlbumInfoChip(
+                        icon: hasOriginalImage
+                            ? Icons.hd_rounded
+                            : Icons.photo_size_select_small_rounded,
+                        text: hasOriginalImage ? '本地原图可重识别' : '当前仅保存缩略图',
+                        backgroundColor: themeChipColor(
+                          context,
+                          hasOriginalImage ? tonalColor : scheme.secondary,
+                        ),
+                        foregroundColor: hasOriginalImage
+                            ? tonalColor
+                            : scheme.secondary,
+                      ),
+                      if (entry.takenAt > 0)
+                        _AlbumInfoChip(
+                          icon: Icons.schedule_rounded,
+                          text: '记录于 ${_formatAlbumDate(entry.takenAt)}',
+                          backgroundColor: themeChipColor(
+                            context,
+                            scheme.primary,
+                          ),
+                          foregroundColor: scheme.primary,
+                        ),
+                    ],
                   ),
                   if (!hasOriginalImage) ...[
                     const SizedBox(height: 10),
                     Container(
                       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFFBEB),
+                        color: appTintedSurface(
+                          context,
+                          scheme.secondary,
+                          lightAlpha: 0.12,
+                          darkAlpha: 0.20,
+                        ),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFFDE68A)),
+                        border: Border.all(
+                          color: appTintedBorder(
+                            context,
+                            scheme.secondary,
+                            lightAlpha: 0.18,
+                            darkAlpha: 0.24,
+                          ),
+                        ),
                       ),
-                      child: const Text(
+                      child: Text(
                         '当前记录仅保存缩略图，无法高质量重识别。',
                         style: TextStyle(
                           fontSize: 12.5,
                           height: 1.45,
-                          color: Color(0xFF92400E),
+                          color: isDark
+                              ? scheme.onSurface
+                              : const Color(0xFF7C5A19),
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -931,7 +983,7 @@ class AlbumPreviewPage extends StatelessWidget {
                     key: const ValueKey('album_preview_detail_button'),
                     onPressed: onOpenDetail,
                     style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF0EA5E9),
+                      backgroundColor: primaryActionColor,
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 48),
                       shape: RoundedRectangleBorder(
@@ -946,11 +998,12 @@ class AlbumPreviewPage extends StatelessWidget {
                     onPressed: onRescan,
                     style: FilledButton.styleFrom(
                       foregroundColor: onRescan == null
-                          ? const Color(0xFF94A3B8)
-                          : const Color(0xFF0F172A),
+                          ? scheme.onSurfaceVariant.withValues(alpha: 0.76)
+                          : tonalColor,
                       backgroundColor: onRescan == null
-                          ? const Color(0xFFF1F5F9)
-                          : const Color(0xFFEAF6FF),
+                          ? theme.cardTheme.color?.withValues(alpha: 0.82) ??
+                                scheme.surfaceContainerHighest
+                          : themeChipColor(context, tonalColor),
                       minimumSize: const Size(double.infinity, 48),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
