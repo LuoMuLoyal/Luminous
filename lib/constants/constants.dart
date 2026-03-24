@@ -79,9 +79,6 @@ class HttpConstants {
   /// 识别记录创建接口。
   static const String SCAN_RECORD_CREATE = '/scan-record-create';
 
-  /// 识别记录列表接口。
-  static const String SCAN_RECORD_LIST = '/scan-record-list';
-
   /// 提醒计划新增/更新接口。
   static const String REMINDER_UPSERT = '/reminder-upsert';
 
@@ -100,16 +97,16 @@ class AppUiConstants {
   AppUiConstants._();
 
   /// 四个主 Tab 页面共享的背景底色。
-  static const Color PAGE_BACKGROUND = Color(0xFFF3F7FB);
+  static const Color PAGE_BACKGROUND = Color(0xFFF8FAFD);
 
   /// 底部 Tab 栏背景色，比页面底色略深一点。
-  static const Color TAB_BAR_BACKGROUND = Color(0xFFF8FAFD);
+  static const Color TAB_BAR_BACKGROUND = Color(0xFFFBFCFF);
 
   /// 底部 Tab 栏顶部描边。
-  static const Color TAB_BAR_BORDER = Color(0xFFDCE6F2);
+  static const Color TAB_BAR_BORDER = Color(0xFFE4EAF3);
 
   /// 底部 Tab 未选中图标和文字颜色。
-  static const Color TAB_INACTIVE = Color(0xFF7B8798);
+  static const Color TAB_INACTIVE = Color(0xFF7A8798);
 
   /// 四个 Tab 选中时的主题色。
   static const List<Color> TAB_ACTIVE_COLORS = <Color>[

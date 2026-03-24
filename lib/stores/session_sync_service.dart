@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:luminous/stores/album_local_store.dart';
 import 'package:luminous/api/reminder_api.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
 import 'package:luminous/stores/reminder_local_store.dart';
@@ -61,12 +60,6 @@ class SessionSyncService {
 
     if (!_shouldApplySync(userId)) {
       return errors;
-    }
-
-    try {
-      await albumLocalStore.syncRemoteForUser(userId);
-    } catch (e) {
-      errors.add(_buildErrorText('识别相册', e));
     }
     return errors;
   }

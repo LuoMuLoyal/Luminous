@@ -40,7 +40,7 @@ class ScanApi {
 
   /// 创建一条识别记录。
   ///
-  /// 该接口用于把拍照识别结果同步到服务端，便于后续跨设备查看。
+  /// 该接口用于在已登录时，把缩略图与识别结果轻量上报到服务端。
   static Future<ApiResult<IdResult>> createScanRecord({
     required String userId,
     required String thumbBase64,
@@ -63,39 +63,6 @@ class ScanApi {
         ...?(takenAt == null ? null : <String, dynamic>{'takenAt': takenAt}),
       },
       decoder: (json) => IdResult.fromJson(_asMap(json)),
-      showLoading: false,
-    );
-  }
-
-  /// 获取识别记录列表。
-  ///
-  /// 支持按用户分页拉取，供相册页展示使用。
-  static Future<ApiResult<ScanRecordListResult>> listScanRecords({
-    required String userId,
-    int page = 1,
-    int pageSize = 20,
-  }) {
-    return dioRequest.post<ScanRecordListResult>(
-      HttpConstants.SCAN_RECORD_LIST,
-      data: <String, dynamic>{
-        'userId': userId.trim(),
-        'page': page,
-        'pageSize': pageSize,
-      },
-      decoder: (json) {
-        if (json is Map<String, dynamic>) {
-          return ScanRecordListResult.fromJson(json);
-        }
-        if (json is Map) {
-          return ScanRecordListResult.fromJson(json.cast<String, dynamic>());
-        }
-        return const ScanRecordListResult(
-          items: [],
-          total: 0,
-          page: 1,
-          pageSize: 20,
-        );
-      },
       showLoading: false,
     );
   }

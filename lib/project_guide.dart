@@ -29,14 +29,14 @@
 
   A) 空项目阶段（骨架必须先稳定）
   - 建立 lib 目录下基本分层：pages/components/utils/constants/api/viewmodels/stores/routes
-  - 配置依赖：dio/shared_preferences/get/flutter_svg/sqflite（pubspec.yaml）
+  - 配置依赖：dio/shared_preferences/get/sqflite（pubspec.yaml）
   - AndroidManifest.xml 加网络权限（INTERNET），否则真机请求会失败
   - 路由：MaterialApp + routes map（lib/routes/routes.dart）
 
   B) 认证阶段（最先打通“用户能登录注册”，以便后续功能基于登录态扩展）
   - 后端 3 个接口：send-code / register-user / login-user
   - 前端页面：Login/Register
-  - 重点：手机号/邮箱双栈、验证码登录、注册 SVG 校验、自动注册跳转、Loading/Toast + 错误展示
+  - 重点：手机号/邮箱双栈、验证码登录、自动注册跳转、Loading/Toast + 错误展示
 
   C) 协议统一阶段（工程可维护性拐点：把不稳定性压到“最少的地方”）
   - 后端返回结构统一为 code/msg/result
@@ -332,12 +332,12 @@
   - 注意：Toast 是 UI 层提示，不应该承担“业务状态判断”
 
   (6) lib/api/auth_api.dart
-  - fetchSvgCode / sendEmailCode / registerWithEmail / registerWithSvg
-  - loginWithEmail / loginWithSvg
+  - sendEmailCode / sendPhoneCode / registerWithEmail / registerWithPhone
+  - loginWithPassword / loginWithCode
   - 这些方法把“接口字段细节”集中在一起，页面不用记 channel/scene/loginMode 等细节
 
   (7) lib/viewmodels/auth.dart
-  - SvgCodeResult / EmailCodeResult / RegisterResult / UserSafe
+  - CodeTicketResult / RegisterResult / UserSafe
   - UserSafe.toJson 用于本地持久化；fromJson 兼容 _id/id
 
   (8) lib/stores/user_controller.dart

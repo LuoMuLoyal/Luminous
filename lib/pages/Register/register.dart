@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:luminous/api/auth_api.dart';
 import 'package:luminous/components/auth.dart';
@@ -7,7 +9,7 @@ import 'package:luminous/viewmodels/auth.dart';
 
 /// 注册页。
 ///
-/// 支持手机号/邮箱双栈注册，并要求业务验证码 + SVG 验证码双校验。
+/// 支持手机号/邮箱双栈注册，仅保留业务验证码校验。
 class RegisterView extends StatefulWidget {
   const RegisterView({
     super.key,
@@ -29,10 +31,11 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
+  static const int _codeCooldownSeconds = 60;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _identifierController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
-  final TextEditingController _svgCodeController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
@@ -41,17 +44,15 @@ class _RegisterViewState extends State<RegisterView> {
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
   bool _sendingCode = false;
-  bool _loadingSvg = false;
   bool _submitting = false;
   String _codeId = '';
   String _codeTarget = '';
-  String? _svgContent;
-  String _svgCodeId = '';
+  Timer? _codeCountdownTimer;
+  int _codeCountdownSeconds = 0;
 
   static final RegExp _emailRegExp = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
   static final RegExp _phoneRegExp = RegExp(r'^1[3-9]\d{9}$');
   static final RegExp _codeRegExp = RegExp(r'^\d{6}$');
-  static final RegExp _svgCodeRegExp = RegExp(r'^\d{4}$');
   static final RegExp _passwordRegExp = RegExp(r'^[A-Za-z0-9]{6,12}$');
 
   @override
@@ -62,16 +63,13 @@ class _RegisterViewState extends State<RegisterView> {
     _codeController.text = widget.initialCode;
     _codeId = widget.initialCodeId.trim();
     _codeTarget = widget.initialIdentifier.trim();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _onFetchSvg();
-    });
   }
 
   @override
   void dispose() {
+    _codeCountdownTimer?.cancel();
     _identifierController.dispose();
     _codeController.dispose();
-    _svgCodeController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
     super.dispose();
@@ -112,17 +110,6 @@ class _RegisterViewState extends State<RegisterView> {
     return null;
   }
 
-  String? _svgCodeValidator(String? value) {
-    final code = (value ?? '').trim();
-    if (code.isEmpty) {
-      return '请输入SVG验证码';
-    }
-    if (!_svgCodeRegExp.hasMatch(code)) {
-      return 'SVG验证码应为4位数字';
-    }
-    return null;
-  }
-
   String? _passwordValidator(String? value) {
     final pwd = value ?? '';
     if (pwd.isEmpty) {
@@ -157,6 +144,7 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   void _clearCodeSession({required bool clearInput}) {
+    _resetCodeCooldown();
     _codeId = '';
     _codeTarget = '';
     if (clearInput) {
@@ -164,9 +152,41 @@ class _RegisterViewState extends State<RegisterView> {
     }
   }
 
+  void _startCodeCooldown() {
+    _codeCountdownTimer?.cancel();
+    setState(() {
+      _codeCountdownSeconds = _codeCooldownSeconds;
+    });
+    _codeCountdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_codeCountdownSeconds <= 1) {
+        timer.cancel();
+        setState(() {
+          _codeCountdownSeconds = 0;
+        });
+        return;
+      }
+      setState(() {
+        _codeCountdownSeconds -= 1;
+      });
+    });
+  }
+
+  void _resetCodeCooldown() {
+    _codeCountdownTimer?.cancel();
+    _codeCountdownTimer = null;
+    if (_codeCountdownSeconds == 0) {
+      return;
+    }
+    _codeCountdownSeconds = 0;
+  }
+
   Future<void> _onSendCode() async {
     FocusScope.of(context).unfocus();
-    if (_sendingCode) {
+    if (_sendingCode || _codeCountdownSeconds > 0) {
       return;
     }
 
@@ -200,6 +220,7 @@ class _RegisterViewState extends State<RegisterView> {
         _codeId = response.result.id.trim();
         _codeTarget = identifier;
       });
+      _startCodeCooldown();
       ToastUtils.instance.show(
         context,
         response.msg.isEmpty ? '验证码发送成功' : response.msg,
@@ -213,47 +234,6 @@ class _RegisterViewState extends State<RegisterView> {
       if (mounted) {
         setState(() {
           _sendingCode = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _onFetchSvg() async {
-    FocusScope.of(context).unfocus();
-    if (_loadingSvg) {
-      return;
-    }
-
-    setState(() {
-      _loadingSvg = true;
-    });
-
-    try {
-      final response = await widget.authApi.fetchSvgCode();
-      final result = response.result;
-
-      if (!mounted) {
-        return;
-      }
-
-      if (result.svg.isEmpty || result.id.isEmpty) {
-        ToastUtils.instance.show(context, 'SVG验证码获取失败');
-        return;
-      }
-
-      setState(() {
-        _svgContent = result.svg;
-        _svgCodeId = result.id.trim();
-      });
-    } catch (e) {
-      if (!mounted) {
-        return;
-      }
-      ToastUtils.instance.showError(context, e);
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loadingSvg = false;
         });
       }
     }
@@ -275,10 +255,6 @@ class _RegisterViewState extends State<RegisterView> {
       ToastUtils.instance.show(context, '请先获取当前账号的验证码');
       return;
     }
-    if (_svgCodeId.isEmpty) {
-      ToastUtils.instance.show(context, '请先获取SVG验证码');
-      return;
-    }
     if (!_agreed) {
       ToastUtils.instance.show(context, '请先阅读并勾选《用户协议》《隐私政策》');
       return;
@@ -294,16 +270,12 @@ class _RegisterViewState extends State<RegisterView> {
               phone: identifier,
               code: _codeController.text.trim(),
               codeId: _codeId,
-              svgCode: _svgCodeController.text.trim(),
-              svgId: _svgCodeId,
               password: _passwordController.text,
             )
           : await widget.authApi.registerWithEmail(
               email: identifier,
               code: _codeController.text.trim(),
               codeId: _codeId,
-              svgCode: _svgCodeController.text.trim(),
-              svgId: _svgCodeId,
               password: _passwordController.text,
             );
 
@@ -338,14 +310,14 @@ class _RegisterViewState extends State<RegisterView> {
     return AuthPageScaffold(
       children: [
         _buildTopBar(),
-        const SizedBox(height: 14),
+        const SizedBox(height: 10),
         AuthHeroCard(
           palette: SoftBannerPalettes.auth,
           icon: Icons.person_add_alt_1_rounded,
           title: '创建账号',
-          subtitle: '${_identifierType.label}验证码注册 + SVG 校验',
+          subtitle: '${_identifierType.label}验证码注册',
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         AuthMethodSwitcher(
           items: [
             AuthMethodItem(
@@ -360,9 +332,9 @@ class _RegisterViewState extends State<RegisterView> {
             ),
           ],
         ),
-        const SizedBox(height: 18),
-        _buildFormCard(),
         const SizedBox(height: 14),
+        _buildFormCard(),
+        const SizedBox(height: 12),
         AuthAgreementRow(
           agreed: _agreed,
           onChanged: (value) {
@@ -373,9 +345,9 @@ class _RegisterViewState extends State<RegisterView> {
           onTapAgreement: _onTapAgreement,
           onTapPrivacy: _onTapPrivacy,
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 14),
         _buildRegisterButton(),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         _buildHelperText(),
       ],
     );
@@ -389,15 +361,15 @@ class _RegisterViewState extends State<RegisterView> {
           onTap: () => Navigator.maybePop(context),
           borderRadius: BorderRadius.circular(999),
           child: Container(
-            width: 34,
-            height: 34,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF162033) : Colors.white,
               borderRadius: BorderRadius.circular(999),
             ),
             child: Icon(
               Icons.arrow_back_ios_new_rounded,
-              size: 18,
+              size: 16,
               color: isDark ? Colors.white : const Color(0xFF0F172A),
             ),
           ),
@@ -407,7 +379,7 @@ class _RegisterViewState extends State<RegisterView> {
           child: Text(
             '注册',
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w800,
               color: isDark ? Colors.white : const Color(0xFF0F172A),
             ),
@@ -429,13 +401,13 @@ class _RegisterViewState extends State<RegisterView> {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.0 : 0.08),
-            blurRadius: 14,
-            offset: Offset(0, 6),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
         child: Form(
           key: _formKey,
           child: Column(
@@ -467,27 +439,9 @@ class _RegisterViewState extends State<RegisterView> {
                   }
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               _buildCodeRow(),
-              const SizedBox(height: 12),
-              AuthSvgCaptchaCard(
-                isLoading: _loadingSvg,
-                onRefresh: _onFetchSvg,
-                svgContent: _svgContent,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _svgCodeController,
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.next,
-                decoration: _buildInputDecoration(
-                  labelText: 'SVG验证码',
-                  hintText: '请输入4位SVG验证码',
-                  prefixIcon: Icons.shield_outlined,
-                ),
-                validator: _svgCodeValidator,
-              ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
@@ -511,7 +465,7 @@ class _RegisterViewState extends State<RegisterView> {
                 ),
                 validator: _passwordValidator,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: _confirmController,
                 obscureText: _obscureConfirm,
@@ -561,13 +515,16 @@ class _RegisterViewState extends State<RegisterView> {
         ),
         const SizedBox(width: 10),
         FilledButton(
-          onPressed: _sendingCode ? null : _onSendCode,
+          onPressed: (_sendingCode || _codeCountdownSeconds > 0)
+              ? null
+              : _onSendCode,
           style: FilledButton.styleFrom(
             backgroundColor: const Color(0xFF0EA5E9),
             foregroundColor: Colors.white,
-            minimumSize: const Size(96, 48),
+            minimumSize: const Size(78, 42),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(13),
             ),
           ),
           child: _sendingCode
@@ -579,7 +536,15 @@ class _RegisterViewState extends State<RegisterView> {
                     color: Colors.white,
                   ),
                 )
-              : const Text('发送验证码'),
+              : Text(
+                  _codeCountdownSeconds > 0
+                      ? '${_codeCountdownSeconds}s'
+                      : '发送',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
         ),
       ],
     );
@@ -595,26 +560,49 @@ class _RegisterViewState extends State<RegisterView> {
     return InputDecoration(
       labelText: labelText,
       hintText: hintText,
-      prefixIcon: Icon(prefixIcon),
+      prefixIcon: Icon(prefixIcon, size: 22),
       suffixIcon: suffixIcon,
+      isDense: true,
       filled: true,
-      fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+      fillColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF6F8FC),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14),
+      prefixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 44),
+      suffixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(13),
         borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide.none,
+      ),
+      labelStyle: TextStyle(
+        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+        fontSize: 13.5,
+        fontWeight: FontWeight.w600,
+      ),
+      hintStyle: TextStyle(
+        color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
       ),
     );
   }
 
   Widget _buildRegisterButton() {
     return SizedBox(
-      height: 48,
+      height: 46,
       child: FilledButton(
         onPressed: _submitting ? null : _onRegisterPressed,
         style: FilledButton.styleFrom(
           backgroundColor: const Color(0xFF0EA5E9),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(13),
           ),
         ),
         child: _submitting
@@ -628,7 +616,7 @@ class _RegisterViewState extends State<RegisterView> {
               )
             : const Text(
                 '注册',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+                style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w800),
               ),
       ),
     );
@@ -637,13 +625,14 @@ class _RegisterViewState extends State<RegisterView> {
   Widget _buildHelperText() {
     return Text(
       _identifierType == AuthIdentifierType.phone
-          ? '手机号注册会先校验短信认证验证码，再校验 SVG 验证码。'
-          : '邮箱注册会先校验邮件验证码，再校验 SVG 验证码。',
+          ? '手机号注册只需短信验证码和密码确认。'
+          : '邮箱注册只需邮件验证码和密码确认。',
       textAlign: TextAlign.center,
       style: const TextStyle(
         color: Color(0xFF64748B),
-        fontSize: 12,
+        fontSize: 11.5,
         fontWeight: FontWeight.w600,
+        height: 1.45,
       ),
     );
   }

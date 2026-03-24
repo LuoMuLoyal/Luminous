@@ -172,51 +172,29 @@ class MinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final compact = isCompactLayoutWidth(MediaQuery.sizeOf(context).width);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final topDecorColor = headerPalette.accentColor.withValues(alpha: 0.10);
-    final bottomDecorColor = headerPalette.endColor.withValues(alpha: 0.24);
 
     return SafeArea(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF3F7FB),
+      child: ListView(
+        padding: EdgeInsets.fromLTRB(
+          16,
+          compact ? 10 : 12,
+          16,
+          compact ? 20 : 24,
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -120,
-              right: -120,
-              child: _MineDecorCircle(size: 260, color: topDecorColor),
-            ),
-            Positioned(
-              bottom: -140,
-              left: -140,
-              child: _MineDecorCircle(size: 300, color: bottomDecorColor),
-            ),
-            ListView(
-              padding: EdgeInsets.fromLTRB(
-                16,
-                compact ? 10 : 12,
-                16,
-                compact ? 20 : 24,
-              ),
-              children: [
-                profileCard,
-                SizedBox(height: compact ? 10 : 12),
-                MineQuickActionsSection(
-                  items: quickActions,
-                  onTap: (item) => onTapQuickAction(item.id),
-                ),
-                SizedBox(height: compact ? 10 : 12),
-                MineMenuCard(
-                  onTapBrowseHistory: onTapBrowseHistory,
-                  onTapSecurity: onTapSecurity,
-                  onTapAbout: onTapAbout,
-                ),
-              ],
-            ),
-          ],
-        ),
+        children: [
+          profileCard,
+          SizedBox(height: compact ? 10 : 12),
+          MineQuickActionsSection(
+            items: quickActions,
+            onTap: (item) => onTapQuickAction(item.id),
+          ),
+          SizedBox(height: compact ? 10 : 12),
+          MineMenuCard(
+            onTapBrowseHistory: onTapBrowseHistory,
+            onTapSecurity: onTapSecurity,
+            onTapAbout: onTapAbout,
+          ),
+        ],
       ),
     );
   }
@@ -344,25 +322,6 @@ class MineMenuCard extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _MineDecorCircle extends StatelessWidget {
-  const _MineDecorCircle({required this.size, required this.color});
-
-  /// 圆形直径。
-  final double size;
-
-  /// 圆形颜色（通常带透明度用于背景装饰）。
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
     );
   }
 }

@@ -22,11 +22,7 @@
 
 ## 为什么旧资源被删掉了
 
-以前项目里保留过一套旧链路：
-
-- `launch_background.xml`
-- `drawable-v21/launch_background.xml`
-- `drawable-nodpi/native_launch_screen.png`
+以前项目里保留过一套“整屏位图 + 多套背景 xml”的旧链路。
 
 那套方案本质上是“整屏静态图”，在 Android 12 之后已经不是最合适的原生启动方式了，而且还会带来：
 
@@ -73,7 +69,8 @@ installSplashScreen()
 
 - `android/app/src/main/res/drawable/splash_wordmark_icon.xml`
 
-这张资源直接由 `lib/assets/app_icons/app_icon_source.svg` 转成了 Android Vector Drawable。
+这张资源直接由 `lib/assets/app_icons/app_icon_source.svg` 转成了 Android Vector Drawable，
+并在图标内部叠了淡黄色、淡紫色的柔和装饰层，配合更浅的暖白背景色。
 
 优点很直接：
 
@@ -83,7 +80,7 @@ installSplashScreen()
 
 ## NormalTheme 现在负责什么
 
-`NormalTheme` 不再引用旧的 `launch_background`，而是只保留窗口背景色。
+`NormalTheme` 不再引用旧的整屏背景资源，而是只保留窗口背景色。
 
 它负责的是：
 

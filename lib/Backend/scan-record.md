@@ -9,7 +9,7 @@
 - https://wty10hv6az.sealosbja.site/scan-record-list
 
 用途:
-- 相册记录同步: 前端拍照识别后，把“缩略图 + 识别结果”同步到后端，便于跨设备查看
+- 相册记录同步: 前端拍照识别后，把“缩略图 + 识别结果”同步到后端，当前客户端不再回拉历史列表
 
 请求体: POST /scan-record-create
 - userId: string (必填)
@@ -123,4 +123,3 @@ export async function main(ctx: FunctionContext) {
   return fail('未知函数')
 }
 ```
-

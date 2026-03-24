@@ -34,17 +34,23 @@ class SearchSurfaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF162033) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x10000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+        ),
+        boxShadow: isDark
+            ? const []
+            : const [
+                BoxShadow(
+                  color: Color(0x0C0F172A),
+                  blurRadius: 14,
+                  offset: Offset(0, 6),
+                ),
+              ],
       ),
       child: child,
     );

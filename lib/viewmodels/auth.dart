@@ -35,27 +35,6 @@ extension AuthLoginModeValue on AuthLoginMode {
       this == AuthLoginMode.password ? 'password' : 'code';
 }
 
-class SvgCodeResult {
-  /// 验证码记录 id（后端可能返回 `id` 或 `_id`）。
-  final String id;
-
-  /// SVG 内容字符串（可以直接用 `flutter_svg` 渲染）。
-  final String svg;
-
-  /// 创建一个 SVG 验证码结果对象。
-  const SvgCodeResult({required this.id, required this.svg});
-
-  /// 从后端 JSON 反序列化为 `SvgCodeResult`。
-  ///
-  /// 兼容字段：`id/_id`。
-  factory SvgCodeResult.fromJson(Map<String, dynamic> json) {
-    return SvgCodeResult(
-      id: (json['id'] ?? json['_id'] ?? '').toString(),
-      svg: (json['svg'] ?? '').toString(),
-    );
-  }
-}
-
 class CodeTicketResult {
   /// 验证码发送记录 id（后端可能返回 `id` 或 `_id`）。
   final String id;

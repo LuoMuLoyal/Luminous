@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/soft_banner.dart';
 
 /// 认证页面（登录/注册）可复用的 UI 组件集合。
@@ -47,32 +47,38 @@ class AuthPageScaffold extends StatelessWidget {
     final horizontalPadding = screenWidth < 600 ? 16.0 : 24.0;
     final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
     final theme = Theme.of(context);
+    final scaffoldBackground = backgroundColor ?? theme.scaffoldBackgroundColor;
 
     return Scaffold(
-      backgroundColor: backgroundColor ?? theme.scaffoldBackgroundColor,
+      backgroundColor: scaffoldBackground,
       resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        bottom: false,
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: isWide ? 420 : double.infinity,
-            ),
-            child: Padding(
-              padding: EdgeInsets.only(bottom: keyboardInset),
-              child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: EdgeInsets.fromLTRB(
-                  horizontalPadding,
-                  24,
-                  horizontalPadding,
-                  20,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: children,
+      body: AppCanvas(
+        accentColor: SoftBannerPalettes.auth.accentColor,
+        secondaryAccentColor: const Color(0xFFD7C7FF),
+        baseColor: scaffoldBackground,
+        child: SafeArea(
+          bottom: false,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWide ? 420 : double.infinity,
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: keyboardInset),
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: EdgeInsets.fromLTRB(
+                    horizontalPadding,
+                    6,
+                    horizontalPadding,
+                    16,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: children,
+                  ),
                 ),
               ),
             ),
@@ -106,6 +112,8 @@ class AuthLegalHint extends StatelessWidget {
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w600,
+            fontSize: 11.5,
+            height: 1.45,
           ),
         ),
         GestureDetector(
@@ -113,20 +121,20 @@ class AuthLegalHint extends StatelessWidget {
           child: const Text(
             '《用户协议》',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 11.5,
               color: Color(0xFF0284C7),
               fontWeight: FontWeight.w700,
-              height: 1.4,
+              height: 1.45,
             ),
           ),
         ),
         Text(
           '和',
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 11.5,
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w600,
-            height: 1.4,
+            height: 1.45,
           ),
         ),
         GestureDetector(
@@ -134,10 +142,10 @@ class AuthLegalHint extends StatelessWidget {
           child: const Text(
             '《隐私政策》',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 11.5,
               color: Color(0xFF0284C7),
               fontWeight: FontWeight.w700,
-              height: 1.4,
+              height: 1.45,
             ),
           ),
         ),
@@ -175,19 +183,20 @@ class AuthHeroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SoftBannerCard(
       palette: palette,
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       borderRadius: BorderRadius.circular(18),
       builder: (context, theme) {
         return Row(
           children: [
             Container(
-              width: 46,
-              height: 46,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.82),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: theme.borderColor),
               ),
-              child: Icon(icon, color: theme.accentColor, size: 26),
+              child: Icon(icon, color: theme.accentColor, size: 24),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -198,7 +207,7 @@ class AuthHeroCard extends StatelessWidget {
                     title,
                     style: TextStyle(
                       color: theme.textColor,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -207,7 +216,7 @@ class AuthHeroCard extends StatelessWidget {
                     subtitle,
                     style: TextStyle(
                       color: theme.secondaryTextColor,
-                      fontSize: 13,
+                      fontSize: 12.5,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -237,10 +246,22 @@ class AuthMethodSwitcher extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF162033) : Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+        ),
+        boxShadow: isDark
+            ? const []
+            : const [
+                BoxShadow(
+                  color: Color(0x0C0F172A),
+                  blurRadius: 12,
+                  offset: Offset(0, 6),
+                ),
+              ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(5),
         child: Row(
           children: items
               .asMap()
@@ -256,14 +277,14 @@ class AuthMethodSwitcher extends StatelessWidget {
                       onTap: entry.value.onTap,
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 180),
-                        height: 38,
+                        height: 36,
                         decoration: BoxDecoration(
                           color: entry.value.selected
                               ? const Color(0xFF0EA5E9)
                               : (isDark
                                     ? const Color(0xFF1E293B)
                                     : const Color(0xFFF1F5F9)),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(11),
                         ),
                         child: Center(
                           child: Text(
@@ -275,7 +296,7 @@ class AuthMethodSwitcher extends StatelessWidget {
                                         ? const Color(0xFFE2E8F0)
                                         : const Color(0xFF334155)),
                               fontWeight: FontWeight.w700,
-                              fontSize: 13,
+                              fontSize: 12.5,
                             ),
                           ),
                         ),
@@ -286,91 +307,6 @@ class AuthMethodSwitcher extends StatelessWidget {
               )
               .toList(),
         ),
-      ),
-    );
-  }
-}
-
-/// SVG 验证码展示卡。
-///
-/// 支持三种状态：
-/// - loading：展示进度圈；
-/// - empty：展示引导文案；
-/// - 有 svgContent：渲染 SVG 图像。
-class AuthSvgCaptchaCard extends StatelessWidget {
-  /// 创建一个 SVG 验证码卡片。
-  const AuthSvgCaptchaCard({
-    super.key,
-    required this.isLoading,
-    required this.onRefresh,
-    required this.svgContent,
-    this.emptyText = '点击右侧刷新获取SVG验证码',
-  });
-
-  /// 是否处于加载中。
-  final bool isLoading;
-
-  /// 点击“刷新”按钮回调。
-  final VoidCallback onRefresh;
-
-  /// SVG 原始字符串内容（来自后端）。
-  final String? svgContent;
-
-  /// 没有 SVG 内容时的提示文案。
-  final String emptyText;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: 52,
-              child: Center(
-                child: isLoading
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : svgContent == null || svgContent!.isEmpty
-                    ? Text(
-                        emptyText,
-                        style: TextStyle(
-                          color: isDark
-                              ? const Color(0xFF94A3B8)
-                              : const Color(0xFF64748B),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )
-                    : SvgPicture.string(svgContent!),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          FilledButton.tonalIcon(
-            onPressed: isLoading ? null : onRefresh,
-            icon: const Icon(Icons.refresh_rounded, size: 16),
-            label: const Text('刷新'),
-            style: FilledButton.styleFrom(
-              foregroundColor: const Color(0xFF0369A1),
-              backgroundColor: const Color(0xFFE0F2FE),
-              minimumSize: const Size(80, 42),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -410,6 +346,7 @@ class AuthAgreementRow extends StatelessWidget {
         Checkbox(
           value: agreed,
           onChanged: (value) => onChanged(value ?? false),
+          visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
         ),
         Expanded(
           child: Wrap(
@@ -420,10 +357,12 @@ class AuthAgreementRow extends StatelessWidget {
                 child: Text(
                   '我已阅读并同意',
                   style: TextStyle(
-                    fontSize: 13,
-                    color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155),
+                    fontSize: 12.5,
+                    color: isDark
+                        ? const Color(0xFFE2E8F0)
+                        : const Color(0xFF334155),
                     fontWeight: FontWeight.w600,
-                    height: 1.4,
+                    height: 1.35,
                   ),
                 ),
               ),
@@ -432,10 +371,10 @@ class AuthAgreementRow extends StatelessWidget {
                 child: const Text(
                   '《用户协议》',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 12.5,
                     color: Color(0xFF0284C7),
                     fontWeight: FontWeight.w700,
-                    height: 1.4,
+                    height: 1.35,
                   ),
                 ),
               ),
@@ -444,10 +383,12 @@ class AuthAgreementRow extends StatelessWidget {
                 child: Text(
                   '和',
                   style: TextStyle(
-                    fontSize: 13,
-                    color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155),
+                    fontSize: 12.5,
+                    color: isDark
+                        ? const Color(0xFFE2E8F0)
+                        : const Color(0xFF334155),
                     fontWeight: FontWeight.w600,
-                    height: 1.4,
+                    height: 1.35,
                   ),
                 ),
               ),
@@ -456,10 +397,10 @@ class AuthAgreementRow extends StatelessWidget {
                 child: const Text(
                   '《隐私政策》',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 12.5,
                     color: Color(0xFF0284C7),
                     fontWeight: FontWeight.w700,
-                    height: 1.4,
+                    height: 1.35,
                   ),
                 ),
               ),

@@ -4,10 +4,8 @@
 
 用途:
 - 手机号注册或邮箱注册
-- 注册时必须同时通过：
-  - 业务验证码（邮箱或手机）
-  - SVG 验证码
-  - 密码与确认密码由前端校验一致性
+- 注册时只校验业务验证码（邮箱或手机）
+- 密码与确认密码由前端校验一致性
 
 请求体:
 - `identifierType`: `'email' | 'phone'`
@@ -15,8 +13,6 @@
 - `phone`: string
 - `code`: string
 - `codeId`: string
-- `svgCode`: string
-- `svgId`: string
 - `password`: string
 
 返回体:
@@ -54,8 +50,6 @@ export async function main(ctx: FunctionContext) {
   const phone = String((ctx.body as any).phone || '').trim()
   const code = String((ctx.body as any).code || '').trim()
   const codeId = String((ctx.body as any).codeId || '').trim()
-  const svgCode = String((ctx.body as any).svgCode || '').trim()
-  const svgId = String((ctx.body as any).svgId || '').trim()
   const password = String((ctx.body as any).password || '')
 
   if (!['email', 'phone'].includes(identifierType)) {
@@ -87,11 +81,6 @@ export async function main(ctx: FunctionContext) {
   })
   if (!codeValid) {
     return fail('业务验证码不正确或已过期')
-  }
-
-  const svgValid = await consumeSvgCode(svgId, svgCode)
-  if (!svgValid) {
-    return fail('SVG验证码不正确或已过期')
   }
 
   const encryptedPassword = createHash('sha256')
@@ -133,20 +122,6 @@ async function consumeBusinessCode({
       target,
       scene,
       code: Number(code),
-    })
-    .remove()
-  return deleted === 1
-}
-
-async function consumeSvgCode(svgId: string, svgCode: string) {
-  if (!svgId || !svgCode) return false
-  const { deleted } = await db
-    .collection('codes')
-    .where({
-      _id: svgId,
-      channel: 'svg',
-      scene: 'register',
-      code: Number(svgCode),
     })
     .remove()
   return deleted === 1

@@ -254,31 +254,28 @@ class _HomeViewState extends State<HomeView> {
         : '下一次提醒: ${next.title} · ${next.subtitle}';
 
     return SafeArea(
-      child: Container(
-        color: const Color(0xFFF3F7FB),
-        child: RefreshIndicator(
-          onRefresh: _fetchTodayReminders,
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              SliverToBoxAdapter(
-                child: HomeTopSection(
-                  palette: SoftBannerPalettes.home,
-                  todayTipListenable: _todayTipNotifier,
-                  nextText: nextText,
-                  loadingReminders: _loadingReminders,
-                  reminderCount: _reminders.length,
-                  onTapTip: _cycleHealthTip,
-                  onLongPressTip: _showAllHealthTips,
-                ),
+      child: RefreshIndicator(
+        onRefresh: _fetchTodayReminders,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: HomeTopSection(
+                palette: SoftBannerPalettes.home,
+                todayTipListenable: _todayTipNotifier,
+                nextText: nextText,
+                loadingReminders: _loadingReminders,
+                reminderCount: _reminders.length,
+                onTapTip: _cycleHealthTip,
+                onLongPressTip: _showAllHealthTips,
               ),
-              SliverToBoxAdapter(
-                child: HomeFeatureSection(items: _entries, onTap: _onEntryTap),
-              ),
-              SliverToBoxAdapter(child: HomeReminderSection(items: _reminders)),
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
-            ],
-          ),
+            ),
+            SliverToBoxAdapter(
+              child: HomeFeatureSection(items: _entries, onTap: _onEntryTap),
+            ),
+            SliverToBoxAdapter(child: HomeReminderSection(items: _reminders)),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          ],
         ),
       ),
     );

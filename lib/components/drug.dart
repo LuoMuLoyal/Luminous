@@ -48,35 +48,32 @@ class DrugPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Container(
-        color: const Color(0xFFF3F7FB),
-        child: RefreshIndicator(
-          onRefresh: onRefresh,
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              DrugSearchEntrySliver(onTap: onTapSearch),
-              DrugQuickEntrySectionSliver(
-                entries: quickEntries,
-                onTapEntry: onTapQuickEntry,
+      child: RefreshIndicator(
+        onRefresh: onRefresh,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            DrugSearchEntrySliver(onTap: onTapSearch),
+            DrugQuickEntrySectionSliver(
+              entries: quickEntries,
+              onTapEntry: onTapQuickEntry,
+            ),
+            DrugMyMedicinesHeaderSliver(
+              count: myMedicines.length,
+              loading: loadingMedicines,
+            ),
+            if (loadingMedicines && myMedicines.isEmpty)
+              const DrugLoadingSliver()
+            else if (myMedicines.isEmpty)
+              const DrugEmptyMedicinesSliver()
+            else
+              DrugMyMedicinesListSliver(
+                rows: myMedicines,
+                onDeleteMedicine: onDeleteMedicine,
+                onTapRow: onTapMedicineRow,
               ),
-              DrugMyMedicinesHeaderSliver(
-                count: myMedicines.length,
-                loading: loadingMedicines,
-              ),
-              if (loadingMedicines && myMedicines.isEmpty)
-                const DrugLoadingSliver()
-              else if (myMedicines.isEmpty)
-                const DrugEmptyMedicinesSliver()
-              else
-                DrugMyMedicinesListSliver(
-                  rows: myMedicines,
-                  onDeleteMedicine: onDeleteMedicine,
-                  onTapRow: onTapMedicineRow,
-                ),
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
-            ],
-          ),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          ],
         ),
       ),
     );
@@ -228,7 +225,7 @@ class DrugQuickEntrySectionSliver extends StatelessWidget {
                     ),
                     SizedBox(height: metrics.isCompact ? 2 : 3),
                     Text(
-                      '像首页顶部一样，给常用操作一点轻盈的层次感',
+                      '把高频操作收在一块，页面会更轻更顺手',
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w600,

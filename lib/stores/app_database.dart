@@ -4,11 +4,11 @@ import 'package:sqflite/sqflite.dart';
 //
 // 用途：
 // - 存储“我的药品”（用户添加的药品列表）
-// - 存储“相册”（拍照/识别产生的照片记录，当前先存元数据，后续再接入真实图片路径）
+// - 存储“相册”（拍照/识别产生的本地图片路径与识别元数据）
 //
 // 注意：
 // - 这类本地数据属于“客户端缓存/本地资产”，不依赖后端。
-// - 表结构尽量保持稳定；需要变更时通过 version + onUpgrade 做迁移。
+// - 当前按“全新应用”处理；schema 变化时直接重建本地缓存表。
 class AppDatabase {
   /// 私有构造函数，当前数据库管理器通过单例使用。
   AppDatabase._();
@@ -20,9 +20,7 @@ class AppDatabase {
   static const String _dbName = 'luminous.db';
 
   /// 当前数据库 schema 版本号。
-  ///
-  /// 版本变更时需要同步更新 `_upgradeTables` 中的迁移逻辑。
-  static const int _version = 8;
+  static const int _version = 10;
 
   /// 已打开的数据库实例缓存。
   Database? _db;
@@ -63,7 +61,8 @@ class AppDatabase {
 
   /// 打开 SQLite 数据库。
   ///
-  /// 会在首次创建时执行建表逻辑，在版本升级时执行迁移逻辑。
+  /// 首次创建时直接建立当前 schema；
+  /// 升级或降级时一律丢弃旧本地缓存并按当前 schema 重建。
   Future<Database> _open() async {
     /// 设备上 SQLite 数据库目录路径。
     final dbPath = await getDatabasesPath();
@@ -74,15 +73,21 @@ class AppDatabase {
       path,
       version: _version,
       onCreate: (db, version) async {
-        await _repairRuntimeSchema(db);
+        await _createSchema(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        await _upgradeTables(db, oldVersion, newVersion);
+        await _resetSchema(db);
       },
-      onOpen: (db) async {
-        await _repairRuntimeSchema(db);
+      onDowngrade: (db, oldVersion, newVersion) async {
+        await _resetSchema(db);
       },
     );
+  }
+
+  /// 创建当前版本的完整 schema。
+  Future<void> _createSchema(Database db) async {
+    await _createTables(db);
+    await _createIndexes(db);
   }
 
   /// 创建当前版本所需的全部表结构。
@@ -104,7 +109,7 @@ class AppDatabase {
         createdAt INTEGER NOT NULL
       )
     ''');
-    // album_items：相册记录（先存元数据，后续接入真实图片 filePath）
+    // album_items：相册记录（原图/缩略图走文件系统，这里只存路径与元数据）
     await db.execute('''
       CREATE TABLE IF NOT EXISTS album_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -114,9 +119,8 @@ class AppDatabase {
         drugCode TEXT,
         approvalNo TEXT,
         productName TEXT,
-        filePath TEXT,
-        thumbBase64 TEXT,
-        imageBase64 TEXT,
+        imagePath TEXT NOT NULL,
+        thumbPath TEXT,
         imageMimeType TEXT,
         takenAt INTEGER,
         source TEXT,
@@ -180,105 +184,40 @@ class AppDatabase {
     ''');
   }
 
-  /// 执行数据库升级迁移。
-  Future<void> _upgradeTables(
-    Database db,
-    int oldVersion,
-    int newVersion,
-  ) async {
-    await _repairRuntimeSchema(db);
+  /// 直接丢弃旧 schema，并按当前版本重建本地缓存。
+  Future<void> _resetSchema(Database db) async {
+    await db.execute('DROP TABLE IF EXISTS my_medicines');
+    await db.execute('DROP TABLE IF EXISTS album_items');
+    await db.execute('DROP TABLE IF EXISTS reminders');
+    await db.execute('DROP TABLE IF EXISTS checkins');
+    await db.execute('DROP TABLE IF EXISTS checkin_overrides');
+    await db.execute('DROP TABLE IF EXISTS today_reminder_snapshots');
+    await _createSchema(db);
   }
 
-  /// 运行时做一次轻量 schema 修复，兜住老库或上次升级中断后的半成品状态。
-  Future<void> _repairRuntimeSchema(Database db) async {
-    await _createTables(db);
-
-    await _ensureColumn(
-      db,
-      table: 'my_medicines',
-      column: 'userId',
-      sql:
-          "ALTER TABLE my_medicines ADD COLUMN userId TEXT NOT NULL DEFAULT ''",
-    );
-    await _ensureColumn(
-      db,
-      table: 'my_medicines',
-      column: 'remoteId',
-      sql: 'ALTER TABLE my_medicines ADD COLUMN remoteId TEXT',
-    );
-
-    await _ensureColumn(
-      db,
-      table: 'album_items',
-      column: 'remoteId',
-      sql: 'ALTER TABLE album_items ADD COLUMN remoteId TEXT',
-    );
-    await _ensureColumn(
-      db,
-      table: 'album_items',
-      column: 'thumbBase64',
-      sql: 'ALTER TABLE album_items ADD COLUMN thumbBase64 TEXT',
-    );
-    await _ensureColumn(
-      db,
-      table: 'album_items',
-      column: 'takenAt',
-      sql: 'ALTER TABLE album_items ADD COLUMN takenAt INTEGER',
-    );
-    await _ensureColumn(
-      db,
-      table: 'album_items',
-      column: 'imageBase64',
-      sql: 'ALTER TABLE album_items ADD COLUMN imageBase64 TEXT',
-    );
-    await _ensureColumn(
-      db,
-      table: 'album_items',
-      column: 'userId',
-      sql: "ALTER TABLE album_items ADD COLUMN userId TEXT NOT NULL DEFAULT ''",
-    );
-    await _ensureColumn(
-      db,
-      table: 'album_items',
-      column: 'imageMimeType',
-      sql: 'ALTER TABLE album_items ADD COLUMN imageMimeType TEXT',
-    );
-
-    await _createIndexes(db);
-  }
-
-  /// 只在相关列已存在时创建索引，避免老版本数据库在半升级状态下直接报错。
   Future<void> _createIndexes(Database db) async {
     await db.execute(
       'CREATE INDEX IF NOT EXISTS idx_my_medicines_createdAt ON my_medicines(createdAt DESC)',
     );
-    if (await _tableHasColumn(db, 'my_medicines', 'userId')) {
-      await db.execute(
-        'CREATE INDEX IF NOT EXISTS idx_my_medicines_userId_createdAt '
-        'ON my_medicines(userId, createdAt DESC)',
-      );
-    }
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_my_medicines_userId_createdAt '
+      'ON my_medicines(userId, createdAt DESC)',
+    );
 
     await db.execute(
       'CREATE INDEX IF NOT EXISTS idx_album_items_createdAt ON album_items(createdAt DESC)',
     );
-    if (await _tableHasColumn(db, 'album_items', 'remoteId')) {
-      await db.execute(
-        'CREATE INDEX IF NOT EXISTS idx_album_items_remoteId ON album_items(remoteId)',
-      );
-    }
-    if (await _tableHasColumn(db, 'album_items', 'userId')) {
-      await db.execute(
-        'CREATE INDEX IF NOT EXISTS idx_album_items_userId_createdAt '
-        'ON album_items(userId, createdAt DESC)',
-      );
-      if (await _tableHasColumn(db, 'album_items', 'remoteId')) {
-        await db.execute(
-          'CREATE INDEX IF NOT EXISTS idx_album_items_userId_remoteId '
-          'ON album_items(userId, remoteId)',
-        );
-      }
-    }
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_album_items_remoteId ON album_items(remoteId)',
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_album_items_userId_createdAt '
+      'ON album_items(userId, createdAt DESC)',
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_album_items_userId_remoteId '
+      'ON album_items(userId, remoteId)',
+    );
 
     await db.execute(
       'CREATE INDEX IF NOT EXISTS idx_reminders_userId_time ON reminders(userId, time)',
@@ -298,41 +237,6 @@ class AppDatabase {
       'CREATE INDEX IF NOT EXISTS idx_today_reminder_snapshots_userId_dateKey_remoteId '
       'ON today_reminder_snapshots(userId, dateKey, remoteId)',
     );
-  }
-
-  Future<bool> _ensureColumn(
-    Database db, {
-    required String table,
-    required String column,
-    required String sql,
-  }) async {
-    if (await _tableHasColumn(db, table, column)) {
-      return false;
-    }
-    await _tryExecute(db, sql);
-    return _tableHasColumn(db, table, column);
-  }
-
-  Future<bool> _tableHasColumn(Database db, String table, String column) async {
-    final rows = await db.rawQuery('PRAGMA table_info($table)');
-    for (final row in rows) {
-      final name = (row['name'] ?? '').toString().trim();
-      if (name == column) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /// 尝试执行一条 SQL 语句。
-  ///
-  /// 用于迁移时的“幂等式”字段新增，避免字段已存在时整个升级失败。
-  Future<void> _tryExecute(Database db, String sql) async {
-    try {
-      await db.execute(sql);
-    } catch (_) {
-      // Ignore: column/table might already exist on some devices.
-    }
   }
 
   /// 关闭数据库连接并清空实例缓存。

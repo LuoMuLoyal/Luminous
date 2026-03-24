@@ -9,7 +9,7 @@
 - https://wty10hv6az.sealosbja.site/scan-record-list
 
 用途:
-- 相册记录同步: 前端拍照识别后，把“缩略图 + 识别结果”同步到后端，便于跨设备查看
+- 相册记录同步: 前端拍照识别后，把“缩略图 + 识别结果”同步到后端，当前客户端不再回拉历史列表
 
 请求体: POST /scan-record-create
 - userId: string (必填)
@@ -127,9 +127,9 @@ export async function main(ctx: FunctionContext) {
 ## 当前项目对应关系
 
 - 接口用途:
-  提供识别记录创建和识别记录列表查询，主要服务于软件相册和历史识别记录。
+  提供识别记录创建和识别记录列表查询；当前客户端仅使用创建接口做轻量上报。
 - Flutter 端调用入口:
-  `lib/api/scan_api.dart` 的 `createScanRecord()` 和 `listScanRecords()`。
+  `lib/api/scan_api.dart` 的 `createScanRecord()`。
 - `backend/src/handlers` 对应实现:
   暂未整理进 `backend/`。
 - `backend/src/cloud` 对应云函数入口:

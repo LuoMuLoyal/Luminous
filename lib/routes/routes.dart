@@ -56,49 +56,115 @@ Map<String, Widget Function(BuildContext)> getRootRoutes() {
 
 ThemeData _buildLightTheme() {
   const primary = Color(0xFF0EA5E9);
-  final colorScheme = ColorScheme.fromSeed(
-    seedColor: primary,
-    brightness: Brightness.light,
-  ).copyWith(primary: primary, surface: Colors.white);
+  const secondary = Color(0xFFC8A7F2);
+  const tertiary = Color(0xFFE7C767);
+  final colorScheme =
+      ColorScheme.fromSeed(
+        seedColor: primary,
+        brightness: Brightness.light,
+      ).copyWith(
+        primary: primary,
+        secondary: secondary,
+        tertiary: tertiary,
+        surface: Colors.white,
+        onSurfaceVariant: const Color(0xFF64748B),
+        outline: const Color(0xFFDDE5F0),
+        shadow: const Color(0xFF0F172A),
+      );
 
   return ThemeData(
     useMaterial3: true,
     colorScheme: colorScheme,
     scaffoldBackgroundColor: AppUiConstants.PAGE_BACKGROUND,
+    canvasColor: AppUiConstants.PAGE_BACKGROUND,
+    dividerColor: const Color(0xFFE2E8F0),
+    shadowColor: const Color(0xFF0F172A),
     dialogTheme: const DialogThemeData(
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(24)),
+      ),
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       foregroundColor: Color(0xFF0F172A),
       elevation: 0,
+      scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
     ),
     cardTheme: const CardThemeData(
       color: Colors.white,
       surfaceTintColor: Colors.transparent,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        side: BorderSide(color: Color(0xFFE4EAF2)),
+      ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: const Color(0xFFF8FAFC),
+      fillColor: const Color(0xFFF7F9FC),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      hintStyle: const TextStyle(
+        color: Color(0xFF94A3B8),
+        fontWeight: FontWeight.w500,
+      ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,
       ),
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: AppUiConstants.TAB_BAR_BACKGROUND,
-      elevation: 0,
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: primary,
+        foregroundColor: Colors.white,
+        minimumSize: const Size(0, 46),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: primary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      side: const BorderSide(color: Color(0xFFCBD5E1)),
+      fillColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return primary;
+        }
+        return Colors.white;
+      }),
+      checkColor: const WidgetStatePropertyAll<Color>(Colors.white),
+    ),
+    switchTheme: const SwitchThemeData(
+      trackOutlineColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.transparent,
+      indicatorColor: primary.withValues(alpha: 0.12),
+      labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
+        final selected = states.contains(WidgetState.selected);
+        return TextStyle(
+          fontSize: 12.5,
+          fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
+          color: selected ? primary : AppUiConstants.TAB_INACTIVE,
+        );
+      }),
     ),
   );
 }
 
 ThemeData _buildDarkTheme() {
   const primary = Color(0xFF7DD3FC);
-  const background = Color(0xFF0F172A);
-  const surface = Color(0xFF162033);
-  const surfaceAlt = Color(0xFF1E293B);
+  const secondary = Color(0xFFE0D2FF);
+  const tertiary = Color(0xFFF7E3A5);
+  const background = Color(0xFF0C1424);
+  const surface = Color(0xFF131E30);
+  const surfaceAlt = Color(0xFF1C2A41);
   final colorScheme =
       ColorScheme.fromSeed(
         seedColor: primary,
@@ -106,7 +172,10 @@ ThemeData _buildDarkTheme() {
       ).copyWith(
         primary: primary,
         surface: surface,
-        secondary: const Color(0xFF99F6E4),
+        secondary: secondary,
+        tertiary: tertiary,
+        onSurfaceVariant: const Color(0xFF97A6BA),
+        outline: const Color(0xFF334155),
       );
 
   return ThemeData(
@@ -114,31 +183,83 @@ ThemeData _buildDarkTheme() {
     colorScheme: colorScheme,
     scaffoldBackgroundColor: background,
     canvasColor: background,
+    dividerColor: const Color(0xFF334155),
+    shadowColor: Colors.black,
     dialogTheme: const DialogThemeData(
       backgroundColor: surface,
       surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(24)),
+      ),
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.white,
       elevation: 0,
+      scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
     ),
     cardTheme: const CardThemeData(
       color: surface,
       surfaceTintColor: Colors.transparent,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        side: BorderSide(color: Color(0xFF334155)),
+      ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: surfaceAlt,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      hintStyle: const TextStyle(
+        color: Color(0xFF94A3B8),
+        fontWeight: FontWeight.w500,
+      ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,
       ),
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: Color(0xFF111C2E),
-      elevation: 0,
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: primary,
+        foregroundColor: const Color(0xFF082F49),
+        minimumSize: const Size(0, 46),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: primary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      side: const BorderSide(color: Color(0xFF475569)),
+      fillColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return primary;
+        }
+        return surfaceAlt;
+      }),
+      checkColor: const WidgetStatePropertyAll<Color>(Color(0xFF082F49)),
+    ),
+    switchTheme: const SwitchThemeData(
+      trackOutlineColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.transparent,
+      indicatorColor: primary.withValues(alpha: 0.18),
+      labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
+        final selected = states.contains(WidgetState.selected);
+        return TextStyle(
+          fontSize: 12.5,
+          fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
+          color: selected ? primary : const Color(0xFF94A3B8),
+        );
+      }),
     ),
   );
 }

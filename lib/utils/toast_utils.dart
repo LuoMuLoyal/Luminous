@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:luminous/utils/message_utils.dart';
 
 /// 轻提示出现位置。
@@ -82,10 +83,11 @@ class ToastUtils {
     String fallback = '操作失败，请稍后重试',
     Duration toastduration = const Duration(seconds: 2),
   }) {
+    _logError(error);
     final message = MessageUtils.extractError(
       error,
       fallback: fallback,
-      maxLength: 80,
+      maxLength: 36,
     );
     if (message.isEmpty) {
       return;
@@ -98,6 +100,17 @@ class ToastUtils {
       placement: ToastPlacement.top,
       tone: ToastTone.error,
     );
+  }
+
+  void _logError(Object? error) {
+    if (!kDebugMode || error == null) {
+      return;
+    }
+
+    debugPrint('[ToastError] $error');
+    if (error is Error) {
+      debugPrintStack(stackTrace: error.stackTrace);
+    }
   }
 
   void _showOverlay(

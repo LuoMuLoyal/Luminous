@@ -9,7 +9,7 @@ class MessageUtils {
   static String extractError(
     Object? error, {
     String fallback = '操作失败，请稍后重试',
-    int maxLength = 80,
+    int maxLength = 36,
   }) {
     return normalize(
       error?.toString() ?? '',
@@ -22,7 +22,7 @@ class MessageUtils {
   static String normalize(
     String message, {
     String fallback = '操作失败，请稍后重试',
-    int maxLength = 80,
+    int maxLength = 36,
   }) {
     var text = message.trim();
     if (text.isEmpty) {
@@ -35,6 +35,11 @@ class MessageUtils {
     final lower = text.toLowerCase();
     if (lower.contains('<!doctype html') || lower.contains('<html')) {
       return fallback;
+    }
+
+    final classified = _classifyCommonError(text);
+    if (classified != null) {
+      return classified;
     }
 
     // 常见异常前缀清理。
@@ -75,6 +80,36 @@ class MessageUtils {
     }
 
     return text.isEmpty ? fallback : text;
+  }
+
+  static String? _classifyCommonError(String text) {
+    final lower = text.toLowerCase();
+
+    if (lower.contains('timeout') || text.contains('超时')) {
+      return '网络请求超时';
+    }
+    if (lower.contains('404') || text.contains('接口不存在')) {
+      return '接口不存在';
+    }
+    if (lower.contains('500') ||
+        lower.contains('502') ||
+        lower.contains('503') ||
+        lower.contains('504') ||
+        text.contains('服务器')) {
+      return '服务器开小差了';
+    }
+    if (lower.contains('network') ||
+        lower.contains('socketexception') ||
+        lower.contains('connection') ||
+        lower.contains('dioexception') ||
+        lower.contains('xmlhttprequest') ||
+        text.contains('网络')) {
+      return '网络请求错误';
+    }
+    if (lower.contains('cancel')) {
+      return '请求已取消';
+    }
+    return null;
   }
 
   static int _findNaturalCutIndex(String text, {required int maxLength}) {
