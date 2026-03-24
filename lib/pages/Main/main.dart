@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:luminous/components/app_ornaments.dart';
 import 'package:luminous/components/app_canvas.dart';
@@ -89,40 +90,78 @@ class _MainPageState extends State<MainPage> {
     final tabBarBackground = isDark
         ? const Color(0xFF111C2E)
         : AppUiConstants.TAB_BAR_BACKGROUND;
+    final bottomBedColor = Color.alphaBlend(
+      currentColor.withValues(alpha: isDark ? 0.12 : 0.055),
+      theme.scaffoldBackgroundColor,
+    );
+    final systemNavigationBarColor = Color.alphaBlend(
+      secondaryColor.withValues(alpha: isDark ? 0.12 : 0.05),
+      bottomBedColor,
+    );
     final inactiveColor = isDark
         ? const Color(0xFF94A3B8)
         : AppUiConstants.TAB_INACTIVE;
+    final overlayStyle =
+        (isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
+            .copyWith(
+              statusBarColor: Colors.transparent,
+              systemNavigationBarColor: systemNavigationBarColor,
+              systemNavigationBarDividerColor: Colors.transparent,
+              statusBarIconBrightness: isDark
+                  ? Brightness.light
+                  : Brightness.dark,
+              statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+              systemNavigationBarIconBrightness: isDark
+                  ? Brightness.light
+                  : Brightness.dark,
+            );
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      body: AppCanvas(
-        accentColor: currentColor,
-        secondaryAccentColor: secondaryColor,
-        child: IndexedStack(
-          index: _currentIndex,
-          children: List<Widget>.generate(
-            _tablist.length,
-            (index) => _loadedIndexes.contains(index)
-                ? _pages[index]
-                : const SizedBox.shrink(),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlayStyle,
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        extendBody: true,
+        body: AppCanvas(
+          accentColor: currentColor,
+          secondaryAccentColor: secondaryColor,
+          child: IndexedStack(
+            index: _currentIndex,
+            children: List<Widget>.generate(
+              _tablist.length,
+              (index) => _loadedIndexes.contains(index)
+                  ? _pages[index]
+                  : const SizedBox.shrink(),
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        minimum: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-        child: _MainBottomBar(
-          items: _tablist,
-          currentIndex: _currentIndex,
-          backgroundColor: tabBarBackground,
-          inactiveColor: inactiveColor,
-          buildIcon: _buildTabIcon,
-          onTap: (index) {
-            setState(() {
-              _loadedIndexes.add(index);
-              _currentIndex = index;
-            });
-          },
+        bottomNavigationBar: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                bottomBedColor.withValues(alpha: isDark ? 0.92 : 0.90),
+                systemNavigationBarColor,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            top: false,
+            minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+            child: _MainBottomBar(
+              items: _tablist,
+              currentIndex: _currentIndex,
+              backgroundColor: tabBarBackground,
+              inactiveColor: inactiveColor,
+              buildIcon: _buildTabIcon,
+              onTap: (index) {
+                setState(() {
+                  _loadedIndexes.add(index);
+                  _currentIndex = index;
+                });
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -190,9 +229,37 @@ class _MainBottomBar extends StatelessWidget {
                 isDark ? const Color(0xFF24324A) : const Color(0xFFE4EAF3),
               ),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.08),
+                blurRadius: 22,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
           child: Stack(
             children: [
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: const [0, 0.22, 0.72],
+                        colors: [
+                          Colors.white.withValues(alpha: isDark ? 0.04 : 0.12),
+                          Colors.white.withValues(
+                            alpha: isDark ? 0.015 : 0.038,
+                          ),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Positioned.fill(
                 child: IgnorePointer(
                   child: DecoratedBox(
@@ -269,12 +336,40 @@ class _MainBottomBar extends StatelessWidget {
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: selected
-                                  ? item.color.withValues(
-                                      alpha: isDark ? 0.24 : 0.16,
+                              gradient: selected
+                                  ? LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        item.color.withValues(
+                                          alpha: isDark ? 0.26 : 0.19,
+                                        ),
+                                        item.color.withValues(
+                                          alpha: isDark ? 0.16 : 0.11,
+                                        ),
+                                      ],
                                     )
-                                  : Colors.transparent,
+                                  : null,
+                              color: selected ? null : Colors.transparent,
                               borderRadius: BorderRadius.circular(22),
+                              border: Border.all(
+                                color: selected
+                                    ? item.color.withValues(
+                                        alpha: isDark ? 0.24 : 0.14,
+                                      )
+                                    : Colors.transparent,
+                              ),
+                              boxShadow: selected
+                                  ? [
+                                      BoxShadow(
+                                        color: item.color.withValues(
+                                          alpha: isDark ? 0.16 : 0.12,
+                                        ),
+                                        blurRadius: 16,
+                                        offset: const Offset(0, 6),
+                                      ),
+                                    ]
+                                  : const [],
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,

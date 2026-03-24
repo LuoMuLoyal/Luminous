@@ -251,12 +251,14 @@ class AuthMethodSwitcher extends StatelessWidget {
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
     final accent = accentColor ?? scheme.primary;
+    final selectedStart = Color.lerp(accent, scheme.secondary, 0.16)!;
+    final selectedEnd = Color.lerp(accent, scheme.tertiary, 0.10)!;
     final outerBackground = Color.alphaBlend(
-      accent.withValues(alpha: isDark ? 0.06 : 0.025),
+      accent.withValues(alpha: isDark ? 0.07 : 0.032),
       theme.cardTheme.color ?? theme.colorScheme.surface,
     );
     final outerBorder = Color.alphaBlend(
-      accent.withValues(alpha: isDark ? 0.14 : 0.08),
+      accent.withValues(alpha: isDark ? 0.16 : 0.10),
       scheme.outline,
     );
 
@@ -269,7 +271,7 @@ class AuthMethodSwitcher extends StatelessWidget {
             ? const []
             : const [
                 BoxShadow(
-                  color: Color(0x0C0F172A),
+                  color: Color(0x100F172A),
                   blurRadius: 12,
                   offset: Offset(0, 6),
                 ),
@@ -290,35 +292,67 @@ class AuthMethodSwitcher extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
                       onTap: entry.value.onTap,
-                      child: AnimatedContainer(
+                      child: AnimatedScale(
+                        scale: entry.value.selected ? 1 : 0.985,
                         duration: const Duration(milliseconds: 180),
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: entry.value.selected
-                              ? accent
-                              : Color.alphaBlend(
-                                  accent.withValues(
-                                    alpha: isDark ? 0.08 : 0.035,
+                        curve: Curves.easeOutCubic,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          height: 38,
+                          decoration: BoxDecoration(
+                            gradient: entry.value.selected
+                                ? LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [selectedStart, selectedEnd],
+                                  )
+                                : null,
+                            color: entry.value.selected
+                                ? null
+                                : Color.alphaBlend(
+                                    accent.withValues(
+                                      alpha: isDark ? 0.08 : 0.035,
+                                    ),
+                                    isDark
+                                        ? const Color(0xFF1A2335)
+                                        : const Color(0xFFF3F6FA),
                                   ),
-                                  isDark
-                                      ? const Color(0xFF1A2335)
-                                      : const Color(0xFFF3F6FA),
-                                ),
-                          borderRadius: BorderRadius.circular(11),
-                        ),
-                        child: Center(
-                          child: Text(
-                            entry.value.label,
-                            style: TextStyle(
+                            borderRadius: BorderRadius.circular(11),
+                            border: Border.all(
                               color: entry.value.selected
-                                  ? Colors.white
-                                  : (isDark
-                                        ? scheme.onSurface
-                                        : scheme.onSurface.withValues(
-                                            alpha: 0.84,
-                                          )),
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12.5,
+                                  ? accent.withValues(
+                                      alpha: isDark ? 0.28 : 0.18,
+                                    )
+                                  : Colors.white.withValues(
+                                      alpha: isDark ? 0.04 : 0.24,
+                                    ),
+                            ),
+                            boxShadow: entry.value.selected
+                                ? [
+                                    BoxShadow(
+                                      color: accent.withValues(
+                                        alpha: isDark ? 0.18 : 0.22,
+                                      ),
+                                      blurRadius: 14,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ]
+                                : const [],
+                          ),
+                          child: Center(
+                            child: Text(
+                              entry.value.label,
+                              style: TextStyle(
+                                color: entry.value.selected
+                                    ? Colors.white
+                                    : (isDark
+                                          ? scheme.onSurface
+                                          : scheme.onSurface.withValues(
+                                              alpha: 0.84,
+                                            )),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12.5,
+                              ),
                             ),
                           ),
                         ),

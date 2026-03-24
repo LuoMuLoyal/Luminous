@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
@@ -21,77 +22,67 @@ class SettingsPage extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(title: const Text('设置')),
-      body: AppCanvas(
-        accentColor: scheme.secondary,
-        secondaryAccentColor: scheme.primary,
-        child: SafeArea(
-          top: false,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+    return AppCanvasPageScaffold(
+      accentColor: scheme.secondary,
+      secondaryAccentColor: scheme.primary,
+      safeAreaBottom: true,
+      appBar: AppBar(
+        title: const Text('设置'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+        children: [
+          _SettingsHeroCard(
+            themeController: themeController,
+            userController: userController,
+          ),
+          const SizedBox(height: 12),
+          _SettingsSectionCard(
+            title: '显示',
+            subtitle: '主题模式和主题风格会同时作用到首页、药品、相册与弹层',
+            icon: Icons.palette_outlined,
+            accentColor: scheme.secondary,
+            secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.5)!,
+            ornamentKey: 'settings.display',
             children: [
-              _SettingsSectionCard(
-                title: '显示',
-                accentColor: scheme.secondary,
-                secondaryColor: Color.lerp(
-                  scheme.primary,
-                  scheme.tertiary,
-                  0.5,
-                )!,
-                ornamentKey: 'settings.display',
-                children: [
-                  _DisplayPreferencesSection(themeController: themeController),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _SettingsSectionCard(
-                title: '账号',
-                accentColor: scheme.tertiary,
-                secondaryColor: scheme.secondary,
-                ornamentKey: 'settings.account',
-                children: [
-                  Obx(() {
-                    final loggedIn = userController.isLoggedIn;
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      enabled: loggedIn,
-                      leading: Icon(
-                        Icons.logout_rounded,
-                        color: loggedIn
-                            ? scheme.error
-                            : scheme.onSurfaceVariant.withValues(alpha: 0.7),
-                      ),
-                      title: const Text(
-                        '退出登录',
-                        style: TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                      subtitle: Text(
-                        loggedIn ? '清除当前设备上的登录状态' : '当前还没有登录账号',
-                        style: TextStyle(
-                          color: scheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      trailing: loggedIn
-                          ? Icon(
-                              Icons.chevron_right_rounded,
-                              color: scheme.onSurfaceVariant,
-                            )
-                          : null,
-                      onTap: loggedIn
-                          ? () => _confirmLogout(context, userController)
-                          : () {
-                              ToastUtils.instance.show(context, '当前未登录');
-                            },
-                    );
-                  }),
-                ],
-              ),
+              _DisplayPreferencesSection(themeController: themeController),
             ],
           ),
-        ),
+          const SizedBox(height: 12),
+          _SettingsSectionCard(
+            title: '账号',
+            subtitle: '当前应用只保留这台设备的登录态，不做旧版本迁移兼容',
+            icon: Icons.lock_person_outlined,
+            accentColor: scheme.tertiary,
+            secondaryColor: scheme.secondary,
+            ornamentKey: 'settings.account',
+            children: [
+              Obx(() {
+                final loggedIn = userController.isLoggedIn;
+                final currentUser = userController.user.value;
+                return _SettingsActionTile(
+                  icon: loggedIn
+                      ? Icons.logout_rounded
+                      : Icons.person_outline_rounded,
+                  accentColor: loggedIn ? scheme.error : scheme.secondary,
+                  title: loggedIn ? '退出登录' : '当前未登录',
+                  subtitle: loggedIn
+                      ? '当前账号：${currentUser?.displayTitle ?? '已登录'}'
+                      : '登录后可同步缩略图和识别结果，原图仍只保留在本机',
+                  caption: loggedIn ? '安全退出并清除这台设备上的登录状态' : '没有账号内容需要清理',
+                  enabled: loggedIn,
+                  onTap: loggedIn
+                      ? () => _confirmLogout(context, userController)
+                      : () => ToastUtils.instance.show(context, '当前未登录'),
+                );
+              }),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -135,6 +126,8 @@ class SettingsPage extends StatelessWidget {
 class _SettingsSectionCard extends StatelessWidget {
   const _SettingsSectionCard({
     required this.title,
+    required this.subtitle,
+    required this.icon,
     required this.children,
     required this.accentColor,
     required this.secondaryColor,
@@ -142,6 +135,8 @@ class _SettingsSectionCard extends StatelessWidget {
   });
 
   final String title;
+  final String subtitle;
+  final IconData icon;
   final List<Widget> children;
   final Color accentColor;
   final Color secondaryColor;
@@ -156,21 +151,261 @@ class _SettingsSectionCard extends StatelessWidget {
       accentColor: accentColor,
       secondaryColor: secondaryColor,
       ornamentKey: ornamentKey,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
       radius: 18,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: appTintedSurface(
+                    context,
+                    accentColor,
+                    lightAlpha: 0.10,
+                    darkAlpha: 0.18,
+                  ),
+                  borderRadius: BorderRadius.circular(13),
+                  border: Border.all(
+                    color: appTintedBorder(
+                      context,
+                      accentColor,
+                      lightAlpha: 0.18,
+                      darkAlpha: 0.24,
+                    ),
+                  ),
+                ),
+                child: Icon(icon, color: accentColor),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: scheme.onSurface,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: scheme.onSurfaceVariant,
+                        fontSize: 12.5,
+                        height: 1.4,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ...children,
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsHeroCard extends StatelessWidget {
+  const _SettingsHeroCard({
+    required this.themeController,
+    required this.userController,
+  });
+
+  final ThemeController themeController;
+  final UserController userController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final preference = themeController.themePreference.value;
+      final style = themeController.themeStyle.value;
+      final systemBrightness = MediaQuery.platformBrightnessOf(context);
+      final resolvedDark = preference == AppThemeModePreference.system
+          ? systemBrightness == Brightness.dark
+          : preference == AppThemeModePreference.dark;
+      final loggedIn = userController.isLoggedIn;
+      final userLabel = loggedIn
+          ? (userController.user.value?.displayTitle ?? '账号已登录')
+          : '未登录';
+
+      return SoftBannerCard(
+        palette: SoftBannerPalettes.mineOf(context),
+        ornamentKey: 'settings.hero',
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+        builder: (context, theme) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: theme.surfaceColor,
+                      border: Border.all(color: theme.borderColor),
+                    ),
+                    child: Icon(Icons.tune_rounded, color: theme.accentColor),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '界面与偏好',
+                          style: TextStyle(
+                            color: theme.textColor,
+                            fontSize: 19,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          resolvedDark
+                              ? '现在是更安静的夜间观感，页面会一起跟随当前主题节奏'
+                              : '现在是更通透的浅色观感，页面会一起保持柔和层次',
+                          style: TextStyle(
+                            color: theme.secondaryTextColor,
+                            fontSize: 13,
+                            height: 1.4,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _SettingsInfoChip(
+                    icon: _themeModeIcon(preference),
+                    text: _themeModeLabel(preference),
+                    backgroundColor: theme.surfaceColor,
+                    foregroundColor: theme.surfaceTextColor,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _SettingsInfoChip(
+                    icon: Icons.auto_awesome_rounded,
+                    text: _themeStyleLabel(style),
+                    backgroundColor: theme.surfaceColor,
+                    foregroundColor: theme.surfaceTextColor,
+                  ),
+                  _SettingsInfoChip(
+                    icon: loggedIn
+                        ? Icons.cloud_done_rounded
+                        : Icons.cloud_off_rounded,
+                    text: loggedIn ? '账号已登录' : '本地模式',
+                    backgroundColor: theme.surfaceColor,
+                    foregroundColor: theme.surfaceTextColor,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Container(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                decoration: BoxDecoration(
+                  color: theme.surfaceColor.withValues(alpha: 0.76),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: theme.borderColor),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.person_outline_rounded,
+                      color: theme.accentColor,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userLabel,
+                            style: TextStyle(
+                              color: theme.textColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            loggedIn
+                                ? '你可以继续调整主题风格，账号状态会保留在这台设备上'
+                                : '现在也能正常使用应用，登录只会额外开启轻量同步能力',
+                            style: TextStyle(
+                              color: theme.secondaryTextColor,
+                              fontSize: 12.5,
+                              height: 1.45,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+}
+
+class _SettingsInfoChip extends StatelessWidget {
+  const _SettingsInfoChip({
+    required this.icon,
+    required this.text,
+    required this.backgroundColor,
+    required this.foregroundColor,
+  });
+
+  final IconData icon;
+  final String text;
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: foregroundColor),
+          const SizedBox(width: 6),
           Text(
-            title,
+            text,
             style: TextStyle(
-              color: scheme.onSurface,
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
+              color: foregroundColor,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 8),
-          ...children,
         ],
       ),
     );
@@ -197,24 +432,15 @@ class _DisplayPreferencesSection extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(
-                preference == AppThemeModePreference.system
-                    ? Icons.brightness_auto_rounded
-                    : (resolvedDark
-                          ? Icons.dark_mode_rounded
-                          : Icons.light_mode_rounded),
-                color: scheme.primary,
-              ),
-              const SizedBox(width: 10),
-              const Expanded(
-                child: Text(
-                  '主题模式',
-                  style: TextStyle(fontWeight: FontWeight.w800),
-                ),
-              ),
-            ],
+          _SettingsFieldTitle(
+            icon: preference == AppThemeModePreference.system
+                ? Icons.brightness_auto_rounded
+                : (resolvedDark
+                      ? Icons.dark_mode_rounded
+                      : Icons.light_mode_rounded),
+            title: '主题模式',
+            description: '支持跟随系统、固定浅色和固定深色三种方式',
+            color: scheme.primary,
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -266,17 +492,11 @@ class _DisplayPreferencesSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Icon(Icons.palette_outlined, color: scheme.secondary),
-              const SizedBox(width: 10),
-              const Expanded(
-                child: Text(
-                  '主题风格',
-                  style: TextStyle(fontWeight: FontWeight.w800),
-                ),
-              ),
-            ],
+          _SettingsFieldTitle(
+            icon: Icons.palette_outlined,
+            title: '主题风格',
+            description: '柔和、月雾、神树三套配色会一起影响环境光、横幅和分区块',
+            color: scheme.secondary,
           ),
           const SizedBox(height: 8),
           LayoutBuilder(
@@ -333,6 +553,7 @@ class _ThemeStyleCard extends StatelessWidget {
       style,
       theme.brightness == Brightness.dark,
     );
+    final accent = preview[preview.length - 1];
 
     return InkWell(
       onTap: onTap,
@@ -350,48 +571,99 @@ class _ThemeStyleCard extends StatelessWidget {
                 ? scheme.primary.withValues(alpha: 0.34)
                 : scheme.outline,
           ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: scheme.primary.withValues(alpha: 0.10),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ]
+              : const [],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _themeStyleLabel(style),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 180),
+                  opacity: selected ? 1 : 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: scheme.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      '当前使用',
+                      style: TextStyle(
+                        color: scheme.primary,
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
             Container(
-              height: 48,
+              height: 56,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 gradient: LinearGradient(colors: preview),
               ),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: preview
-                        .map(
-                          (color) => Container(
-                            width: 8,
-                            height: 8,
-                            margin: const EdgeInsets.only(left: 4),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: color.withValues(alpha: 0.92),
-                            ),
-                          ),
-                        )
-                        .toList(),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -12,
+                    right: -10,
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.30),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
                   ),
-                ),
+                  Positioned(
+                    bottom: 10,
+                    left: 12,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: preview
+                          .map(
+                            (color) => Container(
+                              width: 9,
+                              height: 9,
+                              margin: const EdgeInsets.only(right: 5),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: color.withValues(alpha: 0.92),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 10),
-            Text(
-              _themeStyleLabel(style),
-              style: TextStyle(
-                fontWeight: FontWeight.w800,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 2),
             Text(
               _themeStyleSubtitle(style),
               style: TextStyle(
@@ -402,6 +674,170 @@ class _ThemeStyleCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsFieldTitle extends StatelessWidget {
+  const _SettingsFieldTitle({
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String title;
+  final String description;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: color),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+              const SizedBox(height: 2),
+              Text(
+                description,
+                style: TextStyle(
+                  color: scheme.onSurfaceVariant,
+                  fontSize: 12.5,
+                  height: 1.35,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SettingsActionTile extends StatelessWidget {
+  const _SettingsActionTile({
+    required this.icon,
+    required this.accentColor,
+    required this.title,
+    required this.subtitle,
+    required this.caption,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color accentColor;
+  final String title;
+  final String subtitle;
+  final String caption;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final cardColor = enabled
+        ? appTintedSurface(
+            context,
+            accentColor,
+            lightAlpha: 0.08,
+            darkAlpha: 0.16,
+          )
+        : theme.cardColor.withValues(alpha: 0.36);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Ink(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: enabled
+                  ? appTintedBorder(
+                      context,
+                      accentColor,
+                      lightAlpha: 0.18,
+                      darkAlpha: 0.26,
+                    )
+                  : scheme.outline.withValues(alpha: 0.75),
+            ),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: accentColor.withValues(alpha: enabled ? 0.14 : 0.10),
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Icon(
+                  icon,
+                  color: enabled
+                      ? accentColor
+                      : scheme.onSurfaceVariant.withValues(alpha: 0.85),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w800,
+                        color: scheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: scheme.onSurfaceVariant,
+                        fontSize: 12.8,
+                        height: 1.4,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      caption,
+                      style: TextStyle(
+                        color: enabled
+                            ? accentColor
+                            : scheme.onSurfaceVariant.withValues(alpha: 0.82),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                enabled ? Icons.chevron_right_rounded : Icons.remove_rounded,
+                color: scheme.onSurfaceVariant,
+              ),
+            ],
+          ),
         ),
       ),
     );

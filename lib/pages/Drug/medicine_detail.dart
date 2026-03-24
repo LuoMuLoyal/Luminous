@@ -209,93 +209,162 @@ class _HeaderCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       borderRadius: BorderRadius.circular(18),
       builder: (context, theme) {
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: theme.surfaceColor,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: theme.borderColor),
-              ),
-              child: Icon(
-                Icons.medication_rounded,
-                color: theme.accentColor,
-                size: 24,
-              ),
+        final refreshButton = FilledButton.tonalIcon(
+          onPressed: loading ? null : onRefresh,
+          icon: loading
+              ? SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: theme.surfaceTextColor,
+                  ),
+                )
+              : const Icon(Icons.refresh_rounded, size: 16),
+          label: Text(loading ? '更新中' : '刷新'),
+          style: FilledButton.styleFrom(
+            backgroundColor: theme.surfaceColor,
+            foregroundColor: theme.surfaceTextColor,
+            minimumSize: const Size(92, 40),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(999),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.displayName,
+          ),
+        );
+        final pills = [
+          if (item.approvalNo.isNotEmpty)
+            _pill(
+              label: '批准文号',
+              value: item.approvalNo,
+              backgroundColor: theme.surfaceColor,
+              textColor: theme.surfaceTextColor,
+            ),
+          if (item.drugCode.isNotEmpty)
+            _pill(
+              label: '药品编码',
+              value: item.drugCode,
+              backgroundColor: theme.surfaceColor,
+              textColor: theme.surfaceTextColor,
+            ),
+        ];
+
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxWidth < 470;
+            final content = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.surfaceColor,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    '药物信息',
                     style: TextStyle(
-                      color: theme.textColor,
-                      fontSize: 18,
+                      color: theme.surfaceTextColor,
+                      fontSize: 11,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                ),
+                const SizedBox(height: 9),
+                Text(
+                  item.displayName,
+                  style: TextStyle(
+                    color: theme.textColor,
+                    fontSize: compact ? 17.5 : 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  item.displaySubtitle,
+                  style: TextStyle(
+                    color: theme.secondaryTextColor,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    height: 1.4,
+                  ),
+                ),
+                if (item.displayTips.isNotEmpty) ...[
+                  const SizedBox(height: 8),
                   Text(
-                    item.displaySubtitle,
+                    item.displayTips,
                     style: TextStyle(
-                      color: theme.secondaryTextColor,
-                      fontSize: 13,
+                      color: theme.secondaryTextColor.withValues(alpha: 0.94),
+                      fontSize: 12.2,
                       fontWeight: FontWeight.w600,
+                      height: 1.35,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                ],
+                if (pills.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Wrap(spacing: 8, runSpacing: 8, children: pills),
+                ],
+              ],
+            );
+
+            if (compact) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (item.approvalNo.isNotEmpty)
-                        _pill(
-                          label: '批准文号',
-                          value: item.approvalNo,
-                          backgroundColor: theme.surfaceColor,
-                          textColor: theme.surfaceTextColor,
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: theme.surfaceColor,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: theme.borderColor),
                         ),
-                      if (item.drugCode.isNotEmpty)
-                        _pill(
-                          label: '药品编码',
-                          value: item.drugCode,
-                          backgroundColor: theme.surfaceColor,
-                          textColor: theme.surfaceTextColor,
+                        child: Icon(
+                          Icons.medication_rounded,
+                          color: theme.accentColor,
+                          size: 24,
                         ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(child: content),
                     ],
                   ),
+                  const SizedBox(height: 14),
+                  refreshButton,
                 ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            FilledButton.tonalIcon(
-              onPressed: loading ? null : onRefresh,
-              icon: loading
-                  ? SizedBox(
-                      width: 14,
-                      height: 14,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: theme.surfaceTextColor,
-                      ),
-                    )
-                  : const Icon(Icons.refresh_rounded, size: 16),
-              label: const Text('刷新'),
-              style: FilledButton.styleFrom(
-                backgroundColor: theme.surfaceColor,
-                foregroundColor: theme.surfaceTextColor,
-                minimumSize: const Size(86, 40),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(999),
+              );
+            }
+
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: theme.surfaceColor,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: theme.borderColor),
+                  ),
+                  child: Icon(
+                    Icons.medication_rounded,
+                    color: theme.accentColor,
+                    size: 24,
+                  ),
                 ),
-              ),
-            ),
-          ],
+                const SizedBox(width: 12),
+                Expanded(child: content),
+                const SizedBox(width: 12),
+                refreshButton,
+              ],
+            );
+          },
         );
       },
     );
@@ -498,26 +567,49 @@ class _SurfaceCard extends StatelessWidget {
       radius: 18,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compactHeader =
+                trailing != null && constraints.maxWidth < 420;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w800,
-                    color: scheme.onSurface,
+                if (compactHeader) ...[
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.w800,
+                      color: scheme.onSurface,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                ...?(trailing == null ? null : <Widget>[trailing!]),
+                  const SizedBox(height: 10),
+                  trailing!,
+                ] else
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 15.5,
+                            fontWeight: FontWeight.w800,
+                            color: scheme.onSurface,
+                          ),
+                        ),
+                      ),
+                      if (trailing != null) ...[
+                        const SizedBox(width: 12),
+                        trailing!,
+                      ],
+                    ],
+                  ),
+                const SizedBox(height: 10),
+                child,
               ],
-            ),
-            const SizedBox(height: 10),
-            child,
-          ],
+            );
+          },
         ),
       ),
     );
@@ -541,35 +633,69 @@ class _InfoRow extends StatelessWidget {
     /// 经过兜底处理的展示文本。
     final text = value.trim().isEmpty ? '-' : value.trim();
     final scheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 108,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 12.5,
-                color: scheme.onSurfaceVariant,
-                fontWeight: FontWeight.w700,
-              ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 360;
+        if (compact) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12.2,
+                    color: scheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    height: 1.45,
+                    color: scheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
-          ),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 12.5,
-                height: 1.45,
-                color: scheme.onSurface,
-                fontWeight: FontWeight.w600,
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 108,
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    color: scheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
-            ),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    height: 1.45,
+                    color: scheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -85,12 +85,43 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
           children: [
+            _buildFlowHints(),
+            const SizedBox(height: 12),
             _buildSearchEntry(),
             const SizedBox(height: 12),
             _buildMyMedicinesCard(),
           ],
         ),
       ),
+    );
+  }
+
+  /// 构建顶部流程提示，让选择策略更直观。
+  Widget _buildFlowHints() {
+    final scheme = Theme.of(context).colorScheme;
+    final itemCountText = _rows.isEmpty
+        ? '本地药品库暂时为空'
+        : '本地已收录 ${_rows.length} 项';
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        _PickerHintChip(
+          icon: Icons.offline_bolt_rounded,
+          label: '本地优先选择',
+          accent: scheme.primary,
+        ),
+        _PickerHintChip(
+          icon: Icons.cloud_sync_outlined,
+          label: '需要时再补查云端',
+          accent: scheme.secondary,
+        ),
+        _PickerHintChip(
+          icon: Icons.inventory_2_outlined,
+          label: itemCountText,
+          accent: scheme.tertiary,
+        ),
+      ],
     );
   }
 
@@ -132,6 +163,30 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: appTintedSurface(
+                            context,
+                            scheme.secondary,
+                            lightAlpha: 0.09,
+                            darkAlpha: 0.16,
+                          ),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          '云端药品库',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: scheme.secondary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
                       Text(
                         '手动搜索药品库',
                         style: TextStyle(
@@ -142,11 +197,12 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '从后端药品库搜索并选择',
+                        '从云端搜索后直接带回当前流程，适合本地还没保存时快速补查。',
                         style: TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,
                           color: scheme.onSurfaceVariant,
+                          height: 1.35,
                         ),
                       ),
                     ],
@@ -189,39 +245,98 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                   color: scheme.onSurface,
                 ),
               ),
+              const SizedBox(width: 10),
+              if (_rows.isNotEmpty)
+                _PickerCountChip(
+                  label: '共 ${_rows.length} 项',
+                  accent: scheme.tertiary,
+                ),
               const Spacer(),
-              if (_loading)
+              if (_loading) ...[
                 const SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 ),
+                const SizedBox(width: 6),
+                Text(
+                  '同步中',
+                  style: TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700,
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 10),
           if (_rows.isEmpty)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 18),
-              child: Center(
-                child: Text(
-                  '暂无药品，请先添加或从搜索库选择',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: scheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+              decoration: BoxDecoration(
+                color: appTintedSurface(
+                  context,
+                  scheme.tertiary,
+                  lightAlpha: 0.045,
+                  darkAlpha: 0.10,
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: appTintedBorder(
+                    context,
+                    scheme.tertiary,
+                    lightAlpha: 0.08,
+                    darkAlpha: 0.18,
                   ),
                 ),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: appTintedSurface(
+                        context,
+                        scheme.tertiary,
+                        lightAlpha: 0.09,
+                        darkAlpha: 0.16,
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(
+                      Icons.medication_liquid_rounded,
+                      color: scheme.tertiary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '还没有本地药品记录',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: scheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '你可以先去云端药品库补查，或者稍后再把常用药保存到这里。',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: scheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
               ),
             )
           else
             ..._rows.asMap().entries.map((entry) {
-              /// 当前列表项下标。
               final index = entry.key;
-
-              /// 当前数据库行数据。
               final row = entry.value;
-
-              /// 由数据库行转换而成的药品对象。
               final item = _rowToItem(row);
               return Padding(
                 padding: EdgeInsets.only(
@@ -250,10 +365,11 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                       ),
                     ),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: 40,
-                          height: 40,
+                          width: 42,
+                          height: 42,
                           decoration: BoxDecoration(
                             color: appTintedSurface(
                               context,
@@ -273,26 +389,55 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                item.displayName,
-                                style: TextStyle(
-                                  fontSize: 14.5,
-                                  fontWeight: FontWeight.w800,
-                                  color: scheme.onSurface,
-                                ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      item.displayName,
+                                      style: TextStyle(
+                                        fontSize: 14.5,
+                                        fontWeight: FontWeight.w800,
+                                        color: scheme.onSurface,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _MedicineBadge(
+                                    label: item.displayBadge,
+                                    accent: scheme.primary,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 2),
+                              const SizedBox(height: 4),
                               Text(
                                 item.displaySubtitle,
                                 style: TextStyle(
                                   fontSize: 12.5,
                                   color: scheme.onSurfaceVariant,
                                   fontWeight: FontWeight.w600,
+                                  height: 1.35,
                                 ),
                               ),
+                              if (item.displayTips.isNotEmpty) ...[
+                                const SizedBox(height: 7),
+                                Text(
+                                  item.displayTips,
+                                  style: TextStyle(
+                                    fontSize: 11.8,
+                                    color: scheme.onSurfaceVariant.withValues(
+                                      alpha: 0.88,
+                                    ),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ],
                           ),
                         ),
+                        const SizedBox(width: 10),
                         Icon(
                           Icons.chevron_right_rounded,
                           color: scheme.onSurfaceVariant,
@@ -338,5 +483,119 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
     if (!mounted) return;
     if (result == null) return;
     Navigator.pop(context, result);
+  }
+}
+
+class _PickerHintChip extends StatelessWidget {
+  const _PickerHintChip({
+    required this.icon,
+    required this.label,
+    required this.accent,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    final background = appTintedSurface(
+      context,
+      accent,
+      lightAlpha: 0.06,
+      darkAlpha: 0.11,
+    );
+    final border = appTintedBorder(
+      context,
+      accent,
+      lightAlpha: 0.08,
+      darkAlpha: 0.16,
+    );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: border),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 15, color: accent),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w700,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PickerCountChip extends StatelessWidget {
+  const _PickerCountChip({required this.label, required this.accent});
+
+  final String label;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+      decoration: BoxDecoration(
+        color: appTintedSurface(
+          context,
+          accent,
+          lightAlpha: 0.08,
+          darkAlpha: 0.16,
+        ),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 11.3,
+          fontWeight: FontWeight.w700,
+          color: accent,
+        ),
+      ),
+    );
+  }
+}
+
+class _MedicineBadge extends StatelessWidget {
+  const _MedicineBadge({required this.label, required this.accent});
+
+  final String label;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: appTintedSurface(
+          context,
+          accent,
+          lightAlpha: 0.08,
+          darkAlpha: 0.16,
+        ),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 10.8,
+          fontWeight: FontWeight.w700,
+          color: accent,
+        ),
+      ),
+    );
   }
 }
