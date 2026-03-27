@@ -1,59 +1,49 @@
-# Luminous Backend
+# Luminous App Backend
 
-这个目录是从你项目里的后端文档整理出来的一套可部署 `Node + TypeScript` 后端代码，重点覆盖当前 Flutter 端已经接好的这几个接口：
+Luminous App 后端服务，负责认证与药品相关接口。
 
-- `/medicine-search`
-- `/medicine-detail`
-- `/medicine-ai-detail`
-- `/medicine-ai-safety`
-- `/medicine-scan`
+## 技术栈
 
-如果你现在是先按 Sealos 云函数来学和部署，建议先看：
-
-- 根目录 `README.md`
-- `BackendMd/README.md`
-
-这份 `backend/README.md` 更偏代码目录自述，重点说明这份后端代码怎么运行、怎么打包，而不是替代整个项目的总说明文档。
-
-设计目标有两个：
-
-- 现在可以继续走云函数部署
-- 后面迁移到云服务器时，不需要重写核心逻辑
+- Node.js + TypeScript
+- Express
+- JWT (AT/RT 双 token)
+- MongoDB (用户)
+- MySQL (药品库)
+- OpenAI SDK (豆包/方舟兼容调用)
 
 ## 目录结构
 
 ```text
 backend/
   src/
-    ai/            豆包调用与 prompt
-    cloud/         云函数入口
-    config/        环境变量
-    db/            MySQL 连接与药品查询
-    handlers/      业务处理核心
-    http/          响应结构与 Express 适配
-    routes/        Express 路由
-    app.ts         Express app
-    server.ts      服务启动入口
-  scripts/
-    bundle-cloud.mjs
+    ai/             AI 请求与 Prompt 组装
+    config/         环境变量读取
+    db/             MongoDB/MySQL 访问
+    handlers/       业务处理逻辑
+    http/           请求校验、统一响应、错误处理、JWT
+    models/         Mongoose 模型
+    routes/         路由注册
+    app.ts          Express app 组装
+    server.ts       启动入口
 ```
 
-其中最关键的是 `handlers/`。
+## 环境要求
 
-- 云函数入口调用 `handlers`
-- Express 路由也调用同一套 `handlers`
+- Node.js 18+
+- 可访问的 MongoDB
+- 可访问的 MySQL
 
-所以以后你迁到云服务器，基本只需要换部署方式，不用改业务逻辑。
+## 快速开始
 
-## 环境变量
-
-先复制一份环境变量模板：
+### 1) 安装依赖
 
 ```bash
-Copy-Item .env.example .env
+npm install
 ```
 
-需要重点填写：
+### 2) 配置环境变量
+
+创建 `backend/.env`，参考如下：
 
 ```env
 PORT=8787
@@ -66,87 +56,58 @@ MYSQL_PASSWORD=your_password
 MYSQL_DATABASE=medicine_db
 MYSQL_TABLE=国产本位码
 
+MONGODB_URI=mongodb://127.0.0.1:27017/luminous
+
+JWT_SECRET=replace_with_strong_secret
+JWT_REFRESH_SECRET=replace_with_another_strong_secret
+
 DOUBAO_API_KEY=your_doubao_api_key
 DOUBAO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
-DOUBAO_VISION_ENDPOINT_ID=你的视觉endpoint
-DOUBAO_TEXT_ENDPOINT_ID=你的文本endpoint
+DOUBAO_VISION_ENDPOINT_ID=ep-vision-xxx
+DOUBAO_TEXT_ENDPOINT_ID=ep-text-xxx
 ```
 
-如果你不用 endpoint，也可以改用：
+说明：
 
-- `DOUBAO_VISION_MODEL_ID`
-- `DOUBAO_TEXT_MODEL_ID`
+- 视觉模型优先级：`DOUBAO_VISION_ENDPOINT_ID` > `DOUBAO_VISION_MODEL_ID`
+- 文本模型优先级：`DOUBAO_TEXT_ENDPOINT_ID` > `DOUBAO_TEXT_MODEL_ID`
 
-模型选择优先级和你原来文档里保持一致：
-
-- 视觉：`DOUBAO_VISION_ENDPOINT_ID` > `DOUBAO_VISION_MODEL_ID`
-- 文本：`DOUBAO_TEXT_ENDPOINT_ID` > `DOUBAO_TEXT_MODEL_ID`
-
-## 本地启动
+### 3) 开发运行
 
 ```bash
-npm install
 npm run dev
 ```
 
-启动后默认地址：
-
-```text
-http://127.0.0.1:8787
-```
-
-健康检查：
-
-```text
-GET /health
-```
-
-## 打包部署到云服务器
+### 4) 生产构建与启动
 
 ```bash
-npm install
 npm run build
 npm run start
 ```
 
-如果你部署到云服务器后地址变了，只需要回 Flutter 侧修改：
+## 接口概览
 
-[constants.dart](/d:/25080/Documents/AndroidStudioProjects/Luminous/lib/constants/constants.dart#L16)
+健康检查：
 
-## 打包部署到云函数
+- `GET /health`
 
-如果你的云函数平台支持上传一个完整 Node 项目，可以直接把这个 `backend/` 当项目部署。
+认证接口：
 
-如果你的云函数平台更偏向“一个函数一个文件”，就用下面这条命令：
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/refresh`
 
-```bash
-npm install
-npm run build:cloud
-```
+药品接口：
 
-会生成：
+- `POST /api/medicines/search`
+- `POST /api/medicines/detail`
+- `POST /api/medicines/ai-detail`
+- `POST /api/medicines/ai-safety`
+- `POST /api/medicines/scan`
 
-```text
-dist/cloud-bundle/medicine-search.js
-dist/cloud-bundle/medicine-detail.js
-dist/cloud-bundle/medicine-ai-detail.js
-dist/cloud-bundle/medicine-ai-safety.js
-dist/cloud-bundle/medicine-scan.js
-```
+完整参数与返回示例见 [../lib/docs/backend-api.md](../lib/docs/backend-api.md)。
 
-这些文件已经是单文件 bundle，适合直接上传到云函数平台。
-
-每个文件都导出了：
-
-```js
-exports.main = async (ctx) => { ... }
-```
-
-也就是你现在文档里常见的那种 `main(ctx)` 入口风格。
-
-## 返回格式
-
-所有接口都统一返回：
+## 统一返回结构
 
 ```json
 {
@@ -156,129 +117,39 @@ exports.main = async (ctx) => { ... }
 }
 ```
 
-这和 Flutter 端 [DioRequest.dart](/d:/25080/Documents/AndroidStudioProjects/Luminous/lib/utils/DioRequest.dart) 的解析逻辑保持一致。
-
-## 当前接口说明
-
-### `/medicine-search`
-
-请求体：
-
-```json
-{
-  "keyword": "阿莫西林",
-  "page": 1,
-  "pageSize": 20
-}
-```
-
-### `/medicine-detail`
-
-请求体：
-
-```json
-{
-  "drugCode": "86900000000000"
-}
-```
-
-或：
-
-```json
-{
-  "approvalNo": "国药准字..."
-}
-```
-
-### `/medicine-ai-detail`
-
-请求体：
-
-```json
-{
-  "drugCode": "86900000000000"
-}
-```
-
-返回：
-
-```json
-{
-  "code": "1",
-  "msg": "",
-  "result": {
-    "text": "AI 返回的药品解读文本"
-  }
-}
-```
-
-### `/medicine-ai-safety`
-
-请求体：
-
-```json
-{
-  "mode": "pair",
-  "medicines": [
-    {
-      "drugCode": "86900000000001",
-      "approvalNo": "国药准字A",
-      "productName": "药品A"
-    },
-    {
-      "drugCode": "86900000000002",
-      "approvalNo": "国药准字B",
-      "productName": "药品B"
-    }
-  ]
-}
-```
-
-### `/medicine-scan`
-
-请求体：
-
-```json
-{
-  "imageBase64": "base64内容",
-  "mimeType": "image/jpeg"
-}
-```
-
 说明：
 
-- 后端会把图片传给豆包视觉模型
-- 视觉模型只返回 JSON
-- 服务端再用 `approvalNo / productName / manufacturer` 回查 MySQL
-- 当前 `thumbBase64` 固定返回空字符串，避免服务端为了缩略图引入额外图像处理依赖
-- Flutter 侧已经有本地缩略图兜底逻辑，所以不会影响现有流程
+- `code == "1"` 为业务成功
+- 业务失败通常也会返回 HTTP 200，但 `code != "1"`
+- 中间件级错误（如未授权）可能返回 4xx/5xx
 
-## 和 Flutter 的对应关系
+## 与 Flutter 的联调点
 
-Flutter 侧已经接好的调用入口分别在：
+- Flutter 基础地址配置：`lib/constants/constants.dart`
+- 网络层解析逻辑：`lib/utils/DioRequest.dart`
 
-- [scan_api.dart](/d:/25080/Documents/AndroidStudioProjects/Luminous/lib/api/scan_api.dart)
-- [medicine_api.dart](/d:/25080/Documents/AndroidStudioProjects/Luminous/lib/api/medicine_api.dart)
-- [safety_api.dart](/d:/25080/Documents/AndroidStudioProjects/Luminous/lib/api/safety_api.dart)
+请确保 Flutter 的 `GlobalConstants.BASE_URL` 指向当前后端实例。
 
-页面调用在：
+## 常见问题
 
-- [medicine_scan.dart](/d:/25080/Documents/AndroidStudioProjects/Luminous/lib/pages/Scan/medicine_scan.dart#L699)
-- [medicine_detail.dart](/d:/25080/Documents/AndroidStudioProjects/Luminous/lib/pages/Drug/medicine_detail.dart#L109)
-- [safety_assist.dart](/d:/25080/Documents/AndroidStudioProjects/Luminous/lib/pages/Safety/safety_assist.dart#L370)
+### 1) 启动时报 MySQL 连接错误
 
-## 后续建议
+检查 `.env` 中 `MYSQL_*` 是否正确，且数据库白名单已放通。
 
-现在这版优先保证“能跑、结构清楚、方便迁移”。后面你可以再继续补：
+### 2) 启动时报 Mongo 连接错误
 
-- `/scan-record-create` 和 `/scan-record-list` 的服务端实现
-- AI 请求日志、耗时统计、重试
-- Redis 缓存
-- 鉴权中间件
-- 限流
-- 医药类 prompt 的更细分模板
+检查 `MONGODB_URI`，并确认 Mongo 服务可访问。
 
-如果你愿意，我下一步可以继续把这两个也补上：
+### 3) AI 接口返回失败
 
-1. `scan-record-create` / `scan-record-list`
-2. 一个 `curl` 或 Postman 测试清单，方便你逐个联调
+检查：
+
+- `DOUBAO_API_KEY`
+- 文本/视觉模型 ID 是否配置
+- 目标环境是否可访问 `DOUBAO_BASE_URL`
+
+## 相关文档
+
+- 项目总览：[../README.md](../README.md)
+- 后端学习文档：[../BackendMd/README.md](../BackendMd/README.md)
+- 部署配置清单：[../lib/docs/deployment-config.md](../lib/docs/deployment-config.md)
