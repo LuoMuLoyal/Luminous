@@ -29,6 +29,9 @@ export const env = {
     database: requireEnv('MYSQL_DATABASE'),
     table: readString('MYSQL_TABLE', '国产本位码'),
   },
+  mongoUri: readString('MONGODB_URI', 'mongodb://localhost:27017/luminous'),
+  jwtSecret: readString('JWT_SECRET', 'your_jwt_secret_key_here_for_dev'),
+  jwtRefreshSecret: readString('JWT_REFRESH_SECRET', 'your_jwt_refresh_secret_key_here_for_dev'),
   doubao: {
     apiKey: readString('DOUBAO_API_KEY'),
     baseUrl: readString(

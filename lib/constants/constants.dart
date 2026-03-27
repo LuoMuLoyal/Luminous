@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 class GlobalConstants {
   /// 当前后端服务根地址。
   ///
-  /// 所有接口最终都会以这个地址作为前缀进行请求。
-  static const String BASE_URL = 'https://wty10hv6az.sealosbja.site';
+  /// 已经修改为本地后端地址，如使用 Android 模拟器请用 10.0.2.2，真机用局域网 IP
+  static const String BASE_URL = 'http://10.0.2.2:8787';
 
   /// 网络请求默认超时时间，单位是秒。
   ///
@@ -25,10 +25,11 @@ class GlobalConstants {
   /// 当前项目约定 `code == "1"` 时表示业务成功。
   static const String SUCCESS_CODE = '1';
 
-  /// 本地存储 token 时使用的 key。
-  ///
-  /// 当前项目还没有完整接入 token 鉴权，但 key 已预留。
-  static const String TOKEN_KEY = 'luminous_token';
+  /// 本地存储 AT 时使用的 key。
+  static const String TOKEN_KEY = 'luminous_access_token';
+
+  /// 本地存储 RT 时使用的 key。
+  static const String REFRESH_TOKEN_KEY = 'luminous_refresh_token';
 
   /// 本地存储用户信息时使用的 key。
   ///
@@ -50,52 +51,55 @@ class GlobalConstants {
 /// API 层统一引用这里的路径，避免在业务代码里散落硬编码接口字符串。
 class HttpConstants {
   /// 获取验证码接口。
-  static const String SEND_CODE = '/send-code';
+  static const String SEND_CODE = '/api/auth/send-code';
 
   /// 用户注册接口。
-  static const String REGISTER_USER = '/register-user';
+  static const String REGISTER_USER = '/api/auth/register';
 
   /// 用户登录接口。
-  static const String LOGIN_USER = '/login-user';
+  static const String LOGIN_USER = '/api/auth/login';
+
+  /// 刷新鉴权 Token 接口。
+  static const String REFRESH_TOKEN = '/api/auth/refresh';
 
   /// 我的药品新增/更新接口。
-  static const String MY_MEDICINE_UPSERT = '/my-medicine-upsert';
+  static const String MY_MEDICINE_UPSERT = '/api/medicines/my-upsert';
 
   /// 我的药品删除接口。
-  static const String MY_MEDICINE_DELETE = '/my-medicine-delete';
+  static const String MY_MEDICINE_DELETE = '/api/medicines/my-delete';
 
   /// 我的药品列表接口。
-  static const String MY_MEDICINE_LIST = '/my-medicine-list';
+  static const String MY_MEDICINE_LIST = '/api/medicines/my-list';
 
   /// 首页今日提醒接口。
-  static const String TODAY_REMINDERS = '/today-reminders';
+  static const String TODAY_REMINDERS = '/api/reminders/today';
 
   /// 药品搜索接口。
-  static const String MEDICINE_SEARCH = '/medicine-search';
+  static const String MEDICINE_SEARCH = '/api/medicines/search';
 
   /// 药品详情接口。
-  static const String MEDICINE_DETAIL = '/medicine-detail';
+  static const String MEDICINE_DETAIL = '/api/medicines/detail';
 
   /// 药品 AI 详情解读接口。
-  static const String MEDICINE_AI_DETAIL = '/medicine-ai-detail';
+  static const String MEDICINE_AI_DETAIL = '/api/medicines/ai-detail';
 
   /// 药品识别接口。
-  static const String MEDICINE_SCAN = '/medicine-scan';
+  static const String MEDICINE_SCAN = '/api/medicines/scan';
 
   /// 识别记录创建接口。
-  static const String SCAN_RECORD_CREATE = '/scan-record-create';
+  static const String SCAN_RECORD_CREATE = '/api/medicines/scan-record-create';
 
   /// 提醒计划新增/更新接口。
-  static const String REMINDER_UPSERT = '/reminder-upsert';
+  static const String REMINDER_UPSERT = '/api/reminders/upsert';
 
   /// 提醒计划删除接口。
-  static const String REMINDER_DELETE = '/reminder-delete';
+  static const String REMINDER_DELETE = '/api/reminders/delete';
 
   /// 提醒计划列表接口。
-  static const String REMINDER_LIST = '/reminder-list';
+  static const String REMINDER_LIST = '/api/reminders/list';
 
   /// 安全辅助 AI 查询接口。
-  static const String MEDICINE_AI_SAFETY = '/medicine-ai-safety';
+  static const String MEDICINE_AI_SAFETY = '/api/medicines/ai-safety';
 }
 
 /// 应用内统一使用的 UI 色值。

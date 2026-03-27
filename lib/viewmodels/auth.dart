@@ -52,12 +52,31 @@ class RegisterResult {
   /// 注册结果 id（后端可能返回 `id` 或 `_id`）。
   final String id;
 
+  /// accessToken，注册即颁发登录态
+  final String accessToken;
+
+  /// refreshToken，用于续签
+  final String refreshToken;
+
   /// 创建一个注册结果对象。
-  const RegisterResult({required this.id});
+  const RegisterResult({
+    required this.id,
+    this.accessToken = '',
+    this.refreshToken = '',
+  });
 
   /// 从后端 JSON 反序列化为 `RegisterResult`。
   factory RegisterResult.fromJson(Map<String, dynamic> json) {
-    return RegisterResult(id: (json['id'] ?? json['_id'] ?? '').toString());
+    return RegisterResult(
+      id:
+          (json['id'] ??
+                  json['_id'] ??
+                  (json['user'] != null ? json['user']['id'] : '') ??
+                  '')
+              .toString(),
+      accessToken: (json['accessToken'] ?? '').toString(),
+      refreshToken: (json['refreshToken'] ?? '').toString(),
+    );
   }
 }
 
@@ -65,18 +84,23 @@ class RegisterResult {
 ///
 /// 兼容两种返回结构：
 /// - 旧结构：`result` 直接就是用户对象；
-/// - 新结构：`result.user + result.token`。
+/// - 新结构：`result.user + result.token` 或者新添加了 refreshToken。
 class LoginResult {
   /// 登录后的用户信息。
   final UserSafe user;
 
-  /// 登录后返回的访问令牌。
-  ///
-  /// 当前后端如果还没返回 token，这里会是空字符串。
+  /// 登录后返回的访问令牌 (accessToken)。
   final String token;
 
+  /// 用于后续无感续签的 token。
+  final String refreshToken;
+
   /// 创建一个登录结果对象。
-  const LoginResult({required this.user, required this.token});
+  const LoginResult({
+    required this.user,
+    required this.token,
+    required this.refreshToken,
+  });
 
   /// 从后端 JSON 反序列化为 `LoginResult`。
   factory LoginResult.fromJson(Map<String, dynamic> json) {
@@ -96,6 +120,7 @@ class LoginResult {
                   json['jwt'] ??
                   '')
               .toString(),
+      refreshToken: (json['refreshToken'] ?? '').toString(),
     );
   }
 }
