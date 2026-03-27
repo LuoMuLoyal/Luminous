@@ -21,13 +21,19 @@ class TokenManager {
     await _prefs;
   }
 
-  /// 持久化保存 token。
+  /// 持久化保存 access token。
   Future<void> setToken(String token) async {
     final prefs = await _prefs;
     await prefs.setString(GlobalConstants.TOKEN_KEY, token);
   }
 
-  /// 读取本地缓存的 token。
+  /// 持久化保存 refresh token。
+  Future<void> setRefreshToken(String token) async {
+    final prefs = await _prefs;
+    await prefs.setString(GlobalConstants.REFRESH_TOKEN_KEY, token);
+  }
+
+  /// 读取本地缓存的 access token。
   ///
   /// 如果本地没有 token，则返回空字符串。
   Future<String> getToken() async {
@@ -35,12 +41,19 @@ class TokenManager {
     return prefs.getString(GlobalConstants.TOKEN_KEY) ?? '';
   }
 
-  /// 删除本地缓存的 token。
+  /// 读取本地缓存的 refresh token。
+  Future<String> getRefreshToken() async {
+    final prefs = await _prefs;
+    return prefs.getString(GlobalConstants.REFRESH_TOKEN_KEY) ?? '';
+  }
+
+  /// 删除本地缓存的 tokens。
   ///
   /// 一般在退出登录或 token 失效时调用。
   Future<void> deleteToken() async {
     final prefs = await _prefs;
     await prefs.remove(GlobalConstants.TOKEN_KEY);
+    await prefs.remove(GlobalConstants.REFRESH_TOKEN_KEY);
   }
 }
 

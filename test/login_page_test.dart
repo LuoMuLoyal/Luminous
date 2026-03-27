@@ -233,6 +233,7 @@ class FakeAuthApi extends AuthApi {
           type: 0,
         ),
         token: '',
+        refreshToken: '',
       ),
     );
   }
@@ -261,6 +262,7 @@ class FakeAuthApi extends AuthApi {
           type: 0,
         ),
         token: '',
+        refreshToken: '',
       ),
     );
   }

@@ -34,7 +34,7 @@ enum AppThemeStyle {
 ///
 /// 负责持久化并恢复：
 /// - 主题模式（浅色 / 深色 / 跟随系统）；
-/// - 主题风格（当前提供三套预设）。
+/// - 主题风格（当前提供四套预设）。
 class ThemeController extends GetxController {
   final Rx<AppThemeModePreference> themePreference =
       AppThemeModePreference.system.obs;

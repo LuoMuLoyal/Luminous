@@ -264,6 +264,9 @@ class _LoginPageState extends State<LoginPage> {
       final loginResult = response.result;
       if (loginResult.token.trim().isNotEmpty) {
         await tokenManager.setToken(loginResult.token.trim());
+        if (loginResult.refreshToken.trim().isNotEmpty) {
+          await tokenManager.setRefreshToken(loginResult.refreshToken.trim());
+        }
       } else {
         await tokenManager.deleteToken();
       }

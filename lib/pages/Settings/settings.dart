@@ -496,7 +496,7 @@ class _DisplayPreferencesSection extends StatelessWidget {
           _SettingsFieldTitle(
             icon: Icons.palette_outlined,
             title: '主题风格',
-            description: '柔和、月雾、神树、虚幻四套配色会一起影响环境光、横幅和分区块',
+            description: '柔岚、月雾、神树、虚幻四套配色会一起影响环境光、横幅和分区块',
             color: scheme.secondary,
           ),
           const SizedBox(height: 8),
@@ -870,7 +870,7 @@ IconData _themeModeIcon(AppThemeModePreference preference) {
 String _themeStyleLabel(AppThemeStyle style) {
   switch (style) {
     case AppThemeStyle.softGlow:
-      return '柔和';
+      return '柔岚';
     case AppThemeStyle.moonMist:
       return '月雾';
     case AppThemeStyle.divineTree:
