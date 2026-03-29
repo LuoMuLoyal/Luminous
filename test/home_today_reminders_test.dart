@@ -146,7 +146,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('旧账号提醒', findRichText: true), findsNothing);
-      expect(find.textContaining('19:30', findRichText: true), findsWidgets);
+      expect(find.textContaining('示例', findRichText: true), findsNothing);
+      expect(find.textContaining('19:30', findRichText: true), findsNothing);
+      expect(
+        find.textContaining('今天暂无待完成提醒', findRichText: true),
+        findsWidgets,
+      );
 
       ToastUtils.instance.dismiss();
       await tester.pump();
