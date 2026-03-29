@@ -3,6 +3,7 @@ import 'package:luminous/api/medicine_api.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 
@@ -120,7 +121,11 @@ class _MedicineDetailPageState extends State<MedicineDetailPage> {
         _aiResult = response.result;
       });
       if (!_aiResult!.hasText) {
-        ToastUtils.instance.show(context, 'AI接口暂无返回内容');
+        final l10n = AppLocalizations.of(context);
+        ToastUtils.instance.show(
+          context,
+          l10n?.medicineDetailAiNoContentToast ?? 'AI接口暂无返回内容',
+        );
       }
     } catch (e) {
       if (!mounted) {
@@ -204,6 +209,7 @@ class _HeaderCard extends StatelessWidget {
   /// 构建顶部基础信息卡片 UI。
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SoftBannerCard(
       palette: SoftBannerPalettes.drugOf(context),
       ornamentKey: 'medicine.header',
@@ -222,7 +228,11 @@ class _HeaderCard extends StatelessWidget {
                   ),
                 )
               : const Icon(Icons.refresh_rounded, size: 16),
-          label: Text(loading ? '更新中' : '刷新'),
+          label: Text(
+            loading
+                ? (l10n?.medicineDetailHeaderRefreshing ?? '更新中')
+                : (l10n?.medicineDetailHeaderRefresh ?? '刷新'),
+          ),
           style: FilledButton.styleFrom(
             backgroundColor: theme.surfaceColor,
             foregroundColor: theme.surfaceTextColor,
@@ -235,14 +245,14 @@ class _HeaderCard extends StatelessWidget {
         final pills = [
           if (item.approvalNo.isNotEmpty)
             _pill(
-              label: '批准文号',
+              label: l10n?.medicineDetailLabelApprovalNo ?? '批准文号',
               value: item.approvalNo,
               backgroundColor: theme.surfaceColor,
               textColor: theme.surfaceTextColor,
             ),
           if (item.drugCode.isNotEmpty)
             _pill(
-              label: '药品编码',
+              label: l10n?.medicineDetailLabelDrugCode ?? '药品编码',
               value: item.drugCode,
               backgroundColor: theme.surfaceColor,
               textColor: theme.surfaceTextColor,
@@ -265,7 +275,7 @@ class _HeaderCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
-                    '药物信息',
+                    l10n?.medicineDetailHeaderBadge ?? '药物信息',
                     style: TextStyle(
                       color: theme.surfaceTextColor,
                       fontSize: 11,
@@ -407,21 +417,48 @@ class _InfoCard extends StatelessWidget {
   /// 构建基础信息卡片 UI。
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return _SurfaceCard(
-      title: '基础信息',
+      title: l10n?.medicineDetailInfoTitle ?? '基础信息',
       accentColor: Theme.of(context).colorScheme.primary,
       secondaryColor: Theme.of(context).colorScheme.secondary,
       ornamentKey: 'medicine.info',
       child: Column(
         children: [
-          _InfoRow(label: '产品名称', value: item.productName),
-          _InfoRow(label: '剂型', value: item.dosageForm),
-          _InfoRow(label: '规格', value: item.specification),
-          _InfoRow(label: '批准文号', value: item.approvalNo),
-          _InfoRow(label: '上市许可持有人', value: item.marketingAuthorizationHolder),
-          _InfoRow(label: '生产单位', value: item.manufacturer),
-          _InfoRow(label: '药品编码', value: item.drugCode),
-          _InfoRow(label: '药品编码备注', value: item.drugCodeRemark),
+          _InfoRow(
+            label: l10n?.medicineDetailLabelProductName ?? '产品名称',
+            value: item.productName,
+          ),
+          _InfoRow(
+            label: l10n?.medicineDetailLabelDosageForm ?? '剂型',
+            value: item.dosageForm,
+          ),
+          _InfoRow(
+            label: l10n?.medicineDetailLabelSpecification ?? '规格',
+            value: item.specification,
+          ),
+          _InfoRow(
+            label: l10n?.medicineDetailLabelApprovalNo ?? '批准文号',
+            value: item.approvalNo,
+          ),
+          _InfoRow(
+            label:
+                l10n?.medicineDetailLabelMarketingAuthorizationHolder ??
+                '上市许可持有人',
+            value: item.marketingAuthorizationHolder,
+          ),
+          _InfoRow(
+            label: l10n?.medicineDetailLabelManufacturer ?? '生产单位',
+            value: item.manufacturer,
+          ),
+          _InfoRow(
+            label: l10n?.medicineDetailLabelDrugCode ?? '药品编码',
+            value: item.drugCode,
+          ),
+          _InfoRow(
+            label: l10n?.medicineDetailLabelDrugCodeRemark ?? '药品编码备注',
+            value: item.drugCodeRemark,
+          ),
         ],
       ),
     );
@@ -453,11 +490,12 @@ class _AiCard extends StatelessWidget {
   /// 构建 AI 解读卡片 UI。
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final hasFetched = result != null;
     final scheme = Theme.of(context).colorScheme;
 
     return _SurfaceCard(
-      title: 'AI 智能解读',
+      title: l10n?.medicineDetailAiTitle ?? 'AI 智能解读',
       accentColor: Color.lerp(scheme.secondary, scheme.primary, 0.5)!,
       secondaryColor: scheme.tertiary,
       ornamentKey: 'medicine.ai',
@@ -478,11 +516,16 @@ class _AiCard extends StatelessWidget {
                   color: scheme.onPrimary,
                 ),
               )
-            : Text(hasFetched ? '再次获取' : '获取更详细信息'),
+            : Text(
+                hasFetched
+                    ? (l10n?.medicineDetailAiRefetch ?? '再次获取')
+                    : (l10n?.medicineDetailAiFetch ?? '获取更详细信息'),
+              ),
       ),
       child: result == null || !result!.hasText
           ? Text(
-              '点击“尝试获取更详细信息”后，后端会调用 AI 模型补充数据库里未保存的说明书信息，例如成分、禁忌、注意事项等。',
+              l10n?.medicineDetailAiPlaceholder ??
+                  '点击“尝试获取更详细信息”后，后端会调用 AI 模型补充数据库里未保存的说明书信息，例如成分、禁忌、注意事项等。',
               style: TextStyle(
                 fontSize: 13,
                 height: 1.55,
@@ -511,14 +554,16 @@ class _DisclaimerCard extends StatelessWidget {
   /// 构建免责声明卡片 UI。
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return _SurfaceCard(
-      title: '安全提示',
+      title: l10n?.medicineDetailSafetyTitle ?? '安全提示',
       accentColor: Theme.of(context).colorScheme.tertiary,
       secondaryColor: Theme.of(context).colorScheme.secondary,
       ornamentKey: 'medicine.disclaimer',
       child: Text(
-        '本应用信息仅用于健康科普与辅助查询，不能替代医生诊断与处方。'
-        '如有不适或正在用药，请遵医嘱并咨询专业人士。',
+        l10n?.medicineDetailSafetyDisclaimer ??
+            '本应用信息仅用于健康科普与辅助查询，不能替代医生诊断与处方。'
+                '如有不适或正在用药，请遵医嘱并咨询专业人士。',
         style: TextStyle(
           fontSize: 12.5,
           height: 1.55,

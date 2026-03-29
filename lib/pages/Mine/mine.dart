@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/components/mine.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/mine.dart';
@@ -33,30 +34,35 @@ class _MineViewState extends State<MineView> {
   /// 用于判断登录态、读取用户信息、执行退出登录。
   final UserController _userController = Get.find<UserController>();
 
+  AppLocalizations? get _l10n => AppLocalizations.of(context);
+
   /// 我的页顶部快捷入口配置列表。
-  final List<MineQuickActionData> _quickActions = const [
-    MineQuickActionData(
-      icon: Icons.alarm_rounded,
-      title: '今日提醒',
-      subtitle: '查看计划',
-      color: Color(0xFF10B981),
-      id: 'reminders',
-    ),
-    MineQuickActionData(
-      icon: Icons.search_rounded,
-      title: '手动搜索',
-      subtitle: '药品信息',
-      color: Color(0xFF0EA5E9),
-      id: 'search',
-    ),
-    MineQuickActionData(
-      icon: Icons.settings_rounded,
-      title: '设置',
-      subtitle: '偏好选项',
-      color: Color(0xFF6366F1),
-      id: 'settings',
-    ),
-  ];
+  List<MineQuickActionData> get _quickActions {
+    final l10n = _l10n;
+    return [
+      MineQuickActionData(
+        icon: Icons.alarm_rounded,
+        title: l10n?.mineQuickReminderTitle ?? '今日提醒',
+        subtitle: l10n?.mineQuickReminderSubtitle ?? '查看计划',
+        color: const Color(0xFF10B981),
+        id: 'reminders',
+      ),
+      MineQuickActionData(
+        icon: Icons.search_rounded,
+        title: l10n?.mineQuickSearchTitle ?? '手动搜索',
+        subtitle: l10n?.mineQuickSearchSubtitle ?? '药品信息',
+        color: const Color(0xFF0EA5E9),
+        id: 'search',
+      ),
+      MineQuickActionData(
+        icon: Icons.settings_rounded,
+        title: l10n?.mineQuickSettingsTitle ?? '设置',
+        subtitle: l10n?.mineQuickSettingsSubtitle ?? '偏好选项',
+        color: const Color(0xFF6366F1),
+        id: 'settings',
+      ),
+    ];
+  }
 
   /// 点击 Profile 区域（头像/昵称）回调。
   ///
@@ -84,6 +90,7 @@ class _MineViewState extends State<MineView> {
   ///
   /// 根据 id 决定跳转的页面。
   void _onTapQuickAction(String id) {
+    final l10n = _l10n;
     if (id == 'search') {
       Navigator.pushNamed(context, '/search');
       return;
@@ -96,7 +103,7 @@ class _MineViewState extends State<MineView> {
       Navigator.pushNamed(context, '/settings');
       return;
     }
-    ToastUtils.instance.show(context, '功能开发中');
+    ToastUtils.instance.show(context, l10n?.mineDevelopingToast ?? '功能开发中');
   }
 
   /// 构建我的页 UI。
@@ -104,6 +111,7 @@ class _MineViewState extends State<MineView> {
   /// 这里用 `Obx` 监听用户对象变化，让 UI 自动响应登录/退出登录。
   @override
   Widget build(BuildContext context) {
+    final l10n = _l10n;
     return MinePage(
       headerPalette: SoftBannerPalettes.mineOf(context),
       profileCard: Obx(
@@ -112,18 +120,21 @@ class _MineViewState extends State<MineView> {
           user: _userController.user.value,
           onTapProfile: _onTapProfile,
           onTapAction: _onTapAction,
-          loggedInActionLabel: '设置',
+          loggedInActionLabel: l10n?.mineLoggedInActionLabel ?? '设置',
         ),
       ),
       quickActions: _quickActions,
       onTapQuickAction: _onTapQuickAction,
-      onTapBrowseHistory: () => ToastUtils.instance.show(context, '功能开发中'),
+      onTapBrowseHistory: () => ToastUtils.instance.show(
+        context,
+        l10n?.mineDevelopingToast ?? '功能开发中',
+      ),
       onTapSecurity: () => Navigator.pushNamed(context, '/settings'),
       onTapAbout: () => showAboutDialog(
         context: context,
         applicationName: 'Luminous',
-        applicationVersion: '2.32.0+32',
-        applicationLegalese: '健康助手与药品信息辅助应用',
+        applicationVersion: '3.0.0+33',
+        applicationLegalese: l10n?.mineAboutLegalese ?? '健康助手与药品信息辅助应用',
       ),
     );
   }

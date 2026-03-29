@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/components/album.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Drug/medicine_detail.dart';
 import 'package:luminous/pages/Scan/medicine_scan.dart';
 import 'package:luminous/stores/album_local_store.dart';
@@ -65,6 +66,8 @@ class _AlbumViewState extends State<AlbumView> {
   ///
   /// 未登录时为空字符串。
   String get _userId => _userController.user.value?.id ?? '';
+
+  AppLocalizations? get _l10n => AppLocalizations.of(context);
 
   /// 页面初始化时立即加载相册数据。
   @override
@@ -171,7 +174,11 @@ class _AlbumViewState extends State<AlbumView> {
       drugCodeRemark: '',
     );
     if (!item.hasIdentity) {
-      ToastUtils.instance.show(context, '该记录缺少 drugCode/approvalNo，无法查看详情');
+      ToastUtils.instance.show(
+        context,
+        _l10n?.albumDetailMissingIdentityToast ??
+            '该记录缺少 drugCode/approvalNo，无法查看详情',
+      );
       return;
     }
     await Navigator.of(context).push(
@@ -183,7 +190,10 @@ class _AlbumViewState extends State<AlbumView> {
 
   Future<void> _rescanEntry(AlbumEntry entry) async {
     if (!entry.hasOriginalImage) {
-      ToastUtils.instance.show(context, '当前记录仅保存缩略图，无法高质量重识别');
+      ToastUtils.instance.show(
+        context,
+        _l10n?.albumRescanThumbnailOnlyToast ?? '当前记录仅保存缩略图，无法高质量重识别',
+      );
       return;
     }
 
@@ -192,7 +202,10 @@ class _AlbumViewState extends State<AlbumView> {
       return;
     }
     if (bytes == null) {
-      ToastUtils.instance.show(context, '原图读取失败，无法重识别');
+      ToastUtils.instance.show(
+        context,
+        _l10n?.albumRescanReadOriginalFailedToast ?? '原图读取失败，无法重识别',
+      );
       return;
     }
 

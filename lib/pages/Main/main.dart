@@ -7,6 +7,7 @@ import 'package:luminous/constants/constants.dart';
 import 'package:luminous/pages/Album/album.dart';
 import 'package:luminous/pages/Drug/drug.dart';
 import 'package:luminous/pages/Home/home.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Mine/mine.dart';
 import 'package:luminous/stores/ornament_controller.dart';
 
@@ -32,28 +33,30 @@ class MainPage extends StatefulWidget {
 /// 这里只维护当前选中的 Tab 下标，不承载任何业务数据，业务状态由各子页面自己保存。
 class _MainPageState extends State<MainPage> {
   /// 底部导航栏配置列表。
-  final List<_MainTabItem> _tablist = const [
-    _MainTabItem(
-      icon: 'lib/assets/home.png',
-      activeIcon: 'lib/assets/home-full.png',
-      text: '主页',
-    ),
-    _MainTabItem(
-      icon: 'lib/assets/drug.png',
-      activeIcon: 'lib/assets/drug-full.png',
-      text: '药品',
-    ),
-    _MainTabItem(
-      icon: 'lib/assets/picture.png',
-      activeIcon: 'lib/assets/picture-full.png',
-      text: '相册',
-    ),
-    _MainTabItem(
-      icon: 'lib/assets/mine.png',
-      activeIcon: 'lib/assets/mine-full.png',
-      text: '我的',
-    ),
-  ];
+  List<_MainTabItem> _tablist(AppLocalizations? l10n) {
+    return [
+      _MainTabItem(
+        icon: 'lib/assets/home.png',
+        activeIcon: 'lib/assets/home-full.png',
+        text: l10n?.mainTabHome ?? '主页',
+      ),
+      _MainTabItem(
+        icon: 'lib/assets/drug.png',
+        activeIcon: 'lib/assets/drug-full.png',
+        text: l10n?.mainTabDrug ?? '药品',
+      ),
+      _MainTabItem(
+        icon: 'lib/assets/picture.png',
+        activeIcon: 'lib/assets/picture-full.png',
+        text: l10n?.mainTabAlbum ?? '相册',
+      ),
+      _MainTabItem(
+        icon: 'lib/assets/mine.png',
+        activeIcon: 'lib/assets/mine-full.png',
+        text: l10n?.mainTabMine ?? '我的',
+      ),
+    ];
+  }
 
   /// 与底部 Tab 一一对应的页面实例列表。
   static const List<Widget> _pages = [
@@ -93,6 +96,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final tablist = _tablist(l10n);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final tabColors = _resolvedTabColors(theme);
@@ -141,7 +146,7 @@ class _MainPageState extends State<MainPage> {
           child: IndexedStack(
             index: _currentIndex,
             children: List<Widget>.generate(
-              _tablist.length,
+              tablist.length,
               (index) => _loadedIndexes.contains(index)
                   ? _pages[index]
                   : const SizedBox.shrink(),
@@ -163,7 +168,7 @@ class _MainPageState extends State<MainPage> {
             top: false,
             minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
             child: _MainBottomBar(
-              items: _tablist,
+              items: tablist,
               itemColors: tabColors,
               currentIndex: _currentIndex,
               backgroundColor: tabBarBackground,

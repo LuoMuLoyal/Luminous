@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:luminous/routes/routes.dart';
+import 'package:luminous/stores/locale_controller.dart';
 import 'package:luminous/startup/app_startup_warmup.dart';
 import 'package:luminous/stores/ornament_controller.dart';
 import 'package:luminous/stores/theme_controller.dart';
@@ -18,8 +19,10 @@ Future<void> main() async {
   final userController = Get.put(UserController(), permanent: true);
   userController.markSessionPending();
   final themeController = Get.put(ThemeController(), permanent: true);
+  final localeController = Get.put(LocaleController(), permanent: true);
   final ornamentController = Get.put(OrnamentController(), permanent: true);
   await themeController.init();
+  await localeController.init();
   runApp(
     LuminousApp(
       userController: userController,

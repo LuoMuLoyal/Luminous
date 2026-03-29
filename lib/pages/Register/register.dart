@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/api/auth_api.dart';
 import 'package:luminous/components/auth.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
@@ -53,6 +54,20 @@ class _RegisterViewState extends State<RegisterView> {
   static final RegExp _codeRegExp = RegExp(r'^\d{6}$');
   static final RegExp _passwordRegExp = RegExp(r'^[A-Za-z0-9]{6,12}$');
 
+  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+
+  String _identifierLabel(AuthIdentifierType type) {
+    return type == AuthIdentifierType.phone
+        ? _l10n.authPhoneLabel
+        : _l10n.authEmailLabel;
+  }
+
+  String _registerMethodLabel(AuthIdentifierType type) {
+    return type == AuthIdentifierType.phone
+        ? _l10n.authPhoneRegisterMethod
+        : _l10n.authEmailRegisterMethod;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -84,15 +99,17 @@ class _RegisterViewState extends State<RegisterView> {
   String? _identifierValidator(String? value) {
     final identifier = (value ?? '').trim();
     if (identifier.isEmpty) {
-      return _identifierType == AuthIdentifierType.phone ? '请输入手机号' : '请输入邮箱';
+      return _identifierType == AuthIdentifierType.phone
+          ? _l10n.authValidationEnterPhone
+          : _l10n.authValidationEnterEmail;
     }
     if (_identifierType == AuthIdentifierType.phone &&
         !_phoneRegExp.hasMatch(identifier)) {
-      return '手机号格式不正确';
+      return _l10n.authValidationInvalidPhone;
     }
     if (_identifierType == AuthIdentifierType.email &&
         !_emailRegExp.hasMatch(identifier)) {
-      return '邮箱格式不正确';
+      return _l10n.authValidationInvalidEmail;
     }
     return null;
   }
@@ -100,10 +117,10 @@ class _RegisterViewState extends State<RegisterView> {
   String? _codeValidator(String? value) {
     final code = (value ?? '').trim();
     if (code.isEmpty) {
-      return '请输入验证码';
+      return _l10n.authValidationEnterCode;
     }
     if (!_codeRegExp.hasMatch(code)) {
-      return '验证码应为6位数字';
+      return _l10n.authValidationCodeRule;
     }
     return null;
   }
@@ -111,10 +128,10 @@ class _RegisterViewState extends State<RegisterView> {
   String? _passwordValidator(String? value) {
     final pwd = value ?? '';
     if (pwd.isEmpty) {
-      return '请输入密码';
+      return _l10n.authValidationEnterPassword;
     }
     if (!_passwordRegExp.hasMatch(pwd)) {
-      return '密码需为6-12位字母或数字';
+      return _l10n.authValidationPasswordRule;
     }
     return null;
   }
@@ -122,10 +139,10 @@ class _RegisterViewState extends State<RegisterView> {
   String? _confirmValidator(String? value) {
     final confirm = value ?? '';
     if (confirm.isEmpty) {
-      return '请再次输入密码';
+      return _l10n.authValidationEnterConfirmPassword;
     }
     if (confirm != _passwordController.text) {
-      return '两次输入的密码不一致';
+      return _l10n.authValidationPasswordMismatch;
     }
     return null;
   }
@@ -219,7 +236,7 @@ class _RegisterViewState extends State<RegisterView> {
       _startCodeCooldown();
       ToastUtils.instance.show(
         context,
-        response.msg.isEmpty ? '验证码发送成功' : response.msg,
+        response.msg.isEmpty ? _l10n.authCodeSentSuccess : response.msg,
       );
     } on ApiException catch (e) {
       if (!mounted) {
@@ -253,11 +270,14 @@ class _RegisterViewState extends State<RegisterView> {
 
     final identifier = _identifierController.text.trim();
     if (_codeTarget != identifier) {
-      ToastUtils.instance.show(context, '请先获取当前账号的验证码');
+      ToastUtils.instance.show(
+        context,
+        _l10n.registerNeedCodeForCurrentAccount,
+      );
       return;
     }
     if (!_agreed) {
-      ToastUtils.instance.show(context, '请先阅读并勾选《用户协议》《隐私政策》');
+      ToastUtils.instance.show(context, _l10n.registerNeedAgreement);
       return;
     }
 
@@ -284,7 +304,7 @@ class _RegisterViewState extends State<RegisterView> {
 
       ToastUtils.instance.show(
         context,
-        response.msg.isEmpty ? '注册成功' : response.msg,
+        response.msg.isEmpty ? _l10n.registerSuccess : response.msg,
       );
       await Future<void>.delayed(const Duration(milliseconds: 600));
       if (mounted) {
@@ -312,29 +332,32 @@ class _RegisterViewState extends State<RegisterView> {
   String _resolveAuthErrorMessage(ApiException error) {
     switch (error.code) {
       case 'CODE_INVALID':
-        return '验证码错误，请检查后重试';
+        return _l10n.authErrorCodeInvalid;
       case 'CODE_EXPIRED':
-        return '验证码已过期，请重新获取';
+        return _l10n.authErrorCodeExpired;
       case 'CODE_REQUIRED':
-        return '请输入验证码';
+        return _l10n.authErrorCodeRequired;
       case 'IDENTIFIER_EXISTS':
         return _identifierType == AuthIdentifierType.phone
-            ? '手机号已经注册'
-            : '邮箱已经注册';
+            ? _l10n.authErrorIdentifierExistsPhoneRegistered
+            : _l10n.authErrorIdentifierExistsEmailRegistered;
       case 'CODE_SEND_TOO_FREQUENT':
-        return '发送过于频繁，请稍后再试';
+        return _l10n.authErrorTooFrequent;
       case 'INVALID_IDENTIFIER':
       case 'INVALID_TARGET':
         return _identifierType == AuthIdentifierType.phone
-            ? '手机号格式不正确'
-            : '邮箱地址格式错误';
+            ? _l10n.authErrorInvalidPhone
+            : _l10n.authErrorInvalidEmailFormat;
       default:
-        return error.message.trim().isEmpty ? '请求失败，请稍后重试' : error.message;
+        return error.message.trim().isEmpty
+            ? _l10n.authErrorRequestFailed
+            : error.message;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = _l10n;
     return AuthPageScaffold(
       children: [
         _buildTopBar(),
@@ -342,19 +365,21 @@ class _RegisterViewState extends State<RegisterView> {
         AuthHeroCard(
           palette: SoftBannerPalettes.authOf(context),
           icon: Icons.person_add_alt_1_rounded,
-          title: '创建账号',
-          subtitle: '${_identifierType.label}验证码注册',
+          title: l10n.registerHeroTitle,
+          subtitle: l10n.registerHeroSubtitle(
+            _identifierLabel(_identifierType),
+          ),
         ),
         const SizedBox(height: 10),
         AuthMethodSwitcher(
           items: [
             AuthMethodItem(
-              label: AuthIdentifierType.phone.registerLabel,
+              label: _registerMethodLabel(AuthIdentifierType.phone),
               selected: _identifierType == AuthIdentifierType.phone,
               onTap: () => _toggleIdentifierType(AuthIdentifierType.phone),
             ),
             AuthMethodItem(
-              label: AuthIdentifierType.email.registerLabel,
+              label: _registerMethodLabel(AuthIdentifierType.email),
               selected: _identifierType == AuthIdentifierType.email,
               onTap: () => _toggleIdentifierType(AuthIdentifierType.email),
             ),
@@ -408,7 +433,7 @@ class _RegisterViewState extends State<RegisterView> {
         const SizedBox(width: 10),
         Expanded(
           child: Text(
-            '注册',
+            _l10n.registerTopTitle,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w800,
@@ -450,10 +475,10 @@ class _RegisterViewState extends State<RegisterView> {
                     : TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 decoration: _buildInputDecoration(
-                  labelText: _identifierType.label,
+                  labelText: _identifierLabel(_identifierType),
                   hintText: _identifierType == AuthIdentifierType.phone
-                      ? '请输入手机号'
-                      : '请输入邮箱地址',
+                      ? _l10n.loginIdentifierHintPhone
+                      : _l10n.loginIdentifierHintEmail,
                   prefixIcon: _identifierType == AuthIdentifierType.phone
                       ? Icons.phone_iphone_rounded
                       : Icons.email_outlined,
@@ -477,8 +502,8 @@ class _RegisterViewState extends State<RegisterView> {
                 obscureText: _obscurePassword,
                 textInputAction: TextInputAction.next,
                 decoration: _buildInputDecoration(
-                  labelText: '密码',
-                  hintText: '6-12位字母或数字',
+                  labelText: _l10n.authPasswordLabel,
+                  hintText: _l10n.authPasswordHint,
                   prefixIcon: Icons.lock_rounded,
                   suffixIcon: IconButton(
                     onPressed: () {
@@ -501,8 +526,8 @@ class _RegisterViewState extends State<RegisterView> {
                 obscureText: _obscureConfirm,
                 textInputAction: TextInputAction.done,
                 decoration: _buildInputDecoration(
-                  labelText: '确认密码',
-                  hintText: '请再次输入密码',
+                  labelText: _l10n.authConfirmPasswordLabel,
+                  hintText: _l10n.authConfirmPasswordHint,
                   prefixIcon: Icons.lock_outline_rounded,
                   suffixIcon: IconButton(
                     onPressed: () {
@@ -537,8 +562,8 @@ class _RegisterViewState extends State<RegisterView> {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
             decoration: _buildInputDecoration(
-              labelText: '验证码',
-              hintText: '请输入6位验证码',
+              labelText: _l10n.authCodeLabel,
+              hintText: _l10n.authCodeHint,
               prefixIcon: Icons.verified_user_rounded,
             ),
             validator: _codeValidator,
@@ -570,7 +595,7 @@ class _RegisterViewState extends State<RegisterView> {
               : Text(
                   _codeCountdownSeconds > 0
                       ? '${_codeCountdownSeconds}s'
-                      : '发送',
+                      : _l10n.authSendCode,
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -648,9 +673,12 @@ class _RegisterViewState extends State<RegisterView> {
                   color: Colors.white,
                 ),
               )
-            : const Text(
-                '注册',
-                style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w800),
+            : Text(
+                _l10n.registerButton,
+                style: const TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
       ),
     );
@@ -660,8 +688,8 @@ class _RegisterViewState extends State<RegisterView> {
     final scheme = Theme.of(context).colorScheme;
     return Text(
       _identifierType == AuthIdentifierType.phone
-          ? '手机号注册只需短信验证码和密码确认。'
-          : '邮箱注册只需邮件验证码和密码确认。',
+          ? _l10n.registerHelperPhone
+          : _l10n.registerHelperEmail,
       textAlign: TextAlign.center,
       style: TextStyle(
         color: scheme.onSurfaceVariant,

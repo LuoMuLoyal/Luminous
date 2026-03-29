@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/api/scan_api.dart';
 import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Search/search.dart';
 import 'package:luminous/stores/album_local_store.dart';
 import 'package:luminous/stores/user_controller.dart';
@@ -39,6 +40,7 @@ class SelectedScanImage {
 
 /// 打开图片来源选择弹层。
 Future<ImageSource?> showMedicineScanSourceSheet(BuildContext context) {
+  final l10n = AppLocalizations.of(context);
   final theme = Theme.of(context);
   final scheme = theme.colorScheme;
   return showModalBottomSheet<ImageSource>(
@@ -54,7 +56,10 @@ Future<ImageSource?> showMedicineScanSourceSheet(BuildContext context) {
           children: [
             ListTile(
               leading: Icon(Icons.camera_alt_outlined, color: scheme.primary),
-              title: Text('拍摄', style: TextStyle(color: scheme.onSurface)),
+              title: Text(
+                l10n?.scanSourceCamera ?? '拍摄',
+                style: TextStyle(color: scheme.onSurface),
+              ),
               onTap: () => Navigator.of(context).pop(ImageSource.camera),
             ),
             ListTile(
@@ -62,7 +67,10 @@ Future<ImageSource?> showMedicineScanSourceSheet(BuildContext context) {
                 Icons.photo_library_outlined,
                 color: scheme.secondary,
               ),
-              title: Text('从相册选择', style: TextStyle(color: scheme.onSurface)),
+              title: Text(
+                l10n?.scanSourceGallery ?? '从相册选择',
+                style: TextStyle(color: scheme.onSurface),
+              ),
               onTap: () => Navigator.of(context).pop(ImageSource.gallery),
             ),
             ListTile(
@@ -71,7 +79,7 @@ Future<ImageSource?> showMedicineScanSourceSheet(BuildContext context) {
                 color: scheme.onSurfaceVariant,
               ),
               title: Text(
-                '取消',
+                l10n?.scanSourceCancel ?? '取消',
                 style: TextStyle(color: scheme.onSurfaceVariant),
               ),
               onTap: () => Navigator.of(context).pop(),
@@ -101,6 +109,7 @@ Future<void> openMedicineScanFlow(
 
 /// 先让用户选择来源，再读取图片内容。
 Future<SelectedScanImage?> pickMedicineScanImage(BuildContext context) async {
+  final l10n = AppLocalizations.of(context);
   final source = await showMedicineScanSourceSheet(context);
   if (source == null) {
     return null;
@@ -110,7 +119,10 @@ Future<SelectedScanImage?> pickMedicineScanImage(BuildContext context) async {
     final granted = await Permission.camera.request();
     if (!granted.isGranted) {
       if (context.mounted) {
-        ToastUtils.instance.showTop(context, '相机权限被拒绝，请允许后重试');
+        ToastUtils.instance.showTop(
+          context,
+          l10n?.scanCameraPermissionDeniedToast ?? '相机权限被拒绝，请允许后重试',
+        );
       }
       return null;
     }
@@ -135,7 +147,10 @@ Future<SelectedScanImage?> pickMedicineScanImage(BuildContext context) async {
     );
   } catch (_) {
     if (context.mounted) {
-      ToastUtils.instance.showTop(context, '读取图片失败，请重试');
+      ToastUtils.instance.showTop(
+        context,
+        l10n?.scanReadImageFailedToast ?? '读取图片失败，请重试',
+      );
     }
     return null;
   }
@@ -193,6 +208,8 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   int _selectedIndex = 0;
   String? _lastError;
 
+  AppLocalizations? get _l10n => AppLocalizations.of(context);
+
   @override
   void initState() {
     super.initState();
@@ -239,12 +256,17 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = _l10n;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: Text(widget.mode == ScanEntryMode.actions ? '药物识别' : '识别结果'),
+        title: Text(
+          widget.mode == ScanEntryMode.actions
+              ? (l10n?.scanPageTitleActions ?? '药物识别')
+              : (l10n?.scanPageTitleResult ?? '识别结果'),
+        ),
         centerTitle: true,
       ),
       body: LayoutBuilder(
@@ -294,6 +316,7 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   Widget _buildPhotoArea() {
+    final l10n = _l10n;
     final bytes = _photoBytes;
     return Container(
       color: Colors.black,
@@ -316,8 +339,8 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  '准备识别药物',
+                Text(
+                  l10n?.scanPhotoPlaceholderTitle ?? '准备识别药物',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -375,13 +398,19 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   Widget _buildHeaderRow() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
-    final title = widget.mode == ScanEntryMode.actions ? '药物识别' : '识别结果';
+    final title = widget.mode == ScanEntryMode.actions
+        ? (l10n?.scanPageTitleActions ?? '药物识别')
+        : (l10n?.scanPageTitleResult ?? '识别结果');
     final subtitle = _scanning
-        ? '识别中，请稍等...'
+        ? (l10n?.scanHeaderSubtitleScanning ?? '识别中，请稍等...')
         : _scanResult == null
-        ? '选择图片后上传，由豆包视觉模型识别药物信息'
-        : '共识别 ${_scanResult!.candidates.length} 个候选结果';
+        ? (l10n?.scanHeaderSubtitleNoResult ?? '选择图片后上传，由豆包视觉模型识别药物信息')
+        : (l10n?.scanHeaderSubtitleResultCount(
+                _scanResult!.candidates.length,
+              ) ??
+              '共识别 ${_scanResult!.candidates.length} 个候选结果');
 
     return Row(
       children: [
@@ -430,7 +459,7 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
         FilledButton.tonalIcon(
           onPressed: _scanning ? null : _pickAndScan,
           icon: const Icon(Icons.camera_alt_rounded, size: 16),
-          label: const Text('重拍'),
+          label: Text(l10n?.scanRetakeAction ?? '重拍'),
         ),
       ],
     );
@@ -486,6 +515,7 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   Widget _buildResultSection() {
+    final l10n = _l10n;
     final result = _scanResult;
     final scheme = Theme.of(context).colorScheme;
     if (_scanning) {
@@ -501,13 +531,16 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     }
     if (result == null) {
       return _buildInfoCard(
-        '选一张药盒或药品包装图片，后端会把图片交给豆包视觉模型做识别。\n'
-        '如识别到多个候选，你可以先在列表里选择更接近的一项，再执行后续动作。',
+        l10n?.scanInfoNoResult ??
+            '选一张药盒或药品包装图片，后端会把图片交给豆包视觉模型做识别。\n'
+                '如识别到多个候选，你可以先在列表里选择更接近的一项，再执行后续动作。',
       );
     }
 
     if (result.candidates.isEmpty) {
-      return _buildInfoCard('未识别到有效结果，请尝试重新选择更清晰的图片。');
+      return _buildInfoCard(
+        l10n?.scanInfoNoCandidate ?? '未识别到有效结果，请尝试重新选择更清晰的图片。',
+      );
     }
 
     return AppSurfaceCard(
@@ -518,7 +551,7 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '识别结果',
+              l10n?.scanResultSectionTitle ?? '识别结果',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
@@ -595,7 +628,10 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
                                 c.manufacturer.trim().isEmpty
                                     ? (c.approvalNo.trim().isEmpty
                                           ? ''
-                                          : '批准文号: ${c.approvalNo}')
+                                          : (l10n?.scanApprovalNoPrefix(
+                                                  c.approvalNo,
+                                                ) ??
+                                                '批准文号: ${c.approvalNo}'))
                                     : c.manufacturer,
                                 style: TextStyle(
                                   fontSize: 11.5,
@@ -663,6 +699,7 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   Widget _buildActionsSection() {
+    final l10n = _l10n;
     final selected = _getSelectedCandidateOrNull();
     final hasResult = selected != null;
     final searchKeyword = _buildSearchKeyword(selected);
@@ -672,32 +709,36 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
         _ActionTile(
           icon: Icons.refresh_rounded,
           color: const Color(0xFF0EA5E9),
-          label: '再次识别',
-          subtitle: '重新选择拍摄或相册图片',
+          label: l10n?.scanActionRescanLabel ?? '再次识别',
+          subtitle: l10n?.scanActionRescanSubtitle ?? '重新选择拍摄或相册图片',
           onTap: _scanning ? null : _pickAndScan,
         ),
         const SizedBox(height: 10),
         _ActionTile(
           icon: Icons.photo_library_outlined,
           color: const Color(0xFF6366F1),
-          label: '添加到相册',
-          subtitle: _savingToAlbum ? '写入中...' : '保存到软件相册列表',
+          label: l10n?.scanActionSaveAlbumLabel ?? '添加到相册',
+          subtitle: _savingToAlbum
+              ? (l10n?.scanActionSaveAlbumSavingSubtitle ?? '写入中...')
+              : (l10n?.scanActionSaveAlbumSubtitle ?? '保存到软件相册列表'),
           onTap: hasResult && !_savingToAlbum ? _saveToAppAlbum : null,
         ),
         const SizedBox(height: 10),
         _ActionTile(
           icon: Icons.search_rounded,
           color: const Color(0xFF10B981),
-          label: '搜索该药物',
-          subtitle: searchKeyword.isEmpty ? '当前候选缺少可搜索字段' : '跳转搜索页并自动查询',
+          label: l10n?.scanActionSearchLabel ?? '搜索该药物',
+          subtitle: searchKeyword.isEmpty
+              ? (l10n?.scanActionSearchNoKeywordSubtitle ?? '当前候选缺少可搜索字段')
+              : (l10n?.scanActionSearchSubtitle ?? '跳转搜索页并自动查询'),
           onTap: searchKeyword.isEmpty ? null : _searchSelectedMedicine,
         ),
         const SizedBox(height: 10),
         _ActionTile(
           icon: Icons.close_rounded,
           color: const Color(0xFF94A3B8),
-          label: '取消',
-          subtitle: '关闭当前识别页面',
+          label: l10n?.scanActionCancelLabel ?? '取消',
+          subtitle: l10n?.scanActionCancelSubtitle ?? '关闭当前识别页面',
           onTap: _scanning ? null : () => Navigator.maybePop(context),
         ),
       ],
@@ -758,6 +799,7 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   Future<void> _saveToAppAlbum() async {
+    final l10n = _l10n;
     final bytes = _photoBytes;
     final result = _scanResult;
     if (bytes == null || result == null || _savingToAlbum) {
@@ -767,10 +809,17 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     try {
       await _persistAlbumRecord(bytes, result);
       if (!mounted) return;
-      ToastUtils.instance.show(context, '已添加到软件相册');
+      ToastUtils.instance.show(
+        context,
+        l10n?.scanSavedToAlbumToast ?? '已添加到软件相册',
+      );
     } catch (e) {
       if (!mounted) return;
-      ToastUtils.instance.showError(context, e, fallback: '添加到相册失败');
+      ToastUtils.instance.showError(
+        context,
+        e,
+        fallback: l10n?.scanSaveToAlbumFailedToast ?? '添加到相册失败',
+      );
     } finally {
       if (mounted) {
         setState(() => _savingToAlbum = false);
@@ -817,10 +866,14 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
   }
 
   Future<void> _searchSelectedMedicine() async {
+    final l10n = _l10n;
     final selected = _getSelectedCandidateOrNull();
     final keyword = _buildSearchKeyword(selected);
     if (keyword.isEmpty) {
-      ToastUtils.instance.show(context, '当前候选缺少可搜索字段');
+      ToastUtils.instance.show(
+        context,
+        l10n?.scanSearchMissingKeywordToast ?? '当前候选缺少可搜索字段',
+      );
       return;
     }
 

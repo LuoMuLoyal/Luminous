@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/reminder_local_store.dart';
 import 'package:luminous/stores/today_reminder_local_store.dart';
 import 'package:luminous/stores/user_controller.dart';
@@ -45,6 +46,8 @@ class _CheckInPageState extends State<CheckInPage> {
   int _loadRequestId = 0;
 
   String get _userId => _userController.user.value?.id ?? '';
+
+  AppLocalizations? get _l10n => AppLocalizations.of(context);
 
   @override
   void initState() {
@@ -127,12 +130,13 @@ class _CheckInPageState extends State<CheckInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = _l10n;
     final loggedIn = _userController.isLoggedIn && _userId.isNotEmpty;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('用药打卡'),
+        title: Text(l10n?.checkInPageTitle ?? '用药打卡'),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
@@ -183,6 +187,7 @@ class _CheckInPageState extends State<CheckInPage> {
   }
 
   Widget _buildNeedLogin() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
@@ -210,8 +215,8 @@ class _CheckInPageState extends State<CheckInPage> {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                '请先登录',
+              Text(
+                l10n?.checkInNeedLoginTitle ?? '请先登录',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
@@ -219,8 +224,9 @@ class _CheckInPageState extends State<CheckInPage> {
                 ),
               ),
               const SizedBox(height: 6),
-              const Text(
-                '登录后可读取当前设备上的提醒计划，并在本机记录今日打卡状态。',
+              Text(
+                l10n?.checkInNeedLoginSubtitle ??
+                    '登录后可读取当前设备上的提醒计划，并在本机记录今日打卡状态。',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
@@ -242,7 +248,7 @@ class _CheckInPageState extends State<CheckInPage> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: const Text('去登录'),
+                  child: Text(l10n?.checkInNeedLoginAction ?? '去登录'),
                 ),
               ),
             ],
@@ -282,6 +288,7 @@ class _CheckInPageState extends State<CheckInPage> {
   }
 
   Widget _buildEmpty() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return AppSectionCard(
       accentColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.35)!,
@@ -298,7 +305,7 @@ class _CheckInPageState extends State<CheckInPage> {
           ),
           const SizedBox(height: 10),
           Text(
-            '今日暂无提醒',
+            l10n?.checkInEmptyTitle ?? '今日暂无提醒',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w800,
@@ -307,7 +314,7 @@ class _CheckInPageState extends State<CheckInPage> {
           ),
           const SizedBox(height: 6),
           Text(
-            '可以先到“用药提醒”里新增计划',
+            l10n?.checkInEmptySubtitle ?? '可以先到“用药提醒”里新增计划',
             style: TextStyle(
               fontSize: 13,
               color: scheme.onSurfaceVariant,
@@ -328,10 +335,14 @@ class _CheckInPageState extends State<CheckInPage> {
   }
 
   Future<void> _markDone(ReminderItem item) async {
+    final l10n = _l10n;
     final userId = _userId.trim();
     if (userId.isEmpty) return;
     if (item.id.trim().isEmpty) {
-      ToastUtils.instance.show(context, '该提醒缺少 id，无法打卡');
+      ToastUtils.instance.show(
+        context,
+        l10n?.checkInMissingIdMarkDone ?? '该提醒缺少 id，无法打卡',
+      );
       return;
     }
 
@@ -349,7 +360,10 @@ class _CheckInPageState extends State<CheckInPage> {
       );
 
       if (!mounted) return;
-      ToastUtils.instance.show(context, '已记录到当前设备');
+      ToastUtils.instance.show(
+        context,
+        l10n?.checkInMarkedDoneToast ?? '已记录到当前设备',
+      );
       _setLocalDone(item.id, true);
     } catch (e) {
       if (!mounted) return;
@@ -358,12 +372,16 @@ class _CheckInPageState extends State<CheckInPage> {
   }
 
   Future<void> _markUndone(ReminderItem item) async {
+    final l10n = _l10n;
     final userId = _userId.trim();
     if (userId.isEmpty) {
       return;
     }
     if (item.id.trim().isEmpty) {
-      ToastUtils.instance.show(context, '该提醒缺少 id，无法切换状态');
+      ToastUtils.instance.show(
+        context,
+        l10n?.checkInMissingIdMarkUndone ?? '该提醒缺少 id，无法切换状态',
+      );
       return;
     }
 
@@ -371,16 +389,19 @@ class _CheckInPageState extends State<CheckInPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('撤销本地打卡'),
-          content: const Text('当前用药打卡只保存在本机，撤销后会立即修改当前设备显示。确定继续吗？'),
+          title: Text(l10n?.checkInUndoDialogTitle ?? '撤销本地打卡'),
+          content: Text(
+            l10n?.checkInUndoDialogContent ??
+                '当前用药打卡只保存在本机，撤销后会立即修改当前设备显示。确定继续吗？',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('取消'),
+              child: Text(l10n?.checkInUndoDialogCancel ?? '取消'),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('撤销本地打卡'),
+              child: Text(l10n?.checkInUndoDialogConfirm ?? '撤销本地打卡'),
             ),
           ],
         );
@@ -403,7 +424,10 @@ class _CheckInPageState extends State<CheckInPage> {
       );
 
       if (!mounted) return;
-      ToastUtils.instance.show(context, '已改为未打卡');
+      ToastUtils.instance.show(
+        context,
+        l10n?.checkInMarkedUndoneToast ?? '已改为未打卡',
+      );
       _setLocalDone(item.id, false);
     } catch (e) {
       if (!mounted) return;
@@ -430,6 +454,7 @@ class _CheckInPageState extends State<CheckInPage> {
   }
 
   List<ReminderItem> _buildCheckInItems(List<ReminderPlan> plans) {
+    final l10n = _l10n;
     return plans
         .where((plan) => plan.enabled)
         .where(_supportsLocalCheckIn)
@@ -438,7 +463,7 @@ class _CheckInPageState extends State<CheckInPage> {
             id: plan.id.trim(),
             time: plan.time.trim(),
             title: plan.productName.trim().isEmpty
-                ? '用药提醒'
+                ? (l10n?.checkInDefaultTitle ?? '用药提醒')
                 : plan.productName.trim(),
             subtitle: plan.subtitle.trim(),
             done: false,
@@ -461,6 +486,7 @@ class _CheckInCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final done = item.done;
     return AppSurfaceCard(
       radius: 18,
@@ -500,7 +526,7 @@ class _CheckInCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     item.subtitle.trim().isEmpty
-                        ? '请按时完成'
+                        ? (l10n?.checkInCardDefaultSubtitle ?? '请按时完成')
                         : item.subtitle.trim(),
                     style: const TextStyle(
                       fontSize: 12.5,
@@ -525,7 +551,11 @@ class _CheckInCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: Text(done ? '取消打卡' : '打卡'),
+              child: Text(
+                done
+                    ? (l10n?.checkInActionDone ?? '取消打卡')
+                    : (l10n?.checkInActionUndone ?? '打卡'),
+              ),
             ),
           ],
         ),

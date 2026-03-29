@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/user_controller.dart';
 
 /// 启动屏页面。
@@ -150,15 +151,16 @@ class _SplashTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── 如需替换为图片 Logo，将下方 Text 替换为 Image.asset(...) ──
-          const Text(
-            '智慧用药',
-            style: TextStyle(
+          Text(
+            l10n?.splashTitleMain ?? '智慧用药',
+            style: const TextStyle(
               fontSize: 52,
               fontWeight: FontWeight.w900,
               color: Colors.white,
@@ -180,9 +182,9 @@ class _SplashTitle extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.22),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Text(
-              'Luminous · 健康守护',
-              style: TextStyle(
+            child: Text(
+              l10n?.splashTitleSubtitle ?? 'Luminous · 健康守护',
+              style: const TextStyle(
                 fontSize: 15,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -205,6 +207,7 @@ class _SplashMascot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     // ── 【素材替换指南】────────────────────────────────────────────────────
     // 当你准备好图片素材后，将整个 _SplashMascot 的 build 方法替换为：
     //
@@ -269,7 +272,7 @@ class _SplashMascot extends StatelessWidget {
             bottom: 32,
             left: 16,
             child: _FloatingBadge(
-              label: '扫描',
+              label: l10n?.splashBadgeScan ?? '扫描',
               color: const Color(0xFF0891B2),
               icon: Icons.qr_code_scanner_rounded,
             ),
@@ -279,7 +282,7 @@ class _SplashMascot extends StatelessWidget {
             bottom: 20,
             right: 10,
             child: _FloatingBadge(
-              label: '提醒',
+              label: l10n?.splashBadgeReminder ?? '提醒',
               color: const Color(0xFF059669),
               icon: Icons.alarm_rounded,
             ),
@@ -346,12 +349,13 @@ class _SplashFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.only(bottom: math.max(bottomPadding, 24) + 8),
       child: Column(
         children: [
           Text(
-            'Luminous 智慧用药助手',
+            l10n?.splashFooterBrand ?? 'Luminous 智慧用药助手',
             style: TextStyle(
               fontSize: 13,
               color: Colors.white.withValues(alpha: 0.85),
@@ -361,7 +365,7 @@ class _SplashFooter extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '安全 · 便捷 · 智能',
+            l10n?.splashFooterSlogan ?? '安全 · 便捷 · 智能',
             style: TextStyle(
               fontSize: 11,
               color: Colors.white.withValues(alpha: 0.60),

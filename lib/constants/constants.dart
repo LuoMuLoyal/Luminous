@@ -41,6 +41,9 @@ class GlobalConstants {
 
   /// 本地存储主题风格偏好时使用的 key。
   static const String THEME_STYLE_KEY = 'luminous_theme_style';
+
+  /// 本地存储语言偏好时使用的 key。
+  static const String LOCALE_KEY = 'luminous_locale';
 }
 
 /// 后端接口路径常量集合。

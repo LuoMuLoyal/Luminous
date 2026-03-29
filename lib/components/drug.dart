@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/responsive_quick_grid.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/viewmodels/drug.dart';
 
 /// 药品页（Drug）的大块 UI 组件集合。
@@ -90,6 +91,7 @@ class DrugSearchEntrySliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final scheme = Theme.of(context).colorScheme;
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
@@ -147,7 +149,7 @@ class DrugSearchEntrySliver extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '搜索药品',
+                                l10n?.drugSearchEntryTitle ?? '搜索药品',
                                 style: TextStyle(
                                   fontSize: compact ? 14.5 : 15,
                                   fontWeight: FontWeight.w800,
@@ -156,7 +158,8 @@ class DrugSearchEntrySliver extends StatelessWidget {
                               ),
                               SizedBox(height: compact ? 3 : 4),
                               Text(
-                                '支持：产品名称 / 批准文号 / 生产单位',
+                                l10n?.drugSearchEntrySubtitle ??
+                                    '支持：产品名称 / 批准文号 / 生产单位',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -202,6 +205,7 @@ class DrugQuickEntrySectionSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final palette = SoftBannerPalettes.drugOf(context);
 
     return SliverToBoxAdapter(
@@ -224,7 +228,7 @@ class DrugQuickEntrySectionSliver extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '快捷入口',
+                      l10n?.drugQuickSectionTitle ?? '快捷入口',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
@@ -233,7 +237,7 @@ class DrugQuickEntrySectionSliver extends StatelessWidget {
                     ),
                     SizedBox(height: metrics.isCompact ? 2 : 3),
                     Text(
-                      '把高频操作收在一块，页面会更轻更顺手',
+                      l10n?.drugQuickSectionSubtitle ?? '把高频操作收在一块，页面会更轻更顺手',
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w600,
@@ -282,6 +286,7 @@ class DrugMyMedicinesHeaderSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return SliverToBoxAdapter(
       child: Padding(
@@ -292,7 +297,7 @@ class DrugMyMedicinesHeaderSliver extends StatelessWidget {
             return Row(
               children: [
                 Text(
-                  '我的药品',
+                  l10n?.drugMyMedicinesTitle ?? '我的药品',
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w800,
@@ -361,6 +366,7 @@ class DrugEmptyMedicinesSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final scheme = Theme.of(context).colorScheme;
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
@@ -410,7 +416,7 @@ class DrugEmptyMedicinesSliver extends StatelessWidget {
                   ),
                   SizedBox(height: compact ? 12 : 14),
                   Text(
-                    '暂无药品',
+                    l10n?.drugEmptyTitle ?? '暂无药品',
                     style: TextStyle(
                       fontSize: compact ? 14.5 : 15,
                       fontWeight: FontWeight.w700,
@@ -419,7 +425,7 @@ class DrugEmptyMedicinesSliver extends StatelessWidget {
                   ),
                   SizedBox(height: compact ? 4 : 6),
                   Text(
-                    '通过"手动搜索"或"药物识别"\n将药品添加到这里',
+                    l10n?.drugEmptySubtitle ?? '通过"手动搜索"或"药物识别"\n将药品添加到这里',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: compact ? 12.5 : 13,

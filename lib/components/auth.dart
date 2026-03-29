@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// 认证页面（登录/注册）可复用的 UI 组件集合。
 ///
@@ -103,13 +104,14 @@ class AuthLegalHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Text(
-          '登录即代表你已阅读并同意',
+          l10n.authLegalPrefix,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w600,
@@ -119,8 +121,8 @@ class AuthLegalHint extends StatelessWidget {
         ),
         GestureDetector(
           onTap: onTapAgreement,
-          child: const Text(
-            '《用户协议》',
+          child: Text(
+            l10n.authUserAgreementTitle,
             style: TextStyle(
               fontSize: 11.5,
               color: Color(0xFF0284C7),
@@ -130,7 +132,7 @@ class AuthLegalHint extends StatelessWidget {
           ),
         ),
         Text(
-          '和',
+          l10n.authLegalAnd,
           style: TextStyle(
             fontSize: 11.5,
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
@@ -140,8 +142,8 @@ class AuthLegalHint extends StatelessWidget {
         ),
         GestureDetector(
           onTap: onTapPrivacy,
-          child: const Text(
-            '《隐私政策》',
+          child: Text(
+            l10n.authPrivacyPolicyTitle,
             style: TextStyle(
               fontSize: 11.5,
               color: Color(0xFF0284C7),
@@ -411,6 +413,7 @@ class AuthAgreementRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -427,7 +430,7 @@ class AuthAgreementRow extends StatelessWidget {
               GestureDetector(
                 onTap: () => onChanged(!agreed),
                 child: Text(
-                  '我已阅读并同意',
+                  l10n.authAgreementPrefix,
                   style: TextStyle(
                     fontSize: 12.5,
                     color: isDark
@@ -440,8 +443,8 @@ class AuthAgreementRow extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: onTapAgreement,
-                child: const Text(
-                  '《用户协议》',
+                child: Text(
+                  l10n.authUserAgreementTitle,
                   style: TextStyle(
                     fontSize: 12.5,
                     color: Color(0xFF0284C7),
@@ -453,7 +456,7 @@ class AuthAgreementRow extends StatelessWidget {
               GestureDetector(
                 onTap: () => onChanged(!agreed),
                 child: Text(
-                  '和',
+                  l10n.authLegalAnd,
                   style: TextStyle(
                     fontSize: 12.5,
                     color: isDark
@@ -466,8 +469,8 @@ class AuthAgreementRow extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: onTapPrivacy,
-                child: const Text(
-                  '《隐私政策》',
+                child: Text(
+                  l10n.authPrivacyPolicyTitle,
                   style: TextStyle(
                     fontSize: 12.5,
                     color: Color(0xFF0284C7),

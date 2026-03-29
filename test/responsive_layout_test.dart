@@ -78,6 +78,7 @@ void main() {
 
   const drugEntries = <DrugQuickEntry>[
     DrugQuickEntry(
+      entryKey: 'search',
       title: '手动搜索',
       subtitle: '名称/批准文号',
       icon: Icons.search_rounded,
@@ -85,6 +86,7 @@ void main() {
       routeName: '/search',
     ),
     DrugQuickEntry(
+      entryKey: 'scan',
       title: '药物识别',
       subtitle: '拍照识别',
       icon: Icons.camera_alt_outlined,
@@ -92,6 +94,7 @@ void main() {
       routeName: '',
     ),
     DrugQuickEntry(
+      entryKey: 'ai',
       title: 'AI 解读',
       subtitle: '用法禁忌',
       icon: Icons.auto_awesome_rounded,

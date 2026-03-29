@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/responsive_quick_grid.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// 药品页（Drug）相关的数据结构与小组件。
 ///
@@ -11,12 +12,16 @@ import 'package:luminous/components/responsive_quick_grid.dart';
 class DrugQuickEntry {
   /// 创建一个快捷入口数据对象。
   const DrugQuickEntry({
+    required this.entryKey,
     required this.title,
     required this.subtitle,
     required this.icon,
     required this.color,
     required this.routeName,
   });
+
+  /// 快捷入口稳定标识，用于点击分支等逻辑判断。
+  final String entryKey;
 
   /// 卡片主标题。
   final String title;
@@ -58,7 +63,13 @@ class DrugMedicineCardViewModel {
   /// - 副标题/元信息拼接；
   /// - 来源徽标映射；
   /// - 创建日期格式化。
-  factory DrugMedicineCardViewModel.fromRow(Map<String, dynamic> row) {
+  factory DrugMedicineCardViewModel.fromRow(
+    Map<String, dynamic> row, {
+    String unknownProductName = '未知药品',
+    String approvalNoLabel = '批准文号',
+    String sourceScanLabel = '拍照识别',
+    String sourceManualSearchLabel = '手动搜索',
+  }) {
     // 剂型字段。
     final dosageForm = (row['dosageForm'] ?? '').toString();
     // 规格字段。
@@ -81,14 +92,16 @@ class DrugMedicineCardViewModel {
     // 元信息组成：生产单位 + 批准文号。
     final metaParts = <String>[
       if (manufacturer.isNotEmpty) manufacturer,
-      if (approvalNo.isNotEmpty) '批准文号: $approvalNo',
+      if (approvalNo.isNotEmpty) '$approvalNoLabel: $approvalNo',
     ];
 
     return DrugMedicineCardViewModel(
-      productName: (row['productName'] ?? '未知药品').toString(),
+      productName: (row['productName'] ?? unknownProductName).toString(),
       subtitle: subtitleParts.join(' · '),
       metaText: metaParts.join('  '),
-      sourceLabel: source.isEmpty ? '' : (source == 'scan' ? '拍照识别' : '手动搜索'),
+      sourceLabel: source.isEmpty
+          ? ''
+          : (source == 'scan' ? sourceScanLabel : sourceManualSearchLabel),
       sourceColor: source == 'scan'
           ? const Color(0xFF10B981)
           : const Color(0xFF0EA5E9),
@@ -138,8 +151,16 @@ class DrugMyMedicineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     /// 将原始行数据转换为 UI 渲染友好的展示模型。
-    final item = DrugMedicineCardViewModel.fromRow(row);
+    final item = DrugMedicineCardViewModel.fromRow(
+      row,
+      unknownProductName: l10n?.drugUnknownMedicineName ?? '未知药品',
+      approvalNoLabel: l10n?.drugApprovalNoLabel ?? '批准文号',
+      sourceScanLabel: l10n?.drugSourceScanLabel ?? '拍照识别',
+      sourceManualSearchLabel: l10n?.drugSourceManualLabel ?? '手动搜索',
+    );
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
     final subtitleColor = isDark

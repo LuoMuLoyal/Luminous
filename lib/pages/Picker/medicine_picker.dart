@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Search/search.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
 import 'package:luminous/stores/user_controller.dart';
@@ -13,10 +14,10 @@ import 'package:luminous/viewmodels/medicine.dart';
 /// 统一承接“从我的药品选择”与“跳转搜索库选择”两种入口，并把结果返回给上层页面。
 class MedicinePickerPage extends StatefulWidget {
   /// 创建药品选择器页面。
-  const MedicinePickerPage({super.key, this.title = '选择药品'});
+  const MedicinePickerPage({super.key, this.title});
 
   /// 顶部 AppBar 标题。
-  final String title;
+  final String? title;
 
   /// 创建药品选择页对应的状态对象。
   @override
@@ -62,7 +63,10 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
       }
     } catch (_) {
       if (mounted) {
-        ToastUtils.instance.show(context, '加载我的药品失败');
+        ToastUtils.instance.show(
+          context,
+          _l10n?.pickerLoadFailedToast ?? '加载我的药品失败',
+        );
       }
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -72,12 +76,18 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
   /// 当前登录用户 id（未登录时为空字符串）。
   String get _userId => _userController.user.value?.id ?? '';
 
+  AppLocalizations? get _l10n => AppLocalizations.of(context);
+
   /// 构建药品选择页 UI。
   @override
   Widget build(BuildContext context) {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return AppCanvasPageScaffold(
-      appBar: AppBar(title: Text(widget.title), centerTitle: true),
+      appBar: AppBar(
+        title: Text(widget.title ?? l10n?.homeMedicinePickerTitle ?? '选择药品'),
+        centerTitle: true,
+      ),
       appBarSpacing: 32,
       accentColor: scheme.primary,
       secondaryAccentColor: Color.lerp(scheme.secondary, scheme.tertiary, 0.5)!,
@@ -99,22 +109,24 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
 
   /// 构建顶部流程提示，让选择策略更直观。
   Widget _buildFlowHints() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     final itemCountText = _rows.isEmpty
-        ? '本地药品库暂时为空'
-        : '本地已收录 ${_rows.length} 项';
+        ? (l10n?.pickerHintLocalEmpty ?? '本地药品库暂时为空')
+        : (l10n?.pickerHintLocalCount(_rows.length) ??
+              '本地已收录 ${_rows.length} 项');
     return Wrap(
       spacing: 8,
       runSpacing: 8,
       children: [
         _PickerHintChip(
           icon: Icons.offline_bolt_rounded,
-          label: '本地优先选择',
+          label: l10n?.pickerHintLocalPriority ?? '本地优先选择',
           accent: scheme.primary,
         ),
         _PickerHintChip(
           icon: Icons.cloud_sync_outlined,
-          label: '需要时再补查云端',
+          label: l10n?.pickerHintCloudFallback ?? '需要时再补查云端',
           accent: scheme.secondary,
         ),
         _PickerHintChip(
@@ -128,6 +140,7 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
 
   /// 构建顶部“手动搜索药品库”入口。
   Widget _buildSearchEntry() {
+    final l10n = _l10n;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     return AppSectionCard(
@@ -179,7 +192,7 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
-                          '云端药品库',
+                          l10n?.pickerSearchBadge ?? '云端药品库',
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
@@ -189,7 +202,7 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '手动搜索药品库',
+                        l10n?.pickerSearchTitle ?? '手动搜索药品库',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
@@ -198,7 +211,8 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '从云端搜索后直接带回当前流程，适合本地还没保存时快速补查。',
+                        l10n?.pickerSearchSubtitle ??
+                            '从云端搜索后直接带回当前流程，适合本地还没保存时快速补查。',
                         style: TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w600,
@@ -225,6 +239,7 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
   ///
   /// 用户可以直接从本地已添加的药品里点选，也可以跳到搜索页重新选择。
   Widget _buildMyMedicinesCard() {
+    final l10n = _l10n;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     return AppSectionCard(
@@ -239,7 +254,7 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
           Row(
             children: [
               Text(
-                '我的药品',
+                l10n?.pickerMyMedicinesTitle ?? '我的药品',
                 style: TextStyle(
                   fontSize: 15.5,
                   fontWeight: FontWeight.w800,
@@ -249,7 +264,8 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
               const SizedBox(width: 10),
               if (_rows.isNotEmpty)
                 _PickerCountChip(
-                  label: '共 ${_rows.length} 项',
+                  label:
+                      l10n?.pickerCount(_rows.length) ?? '共 ${_rows.length} 项',
                   accent: scheme.tertiary,
                 ),
               const Spacer(),
@@ -261,7 +277,7 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  '同步中',
+                  l10n?.pickerSyncing ?? '同步中',
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w700,
@@ -313,7 +329,7 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    '还没有本地药品记录',
+                    l10n?.pickerEmptyTitle ?? '还没有本地药品记录',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
@@ -322,7 +338,7 @@ class _MedicinePickerPageState extends State<MedicinePickerPage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '你可以先去云端药品库补查，或者稍后再把常用药保存到这里。',
+                    l10n?.pickerEmptySubtitle ?? '你可以先去云端药品库补查，或者稍后再把常用药保存到这里。',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 12.5,

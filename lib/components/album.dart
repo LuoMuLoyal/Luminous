@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/viewmodels/album.dart';
 
 /// 相册页（Album）的大块 UI 组件集合。
@@ -135,6 +136,7 @@ class AlbumHeaderSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
@@ -167,7 +169,7 @@ class AlbumHeaderSliver extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '识别相册',
+                            l10n?.albumHeaderTitle ?? '识别相册',
                             style: TextStyle(
                               color: theme.textColor,
                               fontSize: 18,
@@ -177,8 +179,10 @@ class AlbumHeaderSliver extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             entryCount == 0
-                                ? '新的识别记录会自动归档到这里'
-                                : '本地保存原图，云端仅同步缩略图和识别结果',
+                                ? (l10n?.albumHeaderSubtitleEmpty ??
+                                      '新的识别记录会自动归档到这里')
+                                : (l10n?.albumHeaderSubtitleNonEmpty ??
+                                      '本地保存原图，云端仅同步缩略图和识别结果'),
                             style: TextStyle(
                               color: theme.secondaryTextColor,
                               fontSize: 13,
@@ -207,15 +211,22 @@ class AlbumHeaderSliver extends StatelessWidget {
                   children: [
                     _AlbumInfoChip(
                       icon: Icons.grid_view_rounded,
-                      text: entryCount == 0 ? '等待第一条记录' : '$entryCount 条记录',
+                      text: entryCount == 0
+                          ? (l10n?.albumHeaderChipWaitingFirstRecord ??
+                                '等待第一条记录')
+                          : (l10n?.albumHeaderChipRecordCount(entryCount) ??
+                                '$entryCount 条记录'),
                       backgroundColor: theme.surfaceColor,
                       foregroundColor: theme.surfaceTextColor,
                     ),
                     _AlbumInfoChip(
                       icon: Icons.hd_rounded,
                       text: originalCount == 0
-                          ? '暂无原图归档'
-                          : '原图 $originalCount 条',
+                          ? (l10n?.albumHeaderChipNoOriginal ?? '暂无原图归档')
+                          : (l10n?.albumHeaderChipOriginalCount(
+                                  originalCount,
+                                ) ??
+                                '原图 $originalCount 条'),
                       backgroundColor: theme.surfaceColor,
                       foregroundColor: theme.surfaceTextColor,
                     ),
@@ -223,7 +234,9 @@ class AlbumHeaderSliver extends StatelessWidget {
                       icon: isLoggedIn
                           ? Icons.cloud_done_rounded
                           : Icons.cloud_off_rounded,
-                      text: isLoggedIn ? '云端轻同步' : '当前仅本地保存',
+                      text: isLoggedIn
+                          ? (l10n?.albumHeaderChipCloudSync ?? '云端轻同步')
+                          : (l10n?.albumHeaderChipLocalOnly ?? '当前仅本地保存'),
                       backgroundColor: theme.surfaceColor,
                       foregroundColor: theme.surfaceTextColor,
                     ),
@@ -247,6 +260,7 @@ class AlbumErrorBannerSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     return SliverToBoxAdapter(
       child: Padding(
@@ -275,7 +289,7 @@ class AlbumErrorBannerSliver extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '相册同步出了点问题',
+                      l10n?.albumErrorTitle ?? '相册同步出了点问题',
                       style: TextStyle(
                         fontSize: 13.5,
                         fontWeight: FontWeight.w800,
@@ -294,7 +308,7 @@ class AlbumErrorBannerSliver extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '下拉刷新后会再次尝试读取本地记录',
+                      l10n?.albumErrorHint ?? '下拉刷新后会再次尝试读取本地记录',
                       style: TextStyle(
                         fontSize: 11.8,
                         color: scheme.error,
@@ -318,6 +332,7 @@ class AlbumEmptySliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final scheme = Theme.of(context).colorScheme;
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
@@ -350,7 +365,7 @@ class AlbumEmptySliver extends StatelessWidget {
               ),
               const SizedBox(height: 14),
               Text(
-                '暂无记录',
+                l10n?.albumEmptyTitle ?? '暂无记录',
                 style: TextStyle(
                   fontSize: 15.5,
                   fontWeight: FontWeight.w800,
@@ -359,7 +374,7 @@ class AlbumEmptySliver extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                '去“药物识别”拍照后会自动保存到这里',
+                l10n?.albumEmptySubtitle ?? '去“药物识别”拍照后会自动保存到这里',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
@@ -376,13 +391,13 @@ class AlbumEmptySliver extends StatelessWidget {
                 children: [
                   _AlbumInfoChip(
                     icon: Icons.photo_camera_back_outlined,
-                    text: '拍照后自动归档',
+                    text: l10n?.albumEmptyChipAutoArchive ?? '拍照后自动归档',
                     backgroundColor: themeChipColor(context, scheme.primary),
                     foregroundColor: scheme.primary,
                   ),
                   _AlbumInfoChip(
                     icon: Icons.lock_outline_rounded,
-                    text: '原图仅保存在本机',
+                    text: l10n?.albumEmptyChipLocalOnly ?? '原图仅保存在本机',
                     backgroundColor: themeChipColor(context, scheme.secondary),
                     foregroundColor: scheme.secondary,
                   ),
@@ -405,6 +420,7 @@ class AlbumLoginBannerSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final accent = Color.lerp(scheme.secondary, scheme.primary, 0.3)!;
@@ -424,7 +440,7 @@ class AlbumLoginBannerSliver extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '开启轻量同步',
+                    l10n?.albumLoginTitle ?? '开启轻量同步',
                     style: TextStyle(
                       fontSize: 14.5,
                       fontWeight: FontWeight.w800,
@@ -433,7 +449,7 @@ class AlbumLoginBannerSliver extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '登录后可把缩略图和识别结果同步到云端，原图继续留在本机',
+                    l10n?.albumLoginSubtitle ?? '登录后可把缩略图和识别结果同步到云端，原图继续留在本机',
                     style: TextStyle(
                       fontSize: 12.8,
                       height: 1.45,
@@ -448,13 +464,13 @@ class AlbumLoginBannerSliver extends StatelessWidget {
                     children: [
                       _AlbumInfoChip(
                         icon: Icons.image_not_supported_outlined,
-                        text: '原图不上传',
+                        text: l10n?.albumLoginChipNoUpload ?? '原图不上传',
                         backgroundColor: themeChipColor(context, accent),
                         foregroundColor: accent,
                       ),
                       _AlbumInfoChip(
                         icon: Icons.cloud_upload_outlined,
-                        text: '只同步轻量结果',
+                        text: l10n?.albumLoginChipLightweightSync ?? '只同步轻量结果',
                         backgroundColor: themeChipColor(
                           context,
                           scheme.primary,
@@ -499,7 +515,9 @@ class AlbumLoginBannerSliver extends StatelessWidget {
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      child: const Text('登录后同步'),
+                      child: Text(
+                        l10n?.albumLoginActionSyncAfterLogin ?? '登录后同步',
+                      ),
                     ),
                   ],
                 );
@@ -529,7 +547,7 @@ class AlbumLoginBannerSliver extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Text('登录'),
+                    child: Text(l10n?.albumLoginActionLogin ?? '登录'),
                   ),
                 ],
               );
@@ -550,6 +568,7 @@ class AlbumCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
@@ -568,7 +587,9 @@ class AlbumCard extends StatelessWidget {
     final placeholderColor = isDark
         ? const Color(0xFF1E293B)
         : const Color(0xFFF1F5F9);
-    final statusText = entry.hasOriginalImage ? '本地原图' : '仅缩略图';
+    final statusText = entry.hasOriginalImage
+        ? (l10n?.albumCardStatusLocalOriginal ?? '本地原图')
+        : (l10n?.albumCardStatusThumbnailOnly ?? '仅缩略图');
 
     return RepaintBoundary(
       child: InkWell(
@@ -675,8 +696,10 @@ class AlbumCard extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       entry.approvalNo.trim().isEmpty
-                          ? '点击查看识别结果与药品详情'
-                          : '批准文号: ${entry.approvalNo}',
+                          ? (l10n?.albumCardSubtitleTapForDetail ??
+                                '点击查看识别结果与药品详情')
+                          : (l10n?.albumApprovalNoPrefix(entry.approvalNo) ??
+                                '批准文号: ${entry.approvalNo}'),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -687,7 +710,9 @@ class AlbumCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      entry.hasOriginalImage ? '可再次识别' : '当前为轻量记录',
+                      entry.hasOriginalImage
+                          ? (l10n?.albumCardTagRescannable ?? '可再次识别')
+                          : (l10n?.albumCardTagLightRecord ?? '当前为轻量记录'),
                       style: TextStyle(
                         fontSize: 11.8,
                         color: accent,
@@ -847,6 +872,7 @@ class AlbumPreviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final hasOriginalImage = entry.hasOriginalImage;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
@@ -906,8 +932,9 @@ class AlbumPreviewPage extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     entry.approvalNo.trim().isEmpty
-                        ? '暂无批准文号'
-                        : '批准文号: ${entry.approvalNo}',
+                        ? (l10n?.albumPreviewNoApprovalNo ?? '暂无批准文号')
+                        : (l10n?.albumApprovalNoPrefix(entry.approvalNo) ??
+                              '批准文号: ${entry.approvalNo}'),
                     style: TextStyle(
                       fontSize: 13,
                       color: subtitleColor,
@@ -923,7 +950,11 @@ class AlbumPreviewPage extends StatelessWidget {
                         icon: hasOriginalImage
                             ? Icons.hd_rounded
                             : Icons.photo_size_select_small_rounded,
-                        text: hasOriginalImage ? '本地原图可重识别' : '当前仅保存缩略图',
+                        text: hasOriginalImage
+                            ? (l10n?.albumPreviewTagOriginalRescannable ??
+                                  '本地原图可重识别')
+                            : (l10n?.albumPreviewTagThumbnailOnly ??
+                                  '当前仅保存缩略图'),
                         backgroundColor: themeChipColor(
                           context,
                           hasOriginalImage ? tonalColor : scheme.secondary,
@@ -935,7 +966,11 @@ class AlbumPreviewPage extends StatelessWidget {
                       if (entry.takenAt > 0)
                         _AlbumInfoChip(
                           icon: Icons.schedule_rounded,
-                          text: '记录于 ${_formatAlbumDate(entry.takenAt)}',
+                          text:
+                              l10n?.albumPreviewTagRecordedAt(
+                                _formatAlbumDate(entry.takenAt),
+                              ) ??
+                              '记录于 ${_formatAlbumDate(entry.takenAt)}',
                           backgroundColor: themeChipColor(
                             context,
                             scheme.primary,
@@ -966,7 +1001,8 @@ class AlbumPreviewPage extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        '当前记录仅保存缩略图，无法高质量重识别。',
+                        l10n?.albumPreviewLowQualityNotice ??
+                            '当前记录仅保存缩略图，无法高质量重识别。',
                         style: TextStyle(
                           fontSize: 12.5,
                           height: 1.45,
@@ -990,7 +1026,7 @@ class AlbumPreviewPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Text('查看药品详情'),
+                    child: Text(l10n?.albumPreviewOpenDetailAction ?? '查看药品详情'),
                   ),
                   const SizedBox(height: 10),
                   FilledButton.tonal(
@@ -1009,7 +1045,7 @@ class AlbumPreviewPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Text('再次识别'),
+                    child: Text(l10n?.albumPreviewRescanAction ?? '再次识别'),
                   ),
                 ],
               ),
