@@ -55,6 +55,7 @@ export async function handleMedicineAiSafety(
         detail: await findMedicine({
           drugCode: raw.drugCode,
           approvalNo: raw.approvalNo,
+          productName: raw.productName,
         }),
       })),
     );

@@ -59,7 +59,8 @@ class _RegisterViewState extends State<RegisterView> {
     _identifierType = widget.initialIdentifierType;
     _identifierController.text = widget.initialIdentifier;
     _codeController.text = widget.initialCode;
-    _codeTarget = widget.initialIdentifier.trim();
+    final initialCode = widget.initialCode.trim();
+    _codeTarget = initialCode.isEmpty ? '' : widget.initialIdentifier.trim();
   }
 
   @override

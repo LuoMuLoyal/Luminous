@@ -44,3 +44,71 @@ export interface ScanRecognitionFields {
   specification: string;
 }
 
+export interface MyMedicineRecordPayload {
+  id: string;
+  userId: string;
+  identityKey: string;
+  drugCode: string;
+  approvalNo: string;
+  productName: string;
+  dosageForm: string;
+  specification: string;
+  manufacturer: string;
+  source: string;
+  createdAt: number;
+}
+
+export interface MyMedicineListPayload {
+  items: MyMedicineRecordPayload[];
+}
+
+export interface ReminderPlanRecord {
+  id: string;
+  userId: string;
+  time: string;
+  drugCode: string;
+  approvalNo: string;
+  productName: string;
+  subtitle: string;
+  enabled: boolean;
+  repeatRule: string;
+  method: string;
+}
+
+export interface ReminderListPayload {
+  items: ReminderPlanRecord[];
+}
+
+export interface TodayReminderItemRecord {
+  id: string;
+  time: string;
+  title: string;
+  subtitle: string;
+  done: boolean;
+}
+
+export interface TodayRemindersPayload {
+  date: string;
+  items: TodayReminderItemRecord[];
+}
+
+export interface ScanRecordCreatePayload {
+  id: string;
+}
+
+export interface ScanRecordItemRecord {
+  id: string;
+  thumbBase64: string;
+  drugCode: string;
+  approvalNo: string;
+  productName: string;
+  takenAt: number;
+}
+
+export interface ScanRecordListPayload {
+  items: ScanRecordItemRecord[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+

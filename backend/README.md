@@ -112,6 +112,15 @@ npm run start
 - `POST /api/medicines/ai-detail`
 - `POST /api/medicines/ai-safety`
 - `POST /api/medicines/scan`
+- `POST /api/medicines/my-upsert`
+- `POST /api/medicines/my-delete`
+- `POST /api/medicines/my-list`
+- `POST /api/reminders/upsert`
+- `POST /api/reminders/delete`
+- `POST /api/reminders/list`
+- `POST /api/reminders/today`
+- `POST /api/medicines/scan-record-create`
+- `POST /api/medicines/scan-record-list`
 
 Full schema and examples: [../lib/docs/backend-api.md](../lib/docs/backend-api.md)
 

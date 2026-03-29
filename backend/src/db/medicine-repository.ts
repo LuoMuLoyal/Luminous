@@ -92,21 +92,50 @@ export async function searchMedicines(input: {
 export async function findMedicine(input: {
   drugCode?: string;
   approvalNo?: string;
+  productName?: string;
 }): Promise<MedicineItemRecord | null> {
   const drugCode = String(input.drugCode ?? '').trim();
   const approvalNo = String(input.approvalNo ?? '').trim();
-  if (!drugCode && !approvalNo) {
+  const productName = String(input.productName ?? '').trim();
+  if (!drugCode && !approvalNo && !productName) {
     return null;
   }
 
-  const where = drugCode ? '`药品编码` = ?' : '`批准文号` = ?';
-  const value = drugCode || approvalNo;
-  const [rows] = await getMysqlPool().query<MedicineRow[]>(
-    `${baseSelectSql()} WHERE ${where} LIMIT 1`,
-    [value],
-  );
+  if (drugCode) {
+    const [rows] = await getMysqlPool().query<MedicineRow[]>(
+      `${baseSelectSql()} WHERE \`药品编码\` = ? LIMIT 1`,
+      [drugCode],
+    );
+    if (rows.length > 0) {
+      return mapMedicineRow(rows[0]);
+    }
+  }
 
-  return rows.length > 0 ? mapMedicineRow(rows[0]) : null;
+  if (approvalNo) {
+    const [rows] = await getMysqlPool().query<MedicineRow[]>(
+      `${baseSelectSql()} WHERE \`批准文号\` = ? LIMIT 1`,
+      [approvalNo],
+    );
+    if (rows.length > 0) {
+      return mapMedicineRow(rows[0]);
+    }
+  }
+
+  if (productName) {
+    const like = `%${escapeLike(productName)}%`;
+    const [rows] = await getMysqlPool().query<MedicineRow[]>(
+      `${baseSelectSql()}
+      WHERE \`产品名称\` LIKE ? ESCAPE '\\\\'
+      ORDER BY CASE WHEN \`产品名称\` = ? THEN 0 ELSE 1 END, \`序号\` ASC
+      LIMIT 1`,
+      [like, productName],
+    );
+    if (rows.length > 0) {
+      return mapMedicineRow(rows[0]);
+    }
+  }
+
+  return null;
 }
 
 async function queryCandidatesByApprovalNo(

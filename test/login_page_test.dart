@@ -126,7 +126,6 @@ void main() {
             initialIdentifierType: AuthIdentifierType.phone,
             initialIdentifier: '13800138000',
             initialCode: '123456',
-            initialCodeId: 'phone-code-1',
           ),
         ),
       );
@@ -243,7 +242,6 @@ class FakeAuthApi extends AuthApi {
     required AuthIdentifierType identifierType,
     required String identifier,
     required String code,
-    required String codeId,
   }) async {
     if (throwNotRegisteredOnCodeLogin) {
       throw const ApiException('该账号尚未注册，是否前往注册？', code: 'NOT_REGISTERED');
@@ -271,7 +269,6 @@ class FakeAuthApi extends AuthApi {
   Future<ApiResult<RegisterResult>> registerWithEmail({
     required String email,
     required String code,
-    required String codeId,
     required String password,
   }) async {
     lastRegisteredEmail = email;
@@ -286,7 +283,6 @@ class FakeAuthApi extends AuthApi {
   Future<ApiResult<RegisterResult>> registerWithPhone({
     required String phone,
     required String code,
-    required String codeId,
     required String password,
   }) async {
     lastRegisteredPhone = phone;
