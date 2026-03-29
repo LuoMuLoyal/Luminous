@@ -391,6 +391,256 @@ Failure examples:
 - `msg: "imageBase64 不能为空"`
 - `msg: "药品识别失败，请稍后重试"`
 
+### 4.6 My Medicines
+
+- `POST /api/medicines/my-upsert`
+- `POST /api/medicines/my-delete`
+- `POST /api/medicines/my-list`
+
+`my-upsert` request body:
+
+```json
+{
+  "userId": "u_123",
+  "identityKey": "user:u_123|drugCode:86900000000000",
+  "productName": "阿莫西林胶囊",
+  "drugCode": "86900000000000",
+  "approvalNo": "国药准字...",
+  "dosageForm": "胶囊剂",
+  "specification": "0.25g",
+  "manufacturer": "某药业",
+  "source": "search"
+}
+```
+
+`my-upsert` success `result`:
+
+```json
+{
+  "id": "...",
+  "userId": "u_123",
+  "identityKey": "user:u_123|drugCode:86900000000000",
+  "drugCode": "86900000000000",
+  "approvalNo": "国药准字...",
+  "productName": "阿莫西林胶囊",
+  "dosageForm": "胶囊剂",
+  "specification": "0.25g",
+  "manufacturer": "某药业",
+  "source": "search",
+  "createdAt": 1710000000000
+}
+```
+
+`my-delete` request body:
+
+```json
+{
+  "userId": "u_123",
+  "id": "..."
+}
+```
+
+or
+
+```json
+{
+  "userId": "u_123",
+  "identityKey": "user:u_123|drugCode:86900000000000"
+}
+```
+
+`my-delete` success `result`: `true | false`
+
+`my-list` request body:
+
+```json
+{
+  "userId": "u_123"
+}
+```
+
+`my-list` success `result`:
+
+```json
+{
+  "items": [
+    {
+      "id": "...",
+      "userId": "u_123",
+      "identityKey": "user:u_123|drugCode:86900000000000",
+      "drugCode": "86900000000000",
+      "approvalNo": "国药准字...",
+      "productName": "阿莫西林胶囊",
+      "dosageForm": "胶囊剂",
+      "specification": "0.25g",
+      "manufacturer": "某药业",
+      "source": "search",
+      "createdAt": 1710000000000
+    }
+  ]
+}
+```
+
+### 4.7 Reminder Plans
+
+- `POST /api/reminders/upsert`
+- `POST /api/reminders/delete`
+- `POST /api/reminders/list`
+- `POST /api/reminders/today`
+
+`upsert` request body:
+
+```json
+{
+  "userId": "u_123",
+  "time": "08:30",
+  "productName": "维生素D",
+  "subtitle": "早餐后服用 1 粒",
+  "enabled": true,
+  "repeatRule": "daily",
+  "method": "notification"
+}
+```
+
+`upsert` success `result`:
+
+```json
+{
+  "id": "...",
+  "userId": "u_123",
+  "time": "08:30",
+  "drugCode": "",
+  "approvalNo": "",
+  "productName": "维生素D",
+  "subtitle": "早餐后服用 1 粒",
+  "enabled": true,
+  "repeatRule": "daily",
+  "method": "notification"
+}
+```
+
+`delete` request body:
+
+```json
+{
+  "userId": "u_123",
+  "id": "..."
+}
+```
+
+`delete` success `result`: `true | false`
+
+`list` request body:
+
+```json
+{
+  "userId": "u_123"
+}
+```
+
+`list` success `result`:
+
+```json
+{
+  "items": [
+    {
+      "id": "...",
+      "userId": "u_123",
+      "time": "08:30",
+      "drugCode": "",
+      "approvalNo": "",
+      "productName": "维生素D",
+      "subtitle": "早餐后服用 1 粒",
+      "enabled": true,
+      "repeatRule": "daily",
+      "method": "notification"
+    }
+  ]
+}
+```
+
+`today` request body:
+
+```json
+{
+  "date": "2026-03-29",
+  "userId": "u_123"
+}
+```
+
+`today` success `result`:
+
+```json
+{
+  "date": "2026-03-29",
+  "items": [
+    {
+      "id": "...",
+      "time": "08:30",
+      "title": "维生素D",
+      "subtitle": "早餐后服用 1 粒",
+      "done": false
+    }
+  ]
+}
+```
+
+### 4.8 Scan Records
+
+- `POST /api/medicines/scan-record-create`
+- `POST /api/medicines/scan-record-list`
+
+`scan-record-create` request body:
+
+```json
+{
+  "userId": "u_123",
+  "thumbBase64": "...",
+  "drugCode": "86900000000000",
+  "approvalNo": "国药准字...",
+  "productName": "阿莫西林胶囊",
+  "takenAt": 1710000000000
+}
+```
+
+`scan-record-create` success `result`:
+
+```json
+{
+  "id": "..."
+}
+```
+
+`scan-record-list` request body:
+
+```json
+{
+  "userId": "u_123",
+  "page": 1,
+  "pageSize": 20
+}
+```
+
+`scan-record-list` success `result`:
+
+```json
+{
+  "items": [
+    {
+      "id": "...",
+      "thumbBase64": "...",
+      "drugCode": "86900000000000",
+      "approvalNo": "国药准字...",
+      "productName": "阿莫西林胶囊",
+      "takenAt": 1710000000000
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "pageSize": 20
+}
+```
+
 ## 5. Error and Status Conventions
 
 - 业务失败: 常见为 HTTP 200 + `code != "1"`
@@ -411,6 +661,15 @@ Failure examples:
 - `POST /api/medicines/ai-detail`
 - `POST /api/medicines/ai-safety`
 - `POST /api/medicines/scan`
+- `POST /api/medicines/my-upsert`
+- `POST /api/medicines/my-delete`
+- `POST /api/medicines/my-list`
+- `POST /api/reminders/upsert`
+- `POST /api/reminders/delete`
+- `POST /api/reminders/list`
+- `POST /api/reminders/today`
+- `POST /api/medicines/scan-record-create`
+- `POST /api/medicines/scan-record-list`
 
 ## 7. Flutter Constant Compatibility Note
 

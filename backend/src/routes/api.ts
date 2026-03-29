@@ -10,6 +10,21 @@ import { handleMedicineAiSafety } from '../handlers/medicine-ai-safety';
 import { handleMedicineDetail } from '../handlers/medicine-detail';
 import { handleMedicineScan } from '../handlers/medicine-scan';
 import { handleMedicineSearch } from '../handlers/medicine-search';
+import {
+  handleMyMedicineDelete,
+  handleMyMedicineList,
+  handleMyMedicineUpsert,
+} from '../handlers/my-medicine';
+import {
+  handleReminderDelete,
+  handleReminderList,
+  handleReminderUpsert,
+  handleTodayReminders,
+} from '../handlers/reminder';
+import {
+  handleScanRecordCreate,
+  handleScanRecordList,
+} from '../handlers/scan-record';
 import { createPostHandler } from '../http/express';
 import { authMiddleware } from '../http/jwt';
 
@@ -29,5 +44,20 @@ export function registerApiRoutes(app: Express): void {
   app.post('/api/medicines/ai-detail', createPostHandler(handleMedicineAiDetail));
   app.post('/api/medicines/ai-safety', createPostHandler(handleMedicineAiSafety));
   app.post('/api/medicines/scan', createPostHandler(handleMedicineScan));
+
+  // --- My medicine endpoints ---
+  app.post('/api/medicines/my-upsert', createPostHandler(handleMyMedicineUpsert));
+  app.post('/api/medicines/my-delete', createPostHandler(handleMyMedicineDelete));
+  app.post('/api/medicines/my-list', createPostHandler(handleMyMedicineList));
+
+  // --- Reminder endpoints ---
+  app.post('/api/reminders/upsert', createPostHandler(handleReminderUpsert));
+  app.post('/api/reminders/delete', createPostHandler(handleReminderDelete));
+  app.post('/api/reminders/list', createPostHandler(handleReminderList));
+  app.post('/api/reminders/today', createPostHandler(handleTodayReminders));
+
+  // --- Scan record endpoints ---
+  app.post('/api/medicines/scan-record-create', createPostHandler(handleScanRecordCreate));
+  app.post('/api/medicines/scan-record-list', createPostHandler(handleScanRecordList));
 }
 

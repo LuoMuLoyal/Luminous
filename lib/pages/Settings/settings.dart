@@ -5,20 +5,15 @@ import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
-import 'package:luminous/utils/toast_utils.dart';
 
-/// 设置页。
+/// 设置总览页。
 ///
-/// 当前先放两项：
-/// - 暗黑模式；
-/// - 退出登录。
+/// 采用常见 App 的“设置列表 -> 子设置页”结构。
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeController = Get.find<ThemeController>();
-    final userController = Get.find<UserController>();
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
@@ -29,6 +24,85 @@ class SettingsPage extends StatelessWidget {
       appBarSpacing: 36,
       appBar: AppBar(
         title: const Text('设置'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 2, 16, 28),
+        children: [
+          _SettingsHubHeroCard(
+            accentColor: scheme.primary,
+            secondaryColor: scheme.secondary,
+          ),
+          const SizedBox(height: 12),
+          _SettingsSectionCard(
+            title: '通用设置',
+            subtitle: '可按模块进入对应设置项，后续会继续扩展更多系统偏好',
+            icon: Icons.tune_rounded,
+            accentColor: scheme.secondary,
+            secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.5)!,
+            ornamentKey: 'settings.hub',
+            children: [
+              _SettingsActionTile(
+                icon: Icons.palette_outlined,
+                accentColor: scheme.primary,
+                title: '主题设置',
+                subtitle: '调整主题模式与主题风格，影响全局页面与组件视觉',
+                caption: '进入主题设置',
+                enabled: true,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const ThemeSettingsPage(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              _SettingsActionTile(
+                icon: Icons.language_rounded,
+                accentColor: scheme.tertiary,
+                title: '语言设置',
+                subtitle: '当前支持中文，英文能力将于后续版本上线',
+                caption: '进入语言设置',
+                enabled: true,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const LanguageSettingsPage(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 主题设置页。
+///
+/// 复用原有主题设置内容。
+class ThemeSettingsPage extends StatelessWidget {
+  const ThemeSettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
+    final userController = Get.find<UserController>();
+    final scheme = Theme.of(context).colorScheme;
+
+    return AppCanvasPageScaffold(
+      accentColor: scheme.secondary,
+      secondaryAccentColor: scheme.primary,
+      safeAreaBottom: true,
+      appBarSpacing: 36,
+      appBar: AppBar(
+        title: const Text('主题设置'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -53,74 +127,175 @@ class SettingsPage extends StatelessWidget {
               _DisplayPreferencesSection(themeController: themeController),
             ],
           ),
-          const SizedBox(height: 12),
+        ],
+      ),
+    );
+  }
+}
+
+/// 语言设置页。
+///
+/// 当前先提供中文，英文先占位。
+class LanguageSettingsPage extends StatelessWidget {
+  const LanguageSettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return AppCanvasPageScaffold(
+      accentColor: scheme.tertiary,
+      secondaryAccentColor: scheme.primary,
+      safeAreaBottom: true,
+      appBarSpacing: 36,
+      appBar: AppBar(
+        title: const Text('语言设置'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 2, 16, 28),
+        children: [
           _SettingsSectionCard(
-            title: '账号',
-            subtitle: '当前应用只保留这台设备的登录态，不做旧版本迁移兼容',
-            icon: Icons.lock_person_outlined,
+            title: '应用语言',
+            subtitle: '当前默认使用简体中文，英文入口先保留占位用于后续版本扩展',
+            icon: Icons.translate_rounded,
             accentColor: scheme.tertiary,
-            secondaryColor: scheme.secondary,
-            ornamentKey: 'settings.account',
-            children: [
-              Obx(() {
-                final loggedIn = userController.isLoggedIn;
-                final currentUser = userController.user.value;
-                return _SettingsActionTile(
-                  icon: loggedIn
-                      ? Icons.logout_rounded
-                      : Icons.person_outline_rounded,
-                  accentColor: loggedIn ? scheme.error : scheme.secondary,
-                  title: loggedIn ? '退出登录' : '当前未登录',
-                  subtitle: loggedIn
-                      ? '当前账号：${currentUser?.displayTitle ?? '已登录'}'
-                      : '登录后可同步缩略图和识别结果，原图仍只保留在本机',
-                  caption: loggedIn ? '安全退出并清除这台设备上的登录状态' : '没有账号内容需要清理',
-                  enabled: loggedIn,
-                  onTap: loggedIn
-                      ? () => _confirmLogout(context, userController)
-                      : () => ToastUtils.instance.show(context, '当前未登录'),
-                );
-              }),
-            ],
+            secondaryColor: Color.lerp(scheme.secondary, scheme.primary, 0.4)!,
+            ornamentKey: 'settings.language',
+            children: const [_LanguagePlaceholderSection()],
           ),
         ],
       ),
     );
   }
+}
 
-  Future<void> _confirmLogout(
-    BuildContext context,
-    UserController userController,
-  ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('退出登录'),
-          content: const Text('确定要退出当前账号吗？本地登录状态会被清除。'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('取消'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('退出'),
-            ),
-          ],
-        );
-      },
+class _LanguagePlaceholderSection extends StatelessWidget {
+  const _LanguagePlaceholderSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor.withValues(alpha: 0.42),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: scheme.outline),
+          ),
+          child: Column(
+            children: [
+              RadioListTile<String>(
+                value: 'zh-CN',
+                groupValue: 'zh-CN',
+                onChanged: (_) {},
+                title: const Text('简体中文'),
+                subtitle: const Text('当前已启用'),
+              ),
+              Divider(height: 1, color: scheme.outline),
+              RadioListTile<String>(
+                value: 'en-US',
+                groupValue: 'zh-CN',
+                onChanged: null,
+                title: const Text('English'),
+                subtitle: const Text('即将支持'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          '说明：当前仅提供中文，英文入口已预留，后续版本会逐步补齐文案与本地化资源。',
+          style: TextStyle(
+            color: scheme.onSurfaceVariant,
+            fontSize: 12.5,
+            fontWeight: FontWeight.w600,
+            height: 1.4,
+          ),
+        ),
+      ],
     );
+  }
+}
 
-    if (confirmed != true) {
-      return;
-    }
+class _SettingsHubHeroCard extends StatelessWidget {
+  const _SettingsHubHeroCard({
+    required this.accentColor,
+    required this.secondaryColor,
+  });
 
-    await userController.logout();
-    if (context.mounted) {
-      ToastUtils.instance.show(context, '已退出登录');
-      Navigator.maybePop(context);
-    }
+  final Color accentColor;
+  final Color secondaryColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return AppSectionCard(
+      accentColor: accentColor,
+      secondaryColor: secondaryColor,
+      ornamentKey: 'settings.hub.hero',
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      radius: 18,
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: appTintedSurface(
+                context,
+                accentColor,
+                lightAlpha: 0.10,
+                darkAlpha: 0.18,
+              ),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: appTintedBorder(
+                  context,
+                  accentColor,
+                  lightAlpha: 0.18,
+                  darkAlpha: 0.24,
+                ),
+              ),
+            ),
+            child: Icon(Icons.settings_outlined, color: accentColor),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '偏好设置',
+                  style: TextStyle(
+                    color: scheme.onSurface,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '从这里进入主题和语言设置，后续可继续扩展通知、隐私等模块。',
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 12.8,
+                    fontWeight: FontWeight.w600,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
