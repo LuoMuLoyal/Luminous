@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/reminder_api.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Picker/medicine_picker.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
@@ -70,6 +71,8 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
   /// 用于避免重复点击“保存”导致重复 upsert。
   bool _saving = false;
 
+  AppLocalizations? get _l10n => AppLocalizations.of(context);
+
   /// 当前登录用户 id（未登录时为空字符串）。
   String get _userId => _userController.user.value?.id ?? '';
 
@@ -100,12 +103,18 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
   /// 构建提醒编辑页 UI。
   @override
   Widget build(BuildContext context) {
+    final l10n = _l10n;
+
     /// 当前是否为编辑模式。
     final isEdit = widget.initial != null;
     return Scaffold(
       backgroundColor: const Color(0xFFF3F7FB),
       appBar: AppBar(
-        title: Text(isEdit ? '编辑提醒' : '新增提醒'),
+        title: Text(
+          isEdit
+              ? (l10n?.reminderEditTitle ?? '编辑提醒')
+              : (l10n?.reminderCreateTitle ?? '新增提醒'),
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
@@ -114,28 +123,29 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
           _buildSection(
-            title: '药品与时间',
+            title: l10n?.reminderEditSectionDrugTime ?? '药品与时间',
             child: Column(
               children: [
                 _tile(
                   icon: Icons.medication_outlined,
                   color: const Color(0xFF0EA5E9),
                   title: _nameController.text.trim().isEmpty
-                      ? '选择药品'
+                      ? (l10n?.reminderEditSelectMedicine ?? '选择药品')
                       : _nameController.text.trim(),
                   subtitle:
                       _drugCode.trim().isNotEmpty ||
                           _approvalNo.trim().isNotEmpty
                       ? 'drugCode: ${_drugCode.isEmpty ? '-' : _drugCode}  approvalNo: ${_approvalNo.isEmpty ? '-' : _approvalNo}'
-                      : '可从“我的药品/搜索库”选择',
+                      : (l10n?.reminderEditSelectMedicineHint ??
+                            '可从“我的药品/搜索库”选择'),
                   onTap: _pickMedicine,
                 ),
                 const SizedBox(height: 10),
                 _tile(
                   icon: Icons.access_time_rounded,
                   color: const Color(0xFF10B981),
-                  title: '提醒时间: $_time',
-                  subtitle: '每天在该时间通过系统通知提醒',
+                  title: l10n?.reminderEditTimeTitle(_time) ?? '提醒时间: $_time',
+                  subtitle: l10n?.reminderEditTimeSubtitle ?? '每天在该时间通过系统通知提醒',
                   onTap: _pickTime,
                 ),
               ],
@@ -143,15 +153,15 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
           ),
           const SizedBox(height: 12),
           _buildSection(
-            title: '提醒内容',
+            title: l10n?.reminderEditSectionContent ?? '提醒内容',
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: '药品名称(必填)',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n?.reminderEditNameLabel ?? '药品名称(必填)',
+                    border: const OutlineInputBorder(),
                   ),
                   onChanged: (value) {
                     final nextName = value.trim();
@@ -170,10 +180,10 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
                 const SizedBox(height: 10),
                 TextField(
                   controller: _subtitleController,
-                  decoration: const InputDecoration(
-                    labelText: '备注(可选)',
-                    hintText: '例如 早餐后服用 1 粒',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n?.reminderEditSubtitleLabel ?? '备注(可选)',
+                    hintText: l10n?.reminderEditSubtitleHint ?? '例如 早餐后服用 1 粒',
+                    border: const OutlineInputBorder(),
                   ),
                   maxLines: 2,
                 ),
@@ -182,13 +192,13 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
           ),
           const SizedBox(height: 12),
           _buildSection(
-            title: '开关',
+            title: l10n?.reminderEditSectionSwitch ?? '开关',
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    '启用提醒',
-                    style: TextStyle(
+                    l10n?.reminderEditEnableSwitch ?? '启用提醒',
+                    style: const TextStyle(
                       fontSize: 14.5,
                       fontWeight: FontWeight.w800,
                       color: Color(0xFF0F172A),
@@ -224,12 +234,12 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
                         color: Colors.white,
                       ),
                     )
-                  : const Text('保存'),
+                  : Text(l10n?.reminderEditSave ?? '保存'),
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            '提示：提醒信息仅用于辅助管理，不能替代医生处方。如有不适请及时就医。',
+          Text(
+            l10n?.reminderEditTip ?? '提示：提醒信息仅用于辅助管理，不能替代医生处方。如有不适请及时就医。',
             style: TextStyle(
               fontSize: 12.5,
               height: 1.5,
@@ -341,7 +351,9 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
   Future<void> _pickMedicine() async {
     final item = await Navigator.of(context).push<MedicineItem>(
       MaterialPageRoute<MedicineItem>(
-        builder: (_) => const MedicinePickerPage(title: '选择提醒药品'),
+        builder: (_) => MedicinePickerPage(
+          title: _l10n?.reminderEditPickerTitle ?? '选择提醒药品',
+        ),
       ),
     );
     if (!mounted) return;
@@ -383,7 +395,7 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
     /// 当前 userId。
     final userId = _userId;
     if (userId.trim().isEmpty) {
-      ToastUtils.instance.show(context, '请先登录');
+      ToastUtils.instance.show(context, _l10n?.reminderEditNeedLogin ?? '请先登录');
       Navigator.pushNamed(context, '/login');
       return;
     }
@@ -391,7 +403,10 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
     /// 表单中的药品名称。
     final productName = _nameController.text.trim();
     if (productName.isEmpty) {
-      ToastUtils.instance.show(context, '药品名称不能为空');
+      ToastUtils.instance.show(
+        context,
+        _l10n?.reminderEditNameRequired ?? '药品名称不能为空',
+      );
       return;
     }
 

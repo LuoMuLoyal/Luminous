@@ -4,6 +4,7 @@ import 'package:luminous/api/medicine_api.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/search.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Drug/medicine_detail.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
 import 'package:luminous/stores/user_controller.dart';
@@ -87,19 +88,31 @@ class _SearchViewState extends State<SearchView> {
   final ScrollController _scrollController = ScrollController();
 
   /// 搜索框下方的快捷搜索标签。
-  final List<String> _quickTags = const [
-    '阿莫西林',
-    '布洛芬',
-    '维生素D',
-    '头孢',
-    '抗生素',
-    '胃药',
-  ];
+  List<String> get _quickTags {
+    final l10n = _l10n;
+    return [
+      l10n?.searchQuickTagAmoxicillin ?? '阿莫西林',
+      l10n?.searchQuickTagIbuprofen ?? '布洛芬',
+      l10n?.searchQuickTagVitaminD ?? '维生素D',
+      l10n?.searchQuickTagCephalosporin ?? '头孢',
+      l10n?.searchQuickTagAntibiotic ?? '抗生素',
+      l10n?.searchQuickTagGastroMedicine ?? '胃药',
+    ];
+  }
 
   /// 最近搜索关键词列表。
   ///
   /// 当前仅做内存态演示，未持久化到本地。
-  final List<String> _recentKeywords = ['阿莫西林', '布洛芬', '维生素D'];
+  final List<String> _recentKeywords = [];
+
+  /// 最近搜索是否由当前语言的默认值自动填充。
+  ///
+  /// 仅当历史仍保持默认值时，语言切换才会替换为新语言默认词；
+  /// 用户手动搜索或手动清空后不再自动覆盖。
+  List<String>? _seededRecentKeywords;
+
+  /// 标记是否由用户主动清空过历史，避免在同一会话内被默认词再次填充。
+  bool _historyClearedByUser = false;
 
   /// 已提交并用于实际请求的搜索关键词。
   ///
@@ -237,6 +250,18 @@ class _SearchViewState extends State<SearchView> {
     return true;
   }
 
+  bool _sameStringList(List<String> current, List<String> next) {
+    if (current.length != next.length) {
+      return false;
+    }
+    for (var i = 0; i < current.length; i++) {
+      if (current[i] != next[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /// 页面销毁时释放控制器资源。
   @override
   void dispose() {
@@ -246,6 +271,41 @@ class _SearchViewState extends State<SearchView> {
     _scrollController.dispose();
     _draftKeywordNotifier.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncDefaultRecentKeywordsForLocale();
+  }
+
+  List<String> _defaultRecentKeywords() {
+    return _quickTags.take(3).toList();
+  }
+
+  void _syncDefaultRecentKeywordsForLocale() {
+    final defaults = _defaultRecentKeywords();
+    if (_recentKeywords.isEmpty) {
+      if (_historyClearedByUser) {
+        return;
+      }
+      _recentKeywords.addAll(defaults);
+      _seededRecentKeywords = List<String>.from(defaults);
+      return;
+    }
+
+    final seeded = _seededRecentKeywords;
+    if (seeded == null || !_sameStringList(_recentKeywords, seeded)) {
+      return;
+    }
+    if (_sameStringList(_recentKeywords, defaults)) {
+      return;
+    }
+
+    _recentKeywords
+      ..clear()
+      ..addAll(defaults);
+    _seededRecentKeywords = List<String>.from(defaults);
   }
 
   void _syncDraftKeyword() {
@@ -258,6 +318,8 @@ class _SearchViewState extends State<SearchView> {
 
   /// 当前登录用户 id（未登录时为空字符串）。
   String get _userId => _userController.user.value?.id ?? '';
+
+  AppLocalizations? get _l10n => AppLocalizations.of(context);
 
   Color _searchDecorAccent(BuildContext context) {
     final theme = Theme.of(context);
@@ -340,6 +402,7 @@ class _SearchViewState extends State<SearchView> {
 
   /// 构建顶部标题区域。
   Widget _buildHeaderSliver() {
+    final l10n = _l10n;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final badgeBackground = appTintedSurface(
@@ -377,7 +440,9 @@ class _SearchViewState extends State<SearchView> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    widget.pickerMode ? '选择药品' : '手动搜索',
+                    widget.pickerMode
+                        ? (l10n?.searchTitlePicker ?? '选择药品')
+                        : (l10n?.searchTitleManual ?? '手动搜索'),
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
@@ -408,7 +473,9 @@ class _SearchViewState extends State<SearchView> {
                     ),
                   ),
                   child: Text(
-                    widget.pickerMode ? '药品库选择' : '关键词检索',
+                    widget.pickerMode
+                        ? (l10n?.searchBadgePicker ?? '药品库选择')
+                        : (l10n?.searchBadgeManual ?? '关键词检索'),
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w700,
@@ -419,7 +486,10 @@ class _SearchViewState extends State<SearchView> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    widget.pickerMode ? '从后端药品库搜索并选择' : '支持按药品名称、批准文号、生产单位搜索',
+                    widget.pickerMode
+                        ? (l10n?.searchHeaderSubtitlePicker ?? '从后端药品库搜索并选择')
+                        : (l10n?.searchHeaderSubtitleManual ??
+                              '支持按药品名称、批准文号、生产单位搜索'),
                     style: TextStyle(
                       fontSize: 13,
                       color: scheme.onSurfaceVariant,
@@ -436,6 +506,7 @@ class _SearchViewState extends State<SearchView> {
 
   /// 构建搜索输入框区域。
   Widget _buildSearchBarSliver() {
+    final l10n = _l10n;
     return ValueListenableBuilder<String>(
       valueListenable: _draftKeywordNotifier,
       builder: (context, draftKeyword, _) {
@@ -457,7 +528,8 @@ class _SearchViewState extends State<SearchView> {
                         controller: _searchController,
                         onSubmitted: (_) => _commitSearch(),
                         decoration: InputDecoration(
-                          hintText: '产品名称 / 批准文号 / 生产单位',
+                          hintText:
+                              l10n?.searchInputHint ?? '产品名称 / 批准文号 / 生产单位',
                           hintStyle: TextStyle(
                             color: scheme.onSurfaceVariant,
                             fontSize: 14,
@@ -506,7 +578,7 @@ class _SearchViewState extends State<SearchView> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('搜索'),
+                      child: Text(l10n?.searchActionSearch ?? '搜索'),
                     ),
                   ],
                 ),
@@ -544,6 +616,7 @@ class _SearchViewState extends State<SearchView> {
 
   /// 构建快捷搜索标签区域。
   Widget _buildQuickTagsSliver() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return SliverToBoxAdapter(
       child: Padding(
@@ -558,7 +631,7 @@ class _SearchViewState extends State<SearchView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '常用搜索',
+                  l10n?.searchQuickTagsTitle ?? '常用搜索',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -611,6 +684,7 @@ class _SearchViewState extends State<SearchView> {
 
   /// 构建最近搜索历史区域。
   Widget _buildHistorySliver() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return SliverToBoxAdapter(
       child: Padding(
@@ -623,7 +697,7 @@ class _SearchViewState extends State<SearchView> {
                 Row(
                   children: [
                     Text(
-                      '最近搜索',
+                      l10n?.searchHistoryTitle ?? '最近搜索',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
@@ -638,7 +712,7 @@ class _SearchViewState extends State<SearchView> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         foregroundColor: scheme.onSurfaceVariant,
                       ),
-                      child: const Text('清空'),
+                      child: Text(l10n?.searchHistoryClearAction ?? '清空'),
                     ),
                   ],
                 ),
@@ -646,7 +720,7 @@ class _SearchViewState extends State<SearchView> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
                     child: Text(
-                      '暂无搜索历史',
+                      l10n?.searchHistoryEmpty ?? '暂无搜索历史',
                       style: TextStyle(
                         fontSize: 13,
                         color: scheme.onSurfaceVariant,
@@ -704,6 +778,7 @@ class _SearchViewState extends State<SearchView> {
 
   /// 构建“搜索结果”标题行。
   Widget _buildResultTitleSliver() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return SliverToBoxAdapter(
       child: Padding(
@@ -711,7 +786,7 @@ class _SearchViewState extends State<SearchView> {
         child: Row(
           children: [
             Text(
-              '搜索结果',
+              l10n?.searchResultTitle ?? '搜索结果',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
@@ -778,6 +853,7 @@ class _SearchViewState extends State<SearchView> {
 
   /// 构建“还没输入也没搜索”时的搜索提示区域。
   Widget _buildGuideSliver() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return SliverToBoxAdapter(
       child: Padding(
@@ -797,7 +873,7 @@ class _SearchViewState extends State<SearchView> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        '搜索提示',
+                        l10n?.searchGuideTitle ?? '搜索提示',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -808,10 +884,27 @@ class _SearchViewState extends State<SearchView> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                const _TipRow(label: '产品名称', example: '阿莫西林胶囊、布洛芬片'),
-                const _TipRow(label: '批准文号', example: '国药准字 H20013191'),
-                const _TipRow(label: '生产单位', example: '石药集团、华润三九'),
-                const _TipRow(label: '药品编码', example: '86901000000000(本位码)'),
+                _TipRow(
+                  label: l10n?.searchGuideTipProductNameLabel ?? '产品名称',
+                  example:
+                      l10n?.searchGuideTipProductNameExample ?? '阿莫西林胶囊、布洛芬片',
+                ),
+                _TipRow(
+                  label: l10n?.searchGuideTipApprovalNoLabel ?? '批准文号',
+                  example:
+                      l10n?.searchGuideTipApprovalNoExample ?? '国药准字 H20013191',
+                ),
+                _TipRow(
+                  label: l10n?.searchGuideTipManufacturerLabel ?? '生产单位',
+                  example:
+                      l10n?.searchGuideTipManufacturerExample ?? '石药集团、华润三九',
+                ),
+                _TipRow(
+                  label: l10n?.searchGuideTipDrugCodeLabel ?? '药品编码',
+                  example:
+                      l10n?.searchGuideTipDrugCodeExample ??
+                      '86901000000000(本位码)',
+                ),
               ],
             ),
           ),
@@ -822,6 +915,7 @@ class _SearchViewState extends State<SearchView> {
 
   /// 构建“输入了内容但还没真正搜索”时的引导区域。
   Widget _buildReadySliver() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return SliverToBoxAdapter(
       child: Padding(
@@ -838,7 +932,7 @@ class _SearchViewState extends State<SearchView> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    '按下"搜索"或回车键开始查询药品数据库',
+                    l10n?.searchReadyHint ?? '按下"搜索"或回车键开始查询药品数据库',
                     style: TextStyle(
                       color: scheme.onSurfaceVariant,
                       fontSize: 13,
@@ -889,6 +983,7 @@ class _SearchViewState extends State<SearchView> {
 
   /// 构建空结果占位区域。
   Widget _buildEmptySliver() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return SliverToBoxAdapter(
       child: Padding(
@@ -903,7 +998,7 @@ class _SearchViewState extends State<SearchView> {
               ),
               const SizedBox(height: 8),
               Text(
-                '暂无匹配结果',
+                l10n?.searchEmptyTitle ?? '暂无匹配结果',
                 style: TextStyle(
                   fontSize: 15,
                   color: scheme.onSurfaceVariant,
@@ -912,7 +1007,7 @@ class _SearchViewState extends State<SearchView> {
               ),
               const SizedBox(height: 2),
               Text(
-                '可尝试产品名称、批准文号或生产单位重新搜索',
+                l10n?.searchEmptySubtitle ?? '可尝试产品名称、批准文号或生产单位重新搜索',
                 style: TextStyle(
                   fontSize: 12.5,
                   color: scheme.onSurfaceVariant,
@@ -927,6 +1022,7 @@ class _SearchViewState extends State<SearchView> {
 
   /// 构建搜索失败时的错误区域。
   Widget _buildErrorSliver(String message) {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return SliverToBoxAdapter(
       child: Padding(
@@ -950,7 +1046,7 @@ class _SearchViewState extends State<SearchView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '查询失败',
+                        l10n?.searchErrorTitle ?? '查询失败',
                         style: TextStyle(
                           color: scheme.onSurface,
                           fontSize: 14,
@@ -985,7 +1081,7 @@ class _SearchViewState extends State<SearchView> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text('重试'),
+                          child: Text(l10n?.searchRetryAction ?? '重试'),
                         ),
                       ),
                     ],
@@ -1022,10 +1118,15 @@ class _SearchViewState extends State<SearchView> {
   /// 该方法是“用户确认搜索”的入口，会把输入框内容从 `_draftKeyword`
   /// 提交到 `_keyword`，再触发一次重置搜索。
   void _commitSearch() {
+    final l10n = _l10n;
+
     /// 输入框中当前的关键词。
     final keyword = _searchController.text.trim();
     if (keyword.isEmpty) {
-      ToastUtils.instance.show(context, '请输入产品名称、批准文号或生产单位后再搜索');
+      ToastUtils.instance.show(
+        context,
+        l10n?.searchCommitEmptyToast ?? '请输入产品名称、批准文号或生产单位后再搜索',
+      );
       return;
     }
     setState(() {
@@ -1057,10 +1158,16 @@ class _SearchViewState extends State<SearchView> {
 
   /// 清空最近搜索历史。
   void _clearHistory() {
+    final l10n = _l10n;
     setState(() {
       _recentKeywords.clear();
+      _historyClearedByUser = true;
+      _seededRecentKeywords = null;
     });
-    ToastUtils.instance.show(context, '最近搜索已清空');
+    ToastUtils.instance.show(
+      context,
+      l10n?.searchHistoryClearedToast ?? '最近搜索已清空',
+    );
   }
 
   /// 更新最近搜索列表。
@@ -1069,6 +1176,8 @@ class _SearchViewState extends State<SearchView> {
   /// - 相同关键词去重后移到最前；
   /// - 最多保留 8 条。
   void _updateRecentKeywords(String keyword) {
+    _historyClearedByUser = false;
+    _seededRecentKeywords = null;
     _recentKeywords.remove(keyword);
     _recentKeywords.insert(0, keyword);
     if (_recentKeywords.length > 8) {
@@ -1078,9 +1187,12 @@ class _SearchViewState extends State<SearchView> {
 
   /// 将 `MedicineItem` 转为搜索结果卡片所需的数据对象。
   SearchResultItemData _toCardData(MedicineItem item) {
+    final l10n = _l10n;
+
     /// 卡片下方的补充提示。
     final tips = item.approvalNo.isNotEmpty
-        ? '批准文号: ${item.approvalNo}'
+        ? (l10n?.searchApprovalNoPrefix(item.approvalNo) ??
+              '批准文号: ${item.approvalNo}')
         : item.displayTips;
     return SearchResultItemData(
       name: item.displayName,
@@ -1105,6 +1217,8 @@ class _SearchViewState extends State<SearchView> {
   /// 成功后除了写库，还会立即把 identityKey 放进 `_addedKeys`，
   /// 这样当前页面不需要重新查库就能同步按钮状态。
   Future<void> _addToMyMedicines(MedicineItem item) async {
+    final l10n = _l10n;
+
     /// 当前药品的唯一 identityKey。
     final identityKey = _buildIdentityKey(item);
     try {
@@ -1115,7 +1229,10 @@ class _SearchViewState extends State<SearchView> {
       );
       if (!mounted) return;
       if (!result.added) {
-        ToastUtils.instance.show(context, '该药品已在我的药品列表中');
+        ToastUtils.instance.show(
+          context,
+          l10n?.searchAlreadyAddedToast ?? '该药品已在我的药品列表中',
+        );
         setState(() {
           _addedKeys.add(identityKey);
         });
@@ -1127,12 +1244,15 @@ class _SearchViewState extends State<SearchView> {
       ToastUtils.instance.show(
         context,
         _userId.isNotEmpty && !result.remoteSynced
-            ? '已添加到我的药品，待同步到云端'
-            : '已添加到我的药品',
+            ? (l10n?.searchAddedPendingSyncToast ?? '已添加到我的药品，待同步到云端')
+            : (l10n?.searchAddedToast ?? '已添加到我的药品'),
       );
     } catch (e) {
       if (!mounted) return;
-      ToastUtils.instance.show(context, '添加失败，请重试');
+      ToastUtils.instance.show(
+        context,
+        l10n?.searchAddFailedToast ?? '添加失败，请重试',
+      );
     }
   }
 

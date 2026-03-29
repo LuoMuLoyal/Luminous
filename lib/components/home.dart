@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/responsive_quick_grid.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/viewmodels/home.dart';
 
 /// 首页（Home）可复用的 UI 组件集合。
@@ -55,6 +56,7 @@ class HomeFeatureSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final accent = Color.lerp(scheme.primary, scheme.secondary, 0.35)!;
     final secondary = Color.lerp(scheme.secondary, scheme.tertiary, 0.45)!;
@@ -76,13 +78,16 @@ class HomeFeatureSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '常用功能',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                Text(
+                  l10n?.homeFeaturesTitle ?? '常用功能',
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '快速进入核心健康服务',
+                  l10n?.homeFeaturesSubtitle ?? '快速进入核心健康服务',
                   style: TextStyle(
                     fontSize: 13,
                     color: scheme.onSurfaceVariant,
@@ -123,6 +128,7 @@ class HomeReminderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -138,9 +144,12 @@ class HomeReminderSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '今日提醒',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                Text(
+                  l10n?.homeReminderTitle ?? '今日提醒',
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 SizedBox(height: compact ? 8 : 10),
                 ...items.asMap().entries.map((entry) {
@@ -200,16 +209,17 @@ class HomeTopSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final compact = isCompactLayoutWidth(constraints.maxWidth);
           final statusText = loadingReminders
-              ? '同步中'
+              ? (l10n?.homeStatusSyncing ?? '同步中')
               : reminderCount == 0
-              ? '今天较轻松'
-              : '已整理';
+              ? (l10n?.homeStatusRelaxed ?? '今天较轻松')
+              : (l10n?.homeStatusReady ?? '已整理');
 
           return SoftBannerCard(
             palette: palette,
@@ -218,12 +228,15 @@ class HomeTopSection extends StatelessWidget {
             builder: (context, theme) {
               final pills = <Widget>[
                 HomeInfoPill(
-                  text: loadingReminders ? '提醒加载中...' : '今日提醒 $reminderCount 条',
+                  text: loadingReminders
+                      ? (l10n?.homePillLoading ?? '提醒加载中...')
+                      : (l10n?.homePillCount(reminderCount) ??
+                            '今日提醒 $reminderCount 条'),
                   backgroundColor: theme.surfaceColor,
                   textColor: theme.surfaceTextColor,
                 ),
                 HomeInfoPill(
-                  text: '健康小贴士',
+                  text: l10n?.homePillTips ?? '健康小贴士',
                   backgroundColor: theme.surfaceColor,
                   textColor: theme.surfaceTextColor,
                   onTap: onTapTip,
@@ -253,7 +266,7 @@ class HomeTopSection extends StatelessWidget {
                       SizedBox(width: compact ? 8 : 10),
                       Expanded(
                         child: Text(
-                          '健康助手',
+                          l10n?.homeHeroTitle ?? '健康助手',
                           style: TextStyle(
                             color: theme.textColor,
                             fontSize: compact ? 19 : 20,
@@ -270,7 +283,7 @@ class HomeTopSection extends StatelessWidget {
                   ),
                   SizedBox(height: compact ? 14 : 16),
                   Text(
-                    '今天已经为你整理好',
+                    l10n?.homeHeroIntro ?? '今天已经为你整理好',
                     style: TextStyle(
                       color: theme.secondaryTextColor,
                       fontSize: 12.5,
@@ -383,21 +396,22 @@ class _HomeTopSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final title = loadingReminders
-        ? '正在整理提醒'
+        ? (l10n?.homeSummaryTitleLoading ?? '正在整理提醒')
         : reminderCount == 0
-        ? '今日状态'
-        : '下一条提醒';
+        ? (l10n?.homeSummaryTitleNone ?? '今日状态')
+        : (l10n?.homeSummaryTitleNext ?? '下一条提醒');
     final detail = loadingReminders
-        ? '正在同步今天的提醒安排，请稍等一下'
+        ? (l10n?.homeSummaryDetailLoading ?? '正在同步今天的提醒安排，请稍等一下')
         : reminderCount == 0
-        ? '今天暂无待完成提醒，可以安心继续当前节奏'
-        : nextText.replaceFirst('下一次提醒: ', '');
+        ? (l10n?.homeSummaryDetailNone ?? '今天暂无待完成提醒，可以安心继续当前节奏')
+        : nextText;
     final badgeText = loadingReminders
-        ? '同步中'
+        ? (l10n?.homeSummaryBadgeLoading ?? '同步中')
         : reminderCount == 0
-        ? '轻松日'
-        : '$reminderCount 条安排';
+        ? (l10n?.homeSummaryBadgeRelaxed ?? '轻松日')
+        : (l10n?.homeSummaryBadgeCount(reminderCount) ?? '$reminderCount 条安排');
     final icon = loadingReminders
         ? Icons.sync_rounded
         : reminderCount == 0

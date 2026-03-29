@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/pages/Settings/settings.dart';
+import 'package:luminous/stores/locale_controller.dart';
 import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +17,8 @@ void main() {
     await userController.init();
     final themeController = Get.put(ThemeController(), permanent: true);
     await themeController.init();
+    final localeController = Get.put(LocaleController(), permanent: true);
+    await localeController.init();
   });
 
   testWidgets('settings page builds without exceptions', (tester) async {
@@ -43,7 +46,7 @@ void main() {
     expect(find.text('主题风格'), findsOneWidget);
   });
 
-  testWidgets('language settings entry navigates to placeholder page', (
+  testWidgets('language settings entry navigates to language options page', (
     tester,
   ) async {
     await tester.pumpWidget(const MaterialApp(home: SettingsPage()));
@@ -53,8 +56,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('语言设置'), findsWidgets);
+    expect(find.text('跟随系统'), findsOneWidget);
     expect(find.text('简体中文'), findsOneWidget);
     expect(find.text('English'), findsOneWidget);
-    expect(find.text('即将支持'), findsOneWidget);
+    expect(find.text('自动使用设备当前语言'), findsOneWidget);
   });
 }

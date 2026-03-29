@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:luminous/api/reminder_api.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Reminders/reminder_edit.dart';
 import 'package:luminous/stores/reminder_local_store.dart';
 import 'package:luminous/stores/user_controller.dart';
@@ -50,6 +51,8 @@ class _ReminderListPageState extends State<ReminderListPage> {
 
   /// 当前活跃加载请求的编号。
   int _loadRequestId = 0;
+
+  AppLocalizations? get _l10n => AppLocalizations.of(context);
 
   /// 页面初始化时先拉取一次提醒列表。
   @override
@@ -164,12 +167,13 @@ class _ReminderListPageState extends State<ReminderListPage> {
   /// 构建提醒列表页 UI。
   @override
   Widget build(BuildContext context) {
+    final l10n = _l10n;
     final loggedIn = _userController.isLoggedIn && _userId.isNotEmpty;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('用药提醒'),
+        title: Text(l10n?.reminderListTitle ?? '用药提醒'),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
@@ -192,7 +196,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
               backgroundColor: const Color(0xFF10B981),
               foregroundColor: Colors.white,
               icon: const Icon(Icons.add_rounded),
-              label: const Text('新增提醒'),
+              label: Text(l10n?.reminderAddButton ?? '新增提醒'),
             )
           : null,
       body: AppCanvas(
@@ -232,6 +236,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
 
   /// 构建未登录时的引导视图。
   Widget _buildNeedLogin() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
@@ -259,8 +264,8 @@ class _ReminderListPageState extends State<ReminderListPage> {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                '请先登录',
+              Text(
+                l10n?.reminderNeedLoginTitle ?? '请先登录',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
@@ -268,8 +273,8 @@ class _ReminderListPageState extends State<ReminderListPage> {
                 ),
               ),
               const SizedBox(height: 6),
-              const Text(
-                '登录后可同步提醒计划，并在到点收到系统通知。',
+              Text(
+                l10n?.reminderNeedLoginSubtitle ?? '登录后可同步提醒计划，并在到点收到系统通知。',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
@@ -291,7 +296,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: const Text('去登录'),
+                  child: Text(l10n?.reminderNeedLoginAction ?? '去登录'),
                 ),
               ),
             ],
@@ -333,6 +338,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
 
   /// 构建空状态占位视图。
   Widget _buildEmpty() {
+    final l10n = _l10n;
     final scheme = Theme.of(context).colorScheme;
     return AppSectionCard(
       accentColor: Color.lerp(scheme.primary, scheme.tertiary, 0.32)!,
@@ -349,7 +355,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
           ),
           const SizedBox(height: 10),
           Text(
-            '暂无提醒',
+            l10n?.reminderEmptyTitle ?? '暂无提醒',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w800,
@@ -358,7 +364,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
           ),
           const SizedBox(height: 6),
           Text(
-            '点击右下角“新增提醒”开始设置',
+            l10n?.reminderEmptySubtitle ?? '点击右下角“新增提醒”开始设置',
             style: TextStyle(
               fontSize: 13,
               color: scheme.onSurfaceVariant,
@@ -435,20 +441,24 @@ class _ReminderListPageState extends State<ReminderListPage> {
 
   /// 删除一条提醒计划，并同步到后端/本地/系统通知。
   Future<void> _delete(ReminderPlan plan) async {
+    final l10n = _l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('删除提醒'),
-          content: Text('确定要删除“${plan.productName} ${plan.time}”吗？'),
+          title: Text(l10n?.reminderDeleteDialogTitle ?? '删除提醒'),
+          content: Text(
+            l10n?.reminderDeleteDialogContent(plan.productName, plan.time) ??
+                '确定要删除“${plan.productName} ${plan.time}”吗？',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('取消'),
+              child: Text(l10n?.reminderDeleteCancel ?? '取消'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('删除'),
+              child: Text(l10n?.reminderDeleteConfirm ?? '删除'),
             ),
           ],
         );
@@ -464,7 +474,9 @@ class _ReminderListPageState extends State<ReminderListPage> {
       });
       await _persistCurrentItems(userId: plan.userId);
       await NotificationService.instance.rescheduleAll(_items);
-      if (mounted) ToastUtils.instance.show(context, '已删除');
+      if (mounted) {
+        ToastUtils.instance.show(context, l10n?.reminderDeletedToast ?? '已删除');
+      }
     } catch (e) {
       if (mounted) {
         ToastUtils.instance.showError(context, e);
@@ -500,6 +512,7 @@ class _ReminderCard extends StatelessWidget {
   /// 构建提醒计划卡片 UI。
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AppSurfaceCard(
       radius: 18,
       child: InkWell(
@@ -544,7 +557,8 @@ class _ReminderCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       item.subtitle.trim().isEmpty
-                          ? '系统通知提醒'
+                          ? (l10n?.reminderSystemNotificationSubtitle ??
+                                '系统通知提醒')
                           : item.subtitle.trim(),
                       style: const TextStyle(
                         fontSize: 12.5,

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:luminous/api/auth_api.dart';
 import 'package:luminous/components/auth.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Register/register.dart';
 import 'package:luminous/stores/session_sync_service.dart';
 import 'package:luminous/stores/token_manager.dart';
@@ -48,6 +49,26 @@ class _LoginPageState extends State<LoginPage> {
   static final RegExp _codeRegExp = RegExp(r'^\d{6}$');
   static final RegExp _passwordRegExp = RegExp(r'^[A-Za-z0-9]{6,12}$');
 
+  AppLocalizations get _l10n => AppLocalizations.of(context)!;
+
+  String _identifierLabel(AuthIdentifierType type) {
+    return type == AuthIdentifierType.phone
+        ? _l10n.authPhoneLabel
+        : _l10n.authEmailLabel;
+  }
+
+  String _loginModeLabel(AuthLoginMode mode) {
+    return mode == AuthLoginMode.password
+        ? _l10n.authPasswordLoginMode
+        : _l10n.authCodeLoginMode;
+  }
+
+  String _alternateIdentifierAction(AuthIdentifierType type) {
+    return type == AuthIdentifierType.phone
+        ? _l10n.authSwitchToEmailLogin
+        : _l10n.authSwitchToPhoneLogin;
+  }
+
   @override
   void dispose() {
     _codeCountdownTimer?.cancel();
@@ -60,15 +81,17 @@ class _LoginPageState extends State<LoginPage> {
   String? _identifierValidator(String? value) {
     final identifier = (value ?? '').trim();
     if (identifier.isEmpty) {
-      return _identifierType == AuthIdentifierType.phone ? '请输入手机号' : '请输入邮箱';
+      return _identifierType == AuthIdentifierType.phone
+          ? _l10n.authValidationEnterPhone
+          : _l10n.authValidationEnterEmail;
     }
     if (_identifierType == AuthIdentifierType.phone &&
         !_phoneRegExp.hasMatch(identifier)) {
-      return '手机号格式不正确';
+      return _l10n.authValidationInvalidPhone;
     }
     if (_identifierType == AuthIdentifierType.email &&
         !_emailRegExp.hasMatch(identifier)) {
-      return '邮箱格式不正确';
+      return _l10n.authValidationInvalidEmail;
     }
     return null;
   }
@@ -76,10 +99,10 @@ class _LoginPageState extends State<LoginPage> {
   String? _passwordValidator(String? value) {
     final pwd = value ?? '';
     if (pwd.isEmpty) {
-      return '请输入密码';
+      return _l10n.authValidationEnterPassword;
     }
     if (!_passwordRegExp.hasMatch(pwd)) {
-      return '密码需为6-12位字母或数字';
+      return _l10n.authValidationPasswordRule;
     }
     return null;
   }
@@ -87,10 +110,10 @@ class _LoginPageState extends State<LoginPage> {
   String? _codeValidator(String? value) {
     final code = (value ?? '').trim();
     if (code.isEmpty) {
-      return '请输入验证码';
+      return _l10n.authValidationEnterCode;
     }
     if (!_codeRegExp.hasMatch(code)) {
-      return '验证码应为6位数字';
+      return _l10n.authValidationCodeRule;
     }
     return null;
   }
@@ -104,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onTapForgotPassword() {
-    ToastUtils.instance.show(context, '找回密码功能稍后补充，当前可先注册新账号或联系人工支持');
+    ToastUtils.instance.show(context, _l10n.loginForgotPasswordPending);
   }
 
   void _toggleIdentifierType() {
@@ -206,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
       _startCodeCooldown();
       ToastUtils.instance.show(
         context,
-        response.msg.isEmpty ? '验证码发送成功' : response.msg,
+        response.msg.isEmpty ? _l10n.authCodeSentSuccess : response.msg,
       );
     } on ApiException catch (e) {
       if (!mounted) {
@@ -240,7 +263,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final identifier = _identifierController.text.trim();
     if (_loginMode == AuthLoginMode.code && _codeTarget != identifier) {
-      ToastUtils.instance.show(context, '请先获取当前账号的验证码');
+      ToastUtils.instance.show(context, _l10n.loginNeedCodeForCurrentAccount);
       return;
     }
 
@@ -283,8 +306,8 @@ class _LoginPageState extends State<LoginPage> {
       ToastUtils.instance.show(
         context,
         syncErrors.isEmpty
-            ? (response.msg.isEmpty ? '登录成功' : response.msg)
-            : '登录成功，但部分云端数据同步失败',
+            ? (response.msg.isEmpty ? _l10n.loginSuccess : response.msg)
+            : _l10n.loginSuccessPartialSync,
       );
 
       await Future<void>.delayed(const Duration(milliseconds: 500));
@@ -332,16 +355,18 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('账号未注册'),
-          content: Text(message.isEmpty ? '该账号尚未注册，是否前往注册？' : message),
+          title: Text(_l10n.loginAutoRegisterTitle),
+          content: Text(
+            message.isEmpty ? _l10n.loginAutoRegisterPrompt : message,
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('取消'),
+              child: Text(_l10n.loginAutoRegisterCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('去注册'),
+              child: Text(_l10n.loginAutoRegisterConfirm),
             ),
           ],
         );
@@ -352,27 +377,30 @@ class _LoginPageState extends State<LoginPage> {
   String _resolveAuthErrorMessage(ApiException error) {
     switch (error.code) {
       case 'CODE_INVALID':
-        return '验证码错误，请检查后重试';
+        return _l10n.authErrorCodeInvalid;
       case 'CODE_EXPIRED':
-        return '验证码已过期，请重新获取';
+        return _l10n.authErrorCodeExpired;
       case 'CODE_REQUIRED':
-        return '请输入验证码';
+        return _l10n.authErrorCodeRequired;
       case 'IDENTIFIER_EXISTS':
-        return '该账号已注册，请直接登录';
+        return _l10n.authErrorIdentifierExistsLogin;
       case 'CODE_SEND_TOO_FREQUENT':
-        return '发送过于频繁，请稍后再试';
+        return _l10n.authErrorTooFrequent;
       case 'INVALID_IDENTIFIER':
       case 'INVALID_TARGET':
         return _identifierType == AuthIdentifierType.phone
-            ? '手机号格式不正确'
-            : '邮箱地址格式错误';
+            ? _l10n.authErrorInvalidPhone
+            : _l10n.authErrorInvalidEmailFormat;
       default:
-        return error.message.trim().isEmpty ? '请求失败，请稍后重试' : error.message;
+        return error.message.trim().isEmpty
+            ? _l10n.authErrorRequestFailed
+            : error.message;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = _l10n;
     return AuthPageScaffold(
       children: [
         _buildTopBar(),
@@ -380,20 +408,22 @@ class _LoginPageState extends State<LoginPage> {
         AuthHeroCard(
           palette: SoftBannerPalettes.authOf(context),
           icon: Icons.health_and_safety_rounded,
-          title: '健康助手',
-          subtitle:
-              '${_identifierType.label}${_loginMode == AuthLoginMode.password ? '密码登录' : '验证码登录'}',
+          title: l10n.loginHeroTitle,
+          subtitle: l10n.loginHeroSubtitle(
+            _identifierLabel(_identifierType),
+            _loginModeLabel(_loginMode),
+          ),
         ),
         const SizedBox(height: 10),
         AuthMethodSwitcher(
           items: [
             AuthMethodItem(
-              label: AuthLoginMode.password.label,
+              label: _loginModeLabel(AuthLoginMode.password),
               selected: _loginMode == AuthLoginMode.password,
               onTap: () => _onLoginModeChanged(AuthLoginMode.password),
             ),
             AuthMethodItem(
-              label: AuthLoginMode.code.label,
+              label: _loginModeLabel(AuthLoginMode.code),
               selected: _loginMode == AuthLoginMode.code,
               onTap: () => _onLoginModeChanged(AuthLoginMode.code),
             ),
@@ -458,7 +488,7 @@ class _LoginPageState extends State<LoginPage> {
               fontWeight: FontWeight.w700,
             ),
           ),
-          child: const Text('注册'),
+          child: Text(_l10n.loginRegisterAction),
         ),
       ],
     );
@@ -494,10 +524,10 @@ class _LoginPageState extends State<LoginPage> {
                     : TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 decoration: _buildInputDecoration(
-                  labelText: _identifierType.label,
+                  labelText: _identifierLabel(_identifierType),
                   hintText: _identifierType == AuthIdentifierType.phone
-                      ? '请输入手机号'
-                      : '请输入邮箱地址',
+                      ? _l10n.loginIdentifierHintPhone
+                      : _l10n.loginIdentifierHintEmail,
                   prefixIcon: _identifierType == AuthIdentifierType.phone
                       ? Icons.phone_iphone_rounded
                       : Icons.email_outlined,
@@ -520,8 +550,8 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: _obscurePassword,
                   textInputAction: TextInputAction.done,
                   decoration: _buildInputDecoration(
-                    labelText: '密码',
-                    hintText: '6-12位字母或数字',
+                    labelText: _l10n.authPasswordLabel,
+                    hintText: _l10n.authPasswordHint,
                     prefixIcon: Icons.lock_rounded,
                     suffixIcon: IconButton(
                       onPressed: () {
@@ -560,8 +590,8 @@ class _LoginPageState extends State<LoginPage> {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
             decoration: _buildInputDecoration(
-              labelText: '验证码',
-              hintText: '请输入6位验证码',
+              labelText: _l10n.authCodeLabel,
+              hintText: _l10n.authCodeHint,
               prefixIcon: Icons.verified_user_rounded,
             ),
             validator: _codeValidator,
@@ -594,7 +624,7 @@ class _LoginPageState extends State<LoginPage> {
               : Text(
                   _codeCountdownSeconds > 0
                       ? '${_codeCountdownSeconds}s'
-                      : '发送',
+                      : _l10n.authSendCode,
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -617,7 +647,7 @@ class _LoginPageState extends State<LoginPage> {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             foregroundColor: scheme.primary,
           ),
-          child: Text(_identifierType.alternateActionText),
+          child: Text(_alternateIdentifierAction(_identifierType)),
         ),
         const Spacer(),
         TextButton(
@@ -628,7 +658,7 @@ class _LoginPageState extends State<LoginPage> {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             foregroundColor: scheme.primary,
           ),
-          child: const Text('找回密码'),
+          child: Text(_l10n.loginForgotPasswordAction),
         ),
       ],
     );
@@ -701,9 +731,12 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.white,
                 ),
               )
-            : const Text(
-                '登录',
-                style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w800),
+            : Text(
+                _l10n.loginButton,
+                style: const TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
       ),
     );
@@ -713,8 +746,8 @@ class _LoginPageState extends State<LoginPage> {
     final scheme = Theme.of(context).colorScheme;
     return Text(
       _loginMode == AuthLoginMode.password
-          ? '支持手机号或邮箱搭配密码登录。'
-          : '支持手机号或邮箱验证码登录，未注册可直接去注册。',
+          ? _l10n.loginHelperPassword
+          : _l10n.loginHelperCode,
       textAlign: TextAlign.center,
       style: TextStyle(
         color: scheme.onSurfaceVariant,

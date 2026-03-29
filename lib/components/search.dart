@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// 搜索页（Search）可复用 UI 组件集合。
 class SearchResultItemData {
@@ -89,6 +90,7 @@ class SearchResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final titleColor = scheme.onSurface;
@@ -244,7 +246,10 @@ class SearchResultCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              isAdded ? '已添加' : '添加到我的药品',
+                              isAdded
+                                  ? (l10n?.searchResultAddedLabel ?? '已添加')
+                                  : (l10n?.searchResultAddActionLabel ??
+                                        '添加到我的药品'),
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,

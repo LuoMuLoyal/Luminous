@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/stores/locale_controller.dart';
 import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
 
@@ -16,6 +18,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return AppCanvasPageScaffold(
       accentColor: scheme.secondary,
@@ -23,7 +26,7 @@ class SettingsPage extends StatelessWidget {
       safeAreaBottom: true,
       appBarSpacing: 36,
       appBar: AppBar(
-        title: const Text('设置'),
+        title: Text(l10n?.settingsTitle ?? '设置'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -38,8 +41,9 @@ class SettingsPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _SettingsSectionCard(
-            title: '通用设置',
-            subtitle: '可按模块进入对应设置项，后续会继续扩展更多系统偏好',
+            title: l10n?.settingsGeneralTitle ?? '通用设置',
+            subtitle:
+                l10n?.settingsGeneralSubtitle ?? '可按模块进入对应设置项，后续会继续扩展更多系统偏好',
             icon: Icons.tune_rounded,
             accentColor: scheme.secondary,
             secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.5)!,
@@ -48,9 +52,10 @@ class SettingsPage extends StatelessWidget {
               _SettingsActionTile(
                 icon: Icons.palette_outlined,
                 accentColor: scheme.primary,
-                title: '主题设置',
-                subtitle: '调整主题模式与主题风格，影响全局页面与组件视觉',
-                caption: '进入主题设置',
+                title: l10n?.settingsThemeTitle ?? '主题设置',
+                subtitle:
+                    l10n?.settingsThemeSubtitle ?? '调整主题模式与主题风格，影响全局页面与组件视觉',
+                caption: l10n?.settingsThemeEnter ?? '进入主题设置',
                 enabled: true,
                 onTap: () {
                   Navigator.of(context).push(
@@ -64,9 +69,10 @@ class SettingsPage extends StatelessWidget {
               _SettingsActionTile(
                 icon: Icons.language_rounded,
                 accentColor: scheme.tertiary,
-                title: '语言设置',
-                subtitle: '当前支持中文，英文能力将于后续版本上线',
-                caption: '进入语言设置',
+                title: l10n?.settingsLanguageTitle ?? '语言设置',
+                subtitle:
+                    l10n?.settingsLanguageSubtitle ?? '可自动跟随系统语言，也可手动固定应用语言',
+                caption: l10n?.settingsLanguageEnter ?? '进入语言设置',
                 enabled: true,
                 onTap: () {
                   Navigator.of(context).push(
@@ -95,6 +101,7 @@ class ThemeSettingsPage extends StatelessWidget {
     final themeController = Get.find<ThemeController>();
     final userController = Get.find<UserController>();
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return AppCanvasPageScaffold(
       accentColor: scheme.secondary,
@@ -102,7 +109,7 @@ class ThemeSettingsPage extends StatelessWidget {
       safeAreaBottom: true,
       appBarSpacing: 36,
       appBar: AppBar(
-        title: const Text('主题设置'),
+        title: Text(l10n?.settingsThemeTitle ?? '主题设置'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -117,8 +124,9 @@ class ThemeSettingsPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _SettingsSectionCard(
-            title: '显示',
-            subtitle: '主题模式和主题风格会同时作用到首页、药品、相册与弹层',
+            title: l10n?.settingsDisplayTitle ?? '显示',
+            subtitle:
+                l10n?.settingsDisplaySubtitle ?? '主题模式和主题风格会同时作用到首页、药品、相册与弹层',
             icon: Icons.palette_outlined,
             accentColor: scheme.secondary,
             secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.5)!,
@@ -142,6 +150,8 @@ class LanguageSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final localeController = Get.find<LocaleController>();
 
     return AppCanvasPageScaffold(
       accentColor: scheme.tertiary,
@@ -149,7 +159,7 @@ class LanguageSettingsPage extends StatelessWidget {
       safeAreaBottom: true,
       appBarSpacing: 36,
       appBar: AppBar(
-        title: const Text('语言设置'),
+        title: Text(l10n?.languagePageTitle ?? '语言设置'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -159,13 +169,16 @@ class LanguageSettingsPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 2, 16, 28),
         children: [
           _SettingsSectionCard(
-            title: '应用语言',
-            subtitle: '当前默认使用简体中文，英文入口先保留占位用于后续版本扩展',
+            title: l10n?.languageSectionTitle ?? '应用语言',
+            subtitle:
+                l10n?.languageSectionSubtitle ?? '选择“跟随系统”可自动匹配设备语言，也可手动固定语言',
             icon: Icons.translate_rounded,
             accentColor: scheme.tertiary,
             secondaryColor: Color.lerp(scheme.secondary, scheme.primary, 0.4)!,
             ornamentKey: 'settings.language',
-            children: const [_LanguagePlaceholderSection()],
+            children: [
+              _LanguagePreferenceSection(localeController: localeController),
+            ],
           ),
         ],
       ),
@@ -173,56 +186,86 @@ class LanguageSettingsPage extends StatelessWidget {
   }
 }
 
-class _LanguagePlaceholderSection extends StatelessWidget {
-  const _LanguagePlaceholderSection();
+class _LanguagePreferenceSection extends StatelessWidget {
+  const _LanguagePreferenceSection({required this.localeController});
+
+  final LocaleController localeController;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor.withValues(alpha: 0.42),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: scheme.outline),
-          ),
-          child: Column(
-            children: [
-              ListTile(
-                leading: Icon(
-                  Icons.check_circle_rounded,
-                  color: scheme.primary,
-                ),
-                title: const Text('简体中文'),
-                subtitle: const Text('当前已启用'),
-              ),
-              Divider(height: 1, color: scheme.outline),
-              ListTile(
-                leading: Icon(
-                  Icons.radio_button_unchecked_rounded,
-                  color: scheme.onSurfaceVariant,
-                ),
-                title: const Text('English'),
-                subtitle: const Text('即将支持'),
-              ),
-            ],
-          ),
+    Widget buildOption({
+      required AppLocalePreference value,
+      required String title,
+      required String subtitle,
+      required AppLocalePreference selected,
+    }) {
+      final isSelected = selected == value;
+      return ListTile(
+        onTap: () => localeController.setLocalePreference(value),
+        leading: Icon(
+          isSelected
+              ? Icons.check_circle_rounded
+              : Icons.radio_button_unchecked_rounded,
+          color: isSelected ? scheme.primary : scheme.onSurfaceVariant,
         ),
-        const SizedBox(height: 10),
-        Text(
-          '说明：当前仅提供中文，英文入口已预留，后续版本会逐步补齐文案与本地化资源。',
-          style: TextStyle(
-            color: scheme.onSurfaceVariant,
-            fontSize: 12.5,
-            fontWeight: FontWeight.w600,
-            height: 1.4,
+        title: Text(title),
+        subtitle: Text(subtitle),
+      );
+    }
+
+    return Obx(() {
+      final selected = localeController.localePreference.value;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor.withValues(alpha: 0.42),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: scheme.outline),
+            ),
+            child: Column(
+              children: [
+                buildOption(
+                  value: AppLocalePreference.system,
+                  title: l10n?.languageFollowSystem ?? '跟随系统',
+                  subtitle: l10n?.languageFollowSystemSubtitle ?? '自动使用设备当前语言',
+                  selected: selected,
+                ),
+                Divider(height: 1, color: scheme.outline),
+                buildOption(
+                  value: AppLocalePreference.zh,
+                  title: l10n?.languageChinese ?? '简体中文',
+                  subtitle: l10n?.languageChineseSubtitle ?? '应用文案使用中文',
+                  selected: selected,
+                ),
+                Divider(height: 1, color: scheme.outline),
+                buildOption(
+                  value: AppLocalePreference.en,
+                  title: l10n?.languageEnglish ?? 'English',
+                  subtitle: l10n?.languageEnglishSubtitle ?? '应用文案使用英文',
+                  selected: selected,
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
+          const SizedBox(height: 10),
+          Text(
+            l10n?.languageNote ??
+                '开启“跟随系统”后，当你把系统语言从中文切到英文，应用在下次打开时会自动切换；系统在运行中变更语言时也会同步更新。',
+            style: TextStyle(
+              color: scheme.onSurfaceVariant,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w600,
+              height: 1.4,
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -237,6 +280,7 @@ class _SettingsHubHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
 
     return AppSectionCard(
@@ -275,7 +319,7 @@ class _SettingsHubHeroCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '偏好设置',
+                  l10n?.settingsHubHeroTitle ?? '偏好设置',
                   style: TextStyle(
                     color: scheme.onSurface,
                     fontWeight: FontWeight.w800,
@@ -284,7 +328,8 @@ class _SettingsHubHeroCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '从这里进入主题和语言设置，后续可继续扩展通知、隐私等模块。',
+                  l10n?.settingsHubHeroSubtitle ??
+                      '从这里进入主题和语言设置，后续可继续扩展通知、隐私等模块。',
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 12.8,
@@ -407,6 +452,7 @@ class _SettingsHeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      final l10n = AppLocalizations.of(context);
       final preference = themeController.themePreference.value;
       final style = themeController.themeStyle.value;
       final systemBrightness = MediaQuery.platformBrightnessOf(context);
@@ -415,8 +461,9 @@ class _SettingsHeroCard extends StatelessWidget {
           : preference == AppThemeModePreference.dark;
       final loggedIn = userController.isLoggedIn;
       final userLabel = loggedIn
-          ? (userController.user.value?.displayTitle ?? '账号已登录')
-          : '未登录';
+          ? (userController.user.value?.displayTitle ??
+                (l10n?.settingsHeroAccountLoggedIn ?? '账号已登录'))
+          : (l10n?.settingsHeroAccountLoggedOut ?? '未登录');
 
       return SoftBannerCard(
         palette: SoftBannerPalettes.mineOf(context),
@@ -444,7 +491,7 @@ class _SettingsHeroCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '界面与偏好',
+                          l10n?.settingsHeroTitle ?? '界面与偏好',
                           style: TextStyle(
                             color: theme.textColor,
                             fontSize: 19,
@@ -454,8 +501,10 @@ class _SettingsHeroCard extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           resolvedDark
-                              ? '现在是更安静的夜间观感，页面会一起跟随当前主题节奏'
-                              : '现在是更通透的浅色观感，页面会一起保持柔和层次',
+                              ? (l10n?.settingsHeroMoodDark ??
+                                    '现在是更安静的夜间观感，页面会一起跟随当前主题节奏')
+                              : (l10n?.settingsHeroMoodLight ??
+                                    '现在是更通透的浅色观感，页面会一起保持柔和层次'),
                           style: TextStyle(
                             color: theme.secondaryTextColor,
                             fontSize: 13,
@@ -468,7 +517,7 @@ class _SettingsHeroCard extends StatelessWidget {
                   ),
                   _SettingsInfoChip(
                     icon: _themeModeIcon(preference),
-                    text: _themeModeLabel(preference),
+                    text: _themeModeLabel(preference, l10n: l10n),
                     backgroundColor: theme.surfaceColor,
                     foregroundColor: theme.surfaceTextColor,
                   ),
@@ -481,7 +530,7 @@ class _SettingsHeroCard extends StatelessWidget {
                 children: [
                   _SettingsInfoChip(
                     icon: Icons.auto_awesome_rounded,
-                    text: _themeStyleLabel(style),
+                    text: _themeStyleLabel(style, l10n: l10n),
                     backgroundColor: theme.surfaceColor,
                     foregroundColor: theme.surfaceTextColor,
                   ),
@@ -489,7 +538,9 @@ class _SettingsHeroCard extends StatelessWidget {
                     icon: loggedIn
                         ? Icons.cloud_done_rounded
                         : Icons.cloud_off_rounded,
-                    text: loggedIn ? '账号已登录' : '本地模式',
+                    text: loggedIn
+                        ? (l10n?.settingsHeroAccountLoggedIn ?? '账号已登录')
+                        : (l10n?.settingsHeroLocalMode ?? '本地模式'),
                     backgroundColor: theme.surfaceColor,
                     foregroundColor: theme.surfaceTextColor,
                   ),
@@ -529,8 +580,10 @@ class _SettingsHeroCard extends StatelessWidget {
                           const SizedBox(height: 3),
                           Text(
                             loggedIn
-                                ? '你可以继续调整主题风格，账号状态会保留在这台设备上'
-                                : '现在也能正常使用应用，登录只会额外开启轻量同步能力',
+                                ? (l10n?.settingsHeroLoggedInHint ??
+                                      '你可以继续调整主题风格，账号状态会保留在这台设备上')
+                                : (l10n?.settingsHeroLoggedOutHint ??
+                                      '现在也能正常使用应用，登录只会额外开启轻量同步能力'),
                             style: TextStyle(
                               color: theme.secondaryTextColor,
                               fontSize: 12.5,
@@ -602,6 +655,7 @@ class _DisplayPreferencesSection extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     return Obx(() {
+      final l10n = AppLocalizations.of(context);
       final preference = themeController.themePreference.value;
       final selectedStyle = themeController.themeStyle.value;
       final systemBrightness = MediaQuery.platformBrightnessOf(context);
@@ -618,8 +672,9 @@ class _DisplayPreferencesSection extends StatelessWidget {
                 : (resolvedDark
                       ? Icons.dark_mode_rounded
                       : Icons.light_mode_rounded),
-            title: '主题模式',
-            description: '支持跟随系统、固定浅色和固定深色三种方式',
+            title: l10n?.settingsThemeModeFieldTitle ?? '主题模式',
+            description:
+                l10n?.settingsThemeModeFieldSubtitle ?? '支持跟随系统、固定浅色和固定深色三种方式',
             color: scheme.primary,
           ),
           const SizedBox(height: 8),
@@ -629,7 +684,7 @@ class _DisplayPreferencesSection extends StatelessWidget {
             children: AppThemeModePreference.values
                 .map(
                   (item) => ChoiceChip(
-                    label: Text(_themeModeLabel(item)),
+                    label: Text(_themeModeLabel(item, l10n: l10n)),
                     avatar: Icon(
                       _themeModeIcon(item),
                       size: 18,
@@ -664,8 +719,18 @@ class _DisplayPreferencesSection extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             preference == AppThemeModePreference.system
-                ? '当前跟随系统，系统正在使用${resolvedDark ? '深色' : '浅色'}外观'
-                : '当前固定为${resolvedDark ? '深色' : '浅色'}外观',
+                ? (l10n?.settingsThemeModeCurrentSystem(
+                        resolvedDark
+                            ? (l10n.settingsThemeModeOptionDark)
+                            : (l10n.settingsThemeModeOptionLight),
+                      ) ??
+                      '当前跟随系统，系统正在使用${resolvedDark ? '深色' : '浅色'}外观')
+                : (l10n?.settingsThemeModeCurrentFixed(
+                        resolvedDark
+                            ? (l10n.settingsThemeModeOptionDark)
+                            : (l10n.settingsThemeModeOptionLight),
+                      ) ??
+                      '当前固定为${resolvedDark ? '深色' : '浅色'}外观'),
             style: TextStyle(
               color: scheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
@@ -674,8 +739,10 @@ class _DisplayPreferencesSection extends StatelessWidget {
           const SizedBox(height: 16),
           _SettingsFieldTitle(
             icon: Icons.palette_outlined,
-            title: '主题风格',
-            description: '柔岚、月雾、神树、虚霭、浅砂五套配色会一起影响环境光、横幅和分区块',
+            title: l10n?.settingsThemeStyleFieldTitle ?? '主题风格',
+            description:
+                l10n?.settingsThemeStyleFieldSubtitle ??
+                '柔岚、月雾、神树、虚霭、浅砂五套配色会一起影响环境光、横幅和分区块',
             color: scheme.secondary,
           ),
           const SizedBox(height: 8),
@@ -700,6 +767,7 @@ class _DisplayPreferencesSection extends StatelessWidget {
                         child: _ThemeStyleCard(
                           style: style,
                           selected: selectedStyle == style,
+                          l10n: l10n,
                           onTap: () => themeController.setThemeStyle(style),
                         ),
                       ),
@@ -718,11 +786,13 @@ class _ThemeStyleCard extends StatelessWidget {
   const _ThemeStyleCard({
     required this.style,
     required this.selected,
+    this.l10n,
     required this.onTap,
   });
 
   final AppThemeStyle style;
   final bool selected;
+  final AppLocalizations? l10n;
   final VoidCallback onTap;
 
   @override
@@ -768,7 +838,7 @@ class _ThemeStyleCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    _themeStyleLabel(style),
+                    _themeStyleLabel(style, l10n: l10n),
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       color: theme.colorScheme.onSurface,
@@ -788,7 +858,7 @@ class _ThemeStyleCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
-                      '当前使用',
+                      l10n?.settingsThemeStyleInUseBadge ?? '当前使用',
                       style: TextStyle(
                         color: scheme.primary,
                         fontSize: 11.5,
@@ -845,7 +915,7 @@ class _ThemeStyleCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              _themeStyleSubtitle(style),
+              _themeStyleSubtitle(style, l10n: l10n),
               style: TextStyle(
                 color: theme.colorScheme.onSurfaceVariant,
                 fontSize: 12.5,
@@ -1024,14 +1094,17 @@ class _SettingsActionTile extends StatelessWidget {
   }
 }
 
-String _themeModeLabel(AppThemeModePreference preference) {
+String _themeModeLabel(
+  AppThemeModePreference preference, {
+  AppLocalizations? l10n,
+}) {
   switch (preference) {
     case AppThemeModePreference.system:
-      return '跟随系统';
+      return l10n?.settingsThemeModeOptionSystem ?? '跟随系统';
     case AppThemeModePreference.light:
-      return '浅色';
+      return l10n?.settingsThemeModeOptionLight ?? '浅色';
     case AppThemeModePreference.dark:
-      return '深色';
+      return l10n?.settingsThemeModeOptionDark ?? '深色';
   }
 }
 
@@ -1046,33 +1119,38 @@ IconData _themeModeIcon(AppThemeModePreference preference) {
   }
 }
 
-String _themeStyleLabel(AppThemeStyle style) {
+String _themeStyleLabel(AppThemeStyle style, {AppLocalizations? l10n}) {
   switch (style) {
     case AppThemeStyle.softGlow:
-      return '柔岚';
+      return l10n?.settingsThemeStyleOptionSoftGlow ?? '柔岚';
     case AppThemeStyle.moonMist:
-      return '月雾';
+      return l10n?.settingsThemeStyleOptionMoonMist ?? '月雾';
     case AppThemeStyle.divineTree:
-      return '神树';
+      return l10n?.settingsThemeStyleOptionDivineTree ?? '神树';
     case AppThemeStyle.illusion:
-      return '虚霭';
+      return l10n?.settingsThemeStyleOptionIllusion ?? '虚霭';
     case AppThemeStyle.lightSand:
-      return '浅砂';
+      return l10n?.settingsThemeStyleOptionLightSand ?? '浅砂';
   }
 }
 
-String _themeStyleSubtitle(AppThemeStyle style) {
+String _themeStyleSubtitle(AppThemeStyle style, {AppLocalizations? l10n}) {
   switch (style) {
     case AppThemeStyle.softGlow:
-      return '淡蓝、浅紫和暖金同场，明快但不刺眼，整体更轻盈';
+      return l10n?.settingsThemeStyleOptionSoftGlowDesc ??
+          '淡蓝、浅紫和暖金同场，明快但不刺眼，整体更轻盈';
     case AppThemeStyle.moonMist:
-      return '主蓝色调里融入一丝紫雾，像月光下的冷蓝薄纱';
+      return l10n?.settingsThemeStyleOptionMoonMistDesc ??
+          '主蓝色调里融入一丝紫雾，像月光下的冷蓝薄纱';
     case AppThemeStyle.divineTree:
-      return '黄绿与柔金交错，像林荫透光，生机感更突出';
+      return l10n?.settingsThemeStyleOptionDivineTreeDesc ??
+          '黄绿与柔金交错，像林荫透光，生机感更突出';
     case AppThemeStyle.illusion:
-      return '偏紫色主调，带一点点蓝光，像夜雾里的霓虹边缘';
+      return l10n?.settingsThemeStyleOptionIllusionDesc ??
+          '偏紫色主调，带一点点蓝光，像夜雾里的霓虹边缘';
     case AppThemeStyle.lightSand:
-      return '奶茶、枯粉与陶土色杂糅，温暖克制，像干燥砂岩与旧织物';
+      return l10n?.settingsThemeStyleOptionLightSandDesc ??
+          '奶茶、枯粉与陶土色杂糅，温暖克制，像干燥砂岩与旧织物';
   }
 }
 

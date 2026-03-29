@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/constants/constants.dart';
 import 'package:luminous/pages/CheckIn/checkin.dart';
 import 'package:luminous/pages/Legal/legal_documents.dart';
@@ -11,6 +13,7 @@ import 'package:luminous/pages/Safety/safety_assist.dart';
 import 'package:luminous/pages/Scan/medicine_scan.dart';
 import 'package:luminous/pages/Search/search.dart';
 import 'package:luminous/pages/Settings/settings.dart';
+import 'package:luminous/stores/locale_controller.dart';
 import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/utils/loading_utils.dart';
 
@@ -19,11 +22,23 @@ import 'package:luminous/utils/loading_utils.dart';
 /// 当前项目使用原生 `MaterialApp` 路由表，不依赖 `GetMaterialApp`。
 Widget getRootWidget() {
   final themeController = Get.find<ThemeController>();
+  final localeController = Get.find<LocaleController>();
   return Obx(() {
     final style = themeController.themeStyle.value;
+    final locale = localeController.locale;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: LoadingUtils.navigatorKey,
+      onGenerateTitle: (context) =>
+          AppLocalizations.of(context)?.appName ?? 'Luminous',
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: locale,
       theme: _buildLightTheme(style),
       darkTheme: _buildDarkTheme(style),
       themeMode: themeController.themeMode,

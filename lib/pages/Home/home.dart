@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/home_api.dart';
 import 'package:luminous/components/home.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/pages/Drug/medicine_detail.dart';
 import 'package:luminous/pages/Picker/medicine_picker.dart';
@@ -17,22 +18,6 @@ import 'package:luminous/viewmodels/medicine.dart';
 
 typedef FetchTodayReminders =
     Future<ApiResult<TodayRemindersResult>> Function({String? userId});
-
-const List<String> _localHealthTips = [
-  '按时服药，别漏别补',
-  '饭前饭后按说明来',
-  '合并用药先问药师',
-  '漏服勿加倍，咨询放在先',
-  '出现不适，及时就医',
-  '抗生素按疗程，不要擅停',
-  '药品避光防潮，远离高温',
-  '定期清理过期药品',
-  '用药前看禁忌与相互作用',
-  '规律作息，药效更稳',
-];
-
-final String _startupHealthTip =
-    _localHealthTips[Random().nextInt(_localHealthTips.length)];
 
 // 首页
 //
@@ -67,77 +52,20 @@ class HomeView extends StatefulWidget {
 /// - 中部固定功能入口；
 /// - 底部今日提醒及其本地/远端回退逻辑。
 class _HomeViewState extends State<HomeView> {
-  /// 当前登录用户控制器。
-  ///
-  /// 用来读取用户 id，以便请求“今日提醒”接口和查询本地提醒/打卡数据。
-  final UserController _userController = Get.find<UserController>();
-
-  FetchTodayReminders get _fetchTodayRemindersApi =>
-      widget.fetchTodayReminders ?? HomeApi.fetchTodayReminders;
-
-  TodayReminderStore get _todayReminderStore =>
-      widget.todayReminderStore ?? todayReminderLocalStore;
-
-  /// 监听登录用户变化的 worker。
-  Worker? _userWorker;
-  Worker? _sessionReadyWorker;
-
-  /// 当前首页顶部展示的小贴士文案监听器。
-  late final ValueNotifier<String> _todayTipNotifier;
-
-  /// “常用功能”区域的静态入口列表。
-  ///
-  /// 每个元素描述一个功能卡片的 id、标题、副标题、图标和颜色，
-  /// 页面点击后会根据 id 决定跳转到哪个功能页。
-  final List<HomeFeatureItemData> _entries = const [
-    HomeFeatureItemData(
-      id: 'drugScan',
-      title: '药物识别',
-      subtitle: '拍照识别药品',
-      icon: Icons.camera_alt_outlined,
-      color: Color(0xFF0EA5E9),
-    ),
-    HomeFeatureItemData(
-      id: 'manualSearch',
-      title: '手动搜索',
-      subtitle: '关键词查询',
-      icon: Icons.search_outlined,
-      color: Color(0xFF06B6D4),
-    ),
-    HomeFeatureItemData(
-      id: 'reminder',
-      title: '用药提醒',
-      subtitle: '按时通知',
-      icon: Icons.alarm_outlined,
-      color: Color(0xFF10B981),
-    ),
-    HomeFeatureItemData(
-      id: 'checkIn',
-      title: '用药打卡',
-      subtitle: '记录服药情况',
-      icon: Icons.fact_check_outlined,
-      color: Color(0xFFF59E0B),
-    ),
-    HomeFeatureItemData(
-      id: 'drugInfo',
-      title: '药物信息',
-      subtitle: '成分与禁忌',
-      icon: Icons.medication_outlined,
-      color: Color(0xFF6366F1),
-    ),
-    HomeFeatureItemData(
-      id: 'safety',
-      title: '安全辅助',
-      subtitle: '风险提示',
-      icon: Icons.health_and_safety_outlined,
-      color: Color(0xFFEC4899),
-    ),
+  static const List<String> _defaultHealthTips = [
+    '按时服药，别漏别补',
+    '饭前饭后按说明来',
+    '合并用药先问药师',
+    '漏服勿加倍，咨询放在先',
+    '出现不适，及时就医',
+    '抗生素按疗程，不要擅停',
+    '药品避光防潮，远离高温',
+    '定期清理过期药品',
+    '用药前看禁忌与相互作用',
+    '规律作息，药效更稳',
   ];
 
-  /// 当接口没有返回提醒，或者本地/网络数据暂时不可用时使用的兜底提醒数据。
-  ///
-  /// 这样首页“今日提醒”区域不会空白，能始终保持一个完整布局。
-  static const List<HomeReminderItemData> _fallbackReminders = [
+  static const List<HomeReminderItemData> _defaultFallbackReminders = [
     HomeReminderItemData(
       icon: Icons.access_time_rounded,
       title: '08:30 维生素D',
@@ -158,13 +86,134 @@ class _HomeViewState extends State<HomeView> {
     ),
   ];
 
+  /// 当前登录用户控制器。
+  ///
+  /// 用来读取用户 id，以便请求“今日提醒”接口和查询本地提醒/打卡数据。
+  final UserController _userController = Get.find<UserController>();
+
+  FetchTodayReminders get _fetchTodayRemindersApi =>
+      widget.fetchTodayReminders ?? HomeApi.fetchTodayReminders;
+
+  TodayReminderStore get _todayReminderStore =>
+      widget.todayReminderStore ?? todayReminderLocalStore;
+
+  /// 监听登录用户变化的 worker。
+  Worker? _userWorker;
+  Worker? _sessionReadyWorker;
+
+  /// 当前首页顶部展示的小贴士文案监听器。
+  late final ValueNotifier<String> _todayTipNotifier;
+
+  String? _tipLocaleCode;
+
+  bool _usingFallbackReminders = true;
+
+  AppLocalizations? get _l10n => AppLocalizations.of(context);
+
+  List<String> _healthTipsFor(AppLocalizations? l10n) {
+    if (l10n == null) {
+      return _defaultHealthTips;
+    }
+    return [
+      l10n.homeTip1,
+      l10n.homeTip2,
+      l10n.homeTip3,
+      l10n.homeTip4,
+      l10n.homeTip5,
+      l10n.homeTip6,
+      l10n.homeTip7,
+      l10n.homeTip8,
+      l10n.homeTip9,
+      l10n.homeTip10,
+    ];
+  }
+
+  List<HomeReminderItemData> _buildFallbackRemindersFor(
+    AppLocalizations? l10n,
+  ) {
+    if (l10n == null) {
+      return _defaultFallbackReminders;
+    }
+
+    return [
+      HomeReminderItemData(
+        icon: Icons.access_time_rounded,
+        title: l10n.homeFallbackReminder1Title,
+        subtitle: l10n.homeFallbackReminder1Subtitle,
+        done: true,
+      ),
+      HomeReminderItemData(
+        icon: Icons.access_time_rounded,
+        title: l10n.homeFallbackReminder2Title,
+        subtitle: l10n.homeFallbackReminder2Subtitle,
+        done: false,
+      ),
+      HomeReminderItemData(
+        icon: Icons.access_time_rounded,
+        title: l10n.homeFallbackReminder3Title,
+        subtitle: l10n.homeFallbackReminder3Subtitle,
+        done: false,
+      ),
+    ];
+  }
+
+  /// “常用功能”区域的静态入口列表。
+  ///
+  /// 每个元素描述一个功能卡片的 id、标题、副标题、图标和颜色，
+  /// 页面点击后会根据 id 决定跳转到哪个功能页。
+  List<HomeFeatureItemData> get _entries {
+    final l10n = _l10n;
+    return [
+      HomeFeatureItemData(
+        id: 'drugScan',
+        title: l10n?.homeFeatureDrugScanTitle ?? '药物识别',
+        subtitle: l10n?.homeFeatureDrugScanSubtitle ?? '拍照识别药品',
+        icon: Icons.camera_alt_outlined,
+        color: const Color(0xFF0EA5E9),
+      ),
+      HomeFeatureItemData(
+        id: 'manualSearch',
+        title: l10n?.homeFeatureManualSearchTitle ?? '手动搜索',
+        subtitle: l10n?.homeFeatureManualSearchSubtitle ?? '关键词查询',
+        icon: Icons.search_outlined,
+        color: const Color(0xFF06B6D4),
+      ),
+      HomeFeatureItemData(
+        id: 'reminder',
+        title: l10n?.homeFeatureReminderTitle ?? '用药提醒',
+        subtitle: l10n?.homeFeatureReminderSubtitle ?? '按时通知',
+        icon: Icons.alarm_outlined,
+        color: const Color(0xFF10B981),
+      ),
+      HomeFeatureItemData(
+        id: 'checkIn',
+        title: l10n?.homeFeatureCheckInTitle ?? '用药打卡',
+        subtitle: l10n?.homeFeatureCheckInSubtitle ?? '记录服药情况',
+        icon: Icons.fact_check_outlined,
+        color: const Color(0xFFF59E0B),
+      ),
+      HomeFeatureItemData(
+        id: 'drugInfo',
+        title: l10n?.homeFeatureDrugInfoTitle ?? '药物信息',
+        subtitle: l10n?.homeFeatureDrugInfoSubtitle ?? '成分与禁忌',
+        icon: Icons.medication_outlined,
+        color: const Color(0xFF6366F1),
+      ),
+      HomeFeatureItemData(
+        id: 'safety',
+        title: l10n?.homeFeatureSafetyTitle ?? '安全辅助',
+        subtitle: l10n?.homeFeatureSafetySubtitle ?? '风险提示',
+        icon: Icons.health_and_safety_outlined,
+        color: const Color(0xFFEC4899),
+      ),
+    ];
+  }
+
   /// 当前真正渲染到页面上的提醒列表。
   ///
   /// 初始值使用兜底提醒，后续会在 `_fetchTodayReminders` 中
   /// 被本地数据库数据或接口数据替换。
-  late List<HomeReminderItemData> _reminders = List<HomeReminderItemData>.from(
-    _fallbackReminders,
-  );
+  late List<HomeReminderItemData> _reminders;
 
   /// 标记首页提醒区域是否正处于加载状态。
   ///
@@ -190,7 +239,12 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    _todayTipNotifier = ValueNotifier<String>(_startupHealthTip);
+    final tips = _healthTipsFor(null);
+    final startupTip = tips.isEmpty
+        ? '按时服药，别漏别补'
+        : tips[Random().nextInt(tips.length)];
+    _todayTipNotifier = ValueNotifier<String>(startupTip);
+    _reminders = _buildFallbackRemindersFor(null);
     _userWorker = ever<dynamic>(_userController.user, (_) {
       _refreshRemindersIfReady();
     });
@@ -201,6 +255,27 @@ class _HomeViewState extends State<HomeView> {
       }
     });
     _refreshRemindersIfReady();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final localeCode = Localizations.localeOf(context).languageCode;
+    if (_tipLocaleCode == localeCode) {
+      return;
+    }
+    _tipLocaleCode = localeCode;
+
+    final tips = _healthTipsFor(_l10n);
+    if (tips.isNotEmpty && _todayTipNotifier.value.isNotEmpty) {
+      if (!tips.contains(_todayTipNotifier.value)) {
+        _todayTipNotifier.value = tips[Random().nextInt(tips.length)];
+      }
+    }
+
+    if (_usingFallbackReminders) {
+      _reminders = _buildFallbackRemindersFor(_l10n);
+    }
   }
 
   @override
@@ -220,7 +295,8 @@ class _HomeViewState extends State<HomeView> {
         _lastRequestedUserId != userId &&
         mounted) {
       setState(() {
-        _reminders = List<HomeReminderItemData>.from(_fallbackReminders);
+        _usingFallbackReminders = true;
+        _reminders = _buildFallbackRemindersFor(_l10n);
       });
     }
     if (!force && _lastRequestedUserId == userId) {
@@ -238,6 +314,8 @@ class _HomeViewState extends State<HomeView> {
   /// 3. 今日提醒列表。
   @override
   Widget build(BuildContext context) {
+    final l10n = _l10n;
+
     /// 当前提醒列表里“下一条未完成提醒”。
     ///
     /// 顶部卡片会优先展示它，帮助用户快速知道最近一次该做什么。
@@ -250,8 +328,9 @@ class _HomeViewState extends State<HomeView> {
     ///
     /// 如果今天没有待完成提醒，则显示“暂无提醒”。
     final nextText = next == null
-        ? '暂无提醒'
-        : '下一次提醒: ${next.title} · ${next.subtitle}';
+        ? (l10n?.homeNoReminder ?? '暂无提醒')
+        : (l10n?.homeNextReminderPrefix(next.title, next.subtitle) ??
+              '下一次提醒: ${next.title} · ${next.subtitle}');
 
     return SafeArea(
       child: RefreshIndicator(
@@ -320,7 +399,10 @@ class _HomeViewState extends State<HomeView> {
       return;
     }
 
-    ToastUtils.instance.show(context, '功能开发中');
+    ToastUtils.instance.show(
+      context,
+      _l10n?.homeFeatureDevelopingToast ?? '功能开发中',
+    );
   }
 
   /// 打开药品选择页，并在用户选中药品后进入药品详情页。
@@ -332,7 +414,8 @@ class _HomeViewState extends State<HomeView> {
     /// 用户取消选择时会得到 `null`。
     final item = await Navigator.of(context).push<MedicineItem>(
       MaterialPageRoute<MedicineItem>(
-        builder: (_) => const MedicinePickerPage(title: '选择药品'),
+        builder: (_) =>
+            MedicinePickerPage(title: _l10n?.homeMedicinePickerTitle ?? '选择药品'),
       ),
     );
     if (!mounted) return;
@@ -393,9 +476,8 @@ class _HomeViewState extends State<HomeView> {
 
       if (!_canApplyReminderResult(requestId, userId)) return;
       setState(() {
-        _reminders = items.isEmpty
-            ? List<HomeReminderItemData>.from(_fallbackReminders)
-            : items;
+        _usingFallbackReminders = items.isEmpty;
+        _reminders = items.isEmpty ? _buildFallbackRemindersFor(_l10n) : items;
       });
     } catch (e) {
       if (!_canApplyReminderResult(requestId, userId)) {
@@ -408,13 +490,15 @@ class _HomeViewState extends State<HomeView> {
       );
       if (_canApplyReminderResult(requestId, userId) && snapshot.isNotEmpty) {
         setState(() {
+          _usingFallbackReminders = false;
           _reminders = snapshot
               .map((item) => _toReminderUi(item, doneOverride: item.done))
               .toList();
         });
       } else if (_canApplyReminderResult(requestId, userId)) {
         setState(() {
-          _reminders = List<HomeReminderItemData>.from(_fallbackReminders);
+          _usingFallbackReminders = true;
+          _reminders = _buildFallbackRemindersFor(_l10n);
         });
       }
       if (!mounted) {
@@ -469,14 +553,13 @@ class _HomeViewState extends State<HomeView> {
 
   /// 切换到下一条本地健康小贴士。
   void _cycleHealthTip() {
-    if (_localHealthTips.length <= 1) {
+    final tips = _healthTipsFor(_l10n);
+    if (tips.length <= 1) {
       return;
     }
 
     final currentTip = _todayTipNotifier.value;
-    final nextTips = _localHealthTips
-        .where((tip) => tip != currentTip)
-        .toList();
+    final nextTips = tips.where((tip) => tip != currentTip).toList();
     if (nextTips.isEmpty) {
       return;
     }
@@ -492,6 +575,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> _showAllHealthTips() async {
+    final l10n = _l10n;
+    final tips = _healthTipsFor(l10n);
     final currentTip = _todayTipNotifier.value;
     final selectedTip = await showModalBottomSheet<String>(
       context: context,
@@ -503,23 +588,23 @@ class _HomeViewState extends State<HomeView> {
           heightFactor: 0.72,
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(20, 8, 20, 6),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 6),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '全部健康小贴士',
-                      style: TextStyle(
+                      l10n?.homeTipsSheetTitle ?? '全部健康小贴士',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF0F172A),
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      '点击任意一条即可替换首页提示语',
-                      style: TextStyle(
+                      l10n?.homeTipsSheetSubtitle ?? '点击任意一条即可替换首页提示语',
+                      style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF64748B),
@@ -532,10 +617,10 @@ class _HomeViewState extends State<HomeView> {
               Expanded(
                 child: ListView.separated(
                   padding: const EdgeInsets.fromLTRB(12, 8, 12, 20),
-                  itemCount: _localHealthTips.length,
+                  itemCount: tips.length,
                   separatorBuilder: (_, _) => const SizedBox(height: 8),
                   itemBuilder: (context, index) {
-                    final tip = _localHealthTips[index];
+                    final tip = tips[index];
                     final isCurrent = tip == currentTip;
 
                     return Material(

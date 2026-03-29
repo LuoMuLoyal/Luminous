@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/responsive_quick_grid.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:luminous/viewmodels/mine.dart';
 
@@ -40,6 +41,7 @@ class MineProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isLoggedIn = user?.hasData ?? false;
     final displayUser = user;
 
@@ -86,7 +88,9 @@ class MineProfileCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              isLoggedIn ? displayUser!.displayTitle : '立即登录',
+                              isLoggedIn
+                                  ? displayUser!.displayTitle
+                                  : (l10n?.mineProfileLoginNow ?? '立即登录'),
                               style: TextStyle(
                                 color: theme.textColor,
                                 fontSize: compact ? 18 : 20,
@@ -99,7 +103,8 @@ class MineProfileCard extends StatelessWidget {
                             Text(
                               isLoggedIn
                                   ? displayUser!.displaySubtitle
-                                  : '登录后可管理账号信息与同步个人数据',
+                                  : (l10n?.mineProfileLoginHint ??
+                                        '登录后可管理账号信息与同步个人数据'),
                               style: TextStyle(
                                 color: theme.secondaryTextColor,
                                 fontSize: 13,
@@ -127,7 +132,11 @@ class MineProfileCard extends StatelessWidget {
                           horizontal: compact ? 14 : 16,
                         ),
                       ),
-                      child: Text(isLoggedIn ? loggedInActionLabel : '去登录'),
+                      child: Text(
+                        isLoggedIn
+                            ? loggedInActionLabel
+                            : (l10n?.mineProfileLoginAction ?? '去登录'),
+                      ),
                     ),
                   ],
                 ),
@@ -140,19 +149,23 @@ class MineProfileCard extends StatelessWidget {
                       icon: isLoggedIn
                           ? Icons.cloud_done_rounded
                           : Icons.phone_android_rounded,
-                      text: isLoggedIn ? '账号已连接' : '当前本地体验',
+                      text: isLoggedIn
+                          ? (l10n?.mineProfileChipAccountConnected ?? '账号已连接')
+                          : (l10n?.mineProfileChipLocalOnly ?? '当前本地体验'),
                       backgroundColor: theme.surfaceColor,
                       foregroundColor: theme.surfaceTextColor,
                     ),
                     _MineInfoChip(
                       icon: Icons.image_outlined,
-                      text: '原图仅本机保存',
+                      text: l10n?.mineProfileChipImageLocalOnly ?? '原图仅本机保存',
                       backgroundColor: theme.surfaceColor,
                       foregroundColor: theme.surfaceTextColor,
                     ),
                     _MineInfoChip(
                       icon: Icons.auto_awesome_rounded,
-                      text: isLoggedIn ? '可同步轻量结果' : '登录后开启轻同步',
+                      text: isLoggedIn
+                          ? (l10n?.mineProfileChipSyncEnabled ?? '可同步轻量结果')
+                          : (l10n?.mineProfileChipSyncAfterLogin ?? '登录后开启轻同步'),
                       backgroundColor: theme.surfaceColor,
                       foregroundColor: theme.surfaceTextColor,
                     ),
@@ -250,6 +263,7 @@ class MineQuickActionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -269,8 +283,8 @@ class MineQuickActionsSection extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Text(
-                    '常用入口',
+                  Text(
+                    l10n?.mineQuickSectionTitle ?? '常用入口',
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(width: 8),
@@ -297,7 +311,8 @@ class MineQuickActionsSection extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      '${items.length} 项',
+                      l10n?.mineQuickSectionCount(items.length) ??
+                          '${items.length} 项',
                       style: TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w800,
@@ -309,7 +324,7 @@ class MineQuickActionsSection extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                '把账号、同步和设备相关入口集中到一起',
+                l10n?.mineQuickSectionSubtitle ?? '把账号、同步和设备相关入口集中到一起',
                 style: TextStyle(
                   fontSize: 13,
                   color: scheme.onSurfaceVariant,
@@ -359,6 +374,7 @@ class MineMenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -386,8 +402,8 @@ class MineMenuCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      '更多设置',
+                    Text(
+                      l10n?.mineMenuTitle ?? '更多设置',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
@@ -395,7 +411,7 @@ class MineMenuCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      '把浏览记录、账号安全和版本信息收拢到一个区域',
+                      l10n?.mineMenuSubtitle ?? '把浏览记录、账号安全和版本信息收拢到一个区域',
                       style: TextStyle(
                         fontSize: 12.8,
                         color: scheme.onSurfaceVariant,
@@ -409,8 +425,8 @@ class MineMenuCard extends StatelessWidget {
               _MineMenuItem(
                 compact: compact,
                 icon: Icons.history_rounded,
-                title: '浏览记录',
-                subtitle: '你最近查看过的药品',
+                title: l10n?.mineMenuHistoryTitle ?? '浏览记录',
+                subtitle: l10n?.mineMenuHistorySubtitle ?? '你最近查看过的药品',
                 accentColor: scheme.secondary,
                 onTap: onTapBrowseHistory,
               ),
@@ -418,8 +434,8 @@ class MineMenuCard extends StatelessWidget {
               _MineMenuItem(
                 compact: compact,
                 icon: Icons.shield_rounded,
-                title: '账号与安全',
-                subtitle: '隐私设置与安全选项',
+                title: l10n?.mineMenuSecurityTitle ?? '账号与安全',
+                subtitle: l10n?.mineMenuSecuritySubtitle ?? '隐私设置与安全选项',
                 accentColor: scheme.primary,
                 onTap: onTapSecurity,
               ),
@@ -427,8 +443,8 @@ class MineMenuCard extends StatelessWidget {
               _MineMenuItem(
                 compact: compact,
                 icon: Icons.info_rounded,
-                title: '关于 Luminous',
-                subtitle: '版本信息与使用说明',
+                title: l10n?.mineMenuAboutTitle ?? '关于 Luminous',
+                subtitle: l10n?.mineMenuAboutSubtitle ?? '版本信息与使用说明',
                 accentColor: scheme.tertiary,
                 onTap: onTapAbout,
               ),
