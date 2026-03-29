@@ -126,6 +126,22 @@ class _HomeViewState extends State<HomeView> {
     ),
   ];
 
+  List<HomeReminderItemData> _buildGuestSampleRemindersFor(
+    AppLocalizations? l10n,
+  ) {
+    final prefix = AppI18nText.pick(zh: '示例', en: 'Sample');
+    return _buildFallbackRemindersFor(l10n)
+        .map(
+          (item) => HomeReminderItemData(
+            icon: item.icon,
+            title: '$prefix ${item.title}',
+            subtitle: item.subtitle,
+            done: item.done,
+          ),
+        )
+        .toList(growable: false);
+  }
+
   /// 当前登录用户控制器。
   ///
   /// 用来读取用户 id，以便请求“今日提醒”接口和查询本地提醒/打卡数据。
@@ -284,7 +300,7 @@ class _HomeViewState extends State<HomeView> {
         ? _defaultHealthTips.first
         : tips[Random().nextInt(tips.length)];
     _todayTipNotifier = ValueNotifier<String>(startupTip);
-    _reminders = _buildFallbackRemindersFor(null);
+    _reminders = _buildGuestSampleRemindersFor(null);
     _userWorker = ever<dynamic>(_userController.user, (_) {
       _refreshRemindersIfReady();
     });
@@ -314,7 +330,7 @@ class _HomeViewState extends State<HomeView> {
     }
 
     if (_usingFallbackReminders) {
-      _reminders = _buildFallbackRemindersFor(_l10n);
+      _reminders = _buildGuestSampleRemindersFor(_l10n);
     }
   }
 
@@ -331,12 +347,25 @@ class _HomeViewState extends State<HomeView> {
       return;
     }
     final userId = (_userController.user.value?.id ?? '').trim();
+    if (userId.isEmpty) {
+      _lastRequestedUserId = userId;
+      _refreshQueued = false;
+      if (mounted) {
+        setState(() {
+          _loadingReminders = false;
+          _usingFallbackReminders = true;
+          _reminders = _buildGuestSampleRemindersFor(_l10n);
+        });
+      }
+      return;
+    }
+
     if (_lastRequestedUserId != null &&
         _lastRequestedUserId != userId &&
         mounted) {
       setState(() {
-        _usingFallbackReminders = true;
-        _reminders = _buildFallbackRemindersFor(_l10n);
+        _usingFallbackReminders = false;
+        _reminders = <HomeReminderItemData>[];
       });
     }
     if (!force && _lastRequestedUserId == userId) {
@@ -481,8 +510,21 @@ class _HomeViewState extends State<HomeView> {
       return;
     }
 
-    final requestId = ++_reminderRequestId;
     final userId = (_userController.user.value?.id ?? '').trim();
+    if (userId.isEmpty) {
+      _refreshQueued = false;
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _loadingReminders = false;
+        _usingFallbackReminders = true;
+        _reminders = _buildGuestSampleRemindersFor(_l10n);
+      });
+      return;
+    }
+
+    final requestId = ++_reminderRequestId;
     setState(() {
       _loadingReminders = true;
     });
@@ -516,8 +558,8 @@ class _HomeViewState extends State<HomeView> {
 
       if (!_canApplyReminderResult(requestId, userId)) return;
       setState(() {
-        _usingFallbackReminders = items.isEmpty;
-        _reminders = items.isEmpty ? _buildFallbackRemindersFor(_l10n) : items;
+        _usingFallbackReminders = false;
+        _reminders = items;
       });
     } catch (e) {
       if (!_canApplyReminderResult(requestId, userId)) {
@@ -537,8 +579,8 @@ class _HomeViewState extends State<HomeView> {
         });
       } else if (_canApplyReminderResult(requestId, userId)) {
         setState(() {
-          _usingFallbackReminders = true;
-          _reminders = _buildFallbackRemindersFor(_l10n);
+          _usingFallbackReminders = false;
+          _reminders = <HomeReminderItemData>[];
         });
       }
       if (!mounted) {

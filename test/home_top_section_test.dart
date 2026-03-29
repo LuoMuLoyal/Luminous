@@ -26,7 +26,7 @@ void main() {
         body: HomeTopSection(
           palette: palette,
           todayTipListenable: tipNotifier,
-          nextText: '下一次提醒: 08:30 维生素D · 早餐后服用 1 粒',
+          nextText: '下一次提醒: 示例 08:30 维生素D · 早餐后服用 1 粒',
           loadingReminders: false,
           reminderCount: 3,
           onTapTip: onTapTip,
