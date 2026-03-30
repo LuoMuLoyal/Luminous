@@ -280,6 +280,7 @@ class SoftBannerCard extends StatelessWidget {
       ornamentController.revision.value;
       return _buildCard(
         context,
+        ornamentVisibilityFactor: ornamentController.visibilityFactor,
         sessionLayout: ornamentController.resolveLayout(
           ornamentKey: ornamentKey!,
           family: AppOrnamentFamily.banner,
@@ -288,7 +289,11 @@ class SoftBannerCard extends StatelessWidget {
     });
   }
 
-  Widget _buildCard(BuildContext context, {AppOrnamentLayout? sessionLayout}) {
+  Widget _buildCard(
+    BuildContext context, {
+    AppOrnamentLayout? sessionLayout,
+    double ornamentVisibilityFactor = 1,
+  }) {
     final theme = palette.createTheme();
     final resolvedStyle =
         ornamentStyle ??
@@ -297,9 +302,20 @@ class SoftBannerCard extends StatelessWidget {
           palette.endColor,
           palette.accentColor,
         );
-    final ornamentWidgets = sessionLayout == null
-        ? _buildBannerOrnaments(style: resolvedStyle, theme: theme)
-        : _buildBannerOrnamentsForLayout(layout: sessionLayout, theme: theme);
+    final showOrnaments = ornamentVisibilityFactor > 0;
+    final ornamentWidgets = showOrnaments
+        ? (sessionLayout == null
+              ? _buildBannerOrnaments(
+                  style: resolvedStyle,
+                  theme: theme,
+                  visibilityFactor: ornamentVisibilityFactor,
+                )
+              : _buildBannerOrnamentsForLayout(
+                  layout: sessionLayout,
+                  theme: theme,
+                  visibilityFactor: ornamentVisibilityFactor,
+                ))
+        : const <Widget>[];
     final ornamentIdentity =
         sessionLayout?.id ?? 'fallback:${resolvedStyle.name}';
 
@@ -364,20 +380,21 @@ class SoftBannerCard extends StatelessWidget {
                 ),
               ),
             ),
-            Positioned.fill(
-              child: IgnorePointer(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 260),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  child: Stack(
-                    key: ValueKey<String>(ornamentIdentity),
-                    fit: StackFit.expand,
-                    children: ornamentWidgets,
+            if (showOrnaments)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 260),
+                    switchInCurve: Curves.easeOutCubic,
+                    switchOutCurve: Curves.easeInCubic,
+                    child: Stack(
+                      key: ValueKey<String>(ornamentIdentity),
+                      fit: StackFit.expand,
+                      children: ornamentWidgets,
+                    ),
                   ),
                 ),
               ),
-            ),
             Padding(
               padding: padding,
               child: SizedBox(
@@ -406,23 +423,34 @@ AppOrnamentStyle _resolveBannerOrnamentStyle(
 List<Widget> _buildBannerOrnaments({
   required AppOrnamentStyle style,
   required SoftBannerTheme theme,
+  required double visibilityFactor,
 }) {
   return _buildBannerOrnamentsForLayout(
     layout: kBannerFallbackLayouts[style]!,
     theme: theme,
+    visibilityFactor: visibilityFactor,
   );
 }
 
 List<Widget> _buildBannerOrnamentsForLayout({
   required AppOrnamentLayout layout,
   required SoftBannerTheme theme,
+  required double visibilityFactor,
 }) {
   return layout.nodes
       .map(
         (node) => _SoftBannerOrnamentNode(
           node: node,
-          color: _bannerNodeColor(node: node, theme: theme),
-          borderColor: _bannerNodeBorderColor(node: node, theme: theme),
+          color: _bannerNodeColor(
+            node: node,
+            theme: theme,
+            visibilityFactor: visibilityFactor,
+          ),
+          borderColor: _bannerNodeBorderColor(
+            node: node,
+            theme: theme,
+            visibilityFactor: visibilityFactor,
+          ),
         ),
       )
       .toList();
@@ -431,34 +459,44 @@ List<Widget> _buildBannerOrnamentsForLayout({
 Color _bannerNodeColor({
   required AppOrnamentNodeSpec node,
   required SoftBannerTheme theme,
+  required double visibilityFactor,
 }) {
   final secondaryBase = Color.lerp(theme.accentColor, theme.endColor, 0.4)!;
   final base = node.colorRole == AppOrnamentColorRole.secondary
       ? secondaryBase
       : theme.accentColor;
-  final alpha = switch (node.tone) {
+  final baseAlpha = switch (node.tone) {
     AppOrnamentTone.strong => 0.16,
     AppOrnamentTone.medium => 0.12,
     AppOrnamentTone.light => 0.085,
     AppOrnamentTone.spark => 0.27,
   };
+  final alpha = resolveOrnamentAlpha(
+    baseAlpha: baseAlpha,
+    visibilityFactor: visibilityFactor,
+  );
   return base.withValues(alpha: alpha);
 }
 
 Color _bannerNodeBorderColor({
   required AppOrnamentNodeSpec node,
   required SoftBannerTheme theme,
+  required double visibilityFactor,
 }) {
   final secondaryBase = Color.lerp(theme.accentColor, theme.endColor, 0.4)!;
   final base = node.colorRole == AppOrnamentColorRole.secondary
       ? secondaryBase
       : theme.accentColor;
-  final alpha = switch (node.tone) {
+  final baseAlpha = switch (node.tone) {
     AppOrnamentTone.strong => 0.23,
     AppOrnamentTone.medium => 0.2,
     AppOrnamentTone.light => 0.16,
     AppOrnamentTone.spark => 0.28,
   };
+  final alpha = resolveOrnamentAlpha(
+    baseAlpha: baseAlpha,
+    visibilityFactor: visibilityFactor,
+  );
   return base.withValues(alpha: alpha);
 }
 

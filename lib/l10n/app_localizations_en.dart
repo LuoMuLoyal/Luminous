@@ -998,6 +998,66 @@ class AppLocalizationsEn extends AppLocalizations {
       'Theme mode and style will affect Home, Medicines, Album, and overlays together';
 
   @override
+  String get settingsOrnamentFieldTitle => 'Atmosphere Ornaments';
+
+  @override
+  String get settingsOrnamentFieldSubtitle =>
+      'Supports transparency 0%, 25%, 50%, 75%, and 100% (100% means hidden)';
+
+  @override
+  String get settingsOrnamentPreviewTitle => 'Live Preview';
+
+  @override
+  String get settingsOrnamentPreviewSubtitle =>
+      'The gradient block above updates instantly with your ornament intensity';
+
+  @override
+  String get settingsOrnamentPresetTitle => 'Preset Levels';
+
+  @override
+  String get settingsOrnamentPresetSubtitle =>
+      'Switch common transparency presets quickly for immediate visual tuning';
+
+  @override
+  String get settingsOrnamentSliderTitle => 'Custom Transparency';
+
+  @override
+  String get settingsOrnamentSliderSubtitle =>
+      'Adjust from 0%-100% (5% steps) for fine-grained control per device';
+
+  @override
+  String get settingsOrnamentSliderMinLabel => '0% (Most Visible)';
+
+  @override
+  String get settingsOrnamentSliderMaxLabel => '100% (Hidden)';
+
+  @override
+  String settingsOrnamentCurrentPercent(Object percent) {
+    return 'Current ornament transparency: $percent%';
+  }
+
+  @override
+  String get settingsOrnamentOptionTransparency0 => 'Transparency 0%';
+
+  @override
+  String get settingsOrnamentOptionTransparency25 => 'Transparency 25%';
+
+  @override
+  String get settingsOrnamentOptionTransparency50 => 'Transparency 50%';
+
+  @override
+  String get settingsOrnamentOptionTransparency75 => 'Transparency 75%';
+
+  @override
+  String get settingsOrnamentOptionTransparency100 =>
+      'Transparency 100% (Hidden)';
+
+  @override
+  String settingsOrnamentCurrent(Object option) {
+    return 'Current atmosphere ornaments: $option';
+  }
+
+  @override
   String get settingsHubHeroTitle => 'Preference Settings';
 
   @override

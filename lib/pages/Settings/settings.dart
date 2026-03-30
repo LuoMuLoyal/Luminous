@@ -5,6 +5,7 @@ import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/locale_controller.dart';
+import 'package:luminous/stores/ornament_controller.dart';
 import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
@@ -100,6 +101,7 @@ class ThemeSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
+    final ornamentController = Get.find<OrnamentController>();
     final userController = Get.find<UserController>();
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
@@ -133,7 +135,10 @@ class ThemeSettingsPage extends StatelessWidget {
             secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.5)!,
             ornamentKey: 'settings.display',
             children: [
-              _DisplayPreferencesSection(themeController: themeController),
+              _DisplayPreferencesSection(
+                themeController: themeController,
+                ornamentController: ornamentController,
+              ),
             ],
           ),
         ],
@@ -647,9 +652,13 @@ class _SettingsInfoChip extends StatelessWidget {
 }
 
 class _DisplayPreferencesSection extends StatelessWidget {
-  const _DisplayPreferencesSection({required this.themeController});
+  const _DisplayPreferencesSection({
+    required this.themeController,
+    required this.ornamentController,
+  });
 
   final ThemeController themeController;
+  final OrnamentController ornamentController;
 
   @override
   Widget build(BuildContext context) {
@@ -659,6 +668,15 @@ class _DisplayPreferencesSection extends StatelessWidget {
       final l10n = AppLocalizations.of(context);
       final preference = themeController.themePreference.value;
       final selectedStyle = themeController.themeStyle.value;
+      final ornamentPercent = ornamentController.transparencyPercent.value;
+      final matchedPreset = ornamentController.matchedPreset;
+      const ornamentOptions = <AppOrnamentTransparencyPreference>[
+        AppOrnamentTransparencyPreference.t0,
+        AppOrnamentTransparencyPreference.t25,
+        AppOrnamentTransparencyPreference.t50,
+        AppOrnamentTransparencyPreference.t75,
+        AppOrnamentTransparencyPreference.t100,
+      ];
       final systemBrightness = MediaQuery.platformBrightnessOf(context);
       final resolvedDark = preference == AppThemeModePreference.system
           ? systemBrightness == Brightness.dark
@@ -738,6 +756,141 @@ class _DisplayPreferencesSection extends StatelessWidget {
                         zh: '当前固定为${resolvedDark ? '深色' : '浅色'}外观',
                         en: 'Fixed to ${resolvedDark ? 'dark' : 'light'} appearance.',
                       )),
+            style: TextStyle(
+              color: scheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _SettingsFieldTitle(
+            icon: Icons.blur_on_rounded,
+            title: l10n?.settingsOrnamentFieldTitle ?? '氛围装饰',
+            description:
+                l10n?.settingsOrnamentFieldSubtitle ??
+                '支持透明度 0%、25%、50%、75% 与 100%（100% 表示关闭）',
+            color: scheme.tertiary,
+          ),
+          const SizedBox(height: 8),
+          _OrnamentPreviewCard(
+            accentColor: scheme.tertiary,
+            secondaryColor: Color.lerp(scheme.primary, scheme.secondary, 0.45)!,
+            transparencyPercent: ornamentPercent,
+          ),
+          const SizedBox(height: 12),
+          _SettingsFieldTitle(
+            icon: Icons.grid_view_rounded,
+            title: l10n?.settingsOrnamentPresetTitle ?? '快捷档位',
+            description:
+                l10n?.settingsOrnamentPresetSubtitle ??
+                '快速切换常用透明度配置，适合一键调整视觉强弱',
+            color: scheme.tertiary,
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: ornamentOptions
+                .map(
+                  (item) => ChoiceChip(
+                    label: Text(_ornamentTransparencyLabel(item, l10n: l10n)),
+                    avatar: Icon(
+                      item == AppOrnamentTransparencyPreference.t100
+                          ? Icons.visibility_off_rounded
+                          : Icons.blur_on_rounded,
+                      size: 18,
+                      color: matchedPreset == item
+                          ? scheme.tertiary
+                          : scheme.onSurfaceVariant,
+                    ),
+                    selected: matchedPreset == item,
+                    onSelected: (_) {
+                      ornamentController.setTransparencyPreference(item);
+                    },
+                    labelStyle: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: matchedPreset == item
+                          ? scheme.tertiary
+                          : scheme.onSurface,
+                    ),
+                    side: BorderSide(
+                      color: matchedPreset == item
+                          ? scheme.tertiary.withValues(alpha: 0.28)
+                          : scheme.outline,
+                    ),
+                    backgroundColor: theme.cardColor.withValues(alpha: 0.45),
+                    selectedColor: scheme.tertiary.withValues(alpha: 0.12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+          const SizedBox(height: 12),
+          _SettingsFieldTitle(
+            icon: Icons.tune_rounded,
+            title: l10n?.settingsOrnamentSliderTitle ?? '自定义透明度',
+            description:
+                l10n?.settingsOrnamentSliderSubtitle ??
+                '支持 0%-100%（步进 5%），可按设备观感精细调节',
+            color: scheme.tertiary,
+          ),
+          const SizedBox(height: 8),
+          SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              activeTrackColor: scheme.tertiary,
+              inactiveTrackColor: scheme.tertiary.withValues(alpha: 0.22),
+              thumbColor: scheme.tertiary,
+              overlayColor: scheme.tertiary.withValues(alpha: 0.16),
+              valueIndicatorColor: scheme.tertiary,
+              valueIndicatorTextStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            child: Slider(
+              min: 0,
+              max: 100,
+              divisions: 20,
+              value: ornamentPercent.toDouble(),
+              label: '$ornamentPercent%',
+              onChanged: (value) {
+                ornamentController.setTransparencyPercent(value.round());
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n?.settingsOrnamentSliderMinLabel ?? '0%（最明显）',
+                    style: TextStyle(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Text(
+                  l10n?.settingsOrnamentSliderMaxLabel ?? '100%（关闭）',
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n?.settingsOrnamentCurrentPercent(ornamentPercent) ??
+                (l10n?.settingsOrnamentCurrent(
+                      '${ornamentPercent.toString()}%',
+                    ) ??
+                    '当前氛围装饰透明度：${ornamentPercent.toString()}%'),
             style: TextStyle(
               color: scheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
@@ -937,6 +1090,106 @@ class _ThemeStyleCard extends StatelessWidget {
   }
 }
 
+class _OrnamentPreviewCard extends StatelessWidget {
+  const _OrnamentPreviewCard({
+    required this.accentColor,
+    required this.secondaryColor,
+    required this.transparencyPercent,
+  });
+
+  final Color accentColor;
+  final Color secondaryColor;
+  final int transparencyPercent;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final visibilityPercent = 100 - transparencyPercent;
+
+    return AppSectionCard(
+      accentColor: accentColor,
+      secondaryColor: secondaryColor,
+      ornamentKey: 'settings.ornament.preview',
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      radius: 16,
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: appTintedSurface(
+                context,
+                accentColor,
+                lightAlpha: 0.12,
+                darkAlpha: 0.2,
+              ),
+              border: Border.all(
+                color: appTintedBorder(
+                  context,
+                  accentColor,
+                  lightAlpha: 0.18,
+                  darkAlpha: 0.26,
+                ),
+              ),
+            ),
+            child: Icon(Icons.auto_awesome_rounded, color: accentColor),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n?.settingsOrnamentPreviewTitle ?? '实时预览',
+                  style: TextStyle(
+                    color: scheme.onSurface,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14.5,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  l10n?.settingsOrnamentPreviewSubtitle ?? '上方渐变块会实时反映当前氛围装饰强度',
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            decoration: BoxDecoration(
+              color: appTintedSurface(
+                context,
+                accentColor,
+                lightAlpha: 0.1,
+                darkAlpha: 0.18,
+              ),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              '${visibilityPercent.toString()}%',
+              style: TextStyle(
+                color: accentColor,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _SettingsFieldTitle extends StatelessWidget {
   const _SettingsFieldTitle({
     required this.icon,
@@ -1123,6 +1376,24 @@ IconData _themeModeIcon(AppThemeModePreference preference) {
       return Icons.light_mode_rounded;
     case AppThemeModePreference.dark:
       return Icons.dark_mode_rounded;
+  }
+}
+
+String _ornamentTransparencyLabel(
+  AppOrnamentTransparencyPreference preference, {
+  AppLocalizations? l10n,
+}) {
+  switch (preference) {
+    case AppOrnamentTransparencyPreference.t0:
+      return l10n?.settingsOrnamentOptionTransparency0 ?? '透明度 0%';
+    case AppOrnamentTransparencyPreference.t25:
+      return l10n?.settingsOrnamentOptionTransparency25 ?? '透明度 25%';
+    case AppOrnamentTransparencyPreference.t50:
+      return l10n?.settingsOrnamentOptionTransparency50 ?? '透明度 50%';
+    case AppOrnamentTransparencyPreference.t75:
+      return l10n?.settingsOrnamentOptionTransparency75 ?? '透明度 75%';
+    case AppOrnamentTransparencyPreference.t100:
+      return l10n?.settingsOrnamentOptionTransparency100 ?? '透明度 100%（关闭）';
   }
 }
 

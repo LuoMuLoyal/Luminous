@@ -373,6 +373,33 @@
   "scanSearchMissingKeywordToast": "Selected candidate has no searchable fields",
   "settingsDisplayTitle": "Display",
   "settingsDisplaySubtitle": "Theme mode and style will affect Home, Medicines, Album, and overlays together",
+  "settingsOrnamentFieldTitle": "Atmosphere Ornaments",
+  "settingsOrnamentFieldSubtitle": "Supports transparency 0%, 25%, 50%, 75%, and 100% (100% means hidden)",
+  "settingsOrnamentPreviewTitle": "Live Preview",
+  "settingsOrnamentPreviewSubtitle": "The gradient block above updates instantly with your ornament intensity",
+  "settingsOrnamentPresetTitle": "Preset Levels",
+  "settingsOrnamentPresetSubtitle": "Switch common transparency presets quickly for immediate visual tuning",
+  "settingsOrnamentSliderTitle": "Custom Transparency",
+  "settingsOrnamentSliderSubtitle": "Adjust from 0%-100% (5% steps) for fine-grained control per device",
+  "settingsOrnamentSliderMinLabel": "0% (Most Visible)",
+  "settingsOrnamentSliderMaxLabel": "100% (Hidden)",
+  "settingsOrnamentCurrentPercent": "Current ornament transparency: {percent}%",
+  "@settingsOrnamentCurrentPercent": {
+    "placeholders": {
+      "percent": {}
+    }
+  },
+  "settingsOrnamentOptionTransparency0": "Transparency 0%",
+  "settingsOrnamentOptionTransparency25": "Transparency 25%",
+  "settingsOrnamentOptionTransparency50": "Transparency 50%",
+  "settingsOrnamentOptionTransparency75": "Transparency 75%",
+  "settingsOrnamentOptionTransparency100": "Transparency 100% (Hidden)",
+  "settingsOrnamentCurrent": "Current atmosphere ornaments: {option}",
+  "@settingsOrnamentCurrent": {
+    "placeholders": {
+      "option": {}
+    }
+  },
   "settingsHubHeroTitle": "Preference Settings",
   "settingsHubHeroSubtitle": "Enter theme and language settings here. More modules like notifications and privacy can be added later.",
   "settingsHeroTitle": "Appearance & Preferences",

@@ -938,6 +938,62 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsDisplaySubtitle => '主题模式和主题风格会同时作用到首页、药品、相册与弹层';
 
   @override
+  String get settingsOrnamentFieldTitle => '氛围装饰';
+
+  @override
+  String get settingsOrnamentFieldSubtitle =>
+      '支持透明度 0%、25%、50%、75% 与 100%（100% 表示关闭）';
+
+  @override
+  String get settingsOrnamentPreviewTitle => '实时预览';
+
+  @override
+  String get settingsOrnamentPreviewSubtitle => '上方渐变块会实时反映当前氛围装饰强度';
+
+  @override
+  String get settingsOrnamentPresetTitle => '快捷档位';
+
+  @override
+  String get settingsOrnamentPresetSubtitle => '快速切换常用透明度配置，适合一键调整视觉强弱';
+
+  @override
+  String get settingsOrnamentSliderTitle => '自定义透明度';
+
+  @override
+  String get settingsOrnamentSliderSubtitle => '支持 0%-100%（步进 5%），可按设备观感精细调节';
+
+  @override
+  String get settingsOrnamentSliderMinLabel => '0%（最明显）';
+
+  @override
+  String get settingsOrnamentSliderMaxLabel => '100%（关闭）';
+
+  @override
+  String settingsOrnamentCurrentPercent(Object percent) {
+    return '当前氛围装饰透明度：$percent%';
+  }
+
+  @override
+  String get settingsOrnamentOptionTransparency0 => '透明度 0%';
+
+  @override
+  String get settingsOrnamentOptionTransparency25 => '透明度 25%';
+
+  @override
+  String get settingsOrnamentOptionTransparency50 => '透明度 50%';
+
+  @override
+  String get settingsOrnamentOptionTransparency75 => '透明度 75%';
+
+  @override
+  String get settingsOrnamentOptionTransparency100 => '透明度 100%（关闭）';
+
+  @override
+  String settingsOrnamentCurrent(Object option) {
+    return '当前氛围装饰：$option';
+  }
+
+  @override
   String get settingsHubHeroTitle => '偏好设置';
 
   @override

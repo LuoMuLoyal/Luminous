@@ -137,6 +137,16 @@ AppOrnamentTone _variantTone(
   };
 }
 
+/// 将基础 alpha 与可见度倍率合成，统一控制氛围装饰透明度。
+double resolveOrnamentAlpha({
+  required double baseAlpha,
+  required double visibilityFactor,
+}) {
+  final safeBase = baseAlpha.clamp(0.0, 1.0).toDouble();
+  final safeVisibility = visibilityFactor.clamp(0.0, 1.0).toDouble();
+  return (safeBase * safeVisibility).clamp(0.0, 1.0).toDouble();
+}
+
 const AppOrnamentLayout kBannerOrbitLayout = AppOrnamentLayout(
   id: 'banner-orbit',
   nodes: [

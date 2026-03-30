@@ -1904,6 +1904,108 @@ abstract class AppLocalizations {
   /// **'Theme mode and style will affect Home, Medicines, Album, and overlays together'**
   String get settingsDisplaySubtitle;
 
+  /// No description provided for @settingsOrnamentFieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Atmosphere Ornaments'**
+  String get settingsOrnamentFieldTitle;
+
+  /// No description provided for @settingsOrnamentFieldSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supports transparency 0%, 25%, 50%, 75%, and 100% (100% means hidden)'**
+  String get settingsOrnamentFieldSubtitle;
+
+  /// No description provided for @settingsOrnamentPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Preview'**
+  String get settingsOrnamentPreviewTitle;
+
+  /// No description provided for @settingsOrnamentPreviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The gradient block above updates instantly with your ornament intensity'**
+  String get settingsOrnamentPreviewSubtitle;
+
+  /// No description provided for @settingsOrnamentPresetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset Levels'**
+  String get settingsOrnamentPresetTitle;
+
+  /// No description provided for @settingsOrnamentPresetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch common transparency presets quickly for immediate visual tuning'**
+  String get settingsOrnamentPresetSubtitle;
+
+  /// No description provided for @settingsOrnamentSliderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Transparency'**
+  String get settingsOrnamentSliderTitle;
+
+  /// No description provided for @settingsOrnamentSliderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust from 0%-100% (5% steps) for fine-grained control per device'**
+  String get settingsOrnamentSliderSubtitle;
+
+  /// No description provided for @settingsOrnamentSliderMinLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'0% (Most Visible)'**
+  String get settingsOrnamentSliderMinLabel;
+
+  /// No description provided for @settingsOrnamentSliderMaxLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'100% (Hidden)'**
+  String get settingsOrnamentSliderMaxLabel;
+
+  /// No description provided for @settingsOrnamentCurrentPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current ornament transparency: {percent}%'**
+  String settingsOrnamentCurrentPercent(Object percent);
+
+  /// No description provided for @settingsOrnamentOptionTransparency0.
+  ///
+  /// In en, this message translates to:
+  /// **'Transparency 0%'**
+  String get settingsOrnamentOptionTransparency0;
+
+  /// No description provided for @settingsOrnamentOptionTransparency25.
+  ///
+  /// In en, this message translates to:
+  /// **'Transparency 25%'**
+  String get settingsOrnamentOptionTransparency25;
+
+  /// No description provided for @settingsOrnamentOptionTransparency50.
+  ///
+  /// In en, this message translates to:
+  /// **'Transparency 50%'**
+  String get settingsOrnamentOptionTransparency50;
+
+  /// No description provided for @settingsOrnamentOptionTransparency75.
+  ///
+  /// In en, this message translates to:
+  /// **'Transparency 75%'**
+  String get settingsOrnamentOptionTransparency75;
+
+  /// No description provided for @settingsOrnamentOptionTransparency100.
+  ///
+  /// In en, this message translates to:
+  /// **'Transparency 100% (Hidden)'**
+  String get settingsOrnamentOptionTransparency100;
+
+  /// No description provided for @settingsOrnamentCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current atmosphere ornaments: {option}'**
+  String settingsOrnamentCurrent(Object option);
+
   /// No description provided for @settingsHubHeroTitle.
   ///
   /// In en, this message translates to:

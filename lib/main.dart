@@ -23,6 +23,7 @@ Future<void> main() async {
   final ornamentController = Get.put(OrnamentController(), permanent: true);
   await themeController.init();
   await localeController.init();
+  await ornamentController.init();
   runApp(
     LuminousApp(
       userController: userController,
