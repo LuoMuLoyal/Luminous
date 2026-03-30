@@ -214,9 +214,17 @@ class _MainBottomBar extends StatelessWidget {
     final ornamentController = Get.find<OrnamentController>();
     final currentColor = itemColors[currentIndex];
     final secondaryColor = itemColors[(currentIndex + 1) % itemColors.length];
+    final tabCenterShift = switch (currentIndex) {
+      0 => 56.0,
+      1 => 22.0,
+      2 => -22.0,
+      _ => -56.0,
+    };
 
     return Obx(() {
       ornamentController.revision.value;
+      final visibilityFactor = ornamentController.visibilityFactor;
+      final showOrnaments = visibilityFactor > 0;
       final layout =
           ornamentController.resolveLayout(
             ornamentKey: 'main.bottom-bar',
@@ -318,25 +326,28 @@ class _MainBottomBar extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 260),
-                    switchInCurve: Curves.easeOutCubic,
-                    switchOutCurve: Curves.easeInCubic,
-                    child: Stack(
-                      key: ValueKey<String>(layout.id),
-                      fit: StackFit.expand,
-                      children: _buildBottomBarOrnaments(
-                        layout: layout,
-                        accentColor: currentColor,
-                        secondaryColor: secondaryColor,
-                        isDark: isDark,
+              if (showOrnaments)
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 260),
+                      switchInCurve: Curves.easeOutCubic,
+                      switchOutCurve: Curves.easeInCubic,
+                      child: Stack(
+                        key: ValueKey<String>('${layout.id}-$currentIndex'),
+                        fit: StackFit.expand,
+                        children: _buildBottomBarOrnaments(
+                          layout: layout,
+                          accentColor: currentColor,
+                          secondaryColor: secondaryColor,
+                          isDark: isDark,
+                          visibilityFactor: visibilityFactor,
+                          globalShiftX: tabCenterShift,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
                 child: Row(
@@ -436,22 +447,27 @@ List<Widget> _buildBottomBarOrnaments({
   required Color accentColor,
   required Color secondaryColor,
   required bool isDark,
+  required double visibilityFactor,
+  required double globalShiftX,
 }) {
   return layout.nodes
       .map(
         (node) => _BottomBarOrnamentNode(
           node: node,
+          globalShiftX: globalShiftX,
           color: _bottomBarNodeColor(
             node: node,
             accentColor: accentColor,
             secondaryColor: secondaryColor,
             isDark: isDark,
+            visibilityFactor: visibilityFactor,
           ),
           borderColor: _bottomBarNodeBorderColor(
             node: node,
             accentColor: accentColor,
             secondaryColor: secondaryColor,
             isDark: isDark,
+            visibilityFactor: visibilityFactor,
           ),
         ),
       )
@@ -463,16 +479,21 @@ Color _bottomBarNodeColor({
   required Color accentColor,
   required Color secondaryColor,
   required bool isDark,
+  required double visibilityFactor,
 }) {
   final base = node.colorRole == AppOrnamentColorRole.secondary
       ? secondaryColor
       : accentColor;
-  final alpha = switch (node.tone) {
+  final baseAlpha = switch (node.tone) {
     AppOrnamentTone.strong => isDark ? 0.20 : 0.13,
     AppOrnamentTone.medium => isDark ? 0.15 : 0.10,
     AppOrnamentTone.light => isDark ? 0.10 : 0.07,
     AppOrnamentTone.spark => isDark ? 0.23 : 0.16,
   };
+  final alpha = resolveOrnamentAlpha(
+    baseAlpha: baseAlpha,
+    visibilityFactor: visibilityFactor,
+  );
   return base.withValues(alpha: alpha);
 }
 
@@ -481,16 +502,21 @@ Color _bottomBarNodeBorderColor({
   required Color accentColor,
   required Color secondaryColor,
   required bool isDark,
+  required double visibilityFactor,
 }) {
   final base = node.colorRole == AppOrnamentColorRole.secondary
       ? secondaryColor
       : accentColor;
-  final alpha = switch (node.tone) {
+  final baseAlpha = switch (node.tone) {
     AppOrnamentTone.strong => isDark ? 0.24 : 0.16,
     AppOrnamentTone.medium => isDark ? 0.20 : 0.13,
     AppOrnamentTone.light => isDark ? 0.16 : 0.10,
     AppOrnamentTone.spark => isDark ? 0.28 : 0.18,
   };
+  final alpha = resolveOrnamentAlpha(
+    baseAlpha: baseAlpha,
+    visibilityFactor: visibilityFactor,
+  );
   return base.withValues(alpha: alpha);
 }
 
@@ -499,11 +525,13 @@ class _BottomBarOrnamentNode extends StatelessWidget {
     required this.node,
     required this.color,
     required this.borderColor,
+    required this.globalShiftX,
   });
 
   final AppOrnamentNodeSpec node;
   final Color color;
   final Color borderColor;
+  final double globalShiftX;
 
   static const double _sizeScale = 0.58;
   static const double _offsetScale = 0.26;
@@ -530,7 +558,7 @@ class _BottomBarOrnamentNode extends StatelessWidget {
       alignment: node.alignment,
       child: Transform.translate(
         offset: Offset(
-          node.offset.dx * _offsetScale,
+          (node.offset.dx * _offsetScale) + globalShiftX,
           node.offset.dy * _offsetScale,
         ),
         child: Transform.rotate(angle: node.rotation, child: child),

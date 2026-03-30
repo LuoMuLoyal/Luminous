@@ -162,6 +162,7 @@ class AppSectionCard extends StatelessWidget {
       ornamentController.revision.value;
       return _buildCard(
         context,
+        ornamentVisibilityFactor: ornamentController.visibilityFactor,
         sessionLayout: ornamentController.resolveLayout(
           ornamentKey: ornamentKey!,
           family: AppOrnamentFamily.section,
@@ -170,7 +171,11 @@ class AppSectionCard extends StatelessWidget {
     });
   }
 
-  Widget _buildCard(BuildContext context, {AppOrnamentLayout? sessionLayout}) {
+  Widget _buildCard(
+    BuildContext context, {
+    AppOrnamentLayout? sessionLayout,
+    double ornamentVisibilityFactor = 1,
+  }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final baseColor = theme.cardTheme.color ?? theme.colorScheme.surface;
@@ -185,19 +190,24 @@ class AppSectionCard extends StatelessWidget {
       (secondaryColor ?? accentColor).withValues(alpha: isDark ? 0.095 : 0.062),
       baseColor,
     );
-    final ornamentWidgets = sessionLayout == null
-        ? _buildSectionOrnaments(
-            style: resolvedStyle,
-            isDark: isDark,
-            accentColor: accentColor,
-            secondaryColor: secondaryColor ?? accentColor,
-          )
-        : _buildSectionOrnamentsForLayout(
-            layout: sessionLayout,
-            isDark: isDark,
-            accentColor: accentColor,
-            secondaryColor: secondaryColor ?? accentColor,
-          );
+    final showOrnaments = ornamentVisibilityFactor > 0;
+    final ornamentWidgets = showOrnaments
+        ? (sessionLayout == null
+              ? _buildSectionOrnaments(
+                  style: resolvedStyle,
+                  isDark: isDark,
+                  accentColor: accentColor,
+                  secondaryColor: secondaryColor ?? accentColor,
+                  visibilityFactor: ornamentVisibilityFactor,
+                )
+              : _buildSectionOrnamentsForLayout(
+                  layout: sessionLayout,
+                  isDark: isDark,
+                  accentColor: accentColor,
+                  secondaryColor: secondaryColor ?? accentColor,
+                  visibilityFactor: ornamentVisibilityFactor,
+                ))
+        : const <Widget>[];
     final ornamentIdentity =
         sessionLayout?.id ?? 'fallback:${resolvedStyle.name}';
 
@@ -258,20 +268,21 @@ class AppSectionCard extends StatelessWidget {
                 ),
               ),
             ),
-            Positioned.fill(
-              child: IgnorePointer(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 260),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  child: Stack(
-                    key: ValueKey<String>(ornamentIdentity),
-                    fit: StackFit.expand,
-                    children: ornamentWidgets,
+            if (showOrnaments)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 260),
+                    switchInCurve: Curves.easeOutCubic,
+                    switchOutCurve: Curves.easeInCubic,
+                    child: Stack(
+                      key: ValueKey<String>(ornamentIdentity),
+                      fit: StackFit.expand,
+                      children: ornamentWidgets,
+                    ),
                   ),
                 ),
               ),
-            ),
             Padding(
               padding: padding,
               child: SizedBox(width: double.infinity, child: child),
@@ -301,12 +312,14 @@ List<Widget> _buildSectionOrnaments({
   required bool isDark,
   required Color accentColor,
   required Color secondaryColor,
+  required double visibilityFactor,
 }) {
   return _buildSectionOrnamentsForLayout(
     layout: kSectionFallbackLayouts[style]!,
     isDark: isDark,
     accentColor: accentColor,
     secondaryColor: secondaryColor,
+    visibilityFactor: visibilityFactor,
   );
 }
 
@@ -315,6 +328,7 @@ List<Widget> _buildSectionOrnamentsForLayout({
   required bool isDark,
   required Color accentColor,
   required Color secondaryColor,
+  required double visibilityFactor,
 }) {
   return layout.nodes
       .map(
@@ -325,12 +339,14 @@ List<Widget> _buildSectionOrnamentsForLayout({
             isDark: isDark,
             accentColor: accentColor,
             secondaryColor: secondaryColor,
+            visibilityFactor: visibilityFactor,
           ),
           borderColor: _sectionNodeBorderColor(
             node: node,
             isDark: isDark,
             accentColor: accentColor,
             secondaryColor: secondaryColor,
+            visibilityFactor: visibilityFactor,
           ),
         ),
       )
@@ -342,16 +358,21 @@ Color _sectionNodeColor({
   required bool isDark,
   required Color accentColor,
   required Color secondaryColor,
+  required double visibilityFactor,
 }) {
   final base = node.colorRole == AppOrnamentColorRole.secondary
       ? secondaryColor
       : accentColor;
-  final alpha = switch (node.tone) {
+  final baseAlpha = switch (node.tone) {
     AppOrnamentTone.strong => isDark ? 0.13 : 0.145,
     AppOrnamentTone.medium => isDark ? 0.095 : 0.11,
     AppOrnamentTone.light => isDark ? 0.075 : 0.088,
     AppOrnamentTone.spark => isDark ? 0.18 : 0.23,
   };
+  final alpha = resolveOrnamentAlpha(
+    baseAlpha: baseAlpha,
+    visibilityFactor: visibilityFactor,
+  );
   return base.withValues(alpha: alpha);
 }
 
@@ -360,16 +381,21 @@ Color _sectionNodeBorderColor({
   required bool isDark,
   required Color accentColor,
   required Color secondaryColor,
+  required double visibilityFactor,
 }) {
   final base = node.colorRole == AppOrnamentColorRole.secondary
       ? secondaryColor
       : accentColor;
-  final alpha = switch (node.tone) {
+  final baseAlpha = switch (node.tone) {
     AppOrnamentTone.strong => isDark ? 0.22 : 0.19,
     AppOrnamentTone.medium => isDark ? 0.20 : 0.18,
     AppOrnamentTone.light => isDark ? 0.16 : 0.14,
     AppOrnamentTone.spark => isDark ? 0.24 : 0.22,
   };
+  final alpha = resolveOrnamentAlpha(
+    baseAlpha: baseAlpha,
+    visibilityFactor: visibilityFactor,
+  );
   return base.withValues(alpha: alpha);
 }
 

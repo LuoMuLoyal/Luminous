@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/pages/Settings/settings.dart';
 import 'package:luminous/stores/locale_controller.dart';
+import 'package:luminous/stores/ornament_controller.dart';
 import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,8 @@ void main() {
     await themeController.init();
     final localeController = Get.put(LocaleController(), permanent: true);
     await localeController.init();
+    final ornamentController = Get.put(OrnamentController(), permanent: true);
+    await ornamentController.init();
   });
 
   testWidgets('settings page builds without exceptions', (tester) async {
@@ -43,6 +46,9 @@ void main() {
 
     expect(find.text('主题设置'), findsWidgets);
     expect(find.text('主题模式'), findsOneWidget);
+    expect(find.text('氛围装饰'), findsOneWidget);
+    expect(find.text('透明度 0%'), findsOneWidget);
+    expect(find.text('透明度 100%（关闭）'), findsOneWidget);
     expect(find.text('主题风格'), findsOneWidget);
   });
 
