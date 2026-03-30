@@ -56,6 +56,7 @@ class OrnamentController extends GetxController {
       AppOrnamentTransparencyPreference.t50.transparencyPercent.obs;
   final math.Random _random = math.Random();
   Future<SharedPreferences>? _prefsFuture;
+  bool _preferencesLoaded = false;
 
   int? _sessionSeed;
   bool _warming = false;
@@ -97,6 +98,9 @@ class OrnamentController extends GetxController {
   }
 
   Future<void> init() async {
+    if (_preferencesLoaded) {
+      return;
+    }
     final prefs = await _prefs;
     final raw = prefs.get(GlobalConstants.ORNAMENT_TRANSPARENCY_KEY);
 
@@ -113,6 +117,7 @@ class OrnamentController extends GetxController {
     if (raw is! int || raw != resolved) {
       await prefs.setInt(GlobalConstants.ORNAMENT_TRANSPARENCY_KEY, resolved);
     }
+    _preferencesLoaded = true;
   }
 
   int _resolveTransparencyPercentFromString(String rawValue) {

@@ -72,6 +72,7 @@ Map<String, Widget Function(BuildContext)> getRootRoutes() {
 
 ThemeData _buildLightTheme(AppThemeStyle style) {
   final spec = _safeThemeSpec(style);
+  final scaffoldBackground = _softenedLightBackground(spec.lightBackground);
   final colorScheme =
       ColorScheme.fromSeed(
         seedColor: spec.lightPrimary,
@@ -89,8 +90,8 @@ ThemeData _buildLightTheme(AppThemeStyle style) {
   return ThemeData(
     useMaterial3: true,
     colorScheme: colorScheme,
-    scaffoldBackgroundColor: spec.lightBackground,
-    canvasColor: spec.lightBackground,
+    scaffoldBackgroundColor: scaffoldBackground,
+    canvasColor: scaffoldBackground,
     dividerColor: const Color(0xFFE2E8F0),
     shadowColor: const Color(0xFF0F172A),
     dialogTheme: const DialogThemeData(
@@ -185,6 +186,7 @@ ThemeData _buildLightTheme(AppThemeStyle style) {
 
 ThemeData _buildDarkTheme(AppThemeStyle style) {
   final spec = _safeThemeSpec(style);
+  final scaffoldBackground = _softenedDarkBackground(spec.darkBackground);
   final darkOnSurface = const Color(0xFFF2F6FF);
   final darkOnSurfaceVariant = Color.alphaBlend(
     spec.darkPrimary.withValues(alpha: 0.24),
@@ -216,8 +218,8 @@ ThemeData _buildDarkTheme(AppThemeStyle style) {
   return ThemeData(
     useMaterial3: true,
     colorScheme: colorScheme,
-    scaffoldBackgroundColor: spec.darkBackground,
-    canvasColor: spec.darkBackground,
+    scaffoldBackgroundColor: scaffoldBackground,
+    canvasColor: scaffoldBackground,
     dividerColor: darkDivider,
     shadowColor: Colors.black,
     dialogTheme: DialogThemeData(
@@ -402,6 +404,14 @@ _AppThemeSpec _safeThemeSpec(AppThemeStyle style) {
   } catch (_) {
     return _fallbackThemeSpec;
   }
+}
+
+Color _softenedLightBackground(Color themedBackground) {
+  return Color.lerp(const Color(0xFFF7F9FC), themedBackground, 0.72)!;
+}
+
+Color _softenedDarkBackground(Color themedBackground) {
+  return Color.lerp(const Color(0xFF0C1118), themedBackground, 0.72)!;
 }
 
 class _AppThemeSpec {

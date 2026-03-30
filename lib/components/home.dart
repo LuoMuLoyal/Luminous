@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/components/quick_entry_style.dart';
 import 'package:luminous/components/responsive_quick_grid.dart';
 import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -514,29 +515,78 @@ class _HomeReminderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
-    final subtitleColor = isDark
-        ? const Color(0xFFCBD5E1)
-        : const Color(0xFF64748B);
-    final idleBackground = isDark
-        ? const Color(0xFF172234)
-        : const Color(0xFFF8FAFC);
-    final idleBorder = isDark
-        ? const Color(0xFF314257)
-        : const Color(0xFFE2E8F0);
-    final doneBackground = isDark
-        ? const Color(0xFF12271F)
-        : const Color(0xFFEFFCF5);
-    final doneBorder = isDark
-        ? const Color(0xFF23513E)
-        : const Color(0xFFBBF7D0);
-    final idleIconBackground = isDark
-        ? const Color(0xFF17324B)
-        : const Color(0xFFEFF6FF);
-    final doneIconBackground = isDark
-        ? const Color(0xFF173427)
-        : const Color(0xFFDCFCE7);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final titleColor = scheme.onSurface;
+    final subtitleColor = scheme.onSurfaceVariant;
+    final idleTint = Color.lerp(scheme.primary, scheme.secondary, 0.34)!;
+    final doneTint = Color.lerp(scheme.tertiary, scheme.primary, 0.45)!;
+    final idleBackground = appTintedSurface(
+      context,
+      idleTint,
+      lightAlpha: 0.11,
+      darkAlpha: 0.19,
+    );
+    final idleBorder = appTintedBorder(
+      context,
+      idleTint,
+      lightAlpha: 0.22,
+      darkAlpha: 0.33,
+    );
+    final doneBackground = appTintedSurface(
+      context,
+      doneTint,
+      lightAlpha: 0.12,
+      darkAlpha: 0.20,
+    );
+    final doneBorder = appTintedBorder(
+      context,
+      doneTint,
+      lightAlpha: 0.23,
+      darkAlpha: 0.35,
+    );
+    final idleIconTint = Color.lerp(
+      const Color(0xFF0284C7),
+      scheme.primary,
+      0.45,
+    )!;
+    final doneIconTint = Color.lerp(
+      const Color(0xFF16A34A),
+      scheme.tertiary,
+      0.40,
+    )!;
+    final idleIconBackground = appTintedSurface(
+      context,
+      idleIconTint,
+      lightAlpha: 0.19,
+      darkAlpha: 0.28,
+    );
+    final doneIconBackground = appTintedSurface(
+      context,
+      doneIconTint,
+      lightAlpha: 0.20,
+      darkAlpha: 0.29,
+    );
+    final idleIconColor = Color.lerp(
+      const Color(0xFF0284C7),
+      scheme.primary,
+      0.28,
+    )!;
+    final doneIconColor = Color.lerp(
+      const Color(0xFF16A34A),
+      scheme.tertiary,
+      0.30,
+    )!;
+    final statusIdleColor = Color.lerp(
+      const Color(0xFFF59E0B),
+      scheme.secondary,
+      0.24,
+    )!;
+    final statusDoneColor = Color.lerp(
+      const Color(0xFF16A34A),
+      scheme.tertiary,
+      0.30,
+    )!;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -559,9 +609,7 @@ class _HomeReminderTile extends StatelessWidget {
             ),
             child: Icon(
               item.icon,
-              color: item.done
-                  ? const Color(0xFF16A34A)
-                  : const Color(0xFF0284C7),
+              color: item.done ? doneIconColor : idleIconColor,
               size: compact ? 17 : 18,
             ),
           ),
@@ -597,9 +645,7 @@ class _HomeReminderTile extends StatelessWidget {
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: item.done
-                  ? const Color(0xFF16A34A)
-                  : const Color(0xFFF59E0B),
+              color: item.done ? statusDoneColor : statusIdleColor,
               shape: BoxShape.circle,
             ),
           ),
@@ -623,75 +669,81 @@ class _HomeFeatureGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final compact = metrics.isCompact;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final style = resolveQuickEntryVisualStyle(context, item.color);
 
     return InkWell(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
       onTap: onTap,
-      child: Padding(
-        padding: metrics.itemPadding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Align(
-              child: SizedBox(
-                width: metrics.iconBoxSize,
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: item.color.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(
-                        metrics.iconBorderRadius,
+      child: Ink(
+        decoration: BoxDecoration(
+          color: style.background,
+          borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
+          border: Border.all(color: style.border),
+        ),
+        child: Padding(
+          padding: metrics.itemPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                child: SizedBox(
+                  width: metrics.iconBoxSize,
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: style.iconBackground,
+                        borderRadius: BorderRadius.circular(
+                          metrics.iconBorderRadius,
+                        ),
+                        border: Border.all(color: style.iconBorder),
                       ),
-                    ),
-                    child: Icon(
-                      item.icon,
-                      size: metrics.iconSize,
-                      color: item.color,
+                      child: Icon(
+                        item.icon,
+                        size: metrics.iconSize,
+                        color: style.iconColor,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: metrics.titleSpacing),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    item.title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: compact ? 14 : 14.5,
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? Colors.white : const Color(0xFF0F172A),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: metrics.subtitleSpacing),
-                  Flexible(
-                    child: Text(
-                      item.subtitle,
+              SizedBox(height: metrics.titleSpacing),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      item.title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: compact ? 11.5 : 12,
-                        color: isDark
-                            ? const Color(0xFFCBD5E1)
-                            : const Color(0xFF64748B),
-                        fontWeight: FontWeight.w600,
-                        height: compact ? 1.2 : 1.25,
+                        fontSize: compact ? 14 : 14.5,
+                        fontWeight: FontWeight.w800,
+                        color: style.titleColor,
                       ),
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                    SizedBox(height: metrics.subtitleSpacing),
+                    Flexible(
+                      child: Text(
+                        item.subtitle,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: compact ? 11.5 : 12,
+                          color: style.subtitleColor,
+                          fontWeight: FontWeight.w600,
+                          height: compact ? 1.2 : 1.25,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

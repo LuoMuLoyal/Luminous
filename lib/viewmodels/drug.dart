@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/components/quick_entry_style.dart';
 import 'package:luminous/components/responsive_quick_grid.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
@@ -330,27 +331,17 @@ class DrugQuickEntryCard extends StatelessWidget {
             metrics ??
             ResponsiveQuickGridMetrics.fromWidth(constraints.maxWidth);
         final compact = resolvedMetrics.isCompact;
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-        final background = isDark
-            ? const Color(0xFF182336)
-            : const Color(0xFFF8FAFC);
-        final border = isDark
-            ? const Color(0xFF334155)
-            : const Color(0xFFE2E8F0);
-        final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
-        final subtitleColor = isDark
-            ? const Color(0xFFCBD5E1)
-            : const Color(0xFF64748B);
+        final style = resolveQuickEntryVisualStyle(context, item.color);
 
         return InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
           onTap: onTap,
           child: Ink(
             padding: resolvedMetrics.itemPadding,
             decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: border),
+              color: style.background,
+              borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
+              border: Border.all(color: style.border),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -362,14 +353,15 @@ class DrugQuickEntryCard extends StatelessWidget {
                       aspectRatio: 1,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: item.color.withValues(alpha: 0.12),
+                          color: style.iconBackground,
                           borderRadius: BorderRadius.circular(
                             resolvedMetrics.iconBorderRadius,
                           ),
+                          border: Border.all(color: style.iconBorder),
                         ),
                         child: Icon(
                           item.icon,
-                          color: item.color,
+                          color: style.iconColor,
                           size: resolvedMetrics.iconSize,
                         ),
                       ),
@@ -386,7 +378,7 @@ class DrugQuickEntryCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: compact ? 14 : 14.5,
                           fontWeight: FontWeight.w800,
-                          color: titleColor,
+                          color: style.titleColor,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -399,7 +391,7 @@ class DrugQuickEntryCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: compact ? 11.5 : 12,
                             fontWeight: FontWeight.w600,
-                            color: subtitleColor,
+                            color: style.subtitleColor,
                             height: compact ? 1.2 : 1.25,
                           ),
                           maxLines: 2,

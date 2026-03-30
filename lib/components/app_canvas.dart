@@ -26,11 +26,11 @@ class AppCanvas extends StatelessWidget {
     final background = baseColor ?? theme.scaffoldBackgroundColor;
     final midBlend = Color.lerp(accentColor, secondaryAccentColor, 0.5)!;
     final topTint = Color.alphaBlend(
-      accentColor.withValues(alpha: isDark ? 0.055 : 0.032),
+      accentColor.withValues(alpha: isDark ? 0.04 : 0.024),
       background,
     );
     final bottomTint = Color.alphaBlend(
-      secondaryAccentColor.withValues(alpha: isDark ? 0.05 : 0.03),
+      secondaryAccentColor.withValues(alpha: isDark ? 0.036 : 0.022),
       background,
     );
 
@@ -51,7 +51,7 @@ class AppCanvas extends StatelessWidget {
             child: _CanvasOrb(
               size: 320,
               colors: [
-                accentColor.withValues(alpha: isDark ? 0.07 : 0.08),
+                accentColor.withValues(alpha: isDark ? 0.045 : 0.052),
                 accentColor.withValues(alpha: 0),
               ],
             ),
@@ -62,7 +62,7 @@ class AppCanvas extends StatelessWidget {
             child: _CanvasOrb(
               size: 246,
               colors: [
-                midBlend.withValues(alpha: isDark ? 0.032 : 0.04),
+                midBlend.withValues(alpha: isDark ? 0.022 : 0.028),
                 accentColor.withValues(alpha: 0),
               ],
             ),
@@ -73,7 +73,7 @@ class AppCanvas extends StatelessWidget {
             child: _CanvasOrb(
               size: 342,
               colors: [
-                secondaryAccentColor.withValues(alpha: isDark ? 0.06 : 0.08),
+                secondaryAccentColor.withValues(alpha: isDark ? 0.04 : 0.05),
                 secondaryAccentColor.withValues(alpha: 0),
               ],
             ),
