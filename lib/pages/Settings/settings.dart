@@ -174,6 +174,8 @@ class LanguageSettingsPage extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 2, 16, 28),
         children: [
+          _LanguageHeroCard(localeController: localeController),
+          const SizedBox(height: 12),
           _SettingsSectionCard(
             title: l10n?.languageSectionTitle ?? '应用语言',
             subtitle:
@@ -199,7 +201,8 @@ class _LanguagePreferenceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
     Widget buildOption({
@@ -209,54 +212,173 @@ class _LanguagePreferenceSection extends StatelessWidget {
       required AppLocalePreference selected,
     }) {
       final isSelected = selected == value;
-      return ListTile(
-        onTap: () => localeController.setLocalePreference(value),
-        leading: Icon(
-          isSelected
-              ? Icons.check_circle_rounded
-              : Icons.radio_button_unchecked_rounded,
-          color: isSelected ? scheme.primary : scheme.onSurfaceVariant,
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => localeController.setLocalePreference(value),
+          borderRadius: BorderRadius.circular(14),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOutCubic,
+            padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? appTintedSurface(
+                      context,
+                      scheme.primary,
+                      lightAlpha: 0.12,
+                      darkAlpha: 0.20,
+                    )
+                  : theme.cardColor.withValues(alpha: 0.34),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: isSelected
+                    ? appTintedBorder(
+                        context,
+                        scheme.primary,
+                        lightAlpha: 0.24,
+                        darkAlpha: 0.34,
+                      )
+                    : scheme.outline,
+              ),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: appTintedSurface(
+                      context,
+                      scheme.primary,
+                      lightAlpha: 0.11,
+                      darkAlpha: 0.20,
+                    ),
+                    border: Border.all(
+                      color: appTintedBorder(
+                        context,
+                        scheme.primary,
+                        lightAlpha: 0.20,
+                        darkAlpha: 0.30,
+                      ),
+                    ),
+                  ),
+                  child: Icon(
+                    isSelected ? Icons.check_rounded : Icons.language_rounded,
+                    color: isSelected
+                        ? scheme.primary
+                        : scheme.onSurfaceVariant,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: scheme.onSurface,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          color: scheme.onSurfaceVariant,
+                          fontSize: 12.3,
+                          fontWeight: FontWeight.w600,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  isSelected
+                      ? Icons.check_circle_rounded
+                      : Icons.radio_button_unchecked_rounded,
+                  color: isSelected ? scheme.primary : scheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
         ),
-        title: Text(title),
-        subtitle: Text(subtitle),
       );
     }
 
     return Obx(() {
       final selected = localeController.localePreference.value;
+      final selectedLabel = _languagePreferenceLabel(selected, l10n: l10n);
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
             decoration: BoxDecoration(
-              color: Theme.of(context).cardColor.withValues(alpha: 0.42),
+              color: appTintedSurface(
+                context,
+                scheme.tertiary,
+                lightAlpha: 0.08,
+                darkAlpha: 0.16,
+              ),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: scheme.outline),
+              border: Border.all(
+                color: appTintedBorder(
+                  context,
+                  scheme.tertiary,
+                  lightAlpha: 0.18,
+                  darkAlpha: 0.28,
+                ),
+              ),
             ),
-            child: Column(
+            child: Row(
               children: [
-                buildOption(
-                  value: AppLocalePreference.system,
-                  title: l10n?.languageFollowSystem ?? '跟随系统',
-                  subtitle: l10n?.languageFollowSystemSubtitle ?? '自动使用设备当前语言',
-                  selected: selected,
-                ),
-                Divider(height: 1, color: scheme.outline),
-                buildOption(
-                  value: AppLocalePreference.zh,
-                  title: l10n?.languageChinese ?? '简体中文',
-                  subtitle: l10n?.languageChineseSubtitle ?? '应用文案使用中文',
-                  selected: selected,
-                ),
-                Divider(height: 1, color: scheme.outline),
-                buildOption(
-                  value: AppLocalePreference.en,
-                  title: l10n?.languageEnglish ?? 'English',
-                  subtitle: l10n?.languageEnglishSubtitle ?? '应用文案使用英文',
-                  selected: selected,
+                Icon(Icons.translate_rounded, color: scheme.tertiary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    AppI18nText.pick(
+                      zh: '当前语言：$selectedLabel',
+                      en: 'Current language: $selectedLabel',
+                    ),
+                    style: TextStyle(
+                      color: scheme.onSurface,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ],
             ),
+          ),
+          const SizedBox(height: 10),
+          buildOption(
+            value: AppLocalePreference.system,
+            title: l10n?.languageFollowSystem ?? '跟随系统',
+            subtitle: l10n?.languageFollowSystemSubtitle ?? '自动使用设备当前语言',
+            selected: selected,
+          ),
+          const SizedBox(height: 8),
+          buildOption(
+            value: AppLocalePreference.zh,
+            title: l10n?.languageChinese ?? '简体中文',
+            subtitle: l10n?.languageChineseSubtitle ?? '应用文案使用中文',
+            selected: selected,
+          ),
+          const SizedBox(height: 8),
+          buildOption(
+            value: AppLocalePreference.en,
+            title: l10n?.languageEnglish ?? 'English',
+            subtitle: l10n?.languageEnglishSubtitle ?? '应用文案使用英文',
+            selected: selected,
           ),
           const SizedBox(height: 10),
           Text(
@@ -270,6 +392,101 @@ class _LanguagePreferenceSection extends StatelessWidget {
             ),
           ),
         ],
+      );
+    });
+  }
+}
+
+class _LanguageHeroCard extends StatelessWidget {
+  const _LanguageHeroCard({required this.localeController});
+
+  final LocaleController localeController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final l10n = AppLocalizations.of(context);
+      final selected = localeController.localePreference.value;
+      final selectedLabel = _languagePreferenceLabel(selected, l10n: l10n);
+      final selectedHint = switch (selected) {
+        AppLocalePreference.system => AppI18nText.pick(
+          zh: '应用将自动跟随设备语言切换',
+          en: 'App language follows device language automatically',
+        ),
+        AppLocalePreference.zh => AppI18nText.pick(
+          zh: '界面文案固定为简体中文',
+          en: 'Interface text is fixed to Simplified Chinese',
+        ),
+        AppLocalePreference.en => AppI18nText.pick(
+          zh: '界面文案固定为英文',
+          en: 'Interface text is fixed to English',
+        ),
+      };
+
+      return SoftBannerCard(
+        palette: SoftBannerPalettes.homeOf(context),
+        ornamentKey: 'settings.language.hero',
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        builder: (context, theme) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: theme.surfaceColor,
+                      border: Border.all(color: theme.borderColor),
+                    ),
+                    child: Icon(
+                      Icons.translate_rounded,
+                      color: theme.accentColor,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n?.languagePageTitle ?? '语言设置',
+                          style: TextStyle(
+                            color: theme.textColor,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          selectedHint,
+                          style: TextStyle(
+                            color: theme.secondaryTextColor,
+                            fontSize: 12.8,
+                            fontWeight: FontWeight.w600,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _SettingsInfoChip(
+                icon: Icons.language_rounded,
+                text: AppI18nText.pick(
+                  zh: '已选：$selectedLabel',
+                  en: 'Selected: $selectedLabel',
+                ),
+                backgroundColor: theme.surfaceColor,
+                foregroundColor: theme.surfaceTextColor,
+              ),
+            ],
+          );
+        },
       );
     });
   }
@@ -380,8 +597,8 @@ class _SettingsSectionCard extends StatelessWidget {
       accentColor: accentColor,
       secondaryColor: secondaryColor,
       ornamentKey: ornamentKey,
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
-      radius: 18,
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+      radius: 20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -389,26 +606,26 @@ class _SettingsSectionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 38,
-                height: 38,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
                   color: appTintedSurface(
                     context,
                     accentColor,
-                    lightAlpha: 0.10,
-                    darkAlpha: 0.18,
+                    lightAlpha: 0.12,
+                    darkAlpha: 0.20,
                   ),
-                  borderRadius: BorderRadius.circular(13),
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: appTintedBorder(
                       context,
                       accentColor,
-                      lightAlpha: 0.18,
-                      darkAlpha: 0.24,
+                      lightAlpha: 0.22,
+                      darkAlpha: 0.30,
                     ),
                   ),
                 ),
-                child: Icon(icon, color: accentColor),
+                child: Icon(icon, color: accentColor, size: 21),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -419,7 +636,7 @@ class _SettingsSectionCard extends StatelessWidget {
                       title,
                       style: TextStyle(
                         color: scheme.onSurface,
-                        fontSize: 16,
+                        fontSize: 16.2,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -428,7 +645,7 @@ class _SettingsSectionCard extends StatelessWidget {
                       subtitle,
                       style: TextStyle(
                         color: scheme.onSurfaceVariant,
-                        fontSize: 12.5,
+                        fontSize: 12.6,
                         height: 1.4,
                         fontWeight: FontWeight.w600,
                       ),
@@ -438,7 +655,20 @@ class _SettingsSectionCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
+          Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  accentColor.withValues(alpha: 0),
+                  accentColor.withValues(alpha: 0.20),
+                  accentColor.withValues(alpha: 0),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
           ...children,
         ],
       ),
@@ -1205,17 +1435,45 @@ class _SettingsFieldTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final scheme = Theme.of(context).colorScheme;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: color),
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: appTintedSurface(
+              context,
+              color,
+              lightAlpha: 0.11,
+              darkAlpha: 0.20,
+            ),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: appTintedBorder(
+                context,
+                color,
+                lightAlpha: 0.22,
+                darkAlpha: 0.32,
+              ),
+            ),
+          ),
+          child: Icon(icon, color: color, size: 18),
+        ),
         const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
               const SizedBox(height: 2),
               Text(
                 description,
@@ -1261,8 +1519,8 @@ class _SettingsActionTile extends StatelessWidget {
         ? appTintedSurface(
             context,
             accentColor,
-            lightAlpha: 0.08,
-            darkAlpha: 0.16,
+            lightAlpha: 0.10,
+            darkAlpha: 0.18,
           )
         : theme.cardColor.withValues(alpha: 0.36);
 
@@ -1270,22 +1528,31 @@ class _SettingsActionTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(17),
         child: Ink(
-          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 13),
           decoration: BoxDecoration(
             color: cardColor,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(17),
             border: Border.all(
               color: enabled
                   ? appTintedBorder(
                       context,
                       accentColor,
-                      lightAlpha: 0.18,
-                      darkAlpha: 0.26,
+                      lightAlpha: 0.24,
+                      darkAlpha: 0.34,
                     )
                   : scheme.outline.withValues(alpha: 0.75),
             ),
+            boxShadow: enabled
+                ? [
+                    BoxShadow(
+                      color: accentColor.withValues(alpha: 0.06),
+                      blurRadius: 14,
+                      offset: const Offset(0, 6),
+                    ),
+                  ]
+                : const [],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1294,8 +1561,21 @@ class _SettingsActionTile extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: enabled ? 0.14 : 0.10),
+                  color: appTintedSurface(
+                    context,
+                    accentColor,
+                    lightAlpha: 0.16,
+                    darkAlpha: 0.26,
+                  ),
                   borderRadius: BorderRadius.circular(13),
+                  border: Border.all(
+                    color: appTintedBorder(
+                      context,
+                      accentColor,
+                      lightAlpha: 0.24,
+                      darkAlpha: 0.34,
+                    ),
+                  ),
                 ),
                 child: Icon(
                   icon,
@@ -1328,29 +1608,88 @@ class _SettingsActionTile extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      caption,
-                      style: TextStyle(
-                        color: enabled
-                            ? accentColor
-                            : scheme.onSurfaceVariant.withValues(alpha: 0.82),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: appTintedSurface(
+                          context,
+                          accentColor,
+                          lightAlpha: 0.10,
+                          darkAlpha: 0.18,
+                        ),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color: appTintedBorder(
+                            context,
+                            accentColor,
+                            lightAlpha: 0.20,
+                            darkAlpha: 0.30,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        caption,
+                        style: TextStyle(
+                          color: enabled
+                              ? accentColor
+                              : scheme.onSurfaceVariant.withValues(alpha: 0.82),
+                          fontSize: 11.8,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(
-                enabled ? Icons.chevron_right_rounded : Icons.remove_rounded,
-                color: scheme.onSurfaceVariant,
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: appTintedSurface(
+                    context,
+                    accentColor,
+                    lightAlpha: 0.10,
+                    darkAlpha: 0.18,
+                  ),
+                  border: Border.all(
+                    color: appTintedBorder(
+                      context,
+                      accentColor,
+                      lightAlpha: 0.20,
+                      darkAlpha: 0.30,
+                    ),
+                  ),
+                ),
+                child: Icon(
+                  enabled ? Icons.chevron_right_rounded : Icons.remove_rounded,
+                  color: scheme.onSurfaceVariant,
+                  size: 18,
+                ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+String _languagePreferenceLabel(
+  AppLocalePreference preference, {
+  AppLocalizations? l10n,
+}) {
+  switch (preference) {
+    case AppLocalePreference.system:
+      return l10n?.languageFollowSystem ?? '跟随系统';
+    case AppLocalePreference.zh:
+      return l10n?.languageChinese ?? '简体中文';
+    case AppLocalePreference.en:
+      return l10n?.languageEnglish ?? 'English';
   }
 }
 

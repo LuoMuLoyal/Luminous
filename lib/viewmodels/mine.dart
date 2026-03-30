@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/components/quick_entry_style.dart';
 import 'package:luminous/components/responsive_quick_grid.dart';
 
 /// 我的页（Mine）相关的小型展示模型与卡片组件。
@@ -58,36 +59,17 @@ class MineQuickActionCard extends StatelessWidget {
               metrics ??
               ResponsiveQuickGridMetrics.fromWidth(constraints.maxWidth);
           final compact = resolvedMetrics.isCompact;
-          final theme = Theme.of(context);
-          final scheme = theme.colorScheme;
-          final isDark = theme.brightness == Brightness.dark;
-          final cardBackground = Color.alphaBlend(
-            data.color.withValues(alpha: isDark ? 0.10 : 0.055),
-            isDark ? scheme.surface : Colors.white,
-          );
-          final cardBorder = Color.alphaBlend(
-            data.color.withValues(alpha: isDark ? 0.28 : 0.14),
-            scheme.outline,
-          );
+          final style = resolveQuickEntryVisualStyle(context, data.color);
 
           return InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
             child: Ink(
               padding: resolvedMetrics.itemPadding,
               decoration: BoxDecoration(
-                color: cardBackground,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: cardBorder),
-                boxShadow: [
-                  BoxShadow(
-                    color: (isDark ? Colors.black : data.color).withValues(
-                      alpha: isDark ? 0.14 : 0.08,
-                    ),
-                    blurRadius: isDark ? 16 : 14,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
+                color: style.background,
+                borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
+                border: Border.all(color: style.border),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -99,30 +81,15 @@ class MineQuickActionCard extends StatelessWidget {
                         aspectRatio: 1,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                data.color.withValues(
-                                  alpha: isDark ? 0.26 : 0.20,
-                                ),
-                                data.color.withValues(
-                                  alpha: isDark ? 0.15 : 0.11,
-                                ),
-                              ],
-                            ),
+                            color: style.iconBackground,
                             borderRadius: BorderRadius.circular(
                               resolvedMetrics.iconBorderRadius,
                             ),
-                            border: Border.all(
-                              color: data.color.withValues(
-                                alpha: isDark ? 0.38 : 0.26,
-                              ),
-                            ),
+                            border: Border.all(color: style.iconBorder),
                           ),
                           child: Icon(
                             data.icon,
-                            color: data.color,
+                            color: style.iconColor,
                             size: resolvedMetrics.iconSize,
                           ),
                         ),
@@ -139,7 +106,7 @@ class MineQuickActionCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: compact ? 14 : 14.5,
                             fontWeight: FontWeight.w800,
-                            color: scheme.onSurface,
+                            color: style.titleColor,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -152,7 +119,7 @@ class MineQuickActionCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: compact ? 11.5 : 12,
                               fontWeight: FontWeight.w600,
-                              color: scheme.onSurfaceVariant,
+                              color: style.subtitleColor,
                               height: compact ? 1.2 : 1.25,
                             ),
                             maxLines: 2,

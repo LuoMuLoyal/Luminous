@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luminous/stores/app_database.dart';
+import 'package:luminous/stores/locale_controller.dart';
 import 'package:luminous/stores/ornament_controller.dart';
 import 'package:luminous/stores/session_sync_service.dart';
 import 'package:luminous/stores/token_manager.dart';
+import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/notification_service.dart';
 
@@ -16,11 +18,17 @@ import 'package:luminous/utils/notification_service.dart';
 class AppStartupWarmup {
   AppStartupWarmup({
     required UserController userController,
+    required ThemeController themeController,
+    required LocaleController localeController,
     required OrnamentController ornamentController,
   }) : _userController = userController,
+       _themeController = themeController,
+       _localeController = localeController,
        _ornamentController = ornamentController;
 
   final UserController _userController;
+  final ThemeController _themeController;
+  final LocaleController _localeController;
   final OrnamentController _ornamentController;
   bool _started = false;
 
@@ -39,6 +47,9 @@ class AppStartupWarmup {
   Future<void> _runWarmup() async {
     await Future<void>.delayed(Duration.zero);
 
+    // UI 偏好（主题/语言/氛围装饰）首帧后优先恢复，避免阻塞 runApp 前路径。
+    unawaited(_hydrateUiPreferences());
+
     // 装饰模板只依赖内存随机种子，尽快在首帧后准备好即可。
     unawaited(_warmOrnaments());
 
@@ -53,9 +64,25 @@ class AppStartupWarmup {
     unawaited(_warmNotificationSdk());
   }
 
+  Future<void> _hydrateUiPreferences() async {
+    try {
+      await Future<void>.delayed(const Duration(milliseconds: 4));
+      await Future.wait<void>([
+        _themeController.init(),
+        _localeController.init(),
+        _ornamentController.init(),
+      ]);
+    } catch (_) {
+      // 偏好恢复失败时沿用默认配置，不阻塞首屏可用性。
+    }
+  }
+
   Future<void> _warmOrnaments() async {
     try {
       await Future<void>.delayed(const Duration(milliseconds: 12));
+      if (!_ornamentController.isReady) {
+        await _ornamentController.init();
+      }
       await _ornamentController.warmup();
     } catch (_) {
       // 装饰预热失败时保持确定性兜底布局，不影响功能。

@@ -94,6 +94,11 @@ class DrugSearchEntrySliver extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final scheme = Theme.of(context).colorScheme;
+    final searchIconColor = Color.lerp(
+      const Color(0xFF0EA5E9),
+      scheme.primary,
+      0.42,
+    )!;
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
     final subtitleColor = isDark
         ? const Color(0xFFCBD5E1)
@@ -130,16 +135,27 @@ class DrugSearchEntrySliver extends StatelessWidget {
                           width: iconBoxSize,
                           height: iconBoxSize,
                           decoration: BoxDecoration(
-                            color: const Color(
-                              0xFF0EA5E9,
-                            ).withValues(alpha: 0.12),
+                            color: appTintedSurface(
+                              context,
+                              searchIconColor,
+                              lightAlpha: 0.21,
+                              darkAlpha: 0.31,
+                            ),
                             borderRadius: BorderRadius.circular(
                               compact ? 12 : 14,
+                            ),
+                            border: Border.all(
+                              color: appTintedBorder(
+                                context,
+                                searchIconColor,
+                                lightAlpha: 0.27,
+                                darkAlpha: 0.41,
+                              ),
                             ),
                           ),
                           child: Icon(
                             Icons.search_rounded,
-                            color: const Color(0xFF0EA5E9),
+                            color: searchIconColor,
                             size: compact ? 20 : 24,
                           ),
                         ),

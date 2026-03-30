@@ -21,12 +21,13 @@ Future<void> main() async {
   final themeController = Get.put(ThemeController(), permanent: true);
   final localeController = Get.put(LocaleController(), permanent: true);
   final ornamentController = Get.put(OrnamentController(), permanent: true);
-  await themeController.init();
-  await localeController.init();
-  await ornamentController.init();
+
+  // 偏好恢复与预热统一延后到首帧后，避免阻塞冷启动首帧。
   runApp(
     LuminousApp(
       userController: userController,
+      themeController: themeController,
+      localeController: localeController,
       ornamentController: ornamentController,
     ),
   );
@@ -41,10 +42,14 @@ class LuminousApp extends StatefulWidget {
   const LuminousApp({
     super.key,
     required this.userController,
+    required this.themeController,
+    required this.localeController,
     required this.ornamentController,
   });
 
   final UserController userController;
+  final ThemeController themeController;
+  final LocaleController localeController;
   final OrnamentController ornamentController;
 
   @override
@@ -59,6 +64,8 @@ class _LuminousAppState extends State<LuminousApp> {
     super.initState();
     _startupWarmup = AppStartupWarmup(
       userController: widget.userController,
+      themeController: widget.themeController,
+      localeController: widget.localeController,
       ornamentController: widget.ornamentController,
     );
     _startupWarmup.start();
