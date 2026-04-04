@@ -9,12 +9,11 @@ async function startServer() {
 
   const app = createApp();
 
-  app.listen(env.port, () => {
-    console.log(`Luminous backend listening on http://127.0.0.1:${env.port}`);
+  app.listen(env.port, env.host, () => {
+    console.log(`Luminous backend listening on http://${env.host}:${env.port}`);
   });
 }
 
 startServer().catch(err => {
   console.error('Failed to start server:', err);
 });
-

@@ -95,6 +95,59 @@ class SettingsPage extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 32),
+          // 退出登录区域
+          TextButton.icon(
+            onPressed: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('退出登录'),
+                  content: const Text(
+                    '确认要退出当前账号吗？您的本地数据（如偏好设置）将会保留，但需要重新登录才能继续同步。',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: const Text('取消'),
+                    ),
+                    FilledButton(
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: scheme.error,
+                        foregroundColor: scheme.onError,
+                      ),
+                      child: const Text('确认退出'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true) {
+                final userController = Get.find<UserController>();
+                await userController.logout();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              }
+            },
+            icon: Icon(Icons.logout_rounded, color: scheme.error),
+            label: Text(
+              '退出登录',
+              style: TextStyle(
+                color: scheme.error,
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: scheme.errorContainer.withOpacity(0.4),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          ),
         ],
       ),
     );

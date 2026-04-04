@@ -59,6 +59,7 @@ function requireEnv(name: string): string {
 }
 
 export const env = {
+  host: readString('HOST', '0.0.0.0'),
   port: readNumber('PORT', 8787),
   corsOrigin: readString('CORS_ORIGIN', '*'),
   mysql: {

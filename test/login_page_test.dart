@@ -27,6 +27,7 @@ void main() {
 
   Widget createLoginWidget({AuthApi? authApi}) {
     return MaterialApp(
+      locale: const Locale('zh'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: LoginPage(authApi: authApi ?? FakeAuthApi()),
@@ -87,9 +88,15 @@ void main() {
 
       expect(find.byType(RegisterView), findsOneWidget);
       final registerFields = tester
-          .widgetList<TextFormField>(find.byType(TextFormField))
+          .widgetList<TextFormField>(
+            find.descendant(
+              of: find.byType(RegisterView),
+              matching: find.byType(TextFormField),
+            ),
+          )
           .toList();
       expect(registerFields[0].controller?.text, '13800138000');
+      // SMS captcha field
       expect(registerFields[2].controller?.text, '123456');
     },
   );
@@ -126,6 +133,7 @@ void main() {
       final fakeAuth = FakeAuthApi();
       await tester.pumpWidget(
         MaterialApp(
+          locale: const Locale('zh'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: RegisterView(
@@ -161,6 +169,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       MaterialApp(
+        locale: const Locale('zh'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: RegisterView(
