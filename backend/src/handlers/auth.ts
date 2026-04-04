@@ -190,7 +190,37 @@ async function dispatchEmailCode({
     from: env.authCode.email.from,
     to: target,
     subject: scene === 'register' ? 'Luminous 注册验证码' : 'Luminous 登录验证码',
-    html: `您好，您的${scene === 'register' ? '注册' : '登录'}验证码为：<b>${code}</b>，5分钟内有效。`,
+    html: `
+      <div style="font-family: 'Segoe UI', Tahoma, Verdana, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="font-size: 14px; color: #777;">Luminous 帐户</div>
+        <h1 style="color: #2b579a; font-size: 36px; margin-top: 10px; font-weight: normal; font-style: italic;">验证码</h1>
+        
+        <p style="font-size: 15px; margin-top: 30px; line-height: 1.6;">
+          请对 Luminous 帐户 <a href="mailto:${target}" style="color: #2b579a; text-decoration: none;">${target}</a> 使用以下${scene === 'register' ? '注册' : '登录'}验证码。
+        </p>
+        
+        <p style="font-size: 18px; margin: 30px 0;">
+          验证码: <strong style="font-size: 20px;">${code}</strong> 
+          <span style="font-size: 14px; color: #777; margin-left: 10px;">(5分钟内有效)</span>
+        </p>
+        
+        <p style="font-size: 15px; line-height: 1.6; color: #555;">
+          如果你无法识别 Luminous 帐户 <a href="mailto:${target}" style="color: #2b579a; text-decoration: none;">${target}</a> 操作，请忽略此电子邮件。
+        </p>
+        
+        <p style="font-size: 15px; margin-top: 40px; color: #333;">
+          谢谢!<br>
+          Luminous 团队
+        </p>
+        
+        <hr style="border: none; border-top: 1px solid #eee; margin-top: 40px; margin-bottom: 20px;">
+        
+        <div style="font-size: 12px; color: #999;">
+          <strong style="color: #2b579a;">隐私声明</strong><br><br>
+          Luminous Corporation
+        </div>
+      </div>
+    `,
   });
 }
 

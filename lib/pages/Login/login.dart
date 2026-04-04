@@ -448,26 +448,29 @@ class _LoginPageState extends State<LoginPage> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final canPop = Navigator.canPop(context);
+
     return Row(
       children: [
-        InkWell(
-          onTap: () => Navigator.maybePop(context),
-          borderRadius: BorderRadius.circular(999),
-          child: Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: theme.cardTheme.color ?? scheme.surface,
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: scheme.outline),
-            ),
-            child: Icon(
-              Icons.arrow_back_ios_new_rounded,
-              size: 16,
-              color: isDark ? scheme.onSurface : scheme.onSurface,
+        if (canPop)
+          InkWell(
+            onTap: () => Navigator.maybePop(context),
+            borderRadius: BorderRadius.circular(999),
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: theme.cardTheme.color ?? scheme.surface,
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(color: scheme.outline),
+              ),
+              child: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 16,
+                color: isDark ? scheme.onSurface : scheme.onSurface,
+              ),
             ),
           ),
-        ),
         const Spacer(),
         TextButton(
           onPressed: () {
