@@ -2,10 +2,12 @@ import { createApp } from './app';
 import { env } from './config/env';
 import { connectMongoDB } from './db/mongodb';
 import { connectRedis } from './db/redis';
+import { connectMySQL } from './db/mysql';
 
 async function startServer() {
   await connectMongoDB();
   await connectRedis();
+  await connectMySQL();
 
   const app = createApp();
 

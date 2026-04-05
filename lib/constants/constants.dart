@@ -26,12 +26,12 @@ class GlobalConstants {
     }
 
     if (kIsWeb) {
-      return 'http://127.0.0.1:8787';
+      return 'http://47.94.95.42:8080';
     }
 
     return defaultTargetPlatform == TargetPlatform.android
-        ? 'http://10.0.2.2:8787'
-        : 'http://127.0.0.1:8787';
+        ? 'http://47.94.95.42:8080'
+        : 'http://47.94.95.42:8080';
   }
 
   /// 网络请求默认超时时间，单位是秒。
