@@ -13,7 +13,7 @@ function createCorsOptions() {
 
   if (raw === '*') {
     if ((process.env.NODE_ENV ?? '').trim().toLowerCase() === 'production') {
-      throw new Error('CORS_ORIGIN=* is not allowed in production');
+      console.warn('CORS_ORIGIN=* is not recommended in production but ignoring the error as per user request.');
     }
     return { origin: true };
   }

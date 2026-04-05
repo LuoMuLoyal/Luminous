@@ -132,8 +132,8 @@ class _MineViewState extends State<MineView> {
       onTapSecurity: () => Navigator.pushNamed(context, '/settings'),
       onTapAbout: () => showAboutDialog(
         context: context,
-        applicationName: 'Luminous',
-        applicationVersion: '3.0.0+33',
+        applicationName: 'Luminous Alpha',
+        applicationVersion: '3.1.0-alpha.1+35',
         applicationLegalese: l10n?.mineAboutLegalese ?? '健康助手与药品信息辅助应用',
       ),
     );

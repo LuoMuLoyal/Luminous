@@ -31,6 +31,18 @@ export function getMysqlPool(): mysql.Pool {
   return pool;
 }
 
+export async function connectMySQL(): Promise<void> {
+  const p = getMysqlPool();
+  try {
+    const connection = await p.getConnection();
+    console.log('Connected to MySQL successfully.');
+    connection.release();
+  } catch (error) {
+    console.error('Failed to connect to MySQL:', error);
+    throw error;
+  }
+}
+
 export function escapeLike(input: string): string {
   return input.replace(/[\\%_]/g, '\\$&');
 }

@@ -142,7 +142,7 @@ class SettingsPage extends StatelessWidget {
             ),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: scheme.errorContainer.withOpacity(0.4),
+              backgroundColor: scheme.errorContainer.withValues(alpha: 0.4),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
