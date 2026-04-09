@@ -7,6 +7,8 @@
   "mainTabMine": "Mine",
   "settingsTitle": "Settings",
   "settingsGeneralTitle": "General",
+  "settingsProfileTitle": "Personal Settings",
+  "settingsProfileSubtitle": "Set up your avatar, nickname, gender, birthday, and profession",
   "settingsGeneralSubtitle": "Enter each module to configure preferences. More options will be added.",
   "settingsThemeTitle": "Theme",
   "settingsThemeSubtitle": "Adjust mode and style for global UI.",

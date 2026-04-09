@@ -166,7 +166,7 @@ class _MainPageState extends State<MainPage> {
           ),
           child: SafeArea(
             top: false,
-            minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+            minimum: const EdgeInsets.fromLTRB(12, 0, 12, 6),
             child: _MainBottomBar(
               items: tablist,
               itemColors: tabColors,
@@ -366,8 +366,8 @@ class _MainBottomBar extends StatelessWidget {
                             duration: const Duration(milliseconds: 240),
                             curve: Curves.easeOutCubic,
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 8,
+                              horizontal: 6,
+                              vertical: 6,
                             ),
                             decoration: BoxDecoration(
                               gradient: selected
@@ -414,15 +414,20 @@ class _MainBottomBar extends StatelessWidget {
                                       : item.icon,
                                   color: selected ? itemColor : inactiveColor,
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 2),
                                 Text(
                                   item.text,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize: 12.5,
+                                    fontSize: 12.0,
                                     fontWeight: selected
                                         ? FontWeight.w800
                                         : FontWeight.w700,
                                     color: selected ? itemColor : inactiveColor,
+                                    height: 1.1,
+                                    leadingDistribution:
+                                        TextLeadingDistribution.even,
                                   ),
                                 ),
                               ],

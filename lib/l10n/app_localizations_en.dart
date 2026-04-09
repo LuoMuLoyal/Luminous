@@ -30,6 +30,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsGeneralTitle => 'General';
 
   @override
+  String get settingsProfileTitle => 'Personal Settings';
+
+  @override
+  String get settingsProfileSubtitle =>
+      'Set up your avatar, nickname, gender, birthday, and profession';
+
+  @override
   String get settingsGeneralSubtitle =>
       'Enter each module to configure preferences. More options will be added.';
 

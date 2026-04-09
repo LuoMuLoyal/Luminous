@@ -11,6 +11,7 @@ import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/scan_image_processing.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// 个人设置页。
 ///
@@ -286,7 +287,8 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
     });
   }
 
-  Widget _buildTextField({
+  Widget _buildTextField( 
+    BuildContext context, {
     required TextEditingController controller,
     required String label,
     required String hint,
@@ -294,6 +296,8 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
     bool readOnly = false,
     VoidCallback? onTap,
   }) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -302,7 +306,19 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        filled: true,
+        fillColor: scheme.surface.withValues(alpha: 0.5),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: scheme.outline.withValues(alpha: 0.15)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: scheme.primary.withValues(alpha: 0.4)),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
     );
   }
@@ -417,7 +433,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                _buildTextField(
+                _buildTextField(context, 
                   controller: _nicknameController,
                   label: '昵称',
                   hint: '2-30 字符，可留空',
@@ -427,6 +443,16 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   initialValue: _gender,
                   decoration: InputDecoration(
                     labelText: '性别',
+                    filled: true,
+                    fillColor: scheme.surface.withValues(alpha: 0.5),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: scheme.outline.withValues(alpha: 0.15)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: scheme.primary.withValues(alpha: 0.4)),
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -446,7 +472,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   },
                 ),
                 const SizedBox(height: 10),
-                _buildTextField(
+                _buildTextField(context, 
                   controller: _birthdayController,
                   label: '生日',
                   hint: 'YYYY-MM-DD',
@@ -454,7 +480,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                   onTap: _pickBirthday,
                 ),
                 const SizedBox(height: 10),
-                _buildTextField(
+                _buildTextField(context, 
                   controller: _professionController,
                   label: '职业',
                   hint: '例如：工程师、学生',
@@ -463,7 +489,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: _buildTextField(
+                      child: _buildTextField(context, 
                         controller: _provinceCodeController,
                         label: '省份编码',
                         hint: '如 110000',
@@ -471,7 +497,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                     ),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: _buildTextField(
+                      child: _buildTextField(context, 
                         controller: _cityCodeController,
                         label: '城市编码',
                         hint: '如 110100',
@@ -511,7 +537,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
       safeAreaBottom: true,
       appBarSpacing: 30,
       appBar: AppBar(
-        title: const Text('个人设置'),
+        title: Text(AppLocalizations.of(context)?.settingsProfileTitle ?? '个人设置'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,

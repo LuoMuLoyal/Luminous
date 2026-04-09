@@ -7,6 +7,8 @@
   "mainTabMine": "我的",
   "settingsTitle": "设置",
   "settingsGeneralTitle": "通用设置",
+  "settingsProfileTitle": "个人设置",
+  "settingsProfileSubtitle": "完善头像、昵称、性别、生日和职业等个人资料",
   "settingsGeneralSubtitle": "可按模块进入对应设置项，后续会继续扩展更多系统偏好",
   "settingsThemeTitle": "主题设置",
   "settingsThemeSubtitle": "调整主题模式与主题风格，影响全局页面与组件视觉",

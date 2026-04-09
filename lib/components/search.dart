@@ -27,6 +27,7 @@ class SearchSurfaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     if (decorated) {
       return AppSectionCard(
         radius: 16,
@@ -35,11 +36,20 @@ class SearchSurfaceCard extends StatelessWidget {
         secondaryColor:
             secondaryColor ??
             Color.lerp(scheme.secondary, scheme.tertiary, 0.5),
+        baseColor: scheme.surface.withValues(alpha: isDark ? 0.35 : 0.65),
         ornamentKey: ornamentKey,
         child: child,
       );
     }
-    return AppSurfaceCard(radius: 16, child: child);
+    return AppSectionCard(
+      radius: 16,
+      padding: EdgeInsets.zero,
+      accentColor: scheme.primary.withValues(alpha: 0.15),
+      secondaryColor: scheme.secondary.withValues(alpha: 0.15),
+      baseColor: scheme.surface.withValues(alpha: isDark ? 0.35 : 0.65),
+      ornamentKey: 'search.item',
+      child: child,
+    );
   }
 }
 

@@ -22,40 +22,40 @@ class ResponsiveQuickGridMetrics {
 
   factory ResponsiveQuickGridMetrics.fromWidth(double maxWidth) {
     final compact = isCompactLayoutWidth(maxWidth);
-    final spacing = compact ? 8.0 : 12.0;
+    final spacing = compact ? 6.0 : 10.0;
     final safeWidth = maxWidth.isFinite && maxWidth > 0 ? maxWidth : 360.0;
     final cellWidth = ((safeWidth - (spacing * 2)) / 3).clamp(
       0.0,
       double.infinity,
     );
-    final compactIconBox = (cellWidth * 0.50).clamp(46.0, 58.0).toDouble();
+    final compactIconBox = (cellWidth * 0.45).clamp(42.0, 52.0).toDouble();
 
     return ResponsiveQuickGridMetrics._(
       isCompact: compact,
-      sectionPadding: compact ? 10.0 : 14.0,
+      sectionPadding: compact ? 8.0 : 12.0,
       gridSpacing: spacing,
       itemPadding: compact
-          ? const EdgeInsets.fromLTRB(7, 7, 7, 7)
-          : const EdgeInsets.fromLTRB(10, 12, 10, 12),
-      iconBoxSize: compact ? compactIconBox : 74.0,
+          ? const EdgeInsets.fromLTRB(4, 6, 4, 6)
+          : const EdgeInsets.fromLTRB(8, 10, 8, 10),
+      iconBoxSize: compact ? compactIconBox : 64.0,
       iconSize: compact
-          ? (compactIconBox * 0.5).clamp(24.0, 30.0).toDouble()
-          : 38.0,
-      iconBorderRadius: compact ? 16.0 : 22.0,
-      titleSpacing: compact ? 6.0 : 12.0,
-      subtitleSpacing: compact ? 1.5 : 3.0,
+          ? (compactIconBox * 0.5).clamp(22.0, 28.0).toDouble()
+          : 32.0,
+      iconBorderRadius: compact ? 14.0 : 18.0,
+      titleSpacing: compact ? 4.0 : 8.0,
+      subtitleSpacing: compact ? 1.0 : 2.0,
       gridDelegate: compact
           ? SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               mainAxisSpacing: spacing,
               crossAxisSpacing: spacing,
-              childAspectRatio: 0.93,
+              mainAxisExtent: 116,
             )
           : const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              mainAxisExtent: 150,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              mainAxisExtent: 136,
             ),
     );
   }

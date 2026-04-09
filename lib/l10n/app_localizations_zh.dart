@@ -30,6 +30,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsGeneralTitle => '通用设置';
 
   @override
+  String get settingsProfileTitle => '个人设置';
+
+  @override
+  String get settingsProfileSubtitle => '完善头像、昵称、性别、生日和职业等个人资料';
+
+  @override
   String get settingsGeneralSubtitle => '可按模块进入对应设置项，后续会继续扩展更多系统偏好';
 
   @override

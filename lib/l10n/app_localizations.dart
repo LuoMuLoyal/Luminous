@@ -140,6 +140,18 @@ abstract class AppLocalizations {
   /// **'General'**
   String get settingsGeneralTitle;
 
+  /// No description provided for @settingsProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Settings'**
+  String get settingsProfileTitle;
+
+  /// No description provided for @settingsProfileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your avatar, nickname, gender, birthday, and profession'**
+  String get settingsProfileSubtitle;
+
   /// No description provided for @settingsGeneralSubtitle.
   ///
   /// In en, this message translates to:
