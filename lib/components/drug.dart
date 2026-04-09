@@ -560,8 +560,13 @@ class DrugMyMedicineCard extends StatelessWidget {
         builder: (context, constraints) {
           final compact = isCompactLayoutWidth(constraints.maxWidth);
 
-          return AppSurfaceCard(
+          return AppSectionCard(
             radius: 16,
+            padding: EdgeInsets.zero,
+            accentColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+            secondaryColor: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.15),
+            baseColor: Theme.of(context).colorScheme.surface.withValues(alpha: isDark ? 0.35 : 0.65),
+            ornamentKey: 'drug.item',
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
               onTap: onTap,

@@ -44,13 +44,20 @@ Widget getRootWidget() {
       themeMode: themeController.themeMode,
       initialRoute: '/',
       routes: getRootRoutes(),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: MediaQuery.of(
+              context,
+            ).textScaler.clamp(minScaleFactor: 0.85, maxScaleFactor: 1.15),
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   });
 }
 
-/// 返回整个应用的命名路由表。
-///
-/// 所有 `Navigator.pushNamed` 都会通过这里注册的页面进行匹配。
 Map<String, Widget Function(BuildContext)> getRootRoutes() {
   return {
     '/': (context) => const MainPage(),

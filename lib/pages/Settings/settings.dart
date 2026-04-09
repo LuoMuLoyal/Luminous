@@ -50,8 +50,8 @@ class SettingsPage extends StatelessWidget {
               _SettingsActionTile(
                 icon: Icons.person_outline_rounded,
                 accentColor: const Color(0xFF0EA5E9),
-                title: '个人设置',
-                subtitle: '完善头像、昵称、性别、生日和职业等个人资料',
+                title: l10n?.settingsProfileTitle ?? '个人设置',
+                subtitle: l10n?.settingsProfileSubtitle ?? '完善头像、昵称、性别、生日和职业等个人资料',
                 enabled: true,
                 onTap: () {
                   Navigator.of(context).push(
@@ -1090,7 +1090,7 @@ class _DisplayPreferencesSection extends StatelessWidget {
               final styles = AppThemeStyle.values;
               final columnCount = constraints.maxWidth >= 720
                   ? 3
-                  : (constraints.maxWidth >= 430 ? 2 : 1);
+                  : (constraints.maxWidth >= 500 ? 2 : 1);
               final spacing = 10.0;
               final itemWidth =
                   (constraints.maxWidth - (columnCount - 1) * spacing) /

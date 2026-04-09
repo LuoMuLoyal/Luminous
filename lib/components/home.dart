@@ -85,6 +85,7 @@ class HomeInfoPill extends StatelessWidget {
       fontSize: 12.5,
       fontWeight: FontWeight.w600,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      enablePopup: onTap == null && onLongPress == null,
     );
 
     if (onTap == null && onLongPress == null) {
@@ -129,7 +130,7 @@ class HomeFeatureSection extends StatelessWidget {
     final accent = Color.lerp(scheme.primary, scheme.secondary, 0.35)!;
     final secondary = Color.lerp(scheme.secondary, scheme.tertiary, 0.45)!;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 2, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 2, 16, 6),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final compact = isCompactLayoutWidth(constraints.maxWidth);
@@ -161,7 +162,7 @@ class HomeFeatureSection extends StatelessWidget {
                     color: scheme.onSurfaceVariant,
                   ),
                 ),
-                SizedBox(height: compact ? 10 : 12),
+                SizedBox(height: compact ? 8 : 10),
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -214,7 +215,7 @@ class HomeReminderSection extends StatelessWidget {
             accentColor: Color.lerp(scheme.tertiary, scheme.primary, 0.35)!,
             secondaryColor: Color.lerp(scheme.primary, scheme.secondary, 0.45)!,
             ornamentKey: 'home.reminders',
-            padding: EdgeInsets.all(compact ? 12 : 14),
+            padding: EdgeInsets.all(compact ? 10 : 12),
             radius: 18,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,7 +227,7 @@ class HomeReminderSection extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(height: compact ? 7 : 9),
+                SizedBox(height: compact ? 5 : 7),
                 if (items.isEmpty)
                   Container(
                     width: double.infinity,
@@ -407,16 +408,7 @@ class HomeTopSection extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: compact ? 12 : 15),
-                  Text(
-                    l10n?.homeHeroIntro ?? '今天已经为你整理好',
-                    style: TextStyle(
-                      color: theme.secondaryTextColor,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(height: compact ? 4 : 6),
+                    SizedBox(height: compact ? 6 : 8),
                   ValueListenableBuilder<String>(
                     valueListenable: todayTipListenable,
                     builder: (context, todayTip, _) {
@@ -552,7 +544,7 @@ class _HomeTopSummaryCard extends StatelessWidget {
         compact ? 10 : 12,
       ),
       decoration: BoxDecoration(
-        color: bannerTheme.surfaceColor.withValues(alpha: 0.78),
+        color: bannerTheme.surfaceColor.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.78 : 0.55),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: bannerTheme.borderColor),
       ),
@@ -610,10 +602,12 @@ class _HomeTopSummaryCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  detail,
-                  style: TextStyle(
+                  const SizedBox(height: 5),
+                  Text(
+                    detail,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
                     color: bannerTheme.secondaryTextColor,
                     fontSize: compact ? 12.5 : 13.5,
                     height: 1.45,
@@ -784,3 +778,11 @@ class _HomeReminderTile extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+

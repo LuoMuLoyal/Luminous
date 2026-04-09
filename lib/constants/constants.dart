@@ -26,12 +26,12 @@ class GlobalConstants {
     }
 
     if (kIsWeb) {
-      return 'http://47.94.95.42:8080';
+      return 'https://devluo.com';
     }
 
     return defaultTargetPlatform == TargetPlatform.android
-        ? 'http://47.94.95.42:8080'
-        : 'http://47.94.95.42:8080';
+        ? 'https://devluo.com'
+        : 'https://devluo.com';
   }
 
   /// 网络请求默认超时时间，单位是秒。

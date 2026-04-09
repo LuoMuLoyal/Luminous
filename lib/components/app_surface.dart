@@ -142,6 +142,7 @@ class AppSectionCard extends StatelessWidget {
     this.ornamentStyle,
     this.padding = const EdgeInsets.all(14),
     this.radius = 18,
+    this.baseColor,
   });
 
   final Widget child;
@@ -151,6 +152,7 @@ class AppSectionCard extends StatelessWidget {
   final AppOrnamentStyle? ornamentStyle;
   final EdgeInsetsGeometry padding;
   final double radius;
+  final Color? baseColor;
 
   @override
   Widget build(BuildContext context) {
@@ -178,17 +180,18 @@ class AppSectionCard extends StatelessWidget {
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final baseColor = theme.cardTheme.color ?? theme.colorScheme.surface;
+    final resolvedBaseColor =
+        baseColor ?? theme.cardTheme.color ?? theme.colorScheme.surface;
     final resolvedStyle =
         ornamentStyle ??
         _resolveOrnamentStyle(accentColor, secondaryColor, radius);
     final startColor = Color.alphaBlend(
       accentColor.withValues(alpha: isDark ? 0.12 : 0.085),
-      baseColor,
+      resolvedBaseColor,
     );
     final endColor = Color.alphaBlend(
       (secondaryColor ?? accentColor).withValues(alpha: isDark ? 0.095 : 0.062),
-      baseColor,
+      resolvedBaseColor,
     );
     final showOrnaments = ornamentVisibilityFactor > 0;
     final ornamentWidgets = showOrnaments
@@ -213,6 +216,7 @@ class AppSectionCard extends StatelessWidget {
 
     return AppSurfaceCard(
       radius: radius,
+      color: resolvedBaseColor,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
         child: Stack(
