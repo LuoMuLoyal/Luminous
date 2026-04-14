@@ -30,6 +30,13 @@ export function getRedisClient(): AppRedisClient {
   return redisClient;
 }
 
+export function tryGetRedisClient(): AppRedisClient | null {
+  if (!redisClient || !redisClient.isOpen) {
+    return null;
+  }
+  return redisClient;
+}
+
 export async function closeRedis(): Promise<void> {
   if (!redisClient) {
     return;

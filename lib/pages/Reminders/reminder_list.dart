@@ -1,273 +1,114 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:luminous/api/reminder_api.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/tinted_status_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/pages/Reminders/controllers/reminder_list_controller.dart';
 import 'package:luminous/pages/Reminders/reminder_edit.dart';
-import 'package:luminous/stores/reminder_local_store.dart';
-import 'package:luminous/stores/today_reminder_local_store.dart';
-import 'package:luminous/stores/user_controller.dart';
-import 'package:luminous/utils/message_utils.dart';
-import 'package:luminous/utils/notification_service.dart';
-import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/reminder.dart';
 
 /// 用药提醒列表页。
 ///
-/// 页面负责展示提醒计划、进入新增/编辑页，并把结果同步到本地缓存与系统通知。
-class ReminderListPage extends StatefulWidget {
+/// 页面只负责展示列表、页面跳转和删除确认，业务状态由 controller 承接。
+class ReminderListPage extends StatelessWidget {
   /// 创建用药提醒列表页组件。
   const ReminderListPage({super.key});
 
-  /// 创建提醒列表页对应的状态对象。
-  @override
-  State<ReminderListPage> createState() => _ReminderListPageState();
-}
-
-/// 提醒列表页状态对象。
-///
-/// 这里维护的是“提醒计划清单”本身，任何对计划的新增、编辑、启停、删除
-/// 都会在这里更新 `_items`，并重新调度系统通知。
-class _ReminderListPageState extends State<ReminderListPage> {
-  /// 全局用户控制器，用于判断登录态与获取 userId。
-  final UserController _userController = Get.find<UserController>();
-
-  /// 监听登录用户变化的 worker。
-  Worker? _userWorker;
-
-  /// 当前是否正在加载提醒列表。
-  bool _loading = false;
-
-  /// 当前错误提示文案（非空时会在页面顶部展示错误 banner）。
-  String? _error;
-
-  /// 当前提醒计划列表。
-  List<ReminderPlan> _items = [];
-
-  /// 当前是否有一次新的刷新请求在排队。
-  bool _reloadQueued = false;
-
-  /// 当前活跃加载请求的编号。
-  int _loadRequestId = 0;
-
-  /// 正在执行启用/删除等变更操作的提醒 id。
-  final Set<String> _busyReminderIds = <String>{};
-
-  AppLocalizations? get _l10n => AppLocalizations.of(context);
-
-  /// 页面初始化时先拉取一次提醒列表。
-  @override
-  void initState() {
-    super.initState();
-    _userWorker = ever<dynamic>(_userController.user, (_) {
-      _load();
-    });
-    _load();
-  }
-
-  @override
-  void dispose() {
-    _userWorker?.dispose();
-    super.dispose();
-  }
-
-  /// 当前登录用户 id（未登录时为空字符串）。
-  String get _userId => _userController.user.value?.id ?? '';
-
-  bool get _loggedIn => _userController.isLoggedIn && _userId.trim().isNotEmpty;
-
-  int get _enabledCount => _items.where((item) => item.enabled).length;
-
-  int get _disabledCount => _items.length - _enabledCount;
-
-  String _itemsCountLabel(AppLocalizations? l10n) =>
-      l10n?.reminderListCountLabel(_items.length) ?? '${_items.length} 条提醒';
-
-  /// 加载提醒计划列表。
-  ///
-  /// - 成功：写入本地缓存，并重新调度系统通知；
-  /// - 失败：回退读取本地缓存。
-  Future<void> _load() async {
-    final userId = _userId.trim();
-    if (userId.trim().isEmpty) {
-      if (mounted) {
-        setState(() {
-          _items = [];
-          _error = null;
-          _loading = false;
-          _busyReminderIds.clear();
-        });
-      }
-      return;
-    }
-    if (_loading) {
-      _reloadQueued = true;
-      return;
-    }
-
-    final requestId = ++_loadRequestId;
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-
-    try {
-      final response = await ReminderApi.list(userId: userId);
-      final items = _sortedPlans(response.result.items);
-      if (!_canApplyLoadResult(requestId, userId)) return;
-      setState(() {
-        _items = items;
-      });
-      await reminderLocalStore.replaceForUser(userId, items);
-      await _syncTodaySnapshotForUser(userId);
-      if (!_canApplyLoadResult(requestId, userId)) return;
-      await NotificationService.instance.rescheduleAll(items);
-    } catch (e) {
-      if (!_canApplyLoadResult(requestId, userId)) return;
-      setState(() => _error = MessageUtils.extractError(e));
-      await _loadLocal(userId, requestId: requestId);
-    } finally {
-      if (_isActiveLoadRequest(requestId) && mounted) {
-        setState(() => _loading = false);
-      }
-      if (_isActiveLoadRequest(requestId) && _reloadQueued && mounted) {
-        _reloadQueued = false;
-        unawaited(_load());
-      }
-    }
-  }
-
-  /// 从本地缓存读取提醒计划列表（网络失败时回退使用）。
-  Future<void> _loadLocal(String userId, {required int requestId}) async {
-    final items = await reminderLocalStore.loadForUser(userId);
-    if (!_canApplyLoadResult(requestId, userId)) {
-      return;
-    }
-    setState(() {
-      _items = items;
-    });
-    await _syncTodaySnapshotForUser(userId);
-  }
-
-  /// 当前请求结果是否仍然可以安全落到界面上。
-  bool _canApplyLoadResult(int requestId, String userId) {
-    return mounted &&
-        _isActiveLoadRequest(requestId) &&
-        userId == _userId.trim();
-  }
-
-  /// 当前请求是否仍然是活跃请求。
-  bool _isActiveLoadRequest(int requestId) {
-    return requestId == _loadRequestId;
-  }
-
-  /// 对提醒计划列表做稳定排序。
-  List<ReminderPlan> _sortedPlans(Iterable<ReminderPlan> items) {
-    return List<ReminderPlan>.from(items)
-      ..sort((a, b) => a.time.compareTo(b.time));
-  }
-
-  /// 把当前页面上的提醒列表持久化到本地缓存。
-  Future<void> _persistCurrentItems({String? userId}) async {
-    final provided = (userId ?? '').trim();
-    final uid = provided.isNotEmpty ? provided : _userId.trim();
-    if (uid.isEmpty) {
-      return;
-    }
-    await reminderLocalStore.replaceForUser(uid, _sortedPlans(_items));
-  }
-
-  Future<void> _syncTodaySnapshotForUser(String userId) async {
-    final uid = userId.trim();
-    if (uid.isEmpty) {
-      return;
-    }
-    final items = await todayReminderLocalStore.buildTodayItemsFromPlans(
-      uid,
-      _items,
-    );
-    await todayReminderLocalStore.replaceTodaySnapshot(
-      userId: uid,
-      items: items,
-    );
-  }
-
-  /// 构建提醒列表页 UI。
   @override
   Widget build(BuildContext context) {
-    final l10n = _l10n;
-    return AppCanvasPageScaffold(
-      appBar: AppBar(
-        title: Text(l10n?.reminderListTitle ?? '用药提醒'),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        foregroundColor: const Color(0xFF0F172A),
-        actions: [
-          IconButton(
-            onPressed: _loggedIn && !_loading ? _load : null,
-            icon: _loading
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.refresh_rounded),
-          ),
-        ],
-      ),
-      appBarSpacing: 30,
-      accentColor: const Color(0xFF10B981),
-      secondaryAccentColor: const Color(0xFF0EA5E9),
-      floatingActionButton: _loggedIn
-          ? FloatingActionButton.extended(
-              onPressed: _loading ? null : _openCreate,
-              backgroundColor: const Color(0xFF10B981),
-              foregroundColor: Colors.white,
-              icon: const Icon(Icons.add_rounded),
-              label: Text(l10n?.reminderAddButton ?? '新增提醒'),
-            )
-          : null,
-      child: !_loggedIn
-          ? _buildNeedLogin()
-          : RefreshIndicator(
-              onRefresh: _load,
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(14, 0, 14, 20),
-                children: [
-                  _buildHeroCard(),
-                  const SizedBox(height: 10),
-                  if (_error != null) _buildErrorBanner(_error!),
-                  if (_items.isEmpty && !_loading) _buildEmpty(),
-                  ..._items.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final item = entry.value;
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        bottom: index == _items.length - 1 ? 0 : 8,
-                      ),
-                      child: _ReminderCard(
-                        item: item,
-                        busy: _busyReminderIds.contains(item.id.trim()),
-                        onTap: () => _openEdit(item),
-                        onToggle: (value) => _toggleEnabled(item, value),
-                        onDelete: () => _delete(item),
-                      ),
-                    );
-                  }),
-                ],
+    return GetBuilder<ReminderListController>(
+      init: ReminderListController(),
+      global: false,
+      builder: (controller) {
+        final l10n = AppLocalizations.of(context);
+        return AppCanvasPageScaffold(
+          appBar: AppBar(
+            title: Text(l10n?.reminderListTitle ?? '用药提醒'),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            foregroundColor: const Color(0xFF0F172A),
+            actions: [
+              IconButton(
+                onPressed: controller.isLoggedIn && !controller.loading
+                    ? controller.sync
+                    : null,
+                icon: controller.loading
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.refresh_rounded),
               ),
-            ),
+            ],
+          ),
+          appBarSpacing: 30,
+          accentColor: const Color(0xFF10B981),
+          secondaryAccentColor: const Color(0xFF0EA5E9),
+          floatingActionButton: controller.isLoggedIn
+              ? FloatingActionButton.extended(
+                  onPressed: controller.loading
+                      ? null
+                      : () => _openCreate(context, controller),
+                  backgroundColor: const Color(0xFF10B981),
+                  foregroundColor: Colors.white,
+                  icon: const Icon(Icons.add_rounded),
+                  label: Text(l10n?.reminderAddButton ?? '新增提醒'),
+                )
+              : null,
+          child: !controller.isLoggedIn
+              ? _buildNeedLogin(context)
+              : RefreshIndicator(
+                  onRefresh: controller.sync,
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(14, 0, 14, 20),
+                    children: [
+                      _buildHeroCard(context, controller),
+                      const SizedBox(height: 10),
+                      if (controller.error != null)
+                        _buildErrorBanner(context, controller.error!),
+                      if (controller.items.isEmpty && !controller.loading)
+                        _buildEmpty(context),
+                      ...controller.items.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final item = entry.value;
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: index == controller.items.length - 1
+                                ? 0
+                                : 8,
+                          ),
+                          child: _ReminderCard(
+                            item: item,
+                            busy: controller.isBusy(item.id),
+                            onTap: () => _openEdit(context, controller, item),
+                            onToggle: (value) =>
+                                controller.toggleEnabled(item, value),
+                            onDelete: () =>
+                                _confirmAndDelete(context, controller, item),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+        );
+      },
     );
   }
 
-  Widget _buildHeroCard() {
-    final l10n = _l10n;
+  String _itemsCountLabel(AppLocalizations? l10n, int count) {
+    return l10n?.reminderListCountLabel(count) ?? '$count 条提醒';
+  }
+
+  Widget _buildHeroCard(
+    BuildContext context,
+    ReminderListController controller,
+  ) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     return AppSectionCard(
       accentColor: const Color(0xFF10B981),
@@ -302,21 +143,25 @@ class _ReminderListPageState extends State<ReminderListPage> {
             children: [
               TintedStatusChip(
                 icon: Icons.library_books_rounded,
-                text: _itemsCountLabel(l10n),
+                text: _itemsCountLabel(l10n, controller.items.length),
                 color: const Color(0xFF0EA5E9),
               ),
               TintedStatusChip(
                 icon: Icons.notifications_active_rounded,
                 text:
-                    l10n?.reminderListEnabledCountLabel(_enabledCount) ??
-                    '$_enabledCount 启用',
+                    l10n?.reminderListEnabledCountLabel(
+                      controller.enabledCount,
+                    ) ??
+                    '${controller.enabledCount} 启用',
                 color: const Color(0xFF10B981),
               ),
               TintedStatusChip(
                 icon: Icons.notifications_off_rounded,
                 text:
-                    l10n?.reminderListDisabledCountLabel(_disabledCount) ??
-                    '$_disabledCount 关闭',
+                    l10n?.reminderListDisabledCountLabel(
+                      controller.disabledCount,
+                    ) ??
+                    '${controller.disabledCount} 关闭',
                 color: const Color(0xFF64748B),
               ),
             ],
@@ -327,8 +172,8 @@ class _ReminderListPageState extends State<ReminderListPage> {
   }
 
   /// 构建未登录时的引导视图。
-  Widget _buildNeedLogin() {
-    final l10n = _l10n;
+  Widget _buildNeedLogin(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final scheme = Theme.of(context).colorScheme;
     final iconAccent = Color.lerp(scheme.primary, scheme.tertiary, 0.4)!;
@@ -412,7 +257,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
   }
 
   /// 构建错误提示 banner。
-  Widget _buildErrorBanner(String text) {
+  Widget _buildErrorBanner(BuildContext context, String text) {
     final scheme = Theme.of(context).colorScheme;
     return AppSectionCard(
       accentColor: const Color(0xFFF59E0B),
@@ -440,8 +285,8 @@ class _ReminderListPageState extends State<ReminderListPage> {
   }
 
   /// 构建空状态占位视图。
-  Widget _buildEmpty() {
-    final l10n = _l10n;
+  Widget _buildEmpty(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     return AppSectionCard(
       accentColor: Color.lerp(scheme.primary, scheme.tertiary, 0.32)!,
@@ -479,127 +324,54 @@ class _ReminderListPageState extends State<ReminderListPage> {
     );
   }
 
-  /// 打开“新增提醒”页面并在保存成功后更新列表与通知调度。
-  Future<void> _openCreate() async {
+  /// 打开“新增提醒”页并接住编辑结果。
+  Future<void> _openCreate(
+    BuildContext context,
+    ReminderListController controller,
+  ) async {
     final plan = await Navigator.of(context).push<ReminderPlan>(
       MaterialPageRoute<ReminderPlan>(builder: (_) => const ReminderEditPage()),
     );
-    if (!mounted) return;
-    if (plan == null) return;
-    await _upsertPlanAndReschedule(plan);
+    if (!context.mounted || plan == null) {
+      return;
+    }
+    await controller.applySavedPlan(plan);
   }
 
-  /// 打开“编辑提醒”页面并在保存成功后更新列表与通知调度。
-  Future<void> _openEdit(ReminderPlan plan) async {
+  /// 打开“编辑提醒”页并接住更新结果。
+  Future<void> _openEdit(
+    BuildContext context,
+    ReminderListController controller,
+    ReminderPlan plan,
+  ) async {
     final next = await Navigator.of(context).push<ReminderPlan>(
       MaterialPageRoute<ReminderPlan>(
         builder: (_) => ReminderEditPage(initial: plan),
       ),
     );
-    if (!mounted) return;
-    if (next == null) return;
-    await _upsertPlanAndReschedule(next);
+    if (!context.mounted || next == null) {
+      return;
+    }
+    await controller.applySavedPlan(next);
   }
 
-  Future<void> _upsertPlanAndReschedule(ReminderPlan plan) async {
-    setState(() {
-      _items.removeWhere((e) => e.id == plan.id);
-      _items.add(plan);
-      _items = _sortedPlans(_items);
-    });
-    await _persistCurrentItems(userId: plan.userId);
-    await _syncTodaySnapshotForUser(plan.userId);
-    await NotificationService.instance.rescheduleAll(_items);
-  }
-
-  Future<void> _runWithBusyReminder(
-    String reminderId,
-    Future<void> Function() task,
+  Future<void> _confirmAndDelete(
+    BuildContext context,
+    ReminderListController controller,
+    ReminderPlan plan,
   ) async {
-    final id = reminderId.trim();
-    if (id.isEmpty) {
-      await task();
+    final confirmed = await _confirmDeletePlan(context, plan);
+    if (!context.mounted || !confirmed) {
       return;
     }
-    if (_busyReminderIds.contains(id)) {
-      return;
-    }
-
-    if (mounted) {
-      setState(() => _busyReminderIds.add(id));
-    }
-    try {
-      await task();
-    } finally {
-      if (mounted) {
-        setState(() => _busyReminderIds.remove(id));
-      }
-    }
+    await controller.deletePlan(plan);
   }
 
-  /// 切换某条提醒的启用状态，并同步到后端/本地/系统通知。
-  Future<void> _toggleEnabled(ReminderPlan plan, bool enabled) async {
-    await _runWithBusyReminder(plan.id, () async {
-      try {
-        final next = await ReminderApi.upsert(
-          userId: _userId,
-          id: plan.id,
-          time: plan.time,
-          drugCode: plan.drugCode,
-          approvalNo: plan.approvalNo,
-          productName: plan.productName,
-          medicines: plan.medicines,
-          dosage: plan.dosage,
-          subtitle: plan.subtitle,
-          enabled: enabled,
-          repeatRule: plan.repeatRule,
-          method: plan.method,
-          startDate: plan.startDate,
-          endDate: plan.endDate,
-        );
-        if (!mounted) return;
-        await _upsertPlanAndReschedule(next.result);
-      } catch (e) {
-        if (mounted) {
-          ToastUtils.instance.showError(context, e);
-        }
-      }
-    });
-  }
-
-  /// 删除一条提醒计划，并同步到后端/本地/系统通知。
-  Future<void> _delete(ReminderPlan plan) async {
-    final l10n = _l10n;
-    final confirmed = await _confirmDeletePlan(plan);
-    if (!confirmed) return;
-
-    await _runWithBusyReminder(plan.id, () async {
-      try {
-        await ReminderApi.delete(userId: _userId, id: plan.id);
-        if (!mounted) return;
-        setState(() {
-          _items.removeWhere((e) => e.id == plan.id);
-          _items = _sortedPlans(_items);
-        });
-        await _persistCurrentItems(userId: plan.userId);
-        await _syncTodaySnapshotForUser(plan.userId);
-        await NotificationService.instance.rescheduleAll(_items);
-        if (mounted) {
-          ToastUtils.instance.show(
-            context,
-            l10n?.reminderDeletedToast ?? '已删除',
-          );
-        }
-      } catch (e) {
-        if (mounted) {
-          ToastUtils.instance.showError(context, e);
-        }
-      }
-    });
-  }
-
-  Future<bool> _confirmDeletePlan(ReminderPlan plan) async {
-    final l10n = _l10n;
+  Future<bool> _confirmDeletePlan(
+    BuildContext context,
+    ReminderPlan plan,
+  ) async {
+    final l10n = AppLocalizations.of(context);
     final result = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {

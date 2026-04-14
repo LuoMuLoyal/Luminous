@@ -47,6 +47,11 @@ abstract interface class TodayReminderStore {
     required List<ReminderItem> items,
     Map<String, bool>? overrides,
   });
+
+  Future<List<ReminderItem>> buildTodayItemsFromPlans(
+    String? userId,
+    List<ReminderPlan> plans,
+  );
 }
 
 /// 今日提醒快照、本地打卡状态与本地覆盖状态的统一读取/写入入口。
@@ -321,6 +326,7 @@ class TodayReminderLocalStore implements TodayReminderStore {
         .toList(growable: false);
   }
 
+  @override
   Future<List<ReminderItem>> buildTodayItemsFromPlans(
     String? userId,
     List<ReminderPlan> plans,

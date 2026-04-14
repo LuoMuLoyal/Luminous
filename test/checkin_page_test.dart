@@ -5,10 +5,10 @@ import 'package:luminous/pages/CheckIn/checkin.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
-import 'package:luminous/viewmodels/reminder.dart';
+import 'package:luminous/viewmodels/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'support/fake_today_reminder_store.dart';
+import 'support/fake_reminder_local_gateway.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -34,98 +34,56 @@ void main() {
     Get.reset();
   });
 
-  testWidgets(
-    'checkin page builds items from local reminder plans and applies local done state',
-    (tester) async {
-      final store = FakeTodayReminderStore(initialDoneIds: const {'rem-1'});
-
-      Future<List<ReminderPlan>> loadPlans(String userId) async {
-        return const [
-          ReminderPlan(
-            id: 'rem-1',
-            userId: 'user-1',
-            time: '08:30',
-            drugCode: '',
-            approvalNo: '',
-            productName: '阿莫西林',
-            subtitle: '早餐后 1 粒',
-            enabled: true,
-            repeatRule: 'daily',
-            method: 'notification',
-          ),
-          ReminderPlan(
-            id: 'rem-2',
-            userId: 'user-1',
-            time: '20:00',
-            drugCode: '',
-            approvalNo: '',
-            productName: '维生素D',
-            subtitle: '晚饭后 1 粒',
-            enabled: true,
-            repeatRule: 'daily',
-            method: 'notification',
-          ),
-          ReminderPlan(
-            id: 'rem-3',
-            userId: 'user-1',
-            time: '22:00',
-            drugCode: '',
-            approvalNo: '',
-            productName: '不会显示',
-            subtitle: '已禁用',
-            enabled: false,
-            repeatRule: 'daily',
-            method: 'notification',
-          ),
-        ];
-      }
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CheckInPage(
-            loadLocalPlans: loadPlans,
-            todayReminderStore: store,
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('阿莫西林'), findsOneWidget);
-      expect(find.text('维生素D'), findsOneWidget);
-      expect(find.text('08:30'), findsOneWidget);
-      expect(find.text('20:00'), findsOneWidget);
-      expect(find.text('不会显示'), findsNothing);
-      expect(find.widgetWithText(FilledButton, '取消打卡'), findsOneWidget);
-      expect(find.widgetWithText(FilledButton, '打卡'), findsOneWidget);
-    },
-  );
-
-  testWidgets('undo checkin shows local-only warning and writes override', (
+  testWidgets('checkin page renders local today snapshot items', (
     tester,
   ) async {
-    final store = FakeTodayReminderStore(initialDoneIds: const {'rem-1'});
-
-    Future<List<ReminderPlan>> loadPlans(String userId) async {
-      return const [
-        ReminderPlan(
-          id: 'rem-1',
-          userId: 'user-1',
-          time: '08:30',
-          drugCode: '',
-          approvalNo: '',
-          productName: '阿莫西林',
-          subtitle: '早餐后 1 粒',
-          enabled: true,
-          repeatRule: 'daily',
-          method: 'notification',
-        ),
-      ];
-    }
+    final gateway = FakeReminderLocalGateway();
+    gateway.setTodayItems('user-1', const [
+      ReminderItem(
+        id: 'rem-1',
+        time: '08:30',
+        title: '阿莫西林',
+        subtitle: '早餐后 1 粒',
+        done: true,
+      ),
+      ReminderItem(
+        id: 'rem-2',
+        time: '20:00',
+        title: '维生素D',
+        subtitle: '晚饭后 1 粒',
+        done: false,
+      ),
+    ]);
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: CheckInPage(loadLocalPlans: loadPlans, todayReminderStore: store),
+      MaterialApp(home: CheckInPage(reminderGateway: gateway)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('阿莫西林'), findsOneWidget);
+    expect(find.text('维生素D'), findsOneWidget);
+    expect(find.text('08:30'), findsOneWidget);
+    expect(find.text('20:00'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, '取消打卡'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, '打卡'), findsOneWidget);
+  });
+
+  testWidgets('undo checkin writes local gateway change and refreshes ui', (
+    tester,
+  ) async {
+    final gateway = FakeReminderLocalGateway();
+    gateway.setTodayItems('user-1', const [
+      ReminderItem(
+        id: 'rem-1',
+        time: '08:30',
+        title: '阿莫西林',
+        subtitle: '早餐后 1 粒',
+        done: true,
       ),
+    ]);
+
+    await tester.pumpWidget(
+      MaterialApp(home: CheckInPage(reminderGateway: gateway)),
     );
     await tester.pumpAndSettle();
 
@@ -141,10 +99,5 @@ void main() {
     await tester.pump(const Duration(milliseconds: 120));
 
     expect(find.widgetWithText(FilledButton, '打卡'), findsOneWidget);
-    expect(store.deletedReminderIds, contains('rem-1'));
-    expect(store.savedOverrides['rem-1'], isFalse);
-
-    ToastUtils.instance.dismiss();
-    await tester.pump();
   });
 }

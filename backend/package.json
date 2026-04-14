@@ -8,7 +8,8 @@
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/server.ts --env-file=.env.development",
     "start": "node dist/server.js",
-    "start:prod": "node --env-file=.env.production dist/server.js"
+    "start:prod": "node --env-file=.env.production dist/server.js",
+    "test": "set MYSQL_HOST=localhost&& set MYSQL_USER=test&& set MYSQL_DATABASE=luminous&& set JWT_SECRET=test-jwt&& set JWT_REFRESH_SECRET=test-refresh&& node --import tsx --test src/**/*.test.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

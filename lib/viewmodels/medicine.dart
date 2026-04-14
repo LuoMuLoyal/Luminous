@@ -169,14 +169,56 @@ class MedicineAiDetailResult {
   /// AI 返回的纯文本解读内容。
   final String text;
 
+  /// 结果来源：`cache` 或 `generated`。
+  final String source;
+
+  /// 缓存写入时间。
+  final DateTime? cachedAt;
+
+  /// 缓存过期时间。
+  final DateTime? expiresAt;
+
   /// 创建一个 AI 解读结果对象。
-  const MedicineAiDetailResult({required this.text});
+  const MedicineAiDetailResult({
+    required this.text,
+    this.source = 'generated',
+    this.cachedAt,
+    this.expiresAt,
+  });
 
   /// 从后端 JSON 反序列化为 `MedicineAiDetailResult`。
   factory MedicineAiDetailResult.fromJson(Map<String, dynamic> json) {
-    return MedicineAiDetailResult(text: (json['text'] ?? '').toString());
+    return MedicineAiDetailResult(
+      text: (json['text'] ?? '').toString(),
+      source: (json['source'] ?? 'generated').toString(),
+      cachedAt: _parseAiTimestamp(json['cachedAt']),
+      expiresAt: _parseAiTimestamp(json['expiresAt']),
+    );
   }
 
   /// AI 是否返回了有效文本。
   bool get hasText => text.trim().isNotEmpty;
+
+  bool get isCached => source.trim().toLowerCase() == 'cache';
+}
+
+DateTime? _parseAiTimestamp(dynamic value) {
+  if (value == null) {
+    return null;
+  }
+  if (value is int) {
+    return DateTime.fromMillisecondsSinceEpoch(value);
+  }
+  if (value is num) {
+    return DateTime.fromMillisecondsSinceEpoch(value.toInt());
+  }
+  final text = value.toString().trim();
+  if (text.isEmpty) {
+    return null;
+  }
+  final asInt = int.tryParse(text);
+  if (asInt != null) {
+    return DateTime.fromMillisecondsSinceEpoch(asInt);
+  }
+  return DateTime.tryParse(text);
 }

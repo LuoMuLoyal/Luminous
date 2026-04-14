@@ -18,6 +18,30 @@ export function readTrimmedString(
   return typeof value === 'string' ? value.trim() : fallback;
 }
 
+export function readBoolean(
+  body: JsonRecord,
+  key: string,
+  fallback = false,
+): boolean {
+  const value = body[key];
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  if (typeof value === 'number') {
+    return value !== 0;
+  }
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === 'true' || normalized === '1') {
+      return true;
+    }
+    if (normalized === 'false' || normalized === '0') {
+      return false;
+    }
+  }
+  return fallback;
+}
+
 export function readPage(
   body: JsonRecord,
   key: string,
@@ -31,4 +55,3 @@ export function readPage(
   }
   return Math.min(max, Math.max(min, Math.trunc(raw)));
 }
-

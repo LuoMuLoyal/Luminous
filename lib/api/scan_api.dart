@@ -18,6 +18,7 @@ class ScanApi {
     String? userId,
     required String imageBase64,
     String mimeType = 'image/jpeg',
+    CancelToken? cancelToken,
   }) {
     return dioRequest.post<MedicineScanResult>(
       HttpConstants.MEDICINE_SCAN,
@@ -41,6 +42,7 @@ class ScanApi {
           seconds: GlobalConstants.AI_SCAN_RECEIVE_TIMEOUT,
         ),
       ),
+      cancelToken: cancelToken,
     );
   }
 
