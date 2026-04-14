@@ -6,197 +6,94 @@ import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/tinted_status_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/stores/reminder_local_store.dart';
-import 'package:luminous/stores/today_reminder_local_store.dart';
-import 'package:luminous/stores/user_controller.dart';
-import 'package:luminous/utils/message_utils.dart';
-import 'package:luminous/utils/toast_utils.dart';
+import 'package:luminous/pages/CheckIn/controllers/checkin_controller.dart';
+import 'package:luminous/stores/reminder_local_gateway.dart';
 import 'package:luminous/viewmodels/home.dart';
-import 'package:luminous/viewmodels/reminder.dart';
-
-typedef LoadLocalCheckInPlans =
-    Future<List<ReminderPlan>> Function(String userId);
 
 /// 用药打卡页。
 ///
 /// 页面聚焦“今天要不要打卡、是否已完成”，数据来源是本地提醒计划和本地打卡状态。
-class CheckInPage extends StatefulWidget {
-  const CheckInPage({super.key, this.todayReminderStore, this.loadLocalPlans});
+class CheckInPage extends StatelessWidget {
+  const CheckInPage({super.key, this.reminderGateway});
 
-  final TodayReminderStore? todayReminderStore;
-  final LoadLocalCheckInPlans? loadLocalPlans;
-
-  @override
-  State<CheckInPage> createState() => _CheckInPageState();
-}
-
-class _CheckInPageState extends State<CheckInPage> {
-  final UserController _userController = Get.find<UserController>();
-  Worker? _userWorker;
-
-  TodayReminderStore get _todayReminderStore =>
-      widget.todayReminderStore ?? todayReminderLocalStore;
-
-  LoadLocalCheckInPlans get _loadLocalPlans =>
-      widget.loadLocalPlans ?? reminderLocalStore.loadForUser;
-
-  bool _loading = false;
-  String? _error;
-  List<ReminderItem> _items = [];
-  bool _reloadQueued = false;
-  int _loadRequestId = 0;
-
-  String get _userId => _userController.user.value?.id ?? '';
-
-  int get _doneCount => _items.where((item) => item.done).length;
-
-  int get _pendingCount => _items.length - _doneCount;
-
-  AppLocalizations? get _l10n => AppLocalizations.of(context);
-
-  @override
-  void initState() {
-    super.initState();
-    _userWorker = ever<dynamic>(_userController.user, (_) {
-      _load();
-    });
-    _load();
-  }
-
-  @override
-  void dispose() {
-    _userWorker?.dispose();
-    super.dispose();
-  }
-
-  Future<void> _load() async {
-    final userId = _userId.trim();
-    if (userId.isEmpty) {
-      if (mounted) {
-        setState(() {
-          _items = [];
-          _error = null;
-          _loading = false;
-        });
-      }
-      return;
-    }
-    if (_loading) {
-      _reloadQueued = true;
-      return;
-    }
-
-    final requestId = ++_loadRequestId;
-
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-
-    try {
-      final plans = await _loadLocalPlans(userId);
-      final overrides = await _todayReminderStore.loadTodayOverrides(userId);
-      final localItems = await _todayReminderStore.applyTodayState(
-        userId,
-        items: _buildCheckInItems(plans),
-        overrides: overrides,
-      );
-      if (!_canApplyLoadResult(requestId, userId)) return;
-
-      setState(() {
-        _items = localItems;
-      });
-    } catch (e) {
-      if (!_canApplyLoadResult(requestId, userId)) return;
-      setState(() {
-        _error = MessageUtils.extractError(e);
-        _items = const [];
-      });
-    } finally {
-      if (_isActiveLoadRequest(requestId) && mounted) {
-        setState(() => _loading = false);
-      }
-      if (_isActiveLoadRequest(requestId) && _reloadQueued && mounted) {
-        _reloadQueued = false;
-        unawaited(_load());
-      }
-    }
-  }
-
-  bool _canApplyLoadResult(int requestId, String userId) {
-    return mounted &&
-        _isActiveLoadRequest(requestId) &&
-        userId == _userId.trim();
-  }
-
-  bool _isActiveLoadRequest(int requestId) {
-    return requestId == _loadRequestId;
-  }
+  final ReminderLocalGateway? reminderGateway;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = _l10n;
-    final loggedIn = _userController.isLoggedIn && _userId.isNotEmpty;
-
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text(l10n?.checkInPageTitle ?? '用药打卡'),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        foregroundColor: const Color(0xFF0F172A),
-        actions: [
-          IconButton(
-            onPressed: loggedIn && !_loading ? _load : null,
-            icon: _loading
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.refresh_rounded),
-          ),
-        ],
-      ),
-      body: AppCanvas(
-        accentColor: const Color(0xFFF59E0B),
-        secondaryAccentColor: const Color(0xFFBFD8FF),
-        child: !loggedIn
-            ? _buildNeedLogin()
-            : RefreshIndicator(
-                onRefresh: _load,
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 14),
-                  children: [
-                    _buildHeroCard(),
-                    const SizedBox(height: 8),
-                    if (_error != null) _buildErrorBanner(_error!),
-                    if (_items.isEmpty && !_loading && _error == null)
-                      _buildEmpty(),
-                    ..._items.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final item = entry.value;
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          bottom: index == _items.length - 1 ? 0 : 6,
-                        ),
-                        child: _CheckInCard(
-                          item: item,
-                          onCheckIn: () => _toggleCheckIn(item),
-                        ),
-                      );
-                    }),
-                  ],
-                ),
+    return GetBuilder<CheckInController>(
+      init: CheckInController(reminderGateway: reminderGateway),
+      global: false,
+      builder: (controller) {
+        final l10n = AppLocalizations.of(context);
+        return Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: AppBar(
+            title: Text(l10n?.checkInPageTitle ?? '用药打卡'),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            foregroundColor: const Color(0xFF0F172A),
+            actions: [
+              IconButton(
+                onPressed: controller.isLoggedIn && !controller.loading
+                    ? controller.load
+                    : null,
+                icon: controller.loading
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.refresh_rounded),
               ),
-      ),
+            ],
+          ),
+          body: AppCanvas(
+            accentColor: const Color(0xFFF59E0B),
+            secondaryAccentColor: const Color(0xFFBFD8FF),
+            child: !controller.isLoggedIn
+                ? _buildNeedLogin(context)
+                : RefreshIndicator(
+                    onRefresh: controller.load,
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 14),
+                      children: [
+                        _buildHeroCard(context, controller),
+                        const SizedBox(height: 8),
+                        if (controller.error != null)
+                          _buildErrorBanner(controller.error!),
+                        if (controller.items.isEmpty &&
+                            !controller.loading &&
+                            controller.error == null)
+                          _buildEmpty(context),
+                        ...controller.items.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final item = entry.value;
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: index == controller.items.length - 1
+                                  ? 0
+                                  : 6,
+                            ),
+                            child: _CheckInCard(
+                              item: item,
+                              onCheckIn: () =>
+                                  _toggleCheckIn(context, controller, item),
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildHeroCard() {
-    final l10n = _l10n;
+  Widget _buildHeroCard(BuildContext context, CheckInController controller) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final locale = (l10n?.localeName ?? 'zh').toLowerCase();
     final subtitleText = locale.startsWith('zh')
@@ -235,17 +132,17 @@ class _CheckInPageState extends State<CheckInPage> {
             children: [
               TintedStatusChip(
                 icon: Icons.library_books_rounded,
-                text: '${_items.length} 条',
+                text: '${controller.items.length} 条',
                 color: const Color(0xFF0EA5E9),
               ),
               TintedStatusChip(
                 icon: Icons.check_circle_rounded,
-                text: '$_doneCount 已打卡',
+                text: '${controller.doneCount} 已打卡',
                 color: const Color(0xFF10B981),
               ),
               TintedStatusChip(
                 icon: Icons.alarm_rounded,
-                text: '$_pendingCount 待完成',
+                text: '${controller.pendingCount} 待完成',
                 color: const Color(0xFFF59E0B),
               ),
             ],
@@ -255,8 +152,8 @@ class _CheckInPageState extends State<CheckInPage> {
     );
   }
 
-  Widget _buildNeedLogin() {
-    final l10n = _l10n;
+  Widget _buildNeedLogin(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final scheme = Theme.of(context).colorScheme;
     final iconAccent = Color.lerp(scheme.tertiary, scheme.primary, 0.32)!;
@@ -373,8 +270,8 @@ class _CheckInPageState extends State<CheckInPage> {
     );
   }
 
-  Widget _buildEmpty() {
-    final l10n = _l10n;
+  Widget _buildEmpty(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     return Center(
       child: ConstrainedBox(
@@ -419,65 +316,24 @@ class _CheckInPageState extends State<CheckInPage> {
     );
   }
 
-  Future<void> _toggleCheckIn(ReminderItem item) async {
+  Future<void> _toggleCheckIn(
+    BuildContext context,
+    CheckInController controller,
+    ReminderItem item,
+  ) async {
     if (item.done) {
-      await _markUndone(item);
+      await _confirmAndMarkUndone(context, controller, item);
       return;
     }
-    await _markDone(item);
+    await controller.markDone(item);
   }
 
-  Future<void> _markDone(ReminderItem item) async {
-    final l10n = _l10n;
-    final userId = _userId.trim();
-    if (userId.isEmpty) return;
-    if (item.id.trim().isEmpty) {
-      ToastUtils.instance.show(
-        context,
-        l10n?.checkInMissingIdMarkDone ?? '该提醒缺少 id，无法打卡',
-      );
-      return;
-    }
-
-    try {
-      final now = DateTime.now().millisecondsSinceEpoch;
-      await _todayReminderStore.replaceTodayCheckin(
-        userId: userId,
-        reminderId: item.id,
-        takenAt: now,
-      );
-      await _todayReminderStore.saveTodayOverride(
-        userId: userId,
-        reminderId: item.id,
-        done: true,
-      );
-
-      if (!mounted) return;
-      ToastUtils.instance.show(
-        context,
-        l10n?.checkInMarkedDoneToast ?? '已记录到当前设备',
-      );
-      _setLocalDone(item.id, true);
-    } catch (e) {
-      if (!mounted) return;
-      ToastUtils.instance.showError(context, e);
-    }
-  }
-
-  Future<void> _markUndone(ReminderItem item) async {
-    final l10n = _l10n;
-    final userId = _userId.trim();
-    if (userId.isEmpty) {
-      return;
-    }
-    if (item.id.trim().isEmpty) {
-      ToastUtils.instance.show(
-        context,
-        l10n?.checkInMissingIdMarkUndone ?? '该提醒缺少 id，无法切换状态',
-      );
-      return;
-    }
-
+  Future<void> _confirmAndMarkUndone(
+    BuildContext context,
+    CheckInController controller,
+    ReminderItem item,
+  ) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -504,72 +360,7 @@ class _CheckInPageState extends State<CheckInPage> {
     if (confirmed != true) {
       return;
     }
-
-    try {
-      await _todayReminderStore.deleteTodayCheckin(
-        userId: userId,
-        reminderId: item.id.trim(),
-      );
-      await _todayReminderStore.saveTodayOverride(
-        userId: userId,
-        reminderId: item.id,
-        done: false,
-      );
-
-      if (!mounted) return;
-      ToastUtils.instance.show(
-        context,
-        l10n?.checkInMarkedUndoneToast ?? '已改为未打卡',
-      );
-      _setLocalDone(item.id, false);
-    } catch (e) {
-      if (!mounted) return;
-      ToastUtils.instance.showError(context, e);
-    }
-  }
-
-  void _setLocalDone(String reminderId, bool done) {
-    setState(() {
-      _items = _items
-          .map(
-            (item) => item.id == reminderId
-                ? ReminderItem(
-                    id: item.id,
-                    time: item.time,
-                    title: item.title,
-                    dosage: item.dosage,
-                    subtitle: item.subtitle,
-                    done: done,
-                  )
-                : item,
-          )
-          .toList();
-    });
-  }
-
-  List<ReminderItem> _buildCheckInItems(List<ReminderPlan> plans) {
-    final l10n = _l10n;
-    return plans
-        .where((plan) => plan.enabled)
-        .where(_supportsLocalCheckIn)
-        .map(
-          (plan) => ReminderItem(
-            id: plan.id.trim(),
-            time: plan.time.trim(),
-            title: plan.productName.trim().isEmpty
-                ? (l10n?.checkInDefaultTitle ?? '用药提醒')
-                : plan.productName.trim(),
-            dosage: plan.dosage.trim(),
-            subtitle: plan.subtitle.trim(),
-            done: false,
-          ),
-        )
-        .toList(growable: false);
-  }
-
-  bool _supportsLocalCheckIn(ReminderPlan plan) {
-    final repeatRule = plan.repeatRule.trim().toLowerCase();
-    return repeatRule.isEmpty || repeatRule == 'daily';
+    await controller.markUndone(item);
   }
 }
 

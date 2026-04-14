@@ -3,9 +3,25 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/medicine_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
+
+typedef FetchMedicineDetail =
+    Future<ApiResult<MedicineItem>> Function({
+      String? drugCode,
+      String? approvalNo,
+      CancelToken? cancelToken,
+    });
+
+typedef FetchMedicineAiDetail =
+    Future<ApiResult<MedicineAiDetailResult>> Function({
+      String? drugCode,
+      String? approvalNo,
+      bool refresh,
+      CancelToken? cancelToken,
+    });
 
 /// 药品详情页控制器。
 ///
@@ -14,8 +30,16 @@ import 'package:luminous/viewmodels/medicine.dart';
 /// - AI 解读请求；
 /// - 页面级请求状态与取消逻辑。
 class MedicineDetailController extends GetxController {
-  MedicineDetailController({required MedicineItem initialItem})
-    : _item = initialItem;
+  MedicineDetailController({
+    required MedicineItem initialItem,
+    FetchMedicineDetail? fetchDetail,
+    FetchMedicineAiDetail? fetchAiDetail,
+  }) : _item = initialItem,
+       _fetchDetail = fetchDetail ?? MedicineApi.fetchDetail,
+       _fetchAiDetail = fetchAiDetail ?? MedicineApi.fetchAiDetail;
+
+  final FetchMedicineDetail _fetchDetail;
+  final FetchMedicineAiDetail _fetchAiDetail;
 
   MedicineItem _item;
   bool _loadingDetail = false;
@@ -24,16 +48,9 @@ class MedicineDetailController extends GetxController {
   CancelToken? _detailCancelToken;
   CancelToken? _aiCancelToken;
 
-  /// 当前展示的药品对象。
   MedicineItem get item => _item;
-
-  /// 是否正在加载基础详情。
   bool get loadingDetail => _loadingDetail;
-
-  /// AI 解读结果。
   MedicineAiDetailResult? get aiResult => _aiResult;
-
-  /// 是否正在加载 AI 解读。
   bool get loadingAi => _loadingAi;
 
   @override
@@ -64,7 +81,7 @@ class MedicineDetailController extends GetxController {
     update();
 
     try {
-      final response = await MedicineApi.fetchDetail(
+      final response = await _fetchDetail(
         drugCode: _item.drugCode,
         approvalNo: _item.approvalNo,
         cancelToken: cancelToken,
@@ -92,7 +109,7 @@ class MedicineDetailController extends GetxController {
   }
 
   /// 拉取 AI 药品解读。
-  Future<void> loadAiDetail() async {
+  Future<void> loadAiDetail({bool refresh = false}) async {
     if (_loadingAi || !_item.hasIdentity) {
       return;
     }
@@ -104,9 +121,10 @@ class MedicineDetailController extends GetxController {
     update();
 
     try {
-      final response = await MedicineApi.fetchAiDetail(
+      final response = await _fetchAiDetail(
         drugCode: _item.drugCode,
         approvalNo: _item.approvalNo,
+        refresh: refresh,
         cancelToken: cancelToken,
       );
       if (isClosed) {

@@ -17,6 +17,7 @@ class SafetyApi {
     String? userId,
     required String mode,
     required List<Map<String, String>> medicines,
+    bool refresh = false,
     CancelToken? cancelToken,
   }) {
     return dioRequest.post<MedicineAiSafetyResult>(
@@ -25,6 +26,7 @@ class SafetyApi {
         if (userId != null && userId.trim().isNotEmpty) 'userId': userId.trim(),
         'mode': mode,
         'medicines': medicines,
+        'refresh': refresh,
       },
       decoder: (json) => MedicineAiSafetyResult.fromJson(_asMap(json)),
       showLoading: false,

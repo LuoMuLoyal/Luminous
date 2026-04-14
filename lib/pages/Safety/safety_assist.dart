@@ -10,17 +10,32 @@ import 'package:luminous/pages/Picker/medicine_picker.dart';
 import 'package:luminous/pages/Safety/controllers/safety_assist_controller.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 
+String _formatSafetyAiTimestamp(BuildContext context, DateTime? value) {
+  if (value == null) {
+    return '';
+  }
+  final local = value.toLocal();
+  final year = local.year.toString().padLeft(4, '0');
+  final month = local.month.toString().padLeft(2, '0');
+  final day = local.day.toString().padLeft(2, '0');
+  final hour = local.hour.toString().padLeft(2, '0');
+  final minute = local.minute.toString().padLeft(2, '0');
+  return '$year-$month-$day $hour:$minute';
+}
+
 /// 安全辅助页。
 ///
 /// 页面允许用户选择一款或两款药品，并调用 AI 接口生成用药建议或相互作用提示。
 class SafetyAssistPage extends StatelessWidget {
   /// 创建安全辅助页组件。
-  const SafetyAssistPage({super.key});
+  const SafetyAssistPage({super.key, this.controller});
+
+  final SafetyAssistController? controller;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SafetyAssistController>(
-      init: SafetyAssistController(),
+      init: controller ?? SafetyAssistController(),
       global: false,
       builder: (controller) {
         final l10n = AppLocalizations.of(context);
@@ -119,7 +134,15 @@ class SafetyAssistPage extends StatelessWidget {
     return l10n?.safetyPickBadgeB ?? 'Medicine B';
   }
 
-  String _actionQueryText(AppLocalizations? l10n, String mode) {
+  String _actionQueryText(
+    AppLocalizations? l10n,
+    String mode, {
+    required bool hasResult,
+  }) {
+    if (hasResult) {
+      final locale = (l10n?.localeName ?? 'zh').toLowerCase();
+      return locale.startsWith('zh') ? '重新分析' : 'Analyze again';
+    }
     if (mode == SafetyAssistController.pairMode) {
       return l10n?.safetyActionQueryPair ?? 'Check Two-medicine Interaction';
     }
@@ -470,7 +493,7 @@ class SafetyAssistPage extends StatelessWidget {
             child: FilledButton(
               onPressed: controller.loading || !controller.ready
                   ? null
-                  : controller.query,
+                  : () => controller.query(refresh: controller.result != null),
               style: FilledButton.styleFrom(
                 minimumSize: const Size(double.infinity, 44),
                 shape: RoundedRectangleBorder(
@@ -486,7 +509,13 @@ class SafetyAssistPage extends StatelessWidget {
                         color: scheme.onPrimary,
                       ),
                     )
-                  : Text(_actionQueryText(l10n, controller.mode)),
+                  : Text(
+                      _actionQueryText(
+                        l10n,
+                        controller.mode,
+                        hasResult: controller.result != null,
+                      ),
+                    ),
             ),
           ),
           if (controller.loading) ...[
@@ -520,9 +549,15 @@ class SafetyAssistPage extends StatelessWidget {
   ) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final locale = (l10n?.localeName ?? 'zh').toLowerCase();
+    final isZh = locale.startsWith('zh');
     final entries = controller.result == null
         ? const <String>[]
         : _splitResultParagraphs(controller.result!.text);
+    final cachedTime = _formatSafetyAiTimestamp(
+      context,
+      controller.result?.cachedAt,
+    );
     return _SectionCard(
       title: l10n?.safetyResultCardTitle ?? 'AI Result',
       accentColor: Color.lerp(scheme.secondary, scheme.primary, 0.5)!,
@@ -542,6 +577,44 @@ class SafetyAssistPage extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (controller.result?.isCached == true)
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                    decoration: BoxDecoration(
+                      color: appTintedSurface(
+                        context,
+                        scheme.primary,
+                        lightAlpha: 0.06,
+                        darkAlpha: 0.12,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: appTintedBorder(
+                          context,
+                          scheme.primary,
+                          lightAlpha: 0.12,
+                          darkAlpha: 0.22,
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      cachedTime.isEmpty
+                          ? (isZh
+                                ? '上次 AI 分析结果'
+                                : 'Previous AI analysis result')
+                          : (isZh
+                                ? '上次 AI 分析结果 · $cachedTime'
+                                : 'Previous AI analysis result · $cachedTime'),
+                      style: TextStyle(
+                        fontSize: 12.6,
+                        height: 1.45,
+                        color: scheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
                 for (var i = 0; i < entries.length; i++) ...[
                   _AiResultEntryCard(
                     index: i + 1,

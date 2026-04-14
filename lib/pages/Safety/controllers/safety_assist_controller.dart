@@ -4,10 +4,20 @@ import 'package:get/get.dart';
 import 'package:luminous/api/safety_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:luminous/viewmodels/safety.dart';
+
+typedef QueryMedicineAiSafety =
+    Future<ApiResult<MedicineAiSafetyResult>> Function({
+      String? userId,
+      required String mode,
+      required List<Map<String, String>> medicines,
+      bool refresh,
+      CancelToken? cancelToken,
+    });
 
 /// 安全辅助页控制器。
 ///
@@ -17,13 +27,17 @@ import 'package:luminous/viewmodels/safety.dart';
 /// - AI 查询与取消；
 /// - 页面级提示文案分发。
 class SafetyAssistController extends GetxController {
-  SafetyAssistController({UserController? userController})
-    : _userController = userController ?? Get.find<UserController>();
+  SafetyAssistController({
+    UserController? userController,
+    QueryMedicineAiSafety? queryApi,
+  }) : _userController = userController ?? Get.find<UserController>(),
+       _queryApi = queryApi ?? SafetyApi.query;
 
   static const String singleMode = 'single';
   static const String pairMode = 'pair';
 
   final UserController _userController;
+  final QueryMedicineAiSafety _queryApi;
 
   String _mode = singleMode;
   MedicineItem? _a;
@@ -32,28 +46,14 @@ class SafetyAssistController extends GetxController {
   CancelToken? _queryCancelToken;
   MedicineAiSafetyResult? _result;
 
-  /// 当前查询模式。
   String get mode => _mode;
-
-  /// 当前选中的药品 A。
   MedicineItem? get medicineA => _a;
-
-  /// 当前选中的药品 B。
   MedicineItem? get medicineB => _b;
-
-  /// 当前是否正在请求 AI。
   bool get loading => _loading;
-
-  /// 当前 AI 查询结果。
   MedicineAiSafetyResult? get result => _result;
-
-  /// 当前登录态。
   bool get loggedIn => _userController.isLoggedIn;
-
-  /// 当前是否满足查询条件。
   bool get ready => _a != null && (_mode == singleMode || _b != null);
 
-  /// 当前已选择药品数量。
   int get selectedCount {
     var count = 0;
     if (_a != null) {
@@ -72,7 +72,6 @@ class SafetyAssistController extends GetxController {
     super.onClose();
   }
 
-  /// 切换查询模式。
   void setMode(String nextMode) {
     if (_mode == nextMode) {
       return;
@@ -85,7 +84,6 @@ class SafetyAssistController extends GetxController {
     update();
   }
 
-  /// 写入选中的药品。
   void setMedicine({required int slot, required MedicineItem item}) {
     if (slot == 0) {
       _a = item;
@@ -97,7 +95,7 @@ class SafetyAssistController extends GetxController {
   }
 
   /// 发起安全辅助查询。
-  Future<void> query() async {
+  Future<void> query({bool refresh = false}) async {
     final a = _a;
     final b = _b;
     if (a == null) {
@@ -135,10 +133,11 @@ class SafetyAssistController extends GetxController {
           },
       ];
 
-      final response = await SafetyApi.query(
+      final response = await _queryApi(
         userId: _userId.isEmpty ? null : _userId,
         mode: _mode,
         medicines: medicines,
+        refresh: refresh,
         cancelToken: cancelToken,
       );
       if (isClosed) {
@@ -180,7 +179,7 @@ class SafetyAssistController extends GetxController {
     if (!ready || _loading) {
       return;
     }
-    await query();
+    await query(refresh: true);
   }
 
   String get _userId => _userController.user.value?.id ?? '';

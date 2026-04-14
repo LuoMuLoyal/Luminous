@@ -1,0 +1,22 @@
+已完成页面
+- MedicineDetailPage
+- SafetyAssistPage
+- MedicineScanPage
+- MedicinePickerPage
+- DrugView
+- AlbumView
+- CheckInPage
+- ReminderListPage
+
+基础设施改动
+- MedicineApi.fetchDetail 已支持 CancelToken。
+- ScanApi.scanMedicine 已支持 CancelToken。
+- 页面级 GetX controller 已按 GetBuilder(..., global: false) 落地。
+
+剩余目标
+- 优先继续推进 HomeView、SearchView、MineView。
+- 后续再评估 Login/Register/ProfileSettings 这类表单页里，哪些状态值得继续抽到 controller。
+
+当前验证状态
+- 已完成当前 GetX 重构页面的人工回归确认：MedicineDetailPage、SafetyAssistPage、MedicineScanPage、MedicinePickerPage、DrugView、AlbumView、CheckInPage、ReminderListPage。
+- 已实际补跑定向 flutter analyze，覆盖本轮 GetX 重构相关页面与 controller：MedicineDetailPage、SafetyAssistPage、MedicineScanPage、MedicinePickerPage、DrugView、AlbumView、CheckInPage、ReminderListPage。

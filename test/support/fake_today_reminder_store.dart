@@ -1,5 +1,6 @@
 import 'package:luminous/stores/today_reminder_local_store.dart';
 import 'package:luminous/viewmodels/home.dart';
+import 'package:luminous/viewmodels/reminder.dart';
 
 class FakeTodayReminderStore implements TodayReminderStore {
   FakeTodayReminderStore({
@@ -144,5 +145,26 @@ class FakeTodayReminderStore implements TodayReminderStore {
   }) async {
     loadTodaySnapshotItemsCalls += 1;
     return applyTodayState(userId, items: _snapshot, overrides: overrides);
+  }
+
+  @override
+  Future<List<ReminderItem>> buildTodayItemsFromPlans(
+    String? userId,
+    List<ReminderPlan> plans,
+  ) async {
+    final items = plans
+        .where((plan) => plan.enabled)
+        .map(
+          (plan) => ReminderItem(
+            id: plan.id,
+            time: plan.time,
+            title: plan.productName,
+            subtitle: plan.subtitle,
+            dosage: plan.dosage,
+            done: false,
+          ),
+        )
+        .toList(growable: false);
+    return applyTodayState(userId, items: items);
   }
 }

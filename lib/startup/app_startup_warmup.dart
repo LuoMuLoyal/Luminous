@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:luminous/stores/app_database.dart';
 import 'package:luminous/stores/locale_controller.dart';
 import 'package:luminous/stores/ornament_controller.dart';
+import 'package:luminous/stores/reminder_local_gateway.dart';
 import 'package:luminous/stores/session_sync_service.dart';
 import 'package:luminous/stores/token_manager.dart';
 import 'package:luminous/stores/theme_controller.dart';
@@ -21,15 +22,21 @@ class AppStartupWarmup {
     required ThemeController themeController,
     required LocaleController localeController,
     required OrnamentController ornamentController,
+    ReminderLocalGateway? reminderGateway,
+    Future<void> Function(String userId)? syncSession,
   }) : _userController = userController,
        _themeController = themeController,
        _localeController = localeController,
-       _ornamentController = ornamentController;
+       _ornamentController = ornamentController,
+       _reminderGateway = reminderGateway ?? reminderLocalGateway,
+       _syncSession = syncSession ?? sessionSyncService.syncForUser;
 
   final UserController _userController;
   final ThemeController _themeController;
   final LocaleController _localeController;
   final OrnamentController _ornamentController;
+  final ReminderLocalGateway _reminderGateway;
+  final Future<void> Function(String userId) _syncSession;
   bool _started = false;
 
   /// 在首帧之后启动所有预热任务。
@@ -105,7 +112,9 @@ class AppStartupWarmup {
 
       final userId = _userController.user.value?.id;
       if ((userId ?? '').trim().isNotEmpty) {
-        unawaited(_syncCloudSession(userId!));
+        final resolvedUserId = userId?.trim() ?? '';
+        await _reminderGateway.rescheduleFromLocal(resolvedUserId);
+        unawaited(_syncCloudSession(resolvedUserId));
       }
     } catch (_) {
       // 登录态恢复失败时回退到未登录状态，不阻塞首屏。
@@ -115,7 +124,7 @@ class AppStartupWarmup {
   Future<void> _syncCloudSession(String userId) async {
     try {
       await Future<void>.delayed(const Duration(milliseconds: 260));
-      await sessionSyncService.syncForUser(userId);
+      await _syncSession(userId);
     } catch (_) {
       // 云端同步失败留给页面层或后续操作处理。
     }

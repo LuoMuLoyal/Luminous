@@ -1,44 +1,35 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:luminous/api/home_api.dart';
 import 'package:luminous/components/home.dart';
-import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Drug/medicine_detail.dart';
 import 'package:luminous/pages/Picker/medicine_picker.dart';
 import 'package:luminous/pages/Scan/medicine_scan.dart';
-import 'package:luminous/stores/today_reminder_local_store.dart';
+import 'package:luminous/stores/reminder_local_gateway.dart';
 import 'package:luminous/stores/user_controller.dart';
-import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/home.dart';
 import 'package:luminous/viewmodels/medicine.dart';
-
-typedef FetchTodayReminders =
-    Future<ApiResult<TodayRemindersResult>> Function({String? userId});
 
 // 首页
 //
 // 设计要点：
 // - 顶部色块展示健康提示（默认本地兜底，并随语言切换自动更新）
 // - "常用功能"是本地静态入口（纯 UI）
-// - "今日提醒"来自后端接口 today-reminders
-// - 请求成功后覆盖当天快照，失败时回退到当天快照或首页兜底数据
+// - "今日提醒"只读取本地 today snapshot
+// - 远端只负责把数据同步回本地，再由本地回流驱动 UI
 /// 首页。
 ///
 /// 作为应用一级入口，负责把高频功能、今日提醒和健康提示组合在同一屏展示。
 class HomeView extends StatefulWidget {
   /// 创建首页组件。
-  const HomeView({
-    super.key,
-    this.fetchTodayReminders,
-    this.todayReminderStore,
-  });
+  const HomeView({super.key, this.reminderGateway});
 
-  final FetchTodayReminders? fetchTodayReminders;
-  final TodayReminderStore? todayReminderStore;
+  final ReminderLocalGateway? reminderGateway;
 
   /// 创建首页对应的状态对象，所有首页数据加载与交互都在状态类里完成。
   @override
@@ -50,7 +41,7 @@ class HomeView extends StatefulWidget {
 /// 主要维护三类首页信息：
 /// - 顶部温馨提示；
 /// - 中部固定功能入口；
-/// - 底部今日提醒及其本地/远端回退逻辑。
+/// - 底部今日提醒及其本地回流逻辑。
 class _HomeViewState extends State<HomeView> {
   List<String> get _defaultHealthTips => [
     '按时服药，别漏别补',
@@ -65,126 +56,20 @@ class _HomeViewState extends State<HomeView> {
     '规律作息，药效更稳',
   ];
 
-  List<HomeReminderItemData> _defaultFallbackReminders() => [
-    HomeReminderItemData(
-      icon: Icons.access_time_rounded,
-      title: '08:30 维生素D',
-      dosage: '1 粒',
-      subtitle: '早餐后服用 1 粒',
-      done: true,
-    ),
-    HomeReminderItemData(
-      icon: Icons.access_time_rounded,
-      title: '19:30 阿莫西林',
-      dosage: '1 粒',
-      subtitle: '晚餐后服用 1 粒',
-      done: false,
-    ),
-    HomeReminderItemData(
-      icon: Icons.access_time_rounded,
-      title: '22:00 血压记录',
-      dosage: '',
-      subtitle: '睡前记录并上传',
-      done: false,
-    ),
-  ];
-
-  List<HomeReminderItemData> _buildGuestSampleRemindersFor(
-    AppLocalizations? l10n,
-  ) {
-    final localeName = (l10n?.localeName ?? 'zh').toLowerCase();
-    final prefix = localeName.startsWith('zh') ? '示例' : 'Sample';
-    return _buildFallbackRemindersFor(l10n)
-        .map(
-          (item) => HomeReminderItemData(
-            icon: item.icon,
-            title: '$prefix ${item.title}',
-            dosage: item.dosage,
-            subtitle: item.subtitle,
-            done: item.done,
-          ),
-        )
-        .toList(growable: false);
-  }
-
-  /// 当前登录用户控制器。
-  ///
-  /// 用来读取用户 id，以便请求“今日提醒”接口和查询本地提醒/打卡数据。
   final UserController _userController = Get.find<UserController>();
 
-  FetchTodayReminders get _fetchTodayRemindersApi =>
-      widget.fetchTodayReminders ?? HomeApi.fetchTodayReminders;
+  ReminderLocalGateway get _reminderGateway =>
+      widget.reminderGateway ?? reminderLocalGateway;
 
-  TodayReminderStore get _todayReminderStore =>
-      widget.todayReminderStore ?? todayReminderLocalStore;
-
-  /// 监听登录用户变化的 worker。
   Worker? _userWorker;
   Worker? _sessionReadyWorker;
+  StreamSubscription<int>? _revisionSubscription;
 
-  /// 当前首页顶部展示的小贴士文案监听器。
   late final ValueNotifier<String> _todayTipNotifier;
-
   String? _tipLocaleCode;
-
-  bool _usingFallbackReminders = true;
 
   AppLocalizations? get _l10n => AppLocalizations.of(context);
 
-  List<String> _healthTipsFor(AppLocalizations? l10n) {
-    if (l10n == null) {
-      return _defaultHealthTips;
-    }
-    return <String>[
-      l10n.homeTip1,
-      l10n.homeTip2,
-      l10n.homeTip3,
-      l10n.homeTip4,
-      l10n.homeTip5,
-      l10n.homeTip6,
-      l10n.homeTip7,
-      l10n.homeTip8,
-      l10n.homeTip9,
-      l10n.homeTip10,
-    ];
-  }
-
-  List<HomeReminderItemData> _buildFallbackRemindersFor(
-    AppLocalizations? l10n,
-  ) {
-    if (l10n == null) {
-      return _defaultFallbackReminders();
-    }
-
-    return [
-      HomeReminderItemData(
-        icon: Icons.access_time_rounded,
-        title: l10n.homeFallbackReminder1Title,
-        dosage: '1 粒',
-        subtitle: l10n.homeFallbackReminder1Subtitle,
-        done: true,
-      ),
-      HomeReminderItemData(
-        icon: Icons.access_time_rounded,
-        title: l10n.homeFallbackReminder2Title,
-        dosage: '1 粒',
-        subtitle: l10n.homeFallbackReminder2Subtitle,
-        done: false,
-      ),
-      HomeReminderItemData(
-        icon: Icons.access_time_rounded,
-        title: l10n.homeFallbackReminder3Title,
-        dosage: '',
-        subtitle: l10n.homeFallbackReminder3Subtitle,
-        done: false,
-      ),
-    ];
-  }
-
-  /// “常用功能”区域的静态入口列表。
-  ///
-  /// 每个元素描述一个功能卡片的 id、标题、副标题、图标和颜色，
-  /// 页面点击后会根据 id 决定跳转到哪个功能页。
   List<HomeFeatureItemData> get _entries {
     final l10n = _l10n;
     return [
@@ -233,33 +118,32 @@ class _HomeViewState extends State<HomeView> {
     ];
   }
 
-  /// 当前真正渲染到页面上的提醒列表。
-  ///
-  /// 初始值使用兜底提醒，后续会在 `_fetchTodayReminders` 中
-  /// 被本地数据库数据或接口数据替换。
   late List<HomeReminderItemData> _reminders;
-
-  /// 标记首页提醒区域是否正处于加载状态。
-  ///
-  /// 主要用于：
-  /// 1. 防止重复触发提醒请求；
-  /// 2. 顶部卡片展示“提醒加载中...”文案。
   bool _loadingReminders = false;
-
-  /// 当前是否有新的提醒刷新请求在排队。
-  bool _refreshQueued = false;
-
-  /// 当前活跃提醒请求的编号。
+  bool _syncingReminders = false;
+  bool _reloadQueued = false;
+  bool _syncQueued = false;
   int _reminderRequestId = 0;
-
-  /// 最近一次已经按当前用户态发起过的提醒请求 userId。
   String? _lastRequestedUserId;
 
-  /// 页面初始化时完成一次性数据准备。
-  ///
-  /// 这里做两件事：
-  /// 1. 绑定用户变化，确保提醒数据和登录态同步；
-  /// 2. 拉取今日提醒，替换默认兜底数据。
+  List<String> _healthTipsFor(AppLocalizations? l10n) {
+    if (l10n == null) {
+      return _defaultHealthTips;
+    }
+    return <String>[
+      l10n.homeTip1,
+      l10n.homeTip2,
+      l10n.homeTip3,
+      l10n.homeTip4,
+      l10n.homeTip5,
+      l10n.homeTip6,
+      l10n.homeTip7,
+      l10n.homeTip8,
+      l10n.homeTip9,
+      l10n.homeTip10,
+    ];
+  }
+
   @override
   void initState() {
     super.initState();
@@ -293,16 +177,13 @@ class _HomeViewState extends State<HomeView> {
         _todayTipNotifier.value = tips[Random().nextInt(tips.length)];
       }
     }
-
-    if (_usingFallbackReminders) {
-      _reminders = _buildGuestSampleRemindersFor(_l10n);
-    }
   }
 
   @override
   void dispose() {
     _userWorker?.dispose();
     _sessionReadyWorker?.dispose();
+    _revisionSubscription?.cancel();
     _todayTipNotifier.dispose();
     super.dispose();
   }
@@ -311,15 +192,19 @@ class _HomeViewState extends State<HomeView> {
     if (!_userController.sessionReady.value) {
       return;
     }
+
     final userId = (_userController.user.value?.id ?? '').trim();
+    _bindRevision(userId);
+
     if (userId.isEmpty) {
       _lastRequestedUserId = userId;
-      _refreshQueued = false;
+      _reloadQueued = false;
+      _syncQueued = false;
       if (mounted) {
         setState(() {
           _loadingReminders = false;
-          _usingFallbackReminders = true;
-          _reminders = _buildGuestSampleRemindersFor(_l10n);
+          _syncingReminders = false;
+          _reminders = <HomeReminderItemData>[];
         });
       }
       return;
@@ -329,38 +214,26 @@ class _HomeViewState extends State<HomeView> {
         _lastRequestedUserId != userId &&
         mounted) {
       setState(() {
-        _usingFallbackReminders = false;
         _reminders = <HomeReminderItemData>[];
       });
     }
+
     if (!force && _lastRequestedUserId == userId) {
       return;
     }
+
     _lastRequestedUserId = userId;
-    unawaited(_fetchTodayReminders());
+    unawaited(_loadTodayReminders());
+    unawaited(_syncTodayReminders());
   }
 
-  /// 构建首页整体 UI。
-  ///
-  /// 页面结构分为三块：
-  /// 1. 顶部健康助手卡片；
-  /// 2. 常用功能网格；
-  /// 3. 今日提醒列表。
   @override
   Widget build(BuildContext context) {
     final l10n = _l10n;
-
-    /// 当前提醒列表里“下一条未完成提醒”。
-    ///
-    /// 顶部卡片会优先展示它，帮助用户快速知道最近一次该做什么。
     final next = _reminders.cast<HomeReminderItemData?>().firstWhere(
       (e) => e != null && e.done == false,
       orElse: () => null,
     );
-
-    /// 顶部卡片中展示的“下一次提醒”文案。
-    ///
-    /// 如果今天没有待完成提醒，则显示“暂无提醒”。
     final nextText = next == null
         ? (l10n?.homeNoReminder ?? '暂无提醒')
         : (l10n?.homeNextReminderPrefix(
@@ -371,7 +244,7 @@ class _HomeViewState extends State<HomeView> {
 
     return SafeArea(
       child: RefreshIndicator(
-        onRefresh: _fetchTodayReminders,
+        onRefresh: () => _syncTodayReminders(showError: true),
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -380,7 +253,7 @@ class _HomeViewState extends State<HomeView> {
                 palette: SoftBannerPalettes.homeOf(context),
                 todayTipListenable: _todayTipNotifier,
                 nextText: nextText,
-                loadingReminders: _loadingReminders,
+                loadingReminders: _loadingReminders || _syncingReminders,
                 reminderCount: _reminders.length,
                 onTapTip: _cycleHealthTip,
                 onLongPressTip: _showAllHealthTips,
@@ -397,10 +270,6 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  /// 处理“常用功能”卡片的点击事件。
-  ///
-  /// 根据不同入口的 id 进行页面跳转；部分跳转完成后会刷新首页提醒，
-  /// 保证提醒和打卡状态能及时同步回首页。
   void _onEntryTap(HomeFeatureItemData item) {
     if (item.id == 'manualSearch') {
       Navigator.pushNamed(context, '/search');
@@ -414,14 +283,14 @@ class _HomeViewState extends State<HomeView> {
 
     if (item.id == 'reminder') {
       Navigator.pushNamed(context, '/reminders').then((_) {
-        _fetchTodayReminders();
+        _loadTodayReminders();
       });
       return;
     }
 
     if (item.id == 'checkIn') {
       Navigator.pushNamed(context, '/checkin').then((_) {
-        _fetchTodayReminders();
+        _loadTodayReminders();
       });
       return;
     }
@@ -442,21 +311,16 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  /// 打开药品选择页，并在用户选中药品后进入药品详情页。
-  ///
-  /// 这是首页“药物信息”入口的行为：先选药，再看详情。
   Future<void> _pickAndOpenMedicineDetail() async {
-    /// 从药品选择页返回的药品对象。
-    ///
-    /// 用户取消选择时会得到 `null`。
     final item = await Navigator.of(context).push<MedicineItem>(
       MaterialPageRoute<MedicineItem>(
         builder: (_) =>
             MedicinePickerPage(title: _l10n?.homeMedicinePickerTitle ?? '选择药品'),
       ),
     );
-    if (!mounted) return;
-    if (item == null) return;
+    if (!mounted || item == null) {
+      return;
+    }
 
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -465,29 +329,21 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  /// 拉取首页“今日提醒”数据。
-  ///
-  /// 加载顺序是：
-  /// 1. 先请求后端 today-reminders；
-  /// 2. 请求成功后用完整远端结果覆盖当天快照；
-  /// 3. 再统一从“当天快照 + 本地打卡 / override”组合出 UI；
-  /// 4. 请求失败时回退到当天快照，没有快照再用首页兜底数据。
-  Future<void> _fetchTodayReminders() async {
+  Future<void> _loadTodayReminders() async {
     if (_loadingReminders) {
-      _refreshQueued = true;
+      _reloadQueued = true;
       return;
     }
 
     final userId = (_userController.user.value?.id ?? '').trim();
     if (userId.isEmpty) {
-      _refreshQueued = false;
+      _reloadQueued = false;
       if (!mounted) {
         return;
       }
       setState(() {
         _loadingReminders = false;
-        _usingFallbackReminders = true;
-        _reminders = _buildGuestSampleRemindersFor(_l10n);
+        _reminders = <HomeReminderItemData>[];
       });
       return;
     }
@@ -498,99 +354,88 @@ class _HomeViewState extends State<HomeView> {
     });
 
     try {
-      /// 后端返回的“今日提醒”结果。
-      ///
-      /// 作为网络数据来源，当本地没有可用数据时会回退使用这里的内容。
-      final response = await _fetchTodayRemindersApi(
-        userId: userId.isEmpty ? null : userId,
-      );
+      final snapshot = await _reminderGateway.loadTodayItems(userId);
+      final items = snapshot.map(_toReminderUi).toList(growable: false);
 
-      await _todayReminderStore.replaceTodaySnapshot(
-        userId: userId,
-        date: response.result.date,
-        items: response.result.items,
-      );
-
-      final overrides = await _todayReminderStore.loadTodayOverrides(userId);
-
-      /// 从“今日提醒快照 + 本地打卡状态”组合出来的 UI 数据。
-      final snapshot = await _todayReminderStore.loadTodaySnapshotItems(
-        userId,
-        date: response.result.date,
-        overrides: overrides,
-      );
-
-      final items = snapshot
-          .map((item) => _toReminderUi(item, doneOverride: item.done))
-          .toList();
-
-      if (!_canApplyReminderResult(requestId, userId)) return;
-      setState(() {
-        _usingFallbackReminders = false;
-        _reminders = items;
-      });
-    } catch (e) {
       if (!_canApplyReminderResult(requestId, userId)) {
         return;
       }
-      final overrides = await _todayReminderStore.loadTodayOverrides(userId);
-      final snapshot = await _todayReminderStore.loadTodaySnapshotItems(
-        userId,
-        overrides: overrides,
-      );
-      if (_canApplyReminderResult(requestId, userId) && snapshot.isNotEmpty) {
+      setState(() {
+        _reminders = items;
+      });
+    } catch (_) {
+      if (_canApplyReminderResult(requestId, userId)) {
         setState(() {
-          _usingFallbackReminders = false;
-          _reminders = snapshot
-              .map((item) => _toReminderUi(item, doneOverride: item.done))
-              .toList();
-        });
-      } else if (_canApplyReminderResult(requestId, userId)) {
-        setState(() {
-          _usingFallbackReminders = false;
           _reminders = <HomeReminderItemData>[];
         });
       }
-      if (!mounted) {
-        return;
-      }
-      ToastUtils.instance.showError(context, e);
     } finally {
       if (_isActiveReminderRequest(requestId) && mounted) {
         setState(() {
           _loadingReminders = false;
         });
       }
-      if (_isActiveReminderRequest(requestId) && _refreshQueued && mounted) {
-        _refreshQueued = false;
-        unawaited(_fetchTodayReminders());
+      if (_isActiveReminderRequest(requestId) && _reloadQueued && mounted) {
+        _reloadQueued = false;
+        unawaited(_loadTodayReminders());
       }
     }
   }
 
-  /// 当前提醒请求结果是否仍然可以落到页面上。
+  Future<void> _syncTodayReminders({bool showError = false}) async {
+    final userId = (_userController.user.value?.id ?? '').trim();
+    if (userId.isEmpty) {
+      return;
+    }
+
+    if (_syncingReminders) {
+      _syncQueued = true;
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _syncingReminders = true;
+      });
+    }
+
+    try {
+      await _reminderGateway.syncRemoteToLocal(userId);
+      if (mounted && userId == (_userController.user.value?.id ?? '').trim()) {
+        await _loadTodayReminders();
+      }
+    } catch (error) {
+      if (showError && mounted) {
+        ToastUtils.instance.showError(context, error);
+      }
+    } finally {
+      if (mounted && userId == (_userController.user.value?.id ?? '').trim()) {
+        setState(() {
+          _syncingReminders = false;
+        });
+      }
+      if (_syncQueued &&
+          mounted &&
+          userId == (_userController.user.value?.id ?? '').trim()) {
+        _syncQueued = false;
+        unawaited(_syncTodayReminders(showError: showError));
+      }
+    }
+  }
+
   bool _canApplyReminderResult(int requestId, String userId) {
     return mounted &&
         _isActiveReminderRequest(requestId) &&
         userId == (_userController.user.value?.id ?? '').trim();
   }
 
-  /// 当前请求是否仍然是活跃请求。
   bool _isActiveReminderRequest(int requestId) {
     return requestId == _reminderRequestId;
   }
 
-  /// 把接口层的提醒对象转换为首页组件直接可用的 UI 数据。
-  ///
-  /// 这样页面不需要直接依赖接口返回结构的字段命名和组合规则。
-  HomeReminderItemData _toReminderUi(ReminderItem item, {bool? doneOverride}) {
-    /// 接口返回的提醒时间字符串。
+  HomeReminderItemData _toReminderUi(ReminderItem item) {
     final time = item.time.trim();
-
-    /// 接口返回的提醒标题。
     final title = item.title.trim();
-
-    /// 首页主标题展示用的组合文案。
     final combinedTitle = time.isEmpty ? title : '$time $title';
 
     return HomeReminderItemData(
@@ -601,7 +446,7 @@ class _HomeViewState extends State<HomeView> {
         item.dosage.trim(),
         item.subtitle.trim(),
       ),
-      done: doneOverride ?? item.done,
+      done: item.done,
     );
   }
 
@@ -628,7 +473,21 @@ class _HomeViewState extends State<HomeView> {
     return _l10n?.homeNoReminder ?? '暂无提醒';
   }
 
-  /// 切换到下一条本地健康小贴士。
+  void _bindRevision(String userId) {
+    _revisionSubscription?.cancel();
+    final scopedUserId = userId.trim();
+    if (scopedUserId.isEmpty) {
+      return;
+    }
+    _revisionSubscription = _reminderGateway.watchRevision(scopedUserId).listen(
+      (_) {
+        if (mounted) {
+          unawaited(_loadTodayReminders());
+        }
+      },
+    );
+  }
+
   void _cycleHealthTip() {
     final tips = _healthTipsFor(_l10n);
     if (tips.length <= 1) {

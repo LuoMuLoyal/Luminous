@@ -2,18 +2,13 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:luminous/api/scan_api.dart';
+import 'package:get/get.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Search/search.dart';
-import 'package:luminous/stores/album_local_store.dart';
-import 'package:luminous/stores/user_controller.dart';
-import 'package:luminous/utils/scan_image_processing.dart';
-import 'package:luminous/utils/message_utils.dart';
+import 'package:luminous/pages/Scan/controllers/medicine_scan_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
-import 'package:luminous/viewmodels/scan.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// 药物识别页面的入口模式。
@@ -193,22 +188,13 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     _maxSheetSize,
   ];
 
-  final UserController _userController = Get.find<UserController>();
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
   final ValueNotifier<double> _sheetSizeNotifier = ValueNotifier<double>(
     _initialSheetSize,
   );
-
-  Uint8List? _photoBytes;
-  String _photoMimeType = 'image/jpeg';
-  bool _scanning = false;
-  bool _savingToAlbum = false;
-  MedicineScanResult? _scanResult;
-  int _selectedIndex = 0;
-  String? _lastError;
-
-  AppLocalizations? get _l10n => AppLocalizations.of(context);
+  late final MedicineScanController _controller = MedicineScanController();
+  late final String _controllerTag = 'medicine-scan:${identityHashCode(this)}';
 
   String _pageTitle(AppLocalizations? l10n) {
     if (widget.mode == ScanEntryMode.actions) {
@@ -217,15 +203,18 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     return l10n?.scanPageTitleResult ?? 'Scan Result';
   }
 
-  String _headerSubtitle(AppLocalizations? l10n) {
-    if (_scanning) {
+  String _headerSubtitle(
+    AppLocalizations? l10n,
+    MedicineScanController controller,
+  ) {
+    if (controller.scanning) {
       return l10n?.scanHeaderSubtitleScanning ?? 'Scanning, please wait...';
     }
-    if (_scanResult == null) {
+    if (controller.scanResult == null) {
       return l10n?.scanHeaderSubtitleNoResult ??
           'Upload an image and the vision model will identify medicine information';
     }
-    final count = _scanResult!.candidates.length;
+    final count = controller.scanResult!.candidates.length;
     return l10n?.scanHeaderSubtitleResultCount(count) ??
         '$count candidates identified';
   }
@@ -262,8 +251,8 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     return l10n?.scanActionSaveAlbumLabel ?? 'Add to Album';
   }
 
-  String _actionSaveAlbumSubtitle(AppLocalizations? l10n) {
-    if (_savingToAlbum) {
+  String _actionSaveAlbumSubtitle(AppLocalizations? l10n, bool savingToAlbum) {
+    if (savingToAlbum) {
       return l10n?.scanActionSaveAlbumSavingSubtitle ?? 'Saving...';
     }
     return l10n?.scanActionSaveAlbumSubtitle ?? 'Save to in-app album list';
@@ -290,14 +279,6 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     return l10n?.scanActionCancelSubtitle ?? 'Close current recognition page';
   }
 
-  String _savedToastText(AppLocalizations? l10n) {
-    return l10n?.scanSavedToAlbumToast ?? 'Added to in-app album';
-  }
-
-  String _saveFailedToastText(AppLocalizations? l10n) {
-    return l10n?.scanSaveToAlbumFailedToast ?? 'Failed to add to album';
-  }
-
   String _searchMissingKeywordToastText(AppLocalizations? l10n) {
     return l10n?.scanSearchMissingKeywordToast ??
         'Selected candidate has no searchable fields';
@@ -310,7 +291,10 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       unawaited(_autoExpandSheet());
       if (widget.initialImage != null) {
-        await _applyImageAndScan(widget.initialImage!);
+        await _controller.applyImageAndScan(
+          bytes: widget.initialImage!.bytes,
+          mimeType: widget.initialImage!.mimeType,
+        );
       } else if (widget.promptSourceOnStart) {
         await _pickAndScan(closeIfCancelled: true);
       }
@@ -349,64 +333,73 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = _l10n;
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        title: Text(_pageTitle(l10n)),
-        centerTitle: true,
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final maxImageHeight = constraints.maxHeight * 0.62;
-          final minImageHeight = constraints.maxHeight * 0.28;
+    return GetBuilder<MedicineScanController>(
+      init: _controller,
+      tag: _controllerTag,
+      builder: (controller) {
+        final l10n = AppLocalizations.of(context);
+        return Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            title: Text(_pageTitle(l10n)),
+            centerTitle: true,
+          ),
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              final maxImageHeight = constraints.maxHeight * 0.62;
+              final minImageHeight = constraints.maxHeight * 0.28;
 
-          return Stack(
-            children: [
-              ValueListenableBuilder<double>(
-                valueListenable: _sheetSizeNotifier,
-                child: _buildPhotoArea(),
-                builder: (context, sheetSize, child) {
-                  final t =
-                      ((sheetSize - _minSheetSize) /
-                              (_maxSheetSize - _minSheetSize))
-                          .clamp(0.0, 1.0);
-                  final imageHeight =
-                      maxImageHeight - (maxImageHeight - minImageHeight) * t;
-                  return Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: imageHeight,
-                    child: child!,
-                  );
-                },
-              ),
-              Positioned.fill(
-                child: DraggableScrollableSheet(
-                  controller: _sheetController,
-                  minChildSize: _minSheetSize,
-                  maxChildSize: _maxSheetSize,
-                  initialChildSize: _initialSheetSize,
-                  snap: true,
-                  snapSizes: _snapSheetSizes,
-                  builder: (context, scrollController) {
-                    return _buildSheet(scrollController);
-                  },
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+              return Stack(
+                children: [
+                  ValueListenableBuilder<double>(
+                    valueListenable: _sheetSizeNotifier,
+                    child: _buildPhotoArea(controller, l10n),
+                    builder: (context, sheetSize, child) {
+                      final t =
+                          ((sheetSize - _minSheetSize) /
+                                  (_maxSheetSize - _minSheetSize))
+                              .clamp(0.0, 1.0);
+                      final imageHeight =
+                          maxImageHeight -
+                          (maxImageHeight - minImageHeight) * t;
+                      return Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: imageHeight,
+                        child: child!,
+                      );
+                    },
+                  ),
+                  Positioned.fill(
+                    child: DraggableScrollableSheet(
+                      controller: _sheetController,
+                      minChildSize: _minSheetSize,
+                      maxChildSize: _maxSheetSize,
+                      initialChildSize: _initialSheetSize,
+                      snap: true,
+                      snapSizes: _snapSheetSizes,
+                      builder: (context, scrollController) {
+                        return _buildSheet(scrollController, controller, l10n);
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildPhotoArea() {
-    final l10n = _l10n;
-    final bytes = _photoBytes;
+  Widget _buildPhotoArea(
+    MedicineScanController controller,
+    AppLocalizations? l10n,
+  ) {
+    final bytes = controller.photoBytes;
     return Container(
       color: Colors.black,
       alignment: Alignment.center,
@@ -452,7 +445,11 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     );
   }
 
-  Widget _buildSheet(ScrollController scrollController) {
+  Widget _buildSheet(
+    ScrollController scrollController,
+    MedicineScanController controller,
+    AppLocalizations? l10n,
+  ) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     return DecoratedBox(
@@ -475,22 +472,25 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
             ),
           ),
           const SizedBox(height: 10),
-          _buildHeaderRow(),
+          _buildHeaderRow(controller, l10n),
           const SizedBox(height: 12),
-          if (_lastError != null) _buildErrorCard(_lastError!),
-          _buildResultSection(),
+          if (controller.lastError != null)
+            _buildErrorCard(controller.lastError!),
+          _buildResultSection(controller, l10n),
           const SizedBox(height: 10),
-          _buildActionsSection(),
+          _buildActionsSection(controller, l10n),
         ],
       ),
     );
   }
 
-  Widget _buildHeaderRow() {
-    final l10n = _l10n;
+  Widget _buildHeaderRow(
+    MedicineScanController controller,
+    AppLocalizations? l10n,
+  ) {
     final scheme = Theme.of(context).colorScheme;
     final title = _pageTitle(l10n);
-    final subtitle = _headerSubtitle(l10n);
+    final subtitle = _headerSubtitle(l10n, controller);
 
     return Row(
       children: [
@@ -537,7 +537,7 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
           ),
         ),
         FilledButton.tonalIcon(
-          onPressed: _scanning ? null : _pickAndScan,
+          onPressed: controller.scanning ? null : _pickAndScan,
           icon: const Icon(Icons.camera_alt_rounded, size: 16),
           label: Text(l10n?.scanRetakeAction ?? 'Retake'),
         ),
@@ -594,11 +594,13 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     );
   }
 
-  Widget _buildResultSection() {
-    final l10n = _l10n;
-    final result = _scanResult;
+  Widget _buildResultSection(
+    MedicineScanController controller,
+    AppLocalizations? l10n,
+  ) {
+    final result = controller.scanResult;
     final scheme = Theme.of(context).colorScheme;
-    if (_scanning) {
+    if (controller.scanning) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 24),
         alignment: Alignment.center,
@@ -636,13 +638,13 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
             ...result.candidates.asMap().entries.map((entry) {
               final index = entry.key;
               final c = entry.value;
-              final selected = index == _selectedIndex;
+              final selected = index == controller.selectedIndex;
               return Padding(
                 padding: EdgeInsets.only(
                   bottom: index == result.candidates.length - 1 ? 0 : 10,
                 ),
                 child: InkWell(
-                  onTap: () => setState(() => _selectedIndex = index),
+                  onTap: () => controller.selectCandidate(index),
                   borderRadius: BorderRadius.circular(14),
                   child: Ink(
                     padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -769,11 +771,13 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
     );
   }
 
-  Widget _buildActionsSection() {
-    final l10n = _l10n;
-    final selected = _getSelectedCandidateOrNull();
+  Widget _buildActionsSection(
+    MedicineScanController controller,
+    AppLocalizations? l10n,
+  ) {
+    final selected = controller.selectedCandidate;
     final hasResult = selected != null;
-    final searchKeyword = _buildSearchKeyword(selected);
+    final searchKeyword = controller.searchKeyword;
 
     return Column(
       children: [
@@ -782,15 +786,17 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
           color: const Color(0xFF0EA5E9),
           label: _actionRescanLabel(l10n),
           subtitle: _actionRescanSubtitle(l10n),
-          onTap: _scanning ? null : _pickAndScan,
+          onTap: controller.scanning ? null : _pickAndScan,
         ),
         const SizedBox(height: 10),
         _ActionTile(
           icon: Icons.photo_library_outlined,
           color: const Color(0xFF6366F1),
           label: _actionSaveAlbumLabel(l10n),
-          subtitle: _actionSaveAlbumSubtitle(l10n),
-          onTap: hasResult && !_savingToAlbum ? _saveToAppAlbum : null,
+          subtitle: _actionSaveAlbumSubtitle(l10n, controller.savingToAlbum),
+          onTap: hasResult && controller.canSaveToAlbum
+              ? controller.saveToAppAlbum
+              : null,
         ),
         const SizedBox(height: 10),
         _ActionTile(
@@ -798,7 +804,9 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
           color: const Color(0xFF10B981),
           label: _actionSearchLabel(l10n),
           subtitle: _actionSearchSubtitle(l10n, searchKeyword.isNotEmpty),
-          onTap: searchKeyword.isEmpty ? null : _searchSelectedMedicine,
+          onTap: searchKeyword.isEmpty
+              ? null
+              : () => _searchSelectedMedicine(controller),
         ),
         const SizedBox(height: 10),
         _ActionTile(
@@ -806,7 +814,7 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
           color: const Color(0xFF94A3B8),
           label: _actionCancelLabel(l10n),
           subtitle: _actionCancelSubtitle(l10n),
-          onTap: _scanning ? null : () => Navigator.maybePop(context),
+          onTap: controller.scanning ? null : () => Navigator.maybePop(context),
         ),
       ],
     );
@@ -823,116 +831,17 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
       }
       return;
     }
-    await _applyImageAndScan(image);
-  }
-
-  Future<void> _applyImageAndScan(SelectedScanImage image) async {
-    setState(() {
-      _lastError = null;
-      _scanResult = null;
-      _selectedIndex = 0;
-      _photoBytes = image.bytes;
-      _photoMimeType = image.mimeType;
-    });
-    await _scan(image.bytes);
-  }
-
-  Future<void> _scan(Uint8List bytes) async {
-    if (_scanning) return;
-    setState(() => _scanning = true);
-    try {
-      final base64 = await encodeScanImageBase64(bytes);
-      final userId = _userController.user.value?.id;
-      final response = await ScanApi.scanMedicine(
-        userId: userId,
-        imageBase64: base64,
-        mimeType: _photoMimeType,
-      );
-      if (!mounted) return;
-
-      final result = response.result;
-      setState(() {
-        _scanResult = result;
-        _selectedIndex = _findBestCandidateIndex(result);
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _lastError = MessageUtils.extractError(e));
-    } finally {
-      if (mounted) {
-        setState(() => _scanning = false);
-      }
-    }
-  }
-
-  Future<void> _saveToAppAlbum() async {
-    final l10n = _l10n;
-    final bytes = _photoBytes;
-    final result = _scanResult;
-    if (bytes == null || result == null || _savingToAlbum) {
-      return;
-    }
-    setState(() => _savingToAlbum = true);
-    try {
-      await _persistAlbumRecord(bytes, result);
-      if (!mounted) return;
-      ToastUtils.instance.show(context, _savedToastText(l10n));
-    } catch (e) {
-      if (!mounted) return;
-      ToastUtils.instance.showError(
-        context,
-        e,
-        fallback: _saveFailedToastText(l10n),
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _savingToAlbum = false);
-      }
-    }
-  }
-
-  Future<void> _persistAlbumRecord(
-    Uint8List bytes,
-    MedicineScanResult result,
-  ) async {
-    final selected = _getSelectedCandidateOrNull();
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final userId = _userController.user.value?.id ?? '';
-    await albumLocalStore.saveScanRecord(
-      userId: userId,
-      drugCode: selected?.drugCode,
-      approvalNo: selected?.approvalNo,
-      productName: selected?.productName,
-      imageBytes: bytes,
-      imageMimeType: _photoMimeType,
-      preferredThumbBase64: result.thumbBase64,
-      takenAt: now,
+    await _controller.applyImageAndScan(
+      bytes: image.bytes,
+      mimeType: image.mimeType,
     );
   }
 
-  int _findBestCandidateIndex(MedicineScanResult result) {
-    if (result.candidates.isEmpty) return 0;
-    for (final entry in result.candidates.asMap().entries) {
-      if (entry.value.hasIdentity) {
-        return entry.key;
-      }
-    }
-    return 0;
-  }
-
-  ScanCandidate? _getSelectedCandidateOrNull() {
-    final result = _scanResult;
-    if (result == null || result.candidates.isEmpty) {
-      return null;
-    }
-    final index = _selectedIndex.clamp(0, result.candidates.length - 1);
-    return result.candidates[index];
-  }
-
-  Future<void> _searchSelectedMedicine() async {
-    final l10n = _l10n;
-    final selected = _getSelectedCandidateOrNull();
-    final keyword = _buildSearchKeyword(selected);
+  Future<void> _searchSelectedMedicine(
+    MedicineScanController controller,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final keyword = controller.searchKeyword;
     if (keyword.isEmpty) {
       ToastUtils.instance.show(context, _searchMissingKeywordToastText(l10n));
       return;
@@ -944,22 +853,6 @@ class _MedicineScanPageState extends State<MedicineScanPage> {
             SearchView(initialKeyword: keyword, autoSearchOnInit: true),
       ),
     );
-  }
-
-  String _buildSearchKeyword(ScanCandidate? candidate) {
-    if (candidate == null) {
-      return '';
-    }
-    if (candidate.productName.trim().isNotEmpty) {
-      return candidate.productName.trim();
-    }
-    if (candidate.approvalNo.trim().isNotEmpty) {
-      return candidate.approvalNo.trim();
-    }
-    if (candidate.manufacturer.trim().isNotEmpty) {
-      return candidate.manufacturer.trim();
-    }
-    return '';
   }
 }
 

@@ -17,6 +17,19 @@ String _pickDetailTextByLocale(
   return languageCode.startsWith('zh') ? zh : en;
 }
 
+String _formatAiTimestamp(BuildContext context, DateTime? value) {
+  if (value == null) {
+    return '';
+  }
+  final local = value.toLocal();
+  final year = local.year.toString().padLeft(4, '0');
+  final month = local.month.toString().padLeft(2, '0');
+  final day = local.day.toString().padLeft(2, '0');
+  final hour = local.hour.toString().padLeft(2, '0');
+  final minute = local.minute.toString().padLeft(2, '0');
+  return '$year-$month-$day $hour:$minute';
+}
+
 // 药品详情页
 //
 // 页面职责：
@@ -33,17 +46,22 @@ class MedicineDetailPage extends StatelessWidget {
   /// 创建药品详情页，并指定初始药品对象。
   ///
   /// 初始对象可能来自列表点击，字段不一定完整，页面会在 `initState` 再拉取一次详情补齐。
-  const MedicineDetailPage({super.key, required this.initialItem});
+  const MedicineDetailPage({
+    super.key,
+    required this.initialItem,
+    this.controller,
+  });
 
   /// 详情页的初始药品对象。
   ///
   /// 通常来自列表页/搜索页的点击结果，字段可能不完整，页面会再调用详情接口补齐。
   final MedicineItem initialItem;
+  final MedicineDetailController? controller;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MedicineDetailController>(
-      init: MedicineDetailController(initialItem: initialItem),
+      init: controller ?? MedicineDetailController(initialItem: initialItem),
       global: false,
       builder: (controller) {
         final l10n = AppLocalizations.of(context);
@@ -85,7 +103,9 @@ class MedicineDetailPage extends StatelessWidget {
                   hasIdentity: controller.item.hasIdentity,
                   loading: controller.loadingAi,
                   result: controller.aiResult,
-                  onFetch: controller.loadAiDetail,
+                  onFetch: () => controller.loadAiDetail(
+                    refresh: controller.aiResult != null,
+                  ),
                   onCancel: controller.cancelAiDetail,
                 ),
                 const SizedBox(height: 12),
@@ -272,6 +292,9 @@ class _AiCard extends StatelessWidget {
     final entries = result == null
         ? const <String>[]
         : _splitAiEntries(result!.text);
+    final locale = Localizations.localeOf(context).languageCode.toLowerCase();
+    final isZh = locale.startsWith('zh');
+    final cachedTime = _formatAiTimestamp(context, result?.cachedAt);
 
     return _SurfaceCard(
       title: l10n?.medicineDetailAiTitle ?? 'AI 智能解读',
@@ -301,7 +324,7 @@ class _AiCard extends StatelessWidget {
                   )
                 : Text(
                     hasFetched
-                        ? (l10n?.medicineDetailAiRefetch ?? '再次获取')
+                        ? (isZh ? '重新分析' : 'Analyze again')
                         : (l10n?.medicineDetailAiFetch ?? '获取更详细信息'),
                   ),
           ),
@@ -339,6 +362,44 @@ class _AiCard extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (result?.isCached == true)
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                    decoration: BoxDecoration(
+                      color: appTintedSurface(
+                        context,
+                        scheme.primary,
+                        lightAlpha: 0.06,
+                        darkAlpha: 0.12,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: appTintedBorder(
+                          context,
+                          scheme.primary,
+                          lightAlpha: 0.12,
+                          darkAlpha: 0.22,
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      cachedTime.isEmpty
+                          ? (isZh
+                                ? '上次 AI 分析结果'
+                                : 'Previous AI analysis result')
+                          : (isZh
+                                ? '上次 AI 分析结果 · $cachedTime'
+                                : 'Previous AI analysis result · $cachedTime'),
+                      style: TextStyle(
+                        fontSize: 12.6,
+                        height: 1.45,
+                        color: scheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
                 for (var i = 0; i < entries.length; i++) ...[
                   _AiDetailEntryCard(
                     index: i + 1,

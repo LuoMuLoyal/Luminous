@@ -3,13 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/pages/Home/home.dart';
 import 'package:luminous/stores/user_controller.dart';
-import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:luminous/viewmodels/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'support/fake_today_reminder_store.dart';
+import 'support/fake_reminder_local_gateway.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -31,109 +30,72 @@ void main() {
   });
 
   tearDown(() {
+    ToastUtils.instance.dismiss();
     Get.reset();
   });
 
-  testWidgets(
-    'home replaces stale local snapshot with fresh today-reminders result',
-    (tester) async {
-      final store = FakeTodayReminderStore(
-        initialSnapshot: const [
-          ReminderItem(
-            id: 'stale-reminder',
-            time: '07:30',
-            title: '旧本地提醒',
-            subtitle: '旧缓存',
-            done: false,
-          ),
-        ],
-      );
-
-      Future<ApiResult<TodayRemindersResult>> fakeFetch({
-        String? userId,
-      }) async {
-        return const ApiResult<TodayRemindersResult>(
-          code: '1',
-          msg: 'ok',
-          result: TodayRemindersResult(
-            date: '',
-            items: [
-              ReminderItem(
-                id: 'remote-reminder',
-                time: '09:00',
-                title: '远端新提醒',
-                subtitle: '以快照为准',
-                done: false,
-              ),
-            ],
-          ),
-        );
-      }
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: HomeView(
-              fetchTodayReminders: fakeFetch,
-              todayReminderStore: store,
-            ),
-          ),
+  testWidgets('home replaces stale local snapshot after gateway sync', (
+    tester,
+  ) async {
+    final gateway = FakeReminderLocalGateway();
+    gateway.setTodayItems('user-1', const [
+      ReminderItem(
+        id: 'stale-reminder',
+        time: '07:30',
+        title: '旧本地提醒',
+        subtitle: '旧缓存',
+        done: false,
+      ),
+    ]);
+    gateway.onSyncRemoteToLocal = (userId) async {
+      gateway.setTodayItems(userId, const [
+        ReminderItem(
+          id: 'remote-reminder',
+          time: '09:00',
+          title: '远端新提醒',
+          subtitle: '以快照为准',
+          done: false,
         ),
-      );
-      await tester.pumpAndSettle();
+      ]);
+      gateway.emitRevision(userId);
+    };
 
-      expect(find.textContaining('远端新提醒', findRichText: true), findsWidgets);
-      expect(find.textContaining('旧本地提醒', findRichText: true), findsNothing);
-      expect(store.replaceTodaySnapshotCalls, 1);
-      expect(store.snapshot.map((item) => item.id), ['remote-reminder']);
-    },
-  );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(body: HomeView(reminderGateway: gateway)),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('远端新提醒', findRichText: true), findsWidgets);
+    expect(find.textContaining('旧本地提醒', findRichText: true), findsNothing);
+    expect(gateway.syncRemoteToLocalCalls, 1);
+  });
 
   testWidgets(
-    'home clears stale reminders when user changes and the new request has no snapshot fallback',
+    'home clears stale reminders when switched user has no local data',
     (tester) async {
       final controller = Get.find<UserController>();
-      final store = FakeTodayReminderStore();
-
-      Future<ApiResult<TodayRemindersResult>> fakeFetch({
-        String? userId,
-      }) async {
-        if (userId == 'user-1') {
-          return const ApiResult<TodayRemindersResult>(
-            code: '1',
-            msg: 'ok',
-            result: TodayRemindersResult(
-              date: '',
-              items: [
-                ReminderItem(
-                  id: 'remote-reminder',
-                  time: '09:00',
-                  title: '旧账号提醒',
-                  subtitle: '来自 user-1',
-                  done: false,
-                ),
-              ],
-            ),
-          );
-        }
-        throw const ApiException('network failed');
-      }
+      final gateway = FakeReminderLocalGateway();
+      gateway.setTodayItems('user-1', const [
+        ReminderItem(
+          id: 'remote-reminder',
+          time: '09:00',
+          title: '旧账号提醒',
+          subtitle: '来自 user-1',
+          done: false,
+        ),
+      ]);
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: HomeView(
-              fetchTodayReminders: fakeFetch,
-              todayReminderStore: store,
-            ),
-          ),
+          home: Scaffold(body: HomeView(reminderGateway: gateway)),
         ),
       );
       await tester.pumpAndSettle();
 
       expect(find.textContaining('旧账号提醒', findRichText: true), findsWidgets);
 
-      await store.replaceTodaySnapshot(userId: 'user-1', items: const []);
       controller.user.value = const UserSafe(
         id: 'user-2',
         username: 'tester-2',
@@ -146,15 +108,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('旧账号提醒', findRichText: true), findsNothing);
-      expect(find.textContaining('示例', findRichText: true), findsNothing);
-      expect(find.textContaining('19:30', findRichText: true), findsNothing);
       expect(
         find.textContaining('今天暂无待完成提醒', findRichText: true),
         findsWidgets,
       );
-
-      ToastUtils.instance.dismiss();
-      await tester.pump();
     },
   );
 }

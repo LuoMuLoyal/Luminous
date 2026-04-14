@@ -1,12 +1,10 @@
 import 'package:get/get.dart';
-import 'package:luminous/api/reminder_api.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
-import 'package:luminous/stores/reminder_local_store.dart';
+import 'package:luminous/stores/reminder_local_gateway.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/notification_service.dart';
-import 'package:luminous/viewmodels/reminder.dart';
 
 /// 当前用户登录后的会话同步服务。
 ///
@@ -74,14 +72,10 @@ class SessionSyncService {
 
   /// 同步远端提醒列表，并重建本地通知。
   Future<void> _syncReminders(String userId) async {
-    final response = await ReminderApi.list(userId: userId);
-    final items = List<ReminderPlan>.from(response.result.items)
-      ..sort((a, b) => a.time.compareTo(b.time));
-    await reminderLocalStore.replaceForUser(userId, items);
+    await reminderLocalGateway.syncRemoteToLocal(userId);
     if (!_shouldApplySync(userId)) {
       return;
     }
-    await NotificationService.instance.rescheduleAll(items);
   }
 
   bool _shouldApplySync(String userId) {

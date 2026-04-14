@@ -1,0 +1,86 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
+import 'package:luminous/pages/Reminders/controllers/reminder_list_controller.dart';
+import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/viewmodels/reminder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'support/fake_reminder_local_gateway.dart';
+
+void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    Get.testMode = true;
+    Get.reset();
+  });
+
+  tearDown(Get.reset);
+
+  test(
+    'reminder list controller reloads from local gateway after revision',
+    () async {
+      final userController = Get.put(UserController(), permanent: true);
+      userController.user.value = const UserSafe(
+        id: 'user-1',
+        username: 'tester',
+        email: '',
+        phone: '13800138000',
+        name: '',
+        type: 0,
+      );
+
+      final gateway = FakeReminderLocalGateway();
+      gateway.setPlans('user-1', const [
+        ReminderPlan(
+          id: 'rem-1',
+          userId: 'user-1',
+          time: '08:30',
+          drugCode: '',
+          approvalNo: '',
+          productName: '阿莫西林',
+          subtitle: '早餐后 1 粒',
+          enabled: true,
+          repeatRule: 'daily',
+          method: 'notification',
+        ),
+      ]);
+
+      final controller = ReminderListController(
+        userController: userController,
+        reminderGateway: gateway,
+      );
+
+      controller.onInit();
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(controller.items.map((item) => item.id), ['rem-1']);
+      final initialLoadCalls = gateway.loadPlansCalls;
+
+      gateway.setPlans('user-1', const [
+        ReminderPlan(
+          id: 'rem-2',
+          userId: 'user-1',
+          time: '21:00',
+          drugCode: '',
+          approvalNo: '',
+          productName: '维生素D',
+          subtitle: '晚饭后 1 粒',
+          enabled: true,
+          repeatRule: 'daily',
+          method: 'notification',
+        ),
+      ]);
+      gateway.emitRevision('user-1');
+
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+
+      expect(gateway.loadPlansCalls, greaterThan(initialLoadCalls));
+      expect(controller.items.map((item) => item.id), ['rem-2']);
+
+      controller.onClose();
+    },
+  );
+}

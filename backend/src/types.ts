@@ -29,6 +29,9 @@ export interface MedicineSearchPayload {
 
 export interface MedicineAiTextPayload {
   text: string;
+  source: 'cache' | 'generated';
+  cachedAt: string;
+  expiresAt: string;
 }
 
 export interface MedicineScanPayload {
@@ -116,4 +119,3 @@ export interface ScanRecordListPayload {
   page: number;
   pageSize: number;
 }
-

@@ -117,6 +117,7 @@ class MedicineApi {
   static Future<ApiResult<MedicineAiDetailResult>> fetchAiDetail({
     String? drugCode,
     String? approvalNo,
+    bool refresh = false,
     CancelToken? cancelToken,
   }) {
     return dioRequest.post<MedicineAiDetailResult>(
@@ -126,6 +127,7 @@ class MedicineApi {
           'drugCode': drugCode.trim(),
         if (approvalNo != null && approvalNo.trim().isNotEmpty)
           'approvalNo': approvalNo.trim(),
+        'refresh': refresh,
       },
       decoder: (json) {
         if (json is Map<String, dynamic>) {
