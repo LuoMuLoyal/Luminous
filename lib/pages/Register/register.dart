@@ -5,19 +5,18 @@ import 'package:luminous/api/auth_api.dart';
 import 'package:luminous/components/auth.dart';
 import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
 
 /// 注册页。
 ///
-/// 支持手机号/邮箱双栈注册，仅保留业务验证码校验。
+/// 页面默认展示邮箱注册，保留手机号分支逻辑供后续灰度开关。
 class RegisterView extends StatefulWidget {
   const RegisterView({
     super.key,
     this.authApi = const AuthApi(),
-    this.initialIdentifierType = AuthIdentifierType.phone,
+    this.initialIdentifierType = AuthIdentifierType.email,
     this.initialIdentifier = '',
     this.initialCode = '',
   });
@@ -41,7 +40,7 @@ class _RegisterViewState extends State<RegisterView> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
 
-  AuthIdentifierType _identifierType = AuthIdentifierType.phone;
+  AuthIdentifierType _identifierType = AuthIdentifierType.email;
   bool _agreed = false;
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
@@ -63,12 +62,6 @@ class _RegisterViewState extends State<RegisterView> {
     return type == AuthIdentifierType.phone
         ? _l10n.authPhoneLabel
         : _l10n.authEmailLabel;
-  }
-
-  String _registerMethodLabel(AuthIdentifierType type) {
-    return type == AuthIdentifierType.phone
-        ? _l10n.authPhoneRegisterMethod
-        : _l10n.authEmailRegisterMethod;
   }
 
   @override
@@ -135,10 +128,7 @@ class _RegisterViewState extends State<RegisterView> {
       return null;
     }
     if (!_usernameRegExp.hasMatch(username)) {
-      return AppI18nText.pick(
-        zh: '用户名需为2-30个字符且不能包含空格',
-        en: 'Username must be 2-30 chars with no spaces',
-      );
+      return _l10n.registerUsernameValidation;
     }
     return null;
   }
@@ -163,17 +153,6 @@ class _RegisterViewState extends State<RegisterView> {
       return _l10n.authValidationPasswordMismatch;
     }
     return null;
-  }
-
-  void _toggleIdentifierType(AuthIdentifierType type) {
-    if (_identifierType == type) {
-      return;
-    }
-    FocusScope.of(context).unfocus();
-    setState(() {
-      _identifierType = type;
-      _clearCodeSession(clearInput: true);
-    });
   }
 
   void _clearCodeSession({required bool clearInput}) {
@@ -391,21 +370,6 @@ class _RegisterViewState extends State<RegisterView> {
             _identifierLabel(_identifierType),
           ),
         ),
-        const SizedBox(height: 10),
-        AuthMethodSwitcher(
-          items: [
-            AuthMethodItem(
-              label: _registerMethodLabel(AuthIdentifierType.phone),
-              selected: _identifierType == AuthIdentifierType.phone,
-              onTap: () => _toggleIdentifierType(AuthIdentifierType.phone),
-            ),
-            AuthMethodItem(
-              label: _registerMethodLabel(AuthIdentifierType.email),
-              selected: _identifierType == AuthIdentifierType.email,
-              onTap: () => _toggleIdentifierType(AuthIdentifierType.email),
-            ),
-          ],
-        ),
         const SizedBox(height: 14),
         _buildFormCard(),
         const SizedBox(height: 12),
@@ -467,28 +431,26 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   Widget _buildFormCard() {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color ?? scheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: scheme.outline),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.0 : 0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+    return AuthSurfaceCard(
+      ornamentKey: 'auth.register.form',
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
+              TextFormField(
+                controller: _usernameController,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                decoration: _buildInputDecoration(
+                  labelText: _l10n.registerUsernameLabel,
+                  hintText: _l10n.registerUsernameHint,
+                  prefixIcon: Icons.person_outline_rounded,
+                ),
+                validator: _usernameValidator,
+              ),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: _identifierController,
                 keyboardType: _identifierType == AuthIdentifierType.phone
@@ -514,24 +476,6 @@ class _RegisterViewState extends State<RegisterView> {
                     });
                   }
                 },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _usernameController,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-                decoration: _buildInputDecoration(
-                  labelText: AppI18nText.pick(
-                    zh: '用户名(可选)',
-                    en: 'Username (optional)',
-                  ),
-                  hintText: AppI18nText.pick(
-                    zh: '用于个性化显示，例如 luminous_user',
-                    en: 'Used for profile display, e.g. luminous_user',
-                  ),
-                  prefixIcon: Icons.person_outline_rounded,
-                ),
-                validator: _usernameValidator,
               ),
               const SizedBox(height: 10),
               _buildCodeRow(),
@@ -616,7 +560,7 @@ class _RegisterViewState extends State<RegisterView> {
           style: FilledButton.styleFrom(
             backgroundColor: scheme.primary,
             foregroundColor: scheme.onPrimary,
-            minimumSize: const Size(78, 42),
+            minimumSize: const Size(78, 48),
             padding: const EdgeInsets.symmetric(horizontal: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(13),
@@ -654,48 +598,78 @@ class _RegisterViewState extends State<RegisterView> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final fillColor =
+        theme.inputDecorationTheme.fillColor ??
+        (isDark ? const Color(0xFF172033) : const Color(0xFFFCFEFF));
+    final enabledBorderColor = Color.alphaBlend(
+      scheme.primary.withValues(alpha: isDark ? 0.18 : 0.10),
+      scheme.outline.withValues(alpha: isDark ? 0.72 : 0.42),
+    );
+    final focusedBorderColor = Color.lerp(
+      scheme.primary,
+      scheme.secondary,
+      0.16,
+    )!;
+    final errorBorderColor = Color.alphaBlend(
+      scheme.error.withValues(alpha: 0.28),
+      scheme.error,
+    );
     return InputDecoration(
       labelText: labelText,
       hintText: hintText,
-      prefixIcon: Icon(prefixIcon, size: 22),
+      prefixIcon: Icon(
+        prefixIcon,
+        size: 22,
+        color: Color.lerp(scheme.primary, scheme.onSurface, 0.18),
+      ),
       suffixIcon: suffixIcon,
       isDense: true,
       filled: true,
-      fillColor:
-          theme.inputDecorationTheme.fillColor ??
-          (isDark ? const Color(0xFF1E293B) : const Color(0xFFF6F8FC)),
-      contentPadding: const EdgeInsets.symmetric(vertical: 14),
-      prefixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 44),
-      suffixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+      fillColor: fillColor,
+      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+      prefixIconConstraints: const BoxConstraints(minWidth: 50, minHeight: 50),
+      suffixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 48),
       floatingLabelBehavior: FloatingLabelBehavior.never,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
-        borderSide: BorderSide.none,
+        borderSide: BorderSide(color: enabledBorderColor, width: 1.1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
-        borderSide: BorderSide.none,
+        borderSide: BorderSide(color: enabledBorderColor, width: 1.1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
-        borderSide: BorderSide.none,
+        borderSide: BorderSide(color: focusedBorderColor, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide(color: errorBorderColor, width: 1.2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide(color: scheme.error, width: 1.5),
       ),
       labelStyle: TextStyle(
-        color: scheme.onSurfaceVariant,
+        color: Color.lerp(scheme.onSurfaceVariant, scheme.onSurface, 0.26),
         fontSize: 13.5,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
       ),
       hintStyle: TextStyle(
-        color: scheme.onSurfaceVariant.withValues(alpha: 0.78),
+        color: Color.lerp(
+          scheme.onSurfaceVariant,
+          scheme.onSurface,
+          0.18,
+        )?.withValues(alpha: 0.82),
         fontSize: 13,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
       ),
     );
   }
 
   Widget _buildRegisterButton() {
     return SizedBox(
-      height: 46,
+      height: 48,
       child: FilledButton(
         onPressed: _submitting ? null : _onRegisterPressed,
         style: FilledButton.styleFrom(

@@ -632,6 +632,18 @@ abstract class AppLocalizations {
   /// **'Supports phone or email code login. If unregistered, go register directly.'**
   String get loginHelperCode;
 
+  /// No description provided for @loginHelperPasswordEmailOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Supports email with password login.'**
+  String get loginHelperPasswordEmailOnly;
+
+  /// No description provided for @loginHelperCodeEmailOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Supports email code login. If unregistered, go register directly.'**
+  String get loginHelperCodeEmailOnly;
+
   /// No description provided for @registerTopTitle.
   ///
   /// In en, this message translates to:
@@ -649,6 +661,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{identifier} code registration'**
   String registerHeroSubtitle(Object identifier);
+
+  /// No description provided for @registerUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username (optional)'**
+  String get registerUsernameLabel;
+
+  /// No description provided for @registerUsernameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Used for profile display, e.g. luminous_user'**
+  String get registerUsernameHint;
+
+  /// No description provided for @registerUsernameValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be 2-30 chars with no spaces'**
+  String get registerUsernameValidation;
 
   /// No description provided for @registerNeedCodeForCurrentAccount.
   ///
@@ -1141,6 +1171,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System notification reminder'**
   String get reminderSystemNotificationSubtitle;
+
+  /// No description provided for @reminderDosePrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose: {dosage}'**
+  String reminderDosePrefix(Object dosage);
+
+  /// No description provided for @reminderNoExtraContent.
+  ///
+  /// In en, this message translates to:
+  /// **'No extra reminder content'**
+  String get reminderNoExtraContent;
 
   /// No description provided for @reminderEditTitle.
   ///

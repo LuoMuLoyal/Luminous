@@ -7,14 +7,37 @@ import android.provider.MediaStore
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
   private val channelName = "com.dev.luminous/gallery"
+  private var keepNativeSplash = true
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    installSplashScreen()
+    val splashScreen = installSplashScreen()
+    splashScreen.setKeepOnScreenCondition { keepNativeSplash }
     super.onCreate(savedInstanceState)
+
+    val renderer = flutterEngine?.renderer
+    if (renderer == null) {
+      keepNativeSplash = false
+      return
+    }
+
+    val uiListener =
+      object : FlutterUiDisplayListener {
+        override fun onFlutterUiDisplayed() {
+          keepNativeSplash = false
+          renderer.removeIsDisplayingFlutterUiListener(this)
+        }
+
+        override fun onFlutterUiNoLongerDisplayed() = Unit
+      }
+    renderer.addIsDisplayingFlutterUiListener(uiListener)
+
+    // 兜底：即便 Flutter 首帧异常延迟，也避免原生 splash 长时间卡住。
+    window.decorView.postDelayed({ keepNativeSplash = false }, 3500)
   }
 
   override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

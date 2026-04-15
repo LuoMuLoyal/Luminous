@@ -304,6 +304,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Supports phone or email code login. If unregistered, go register directly.';
 
   @override
+  String get loginHelperPasswordEmailOnly =>
+      'Supports email with password login.';
+
+  @override
+  String get loginHelperCodeEmailOnly =>
+      'Supports email code login. If unregistered, go register directly.';
+
+  @override
   String get registerTopTitle => 'Register';
 
   @override
@@ -313,6 +321,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String registerHeroSubtitle(Object identifier) {
     return '$identifier code registration';
   }
+
+  @override
+  String get registerUsernameLabel => 'Username (optional)';
+
+  @override
+  String get registerUsernameHint =>
+      'Used for profile display, e.g. luminous_user';
+
+  @override
+  String get registerUsernameValidation =>
+      'Username must be 2-30 chars with no spaces';
 
   @override
   String get registerNeedCodeForCurrentAccount =>
@@ -582,6 +601,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reminderSystemNotificationSubtitle =>
       'System notification reminder';
+
+  @override
+  String reminderDosePrefix(Object dosage) {
+    return 'Dose: $dosage';
+  }
+
+  @override
+  String get reminderNoExtraContent => 'No extra reminder content';
 
   @override
   String get reminderEditTitle => 'Edit Reminder';

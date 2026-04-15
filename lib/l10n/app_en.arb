@@ -105,6 +105,8 @@
   "loginButton": "Log in",
   "loginHelperPassword": "Supports phone or email with password login.",
   "loginHelperCode": "Supports phone or email code login. If unregistered, go register directly.",
+  "loginHelperPasswordEmailOnly": "Supports email with password login.",
+  "loginHelperCodeEmailOnly": "Supports email code login. If unregistered, go register directly.",
   "registerTopTitle": "Register",
   "registerHeroTitle": "Create Account",
   "registerHeroSubtitle": "{identifier} code registration",
@@ -113,6 +115,9 @@
       "identifier": {}
     }
   },
+  "registerUsernameLabel": "Username (optional)",
+  "registerUsernameHint": "Used for profile display, e.g. luminous_user",
+  "registerUsernameValidation": "Username must be 2-30 chars with no spaces",
   "registerNeedCodeForCurrentAccount": "Please request a verification code for the current account first",
   "registerNeedAgreement": "Please read and check User Agreement and Privacy Policy first",
   "registerSuccess": "Registration successful",
@@ -236,6 +241,13 @@
   "reminderDeleteConfirm": "Delete",
   "reminderDeletedToast": "Deleted",
   "reminderSystemNotificationSubtitle": "System notification reminder",
+  "reminderDosePrefix": "Dose: {dosage}",
+  "@reminderDosePrefix": {
+    "placeholders": {
+      "dosage": {}
+    }
+  },
+  "reminderNoExtraContent": "No extra reminder content",
   "reminderEditTitle": "Edit Reminder",
   "reminderCreateTitle": "New Reminder",
   "reminderEditSectionDrugTime": "Medicine & Time",

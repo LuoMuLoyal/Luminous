@@ -105,6 +105,8 @@
   "loginButton": "登录",
   "loginHelperPassword": "支持手机号或邮箱搭配密码登录。",
   "loginHelperCode": "支持手机号或邮箱验证码登录，未注册可直接去注册。",
+  "loginHelperPasswordEmailOnly": "支持邮箱搭配密码登录。",
+  "loginHelperCodeEmailOnly": "支持邮箱验证码登录，未注册可直接去注册。",
   "registerTopTitle": "注册",
   "registerHeroTitle": "创建账号",
   "registerHeroSubtitle": "{identifier}验证码注册",
@@ -113,6 +115,9 @@
       "identifier": {}
     }
   },
+  "registerUsernameLabel": "用户名（可选）",
+  "registerUsernameHint": "用于个性化显示，例如 luminous_user",
+  "registerUsernameValidation": "用户名需为2-30个字符且不能包含空格",
   "registerNeedCodeForCurrentAccount": "请先获取当前账号的验证码",
   "registerNeedAgreement": "请先阅读并勾选《用户协议》《隐私政策》",
   "registerSuccess": "注册成功",
@@ -236,6 +241,13 @@
   "reminderDeleteConfirm": "删除",
   "reminderDeletedToast": "已删除",
   "reminderSystemNotificationSubtitle": "系统通知提醒",
+  "reminderDosePrefix": "剂量: {dosage}",
+  "@reminderDosePrefix": {
+    "placeholders": {
+      "dosage": {}
+    }
+  },
+  "reminderNoExtraContent": "未设置额外提醒内容",
   "reminderEditTitle": "编辑提醒",
   "reminderCreateTitle": "新增提醒",
   "reminderEditSectionDrugTime": "药品与时间",

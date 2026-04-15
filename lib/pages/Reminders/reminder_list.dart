@@ -705,9 +705,10 @@ class _ReminderCard extends StatelessWidget {
     }
     if (dosage.isNotEmpty) {
       parts.add(
-        (l10n?.localeName ?? 'zh').toLowerCase().startsWith('zh')
-            ? '剂量: $dosage'
-            : 'Dose: $dosage',
+        l10n?.reminderDosePrefix(dosage) ??
+            ((l10n?.localeName ?? 'zh').toLowerCase().startsWith('zh')
+                ? '剂量: $dosage'
+                : 'Dose: $dosage'),
       );
     }
     if (parts.isEmpty) {
@@ -721,8 +722,9 @@ class _ReminderCard extends StatelessWidget {
     if (extra.isNotEmpty) {
       return extra;
     }
-    return (l10n?.localeName ?? 'zh').toLowerCase().startsWith('zh')
-        ? '未设置额外提醒内容'
-        : 'No extra reminder content';
+    return l10n?.reminderNoExtraContent ??
+        ((l10n?.localeName ?? 'zh').toLowerCase().startsWith('zh')
+            ? '未设置额外提醒内容'
+            : 'No extra reminder content');
   }
 }

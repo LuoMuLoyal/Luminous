@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:luminous/components/app_canvas.dart';
+import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/stores/ornament_controller.dart';
 
 /// 认证页面（登录/注册）可复用的 UI 组件集合。
 ///
@@ -48,46 +51,218 @@ class AuthPageScaffold extends StatelessWidget {
     final horizontalPadding = screenWidth < 600 ? 16.0 : 24.0;
     final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final scaffoldBackground = backgroundColor ?? theme.scaffoldBackgroundColor;
     final authPalette = SoftBannerPalettes.authOf(context);
+    final canvasSecondary = Color.lerp(scheme.secondary, scheme.tertiary, 0.5)!;
 
     return Scaffold(
       backgroundColor: scaffoldBackground,
       resizeToAvoidBottomInset: false,
       body: AppCanvas(
         accentColor: authPalette.accentColor,
-        secondaryAccentColor: theme.colorScheme.secondary,
+        secondaryAccentColor: canvasSecondary,
         baseColor: scaffoldBackground,
-        child: SafeArea(
-          bottom: false,
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: isWide ? 420 : double.infinity,
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(bottom: keyboardInset),
-                child: SingleChildScrollView(
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  padding: EdgeInsets.fromLTRB(
-                    horizontalPadding,
-                    6,
-                    horizontalPadding,
-                    16,
+        child: Stack(
+          children: [
+            const Positioned.fill(
+              child: IgnorePointer(child: _AuthBackdropDecoration()),
+            ),
+            SafeArea(
+              bottom: false,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: isWide ? 420 : double.infinity,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: children,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: keyboardInset),
+                    child: SingleChildScrollView(
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      padding: EdgeInsets.fromLTRB(
+                        horizontalPadding,
+                        6,
+                        horizontalPadding,
+                        16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: children,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
+  }
+}
+
+class _AuthBackdropDecoration extends StatelessWidget {
+  const _AuthBackdropDecoration();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Color.lerp(scheme.primary, scheme.secondary, 0.22)!;
+    final secondary = Color.lerp(scheme.secondary, scheme.tertiary, 0.40)!;
+    final tertiary = Color.lerp(scheme.tertiary, scheme.primary, 0.26)!;
+
+    return Stack(
+      children: [
+        Positioned(
+          top: -42,
+          left: -30,
+          child: _AuthBackdropOrb(
+            size: 176,
+            color: primary.withValues(alpha: isDark ? 0.15 : 0.11),
+          ),
+        ),
+        Positioned(
+          top: 86,
+          right: -24,
+          child: _AuthBackdropOrb(
+            size: 146,
+            color: secondary.withValues(alpha: isDark ? 0.12 : 0.09),
+          ),
+        ),
+        Positioned(
+          left: 22,
+          right: 22,
+          top: 156,
+          child: Container(
+            height: 118,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(32),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  primary.withValues(alpha: isDark ? 0.06 : 0.05),
+                  secondary.withValues(alpha: isDark ? 0.05 : 0.035),
+                  tertiary.withValues(alpha: isDark ? 0.06 : 0.05),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          right: -36,
+          bottom: 120,
+          child: _AuthBackdropOrb(
+            size: 190,
+            color: tertiary.withValues(alpha: isDark ? 0.11 : 0.08),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AuthBackdropOrb extends StatelessWidget {
+  const _AuthBackdropOrb({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        boxShadow: [
+          BoxShadow(
+            color: color,
+            blurRadius: size * 0.45,
+            spreadRadius: size * 0.08,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 认证页面中用于承载表单的浅色装饰卡片。
+///
+/// 实现逻辑与手动搜索页保持一致：
+/// - 装饰开启时使用 [AppSectionCard] 注入氛围装饰；
+/// - 装饰关闭时回退到普通 [AppSurfaceCard]；
+/// - 默认把装饰强度压低到 `0.2`，避免喧宾夺主。
+class AuthSurfaceCard extends StatelessWidget {
+  const AuthSurfaceCard({
+    super.key,
+    required this.child,
+    this.ornamentKey,
+    this.ornamentVisibilityScale = 0.2,
+    this.radius = 18,
+  });
+
+  final Widget child;
+  final String? ornamentKey;
+  final double ornamentVisibilityScale;
+  final double radius;
+
+  Widget _buildContent(
+    BuildContext context, {
+    required bool ornamentsDisabled,
+  }) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final accentColor = Color.lerp(scheme.primary, scheme.secondary, 0.30)!;
+    final secondaryColor = Color.lerp(scheme.secondary, scheme.tertiary, 0.45)!;
+    final baseColor = scheme.surface.withValues(alpha: isDark ? 0.40 : 0.76);
+    final borderColor = appTintedBorder(
+      context,
+      accentColor,
+      lightAlpha: 0.16,
+      darkAlpha: 0.22,
+    );
+
+    if (ornamentsDisabled) {
+      return AppSurfaceCard(
+        radius: radius,
+        color: baseColor,
+        borderColor: borderColor,
+        child: child,
+      );
+    }
+
+    return AppSectionCard(
+      radius: radius,
+      padding: EdgeInsets.zero,
+      accentColor: accentColor,
+      secondaryColor: secondaryColor,
+      baseColor: baseColor,
+      ornamentKey: ornamentKey ?? 'auth.surface',
+      ornamentVisibilityScale: ornamentVisibilityScale,
+      surfaceBorderColor: borderColor,
+      child: child,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!Get.isRegistered<OrnamentController>()) {
+      return _buildContent(context, ornamentsDisabled: false);
+    }
+    final ornamentController = Get.find<OrnamentController>();
+    return Obx(() {
+      ornamentController.revision.value;
+      return _buildContent(
+        context,
+        ornamentsDisabled: ornamentController.isDisabled,
+      );
+    });
   }
 }
 
@@ -105,14 +280,17 @@ class AuthLegalHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final linkColor = Color.lerp(scheme.primary, scheme.secondary, 0.20)!;
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Text(
           l10n.authLegalPrefix,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          style: theme.textTheme.bodySmall?.copyWith(
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w600,
             fontSize: 11.5,
@@ -125,7 +303,7 @@ class AuthLegalHint extends StatelessWidget {
             l10n.authUserAgreementTitle,
             style: TextStyle(
               fontSize: 11.5,
-              color: Color(0xFF0284C7),
+              color: linkColor,
               fontWeight: FontWeight.w700,
               height: 1.45,
             ),
@@ -146,7 +324,7 @@ class AuthLegalHint extends StatelessWidget {
             l10n.authPrivacyPolicyTitle,
             style: TextStyle(
               fontSize: 11.5,
-              color: Color(0xFF0284C7),
+              color: linkColor,
               fontWeight: FontWeight.w700,
               height: 1.45,
             ),
@@ -414,7 +592,10 @@ class AuthAgreementRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final linkColor = Color.lerp(scheme.primary, scheme.secondary, 0.20)!;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -447,7 +628,7 @@ class AuthAgreementRow extends StatelessWidget {
                   l10n.authUserAgreementTitle,
                   style: TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF0284C7),
+                    color: linkColor,
                     fontWeight: FontWeight.w700,
                     height: 1.35,
                   ),
@@ -473,7 +654,7 @@ class AuthAgreementRow extends StatelessWidget {
                   l10n.authPrivacyPolicyTitle,
                   style: TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF0284C7),
+                    color: linkColor,
                     fontWeight: FontWeight.w700,
                     height: 1.35,
                   ),

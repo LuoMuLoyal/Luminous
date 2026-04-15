@@ -283,6 +283,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get loginHelperCode => '支持手机号或邮箱验证码登录，未注册可直接去注册。';
 
   @override
+  String get loginHelperPasswordEmailOnly => '支持邮箱搭配密码登录。';
+
+  @override
+  String get loginHelperCodeEmailOnly => '支持邮箱验证码登录，未注册可直接去注册。';
+
+  @override
   String get registerTopTitle => '注册';
 
   @override
@@ -292,6 +298,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String registerHeroSubtitle(Object identifier) {
     return '$identifier验证码注册';
   }
+
+  @override
+  String get registerUsernameLabel => '用户名（可选）';
+
+  @override
+  String get registerUsernameHint => '用于个性化显示，例如 luminous_user';
+
+  @override
+  String get registerUsernameValidation => '用户名需为2-30个字符且不能包含空格';
 
   @override
   String get registerNeedCodeForCurrentAccount => '请先获取当前账号的验证码';
@@ -550,6 +565,14 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reminderSystemNotificationSubtitle => '系统通知提醒';
+
+  @override
+  String reminderDosePrefix(Object dosage) {
+    return '剂量: $dosage';
+  }
+
+  @override
+  String get reminderNoExtraContent => '未设置额外提醒内容';
 
   @override
   String get reminderEditTitle => '编辑提醒';

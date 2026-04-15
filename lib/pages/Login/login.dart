@@ -16,7 +16,7 @@ import 'package:luminous/viewmodels/auth.dart';
 
 /// 登录页。
 ///
-/// 支持手机号/邮箱两种账号类型，且二者都支持密码登录与验证码登录。
+/// 页面默认展示邮箱登录（密码/验证码），保留手机号分支逻辑供后续灰度开关。
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, this.authApi = const AuthApi()});
 
@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _codeController = TextEditingController();
   final UserController _userController = Get.find<UserController>();
 
-  AuthIdentifierType _identifierType = AuthIdentifierType.phone;
+  final AuthIdentifierType _identifierType = AuthIdentifierType.email;
   AuthLoginMode _loginMode = AuthLoginMode.password;
   bool _obscurePassword = true;
   bool _sendingCode = false;
@@ -61,12 +61,6 @@ class _LoginPageState extends State<LoginPage> {
     return mode == AuthLoginMode.password
         ? _l10n.authPasswordLoginMode
         : _l10n.authCodeLoginMode;
-  }
-
-  String _alternateIdentifierAction(AuthIdentifierType type) {
-    return type == AuthIdentifierType.phone
-        ? _l10n.authSwitchToEmailLogin
-        : _l10n.authSwitchToPhoneLogin;
   }
 
   @override
@@ -128,16 +122,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void _onTapForgotPassword() {
     ToastUtils.instance.show(context, _l10n.loginForgotPasswordPending);
-  }
-
-  void _toggleIdentifierType() {
-    FocusScope.of(context).unfocus();
-    setState(() {
-      _identifierType = _identifierType == AuthIdentifierType.phone
-          ? AuthIdentifierType.email
-          : AuthIdentifierType.phone;
-      _clearCodeSession(clearInput: true);
-    });
   }
 
   void _onLoginModeChanged(AuthLoginMode mode) {
@@ -478,7 +462,7 @@ class _LoginPageState extends State<LoginPage> {
               MaterialPageRoute<void>(
                 builder: (_) => RegisterView(
                   authApi: widget.authApi,
-                  initialIdentifierType: _identifierType,
+                  initialIdentifierType: AuthIdentifierType.email,
                 ),
               ),
             );
@@ -498,22 +482,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildFormCard() {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color ?? scheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: scheme.outline),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.0 : 0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+    return AuthSurfaceCard(
+      ornamentKey: 'auth.login.form',
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
         child: Form(
@@ -609,7 +579,7 @@ class _LoginPageState extends State<LoginPage> {
           style: FilledButton.styleFrom(
             backgroundColor: scheme.primary,
             foregroundColor: scheme.onPrimary,
-            minimumSize: const Size(78, 42),
+            minimumSize: const Size(78, 48),
             padding: const EdgeInsets.symmetric(horizontal: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(13),
@@ -642,16 +612,6 @@ class _LoginPageState extends State<LoginPage> {
     final scheme = Theme.of(context).colorScheme;
     return Row(
       children: [
-        TextButton(
-          onPressed: _toggleIdentifierType,
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: Size.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            foregroundColor: scheme.primary,
-          ),
-          child: Text(_alternateIdentifierAction(_identifierType)),
-        ),
         const Spacer(),
         TextButton(
           onPressed: _onTapForgotPassword,
@@ -676,48 +636,78 @@ class _LoginPageState extends State<LoginPage> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final fillColor =
+        theme.inputDecorationTheme.fillColor ??
+        (isDark ? const Color(0xFF172033) : const Color(0xFFFCFEFF));
+    final enabledBorderColor = Color.alphaBlend(
+      scheme.primary.withValues(alpha: isDark ? 0.18 : 0.10),
+      scheme.outline.withValues(alpha: isDark ? 0.72 : 0.42),
+    );
+    final focusedBorderColor = Color.lerp(
+      scheme.primary,
+      scheme.secondary,
+      0.16,
+    )!;
+    final errorBorderColor = Color.alphaBlend(
+      scheme.error.withValues(alpha: 0.28),
+      scheme.error,
+    );
     return InputDecoration(
       labelText: labelText,
       hintText: hintText,
-      prefixIcon: Icon(prefixIcon, size: 22),
+      prefixIcon: Icon(
+        prefixIcon,
+        size: 22,
+        color: Color.lerp(scheme.primary, scheme.onSurface, 0.18),
+      ),
       suffixIcon: suffixIcon,
       isDense: true,
       filled: true,
-      fillColor:
-          theme.inputDecorationTheme.fillColor ??
-          (isDark ? const Color(0xFF1E293B) : const Color(0xFFF6F8FC)),
-      contentPadding: const EdgeInsets.symmetric(vertical: 14),
-      prefixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 44),
-      suffixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+      fillColor: fillColor,
+      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+      prefixIconConstraints: const BoxConstraints(minWidth: 50, minHeight: 50),
+      suffixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 48),
       floatingLabelBehavior: FloatingLabelBehavior.never,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
-        borderSide: BorderSide.none,
+        borderSide: BorderSide(color: enabledBorderColor, width: 1.1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
-        borderSide: BorderSide.none,
+        borderSide: BorderSide(color: enabledBorderColor, width: 1.1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
-        borderSide: BorderSide.none,
+        borderSide: BorderSide(color: focusedBorderColor, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide(color: errorBorderColor, width: 1.2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide(color: scheme.error, width: 1.5),
       ),
       labelStyle: TextStyle(
-        color: scheme.onSurfaceVariant,
+        color: Color.lerp(scheme.onSurfaceVariant, scheme.onSurface, 0.26),
         fontSize: 13.5,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
       ),
       hintStyle: TextStyle(
-        color: scheme.onSurfaceVariant.withValues(alpha: 0.78),
+        color: Color.lerp(
+          scheme.onSurfaceVariant,
+          scheme.onSurface,
+          0.18,
+        )?.withValues(alpha: 0.82),
         fontSize: 13,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
       ),
     );
   }
 
   Widget _buildLoginButton() {
     return SizedBox(
-      height: 46,
+      height: 48,
       child: FilledButton(
         onPressed: _submitting ? null : _onLoginPressed,
         style: FilledButton.styleFrom(
@@ -749,8 +739,8 @@ class _LoginPageState extends State<LoginPage> {
     final scheme = Theme.of(context).colorScheme;
     return Text(
       _loginMode == AuthLoginMode.password
-          ? _l10n.loginHelperPassword
-          : _l10n.loginHelperCode,
+          ? _l10n.loginHelperPasswordEmailOnly
+          : _l10n.loginHelperCodeEmailOnly,
       textAlign: TextAlign.center,
       style: TextStyle(
         color: scheme.onSurfaceVariant,

@@ -195,9 +195,9 @@ class SoftBannerPalettes {
     final scheme = Theme.of(context).colorScheme;
     return _build(
       context,
-      accent: scheme.primary,
-      secondary: scheme.secondary,
-      tertiary: scheme.tertiary,
+      accent: Color.lerp(scheme.primary, scheme.secondary, 0.28)!,
+      secondary: Color.lerp(scheme.secondary, scheme.tertiary, 0.42)!,
+      tertiary: Color.lerp(scheme.primary, scheme.tertiary, 0.34)!,
     );
   }
 
