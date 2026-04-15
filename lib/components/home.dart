@@ -8,6 +8,18 @@ import 'package:luminous/components/tinted_status_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/viewmodels/home.dart';
 
+Color _homeSecondaryTextColor(BuildContext context, {double emphasis = 0.24}) {
+  final scheme = Theme.of(context).colorScheme;
+  return Color.lerp(scheme.onSurfaceVariant, scheme.onSurface, emphasis)!;
+}
+
+Color _homeBannerSecondaryTextColor(
+  SoftBannerTheme theme, {
+  double emphasis = 0.18,
+}) {
+  return Color.lerp(theme.secondaryTextColor, theme.textColor, emphasis)!;
+}
+
 /// 首页（Home）可复用的 UI 组件集合。
 ///
 /// 该文件的组件会被 [lib/pages/Home/home.dart] 组合使用，页面本身只负责：
@@ -41,6 +53,7 @@ class HomeStatusChip extends StatelessWidget {
       color: textColor,
       backgroundColor: backgroundColor,
       showBorder: false,
+      enablePopup: false,
       fontSize: 12,
       fontWeight: FontWeight.w600,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -161,7 +174,8 @@ class HomeFeatureSection extends StatelessWidget {
                   l10n?.homeFeaturesSubtitle ?? '快速进入核心健康服务',
                   style: TextStyle(
                     fontSize: 13,
-                    color: scheme.onSurfaceVariant,
+                    color: _homeSecondaryTextColor(context, emphasis: 0.28),
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 SizedBox(height: compact ? 8 : 10),
@@ -202,10 +216,7 @@ class HomeReminderSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final locale = Localizations.localeOf(context).languageCode.toLowerCase();
-    final emptyText = locale.startsWith('zh')
-        ? '暂未设置任何提醒'
-        : (l10n?.homeNoReminder ?? 'No reminders');
+    final emptyText = l10n?.homeNoReminder ?? 'No reminders';
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       child: LayoutBuilder(
@@ -261,7 +272,10 @@ class HomeReminderSection extends StatelessWidget {
                         emptyText,
                         style: TextStyle(
                           fontSize: compact ? 13 : 13.5,
-                          color: scheme.onSurfaceVariant,
+                          color: _homeSecondaryTextColor(
+                            context,
+                            emphasis: 0.30,
+                          ),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -349,7 +363,7 @@ class HomeCheckInRecordSection extends StatelessWidget {
                       'Daily completion and actual check-in time',
                   style: TextStyle(
                     fontSize: compact ? 12.4 : 12.9,
-                    color: scheme.onSurfaceVariant,
+                    color: _homeSecondaryTextColor(context, emphasis: 0.28),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -382,7 +396,7 @@ class HomeCheckInRecordSection extends StatelessWidget {
                       emptyText,
                       style: TextStyle(
                         fontSize: compact ? 13 : 13.4,
-                        color: scheme.onSurfaceVariant,
+                        color: _homeSecondaryTextColor(context, emphasis: 0.30),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -677,7 +691,7 @@ class _HomeCheckInRecordTile extends StatelessWidget {
                   detailText,
                   style: TextStyle(
                     fontSize: compact ? 11.1 : 11.6,
-                    color: scheme.onSurfaceVariant,
+                    color: _homeSecondaryTextColor(context, emphasis: 0.28),
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,
@@ -784,12 +798,12 @@ class HomeTopSection extends StatelessWidget {
                       ? (l10n?.homePillLoading ?? '提醒加载中...')
                       : (l10n?.homePillCount(reminderCount) ??
                             '今日提醒 $reminderCount 条'),
-                  backgroundColor: theme.surfaceColor,
+                  backgroundColor: theme.surfaceColor.withValues(alpha: 0.70),
                   textColor: theme.surfaceTextColor,
                 ),
                 HomeInfoPill(
                   text: l10n?.homePillTips ?? '健康小贴士',
-                  backgroundColor: theme.surfaceColor,
+                  backgroundColor: theme.surfaceColor.withValues(alpha: 0.70),
                   textColor: theme.surfaceTextColor,
                   onTap: onTapTip,
                   onLongPress: onLongPressTip,
@@ -806,11 +820,11 @@ class HomeTopSection extends StatelessWidget {
                         height: compact ? 38 : 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: theme.surfaceColor,
+                          color: theme.surfaceColor.withValues(alpha: 0.76),
                           border: Border.all(color: theme.borderColor),
                         ),
                         child: Icon(
-                          Icons.favorite_outline,
+                          Icons.health_and_safety_rounded,
                           color: theme.accentColor,
                           size: compact ? 20 : 24,
                         ),
@@ -818,7 +832,7 @@ class HomeTopSection extends StatelessWidget {
                       SizedBox(width: compact ? 8 : 10),
                       Expanded(
                         child: Text(
-                          l10n?.homeHeroTitle ?? '健康助手',
+                          '${l10n?.homeHeroTitle ?? '健康助手'} | Luminous',
                           style: TextStyle(
                             color: theme.textColor,
                             fontSize: compact ? 18 : 20,
@@ -828,7 +842,9 @@ class HomeTopSection extends StatelessWidget {
                       ),
                       HomeStatusChip(
                         text: statusText,
-                        backgroundColor: theme.surfaceColor,
+                        backgroundColor: theme.surfaceColor.withValues(
+                          alpha: 0.74,
+                        ),
                         textColor: theme.surfaceTextColor,
                       ),
                     ],
@@ -976,7 +992,7 @@ class _HomeTopSummaryCard extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: bannerTheme.surfaceColor.withValues(
-          alpha: Theme.of(context).brightness == Brightness.dark ? 0.78 : 0.55,
+          alpha: Theme.of(context).brightness == Brightness.dark ? 0.74 : 0.44,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: bannerTheme.borderColor),
@@ -1015,22 +1031,19 @@ class _HomeTopSummaryCard extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    Container(
+                    TintedStatusChip(
+                      text: badgeText,
+                      color: bannerTheme.accentColor,
+                      backgroundColor: bannerTheme.accentColor.withValues(
+                        alpha: 0.12,
+                      ),
+                      enablePopup: false,
+                      showBorder: false,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w800,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
                         vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: bannerTheme.accentColor.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        badgeText,
-                        style: TextStyle(
-                          color: bannerTheme.accentColor,
-                          fontSize: 11.5,
-                          fontWeight: FontWeight.w800,
-                        ),
                       ),
                     ),
                   ],
@@ -1041,10 +1054,13 @@ class _HomeTopSummaryCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: bannerTheme.secondaryTextColor,
+                    color: _homeBannerSecondaryTextColor(
+                      bannerTheme,
+                      emphasis: 0.34,
+                    ),
                     fontSize: compact ? 12.5 : 13.5,
                     height: 1.45,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -1067,10 +1083,11 @@ class _HomeReminderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final titleColor = scheme.onSurface;
-    final subtitleColor = scheme.onSurfaceVariant;
+    final subtitleColor = _homeSecondaryTextColor(context, emphasis: 0.28);
     final idleTint = Color.lerp(scheme.primary, scheme.secondary, 0.34)!;
     final doneTint = Color.lerp(scheme.tertiary, scheme.primary, 0.45)!;
     final idleBackground = appTintedSurface(
@@ -1142,7 +1159,8 @@ class _HomeReminderTile extends StatelessWidget {
     final subtitleText = item.subtitle.trim().isNotEmpty
         ? item.subtitle.trim()
         : item.dosage.trim().isNotEmpty
-        ? '剂量: ${item.dosage.trim()}'
+        ? (l10n?.reminderDosePrefix(item.dosage.trim()) ??
+              '剂量: ${item.dosage.trim()}')
         : '-';
 
     return Container(

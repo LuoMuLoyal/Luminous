@@ -34,70 +34,83 @@ class SharedQuickEntryCard extends StatelessWidget {
               textScaleFactor: MediaQuery.textScalerOf(context).scale(1),
             );
         final compact = resolvedMetrics.isCompact;
+        final iconBoxSize = resolvedMetrics.iconBoxSize + (compact ? 4 : 2);
+        final iconSize = resolvedMetrics.iconSize + (compact ? 1 : 0);
         final style = resolveQuickEntryVisualStyle(context, color);
 
-        return InkWell(
-          borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
-          onTap: onTap,
-          child: Ink(
-            decoration: BoxDecoration(
-              color: style.background,
-              borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
-              border: Border.all(color: style.border),
+        return Semantics(
+          button: true,
+          label: title,
+          hint: subtitle,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: 48,
+              minHeight: compact ? 124 : 136,
             ),
-            child: Padding(
-              padding: resolvedMetrics.itemPadding,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Align(
-                    child: SizedBox(
-                      width: resolvedMetrics.iconBoxSize,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: style.iconBackground,
-                            borderRadius: BorderRadius.circular(
-                              resolvedMetrics.iconBorderRadius,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
+              onTap: onTap,
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: style.background,
+                  borderRadius: BorderRadius.circular(kQuickEntryCardRadius),
+                  border: Border.all(color: style.border),
+                ),
+                child: Padding(
+                  padding: resolvedMetrics.itemPadding,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Align(
+                        child: SizedBox(
+                          width: iconBoxSize,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: style.iconBackground,
+                                borderRadius: BorderRadius.circular(
+                                  resolvedMetrics.iconBorderRadius,
+                                ),
+                                border: Border.all(color: style.iconBorder),
+                              ),
+                              child: Icon(
+                                icon,
+                                size: iconSize,
+                                color: style.iconColor,
+                              ),
                             ),
-                            border: Border.all(color: style.iconBorder),
-                          ),
-                          child: Icon(
-                            icon,
-                            size: resolvedMetrics.iconSize,
-                            color: style.iconColor,
                           ),
                         ),
                       ),
-                    ),
+                      SizedBox(height: resolvedMetrics.titleSpacing),
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: compact ? 14 : 14.5,
+                          fontWeight: FontWeight.w800,
+                          color: style.titleColor,
+                          height: 1.2,
+                          leadingDistribution: TextLeadingDistribution.even,
+                        ),
+                      ),
+                      SizedBox(height: resolvedMetrics.subtitleSpacing),
+                      Text(
+                        subtitle,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: compact ? 11.5 : 12,
+                          color: style.subtitleColor,
+                          fontWeight: FontWeight.w700,
+                          height: compact ? 1.28 : 1.32,
+                          leadingDistribution: TextLeadingDistribution.even,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: resolvedMetrics.titleSpacing),
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: compact ? 14 : 14.5,
-                      fontWeight: FontWeight.w800,
-                      color: style.titleColor,
-                      height: 1.2,
-                      leadingDistribution: TextLeadingDistribution.even,
-                    ),
-                  ),
-                  SizedBox(height: resolvedMetrics.subtitleSpacing),
-                  Text(
-                    subtitle,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: compact ? 11.5 : 12,
-                      color: style.subtitleColor,
-                      fontWeight: FontWeight.w600,
-                      height: compact ? 1.25 : 1.3,
-                      leadingDistribution: TextLeadingDistribution.even,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),

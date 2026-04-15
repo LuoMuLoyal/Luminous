@@ -231,6 +231,7 @@ class LanguageSettingsPage extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
       ),
       child: ListView(
+        physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 28),
         children: [
           _LanguageHeroCard(localeController: localeController),
@@ -719,30 +720,32 @@ class _SettingsHeroCard extends StatelessWidget {
                       ],
                     ),
                   ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
                   TintedStatusChip(
                     icon: _themeModeIcon(preference),
                     text: _themeModeLabel(preference, l10n: l10n),
                     color: theme.surfaceTextColor,
                     backgroundColor: theme.surfaceColor,
                     showBorder: false,
+                    enablePopup: false,
                     iconSize: 16,
                     fontSize: 12.5,
                     fontWeight: FontWeight.w700,
                     padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
                   ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
                   TintedStatusChip(
                     icon: Icons.auto_awesome_rounded,
                     text: _themeStyleLabel(style, l10n: l10n),
                     color: theme.surfaceTextColor,
                     backgroundColor: theme.surfaceColor,
                     showBorder: false,
+                    enablePopup: false,
                     iconSize: 16,
                     fontSize: 12.5,
                     fontWeight: FontWeight.w700,
@@ -1094,80 +1097,46 @@ class _ThemeStyleCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 116,
-                  height: 22,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(999),
-                    gradient: LinearGradient(colors: preview),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: preview.take(3).map((color) {
-                          return Container(
-                            width: 4,
-                            height: 4,
-                            margin: const EdgeInsets.only(right: 4),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: color.withValues(alpha: 0.92),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+            Container(
+              width: double.infinity,
+              height: 24,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(999),
+                gradient: LinearGradient(colors: preview),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: preview.take(3).map((color) {
+                      return Container(
+                        width: 4,
+                        height: 4,
+                        margin: const EdgeInsets.only(right: 4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: color.withValues(alpha: 0.92),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      _themeStyleLabel(style, l10n: l10n),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: theme.colorScheme.onSurface,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 180),
-                  opacity: selected ? 1 : 0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: scheme.primary.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      l10n?.settingsThemeStyleInUseBadge ?? '当前使用',
-                      style: TextStyle(
-                        color: scheme.primary,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-            const SizedBox(height: 7),
+            const SizedBox(height: 10),
+            Text(
+              _themeStyleLabel(style, l10n: l10n),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                color: theme.colorScheme.onSurface,
+                fontSize: 14.6,
+              ),
+            ),
+            const SizedBox(height: 5),
             Text(
               _themeStyleSubtitle(style, l10n: l10n),
               maxLines: 2,
@@ -1179,6 +1148,18 @@ class _ThemeStyleCard extends StatelessWidget {
                 height: 1.3,
               ),
             ),
+            if (selected) ...[
+              const SizedBox(height: 9),
+              TintedStatusChip(
+                text: l10n?.settingsThemeStyleInUseBadge ?? '当前使用',
+                color: scheme.primary,
+                enablePopup: false,
+                showBorder: false,
+                fontSize: 10.8,
+                fontWeight: FontWeight.w800,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              ),
+            ],
           ],
         ),
       ),

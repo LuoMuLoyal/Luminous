@@ -34,13 +34,22 @@ class SearchSurfaceCard extends StatelessWidget {
   }) {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = scheme.surface.withValues(alpha: isDark ? 0.35 : 0.65);
+    final resolvedAccent = accentColor ?? scheme.primary;
+    final resolvedSecondary =
+        secondaryColor ?? Color.lerp(scheme.secondary, scheme.tertiary, 0.5)!;
+    final baseColor = scheme.surface.withValues(alpha: isDark ? 0.42 : 0.82);
+    final borderColor = appTintedBorder(
+      context,
+      resolvedAccent,
+      lightAlpha: 0.16,
+      darkAlpha: 0.24,
+    );
 
     if (ornamentsDisabled) {
       return AppSurfaceCard(
         radius: 16,
         color: baseColor,
-        borderColor: Colors.transparent,
+        borderColor: borderColor,
         child: child,
       );
     }
@@ -49,14 +58,12 @@ class SearchSurfaceCard extends StatelessWidget {
       return AppSectionCard(
         radius: 16,
         padding: EdgeInsets.zero,
-        accentColor: accentColor ?? scheme.primary,
-        secondaryColor:
-            secondaryColor ??
-            Color.lerp(scheme.secondary, scheme.tertiary, 0.5),
+        accentColor: resolvedAccent,
+        secondaryColor: resolvedSecondary,
         baseColor: baseColor,
         ornamentKey: ornamentKey,
         ornamentVisibilityScale: ornamentVisibilityScale,
-        surfaceBorderColor: Colors.transparent,
+        surfaceBorderColor: borderColor,
         child: child,
       );
     }
@@ -64,12 +71,12 @@ class SearchSurfaceCard extends StatelessWidget {
     return AppSectionCard(
       radius: 16,
       padding: EdgeInsets.zero,
-      accentColor: scheme.primary.withValues(alpha: 0.15),
-      secondaryColor: scheme.secondary.withValues(alpha: 0.15),
+      accentColor: resolvedAccent,
+      secondaryColor: resolvedSecondary,
       baseColor: baseColor,
       ornamentKey: 'search.item',
       ornamentVisibilityScale: ornamentVisibilityScale,
-      surfaceBorderColor: Colors.transparent,
+      surfaceBorderColor: borderColor,
       child: child,
     );
   }

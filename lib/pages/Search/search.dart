@@ -436,7 +436,12 @@ class _SearchViewState extends State<SearchView> {
     required String ornamentKey,
     required Widget child,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     return SearchSurfaceCard(
+      decorated: true,
+      accentColor: scheme.primary,
+      secondaryColor: Color.lerp(scheme.secondary, scheme.tertiary, 0.45)!,
+      ornamentKey: ornamentKey,
       ornamentVisibilityScale: _pageOrnamentVisibilityScale,
       child: child,
     );
@@ -648,15 +653,45 @@ class _SearchViewState extends State<SearchView> {
                           fillColor: appTintedSurface(
                             context,
                             scheme.primary,
-                            lightAlpha: 0.04,
-                            darkAlpha: 0.10,
+                            lightAlpha: 0.05,
+                            darkAlpha: 0.11,
                             baseColor:
                                 theme.inputDecorationTheme.fillColor ??
                                 (theme.cardTheme.color ?? scheme.surface),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
+                            borderSide: BorderSide(
+                              color: appTintedBorder(
+                                context,
+                                scheme.primary,
+                                lightAlpha: 0.14,
+                                darkAlpha: 0.22,
+                              ),
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: appTintedBorder(
+                                context,
+                                scheme.primary,
+                                lightAlpha: 0.14,
+                                darkAlpha: 0.22,
+                              ),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: appTintedBorder(
+                                context,
+                                scheme.primary,
+                                lightAlpha: 0.28,
+                                darkAlpha: 0.34,
+                              ),
+                              width: 1.3,
+                            ),
                           ),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 12,

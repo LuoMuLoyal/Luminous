@@ -444,21 +444,16 @@ class _MainBottomBar extends StatelessWidget {
               if (showOrnaments)
                 Positioned.fill(
                   child: IgnorePointer(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 260),
-                      switchInCurve: Curves.easeOutCubic,
-                      switchOutCurve: Curves.easeInCubic,
-                      child: Stack(
-                        key: ValueKey<String>('${layout.id}-$currentIndex'),
-                        fit: StackFit.expand,
-                        children: _buildBottomBarOrnaments(
-                          layout: layout,
-                          accentColor: currentColor,
-                          secondaryColor: secondaryColor,
-                          isDark: isDark,
-                          visibilityFactor: visibilityFactor,
-                          globalShiftX: tabCenterShift,
-                        ),
+                    child: Stack(
+                      key: ValueKey<String>('${layout.id}-$currentIndex'),
+                      fit: StackFit.expand,
+                      children: _buildBottomBarOrnaments(
+                        layout: layout,
+                        accentColor: currentColor,
+                        secondaryColor: secondaryColor,
+                        isDark: isDark,
+                        visibilityFactor: visibilityFactor,
+                        globalShiftX: tabCenterShift,
                       ),
                     ),
                   ),

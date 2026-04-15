@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
-import 'package:luminous/components/auth.dart';
 import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/components/tinted_status_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -99,14 +98,6 @@ class SafetyAssistPage extends StatelessWidget {
     return l10n?.safetyModePair ?? 'Two-medicine interaction';
   }
 
-  String _selectedWaitingText(AppLocalizations? l10n) {
-    return l10n?.safetySelectedWaiting ?? 'Waiting for medicine selection';
-  }
-
-  String _selectedCountText(AppLocalizations? l10n, int count) {
-    return l10n?.safetySelectedCount(count) ?? '$count medicines selected';
-  }
-
   String _cloudWithContextText(AppLocalizations? l10n) {
     return l10n?.safetyCloudWithContext ?? 'Can include account context';
   }
@@ -171,7 +162,6 @@ class SafetyAssistPage extends StatelessWidget {
     AppLocalizations? l10n,
   ) {
     final loggedIn = controller.loggedIn;
-    final selectedCount = controller.selectedCount;
 
     return SoftBannerCard(
       palette: SoftBannerPalettes.drugOf(context),
@@ -243,17 +233,6 @@ class SafetyAssistPage extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: _SafetyInfoChip(
-                    icon: Icons.medication_outlined,
-                    text: selectedCount == 0
-                        ? _selectedWaitingText(l10n)
-                        : _selectedCountText(l10n, selectedCount),
-                    backgroundColor: theme.surfaceColor,
-                    foregroundColor: theme.surfaceTextColor,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: _SafetyInfoChip(
                     icon: loggedIn
                         ? Icons.cloud_done_rounded
                         : Icons.cloud_outlined,
@@ -284,21 +263,7 @@ class SafetyAssistPage extends StatelessWidget {
       accentColor: scheme.secondary,
       secondaryColor: scheme.tertiary,
       ornamentKey: 'safety.mode',
-      child: AuthMethodSwitcher(
-        accentColor: scheme.secondary,
-        items: [
-          AuthMethodItem(
-            label: _modeSingleText(l10n),
-            selected: controller.mode == SafetyAssistController.singleMode,
-            onTap: () => controller.setMode(SafetyAssistController.singleMode),
-          ),
-          AuthMethodItem(
-            label: _modePairText(l10n),
-            selected: controller.mode == SafetyAssistController.pairMode,
-            onTap: () => controller.setMode(SafetyAssistController.pairMode),
-          ),
-        ],
-      ),
+      child: _SafetyModeSwitcher(controller: controller, l10n: l10n),
     );
   }
 
@@ -416,27 +381,16 @@ class SafetyAssistPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      Container(
+                      TintedStatusChip(
+                        text: badge,
+                        color: color,
+                        enablePopup: false,
+                        showBorder: false,
+                        fontSize: 10.2,
+                        fontWeight: FontWeight.w700,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 7,
                           vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: appTintedSurface(
-                            context,
-                            color,
-                            lightAlpha: 0.08,
-                            darkAlpha: 0.16,
-                          ),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(
-                          badge,
-                          style: TextStyle(
-                            fontSize: 10.2,
-                            fontWeight: FontWeight.w700,
-                            color: color,
-                          ),
                         ),
                       ),
                     ],
@@ -608,19 +562,19 @@ class SafetyAssistPage extends StatelessWidget {
                                 ? '上次 AI 分析结果 · $cachedTime'
                                 : 'Previous AI analysis result · $cachedTime'),
                       style: TextStyle(
-                        fontSize: 12.6,
+                        fontSize: 12.4,
                         height: 1.45,
-                        color: scheme.onSurfaceVariant,
+                        color: Color.lerp(
+                          scheme.onSurfaceVariant,
+                          scheme.onSurface,
+                          0.18,
+                        ),
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
                 for (var i = 0; i < entries.length; i++) ...[
-                  _AiResultEntryCard(
-                    index: i + 1,
-                    text: entries[i],
-                    isHeading: _looksLikeHeading(entries[i]),
-                  ),
+                  _AiResultEntryCard(index: i + 1, text: entries[i]),
                   if (i != entries.length - 1) const SizedBox(height: 9),
                 ],
               ],
@@ -635,58 +589,27 @@ class SafetyAssistPage extends StatelessWidget {
       return const <String>[];
     }
 
-    const sectionMarkers = <String>[
-      '是否存在相互作用',
-      '可能风险',
-      '联用建议',
-      '何时需要咨询医生或药师',
-      '风险提示',
-      '用药建议',
-    ];
+    text = text
+        .replaceAllMapped(
+          RegExp(r'(?<!\n)([•●▪◦·])\s*'),
+          (match) => '\n${match.group(1)} ',
+        )
+        .replaceAllMapped(
+          RegExp(r'(?<!\n)((?:\d+|[一二三四五六七八九十]+)[、.．])\s*'),
+          (match) => '\n${match.group(1)} ',
+        );
 
-    for (final marker in sectionMarkers) {
-      final escaped = RegExp.escape(marker);
-      text = text.replaceAllMapped(
-        RegExp('(?<!\\n)($escaped[：:])'),
-        (match) => '\n${match.group(1)}',
-      );
-    }
-
-    var parts = text
-        .split('\n')
-        .map((line) => line.trim())
-        .where((line) => line.isNotEmpty)
-        .toList(growable: false);
-
-    if (parts.length <= 1) {
-      final sentences = text
-          .split(RegExp(r'(?<=[。！？])\s*'))
-          .map((line) => line.trim())
-          .where((line) => line.isNotEmpty)
-          .toList(growable: false);
-      if (sentences.length > 1) {
-        parts = sentences;
+    final parts = <String>[];
+    for (final line in text.split(RegExp(r'\n+|(?<=[。！？；;])\s*'))) {
+      final normalized = line
+          .replaceFirst(RegExp(r'^[•●▪◦·\-*]+\s*'), '')
+          .trim();
+      if (normalized.isNotEmpty) {
+        parts.add(normalized);
       }
     }
 
     return parts;
-  }
-
-  bool _looksLikeHeading(String text) {
-    final line = text.trim();
-    if (line.isEmpty) {
-      return false;
-    }
-    if (line.length > 28) {
-      return false;
-    }
-    final headingPattern = RegExp(
-      r'^(第[一二三四五六七八九十]+[章节部分]|[一二三四五六七八九十]+[、.．]|\d+[、.．])',
-    );
-    if (headingPattern.hasMatch(line)) {
-      return true;
-    }
-    return line.endsWith('建议') || line.endsWith('事项') || line.endsWith('人群');
   }
 
   /// 打开药品选择器并把结果写入 A 或 B。
@@ -766,28 +689,15 @@ class _SectionCard extends StatelessWidget {
 }
 
 class _AiResultEntryCard extends StatelessWidget {
-  const _AiResultEntryCard({
-    required this.index,
-    required this.text,
-    required this.isHeading,
-  });
+  const _AiResultEntryCard({required this.index, required this.text});
 
   final int index;
   final String text;
-  final bool isHeading;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-    final accent = isHeading
-        ? Color.lerp(scheme.secondary, scheme.primary, 0.4)!
-        : scheme.primary;
-    final headingColor = isDark ? scheme.onSurface : const Color(0xFF0F172A);
-    final bodyColor = isDark
-        ? scheme.onSurface.withValues(alpha: 0.92)
-        : const Color(0xFF334155);
+    final accent = Color.lerp(scheme.primary, scheme.secondary, 0.34)!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -795,8 +705,8 @@ class _AiResultEntryCard extends StatelessWidget {
         color: appTintedSurface(
           context,
           accent,
-          lightAlpha: isHeading ? 0.09 : 0.05,
-          darkAlpha: isHeading ? 0.18 : 0.12,
+          lightAlpha: 0.06,
+          darkAlpha: 0.12,
         ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
@@ -834,10 +744,14 @@ class _AiResultEntryCard extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                fontSize: isHeading ? 19 : 16,
-                height: 1.55,
-                color: isHeading ? headingColor : bodyColor,
-                fontWeight: isHeading ? FontWeight.w800 : FontWeight.w600,
+                fontSize: 14.6,
+                height: 1.6,
+                color: Color.lerp(
+                  scheme.onSurfaceVariant,
+                  scheme.onSurface,
+                  0.34,
+                ),
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -901,11 +815,142 @@ class _SafetyInfoChip extends StatelessWidget {
       iconSize: 14,
       fontSize: 11.2,
       fontWeight: FontWeight.w700,
-      textMaxLines: 2,
+      textMaxLines: 1,
       textOverflow: TextOverflow.ellipsis,
       expandText: true,
       mainAxisSize: MainAxisSize.max,
       padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+    );
+  }
+}
+
+class _SafetyModeSwitcher extends StatelessWidget {
+  const _SafetyModeSwitcher({required this.controller, required this.l10n});
+
+  final SafetyAssistController controller;
+  final AppLocalizations? l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final singleColor = scheme.primary;
+    final pairColor = Color.lerp(scheme.secondary, scheme.tertiary, 0.42)!;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _SafetyModeOption(
+            label: l10n?.safetyModeSingle ?? 'Single-medicine guidance',
+            icon: Icons.medication_rounded,
+            color: singleColor,
+            selected: controller.mode == SafetyAssistController.singleMode,
+            onTap: () => controller.setMode(SafetyAssistController.singleMode),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _SafetyModeOption(
+            label: l10n?.safetyModePair ?? 'Two-medicine interaction',
+            icon: Icons.compare_arrows_rounded,
+            color: pairColor,
+            selected: controller.mode == SafetyAssistController.pairMode,
+            onTap: () => controller.setMode(SafetyAssistController.pairMode),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SafetyModeOption extends StatelessWidget {
+  const _SafetyModeOption({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOutCubic,
+          padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
+          decoration: BoxDecoration(
+            color: selected
+                ? appTintedSurface(
+                    context,
+                    color,
+                    lightAlpha: 0.12,
+                    darkAlpha: 0.20,
+                  )
+                : theme.cardColor.withValues(alpha: 0.44),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: selected
+                  ? appTintedBorder(
+                      context,
+                      color,
+                      lightAlpha: 0.24,
+                      darkAlpha: 0.34,
+                    )
+                  : scheme.outline,
+            ),
+            boxShadow: selected
+                ? [
+                    BoxShadow(
+                      color: color.withValues(alpha: 0.12),
+                      blurRadius: 14,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
+                : const [],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: color, size: 16),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11.8,
+                    fontWeight: FontWeight.w800,
+                    color: selected ? color : scheme.onSurface,
+                    height: 1.15,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
