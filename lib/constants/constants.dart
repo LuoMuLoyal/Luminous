@@ -79,6 +79,23 @@ class GlobalConstants {
       'luminous_ornament_transparency';
 }
 
+/// 发版相关的统一展示信息。
+class AppReleaseInfo {
+  AppReleaseInfo._();
+
+  /// 正式版软件名。
+  static const String appName = 'Luminous';
+
+  /// 主版本号。
+  static const String versionName = '3.3.0';
+
+  /// 构建号。
+  static const String buildNumber = '77';
+
+  /// 应用内展示的完整版本号。
+  static const String fullVersion = '$versionName+$buildNumber';
+}
+
 /// 后端接口路径常量集合。
 ///
 /// API 层统一引用这里的路径，避免在业务代码里散落硬编码接口字符串。

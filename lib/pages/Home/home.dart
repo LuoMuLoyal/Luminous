@@ -173,7 +173,7 @@ class _HomeViewState extends State<HomeView> {
                     palette: SoftBannerPalettes.homeOf(context),
                     todayTipListenable: _todayTipNotifier,
                     nextText: nextText,
-                    loadingReminders: false,
+                    loadingReminders: _controller.loadingReminders,
                     reminderCount: _reminders.length,
                     onTapTip: _cycleHealthTip,
                     onLongPressTip: _showAllHealthTips,
@@ -260,6 +260,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> _loadCheckInRecords() async {
+    await _controller.loadReminders();
     await _controller.loadCheckInRecords();
   }
 

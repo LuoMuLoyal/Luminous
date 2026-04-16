@@ -23,6 +23,7 @@ void main() {
 
   tearDown(() {
     ToastUtils.instance.dismiss();
+    Get.reset();
   });
 
   Widget createLoginWidget({AuthApi? authApi}) {
@@ -34,30 +35,30 @@ void main() {
     );
   }
 
-  testWidgets('tap login with empty fields shows phone error', (tester) async {
+  testWidgets('tap login with empty fields shows email error', (tester) async {
     await tester.pumpWidget(createLoginWidget());
 
     await tester.ensureVisible(find.text('登录'));
     await tester.tap(find.text('登录'));
     await tester.pump();
 
-    expect(find.text('请输入手机号'), findsWidgets);
+    expect(find.text('请输入邮箱'), findsWidgets);
   });
 
-  testWidgets('invalid phone shows phone format error before network', (
+  testWidgets('invalid email shows email format error before network', (
     tester,
   ) async {
     await tester.pumpWidget(createLoginWidget());
 
     final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), '123');
+    await tester.enterText(fields.at(0), 'tester');
     await tester.enterText(fields.at(1), 'Abc123');
 
     await tester.ensureVisible(find.text('登录'));
     await tester.tap(find.text('登录'));
     await tester.pump();
 
-    expect(find.text('手机号格式不正确'), findsWidgets);
+    expect(find.text('邮箱格式不正确'), findsWidgets);
   });
 
   testWidgets(
@@ -70,7 +71,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final fields = find.byType(TextFormField);
-      await tester.enterText(fields.at(0), '13800138000');
+      await tester.enterText(fields.at(0), 'tester@example.com');
       await tester.tap(find.text('发送'));
       await tester.pump();
       ToastUtils.instance.dismiss();
@@ -95,9 +96,15 @@ void main() {
             ),
           )
           .toList();
-      expect(registerFields[0].controller?.text, '13800138000');
-      // SMS captcha field
+      expect(registerFields[1].controller?.text, 'tester@example.com');
+      // Email code field
       expect(registerFields[2].controller?.text, '123456');
+
+      await tester.pump(const Duration(seconds: 60));
+      ToastUtils.instance.dismiss();
+      await tester.pump();
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
     },
   );
 
@@ -107,7 +114,10 @@ void main() {
     await tester.tap(find.text('验证码登录'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(TextFormField).at(0), '13800138000');
+    await tester.enterText(
+      find.byType(TextFormField).at(0),
+      'tester@example.com',
+    );
     await tester.tap(find.text('发送'));
     await tester.pump();
 
@@ -121,6 +131,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     expect(find.text('59s'), findsOneWidget);
 
+    await tester.pump(const Duration(seconds: 59));
     ToastUtils.instance.dismiss();
     await tester.pump();
     await tester.pumpWidget(const SizedBox.shrink());

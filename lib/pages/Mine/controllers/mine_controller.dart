@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:luminous/constants/constants.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/browse_history_store.dart';
 import 'package:luminous/stores/user_controller.dart';
@@ -128,19 +129,13 @@ class MineController extends GetxController {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Luminous Alpha',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                ),
+                AppReleaseInfo.appName,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 6),
               const Text(
-                '版本 3.1.0-alpha.1+35',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
+                '版本 ${AppReleaseInfo.fullVersion}',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 12),
               Text(
