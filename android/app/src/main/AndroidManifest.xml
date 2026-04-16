@@ -11,7 +11,7 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <application
-        android:label="Luminous Beta"
+        android:label="Luminous"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -26,6 +26,7 @@ void main() {
   test(
     'medicine detail controller refreshes with refresh=true on reanalyze',
     () async {
+      final userController = Get.put(UserController(), permanent: true);
       final refreshCalls = <bool>[];
       final item = const MedicineItem(
         serialNo: '',
@@ -40,6 +41,7 @@ void main() {
       );
       final controller = MedicineDetailController(
         initialItem: item,
+        userController: userController,
         fetchDetail:
             ({String? drugCode, String? approvalNo, cancelToken}) async {
               return ApiResult<MedicineItem>(

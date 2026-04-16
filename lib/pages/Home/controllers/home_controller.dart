@@ -32,9 +32,11 @@ class HomeController extends GetxController {
   Worker? _userWorker;
   Worker? _sessionReadyWorker;
   StreamSubscription<int>? _revisionSubscription;
+  bool _loadingReminders = false;
   bool _loadingCheckInRecords = false;
   bool _checkInReloadQueued = false;
   int _checkInRequestId = 0;
+  int _reminderRequestId = 0;
   String? _lastRequestedUserId;
 
   List<String> get healthTips => List<String>.unmodifiable(_healthTips);
@@ -42,6 +44,7 @@ class HomeController extends GetxController {
       List<HomeReminderItemData>.unmodifiable(_reminders);
   List<HomeCheckInRecordData> get checkInRecords =>
       List<HomeCheckInRecordData>.unmodifiable(_checkInRecords);
+  bool get loadingReminders => _loadingReminders;
   bool get loadingCheckInRecords => _loadingCheckInRecords;
   String get currentUserId => (_userController.user.value?.id ?? '').trim();
 
@@ -95,6 +98,7 @@ class HomeController extends GetxController {
     }
 
     if (currentUserId.isEmpty) {
+      _loadingReminders = false;
       _loadingCheckInRecords = false;
       _checkInRecords
         ..clear()
@@ -118,7 +122,11 @@ class HomeController extends GetxController {
     if (userId.isEmpty) {
       _lastRequestedUserId = userId;
       _checkInReloadQueued = false;
+      _loadingReminders = false;
       _loadingCheckInRecords = false;
+      _reminders
+        ..clear()
+        ..addAll(_demoReminders);
       _checkInRecords
         ..clear()
         ..addAll(_demoCheckInRecords);
@@ -127,6 +135,7 @@ class HomeController extends GetxController {
     }
 
     if (_lastRequestedUserId != null && _lastRequestedUserId != userId) {
+      _reminders.clear();
       _checkInRecords.clear();
       update();
     } else {
@@ -138,7 +147,54 @@ class HomeController extends GetxController {
     }
 
     _lastRequestedUserId = userId;
+    unawaited(loadReminders(syncRemote: true));
     unawaited(loadCheckInRecords());
+  }
+
+  Future<void> loadReminders({bool syncRemote = false}) async {
+    final userId = currentUserId;
+    if (userId.isEmpty) {
+      _loadingReminders = false;
+      _reminders
+        ..clear()
+        ..addAll(_demoReminders);
+      update();
+      return;
+    }
+
+    final requestId = ++_reminderRequestId;
+    _loadingReminders = true;
+    update();
+
+    try {
+      final localItems = await _reminderGateway.loadTodayItems(userId);
+      if (!_canApplyReminderResult(requestId, userId)) {
+        return;
+      }
+      _applyReminderItems(localItems);
+
+      if (syncRemote) {
+        await _reminderGateway.syncRemoteToLocal(userId);
+        if (!_canApplyReminderResult(requestId, userId)) {
+          return;
+        }
+        final refreshedItems = await _reminderGateway.loadTodayItems(userId);
+        if (!_canApplyReminderResult(requestId, userId)) {
+          return;
+        }
+        _applyReminderItems(refreshedItems);
+      }
+    } catch (_) {
+      if (_canApplyReminderResult(requestId, userId)) {
+        _reminders.clear();
+        update();
+      }
+    } finally {
+      if (_isActiveReminderRequest(requestId) && !isClosed) {
+        _loadingReminders = false;
+        update();
+      }
+    }
   }
 
   Future<void> loadCheckInRecords() async {
@@ -212,6 +268,7 @@ class HomeController extends GetxController {
       if (isClosed || !context.mounted || userId != currentUserId) {
         return;
       }
+      await loadReminders();
       await loadCheckInRecords();
     } catch (error) {
       if (!context.mounted) {
@@ -253,9 +310,42 @@ class HomeController extends GetxController {
         if (isClosed) {
           return;
         }
+        unawaited(loadReminders());
         unawaited(loadCheckInRecords());
       },
     );
+  }
+
+  void _applyReminderItems(List<ReminderItem> items) {
+    _reminders
+      ..clear()
+      ..addAll(items.map(_mapReminderItem));
+    update();
+  }
+
+  HomeReminderItemData _mapReminderItem(ReminderItem item) {
+    final time = item.time.trim();
+    final title = item.title.trim();
+    final titleText = time.isEmpty ? title : '$time $title';
+    return HomeReminderItemData(
+      icon: item.done ? Icons.task_alt_rounded : Icons.access_time_rounded,
+      title: titleText.isEmpty
+          ? (item.subtitle.trim().isEmpty ? '提醒事项' : item.subtitle.trim())
+          : titleText,
+      dosage: item.dosage,
+      subtitle: item.subtitle,
+      done: item.done,
+    );
+  }
+
+  bool _canApplyReminderResult(int requestId, String userId) {
+    return !isClosed &&
+        _isActiveReminderRequest(requestId) &&
+        userId == currentUserId;
+  }
+
+  bool _isActiveReminderRequest(int requestId) {
+    return requestId == _reminderRequestId;
   }
 
   bool _canApplyCheckInResult(int requestId, String userId) {
