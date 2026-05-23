@@ -2,30 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/pages/Home/home.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/pages/Home/controllers/home_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:luminous/viewmodels/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/fake_reminder_local_gateway.dart';
+import 'support/session_test_utils.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     Get.testMode = true;
     Get.reset();
-
-    final controller = Get.put(UserController(), permanent: true);
-    controller.user.value = const UserSafe(
-      id: 'user-1',
-      username: 'tester',
-      email: '',
-      phone: '13800138000',
-      name: '',
-      type: 0,
+    await createTestProviderContainer(
+      user: const UserSafe(
+        id: 'user-1',
+        username: 'tester',
+        email: '',
+        phone: '13800138000',
+        name: '',
+        type: 0,
+      ),
     );
   });
 
@@ -72,10 +73,9 @@ void main() {
     expect(gateway.syncRemoteToLocalCalls, 1);
   });
 
-  testWidgets(
+  test(
     'home clears stale reminders when switched user has no local data',
-    (tester) async {
-      final controller = Get.find<UserController>();
+    () async {
       final gateway = FakeReminderLocalGateway();
       gateway.setTodayItems('user-1', const [
         ReminderItem(
@@ -87,31 +87,36 @@ void main() {
         ),
       ]);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(body: HomeView(reminderGateway: gateway)),
+      final controller = HomeController(reminderGateway: gateway)
+        ..applyLocalizedData(
+          healthTips: const ['tip'],
+          demoReminders: const <HomeReminderItemData>[],
+          demoCheckInRecords: const <HomeCheckInRecordData>[],
+        )
+        ..onInit();
+      addTearDown(controller.onClose);
+
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+
+      expect(controller.reminders.map((item) => item.title), [
+        '09:00 旧账号提醒',
+      ]);
+
+      await setTestSessionUser(
+        const UserSafe(
+          id: 'user-2',
+          username: 'tester-2',
+          email: '',
+          phone: '13900139000',
+          name: '',
+          type: 0,
         ),
       );
-      await tester.pumpAndSettle();
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(const Duration(milliseconds: 20));
 
-      expect(find.textContaining('旧账号提醒', findRichText: true), findsWidgets);
-
-      controller.user.value = const UserSafe(
-        id: 'user-2',
-        username: 'tester-2',
-        email: '',
-        phone: '13900139000',
-        name: '',
-        type: 0,
-      );
-      await tester.pump();
-      await tester.pumpAndSettle();
-
-      expect(find.textContaining('旧账号提醒', findRichText: true), findsNothing);
-      expect(
-        find.textContaining('今天暂无待完成提醒', findRichText: true),
-        findsWidgets,
-      );
+      expect(controller.reminders, isEmpty);
     },
   );
 }

@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/reminder_local_gateway.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
@@ -15,16 +17,12 @@ import 'package:luminous/viewmodels/home.dart';
 /// 打卡页只读取本地 today snapshot，打卡动作也统一写回本地仓库，再靠
 /// revision 触发页面重新读取。
 class CheckInController extends GetxController {
-  CheckInController({
-    UserController? userController,
-    ReminderLocalGateway? reminderGateway,
-  }) : _userController = userController ?? Get.find<UserController>(),
-       _reminderGateway = reminderGateway ?? reminderLocalGateway;
+  CheckInController({ReminderLocalGateway? reminderGateway})
+    : _reminderGateway = reminderGateway ?? reminderLocalGateway;
 
-  final UserController _userController;
   final ReminderLocalGateway _reminderGateway;
 
-  Worker? _userWorker;
+  ProviderSubscription? _userWorker;
   StreamSubscription<int>? _revisionSubscription;
   bool _loading = false;
   String? _error;
@@ -35,15 +33,21 @@ class CheckInController extends GetxController {
   bool get loading => _loading;
   String? get error => _error;
   List<ReminderItem> get items => _items;
-  String get userId => _userController.user.value?.id ?? '';
-  bool get isLoggedIn => _userController.isLoggedIn && userId.isNotEmpty;
+  String get userId =>
+      globalProviderContainer.read(currentUserProvider)?.id ?? '';
+  bool get isLoggedIn =>
+      (globalProviderContainer.read(currentUserProvider)?.hasData ?? false) &&
+      userId.isNotEmpty;
   int get doneCount => _items.where((item) => item.done).length;
   int get pendingCount => _items.length - doneCount;
 
   @override
   void onInit() {
     super.onInit();
-    _userWorker = ever<dynamic>(_userController.user, (_) {
+    _userWorker = globalProviderContainer.listen(currentUserProvider, (
+      previous,
+      next,
+    ) {
       _handleUserChanged();
     });
     _handleUserChanged();
@@ -51,7 +55,7 @@ class CheckInController extends GetxController {
 
   @override
   void onClose() {
-    _userWorker?.dispose();
+    _userWorker?.close();
     _revisionSubscription?.cancel();
     super.onClose();
   }

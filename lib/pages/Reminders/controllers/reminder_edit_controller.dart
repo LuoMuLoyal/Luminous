@@ -4,7 +4,8 @@ import 'package:luminous/api/reminder_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Picker/medicine_picker.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:luminous/viewmodels/reminder.dart';
@@ -13,11 +14,9 @@ import 'package:luminous/viewmodels/reminder.dart';
 ///
 /// 负责维护提醒编辑表单、药品选择、日期时间选择与保存流程。
 class ReminderEditController extends GetxController {
-  ReminderEditController({this.initial, UserController? userController})
-    : _userController = userController ?? Get.find<UserController>();
+  ReminderEditController({this.initial});
 
   final ReminderPlan? initial;
-  final UserController _userController;
 
   late final TextEditingController nameController = TextEditingController(
     text: initial?.productName ?? '',
@@ -49,7 +48,8 @@ class ReminderEditController extends GetxController {
   String get normalizedExtraContent => subtitleController.text.trim();
   bool get hasLinkedIdentity => _selectedMedicines.isNotEmpty;
   bool get canSave => !_saving && _selectedMedicines.isNotEmpty;
-  String get userId => _userController.user.value?.id ?? '';
+  String get userId =>
+      globalProviderContainer.read(currentUserProvider)?.id ?? '';
 
   @override
   void onInit() {

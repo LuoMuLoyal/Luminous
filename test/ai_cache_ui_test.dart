@@ -5,20 +5,22 @@ import 'package:get/get.dart';
 import 'package:luminous/pages/Drug/controllers/medicine_detail_controller.dart';
 import 'package:luminous/pages/Safety/controllers/safety_assist_controller.dart';
 import 'package:luminous/pages/Safety/safety_assist.dart';
-import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:luminous/viewmodels/safety.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'support/session_test_utils.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     Get.testMode = true;
     Get.reset();
+    await createTestProviderContainer();
   });
 
   tearDown(Get.reset);
@@ -26,7 +28,6 @@ void main() {
   test(
     'medicine detail controller refreshes with refresh=true on reanalyze',
     () async {
-      final userController = Get.put(UserController(), permanent: true);
       final refreshCalls = <bool>[];
       final item = const MedicineItem(
         serialNo: '',
@@ -41,7 +42,6 @@ void main() {
       );
       final controller = MedicineDetailController(
         initialItem: item,
-        userController: userController,
         fetchDetail:
             ({String? drugCode, String? approvalNo, cancelToken}) async {
               return ApiResult<MedicineItem>(
@@ -81,14 +81,15 @@ void main() {
   testWidgets(
     'safety assist shows cached banner and refreshes with refresh=true',
     (tester) async {
-      final userController = Get.put(UserController(), permanent: true);
-      userController.user.value = const UserSafe(
-        id: 'user-1',
-        username: 'tester',
-        email: '',
-        phone: '13800138000',
-        name: '',
-        type: 0,
+      await setTestSessionUser(
+        const UserSafe(
+          id: 'user-1',
+          username: 'tester',
+          email: '',
+          phone: '13800138000',
+          name: '',
+          type: 0,
+        ),
       );
 
       final refreshCalls = <bool>[];
@@ -104,7 +105,6 @@ void main() {
         drugCodeRemark: '',
       );
       final controller = SafetyAssistController(
-        userController: userController,
         queryApi:
             ({
               String? userId,

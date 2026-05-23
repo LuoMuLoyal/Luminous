@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/constants/constants.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/browse_history_store.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:luminous/viewmodels/browse_history.dart';
@@ -17,27 +19,27 @@ import 'package:luminous/viewmodels/browse_history.dart';
 /// - 加载浏览记录预览；
 /// - 处理页面上的主要路由与交互。
 class MineController extends GetxController {
-  MineController({
-    UserController? userController,
-    BrowseHistoryStore? historyStore,
-  }) : _userController = userController ?? Get.find<UserController>(),
-       _historyStore = historyStore ?? browseHistoryStore;
+  MineController({BrowseHistoryStore? historyStore})
+    : _historyStore = historyStore ?? browseHistoryStore;
 
-  final UserController _userController;
   final BrowseHistoryStore _historyStore;
 
-  Worker? _userWorker;
+  ProviderSubscription? _userWorker;
   BrowseHistoryEntry? _latestBrowseEntry;
   int _browseHistoryCount = 0;
 
   BrowseHistoryEntry? get latestBrowseEntry => _latestBrowseEntry;
   int get browseHistoryCount => _browseHistoryCount;
-  bool get isLoggedIn => _userController.isLoggedIn;
+  bool get isLoggedIn =>
+      (globalProviderContainer.read(currentUserProvider)?.hasData ?? false);
 
   @override
   void onInit() {
     super.onInit();
-    _userWorker = ever<dynamic>(_userController.user, (_) {
+    _userWorker = globalProviderContainer.listen(currentUserProvider, (
+      previous,
+      next,
+    ) {
       unawaited(loadBrowseHistoryPreview());
       update();
     });
@@ -46,16 +48,17 @@ class MineController extends GetxController {
 
   @override
   void onClose() {
-    _userWorker?.dispose();
+    _userWorker?.close();
     super.onClose();
   }
 
-  UserSafe? get currentUser => _userController.user.value;
+  UserSafe? get currentUser =>
+      globalProviderContainer.read(currentUserProvider);
 
   Future<void> loadBrowseHistoryPreview() async {
     try {
       final entries = await _historyStore.loadEntries(
-        userId: _userController.user.value?.id,
+        userId: globalProviderContainer.read(currentUserProvider)?.id,
       );
       if (isClosed) {
         return;
@@ -74,7 +77,8 @@ class MineController extends GetxController {
   }
 
   Future<void> onTapProfile(BuildContext context) async {
-    if (!_userController.isLoggedIn) {
+    if (!(globalProviderContainer.read(currentUserProvider)?.hasData ??
+        false)) {
       Navigator.pushNamed(context, '/login');
       return;
     }
@@ -82,7 +86,8 @@ class MineController extends GetxController {
   }
 
   Future<void> onTapAction(BuildContext context) async {
-    if (!_userController.isLoggedIn) {
+    if (!(globalProviderContainer.read(currentUserProvider)?.hasData ??
+        false)) {
       Navigator.pushNamed(context, '/login');
       return;
     }

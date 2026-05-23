@@ -6,24 +6,22 @@ import 'package:luminous/stores/app_database.dart';
 import 'package:luminous/stores/reminder_local_gateway.dart';
 import 'package:luminous/stores/session_sync_service.dart';
 import 'package:luminous/stores/token_manager.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
 import 'package:luminous/utils/notification_service.dart';
 
 /// 首帧渲染后的异步预热协调器。
 class AppStartupWarmup {
   AppStartupWarmup({
-    required UserController userController,
     required Future<void> Function() restoreUserSession,
     required Future<void> Function() warmOrnaments,
     ReminderLocalGateway? reminderGateway,
     Future<void> Function(String userId)? syncSession,
-  }) : _userController = userController,
-       _restoreUserSessionTask = restoreUserSession,
+  }) : _restoreUserSessionTask = restoreUserSession,
        _warmOrnamentsTask = warmOrnaments,
        _reminderGateway = reminderGateway ?? reminderLocalGateway,
        _syncSession = syncSession ?? sessionSyncService.syncForUser;
 
-  final UserController _userController;
   final Future<void> Function() _restoreUserSessionTask;
   final Future<void> Function() _warmOrnamentsTask;
   final ReminderLocalGateway _reminderGateway;
@@ -75,7 +73,7 @@ class AppStartupWarmup {
       await Future<void>.delayed(const Duration(milliseconds: 80));
       await _restoreUserSessionTask();
 
-      final userId = _userController.user.value?.id;
+      final userId = globalProviderContainer.read(currentUserProvider)?.id;
       if ((userId ?? '').trim().isNotEmpty) {
         final resolvedUserId = userId?.trim() ?? '';
         await _reminderGateway.rescheduleFromLocal(resolvedUserId);

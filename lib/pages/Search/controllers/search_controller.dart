@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/medicine_api.dart';
 import 'package:luminous/stores/local_medicine_store.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
@@ -30,14 +32,12 @@ class SearchController extends GetxController {
     required this.initialKeyword,
     required this.autoSearchOnInit,
     this.searchExecutor,
-    UserController? userController,
-  }) : _userController = userController ?? Get.find<UserController>();
+  });
 
   final bool pickerMode;
   final String initialKeyword;
   final bool autoSearchOnInit;
   final MedicineSearchExecutor? searchExecutor;
-  final UserController _userController;
 
   final TextEditingController searchController = TextEditingController();
   final ValueNotifier<String> draftKeywordNotifier = ValueNotifier<String>('');
@@ -65,7 +65,7 @@ class SearchController extends GetxController {
   int _page = 1;
   int _searchRequestId = 0;
   Timer? _slowSearchHintTimer;
-  Worker? _userWorker;
+  ProviderSubscription? _userWorker;
   List<String> _localizedRecentDefaults = const <String>[];
 
   MedicineQueryMode _queryMode = MedicineQueryMode.online;
@@ -80,7 +80,8 @@ class SearchController extends GetxController {
   String get keyword => _keyword;
   String? get lastError => _lastError;
   MedicineQueryMode get queryMode => _queryMode;
-  String get userId => _userController.user.value?.id ?? '';
+  String get userId =>
+      globalProviderContainer.read(currentUserProvider)?.id ?? '';
 
   @override
   void onInit() {
@@ -104,7 +105,10 @@ class SearchController extends GetxController {
     unawaited(loadRecentKeywords());
     unawaited(detectInitialQueryMode());
 
-    _userWorker = ever<dynamic>(_userController.user, (_) {
+    _userWorker = globalProviderContainer.listen(currentUserProvider, (
+      previous,
+      next,
+    ) {
       unawaited(loadAddedKeys());
       unawaited(loadRecentKeywords());
     });
@@ -116,7 +120,7 @@ class SearchController extends GetxController {
 
   @override
   void onClose() {
-    _userWorker?.dispose();
+    _userWorker?.close();
     _slowSearchHintTimer?.cancel();
     searchController.removeListener(_syncDraftKeyword);
     searchController.dispose();

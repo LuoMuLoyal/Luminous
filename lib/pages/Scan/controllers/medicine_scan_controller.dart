@@ -7,7 +7,8 @@ import 'package:luminous/api/scan_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Scan/models/selected_scan_image.dart';
 import 'package:luminous/stores/album_local_store.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/scan_image_processing.dart';
@@ -22,13 +23,9 @@ import 'package:luminous/viewmodels/scan.dart';
 /// - 候选结果与选中项；
 /// - 保存到应用相册的状态。
 class MedicineScanController extends GetxController {
-  MedicineScanController({
-    UserController? userController,
-    AlbumLocalStore? albumStore,
-  }) : _userController = userController ?? Get.find<UserController>(),
-       _albumStore = albumStore ?? albumLocalStore;
+  MedicineScanController({AlbumLocalStore? albumStore})
+    : _albumStore = albumStore ?? albumLocalStore;
 
-  final UserController _userController;
   final AlbumLocalStore _albumStore;
 
   Uint8List? _photoBytes;
@@ -148,7 +145,8 @@ class MedicineScanController extends GetxController {
 
     try {
       final now = DateTime.now().millisecondsSinceEpoch;
-      final userId = _userController.user.value?.id ?? '';
+      final userId =
+          globalProviderContainer.read(currentUserProvider)?.id ?? '';
       await _albumStore.saveScanRecord(
         userId: userId,
         drugCode: selected?.drugCode,
@@ -194,7 +192,7 @@ class MedicineScanController extends GetxController {
       }
 
       final response = await ScanApi.scanMedicine(
-        userId: _userController.user.value?.id,
+        userId: globalProviderContainer.read(currentUserProvider)?.id,
         imageBase64: base64,
         mimeType: _photoMimeType,
         cancelToken: cancelToken,
