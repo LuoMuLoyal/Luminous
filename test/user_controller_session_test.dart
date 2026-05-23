@@ -56,4 +56,45 @@ void main() {
       expect(prefs.getString(GlobalConstants.USER_KEY), isNull);
     },
   );
+
+  test(
+    'user controller delegates session changes to attached bridge',
+    () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      final controller = UserController(
+        sessionStore: UserSessionStore.fromPreferences(
+          await SharedPreferences.getInstance(),
+        ),
+        cancelNotifications: () async {},
+      );
+      final calls = <String>[];
+      UserSafe? bridgedUser;
+
+      controller.attachSessionBridge(
+        restoreUser: () async {
+          calls.add('restore');
+          return user;
+        },
+        persistUser: (nextUser) async {
+          calls.add('persist:${nextUser.id}');
+          bridgedUser = nextUser;
+        },
+        clearUser: () async {
+          calls.add('clear');
+          bridgedUser = null;
+        },
+      );
+
+      await controller.init();
+      expect(controller.user.value?.id, 'user-1');
+
+      await controller.setUser(user.copyWith(name: 'Updated'));
+      expect(bridgedUser?.name, 'Updated');
+
+      await controller.logout();
+      expect(controller.user.value, isNull);
+      expect(bridgedUser, isNull);
+      expect(calls, <String>['restore', 'persist:user-1', 'clear']);
+    },
+  );
 }

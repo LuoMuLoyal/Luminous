@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/components/mine.dart';
 import 'package:luminous/components/soft_banner.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Mine/controllers/mine_controller.dart';
 import 'package:luminous/viewmodels/mine.dart';
@@ -15,7 +17,7 @@ import 'package:luminous/viewmodels/mine.dart';
 /// 我的页。
 ///
 /// 负责承载个人中心 UI，并通过页面级 GetX controller 接管页面状态。
-class MineView extends StatelessWidget {
+class MineView extends ConsumerWidget {
   /// 创建我的页组件。
   const MineView({super.key, this.controller});
 
@@ -75,7 +77,8 @@ class MineView extends StatelessWidget {
 
   /// 构建我的页 UI。
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
     return GetBuilder<MineController>(
       init: controller ?? MineController(),
       global: false,
@@ -85,7 +88,7 @@ class MineView extends StatelessWidget {
           headerPalette: SoftBannerPalettes.mineOf(context),
           profileCard: MineProfileCard(
             palette: SoftBannerPalettes.mineOf(context),
-            user: controller.currentUser,
+            user: currentUser ?? controller.currentUser,
             onTapProfile: () => controller.onTapProfile(context),
             onTapAction: () => controller.onTapAction(context),
             loggedInActionLabel: l10n?.mineLoggedInActionLabel,

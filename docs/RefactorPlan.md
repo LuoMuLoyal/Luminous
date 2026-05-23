@@ -235,3 +235,5 @@ Tasks:
 - Added a controller test to keep empty reminder lists empty after local load and remote sync.
 - Moved ornament session/UI state from `OrnamentController` to a Riverpod notifier under `lib/core/theme/ornaments/`, keeping this migration slice small and aligned with the target directory structure.
 - Started `UserController` migration by moving session restore and persisted user reads/writes into `lib/features/auth/`, while keeping the old controller API as the compatibility layer for existing pages.
+- Bridged the running app's `UserController` to `userSessionProvider` and added read selectors for current user, login state, and session readiness.
+- Started read-side adoption by moving the Mine profile card's current-user source to `currentUserProvider`, while leaving Mine page actions and browse-history preview in the existing controller.
