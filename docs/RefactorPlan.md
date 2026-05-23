@@ -13,6 +13,21 @@ Luminous is already functional, and the current checks pass. The next work shoul
 
 This plan is intentionally incremental. Each phase should leave the app runnable and covered by targeted checks.
 
+## Migration Guardrails
+
+- Keep each migration slice small and reversible. Finish one state or structure adjustment, verify it, then move on.
+- Start moving new Flutter code toward the target structure instead of extending the old layer-based layout indefinitely:
+
+```text
+lib/
+  core/
+  shared/
+  features/
+```
+
+- Control file size during migration: target under 300 lines per file, 300-600 lines is acceptable, and anything above 600 lines should be split before more logic is added.
+- Prefer migrating single-responsibility UI/session state first, then move to larger auth or business state after the smaller slice is stable.
+
 ## Current Baseline
 
 Verified before this plan:
@@ -218,3 +233,4 @@ Tasks:
 - Added this optimization and Nest migration plan.
 - Phase 1.1 started: `ReminderListController` no longer seeds default reminder plans when the logged-in user's local reminder list is empty.
 - Added a controller test to keep empty reminder lists empty after local load and remote sync.
+- Moved ornament session/UI state from `OrnamentController` to a Riverpod notifier under `lib/core/theme/ornaments/`, keeping this migration slice small and aligned with the target directory structure.
