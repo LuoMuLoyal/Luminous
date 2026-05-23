@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/components/app_ornaments.dart';
-import 'package:luminous/stores/ornament_controller.dart';
+import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
 
 /// 顶部浅色渐变横幅配色基底。
 class SoftBannerPalette {
@@ -272,21 +272,26 @@ class SoftBannerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (ornamentKey == null || !Get.isRegistered<OrnamentController>()) {
+    if (ornamentKey == null) {
       return _buildCard(context);
     }
-    final ornamentController = Get.find<OrnamentController>();
-    return Obx(() {
-      ornamentController.revision.value;
-      return _buildCard(
-        context,
-        ornamentVisibilityFactor: ornamentController.visibilityFactor,
-        sessionLayout: ornamentController.resolveLayout(
-          ornamentKey: ornamentKey!,
-          family: AppOrnamentFamily.banner,
-        ),
-      );
-    });
+    if (maybeOrnamentContainerOf(context) == null) {
+      return _buildCard(context);
+    }
+    return Consumer(
+      builder: (context, ref, _) {
+        final ornamentState = ref.watch(ornamentProvider);
+        final ornamentNotifier = ref.read(ornamentProvider.notifier);
+        return _buildCard(
+          context,
+          ornamentVisibilityFactor: ornamentState.visibilityFactor,
+          sessionLayout: ornamentNotifier.resolveLayout(
+            ornamentKey: ornamentKey!,
+            family: AppOrnamentFamily.banner,
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildCard(

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luminous/stores/app_database.dart';
-import 'package:luminous/stores/ornament_controller.dart';
 import 'package:luminous/stores/reminder_local_gateway.dart';
 import 'package:luminous/stores/session_sync_service.dart';
 import 'package:luminous/stores/token_manager.dart';
@@ -14,16 +13,16 @@ import 'package:luminous/utils/notification_service.dart';
 class AppStartupWarmup {
   AppStartupWarmup({
     required UserController userController,
-    required OrnamentController ornamentController,
+    required Future<void> Function() warmOrnaments,
     ReminderLocalGateway? reminderGateway,
     Future<void> Function(String userId)? syncSession,
   }) : _userController = userController,
-       _ornamentController = ornamentController,
+       _warmOrnamentsTask = warmOrnaments,
        _reminderGateway = reminderGateway ?? reminderLocalGateway,
        _syncSession = syncSession ?? sessionSyncService.syncForUser;
 
   final UserController _userController;
-  final OrnamentController _ornamentController;
+  final Future<void> Function() _warmOrnamentsTask;
   final ReminderLocalGateway _reminderGateway;
   final Future<void> Function(String userId) _syncSession;
   bool _started = false;
@@ -53,10 +52,7 @@ class AppStartupWarmup {
   Future<void> _warmOrnaments() async {
     try {
       await Future<void>.delayed(const Duration(milliseconds: 12));
-      if (!_ornamentController.isReady) {
-        await _ornamentController.init();
-      }
-      await _ornamentController.warmup();
+      await _warmOrnamentsTask();
     } catch (_) {
       // 装饰预热失败时保持确定性兜底布局，不影响功能。
     }

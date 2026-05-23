@@ -4,6 +4,7 @@ import 'package:luminous/components/app_canvas.dart';
 import 'package:luminous/components/app_surface.dart';
 import 'package:luminous/components/soft_banner.dart';
 import 'package:luminous/components/tinted_status_chip.dart';
+import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Settings/profile_settings.dart';
 import 'package:luminous/stores/providers/locale_provider.dart';
@@ -11,7 +12,6 @@ import 'package:luminous/stores/providers/theme_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/stores/theme_controller.dart';
 import 'package:luminous/stores/locale_controller.dart';
-import 'package:luminous/stores/ornament_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
 
 /// 设置总览页。
@@ -168,7 +168,6 @@ class ThemeSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeNotifier = ref.read(themeProvider.notifier);
     final themeState = ref.watch(themeProvider);
-    final ornamentController = Get.find<OrnamentController>();
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
 
@@ -204,7 +203,6 @@ class ThemeSettingsPage extends ConsumerWidget {
               _DisplayPreferencesSection(
                 themeNotifier: themeNotifier,
                 themeState: themeState,
-                ornamentController: ornamentController,
               ),
             ],
           ),
@@ -792,23 +790,23 @@ class _DisplayPreferencesSection extends ConsumerWidget {
   const _DisplayPreferencesSection({
     required this.themeNotifier,
     required this.themeState,
-    required this.ornamentController,
   });
 
   final ThemeNotifier themeNotifier;
   final ThemeState themeState;
-  final OrnamentController ornamentController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final ornamentNotifier = ref.read(ornamentProvider.notifier);
+    final ornamentState = ref.watch(ornamentProvider);
     return (() {
       final l10n = AppLocalizations.of(context);
       final preference = themeState.modePreference;
       final selectedStyle = themeState.style;
-      final ornamentPercent = ornamentController.transparencyPercent.value;
-      final matchedPreset = ornamentController.matchedPreset;
+      final ornamentPercent = ornamentState.transparencyPercent;
+      final matchedPreset = ornamentState.matchedPreset;
       const ornamentOptions = <AppOrnamentTransparencyPreference>[
         AppOrnamentTransparencyPreference.t0,
         AppOrnamentTransparencyPreference.t25,
@@ -937,7 +935,7 @@ class _DisplayPreferencesSection extends ConsumerWidget {
                     ),
                     selected: matchedPreset == item,
                     onSelected: (_) {
-                      ornamentController.setTransparencyPreference(item);
+                      ornamentNotifier.setTransparencyPreference(item);
                     },
                     labelStyle: TextStyle(
                       fontWeight: FontWeight.w700,
@@ -988,7 +986,7 @@ class _DisplayPreferencesSection extends ConsumerWidget {
               value: ornamentPercent.toDouble(),
               label: '$ornamentPercent%',
               onChanged: (value) {
-                ornamentController.setTransparencyPercent(value.round());
+                ornamentNotifier.setTransparencyPercent(value.round());
               },
             ),
           ),

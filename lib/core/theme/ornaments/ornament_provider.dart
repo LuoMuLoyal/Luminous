@@ -1,25 +1,17 @@
-import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:get/get.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/components/app_ornaments.dart';
 import 'package:luminous/constants/constants.dart';
+import 'package:luminous/stores/providers/shared_preferences_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum AppOrnamentTransparencyPreference {
-  /// 透明度 0%，装饰完全可见。
   t0,
-
-  /// 透明度 25%，保留 75% 装饰可见度。
   t25,
-
-  /// 透明度 50%，保留 50% 装饰可见度。
   t50,
-
-  /// 透明度 75%，保留 25% 装饰可见度。
   t75,
-
-  /// 透明度 100%，等价于关闭装饰。
   t100;
 
   int get transparencyPercent {
@@ -40,51 +32,72 @@ enum AppOrnamentTransparencyPreference {
   }
 }
 
-/// 会话级装饰布局控制器。
-///
-/// 启动后异步生成一次 session seed：
-/// - 不阻塞首帧；
-/// - 本次运行内稳定；
-/// - 完整重启应用后允许变化。
-class OrnamentController extends GetxController {
-  static const int minTransparencyPercent = 0;
-  static const int maxTransparencyPercent = 100;
-  static const int transparencyStep = 5;
+class OrnamentState {
+  const OrnamentState({required this.transparencyPercent, this.sessionSeed});
 
-  final RxInt revision = 0.obs;
-  final RxInt transparencyPercent =
-      AppOrnamentTransparencyPreference.t50.transparencyPercent.obs;
-  final math.Random _random = math.Random();
-  Future<SharedPreferences>? _prefsFuture;
-  bool _preferencesLoaded = false;
+  final int transparencyPercent;
+  final int? sessionSeed;
 
-  int? _sessionSeed;
-  bool _warming = false;
+  bool get isReady => sessionSeed != null;
 
-  bool get isReady => _sessionSeed != null;
-
-  Future<SharedPreferences> get _prefs async {
-    return _prefsFuture ??= SharedPreferences.getInstance();
-  }
-
-  /// 氛围装饰可见度倍率：1 表示完整显示，0 表示关闭。
   double get visibilityFactor {
-    return ((maxTransparencyPercent - transparencyPercent.value) /
-            maxTransparencyPercent)
-        .clamp(0.0, 1.0)
-        .toDouble();
+    return ((100 - transparencyPercent) / 100).clamp(0.0, 1.0).toDouble();
   }
 
   bool get isDisabled => visibilityFactor <= 0;
 
   AppOrnamentTransparencyPreference? get matchedPreset {
-    final current = transparencyPercent.value;
+    final current = transparencyPercent;
     for (final preset in AppOrnamentTransparencyPreference.values) {
       if (preset.transparencyPercent == current) {
         return preset;
       }
     }
     return null;
+  }
+
+  OrnamentState copyWith({int? transparencyPercent, int? sessionSeed}) {
+    return OrnamentState(
+      transparencyPercent: transparencyPercent ?? this.transparencyPercent,
+      sessionSeed: sessionSeed ?? this.sessionSeed,
+    );
+  }
+}
+
+class OrnamentNotifier extends Notifier<OrnamentState> {
+  static const int minTransparencyPercent = 0;
+  static const int maxTransparencyPercent = 100;
+  static const int transparencyStep = 5;
+
+  final math.Random _random = math.Random();
+  bool _warming = false;
+
+  SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
+
+  @override
+  OrnamentState build() {
+    final raw = _prefs.get(GlobalConstants.ORNAMENT_TRANSPARENCY_KEY);
+
+    final resolved = switch (raw) {
+      int value => normalizeTransparencyPercent(value),
+      double value => normalizeTransparencyPercent(value.round()),
+      String value => _resolveTransparencyPercentFromString(value),
+      _ => AppOrnamentTransparencyPreference.t50.transparencyPercent,
+    };
+
+    return OrnamentState(transparencyPercent: resolved);
+  }
+
+  bool get isReady => state.isReady;
+
+  Future<void> init() async {
+    final raw = _prefs.get(GlobalConstants.ORNAMENT_TRANSPARENCY_KEY);
+    if (raw is! int || raw != state.transparencyPercent) {
+      await _prefs.setInt(
+        GlobalConstants.ORNAMENT_TRANSPARENCY_KEY,
+        state.transparencyPercent,
+      );
+    }
   }
 
   int normalizeTransparencyPercent(int rawPercent) {
@@ -97,40 +110,6 @@ class OrnamentController extends GetxController {
     return rounded;
   }
 
-  Future<void> init() async {
-    if (_preferencesLoaded) {
-      return;
-    }
-    final prefs = await _prefs;
-    final raw = prefs.get(GlobalConstants.ORNAMENT_TRANSPARENCY_KEY);
-
-    final resolved = switch (raw) {
-      int value => normalizeTransparencyPercent(value),
-      double value => normalizeTransparencyPercent(value.round()),
-      String value => _resolveTransparencyPercentFromString(value),
-      _ => AppOrnamentTransparencyPreference.t50.transparencyPercent,
-    };
-
-    transparencyPercent.value = resolved;
-
-    // 统一回写为 int，避免历史字符串值再次触发类型异常。
-    if (raw is! int || raw != resolved) {
-      await prefs.setInt(GlobalConstants.ORNAMENT_TRANSPARENCY_KEY, resolved);
-    }
-    _preferencesLoaded = true;
-  }
-
-  int _resolveTransparencyPercentFromString(String rawValue) {
-    final parsedPercent = int.tryParse(rawValue);
-    if (parsedPercent != null) {
-      return normalizeTransparencyPercent(parsedPercent);
-    }
-    final mappedPreset = AppOrnamentTransparencyPreference.fromStorage(
-      rawValue,
-    );
-    return mappedPreset.transparencyPercent;
-  }
-
   Future<void> setTransparencyPreference(
     AppOrnamentTransparencyPreference preference,
   ) async {
@@ -139,37 +118,34 @@ class OrnamentController extends GetxController {
 
   Future<void> setTransparencyPercent(int percent) async {
     final normalized = normalizeTransparencyPercent(percent);
-    if (transparencyPercent.value == normalized) {
+    if (state.transparencyPercent == normalized) {
       return;
     }
-    transparencyPercent.value = normalized;
-    revision.value++;
-    final prefs = await _prefs;
-    await prefs.setInt(GlobalConstants.ORNAMENT_TRANSPARENCY_KEY, normalized);
+    state = state.copyWith(transparencyPercent: normalized);
+    await _prefs.setInt(GlobalConstants.ORNAMENT_TRANSPARENCY_KEY, normalized);
   }
 
-  /// 异步预热装饰 seed。
   Future<void> warmup() async {
-    if (_warming || isReady || isDisabled) {
+    if (_warming || state.isReady || state.isDisabled) {
       return;
     }
     _warming = true;
     try {
       await Future<void>.delayed(const Duration(milliseconds: 28));
-      _sessionSeed =
-          DateTime.now().microsecondsSinceEpoch ^ _random.nextInt(1 << 30);
-      revision.value++;
+      state = state.copyWith(
+        sessionSeed:
+            DateTime.now().microsecondsSinceEpoch ^ _random.nextInt(1 << 30),
+      );
     } finally {
       _warming = false;
     }
   }
 
-  /// 根据稳定 key 返回本次会话内固定的装饰模板。
   AppOrnamentLayout? resolveLayout({
     required String ornamentKey,
     required AppOrnamentFamily family,
   }) {
-    final seed = _sessionSeed;
+    final seed = state.sessionSeed;
     if (seed == null) {
       return null;
     }
@@ -209,6 +185,17 @@ class OrnamentController extends GetxController {
     );
   }
 
+  int _resolveTransparencyPercentFromString(String rawValue) {
+    final parsedPercent = int.tryParse(rawValue);
+    if (parsedPercent != null) {
+      return normalizeTransparencyPercent(parsedPercent);
+    }
+    final mappedPreset = AppOrnamentTransparencyPreference.fromStorage(
+      rawValue,
+    );
+    return mappedPreset.transparencyPercent;
+  }
+
   double _pickScale(int hash, AppOrnamentFamily family) {
     final min = family == AppOrnamentFamily.banner ? 0.88 : 0.84;
     final max = family == AppOrnamentFamily.banner ? 1.18 : 1.16;
@@ -233,5 +220,17 @@ class OrnamentController extends GetxController {
       hash = (hash * 0x01000193) & 0x7fffffff;
     }
     return hash;
+  }
+}
+
+final ornamentProvider = NotifierProvider<OrnamentNotifier, OrnamentState>(() {
+  return OrnamentNotifier();
+});
+
+ProviderContainer? maybeOrnamentContainerOf(BuildContext context) {
+  try {
+    return ProviderScope.containerOf(context, listen: false);
+  } on StateError {
+    return null;
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/constants/constants.dart';
 import 'package:luminous/startup/app_startup_warmup.dart';
-import 'package:luminous/stores/ornament_controller.dart';
 import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +37,7 @@ void main() {
 
     final warmup = AppStartupWarmup(
       userController: UserController(),
-      ornamentController: OrnamentController(),
+      warmOrnaments: () async {},
       reminderGateway: gateway,
       syncSession: (userId) async {
         calls.add('sync:$userId');
