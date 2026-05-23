@@ -8,10 +8,7 @@ class ThemeState {
   final AppThemeModePreference modePreference;
   final AppThemeStyle style;
 
-  const ThemeState({
-    required this.modePreference,
-    required this.style,
-  });
+  const ThemeState({required this.modePreference, required this.style});
 
   ThemeState copyWith({
     AppThemeModePreference? modePreference,

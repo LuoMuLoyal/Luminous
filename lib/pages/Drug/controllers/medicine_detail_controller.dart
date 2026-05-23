@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:luminous/api/medicine_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/browse_history_store.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
@@ -37,17 +38,14 @@ class MedicineDetailController extends GetxController {
     FetchMedicineDetail? fetchDetail,
     FetchMedicineAiDetail? fetchAiDetail,
     BrowseHistoryStore? historyStore,
-    UserController? userController,
   }) : _item = initialItem,
        _fetchDetail = fetchDetail ?? MedicineApi.fetchDetail,
        _fetchAiDetail = fetchAiDetail ?? MedicineApi.fetchAiDetail,
-       _historyStore = historyStore ?? browseHistoryStore,
-       _userController = userController ?? Get.find<UserController>();
+       _historyStore = historyStore ?? browseHistoryStore;
 
   final FetchMedicineDetail _fetchDetail;
   final FetchMedicineAiDetail _fetchAiDetail;
   final BrowseHistoryStore _historyStore;
-  final UserController _userController;
 
   MedicineItem _item;
   bool _loadingDetail = false;
@@ -234,7 +232,7 @@ class MedicineDetailController extends GetxController {
     }
     try {
       await _historyStore.recordMedicine(
-        userId: _userController.user.value?.id,
+        userId: globalProviderContainer.read(currentUserProvider)?.id,
         item: item,
       );
     } catch (_) {

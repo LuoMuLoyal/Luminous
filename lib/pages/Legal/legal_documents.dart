@@ -179,8 +179,7 @@ class PrivacyPolicyPage extends StatelessWidget {
 
     return _LegalDocumentPage(
       title: l10n?.legalPrivacyPolicyTitle ?? '隐私政策',
-      summary:
-          '本页面依据项目根目录中的隐私政策文本整理，供注册、登录与关于页面统一查看。',
+      summary: '本页面依据项目根目录中的隐私政策文本整理，供注册、登录与关于页面统一查看。',
       sections: _buildPrivacyPolicySections(l10n),
     );
   }

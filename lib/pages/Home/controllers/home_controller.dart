@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/stores/reminder_local_gateway.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/home.dart';
 
@@ -12,14 +14,10 @@ import 'package:luminous/viewmodels/home.dart';
 ///
 /// 负责维护健康提示、演示提醒、打卡记录回流，以及登录态切换后的本地同步。
 class HomeController extends GetxController {
-  HomeController({
-    ReminderLocalGateway? reminderGateway,
-    UserController? userController,
-  }) : _reminderGateway = reminderGateway ?? reminderLocalGateway,
-       _userController = userController ?? Get.find<UserController>();
+  HomeController({ReminderLocalGateway? reminderGateway})
+    : _reminderGateway = reminderGateway ?? reminderLocalGateway;
 
   final ReminderLocalGateway _reminderGateway;
-  final UserController _userController;
 
   final ValueNotifier<String> todayTipNotifier = ValueNotifier<String>('');
   final List<String> _healthTips = <String>[];
@@ -29,8 +27,8 @@ class HomeController extends GetxController {
   final List<HomeReminderItemData> _reminders = <HomeReminderItemData>[];
   final List<HomeCheckInRecordData> _checkInRecords = <HomeCheckInRecordData>[];
 
-  Worker? _userWorker;
-  Worker? _sessionReadyWorker;
+  ProviderSubscription? _userWorker;
+  ProviderSubscription? _sessionReadyWorker;
   StreamSubscription<int>? _revisionSubscription;
   bool _loadingReminders = false;
   bool _loadingCheckInRecords = false;
@@ -46,27 +44,34 @@ class HomeController extends GetxController {
       List<HomeCheckInRecordData>.unmodifiable(_checkInRecords);
   bool get loadingReminders => _loadingReminders;
   bool get loadingCheckInRecords => _loadingCheckInRecords;
-  String get currentUserId => (_userController.user.value?.id ?? '').trim();
+  String get currentUserId =>
+      (globalProviderContainer.read(currentUserProvider)?.id ?? '').trim();
 
   @override
   void onInit() {
     super.onInit();
-    _userWorker = ever<dynamic>(_userController.user, (_) {
+    _userWorker = globalProviderContainer.listen(currentUserProvider, (
+      previous,
+      next,
+    ) {
       refreshIfReady();
     });
-    _sessionReadyWorker = ever<bool>(_userController.sessionReady, (ready) {
-      if (ready) {
-        _lastRequestedUserId = null;
-        refreshIfReady();
-      }
-    });
+    _sessionReadyWorker = globalProviderContainer.listen(
+      userSessionReadyProvider,
+      (_, ready) {
+        if (ready) {
+          _lastRequestedUserId = null;
+          refreshIfReady();
+        }
+      },
+    );
     refreshIfReady();
   }
 
   @override
   void onClose() {
-    _userWorker?.dispose();
-    _sessionReadyWorker?.dispose();
+    _userWorker?.close();
+    _sessionReadyWorker?.close();
     _revisionSubscription?.cancel();
     todayTipNotifier.dispose();
     super.onClose();
@@ -109,7 +114,7 @@ class HomeController extends GetxController {
   }
 
   void refreshIfReady({bool force = false}) {
-    if (!_userController.sessionReady.value) {
+    if (!globalProviderContainer.read(userSessionReadyProvider)) {
       return;
     }
 

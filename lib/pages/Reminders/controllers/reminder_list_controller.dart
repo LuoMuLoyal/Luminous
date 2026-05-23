@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/reminder_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/reminder_local_gateway.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
@@ -16,16 +18,12 @@ import 'package:luminous/viewmodels/reminder.dart';
 /// 页面只从本地 SQLite 回流的数据渲染，远端同步完成后统一走本地 revision
 /// 重新触发一次读取。
 class ReminderListController extends GetxController {
-  ReminderListController({
-    UserController? userController,
-    ReminderLocalGateway? reminderGateway,
-  }) : _userController = userController ?? Get.find<UserController>(),
-       _reminderGateway = reminderGateway ?? reminderLocalGateway;
+  ReminderListController({ReminderLocalGateway? reminderGateway})
+    : _reminderGateway = reminderGateway ?? reminderLocalGateway;
 
-  final UserController _userController;
   final ReminderLocalGateway _reminderGateway;
 
-  Worker? _userWorker;
+  ProviderSubscription? _userWorker;
   StreamSubscription<int>? _revisionSubscription;
   bool _loading = false;
   bool _syncing = false;
@@ -39,15 +37,21 @@ class ReminderListController extends GetxController {
   bool get loading => _loading || _syncing;
   String? get error => _error;
   List<ReminderPlan> get items => _items;
-  String get userId => _userController.user.value?.id ?? '';
-  bool get isLoggedIn => _userController.isLoggedIn && userId.trim().isNotEmpty;
+  String get userId =>
+      globalProviderContainer.read(currentUserProvider)?.id ?? '';
+  bool get isLoggedIn =>
+      (globalProviderContainer.read(currentUserProvider)?.hasData ?? false) &&
+      userId.trim().isNotEmpty;
   int get enabledCount => _items.where((item) => item.enabled).length;
   int get disabledCount => _items.length - enabledCount;
 
   @override
   void onInit() {
     super.onInit();
-    _userWorker = ever<dynamic>(_userController.user, (_) {
+    _userWorker = globalProviderContainer.listen(currentUserProvider, (
+      previous,
+      next,
+    ) {
       _handleUserChanged();
     });
     _handleUserChanged();
@@ -55,7 +59,7 @@ class ReminderListController extends GetxController {
 
   @override
   void onClose() {
-    _userWorker?.dispose();
+    _userWorker?.close();
     _revisionSubscription?.cancel();
     super.onClose();
   }

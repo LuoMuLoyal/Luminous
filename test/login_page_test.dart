@@ -5,7 +5,6 @@ import 'package:luminous/api/auth_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Login/login.dart';
 import 'package:luminous/pages/Register/register.dart';
-import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
@@ -23,8 +22,6 @@ void main() {
     prefs = await SharedPreferences.getInstance();
     Get.testMode = true;
     Get.reset();
-    final controller = Get.put(UserController(), permanent: true);
-    controller.sessionReady.value = true;
   });
 
   tearDown(() {

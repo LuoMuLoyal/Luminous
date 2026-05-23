@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/pages/CheckIn/checkin.dart';
-import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:luminous/viewmodels/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/fake_reminder_local_gateway.dart';
+import 'support/session_test_utils.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     Get.testMode = true;
     Get.reset();
-
-    final controller = Get.put(UserController(), permanent: true);
-    controller.user.value = const UserSafe(
-      id: 'user-1',
-      username: 'tester',
-      email: '',
-      phone: '13800138000',
-      name: '',
-      type: 0,
+    await createTestProviderContainer(
+      user: const UserSafe(
+        id: 'user-1',
+        username: 'tester',
+        email: '',
+        phone: '13800138000',
+        name: '',
+        type: 0,
+      ),
     );
   });
 

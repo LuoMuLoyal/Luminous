@@ -1,7 +1,7 @@
-import 'package:get/get.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
 import 'package:luminous/stores/reminder_local_gateway.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/notification_service.dart';
@@ -79,10 +79,8 @@ class SessionSyncService {
   }
 
   bool _shouldApplySync(String userId) {
-    if (!Get.isRegistered<UserController>()) {
-      return true;
-    }
-    final currentUserId = Get.find<UserController>().user.value?.id ?? '';
+    final currentUserId =
+        globalProviderContainer.read(currentUserProvider)?.id ?? '';
     return currentUserId.trim() == userId.trim();
   }
 

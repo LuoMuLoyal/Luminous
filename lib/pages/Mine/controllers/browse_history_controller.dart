@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/browse_history_store.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/browse_history.dart';
@@ -12,16 +14,12 @@ import 'package:luminous/viewmodels/browse_history.dart';
 ///
 /// 负责从本地仓库读取、删除和清空浏览记录。
 class BrowseHistoryController extends GetxController {
-  BrowseHistoryController({
-    UserController? userController,
-    BrowseHistoryStore? historyStore,
-  }) : _userController = userController ?? Get.find<UserController>(),
-       _historyStore = historyStore ?? browseHistoryStore;
+  BrowseHistoryController({BrowseHistoryStore? historyStore})
+    : _historyStore = historyStore ?? browseHistoryStore;
 
-  final UserController _userController;
   final BrowseHistoryStore _historyStore;
 
-  Worker? _userWorker;
+  ProviderSubscription? _userWorker;
   bool _loading = false;
   bool _busy = false;
   List<BrowseHistoryEntry> _items = const <BrowseHistoryEntry>[];
@@ -30,13 +28,18 @@ class BrowseHistoryController extends GetxController {
   bool get busy => _busy;
   List<BrowseHistoryEntry> get items => _items;
   int get count => _items.length;
-  bool get isLoggedIn => _userController.isLoggedIn;
-  String get userId => _userController.user.value?.id.trim() ?? '';
+  bool get isLoggedIn =>
+      (globalProviderContainer.read(currentUserProvider)?.hasData ?? false);
+  String get userId =>
+      globalProviderContainer.read(currentUserProvider)?.id.trim() ?? '';
 
   @override
   void onInit() {
     super.onInit();
-    _userWorker = ever<dynamic>(_userController.user, (_) {
+    _userWorker = globalProviderContainer.listen(currentUserProvider, (
+      previous,
+      next,
+    ) {
       unawaited(load());
     });
     unawaited(load());
@@ -44,7 +47,7 @@ class BrowseHistoryController extends GetxController {
 
   @override
   void onClose() {
-    _userWorker?.dispose();
+    _userWorker?.close();
     super.onClose();
   }
 

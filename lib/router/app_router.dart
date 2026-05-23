@@ -20,22 +20,13 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: '/',
     debugLogDiagnostics: true,
     routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const MainPage(),
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginPage(),
-      ),
+      GoRoute(path: '/', builder: (context, state) => const MainPage()),
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterView(),
       ),
-      GoRoute(
-        path: '/search',
-        builder: (context, state) => const SearchView(),
-      ),
+      GoRoute(path: '/search', builder: (context, state) => const SearchView()),
       GoRoute(
         path: '/scan',
         builder: (context, state) => const MedicineScanPage(

@@ -3,9 +3,11 @@ import 'dart:typed_data';
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/stores/album_local_store.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
@@ -20,14 +22,12 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// - 本地相册记录读取；
 /// - 错误态和基础提示文案。
 class AlbumController extends GetxController {
-  AlbumController({UserController? userController, AlbumLocalStore? albumStore})
-    : _userController = userController ?? Get.find<UserController>(),
-      _albumStore = albumStore ?? albumLocalStore;
+  AlbumController({AlbumLocalStore? albumStore})
+    : _albumStore = albumStore ?? albumLocalStore;
 
-  final UserController _userController;
   final AlbumLocalStore _albumStore;
 
-  Worker? _userWorker;
+  ProviderSubscription? _userWorker;
   bool _loading = false;
   String? _error;
   List<AlbumEntry> _entries = const <AlbumEntry>[];
@@ -37,13 +37,18 @@ class AlbumController extends GetxController {
   bool get loading => _loading;
   String? get error => _error;
   List<AlbumEntry> get entries => _entries;
-  bool get isLoggedIn => _userController.isLoggedIn;
-  String get userId => _userController.user.value?.id ?? '';
+  bool get isLoggedIn =>
+      (globalProviderContainer.read(currentUserProvider)?.hasData ?? false);
+  String get userId =>
+      globalProviderContainer.read(currentUserProvider)?.id ?? '';
 
   @override
   void onInit() {
     super.onInit();
-    _userWorker = ever<dynamic>(_userController.user, (_) {
+    _userWorker = globalProviderContainer.listen(currentUserProvider, (
+      previous,
+      next,
+    ) {
       unawaited(load());
     });
     unawaited(load());
@@ -51,7 +56,7 @@ class AlbumController extends GetxController {
 
   @override
   void onClose() {
-    _userWorker?.dispose();
+    _userWorker?.close();
     super.onClose();
   }
 
