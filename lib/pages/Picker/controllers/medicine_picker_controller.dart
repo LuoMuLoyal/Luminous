@@ -2,7 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
@@ -14,13 +15,9 @@ import 'package:luminous/viewmodels/medicine.dart';
 /// - 登录态下的远端同步；
 /// - 行数据到 `MedicineItem` 的类型转换。
 class MedicinePickerController extends GetxController {
-  MedicinePickerController({
-    UserController? userController,
-    MyMedicineRepository? repository,
-  }) : _userController = userController ?? Get.find<UserController>(),
-       _repository = repository ?? myMedicineRepository;
+  MedicinePickerController({MyMedicineRepository? repository})
+    : _repository = repository ?? myMedicineRepository;
 
-  final UserController _userController;
   final MyMedicineRepository _repository;
 
   bool _loading = false;
@@ -33,7 +30,8 @@ class MedicinePickerController extends GetxController {
   List<MedicineItem> get items => _items;
 
   /// 当前登录用户 id。
-  String get userId => _userController.user.value?.id ?? '';
+  String get userId =>
+      globalProviderContainer.read(currentUserProvider)?.id ?? '';
 
   @override
   void onInit() {

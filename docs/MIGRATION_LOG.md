@@ -69,5 +69,7 @@ lib/
 - 补充迁移执行规则：小步推进、限制文件体积、迁移代码优先进入目标目录结构。
 - 将 `OrnamentController` 迁移为 `lib/core/theme/ornaments/ornament_provider.dart` 中的 Riverpod notifier，并同步替换设置页、共享卡片、横幅和主页面底栏的装饰状态读取方式。
 - 开始拆分 `UserController`：会话恢复和用户持久化读写已迁入 `lib/features/auth/`，旧 GetX 控制器暂时保留为兼容入口。
-- 将主应用中的 `UserController` 桥接到 `userSessionProvider`，后续页面可逐步改用 `currentUserProvider`、`userLoggedInProvider` 和 `userSessionReadyProvider`。
-- 个人中心资料卡开始从 `currentUserProvider` 读取当前用户，页面交互和浏览记录预览仍保留在 `MineController` 中，避免扩大迁移范围。
+- 运行时改为注册全局 `ProviderContainer` 过渡桥，仅供未完成迁移的 GetX controller 读取 `currentUserProvider`、`userLoggedInProvider` 和 `userSessionReadyProvider`。
+- Home、提醒、打卡、相册、搜索、扫描、个人中心等旧 controller 的用户态读取已切到 Riverpod；`UserController` 不再作为运行时会话同步入口。
+- `SplashPage` 已确认无路由引用，并在文件注释与声明处标记废弃，后续不要重新接回路由。
+- 增加 `test/support/session_test_utils.dart`，测试统一通过 Riverpod 会话夹具注入用户态。

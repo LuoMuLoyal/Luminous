@@ -3,7 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/safety_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
@@ -27,16 +28,12 @@ typedef QueryMedicineAiSafety =
 /// - AI 查询与取消；
 /// - 页面级提示文案分发。
 class SafetyAssistController extends GetxController {
-  SafetyAssistController({
-    UserController? userController,
-    QueryMedicineAiSafety? queryApi,
-  }) : _userController = userController ?? Get.find<UserController>(),
-       _queryApi = queryApi ?? SafetyApi.query;
+  SafetyAssistController({QueryMedicineAiSafety? queryApi})
+    : _queryApi = queryApi ?? SafetyApi.query;
 
   static const String singleMode = 'single';
   static const String pairMode = 'pair';
 
-  final UserController _userController;
   final QueryMedicineAiSafety _queryApi;
 
   String _mode = singleMode;
@@ -51,7 +48,8 @@ class SafetyAssistController extends GetxController {
   MedicineItem? get medicineB => _b;
   bool get loading => _loading;
   MedicineAiSafetyResult? get result => _result;
-  bool get loggedIn => _userController.isLoggedIn;
+  bool get loggedIn =>
+      (globalProviderContainer.read(currentUserProvider)?.hasData ?? false);
   bool get ready => _a != null && (_mode == singleMode || _b != null);
 
   int get selectedCount {
@@ -182,7 +180,8 @@ class SafetyAssistController extends GetxController {
     await query(refresh: true);
   }
 
-  String get _userId => _userController.user.value?.id ?? '';
+  String get _userId =>
+      globalProviderContainer.read(currentUserProvider)?.id ?? '';
 
   AppLocalizations? get _l10n {
     final context = _context;

@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/api/user_api.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/media_access_error_text.dart';
@@ -21,18 +22,15 @@ class ProfileSettingsController extends GetxController {
     required this.onLogout,
     required this.onPurgeAccount,
     required this.onUserUpdate,
-    UserController? userController,
     UserApi? userApi,
     ImagePicker? imagePicker,
-  }) : _userController = userController ?? Get.find<UserController>(),
-       _userApi = userApi ?? const UserApi(),
+  }) : _userApi = userApi ?? const UserApi(),
        _imagePicker = imagePicker ?? ImagePicker();
 
   final Future<void> Function() onLogout;
   final Future<void> Function(String userId) onPurgeAccount;
   final Future<void> Function(UserSafe user) onUserUpdate;
 
-  final UserController _userController;
   final UserApi _userApi;
   final ImagePicker _imagePicker;
 
@@ -52,7 +50,8 @@ class ProfileSettingsController extends GetxController {
   bool get saving => _saving;
   bool get deleting => _deleting;
   String get gender => _gender;
-  UserSafe? get currentUser => _userController.user.value;
+  UserSafe? get currentUser =>
+      globalProviderContainer.read(currentUserProvider);
 
   @override
   void onInit() {

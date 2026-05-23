@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/pages/Reminders/reminder_edit.dart';
-import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/viewmodels/reminder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'support/session_test_utils.dart';
 
 void main() {
   setUp(() async {
@@ -12,8 +13,7 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     Get.testMode = true;
     Get.reset();
-    final controller = Get.put(UserController(), permanent: true);
-    controller.sessionReady.value = true;
+    await createTestProviderContainer();
   });
 
   testWidgets('editing dosage and extra content keeps linked identity', (

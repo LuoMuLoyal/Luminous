@@ -75,6 +75,81 @@ class TintedStatusChip extends StatelessWidget {
     final resolvedIconColor = iconColor ?? resolvedTextColor;
 
     Widget box = Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: resolvedBackground,
+        borderRadius: BorderRadius.circular(999),
+        border: showBorder ? Border.all(color: resolvedBorder) : null,
+      ),
+      child: Row(
+        mainAxisSize: mainAxisSize,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: iconSize, color: resolvedIconColor),
+            SizedBox(width: iconTextSpacing),
+          ],
+          if (expandText)
+            Expanded(
+              child: Text(
+                text,
+                maxLines: textMaxLines,
+                overflow: textOverflow,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: fontWeight,
+                  color: resolvedTextColor,
+                ),
+              ),
+            )
+          else
+            Text(
+              text,
+              maxLines: textMaxLines,
+              overflow: textOverflow,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: fontWeight,
+                color: resolvedTextColor,
+              ),
+            ),
+        ],
+      ),
+    );
+
+    if (!enablePopup) return box;
+
+    return GestureDetector(
+      onTap: () {
+        showDialog<void>(
+          context: context,
+          builder: (ctx) {
+            return Dialog(
+              backgroundColor: Theme.of(ctx).colorScheme.surface,
+              surfaceTintColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 28,
+                ),
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                    color: Theme.of(ctx).colorScheme.onSurface,
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+      child: Container(
         padding: padding,
         decoration: BoxDecoration(
           color: resolvedBackground,
@@ -114,79 +189,6 @@ class TintedStatusChip extends StatelessWidget {
               ),
           ],
         ),
-      );
-
-    if (!enablePopup) return box;
-
-    return GestureDetector(
-      onTap: () {
-        showDialog<void>(
-          context: context,
-          builder: (ctx) {
-            
-            return Dialog(
-              backgroundColor: Theme.of(ctx).colorScheme.surface,
-              surfaceTintColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-                child: Text(
-                  text,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    height: 1.5,
-                    color: Theme.of(ctx).colorScheme.onSurface,
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-      child: Container(
-        padding: padding,
-        decoration: BoxDecoration(
-        color: resolvedBackground,
-        borderRadius: BorderRadius.circular(999),
-        border: showBorder ? Border.all(color: resolvedBorder) : null,
-      ),
-              child: Row(
-        mainAxisSize: mainAxisSize,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: iconSize, color: resolvedIconColor),
-            SizedBox(width: iconTextSpacing),
-          ],
-          if (expandText)
-            Expanded(
-              child: Text(
-                text,
-                maxLines: textMaxLines,
-                overflow: textOverflow,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: fontWeight,
-                  color: resolvedTextColor,
-                ),
-              ),
-            )
-          else
-            Text(
-              text,
-              maxLines: textMaxLines,
-              overflow: textOverflow,
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: fontWeight,
-                color: resolvedTextColor,
-              ),
-            ),
-        ],
-      ),
       ),
     );
   }

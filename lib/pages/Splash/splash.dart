@@ -1,12 +1,17 @@
-// This page and it controller is deprecated. Do not reference or modify it.
+// DEPRECATED: this splash page is no longer routed by the app.
+// Keep it only as a historical UI reference; do not import or add it to routes.
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:get/get.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 
 /// 启动屏页面。
+///
+/// Deprecated: the app now starts through `MaterialApp.router` and should not
+/// route to this page. If a launch/loading experience is needed, implement it
+/// in the router/startup flow instead of reusing this widget.
 ///
 /// 展示约 2 秒后自动跳转：
 /// - 已登录 → 主页 `/`
@@ -14,6 +19,7 @@ import 'package:luminous/stores/user_controller.dart';
 ///
 /// 风格参考：全屏纯色背景 + 大标题 + 装饰图标浮动 + 底部品牌信息。
 /// 如需替换图片素材，请参考文件底部的【素材替换指南】注释。
+@Deprecated('SplashPage is no longer used; use the router startup flow.')
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
@@ -21,6 +27,7 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
+@Deprecated('SplashPage is no longer used; use the router startup flow.')
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
@@ -31,8 +38,7 @@ class _SplashPageState extends State<SplashPage> {
 
   void _navigate() {
     if (!mounted) return;
-    final userController = Get.find<UserController>();
-    final isLoggedIn = (userController.user.value?.id ?? '').trim().isNotEmpty;
+    final isLoggedIn = globalProviderContainer.read(userLoggedInProvider);
     Navigator.of(context).pushReplacementNamed(isLoggedIn ? '/' : '/login');
   }
 

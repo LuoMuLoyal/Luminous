@@ -3,10 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/pages/Scan/medicine_scan.dart';
 import 'package:luminous/pages/Search/search.dart';
-import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'support/session_test_utils.dart';
 
 void main() {
   setUp(() async {
@@ -14,8 +15,7 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     Get.testMode = true;
     Get.reset();
-    final controller = Get.put(UserController(), permanent: true);
-    controller.sessionReady.value = true;
+    await createTestProviderContainer();
   });
 
   tearDown(() {

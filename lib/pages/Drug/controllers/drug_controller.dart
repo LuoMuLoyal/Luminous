@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/stores/my_medicine_repository.dart';
-import 'package:luminous/stores/user_controller.dart';
+import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
@@ -16,16 +18,12 @@ import 'package:luminous/viewmodels/medicine.dart';
 /// - 用户切换后的自动刷新；
 /// - 删除药品后的刷新与提示。
 class DrugController extends GetxController {
-  DrugController({
-    UserController? userController,
-    MyMedicineRepository? repository,
-  }) : _userController = userController ?? Get.find<UserController>(),
-       _repository = repository ?? myMedicineRepository;
+  DrugController({MyMedicineRepository? repository})
+    : _repository = repository ?? myMedicineRepository;
 
-  final UserController _userController;
   final MyMedicineRepository _repository;
 
-  Worker? _userWorker;
+  ProviderSubscription? _userWorker;
   List<Map<String, dynamic>> _myMedicines = const <Map<String, dynamic>>[];
   bool _loadingMedicines = false;
   bool _reloadQueued = false;
@@ -38,12 +36,16 @@ class DrugController extends GetxController {
   bool get loadingMedicines => _loadingMedicines;
 
   /// 当前登录用户 id。
-  String get userId => _userController.user.value?.id ?? '';
+  String get userId =>
+      globalProviderContainer.read(currentUserProvider)?.id ?? '';
 
   @override
   void onInit() {
     super.onInit();
-    _userWorker = ever<dynamic>(_userController.user, (_) {
+    _userWorker = globalProviderContainer.listen(currentUserProvider, (
+      previous,
+      next,
+    ) {
       unawaited(loadMyMedicines());
     });
     unawaited(loadMyMedicines());
@@ -51,7 +53,7 @@ class DrugController extends GetxController {
 
   @override
   void onClose() {
-    _userWorker?.dispose();
+    _userWorker?.close();
     super.onClose();
   }
 

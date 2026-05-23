@@ -1,38 +1,37 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/pages/Reminders/controllers/reminder_list_controller.dart';
-import 'package:luminous/stores/user_controller.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:luminous/viewmodels/reminder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/fake_reminder_local_gateway.dart';
+import 'support/session_test_utils.dart';
 
 void main() {
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     Get.testMode = true;
     Get.reset();
+    await createTestProviderContainer();
   });
 
   tearDown(Get.reset);
 
   test('empty reminder list stays empty instead of seeding defaults', () async {
-    final userController = Get.put(UserController(), permanent: true);
-    userController.user.value = const UserSafe(
-      id: 'user-empty',
-      username: 'tester',
-      email: '',
-      phone: '13800138000',
-      name: '',
-      type: 0,
+    await setTestSessionUser(
+      const UserSafe(
+        id: 'user-empty',
+        username: 'tester',
+        email: '',
+        phone: '13800138000',
+        name: '',
+        type: 0,
+      ),
     );
 
     final gateway = FakeReminderLocalGateway();
-    final controller = ReminderListController(
-      userController: userController,
-      reminderGateway: gateway,
-    );
+    final controller = ReminderListController(reminderGateway: gateway);
 
     controller.onInit();
     await Future<void>.delayed(Duration.zero);
@@ -48,14 +47,15 @@ void main() {
   test(
     'reminder list controller reloads from local gateway after revision',
     () async {
-      final userController = Get.put(UserController(), permanent: true);
-      userController.user.value = const UserSafe(
-        id: 'user-1',
-        username: 'tester',
-        email: '',
-        phone: '13800138000',
-        name: '',
-        type: 0,
+      await setTestSessionUser(
+        const UserSafe(
+          id: 'user-1',
+          username: 'tester',
+          email: '',
+          phone: '13800138000',
+          name: '',
+          type: 0,
+        ),
       );
 
       final gateway = FakeReminderLocalGateway();
@@ -74,10 +74,7 @@ void main() {
         ),
       ]);
 
-      final controller = ReminderListController(
-        userController: userController,
-        reminderGateway: gateway,
-      );
+      final controller = ReminderListController(reminderGateway: gateway);
 
       controller.onInit();
       await Future<void>.delayed(Duration.zero);
