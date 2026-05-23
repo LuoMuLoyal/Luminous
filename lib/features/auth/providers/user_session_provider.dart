@@ -49,3 +49,15 @@ final userSessionProvider =
     NotifierProvider<UserSessionNotifier, UserSessionState>(() {
       return UserSessionNotifier();
     });
+
+final currentUserProvider = Provider<UserSafe?>((ref) {
+  return ref.watch(userSessionProvider).user;
+});
+
+final userSessionReadyProvider = Provider<bool>((ref) {
+  return ref.watch(userSessionProvider).ready;
+});
+
+final userLoggedInProvider = Provider<bool>((ref) {
+  return ref.watch(userSessionProvider).isLoggedIn;
+});
