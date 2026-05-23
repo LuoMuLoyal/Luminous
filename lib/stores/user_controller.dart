@@ -11,8 +11,12 @@ import 'package:luminous/viewmodels/auth.dart';
 ///
 /// 使用 GetX 管理当前登录用户，并负责和本地持久化做同步。
 class UserController extends GetxController {
-  UserController({UserSessionStore? sessionStore})
-    : _sessionStore = sessionStore ?? UserSessionStore.lazy();
+  UserController({
+    UserSessionStore? sessionStore,
+    Future<void> Function()? cancelNotifications,
+  }) : _sessionStore = sessionStore ?? UserSessionStore.lazy(),
+       _cancelNotifications =
+           cancelNotifications ?? NotificationService.instance.cancelAll;
 
   /// 当前登录用户的响应式容器。
   ///
@@ -20,8 +24,12 @@ class UserController extends GetxController {
   final Rxn<UserSafe> user = Rxn<UserSafe>();
   final RxBool sessionReady = true.obs;
   final UserSessionStore _sessionStore;
+  final Future<void> Function() _cancelNotifications;
   final BrowseHistoryStore _browseHistoryStore = BrowseHistoryStore.instance;
   final AlbumAssetStore _albumAssetStore = AlbumAssetStore();
+  Future<UserSafe?> Function()? _restoreUser;
+  Future<void> Function(UserSafe user)? _persistUser;
+  Future<void> Function()? _clearUser;
 
   /// 当前是否处于登录状态。
   ///
@@ -33,12 +41,23 @@ class UserController extends GetxController {
     sessionReady.value = false;
   }
 
+  /// 将旧 GetX 控制器桥接到新的 Riverpod 会话状态。
+  void attachSessionBridge({
+    required Future<UserSafe?> Function() restoreUser,
+    required Future<void> Function(UserSafe user) persistUser,
+    required Future<void> Function() clearUser,
+  }) {
+    _restoreUser = restoreUser;
+    _persistUser = persistUser;
+    _clearUser = clearUser;
+  }
+
   /// 从本地缓存恢复登录用户。
   ///
   /// 应用启动时由 `main()` 调用一次。
   Future<void> init() async {
     try {
-      user.value = await _sessionStore.restoreUser();
+      user.value = await (_restoreUser?.call() ?? _sessionStore.restoreUser());
     } catch (_) {
       user.value = null;
     } finally {
@@ -51,7 +70,12 @@ class UserController extends GetxController {
   /// 一般在登录成功后调用。
   Future<void> setUser(UserSafe nextUser) async {
     user.value = nextUser;
-    await _sessionStore.persistUser(nextUser);
+    final persistUser = _persistUser;
+    if (persistUser != null) {
+      await persistUser(nextUser);
+    } else {
+      await _sessionStore.persistUser(nextUser);
+    }
   }
 
   /// 清空当前用户状态并删除本地持久化数据。
@@ -59,9 +83,14 @@ class UserController extends GetxController {
   /// 一般在主动退出登录时调用。
   Future<void> logout() async {
     user.value = null;
-    await _sessionStore.clearUser();
+    final clearUser = _clearUser;
+    if (clearUser != null) {
+      await clearUser();
+    } else {
+      await _sessionStore.clearUser();
+    }
     await tokenManager.deleteToken();
-    await NotificationService.instance.cancelAll();
+    await _cancelNotifications();
   }
 
   /// 当账户被真正注销时，清空当前用户相关的本地缓存与资产文件。

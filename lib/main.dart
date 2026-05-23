@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
 import 'package:luminous/features/auth/data/user_session_store.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:luminous/routes/routes.dart';
 import 'package:luminous/startup/app_startup_warmup.dart';
@@ -45,6 +46,12 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
   @override
   void initState() {
     super.initState();
+    final userSessionNotifier = ref.read(userSessionProvider.notifier);
+    widget.userController.attachSessionBridge(
+      restoreUser: userSessionNotifier.restore,
+      persistUser: userSessionNotifier.setUser,
+      clearUser: userSessionNotifier.clear,
+    );
     _startupWarmup = AppStartupWarmup(
       userController: widget.userController,
       warmOrnaments: () async {

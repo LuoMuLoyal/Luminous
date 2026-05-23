@@ -35,6 +35,9 @@ void main() {
     expect(restoredUser?.id, 'user-1');
     expect(container.read(userSessionProvider).ready, isTrue);
     expect(container.read(userSessionProvider).isLoggedIn, isTrue);
+    expect(container.read(currentUserProvider)?.id, 'user-1');
+    expect(container.read(userLoggedInProvider), isTrue);
+    expect(container.read(userSessionReadyProvider), isTrue);
   });
 
   test('user session provider clears corrupted persisted user', () async {
