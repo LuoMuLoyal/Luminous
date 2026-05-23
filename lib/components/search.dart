@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/stores/ornament_controller.dart';
 import 'package:luminous/viewmodels/search.dart';
 
 /// 搜索页（Search）可复用 UI 组件集合。
@@ -83,17 +83,18 @@ class SearchSurfaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!Get.isRegistered<OrnamentController>()) {
+    if (maybeOrnamentContainerOf(context) == null) {
       return _buildContent(context, ornamentsDisabled: false);
     }
-    final ornamentController = Get.find<OrnamentController>();
-    return Obx(() {
-      ornamentController.revision.value;
-      return _buildContent(
-        context,
-        ornamentsDisabled: ornamentController.isDisabled,
-      );
-    });
+    return Consumer(
+      builder: (context, ref, _) {
+        final ornamentState = ref.watch(ornamentProvider);
+        return _buildContent(
+          context,
+          ornamentsDisabled: ornamentState.isDisabled,
+        );
+      },
+    );
   }
 }
 

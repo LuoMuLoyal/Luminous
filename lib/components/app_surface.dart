@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/components/app_ornaments.dart';
-import 'package:luminous/stores/ornament_controller.dart';
+import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
 
 Color appTintedSurface(
   BuildContext context,
@@ -160,26 +160,31 @@ class AppSectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (ornamentKey == null || !Get.isRegistered<OrnamentController>()) {
+    if (ornamentKey == null) {
       return _buildCard(context);
     }
-    final ornamentController = Get.find<OrnamentController>();
-    return Obx(() {
-      ornamentController.revision.value;
-      final resolvedVisibility =
-          (ornamentController.visibilityFactor * ornamentVisibilityScale).clamp(
-            0.0,
-            1.0,
-          );
-      return _buildCard(
-        context,
-        ornamentVisibilityFactor: resolvedVisibility,
-        sessionLayout: ornamentController.resolveLayout(
-          ornamentKey: ornamentKey!,
-          family: AppOrnamentFamily.section,
-        ),
-      );
-    });
+    if (maybeOrnamentContainerOf(context) == null) {
+      return _buildCard(context);
+    }
+    return Consumer(
+      builder: (context, ref, _) {
+        final ornamentState = ref.watch(ornamentProvider);
+        final ornamentNotifier = ref.read(ornamentProvider.notifier);
+        final resolvedVisibility =
+            (ornamentState.visibilityFactor * ornamentVisibilityScale).clamp(
+              0.0,
+              1.0,
+            );
+        return _buildCard(
+          context,
+          ornamentVisibilityFactor: resolvedVisibility,
+          sessionLayout: ornamentNotifier.resolveLayout(
+            ornamentKey: ornamentKey!,
+            family: AppOrnamentFamily.section,
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildCard(
