@@ -12,7 +12,7 @@ import 'package:luminous/features/medicine_picker/presentation/medicine_picker.d
 import 'package:luminous/features/scan/presentation/scan.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/drug/presentation/drug.dart';
-import 'package:luminous/stores/reminder_local_gateway.dart';
+import 'package:luminous/features/reminders/data/reminder_local_gateway.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/home.dart';
