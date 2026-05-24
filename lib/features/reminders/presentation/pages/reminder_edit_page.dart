@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:luminous/components/app_canvas.dart';
+import 'package:luminous/shared/widgets/app_canvas.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:luminous/viewmodels/reminder.dart';
@@ -130,10 +130,10 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
                     ReminderEditTile(
                       icon: Icons.access_time_rounded,
                       color: const Color(0xFF10B981),
-                      title: l10n?.reminderEditTimeTitle(_time) ??
-                          '提醒时间: $_time',
-                      subtitle: l10n?.reminderEditTimeSubtitle ??
-                          '每天在该时间通过系统通知提醒',
+                      title:
+                          l10n?.reminderEditTimeTitle(_time) ?? '提醒时间: $_time',
+                      subtitle:
+                          l10n?.reminderEditTimeSubtitle ?? '每天在该时间通过系统通知提醒',
                       onTap: _pickTime,
                     ),
                   ],
@@ -150,7 +150,8 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
                     ReminderEditTile(
                       icon: Icons.event_available_rounded,
                       color: const Color(0xFF14B8A6),
-                      title: l10n?.reminderEditStartDateTitle(
+                      title:
+                          l10n?.reminderEditStartDateTitle(
                             _startDate.isEmpty
                                 ? l10n.reminderDateUnlimited
                                 : _startDate,
@@ -158,8 +159,8 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
                           (_startDate.isEmpty
                               ? '开始日期: 不限制'
                               : '开始日期: $_startDate'),
-                      subtitle: l10n?.reminderEditStartDateSubtitle ??
-                          '留空表示不限制开始日期',
+                      subtitle:
+                          l10n?.reminderEditStartDateSubtitle ?? '留空表示不限制开始日期',
                       badgeText: _startDate.isEmpty
                           ? (l10n?.reminderEditDateBadgeUnset ?? '未设置')
                           : (l10n?.reminderEditDateBadgeSet ?? '已设置'),
@@ -169,23 +170,22 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
                     ReminderEditTile(
                       icon: Icons.event_busy_rounded,
                       color: const Color(0xFF0EA5E9),
-                      title: l10n?.reminderEditEndDateTitle(
+                      title:
+                          l10n?.reminderEditEndDateTitle(
                             _endDate.isEmpty
                                 ? l10n.reminderDateUnlimited
                                 : _endDate,
                           ) ??
-                          (_endDate.isEmpty
-                              ? '结束日期: 不限制'
-                              : '结束日期: $_endDate'),
-                      subtitle: l10n?.reminderEditEndDateSubtitle ??
-                          '留空表示不限制结束日期',
+                          (_endDate.isEmpty ? '结束日期: 不限制' : '结束日期: $_endDate'),
+                      subtitle:
+                          l10n?.reminderEditEndDateSubtitle ?? '留空表示不限制结束日期',
                       badgeText: _endDate.isEmpty
                           ? (l10n?.reminderEditDateBadgeUnset ?? '未设置')
                           : (l10n?.reminderEditDateBadgeSet ?? '已设置'),
                       onTap: _pickEndDate,
                     ),
-                    if (_startDate.isNotEmpty || _endDate.isNotEmpty) ...<
-                      Widget>[
+                    if (_startDate.isNotEmpty ||
+                        _endDate.isNotEmpty) ...<Widget>[
                       const SizedBox(height: 6),
                       Align(
                         alignment: Alignment.centerRight,
@@ -244,10 +244,7 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
                         ),
                       ),
                     ),
-                    Switch(
-                      value: _enabled,
-                      onChanged: _controller.setEnabled,
-                    ),
+                    Switch(value: _enabled, onChanged: _controller.setEnabled),
                   ],
                 ),
               ),
@@ -283,8 +280,7 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
                 secondaryColor: const Color(0xFF38BDF8),
                 ornamentKey: 'reminders.edit.tip',
                 child: Text(
-                  l10n?.reminderEditTip ??
-                      '提示：提醒信息仅用于辅助管理，不能替代医生处方。如有不适请及时就医。',
+                  l10n?.reminderEditTip ?? '提示：提醒信息仅用于辅助管理，不能替代医生处方。如有不适请及时就医。',
                   style: TextStyle(
                     fontSize: 12.5,
                     height: 1.5,
@@ -326,10 +322,9 @@ class _ReminderEditPageState extends State<ReminderEditPage> {
     final plan = await _controller.save(
       context,
       needLoginToast: l10n?.reminderEditNeedLogin ?? '请先登录',
-      nameRequiredToast:
-          l10n?.reminderEditNameRequired ?? '请至少选择一种药品',
-      invalidDateRangeToast: l10n?.reminderEditDateRangeInvalidToast ??
-          '开始日期不能晚于结束日期',
+      nameRequiredToast: l10n?.reminderEditNameRequired ?? '请至少选择一种药品',
+      invalidDateRangeToast:
+          l10n?.reminderEditDateRangeInvalidToast ?? '开始日期不能晚于结束日期',
     );
     if (!mounted || plan == null) {
       return;
