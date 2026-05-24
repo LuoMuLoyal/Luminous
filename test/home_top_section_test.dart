@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/components/home.dart';
+import 'package:luminous/features/home/presentation/home.dart';
 import 'package:luminous/components/soft_banner.dart';
 
 void main() {

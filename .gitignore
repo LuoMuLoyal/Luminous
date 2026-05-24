@@ -18,8 +18,11 @@ migrate_working_dir/
 *.iws
 .idea/
 
-# VS Code workspace settings are local to each developer.
-.vscode/
+# VS Code workspace settings are local to each developer, except the shared
+# commit-message linting recommendation and rules.
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 
 # Flutter/Dart/Pub related
 **/doc/api/
