@@ -153,7 +153,8 @@ class AlbumPreviewPage extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        l10n?.albumPreviewLowQualityNotice ?? '当前记录仅保存缩略图，无法高质量重识别。',
+                        l10n?.albumPreviewLowQualityNotice ??
+                            '当前记录仅保存缩略图，无法高质量重识别。',
                         style: TextStyle(
                           fontSize: 12.5,
                           height: 1.45,
@@ -167,6 +168,7 @@ class AlbumPreviewPage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: FilledButton(
+                          key: const ValueKey('album_preview_detail_button'),
                           onPressed: onOpenDetail,
                           style: FilledButton.styleFrom(
                             backgroundColor: primaryActionColor,
@@ -181,21 +183,18 @@ class AlbumPreviewPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (onRescan != null) ...[
-                        const SizedBox(width: 10),
-                        FilledButton.tonal(
-                          onPressed: onRescan,
-                          style: FilledButton.styleFrom(
-                            minimumSize: const Size(120, 48),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: Text(
-                            l10n?.albumPreviewRescanAction ?? '再次识别',
+                      const SizedBox(width: 10),
+                      FilledButton.tonal(
+                        key: const ValueKey('album_preview_rescan_button'),
+                        onPressed: onRescan,
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(120, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
                           ),
                         ),
-                      ],
+                        child: Text(l10n?.albumPreviewRescanAction ?? '再次识别'),
+                      ),
                     ],
                   ),
                 ],

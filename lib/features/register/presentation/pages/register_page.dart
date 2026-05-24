@@ -47,6 +47,12 @@ class _RegisterPageState extends State<RegisterPage> {
     return _controller.identifierLabel(_l10n, type);
   }
 
+  String _identifierHint(AuthIdentifierType type) {
+    return type == AuthIdentifierType.phone
+        ? _l10n.loginIdentifierHintPhone
+        : _l10n.loginIdentifierHintEmail;
+  }
+
   GlobalKey<FormState> get _formKey => _controller.formKey;
   TextEditingController get _identifierController =>
       _controller.identifierController;
@@ -204,7 +210,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 textInputAction: TextInputAction.next,
                 decoration: _buildInputDecoration(
                   labelText: _identifierLabel(_identifierType),
-                  hintText: _l10n.registerEmailHint,
+                  hintText: _identifierHint(_identifierType),
                   prefixIcon: Icons.email_outlined,
                 ),
                 validator: _identifierValidator,
@@ -218,8 +224,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       decoration: _buildInputDecoration(
-                        labelText: _l10n.registerCodeLabel,
-                        hintText: _l10n.registerCodeHint,
+                        labelText: _l10n.authCodeLabel,
+                        hintText: _l10n.authCodeHint,
                         prefixIcon: Icons.pin_outlined,
                       ),
                       validator: _codeValidator,
@@ -228,12 +234,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(width: 8),
                   SizedBox(
                     height: 48,
-                    child: ElevatedButton(
-                      onPressed:
-                          _sendingCode || _codeCountdownSeconds > 0
-                              ? null
-                              : _onSendCode,
-                      style: ElevatedButton.styleFrom(
+                    child: FilledButton(
+                      onPressed: _sendingCode || _codeCountdownSeconds > 0
+                          ? null
+                          : _onSendCode,
+                      style: FilledButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -241,7 +246,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Text(
                         _codeCountdownSeconds > 0
                             ? '${_codeCountdownSeconds}s'
-                            : _l10n.registerSendCodeAction,
+                            : _l10n.authSendCode,
                       ),
                     ),
                   ),
@@ -254,11 +259,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.next,
                 decoration: _buildInputDecoration(
-                  labelText: _l10n.registerPasswordLabel,
-                  hintText: _l10n.registerPasswordHint,
+                  labelText: _l10n.authPasswordLabel,
+                  hintText: _l10n.authPasswordHint,
                   prefixIcon: Icons.lock_outline_rounded,
                   suffixIcon: IconButton(
-                    onPressed: () => _controller.togglePasswordVisibility(),
+                    onPressed: () => _controller.toggleObscurePassword(),
                     icon: Icon(
                       _obscurePassword
                           ? Icons.visibility_off_outlined
@@ -275,11 +280,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.done,
                 decoration: _buildInputDecoration(
-                  labelText: _l10n.registerConfirmLabel,
-                  hintText: _l10n.registerConfirmHint,
+                  labelText: _l10n.authConfirmPasswordLabel,
+                  hintText: _l10n.authConfirmPasswordHint,
                   prefixIcon: Icons.lock_outline_rounded,
                   suffixIcon: IconButton(
-                    onPressed: () => _controller.toggleConfirmVisibility(),
+                    onPressed: () => _controller.toggleObscureConfirm(),
                     icon: Icon(
                       _obscureConfirm
                           ? Icons.visibility_off_outlined
@@ -332,8 +337,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget _buildRegisterButton() {
-    final locale = (_l10n.localeName ?? 'zh').toLowerCase();
-    final t = locale.startsWith('zh') ? '注册' : 'Register';
     return SizedBox(
       width: double.infinity,
       child: FilledButton(
@@ -355,7 +358,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   color: Colors.white,
                 ),
               )
-            : Text(t, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+            : Text(
+                _l10n.registerButton,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
       ),
     );
   }
@@ -366,7 +375,7 @@ class _RegisterPageState extends State<RegisterPage> {
         onPressed: () {
           Navigator.pushReplacementNamed(context, '/login');
         },
-        child: Text(_l10n.registerHaveAccountAction),
+        child: Text(_l10n.loginButton),
       ),
     );
   }
