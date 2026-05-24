@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:luminous/components/app_canvas.dart';
+import 'package:luminous/shared/widgets/app_canvas.dart';
 import 'package:luminous/shared/widgets/app_surface.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/viewmodels/reminder.dart';
@@ -83,8 +83,9 @@ class ReminderListPage extends StatelessWidget {
                         final item = entry.value;
                         return Padding(
                           padding: EdgeInsets.only(
-                            bottom:
-                                index == controller.items.length - 1 ? 0 : 8,
+                            bottom: index == controller.items.length - 1
+                                ? 0
+                                : 8,
                           ),
                           child: ReminderCard(
                             item: item,
@@ -111,9 +112,7 @@ class ReminderListPage extends StatelessWidget {
     ReminderListController controller,
   ) async {
     final plan = await Navigator.of(context).push<ReminderPlan>(
-      MaterialPageRoute<ReminderPlan>(
-        builder: (_) => const ReminderEditPage(),
-      ),
+      MaterialPageRoute<ReminderPlan>(builder: (_) => const ReminderEditPage()),
     );
     if (!context.mounted || plan == null) {
       return;
