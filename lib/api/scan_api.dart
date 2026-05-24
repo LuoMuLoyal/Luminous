@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/constants/constants.dart';
 import 'package:luminous/utils/dio_request.dart';
-import 'package:luminous/viewmodels/album.dart';
-import 'package:luminous/viewmodels/scan.dart';
+import 'package:luminous/features/album/presentation/models/album.dart';
+import 'package:luminous/features/scan/presentation/models/scan.dart';
 
 /// 药品识别与识别记录相关接口封装。
 class ScanApi {

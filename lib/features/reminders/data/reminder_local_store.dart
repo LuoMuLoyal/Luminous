@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:luminous/stores/app_database.dart';
-import 'package:luminous/viewmodels/reminder.dart';
+import 'package:luminous/features/reminders/presentation/models/reminder.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// 用药提醒本地缓存仓库。

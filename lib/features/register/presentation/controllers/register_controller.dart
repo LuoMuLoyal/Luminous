@@ -9,7 +9,7 @@ import 'package:luminous/api/auth_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/toast_utils.dart';
-import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
 
 /// 注册页页面级控制器。
 ///

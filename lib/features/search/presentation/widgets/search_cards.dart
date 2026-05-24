@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/shared/widgets/app_surface.dart';
 import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/viewmodels/search.dart';
+import 'package:luminous/features/search/presentation/models/search.dart';
 
 /// 搜索页（Search）可复用 UI 组件集合。
 /// 搜索页统一使用的白色表面卡片容器。

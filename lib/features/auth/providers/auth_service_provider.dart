@@ -5,7 +5,7 @@ import 'package:luminous/features/mine/data/browse_history_store.dart';
 import 'package:luminous/core/local_storage/token_manager.dart';
 import 'package:luminous/features/album/data/album_asset_store.dart';
 import 'package:luminous/utils/notification_service.dart';
-import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
 
 class AuthService {
   AuthService(this._ref);

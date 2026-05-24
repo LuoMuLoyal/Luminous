@@ -11,7 +11,7 @@ import 'package:luminous/features/drug/data/my_medicine_repository.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/medicine.dart';
-import 'package:luminous/viewmodels/search.dart';
+import 'package:luminous/features/search/presentation/models/search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 typedef MedicineSearchExecutor =

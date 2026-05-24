@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:luminous/stores/app_database.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/viewmodels/home.dart';
-import 'package:luminous/viewmodels/reminder.dart';
+import 'package:luminous/features/reminders/presentation/models/reminder.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract interface class TodayReminderStore {

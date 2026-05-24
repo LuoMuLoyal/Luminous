@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/album/data/album_asset_store.dart';
 import 'package:luminous/features/album/data/album_local_store.dart';
 import 'package:luminous/core/local_storage/app_database.dart';
-import 'package:luminous/viewmodels/album.dart';
+import 'package:luminous/features/album/presentation/models/album.dart';
 
 import 'support/fake_sqflite_database.dart';
 

@@ -9,8 +9,8 @@ import 'package:luminous/features/mine/data/browse_history_store.dart';
 import 'package:luminous/core/providers/global_provider_container.dart';
 import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/toast_utils.dart';
-import 'package:luminous/viewmodels/auth.dart';
-import 'package:luminous/viewmodels/browse_history.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
+import 'package:luminous/features/mine/presentation/models/browse_history.dart';
 
 /// 我的页页面级控制器。
 class MineController extends GetxController {

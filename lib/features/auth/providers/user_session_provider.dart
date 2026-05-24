@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/data/user_session_store.dart';
 import 'package:luminous/core/providers/shared_preferences_provider.dart';
-import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
 
 class UserSessionState {
   const UserSessionState({required this.ready, this.user});

@@ -1,7 +1,7 @@
 import 'package:luminous/constants/constants.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/utils/dio_request.dart';
-import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
 
 /// 认证相关接口封装。
 ///
