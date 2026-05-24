@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/shared/widgets/app_surface.dart';
 import 'package:luminous/features/scan/presentation/controllers/medicine_scan_controller.dart';
 import 'package:luminous/features/scan/presentation/models/selected_scan_image.dart';
 import 'package:luminous/features/search/presentation/search.dart';

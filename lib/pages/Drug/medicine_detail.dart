@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/components/app_canvas.dart';
-import 'package:luminous/components/app_surface.dart';
+import 'package:luminous/shared/widgets/app_surface.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Drug/controllers/medicine_detail_controller.dart';
 import 'package:luminous/viewmodels/medicine.dart';

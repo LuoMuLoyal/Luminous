@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luminous/components/app_canvas.dart';
-import 'package:luminous/components/app_surface.dart';
-import 'package:luminous/components/tinted_status_chip.dart';
+import 'package:luminous/shared/widgets/app_surface.dart';
+import 'package:luminous/shared/widgets/tinted_status_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/pages/Reminders/controllers/reminder_edit_controller.dart';
 import 'package:luminous/utils/toast_utils.dart';
