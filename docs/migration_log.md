@@ -111,3 +111,5 @@ lib/
 - 将 `lib/pages/Reminders/reminder_list.dart`（730行）拆为 3 个文件（page + 辅助卡片 + 提醒卡片），`reminder_edit.dart`（687行）拆为 2 个文件（page + 6 个编辑组件），全部 ≤600 行。
 - 旧路径 `pages/Reminders/reminder_list.dart`、`pages/Reminders/reminder_edit.dart` 及两个 controller 文件均收缩为兼容导出壳。
 - 更新全仓 3 个引用方（`app_router`、`reminder_edit_page_test`、`reminder_list_controller_test`）的 import 到新 `features/reminders` 入口。
+- 完成 `Safety` 第八个结构切片：新增 `lib/features/safety/presentation/`，把 `safety_assist.dart`（956行）拆为 page（626行）+ widgets（328行）+ controller 多文件。
+- 将原 `lib/pages/Safety/safety_assist.dart` 及 controller 收缩为兼容导出壳，更新 `main_shell`、`app_router`、`ai_cache_ui_test` 的 import。
