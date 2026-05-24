@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/api/reminder_api.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/stores/reminder_local_gateway.dart';
+import 'package:luminous/features/reminders/data/reminder_local_gateway.dart';
 import 'package:luminous/core/providers/global_provider_container.dart';
 import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/loading_utils.dart';
