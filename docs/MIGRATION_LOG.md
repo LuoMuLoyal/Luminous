@@ -83,3 +83,7 @@ lib/
 - 完成 `Main shell` 第二个结构切片：新增 `lib/features/main_shell/presentation/`，把主页面壳层、底栏、装饰节点和 `MainController` 分拆到独立文件。
 - 将原 `lib/pages/Main/main.dart` 与 `lib/pages/Main/controllers/main_controller.dart` 收缩为兼容导出壳，并把路由入口切到新的 `features/main_shell` 路径。
 - 新增 `test/main_controller_test.dart` 覆盖底栏切换与加载标记的基础行为，随后重新通过 `flutter analyze` 与全量 `flutter test`。
+- 新增共享工作区提交信息校验：通过 `.vscode/extensions.json` 推荐 `joshbolduc.commitlint`，并在 `.vscode/settings.json` 内配置轻量 Conventional Commit 规则，只在 VS Code Source Control 输入框内提示，不增加 Git hook 或强制全量校验。
+- 调整 `.gitignore` 与 `CONTRIBUTING.md`，将 `.vscode` 改为“默认忽略，放行共享校验配置”的策略，避免把个人本地 IDE 配置带进仓库。
+- 完成 `Home` 第三个结构切片：新增 `lib/features/home/presentation/`，把首页拆成 `controllers/`、`pages/`、`support/`、`widgets/` 多文件，并将正式入口命名统一为 `HomePage`。
+- 将原 `lib/pages/Home/home.dart`、`lib/pages/Home/controllers/home_controller.dart` 与 `lib/components/home.dart` 收缩为兼容壳或导出层，同时把 `Main shell` 与首页相关测试切到新的 `features/home` 入口。

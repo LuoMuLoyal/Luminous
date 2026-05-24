@@ -9,6 +9,8 @@
 ## Commits
 
 - Prefer Conventional Commits: `type(scope): summary`.
+- Use the shared VS Code workspace recommendation so the Source Control input
+  box can lint commit headers while you type.
 - Keep each commit focused on one change.
 - Do not mix code changes with generated files or local config.
 
@@ -20,7 +22,8 @@ Examples:
 
 ## Never Commit
 
-- Local IDE files such as `.vscode/` and `.idea/`
+- Local IDE files such as `.idea/` and personal `.vscode/*` entries other than
+  the shared workspace recommendation files
 - Build artifacts such as `build/`, `android/build/`, `backend/dist/`
 - Local dependencies such as `backend/node_modules/`
 - Presentation exports such as `outputs/`, `Roadshow/`, `feature_timeline_transparent*.png`

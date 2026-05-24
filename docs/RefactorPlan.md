@@ -121,9 +121,9 @@ Acceptance:
 
 ### 0.3 Recommended slice order
 
-1. `Settings`: split `settings.dart`, move the page stack into `lib/features/settings/`.
-2. `Main shell`: split `MainPage`, bottom bar, and ornament rendering responsibilities.
-3. `Home`: separate page composition from home-specific presentation widgets.
+1. `Settings`: split `settings.dart`, move the page stack into `lib/features/settings/`. Completed on 2026-05-24.
+2. `Main shell`: split `MainPage`, bottom bar, and ornament rendering responsibilities. Completed on 2026-05-24.
+3. `Home`: separate page composition from home-specific presentation widgets, and make `HomePage` the canonical feature entry while keeping `HomeView` as a thin compatibility shell. Completed on 2026-05-24.
 4. `Search`: separate search page, history, empty state, and result rendering.
 5. `Scan`: split page orchestration from action tiles, preview, and result presentation.
 6. `Backend auth`: split the large Express auth handler into smaller module-scoped files without starting Nest yet.
