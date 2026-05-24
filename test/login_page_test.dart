@@ -93,11 +93,11 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.byType(RegisterView), findsOneWidget);
+      expect(find.byType(RegisterPage), findsOneWidget);
       final registerFields = tester
           .widgetList<TextFormField>(
             find.descendant(
-              of: find.byType(RegisterView),
+              of: find.byType(RegisterPage),
               matching: find.byType(TextFormField),
             ),
           )
@@ -153,7 +153,7 @@ void main() {
           locale: const Locale('zh'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: RegisterView(
+          home: RegisterPage(
             authApi: fakeAuth,
             initialIdentifierType: AuthIdentifierType.phone,
             initialIdentifier: '13800138000',
@@ -189,7 +189,7 @@ void main() {
         locale: const Locale('zh'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: RegisterView(
+        home: RegisterPage(
           authApi: FakeAuthApi(),
           initialIdentifierType: AuthIdentifierType.phone,
           initialIdentifier: '13800138000',

@@ -123,3 +123,4 @@ lib/
 - 完成 `Register` 第十三个结构切片：新增 `lib/features/register/presentation/`，迁移注册页（改名 `RegisterView` → `RegisterPage`）和 controller。
 - 收缩 Login/Register 共 4 个旧路径为兼容导出壳，更新 `app_router` 和 `test/login_page_test.dart` 的 import。
 - `flutter analyze` 和全量 `flutter test`（19 通过）均已确认。
+- 更新当前 Phase 0 进度 checkpoint：Settings、Main shell、Home、Search、Scan、Shared UI、Responsive shell、Drug、Reminders、Safety、Mine、Album、CheckIn、Login/Register 已迁入 `lib/features/` 或 `lib/shared/` 的目标结构；剩余 Phase 0 收口项主要是 Picker、Legal、Profile settings 等小页面岛、`stores/viewmodels` 后续归属决策、兼容导出壳清理，以及 shared layout 的内容宽度/侧栏/宽屏测试补齐。

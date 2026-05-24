@@ -24,7 +24,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/register',
-        builder: (context, state) => const RegisterView(),
+        builder: (context, state) => const RegisterPage(),
       ),
       GoRoute(path: '/search', builder: (context, state) => const SearchPage()),
       GoRoute(
