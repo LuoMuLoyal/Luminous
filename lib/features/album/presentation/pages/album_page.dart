@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:luminous/shared/widgets/soft_banner/soft_banner.dart';
 import 'package:luminous/features/scan/presentation/scan.dart';
 import 'package:luminous/features/drug/presentation/drug.dart';
-import 'package:luminous/viewmodels/album.dart';
+import 'package:luminous/features/album/presentation/models/album.dart';
 
 import '../controllers/album_controller.dart';
 import '../widgets/album_page_widgets.dart';

@@ -1,7 +1,7 @@
 import 'package:luminous/constants/constants.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/utils/dio_request.dart';
-import 'package:luminous/viewmodels/reminder.dart';
+import 'package:luminous/features/reminders/presentation/models/reminder.dart';
 
 /// 提醒计划接口封装。
 class ReminderApi {

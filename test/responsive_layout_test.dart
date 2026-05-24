@@ -4,9 +4,9 @@ import 'package:luminous/shared/widgets/soft_banner/soft_banner.dart';
 import 'package:luminous/features/drug/presentation/drug.dart';
 import 'package:luminous/features/home/presentation/home.dart';
 import 'package:luminous/features/mine/presentation/mine.dart';
-import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
 import 'package:luminous/viewmodels/home.dart';
-import 'package:luminous/viewmodels/mine.dart';
+import 'package:luminous/features/mine/presentation/models/mine.dart';
 
 void main() {
   Future<void> pumpAtSize(

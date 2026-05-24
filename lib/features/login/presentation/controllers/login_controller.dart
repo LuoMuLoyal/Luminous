@@ -9,7 +9,7 @@ import 'package:luminous/features/auth/data/session_sync_service.dart';
 import 'package:luminous/core/local_storage/token_manager.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/utils/toast_utils.dart';
-import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
 
 /// 登录页页面级控制器。
 ///

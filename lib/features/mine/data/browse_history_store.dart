@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:luminous/viewmodels/browse_history.dart';
+import 'package:luminous/features/mine/presentation/models/browse_history.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/shared/widgets/soft_banner/soft_banner.dart';
 import 'package:luminous/shared/widgets/tinted_status_chip.dart';
-import 'package:luminous/viewmodels/album.dart';
+import 'package:luminous/features/album/presentation/models/album.dart';
 
 import 'album_slivers.dart';
 import 'album_card.dart';

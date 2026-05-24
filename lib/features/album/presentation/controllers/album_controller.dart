@@ -11,7 +11,7 @@ import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/toast_utils.dart';
-import 'package:luminous/viewmodels/album.dart';
+import 'package:luminous/features/album/presentation/models/album.dart';
 import 'package:luminous/viewmodels/medicine.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

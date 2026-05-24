@@ -6,7 +6,7 @@ import 'package:luminous/features/reminders/data/today_reminder_local_store.dart
 import 'package:luminous/utils/notification_service.dart';
 import 'package:luminous/utils/dio_request.dart';
 import 'package:luminous/viewmodels/home.dart';
-import 'package:luminous/viewmodels/reminder.dart';
+import 'package:luminous/features/reminders/presentation/models/reminder.dart';
 
 typedef FetchRemoteReminderPlans =
     Future<ApiResult<ReminderListResult>> Function({required String userId});

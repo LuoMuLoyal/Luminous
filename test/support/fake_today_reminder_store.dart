@@ -1,6 +1,6 @@
 import 'package:luminous/features/reminders/data/today_reminder_local_store.dart';
 import 'package:luminous/viewmodels/home.dart';
-import 'package:luminous/viewmodels/reminder.dart';
+import 'package:luminous/features/reminders/presentation/models/reminder.dart';
 
 class FakeTodayReminderStore implements TodayReminderStore {
   FakeTodayReminderStore({

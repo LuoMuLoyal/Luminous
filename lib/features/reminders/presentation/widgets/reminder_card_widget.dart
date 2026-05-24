@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/shared/widgets/app_surface.dart';
 import 'package:luminous/shared/widgets/tinted_status_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/viewmodels/reminder.dart';
+import 'package:luminous/features/reminders/presentation/models/reminder.dart';
 
 /// 提醒计划列表中的单条卡片。
 ///

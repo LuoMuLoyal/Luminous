@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/pages/CheckIn/checkin.dart';
 import 'package:luminous/utils/toast_utils.dart';
-import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
 import 'package:luminous/viewmodels/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

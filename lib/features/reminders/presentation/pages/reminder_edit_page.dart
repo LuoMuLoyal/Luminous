@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:luminous/shared/widgets/app_canvas.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/viewmodels/medicine.dart';
-import 'package:luminous/viewmodels/reminder.dart';
+import 'package:luminous/features/reminders/presentation/models/reminder.dart';
 
 import '../controllers/reminder_edit_controller.dart';
 import '../widgets/reminder_edit_widgets.dart';

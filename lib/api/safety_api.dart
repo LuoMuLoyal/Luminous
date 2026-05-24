@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/constants/constants.dart';
 import 'package:luminous/utils/dio_request.dart';
-import 'package:luminous/viewmodels/safety.dart';
+import 'package:luminous/features/safety/presentation/models/safety.dart';
 
 /// 安全辅助接口封装。
 class SafetyApi {

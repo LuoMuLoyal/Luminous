@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:luminous/api/scan_api.dart';
 import 'package:luminous/features/album/data/album_asset_store.dart';
 import 'package:luminous/core/local_storage/app_database.dart';
-import 'package:luminous/viewmodels/album.dart';
+import 'package:luminous/features/album/presentation/models/album.dart';
 
 typedef AlbumCreateRemoteRecord =
     Future<IdResult> Function({

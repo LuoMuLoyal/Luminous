@@ -13,7 +13,7 @@ import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/scan_image_processing.dart';
 import 'package:luminous/utils/toast_utils.dart';
-import 'package:luminous/viewmodels/scan.dart';
+import 'package:luminous/features/scan/presentation/models/scan.dart';
 
 /// 药物识别页控制器。
 ///

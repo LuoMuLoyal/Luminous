@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:luminous/shared/widgets/app_surface.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/viewmodels/album.dart';
+import 'package:luminous/features/album/presentation/models/album.dart';
 
 import 'album_page_widgets.dart';
 

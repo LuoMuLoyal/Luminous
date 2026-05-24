@@ -1,7 +1,7 @@
 import 'package:luminous/api/my_medicine_api.dart';
 import 'package:luminous/stores/app_database.dart';
 import 'package:luminous/viewmodels/medicine.dart';
-import 'package:luminous/viewmodels/my_medicine.dart';
+import 'package:luminous/features/drug/presentation/models/my_medicine.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// 保存“我的药品”后的结果对象。

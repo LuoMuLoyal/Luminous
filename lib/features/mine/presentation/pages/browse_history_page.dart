@@ -5,7 +5,7 @@ import 'package:luminous/shared/widgets/app_surface.dart';
 import 'package:luminous/shared/widgets/tinted_status_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/drug/presentation/drug.dart';
-import 'package:luminous/viewmodels/browse_history.dart';
+import 'package:luminous/features/mine/presentation/models/browse_history.dart';
 
 import '../controllers/browse_history_controller.dart';
 
