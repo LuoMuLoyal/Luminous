@@ -134,3 +134,4 @@ lib/
 - 完成 `Profile settings` 小页面岛迁移：将个人资料设置页和 controller 迁入 `lib/features/settings/presentation/`，旧 `lib/pages/Settings/profile_settings.dart` 与 controller 路径保留兼容导出。
 - 继续收口 Settings 文件体积：将 `theme_widgets.dart` 按 hero、display preferences、theme style card、ornament preview 拆分，原 600+ 行文件降至 300 行以内。
 - 继续收口 Safety 文件体积：将安全辅助页纯文案选择函数迁入 `support/safety_assist_text.dart`，使 `safety_assist_page.dart` 降至 600 行以内。
+- 清理 `lib/components/` 兼容导出壳：全仓确认 14 个旧壳（9 个 shared + 5 个 feature）均无外部引用后，移入 `lib/deprecated/` 废弃目录，删除空的 `lib/components/` 目录。`flutter analyze` 无问题。
