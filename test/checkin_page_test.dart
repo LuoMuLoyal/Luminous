@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:luminous/pages/CheckIn/checkin.dart';
+import 'package:luminous/features/checkin/presentation/checkin.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/features/auth/presentation/models/auth.dart';
 import 'package:luminous/shared/models/home.dart';
