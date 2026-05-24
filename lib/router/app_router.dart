@@ -11,7 +11,7 @@ import 'package:luminous/pages/Login/login.dart';
 import 'package:luminous/pages/Mine/browse_history.dart';
 import 'package:luminous/pages/Register/register.dart';
 import 'package:luminous/features/reminders/presentation/reminders.dart';
-import 'package:luminous/pages/Safety/safety_assist.dart';
+import 'package:luminous/features/safety/presentation/safety.dart';
 import 'package:luminous/utils/loading_utils.dart'; // 沿用原本的 NavigatorKey 做兼容
 
 final routerProvider = Provider<GoRouter>((ref) {
