@@ -95,3 +95,4 @@ lib/
 - 将原 `lib/pages/Scan/medicine_scan.dart`、`lib/pages/Scan/controllers/medicine_scan_controller.dart` 与 `lib/pages/Scan/models/selected_scan_image.dart` 收缩为兼容导出层，同时把路由、Home、药品详情、相册重扫和扫码流程测试切到新的 `features/scan` 入口。
 - 根据最新迁移节奏，重新收窄 `Phase 0`：当前只处理 Flutter 项目基座，后端 auth 拆分、NestJS 脚手架和 PostgreSQL 改造全部顺延到后续后端阶段。
 - 更新 `Phase 0` 后续顺序为共享 UI 基座、Auth 展示层、Medicine detail、Reminders 展示层、Safety/Mine 页面壳，先把前端目录结构和文件拆分打稳。
+- 启动共享 UI 基座切片：新增 `lib/shared/widgets/`，迁移 `app_surface`、`tinted_status_chip`、`responsive_quick_grid`、`quick_entry_style` 与 `shared_quick_entry_card`，旧 `lib/components/*` 路径保留兼容导出。

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:luminous/components/app_surface.dart';
-import 'package:luminous/components/responsive_quick_grid.dart';
-import 'package:luminous/components/shared_quick_entry_card.dart';
+import 'package:luminous/shared/widgets/app_surface.dart';
+import 'package:luminous/shared/widgets/responsive_quick_grid.dart';
+import 'package:luminous/shared/widgets/shared_quick_entry_card.dart';
 import 'package:luminous/components/soft_banner.dart';
-import 'package:luminous/components/tinted_status_chip.dart';
+import 'package:luminous/shared/widgets/tinted_status_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:luminous/viewmodels/mine.dart';
