@@ -52,6 +52,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return _controller.identifierLabel(_l10n, type);
   }
 
+  String _identifierHint(AuthIdentifierType type) {
+    return type == AuthIdentifierType.phone
+        ? _l10n.loginIdentifierHintPhone
+        : _l10n.loginIdentifierHintEmail;
+  }
+
   String _loginModeLabel(AuthLoginMode mode) {
     return _controller.loginModeLabel(_l10n, mode);
   }
@@ -212,7 +218,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 textInputAction: TextInputAction.next,
                 decoration: _buildInputDecoration(
                   labelText: _identifierLabel(_identifierType),
-                  hintText: _l10n.loginIdentifierHint,
+                  hintText: _identifierHint(_identifierType),
                   prefixIcon: Icons.email_outlined,
                 ),
                 validator: _identifierValidator,
@@ -225,12 +231,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.done,
                   decoration: _buildInputDecoration(
-                    labelText: _l10n.loginPasswordLabel,
-                    hintText: _l10n.loginPasswordHint,
+                    labelText: _l10n.authPasswordLabel,
+                    hintText: _l10n.authPasswordHint,
                     prefixIcon: Icons.lock_outline_rounded,
                     suffixIcon: IconButton(
-                      onPressed:
-                          () => _controller.togglePasswordVisibility(),
+                      onPressed: () => _controller.toggleObscurePassword(),
                       icon: Icon(
                         _obscurePassword
                             ? Icons.visibility_off_outlined
@@ -251,8 +256,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.done,
                         decoration: _buildInputDecoration(
-                          labelText: _l10n.loginCodeLabel,
-                          hintText: _l10n.loginCodeHint,
+                          labelText: _l10n.authCodeLabel,
+                          hintText: _l10n.authCodeHint,
                           prefixIcon: Icons.pin_outlined,
                         ),
                         validator: _codeValidator,
@@ -261,12 +266,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     const SizedBox(width: 8),
                     SizedBox(
                       height: 48,
-                      child: ElevatedButton(
-                        onPressed:
-                            _sendingCode || _codeCountdownSeconds > 0
-                                ? null
-                                : _onSendCode,
-                        style: ElevatedButton.styleFrom(
+                      child: FilledButton(
+                        onPressed: _sendingCode || _codeCountdownSeconds > 0
+                            ? null
+                            : _onSendCode,
+                        style: FilledButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -274,7 +278,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         child: Text(
                           _codeCountdownSeconds > 0
                               ? '${_codeCountdownSeconds}s'
-                              : _l10n.loginSendCodeAction,
+                              : _l10n.authSendCode,
                         ),
                       ),
                     ),
@@ -324,8 +328,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   Widget _buildLoginButton() {
-    final locale = (_l10n.localeName ?? 'zh').toLowerCase();
-    final t = locale.startsWith('zh') ? '登录' : 'Login';
     return SizedBox(
       width: double.infinity,
       child: FilledButton(
@@ -347,7 +349,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   color: Colors.white,
                 ),
               )
-            : Text(t, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+            : Text(
+                _l10n.loginButton,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
       ),
     );
   }
@@ -371,7 +379,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
             );
           },
-          child: Text(_l10n.loginCreateAccountAction),
+          child: Text(_l10n.loginRegisterAction),
         ),
       ],
     );

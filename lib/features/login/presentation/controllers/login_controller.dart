@@ -209,39 +209,33 @@ class LoginController extends GetxController {
     }
 
     final identifier = identifierController.text.trim();
+    if (_loginMode == AuthLoginMode.code && _codeTarget != identifier) {
+      _showToast(context, l10n.loginNeedCodeForCurrentAccount);
+      return;
+    }
 
     _submitting = true;
     update();
 
     try {
       final response = _loginMode == AuthLoginMode.password
-          ? (_identifierType == AuthIdentifierType.phone
-              ? await authApi.loginWithPasswordPhone(
-                  phone: identifier,
-                  password: passwordController.text,
-                )
-              : await authApi.loginWithPasswordEmail(
-                  email: identifier,
-                  password: passwordController.text,
-                ))
-          : (_identifierType == AuthIdentifierType.phone
-              ? await authApi.loginWithCodePhone(
-                  phone: identifier,
-                  code: codeController.text.trim(),
-                )
-              : await authApi.loginWithCodeEmail(
-                  email: identifier,
-                  code: codeController.text.trim(),
-                ));
-
-      if (!context.mounted || isClosed) {
-        return;
-      }
+          ? await authApi.loginWithPassword(
+              identifierType: _identifierType,
+              identifier: identifier,
+              password: passwordController.text,
+            )
+          : await authApi.loginWithCode(
+              identifierType: _identifierType,
+              identifier: identifier,
+              code: codeController.text.trim(),
+            );
 
       final loginResult = response.result;
-
-      if (loginResult.token != null && loginResult.token!.accessToken.isNotEmpty) {
-        await tokenManager.saveToken(loginResult.token!);
+      if (loginResult.token.trim().isNotEmpty) {
+        await tokenManager.setToken(loginResult.token.trim());
+        if (loginResult.refreshToken.trim().isNotEmpty) {
+          await tokenManager.setRefreshToken(loginResult.refreshToken.trim());
+        }
       } else {
         await tokenManager.deleteToken();
       }

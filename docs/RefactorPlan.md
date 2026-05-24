@@ -113,18 +113,31 @@ Acceptance:
 - Relevant focused tests pass after each slice, and full regression gates run regularly.
 - Large files shrink, and the new target directories become the canonical home for migrated code.
 
-### 0.3 Recommended slice order
+### 0.3 Structural slice status
 
-1. `Settings`: split `settings.dart`, move the page stack into `lib/features/settings/`. Completed on 2026-05-24.
-2. `Main shell`: split `MainPage`, bottom bar, and ornament rendering responsibilities. Completed on 2026-05-24.
-3. `Home`: separate page composition from home-specific presentation widgets, and make `HomePage` the canonical feature entry while keeping `HomeView` as a thin compatibility shell. Completed on 2026-05-24.
-4. `Search`: separate search page, history, empty state, and result rendering, and make `SearchPage` the canonical feature entry while keeping `SearchView` as a thin compatibility shell. Completed on 2026-05-24.
-5. `Scan`: split page orchestration from action tiles, preview, and result presentation. Completed on 2026-05-24.
-6. `Shared UI base`: move genuinely cross-feature UI from `lib/components/` into `lib/shared/widgets/` or `lib/shared/layout/`, keeping old component files as compatibility exports where useful. Started on 2026-05-24.
-7. `Auth presentation`: split login/register pages and auth widgets into `lib/features/auth/presentation/` without changing token/session behavior.
-8. `Medicine detail`: split `medicine_detail.dart` and drug presentation widgets into a feature-owned presentation layer without changing API contracts.
-9. `Reminders presentation`: split reminder list/edit pages into feature-owned page, section, card, and form files without changing reminder data behavior.
-10. `Safety and Mine`: move remaining active page shells toward feature ownership after the shared UI base is stable.
+Completed on 2026-05-24:
+
+1. `Settings`: split `settings.dart`, move the page stack into `lib/features/settings/`, and keep old imports as compatibility exports.
+2. `Main shell`: split `MainPage`, controller, bottom bar, ornament support, and wide navigation rail into `lib/features/main_shell/presentation/`.
+3. `Home`: separate page composition, controller, support data, and widgets under `lib/features/home/presentation/`; `HomePage` is the canonical feature entry.
+4. `Search`: split page, controller, prompt/result slivers, cards, and tip widgets under `lib/features/search/presentation/`; `SearchPage` is the canonical feature entry.
+5. `Scan`: split page orchestration, controller, image-flow support, labels, selected-image model, sheet, photo area, actions, and result section under `lib/features/scan/presentation/`.
+6. `Shared UI base`: move cross-feature surfaces, status chips, quick-entry styles/cards, responsive quick-grid primitives, and ornament layouts into `lib/shared/widgets/`.
+7. `Responsive shell base`: add `lib/shared/layout/`, global breakpoint/window-class definitions, `AppAdaptiveScaffold`, and compact bottom navigation versus wide rail/sidebar behavior for `MainPage`.
+8. `Drug`: split drug list, medicine detail, controllers, presentation widgets, and presentation models under `lib/features/drug/presentation/`; route-level naming is now `DrugPage`.
+9. `Reminders`: split list/edit pages, controllers, reminder card, list widgets, and edit widgets under `lib/features/reminders/presentation/`.
+10. `Safety`: split safety assist page, controller, and widgets under `lib/features/safety/presentation/`.
+11. `Mine`: split mine page, browse history page, controllers, profile card, and page widgets under `lib/features/mine/presentation/`; route-level naming is now `MinePage`.
+12. `Album`: split album page, controller, preview, card, page widgets, and slivers under `lib/features/album/presentation/`; route-level naming is now `AlbumPage`.
+13. `CheckIn`: move check-in page and controller under `lib/features/checkin/presentation/`.
+14. `Login` and `Register`: move login/register pages and controllers under `lib/features/login/presentation/` and `lib/features/register/presentation/`; route-level naming is now `RegisterPage`.
+
+Remaining Phase 0 cleanup:
+
+1. Migrate smaller active page islands that still live under `lib/pages/`, especially `Picker`, `Legal`, and `Settings/profile_settings`.
+2. Decide whether data/model-heavy legacy folders such as `lib/stores/` and `lib/viewmodels/` should move in Phase 0 or wait for the Riverpod/domain/data phases.
+3. Retire compatibility export wrappers only after active imports have moved and the removal is low-risk.
+4. Continue the responsive base with shared content lanes, max-width constraints, optional side panels, and one feature-level compact/expanded reference implementation.
 
 ### 0.4 Exit criteria
 
@@ -141,28 +154,28 @@ Phase 0 is considered healthy enough to move faster only when:
 
 Current status on 2026-05-24:
 
-- The refactor has preserved useful responsive seams at the feature and widget level. Migrated pages now have feature-owned entry points such as `HomePage`, `SearchPage`, and `MedicineScanPage`, which makes it possible to add compact, medium, and expanded variants inside each feature later.
+- The refactor has preserved useful responsive seams at the feature and widget level. Migrated pages now have feature-owned entry points such as `HomePage`, `SearchPage`, `MedicineScanPage`, `DrugPage`, `AlbumPage`, and `MinePage`, which makes it possible to add compact, medium, and expanded variants inside each feature later.
+- `lib/shared/layout/` now defines the global breakpoint taxonomy through `AppWindowClass`: compact `<600`, medium `600-839`, expanded `840-1199`, and web-expanded `>=1200`.
+- `AppAdaptiveScaffold` is the first shared adaptive shell. `MainPage` keeps the compact bottom tab bar on phone widths and switches to `NavigationRail` / extended rail on wider widths.
 - `lib/shared/widgets/responsive_quick_grid.dart` already centralizes one compact breakpoint at `600dp`, text-scale-aware quick-entry metrics, and `ResponsiveQuickWrap`.
 - Home, Drug, and Mine quick-entry sections already consume the shared responsive quick-grid primitives instead of hardcoding fixed card widths.
 - Settings theme style selection already uses local `500dp` and `720dp` breakpoints to change column count.
-- Several remaining legacy pages use `LayoutBuilder` or `Wrap` for local compact handling, including Album, Drug detail, Reminders, CheckIn, Safety, and Mine.
+- Several migrated feature pages still use `LayoutBuilder` or `Wrap` for local compact handling, including Album, Drug detail, Reminders, CheckIn, Safety, and Mine.
 - `test/responsive_layout_test.dart` covers narrow mobile widths for the shared quick-entry sections and one long-email Mine profile layout.
+- `test/adaptive_layout_test.dart` covers breakpoint mapping and compact/wide adaptive shell switching.
 
 Known gaps:
 
-- There is no global app breakpoint taxonomy yet. Width decisions are currently local and ad hoc.
-- `MainPage` is still mobile-first: it always uses a bottom navigation bar. There is no tablet/desktop `NavigationRail`, side navigation, or two-pane shell yet.
 - `AppCanvasPageScaffold` is a visual scaffold, not an adaptive layout scaffold. It does not provide max-width content lanes, side panels, master-detail slots, or desktop content density rules.
 - The app currently changes spacing, wrapping, and card sizing, but it does not yet change feature content between phone, tablet, desktop, and web.
-- Responsive tests currently focus on narrow mobile overflow; tablet, desktop, and web-width regression tests are still missing.
+- Feature-level responsive tests still focus on narrow mobile overflow; tablet, desktop, and web-width feature regression tests are still missing.
 
 Next responsive foundation tasks before product-facing responsive work:
 
-1. Add `lib/shared/layout/` with named breakpoints and window classes, for example compact, medium, expanded, and web-expanded.
-2. Add a shared adaptive shell that can choose bottom navigation on compact widths and rail/sidebar navigation on wider widths.
-3. Add page content constraints such as max readable width, centered content lanes, and optional side panels.
-4. Convert one migrated feature first, preferably Home, to compact and expanded page variants as the reference pattern.
-5. Expand widget tests to cover at least 393, 768, and 1280 logical-pixel widths.
+1. Add page content constraints such as max readable width, centered content lanes, and optional side panels.
+2. Convert one migrated feature first, preferably Home, to compact and expanded page variants as the reference pattern.
+3. Expand widget tests to cover at least 393, 768, and 1280 logical-pixel widths.
+4. Gradually replace local ad hoc width rules with `AppWindowClass` where doing so reduces duplication.
 
 Started on 2026-05-24:
 
@@ -392,3 +405,4 @@ Tasks:
 - Completed the eleventh structural slice (`CheckIn`): migrated page and controller to `lib/features/checkin/presentation/`, collapsed 2 old paths, updated router import. `flutter analyze` clean.
 - Normalized naming: renamed `DrugView`→`DrugPage`, `AlbumView`→`AlbumPage`, `MineView`→`MinePage` (route-level pages), layout widgets renamed to `XxxLayout`. Fixed `use_build_context_synchronously` info lint in reminder_edit_page.
 - Completed the twelfth and thirteenth structural slices (`Login` + `Register`): migrated both pages and controllers to `lib/features/login/presentation/` and `lib/features/register/presentation/`, renamed `RegisterView`→`RegisterPage`, updated `login_controller` to reference `RegisterPage` via barrel, collapsed 4 old paths, updated router and test imports. `flutter analyze` clean; all 19 `flutter test` passing.
+- Updated the Phase 0 status checkpoint: most active presentation modules now have canonical homes under `lib/features/`, shared UI and adaptive shell primitives live under `lib/shared/`, and remaining cleanup is limited to smaller page islands, data/model ownership decisions, compatibility wrapper retirement, and responsive content-lane work.
