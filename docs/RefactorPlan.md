@@ -120,7 +120,7 @@ Acceptance:
 3. `Home`: separate page composition from home-specific presentation widgets, and make `HomePage` the canonical feature entry while keeping `HomeView` as a thin compatibility shell. Completed on 2026-05-24.
 4. `Search`: separate search page, history, empty state, and result rendering, and make `SearchPage` the canonical feature entry while keeping `SearchView` as a thin compatibility shell. Completed on 2026-05-24.
 5. `Scan`: split page orchestration from action tiles, preview, and result presentation. Completed on 2026-05-24.
-6. `Shared UI base`: move genuinely cross-feature UI from `lib/components/` into `lib/shared/widgets/` or `lib/shared/layout/`, keeping old component files as compatibility exports where useful.
+6. `Shared UI base`: move genuinely cross-feature UI from `lib/components/` into `lib/shared/widgets/` or `lib/shared/layout/`, keeping old component files as compatibility exports where useful. Started on 2026-05-24.
 7. `Auth presentation`: split login/register pages and auth widgets into `lib/features/auth/presentation/` without changing token/session behavior.
 8. `Medicine detail`: split `medicine_detail.dart` and drug presentation widgets into a feature-owned presentation layer without changing API contracts.
 9. `Reminders presentation`: split reminder list/edit pages into feature-owned page, section, card, and form files without changing reminder data behavior.
@@ -344,3 +344,4 @@ Tasks:
 - Completed the second structural slice by moving the main shell presentation and controller code into `lib/features/main_shell/`, splitting the old oversized `main.dart` into page, bottom-bar, and ornament support files while keeping legacy export wrappers.
 - Completed the fifth structural slice by moving scan presentation code into `lib/features/scan/presentation/`, splitting the old scan page into page, image-flow support, labels, preview, sheet, result, and action files while keeping legacy export wrappers.
 - Re-scoped `Phase 0` as Flutter project-base work only; backend auth splitting and NestJS/PostgreSQL implementation are deferred to later backend phases.
+- Started the shared UI base slice by moving app surface, tinted status chip, responsive quick grid, quick entry style, and shared quick entry card primitives into `lib/shared/widgets/`, with old component paths kept as compatibility exports.
