@@ -101,3 +101,9 @@ lib/
 - 启动响应式基座：新增 `lib/shared/layout/`，定义 `AppWindowClass` 和全局 breakpoint，并加入 `AppAdaptiveScaffold`。
 - 改造 `MainPage`：compact 宽度保留现有底部导航，medium 及以上宽度切换到 `NavigationRail`，expanded/web-expanded 宽度使用扩展侧栏形态。
 - 新增 `test/adaptive_layout_test.dart` 覆盖 breakpoint 映射和 compact/wide adaptive shell 切换。
+- 完成 `Drug` 第六个结构切片：新增 `lib/features/drug/presentation/`，把药品页拆为 `pages/`（`drug_page.dart`、`medicine_detail_page.dart`）、`widgets/`（3 个 drug 列表组件 + 3 个 medicine detail 组件）、`controllers/` 和 `models/` 多文件。
+- 将 `lib/components/drug.dart`（697行）拆为 3 个 widget 文件，`lib/pages/Drug/medicine_detail.dart`（763行）拆为 4 个文件（page + header card + AI card + support cards），全部 ≤600 行。
+- 将 `lib/viewmodels/drug.dart` 的数据模型迁入 `lib/features/drug/presentation/models/drug_models.dart`。
+- 旧路径 `components/drug.dart`、`viewmodels/drug.dart`、`pages/Drug/drug.dart`、`pages/Drug/medicine_detail.dart` 及两个 controller 文件均收缩为兼容导出壳。
+- 更新全仓 7 个引用方（`main_shell`、`home`、`search`、`album`、`browse_history`、`ai_cache_ui_test`、`responsive_layout_test`）的 import 到新 `features/drug` 入口。
+- 在 `.gitignore` 中新增 `.flutter` 和 `.flutter_tool_state`，避免 Flutter SDK 本地工具状态文件进入仓库。

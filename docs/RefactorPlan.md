@@ -383,3 +383,5 @@ Tasks:
 - Split the shared ornament definitions into `lib/shared/widgets/ornaments/`, separating models, banner layouts, section layouts, and layout sets while keeping `lib/components/app_ornaments.dart` as a compatibility export.
 - Recorded the responsive readiness checkpoint: current responsive support is component-level and mobile-overflow focused, while global breakpoints, adaptive app shell, desktop/web content variants, and wider viewport tests still need to be added.
 - Started the responsive foundation by adding shared layout breakpoints, `AppAdaptiveScaffold`, and a medium/expanded `NavigationRail` path for `MainPage` while preserving the compact bottom bar behavior.
+- Completed the sixth structural slice (`Drug`): split `lib/components/drug.dart` (697→3 files) and `lib/pages/Drug/medicine_detail.dart` (763→4 files), moved data models into `lib/features/drug/presentation/models/`, and collapsed 7 old paths into compatibility re-exports while updating 7 cross-repo imports. All new files ≤600 lines; `flutter analyze` clean.
+- Added `.flutter` and `.flutter_tool_state` to `.gitignore` as Flutter SDK local tool state.
