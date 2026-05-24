@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/providers/user_session_provider.dart';
-import 'package:luminous/stores/app_database.dart';
-import 'package:luminous/stores/browse_history_store.dart';
-import 'package:luminous/stores/token_manager.dart';
-import 'package:luminous/stores/album_asset_store.dart';
+import 'package:luminous/core/local_storage/app_database.dart';
+import 'package:luminous/features/mine/data/browse_history_store.dart';
+import 'package:luminous/core/local_storage/token_manager.dart';
+import 'package:luminous/features/album/data/album_asset_store.dart';
 import 'package:luminous/utils/notification_service.dart';
 import 'package:luminous/viewmodels/auth.dart';
 

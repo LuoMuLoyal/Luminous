@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:luminous/stores/reminder_local_gateway.dart';
+import 'package:luminous/features/reminders/data/reminder_local_gateway.dart';
 import 'package:luminous/viewmodels/home.dart';
 import 'package:luminous/viewmodels/reminder.dart';
 

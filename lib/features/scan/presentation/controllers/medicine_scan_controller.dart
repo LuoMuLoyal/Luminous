@@ -8,7 +8,7 @@ import 'package:luminous/core/providers/global_provider_container.dart';
 import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/features/scan/presentation/models/selected_scan_image.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/stores/album_local_store.dart';
+import 'package:luminous/features/album/data/album_local_store.dart';
 import 'package:luminous/utils/loading_utils.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/scan_image_processing.dart';

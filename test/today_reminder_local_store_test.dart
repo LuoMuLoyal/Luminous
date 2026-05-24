@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/stores/today_reminder_local_store.dart';
+import 'package:luminous/features/reminders/data/today_reminder_local_store.dart';
 
 void main() {
   group('TodayReminderLocalStore helpers', () {

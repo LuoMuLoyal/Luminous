@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:luminous/constants/constants.dart';
-import 'package:luminous/stores/token_manager.dart';
+import 'package:luminous/core/local_storage/token_manager.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/utils/loading_utils.dart';
 

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:luminous/core/providers/global_provider_container.dart';
 import 'package:luminous/features/auth/providers/user_session_provider.dart';
-import 'package:luminous/stores/reminder_local_gateway.dart';
+import 'package:luminous/features/reminders/data/reminder_local_gateway.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/home.dart';
 

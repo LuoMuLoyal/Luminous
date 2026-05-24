@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:luminous/stores/app_database.dart';
-import 'package:luminous/stores/reminder_local_gateway.dart';
-import 'package:luminous/stores/session_sync_service.dart';
-import 'package:luminous/stores/token_manager.dart';
+import 'package:luminous/core/local_storage/app_database.dart';
+import 'package:luminous/features/reminders/data/reminder_local_gateway.dart';
+import 'package:luminous/features/auth/data/session_sync_service.dart';
+import 'package:luminous/core/local_storage/token_manager.dart';
 import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/core/providers/global_provider_container.dart';
 import 'package:luminous/utils/notification_service.dart';

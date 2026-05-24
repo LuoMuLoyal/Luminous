@@ -1,4 +1,4 @@
-import 'package:luminous/stores/today_reminder_local_store.dart';
+import 'package:luminous/features/reminders/data/today_reminder_local_store.dart';
 import 'package:luminous/viewmodels/home.dart';
 import 'package:luminous/viewmodels/reminder.dart';
 
