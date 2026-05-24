@@ -96,3 +96,4 @@ lib/
 - 根据最新迁移节奏，重新收窄 `Phase 0`：当前只处理 Flutter 项目基座，后端 auth 拆分、NestJS 脚手架和 PostgreSQL 改造全部顺延到后续后端阶段。
 - 更新 `Phase 0` 后续顺序为共享 UI 基座、Auth 展示层、Medicine detail、Reminders 展示层、Safety/Mine 页面壳，先把前端目录结构和文件拆分打稳。
 - 启动共享 UI 基座切片：新增 `lib/shared/widgets/`，迁移 `app_surface`、`tinted_status_chip`、`responsive_quick_grid`、`quick_entry_style` 与 `shared_quick_entry_card`，旧 `lib/components/*` 路径保留兼容导出。
+- 继续共享 UI 基座切片：新增 `lib/shared/widgets/ornaments/`，将 `app_ornaments` 拆为模型、banner 布局、section 布局和布局集合文件，并把旧 `lib/components/app_ornaments.dart` 收缩为兼容导出。

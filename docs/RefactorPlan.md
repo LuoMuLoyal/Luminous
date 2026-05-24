@@ -345,3 +345,4 @@ Tasks:
 - Completed the fifth structural slice by moving scan presentation code into `lib/features/scan/presentation/`, splitting the old scan page into page, image-flow support, labels, preview, sheet, result, and action files while keeping legacy export wrappers.
 - Re-scoped `Phase 0` as Flutter project-base work only; backend auth splitting and NestJS/PostgreSQL implementation are deferred to later backend phases.
 - Started the shared UI base slice by moving app surface, tinted status chip, responsive quick grid, quick entry style, and shared quick entry card primitives into `lib/shared/widgets/`, with old component paths kept as compatibility exports.
+- Split the shared ornament definitions into `lib/shared/widgets/ornaments/`, separating models, banner layouts, section layouts, and layout sets while keeping `lib/components/app_ornaments.dart` as a compatibility export.
