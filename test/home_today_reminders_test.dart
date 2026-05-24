@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:luminous/pages/Home/home.dart';
-import 'package:luminous/pages/Home/controllers/home_controller.dart';
+import 'package:luminous/features/home/presentation/home.dart';
 import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/viewmodels/auth.dart';
 import 'package:luminous/viewmodels/home.dart';
@@ -63,7 +62,7 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(body: HomeView(reminderGateway: gateway)),
+        home: Scaffold(body: HomePage(reminderGateway: gateway)),
       ),
     );
     await tester.pumpAndSettle();
@@ -99,9 +98,7 @@ void main() {
       await Future<void>.delayed(Duration.zero);
       await Future<void>.delayed(const Duration(milliseconds: 20));
 
-      expect(controller.reminders.map((item) => item.title), [
-        '09:00 旧账号提醒',
-      ]);
+      expect(controller.reminders.map((item) => item.title), ['09:00 旧账号提醒']);
 
       await setTestSessionUser(
         const UserSafe(
