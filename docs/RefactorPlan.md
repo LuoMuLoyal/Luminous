@@ -122,7 +122,7 @@ Completed on 2026-05-24:
 3. `Home`: separate page composition, controller, support data, and widgets under `lib/features/home/presentation/`; `HomePage` is the canonical feature entry.
 4. `Search`: split page, controller, prompt/result slivers, cards, and tip widgets under `lib/features/search/presentation/`; `SearchPage` is the canonical feature entry.
 5. `Scan`: split page orchestration, controller, image-flow support, labels, selected-image model, sheet, photo area, actions, and result section under `lib/features/scan/presentation/`.
-6. `Shared UI base`: move cross-feature surfaces, status chips, quick-entry styles/cards, responsive quick-grid primitives, and ornament layouts into `lib/shared/widgets/`.
+6. `Shared UI base`: move cross-feature surfaces, status chips, quick-entry styles/cards, responsive quick-grid primitives, ornament layouts, and app canvas scaffolds into `lib/shared/widgets/`.
 7. `Responsive shell base`: add `lib/shared/layout/`, global breakpoint/window-class definitions, `AppAdaptiveScaffold`, and compact bottom navigation versus wide rail/sidebar behavior for `MainPage`.
 8. `Drug`: split drug list, medicine detail, controllers, presentation widgets, and presentation models under `lib/features/drug/presentation/`; route-level naming is now `DrugPage`.
 9. `Reminders`: split list/edit pages, controllers, reminder card, list widgets, and edit widgets under `lib/features/reminders/presentation/`.
@@ -166,7 +166,7 @@ Current status on 2026-05-24:
 
 Known gaps:
 
-- `AppCanvasPageScaffold` is a visual scaffold, not an adaptive layout scaffold. It does not provide max-width content lanes, side panels, master-detail slots, or desktop content density rules.
+- `AppCanvasPageScaffold` now has a canonical home under `lib/shared/widgets/`, but it is still a visual scaffold, not an adaptive layout scaffold. It does not provide max-width content lanes, side panels, master-detail slots, or desktop content density rules.
 - The app currently changes spacing, wrapping, and card sizing, but it does not yet change feature content between phone, tablet, desktop, and web.
 - Feature-level responsive tests still focus on narrow mobile overflow; tablet, desktop, and web-width feature regression tests are still missing.
 
@@ -406,3 +406,4 @@ Tasks:
 - Normalized naming: renamed `DrugView`→`DrugPage`, `AlbumView`→`AlbumPage`, `MineView`→`MinePage` (route-level pages), layout widgets renamed to `XxxLayout`. Fixed `use_build_context_synchronously` info lint in reminder_edit_page.
 - Completed the twelfth and thirteenth structural slices (`Login` + `Register`): migrated both pages and controllers to `lib/features/login/presentation/` and `lib/features/register/presentation/`, renamed `RegisterView`→`RegisterPage`, updated `login_controller` to reference `RegisterPage` via barrel, collapsed 4 old paths, updated router and test imports. `flutter analyze` clean; all 19 `flutter test` passing.
 - Updated the Phase 0 status checkpoint: most active presentation modules now have canonical homes under `lib/features/`, shared UI and adaptive shell primitives live under `lib/shared/`, and remaining cleanup is limited to smaller page islands, data/model ownership decisions, compatibility wrapper retirement, and responsive content-lane work.
+- Moved `AppCanvas` and `AppCanvasPageScaffold` into `lib/shared/widgets/app_canvas.dart`, kept `lib/components/app_canvas.dart` as a compatibility export, and updated active imports to the shared path.
