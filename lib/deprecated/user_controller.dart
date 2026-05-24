@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
 
 /// 全局用户态控制器（仅作向后兼容的只读层）。
 ///

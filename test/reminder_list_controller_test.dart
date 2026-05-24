@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/features/reminders/presentation/reminders.dart';
-import 'package:luminous/viewmodels/auth.dart';
-import 'package:luminous/viewmodels/reminder.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
+import 'package:luminous/features/reminders/presentation/models/reminder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/fake_reminder_local_gateway.dart';

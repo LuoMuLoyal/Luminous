@@ -4,7 +4,7 @@ import 'package:luminous/api/auth_api.dart';
 import 'package:luminous/shared/widgets/auth/auth.dart';
 import 'package:luminous/shared/widgets/soft_banner/soft_banner.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/viewmodels/auth.dart';
+import 'package:luminous/features/auth/presentation/models/auth.dart';
 
 import '../controllers/register_controller.dart';
 

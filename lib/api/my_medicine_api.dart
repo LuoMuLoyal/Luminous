@@ -1,6 +1,6 @@
 import 'package:luminous/constants/constants.dart';
 import 'package:luminous/utils/dio_request.dart';
-import 'package:luminous/viewmodels/my_medicine.dart';
+import 'package:luminous/features/drug/presentation/models/my_medicine.dart';
 
 /// “我的药品”远端接口封装。
 class MyMedicineApi {
