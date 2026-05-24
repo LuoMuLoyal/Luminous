@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/components/app_ornaments.dart';
 import 'package:luminous/constants/constants.dart';
+import 'package:luminous/shared/widgets/ornaments/app_ornaments.dart';
 import 'package:luminous/stores/providers/shared_preferences_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
