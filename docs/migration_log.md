@@ -159,3 +159,6 @@ lib/
 - 更新目标数据源路径为 `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase`，其中 `FullDrugDetail.xlsx` 作为中文详情主源，DrugBank 文件作为英文科学增强源；中英映射和合并策略暂不定稿，先通过 Lucent/PostgreSQL staging 保持分层。
 - 调整 Lucent API envelope：默认采用 `{ code, message, data }`，分页等真实响应级信息才附加 `meta`；`requestId` 放 `X-Request-Id` 响应头并写入服务端日志，`timestamp` 默认只保留在服务端日志中。
 - 重新划分文档边界：Luminous 文档保留 Flutter/client 迁移和跨项目协调摘要；Lucent `docs/` 承接 API contract、数据源和后端迁移路线细节。
+- 初始化 Lucent NestJS 基线：启用 SWC build、环境文件约定、配置校验、`/api/v1/health`、request id header、全局 envelope/filter/interceptor，并在 Lucent docs 中补充环境与协议现状。
+- Flutter 小步收口：默认 API 地址和 legacy/Lucent 成功码语义集中到 `GlobalConstants`，移除 `AppI18nText` 对 `Get.locale` 的依赖，修复根组件对 `localeProvider` 状态的监听。
+- 新增 `docs/flutter-followup-improvement-plan.md`，记录当前 GetX 残留、硬编码归属、Lucent client 切换和后续分步骤执行顺序。

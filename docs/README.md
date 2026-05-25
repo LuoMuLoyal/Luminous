@@ -7,6 +7,7 @@
 - `RefactorPlan.md`：当前 Flutter 优化、状态迁移和 Lucent 后端演进的主计划。
 - `knowledge-data-platform-plan.md`：Luminous 侧的知识库产品/客户端边界摘要；后端导入细节见 `../Lucent/docs/data-sources.md`。
 - `backend-nestjs-pgsql-migration-plan.md`：Luminous 侧的 Lucent 后端迁移协调摘要；后端详细路线见 `../Lucent/docs/migration-roadmap.md`。
+- `flutter-followup-improvement-plan.md`：Flutter 侧硬编码收口、GetX 迁移、Lucent client 切换和后续拆分步骤。
 - `Promise.md`：Personal Health Copilot 的产品愿景、端侧职责和阶段路线。
 - `migration_log.md`：GetX/Layer-based 向 Riverpod/GoRouter/Feature-first 迁移的执行记录。
 - `lib-docs/`：前后端接口、部署和联调文档。
