@@ -151,7 +151,11 @@ lib/
 - 路由入口收口：`lib/routes/routes.dart` 实际承载 RootApp 与主题构建，已迁入 `lib/core/startup/root_app_widget.dart`，`main.dart` 改为从 core startup 引入，活跃代码不再保留 `lib/routes/`。
 - 记录 Phase 0 后续技术债优先级：先补最小 `integration_test` smoke，再单独开 `json_serializable`/`build_runner` 模型生成迁移；复杂不可变模型再评估 `freezed`/`freezed_annotation`，不和结构收口混做。
 - 在重构计划中补充包和落点：`json_annotation`、`build_runner`、`json_serializable`、可选 `freezed`/`freezed_annotation`；`integration_test`；`collection`；本地 SQLite 后续评估 `drift`/`drift_flutter`/`drift_dev`；并明确 `retrofit`、Markdown/AI 文本渲染和大表单库暂不进入 Phase 0。
-- 新增 `docs/knowledge-data-platform-plan.md`，将 `D:\DrugDataBase\FullDrugDetail.xlsx`（204,844 条药品数据、29 列说明书/商品字段）和 `D:\DrugDataBase`（DrugBank XML/CSV/FASTA/SDF）定位为后端知识库导入源，不进入 Git、不打包到 Flutter。
+- 新增 `docs/knowledge-data-platform-plan.md`，将 `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase\FullDrugDetail.xlsx`（204,844 条药品数据、29 列说明书/商品字段）和 `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase`（DrugBank XML/CSV/FASTA/SDF）定位为后端知识库导入源，不进入 Git、不打包到 Flutter。
 - 更新产品愿景与技术路线：`Promise.md` 从“AI RAG 说明书翻译”调整为“权威药品知识库 + Markdown 详情 + AI 健康副驾驶”，药品事实由 PostgreSQL 知识表提供，AI 主要负责解释、总结、安全提示、报告解读和健康计划。
 - 更新后端迁移文档：目标栈明确为 NestJS + PostgreSQL + Prisma + Redis + Passport，新增 `KnowledgeModule`、`SafetyModule`、`CopilotModule`、`ReportsModule`，并补充 xlsx/DrugBank staging、normalization、Markdown sections、`detailMarkdown` 和导入验收规则。
 - 更新 API/README/隐私文档：药品详情规划返回结构化 `sections` 与 `detailMarkdown`，AI 输出规划优先 Markdown；隐私政策补充健康记录、AI 上下文处理和限时分享边界。
+- 明确后端归属调整：`Lucent/` 作为 Luminous 的 Git submodule 和目标 NestJS 后端主线；`backend/` Express 降级为低优先级参考与当前 `https://devluo.com` 旧服务联调基线，不再作为新功能落点。
+- 更新目标数据源路径为 `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase`，其中 `FullDrugDetail.xlsx` 作为中文详情主源，DrugBank 文件作为英文科学增强源；中英映射和合并策略暂不定稿，先通过 Lucent/PostgreSQL staging 保持分层。
+- 调整 Lucent API envelope：默认采用 `{ code, message, data }`，分页等真实响应级信息才附加 `meta`；`requestId` 放 `X-Request-Id` 响应头并写入服务端日志，`timestamp` 默认只保留在服务端日志中。
+- 重新划分文档边界：Luminous 文档保留 Flutter/client 迁移和跨项目协调摘要；Lucent `docs/` 承接 API contract、数据源和后端迁移路线细节。

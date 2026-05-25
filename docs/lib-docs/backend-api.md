@@ -1,4 +1,8 @@
-# Luminous App Backend API
+# Luminous Legacy Express Backend API
+
+> This document describes the deprecated Express backend under `Luminous/backend`.
+> It is kept as a reference for the currently deployed `https://devluo.com` service and data migration work.
+> The target Lucent backend defines versioned `/api/v1` APIs in `Lucent/docs/api-contract.md` and does not need to keep this request body shape or envelope.
 
 ## 1. Service Info
 
@@ -21,7 +25,7 @@ Notes:
 - `code = "1"` 表示业务成功。
 - `code != "1"` 表示业务失败，`msg` 提供错误信息。
 - 业务失败常见为 HTTP 200 + `code != "1"`；框架或中间件错误可能返回 4xx/5xx。
-- NestJS 迁移期间仍保持此 envelope；后续新增的药品知识库字段会优先向后兼容。
+- Lucent 不沿用该 legacy envelope；新协议默认使用 `{ code, message, data }`，分页等场景才增加 `meta`。
 - 新药品长文本和 AI/copilot 输出默认面向 Markdown 渲染，事实字段仍以结构化 JSON 为准。
 
 ## 2. Authentication
