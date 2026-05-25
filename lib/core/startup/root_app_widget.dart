@@ -5,13 +5,14 @@ import 'package:luminous/constants/constants.dart';
 import 'package:luminous/core/providers/locale_provider.dart';
 import 'package:luminous/core/providers/theme_provider.dart';
 import 'package:luminous/core/theme/app_theme_spec.dart';
+import 'package:luminous/shared/design_tokens/design_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/router/app_router.dart';
 
 /// 构建应用根组件。
 ///
 /// 当前项目使用原生 `MaterialApp.router` 结合 GoRouter 路由表体系。
-/// 主题色板规格已迁至 `lib/core/theme/app_theme_spec.dart`。
+/// 主题色板 → `lib/core/theme/app_theme_spec.dart` · token → `lib/shared/design_tokens/`。
 class RootAppWidget extends ConsumerWidget {
   const RootAppWidget({super.key});
 
@@ -75,7 +76,7 @@ ThemeData _buildLightTheme(AppThemeStyle style) {
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24)),
+        borderRadius: BorderRadius.all(Radius.circular(AppRadius.container)),
       ),
     ),
     bottomSheetTheme: BottomSheetThemeData(
@@ -83,7 +84,9 @@ ThemeData _buildLightTheme(AppThemeStyle style) {
       surfaceTintColor: Colors.transparent,
       modalBackgroundColor: colorScheme.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppRadius.container),
+        ),
       ),
     ),
     appBarTheme: const AppBarTheme(
@@ -98,7 +101,7 @@ ThemeData _buildLightTheme(AppThemeStyle style) {
       surfaceTintColor: Colors.transparent,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        borderRadius: AppRadius.cardRadius,
         side: BorderSide(color: cardBorder),
       ),
     ),
@@ -118,7 +121,7 @@ ThemeData _buildLightTheme(AppThemeStyle style) {
         fontWeight: FontWeight.w500,
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.inputRadius,
         borderSide: BorderSide.none,
       ),
     ),
@@ -127,17 +130,17 @@ ThemeData _buildLightTheme(AppThemeStyle style) {
         backgroundColor: spec.lightPrimary,
         foregroundColor: Colors.white,
         minimumSize: const Size(0, 46),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.inputRadius),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: spec.lightPrimary,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.smallRadius),
       ),
     ),
     checkboxTheme: CheckboxThemeData(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.tightRadius),
       side: const BorderSide(color: Color(0xFFCBD5E1)),
       fillColor: WidgetStateProperty.resolveWith<Color?>((states) {
         if (states.contains(WidgetState.selected)) {
@@ -156,7 +159,7 @@ ThemeData _buildLightTheme(AppThemeStyle style) {
       labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
         final selected = states.contains(WidgetState.selected);
         return TextStyle(
-          fontSize: 12.5,
+          fontSize: AppTypography.tab,
           fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
           color: selected ? spec.lightPrimary : AppUiConstants.TAB_INACTIVE,
         );
@@ -211,8 +214,9 @@ ThemeData _buildDarkTheme(AppThemeStyle style) {
     dialogTheme: DialogThemeData(
       backgroundColor: spec.darkSurface,
       surfaceTintColor: Colors.transparent,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24)),
+      shape: RoundedRectangleBorder(
+        borderRadius:
+            const BorderRadius.all(Radius.circular(AppRadius.container)),
       ),
     ),
     bottomSheetTheme: BottomSheetThemeData(
@@ -220,7 +224,9 @@ ThemeData _buildDarkTheme(AppThemeStyle style) {
       surfaceTintColor: Colors.transparent,
       modalBackgroundColor: spec.darkSurface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppRadius.container),
+        ),
       ),
     ),
     appBarTheme: AppBarTheme(
@@ -235,7 +241,7 @@ ThemeData _buildDarkTheme(AppThemeStyle style) {
       surfaceTintColor: Colors.transparent,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+        borderRadius: AppRadius.cardRadius,
         side: BorderSide(color: darkOutline),
       ),
     ),
@@ -251,7 +257,7 @@ ThemeData _buildDarkTheme(AppThemeStyle style) {
         fontWeight: FontWeight.w500,
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.inputRadius,
         borderSide: BorderSide.none,
       ),
     ),
@@ -260,17 +266,17 @@ ThemeData _buildDarkTheme(AppThemeStyle style) {
         backgroundColor: spec.darkPrimary,
         foregroundColor: spec.darkBackground,
         minimumSize: const Size(0, 46),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.inputRadius),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: spec.darkPrimary,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.smallRadius),
       ),
     ),
     checkboxTheme: CheckboxThemeData(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.tightRadius),
       side: BorderSide(color: darkOutline),
       fillColor: WidgetStateProperty.resolveWith<Color?>((states) {
         if (states.contains(WidgetState.selected)) {
@@ -289,7 +295,7 @@ ThemeData _buildDarkTheme(AppThemeStyle style) {
       labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
         final selected = states.contains(WidgetState.selected);
         return TextStyle(
-          fontSize: 12.5,
+          fontSize: AppTypography.tab,
           fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
           color: selected
               ? spec.darkPrimary

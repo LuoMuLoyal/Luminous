@@ -122,7 +122,7 @@ Lucent client envelope 单元测试：
 
 目标：把“配置”和“设计 token”拆到更明确的归属，不让 `constants/` 继续成为杂物桶。
 
-- 运行时配置：`lib/core/config/app_runtime_config.dart`。
+- 运行时配置：`lib/core/config/app_runtime_config.dart`。（延后）
 - 存储 key：`lib/core/local_storage/storage_keys.dart`。
 - 网络路径：`lib/core/network/legacy_express_endpoints.dart` 与 `lib/core/network/lucent_endpoints.dart`。
 - UI token：`lib/shared/design_tokens/`，收口 spacing、radius、duration、opacity、shadow、常用尺寸。
@@ -134,6 +134,19 @@ Lucent client envelope 单元测试：
 - 页面和 controller 不直接写 API path、storage key、全局 URL。
 - 新增 token 后不扩大 `constants.dart` barrel 的职责。
 - `flutter analyze` 通过。
+
+**进度：核心架构完成 ✅（2026-05-25）**
+
+已交付：
+
+- `lib/shared/design_tokens/` — `AppRadius` / `AppTypography` / `AppShadow` + barrel
+- `root_app_widget.dart` ThemeData 层已全部引用 tokens
+- `lib/core/local_storage/storage_keys.dart` — 7 个存储 key
+- `lib/core/network/legacy_express_endpoints.dart` — 20 个旧 Express 端点
+- `lib/core/network/lucent_endpoints.dart` — `/api/v1/health`（切片 1 已建）
+- `lib/router/app_routes.dart` — 12 个路由路径常量
+
+Feature 页面内的硬编码替换可随各 feature 迁移逐步进行。`flutter analyze` 零问题。
 
 ### Step 3：GetX 迁移第一批：壳层和低风险页面
 
