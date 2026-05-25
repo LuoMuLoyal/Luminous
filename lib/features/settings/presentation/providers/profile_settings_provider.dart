@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/api/user_api.dart';
@@ -26,7 +25,10 @@ class ProfileSettingsState {
   });
 
   ProfileSettingsState copyWith({
-    bool? loading, bool? saving, bool? deleting, String? gender,
+    bool? loading,
+    bool? saving,
+    bool? deleting,
+    String? gender,
   }) => ProfileSettingsState(
     loading: loading ?? this.loading,
     saving: saving ?? this.saving,
@@ -57,77 +59,63 @@ class ProfileSettingsNotifier extends Notifier<ProfileSettingsState> {
     state = state.copyWith(gender: value);
   }
 
-  Future<void> loadProfile(
-    UserSafe? user,
-    UserApi userApi,
-    TextEditingController avatarCtrl,
-    TextEditingController nicknameCtrl,
-    TextEditingController birthdayCtrl,
-    TextEditingController professionCtrl,
-  ) async {
+  Future<UserSafe?> loadProfile(UserSafe? user, UserApi userApi) async {
     if (user == null || user.id.trim().isEmpty) {
       state = state.copyWith(loading: false);
-      return;
+      return null;
     }
 
-    _fillControllers(user, avatarCtrl, nicknameCtrl, birthdayCtrl, professionCtrl);
+    state = state.copyWith(loading: true);
     state = state.copyWith(gender: _normalizeGenderForUi(user.gender));
 
     try {
       final response = await userApi.getProfile(userId: user.id);
       final fetched = response.result;
-      _fillControllers(fetched, avatarCtrl, nicknameCtrl, birthdayCtrl, professionCtrl);
       state = state.copyWith(gender: _normalizeGenderForUi(fetched.gender));
+      return fetched;
     } catch (_) {
-      // Keep local data on error
+      return user;
     } finally {
       state = state.copyWith(loading: false);
     }
   }
 
-  void _fillControllers(
-    UserSafe user,
-    TextEditingController avatarCtrl,
-    TextEditingController nicknameCtrl,
-    TextEditingController birthdayCtrl,
-    TextEditingController professionCtrl,
-  ) {
-    avatarCtrl.text = user.avatar;
-    nicknameCtrl.text = user.nickname.isNotEmpty ? user.nickname : user.name;
-    birthdayCtrl.text = user.birthday;
-    professionCtrl.text = user.profession;
-  }
-
   Future<bool> saveProfile({
     required UserSafe? user,
     required UserApi userApi,
-    required TextEditingController avatarCtrl,
-    required TextEditingController nicknameCtrl,
-    required TextEditingController birthdayCtrl,
-    required TextEditingController professionCtrl,
-    required void Function(UserSafe) onUserUpdate,
+    required String avatar,
+    required String nickname,
+    required String birthday,
+    required String profession,
+    required Future<void> Function(UserSafe) onUserUpdate,
   }) async {
     if (user == null || user.id.trim().isEmpty) return false;
     if (state.saving) return false;
 
-    final nickname = nicknameCtrl.text.trim();
-    if (nickname.isNotEmpty && (nickname.length < 2 || nickname.length > 30)) return false;
-    final birthday = birthdayCtrl.text.trim();
-    if (birthday.isNotEmpty && !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(birthday)) return false;
+    final trimmedNickname = nickname.trim();
+    if (trimmedNickname.isNotEmpty &&
+        (trimmedNickname.length < 2 || trimmedNickname.length > 30)) {
+      return false;
+    }
+    final trimmedBirthday = birthday.trim();
+    if (trimmedBirthday.isNotEmpty &&
+        !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(trimmedBirthday)) {
+      return false;
+    }
 
     state = state.copyWith(saving: true);
     try {
       final response = await userApi.updateProfile(
         userId: user.id,
-        avatar: avatarCtrl.text,
-        nickname: nickname,
+        avatar: avatar,
+        nickname: trimmedNickname,
         gender: _normalizeGenderForApi(state.gender),
-        birthday: birthday,
-        profession: professionCtrl.text.trim(),
+        birthday: trimmedBirthday,
+        profession: profession.trim(),
         provinceCode: '',
         cityCode: '',
       );
-      onUserUpdate(response.result);
+      await onUserUpdate(response.result);
       return true;
     } finally {
       state = state.copyWith(saving: false);
@@ -150,19 +138,13 @@ class ProfileSettingsNotifier extends Notifier<ProfileSettingsState> {
     }
   }
 
-  Future<void> pickAvatarFromGallery(
-    BuildContext context,
-    ImagePicker picker,
-    TextEditingController avatarCtrl,
-  ) async {
-    final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-    if (file == null || !context.mounted) return;
+  Future<String?> pickAvatarFromGallery(ImagePicker picker) async {
+    final file = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+    if (file == null) return null;
     final bytes = await file.readAsBytes();
-    final base64 = base64Encode(bytes);
-    avatarCtrl.text = base64;
-  }
-
-  void clearAvatar(TextEditingController avatarCtrl) {
-    avatarCtrl.text = '';
+    return base64Encode(bytes);
   }
 }

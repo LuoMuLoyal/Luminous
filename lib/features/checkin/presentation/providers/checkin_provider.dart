@@ -3,12 +3,17 @@ import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/features/reminders/data/reminder_local_gateway.dart';
 import 'package:luminous/shared/models/home.dart';
 
+final checkinReminderGatewayProvider = Provider<ReminderLocalGateway>(
+  (ref) => reminderLocalGateway,
+);
+
 /// 打卡条目列表 provider。
 ///
 /// 替代旧 GetX `CheckInController` 的 loading / error / items 状态。
 final checkinItemsProvider =
     AsyncNotifierProvider<CheckInNotifier, List<ReminderItem>>(
       CheckInNotifier.new,
+      dependencies: [currentUserProvider, checkinReminderGatewayProvider],
     );
 
 /// 打卡状态管理器。
@@ -21,7 +26,7 @@ class CheckInNotifier extends AsyncNotifier<List<ReminderItem>> {
     final user = ref.watch(currentUserProvider);
     final userId = user?.id ?? '';
     if (userId.isEmpty) return const [];
-    return reminderLocalGateway.loadTodayItems(userId);
+    return ref.watch(checkinReminderGatewayProvider).loadTodayItems(userId);
   }
 
   Future<void> markDone(ReminderItem item) async {
@@ -30,7 +35,9 @@ class CheckInNotifier extends AsyncNotifier<List<ReminderItem>> {
     if (userId.isEmpty) return;
     if (item.id.trim().isEmpty) return;
 
-    await reminderLocalGateway.markTodayDone(userId: userId, item: item);
+    await ref
+        .read(checkinReminderGatewayProvider)
+        .markTodayDone(userId: userId, item: item);
     ref.invalidateSelf();
   }
 
@@ -40,10 +47,9 @@ class CheckInNotifier extends AsyncNotifier<List<ReminderItem>> {
     if (userId.isEmpty) return;
     if (item.id.trim().isEmpty) return;
 
-    await reminderLocalGateway.markTodayUndone(
-      userId: userId,
-      reminderId: item.id.trim(),
-    );
+    await ref
+        .read(checkinReminderGatewayProvider)
+        .markTodayUndone(userId: userId, reminderId: item.id.trim());
     ref.invalidateSelf();
   }
 }
