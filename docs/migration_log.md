@@ -176,4 +176,6 @@ lib/
 
 - **Lucent client envelope 单元测试（切片 5）**：新增 `test/lucent_client_test.dart`（206 行，10 个测试），覆盖 `LucentPaginationMeta`、`LucentResponseMeta`、`LucentApiResult.isOk` 和 `parseLucentResponse` 的 success / error / paginated / missing code 分支。`lucent_client.dart` 新增 `@visibleForTesting parseLucentResponse()` 静态方法供测试使用。`flutter analyze` 零问题通过。
 
+- **Step 2 硬编码常量收口（2026-05-25）**：UI token 建 `lib/shared/design_tokens/`（`AppRadius` / `AppTypography` / `AppShadow`），`root_app_widget.dart` ThemeData 层全部引用。存储 key 迁入 `lib/core/local_storage/storage_keys.dart`。旧 Express 端点迁入 `lib/core/network/legacy_express_endpoints.dart`。路由路径迁入 `lib/router/app_routes.dart`。`dart analyze` 零问题。
+
 - **root_app_widget 主题 spec 拆分（切片 4）**：新建 `lib/core/theme/app_theme_spec.dart`（169 行），迁入 `AppThemeSpec` 类、`themeSpecFor()`、`fallbackThemeSpec`、`safeThemeSpec()` 和 6 个颜色辅助函数。`root_app_widget.dart` 从 469 行降至 301 行。`flutter analyze` 零问题通过。
