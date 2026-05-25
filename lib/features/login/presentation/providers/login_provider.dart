@@ -7,7 +7,9 @@ import 'package:luminous/features/auth/presentation/models/auth.dart';
 
 /// 登录业务逻辑 provider。
 final loginNotifierProvider =
-    NotifierProvider<LoginNotifier, LoginFormState>(LoginNotifier.new);
+    NotifierProvider.autoDispose<LoginNotifier, LoginFormState>(
+      LoginNotifier.new,
+    );
 
 class LoginFormState {
   final bool sendingCode;
@@ -46,13 +48,22 @@ class LoginNotifier extends Notifier<LoginFormState> {
   String get codeTarget => _codeTarget;
 
   @override
-  LoginFormState build() => const LoginFormState();
+  LoginFormState build() {
+    ref.onDispose(() => _countdownTimer?.cancel());
+    return const LoginFormState();
+  }
 
   String? validateIdentifier(String value, AuthIdentifierType type) {
     final v = value.trim();
-    if (v.isEmpty) return type == AuthIdentifierType.phone ? '请输入手机号' : '请输入邮箱';
-    if (type == AuthIdentifierType.phone && !_phoneRegExp.hasMatch(v)) return '手机号格式不正确';
-    if (type == AuthIdentifierType.email && !_emailRegExp.hasMatch(v)) return '邮箱格式不正确';
+    if (v.isEmpty) {
+      return type == AuthIdentifierType.phone ? '请输入手机号' : '请输入邮箱';
+    }
+    if (type == AuthIdentifierType.phone && !_phoneRegExp.hasMatch(v)) {
+      return '手机号格式不正确';
+    }
+    if (type == AuthIdentifierType.email && !_emailRegExp.hasMatch(v)) {
+      return '邮箱格式不正确';
+    }
     return null;
   }
 
@@ -93,9 +104,15 @@ class LoginNotifier extends Notifier<LoginFormState> {
 
     try {
       if (type == AuthIdentifierType.phone) {
-        await authApi.sendPhoneCode(phone: identifier, scene: AuthCodeScene.login);
+        await authApi.sendPhoneCode(
+          phone: identifier,
+          scene: AuthCodeScene.login,
+        );
       } else {
-        await authApi.sendEmailCode(email: identifier, scene: AuthCodeScene.login);
+        await authApi.sendEmailCode(
+          email: identifier,
+          scene: AuthCodeScene.login,
+        );
       }
 
       _codeTarget = identifier;
@@ -109,6 +126,7 @@ class LoginNotifier extends Notifier<LoginFormState> {
   /// 执行登录 API 调用并保存 token，返回 [LoginResult]。
   /// 失败时抛出异常，由页面处理 toast。
   Future<LoginResult> login({
+    required AuthApi authApi,
     required AuthIdentifierType type,
     required String identifier,
     required String password,

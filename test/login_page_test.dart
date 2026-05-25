@@ -78,7 +78,7 @@ void main() {
 
       final fields = find.byType(TextFormField);
       await tester.enterText(fields.at(0), 'tester@example.com');
-      await tester.tap(find.text('发送'));
+      await tester.tap(find.text('发送验证码'));
       await tester.pump();
       ToastUtils.instance.dismiss();
       await tester.pump();
@@ -124,7 +124,7 @@ void main() {
       find.byType(TextFormField).at(0),
       'tester@example.com',
     );
-    await tester.tap(find.text('发送'));
+    await tester.tap(find.text('发送验证码'));
     await tester.pump();
 
     expect(find.text('60s'), findsOneWidget);
@@ -149,15 +149,18 @@ void main() {
     (tester) async {
       final fakeAuth = FakeAuthApi();
       await tester.pumpWidget(
-        MaterialApp(
-          locale: const Locale('zh'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: RegisterPage(
-            authApi: fakeAuth,
-            initialIdentifierType: AuthIdentifierType.phone,
-            initialIdentifier: '13800138000',
-            initialCode: '123456',
+        ProviderScope(
+          overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+          child: MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: RegisterPage(
+              authApi: fakeAuth,
+              initialIdentifierType: AuthIdentifierType.phone,
+              initialIdentifier: '13800138000',
+              initialCode: '123456',
+            ),
           ),
         ),
       );
@@ -185,14 +188,17 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('zh'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: RegisterPage(
-          authApi: FakeAuthApi(),
-          initialIdentifierType: AuthIdentifierType.phone,
-          initialIdentifier: '13800138000',
+      ProviderScope(
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+        child: MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: RegisterPage(
+            authApi: FakeAuthApi(),
+            initialIdentifierType: AuthIdentifierType.phone,
+            initialIdentifier: '13800138000',
+          ),
         ),
       ),
     );

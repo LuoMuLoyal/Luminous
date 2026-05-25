@@ -26,10 +26,32 @@ class CheckInPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final gateway = reminderGateway;
+    if (gateway == null) {
+      return const _CheckInContent();
+    }
+    final user = ref.watch(currentUserProvider);
+    return ProviderScope(
+      overrides: [
+        checkinReminderGatewayProvider.overrideWithValue(gateway),
+        currentUserProvider.overrideWithValue(user),
+      ],
+      child: const _CheckInContent(),
+    );
+  }
+}
+
+class _CheckInContent extends ConsumerWidget {
+  const _CheckInContent();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final itemsAsync = ref.watch(checkinItemsProvider);
     final user = ref.watch(currentUserProvider);
     final isLoggedIn = user?.hasData ?? false;
-    final items = itemsAsync.hasValue ? itemsAsync.value! : const <ReminderItem>[];
+    final items = itemsAsync.hasValue
+        ? itemsAsync.value!
+        : const <ReminderItem>[];
     final errorText = itemsAsync.error != null
         ? MessageUtils.extractError(itemsAsync.error!)
         : null;
@@ -64,16 +86,14 @@ class CheckInPage extends ConsumerWidget {
         child: !isLoggedIn
             ? _buildNeedLogin(context)
             : RefreshIndicator(
-                onRefresh: () async =>
-                    ref.invalidate(checkinItemsProvider),
+                onRefresh: () async => ref.invalidate(checkinItemsProvider),
                 child: ListView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 14),
                   children: [
                     _buildHeroCard(context, items),
                     const SizedBox(height: 8),
-                    if (errorText != null)
-                      _buildErrorBanner(errorText),
+                    if (errorText != null) _buildErrorBanner(errorText),
                     if (items.isEmpty &&
                         !itemsAsync.isLoading &&
                         errorText == null)
@@ -87,8 +107,7 @@ class CheckInPage extends ConsumerWidget {
                         ),
                         child: _CheckInCard(
                           item: item,
-                          onCheckIn: () =>
-                              _toggleCheckIn(context, ref, item),
+                          onCheckIn: () => _toggleCheckIn(context, ref, item),
                         ),
                       );
                     }),
@@ -337,6 +356,7 @@ class CheckInPage extends ConsumerWidget {
     }
     final notifier = ref.read(checkinItemsProvider.notifier);
     await notifier.markDone(item);
+    if (!context.mounted) return;
     _showToast(context, '已记录到当前设备');
   }
 
@@ -370,8 +390,10 @@ class CheckInPage extends ConsumerWidget {
     );
 
     if (confirmed != true) return;
+    if (!context.mounted) return;
     final notifier = ref.read(checkinItemsProvider.notifier);
     await notifier.markUndone(item);
+    if (!context.mounted) return;
     _showToast(context, '已改为未打卡');
   }
 
@@ -413,15 +435,32 @@ class _CheckInCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  item.title.trim().isNotEmpty
-                      ? item.title.trim()
-                      : '用药提醒',
-                  style: TextStyle(
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w800,
-                    color: scheme.onSurface,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item.title.trim().isNotEmpty
+                            ? item.title.trim()
+                            : '用药提醒',
+                        style: TextStyle(
+                          fontSize: 15.5,
+                          fontWeight: FontWeight.w800,
+                          color: scheme.onSurface,
+                        ),
+                      ),
+                    ),
+                    if (item.time.trim().isNotEmpty) ...[
+                      const SizedBox(width: 8),
+                      Text(
+                        item.time.trim(),
+                        style: TextStyle(
+                          fontSize: AppTypography.cardMeta,
+                          color: scheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
                 if (item.subtitle.trim().isNotEmpty) ...[
                   const SizedBox(height: 2),
@@ -458,7 +497,7 @@ class _CheckInCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.small),
               ),
             ),
-            child: Text(done ? '已打卡' : '打卡'),
+            child: Text(done ? '取消打卡' : '打卡'),
           ),
         ],
       ),

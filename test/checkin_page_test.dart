@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:luminous/features/checkin/presentation/checkin.dart';
@@ -12,12 +13,13 @@ import 'support/session_test_utils.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  late ProviderContainer container;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     Get.testMode = true;
     Get.reset();
-    await createTestProviderContainer(
+    container = await createTestProviderContainer(
       user: const UserSafe(
         id: 'user-1',
         username: 'tester',
@@ -28,6 +30,13 @@ void main() {
       ),
     );
   });
+
+  Widget createCheckInWidget(FakeReminderLocalGateway gateway) {
+    return UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(home: CheckInPage(reminderGateway: gateway)),
+    );
+  }
 
   tearDown(() {
     ToastUtils.instance.dismiss();
@@ -55,9 +64,7 @@ void main() {
       ),
     ]);
 
-    await tester.pumpWidget(
-      MaterialApp(home: CheckInPage(reminderGateway: gateway)),
-    );
+    await tester.pumpWidget(createCheckInWidget(gateway));
     await tester.pumpAndSettle();
 
     expect(find.text('阿莫西林'), findsOneWidget);
@@ -82,9 +89,7 @@ void main() {
       ),
     ]);
 
-    await tester.pumpWidget(
-      MaterialApp(home: CheckInPage(reminderGateway: gateway)),
-    );
+    await tester.pumpWidget(createCheckInWidget(gateway));
     await tester.pumpAndSettle();
 
     expect(find.widgetWithText(FilledButton, '取消打卡'), findsOneWidget);
@@ -99,5 +104,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 120));
 
     expect(find.widgetWithText(FilledButton, '打卡'), findsOneWidget);
+    ToastUtils.instance.dismiss();
+    await tester.pump();
   });
 }
