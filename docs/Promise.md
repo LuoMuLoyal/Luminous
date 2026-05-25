@@ -18,8 +18,8 @@ Core boundary:
 
 The project now has two much stronger data sources:
 
-- `D:\DrugDataBase\FullDrugDetail.xlsx`: 204,844 rows of Chinese medicine product and label-style details, including dosage, contraindications, precautions, special population use, interactions, pharmacology, barcode, and national drug code.
-- `D:\DrugDataBase`: DrugBank data, including a large XML knowledge base and target/protein/drug-link files.
+- `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase\FullDrugDetail.xlsx`: 204,844 rows of Chinese medicine product and label-style details, including dosage, contraindications, precautions, special population use, interactions, pharmacology, barcode, and national drug code.
+- `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase`: DrugBank data, including a large XML knowledge base and target/protein/drug-link files.
 
 This changes the role of AI:
 
@@ -74,7 +74,7 @@ Technology focus:
 
 - Finish Flutter Phase 0 project foundation.
 - Add minimal integration smoke tests.
-- Build the backend knowledge platform around PostgreSQL.
+- Build the Lucent knowledge platform around PostgreSQL.
 - Keep massive source datasets outside the Flutter app and outside Git.
 
 ### Stage 2: Medicine safety and personalization

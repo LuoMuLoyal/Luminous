@@ -10,7 +10,7 @@ Luminous is already functional, and the current checks pass. The next work shoul
 2. Make user data ownership and auth boundaries explicit.
 3. Replace weak medicine data foundations with a server-side knowledge platform.
 4. Introduce Markdown as the standard long-text display path for medicine details and AI output.
-5. Prepare the backend for a NestJS + PostgreSQL + Prisma + Redis + Passport migration without breaking the current Flutter app.
+5. Move backend ownership to Lucent (NestJS + PostgreSQL + Prisma + Redis + Passport JWT) and treat the old Express backend as reference-only legacy.
 
 This plan is intentionally incremental. Each phase should leave the app runnable and covered by targeted checks.
 
@@ -41,16 +41,18 @@ Verified before this plan:
 Important current architecture notes:
 
 - Flutter uses GetX controllers at page level and `DioRequest` as the unified HTTP entry.
-- Backend is Express + TypeScript with route handlers under `backend/src/handlers`.
+- `backend/` is the old Express + TypeScript service with route handlers under `backend/src/handlers`; it remains useful for current `https://devluo.com` behavior checks, but it is no longer the target backend.
+- `Lucent/` is the target backend Git submodule. It currently starts from a NestJS scaffold and should absorb new backend work.
 - The current backend data stores are MongoDB + MySQL + Redis.
 - AI calls are already centralized under `backend/src/ai`, with LangChain-compatible helper contracts.
-- The API envelope is unified as `{ code, msg, result }`.
+- The legacy Express API envelope is `{ code, msg, result }`. Lucent uses a lighter versioned envelope documented in `Lucent/docs/api-contract.md`.
 - The frontend still sends `userId` in several user-scoped requests.
 - `lib/assets/data.json` is only a tiny development fixture. It is not the future medicine knowledge source.
-- New external knowledge sources exist outside Git: `D:\DrugDataBase\FullDrugDetail.xlsx` and `D:\DrugDataBase`.
+- New external knowledge sources exist outside Git at `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase`: detailed Chinese `FullDrugDetail.xlsx` plus English DrugBank files.
 
 Target backend end-state for this plan:
 
+- Repository: `Lucent/` submodule.
 - Framework: NestJS.
 - Primary data store: PostgreSQL.
 - Data access and import tooling: Prisma, with raw SQL allowed for search ranking/import cases Prisma cannot express cleanly.
@@ -58,6 +60,9 @@ Target backend end-state for this plan:
 - Redis: keep for verification codes, cooldowns, short-lived cache, and selected AI result cache.
 - MongoDB and MySQL are migration sources to retire, not long-term dependencies to preserve.
 - Medicine facts come from PostgreSQL-backed knowledge tables, not AI-generated text.
+- API paths are versioned, starting at `/api/v1`.
+- User-scoped APIs derive identity from JWT, not request-body `userId`.
+- Standard Lucent envelope: `{ code, message, data }`; optional `meta` appears only when needed, primarily pagination. `requestId` is exposed through `X-Request-Id`, and timestamps stay in server logs by default.
 
 Detailed knowledge/data direction:
 
@@ -71,7 +76,7 @@ Phase 0 comes before any new product-facing migration slice. The current priorit
 2. Split oversized files before adding more behavior.
 3. Keep all structural changes low-risk, reversible, and behavior-preserving.
 
-Phase 0 is scoped to the Flutter project base. Backend restructuring stays documented in later phases, but Express auth splitting, NestJS scaffolding, and PostgreSQL work should not start until the Flutter directory structure and shared UI foundation are healthy.
+Phase 0 is scoped to the Flutter project base. Backend restructuring stays documented in later phases, but new backend implementation should happen in Lucent, not the deprecated Express `backend/` tree.
 
 ### 0.1 Directory contract
 
@@ -354,31 +359,31 @@ Acceptance:
 
 ## Phase 2: Auth Boundary and API Ownership
 
-### 2.1 Protect user-scoped backend routes
+### 2.1 Protect user-scoped Lucent routes
 
 Problem:
 
-- `authMiddleware` exists but is not used on most user-scoped routes.
-- User ownership is currently inferred from request body `userId`.
+- The legacy Express backend infers user ownership from request body `userId`.
+- Lucent must not carry that boundary forward.
 
 Tasks:
 
-- Apply `authMiddleware` to user profile, my medicines, reminders, and scan-record routes.
-- Derive `userId` from JWT for protected handlers.
-- Temporarily accept body `userId` only where compatibility is needed, and assert it matches the JWT user.
-- Return consistent `401/403` envelopes for missing or mismatched identity.
+- Implement Passport JWT guards for user profile, my medicines, reminders, and scan-record routes in Lucent.
+- Derive user identity from JWT for protected handlers.
+- Reject client-supplied `userId` as an authorization boundary.
+- Return consistent `401/403` Lucent envelopes for missing or mismatched identity.
 
 Acceptance:
 
 - A user cannot read or modify another user's reminders or medicines by changing body `userId`.
-- Existing Flutter calls continue to work after adding Authorization headers.
-- Backend tests cover mismatched user identity.
+- New Flutter Lucent client calls do not send `userId` for protected resources.
+- Lucent tests cover mismatched or missing JWT identity.
 
 ### 2.2 Frontend contract cleanup
 
 Tasks:
 
-- Stop sending `userId` from Flutter for protected endpoints after backend compatibility is in place.
+- Stop sending `userId` from Flutter for Lucent protected endpoints.
 - Keep public endpoints public: medicine search/detail, AI detail/safety if product direction allows anonymous use.
 - Update `docs/lib-docs/frontend-backend-alignment-checklist.md`.
 
@@ -398,17 +403,17 @@ Problem:
 
 Preferred direction:
 
-- Build a backend PostgreSQL medicine knowledge platform from the external xlsx and DrugBank sources.
+- Build a Lucent/PostgreSQL medicine knowledge platform from the external xlsx and DrugBank sources.
 - Keep Flutter clients thin: they query backend APIs and render structured sections/Markdown.
 - Use local Flutter storage only for user-owned offline data or small cached snapshots, not the full knowledge base.
 
 Tasks:
 
 - Follow the data architecture in `docs/knowledge-data-platform-plan.md`.
-- Add PostgreSQL/Prisma staging tables and import scripts for `D:\DrugDataBase\FullDrugDetail.xlsx`.
-- Stream DrugBank XML/CSV into backend staging tables; never load the full XML into memory.
+- Add PostgreSQL/Prisma staging tables and import scripts for `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase\FullDrugDetail.xlsx`.
+- Stream DrugBank XML/CSV into Lucent staging tables; never load the full XML into memory.
 - Normalize medicine product, instruction section, identifier, category, search document, and DrugBank enrichment tables.
-- Keep the existing medicine search/detail API compatible while adding richer structured sections and `detailMarkdown`.
+- Design Lucent API v1 medicine search/detail DTOs around structured sections and `detailMarkdown`.
 - Add Flutter Markdown rendering for medicine detail and AI/copilot outputs.
 - Replace AI-generated generic medicine detail with database-backed detail and optional grounded explanation.
 
@@ -417,25 +422,25 @@ Acceptance:
 - Full source datasets remain outside Git and outside Flutter assets.
 - xlsx source row count, imported staging row count, and normalized target count are reported and explainable.
 - Medicine search supports product name, brand, approval number, manufacturer, barcode, and national drug code.
-- Medicine detail returns structured sections and Markdown without breaking old Flutter clients during the transition.
+- Medicine detail returns structured sections and Markdown through Lucent API v1.
 - AI outputs and medicine detail can render Markdown safely in Flutter.
 
-## Phase 4: Backend Migration to NestJS + PostgreSQL + Prisma + Redis + Passport
+## Phase 4: Lucent Backend Buildout to NestJS + PostgreSQL + Prisma + Redis + Passport JWT
 
-The backend migration should be a controlled architecture migration, not a product rewrite.
+The backend migration should be a controlled backend replacement in Lucent, not more work inside the deprecated Express service.
 
 Detailed execution steps are tracked in `docs/backend-nestjs-pgsql-migration-plan.md`.
 
 ### 4.1 Migration strategy
 
-Move toward a single NestJS backend with PostgreSQL as the primary store and Prisma as the schema/import/migration tool.
+Move toward a single Lucent NestJS backend with PostgreSQL as the primary store and Prisma as the schema/import/migration tool.
 
-If parity verification requires it, a temporary parallel Nest runtime is acceptable during the cutover window, but it is not the desired steady state.
+The deployed `https://devluo.com` backend currently points to the old Express service. That service is only a temporary test/reference baseline. Lucent does not need to preserve the old `/api/*` contract; Flutter will migrate to the new versioned API when Lucent is ready.
 
 Recommended structure:
 
 ```text
-backend/
+Lucent/
   src/
     main.ts
     app.module.ts
@@ -457,15 +462,30 @@ backend/
     safety/
     db/
     prisma/
+  prisma/
+    schema.prisma
+    migrations/
+    import/
 ```
 
-Key compatibility rules:
+Target protocol rules:
 
-- Preserve the current route paths under `/api/*`.
-- Preserve the response envelope `{ code, msg, result }`.
-- Preserve existing JWT token semantics until Flutter no longer depends on them.
+- Use versioned routes, starting with `/api/v1`.
+- Do not design new endpoints around legacy request-body `userId`.
+- Use Passport JWT strategy for protected routes and derive identity from the token.
+- Use the standard Lucent envelope documented in `Lucent/docs/api-contract.md`:
+
+```json
+{
+  "code": "OK",
+  "message": "",
+  "data": {}
+}
+```
+
+- Add `meta` only for pagination or real response-level metadata.
+- Return `X-Request-Id` as a response header for support/debug flows; keep timestamps in server logs by default.
 - Reuse the current AI helper contracts where possible.
-- Use Passport JWT strategy for protected routes.
 - Replace MongoDB + MySQL data ownership with PostgreSQL-backed modules instead of reintroducing dual persistence in the new architecture.
 - Keep Redis limited to short-lived state and cache.
 - Keep Prisma as the primary data access layer; use raw SQL for Chinese search ranking and import-heavy paths when needed.
@@ -487,20 +507,21 @@ Key compatibility rules:
 
 ### 4.3 Migration phases
 
-1. Define the target PostgreSQL schema for user data, medicine knowledge, DrugBank enrichment, and source metadata.
-2. Scaffold the NestJS application entry and move shared config/env parsing into Nest config providers.
+1. Define Lucent API v1 protocol, response envelope, error code taxonomy, and JWT identity rules.
+2. Define the PostgreSQL schema for user data, medicine knowledge, DrugBank enrichment, and source metadata.
 3. Add Prisma, PostgreSQL migrations, and import script scaffolding; wire Redis only for clearly justified short-lived flows.
-4. Freeze current Express API contracts and add parity tests.
+4. Build import fixtures for `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase` without committing full datasets.
 5. Move public medicine search/detail first, backed by PostgreSQL knowledge tables and Markdown sections.
 6. Move AI into grounded copilot services instead of preserving generic AI detail as a long-term feature.
 7. Move auth, verification-code delivery, Passport JWT guard, and users.
-8. Move user-scoped routes after Phase 2 auth rules are already tested.
-9. Run Express and Nest parity tests before switching deployment, then retire MongoDB/MySQL runtime dependencies.
+8. Move user-scoped routes only after JWT-derived identity is tested.
+9. Switch Flutter to `/api/v1` through a new client layer when Lucent reaches a stable contract.
+10. Retire MongoDB/MySQL runtime dependencies after Lucent production cutover.
 
 Acceptance:
 
-- Flutter does not need route changes during the migration.
-- Express tests have equivalent Nest tests before a route is switched.
+- Flutter is allowed to change route paths and request/response models when moving from legacy Express to Lucent.
+- Legacy Express behavior is documented as reference, not treated as a hard compatibility target.
 - PostgreSQL becomes the primary persisted source for migrated modules.
 - Prisma migrations and import scripts can rebuild the knowledge tables from external sources.
 - Redis remains optional and limited to cache/code scenarios rather than becoming a second primary database.

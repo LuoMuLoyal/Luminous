@@ -4,9 +4,9 @@
 
 ## 文档索引
 
-- `RefactorPlan.md`：当前 Flutter 优化、状态迁移和后端演进的主计划。
-- `knowledge-data-platform-plan.md`：新药品知识库、DrugBank、Markdown 展示、AI 职责重分配和数据导入路线。
-- `backend-nestjs-pgsql-migration-plan.md`：后端从 Express/MongoDB/MySQL 迁移到 NestJS/PostgreSQL/Prisma/Redis/Passport 的分阶段执行计划。
+- `RefactorPlan.md`：当前 Flutter 优化、状态迁移和 Lucent 后端演进的主计划。
+- `knowledge-data-platform-plan.md`：Luminous 侧的知识库产品/客户端边界摘要；后端导入细节见 `../Lucent/docs/data-sources.md`。
+- `backend-nestjs-pgsql-migration-plan.md`：Luminous 侧的 Lucent 后端迁移协调摘要；后端详细路线见 `../Lucent/docs/migration-roadmap.md`。
 - `Promise.md`：Personal Health Copilot 的产品愿景、端侧职责和阶段路线。
 - `migration_log.md`：GetX/Layer-based 向 Riverpod/GoRouter/Feature-first 迁移的执行记录。
 - `lib-docs/`：前后端接口、部署和联调文档。
@@ -20,3 +20,12 @@
 - 控制文件规模：单文件最好 300 行以内，300-600 行可接受，超过 600 行时优先拆分再继续扩展。
 - 迁移涉及行为变化时，同步更新测试与这里的相关文档。
 - 外部大体量数据源只在文档中记录路径和导入规则，不进入 Git；当前新知识库规划以 `knowledge-data-platform-plan.md` 为准。
+- 目标后端在 `Lucent/` submodule；旧 `backend/` Express 只用于低优先级参考和线上旧服务联调，不再作为新功能落点。
+- 目标数据源位于 `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase`，包含中文 `FullDrugDetail.xlsx` 与英文 DrugBank 文件。导入策略未完全定稿前，只在 Lucent/PostgreSQL 规划中处理，不写入 Flutter assets。
+
+## 文档边界
+
+- Luminous `README.md`：项目入口、运行方式、子项目关系。
+- Luminous `docs/`：Flutter 迁移、客户端边界、跨项目协调和 legacy API 参考。
+- Lucent `README.md`：目标后端入口。
+- Lucent `docs/`：API 协议、数据导入、数据库、后端模块和迁移路线。

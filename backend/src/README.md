@@ -1,6 +1,6 @@
 # backend/src 说明
 
-`backend/src` 是当前 Express App 后端服务源码目录。目标后端会迁移到 NestJS + PostgreSQL + Prisma + Redis + Passport；迁移完成前，本目录仍是当前运行时基线。
+`backend/src` 是旧 Express App 后端服务源码目录。目标后端已明确迁移到 `../../Lucent` submodule（NestJS + PostgreSQL + Prisma + Redis + Passport JWT）。本目录只作为当前线上旧服务、临时联调和数据迁移参考，不再作为新后端功能落点。
 
 ## 分层约定
 
@@ -12,7 +12,7 @@
 - `models/`: Mongoose 数据模型
 - `routes/`: 路由注册
 
-目标 Nest 模块会增加：
+Lucent 目标模块会增加：
 
 - `knowledge/`: xlsx/DrugBank 导入状态、source metadata、知识映射
 - `safety/`: 药品相互作用、特殊人群风险和 AI 辅助安全解释
@@ -26,12 +26,12 @@
 3. `routes/api.ts`: 注册 `/api/*` 接口
 4. `handlers/*`: 执行业务逻辑
 
-## 开发建议
+## Legacy 维护建议
 
-1. 新增接口时，优先在 `handlers/` 实现业务，再在 `routes/api.ts` 暴露路由。
-2. 所有返回建议统一用 `http/response.ts` 的 `success/fail`。
-3. 参数解析统一使用 `http/body.ts`，避免各处重复校验。
-4. 涉及鉴权的路由，使用 `http/jwt.ts` 的 `authMiddleware`。
+1. 不在本目录新增长期后端能力；新功能进入 `../../Lucent`。
+2. 如果必须修复线上旧 Express 问题，优先在 `handlers/` 做最小补丁，再在 `routes/api.ts` 暴露路由。
+3. 所有 legacy 返回继续用 `http/response.ts` 的 `success/fail`，避免破坏已上线旧 Flutter 流程。
+4. 涉及鉴权的 legacy 路由，使用 `http/jwt.ts` 的 `authMiddleware`；Lucent 则使用 Passport JWT guard。
 
 ## 相关文档
 
