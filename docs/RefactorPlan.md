@@ -139,9 +139,11 @@ Completed on 2026-05-24:
 Remaining Phase 0 cleanup:
 
 1. Continue the responsive base with shared content lanes, max-width constraints, optional side panels, and one feature-level compact/expanded reference implementation beyond Home.
-2. Replace hand-written API JSON model serialization with generated model code in a dedicated slice, preferably using `json_serializable` plus `build_runner` after model ownership has stabilized.
-3. Add a minimal integration/e2e smoke suite after the Phase 0 routing and startup structure is stable, focused on app launch, auth navigation, and one primary medicine/reminder flow.
-4. Decide when to retire `lib/deprecated/` files from the repository entirely after one stable checkpoint confirms no rollback path is needed.
+2. Add the minimal integration/e2e smoke baseline before deeper generated-code migration work; see `0.6`.
+3. Replace hand-written API/DTO JSON serialization with generated model code in a dedicated slice, preferably using `json_serializable` plus `build_runner` after model ownership has stabilized; see `0.6`.
+4. Evaluate typed local persistence before expanding cache/offline tables; see the Drift notes in `0.6`.
+5. Replace JSON/string-based object equality and ad hoc list/set equality with explicit `collection` equality helpers where practical.
+6. Decide when to retire `lib/deprecated/` files from the repository entirely after one stable checkpoint confirms no rollback path is needed.
 
 ### 0.4 Exit criteria
 
@@ -187,6 +189,115 @@ Started on 2026-05-24:
 - Added `AppAdaptiveScaffold` as the first shared adaptive shell for compact bottom navigation versus wide navigation pane.
 - Updated `MainPage` to keep the existing bottom tab bar on compact widths and switch to `NavigationRail` on medium and wider widths. Expanded and web-expanded widths use an extended rail/sidebar presentation.
 - Added `test/adaptive_layout_test.dart` to lock the breakpoint mapping and compact/wide shell switching behavior.
+
+### 0.6 Type-safety and smoke-test backlog
+
+Recorded on 2026-05-25. These are real Phase 0 follow-up issues, but they should stay as separate verified slices rather than being mixed into directory-structure cleanup.
+
+Priority order:
+
+1. Add a minimal e2e smoke baseline.
+2. Introduce generated JSON model code for stable DTO/API result/shared models.
+3. Replace fragile equality checks with `collection` helpers.
+4. Evaluate Drift before adding more local cache/offline tables.
+
+#### Minimal e2e smoke
+
+Current issue:
+
+- The repo has no `integration_test/` directory.
+- `pubspec.yaml` does not declare the Flutter SDK `integration_test` package.
+
+Package to add:
+
+- `dev_dependencies`: `integration_test` from the Flutter SDK.
+
+Initial files and flows:
+
+- Add `integration_test/app_smoke_test.dart`.
+- Cover app launch and basic auth/login/register/legal navigation.
+- Cover one stable primary flow: medicine search or reminder list/edit/check-in. Prefer local/mockable flows first so the smoke test is not blocked by backend availability.
+
+Acceptance:
+
+- `flutter test integration_test/app_smoke_test.dart` can run on an available emulator, device, or desktop target.
+- The smoke test stays small enough for release/checkpoint validation; it does not need to become a full per-commit gate.
+
+#### Generated JSON models
+
+Current issue:
+
+- Large parts of the model layer still hand-write `fromJson`, `toJson`, and often `copyWith`.
+- Known hotspots include auth, medicine, reminder, scan, safety, my-medicine, browse-history, album, search, and shared home/medicine models.
+- The current repo has no `json_serializable`, `json_annotation`, `build_runner`, `freezed`, or `freezed_annotation` dependency.
+
+Packages to add for the first slice:
+
+- `dependencies`: `json_annotation`.
+- `dev_dependencies`: `build_runner`, `json_serializable`.
+
+Optional later packages:
+
+- `dependencies`: `freezed_annotation`.
+- `dev_dependencies`: `freezed`.
+- Add Freezed only for complex immutable models that actually benefit from generated `copyWith`, equality, and sealed unions. Do not force every DTO into Freezed.
+
+First migration targets:
+
+- Stable API result/DTO models after their ownership is clear.
+- Cross-feature shared models: `lib/shared/models/medicine.dart`, `lib/shared/models/home.dart`.
+- Feature models with broad hand-written serialization: `lib/features/auth/presentation/models/auth.dart`, `lib/features/reminders/presentation/models/reminder.dart`, `lib/features/scan/presentation/models/scan.dart`, `lib/features/safety/presentation/models/safety.dart`, `lib/features/drug/presentation/models/my_medicine.dart`, `lib/features/mine/presentation/models/browse_history.dart`, `lib/features/album/presentation/models/album.dart`, and `lib/features/search/presentation/models/search.dart`.
+
+Rules:
+
+- Do not replace the whole repo in one pass.
+- Start with stable DTO/shared model files and keep behavior-compatible generated output.
+- Keep local database row mappers separate until the Drift decision is made.
+
+Acceptance:
+
+- Migrated DTO files use generated `*.g.dart` code instead of manual JSON field copying.
+- `dart run build_runner build --delete-conflicting-outputs`, `flutter analyze`, and focused model tests pass.
+
+#### Local SQLite type safety
+
+Current issue:
+
+- `lib/core/local_storage/app_database.dart` manually creates tables, indexes, and upgrade behavior.
+- Local repositories still use a lot of `Map<String, dynamic>` row mapping, especially `lib/features/drug/data/my_medicine_repository.dart`, `lib/features/reminders/data/reminder_local_store.dart`, and `lib/features/reminders/data/today_reminder_local_store.dart`.
+
+Packages to evaluate:
+
+- `dependencies`: `drift`, `drift_flutter`.
+- `dev_dependencies`: `drift_dev`, `build_runner`.
+
+Decision rule:
+
+- Do not migrate SQLite immediately just to add a package.
+- Evaluate Drift before adding more cache/offline tables, because it would give typed tables, DAOs, migrations, and compile-time query checks.
+- Land Drift only after the minimal e2e smoke and the first JSON-generation slice are stable.
+
+#### Collection equality
+
+Current issue:
+
+- `lib/features/mine/data/browse_history_store.dart` compares object state by serializing JSON.
+- `lib/features/search/presentation/controllers/search_controller.dart` contains ad hoc list/set comparison logic.
+
+Package to add:
+
+- `dependencies`: `collection`.
+
+Acceptance:
+
+- Use `ListEquality`, `SetEquality`, or `DeepCollectionEquality` where the comparison is about value equality.
+- Do not use `jsonEncode(toJson())` as an equality proxy unless the product explicitly needs canonical serialized payload comparison.
+
+#### Deferred package decisions
+
+- Keep `dio` and the current `DioRequest` wrapper during Phase 0. `retrofit` and `retrofit_generator` can wait until the NestJS/PostgreSQL API shape is stable and endpoint count justifies generated clients.
+- Do not continue growing AI text segmentation with complex regular expressions. Prefer backend structured JSON; if the UI contract is Markdown-like, evaluate a Markdown renderer such as `flutter_markdown` in a later UI slice.
+- Do not add a large form library for auth validation. Keep phone, code, and password rules centralized in `AuthValidators`; email validation can use a small validator package later if the benefit becomes clear.
 
 ## Phase 1: Product Trust and Real Data
 
@@ -367,7 +478,7 @@ Acceptance:
 
 Tasks:
 
-- Add `integration_test` flows for login, scan-to-detail, reminder-create-to-checkin.
+- Extend the Phase 0 minimal `integration_test` smoke into fuller flows for login, scan-to-detail, and reminder-create-to-checkin.
 - Add a profile-mode performance baseline for cold start and local search.
 - Keep `flutter analyze`, `flutter test`, `backend npm test`, and backend build as the default gate.
 

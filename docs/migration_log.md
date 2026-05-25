@@ -149,3 +149,5 @@ lib/
 - 资产收口：全量 `data.json` 与 `StandardCode_full.xlsx` 已由用户备份到仓库外；项目内删除 xlsx，并将 `lib/assets/data.json` 替换为仅含 2 条药品数据的开发样例，保留离线搜索的轻量兜底能力。
 - 常量收口：将 `constants.dart` 拆为 `global_constants.dart`、`http_constants.dart`、`app_ui_constants.dart` 和 `app_release_info.dart`，保留 `constants.dart` 作为兼容 barrel。
 - 路由入口收口：`lib/routes/routes.dart` 实际承载 RootApp 与主题构建，已迁入 `lib/core/startup/root_app_widget.dart`，`main.dart` 改为从 core startup 引入，活跃代码不再保留 `lib/routes/`。
+- 记录 Phase 0 后续技术债优先级：先补最小 `integration_test` smoke，再单独开 `json_serializable`/`build_runner` 模型生成迁移；复杂不可变模型再评估 `freezed`/`freezed_annotation`，不和结构收口混做。
+- 在重构计划中补充包和落点：`json_annotation`、`build_runner`、`json_serializable`、可选 `freezed`/`freezed_annotation`；`integration_test`；`collection`；本地 SQLite 后续评估 `drift`/`drift_flutter`/`drift_dev`；并明确 `retrofit`、Markdown/AI 文本渲染和大表单库暂不进入 Phase 0。
