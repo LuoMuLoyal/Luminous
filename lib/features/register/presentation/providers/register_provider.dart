@@ -5,7 +5,9 @@ import 'package:luminous/api/auth_api.dart';
 import 'package:luminous/features/auth/presentation/models/auth.dart';
 
 final registerNotifierProvider =
-    NotifierProvider<RegisterNotifier, RegisterFormState>(RegisterNotifier.new);
+    NotifierProvider.autoDispose<RegisterNotifier, RegisterFormState>(
+      RegisterNotifier.new,
+    );
 
 class RegisterFormState {
   final bool sendingCode;
@@ -51,13 +53,22 @@ class RegisterNotifier extends Notifier<RegisterFormState> {
   }
 
   @override
-  RegisterFormState build() => const RegisterFormState();
+  RegisterFormState build() {
+    ref.onDispose(() => _countdownTimer?.cancel());
+    return const RegisterFormState();
+  }
 
   String? validateIdentifier(String value, AuthIdentifierType type) {
     final v = value.trim();
-    if (v.isEmpty) return type == AuthIdentifierType.phone ? '请输入手机号' : '请输入邮箱';
-    if (type == AuthIdentifierType.phone && !_phoneRegExp.hasMatch(v)) return '手机号格式不正确';
-    if (type == AuthIdentifierType.email && !_emailRegExp.hasMatch(v)) return '邮箱格式不正确';
+    if (v.isEmpty) {
+      return type == AuthIdentifierType.phone ? '请输入手机号' : '请输入邮箱';
+    }
+    if (type == AuthIdentifierType.phone && !_phoneRegExp.hasMatch(v)) {
+      return '手机号格式不正确';
+    }
+    if (type == AuthIdentifierType.email && !_emailRegExp.hasMatch(v)) {
+      return '邮箱格式不正确';
+    }
     return null;
   }
 
@@ -103,9 +114,15 @@ class RegisterNotifier extends Notifier<RegisterFormState> {
     state = state.copyWith(sendingCode: true);
     try {
       if (type == AuthIdentifierType.phone) {
-        await authApi.sendPhoneCode(phone: identifier, scene: AuthCodeScene.register);
+        await authApi.sendPhoneCode(
+          phone: identifier,
+          scene: AuthCodeScene.register,
+        );
       } else {
-        await authApi.sendEmailCode(email: identifier, scene: AuthCodeScene.register);
+        await authApi.sendEmailCode(
+          email: identifier,
+          scene: AuthCodeScene.register,
+        );
       }
       _codeTarget = identifier;
       _startCountdown();
@@ -116,6 +133,7 @@ class RegisterNotifier extends Notifier<RegisterFormState> {
   }
 
   Future<RegisterResult> register({
+    required AuthApi authApi,
     required AuthIdentifierType type,
     required String identifier,
     required String username,
@@ -149,8 +167,12 @@ class RegisterNotifier extends Notifier<RegisterFormState> {
     state = state.copyWith(codeCountdownSeconds: _codeCooldownSeconds);
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final next = state.codeCountdownSeconds - 1;
-      if (next <= 0) { timer.cancel(); state = state.copyWith(codeCountdownSeconds: 0); }
-      else { state = state.copyWith(codeCountdownSeconds: next); }
+      if (next <= 0) {
+        timer.cancel();
+        state = state.copyWith(codeCountdownSeconds: 0);
+      } else {
+        state = state.copyWith(codeCountdownSeconds: next);
+      }
     });
   }
 }
