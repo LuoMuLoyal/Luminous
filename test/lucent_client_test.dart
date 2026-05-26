@@ -45,18 +45,18 @@ void main() {
   });
 
   group('LucentApiResult', () {
-    test('isOk returns true for OK code', () {
+    test('isOk returns true for code 0', () {
       final result = LucentApiResult<String>(
-        code: 'OK',
+        code: 0,
         message: '',
         data: 'test',
       );
       expect(result.isOk, isTrue);
     });
 
-    test('isOk returns false for non-OK code', () {
+    test('isOk returns false for non-zero code', () {
       final result = LucentApiResult<String>(
-        code: 'AUTH_UNAUTHORIZED',
+        code: 401001,
         message: 'Unauthorized',
         data: '',
       );
@@ -65,12 +65,12 @@ void main() {
 
     test('stores all fields correctly', () {
       const result = LucentApiResult<int>(
-        code: 'OK',
+        code: 0,
         message: 'done',
         data: 42,
       );
 
-      expect(result.code, 'OK');
+      expect(result.code, 0);
       expect(result.message, 'done');
       expect(result.data, 42);
       expect(result.meta, isNull);
@@ -80,7 +80,7 @@ void main() {
   group('parseLucentResponse', () {
     test('success response: parses data and returns LucentApiResult', () {
       final raw = <String, dynamic>{
-        'code': 'OK',
+        'code': 0,
         'message': '',
         'data': {'name': 'Aspirin'},
       };
@@ -90,7 +90,7 @@ void main() {
         decoder: (json) => json as Map<String, dynamic>,
       );
 
-      expect(result.code, 'OK');
+      expect(result.code, 0);
       expect(result.message, '');
       expect(result.data['name'], 'Aspirin');
       expect(result.meta, isNull);
@@ -98,7 +98,7 @@ void main() {
 
     test('success response with null data: passes null to decoder', () {
       final raw = <String, dynamic>{
-        'code': 'OK',
+        'code': 0,
         'message': '',
         'data': null,
       };
@@ -108,13 +108,13 @@ void main() {
         decoder: (json) => json,
       );
 
-      expect(result.code, 'OK');
+      expect(result.code, 0);
       expect(result.data, isNull);
     });
 
     test('error response: throws ApiException with code and message', () {
       final raw = <String, dynamic>{
-        'code': 'AUTH_UNAUTHORIZED',
+        'code': 401001,
         'message': 'Invalid credentials',
         'data': null,
       };
@@ -126,7 +126,7 @@ void main() {
         ),
         throwsA(
           isA<ApiException>()
-              .having((e) => e.code, 'code', 'AUTH_UNAUTHORIZED')
+              .having((e) => e.code, 'code', '401001')
               .having(
                 (e) => e.message,
                 'message',
@@ -138,7 +138,7 @@ void main() {
 
     test('error response with empty message: uses fallback message', () {
       final raw = <String, dynamic>{
-        'code': 'SERVER_ERROR',
+        'code': 500001,
         'message': '',
         'data': null,
       };
@@ -150,7 +150,7 @@ void main() {
         ),
         throwsA(
           isA<ApiException>()
-              .having((e) => e.code, 'code', 'SERVER_ERROR')
+              .having((e) => e.code, 'code', '500001')
               .having((e) => e.message, 'message', 'Request failed'),
         ),
       );
@@ -158,7 +158,7 @@ void main() {
 
     test('paginated response: parses meta.pagination', () {
       final raw = <String, dynamic>{
-        'code': 'OK',
+        'code': 0,
         'message': '',
         'data': <Map<String, dynamic>>[
           {'id': 1},
@@ -179,7 +179,7 @@ void main() {
         decoder: (json) => json as List<dynamic>,
       );
 
-      expect(result.code, 'OK');
+      expect(result.code, 0);
       expect(result.data, hasLength(2));
       expect(result.meta, isNotNull);
       expect(result.meta!.pagination, isNotNull);
@@ -187,7 +187,7 @@ void main() {
       expect(result.meta!.pagination!.totalPages, 3);
     });
 
-    test('success response with missing code: defaults to empty string', () {
+    test('success response with missing code: defaults to error', () {
       final raw = <String, dynamic>{
         'data': 'hello',
       };
@@ -198,7 +198,7 @@ void main() {
           decoder: (json) => json as String,
         ),
         throwsA(
-          isA<ApiException>().having((e) => e.code, 'code', ''),
+          isA<ApiException>().having((e) => e.code, 'code', '-1'),
         ),
       );
     });

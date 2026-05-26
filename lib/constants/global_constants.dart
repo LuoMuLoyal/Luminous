@@ -53,7 +53,7 @@ class GlobalConstants {
   static const String LEGACY_SUCCESS_CODE = '1';
 
   /// Lucent 后端约定的“请求成功”业务码。
-  static const String LUCENT_SUCCESS_CODE = 'OK';
+  static const int LUCENT_SUCCESS_CODE = 0;
 
   /// 当前默认网络层仍指向旧 Express 协议。
   ///
