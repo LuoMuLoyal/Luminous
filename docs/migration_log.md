@@ -1,3 +1,15 @@
+---
+title: "Luminous 架构重构及迁移记录"
+tags:
+  - execution
+  - migration
+  - log
+aliases:
+  - 迁移日志
+  - 迁移记录
+created: 2026-05-23
+---
+
 # Luminous 架构重构及迁移记录
 
 该文档记录 Luminous 从基于 GetX/Layer-based 迁移向 Riverpod/GoRouter/Feature-first 架构的历程，用以为长期项目维护提供清晰的追踪。
@@ -76,7 +88,7 @@ lib/
 
 ### 2026-05-24
 
-- 在 `docs/RefactorPlan.md` 中新增 `Phase 0`，明确先做目录结构整形和大文件拆分，再恢复更快的产品迁移节奏。
+- 在 [[RefactorPlan]] 中新增 `Phase 0`，明确先做目录结构整形和大文件拆分，再恢复更快的产品迁移节奏。
 - 启动 `Settings` 作为第一个结构切片：新增 `lib/features/settings/presentation/`，把设置相关展示代码拆成 `pages/`、`widgets/`、`support/` 多文件。
 - 将原 `lib/pages/Settings/settings.dart` 收缩为兼容导出壳，避免一次性改爆全仓引用。
 - 路由、主页面和设置页测试已切到新的 `features/settings` 入口，并保持 `flutter analyze` 与 `flutter test` 通过。
@@ -88,7 +100,7 @@ lib/
 - 完成 `Home` 第三个结构切片：新增 `lib/features/home/presentation/`，把首页拆成 `controllers/`、`pages/`、`support/`、`widgets/` 多文件，并将正式入口命名统一为 `HomePage`。
 - 将原 `lib/pages/Home/home.dart`、`lib/pages/Home/controllers/home_controller.dart` 与 `lib/components/home.dart` 收缩为兼容壳或导出层，同时把 `Main shell` 与首页相关测试切到新的 `features/home` 入口。
 - 更新根 `README.md`，移除过时的 `Study/`、`.md/` 目录说明，并把后端说明改为“当前基线 + 目标栈”双轨描述：当前仍是 Express + MongoDB/MySQL/Redis，目标迁移为 NestJS + PostgreSQL；后续目标栈进一步明确为 Prisma/Redis/Passport。
-- 在 `docs/RefactorPlan.md` 中补充后端目标状态：NestJS 作为框架，PostgreSQL 作为主存储，Redis 仅在验证码、缓存和 AI 文本缓存等短生命周期场景按需保留，MongoDB/MySQL 作为迁移源逐步退场。
+- 在 [[RefactorPlan]] 中补充后端目标状态：NestJS 作为框架，PostgreSQL 作为主存储，Redis 仅在验证码、缓存和 AI 文本缓存等短生命周期场景按需保留，MongoDB/MySQL 作为迁移源逐步退场。
 - 完成 `Search` 第四个结构切片：新增 `lib/features/search/presentation/`，把搜索页拆为 `controllers/`、`pages/`、`support/`、`widgets/` 多文件，并将正式入口命名统一为 `SearchPage`。
 - 将原 `lib/pages/Search/search.dart`、`lib/pages/Search/controllers/search_controller.dart` 与 `lib/components/search.dart` 收缩为兼容壳或导出层，同时把路由、Main shell、药品选择器、扫码跳转和相关测试切到新的 `features/search` 入口。
 - 完成 `Scan` 第五个结构切片：新增 `lib/features/scan/presentation/`，把扫码页拆为 `controllers/`、`models/`、`pages/`、`support/`、`widgets/` 多文件，并保留 `MedicineScanPage` 作为正式 Page 命名。
@@ -151,8 +163,8 @@ lib/
 - 路由入口收口：`lib/routes/routes.dart` 实际承载 RootApp 与主题构建，已迁入 `lib/core/startup/root_app_widget.dart`，`main.dart` 改为从 core startup 引入，活跃代码不再保留 `lib/routes/`。
 - 记录 Phase 0 后续技术债优先级：先补最小 `integration_test` smoke，再单独开 `json_serializable`/`build_runner` 模型生成迁移；复杂不可变模型再评估 `freezed`/`freezed_annotation`，不和结构收口混做。
 - 在重构计划中补充包和落点：`json_annotation`、`build_runner`、`json_serializable`、可选 `freezed`/`freezed_annotation`；`integration_test`；`collection`；本地 SQLite 后续评估 `drift`/`drift_flutter`/`drift_dev`；并明确 `retrofit`、Markdown/AI 文本渲染和大表单库暂不进入 Phase 0。
-- 新增 `docs/knowledge-data-platform-plan.md`，将 `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase\FullDrugDetail.xlsx`（204,844 条药品数据、29 列说明书/商品字段）和 `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase`（DrugBank XML/CSV/FASTA/SDF）定位为后端知识库导入源，不进入 Git、不打包到 Flutter。
-- 更新产品愿景与技术路线：`Promise.md` 从“AI RAG 说明书翻译”调整为“权威药品知识库 + Markdown 详情 + AI 健康副驾驶”，药品事实由 PostgreSQL 知识表提供，AI 主要负责解释、总结、安全提示、报告解读和健康计划。
+- 新增 [[knowledge-data-platform-plan]]，将 `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase\FullDrugDetail.xlsx`（204,844 条药品数据、29 列说明书/商品字段）和 `D:\25080\Documents\VSCodeProject\Lumos\DrugDataBase`（DrugBank XML/CSV/FASTA/SDF）定位为后端知识库导入源，不进入 Git、不打包到 Flutter。
+- 更新产品愿景与技术路线：[[Promise]] 从“AI RAG 说明书翻译”调整为“权威药品知识库 + Markdown 详情 + AI 健康副驾驶”，药品事实由 PostgreSQL 知识表提供，AI 主要负责解释、总结、安全提示、报告解读和健康计划。
 - 更新后端迁移文档：目标栈明确为 NestJS + PostgreSQL + Prisma + Redis + Passport，新增 `KnowledgeModule`、`SafetyModule`、`CopilotModule`、`ReportsModule`，并补充 xlsx/DrugBank staging、normalization、Markdown sections、`detailMarkdown` 和导入验收规则。
 - 更新 API/README/隐私文档：药品详情规划返回结构化 `sections` 与 `detailMarkdown`，AI 输出规划优先 Markdown；隐私政策补充健康记录、AI 上下文处理和限时分享边界。
 - 明确后端归属调整：`Lucent/` 作为 Luminous 的 Git submodule 和目标 NestJS 后端主线；`backend/` Express 降级为低优先级参考与当前 `https://devluo.com` 旧服务联调基线，不再作为新功能落点。
@@ -161,7 +173,7 @@ lib/
 - 重新划分文档边界：Luminous 文档保留 Flutter/client 迁移和跨项目协调摘要；Lucent `docs/` 承接 API contract、数据源和后端迁移路线细节。
 - 初始化 Lucent NestJS 基线：启用 SWC build、环境文件约定、配置校验、`/api/v1/health`、request id header、全局 envelope/filter/interceptor，并在 Lucent docs 中补充环境与协议现状。
 - Flutter 小步收口：默认 API 地址和 legacy/Lucent 成功码语义集中到 `GlobalConstants`，移除 `AppI18nText` 对 `Get.locale` 的依赖，修复根组件对 `localeProvider` 状态的监听。
-- 新增 `docs/flutter-followup-improvement-plan.md`，记录当前 GetX 残留、硬编码归属、Lucent client 切换和后续分步骤执行顺序。
+- 新增 [[flutter-followup-improvement-plan]]，记录当前 GetX 残留、硬编码归属、Lucent client 切换和后续分步骤执行顺序。
 
 ### 2026-05-25
 
