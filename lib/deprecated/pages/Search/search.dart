@@ -13,6 +13,5 @@ class SearchView extends SearchPage {
     super.initialKeyword,
     super.autoSearchOnInit,
     super.searchExecutor,
-    super.controller,
   });
 }
