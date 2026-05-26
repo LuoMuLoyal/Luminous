@@ -264,3 +264,17 @@ lib/
 
 - `flutter analyze`：No issues found。
 - `flutter test`：**151/151 通过**（原 118 + 新增 33）。
+
+### Step 14：集合相等与本地比较清理 (2026-06-02)
+
+验收扫描结果：`lib/` 下 `jsonEncode` 全部用于存储/传输，零处用于相等比较。
+
+- `browse_history_store.dart` 已使用 `ListEquality<Map>` + `MapEquality` 替代 JSON 字符串比对的模式，符合 Step 14 目标。
+- 将 `_sameEntries` 逻辑提取为 `@visibleForTesting sameBrowseHistoryEntries()` 独立函数，便于测试。
+- 新增 `test/features/mine/data/browse_history_store_test.dart`（7 tests）：覆盖相同引用、空列表、同内容、不同长度、不同内容、不同字段值、多条目同序。
+- 验证手段 `rg "jsonEncode\\(|toJson\\(\\).*==" lib` 返回零匹配。
+
+**验证结果**
+
+- `flutter analyze`：No issues found。
+- `flutter test`：**158/158 通过**（151 + 新增 7）。
