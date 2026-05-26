@@ -331,3 +331,22 @@ home (Step 1), search (Step 2), drug (Step 3-4), reminders (Step 5), safety (Ste
 - `flutter analyze`：零 issue。`flutter test`：59/59 通过。
 
 **下一步：** Step 4 — 迁移 Medicine Detail 状态到 Riverpod。
+
+### 2026-05-26 — Step 4：迁移 Medicine Detail 状态（完成）
+
+- 新建 `lib/features/drug/presentation/providers/medicine_detail_provider.dart`（223 行）：
+  - `DetailState` 不可变状态模型（item、loadingDetail、aiResult、loadingAi）。
+  - `DetailNotifier extends Notifier<DetailState>` 替代旧 `MedicineDetailController`。
+  - `detailFetchProvider`/`aiFetchProvider`/`detailHistoryStoreProvider` 注入层。
+  - CancelToken 管理通过 `ref.onDispose` 清理。
+  - `loadDetail()`/`loadAiDetail()` 返回 `String?` 错误消息供 page 层 toast。
+  - 浏览历史记录逻辑保留。
+- `MedicineDetailPage`：`StatelessWidget` + `GetBuilder` → `ConsumerStatefulWidget`。
+  - `initState` → `Future.microtask` 延迟 `initialize(initialItem)`。
+  - Toast 显示逻辑从 controller 迁移到 page 层。
+- 旧 `MedicineDetailController` 迁入 `deprecated/getx/medicine_detail_controller.dart`。
+- `controllers/medicine_detail_controller.dart` 变为兼容重新导出壳。
+- `drug.dart` barrel 新增 provider 导出，hide 歧义 typedef。
+- `flutter analyze`：零 issue。`flutter test`：59/59 通过。
+
+**下一步：** Step 5 — 迁移 Reminders 列表状态到 Riverpod。
