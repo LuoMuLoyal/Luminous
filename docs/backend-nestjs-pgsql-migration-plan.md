@@ -1,3 +1,14 @@
+---
+title: "Lucent Backend Migration Summary"
+tags:
+  - strategy
+  - backend
+aliases:
+  - 后端迁移
+  - Lucent迁移
+created: 2026-05-25
+---
+
 # Lucent Backend Migration Summary
 
 Last updated: 2026-05-25

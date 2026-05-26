@@ -1,3 +1,15 @@
+---
+title: "Luminous 当前顺序执行计划"
+tags:
+  - execution
+  - migration
+aliases:
+  - 执行计划
+  - 当前执行计划
+  - 顺序执行计划
+created: 2026-05-26
+---
+
 # Luminous 当前顺序执行计划
 
 Last updated: 2026-05-26
@@ -10,9 +22,9 @@ Last updated: 2026-05-26
 
 1. 严格按步骤推进。除非上一步已经通过验收，否则不要跳到后续步骤。
 2. 每次只做一个步骤中的一个小切片。如果步骤过大，先拆成子切片，但不要扩大范围。
-3. 每个切片必须更新 `docs/migration_log.md`，记录做了什么、验证了什么、还有什么风险。
+3. 每个切片必须更新 [[migration_log]]，记录做了什么、验证了什么、还有什么风险。
 4. 代码改动前先看当前文件，不要按文档猜测。
-5. 任何涉及协议、数据库、状态管理、跨端体验的决策，都以 `docs/RefactorPlan.md` 的红线为准。
+5. 任何涉及协议、数据库、状态管理、跨端体验的决策，都以 [[RefactorPlan]] 的红线为准。
 6. 发现计划过期时，先写清楚差异和建议，等待审核，不要直接重写路线。
 
 默认验证门：
@@ -68,7 +80,7 @@ pnpm build
 - 扫描活跃 GetX：`rg -n "package:get/get\\.dart|GetBuilder|GetxController" lib test`。
 - 扫描大文件：列出 `lib/**/*.dart` 中前 30 个最长文件。
 - 运行 `flutter analyze` 和 `flutter test`。
-- 把结果追加到 `docs/migration_log.md`。
+- 把结果追加到 [[migration_log]]。
 
 验收标准：
 
@@ -782,9 +794,9 @@ pnpm build
 每次 DeepSeek 完成一个步骤后，Codex 审核时优先看：
 
 1. 是否严格按当前步骤做，是否夹带了后续阶段。
-2. 是否破坏 `docs/RefactorPlan.md` 的红线。
+2. 是否破坏 [[RefactorPlan]] 的红线。
 3. 是否保留旧 Express / Lucent 协议边界。
 4. 是否新增 GetX 或扩大 deprecated 目录。
 5. 是否有足够测试覆盖成功、空态、错误、权限边界。
 6. 是否运行并记录了必要验证。
-7. 是否更新 `docs/migration_log.md`，必要时更新本计划。
+7. 是否更新 [[migration_log]]，必要时更新本计划。

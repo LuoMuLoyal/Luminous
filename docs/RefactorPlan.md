@@ -1,19 +1,30 @@
+---
+title: "Luminous 重构路线总控"
+tags:
+  - strategy
+  - refactor
+aliases:
+  - 重构路线
+  - 重构计划
+created: 2026-05-26
+---
+
 # Luminous 重构路线总控
 
 Last updated: 2026-05-26
 
 ## 文档定位
 
-本文只负责把控大方向，避免重构路线走偏。具体执行清单放在 `docs/current-sequential-execution-plan.md`，历史流水记录放在 `docs/migration_log.md`。
+本文只负责把控大方向，避免重构路线走偏。具体执行清单放在 [[current-sequential-execution-plan]]，历史流水记录放在 [[migration_log]]。
 
 相关文档边界：
 
-- `docs/Promise.md`：产品愿景和长期边界。
-- `docs/RefactorPlan.md`：跨阶段重构方向、技术红线、阶段顺序。
-- `docs/current-sequential-execution-plan.md`：从当前仓库状态开始的可执行步骤。
-- `docs/flutter-followup-improvement-plan.md`：Flutter 端阶段性扫描和已推进切片记录，后续以新执行计划为准。
-- `docs/knowledge-data-platform-plan.md`：中文药品详情 xlsx 与 DrugBank 的知识平台设计。
-- `docs/backend-nestjs-pgsql-migration-plan.md`：Lucent 后端迁移细节。
+- [[Promise]]：产品愿景和长期边界。
+- [[RefactorPlan]]：跨阶段重构方向、技术红线、阶段顺序。
+- [[current-sequential-execution-plan]]：从当前仓库状态开始的可执行步骤。
+- [[flutter-followup-improvement-plan]]：Flutter 端阶段性扫描和已推进切片记录，后续以新执行计划为准。
+- [[knowledge-data-platform-plan]]：中文药品详情 xlsx 与 DrugBank 的知识平台设计。
+- [[backend-nestjs-pgsql-migration-plan]]：Lucent 后端迁移细节。
 - `Lucent/docs/*`：Lucent 内部 API、环境、数据源和后端实现约定。
 
 ## 北极星
@@ -234,4 +245,4 @@ pnpm build
 
 ## 近期唯一推荐路线
 
-按 `docs/current-sequential-execution-plan.md` 执行。DeepSeek 负责逐步实现；Codex 负责审核、验收和在关键节点更新本总控文档。
+按 [[current-sequential-execution-plan]] 执行。DeepSeek 负责逐步实现；Codex 负责审核、验收和在关键节点更新本总控文档。

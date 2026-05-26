@@ -1,3 +1,14 @@
+---
+title: "Luminous Personal Health Copilot Vision"
+tags:
+  - strategy
+aliases:
+  - 产品愿景
+  - Personal Health Copilot
+  - 北极星
+created: 2026-05-25
+---
+
 # Luminous Personal Health Copilot Vision
 
 Last updated: 2026-05-25
@@ -27,7 +38,7 @@ This changes the role of AI:
 - Medicine detail pages should be rendered from structured fields and Markdown.
 - AI should become a copilot layer that explains, compares, summarizes, and personalizes based on authoritative retrieved data and user context.
 
-The detailed data architecture is tracked in `docs/knowledge-data-platform-plan.md`.
+The detailed data architecture is tracked in [[knowledge-data-platform-plan]].
 
 ## 3. Experience vision by terminal
 
@@ -149,7 +160,7 @@ Target backend:
 - Passport JWT strategy for protected routes.
 - LangChain/OpenAI-compatible gateway for AI calls.
 
-The backend migration is tracked in `docs/backend-nestjs-pgsql-migration-plan.md`.
+The backend migration is tracked in [[backend-nestjs-pgsql-migration-plan]].
 
 ## 8. Competition and pitch framing
 
