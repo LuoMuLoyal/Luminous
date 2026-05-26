@@ -1,3 +1,14 @@
+---
+title: "Knowledge Data Platform Summary"
+tags:
+  - strategy
+  - data
+aliases:
+  - 知识库平台
+  - 知识数据平台
+created: 2026-05-25
+---
+
 # Knowledge Data Platform Summary
 
 Last updated: 2026-05-25

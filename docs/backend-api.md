@@ -1,3 +1,15 @@
+---
+title: "Luminous Legacy Express Backend API"
+tags:
+  - reference
+  - backend
+aliases:
+  - Legacy API
+  - 旧后端API
+  - Express API
+created: 2026-05-25
+---
+
 # Luminous Legacy Express Backend API
 
 > This document describes the deprecated Express backend under `Luminous/backend`.

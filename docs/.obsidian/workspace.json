@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Promise.md",
+                "file": "backend-api.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Promise"
+              "title": "backend-api"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Promise.md",
+                "file": "backend-api.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Promise 的反向链接列表"
+              "title": "backend-api 的反向链接列表"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Promise.md",
+                "file": "backend-api.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Promise 的出链列表"
+              "title": "backend-api 的出链列表"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Promise.md",
+                "file": "backend-api.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Promise 的大纲"
+              "title": "backend-api 的大纲"
             }
           }
         ]
@@ -185,12 +185,16 @@
   },
   "active": "da2db2da6bd8ade8",
   "lastOpenFiles": [
+    "backend-nestjs-pgsql-migration-plan.md",
+    "current-sequential-execution-plan.md",
+    "flutter-followup-improvement-plan.md",
+    "knowledge-data-platform-plan.md",
+    "migration_log.md",
+    "Promise.md",
     "backend-api.md",
     "lib-docs/backend-api.md",
     "Roadshow/Luminous_PPT_初步修缮_页图/slide_09_updated_from_ppt.png",
     "Roadshow/LuminousCapture/Details.jpg",
-    "current-sequential-execution-plan.md",
-    "backend-nestjs-pgsql-migration-plan.md",
     "README.md"
   ]
 }
