@@ -59,11 +59,6 @@ String _actionQueryText(
   return l10n?.safetyActionQuerySingle ?? 'Check Medication Advice';
 }
 
-String _resultPlaceholderText(AppLocalizations? l10n) {
-  return l10n?.safetyResultPlaceholder ??
-      'After selecting medicines, tap "Start Query" and the backend will call AI to return medication advice or interaction alerts.';
-}
-
 String _pickerTitleText(AppLocalizations? l10n, int slot) {
   if (slot == 0) {
     return l10n?.safetyPickerTitleA ?? 'Select Medicine A';

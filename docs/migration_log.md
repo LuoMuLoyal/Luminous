@@ -436,4 +436,16 @@ home (Step 1), search (Step 2), drug (Step 3-4), reminders (Step 5), safety (Ste
 
 **GetX 已从项目中完全抹除。**
 
-**下一步：** Step 10 — 大文件二次拆分。
+**下一步：** Step 11 — 扩展 integration smoke。
+
+### 2026-05-26 — Step 10：大文件二次拆分（首轮）
+
+- 所有活跃业务文件均已在 600 行以内（最高 `today_reminder_local_store.dart` 552 行，300-600 视为可接受范围）。
+- **`safety_assist_page.dart`**：546 → 424 行（-122 行）。
+  - 提取 `SafetyResultSection` widget → `safety_assist_widgets.dart`。
+  - 连带迁移 `formatSafetyAiTimestamp` 和 `_splitResultParagraphs`。
+  - 移除 `safety_assist_text.dart` 中已无引用的 `_resultPlaceholderText`。
+- 其余计划文件（`search_prompt_slivers.dart` 494 行、`today_reminder_local_store.dart` 552 行等）均在不触发 600 行红线的范围内，可后续按职责继续拆，但不改动行为。
+- 验证：`dart analyze lib`：0 errors, 1 warning。`flutter test`：全量通过。
+
+**下一步：** Step 11 — 扩展 integration smoke。

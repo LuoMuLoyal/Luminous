@@ -15,19 +15,6 @@ import '../widgets/safety_assist_widgets.dart';
 
 part '../support/safety_assist_text.dart';
 
-String formatSafetyAiTimestamp(BuildContext context, DateTime? value) {
-  if (value == null) {
-    return '';
-  }
-  final local = value.toLocal();
-  final year = local.year.toString().padLeft(4, '0');
-  final month = local.month.toString().padLeft(2, '0');
-  final day = local.day.toString().padLeft(2, '0');
-  final hour = local.hour.toString().padLeft(2, '0');
-  final minute = local.minute.toString().padLeft(2, '0');
-  return '$year-$month-$day $hour:$minute';
-}
-
 /// 安全辅助页。
 ///
 /// 页面允许用户选择一款或两款药品，并调用 AI 接口生成用药建议或相互作用提示。
@@ -71,7 +58,7 @@ class SafetyAssistPage extends ConsumerWidget {
             const SizedBox(height: 8),
             _buildActionCard(context, ref, state, l10n),
             const SizedBox(height: 8),
-            _buildResultCard(context, state, l10n),
+            SafetyResultSection(result: state.result, l10n: l10n),
             const SizedBox(height: 8),
             const SafetyDisclaimerCard(),
           ],
@@ -427,121 +414,6 @@ class SafetyAssistPage extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildResultCard(
-    BuildContext context,
-    SafetyState state,
-    AppLocalizations? l10n,
-  ) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final locale = (l10n?.localeName ?? 'zh').toLowerCase();
-    final isZh = locale.startsWith('zh');
-    final entries = state.result == null
-        ? const <String>[]
-        : _splitResultParagraphs(state.result!.text);
-    final cachedTime = formatSafetyAiTimestamp(
-      context,
-      state.result?.cachedAt,
-    );
-    return SafetySectionCard(
-      title: l10n?.safetyResultCardTitle ?? 'AI Result',
-      accentColor: Color.lerp(scheme.secondary, scheme.primary, 0.5)!,
-      secondaryColor: scheme.tertiary,
-      ornamentKey: 'safety.result',
-      titleFontSize: 20,
-      child: entries.isEmpty
-          ? Text(
-              _resultPlaceholderText(l10n),
-              style: TextStyle(
-                fontSize: 15,
-                height: 1.6,
-                color: scheme.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (state.result?.isCached == true)
-                  Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                    decoration: BoxDecoration(
-                      color: appTintedSurface(
-                        context,
-                        scheme.primary,
-                        lightAlpha: 0.06,
-                        darkAlpha: 0.12,
-                      ),
-                      borderRadius: BorderRadius.circular(AppRadius.chip),
-                      border: Border.all(
-                        color: appTintedBorder(
-                          context,
-                          scheme.primary,
-                          lightAlpha: 0.12,
-                          darkAlpha: 0.22,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      cachedTime.isEmpty
-                          ? (isZh
-                                ? '上次 AI 分析结果'
-                                : 'Previous AI analysis result')
-                          : (isZh
-                                ? '上次 AI 分析结果 · $cachedTime'
-                                : 'Previous AI analysis result · $cachedTime'),
-                      style: TextStyle(
-                        fontSize: 12.4,
-                        height: 1.45,
-                        color: Color.lerp(
-                          scheme.onSurfaceVariant,
-                          scheme.onSurface,
-                          0.18,
-                        ),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                for (var i = 0; i < entries.length; i++) ...[
-                  SafetyAiResultEntryCard(index: i + 1, text: entries[i]),
-                  if (i != entries.length - 1) const SizedBox(height: 9),
-                ],
-              ],
-            ),
-    );
-  }
-
-  List<String> _splitResultParagraphs(String raw) {
-    var text = raw.replaceAll('\r\n', '\n').replaceAll('\r', '\n').trim();
-    if (text.isEmpty) {
-      return const <String>[];
-    }
-
-    text = text
-        .replaceAllMapped(
-          RegExp(r'(?<!\n)([•●▪◦·])\s*'),
-          (match) => '\n${match.group(1)} ',
-        )
-        .replaceAllMapped(
-          RegExp(r'(?<!\n)((?:\d+|[一二三四五六七八九十]+)[、.．])\s*'),
-          (match) => '\n${match.group(1)} ',
-        );
-
-    final parts = <String>[];
-    for (final line in text.split(RegExp(r'\n+|(?<=[。！？；;])\s*'))) {
-      final normalized = line
-          .replaceFirst(RegExp(r'^[•●▪◦·\-*]+\s*'), '')
-          .trim();
-      if (normalized.isNotEmpty) {
-        parts.add(normalized);
-      }
-    }
-
-    return parts;
   }
 
   Future<void> _pickMedicine(
