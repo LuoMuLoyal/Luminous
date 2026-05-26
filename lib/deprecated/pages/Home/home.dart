@@ -7,5 +7,5 @@ export 'package:luminous/features/home/presentation/home.dart';
   'Use HomePage from package:luminous/features/home/presentation/home.dart',
 )
 class HomeView extends HomePage {
-  const HomeView({super.key, super.reminderGateway, super.controller});
+  const HomeView({super.key, super.reminderGateway});
 }

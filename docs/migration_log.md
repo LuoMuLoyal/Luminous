@@ -203,3 +203,90 @@ lib/
   - `RegisterPage`：`StatefulWidget` + `GetBuilder<RegisterController>` → `ConsumerStatefulWidget` + `RegisterNotifier`。旧 `RegisterController` → `deprecated/getx/`。
   - `ProfileSettingsPage`：`ConsumerStatefulWidget` + `ProfileSettingsNotifier`（Notifier），管理 loading/saving/deleting/gender。旧 `ProfileSettingsController` → `deprecated/getx/`。
   - `dart analyze` 零问题。
+
+### 2026-05-26 — Step 0：本轮执行基线快照
+
+**Git 状态：**
+- 分支：`refactor`，工作区干净（无未提交改动）。
+
+**`flutter analyze`：** 通过，零 issue（Flutter 3.44.0 / Dart 3.12.0）。
+
+**`flutter test`：** 因环境问题无法运行。`PROGRAMFILES(X86)` 环境变量缺失导致 `test_core` 包在 `_globalConfigPath` 处空指针崩溃。需在修复环境变量后重新验证。
+
+**活跃 GetX（lib/ 非 deprecated 目录，32 处匹配）：**
+
+| Feature | Controller (GetxController) | Page (GetBuilder) |
+|---------|---------------------------|-------------------|
+| drug | `drug_controller.dart` | `drug_page.dart` |
+| drug | `medicine_detail_controller.dart` | `medicine_detail_page.dart` |
+| home | `home_controller.dart` | `home_page.dart` |
+| reminders | `reminder_list_controller.dart`, `reminder_edit_controller.dart` | `reminder_edit_page.dart` |
+| safety | `safety_assist_controller.dart` | `safety_assist_page.dart` |
+| scan | `medicine_scan_controller.dart` | `medicine_scan_page.dart` |
+| search | `search_controller.dart` | `search_page.dart` |
+
+另外 `today_reminder_local_store.dart` 和 `scan.dart` 也引用了 GetX。
+
+**测试中 GetX 依赖（10 个文件）：**
+`ai_cache_ui_test.dart`, `ai_scan_flow_test.dart`, `checkin_page_test.dart`, `home_adaptive_layout_test.dart`, `home_today_reminders_test.dart`, `login_page_test.dart`, `mine_view_session_test.dart`, `reminder_edit_page_test.dart`, `reminder_list_controller_test.dart`, `settings_page_smoke_test.dart`
+
+**大文件（lib/ 中前 30，按字节排序，排除 l10n 自动生成）：**
+
+| 文件 | 字节 | 路径 |
+|------|------|------|
+| safety_assist_page.dart | 19,986 | features/safety |
+| search_prompt_slivers.dart | 19,436 | features/search |
+| today_reminder_local_store.dart | 17,816 | features/reminders |
+| checkin_page.dart | 17,550 | features/checkin |
+| album_slivers.dart | 17,236 | features/album |
+| medicine_picker_page.dart | 16,388 | features/medicine_picker |
+| home_check_in_record_section.dart | 15,952 | features/home |
+| search_controller.dart | 15,668 | features/search |
+| drug_my_medicines_widgets.dart | 14,869 | features/drug |
+| login_page.dart | 14,753 | features/login |
+| reminder_edit_page.dart | 14,196 | features/reminders |
+| mine_page_widgets.dart | 13,766 | features/mine |
+| reminder_edit_widgets.dart | 13,632 | features/reminders |
+| dio_request.dart | 13,405 | utils |
+| register_page.dart | 13,403 | features/register |
+| reminder_edit_controller.dart | 13,363 | features/reminders |
+| legal_documents_page.dart | 13,171 | features/legal |
+| notification_service.dart | 12,979 | utils |
+| my_medicine_repository.dart | 12,481 | features/drug |
+| home_top_section.dart | 12,255 | features/home |
+| search_cards.dart | 11,821 | features/search |
+| theme_widgets.dart | 11,586 | features/settings |
+| root_app_widget.dart | 10,845 | core/startup |
+
+**已迁移的 feature（不再使用 GetX）：**
+checkin, medicine_picker, mine/browse_history, login, register, profile_settings, album, settings, main_shell
+
+**待迁移的 feature（仍使用 GetX）：**
+home (Step 1), search (Step 2), drug (Step 3-4), reminders (Step 5), safety (Step 6), scan (Step 7)
+
+**下一步：** Step 1 — 迁移 Home 到 Riverpod。
+
+### 2026-05-26 — Step 1：迁移 Home 到 Riverpod（完成）
+
+- 新建 `lib/features/home/presentation/providers/home_provider.dart`：
+  - `HomeState` 不可变状态模型（healthTips、reminders、checkInRecords、loading 标志、todayTip）。
+  - `HomeNotifier extends Notifier<HomeState>` 替代旧 `HomeController` (GetxController)。
+  - 用户态监听从 `globalProviderContainer.listen` 迁到 `ref.listen`。
+  - `todayTipNotifier` (ValueNotifier) 逻辑迁入 `HomeState.todayTip`。
+  - revision stream 订阅通过 `ref.onDispose` 清理。
+  - `homeProvider = NotifierProvider<HomeNotifier, HomeState>` 对外暴露。
+- `HomePage`：`StatefulWidget` + `GetBuilder<HomeController>` → `ConsumerStatefulWidget`。
+  - `ref.watch(homeProvider)` 替代 `GetBuilder` builder 回调。
+  - `reminderGateway` 测试注入从构造参数改为 `ProviderScope` override。
+  - `_refreshHomeData` 逻辑从 controller 迁入 page（保留 context.mounted 校验）。
+  - `_HomeTipNotifier` 适配 `HomeState.todayTip` 到 `ValueNotifier<String>` 供 `HomeTopSection` 使用。
+- 旧 `HomeController` 迁入 `lib/deprecated/getx/home_controller.dart`（标记 @Deprecated）。
+- `controllers/home_controller.dart` 变为兼容重新导出壳。
+- `home.dart` barrel：移除 `get/get.dart` 导入，新增 `flutter_riverpod` 和 `home_provider.dart` 导入/导出。
+- 修复 `lib/deprecated/pages/Home/home.dart` 兼容壳（移除 `super.controller`）。
+- 更新 `home_today_reminders_test.dart`：`Get.testMode`/`Get.reset` → `ProviderScope` + `UncontrolledProviderScope`。
+- 更新 `home_adaptive_layout_test.dart`：同上。
+- `home_top_section_test.dart` 无需修改（不依赖 GetX）。
+- `flutter analyze`：零 issue。
+
+**下一步：** Step 2 — 迁移 Search 到 Riverpod。

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 import 'package:luminous/features/home/presentation/home.dart';
 import 'package:luminous/shared/layout/adaptive_layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,12 +13,9 @@ void main() {
     late FakeReminderLocalGateway gateway;
 
     setUp(() {
-      Get.testMode = true;
-      Get.reset();
       SharedPreferences.setMockInitialValues(<String, Object>{});
       gateway = FakeReminderLocalGateway();
       addTearDown(gateway.dispose);
-      addTearDown(Get.reset);
     });
 
     Future<void> pumpHomeAt(
@@ -31,12 +27,17 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(
-            home: Scaffold(
-              body: SizedBox(
-                width: width,
-                height: height,
-                child: HomePage(reminderGateway: gateway),
+          child: ProviderScope(
+            overrides: [
+              homeReminderGatewayProvider.overrideWithValue(gateway),
+            ],
+            child: MaterialApp(
+              home: Scaffold(
+                body: SizedBox(
+                  width: width,
+                  height: height,
+                  child: const HomePage(),
+                ),
               ),
             ),
           ),
@@ -51,7 +52,6 @@ void main() {
     ) async {
       await pumpHomeAt(tester, 393);
 
-      // Compact should not crash and should show the basic sections.
       expect(find.byType(HomePage), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
@@ -64,7 +64,6 @@ void main() {
       expect(find.byType(HomePage), findsOneWidget);
       expect(tester.takeException(), isNull);
 
-      // Medium width should still see expected content but constrained.
       final centerFinder = find.byType(Center);
       expect(centerFinder, findsWidgets);
     });
@@ -77,7 +76,6 @@ void main() {
       expect(find.byType(HomePage), findsOneWidget);
       expect(tester.takeException(), isNull);
 
-      // WebExpanded width should use Center for constraining.
       final constrainedFinder = find.byType(ConstrainedBox);
       expect(constrainedFinder, findsWidgets);
     });
@@ -86,7 +84,10 @@ void main() {
       expect(AppContentWidths.fromWindowClass(AppWindowClass.compact), isNull);
       expect(AppContentWidths.fromWindowClass(AppWindowClass.medium), 640);
       expect(AppContentWidths.fromWindowClass(AppWindowClass.expanded), 800);
-      expect(AppContentWidths.fromWindowClass(AppWindowClass.webExpanded), 840);
+      expect(
+        AppContentWidths.fromWindowClass(AppWindowClass.webExpanded),
+        840,
+      );
     });
   });
 }
