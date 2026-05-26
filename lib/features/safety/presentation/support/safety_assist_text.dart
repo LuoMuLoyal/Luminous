@@ -53,7 +53,7 @@ String _actionQueryText(
     final locale = (l10n?.localeName ?? 'zh').toLowerCase();
     return locale.startsWith('zh') ? '重新分析' : 'Analyze again';
   }
-  if (mode == SafetyAssistController.pairMode) {
+  if (mode == 'pair') {
     return l10n?.safetyActionQueryPair ?? 'Check Two-medicine Interaction';
   }
   return l10n?.safetyActionQuerySingle ?? 'Check Medication Advice';

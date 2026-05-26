@@ -3,8 +3,6 @@ import 'package:luminous/shared/widgets/app_surface.dart';
 import 'package:luminous/shared/widgets/tinted_status_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-import '../controllers/safety_assist_controller.dart';
-
 /// 安全辅助页统一使用的白色 section 卡片。
 class SafetySectionCard extends StatelessWidget {
   const SafetySectionCard({
@@ -191,10 +189,18 @@ class SafetyInfoChip extends StatelessWidget {
 
 /// 查询模式切换器（单选/双药）。
 class SafetyModeSwitcher extends StatelessWidget {
-  const SafetyModeSwitcher({super.key, required this.controller, required this.l10n});
+  const SafetyModeSwitcher({
+    super.key,
+    required this.mode,
+    required this.l10n,
+    required this.onSelectSingle,
+    required this.onSelectPair,
+  });
 
-  final SafetyAssistController controller;
+  final String mode;
   final AppLocalizations? l10n;
+  final VoidCallback onSelectSingle;
+  final VoidCallback onSelectPair;
 
   @override
   Widget build(BuildContext context) {
@@ -209,8 +215,8 @@ class SafetyModeSwitcher extends StatelessWidget {
             label: l10n?.safetyModeSingle ?? 'Single-medicine guidance',
             icon: Icons.medication_rounded,
             color: singleColor,
-            selected: controller.mode == SafetyAssistController.singleMode,
-            onTap: () => controller.setMode(SafetyAssistController.singleMode),
+            selected: mode == 'single',
+            onTap: onSelectSingle,
           ),
         ),
         const SizedBox(width: 8),
@@ -219,8 +225,8 @@ class SafetyModeSwitcher extends StatelessWidget {
             label: l10n?.safetyModePair ?? 'Two-medicine interaction',
             icon: Icons.compare_arrows_rounded,
             color: pairColor,
-            selected: controller.mode == SafetyAssistController.pairMode,
-            onTap: () => controller.setMode(SafetyAssistController.pairMode),
+            selected: mode == 'pair',
+            onTap: onSelectPair,
           ),
         ),
       ],
