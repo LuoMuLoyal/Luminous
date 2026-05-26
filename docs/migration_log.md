@@ -290,3 +290,27 @@ home (Step 1), search (Step 2), drug (Step 3-4), reminders (Step 5), safety (Ste
 - `flutter analyze`：零 issue。
 
 **下一步：** Step 2 — 迁移 Search 到 Riverpod。
+
+### 2026-05-26 — Step 2：迁移 Search 到 Riverpod（完成）
+
+- 新建 `lib/features/search/presentation/providers/search_provider.dart`（570 行）：
+  - `SearchState` 不可变状态模型（recentKeywords、results、addedKeys、loading/loadingMore、hasMore、draftKeyword 等 17 个字段）。
+  - `SearchNotifier extends Notifier<SearchState>` 替代旧 `SearchController` (GetxController)。
+  - `searchMyMedicineRepoProvider` / `searchLocalStoreProvider` / `searchExecutorProvider` 注入层。
+  - 查询模式自动切换（在线↔本地）、滚动分页、慢搜索提示 Timer、搜索历史 SharedPreferences 持久化。
+  - 用户态 `ref.watch(currentUserProvider)` + `ref.listen` 自动重载 addedKeys 和搜索历史。
+  - `initialize()` 方法接收 pickerMode/initialKeyword/autoSearchOnInit。
+- `SearchPage`：`StatefulWidget` + `GetBuilder<SearchController>` → `ConsumerStatefulWidget`。
+  - TextEditingController/ScrollController 保留在 page 层（UI 控制器）。
+  - `_draftKeywordNotifier` (ValueNotifier) 保留给 support 文件的 `ValueListenableBuilder`。
+  - `didChangeDependencies` → `Future.microtask` 延迟 applyLocalizedRecentDefaults。
+  - `initState` → `Future(() => _initialize())` 延迟初始化。
+  - 兼容 getter（`_loading`、`_keyword`、`_results` 等）供 support extension 文件使用。
+- `search.dart` barrel：移除 `get/get.dart`，新增 `flutter_riverpod`、`user_session_provider`、`toast_utils` 导入；export 隐藏歧义类型。
+- 旧 `SearchController` 迁入 `lib/deprecated/getx/search_controller.dart`（标记 @Deprecated）。
+- `controllers/search_controller.dart` 变为兼容重新导出壳。
+- 修复 `lib/deprecated/pages/Search/search.dart` 兼容壳（移除 `super.controller`）。
+- 更新 `test/ai_scan_flow_test.dart`：`Get.testMode`/`Get.reset` → `ProviderScope` + `UncontrolledProviderScope`；searchExecutor 通过 `ProviderContainer` overrides 注入。
+- `flutter analyze`：零 issue。`flutter test`：59/59 通过。
+
+**下一步：** Step 3 — 迁移 Drug 列表和我的药品状态到 Riverpod。
