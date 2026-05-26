@@ -54,8 +54,8 @@ class LucentResponseMeta {
 ///
 /// 对应 Lucent 后端 `{ code, message, data, meta? }` envelope。
 class LucentApiResult<T> {
-  /// 业务状态码，成功时为 `"OK"`。
-  final String code;
+  /// 业务状态码，0 = 成功，非 0 = 失败。
+  final int code;
 
   /// 人类可读提示信息。
   final String message;
@@ -207,7 +207,7 @@ class LucentApiClient {
 
       final rawData = _coerceToMap(response.data);
 
-      final code = (rawData['code'] ?? '').toString();
+      final code = _parseCode(rawData['code']);
       final message = (rawData['message'] ?? '').toString();
 
       if (kDebugMode) {
@@ -221,7 +221,7 @@ class LucentApiClient {
       if (code != GlobalConstants.LUCENT_SUCCESS_CODE) {
         throw ApiException(
           message.isNotEmpty ? message : 'Request failed',
-          code: code,
+          code: code.toString(),
         );
       }
 
@@ -238,6 +238,16 @@ class LucentApiClient {
     } on DioException catch (e) {
       throw ApiException(_parseDioError(e));
     }
+  }
+
+  /// 将后端返回的 code 字段转为 int。
+  ///
+  /// 兼容后端返回 `int`（新协议）或 `String`（旧版 or debug）。
+  static int _parseCode(dynamic codeValue) {
+    if (codeValue is int) return codeValue;
+    if (codeValue is num) return codeValue.toInt();
+    if (codeValue is String) return int.tryParse(codeValue) ?? -1;
+    return -1;
   }
 
   /// 将后端返回的动态数据转为 `Map<String, dynamic>`。
@@ -324,13 +334,13 @@ LucentApiResult<T> parseLucentResponse<T>({
   required Map<String, dynamic> rawData,
   required T Function(dynamic json) decoder,
 }) {
-  final code = (rawData['code'] ?? '').toString();
+  final code = LucentApiClient._parseCode(rawData['code']);
   final message = (rawData['message'] ?? '').toString();
 
   if (code != GlobalConstants.LUCENT_SUCCESS_CODE) {
     throw ApiException(
       message.isNotEmpty ? message : 'Request failed',
-      code: code,
+      code: code.toString(),
     );
   }
 
