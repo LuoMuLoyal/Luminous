@@ -398,7 +398,10 @@ home (Step 1), search (Step 2), drug (Step 3-4), reminders (Step 5), safety (Ste
   - `safety.dart` barrel 新增 provider 导出，`hide QueryMedicineAiSafety` 解决 typedef 重复。
   - `controllers/safety_assist_controller.dart` 变为兼容重新导出壳。
   - 旧 `SafetyAssistController` 完整代码保留在 `deprecated/getx/safety_assist_controller.dart`。
-  - Safety page 暂未迁移（由 GetBuilder → ConsumerWidget 需较大改动），但 provider 基础设施就绪。
+  - Safety page 已完成迁移：`SafetyAssistPage` 改为 `ConsumerWidget`，零 `GetX` 引用。
+    - `SafetyModeSwitcher` 重构为接受 `mode` + 回调参数，不再依赖 `SafetyAssistController`。
+    - `safety_assist_text.dart` 移除 `SafetyAssistController.pairMode` 引用。
+    - `test/ai_cache_ui_test.dart` 移除 `Get.testMode`/`Get.reset`，改用 `ProviderContainer` 覆盖 `safetyQueryProvider`。
 
 - **Scan 模块：**
   - 新建 `lib/features/scan/presentation/providers/medicine_scan_provider.dart`（181 行）：
