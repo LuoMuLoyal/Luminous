@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/shared/widgets/app_canvas.dart';
 import 'package:luminous/shared/design_tokens/design_tokens.dart';
 import 'package:luminous/shared/widgets/app_surface.dart';
 import 'package:luminous/shared/widgets/tinted_status_chip.dart';
 import 'package:luminous/shared/widgets/soft_banner/soft_banner.dart';
 import 'package:luminous/features/medicine_picker/presentation/medicine_picker.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/models/medicine.dart';
 
-import '../controllers/safety_assist_controller.dart';
+import '../providers/safety_provider.dart';
 import '../widgets/safety_assist_widgets.dart';
 
 part '../support/safety_assist_text.dart';
@@ -30,68 +31,62 @@ String formatSafetyAiTimestamp(BuildContext context, DateTime? value) {
 /// 安全辅助页。
 ///
 /// 页面允许用户选择一款或两款药品，并调用 AI 接口生成用药建议或相互作用提示。
-class SafetyAssistPage extends StatelessWidget {
+class SafetyAssistPage extends ConsumerWidget {
   /// 创建安全辅助页组件。
-  const SafetyAssistPage({super.key, this.controller});
-
-  final SafetyAssistController? controller;
+  const SafetyAssistPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return GetBuilder<SafetyAssistController>(
-      init: controller ?? SafetyAssistController(),
-      global: false,
-      builder: (controller) {
-        final l10n = AppLocalizations.of(context);
-        final scheme = Theme.of(context).colorScheme;
-        final secondaryAccent = Color.lerp(
-          scheme.secondary,
-          scheme.tertiary,
-          0.52,
-        )!;
-        return AppCanvasPageScaffold(
-          appBar: AppBar(
-            title: Text(_safetyTitle(l10n)),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            surfaceTintColor: Colors.transparent,
-          ),
-          appBarSpacing: 20,
-          accentColor: scheme.primary,
-          secondaryAccentColor: secondaryAccent,
-          child: RefreshIndicator(
-            onRefresh: controller.refreshResult,
-            child: ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(14, 0, 14, 18),
-              children: [
-                _buildHeroCard(context, controller, l10n),
-                const SizedBox(height: 8),
-                _buildModeCard(context, controller, l10n),
-                const SizedBox(height: 8),
-                _buildPickCard(context, controller, l10n),
-                const SizedBox(height: 8),
-                _buildActionCard(context, controller, l10n),
-                const SizedBox(height: 8),
-                _buildResultCard(context, controller, l10n),
-                const SizedBox(height: 8),
-                const SafetyDisclaimerCard(),
-              ],
-            ),
-          ),
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(safetyProvider);
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final secondaryAccent = Color.lerp(
+      scheme.secondary,
+      scheme.tertiary,
+      0.52,
+    )!;
+    return AppCanvasPageScaffold(
+      appBar: AppBar(
+        title: Text(_safetyTitle(l10n)),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
+      appBarSpacing: 20,
+      accentColor: scheme.primary,
+      secondaryAccentColor: secondaryAccent,
+      child: RefreshIndicator(
+        onRefresh: () => ref.read(safetyProvider.notifier).refreshResult(),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(14, 0, 14, 18),
+          children: [
+            _buildHeroCard(context, ref, state, l10n),
+            const SizedBox(height: 8),
+            _buildModeCard(context, ref, state, l10n),
+            const SizedBox(height: 8),
+            _buildPickCard(context, ref, state, l10n),
+            const SizedBox(height: 8),
+            _buildActionCard(context, ref, state, l10n),
+            const SizedBox(height: 8),
+            _buildResultCard(context, state, l10n),
+            const SizedBox(height: 8),
+            const SafetyDisclaimerCard(),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildHeroCard(
     BuildContext context,
-    SafetyAssistController controller,
+    WidgetRef ref,
+    SafetyState state,
     AppLocalizations? l10n,
   ) {
-    final loggedIn = controller.loggedIn;
+    final loggedIn = ref.read(currentUserProvider)?.hasData == true;
 
     return SoftBannerCard(
       palette: SoftBannerPalettes.drugOf(context),
@@ -150,10 +145,10 @@ class SafetyAssistPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: SafetyInfoChip(
-                    icon: controller.mode == SafetyAssistController.pairMode
+                    icon: state.mode == 'pair'
                         ? Icons.compare_arrows_rounded
                         : Icons.auto_awesome_rounded,
-                    text: controller.mode == SafetyAssistController.pairMode
+                    text: state.mode == 'pair'
                         ? _modePairText(l10n)
                         : _modeSingleText(l10n),
                     backgroundColor: theme.surfaceColor,
@@ -183,7 +178,8 @@ class SafetyAssistPage extends StatelessWidget {
 
   Widget _buildModeCard(
     BuildContext context,
-    SafetyAssistController controller,
+    WidgetRef ref,
+    SafetyState state,
     AppLocalizations? l10n,
   ) {
     final scheme = Theme.of(context).colorScheme;
@@ -192,13 +188,21 @@ class SafetyAssistPage extends StatelessWidget {
       accentColor: scheme.secondary,
       secondaryColor: scheme.tertiary,
       ornamentKey: 'safety.mode',
-      child: SafetyModeSwitcher(controller: controller, l10n: l10n),
+      child: SafetyModeSwitcher(
+        mode: state.mode,
+        l10n: l10n,
+        onSelectSingle: () =>
+            ref.read(safetyProvider.notifier).setMode('single'),
+        onSelectPair: () =>
+            ref.read(safetyProvider.notifier).setMode('pair'),
+      ),
     );
   }
 
   Widget _buildPickCard(
     BuildContext context,
-    SafetyAssistController controller,
+    WidgetRef ref,
+    SafetyState state,
     AppLocalizations? l10n,
   ) {
     final scheme = Theme.of(context).colorScheme;
@@ -214,30 +218,30 @@ class SafetyAssistPage extends StatelessWidget {
           _pickTile(
             context: context,
             label:
-                controller.medicineA?.displayName ??
+                state.medicineA?.displayName ??
                 _pickPlaceholderText(l10n, 0),
             subtitle:
-                controller.medicineA?.displaySubtitle ??
+                state.medicineA?.displaySubtitle ??
                 _pickSubtitleText(l10n),
             color: tileAColor,
-            onTap: () => _pickMedicine(context, controller, slot: 0),
+            onTap: () => _pickMedicine(context, ref, slot: 0),
             badge: _pickBadgeText(l10n, 0),
-            note: controller.medicineA?.displayTips,
+            note: state.medicineA?.displayTips,
           ),
-          if (controller.mode == SafetyAssistController.pairMode) ...[
+          if (state.mode == 'pair') ...[
             const SizedBox(height: 8),
             _pickTile(
               context: context,
               label:
-                  controller.medicineB?.displayName ??
+                  state.medicineB?.displayName ??
                   _pickPlaceholderText(l10n, 1),
               subtitle:
-                  controller.medicineB?.displaySubtitle ??
+                  state.medicineB?.displaySubtitle ??
                   _pickSubtitleText(l10n),
               color: tileBColor,
-              onTap: () => _pickMedicine(context, controller, slot: 1),
+              onTap: () => _pickMedicine(context, ref, slot: 1),
               badge: _pickBadgeText(l10n, 1),
-              note: controller.medicineB?.displayTips,
+              note: state.medicineB?.displayTips,
             ),
           ],
         ],
@@ -358,7 +362,8 @@ class SafetyAssistPage extends StatelessWidget {
 
   Widget _buildActionCard(
     BuildContext context,
-    SafetyAssistController controller,
+    WidgetRef ref,
+    SafetyState state,
     AppLocalizations? l10n,
   ) {
     final scheme = Theme.of(context).colorScheme;
@@ -371,16 +376,18 @@ class SafetyAssistPage extends StatelessWidget {
         children: [
           Expanded(
             child: FilledButton(
-              onPressed: controller.loading || !controller.ready
+              onPressed: state.loading || !state.ready
                   ? null
-                  : () => controller.query(refresh: controller.result != null),
+                  : () => ref.read(safetyProvider.notifier).query(
+                      refresh: state.result != null,
+                    ),
               style: FilledButton.styleFrom(
                 minimumSize: const Size(double.infinity, 44),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.small),
                 ),
               ),
-              child: controller.loading
+              child: state.loading
                   ? SizedBox(
                       width: 18,
                       height: 18,
@@ -392,16 +399,17 @@ class SafetyAssistPage extends StatelessWidget {
                   : Text(
                       _actionQueryText(
                         l10n,
-                        controller.mode,
-                        hasResult: controller.result != null,
+                        state.mode,
+                        hasResult: state.result != null,
                       ),
                     ),
             ),
           ),
-          if (controller.loading) ...[
+          if (state.loading) ...[
             const SizedBox(width: 6),
             FilledButton.tonal(
-              onPressed: controller.cancelQuery,
+              onPressed: () =>
+                  ref.read(safetyProvider.notifier).cancelQuery(),
               style: FilledButton.styleFrom(
                 minimumSize: const Size(78, 44),
                 backgroundColor: const Color(
@@ -423,19 +431,19 @@ class SafetyAssistPage extends StatelessWidget {
 
   Widget _buildResultCard(
     BuildContext context,
-    SafetyAssistController controller,
+    SafetyState state,
     AppLocalizations? l10n,
   ) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final locale = (l10n?.localeName ?? 'zh').toLowerCase();
     final isZh = locale.startsWith('zh');
-    final entries = controller.result == null
+    final entries = state.result == null
         ? const <String>[]
-        : _splitResultParagraphs(controller.result!.text);
+        : _splitResultParagraphs(state.result!.text);
     final cachedTime = formatSafetyAiTimestamp(
       context,
-      controller.result?.cachedAt,
+      state.result?.cachedAt,
     );
     return SafetySectionCard(
       title: l10n?.safetyResultCardTitle ?? 'AI Result',
@@ -456,7 +464,7 @@ class SafetyAssistPage extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (controller.result?.isCached == true)
+                if (state.result?.isCached == true)
                   Container(
                     width: double.infinity,
                     margin: const EdgeInsets.only(bottom: 10),
@@ -538,7 +546,7 @@ class SafetyAssistPage extends StatelessWidget {
 
   Future<void> _pickMedicine(
     BuildContext context,
-    SafetyAssistController controller, {
+    WidgetRef ref, {
     required int slot,
   }) async {
     final l10n = AppLocalizations.of(context);
@@ -547,9 +555,9 @@ class SafetyAssistPage extends StatelessWidget {
         builder: (_) => MedicinePickerPage(title: _pickerTitleText(l10n, slot)),
       ),
     );
-    if (item == null || controller.isClosed) {
+    if (item == null || !context.mounted) {
       return;
     }
-    controller.setMedicine(slot: slot, item: item);
+    ref.read(safetyProvider.notifier).setMedicine(slot: slot, item: item);
   }
 }
