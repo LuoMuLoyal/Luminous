@@ -524,3 +524,33 @@ lib/
 | MigrationLog.md  | 本文件，完整迁移历程                                                        |
 
 **结论：** Flutter 端架构重构（Phase A-B）已完工，下一步是 Lucent 后端协议稳定 + 药品知识平台建设（Phase C-D）。
+
+### 全局 ProviderContainer 消除 (2026-05-27)
+
+执行 [[TODO]] #5：消除 `global_provider_container.dart` 全局容器，将 4 个非 widget 工具类全部改为构造函数 DI 注入。
+
+**改动文件：**
+
+| 文件                                                    | 改动                                                                                           |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `lib/core/providers/global_provider_container.dart`     | **删除** — 全局容器文件已移除                                                                  |
+| `lib/features/auth/data/session_sync_service.dart`      | 改为 Riverpod `Provider`；构造函数注入 `getCurrentUserId` 回调                                 |
+| `lib/startup/app_startup_warmup.dart`                   | 构造函数接受可选 `readCurrentUserId` 和 `sessionSyncService` 参数                              |
+| `lib/utils/app_i18n_text.dart`                          | 移除 `globalProviderContainer` 依赖；新增静态 `init(Locale?)` 方法注入 locale resolver         |
+| `lib/features/login/presentation/pages/login_page.dart` | `sessionSyncService` 通过 `ref.read(sessionSyncServiceProvider)` 获取                          |
+| `lib/main.dart`                                         | `AppStartupWarmup` 构造时传入 `container.read` 和 `container.read(sessionSyncServiceProvider)` |
+| `test/ai_cache_ui_test.dart`                            | 移除 `setGlobalProviderContainer` / `resetGlobalProviderContainerForTest` 调用                 |
+| `test/home_today_reminders_test.dart`                   | 同上                                                                                           |
+| `test/app_startup_warmup_test.dart`                     | `AppStartupWarmup` 构造传入 `readCurrentUserId` 和 `sessionSyncService`                        |
+
+**设计原则：**
+
+- 所有非 widget 类通过 Riverpod `Provider` 或构造函数参数获取依赖，不再依赖全局可变状态
+- `AppI18nText` 使用静态 `init()` + `_resolveLocale` 回调模式，在 `main()` 中通过 `container.read(localeProvider)` 注入
+- 测试中直接构造依赖实例并通过参数注入，无需全局容器
+
+**验证结果：**
+
+- `flutter analyze`：2 info（`prefer_initializing_formals`，私有字段无法用 initializing formal，安全忽略）
+- `flutter test`：**173/173 通过**
+- `global_provider_container.dart` 文件已删除，全仓零引用

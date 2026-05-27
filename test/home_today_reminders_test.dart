@@ -6,7 +6,6 @@ import 'package:luminous/utils/toast_utils.dart';
 import 'package:luminous/features/auth/presentation/models/auth.dart';
 import 'package:luminous/core/providers/shared_preferences_provider.dart';
 import 'package:luminous/features/auth/providers/user_session_provider.dart';
-import 'package:luminous/core/providers/global_provider_container.dart';
 import 'package:luminous/shared/models/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -59,23 +58,23 @@ void main() {
         homeReminderGatewayProvider.overrideWithValue(gateway),
       ],
     );
-    setGlobalProviderContainer(container);
     addTearDown(() {
-      resetGlobalProviderContainerForTest();
       container.dispose();
     });
 
     // 设置用户会话
-    await container.read(userSessionProvider.notifier).setUser(
-      const UserSafe(
-        id: 'user-1',
-        username: 'tester',
-        email: '',
-        phone: '13800138000',
-        name: '',
-        type: 0,
-      ),
-    );
+    await container
+        .read(userSessionProvider.notifier)
+        .setUser(
+          const UserSafe(
+            id: 'user-1',
+            username: 'tester',
+            email: '',
+            phone: '13800138000',
+            name: '',
+            type: 0,
+          ),
+        );
 
     // 启动 HomeNotifier
     container.read(homeProvider.notifier).start();
@@ -83,9 +82,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(
-          home: Scaffold(body: HomePage()),
-        ),
+        child: const MaterialApp(home: Scaffold(body: HomePage())),
       ),
     );
 
