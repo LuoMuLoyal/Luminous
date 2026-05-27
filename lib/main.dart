@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
-import 'package:luminous/features/auth/providers/user_session_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:luminous/core/startup/root_app_widget.dart';
-import 'package:luminous/startup/app_startup_warmup.dart';
+import 'package:luminous/core/providers/locale_provider.dart';
 import 'package:luminous/core/providers/shared_preferences_provider.dart';
-
-import 'package:luminous/core/providers/global_provider_container.dart';
+import 'package:luminous/core/startup/root_app_widget.dart';
+import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
+import 'package:luminous/features/auth/data/session_sync_service.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
+import 'package:luminous/startup/app_startup_warmup.dart';
+import 'package:luminous/utils/app_i18n_text.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,11 @@ Future<void> main() async {
   final container = ProviderContainer(
     overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
   );
-  setGlobalProviderContainer(container);
+
+  // 注入无 context 的本地化辅助。
+  AppI18nText.init(
+    readLocalePreference: () => container.read(localeProvider).preference,
+  );
 
   runApp(
     UncontrolledProviderScope(container: container, child: const LuminousApp()),
@@ -39,6 +44,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
   @override
   void initState() {
     super.initState();
+    final container = ProviderScope.containerOf(context);
     _startupWarmup = AppStartupWarmup(
       restoreUserSession: ref.read(userSessionProvider.notifier).restore,
       warmOrnaments: () async {
@@ -48,6 +54,8 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
         }
         await ornamentNotifier.warmup();
       },
+      readCurrentUserId: () => container.read(currentUserProvider)?.id,
+      sessionSyncService: container.read(sessionSyncServiceProvider),
     );
     _startupWarmup.start();
   }

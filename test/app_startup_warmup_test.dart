@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/features/auth/data/session_sync_service.dart';
 import 'package:luminous/startup/app_startup_warmup.dart';
 import 'package:luminous/features/auth/presentation/models/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +36,8 @@ void main() {
         );
       },
       warmOrnaments: () async {},
+      readCurrentUserId: () => 'user-1',
+      sessionSyncService: SessionSyncService(getCurrentUserId: () => 'user-1'),
       reminderGateway: gateway,
       syncSession: (userId) async {
         calls.add('sync:$userId');

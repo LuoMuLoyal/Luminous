@@ -114,7 +114,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         mode: _loginMode,
       );
       await ref.read(authServiceProvider).loginSuccess(result.user);
-      await sessionSyncService.syncForUser(result.user.id);
+      await ref.read(sessionSyncServiceProvider).syncForUser(result.user.id);
       if (!mounted) return;
       ToastUtils.instance.show(context, _l10n.loginSuccess);
       await Future<void>.delayed(const Duration(milliseconds: 500));
