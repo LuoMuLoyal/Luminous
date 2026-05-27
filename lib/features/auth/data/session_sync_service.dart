@@ -1,7 +1,7 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/features/drug/data/my_medicine_repository.dart';
 import 'package:luminous/features/reminders/data/reminder_local_gateway.dart';
-import 'package:luminous/core/providers/global_provider_container.dart';
-import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/utils/app_i18n_text.dart';
 import 'package:luminous/utils/message_utils.dart';
 import 'package:luminous/utils/notification_service.dart';
@@ -11,12 +11,23 @@ import 'package:luminous/utils/notification_service.dart';
 /// 负责在登录成功或启动恢复登录态后，同步：
 /// - “我的药品”；
 /// - “用药提醒”。
-class SessionSyncService {
-  /// 私有构造函数。
-  SessionSyncService._();
+/// 当前用户的会话同步服务 provider。
+///
+/// 通过 [currentUserProvider] 感知登录态，无需依赖全局容器。
+final sessionSyncServiceProvider = Provider<SessionSyncService>((ref) {
+  return SessionSyncService(
+    getCurrentUserId: () => ref.read(currentUserProvider)?.id ?? '',
+  );
+});
 
-  /// 全局单例入口。
-  static final SessionSyncService instance = SessionSyncService._();
+class SessionSyncService {
+  /// 创建会话同步服务。
+  ///
+  /// [getCurrentUserId] 返回当前登录用户的 id，用于判断同步是否仍需继续。
+  SessionSyncService({required String Function() getCurrentUserId})
+    : _getCurrentUserId = getCurrentUserId;
+
+  final String Function() _getCurrentUserId;
 
   /// 串行化会话同步请求，避免不同用户会话互相覆盖。
   Future<void> _syncTail = Future<void>.value();
@@ -79,9 +90,7 @@ class SessionSyncService {
   }
 
   bool _shouldApplySync(String userId) {
-    final currentUserId =
-        globalProviderContainer.read(currentUserProvider)?.id ?? '';
-    return currentUserId.trim() == userId.trim();
+    return _getCurrentUserId().trim() == userId.trim();
   }
 
   /// 生成同步失败提示文案。
@@ -93,6 +102,3 @@ class SessionSyncService {
     );
   }
 }
-
-/// 对外暴露的全局会话同步服务实例。
-final sessionSyncService = SessionSyncService.instance;

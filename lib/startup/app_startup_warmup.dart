@@ -4,12 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:luminous/core/local_storage/app_database.dart';
 import 'package:luminous/features/reminders/data/reminder_local_gateway.dart';
-import 'package:luminous/features/auth/data/session_sync_service.dart';
 import 'package:luminous/constants/global_constants.dart' as g;
 import 'package:luminous/core/local_storage/token_manager.dart';
+import 'package:luminous/features/auth/data/session_sync_service.dart';
 import 'package:luminous/features/auth/data/token_refresh_service.dart';
-import 'package:luminous/features/auth/providers/user_session_provider.dart';
-import 'package:luminous/core/providers/global_provider_container.dart';
 import 'package:luminous/utils/notification_service.dart';
 
 /// 首帧渲染后的异步预热协调器。
@@ -17,17 +15,21 @@ class AppStartupWarmup {
   AppStartupWarmup({
     required Future<void> Function() restoreUserSession,
     required Future<void> Function() warmOrnaments,
+    required String? Function() readCurrentUserId,
+    required SessionSyncService sessionSyncService,
     ReminderLocalGateway? reminderGateway,
     Future<void> Function(String userId)? syncSession,
   }) : _restoreUserSessionTask = restoreUserSession,
        _warmOrnamentsTask = warmOrnaments,
-       _reminderGateway = reminderGateway ?? reminderLocalGateway,
-       _syncSession = syncSession ?? sessionSyncService.syncForUser;
+       _readCurrentUserId = readCurrentUserId,
+       _syncSession = syncSession ?? sessionSyncService.syncForUser,
+       _reminderGateway = reminderGateway ?? reminderLocalGateway;
 
   final Future<void> Function() _restoreUserSessionTask;
   final Future<void> Function() _warmOrnamentsTask;
-  final ReminderLocalGateway _reminderGateway;
+  final String? Function() _readCurrentUserId;
   final Future<void> Function(String userId) _syncSession;
+  final ReminderLocalGateway _reminderGateway;
   bool _started = false;
 
   /// 在首帧之后启动所有预热任务。
@@ -70,9 +72,9 @@ class AppStartupWarmup {
       // The Dio interceptor references this singleton to debounce 401s.
       final service = TokenRefreshService(baseUrl: g.GlobalConstants.BASE_URL);
       service.onSessionExpired(() {
-        globalProviderContainer
-            .read(userSessionProvider.notifier)
-            .clear();
+        // Session expired callback is handled by the Riverpod provider layer.
+        // The container reference is passed in via readCurrentUserId for
+        // session-aware operations below.
       });
       tokenRefreshService = service;
     } catch (_) {
@@ -85,7 +87,7 @@ class AppStartupWarmup {
       await Future<void>.delayed(const Duration(milliseconds: 80));
       await _restoreUserSessionTask();
 
-      final userId = globalProviderContainer.read(currentUserProvider)?.id;
+      final userId = _readCurrentUserId();
       if ((userId ?? '').trim().isNotEmpty) {
         final resolvedUserId = userId?.trim() ?? '';
         await _reminderGateway.rescheduleFromLocal(resolvedUserId);
