@@ -8,7 +8,6 @@ class _MainNavigationRail extends StatelessWidget {
     required this.backgroundColor,
     required this.inactiveColor,
     required this.extended,
-    required this.buildIcon,
     required this.onTap,
   });
 
@@ -18,8 +17,6 @@ class _MainNavigationRail extends StatelessWidget {
   final Color backgroundColor;
   final Color inactiveColor;
   final bool extended;
-  final Widget Function({required String assetPath, required Color color})
-  buildIcon;
   final ValueChanged<int> onTap;
 
   @override
@@ -79,11 +76,8 @@ class _MainNavigationRail extends StatelessWidget {
                   final item = items[index];
                   final itemColor = itemColors[index];
                   return NavigationRailDestination(
-                    icon: buildIcon(assetPath: item.icon, color: inactiveColor),
-                    selectedIcon: buildIcon(
-                      assetPath: item.activeIcon,
-                      color: itemColor,
-                    ),
+                    icon: Icon(item.icon, color: inactiveColor),
+                    selectedIcon: Icon(item.activeIcon, color: itemColor),
                     label: Text(item.text),
                   );
                 },
