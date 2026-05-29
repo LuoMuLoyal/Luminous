@@ -24,6 +24,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mainTabMine => 'Mine';
 
   @override
+  String get mainTabToday => 'Today';
+
+  @override
+  String get mainTabRecord => 'Records';
+
+  @override
+  String get mainTabMedicine => 'Medicines';
+
+  @override
+  String get mainTabProfile => 'Profile';
+
+  @override
+  String get mainTabMore => 'More';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override
