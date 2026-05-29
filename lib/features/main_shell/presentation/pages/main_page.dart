@@ -6,6 +6,82 @@ part of '../main_shell.dart';
 // - 这里用 IndexedStack 保持每个 Tab 的状态（避免切换时重复 initState）
 // - 不要在这里再包 SafeArea（单页自己负责），否则容易出现双重 padding
 
+/// 底部导航栏，选中底衬覆盖图标+文字。
+class _BottomNavBar extends StatelessWidget {
+  const _BottomNavBar({
+    required this.items,
+    required this.currentIndex,
+    required this.activeColor,
+    required this.inactiveColor,
+    required this.onTap,
+  });
+
+  final List<_MainTabItem> items;
+  final int currentIndex;
+  final Color activeColor;
+  final Color inactiveColor;
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: Row(
+          children: List.generate(items.length, (i) {
+            final selected = i == currentIndex;
+            final item = items[i];
+            return Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => onTap(i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 350),
+                  curve: Curves.easeOutCubic,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? activeColor.withValues(alpha: isDark ? 0.22 : 0.14)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        selected ? item.activeIcon : item.icon,
+                        size: 24,
+                        color: selected ? activeColor : inactiveColor,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        item.text,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: selected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                          color: selected ? activeColor : inactiveColor,
+                          height: 1.1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
 /// 主页面底部 Tab 容器。
 ///
 /// 只负责一级页面切换与状态保活，不承担各业务页的数据逻辑。
@@ -176,26 +252,14 @@ class MainPage extends ConsumerWidget {
           child: AppAdaptiveScaffold(
             windowClass: windowClass,
             backgroundColor: theme.scaffoldBackgroundColor,
-            compactBottomNavigationBar: NavigationBar(
-              selectedIndex: currentIndex,
-              onDestinationSelected: notifier.selectTab,
-              animationDuration: const Duration(milliseconds: 400),
-              destinations: [
-                for (final tab in tablist)
-                  NavigationDestination(
-                    icon: Icon(
-                      tab.icon,
-                      color: isDark
-                          ? const Color(0xFF94A3B8)
-                          : const Color(0xFF94A3B8),
-                    ),
-                    selectedIcon: Icon(
-                      tab.activeIcon,
-                      color: tabColors[tablist.indexOf(tab)],
-                    ),
-                    label: tab.text,
-                  ),
-              ],
+            compactBottomNavigationBar: _BottomNavBar(
+              items: tablist,
+              currentIndex: currentIndex,
+              activeColor: currentColor,
+              inactiveColor: isDark
+                  ? const Color(0xFF94A3B8)
+                  : AppUiConstants.TAB_INACTIVE,
+              onTap: notifier.selectTab,
             ),
             wideNavigationPane: _buildWideNavigationPane(
               windowClass: windowClass,
