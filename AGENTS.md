@@ -141,6 +141,38 @@ final meResp = await appApi.usersGetMe();
 
 ---
 
+## 提交规范
+
+本项目建议使用 [Conventional Commits](https://www.conventionalcommits.org/) 格式，VS Code 编辑器会自动给出格式提示。
+
+### 格式
+
+```
+type(scope): subject
+```
+
+### Type 枚举
+
+| Type       | 说明        |
+| ---------- | ----------- |
+| `feat`     | ✨ 新功能   |
+| `fix`      | 🐛 Bug 修复 |
+| `docs`     | 📚 文档     |
+| `style`    | 💄 代码格式 |
+| `refactor` | ♻️ 重构     |
+| `perf`     | ⚡ 性能优化 |
+| `test`     | ✅ 测试     |
+| `build`    | 📦 构建系统 |
+| `ci`       | 🔧 CI 配置  |
+| `chore`    | 🔨 杂项     |
+| `revert`   | ⏪ 回滚     |
+
+### Scope（可选）
+
+常用 scope：`auth`、`home`、`record`、`drug`、`mine`、`more`、`api`、`ui`、`core`、`router`
+
+---
+
 ## 提交前检查清单
 
 - [ ] `flutter analyze` — No issues
