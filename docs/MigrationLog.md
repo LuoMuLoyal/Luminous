@@ -498,6 +498,45 @@ lib/
 - `profile_settings_page.dart` — 设置表单字段
 - `settings_pages.dart` ×3 — 固定设置项列表
 
+### 今日页 UI 搭建 (2026-05-29)
+
+基于 `docs/UI_Implementation_Plan.md` Phase 1.1，新建 `lib/features/today/` feature 模块，完成今日页 UI 框架。
+
+**新建文件：**
+
+| 文件                                                                    | 说明                                              |
+| ----------------------------------------------------------------------- | ------------------------------------------------- |
+| `lib/constants/today_constants.dart`                                    | 今日页全局常量：尺寸、默认值、Mock 数据、语义颜色 |
+| `lib/shared/widgets/today/today.dart`                                   | 可复用组件 barrel 导出                            |
+| `lib/shared/widgets/today/today_progress_ring.dart`                     | 圆形进度环（CustomPainter）                       |
+| `lib/shared/widgets/today/today_stat_card.dart`                         | 健康指标统计卡片（图标+数值+单位+标签）           |
+| `lib/shared/widgets/today/today_section_header.dart`                    | 区块标题行（标题 + 操作按钮）                     |
+| `lib/shared/widgets/today/today_env_chip.dart`                          | 环境指标标签（基于 TintedStatusChip）             |
+| `lib/features/today/presentation/today.dart`                            | Feature barrel，聚合所有 part 文件                |
+| `lib/features/today/presentation/pages/today_page.dart`                 | 主页面，CustomScrollView + SliverList             |
+| `lib/features/today/presentation/widgets/greeting_header.dart`          | 顶部问候语 + 通知铃铛                             |
+| `lib/features/today/presentation/widgets/water_intake_card.dart`        | 今日喝水追踪卡片                                  |
+| `lib/features/today/presentation/widgets/medication_reminder_card.dart` | 用药提醒卡片                                      |
+| `lib/features/today/presentation/widgets/health_snapshot_card.dart`     | 健康快照卡片（心率/血压/睡眠）                    |
+| `lib/features/today/presentation/widgets/diet_suggestion_card.dart`     | 饮食建议卡片                                      |
+| `lib/features/today/presentation/widgets/environment_alert_card.dart`   | 环境提醒卡片（花粉/紫外线）                       |
+| `lib/features/today/presentation/widgets/lumi_advice_card.dart`         | Lumi AI 建议卡片                                  |
+
+**国际化：**
+
+- 新增 27 个 l10n 键（`app_zh.arb` + `app_en.arb`），覆盖所有用户可见文本
+- 参数化键支持 `{goal}`、`{count}`、`{time}` 占位符
+- 唯一保留的硬编码：`mmHg`（国际通用医学单位）
+
+**设计规范对齐：**
+
+- 所有间距 → `AppSpacing`，圆角 → `AppRadius`，字号 → `AppTypography`
+- 卡片容器 → `AppSectionCard` / `AppSurfaceCard`
+- 颜色 → `TodayConstants` 语义常量 + 主题自适应（dark mode）
+- 零魔法数字
+
+**当前状态：** UI 框架完成，使用 Mock 数据。待接入 Provider + 真实 API。
+
 **附带修复：** `browse_history_page.dart` 移除未使用的局部变量 `isLoggedIn`（现由 `_buildHistoryItem` 内通过 `ref.watch` 按需读取）。
 
 **验证结果：**

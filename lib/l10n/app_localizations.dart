@@ -3589,6 +3589,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to read original image, cannot rescan'**
   String get albumRescanReadOriginalFailedToast;
+
+  /// No description provided for @todayGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning, sunshine! 🌤️'**
+  String get todayGreeting;
+
+  /// No description provided for @todayGreetingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your eyes look great, full of energy!'**
+  String get todayGreetingSubtitle;
+
+  /// No description provided for @todayWaterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Water Intake'**
+  String get todayWaterTitle;
+
+  /// No description provided for @todayWaterGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal {goal} times'**
+  String todayWaterGoal(int goal);
+
+  /// No description provided for @todayWaterDrunk.
+  ///
+  /// In en, this message translates to:
+  /// **'Drunk'**
+  String get todayWaterDrunk;
+
+  /// No description provided for @todayWaterDrunkCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} times'**
+  String todayWaterDrunkCount(int count);
+
+  /// No description provided for @todayWaterRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get todayWaterRemaining;
+
+  /// No description provided for @todayWaterRemainingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} times'**
+  String todayWaterRemainingCount(int count);
+
+  /// No description provided for @todayMedicationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication Reminders'**
+  String get todayMedicationTitle;
+
+  /// No description provided for @todayMedicationView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get todayMedicationView;
+
+  /// No description provided for @todayMedicationTypeCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} types'**
+  String todayMedicationTypeCount(int count);
+
+  /// No description provided for @todayMedicationPendingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pending'**
+  String todayMedicationPendingCount(int count);
+
+  /// No description provided for @todayMedicationNextTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Next at {time}'**
+  String todayMedicationNextTime(Object time);
+
+  /// No description provided for @todayHealthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Snapshot'**
+  String get todayHealthTitle;
+
+  /// No description provided for @todayHealthHeartRateUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'bpm'**
+  String get todayHealthHeartRateUnit;
+
+  /// No description provided for @todayHealthHeartRateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart Rate'**
+  String get todayHealthHeartRateLabel;
+
+  /// No description provided for @todayHealthBloodPressureLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Pressure'**
+  String get todayHealthBloodPressureLabel;
+
+  /// No description provided for @todayHealthSleepUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'hrs'**
+  String get todayHealthSleepUnit;
+
+  /// No description provided for @todayHealthSleepLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep'**
+  String get todayHealthSleepLabel;
+
+  /// No description provided for @todayDietTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet Suggestions'**
+  String get todayDietTitle;
+
+  /// No description provided for @todayDietChangeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get todayDietChangeAction;
+
+  /// No description provided for @todayEnvironmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Environment'**
+  String get todayEnvironmentTitle;
+
+  /// No description provided for @todayEnvironmentPollen.
+  ///
+  /// In en, this message translates to:
+  /// **'Pollen'**
+  String get todayEnvironmentPollen;
+
+  /// No description provided for @todayEnvironmentUv.
+  ///
+  /// In en, this message translates to:
+  /// **'UV Index'**
+  String get todayEnvironmentUv;
+
+  /// No description provided for @todayLumiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lumi Advice'**
+  String get todayLumiTitle;
 }
 
 class _AppLocalizationsDelegate

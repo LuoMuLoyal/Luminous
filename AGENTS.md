@@ -1,230 +1,71 @@
 # AGENTS.md — Luminous
 
-> 面向 AI agent 的项目专属约束与操作指南。每次对话发现的错误应追加到文件末尾的踩坑记录中。
+> Luminous 项目 AI Agent 操作规范
 
----
+## 项目概览
 
-## 项目结构
+- **类型**：Flutter 个人健康管理应用
+- **状态管理**：Riverpod（禁止 GetX）
+- **路由**：GoRouter（禁止 Navigator.push）
+- **后端**：Lucent（NestJS + Prisma + PostgreSQL）
 
-Luminous 是一个 Flutter 个人健康管理应用，当前架构：
+## ✅ 可以做
 
-```
-lib/
-├── core/                  # 全终端共享底座
-│   ├── network/           # HTTP 请求与拦截器（Dio）
-│   ├── theme/             # 主题与装饰
-│   ├── local_storage/     # Isar / SharedPreferences / SecureStorage
-│   ├── router/            # GoRouter 路由表
-│   └── l10n/              # 国际化语言包
-├── shared/                # 跨业务共享模块
-│   ├── widgets/           # 全局通用 UI
-│   └── layout/            # 响应式布局（AppWindowClass / AdaptiveScaffold）
-└── features/              # 业务模块（Feature-first，高内聚）
-    ├── auth/              # 登录、注册、会话管理
-    ├── medicine/          # 药品搜索、扫码、数据库查询
-    ├── reminders/         # 用药打卡、日历
-    ├── drug/              # 药品详情
-    ├── checkin/           # 打卡记录
-    ├── scan/              # 扫码识别
-    ├── album/             # 识别相册
-    ├── home/              # 首页
-    ├── settings/          # 设置
-    ├── safety/            # AI 安全辅助
-    ├── mine/              # 个人中心
-    ├── login/             # 登录页
-    ├── register/          # 注册页
-    ├── medicine_picker/   # 药品选择器
-    └── legal/             # 法律文本
-```
+| 场景                      | 说明                                                   |
+| ------------------------- | ------------------------------------------------------ |
+| 新增业务代码              | 统一放在 `lib/features/`、`lib/shared/` 或 `lib/core/` |
+| 使用自动生成的 API 客户端 | 代码在 `lib/api/generated/`，不要手写网络请求          |
+| 使用 Riverpod 管理状态    | `flutter_riverpod`                                     |
+| 使用 GoRouter 导航        | `context.pushNamed()` 或 GoRoute 注册                  |
 
-- 状态管理：**Riverpod**（已完成 GetX → Riverpod 迁移）
-- 路由：**GoRouter**
-- 后端目标：**Lucent**（`../Lucent/`，NestJS + Prisma + PostgreSQL）
+## ❌ 禁止事项
 
----
+| 类别          | 禁止内容                                                                     |
+| ------------- | ---------------------------------------------------------------------------- |
+| 旧目录加代码  | `lib/pages/`、`lib/stores/`、`lib/viewmodels/`、`lib/components/` 是遗留目录 |
+| 引入 GetX     | 已从 pubspec.yaml 移除，使用 Riverpod                                        |
+| 绕过 GoRouter | 禁止 `Navigator.push(MaterialPageRoute(...))`                                |
+| 提交到 Git    | `DrugDataBase/`、`build/`、`outputs/`、`Roadshow/`、`.env.*`、IDE 配置       |
 
 ## 常用命令
 
 ```bash
-# Flutter
-flutter pub get          # 安装依赖
-flutter analyze          # 静态分析（提交前必须跑）
-flutter test             # 全量单元测试（提交前必须跑）
-flutter run              # 启动应用
+# 提交前必须跑
+flutter analyze
+flutter test
 
-# 后端（Lucent）
-pnpm --prefix ../Lucent test        # Lucent 单元测试
-pnpm --prefix ../Lucent test:e2e    # Lucent e2e 测试
-pnpm --prefix ../Lucent start:dev   # Lucent 开发模式
-```
+# 依赖安装
+flutter pub get
 
----
-
-## 禁止事项
-
-### 永远不要提交到 Git
-
-| 类别             | 路径 / 模式                                                         |
-| ---------------- | ------------------------------------------------------------------- |
-| 大型外部数据集   | `DrugDataBase/` — 包含 zip/xml/sdf/fasta/xlsx，仅本地使用           |
-| 构建产物         | `build/`、`android/build/`、`backend/dist/`                         |
-| 本地依赖         | `backend/node_modules/`                                             |
-| 演示输出         | `outputs/`、`Roadshow/`、`*.pptx`                                   |
-| IDE 个人配置     | `.idea/`、`.vscode/*`（除 `extensions.json` 和 `settings.json` 外） |
-| 真实环境变量     | `backend/.env.development`、`backend/.env.production`               |
-| Flutter SDK 状态 | `.flutter`、`.flutter_tool_state`                                   |
-
-### 代码约束
-
-- **不要往旧目录加新代码**：`lib/pages/`、`lib/stores/`、`lib/viewmodels/`、`lib/components/` 是 Layer-based 遗留目录，仅保留兼容导出壳。所有新代码必须落在 `lib/features/`、`lib/shared/` 或 `lib/core/`。
-- **不要重新引入 GetX**：已从 pubspec.yaml 移除。使用 Riverpod (`flutter_riverpod`)。
-- **不要绕过 GoRouter**：禁止 `Navigator.push(MaterialPageRoute(...))`，统一使用 `context.pushNamed()` 或 GoRoute 注册。
-
----
-
-## 后端对接
-
-- 目标后端是 **Lucent**（`../Lucent/`），NestJS + Prisma v7 + PostgreSQL。
-- API 契约文档位于 `../Lucent/docs/`，以 `api-contract.md` 和 `auth-api-mock.md` 为准。
-- 响应格式统一为 `{ code, message, data }`。
-- 认证方式：`Authorization: Bearer <accessToken>`，token 管理由 `lib/core/network/` 下的 `TokenManager` 和 `TokenRefreshService` 负责。
-
-### 自动生成的 API 客户端（2026-05-29）
-
-> **不要手写网络请求代码**，使用自动生成的 OpenAPI 客户端。
-
-- 生成工具：`openapi-generator-cli`（`dart-dio` 生成器）
-- 生成代码路径：`lib/api/generated/`
-- OpenAPI spec 路径：`Lucent/docs/openapi.json`
-- 重新生成命令：
-
-```bash
-# 1. 从 Lucent 后端导出最新 openapi.json
+# API 客户端重新生成
 cd ../Lucent && pnpm export:openapi
-
-# 2. 重新生成 Flutter 客户端
-cd ../Luminous
-openapi-generator-cli generate -g dart-dio -i ../Lucent/docs/openapi.json -o lib/api/generated --additional-properties=pubName=luminous_api,pubAuthor=Lumos
-
-# 3. 生成序列化代码
+cd ../Luminous && openapi-generator-cli generate -g dart-dio -i ../Lucent/docs/openapi.json -o lib/api/generated --additional-properties=pubName=luminous_api,pubAuthor=Lumos
 cd lib/api/generated && dart pub get && dart run build_runner build --delete-conflicting-outputs
-
-# 4. 回到主项目更新依赖
-cd ../../.. && flutter pub get
 ```
 
-- 使用方式：
+## 后端对接规范
 
-```dart
-import 'package:luminous_api/luminous_api.dart';
-
-final api = LuminousApi(basePathOverride: 'http://your-server:3000');
-api.setBearerAuth('default', jwtToken);
-
-// 登录
-final authApi = api.getAuthApi();
-final loginResp = await authApi.authLogin(body: LoginDto((b) => b
-  ..loginType = LoginTypeEnum.password
-  ..account = 'user@example.com'
-  ..password = 'password123'
-  ..deviceId = 'device-123'
-));
-
-// 获取用户信息
-final appApi = api.getAppApi();
-final meResp = await appApi.usersGetMe();
-```
-
-- API 客户端内置了 BearerAuthInterceptor，自动处理 JWT token 注入
-- 已生成的 API：`AuthApi`（登录/注册/验证码等）、`AppApi`（用户信息/修改密码等）
-- 已生成的 Model DTO：29 个（LoginDto, RegisterDto, UserBriefDto, UserFullDto, TokensDto 等）
-
----
+- API 契约：`../Lucent/docs/api-contract.md`、`auth-api-mock.md`
+- 响应格式：`{ code, message, data }`
+- 认证：`Authorization: Bearer <accessToken>`，token 由 `lib/core/network/TokenManager` 管理
 
 ## 提交规范
 
-本项目建议使用 [Conventional Commits](https://www.conventionalcommits.org/) 格式，VS Code 编辑器会自动给出格式提示。
+格式：`type(scope): subject`
 
-### 格式
-
-```
-type(scope): subject
-```
-
-### Type 枚举
-
-| Type       | 说明        |
-| ---------- | ----------- |
-| `feat`     | ✨ 新功能   |
-| `fix`      | 🐛 Bug 修复 |
-| `docs`     | 📚 文档     |
-| `style`    | 💄 代码格式 |
-| `refactor` | ♻️ 重构     |
-| `perf`     | ⚡ 性能优化 |
-| `test`     | ✅ 测试     |
-| `build`    | 📦 构建系统 |
-| `ci`       | 🔧 CI 配置  |
-| `chore`    | 🔨 杂项     |
-| `revert`   | ⏪ 回滚     |
-
-### Scope（可选）
-
-常用 scope：`auth`、`home`、`record`、`drug`、`mine`、`more`、`api`、`ui`、`core`、`router`
-
----
+常用 type：`feat`、`fix`、`docs`、`refactor`、`test`、`chore`
 
 ## 提交前检查清单
 
 - [ ] `flutter analyze` — No issues
 - [ ] `flutter test` — 全量通过
-- [ ] 未引入新的 GetX 依赖
-- [ ] 新代码未落入 `lib/pages/`、`lib/stores/` 等旧目录
-- [ ] 未提交 `DrugDataBase/`、构建产物、env 文件
+- [ ] 未引入 GetX 依赖
+- [ ] 新代码在 `lib/features/`、`lib/shared/` 或 `lib/core/`
+- [ ] 未提交禁提交的文件
 
----
+## AI 协作原则
 
-## 通用 AI 协作原则
-
-> 以下为补充性的通用原则，优先级低于上述项目专属约束。
-
-### 1. 先想再做
-
-- 不确定时主动说明假设、提出多种理解、指出更简单的替代方案。
-- 有困惑就停下来问，不要猜测。
-
-### 2. 简洁优先
-
-- 只写解决问题所需的最小代码。
-- 不添加未要求的功能、不为单次使用创建抽象、不处理不可能发生的错误。
-- 200 行能解决的问题写 50 行就重写。
-
-### 3. 精准修改
-
-- 不改相邻代码、注释或格式。不重构未损坏的东西。
-- 只清理你自己的修改产生的孤立 import/变量/函数。
-- 发现无关的死代码可以提，但不要动手删。
-
-### 4. 目标驱动
-
-- 把任务转成可验证的目标（"添加验证" → "先写测试再让它通过"）。
-- 多步骤任务先列计划，每步明确验证方式。
-
----
-
-## 踩坑记录
-
-> 以下为 AI agent 在本项目中犯过的错误。每次对话发现的新错误请追加到此区域。
-
-### 模板
-
-```markdown
-### N. 错误简述
-
-**错误**：具体做了什么
-
-**正确**：应该怎么做
-
-**教训**：如何避免
-```
-
-（暂无记录 — 有新踩坑时按模板追加）
+1. **先想再做**：不确定就问，不猜测
+2. **简洁优先**：只写解决问题所需的最小代码
+3. **精准修改**：不改未损坏的东西
+4. **目标驱动**：把任务转成可验证的目标

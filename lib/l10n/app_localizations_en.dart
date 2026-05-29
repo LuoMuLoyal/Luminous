@@ -1973,4 +1973,91 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get albumRescanReadOriginalFailedToast =>
       'Failed to read original image, cannot rescan';
+
+  @override
+  String get todayGreeting => 'Good morning, sunshine! 🌤️';
+
+  @override
+  String get todayGreetingSubtitle => 'Your eyes look great, full of energy!';
+
+  @override
+  String get todayWaterTitle => 'Water Intake';
+
+  @override
+  String todayWaterGoal(int goal) {
+    return 'Goal $goal times';
+  }
+
+  @override
+  String get todayWaterDrunk => 'Drunk';
+
+  @override
+  String todayWaterDrunkCount(int count) {
+    return '$count times';
+  }
+
+  @override
+  String get todayWaterRemaining => 'Remaining';
+
+  @override
+  String todayWaterRemainingCount(int count) {
+    return '$count times';
+  }
+
+  @override
+  String get todayMedicationTitle => 'Medication Reminders';
+
+  @override
+  String get todayMedicationView => 'View';
+
+  @override
+  String todayMedicationTypeCount(int count) {
+    return '$count types';
+  }
+
+  @override
+  String todayMedicationPendingCount(int count) {
+    return '$count pending';
+  }
+
+  @override
+  String todayMedicationNextTime(Object time) {
+    return 'Next at $time';
+  }
+
+  @override
+  String get todayHealthTitle => 'Health Snapshot';
+
+  @override
+  String get todayHealthHeartRateUnit => 'bpm';
+
+  @override
+  String get todayHealthHeartRateLabel => 'Heart Rate';
+
+  @override
+  String get todayHealthBloodPressureLabel => 'Blood Pressure';
+
+  @override
+  String get todayHealthSleepUnit => 'hrs';
+
+  @override
+  String get todayHealthSleepLabel => 'Sleep';
+
+  @override
+  String get todayDietTitle => 'Diet Suggestions';
+
+  @override
+  String get todayDietChangeAction => 'Change';
+
+  @override
+  String get todayEnvironmentTitle => 'Environment';
+
+  @override
+  String get todayEnvironmentPollen => 'Pollen';
+
+  @override
+  String get todayEnvironmentUv => 'UV Index';
+
+  @override
+  String get todayLumiTitle => 'Lumi Advice';
 }
