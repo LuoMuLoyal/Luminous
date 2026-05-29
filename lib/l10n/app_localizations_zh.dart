@@ -24,6 +24,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mainTabMine => '我的';
 
   @override
+  String get mainTabToday => '今日';
+
+  @override
+  String get mainTabRecord => '记录';
+
+  @override
+  String get mainTabMedicine => '用药';
+
+  @override
+  String get mainTabProfile => '我的';
+
+  @override
+  String get mainTabMore => '更多';
+
+  @override
   String get settingsTitle => '设置';
 
   @override

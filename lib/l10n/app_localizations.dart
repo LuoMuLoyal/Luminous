@@ -128,6 +128,36 @@ abstract class AppLocalizations {
   /// **'Mine'**
   String get mainTabMine;
 
+  /// No description provided for @mainTabToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get mainTabToday;
+
+  /// No description provided for @mainTabRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Records'**
+  String get mainTabRecord;
+
+  /// No description provided for @mainTabMedicine.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicines'**
+  String get mainTabMedicine;
+
+  /// No description provided for @mainTabProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get mainTabProfile;
+
+  /// No description provided for @mainTabMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get mainTabMore;
+
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:
