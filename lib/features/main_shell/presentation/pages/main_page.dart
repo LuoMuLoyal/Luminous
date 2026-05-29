@@ -34,28 +34,28 @@ class MainPage extends ConsumerWidget {
   List<_MainTabItem> _tablist(AppLocalizations? l10n) {
     return [
       _MainTabItem(
-        icon: 'lib/assets/tab-icons/today-inactive.png',
-        activeIcon: 'lib/assets/tab-icons/today-active.png',
+        icon: Icons.home_outlined,
+        activeIcon: Icons.home,
         text: l10n?.mainTabToday ?? '今日',
       ),
       _MainTabItem(
-        icon: 'lib/assets/tab-icons/record-inactive.png',
-        activeIcon: 'lib/assets/tab-icons/record-active.png',
+        icon: Icons.edit_calendar_outlined,
+        activeIcon: Icons.edit_calendar,
         text: l10n?.mainTabRecord ?? '记录',
       ),
       _MainTabItem(
-        icon: 'lib/assets/tab-icons/medicine-inactive.png',
-        activeIcon: 'lib/assets/tab-icons/medicine-active.png',
+        icon: Icons.medication_outlined,
+        activeIcon: Icons.medication,
         text: l10n?.mainTabMedicine ?? '用药',
       ),
       _MainTabItem(
-        icon: 'lib/assets/tab-icons/profile-inactive.png',
-        activeIcon: 'lib/assets/tab-icons/profile-active.png',
+        icon: Icons.person_outline,
+        activeIcon: Icons.person,
         text: l10n?.mainTabProfile ?? '我的',
       ),
       _MainTabItem(
-        icon: 'lib/assets/tab-icons/more-inactive.png',
-        activeIcon: 'lib/assets/tab-icons/more-active.png',
+        icon: Icons.more_horiz,
+        activeIcon: Icons.more_horiz,
         text: l10n?.mainTabMore ?? '更多',
       ),
     ];
@@ -98,13 +98,6 @@ class MainPage extends ConsumerWidget {
         .toList();
   }
 
-  Widget _buildTabIcon({required String assetPath, required Color color}) {
-    return ColorFiltered(
-      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-      child: Image.asset(assetPath, width: 30, height: 30),
-    );
-  }
-
   Widget _buildPageStack(MainShellState shellState, List<_MainTabItem> tabs) {
     return Stack(
       fit: StackFit.expand,
@@ -120,50 +113,6 @@ class MainPage extends ConsumerWidget {
         ),
         _buildSecondaryPreloadLayer(shellState.preloadedSecondaryIndexes),
       ],
-    );
-  }
-
-  // ignore: long-method
-  Widget _buildCompactBottomNavigation({
-    required ThemeData theme,
-    required bool isDark,
-    required List<_MainTabItem> tablist,
-    required List<Color> tabColors,
-    required Color currentColor,
-    required Color tabBarBackground,
-    required Color systemNavigationBarColor,
-    required int currentIndex,
-    required Color inactiveColor,
-    required void Function(int) onSelectTab,
-  }) {
-    final bottomBedColor = Color.alphaBlend(
-      currentColor.withValues(alpha: isDark ? 0.12 : 0.055),
-      theme.scaffoldBackgroundColor,
-    );
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            bottomBedColor.withValues(alpha: isDark ? 0.92 : 0.90),
-            systemNavigationBarColor,
-          ],
-        ),
-      ),
-      child: SafeArea(
-        top: false,
-        minimum: const EdgeInsets.fromLTRB(12, 0, 12, 6),
-        child: _MainBottomBar(
-          items: tablist,
-          itemColors: tabColors,
-          currentIndex: currentIndex,
-          backgroundColor: tabBarBackground,
-          inactiveColor: inactiveColor,
-          buildIcon: _buildTabIcon,
-          onTap: onSelectTab,
-        ),
-      ),
     );
   }
 
@@ -184,7 +133,6 @@ class MainPage extends ConsumerWidget {
       backgroundColor: backgroundColor,
       inactiveColor: inactiveColor,
       extended: windowClass.usesExtendedNavigation,
-      buildIcon: _buildTabIcon,
       onTap: onSelectTab,
     );
   }
@@ -205,31 +153,12 @@ class MainPage extends ConsumerWidget {
         final currentIndex = shellState.currentIndex;
         final currentColor = tabColors[currentIndex];
         final secondaryColor = tabColors[(currentIndex + 1) % tabColors.length];
-        final tabBarBackground = Color.alphaBlend(
-          (isDark ? secondaryColor : currentColor).withValues(
-            alpha: isDark ? 0.08 : 0.04,
-          ),
-          theme.cardTheme.color ?? theme.colorScheme.surface,
-        );
-        final bottomBedColor = Color.alphaBlend(
-          currentColor.withValues(alpha: isDark ? 0.12 : 0.055),
-          theme.scaffoldBackgroundColor,
-        );
-        final compactSystemNavigationBarColor = Color.alphaBlend(
-          secondaryColor.withValues(alpha: isDark ? 0.12 : 0.05),
-          bottomBedColor,
-        );
-        final systemNavigationBarColor = windowClass.usesBottomNavigation
-            ? compactSystemNavigationBarColor
-            : theme.scaffoldBackgroundColor;
-        final inactiveColor = isDark
-            ? const Color(0xFF94A3B8)
-            : AppUiConstants.TAB_INACTIVE;
+
         final overlayStyle =
             (isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
                 .copyWith(
                   statusBarColor: Colors.transparent,
-                  systemNavigationBarColor: systemNavigationBarColor,
+                  systemNavigationBarColor: theme.scaffoldBackgroundColor,
                   systemNavigationBarDividerColor: Colors.transparent,
                   statusBarIconBrightness: isDark
                       ? Brightness.light
@@ -247,17 +176,26 @@ class MainPage extends ConsumerWidget {
           child: AppAdaptiveScaffold(
             windowClass: windowClass,
             backgroundColor: theme.scaffoldBackgroundColor,
-            compactBottomNavigationBar: _buildCompactBottomNavigation(
-              theme: theme,
-              isDark: isDark,
-              tablist: tablist,
-              tabColors: tabColors,
-              currentColor: currentColor,
-              tabBarBackground: tabBarBackground,
-              systemNavigationBarColor: compactSystemNavigationBarColor,
-              currentIndex: currentIndex,
-              inactiveColor: inactiveColor,
-              onSelectTab: notifier.selectTab,
+            compactBottomNavigationBar: NavigationBar(
+              selectedIndex: currentIndex,
+              onDestinationSelected: notifier.selectTab,
+              animationDuration: const Duration(milliseconds: 400),
+              destinations: [
+                for (final tab in tablist)
+                  NavigationDestination(
+                    icon: Icon(
+                      tab.icon,
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF94A3B8),
+                    ),
+                    selectedIcon: Icon(
+                      tab.activeIcon,
+                      color: tabColors[tablist.indexOf(tab)],
+                    ),
+                    label: tab.text,
+                  ),
+              ],
             ),
             wideNavigationPane: _buildWideNavigationPane(
               windowClass: windowClass,
@@ -265,7 +203,9 @@ class MainPage extends ConsumerWidget {
               tabColors: tabColors,
               backgroundColor: theme.scaffoldBackgroundColor,
               currentIndex: currentIndex,
-              inactiveColor: inactiveColor,
+              inactiveColor: isDark
+                  ? const Color(0xFF94A3B8)
+                  : AppUiConstants.TAB_INACTIVE,
               onSelectTab: notifier.selectTab,
             ),
             body: AppCanvas(

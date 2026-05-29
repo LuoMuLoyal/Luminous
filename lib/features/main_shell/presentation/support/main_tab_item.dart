@@ -7,7 +7,7 @@ class _MainTabItem {
     required this.text,
   });
 
-  final String icon;
-  final String activeIcon;
+  final IconData icon;
+  final IconData activeIcon;
   final String text;
 }
