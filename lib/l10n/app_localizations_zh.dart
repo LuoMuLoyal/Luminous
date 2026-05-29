@@ -1865,4 +1865,91 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get albumRescanReadOriginalFailedToast => '原图读取失败，无法重识别';
+
+  @override
+  String get todayGreeting => '早上好，阳光正好 🌤️';
+
+  @override
+  String get todayGreetingSubtitle => '你的眼睛很棒呢，精神满满！';
+
+  @override
+  String get todayWaterTitle => '今日喝水';
+
+  @override
+  String todayWaterGoal(int goal) {
+    return '目标 $goal 次';
+  }
+
+  @override
+  String get todayWaterDrunk => '已喝';
+
+  @override
+  String todayWaterDrunkCount(int count) {
+    return '$count 次';
+  }
+
+  @override
+  String get todayWaterRemaining => '还差';
+
+  @override
+  String todayWaterRemainingCount(int count) {
+    return '$count 次';
+  }
+
+  @override
+  String get todayMedicationTitle => '用药提醒';
+
+  @override
+  String get todayMedicationView => '查看';
+
+  @override
+  String todayMedicationTypeCount(int count) {
+    return '$count 种药品';
+  }
+
+  @override
+  String todayMedicationPendingCount(int count) {
+    return '$count 个待服用';
+  }
+
+  @override
+  String todayMedicationNextTime(Object time) {
+    return '下次 $time';
+  }
+
+  @override
+  String get todayHealthTitle => '健康快照';
+
+  @override
+  String get todayHealthHeartRateUnit => '次/分';
+
+  @override
+  String get todayHealthHeartRateLabel => '心率';
+
+  @override
+  String get todayHealthBloodPressureLabel => '血压';
+
+  @override
+  String get todayHealthSleepUnit => '小时';
+
+  @override
+  String get todayHealthSleepLabel => '睡眠';
+
+  @override
+  String get todayDietTitle => '今日饮食建议';
+
+  @override
+  String get todayDietChangeAction => '换一换';
+
+  @override
+  String get todayEnvironmentTitle => '环境提醒';
+
+  @override
+  String get todayEnvironmentPollen => '花粉';
+
+  @override
+  String get todayEnvironmentUv => '紫外线';
+
+  @override
+  String get todayLumiTitle => 'Lumi 建议';
 }
