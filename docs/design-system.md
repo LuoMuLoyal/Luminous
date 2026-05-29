@@ -4,11 +4,12 @@ tags:
   - design
   - tokens
 created: 2026-05-29
+updated: 2026-05-29
 ---
 
 # Luminous 全局设计规范
 
-> 基于 Apple 设计语言，统一管理颜色、间距、字号、圆角、阴影。
+> 基于 Airbnb 设计语言（参考 DESIGN.md），统一管理颜色、间距、字号、圆角、阴影。
 > 所有组件必须引用 token 常量，禁止写魔数。
 
 ---
@@ -27,22 +28,25 @@ created: 2026-05-29
 
 ### 固定色（`AppUiConstants`，不随主题变）
 
-| Token                  | 值        | 用途             |
-| ---------------------- | --------- | ---------------- |
-| `PAGE_BACKGROUND`      | `#F5FAF5` | 亮色页面背景     |
-| `PAGE_BACKGROUND_DARK` | `#0B1A0E` | 暗色页面背景     |
-| `TAB_INACTIVE`         | `#7A8B7A` | 未选中 Tab       |
-| `TEXT_PRIMARY`         | `#1D1F1D` | 主要文字（近黑） |
-| `TEXT_SECONDARY`       | `#6B7B6B` | 次要文字         |
-| `TEXT_MUTED`           | `#94A394` | 辅助/禁用文字    |
-| `TEXT_PRIMARY_DARK`    | `#F2F6F2` | 暗色主要文字     |
-| `DIVIDER`              | `#E2EBE2` | 分割线           |
-| `BORDER`               | `#E4ECE4` | 卡片描边         |
-| `BORDER_DARK`          | `#324432` | 暗色描边         |
-| `SUCCESS`              | `#66BB6A` | 成功             |
-| `WARNING`              | `#FFA726` | 警告             |
-| `ERROR`                | `#EF5350` | 错误             |
-| `INFO`                 | `#42A5F5` | 信息             |
+| Token                  | 值        | 用途                        |
+| ---------------------- | --------- | --------------------------- |
+| `PAGE_BACKGROUND`      | `#FFFFFF` | 亮色页面背景（Canvas）      |
+| `PAGE_BACKGROUND_DARK` | `#0B1A0E` | 暗色页面背景                |
+| `TAB_INACTIVE`         | `#6A6A6A` | 未选中 Tab（Muted）         |
+| `TEXT_PRIMARY`         | `#222222` | 主要文字（Ink，近黑）       |
+| `TEXT_SECONDARY`       | `#3F3F3F` | 次要文字（Body）            |
+| `TEXT_MUTED`           | `#929292` | 辅助/禁用文字（Muted Soft） |
+| `TEXT_PRIMARY_DARK`    | `#F2F6F2` | 暗色主要文字                |
+| `DIVIDER`              | `#DDDDDD` | 分割线（Hairline）          |
+| `BORDER`               | `#DDDDDD` | 卡片描边（Hairline）        |
+| `BORDER_SOFT`          | `#EBEBEB` | 较柔和描边（Hairline Soft） |
+| `BORDER_STRONG`        | `#C1C1C1` | 较强描边（Border Strong）   |
+| `BORDER_DARK`          | `#324432` | 暗色描边                    |
+| `SUCCESS`              | `#66BB6A` | 成功                        |
+| `WARNING`              | `#FFA726` | 警告                        |
+| `ERROR`                | `#C13515` | 错误（Primary Error Text）  |
+| `ERROR_HOVER`          | `#B32505` | 错误悬停                    |
+| `INFO`                 | `#428BFF` | 信息（Legal Link Blue）     |
 
 ### 使用原则
 
@@ -54,18 +58,20 @@ created: 2026-05-29
 
 ## 间距系统（`AppSpacing`，4px 网格）
 
-| Token       | 值   | 用途                    |
-| ----------- | ---- | ----------------------- |
-| `xxs`       | 4px  | 图标与文字间距          |
-| `xs`        | 8px  | 组件内元素间距          |
-| `sm`        | 12px | 列表项内、卡片内容      |
-| `md`        | 16px | 页面水平边距            |
-| `lg`        | 20px | 卡片间距                |
-| `xl`        | 24px | 大区块间距              |
-| `xxl`       | 32px | 页面段落间距            |
-| `section`   | 48px | 段落间距                |
-| `sectionLg` | 64px | 全宽区块内边距          |
-| `tile`      | 80px | 全宽 Tile（Apple 风格） |
+基于 DESIGN.md Airbnb 间距系统。
+
+| Token     | 值   | 用途                                            |
+| --------- | ---- | ----------------------------------------------- |
+| `xxs`     | 2px  | 极小间距（图标与文字间距、密集型元素）          |
+| `xs`      | 4px  | 小间距（组件内元素间、category-strip dividers） |
+| `sm`      | 8px  | 中间距（caption/date-row gutters、卡片内容）    |
+| `md`      | 12px | 中大间距（列表项内、卡片内边距）                |
+| `base`    | 16px | 页面边距（property-card meta、卡片间 gutter）   |
+| `lg`      | 24px | 大区块间距（host-card padding、footer gutters） |
+| `xl`      | 32px | 页面级段落间距                                  |
+| `xxl`     | 48px | 大段落间距                                      |
+| `section` | 64px | 段落间距（major page bands）                    |
+| `tile`    | 80px | 全宽 Tile（Apple 风格）                         |
 
 ### 预设 EdgeInsets
 
@@ -75,76 +81,88 @@ created: 2026-05-29
 | `allPage`      | 16              | 页面全向     |
 | `allCard`      | 12              | 卡片全向     |
 | `cardContent`  | L12 T10 R12 B12 | 卡片内容     |
-| `inputContent` | H14 V14         | 输入框       |
+| `inputContent` | H12 V14         | 输入框       |
 
 ### 预设 SizedBox
 
 | Token                   | 用途     |
 | ----------------------- | -------- |
 | `gapXxs` ~ `gapSection` | 垂直间距 |
-| `gapWXxs` ~ `gapWMd`    | 水平间距 |
+| `gapWXxs` ~ `gapWBase`  | 水平间距 |
 
 ---
 
 ## 字号系统（`AppTypography`）
 
-| Token          | 值     | 用途                 |
-| -------------- | ------ | -------------------- |
-| `micro`        | 10px   | 法律声明             |
-| `tab`          | 12px   | Tab 标签、脚注       |
-| `caption`      | 13px   | 副标题、chip 文字    |
-| `bodySmall`    | 14px   | 次要正文             |
-| `body`         | 15px   | 正文                 |
-| `bodyLarge`    | 17px   | 主正文（Apple 标准） |
-| `button`       | 18px   | 按钮                 |
-| `tagline`      | 21px   | 标题副文案           |
-| `lead`         | 24px   | 引导文字             |
-| `display`      | 34px   | 区块标题             |
-| `displayLarge` | 40px   | 大标题               |
-| `hero`         | 56px   | Hero 标题            |
-| `cardTitle`    | 13.8px | 卡片产品名           |
-| `cardMeta`     | 12.2px | 卡片规格信息         |
+基于 DESIGN.md Airbnb 字号系统，字重适度，display 以 500–600 为主。
+
+| Token          | 值     | 用途                                  |
+| -------------- | ------ | ------------------------------------- |
+| `microTag`     | 8px    | 微型标签（uppercase-tag / NEW badge） |
+| `badge`        | 11px   | 徽章文字（guest-favorite-badge）      |
+| `tab`          | 12px   | Tab 标签、脚注、micro-label           |
+| `caption`      | 13px   | 副标题、chip 文字                     |
+| `bodySmall`    | 14px   | 次要正文（body-sm）                   |
+| `body`         | 16px   | 正文（body-md、button-md、title-md）  |
+| `bodyLarge`    | 17px   | 主正文（Apple 标准）                  |
+| `button`       | 18px   | 按钮                                  |
+| `titleLg`      | 20px   | 子区块标题（display-sm）              |
+| `tagline`      | 21px   | 标题副文案（display-md）              |
+| `display`      | 22px   | 列表详情标题（display-lg）            |
+| `lead`         | 24px   | 引导文字                              |
+| `displayLarge` | 28px   | 首页大标题（display-xl）              |
+| `hero`         | 64px   | 评分展示（rating-display）            |
+| `cardTitle`    | 13.8px | 卡片产品名                            |
+| `cardMeta`     | 12.2px | 卡片规格信息                          |
 
 ---
 
 ## 圆角系统（`AppRadius`）
 
-| Token       | 值     | 用途              |
-| ----------- | ------ | ----------------- |
-| `none`      | 0px    | 全宽 Tile         |
-| `tight`     | 6px    | 复选框、紧凑 chip |
-| `sm`        | 8px    | 小按钮、内嵌图片  |
-| `chip`      | 12px   | chip              |
-| `small`     | 14px   | 文本按钮          |
-| `input`     | 16px   | 输入框、普通按钮  |
-| `card`      | 18px   | 卡片              |
-| `container` | 24px   | 大容器            |
-| `pill`      | 9999px | 胶囊按钮          |
+基于 DESIGN.md Airbnb 圆角系统：所有交互元素圆润，仅 body grid 保留硬角。
+
+| Token  | 值     | 用途                           |
+| ------ | ------ | ------------------------------ |
+| `none` | 0px    | 全宽 Tile、无圆角              |
+| `xs`   | 4px    | 紧凑型元素                     |
+| `sm`   | 8px    | 小按钮、内嵌图片（rounded.sm） |
+| `chip` | 12px   | chip                           |
+| `md`   | 14px   | 卡片圆角（rounded.md）         |
+| `lg`   | 20px   | 大卡片（rounded.lg）           |
+| `xl`   | 32px   | category-strip corners         |
+| `full` | 9999px | 胶囊按钮、pill（rounded.full） |
 
 ### 预设 BorderRadius
 
 | Token             | 等于                          |
 | ----------------- | ----------------------------- |
-| `tightRadius`     | `BorderRadius.circular(6)`    |
+| `tightRadius`     | `BorderRadius.circular(8)`    |
 | `smRadius`        | `BorderRadius.circular(8)`    |
 | `chipRadius`      | `BorderRadius.circular(12)`   |
+| `mdRadius`        | `BorderRadius.circular(14)`   |
 | `inputRadius`     | `BorderRadius.circular(16)`   |
-| `cardRadius`      | `BorderRadius.circular(18)`   |
-| `containerRadius` | `BorderRadius.circular(24)`   |
+| `cardRadius`      | `BorderRadius.circular(14)`   |
+| `lgRadius`        | `BorderRadius.circular(20)`   |
+| `xlRadius`        | `BorderRadius.circular(32)`   |
+| `containerRadius` | `BorderRadius.circular(32)`   |
 | `pillRadius`      | `BorderRadius.circular(9999)` |
 
 ---
 
 ## 阴影系统（`AppShadow`）
 
+基于 DESIGN.md Airbnb 设计语言。系统本质上只有**一个阴影层级**。
+
 | Token              | 效果                   | 用途                                 |
 | ------------------ | ---------------------- | ------------------------------------ |
+| `card`             | 三层叠加阴影组合       | 卡片悬浮、搜索栏、下拉菜单           |
+| `cardBorder`       | 1px 描边模拟           | card 组合第一层                      |
+| `cardMid`          | 0 2px 6px 浅层浮起     | card 组合第二层                      |
+| `cardDeep`         | 0 4px 8px 主要投影     | card 组合第三层                      |
 | `product`          | `0x38000000` 30px 3,5  | 产品图阴影（Apple 唯一 drop-shadow） |
-| `card`             | `0x120F172A` 14px 0,7  | 卡片悬浮                             |
 | `surface`          | `0x33000000` 18px 0,10 | Toast、浮层                          |
-| `surfaceLight`     | `0x0F0F172A` 16px 0,7  | 亮色卡片                             |
-| `authCard`         | `0x100F172A` 12px 0,6  | 登录卡                               |
 | `bottomBar(color)` | 动态                   | 底部导航                             |
+| `authCard`         | `0x100F172A` 12px 0,6  | 登录卡                               |
 
 ---
 
@@ -173,6 +191,7 @@ Container(
   decoration: BoxDecoration(
     borderRadius: AppRadius.cardRadius,
     color: AppUiConstants.PAGE_BACKGROUND,
+    boxShadow: AppShadow.card, // Airbnb 三层叠加阴影
   ),
   child: Text('...', style: TextStyle(fontSize: AppTypography.body)),
 );

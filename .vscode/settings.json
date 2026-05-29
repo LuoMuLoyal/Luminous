@@ -1,14 +1,15 @@
 {
+  "commitlint.enable": true,
   "commitlint.preferBundledLibraries": true,
   "commitlint.log.enabled": false,
   "commitlint.config.extend.rules": {
-    "header-max-length": [1, "always", 120],
-    "scope-case": [1, "always", "lower-case"],
-    "subject-empty": [1, "never"],
-    "type-case": [1, "always", "lower-case"],
-    "type-empty": [1, "never"],
+    "header-max-length": [2, "always", 120],
+    "scope-case": [2, "always", "lower-case"],
+    "subject-empty": [2, "never"],
+    "type-case": [2, "always", "lower-case"],
+    "type-empty": [2, "never"],
     "type-enum": [
-      1,
+      2,
       "always",
       [
         "feat",
@@ -24,7 +25,7 @@
         "revert"
       ]
     ],
-    "subject-max-length": [1, "always", 100]
+    "subject-max-length": [2, "always", 100]
   },
   "git-commit-message-editor.autoFillTypeFromBranchName.enabled": true,
   "git-commit-message-editor.conventionalCommits.enabled": true
