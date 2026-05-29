@@ -36,8 +36,8 @@ class MainShellState {
 /// - Tab 选中切换与惰性加载标记
 /// - 冷启动后分批预加载剩余 Tab 和二级页面
 class MainShellNotifier extends Notifier<MainShellState> {
-  /// 底部 Tab 总数（对应 [HomePage, DrugPage, AlbumPage, MinePage]）。
-  static const pageCount = 4;
+  /// 底部 Tab 总数（对应 [HomePage, RecordPage, DrugPage, MinePage, MorePage]）。
+  static const pageCount = 5;
 
   /// 二级页面总数（对应 Search, Safety, Settings, ProfileSettings）。
   static const secondaryPageCount = 4;
@@ -80,9 +80,7 @@ class MainShellNotifier extends Notifier<MainShellState> {
 
     for (var index = 0; index < pageCount; index++) {
       if (state.loadedIndexes.contains(index)) continue;
-      state = state.copyWith(
-        loadedIndexes: {...state.loadedIndexes, index},
-      );
+      state = state.copyWith(loadedIndexes: {...state.loadedIndexes, index});
       await Future<void>.delayed(const Duration(milliseconds: 420));
     }
   }
@@ -102,17 +100,13 @@ class MainShellNotifier extends Notifier<MainShellState> {
       );
       if (state.preloadedSecondaryIndexes.contains(index)) continue;
       state = state.copyWith(
-        preloadedSecondaryIndexes: {
-          ...state.preloadedSecondaryIndexes,
-          index,
-        },
+        preloadedSecondaryIndexes: {...state.preloadedSecondaryIndexes, index},
       );
     }
   }
 }
 
 /// 主页面底部 Tab 状态的 Riverpod provider。
-final mainShellProvider =
-    NotifierProvider<MainShellNotifier, MainShellState>(
-      MainShellNotifier.new,
-    );
+final mainShellProvider = NotifierProvider<MainShellNotifier, MainShellState>(
+  MainShellNotifier.new,
+);

@@ -94,14 +94,16 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/assets/data.json
-    - lib/assets/home.png
-    - lib/assets/home-full.png
-    - lib/assets/drug.png
-    - lib/assets/drug-full.png
-    - lib/assets/picture.png
-    - lib/assets/picture-full.png
-    - lib/assets/mine.png
-    - lib/assets/mine-full.png
+    - lib/assets/tab-icons/today-active.png
+    - lib/assets/tab-icons/today-inactive.png
+    - lib/assets/tab-icons/record-active.png
+    - lib/assets/tab-icons/record-inactive.png
+    - lib/assets/tab-icons/medicine-active.png
+    - lib/assets/tab-icons/medicine-inactive.png
+    - lib/assets/tab-icons/profile-active.png
+    - lib/assets/tab-icons/profile-inactive.png
+    - lib/assets/tab-icons/more-active.png
+    - lib/assets/tab-icons/more-inactive.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

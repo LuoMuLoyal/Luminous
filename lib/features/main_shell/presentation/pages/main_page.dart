@@ -17,9 +17,10 @@ class MainPage extends ConsumerWidget {
   /// 与底部 Tab 一一对应的页面实例列表。
   static const List<Widget> _pages = [
     HomePage(),
+    RecordPage(),
     DrugPage(),
-    AlbumPage(),
     MinePage(),
+    MorePage(),
   ];
 
   /// 需要在后台预热的二级页面列表。
@@ -33,24 +34,29 @@ class MainPage extends ConsumerWidget {
   List<_MainTabItem> _tablist(AppLocalizations? l10n) {
     return [
       _MainTabItem(
-        icon: 'lib/assets/home.png',
-        activeIcon: 'lib/assets/home-full.png',
-        text: l10n?.mainTabHome ?? '主页',
+        icon: 'lib/assets/tab-icons/today-inactive.png',
+        activeIcon: 'lib/assets/tab-icons/today-active.png',
+        text: l10n?.mainTabToday ?? '今日',
       ),
       _MainTabItem(
-        icon: 'lib/assets/drug.png',
-        activeIcon: 'lib/assets/drug-full.png',
-        text: l10n?.mainTabDrug ?? '药品',
+        icon: 'lib/assets/tab-icons/record-inactive.png',
+        activeIcon: 'lib/assets/tab-icons/record-active.png',
+        text: l10n?.mainTabRecord ?? '记录',
       ),
       _MainTabItem(
-        icon: 'lib/assets/picture.png',
-        activeIcon: 'lib/assets/picture-full.png',
-        text: l10n?.mainTabAlbum ?? '相册',
+        icon: 'lib/assets/tab-icons/medicine-inactive.png',
+        activeIcon: 'lib/assets/tab-icons/medicine-active.png',
+        text: l10n?.mainTabMedicine ?? '用药',
       ),
       _MainTabItem(
-        icon: 'lib/assets/mine.png',
-        activeIcon: 'lib/assets/mine-full.png',
-        text: l10n?.mainTabMine ?? '我的',
+        icon: 'lib/assets/tab-icons/profile-inactive.png',
+        activeIcon: 'lib/assets/tab-icons/profile-active.png',
+        text: l10n?.mainTabProfile ?? '我的',
+      ),
+      _MainTabItem(
+        icon: 'lib/assets/tab-icons/more-inactive.png',
+        activeIcon: 'lib/assets/tab-icons/more-active.png',
+        text: l10n?.mainTabMore ?? '更多',
       ),
     ];
   }
@@ -87,10 +93,7 @@ class MainPage extends ConsumerWidget {
     ];
 
     return colors
-        .map(
-          (color) =>
-              isDark ? Color.lerp(color, Colors.white, 0.08)! : color,
-        )
+        .map((color) => isDark ? Color.lerp(color, Colors.white, 0.08)! : color)
         .toList();
   }
 
@@ -101,10 +104,7 @@ class MainPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildPageStack(
-    MainShellState shellState,
-    List<_MainTabItem> tabs,
-  ) {
+  Widget _buildPageStack(MainShellState shellState, List<_MainTabItem> tabs) {
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -203,8 +203,7 @@ class MainPage extends ConsumerWidget {
         final tabColors = _resolvedTabColors(theme);
         final currentIndex = shellState.currentIndex;
         final currentColor = tabColors[currentIndex];
-        final secondaryColor =
-            tabColors[(currentIndex + 1) % tabColors.length];
+        final secondaryColor = tabColors[(currentIndex + 1) % tabColors.length];
         final tabBarBackground = Color.alphaBlend(
           (isDark ? secondaryColor : currentColor).withValues(
             alpha: isDark ? 0.08 : 0.04,
@@ -226,19 +225,20 @@ class MainPage extends ConsumerWidget {
             ? const Color(0xFF94A3B8)
             : AppUiConstants.TAB_INACTIVE;
         final overlayStyle =
-            (isDark
-                    ? SystemUiOverlayStyle.light
-                    : SystemUiOverlayStyle.dark)
+            (isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
                 .copyWith(
                   statusBarColor: Colors.transparent,
                   systemNavigationBarColor: systemNavigationBarColor,
                   systemNavigationBarDividerColor: Colors.transparent,
-                  statusBarIconBrightness:
-                      isDark ? Brightness.light : Brightness.dark,
-                  statusBarBrightness:
-                      isDark ? Brightness.dark : Brightness.light,
-                  systemNavigationBarIconBrightness:
-                      isDark ? Brightness.light : Brightness.dark,
+                  statusBarIconBrightness: isDark
+                      ? Brightness.light
+                      : Brightness.dark,
+                  statusBarBrightness: isDark
+                      ? Brightness.dark
+                      : Brightness.light,
+                  systemNavigationBarIconBrightness: isDark
+                      ? Brightness.light
+                      : Brightness.dark,
                 );
 
         return AnnotatedRegion<SystemUiOverlayStyle>(
