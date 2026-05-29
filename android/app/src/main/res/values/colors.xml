@@ -4,4 +4,5 @@
     <color name="launch_icon_background_color">#F0E4D4</color>
     <color name="launch_status_bar_color">#FFF9F3</color>
     <color name="launch_navigation_bar_color">#FFF9F3</color>
+	<color name="ic_launcher_background">#66BB6A</color>
 </resources>
