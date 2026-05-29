@@ -833,5 +833,71 @@
   "albumPreviewRescanAction": "再次识别",
   "albumDetailMissingIdentityToast": "该记录缺少 drugCode/approvalNo，无法查看详情",
   "albumRescanThumbnailOnlyToast": "当前记录仅保存缩略图，无法高质量重识别",
-  "albumRescanReadOriginalFailedToast": "原图读取失败，无法重识别"
+  "albumRescanReadOriginalFailedToast": "原图读取失败，无法重识别",
+
+  "todayGreeting": "早上好，阳光正好 🌤️",
+  "todayGreetingSubtitle": "你的眼睛很棒呢，精神满满！",
+  "todayWaterTitle": "今日喝水",
+  "todayWaterGoal": "目标 {goal} 次",
+  "@todayWaterGoal": {
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterDrunk": "已喝",
+  "todayWaterDrunkCount": "{count} 次",
+  "@todayWaterDrunkCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterRemaining": "还差",
+  "todayWaterRemainingCount": "{count} 次",
+  "@todayWaterRemainingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationTitle": "用药提醒",
+  "todayMedicationView": "查看",
+  "todayMedicationTypeCount": "{count} 种药品",
+  "@todayMedicationTypeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationPendingCount": "{count} 个待服用",
+  "@todayMedicationPendingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationNextTime": "下次 {time}",
+  "@todayMedicationNextTime": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "todayHealthTitle": "健康快照",
+  "todayHealthHeartRateUnit": "次/分",
+  "todayHealthHeartRateLabel": "心率",
+  "todayHealthBloodPressureLabel": "血压",
+  "todayHealthSleepUnit": "小时",
+  "todayHealthSleepLabel": "睡眠",
+  "todayDietTitle": "今日饮食建议",
+  "todayDietChangeAction": "换一换",
+  "todayEnvironmentTitle": "环境提醒",
+  "todayEnvironmentPollen": "花粉",
+  "todayEnvironmentUv": "紫外线",
+  "todayLumiTitle": "Lumi 建议"
 }

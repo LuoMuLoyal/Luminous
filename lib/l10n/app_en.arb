@@ -833,5 +833,71 @@
   "albumPreviewRescanAction": "Scan Again",
   "albumDetailMissingIdentityToast": "This record is missing drugCode/approvalNo, cannot open details",
   "albumRescanThumbnailOnlyToast": "This record only keeps a thumbnail, so high-quality rescanning is unavailable",
-  "albumRescanReadOriginalFailedToast": "Failed to read original image, cannot rescan"
+  "albumRescanReadOriginalFailedToast": "Failed to read original image, cannot rescan",
+
+  "todayGreeting": "Good morning, sunshine! 🌤️",
+  "todayGreetingSubtitle": "Your eyes look great, full of energy!",
+  "todayWaterTitle": "Water Intake",
+  "todayWaterGoal": "Goal {goal} times",
+  "@todayWaterGoal": {
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterDrunk": "Drunk",
+  "todayWaterDrunkCount": "{count} times",
+  "@todayWaterDrunkCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterRemaining": "Remaining",
+  "todayWaterRemainingCount": "{count} times",
+  "@todayWaterRemainingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationTitle": "Medication Reminders",
+  "todayMedicationView": "View",
+  "todayMedicationTypeCount": "{count} types",
+  "@todayMedicationTypeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationPendingCount": "{count} pending",
+  "@todayMedicationPendingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationNextTime": "Next at {time}",
+  "@todayMedicationNextTime": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "todayHealthTitle": "Health Snapshot",
+  "todayHealthHeartRateUnit": "bpm",
+  "todayHealthHeartRateLabel": "Heart Rate",
+  "todayHealthBloodPressureLabel": "Blood Pressure",
+  "todayHealthSleepUnit": "hrs",
+  "todayHealthSleepLabel": "Sleep",
+  "todayDietTitle": "Diet Suggestions",
+  "todayDietChangeAction": "Change",
+  "todayEnvironmentTitle": "Environment",
+  "todayEnvironmentPollen": "Pollen",
+  "todayEnvironmentUv": "UV Index",
+  "todayLumiTitle": "Lumi Advice"
 }

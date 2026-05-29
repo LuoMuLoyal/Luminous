@@ -196,3 +196,45 @@ Container(
   child: Text('...', style: TextStyle(fontSize: AppTypography.body)),
 );
 ```
+
+---
+
+## 今日页组件库（`lib/shared/widgets/today/`）
+
+> 2026-05-29 新增，供今日页及后续健康模块复用。
+
+| 组件                 | 文件                        | 用途                                                        |
+| -------------------- | --------------------------- | ----------------------------------------------------------- |
+| `TodayProgressRing`  | `today_progress_ring.dart`  | 圆形进度环（CustomPainter），支持自定义颜色/尺寸/中心子组件 |
+| `TodayStatCard`      | `today_stat_card.dart`      | 健康指标卡片（图标 + 数值 + 单位 + 标签）                   |
+| `TodaySectionHeader` | `today_section_header.dart` | 区块标题行（左侧标题 + 右侧操作按钮）                       |
+| `TodayEnvChip`       | `today_env_chip.dart`       | 环境指标标签（基于 TintedStatusChip）                       |
+
+### 全局常量（`lib/constants/today_constants.dart`）
+
+所有 UI 尺寸、默认值、Mock 数据、语义颜色均在 `TodayConstants` 中统一管理，禁止在 widget 代码中使用魔法数字。
+
+关键常量分组：
+
+- **喝水追踪**：`defaultWaterGoal`(8)、`waterRingSize`(80)、`waterRingStrokeWidth`(8)
+- **健康指标**：心率/血压/睡眠正常范围阈值
+- **环境等级**：花粉/紫外线指数分级阈值
+- **Mock 数据**：`mockWaterIntake`、`mockHeartRate` 等
+- **语义颜色**：`waterPrimaryColor`、`heartRateColor`、`bloodPressureColor` 等
+
+### 使用规范
+
+```dart
+// ✅ 正确 — 引用常量 + 可复用组件
+TodayProgressRing(
+  progress: current / TodayConstants.defaultWaterGoal,
+  center: Text('$current'),
+)
+
+// ❌ 禁止 — 魔法数字 + 硬编码样式
+SizedBox(
+  width: 80,
+  height: 80,
+  child: CircularProgressIndicator(value: 5 / 8),
+)
+```

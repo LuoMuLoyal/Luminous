@@ -8,6 +8,7 @@
 
 ## 功能
 
+- 今日页：喝水追踪、用药提醒、健康快照、饮食建议、环境提醒、Lumi AI 建议
 - 药品搜索、扫码识别、药品详情
 - 用药提醒、打卡记录、服药反应记录
 - AI 用药安全辅助
@@ -28,15 +29,15 @@ flutter test
 
 ## 文档
 
-| 文档 | 说明 |
-|------|------|
-| [Promise](docs/Promise.md) | 产品最终愿景 |
-| [ROADMAP](docs/ROADMAP.md) | 功能路线图与优先级 |
-| [RefactorPlan](docs/RefactorPlan.md) | 架构重构方向与红线 |
-| [ExecutionPlan](docs/ExecutionPlan.md) | 当前顺序执行步骤 |
+| 文档                                         | 说明               |
+| -------------------------------------------- | ------------------ |
+| [Promise](docs/Promise.md)                   | 产品最终愿景       |
+| [ROADMAP](docs/ROADMAP.md)                   | 功能路线图与优先级 |
+| [RefactorPlan](docs/RefactorPlan.md)         | 架构重构方向与红线 |
+| [ExecutionPlan](docs/ExecutionPlan.md)       | 当前顺序执行步骤   |
 | [CurrentFocusPlan](docs/CurrentFocusPlan.md) | 当前阶段聚焦执行版 |
-| [MigrationLog](docs/MigrationLog.md) | 迁移历史记录 |
-| [TODO](docs/TODO.md) | 已知待修复问题 |
+| [MigrationLog](docs/MigrationLog.md)         | 迁移历史记录       |
+| [TODO](docs/TODO.md)                         | 已知待修复问题     |
 
 后端相关文档在 `Lucent/` 和 `backend/` 各自的 README 中。
 
