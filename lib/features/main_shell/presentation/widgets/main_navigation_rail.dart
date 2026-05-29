@@ -24,7 +24,7 @@ class _MainNavigationRail extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final currentColor = itemColors[currentIndex];
-    final width = extended ? 228.0 : 92.0;
+    final width = extended ? 228.0 : 100.0;
     final railBackground = Color.alphaBlend(
       currentColor.withValues(alpha: isDark ? 0.10 : 0.055),
       backgroundColor,
@@ -47,41 +47,76 @@ class _MainNavigationRail extends StatelessWidget {
         child: SafeArea(
           right: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            child: NavigationRail(
-              backgroundColor: Colors.transparent,
-              selectedIndex: currentIndex,
-              extended: extended,
-              minExtendedWidth: width,
-              minWidth: width,
-              groupAlignment: -0.82,
-              labelType: extended ? null : NavigationRailLabelType.all,
-              selectedLabelTextStyle: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w800,
-                color: currentColor,
-              ),
-              unselectedLabelTextStyle: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: inactiveColor,
-              ),
-              indicatorColor: currentColor.withValues(
-                alpha: isDark ? 0.24 : 0.14,
-              ),
-              onDestinationSelected: onTap,
-              destinations: List<NavigationRailDestination>.generate(
-                items.length,
-                (index) {
-                  final item = items[index];
-                  final itemColor = itemColors[index];
-                  return NavigationRailDestination(
-                    icon: Icon(item.icon, color: inactiveColor),
-                    selectedIcon: Icon(item.activeIcon, color: itemColor),
-                    label: Text(item.text),
-                  );
-                },
-              ),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+            child: Column(
+              children: List.generate(items.length, (i) {
+                final selected = i == currentIndex;
+                final item = items[i];
+                final itemColor = itemColors[i];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => onTap(i),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 350),
+                      curve: Curves.easeOutCubic,
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: extended ? 16 : 16,
+                      ),
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? itemColor.withValues(alpha: isDark ? 0.22 : 0.14)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: extended
+                          ? Row(
+                              children: [
+                                Icon(
+                                  selected ? item.activeIcon : item.icon,
+                                  size: 24,
+                                  color: selected ? itemColor : inactiveColor,
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  item.text,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: selected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                    color: selected ? itemColor : inactiveColor,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  selected ? item.activeIcon : item.icon,
+                                  size: 24,
+                                  color: selected ? itemColor : inactiveColor,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  item.text,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: selected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                    color: selected ? itemColor : inactiveColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                  ),
+                );
+              }),
             ),
           ),
         ),

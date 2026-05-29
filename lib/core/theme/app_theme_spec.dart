@@ -37,16 +37,16 @@ AppThemeSpec themeSpecFor(AppThemeStyle style) {
   switch (style) {
     case AppThemeStyle.softGlow:
       return const AppThemeSpec(
-        lightPrimary: Color(0xFF3FA9E8),
-        lightSecondary: Color(0xFFCAA4E8),
-        lightTertiary: Color(0xFFF1CB8A),
-        lightBackground: Color(0xFFF7FBFF),
-        darkPrimary: Color(0xFFA6DBFF),
-        darkSecondary: Color(0xFFD8C1FF),
-        darkTertiary: Color(0xFFE9D08E),
-        darkBackground: Color(0xFF0B1524),
-        darkSurface: Color(0xFF14243A),
-        darkSurfaceAlt: Color(0xFF1E3351),
+        lightPrimary: Color(0xFF66BB6A),
+        lightSecondary: Color(0xFFA5D6A7),
+        lightTertiary: Color(0xFFFFD54F),
+        lightBackground: Color(0xFFF5FAF5),
+        darkPrimary: Color(0xFFA5D6A7),
+        darkSecondary: Color(0xFF81C784),
+        darkTertiary: Color(0xFFFFD54F),
+        darkBackground: Color(0xFF0B1A0E),
+        darkSurface: Color(0xFF14231A),
+        darkSurfaceAlt: Color(0xFF1E3327),
       );
     case AppThemeStyle.moonMist:
       return const AppThemeSpec(
@@ -105,16 +105,16 @@ AppThemeSpec themeSpecFor(AppThemeStyle style) {
 
 /// 兜底色板规格（当未知主题风格时使用，等同 softGlow）。
 const AppThemeSpec fallbackThemeSpec = AppThemeSpec(
-  lightPrimary: Color(0xFF3FA9E8),
-  lightSecondary: Color(0xFFCAA4E8),
-  lightTertiary: Color(0xFFF1CB8A),
-  lightBackground: Color(0xFFF7FBFF),
-  darkPrimary: Color(0xFFA6DBFF),
-  darkSecondary: Color(0xFFD8C1FF),
-  darkTertiary: Color(0xFFE9D08E),
-  darkBackground: Color(0xFF0B1524),
-  darkSurface: Color(0xFF14243A),
-  darkSurfaceAlt: Color(0xFF1E3351),
+  lightPrimary: Color(0xFF66BB6A),
+  lightSecondary: Color(0xFFA5D6A7),
+  lightTertiary: Color(0xFFFFD54F),
+  lightBackground: Color(0xFFF5FAF5),
+  darkPrimary: Color(0xFFA5D6A7),
+  darkSecondary: Color(0xFF81C784),
+  darkTertiary: Color(0xFFFFD54F),
+  darkBackground: Color(0xFF0B1A0E),
+  darkSurface: Color(0xFF14231A),
+  darkSurfaceAlt: Color(0xFF1E3327),
 );
 
 /// 安全获取主题色板，异常时返回 [fallbackThemeSpec]。
@@ -138,32 +138,44 @@ Color softenedDarkBackground(Color themedBackground) {
 
 Color lightOnSurfaceVariant(AppThemeSpec spec) {
   return Color.alphaBlend(
-    Color.lerp(spec.lightPrimary, spec.lightSecondary, 0.42)!
-        .withValues(alpha: 0.10),
+    Color.lerp(
+      spec.lightPrimary,
+      spec.lightSecondary,
+      0.42,
+    )!.withValues(alpha: 0.10),
     const Color(0xFF65758A),
   );
 }
 
 Color lightOutline(AppThemeSpec spec) {
   return Color.alphaBlend(
-    Color.lerp(spec.lightPrimary, spec.lightSecondary, 0.48)!
-        .withValues(alpha: 0.16),
+    Color.lerp(
+      spec.lightPrimary,
+      spec.lightSecondary,
+      0.48,
+    )!.withValues(alpha: 0.16),
     const Color(0xFFD9E2ED),
   );
 }
 
 Color lightDivider(AppThemeSpec spec) {
   return Color.alphaBlend(
-    Color.lerp(spec.lightSecondary, spec.lightTertiary, 0.42)!
-        .withValues(alpha: 0.12),
+    Color.lerp(
+      spec.lightSecondary,
+      spec.lightTertiary,
+      0.42,
+    )!.withValues(alpha: 0.12),
     const Color(0xFFE2E8F0),
   );
 }
 
 Color lightCardBorder(AppThemeSpec spec) {
   return Color.alphaBlend(
-    Color.lerp(spec.lightPrimary, spec.lightTertiary, 0.34)!
-        .withValues(alpha: 0.12),
+    Color.lerp(
+      spec.lightPrimary,
+      spec.lightTertiary,
+      0.34,
+    )!.withValues(alpha: 0.12),
     const Color(0xFFE4EAF2),
   );
 }
