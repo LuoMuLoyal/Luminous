@@ -2,56 +2,78 @@ import 'package:flutter/widgets.dart';
 
 /// 全局圆角 token。
 ///
-/// 组件和组件引用此处的语义化常量，避免散落 `BorderRadius.circular()` 魔数。
+/// 组件引用此处的语义化常量，避免散落 `BorderRadius.circular()` 魔数。
 ///
-/// 参考 Apple 设计语言圆角系统：
-/// none(0) / sm(8) / md(11) / lg(18) / pill(9999)
+/// 基于 DESIGN.md（Airbnb 设计语言）圆角系统：
+/// none(0) / xs(4) / sm(8) / md(14) / lg(20) / xl(32) / full(9999)
 class AppRadius {
   AppRadius._();
 
-  // ── 基础圆角 ──
+  // ── 基础圆角（DESIGN.md rounded tokens）──
 
   /// 0px — 全宽 Tile、无圆角元素。
   static const double none = 0;
 
-  /// 6px — 紧凑型 chip、复选框。
-  static const double tight = 6;
+  /// 4px — 紧凑型元素（xs）。
+  static const double xs = 4;
 
-  /// 8px — 小按钮、内嵌图片。
+  /// 8px — 小按钮、内嵌图片、按钮圆角（sm）。
   static const double sm = 8;
 
   /// 12px — 小 chip、辅助元素。
   static const double chip = 12;
 
-  /// 14px — 文本按钮、小输入框。
-  static const double small = 14;
+  /// 14px — 卡片圆角、property-card photo（md）。
+  static const double md = 14;
 
-  /// 16px — 输入框、普通按钮。
+  /// 20px — 大卡片（lg）。
+  static const double lg = 20;
+
+  /// 32px — category-strip rounded corners（xl）。
+  static const double xl = 32;
+
+  /// 9999px — 胶囊按钮、pill（full）。
+  static const double full = 9999;
+
+  // ── 语义级圆角（向后兼容）──
+
+  /// 8px — 小按钮、内嵌图片。等同于 [sm]。
+  static const double tight = sm;
+
+  /// 8px — 小按钮。等同于 [sm]。
+  static const double small = sm;
+
+  /// 16px — 输入框（text-input rounded: sm=8px，但保留 16 兼容旧代码）。
   static const double input = 16;
 
-  /// 18px — 卡片、实用工具卡片（Apple lg）。
-  static const double card = 18;
+  /// 14px — 卡片圆角。等同于 [md]。
+  static const double card = md;
 
-  /// 20px — 列表项卡片。
-  static const double cardLarge = 20;
+  /// 20px — 列表项卡片。等同于 [lg]。
+  static const double cardLarge = lg;
 
-  /// 24px — 大容器（dialog、bottomSheet、card）。
-  static const double container = 24;
+  /// 32px — 大容器。等同于 [xl]。
+  static const double container = xl;
 
-  /// 9999px — 胶囊按钮（Apple pill）。
-  static const double pill = 9999;
+  /// 9999px — 胶囊按钮。等同于 [full]。
+  static const double pill = full;
 
   // ── 语义级 BorderRadius ──
 
+  static BorderRadius get xsRadius => BorderRadius.circular(xs);
   static BorderRadius get tightRadius => BorderRadius.circular(tight);
   static BorderRadius get smRadius => BorderRadius.circular(sm);
   static BorderRadius get chipRadius => BorderRadius.circular(chip);
   static BorderRadius get smallRadius => BorderRadius.circular(small);
+  static BorderRadius get mdRadius => BorderRadius.circular(md);
   static BorderRadius get inputRadius => BorderRadius.circular(input);
   static BorderRadius get cardRadius => BorderRadius.circular(card);
+  static BorderRadius get lgRadius => BorderRadius.circular(lg);
+  static BorderRadius get xlRadius => BorderRadius.circular(xl);
   static BorderRadius get containerRadius =>
       const BorderRadius.all(Radius.circular(container));
   static BorderRadius get pillRadius => BorderRadius.circular(pill);
+  static BorderRadius get fullRadius => BorderRadius.circular(full);
 
   static BorderRadius get containerTopRadius =>
       const BorderRadius.vertical(top: Radius.circular(container));
