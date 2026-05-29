@@ -1,0 +1,47 @@
+# Luminous 提交信息模板
+
+#
+
+# 格式: type(scope): subject
+
+#
+
+# type 枚举:
+
+# feat ✨ 新功能
+
+# fix 🐛 Bug 修复
+
+# docs 📚 文档
+
+# style 💄 代码格式
+
+# refactor ♻️ 重构
+
+# perf ⚡ 性能优化
+
+# test ✅ 测试
+
+# build 📦 构建系统
+
+# ci 🔧 CI 配置
+
+# chore 🔨 杂项
+
+# revert ⏪ 回滚
+
+#
+
+# scope 常用值:
+
+# auth, home, record, drug, mine, more, api, ui, core, router
+
+#
+
+# 示例:
+
+# feat(auth): 添加微信登录
+
+# fix(drug): 修复药品搜索空结果
+
+# refactor(home): 拆分首页卡片组件
