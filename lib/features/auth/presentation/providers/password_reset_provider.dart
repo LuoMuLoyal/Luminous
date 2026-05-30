@@ -1,54 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 
-class PasswordResetState {
-  const PasswordResetState({
-    this.email = '',
-    this.code = '',
-    this.password = '',
-    this.isSubmitting = false,
-    this.cooldownSeconds,
-    this.errorMessage,
-    this.successMessage,
-  });
+part 'password_reset_provider.freezed.dart';
 
-  final String email;
-  final String code;
-  final String password;
-  final bool isSubmitting;
-  final int? cooldownSeconds;
-  final String? errorMessage;
-  final String? successMessage;
-
-  PasswordResetState copyWith({
-    String? email,
-    String? code,
-    String? password,
-    bool? isSubmitting,
+@freezed
+abstract class PasswordResetState with _$PasswordResetState {
+  const factory PasswordResetState({
+    @Default('') String email,
+    @Default('') String code,
+    @Default('') String password,
+    @Default(false) bool isSubmitting,
     int? cooldownSeconds,
     String? errorMessage,
     String? successMessage,
-    bool clearCooldown = false,
-    bool clearErrorMessage = false,
-    bool clearSuccessMessage = false,
-  }) {
-    return PasswordResetState(
-      email: email ?? this.email,
-      code: code ?? this.code,
-      password: password ?? this.password,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      cooldownSeconds: clearCooldown
-          ? null
-          : cooldownSeconds ?? this.cooldownSeconds,
-      errorMessage: clearErrorMessage
-          ? null
-          : errorMessage ?? this.errorMessage,
-      successMessage: clearSuccessMessage
-          ? null
-          : successMessage ?? this.successMessage,
-    );
-  }
+  }) = _PasswordResetState;
 }
 
 class PasswordResetNotifier extends Notifier<PasswordResetState> {
@@ -56,23 +23,23 @@ class PasswordResetNotifier extends Notifier<PasswordResetState> {
   PasswordResetState build() => const PasswordResetState();
 
   void updateEmail(String value) {
-    state = state.copyWith(email: value, clearErrorMessage: true);
+    state = state.copyWith(email: value, errorMessage: null);
   }
 
   void updateCode(String value) {
-    state = state.copyWith(code: value, clearErrorMessage: true);
+    state = state.copyWith(code: value, errorMessage: null);
   }
 
   void updatePassword(String value) {
-    state = state.copyWith(password: value, clearErrorMessage: true);
+    state = state.copyWith(password: value, errorMessage: null);
   }
 
   Future<bool> sendResetCode() async {
     state = state.copyWith(
       isSubmitting: true,
-      clearCooldown: true,
-      clearErrorMessage: true,
-      clearSuccessMessage: true,
+      cooldownSeconds: null,
+      errorMessage: null,
+      successMessage: null,
     );
     try {
       final result = await ref
@@ -92,8 +59,8 @@ class PasswordResetNotifier extends Notifier<PasswordResetState> {
   Future<bool> resetPassword() async {
     state = state.copyWith(
       isSubmitting: true,
-      clearErrorMessage: true,
-      clearSuccessMessage: true,
+      errorMessage: null,
+      successMessage: null,
     );
     try {
       await ref
@@ -115,7 +82,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState> {
     state = state.copyWith(
       isSubmitting: false,
       errorMessage: apiError.message,
-      clearSuccessMessage: true,
+      successMessage: null,
     );
     return false;
   }
