@@ -66,10 +66,11 @@ class RegisterFormNotifier extends Notifier<RegisterFormState> {
       await ref.read(authSessionProvider.notifier).applySession(session);
       state = state.copyWith(isSubmitting: false);
       return session;
-    } on LucentApiException catch (error) {
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSubmitting: false,
-        errorMessage: error.message,
+        errorMessage: apiError.message,
       );
       return null;
     }
