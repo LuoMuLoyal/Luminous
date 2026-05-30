@@ -16,7 +16,6 @@ class CheckInEmptyCard extends StatelessWidget {
         child: AppSectionCard(
           accentColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.35)!,
           secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.4)!,
-          ornamentKey: 'checkin.empty',
           padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
           radius: 18,
           child: Column(

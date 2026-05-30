@@ -20,7 +20,6 @@ class SafetyHeroCard extends ConsumerWidget {
 
     return SoftBannerCard(
       palette: SoftBannerPalettes.drugOf(context),
-      ornamentKey: 'safety.hero',
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       builder: (context, theme) {
         return Column(

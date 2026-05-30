@@ -155,7 +155,6 @@ class _HistoryHeroCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: Color.lerp(scheme.secondary, scheme.primary, 0.35)!,
       secondaryColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.4)!,
-      ornamentKey: 'mine.browse-history.hero',
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       radius: 18,
       child: Column(
@@ -220,7 +219,6 @@ class _EmptyStateCard extends StatelessWidget {
       child: AppSectionCard(
         accentColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.35)!,
         secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.4)!,
-        ornamentKey: 'mine.browse-history.empty',
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
         radius: 18,
         child: Column(
@@ -287,7 +285,6 @@ class _HistoryItemCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: scheme.primary,
       secondaryColor: scheme.secondary,
-      ornamentKey: 'mine.browse-history.item',
       padding: EdgeInsets.zero,
       radius: 18,
       child: Material(

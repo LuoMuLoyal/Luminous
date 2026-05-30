@@ -18,14 +18,12 @@ class SafetyModeCard extends ConsumerWidget {
       title: l10n?.safetyModeCardTitle ?? 'Query Mode',
       accentColor: scheme.secondary,
       secondaryColor: scheme.tertiary,
-      ornamentKey: 'safety.mode',
       child: SafetyModeSwitcher(
         mode: state.mode,
         l10n: l10n,
         onSelectSingle: () =>
             ref.read(safetyProvider.notifier).setMode('single'),
-        onSelectPair: () =>
-            ref.read(safetyProvider.notifier).setMode('pair'),
+        onSelectPair: () => ref.read(safetyProvider.notifier).setMode('pair'),
       ),
     );
   }

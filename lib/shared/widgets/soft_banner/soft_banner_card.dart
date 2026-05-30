@@ -6,8 +6,6 @@ class SoftBannerCard extends StatelessWidget {
     super.key,
     required this.palette,
     required this.builder,
-    this.ornamentKey,
-    this.ornamentStyle,
     this.padding = const EdgeInsets.all(18),
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
   });
@@ -17,64 +15,12 @@ class SoftBannerCard extends StatelessWidget {
   /// 允许调用方根据 theme 调整前景色（标题、chip、按钮等）。
   final Widget Function(BuildContext context, SoftBannerTheme theme) builder;
 
-  final String? ornamentKey;
-  final AppOrnamentStyle? ornamentStyle;
   final EdgeInsetsGeometry padding;
   final BorderRadius borderRadius;
 
   @override
   Widget build(BuildContext context) {
-    if (ornamentKey == null) {
-      return _buildCard(context);
-    }
-    if (maybeOrnamentContainerOf(context) == null) {
-      return _buildCard(context);
-    }
-    return Consumer(
-      builder: (context, ref, _) {
-        final ornamentState = ref.watch(ornamentProvider);
-        final ornamentNotifier = ref.read(ornamentProvider.notifier);
-        return _buildCard(
-          context,
-          ornamentVisibilityFactor: ornamentState.visibilityFactor,
-          sessionLayout: ornamentNotifier.resolveLayout(
-            ornamentKey: ornamentKey!,
-            family: AppOrnamentFamily.banner,
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCard(
-    BuildContext context, {
-    AppOrnamentLayout? sessionLayout,
-    double ornamentVisibilityFactor = 1,
-  }) {
     final theme = palette.createTheme();
-    final resolvedStyle =
-        ornamentStyle ??
-        _resolveBannerOrnamentStyle(
-          palette.startColor,
-          palette.endColor,
-          palette.accentColor,
-        );
-    final showOrnaments = ornamentVisibilityFactor > 0;
-    final ornamentWidgets = showOrnaments
-        ? (sessionLayout == null
-              ? _buildBannerOrnaments(
-                  style: resolvedStyle,
-                  theme: theme,
-                  visibilityFactor: ornamentVisibilityFactor,
-                )
-              : _buildBannerOrnamentsForLayout(
-                  layout: sessionLayout,
-                  theme: theme,
-                  visibilityFactor: ornamentVisibilityFactor,
-                ))
-        : const <Widget>[];
-    final ornamentIdentity =
-        sessionLayout?.id ?? 'fallback:${resolvedStyle.name}';
 
     return Container(
       decoration: BoxDecoration(
@@ -137,21 +83,6 @@ class SoftBannerCard extends StatelessWidget {
                 ),
               ),
             ),
-            if (showOrnaments)
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 260),
-                    switchInCurve: Curves.easeOutCubic,
-                    switchOutCurve: Curves.easeInCubic,
-                    child: Stack(
-                      key: ValueKey<String>(ornamentIdentity),
-                      fit: StackFit.expand,
-                      children: ornamentWidgets,
-                    ),
-                  ),
-                ),
-              ),
             Padding(
               padding: padding,
               child: SizedBox(

@@ -24,7 +24,6 @@ class CheckInHeroCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: const Color(0xFFF59E0B),
       secondaryColor: const Color(0xFF38BDF8),
-      ornamentKey: 'checkin.hero',
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

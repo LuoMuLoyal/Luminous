@@ -39,24 +39,6 @@ IconData _themeModeIcon(AppThemeModePreference preference) {
   }
 }
 
-String _ornamentTransparencyLabel(
-  AppOrnamentTransparencyPreference preference, {
-  AppLocalizations? l10n,
-}) {
-  switch (preference) {
-    case AppOrnamentTransparencyPreference.t0:
-      return l10n?.settingsOrnamentOptionTransparency0 ?? '透明度 0%';
-    case AppOrnamentTransparencyPreference.t25:
-      return l10n?.settingsOrnamentOptionTransparency25 ?? '透明度 25%';
-    case AppOrnamentTransparencyPreference.t50:
-      return l10n?.settingsOrnamentOptionTransparency50 ?? '透明度 50%';
-    case AppOrnamentTransparencyPreference.t75:
-      return l10n?.settingsOrnamentOptionTransparency75 ?? '透明度 75%';
-    case AppOrnamentTransparencyPreference.t100:
-      return l10n?.settingsOrnamentOptionTransparency100 ?? '透明度 100%（关闭）';
-  }
-}
-
 String _themeStyleLabel(AppThemeStyle style, {AppLocalizations? l10n}) {
   switch (style) {
     case AppThemeStyle.softGlow:

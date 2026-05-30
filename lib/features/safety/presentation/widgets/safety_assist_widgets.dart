@@ -13,7 +13,6 @@ class SafetySectionCard extends StatelessWidget {
     required this.child,
     required this.accentColor,
     required this.secondaryColor,
-    required this.ornamentKey,
     this.titleFontSize = 15.5,
   });
 
@@ -21,7 +20,6 @@ class SafetySectionCard extends StatelessWidget {
   final Widget child;
   final Color accentColor;
   final Color secondaryColor;
-  final String ornamentKey;
   final double titleFontSize;
 
   @override
@@ -30,7 +28,6 @@ class SafetySectionCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: accentColor,
       secondaryColor: secondaryColor,
-      ornamentKey: ornamentKey,
       padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
       radius: 18,
       child: Column(
@@ -54,7 +51,11 @@ class SafetySectionCard extends StatelessWidget {
 
 /// AI 结果条目卡片。
 class SafetyAiResultEntryCard extends StatelessWidget {
-  const SafetyAiResultEntryCard({super.key, required this.index, required this.text});
+  const SafetyAiResultEntryCard({
+    super.key,
+    required this.index,
+    required this.text,
+  });
 
   final int index;
   final String text;
@@ -137,7 +138,6 @@ class SafetyDisclaimerCard extends StatelessWidget {
       title: l10n?.safetyDisclaimerTitle ?? 'Safety Notice',
       accentColor: Theme.of(context).colorScheme.tertiary,
       secondaryColor: Theme.of(context).colorScheme.secondary,
-      ornamentKey: 'safety.disclaimer',
       child: Text(
         l10n?.safetyDisclaimerText ??
             'This feature uses AI-generated content for health education and reference only, '
@@ -368,7 +368,6 @@ class SafetyResultSection extends StatelessWidget {
       title: l10n?.safetyResultCardTitle ?? 'AI Result',
       accentColor: Color.lerp(scheme.secondary, scheme.primary, 0.5)!,
       secondaryColor: scheme.tertiary,
-      ornamentKey: 'safety.result',
       titleFontSize: 20,
       child: entries.isEmpty
           ? Text(
@@ -410,11 +409,11 @@ class SafetyResultSection extends StatelessWidget {
                     child: Text(
                       cachedTime.isEmpty
                           ? (isZh
-                              ? '上次 AI 分析结果'
-                              : 'Previous AI analysis result')
+                                ? '上次 AI 分析结果'
+                                : 'Previous AI analysis result')
                           : (isZh
-                              ? '上次 AI 分析结果 · $cachedTime'
-                              : 'Previous AI analysis result · $cachedTime'),
+                                ? '上次 AI 分析结果 · $cachedTime'
+                                : 'Previous AI analysis result · $cachedTime'),
                       style: TextStyle(
                         fontSize: 12.4,
                         height: 1.45,
@@ -452,8 +451,9 @@ class SafetyResultSection extends StatelessWidget {
 
     final parts = <String>[];
     for (final line in text.split(RegExp(r'\n+|(?<=[。！？；;])\s*'))) {
-      final normalized =
-          line.replaceFirst(RegExp(r'^[•●▪◦·\-*]+\s*'), '').trim();
+      final normalized = line
+          .replaceFirst(RegExp(r'^[•●▪◦·\-*]+\s*'), '')
+          .trim();
       if (normalized.isNotEmpty) parts.add(normalized);
     }
     return parts;

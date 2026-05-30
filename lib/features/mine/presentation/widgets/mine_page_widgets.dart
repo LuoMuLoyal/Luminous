@@ -94,7 +94,6 @@ class MineQuickActionsSection extends StatelessWidget {
         return AppSectionCard(
           accentColor: Color.lerp(scheme.secondary, scheme.tertiary, 0.32)!,
           secondaryColor: Color.lerp(scheme.primary, scheme.secondary, 0.48)!,
-          ornamentKey: 'mine.quick-actions',
           padding: EdgeInsets.all(metrics.sectionPadding),
           radius: 18,
           child: Column(
@@ -207,7 +206,6 @@ class MineMenuCard extends StatelessWidget {
         return AppSectionCard(
           accentColor: Color.lerp(scheme.secondary, scheme.primary, 0.35)!,
           secondaryColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.4)!,
-          ornamentKey: 'mine.menu',
           padding: EdgeInsets.zero,
           radius: 18,
           child: Column(

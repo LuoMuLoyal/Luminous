@@ -11,10 +11,7 @@ import '../support/safety_assist_text.dart';
 
 /// 安全辅助药品选择卡片。
 class SafetyPickCard extends ConsumerWidget {
-  const SafetyPickCard({
-    super.key,
-    required this.onPickMedicine,
-  });
+  const SafetyPickCard({super.key, required this.onPickMedicine});
 
   final Future<void> Function({required int slot}) onPickMedicine;
 
@@ -29,17 +26,13 @@ class SafetyPickCard extends ConsumerWidget {
       title: l10n?.safetyPickCardTitle ?? 'Select Medicines',
       accentColor: scheme.primary,
       secondaryColor: scheme.secondary,
-      ornamentKey: 'safety.pick',
       child: Column(
         children: [
           _pickTile(
             context: context,
-            label:
-                state.medicineA?.displayName ??
-                pickPlaceholderText(l10n, 0),
+            label: state.medicineA?.displayName ?? pickPlaceholderText(l10n, 0),
             subtitle:
-                state.medicineA?.displaySubtitle ??
-                pickSubtitleText(l10n),
+                state.medicineA?.displaySubtitle ?? pickSubtitleText(l10n),
             color: tileAColor,
             onTap: () => onPickMedicine(slot: 0),
             badge: pickBadgeText(l10n, 0),
@@ -50,11 +43,9 @@ class SafetyPickCard extends ConsumerWidget {
             _pickTile(
               context: context,
               label:
-                  state.medicineB?.displayName ??
-                  pickPlaceholderText(l10n, 1),
+                  state.medicineB?.displayName ?? pickPlaceholderText(l10n, 1),
               subtitle:
-                  state.medicineB?.displaySubtitle ??
-                  pickSubtitleText(l10n),
+                  state.medicineB?.displaySubtitle ?? pickSubtitleText(l10n),
               color: tileBColor,
               onTap: () => onPickMedicine(slot: 1),
               badge: pickBadgeText(l10n, 1),

@@ -1,6 +1,6 @@
 part of '../settings.dart';
 
-class _DisplayPreferencesSection extends ConsumerWidget {
+class _DisplayPreferencesSection extends StatelessWidget {
   const _DisplayPreferencesSection({
     required this.themeNotifier,
     required this.themeState,
@@ -10,24 +10,13 @@ class _DisplayPreferencesSection extends ConsumerWidget {
   final ThemeState themeState;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final ornamentNotifier = ref.read(ornamentProvider.notifier);
-    final ornamentState = ref.watch(ornamentProvider);
     return (() {
       final l10n = AppLocalizations.of(context);
       final preference = themeState.modePreference;
       final selectedStyle = themeState.style;
-      final ornamentPercent = ornamentState.transparencyPercent;
-      final matchedPreset = ornamentState.matchedPreset;
-      const ornamentOptions = <AppOrnamentTransparencyPreference>[
-        AppOrnamentTransparencyPreference.t0,
-        AppOrnamentTransparencyPreference.t25,
-        AppOrnamentTransparencyPreference.t50,
-        AppOrnamentTransparencyPreference.t75,
-        AppOrnamentTransparencyPreference.t100,
-      ];
       final systemBrightness = MediaQuery.platformBrightnessOf(context);
       final resolvedDark = preference == AppThemeModePreference.system
           ? systemBrightness == Brightness.dark
@@ -101,141 +90,6 @@ class _DisplayPreferencesSection extends ConsumerWidget {
                             : (l10n.settingsThemeModeOptionLight),
                       ) ??
                       '当前固定为${resolvedDark ? '深色' : '浅色'}外观'),
-            style: TextStyle(
-              color: scheme.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _SettingsFieldTitle(
-            icon: Icons.blur_on_rounded,
-            title: l10n?.settingsOrnamentFieldTitle ?? '氛围装饰',
-            description:
-                l10n?.settingsOrnamentFieldSubtitle ??
-                '支持透明度 0%、25%、50%、75% 与 100%（100% 表示关闭）',
-            color: scheme.tertiary,
-          ),
-          const SizedBox(height: 8),
-          _OrnamentPreviewCard(
-            accentColor: scheme.tertiary,
-            secondaryColor: Color.lerp(scheme.primary, scheme.secondary, 0.45)!,
-            transparencyPercent: ornamentPercent,
-          ),
-          const SizedBox(height: 12),
-          _SettingsFieldTitle(
-            icon: Icons.grid_view_rounded,
-            title: l10n?.settingsOrnamentPresetTitle ?? '快捷档位',
-            description:
-                l10n?.settingsOrnamentPresetSubtitle ??
-                '快速切换常用透明度配置，适合一键调整视觉强弱',
-            color: scheme.tertiary,
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: ornamentOptions
-                .map(
-                  (item) => ChoiceChip(
-                    label: Text(_ornamentTransparencyLabel(item, l10n: l10n)),
-                    avatar: Icon(
-                      item == AppOrnamentTransparencyPreference.t100
-                          ? Icons.visibility_off_rounded
-                          : Icons.blur_on_rounded,
-                      size: 18,
-                      color: matchedPreset == item
-                          ? scheme.tertiary
-                          : scheme.onSurfaceVariant,
-                    ),
-                    selected: matchedPreset == item,
-                    onSelected: (_) {
-                      ornamentNotifier.setTransparencyPreference(item);
-                    },
-                    labelStyle: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: matchedPreset == item
-                          ? scheme.tertiary
-                          : scheme.onSurface,
-                    ),
-                    side: BorderSide(
-                      color: matchedPreset == item
-                          ? scheme.tertiary.withValues(alpha: 0.28)
-                          : scheme.outline,
-                    ),
-                    backgroundColor: theme.cardColor.withValues(alpha: 0.45),
-                    selectedColor: scheme.tertiary.withValues(alpha: 0.12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: 12),
-          _SettingsFieldTitle(
-            icon: Icons.tune_rounded,
-            title: l10n?.settingsOrnamentSliderTitle ?? '自定义透明度',
-            description:
-                l10n?.settingsOrnamentSliderSubtitle ??
-                '支持 0%-100%（步进 5%），可按设备观感精细调节',
-            color: scheme.tertiary,
-          ),
-          const SizedBox(height: 8),
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              activeTrackColor: scheme.tertiary,
-              inactiveTrackColor: scheme.tertiary.withValues(alpha: 0.22),
-              thumbColor: scheme.tertiary,
-              overlayColor: scheme.tertiary.withValues(alpha: 0.16),
-              valueIndicatorColor: scheme.tertiary,
-              valueIndicatorTextStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            child: Slider(
-              min: 0,
-              max: 100,
-              divisions: 20,
-              value: ornamentPercent.toDouble(),
-              label: '$ornamentPercent%',
-              onChanged: (value) {
-                ornamentNotifier.setTransparencyPercent(value.round());
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n?.settingsOrnamentSliderMinLabel ?? '0%（最明显）',
-                    style: TextStyle(
-                      color: scheme.onSurfaceVariant,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Text(
-                  l10n?.settingsOrnamentSliderMaxLabel ?? '100%（关闭）',
-                  style: TextStyle(
-                    color: scheme.onSurfaceVariant,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n?.settingsOrnamentCurrentPercent(ornamentPercent) ??
-                (l10n?.settingsOrnamentCurrent(
-                      '${ornamentPercent.toString()}%',
-                    ) ??
-                    '当前氛围装饰透明度：${ornamentPercent.toString()}%'),
             style: TextStyle(
               color: scheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,

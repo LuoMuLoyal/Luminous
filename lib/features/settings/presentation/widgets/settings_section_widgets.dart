@@ -1,6 +1,6 @@
 part of '../settings.dart';
 
-class _SettingsSectionCard extends ConsumerWidget {
+class _SettingsSectionCard extends StatelessWidget {
   const _SettingsSectionCard({
     required this.title,
     required this.subtitle,
@@ -8,7 +8,6 @@ class _SettingsSectionCard extends ConsumerWidget {
     required this.children,
     required this.accentColor,
     required this.secondaryColor,
-    required this.ornamentKey,
   });
 
   final String title;
@@ -17,17 +16,15 @@ class _SettingsSectionCard extends ConsumerWidget {
   final List<Widget> children;
   final Color accentColor;
   final Color secondaryColor;
-  final String ornamentKey;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
     return AppSectionCard(
       accentColor: accentColor,
       secondaryColor: secondaryColor,
-      ornamentKey: ornamentKey,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       radius: 20,
       child: Column(

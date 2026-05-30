@@ -54,7 +54,6 @@ class MineProfileCard extends StatelessWidget {
 
         return SoftBannerCard(
           palette: palette,
-          ornamentKey: 'mine.profile',
           padding: EdgeInsets.all(compact ? 16 : 18),
           builder: (context, theme) {
             final isDark = Theme.of(context).brightness == Brightness.dark;

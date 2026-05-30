@@ -121,7 +121,6 @@ class DrugSearchEntrySliver extends StatelessWidget {
                 scheme.tertiary,
                 0.45,
               )!,
-              ornamentKey: 'drug.search-entry',
               padding: EdgeInsets.zero,
               radius: 18,
               child: Material(

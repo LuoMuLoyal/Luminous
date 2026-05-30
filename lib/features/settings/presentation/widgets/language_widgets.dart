@@ -230,7 +230,6 @@ class _LanguageHeroCard extends ConsumerWidget {
 
       return SoftBannerCard(
         palette: SoftBannerPalettes.homeOf(context),
-        ornamentKey: 'settings.language.hero',
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         builder: (context, theme) {
           return Column(

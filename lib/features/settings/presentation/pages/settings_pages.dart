@@ -34,7 +34,6 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.tune_rounded,
             accentColor: scheme.secondary,
             secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.5)!,
-            ornamentKey: 'settings.hub',
             children: [
               _SettingsActionTile(
                 icon: Icons.person_outline_rounded,
@@ -170,7 +169,6 @@ class ThemeSettingsPage extends ConsumerWidget {
             icon: Icons.palette_outlined,
             accentColor: scheme.secondary,
             secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.5)!,
-            ornamentKey: 'settings.display',
             children: [
               _DisplayPreferencesSection(
                 themeNotifier: themeNotifier,
@@ -225,7 +223,6 @@ class LanguageSettingsPage extends ConsumerWidget {
             icon: Icons.translate_rounded,
             accentColor: scheme.tertiary,
             secondaryColor: Color.lerp(scheme.secondary, scheme.primary, 0.4)!,
-            ornamentKey: 'settings.language',
             children: [
               _LanguagePreferenceSection(
                 localeNotifier: localeNotifier,

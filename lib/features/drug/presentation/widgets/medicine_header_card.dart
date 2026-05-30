@@ -35,7 +35,6 @@ class MedicineHeaderCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: scheme.primary,
       secondaryColor: Color.lerp(scheme.secondary, scheme.tertiary, 0.5)!,
-      ornamentKey: 'medicine.header.compact',
       radius: 16,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
@@ -104,7 +103,6 @@ class MedicineInfoCard extends StatelessWidget {
       title: l10n?.medicineDetailInfoTitle ?? '基础信息',
       accentColor: Theme.of(context).colorScheme.primary,
       secondaryColor: Theme.of(context).colorScheme.secondary,
-      ornamentKey: 'medicine.info',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
