@@ -1,37 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 
-class AuthSessionState {
-  const AuthSessionState({
-    this.user,
-    this.isLoading = false,
-    this.isAuthenticated = false,
-    this.errorMessage,
-  });
+part 'auth_session_provider.freezed.dart';
 
-  final AuthUser? user;
-  final bool isLoading;
-  final bool isAuthenticated;
-  final String? errorMessage;
-
-  AuthSessionState copyWith({
+@freezed
+abstract class AuthSessionState with _$AuthSessionState {
+  const factory AuthSessionState({
     AuthUser? user,
-    bool? isLoading,
-    bool? isAuthenticated,
+    @Default(false) bool isLoading,
+    @Default(false) bool isAuthenticated,
     String? errorMessage,
-    bool clearErrorMessage = false,
-  }) {
-    return AuthSessionState(
-      user: user ?? this.user,
-      isLoading: isLoading ?? this.isLoading,
-      isAuthenticated: isAuthenticated ?? this.isAuthenticated,
-      errorMessage: clearErrorMessage
-          ? null
-          : errorMessage ?? this.errorMessage,
-    );
-  }
+  }) = _AuthSessionState;
 }
 
 class AuthSessionNotifier extends Notifier<AuthSessionState> {
@@ -41,7 +23,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   }
 
   Future<void> restore() async {
-    state = state.copyWith(isLoading: true, clearErrorMessage: true);
+    state = state.copyWith(isLoading: true, errorMessage: null);
     try {
       final token = await ref.read(lucentDioClientProvider).readAccessToken();
       if (token == null || token.isEmpty) {
@@ -50,16 +32,11 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
       }
 
       final user = await ref.read(authRemoteDataSourceProvider).fetchMe();
-      state = AuthSessionState(
-        user: user,
-        isAuthenticated: true,
-        isLoading: false,
-      );
+      state = AuthSessionState(user: user, isAuthenticated: true);
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
       await ref.read(lucentDioClientProvider).clearSession();
       state = AuthSessionState(
-        isLoading: false,
         isAuthenticated: false,
         errorMessage: apiError.message,
       );
@@ -67,11 +44,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   }
 
   Future<void> applySession(AuthSession session) async {
-    state = AuthSessionState(
-      user: session.user,
-      isAuthenticated: true,
-      isLoading: false,
-    );
+    state = AuthSessionState(user: session.user, isAuthenticated: true);
   }
 
   void applyUser(AuthUser user) {
@@ -79,7 +52,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
       user: user,
       isAuthenticated: true,
       isLoading: false,
-      clearErrorMessage: true,
+      errorMessage: null,
     );
   }
 
@@ -88,7 +61,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   }
 
   Future<void> logout() async {
-    state = state.copyWith(isLoading: true, clearErrorMessage: true);
+    state = state.copyWith(isLoading: true, errorMessage: null);
     try {
       await ref.read(authRemoteDataSourceProvider).logout();
     } finally {

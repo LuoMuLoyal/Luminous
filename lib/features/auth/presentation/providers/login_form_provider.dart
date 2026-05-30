@@ -1,49 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 
+part 'login_form_provider.freezed.dart';
+
 enum AuthLoginMode { password, code }
 
-class LoginFormState {
-  const LoginFormState({
-    this.email = '',
-    this.password = '',
-    this.code = '',
-    this.mode = AuthLoginMode.password,
-    this.isSubmitting = false,
-    this.errorMessage,
-  });
-
-  final String email;
-  final String password;
-  final String code;
-  final AuthLoginMode mode;
-  final bool isSubmitting;
-  final String? errorMessage;
-
-  LoginFormState copyWith({
-    String? email,
-    String? password,
-    String? code,
-    AuthLoginMode? mode,
-    bool? isSubmitting,
+@freezed
+abstract class LoginFormState with _$LoginFormState {
+  const factory LoginFormState({
+    @Default('') String email,
+    @Default('') String password,
+    @Default('') String code,
+    @Default(AuthLoginMode.password) AuthLoginMode mode,
+    @Default(false) bool isSubmitting,
     String? errorMessage,
-    bool clearErrorMessage = false,
-  }) {
-    return LoginFormState(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      code: code ?? this.code,
-      mode: mode ?? this.mode,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      errorMessage: clearErrorMessage
-          ? null
-          : errorMessage ?? this.errorMessage,
-    );
-  }
+  }) = _LoginFormState;
 }
 
 class LoginFormNotifier extends Notifier<LoginFormState> {
@@ -51,29 +27,33 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
   LoginFormState build() => const LoginFormState();
 
   void updateEmail(String value) {
-    state = state.copyWith(email: value, clearErrorMessage: true);
+    state = state.copyWith(email: value, errorMessage: null);
   }
 
   void updatePassword(String value) {
-    state = state.copyWith(password: value, clearErrorMessage: true);
+    state = state.copyWith(password: value, errorMessage: null);
   }
 
   void updateCode(String value) {
-    state = state.copyWith(code: value, clearErrorMessage: true);
+    state = state.copyWith(code: value, errorMessage: null);
   }
 
   void updateMode(AuthLoginMode mode) {
-    state = state.copyWith(mode: mode, clearErrorMessage: true);
+    state = state.copyWith(mode: mode, errorMessage: null);
   }
 
   Future<AuthSession?> submit() async {
-    state = state.copyWith(isSubmitting: true, clearErrorMessage: true);
+    state = state.copyWith(isSubmitting: true, errorMessage: null);
     try {
-      final session = await ref.read(authRemoteDataSourceProvider).login(
-        email: state.email,
-        password: state.mode == AuthLoginMode.password ? state.password : null,
-        code: state.mode == AuthLoginMode.code ? state.code : null,
-      );
+      final session = await ref
+          .read(authRemoteDataSourceProvider)
+          .login(
+            email: state.email,
+            password: state.mode == AuthLoginMode.password
+                ? state.password
+                : null,
+            code: state.mode == AuthLoginMode.code ? state.code : null,
+          );
       await ref.read(authSessionProvider.notifier).applySession(session);
       state = state.copyWith(isSubmitting: false);
       return session;
@@ -89,10 +69,12 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
 
   Future<CooldownMessageDto?> sendCode() async {
     try {
-      return await ref.read(authRemoteDataSourceProvider).sendVerificationCode(
-        email: state.email,
-        scene: AuthVerificationScene.login,
-      );
+      return await ref
+          .read(authRemoteDataSourceProvider)
+          .sendVerificationCode(
+            email: state.email,
+            scene: AuthVerificationScene.login,
+          );
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(errorMessage: apiError.message);
@@ -101,5 +83,6 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
   }
 }
 
-final loginFormProvider =
-    NotifierProvider<LoginFormNotifier, LoginFormState>(LoginFormNotifier.new);
+final loginFormProvider = NotifierProvider<LoginFormNotifier, LoginFormState>(
+  LoginFormNotifier.new,
+);

@@ -12,6 +12,7 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - `ChangeEmailDto` now sends only `newEmail` and `code`; new-email ownership is verified by Lucent.
 - Added account/password-reset logic providers for profile update, email verification, email change, password change, password reset, and account deletion.
 - Fixed Lucent token injection to use the stored access token even when generated OpenAPI `secure` metadata is empty.
+- Migrated auth entities and form/account/session states to `freezed` generated `copyWith` / equality / JSON support where needed.
 
 ### Reset Baseline
 

@@ -1,53 +1,33 @@
-class AuthUser {
-  const AuthUser({
-    required this.id,
-    required this.email,
-    required this.nickname,
-    required this.avatar,
-    required this.emailVerified,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String email;
-  final String? nickname;
-  final String? avatar;
-  final bool emailVerified;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+part 'auth_session.freezed.dart';
+part 'auth_session.g.dart';
 
-  AuthUser copyWith({
-    String? id,
-    String? email,
-    String? nickname,
-    String? avatar,
-    bool? emailVerified,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) {
-    return AuthUser(
-      id: id ?? this.id,
-      email: email ?? this.email,
-      nickname: nickname ?? this.nickname,
-      avatar: avatar ?? this.avatar,
-      emailVerified: emailVerified ?? this.emailVerified,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
-  }
+@freezed
+abstract class AuthUser with _$AuthUser {
+  const factory AuthUser({
+    required String id,
+    required String email,
+    required String? nickname,
+    required String? avatar,
+    required bool emailVerified,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) = _AuthUser;
+
+  factory AuthUser.fromJson(Map<String, Object?> json) =>
+      _$AuthUserFromJson(json);
 }
 
-class AuthSession {
-  const AuthSession({
-    required this.user,
-    required this.accessToken,
-    required this.refreshToken,
-    required this.expiresInSeconds,
-  });
+@freezed
+abstract class AuthSession with _$AuthSession {
+  const factory AuthSession({
+    required AuthUser user,
+    required String accessToken,
+    required String refreshToken,
+    required int expiresInSeconds,
+  }) = _AuthSession;
 
-  final AuthUser user;
-  final String accessToken;
-  final String refreshToken;
-  final int expiresInSeconds;
+  factory AuthSession.fromJson(Map<String, Object?> json) =>
+      _$AuthSessionFromJson(json);
 }
