@@ -16,6 +16,7 @@ Last updated: 2026-05-30
 - `Accept-Language` is injected by the network layer
 - `401002` triggers refresh and retry
 - Dio errors are unwrapped through `LucentErrorMapper`
+- `ChangeEmailDto` follows Lucent contract: `newEmail` + `code`
 
 ## Regenerate
 

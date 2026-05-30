@@ -6,6 +6,11 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-05-30
 
+### Auth Contract Sync
+
+- Regenerated `packages/lucent_openapi` after Lucent removed `currentEmail` from `ChangeEmailDto`.
+- `ChangeEmailDto` now sends only `newEmail` and `code`; new-email ownership is verified by Lucent.
+
 ### Reset Baseline
 
 - Kept five-tab shell: `today / record / medicine / mine / more`.
