@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -126,6 +127,32 @@ class _TodayPageState extends ConsumerState<TodayPage> {
                               style: typography.bodySm.copyWith(
                                 color: surface.mute,
                               ),
+                            ),
+                            const SizedBox(height: AppSpacingTokens.md),
+                            Wrap(
+                              spacing: AppSpacingTokens.sm,
+                              runSpacing: AppSpacingTokens.sm,
+                              children: [
+                                if (!session.isAuthenticated)
+                                  OutlinedButton(
+                                    onPressed: () => context.push('/login'),
+                                    child: const Text('Sign in'),
+                                  ),
+                                if (!session.isAuthenticated)
+                                  FilledButton(
+                                    onPressed: () => context.push('/register'),
+                                    child: const Text('Create account'),
+                                  ),
+                                if (session.isAuthenticated)
+                                  FilledButton(
+                                    onPressed: () async {
+                                      await ref
+                                          .read(authSessionProvider.notifier)
+                                          .logout();
+                                    },
+                                    child: const Text('Sign out'),
+                                  ),
+                              ],
                             ),
                             const SizedBox(height: AppSpacingTokens.lg),
                             Wrap(
