@@ -203,7 +203,6 @@ class ReminderListPage extends ConsumerWidget {
           child: AppSectionCard(
             accentColor: const Color(0xFFF59E0B),
             secondaryColor: const Color(0xFFEF4444),
-            ornamentKey: 'reminders.list.delete-dialog',
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
             child: Column(
               mainAxisSize: MainAxisSize.min,

@@ -32,9 +32,6 @@ extension _SearchStateSlivers on _SearchPageState {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 16, 14, 8),
         child: _buildSearchDecorCard(
-          ornamentKey: widget.pickerMode
-              ? 'search.picker.guide'
-              : 'search.manual.guide',
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
             child: Column(
@@ -93,9 +90,6 @@ extension _SearchStateSlivers on _SearchPageState {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
         child: _buildSearchDecorCard(
-          ornamentKey: widget.pickerMode
-              ? 'search.picker.ready'
-              : 'search.manual.ready',
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
             child: Row(
@@ -196,9 +190,6 @@ extension _SearchStateSlivers on _SearchPageState {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 20, 14, 8),
         child: _buildSearchDecorCard(
-          ornamentKey: widget.pickerMode
-              ? 'search.picker.error'
-              : 'search.manual.error',
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
             child: Row(

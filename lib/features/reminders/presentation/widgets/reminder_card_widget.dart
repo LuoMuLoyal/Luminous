@@ -50,7 +50,6 @@ class ReminderCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: accent,
       secondaryColor: Color.lerp(accent, scheme.primary, 0.36)!,
-      ornamentKey: 'reminders.list.item',
       radius: 18,
       padding: EdgeInsets.zero,
       child: InkWell(

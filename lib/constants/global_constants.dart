@@ -78,8 +78,4 @@ class GlobalConstants {
 
   /// 本地存储语言偏好时使用的 key。
   static const String LOCALE_KEY = 'luminous_locale';
-
-  /// 本地存储氛围装饰透明度偏好时使用的 key。
-  static const String ORNAMENT_TRANSPARENCY_KEY =
-      'luminous_ornament_transparency';
 }

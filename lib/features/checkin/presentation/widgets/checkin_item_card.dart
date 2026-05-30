@@ -22,7 +22,6 @@ class CheckInItemCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: accent,
       secondaryColor: Color.lerp(accent, scheme.primary, 0.35)!,
-      ornamentKey: 'checkin.card.item',
       radius: 18,
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       child: Row(

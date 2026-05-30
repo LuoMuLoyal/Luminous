@@ -20,16 +20,15 @@ class SafetyActionCard extends ConsumerWidget {
       title: l10n?.safetyActionCardTitle ?? 'Start Query',
       accentColor: scheme.tertiary,
       secondaryColor: scheme.primary,
-      ornamentKey: 'safety.action',
       child: Row(
         children: [
           Expanded(
             child: FilledButton(
               onPressed: state.loading || !state.ready
                   ? null
-                  : () => ref.read(safetyProvider.notifier).query(
-                      refresh: state.result != null,
-                    ),
+                  : () => ref
+                        .read(safetyProvider.notifier)
+                        .query(refresh: state.result != null),
               style: FilledButton.styleFrom(
                 minimumSize: const Size(double.infinity, 44),
                 shape: RoundedRectangleBorder(
@@ -57,8 +56,7 @@ class SafetyActionCard extends ConsumerWidget {
           if (state.loading) ...[
             const SizedBox(width: 6),
             FilledButton.tonal(
-              onPressed: () =>
-                  ref.read(safetyProvider.notifier).cancelQuery(),
+              onPressed: () => ref.read(safetyProvider.notifier).cancelQuery(),
               style: FilledButton.styleFrom(
                 minimumSize: const Size(78, 44),
                 backgroundColor: const Color(

@@ -33,7 +33,6 @@ class ReminderEditHeroCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: const Color(0xFF10B981),
       secondaryColor: const Color(0xFF0EA5E9),
-      ornamentKey: 'reminders.edit.hero',
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,8 +115,7 @@ class ReminderEditHeroCard extends StatelessWidget {
                           ? Icons.verified_rounded
                           : Icons.edit_note_rounded,
                       text: hasLinkedIdentity
-                          ? (l10n?.reminderEditStatusBoundMedicine ??
-                              '已绑定药品')
+                          ? (l10n?.reminderEditStatusBoundMedicine ?? '已绑定药品')
                           : (l10n?.reminderEditStatusManualInput ?? '手动输入'),
                       color: hasLinkedIdentity
                           ? const Color(0xFF14B8A6)
@@ -149,14 +147,12 @@ class ReminderEditSectionCard extends StatelessWidget {
     required this.child,
     required this.accentColor,
     required this.secondaryColor,
-    required this.ornamentKey,
   });
 
   final String title;
   final Widget child;
   final Color accentColor;
   final Color secondaryColor;
-  final String ornamentKey;
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +160,6 @@ class ReminderEditSectionCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: accentColor,
       secondaryColor: secondaryColor,
-      ornamentKey: ornamentKey,
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

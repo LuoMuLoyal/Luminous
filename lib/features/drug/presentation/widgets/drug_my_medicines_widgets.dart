@@ -125,7 +125,6 @@ class DrugEmptyMedicinesSliver extends StatelessWidget {
                 scheme.secondary,
                 0.4,
               )!,
-              ornamentKey: 'drug.empty',
               padding: EdgeInsets.fromLTRB(
                 compact ? 16 : 18,
                 compact ? 28 : 36,
@@ -287,7 +286,6 @@ class DrugMyMedicineCard extends StatelessWidget {
             baseColor: Theme.of(
               context,
             ).colorScheme.surface.withValues(alpha: isDark ? 0.35 : 0.65),
-            ornamentKey: 'drug.item',
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
               onTap: onTap,

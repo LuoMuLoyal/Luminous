@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/shared/widgets/app_surface.dart';
-import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/search/presentation/models/search.dart';
 
@@ -13,29 +12,19 @@ class SearchSurfaceCard extends StatelessWidget {
   const SearchSurfaceCard({
     super.key,
     required this.child,
-    this.decorated = false,
     this.accentColor,
     this.secondaryColor,
-    this.ornamentKey,
-    this.ornamentVisibilityScale = 1,
   });
 
   final Widget child;
-  final bool decorated;
   final Color? accentColor;
   final Color? secondaryColor;
-  final String? ornamentKey;
-  final double ornamentVisibilityScale;
 
-  Widget _buildContent(
-    BuildContext context, {
-    required bool ornamentsDisabled,
-  }) {
+  @override
+  Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final resolvedAccent = accentColor ?? scheme.primary;
-    final resolvedSecondary =
-        secondaryColor ?? Color.lerp(scheme.secondary, scheme.tertiary, 0.5)!;
     final baseColor = scheme.surface.withValues(alpha: isDark ? 0.42 : 0.82);
     final borderColor = appTintedBorder(
       context,
@@ -44,55 +33,11 @@ class SearchSurfaceCard extends StatelessWidget {
       darkAlpha: 0.24,
     );
 
-    if (ornamentsDisabled) {
-      return AppSurfaceCard(
-        radius: 16,
-        color: baseColor,
-        borderColor: borderColor,
-        child: child,
-      );
-    }
-
-    if (decorated) {
-      return AppSectionCard(
-        radius: 16,
-        padding: EdgeInsets.zero,
-        accentColor: resolvedAccent,
-        secondaryColor: resolvedSecondary,
-        baseColor: baseColor,
-        ornamentKey: ornamentKey,
-        ornamentVisibilityScale: ornamentVisibilityScale,
-        surfaceBorderColor: borderColor,
-        child: child,
-      );
-    }
-
-    return AppSectionCard(
+    return AppSurfaceCard(
       radius: 16,
-      padding: EdgeInsets.zero,
-      accentColor: resolvedAccent,
-      secondaryColor: resolvedSecondary,
-      baseColor: baseColor,
-      ornamentKey: 'search.item',
-      ornamentVisibilityScale: ornamentVisibilityScale,
-      surfaceBorderColor: borderColor,
+      color: baseColor,
+      borderColor: borderColor,
       child: child,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (maybeOrnamentContainerOf(context) == null) {
-      return _buildContent(context, ornamentsDisabled: false);
-    }
-    return Consumer(
-      builder: (context, ref, _) {
-        final ornamentState = ref.watch(ornamentProvider);
-        return _buildContent(
-          context,
-          ornamentsDisabled: ornamentState.isDisabled,
-        );
-      },
     );
   }
 }
@@ -217,7 +162,6 @@ class SearchResultCard extends StatelessWidget {
     final dosageIcon = _resolveDosageIcon(dosageType);
 
     return SearchSurfaceCard(
-      ornamentVisibilityScale: 0.2,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,

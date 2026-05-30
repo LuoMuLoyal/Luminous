@@ -37,7 +37,6 @@ class HomeTopSection extends StatelessWidget {
 
           return SoftBannerCard(
             palette: palette,
-            ornamentKey: 'home.banner',
             padding: EdgeInsets.all(compact ? 14 : 17),
             builder: (context, theme) {
               final pills = <Widget>[

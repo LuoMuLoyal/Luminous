@@ -31,7 +31,6 @@ class HomeFeatureSection extends StatelessWidget {
           return AppSectionCard(
             accentColor: accent,
             secondaryColor: secondary,
-            ornamentKey: 'home.features',
             padding: EdgeInsets.all(metrics.sectionPadding),
             radius: 18,
             child: Column(

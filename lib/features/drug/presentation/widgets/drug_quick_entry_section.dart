@@ -38,7 +38,6 @@ class DrugQuickEntrySectionSliver extends StatelessWidget {
 
             return SoftBannerCard(
               palette: palette,
-              ornamentKey: 'drug.quick-banner',
               padding: EdgeInsets.all(metrics.sectionPadding),
               borderRadius: BorderRadius.circular(18),
               builder: (context, theme) {

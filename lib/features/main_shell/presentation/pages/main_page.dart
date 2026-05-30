@@ -92,7 +92,7 @@ class MainPage extends ConsumerWidget {
 
   /// 与底部 Tab 一一对应的页面实例列表。
   static const List<Widget> _pages = [
-    HomePage(),
+    TodayPage(),
     RecordPage(),
     DrugPage(),
     MinePage(),
