@@ -18,7 +18,6 @@ class MedicineDisclaimerCard extends StatelessWidget {
       title: l10n?.medicineDetailSafetyTitle ?? '安全提示',
       accentColor: Theme.of(context).colorScheme.tertiary,
       secondaryColor: Theme.of(context).colorScheme.secondary,
-      ornamentKey: 'medicine.disclaimer',
       child: Text(
         l10n?.medicineDetailSafetyDisclaimer ??
             pickDetailTextByLocale(
@@ -48,7 +47,6 @@ class MedicineSurfaceCard extends StatelessWidget {
     required this.child,
     required this.accentColor,
     required this.secondaryColor,
-    required this.ornamentKey,
     this.trailing,
     this.titleFontSize = 15.5,
   });
@@ -61,7 +59,6 @@ class MedicineSurfaceCard extends StatelessWidget {
 
   final Color accentColor;
   final Color secondaryColor;
-  final String ornamentKey;
 
   /// 右上角 trailing 区域（可选），例如按钮。
   final Widget? trailing;
@@ -74,7 +71,6 @@ class MedicineSurfaceCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: accentColor,
       secondaryColor: secondaryColor,
-      ornamentKey: ornamentKey,
       radius: 18,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),

@@ -51,7 +51,6 @@ class MedicineAiCard extends StatelessWidget {
       title: l10n?.medicineDetailAiTitle ?? 'AI 智能解读',
       accentColor: Color.lerp(scheme.secondary, scheme.primary, 0.5)!,
       secondaryColor: scheme.tertiary,
-      ornamentKey: 'medicine.ai',
       titleFontSize: 20,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

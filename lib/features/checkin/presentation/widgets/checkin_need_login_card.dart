@@ -27,7 +27,6 @@ class CheckInNeedLoginCard extends StatelessWidget {
         child: AppSectionCard(
           accentColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.35)!,
           secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.4)!,
-          ornamentKey: 'checkin.need-login',
           padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
           radius: 18,
           child: Column(

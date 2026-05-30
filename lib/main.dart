@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/locale_provider.dart';
 import 'package:luminous/core/providers/shared_preferences_provider.dart';
 import 'package:luminous/core/startup/root_app_widget.dart';
-import 'package:luminous/core/theme/ornaments/ornament_provider.dart';
 import 'package:luminous/features/auth/data/session_sync_service.dart';
 import 'package:luminous/features/auth/providers/user_session_provider.dart';
 import 'package:luminous/startup/app_startup_warmup.dart';
@@ -50,13 +49,6 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
     final container = ProviderScope.containerOf(context);
     _startupWarmup = AppStartupWarmup(
       restoreUserSession: ref.read(userSessionProvider.notifier).restore,
-      warmOrnaments: () async {
-        final ornamentNotifier = ref.read(ornamentProvider.notifier);
-        if (!ornamentNotifier.isReady) {
-          await ornamentNotifier.init();
-        }
-        await ornamentNotifier.warmup();
-      },
       readCurrentUserId: () => container.read(currentUserProvider)?.id,
       sessionSyncService: container.read(sessionSyncServiceProvider),
     );

@@ -28,7 +28,6 @@ class HomeCheckInRecordSection extends StatelessWidget {
               scheme.secondary,
               0.42,
             )!,
-            ornamentKey: 'home.checkin-records',
             padding: EdgeInsets.all(compact ? 10 : 12),
             radius: 18,
             child: Column(

@@ -93,7 +93,6 @@ class _ReminderEditPageState extends ConsumerState<ReminderEditPage> {
             title: l10n?.reminderEditSectionDrugTime ?? '药品与时间',
             accentColor: const Color(0xFF10B981),
             secondaryColor: const Color(0xFF06B6D4),
-            ornamentKey: 'reminders.edit.drug-time',
             child: Column(
               children: <Widget>[
                 ReminderEditTile(
@@ -138,7 +137,6 @@ class _ReminderEditPageState extends ConsumerState<ReminderEditPage> {
             title: l10n?.reminderEditSectionEffectiveDate ?? '生效日期',
             accentColor: const Color(0xFF14B8A6),
             secondaryColor: const Color(0xFF0EA5E9),
-            ornamentKey: 'reminders.edit.date-range',
             child: Column(
               children: <Widget>[
                 ReminderEditTile(
@@ -201,7 +199,6 @@ class _ReminderEditPageState extends ConsumerState<ReminderEditPage> {
             title: l10n?.reminderEditSectionContent ?? '提醒内容',
             accentColor: const Color(0xFF3B82F6),
             secondaryColor: const Color(0xFF14B8A6),
-            ornamentKey: 'reminders.edit.content',
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -226,7 +223,6 @@ class _ReminderEditPageState extends ConsumerState<ReminderEditPage> {
             title: l10n?.reminderEditSectionSwitch ?? '开关',
             accentColor: const Color(0xFFF59E0B),
             secondaryColor: const Color(0xFF10B981),
-            ornamentKey: 'reminders.edit.switch',
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -277,7 +273,6 @@ class _ReminderEditPageState extends ConsumerState<ReminderEditPage> {
             title: l10n?.safetyDisclaimerTitle ?? '提示',
             accentColor: const Color(0xFFF59E0B),
             secondaryColor: const Color(0xFF38BDF8),
-            ornamentKey: 'reminders.edit.disclaimer',
             child: Text(
               '提醒功能仅作为辅助，具体用药请遵从医嘱。',
               style: TextStyle(

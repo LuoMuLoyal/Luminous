@@ -29,7 +29,6 @@ class ReminderListHeroCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: const Color(0xFF10B981),
       secondaryColor: const Color(0xFF38BDF8),
-      ornamentKey: 'reminders.list.hero',
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +107,6 @@ class ReminderNeedLoginCard extends StatelessWidget {
         child: AppSectionCard(
           accentColor: Color.lerp(scheme.primary, scheme.tertiary, 0.32)!,
           secondaryColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.4)!,
-          ornamentKey: 'reminders.need-login',
           padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
           radius: 18,
           child: Column(
@@ -187,7 +185,6 @@ class ReminderErrorBanner extends StatelessWidget {
     return AppSectionCard(
       accentColor: const Color(0xFFF59E0B),
       secondaryColor: Color.lerp(const Color(0xFFF59E0B), scheme.error, 0.25)!,
-      ornamentKey: 'reminders.list.error',
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
       child: Row(
         children: [
@@ -221,7 +218,6 @@ class ReminderEmptyCard extends StatelessWidget {
     return AppSectionCard(
       accentColor: Color.lerp(scheme.primary, scheme.tertiary, 0.32)!,
       secondaryColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.4)!,
-      ornamentKey: 'reminders.empty',
       padding: const EdgeInsets.symmetric(vertical: 42),
       radius: 18,
       child: Column(

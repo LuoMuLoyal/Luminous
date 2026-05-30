@@ -56,8 +56,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   AppLocalizations? get _l10n => AppLocalizations.of(context);
 
-  double get _pageOrnamentVisibilityScale => widget.pickerMode ? 1.0 : 0.2;
-
   @override
   void initState() {
     super.initState();
@@ -96,9 +94,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     super.didChangeDependencies();
     Future.microtask(() {
       if (mounted) {
-        ref.read(searchProvider.notifier).applyLocalizedRecentDefaults(
-          _defaultRecentKeywords(),
-        );
+        ref
+            .read(searchProvider.notifier)
+            .applyLocalizedRecentDefaults(_defaultRecentKeywords());
       }
     });
   }
@@ -118,20 +116,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   String _queryModeLabel(AppLocalizations? l10n) =>
       ref.read(searchProvider).queryMode == MedicineQueryMode.online
-          ? (l10n?.searchQueryModeOnline ?? '联网查询')
-          : (l10n?.searchQueryModeLocal ?? '本地查询');
+      ? (l10n?.searchQueryModeOnline ?? '联网查询')
+      : (l10n?.searchQueryModeLocal ?? '本地查询');
 
-  SearchSurfaceCard _buildSearchDecorCard({
-    required String ornamentKey,
-    required Widget child,
-  }) {
+  SearchSurfaceCard _buildSearchDecorCard({required Widget child}) {
     final scheme = Theme.of(context).colorScheme;
     return SearchSurfaceCard(
       decorated: true,
       accentColor: scheme.primary,
       secondaryColor: Color.lerp(scheme.secondary, scheme.tertiary, 0.45)!,
-      ornamentKey: ornamentKey,
-      ornamentVisibilityScale: _pageOrnamentVisibilityScale,
       child: child,
     );
   }
@@ -158,8 +151,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             child: CustomScrollView(
               controller: _scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
-              keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               slivers: [
                 _buildHeaderSliver(),
                 _buildSearchBarSliver(),
@@ -187,25 +179,26 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     if (_draftKeywordNotifier.value != next) {
       _draftKeywordNotifier.value = next;
     }
-    ref.read(searchProvider.notifier).syncDraftKeyword(
-      _searchTextController.text,
-    );
+    ref
+        .read(searchProvider.notifier)
+        .syncDraftKeyword(_searchTextController.text);
   }
 
   void _handleScroll() {
     if (!_scrollController.hasClients) return;
-    ref.read(searchProvider.notifier).handleScroll(
-      _scrollController.position.maxScrollExtent,
-      _scrollController.offset,
-    );
+    ref
+        .read(searchProvider.notifier)
+        .handleScroll(
+          _scrollController.position.maxScrollExtent,
+          _scrollController.offset,
+        );
   }
 
   SearchResultItemData _toCardData(MedicineItem item) {
     final locale = (_l10n?.localeName ?? 'zh').toLowerCase();
-    return ref.read(searchProvider.notifier).toCardData(
-      item,
-      isZh: locale.startsWith('zh'),
-    );
+    return ref
+        .read(searchProvider.notifier)
+        .toCardData(item, isZh: locale.startsWith('zh'));
   }
 
   void _applyQuickTag(String tag) {
@@ -262,8 +255,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     }
     ToastUtils.instance.show(
       context,
-      ref.read(currentUserProvider)?.id != null &&
-              !result.remoteSynced
+      ref.read(currentUserProvider)?.id != null && !result.remoteSynced
           ? (_l10n?.searchAddedPendingSyncToast ?? '已添加到我的药品，待同步到云端')
           : (_l10n?.searchAddedToast ?? '已添加到我的药品'),
     );

@@ -31,7 +31,6 @@ class AlbumHeaderSliver extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
         child: SoftBannerCard(
           palette: palette,
-          ornamentKey: 'album.banner',
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
           builder: (context, theme) {
             return Column(
@@ -160,7 +159,6 @@ class AlbumErrorBannerSliver extends StatelessWidget {
         child: AppSectionCard(
           accentColor: scheme.error,
           secondaryColor: Color.lerp(scheme.error, scheme.secondary, 0.24)!,
-          ornamentKey: 'album.error',
           padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
           radius: 16,
           child: Row(
@@ -237,7 +235,6 @@ class AlbumEmptySliver extends StatelessWidget {
         child: AppSectionCard(
           accentColor: Color.lerp(scheme.tertiary, scheme.secondary, 0.35)!,
           secondaryColor: Color.lerp(scheme.primary, scheme.tertiary, 0.35)!,
-          ornamentKey: 'album.empty',
           padding: const EdgeInsets.fromLTRB(16, 36, 16, 36),
           radius: 18,
           child: Column(
@@ -321,7 +318,6 @@ class AlbumLoginBannerSliver extends StatelessWidget {
         child: AppSectionCard(
           accentColor: accent,
           secondaryColor: scheme.tertiary,
-          ornamentKey: 'album.login',
           padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
           radius: 16,
           child: LayoutBuilder(

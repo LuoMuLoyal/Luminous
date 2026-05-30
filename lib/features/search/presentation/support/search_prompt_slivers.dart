@@ -116,9 +116,6 @@ extension _SearchPromptSlivers on _SearchPageState {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 6, 14, 6),
             child: _buildSearchDecorCard(
-              ornamentKey: widget.pickerMode
-                  ? 'search.picker.searchBar'
-                  : 'search.manual.searchBar',
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
                 child: Row(
@@ -262,9 +259,6 @@ extension _SearchPromptSlivers on _SearchPageState {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 4, 14, 6),
         child: _buildSearchDecorCard(
-          ornamentKey: widget.pickerMode
-              ? 'search.picker.quickTags'
-              : 'search.manual.quickTags',
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -329,7 +323,6 @@ extension _SearchPromptSlivers on _SearchPageState {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 0, 14, 6),
         child: SearchSurfaceCard(
-          ornamentVisibilityScale: _pageOrnamentVisibilityScale,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
             child: Column(

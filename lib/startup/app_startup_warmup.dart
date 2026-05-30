@@ -14,20 +14,17 @@ import 'package:luminous/utils/notification_service.dart';
 class AppStartupWarmup {
   AppStartupWarmup({
     required Future<void> Function() restoreUserSession,
-    required Future<void> Function() warmOrnaments,
     required String? Function() readCurrentUserId,
     required SessionSyncService sessionSyncService,
     ReminderLocalGateway? reminderGateway,
     Future<void> Function(String userId)? syncSession,
   }) : _restoreUserSessionTask = restoreUserSession,
-       _warmOrnamentsTask = warmOrnaments,
        // ignore: prefer_initializing_formals
        _readCurrentUserId = readCurrentUserId,
        _syncSession = syncSession ?? sessionSyncService.syncForUser,
        _reminderGateway = reminderGateway ?? reminderLocalGateway;
 
   final Future<void> Function() _restoreUserSessionTask;
-  final Future<void> Function() _warmOrnamentsTask;
   final String? Function() _readCurrentUserId;
   final Future<void> Function(String userId) _syncSession;
   final ReminderLocalGateway _reminderGateway;
@@ -48,20 +45,10 @@ class AppStartupWarmup {
   Future<void> _runWarmup() async {
     await Future<void>.delayed(Duration.zero);
 
-    unawaited(_warmOrnaments());
     unawaited(_warmTokenStore());
     unawaited(_restoreUserSession());
     unawaited(_warmDatabase());
     unawaited(_warmNotificationSdk());
-  }
-
-  Future<void> _warmOrnaments() async {
-    try {
-      await Future<void>.delayed(const Duration(milliseconds: 12));
-      await _warmOrnamentsTask();
-    } catch (_) {
-      // 装饰预热失败时保持确定性兜底布局，不影响功能。
-    }
   }
 
   Future<void> _warmTokenStore() async {

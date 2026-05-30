@@ -36,7 +36,7 @@ class MainShellState {
 /// - Tab 选中切换与惰性加载标记
 /// - 冷启动后分批预加载剩余 Tab 和二级页面
 class MainShellNotifier extends Notifier<MainShellState> {
-  /// 底部 Tab 总数（对应 [HomePage, RecordPage, DrugPage, MinePage, MorePage]）。
+  /// 底部 Tab 总数（对应 [TodayPage, RecordPage, DrugPage, MinePage, MorePage]）。
   static const pageCount = 5;
 
   /// 二级页面总数（对应 Search, Safety, Settings, ProfileSettings）。

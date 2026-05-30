@@ -21,7 +21,6 @@ class HomeReminderSection extends StatelessWidget {
           return AppSectionCard(
             accentColor: Color.lerp(scheme.tertiary, scheme.primary, 0.35)!,
             secondaryColor: Color.lerp(scheme.primary, scheme.secondary, 0.45)!,
-            ornamentKey: 'home.reminders',
             padding: EdgeInsets.all(compact ? 10 : 12),
             radius: 18,
             child: Column(

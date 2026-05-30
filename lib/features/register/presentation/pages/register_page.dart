@@ -219,7 +219,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
   Widget _buildForm(RegisterFormState form) {
     return AuthSurfaceCard(
-      ornamentKey: 'auth.register.form',
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
         child: Form(

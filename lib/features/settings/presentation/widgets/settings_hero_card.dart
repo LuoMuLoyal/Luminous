@@ -22,7 +22,6 @@ class _SettingsHeroCard extends ConsumerWidget {
 
       return SoftBannerCard(
         palette: SoftBannerPalettes.mineOf(context),
-        ornamentKey: 'settings.hero',
         padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
         builder: (context, theme) {
           return Column(
