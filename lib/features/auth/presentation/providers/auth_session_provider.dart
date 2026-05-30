@@ -55,16 +55,14 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
         isAuthenticated: true,
         isLoading: false,
       );
-    } on LucentApiException catch (error) {
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
       await ref.read(lucentDioClientProvider).clearSession();
       state = AuthSessionState(
         isLoading: false,
         isAuthenticated: false,
-        errorMessage: error.message,
+        errorMessage: apiError.message,
       );
-    } catch (_) {
-      await ref.read(lucentDioClientProvider).clearSession();
-      state = const AuthSessionState();
     }
   }
 
