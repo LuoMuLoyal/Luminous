@@ -18,25 +18,10 @@ class ChangeEmailDto {
   /// Returns a new [ChangeEmailDto] instance.
   ChangeEmailDto({
 
-    required  this.currentEmail,
-
     required  this.newEmail,
 
     required  this.code,
   });
-
-      /// 当前邮箱
-  @JsonKey(
-    
-    name: r'currentEmail',
-    required: true,
-    includeIfNull: false,
-  )
-
-
-  final String currentEmail;
-
-
 
       /// 新邮箱
   @JsonKey(
@@ -68,13 +53,11 @@ class ChangeEmailDto {
 
     @override
     bool operator ==(Object other) => identical(this, other) || other is ChangeEmailDto &&
-      other.currentEmail == currentEmail &&
       other.newEmail == newEmail &&
       other.code == code;
 
     @override
     int get hashCode =>
-        currentEmail.hashCode +
         newEmail.hashCode +
         code.hashCode;
 

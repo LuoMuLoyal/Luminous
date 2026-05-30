@@ -8,12 +8,8 @@ part of 'change_email_dto.dart';
 
 ChangeEmailDto _$ChangeEmailDtoFromJson(Map<String, dynamic> json) =>
     $checkedCreate('ChangeEmailDto', json, ($checkedConvert) {
-      $checkKeys(
-        json,
-        requiredKeys: const ['currentEmail', 'newEmail', 'code'],
-      );
+      $checkKeys(json, requiredKeys: const ['newEmail', 'code']);
       final val = ChangeEmailDto(
-        currentEmail: $checkedConvert('currentEmail', (v) => v as String),
         newEmail: $checkedConvert('newEmail', (v) => v as String),
         code: $checkedConvert('code', (v) => v as String),
       );
@@ -21,8 +17,4 @@ ChangeEmailDto _$ChangeEmailDtoFromJson(Map<String, dynamic> json) =>
     });
 
 Map<String, dynamic> _$ChangeEmailDtoToJson(ChangeEmailDto instance) =>
-    <String, dynamic>{
-      'currentEmail': instance.currentEmail,
-      'newEmail': instance.newEmail,
-      'code': instance.code,
-    };
+    <String, dynamic>{'newEmail': instance.newEmail, 'code': instance.code};
