@@ -208,6 +208,29 @@
 
 ---
 
+### 2026-05-30 — Auth / Network 错误处理与 Lucent 基线加固
+
+前端已修正：
+
+- 新增 `lib/core/network/lucent_error_mapper.dart`
+- `lucent_api.dart` 导出 `LucentErrorMapper`
+- `login_form_provider.dart` / `register_form_provider.dart` / `auth_session_provider.dart` 统一从 `DioException.error` 中提取 `LucentApiException`
+
+结果：
+
+- Lucent envelope 错误能稳定落到表单 `errorMessage`
+- 登录、注册、session restore 不再因为 Dio 包装异常而漏处理失败态
+
+后端同步完成：
+
+- 修复 Lucent 登录空凭据安全漏洞：`password` / `code` 必须且只能二选一
+- 软删除用户默认从 `findById` / `findByEmail` 查询边界排除
+- 修复 JWT `sub` / `subject` 重复导致的运行时 500
+- 修复 i18n 类型生成在 test / dist 下访问缺失文件的问题
+- `pnpm test:e2e` 已可直接运行并通过
+
+---
+
 ## 当前基线验证
 
 截至本次记录，以下验证通过：
@@ -224,6 +247,7 @@ flutter test
 cd ../Lucent
 pnpm build
 pnpm test
+pnpm test:e2e
 ```
 
 ---

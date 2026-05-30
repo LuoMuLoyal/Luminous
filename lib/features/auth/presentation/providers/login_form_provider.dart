@@ -77,10 +77,11 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
       await ref.read(authSessionProvider.notifier).applySession(session);
       state = state.copyWith(isSubmitting: false);
       return session;
-    } on LucentApiException catch (error) {
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSubmitting: false,
-        errorMessage: error.message,
+        errorMessage: apiError.message,
       );
       return null;
     }
@@ -92,8 +93,9 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
         email: state.email,
         scene: AuthVerificationScene.login,
       );
-    } on LucentApiException catch (error) {
-      state = state.copyWith(errorMessage: error.message);
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
+      state = state.copyWith(errorMessage: apiError.message);
       return null;
     }
   }

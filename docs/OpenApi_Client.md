@@ -17,6 +17,7 @@
 - session token 存储默认走安全存储，Web / Windows / Linux 回退到 `SharedPreferences`
 - client 会自动附带 `Accept-Language` 请求头，当前默认语言为英文
 - `401002 TOKEN_EXPIRED` 会自动触发 refresh 并重试原请求
+- Dio 请求失败时统一通过 `LucentErrorMapper` 从 `DioException.error` 还原 `LucentApiException`
 - 已接入 auth remote datasource、session provider、login/register provider
 
 ## 重新生成
@@ -53,7 +54,7 @@ import 'package:luminous/core/network/lucent_api.dart';
 
 final client = LucentDioClient(
   baseUrl: 'http://127.0.0.1:3000',
-  accessToken: '<jwt>',
+  sessionStore: const SecureLucentSessionStore(),
 );
 
 final authApi = client.authApi;
