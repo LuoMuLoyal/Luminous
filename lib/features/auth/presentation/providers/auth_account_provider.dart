@@ -1,44 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 
-class AuthAccountState {
-  const AuthAccountState({
-    this.isSubmitting = false,
-    this.errorMessage,
-    this.successMessage,
-    this.lastCooldownSeconds,
-  });
+part 'auth_account_provider.freezed.dart';
 
-  final bool isSubmitting;
-  final String? errorMessage;
-  final String? successMessage;
-  final int? lastCooldownSeconds;
-
-  AuthAccountState copyWith({
-    bool? isSubmitting,
+@freezed
+abstract class AuthAccountState with _$AuthAccountState {
+  const factory AuthAccountState({
+    @Default(false) bool isSubmitting,
     String? errorMessage,
     String? successMessage,
     int? lastCooldownSeconds,
-    bool clearErrorMessage = false,
-    bool clearSuccessMessage = false,
-    bool clearCooldown = false,
-  }) {
-    return AuthAccountState(
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      errorMessage: clearErrorMessage
-          ? null
-          : errorMessage ?? this.errorMessage,
-      successMessage: clearSuccessMessage
-          ? null
-          : successMessage ?? this.successMessage,
-      lastCooldownSeconds: clearCooldown
-          ? null
-          : lastCooldownSeconds ?? this.lastCooldownSeconds,
-    );
-  }
+  }) = _AuthAccountState;
 }
 
 class AuthAccountNotifier extends Notifier<AuthAccountState> {
@@ -51,9 +27,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
   }) async {
     state = state.copyWith(
       isSubmitting: true,
-      clearErrorMessage: true,
-      clearSuccessMessage: true,
-      clearCooldown: true,
+      errorMessage: null,
+      successMessage: null,
+      lastCooldownSeconds: null,
     );
     try {
       final result = await ref
@@ -105,7 +81,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
       state = state.copyWith(
         isSubmitting: false,
         errorMessage: 'Not signed in.',
-        clearSuccessMessage: true,
+        successMessage: null,
       );
       return false;
     }
@@ -146,8 +122,8 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
   Future<bool> _run(Future<void> Function() action) async {
     state = state.copyWith(
       isSubmitting: true,
-      clearErrorMessage: true,
-      clearSuccessMessage: true,
+      errorMessage: null,
+      successMessage: null,
     );
     try {
       await action();
@@ -163,7 +139,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
     state = state.copyWith(
       isSubmitting: false,
       errorMessage: apiError.message,
-      clearSuccessMessage: true,
+      successMessage: null,
     );
     return false;
   }
