@@ -17,15 +17,16 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Today concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop wide dashboard, plainer medicine-style surfaces, localized image placeholders, reusable Today primitives, and shared state views
 - Record concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, and toast-only mock actions
 - Mine concept-aligned mock dashboard UI with repository/provider boundary, mobile profile/plans/privacy surface, and desktop status/onboarding/settings side rail
+- More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
 - Medicine mobile-first mock workspace UI with repository/provider boundary
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel
 
-Not restored yet: real medicine loop, live reminders, real scan/upload, real medicine API wiring, Mine write/edit flows, theme selection persistence UI, real feature data.
+Not restored yet: real medicine loop, live reminders, real scan/upload, real medicine API wiring, Mine write/edit flows, More real tools/device integrations, theme selection persistence UI, real feature data.
 
 ## UI Priority
 
 1. Connect Today mock data to API-ready datasource/repository implementations.
-2. Upgrade `more` from placeholder to usable skeleton.
+2. Connect More mock repository to real emergency, device, tool, and environment data sources.
 3. Replace medicine mock data with Lucent-backed search, recognition, detail, add-to-drugbox, and reminder flows.
 4. Connect Mine mock repository to Lucent account/profile/health-context reads and add a Mine/settings theme selector for `system / light / dark`.
 5. Add palette variants after the fixed-token surfaces have been reduced.

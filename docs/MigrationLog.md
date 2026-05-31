@@ -33,6 +33,13 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Kept the data boundary mock-only for now: `mineDashboardProvider` reads from `MockMineRepository`, so later Lucent health-context and account/profile APIs can replace the repository without rewriting the page structure.
 - Added zh/en localization coverage for the Mine mock page and a dedicated widget test covering mobile core sections plus desktop right-rail panels.
 
+### More Mock Utility Workspace Foundation
+
+- Replaced the `more` tab placeholder with a concept-driven mock workspace under `lib/features/more/`, matching the same feature-first layering already used by `mine`, `record`, and `medicine`: `domain/entities`, `domain/repositories`, `data/repositories`, `presentation/providers`, and split `presentation/widgets`.
+- Shaped the page around the approved More concept image: emergency help, family health, AI recognition tools, smart device management, knowledge/services, and environment reminders on mobile; desktop adds a right rail for environment status, recent activity, quick entries, and care guidance.
+- Kept the data boundary mock-only for now: `moreDashboardProvider` reads from `MockMoreRepository`, so later emergency, environment, device, and utility APIs can replace the repository without rewriting the page structure.
+- Added zh/en localization coverage for the More mock page and a dedicated widget test covering mobile core sections plus desktop side panels.
+
 ### Today Concept Alignment
 
 - Refined the Today tab against the 2026-05-31 concept image: mobile keeps the compact health feed, while desktop now expands into a wide dashboard instead of being capped at phone width.
