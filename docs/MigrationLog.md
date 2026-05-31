@@ -25,6 +25,7 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Wired `ShellPage` to render the real `MedicinePage` instead of a placeholder tab label.
 - Added zh/en localization strings for the medicine workspace and a widget test covering the core mock sections.
 - Tightened the medicine UI toward the five-tab concept image: the hero now foregrounds only `today doses` and `on-time adherence`, click feedback now uses `core/feedback/AppToast`, extra nested boxes were reduced, and the page radius treatment was pushed larger to better match the current visual direction.
+- Added `/medicine/search` as a source-aware mock search workspace under the standalone `lib/features/search/` feature, with domain/repository/provider/data boundaries, zh/en text, mobile search flow, desktop result/preview layout, and a widget test. Real Lucent search, detail, recognition, and add-to-drugbox calls remain intentionally unwired until the UI stabilizes.
 
 ### Auth Contract Sync
 

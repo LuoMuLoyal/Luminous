@@ -16,14 +16,15 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Mobile bottom nav + desktop rail
 - Today mobile-first mock dashboard UI with repository/provider boundary
 - Medicine mobile-first mock workspace UI with repository/provider boundary
+- Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel
 
-Not restored yet: real medicine loop, live reminders, real scan/upload, settings, theme selection UI, real feature data.
+Not restored yet: real medicine loop, live reminders, real scan/upload, real medicine API wiring, settings, theme selection UI, real feature data.
 
 ## UI Priority
 
 1. Connect Today mock data to API-ready datasource/repository implementations.
 2. Upgrade `record / mine / more` from placeholders to usable skeletons.
-3. Replace medicine mock data with Lucent-backed search, recognition, detail, and reminder flows.
+3. Replace medicine mock data with Lucent-backed search, recognition, detail, add-to-drugbox, and reminder flows.
 4. Add a Mine/settings theme selector for `system / light / dark`.
 5. Add palette variants after the fixed-token surfaces have been reduced.
 

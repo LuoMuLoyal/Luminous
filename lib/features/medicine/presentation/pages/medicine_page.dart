@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -33,11 +34,7 @@ class MedicinePage extends ConsumerWidget {
           icon: Icons.search_rounded,
           typography: typography,
           surface: surface,
-          onTap: () => _showHeaderActionMessage(
-            context,
-            l10n.medicineHeaderActionSearch,
-            '会跳转到搜索药品页。',
-          ),
+          onTap: () => context.push('/medicine/search'),
         ),
         MedicineHeaderActionChip(
           label: l10n.medicineHeaderActionAdd,

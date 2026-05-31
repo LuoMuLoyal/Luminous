@@ -63,7 +63,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineHeroSubtitle =>
-      'This mock page lands photo recognition, barcode scan, manual search, and a medication safety workspace first, then later swaps in real Lucent data.';
+      'Photo recognition, barcode scan, manual search, and medication safety start here with a clear reference-only boundary.';
 
   @override
   String get medicineHeroMetricTodayCountValue => '2';
@@ -124,36 +124,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get medicineQuickActionPrescriptionSubtitle =>
       'OCR and follow-up reminders can attach later';
-
-  @override
-  String get medicineSearchPanelTitle => 'Manual search';
-
-  @override
-  String get medicineSearchPanelSubtitle =>
-      'This area will later connect Lucent medicine search, cache-bypass refresh, and detail entry points.';
-
-  @override
-  String get medicineSearchInputPlaceholder =>
-      'Search medicine name, ingredient, indication, or brand';
-
-  @override
-  String get medicineSearchMockBadge => 'Mock';
-
-  @override
-  String get medicineSearchSuggestionBloodPressure => 'Blood pressure medicine';
-
-  @override
-  String get medicineSearchSuggestionCold => 'Cold medicine';
-
-  @override
-  String get medicineSearchSuggestionSupplement => 'Vitamin D';
-
-  @override
-  String get medicineSearchCalloutTitle => 'Real capability planned next';
-
-  @override
-  String get medicineSearchCalloutBody =>
-      'Medicine search and detail should prefer cached reads first, then use a header-triggered fresh read only when needed so users are not shown stale data.';
 
   @override
   String get medicineTodayPlanTitle => 'Today\'s dosing plan';
@@ -268,6 +238,128 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get medicinePromisePointPrivacy =>
       'Photos, prescriptions, and high-sensitivity medicine data should follow a minimum-exposure handling model first.';
+
+  @override
+  String get medicineSearchPageTitle => 'Search medicine';
+
+  @override
+  String get medicineSearchAssistantTitle => 'Medication assistant';
+
+  @override
+  String get medicineSearchMyBoxTab => 'My drugbox';
+
+  @override
+  String get medicineSearchFieldHint =>
+      'Search medicine, ingredient, condition, symptom...';
+
+  @override
+  String get medicineSearchSourceCn => 'Package inserts (cn)';
+
+  @override
+  String get medicineSearchSourceDrugbank => 'Drug knowledge (DrugBank)';
+
+  @override
+  String get medicineSearchSwitchSource => 'Switch source';
+
+  @override
+  String get medicineSearchRecentTitle => 'Recent searches';
+
+  @override
+  String get medicineSearchClearAction => 'Clear';
+
+  @override
+  String get medicineSearchPhotoAction => 'Photo recognition';
+
+  @override
+  String get medicineSearchBarcodeAction => 'Scan barcode';
+
+  @override
+  String get medicineSearchPhotoToast =>
+      'This will open camera recognition for boxes, blisters, or inserts.';
+
+  @override
+  String get medicineSearchBarcodeToast =>
+      'This will open barcode scan and fill medicine information.';
+
+  @override
+  String get medicineSearchScanHint =>
+      'This will open scan or photo recognition.';
+
+  @override
+  String get medicineSearchCategoryTitle => 'Common medicine categories';
+
+  @override
+  String get medicineSearchCategoryPainFever => 'Pain & fever';
+
+  @override
+  String get medicineSearchCategoryColdCough => 'Cold & cough';
+
+  @override
+  String get medicineSearchCategoryStomach => 'Stomach';
+
+  @override
+  String get medicineSearchCategorySupplement => 'Supplements';
+
+  @override
+  String get medicineSearchCategoryChronic => 'Chronic care';
+
+  @override
+  String get medicineSearchReferenceNotice =>
+      'Medicine information is for reference only. Follow clinical advice for actual use.';
+
+  @override
+  String get medicineSearchResultTitle => 'Search results';
+
+  @override
+  String medicineSearchResultCount(int count) {
+    return '$count results found';
+  }
+
+  @override
+  String get medicineSearchMatchedBy => 'Matched';
+
+  @override
+  String get medicineSearchMatchIngredient => 'ingredient';
+
+  @override
+  String get medicineSearchMatchName => 'name';
+
+  @override
+  String get medicineSearchAddToBoxAction => 'Add to drugbox';
+
+  @override
+  String get medicineSearchAddToast =>
+      'This will add the medicine and open reminder setup.';
+
+  @override
+  String get medicineSearchOpenDetailToast =>
+      'This will open medicine details.';
+
+  @override
+  String get medicineSearchPreviewTitle => 'Selected preview';
+
+  @override
+  String get medicineSearchSafetyLead =>
+      'Your allergy, pregnancy status, or current medicines may affect use.';
+
+  @override
+  String get medicineSearchSafetyAction =>
+      'Open details for complete information';
+
+  @override
+  String get medicineSearchNoResultTitle => 'No result?';
+
+  @override
+  String get medicineSearchNoResultKeyword => 'Check keywords';
+
+  @override
+  String get medicineSearchNoResultSwitch => 'Switch source';
+
+  @override
+  String get medicineSearchNoResultScan => 'Photo or scan';
+
+  @override
+  String get medicineSearchErrorTitle => 'Search did not load this time';
 
   @override
   String get minePageDescription =>

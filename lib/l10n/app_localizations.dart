@@ -197,7 +197,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineHeroSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'这个 mock 页面先把拍照识别、条码扫描、手动搜索和用药安全工作台落下来，后续再替换成真实 Lucent 数据。'**
+  /// **'拍照识别、条码扫描、手动搜索和用药安全会从这里进入，结果始终保持参考边界。'**
   String get medicineHeroSubtitle;
 
   /// No description provided for @medicineHeroMetricTodayCountValue.
@@ -307,60 +307,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'后续可接 OCR 与复诊提醒'**
   String get medicineQuickActionPrescriptionSubtitle;
-
-  /// No description provided for @medicineSearchPanelTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'手动搜索'**
-  String get medicineSearchPanelTitle;
-
-  /// No description provided for @medicineSearchPanelSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'后续这里会接 Lucent 药品搜索、缓存旁路刷新和详情页入口。'**
-  String get medicineSearchPanelSubtitle;
-
-  /// No description provided for @medicineSearchInputPlaceholder.
-  ///
-  /// In zh, this message translates to:
-  /// **'搜索药名、成分、适应症或商品名'**
-  String get medicineSearchInputPlaceholder;
-
-  /// No description provided for @medicineSearchMockBadge.
-  ///
-  /// In zh, this message translates to:
-  /// **'Mock'**
-  String get medicineSearchMockBadge;
-
-  /// No description provided for @medicineSearchSuggestionBloodPressure.
-  ///
-  /// In zh, this message translates to:
-  /// **'降压药'**
-  String get medicineSearchSuggestionBloodPressure;
-
-  /// No description provided for @medicineSearchSuggestionCold.
-  ///
-  /// In zh, this message translates to:
-  /// **'感冒药'**
-  String get medicineSearchSuggestionCold;
-
-  /// No description provided for @medicineSearchSuggestionSupplement.
-  ///
-  /// In zh, this message translates to:
-  /// **'维生素 D'**
-  String get medicineSearchSuggestionSupplement;
-
-  /// No description provided for @medicineSearchCalloutTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'准备接入的真实能力'**
-  String get medicineSearchCalloutTitle;
-
-  /// No description provided for @medicineSearchCalloutBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'药品搜索和详情未来会优先走缓存，必要时再通过请求头触发 fresh read，避免用户看到旧数据。'**
-  String get medicineSearchCalloutBody;
 
   /// No description provided for @medicineTodayPlanTitle.
   ///
@@ -571,6 +517,228 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'拍照、处方和高敏感药物信息会优先按最小暴露原则处理。'**
   String get medicinePromisePointPrivacy;
+
+  /// No description provided for @medicineSearchPageTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索药品'**
+  String get medicineSearchPageTitle;
+
+  /// No description provided for @medicineSearchAssistantTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药助手'**
+  String get medicineSearchAssistantTitle;
+
+  /// No description provided for @medicineSearchMyBoxTab.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的药箱'**
+  String get medicineSearchMyBoxTab;
+
+  /// No description provided for @medicineSearchFieldHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索药品、成分、疾病、症状...'**
+  String get medicineSearchFieldHint;
+
+  /// No description provided for @medicineSearchSourceCn.
+  ///
+  /// In zh, this message translates to:
+  /// **'药品说明书（cn）'**
+  String get medicineSearchSourceCn;
+
+  /// No description provided for @medicineSearchSourceDrugbank.
+  ///
+  /// In zh, this message translates to:
+  /// **'药物知识（DrugBank）'**
+  String get medicineSearchSourceDrugbank;
+
+  /// No description provided for @medicineSearchSwitchSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'切换数据源'**
+  String get medicineSearchSwitchSource;
+
+  /// No description provided for @medicineSearchRecentTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近搜索'**
+  String get medicineSearchRecentTitle;
+
+  /// No description provided for @medicineSearchClearAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空'**
+  String get medicineSearchClearAction;
+
+  /// No description provided for @medicineSearchPhotoAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照识别'**
+  String get medicineSearchPhotoAction;
+
+  /// No description provided for @medicineSearchBarcodeAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫描条形码'**
+  String get medicineSearchBarcodeAction;
+
+  /// No description provided for @medicineSearchPhotoToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开相机识别药盒、药板或说明书。'**
+  String get medicineSearchPhotoToast;
+
+  /// No description provided for @medicineSearchBarcodeToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开扫码流程，识别条形码并补齐药品信息。'**
+  String get medicineSearchBarcodeToast;
+
+  /// No description provided for @medicineSearchScanHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开扫码或拍照识别入口。'**
+  String get medicineSearchScanHint;
+
+  /// No description provided for @medicineSearchCategoryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'热门常备药分类'**
+  String get medicineSearchCategoryTitle;
+
+  /// No description provided for @medicineSearchCategoryPainFever.
+  ///
+  /// In zh, this message translates to:
+  /// **'退烧止痛'**
+  String get medicineSearchCategoryPainFever;
+
+  /// No description provided for @medicineSearchCategoryColdCough.
+  ///
+  /// In zh, this message translates to:
+  /// **'感冒咳嗽'**
+  String get medicineSearchCategoryColdCough;
+
+  /// No description provided for @medicineSearchCategoryStomach.
+  ///
+  /// In zh, this message translates to:
+  /// **'肠胃'**
+  String get medicineSearchCategoryStomach;
+
+  /// No description provided for @medicineSearchCategorySupplement.
+  ///
+  /// In zh, this message translates to:
+  /// **'维矿补充'**
+  String get medicineSearchCategorySupplement;
+
+  /// No description provided for @medicineSearchCategoryChronic.
+  ///
+  /// In zh, this message translates to:
+  /// **'慢病常用'**
+  String get medicineSearchCategoryChronic;
+
+  /// No description provided for @medicineSearchReferenceNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'药品信息仅供参考，具体用药请遵医嘱'**
+  String get medicineSearchReferenceNotice;
+
+  /// No description provided for @medicineSearchResultTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索结果'**
+  String get medicineSearchResultTitle;
+
+  /// No description provided for @medicineSearchResultCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'共找到 {count} 条结果'**
+  String medicineSearchResultCount(int count);
+
+  /// No description provided for @medicineSearchMatchedBy.
+  ///
+  /// In zh, this message translates to:
+  /// **'命中'**
+  String get medicineSearchMatchedBy;
+
+  /// No description provided for @medicineSearchMatchIngredient.
+  ///
+  /// In zh, this message translates to:
+  /// **'成分'**
+  String get medicineSearchMatchIngredient;
+
+  /// No description provided for @medicineSearchMatchName.
+  ///
+  /// In zh, this message translates to:
+  /// **'名称'**
+  String get medicineSearchMatchName;
+
+  /// No description provided for @medicineSearchAddToBoxAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入药箱'**
+  String get medicineSearchAddToBoxAction;
+
+  /// No description provided for @medicineSearchAddToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会加入药箱并进入用药提醒设置。'**
+  String get medicineSearchAddToast;
+
+  /// No description provided for @medicineSearchOpenDetailToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开药品详情页。'**
+  String get medicineSearchOpenDetailToast;
+
+  /// No description provided for @medicineSearchPreviewTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'选中项预览'**
+  String get medicineSearchPreviewTitle;
+
+  /// No description provided for @medicineSearchSafetyLead.
+  ///
+  /// In zh, this message translates to:
+  /// **'你当前的过敏史 / 孕期状态 / 现用药可能影响此药使用'**
+  String get medicineSearchSafetyLead;
+
+  /// No description provided for @medicineSearchSafetyAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看详情页获取完整信息'**
+  String get medicineSearchSafetyAction;
+
+  /// No description provided for @medicineSearchNoResultTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'无结果？'**
+  String get medicineSearchNoResultTitle;
+
+  /// No description provided for @medicineSearchNoResultKeyword.
+  ///
+  /// In zh, this message translates to:
+  /// **'检查关键词'**
+  String get medicineSearchNoResultKeyword;
+
+  /// No description provided for @medicineSearchNoResultSwitch.
+  ///
+  /// In zh, this message translates to:
+  /// **'切换数据源'**
+  String get medicineSearchNoResultSwitch;
+
+  /// No description provided for @medicineSearchNoResultScan.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照或扫码'**
+  String get medicineSearchNoResultScan;
+
+  /// No description provided for @medicineSearchErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索页暂时没有加载出来'**
+  String get medicineSearchErrorTitle;
 
   /// No description provided for @minePageDescription.
   ///

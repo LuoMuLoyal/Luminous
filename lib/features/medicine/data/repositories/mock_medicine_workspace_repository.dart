@@ -35,13 +35,6 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
           accent: AppColorTokens.warningDeep,
         ),
       ],
-      search: MedicineSearchSurface(
-        suggestionKeys: <MedicineCopyKey>[
-          MedicineCopyKey.suggestionBloodPressure,
-          MedicineCopyKey.suggestionCold,
-          MedicineCopyKey.suggestionSupplement,
-        ],
-      ),
       plan: MedicinePlanSurface(
         items: <MedicinePlanItem>[
           MedicinePlanItem(
