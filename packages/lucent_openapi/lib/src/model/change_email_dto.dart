@@ -7,6 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'change_email_dto.g.dart';
 
+
 @JsonSerializable(
   checked: true,
   createToJson: true,
@@ -15,28 +16,52 @@ part 'change_email_dto.g.dart';
 )
 class ChangeEmailDto {
   /// Returns a new [ChangeEmailDto] instance.
-  ChangeEmailDto({required this.newEmail, required this.code});
+  ChangeEmailDto({
 
-  /// 新邮箱
-  @JsonKey(name: r'newEmail', required: true, includeIfNull: false)
+    required  this.newEmail,
+
+    required  this.code,
+  });
+
+      /// 新邮箱
+  @JsonKey(
+    
+    name: r'newEmail',
+    required: true,
+    includeIfNull: false,
+  )
+
+
   final String newEmail;
 
-  /// 验证码
-  @JsonKey(name: r'code', required: true, includeIfNull: false)
+
+
+      /// 验证码
+  @JsonKey(
+    
+    name: r'code',
+    required: true,
+    includeIfNull: false,
+  )
+
+
   final String code;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ChangeEmailDto &&
-          other.newEmail == newEmail &&
-          other.code == code;
 
-  @override
-  int get hashCode => newEmail.hashCode + code.hashCode;
 
-  factory ChangeEmailDto.fromJson(Map<String, dynamic> json) =>
-      _$ChangeEmailDtoFromJson(json);
+
+
+    @override
+    bool operator ==(Object other) => identical(this, other) || other is ChangeEmailDto &&
+      other.newEmail == newEmail &&
+      other.code == code;
+
+    @override
+    int get hashCode =>
+        newEmail.hashCode +
+        code.hashCode;
+
+  factory ChangeEmailDto.fromJson(Map<String, dynamic> json) => _$ChangeEmailDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChangeEmailDtoToJson(this);
 
@@ -44,4 +69,6 @@ class ChangeEmailDto {
   String toString() {
     return toJson().toString();
   }
+
 }
+

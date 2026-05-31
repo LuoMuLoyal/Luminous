@@ -14,6 +14,8 @@ import 'package:luminous/core/network/lucent_session_store.dart';
 /// - 业务层不要直接 new 生成器里的 `LucentOpenapi`
 /// - 统一通过这里注入 baseUrl、token 和通用 Dio 行为
 class LucentDioClient {
+  static const String medicinesBypassCacheHeader = 'x-bypass-cache';
+
   LucentDioClient({
     required String baseUrl,
     required LucentSessionStore sessionStore,
@@ -117,6 +119,16 @@ class LucentDioClient {
   AppApi get appApi => _openapi.getAppApi();
 
   AuthApi get authApi => _openapi.getAuthApi();
+
+  MedicinesApi get medicinesApi => _openapi.getMedicinesApi();
+
+  Map<String, String> medicinesHeaders({bool bypassCache = false}) {
+    if (!bypassCache) {
+      return const <String, String>{};
+    }
+
+    return const <String, String>{medicinesBypassCacheHeader: 'true'};
+  }
 
   Future<void> writeSession(LucentSessionTokens tokens) {
     return _sessionStore.write(tokens);

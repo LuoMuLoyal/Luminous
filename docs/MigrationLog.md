@@ -57,6 +57,7 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 - Generated Lucent client into `packages/lucent_openapi/`.
 - Added wrapper/export under `lib/core/network/`.
+- Regenerated Lucent client after Lucent added medicines APIs and cache-bypass header support; `LucentDioClient` now exposes `medicinesApi` plus a `medicinesHeaders(bypassCache: true)` helper for one-off fresh medicine reads.
 
 ### Design Tokens
 
