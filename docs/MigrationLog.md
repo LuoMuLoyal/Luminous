@@ -26,6 +26,13 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Reworked the desktop/web shell navigation from a narrow `NavigationRail` into a wider grouped left sidebar: the top keeps the same five tabs as mobile, the bottom adds separate `settings / help` actions, and the content workspace now sits inside a larger framed desktop container.
 - Flattened the placeholder experience for `mine / more`: those pages now render a single placeholder surface directly inside the page scaffold instead of nesting a placeholder card inside another section card.
 
+### Mine Mock Dashboard Foundation
+
+- Replaced the `mine` tab placeholder with a concept-driven mock dashboard under `lib/features/mine/`, following the same feature-first layering used by `record` and `medicine`: `domain/entities`, `domain/repositories`, `data/repositories`, `presentation/providers`, and `presentation/widgets`.
+- Shaped the page around the approved Mine concept image: account header, profile completion, health-context summary, profile entry grid, health plan center, report/privacy cards, and a desktop-only right rail for profile status, onboarding progress, quick entries, and settings.
+- Kept the data boundary mock-only for now: `mineDashboardProvider` reads from `MockMineRepository`, so later Lucent health-context and account/profile APIs can replace the repository without rewriting the page structure.
+- Added zh/en localization coverage for the Mine mock page and a dedicated widget test covering mobile core sections plus desktop right-rail panels.
+
 ### Today Concept Alignment
 
 - Refined the Today tab against the 2026-05-31 concept image: mobile keeps the compact health feed, while desktop now expands into a wide dashboard instead of being capped at phone width.
