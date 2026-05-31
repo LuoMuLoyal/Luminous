@@ -193,13 +193,15 @@ class _MedicineHero extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: _HeroMetric(
-                    data: _HeroMetricData(
-                      value: workspace.hero.metricDosesToday,
-                      label: l10n.medicineHeroMetricTodayCountLabel,
+                  child: Center(
+                    child: _HeroMetric(
+                      data: _HeroMetricData(
+                        value: workspace.hero.metricDosesToday,
+                        label: l10n.medicineHeroMetricTodayCountLabel,
+                      ),
+                      typography: typography,
+                      surface: surface,
                     ),
-                    typography: typography,
-                    surface: surface,
                   ),
                 ),
                 Padding(
@@ -213,14 +215,16 @@ class _MedicineHero extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: _HeroMetric(
-                    data: _HeroMetricData(
-                      value: workspace.hero.metricAdherence,
-                      label: l10n.medicineHeroMetricAdherenceLabel,
+                  child: Center(
+                    child: _HeroMetric(
+                      data: _HeroMetricData(
+                        value: workspace.hero.metricAdherence,
+                        label: l10n.medicineHeroMetricAdherenceLabel,
+                      ),
+                      typography: typography,
+                      surface: surface,
+                      emphasized: true,
                     ),
-                    typography: typography,
-                    surface: surface,
-                    emphasized: true,
                   ),
                 ),
               ],
@@ -741,16 +745,18 @@ class _HeroMetric extends StatelessWidget {
           vertical: AppSpacingTokens.sm,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               data.label,
               style: typography.bodySm.copyWith(color: surface.body),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacingTokens.xs),
             Text(
               data.value,
               style: emphasized ? typography.displayLg : typography.displayMd,
+              textAlign: TextAlign.center,
             ),
           ],
         ),

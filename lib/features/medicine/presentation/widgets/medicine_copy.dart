@@ -19,11 +19,6 @@ String medicineCopy(AppLocalizations l10n, MedicineCopyKey key) {
       l10n.medicineQuickActionPrescriptionTitle,
     MedicineCopyKey.quickActionPrescriptionSubtitle =>
       l10n.medicineQuickActionPrescriptionSubtitle,
-    MedicineCopyKey.suggestionBloodPressure =>
-      l10n.medicineSearchSuggestionBloodPressure,
-    MedicineCopyKey.suggestionCold => l10n.medicineSearchSuggestionCold,
-    MedicineCopyKey.suggestionSupplement =>
-      l10n.medicineSearchSuggestionSupplement,
     MedicineCopyKey.mockNameMetformin => l10n.medicineMockNameMetformin,
     MedicineCopyKey.mockDoseMetformin => l10n.medicineMockDoseMetformin,
     MedicineCopyKey.mockScheduleMorningEvening =>

@@ -4,7 +4,6 @@ class MedicineWorkspace {
   const MedicineWorkspace({
     required this.hero,
     required this.quickActions,
-    required this.search,
     required this.plan,
     required this.alerts,
     required this.promisePoints,
@@ -12,7 +11,6 @@ class MedicineWorkspace {
 
   final MedicineHero hero;
   final List<MedicineQuickAction> quickActions;
-  final MedicineSearchSurface search;
   final MedicinePlanSurface plan;
   final List<MedicineAlert> alerts;
   final List<MedicinePromisePoint> promisePoints;
@@ -42,12 +40,6 @@ class MedicineQuickAction {
   final MedicineCopyKey titleKey;
   final MedicineCopyKey subtitleKey;
   final Color accent;
-}
-
-class MedicineSearchSurface {
-  const MedicineSearchSurface({required this.suggestionKeys});
-
-  final List<MedicineCopyKey> suggestionKeys;
 }
 
 class MedicinePlanSurface {
@@ -113,9 +105,6 @@ enum MedicineCopyKey {
   quickActionSearchSubtitle,
   quickActionPrescriptionTitle,
   quickActionPrescriptionSubtitle,
-  suggestionBloodPressure,
-  suggestionCold,
-  suggestionSupplement,
   mockNameMetformin,
   mockDoseMetformin,
   mockScheduleMorningEvening,

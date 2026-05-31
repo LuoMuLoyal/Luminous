@@ -34,6 +34,8 @@ cd ../.. && flutter pub get
 - Network code belongs in `lib/core/network/`.
 - User-visible text goes through ARB + `flutter gen-l10n`.
 - Token storage prefers secure storage, with desktop/web fallback.
+- For lightweight frontend feedback, use shared `lib/core/feedback/app_toast.dart`; do not introduce page-local `SnackBar` prompts for routine click hints.
+- When refining app UI, prefer flatter surfaces over nested boxes, and align high-level layout/metrics with the approved concept images instead of adding explanatory placeholder copy.
 
 ## Docs
 
