@@ -661,7 +661,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayGreetingSubtitleEvening => '把今天的状态收拢一下，给明天留出节奏。';
 
   @override
+  String get todayHeroCareLine => '我们会在需要时，给你恰到好处的提醒';
+
+  @override
+  String get todayHeroImagePlaceholder => 'Banner 图片占位';
+
+  @override
   String get todayWaterCardTitle => '今日喝水';
+
+  @override
+  String get todayWaterUnit => '次';
 
   @override
   String todayWaterCount(int count) {
@@ -716,6 +725,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayVitalSleepUnit => '小时';
 
   @override
+  String get todayVitalStatusNormal => '正常';
+
+  @override
+  String get todayVitalStatusGood => '良好';
+
+  @override
   String get todayMealCardTitle => '今日饮食建议';
 
   @override
@@ -723,6 +738,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayMealHighProteinBalancedDescription => '鸡胸肉、藜麦、时蔬沙拉';
+
+  @override
+  String get todayMealEnergyHint => '补充优质蛋白，均衡营养，给身体满满能量。';
+
+  @override
+  String get todayMealImagePlaceholder => '餐图占位';
 
   @override
   String get todayMealRefreshAction => '换一换';
@@ -746,6 +767,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayEnvironmentLevelHigh => '较高';
 
   @override
+  String get todayMoreAction => '更多';
+
+  @override
+  String get todayViewDetailsAction => '查看详情';
+
+  @override
   String get todayLumiCardTitle => 'Lumi 建议';
 
   @override
@@ -759,6 +786,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayErrorDescription => 'Mock provider 和页面结构已经接好，可以重新拉取一次看看。';
+
+  @override
+  String get todayEmptyTitle => '你还没有任何记录';
+
+  @override
+  String get todayEmptyDescription => '先记录饮水、用药或体征，我们会为你提供个性化建议。';
+
+  @override
+  String get todayEmptyAction => '去记录';
 
   @override
   String get todayRetryAction => '重试';
