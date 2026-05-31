@@ -1,6 +1,6 @@
 # Flutter i18n
 
-Last updated: 2026-05-30
+Last updated: 2026-05-31-11:54
 
 ## Files
 
@@ -10,7 +10,7 @@ Last updated: 2026-05-30
 
 ## Current Scope
 
-- App title, tabs, Today dashboard, placeholders
+- App title, tabs, Today dashboard, Medicine workspace, placeholders
 - Login / Register / Forgot Password / Change Email / AuthShell
 - Auth empty-field toast prompts
 - Network `Accept-Language`

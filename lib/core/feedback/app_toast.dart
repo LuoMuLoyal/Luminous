@@ -12,31 +12,25 @@ class AppToast {
   static Future<bool?> show(BuildContext context, String message) async {
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>();
-    final isDark = theme.brightness == Brightness.dark;
-    final backgroundColor = surface == null
-        ? (isDark ? const Color(0xFF2A2A2A) : const Color(0xFFEFEFEF))
-        : Color.alphaBlend(
-            surface.link.withValues(alpha: isDark ? 0.10 : 0.08),
-            isDark ? surface.canvasSoft2 : surface.canvas,
-          );
-    final textColor = surface == null
-        ? (isDark ? Colors.white : const Color(0xFF2A2A2A))
-        : surface.body;
+    final backgroundColor = surface?.canvas ?? Colors.white;
+    final textColor = theme.colorScheme.onSurface;
+    final topOffset = MediaQuery.paddingOf(context).top + AppSpacingTokens.xl;
 
     FToast()
       ..init(context)
       ..removeQueuedCustomToasts()
       ..showToast(
-        gravity: ToastGravity.CENTER,
+        gravity: ToastGravity.TOP,
         toastDuration: const Duration(milliseconds: 1800),
         fadeDuration: const Duration(milliseconds: 160),
         ignorePointer: true,
+        positionedToastBuilder: (context, child, gravity) {
+          return Positioned(top: topOffset, left: 24, right: 24, child: child);
+        },
         child: _AppToastSurface(
           message: message,
           backgroundColor: backgroundColor,
-          borderColor:
-              surface?.hairline.withValues(alpha: isDark ? 0.62 : 0.78) ??
-              Colors.transparent,
+          borderColor: surface?.hairline ?? const Color(0xFFE8E8E8),
           textColor: textColor,
         ),
       );
@@ -63,12 +57,12 @@ class _AppToastSurface extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         border: Border.all(color: borderColor),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        boxShadow: AppShadowTokens.level4,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.full),
+        boxShadow: AppShadowTokens.level2,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
+          horizontal: AppSpacingTokens.lg,
           vertical: AppSpacingTokens.sm,
         ),
         child: ConstrainedBox(
@@ -76,9 +70,10 @@ class _AppToastSurface extends StatelessWidget {
           child: Text(
             message,
             textAlign: TextAlign.center,
-            style: AppTypographyTokens.mobile(
-              textColor,
-            ).bodySmStrong.copyWith(decoration: TextDecoration.none),
+            style: AppTypographyTokens.mobile(textColor).bodySmStrong.copyWith(
+              decoration: TextDecoration.none,
+              color: textColor,
+            ),
           ),
         ),
       ),
