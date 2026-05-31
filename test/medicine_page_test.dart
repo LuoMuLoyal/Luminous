@@ -46,8 +46,12 @@ void main() {
       expect(finder, findsOneWidget);
     }
 
-    expect(find.text('拍照识别药品'), findsOneWidget);
     expect(find.text('今日服用计划'), findsOneWidget);
-    expect(find.text('Luminous 用药边界'), findsOneWidget);
+    expect(find.text('拍照识别药品'), findsOneWidget);
+    expect(find.text('二甲双胍缓释片'), findsOneWidget);
+    expect(find.text('阿托伐他汀钙片'), findsOneWidget);
+    expect(find.text('奥美拉唑肠溶胶囊'), findsOneWidget);
+    expect(find.text('需补药提醒'), findsOneWidget);
+    expect(find.text('安全边界'), findsOneWidget);
   });
 }

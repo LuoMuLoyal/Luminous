@@ -52,6 +52,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineHeaderActionAdd => '添加药品';
 
   @override
+  String get medicineHeaderActionSearchCompact => '搜索';
+
+  @override
+  String get medicineHeaderActionAddCompact => '添加';
+
+  @override
+  String get medicineHeaderAddToast => '会打开添加药品与识别入口。';
+
+  @override
   String get medicineHeroEyebrow => 'PERSONAL DRUGBOX';
 
   @override
@@ -67,10 +76,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineHeroMetricTodayCountLabel => '今日需服用';
 
   @override
+  String get medicineHeroMetricTodayCountUnit => '种';
+
+  @override
   String get medicineHeroMetricAdherenceValue => '100%';
 
   @override
   String get medicineHeroMetricAdherenceLabel => '按时服用率';
+
+  @override
+  String get medicineHeroMetricAdherenceUnit => '%';
 
   @override
   String get medicineHeroMetricNextDoseValue => '20:00';
@@ -134,10 +149,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineMockScheduleMorningEvening => '每日 2 次';
 
   @override
-  String get medicineMockTime0800Taken => '08:00 已服用';
+  String get medicineMockTime0800 => '08:00';
 
   @override
-  String get medicineMockTime2000Pending => '20:00 待服用';
+  String get medicineMockTime1200 => '12:00';
+
+  @override
+  String get medicineMockTime2000 => '20:00';
+
+  @override
+  String get medicineDoseStatusTaken => '已服用';
+
+  @override
+  String get medicineDoseStatusPending => '待服用';
 
   @override
   String get medicineMockStock7Days => '剩余 7 天';
@@ -146,40 +170,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineStatusStable => '稳定服用';
 
   @override
-  String get medicineMockNameVitaminD => '维生素 D3';
+  String get medicineMockNameAtorvastatin => '阿托伐他汀钙片';
 
   @override
-  String get medicineMockDoseVitaminD => '1000 IU';
+  String get medicineMockDoseAtorvastatin => '20 mg';
 
   @override
   String get medicineMockScheduleDailyOnce => '每日 1 次';
 
   @override
-  String get medicineMockWithDinner => '建议随晚餐';
-
-  @override
   String get medicineMockStock15Days => '剩余 15 天';
 
   @override
-  String get medicineStatusNeedsCheckin => '今晚记得打卡';
+  String get medicineStatusNeedsCheckin => '稳定服用';
 
   @override
-  String get medicineMockNameSertraline => '舍曲林';
+  String get medicineMockNameOmeprazole => '奥美拉唑肠溶胶囊';
 
   @override
-  String get medicineMockDoseSertraline => '50 mg';
-
-  @override
-  String get medicineMockTime2200Pending => '22:00 待服用';
-
-  @override
-  String get medicineMockStressRisk => '近期压力偏高，漏服风险上升';
+  String get medicineMockDoseOmeprazole => '20 mg';
 
   @override
   String get medicineMockStock3Days => '剩余 3 天';
 
   @override
-  String get medicineStatusNeedRefillSoon => '需要尽快补药';
+  String get medicineStatusNeedRefillSoon => '待关注';
+
+  @override
+  String get medicineStockWarningLow => '库存不足，建议及时补充';
 
   @override
   String get medicineSafetyPanelTitle => '安全与补药';
@@ -188,10 +206,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineSafetyPanelSubtitle => '高风险提醒、临期库存和依从性风险会集中在这里。';
 
   @override
-  String get medicineAlertRefillTitle => '补充提醒';
+  String get medicineAlertRefillTitle => '需补药提醒';
 
   @override
-  String get medicineAlertRefillBody => '维生素 D 低于 7 天，请及时补货。';
+  String get medicineAlertRefillBody => '维生素 D 软胶囊剩余 3 天';
+
+  @override
+  String get medicineAlertRefillDetail => '建议及时补货，避免中断';
 
   @override
   String get medicineAlertRefillAction => '去补药';
@@ -203,22 +224,70 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineAlertInteractionBody => '阿司匹林与布洛芬可能增加出血风险。';
 
   @override
+  String get medicineAlertInteractionDetail => '同时使用时请遵医嘱';
+
+  @override
   String get medicineAlertInteractionAction => '查看详情';
 
   @override
-  String get medicinePromiseTitle => 'Luminous 用药边界';
+  String get medicineAlertOtherTitle => '其他安全提醒';
+
+  @override
+  String get medicineAlertOtherBody => '布洛芬不建议长期连续使用超过 5 天';
+
+  @override
+  String get medicineAlertOtherDetail => '如需长期使用，请咨询医生';
+
+  @override
+  String get medicineAlertOtherAction => '查看详情';
+
+  @override
+  String get medicinePromiseTitle => '安全边界';
 
   @override
   String get medicinePromiseBody => '这个页面会主动帮你发现风险，但不会伪装成诊断结论。';
 
   @override
-  String get medicinePromisePointBoundary => '所有结果都作为参考，不替代医生诊断或治疗决定。';
+  String get medicinePromisePointBoundary => '结果仅供参考，不替代医生诊断与治疗。';
 
   @override
-  String get medicinePromisePointPregnancy => '孕期、哺乳期、儿童和精神类药物会被更高优先级地警示。';
+  String get medicinePromisePointPregnancy => '孕期、哺乳期、儿童、精神类药物更高优先级警示。';
 
   @override
-  String get medicinePromisePointPrivacy => '拍照、处方和高敏感药物信息会优先按最小暴露原则处理。';
+  String get medicinePromisePointPrivacy => '处方、拍照和敏感药物信息遵循最小暴露原则。';
+
+  @override
+  String get medicinePromisePointDiagnosis => '我们不诊断、不替代医生、不编造药品事实。';
+
+  @override
+  String get medicinePromiseAction => '了解更多安全说明';
+
+  @override
+  String get medicineViewPlanToast => '会打开完整的今日用药列表与历史记录。';
+
+  @override
+  String get medicineOpenPlanItemToast => '会打开药品详情、提醒设置和历史服用记录。';
+
+  @override
+  String get medicineOpenPromiseToast => '会打开安全边界、特殊人群提示和隐私处理说明。';
+
+  @override
+  String get medicineQuickActionCameraToast => '会调用相机拍摄药盒、药板或标签并开始识别。';
+
+  @override
+  String get medicineQuickActionBarcodeToast => '会打开扫码流程，识别条形码并补齐药品信息。';
+
+  @override
+  String get medicineQuickActionPrescriptionToast => '会打开图片导入与处方识别流程。';
+
+  @override
+  String get medicineAlertRefillToast => '会打开补药与库存详情。';
+
+  @override
+  String get medicineAlertInteractionToast => '会打开相互作用详情与风险说明。';
+
+  @override
+  String get medicineAlertOtherToast => '会打开其他安全提醒详情。';
 
   @override
   String get medicineSearchPageTitle => '搜索药品';

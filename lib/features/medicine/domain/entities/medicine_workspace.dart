@@ -54,29 +54,44 @@ class MedicinePlanItem {
     required this.nameKey,
     required this.dosageKey,
     required this.scheduleKey,
-    required this.nextSlotKey,
-    required this.laterSlotKey,
+    required this.slots,
     required this.stockKey,
     required this.stateKey,
     required this.stateColor,
+    this.stockWarningKey,
   });
 
   final Color color;
   final MedicineCopyKey nameKey;
   final MedicineCopyKey dosageKey;
   final MedicineCopyKey scheduleKey;
-  final MedicineCopyKey nextSlotKey;
-  final MedicineCopyKey laterSlotKey;
+  final List<MedicineDoseSlot> slots;
   final MedicineCopyKey stockKey;
   final MedicineCopyKey stateKey;
   final Color stateColor;
+  final MedicineCopyKey? stockWarningKey;
 }
+
+class MedicineDoseSlot {
+  const MedicineDoseSlot({
+    required this.timeKey,
+    required this.statusKey,
+    required this.status,
+  });
+
+  final MedicineCopyKey timeKey;
+  final MedicineCopyKey statusKey;
+  final MedicineDoseStatus status;
+}
+
+enum MedicineDoseStatus { taken, pending }
 
 class MedicineAlert {
   const MedicineAlert({
     required this.icon,
     required this.titleKey,
     required this.bodyKey,
+    required this.detailKey,
     required this.actionKey,
     required this.color,
     required this.softColor,
@@ -85,6 +100,7 @@ class MedicineAlert {
   final IconData icon;
   final MedicineCopyKey titleKey;
   final MedicineCopyKey bodyKey;
+  final MedicineCopyKey detailKey;
   final MedicineCopyKey actionKey;
   final Color color;
   final Color softColor;
@@ -108,29 +124,37 @@ enum MedicineCopyKey {
   mockNameMetformin,
   mockDoseMetformin,
   mockScheduleMorningEvening,
-  mockTime0800Taken,
-  mockTime2000Pending,
+  mockTime0800,
+  mockTime1200,
+  mockTime2000,
+  doseStatusTaken,
+  doseStatusPending,
   mockStock7Days,
   statusStable,
-  mockNameVitaminD,
-  mockDoseVitaminD,
+  mockNameAtorvastatin,
+  mockDoseAtorvastatin,
   mockScheduleDailyOnce,
-  mockWithDinner,
   mockStock15Days,
   statusNeedsCheckin,
-  mockNameSertraline,
-  mockDoseSertraline,
-  mockTime2200Pending,
-  mockStressRisk,
+  mockNameOmeprazole,
+  mockDoseOmeprazole,
   mockStock3Days,
   statusNeedRefillSoon,
+  stockWarningLow,
   alertRefillTitle,
   alertRefillBody,
+  alertRefillDetail,
   alertRefillAction,
   alertInteractionTitle,
   alertInteractionBody,
+  alertInteractionDetail,
   alertInteractionAction,
+  alertOtherTitle,
+  alertOtherBody,
+  alertOtherDetail,
+  alertOtherAction,
   promisePointBoundary,
   promisePointPregnancy,
   promisePointPrivacy,
+  promisePointDiagnosis,
 }
