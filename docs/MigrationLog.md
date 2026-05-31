@@ -23,6 +23,8 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Added a shared `AppImagePlaceholder` under `lib/core/widgets/` and used it for record meal imagery placeholders instead of adding fixed raster assets.
 - Wired `ShellPage` to render `RecordPage`, added zh/en localization strings for record copy and toast feedback, and added `test/record_page_test.dart` for mobile and desktop layout coverage.
 - Kept record interactions mock-only: clickable dates, filters, timeline entries, trend cards, and create actions show `AppToast` hints.
+- Reworked the desktop/web shell navigation from a narrow `NavigationRail` into a wider grouped left sidebar: the top keeps the same five tabs as mobile, the bottom adds separate `settings / help` actions, and the content workspace now sits inside a larger framed desktop container.
+- Flattened the placeholder experience for `mine / more`: those pages now render a single placeholder surface directly inside the page scaffold instead of nesting a placeholder card inside another section card.
 
 ### Today Concept Alignment
 
