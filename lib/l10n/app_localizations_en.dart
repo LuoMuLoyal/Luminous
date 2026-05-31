@@ -27,6 +27,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabMore => 'More';
 
   @override
+  String get desktopSidebarSettings => 'Settings';
+
+  @override
+  String get desktopSidebarHelp => 'Help';
+
+  @override
+  String get desktopSidebarSettingsToast => 'This will open settings.';
+
+  @override
+  String get desktopSidebarHelpToast => 'This will open help and support.';
+
+  @override
   String get recordPageDescription =>
       'Calendar, timeline, and multi-type daily records will grow here.';
 

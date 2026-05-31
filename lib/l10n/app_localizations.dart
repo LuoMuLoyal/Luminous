@@ -134,6 +134,30 @@ abstract class AppLocalizations {
   /// **'更多'**
   String get tabMore;
 
+  /// No description provided for @desktopSidebarSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置'**
+  String get desktopSidebarSettings;
+
+  /// No description provided for @desktopSidebarHelp.
+  ///
+  /// In zh, this message translates to:
+  /// **'帮助'**
+  String get desktopSidebarHelp;
+
+  /// No description provided for @desktopSidebarSettingsToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开设置中心。'**
+  String get desktopSidebarSettingsToast;
+
+  /// No description provided for @desktopSidebarHelpToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开帮助与支持。'**
+  String get desktopSidebarHelpToast;
+
   /// No description provided for @recordPageDescription.
   ///
   /// In zh, this message translates to:

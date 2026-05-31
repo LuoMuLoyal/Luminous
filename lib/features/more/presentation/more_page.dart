@@ -14,15 +14,7 @@ class MorePage extends StatelessWidget {
       description:
           l10n?.morePageDescription ??
           'Utility tools, emergency help, device management, and lower-frequency features belong here.',
-      children: [
-        PageSectionCard(
-          title: l10n?.moreSectionTitle ?? 'Utility hub',
-          subtitle:
-              l10n?.moreSectionSubtitle ??
-              'This tab will gather the lower-frequency but still important workflows.',
-          child: PlaceholderPage(label: '更多'),
-        ),
-      ],
+      children: [PlaceholderPage(label: l10n?.tabMore ?? 'More')],
     );
   }
 }
