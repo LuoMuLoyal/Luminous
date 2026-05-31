@@ -19,41 +19,38 @@ class PlaceholderPage extends StatelessWidget {
         : AppTypographyTokens.desktop(scheme.onSurface);
     final layout = AppLayoutTokens.resolve(width);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
-      child: Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: layout.maxContentWidth * 0.42),
-          padding: EdgeInsets.all(layout.cardPaddingLarge),
-          decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: surface.hairline),
-            boxShadow: AppShadowTokens.level3,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.construction_rounded,
-                size: width < 600 ? 42 : 48,
-                color: surface.mute.withValues(alpha: 0.6),
-              ),
-              SizedBox(height: layout.componentGap),
-              Text(
-                l10n?.placeholderSoon(label) ?? '$label · Coming Soon',
-                style: typography.displaySm.copyWith(color: scheme.onSurface),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacingTokens.xs),
-              Text(
-                l10n?.placeholderDescription ??
-                    'This area is reserved structurally and will be rebuilt with the new multi-platform design system.',
-                style: typography.bodySm.copyWith(color: surface.body),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: layout.maxContentWidth * 0.42),
+        padding: EdgeInsets.all(layout.cardPaddingLarge),
+        decoration: BoxDecoration(
+          color: surface.canvas,
+          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          border: Border.all(color: surface.hairline),
+          boxShadow: AppShadowTokens.level3,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.construction_rounded,
+              size: width < 600 ? 42 : 48,
+              color: surface.mute.withValues(alpha: 0.6),
+            ),
+            SizedBox(height: layout.componentGap),
+            Text(
+              l10n?.placeholderSoon(label) ?? '$label · Coming Soon',
+              style: typography.displaySm.copyWith(color: scheme.onSurface),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacingTokens.xs),
+            Text(
+              l10n?.placeholderDescription ??
+                  'This area is reserved structurally and will be rebuilt with the new multi-platform design system.',
+              style: typography.bodySm.copyWith(color: surface.body),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

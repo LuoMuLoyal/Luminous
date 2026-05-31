@@ -27,6 +27,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tabMore => '更多';
 
   @override
+  String get desktopSidebarSettings => '设置';
+
+  @override
+  String get desktopSidebarHelp => '帮助';
+
+  @override
+  String get desktopSidebarSettingsToast => '会打开设置中心。';
+
+  @override
+  String get desktopSidebarHelpToast => '会打开帮助与支持。';
+
+  @override
   String get recordPageDescription => '日历、时间线与多类型每日记录会从这里生长出来。';
 
   @override

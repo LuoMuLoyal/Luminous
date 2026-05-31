@@ -14,15 +14,7 @@ class MinePage extends StatelessWidget {
       description:
           l10n?.minePageDescription ??
           'Profile, goals, privacy, and account settings will be rebuilt here.',
-      children: [
-        PageSectionCard(
-          title: l10n?.mineSectionTitle ?? 'Personal workspace',
-          subtitle:
-              l10n?.mineSectionSubtitle ??
-              'Identity, goals, and privacy controls will share one calm surface here.',
-          child: PlaceholderPage(label: '我的'),
-        ),
-      ],
+      children: [PlaceholderPage(label: l10n?.tabMine ?? 'Mine')],
     );
   }
 }
