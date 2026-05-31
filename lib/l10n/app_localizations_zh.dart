@@ -58,8 +58,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineHeroTitle => '先把今天的药、风险和补药节奏看清。';
 
   @override
-  String get medicineHeroSubtitle =>
-      '这个 mock 页面先把拍照识别、条码扫描、手动搜索和用药安全工作台落下来，后续再替换成真实 Lucent 数据。';
+  String get medicineHeroSubtitle => '拍照识别、条码扫描、手动搜索和用药安全会从这里进入，结果始终保持参考边界。';
 
   @override
   String get medicineHeroMetricTodayCountValue => '2';
@@ -115,34 +114,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineQuickActionPrescriptionSubtitle => '后续可接 OCR 与复诊提醒';
-
-  @override
-  String get medicineSearchPanelTitle => '手动搜索';
-
-  @override
-  String get medicineSearchPanelSubtitle => '后续这里会接 Lucent 药品搜索、缓存旁路刷新和详情页入口。';
-
-  @override
-  String get medicineSearchInputPlaceholder => '搜索药名、成分、适应症或商品名';
-
-  @override
-  String get medicineSearchMockBadge => 'Mock';
-
-  @override
-  String get medicineSearchSuggestionBloodPressure => '降压药';
-
-  @override
-  String get medicineSearchSuggestionCold => '感冒药';
-
-  @override
-  String get medicineSearchSuggestionSupplement => '维生素 D';
-
-  @override
-  String get medicineSearchCalloutTitle => '准备接入的真实能力';
-
-  @override
-  String get medicineSearchCalloutBody =>
-      '药品搜索和详情未来会优先走缓存，必要时再通过请求头触发 fresh read，避免用户看到旧数据。';
 
   @override
   String get medicineTodayPlanTitle => '今日服用计划';
@@ -248,6 +219,119 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicinePromisePointPrivacy => '拍照、处方和高敏感药物信息会优先按最小暴露原则处理。';
+
+  @override
+  String get medicineSearchPageTitle => '搜索药品';
+
+  @override
+  String get medicineSearchAssistantTitle => '用药助手';
+
+  @override
+  String get medicineSearchMyBoxTab => '我的药箱';
+
+  @override
+  String get medicineSearchFieldHint => '搜索药品、成分、疾病、症状...';
+
+  @override
+  String get medicineSearchSourceCn => '药品说明书（cn）';
+
+  @override
+  String get medicineSearchSourceDrugbank => '药物知识（DrugBank）';
+
+  @override
+  String get medicineSearchSwitchSource => '切换数据源';
+
+  @override
+  String get medicineSearchRecentTitle => '最近搜索';
+
+  @override
+  String get medicineSearchClearAction => '清空';
+
+  @override
+  String get medicineSearchPhotoAction => '拍照识别';
+
+  @override
+  String get medicineSearchBarcodeAction => '扫描条形码';
+
+  @override
+  String get medicineSearchPhotoToast => '会打开相机识别药盒、药板或说明书。';
+
+  @override
+  String get medicineSearchBarcodeToast => '会打开扫码流程，识别条形码并补齐药品信息。';
+
+  @override
+  String get medicineSearchScanHint => '会打开扫码或拍照识别入口。';
+
+  @override
+  String get medicineSearchCategoryTitle => '热门常备药分类';
+
+  @override
+  String get medicineSearchCategoryPainFever => '退烧止痛';
+
+  @override
+  String get medicineSearchCategoryColdCough => '感冒咳嗽';
+
+  @override
+  String get medicineSearchCategoryStomach => '肠胃';
+
+  @override
+  String get medicineSearchCategorySupplement => '维矿补充';
+
+  @override
+  String get medicineSearchCategoryChronic => '慢病常用';
+
+  @override
+  String get medicineSearchReferenceNotice => '药品信息仅供参考，具体用药请遵医嘱';
+
+  @override
+  String get medicineSearchResultTitle => '搜索结果';
+
+  @override
+  String medicineSearchResultCount(int count) {
+    return '共找到 $count 条结果';
+  }
+
+  @override
+  String get medicineSearchMatchedBy => '命中';
+
+  @override
+  String get medicineSearchMatchIngredient => '成分';
+
+  @override
+  String get medicineSearchMatchName => '名称';
+
+  @override
+  String get medicineSearchAddToBoxAction => '加入药箱';
+
+  @override
+  String get medicineSearchAddToast => '会加入药箱并进入用药提醒设置。';
+
+  @override
+  String get medicineSearchOpenDetailToast => '会打开药品详情页。';
+
+  @override
+  String get medicineSearchPreviewTitle => '选中项预览';
+
+  @override
+  String get medicineSearchSafetyLead => '你当前的过敏史 / 孕期状态 / 现用药可能影响此药使用';
+
+  @override
+  String get medicineSearchSafetyAction => '查看详情页获取完整信息';
+
+  @override
+  String get medicineSearchNoResultTitle => '无结果？';
+
+  @override
+  String get medicineSearchNoResultKeyword => '检查关键词';
+
+  @override
+  String get medicineSearchNoResultSwitch => '切换数据源';
+
+  @override
+  String get medicineSearchNoResultScan => '拍照或扫码';
+
+  @override
+  String get medicineSearchErrorTitle => '搜索页暂时没有加载出来';
 
   @override
   String get minePageDescription => '档案、目标、隐私与账号设置会在这里重建。';
