@@ -16,6 +16,14 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-05-31
 
+### Record Mock Dashboard Foundation
+
+- Replaced the `record` tab placeholder with a concept-aligned mock dashboard: mobile stacks week strip, quick record, day summary, timeline, trends, and specialist health bag; desktop expands into calendar/filter left rail, central summary/timeline, and trend/new-entry right rail.
+- Added `record` feature-first domain entities, repository contract, mock repository, and Riverpod provider so later Lucent-backed record APIs can replace the data source without rewriting the page structure.
+- Added a shared `AppImagePlaceholder` under `lib/core/widgets/` and used it for record meal imagery placeholders instead of adding fixed raster assets.
+- Wired `ShellPage` to render `RecordPage`, added zh/en localization strings for record copy and toast feedback, and added `test/record_page_test.dart` for mobile and desktop layout coverage.
+- Kept record interactions mock-only: clickable dates, filters, timeline entries, trend cards, and create actions show `AppToast` hints.
+
 ### Today Concept Alignment
 
 - Refined the Today tab against the 2026-05-31 concept image: mobile keeps the compact health feed, while desktop now expands into a wide dashboard instead of being capped at phone width.
