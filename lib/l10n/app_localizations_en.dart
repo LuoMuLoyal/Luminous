@@ -713,6 +713,298 @@ class AppLocalizationsEn extends AppLocalizations {
       'Identity, goals, and privacy controls will share one calm surface here.';
 
   @override
+  String get mineHeaderNotifications => 'Notifications';
+
+  @override
+  String get mineHeaderSettings => 'Page settings';
+
+  @override
+  String get mineAccountDisplayName => 'Lumi User';
+
+  @override
+  String get mineAccountSignedIn => 'Signed in';
+
+  @override
+  String get mineAccountMeta => 'Member until: 2026-05-20';
+
+  @override
+  String get mineCompletionTitle => 'Profile completion';
+
+  @override
+  String get mineCompletionSubtitle =>
+      'Good progress. Keep filling it out for more precise suggestions.';
+
+  @override
+  String get mineSummaryTitle => 'Health context summary';
+
+  @override
+  String get mineSummaryUpdatedAt => 'Updated 2025-05-15';
+
+  @override
+  String get mineSummaryAge => 'Age';
+
+  @override
+  String get mineSummaryAllergies => 'Allergies';
+
+  @override
+  String get mineSummaryConditions => 'Conditions';
+
+  @override
+  String get mineSummaryMedicines => 'Current meds';
+
+  @override
+  String get mineSummaryMissingInfo =>
+      'Missing info: birth date, sex, unit system, pregnancy/lactation state';
+
+  @override
+  String get mineSummaryCompleteAction => 'Complete';
+
+  @override
+  String get mineProfileTitle => 'Health profile';
+
+  @override
+  String get mineProfileBasicInfoTitle => 'Basic info';
+
+  @override
+  String get mineProfileBasicInfoSubtitle => 'Personal basics';
+
+  @override
+  String get mineProfileAllergiesTitle => 'Allergies';
+
+  @override
+  String get mineProfileAllergiesSubtitle => '2 records';
+
+  @override
+  String get mineProfileConditionsTitle => 'Conditions';
+
+  @override
+  String get mineProfileConditionsSubtitle => '1 record';
+
+  @override
+  String get mineProfileMedicinesTitle => 'Current meds';
+
+  @override
+  String get mineProfileMedicinesSubtitle => '3 medicines';
+
+  @override
+  String get mineProfileWomenTitle => 'Women / pregnancy';
+
+  @override
+  String get mineProfileWomenSubtitle => 'Not filled';
+
+  @override
+  String get mineProfileSpecialistTitle => 'Specialist bag';
+
+  @override
+  String get mineProfileSpecialistSubtitle =>
+      'Dental, vision, hearing, and more';
+
+  @override
+  String get mineProfileLifestyleTitle => 'Lifestyle';
+
+  @override
+  String get mineProfileLifestyleSubtitle => 'Diet, exercise, sleep';
+
+  @override
+  String get mineProfileFamilyTitle => 'Family history';
+
+  @override
+  String get mineProfileFamilySubtitle => 'Genetic and family conditions';
+
+  @override
+  String get minePlansTitle => 'Health plan center';
+
+  @override
+  String get minePlansViewAll => 'View all';
+
+  @override
+  String get minePlanBloodSugarTitle => 'Blood sugar plan';
+
+  @override
+  String get minePlanBloodSugarStatus => 'In progress';
+
+  @override
+  String get minePlanBloodSugarDetail => '12 days in';
+
+  @override
+  String get minePlanWeightTitle => 'Weight plan';
+
+  @override
+  String get minePlanWeightStatus => 'Not started';
+
+  @override
+  String get minePlanWeightDetail => 'Set goal';
+
+  @override
+  String get minePlanSleepTitle => 'Sleep plan';
+
+  @override
+  String get minePlanSleepStatus => 'In progress';
+
+  @override
+  String get minePlanSleepDetail => 'Improving sleep';
+
+  @override
+  String get minePlanMoodTitle => 'Mood stability plan';
+
+  @override
+  String get minePlanMoodStatus => 'Not started';
+
+  @override
+  String get minePlanMoodDetail => 'Focus on emotional health';
+
+  @override
+  String get minePlanPregnancyTitle => 'Pre-pregnancy plan';
+
+  @override
+  String get minePlanPregnancyStatus => 'Not started';
+
+  @override
+  String get minePlanPregnancyDetail => 'Prepare with science';
+
+  @override
+  String get mineReportTitle => 'Health report';
+
+  @override
+  String get mineReportBody =>
+      'Weekly/monthly reports, trend reviews, and health insights';
+
+  @override
+  String get mineReportMeta => 'Last generated: 2025-05-12';
+
+  @override
+  String get mineReportAction => 'View report';
+
+  @override
+  String get minePrivacyTitle => 'Privacy control';
+
+  @override
+  String get minePrivacyBody =>
+      'Data visibility, sharing grants, and cloud sync scope';
+
+  @override
+  String get minePrivacyMeta => '8 sensitive data groups protected';
+
+  @override
+  String get minePrivacyAction => 'Manage privacy';
+
+  @override
+  String get mineStatusPanelTitle => 'Profile status';
+
+  @override
+  String get mineStatusBasicTitle => 'Basic info';
+
+  @override
+  String get mineStatusBasicValue => '1/4 complete';
+
+  @override
+  String get mineStatusAllergiesTitle => 'Allergies';
+
+  @override
+  String get mineStatusAllergiesValue => '2 items';
+
+  @override
+  String get mineStatusConditionsTitle => 'Conditions';
+
+  @override
+  String get mineStatusConditionsValue => '1 item';
+
+  @override
+  String get mineStatusMedicinesTitle => 'Current meds';
+
+  @override
+  String get mineStatusMedicinesValue => '3 meds';
+
+  @override
+  String get mineStatusWomenTitle => 'Pregnancy/lactation';
+
+  @override
+  String get mineStatusWomenValue => 'Missing';
+
+  @override
+  String get mineOnboardingTitle => 'Onboarding progress';
+
+  @override
+  String get mineOnboardingBasicTitle => 'Basic info';
+
+  @override
+  String get mineOnboardingContextTitle => 'Health context';
+
+  @override
+  String get mineOnboardingMedicineTitle => 'Medication setup';
+
+  @override
+  String get mineOnboardingGoalTitle => 'Health goals';
+
+  @override
+  String get mineOnboardingPrivacyTitle => 'Privacy setup';
+
+  @override
+  String mineOnboardingProgress(int completed, int total) {
+    return '$completed/$total complete';
+  }
+
+  @override
+  String get mineQuickEntriesTitle => 'Quick entries';
+
+  @override
+  String get mineQuickExportTitle => 'Export health data';
+
+  @override
+  String get mineQuickExportSubtitle => 'Download a health data copy';
+
+  @override
+  String get mineQuickDoctorTitle => 'Share with doctor';
+
+  @override
+  String get mineQuickDoctorSubtitle => 'Grant access to health details';
+
+  @override
+  String get mineQuickEmergencyTitle => 'Emergency contact';
+
+  @override
+  String get mineQuickEmergencySubtitle => '1 contact configured';
+
+  @override
+  String get mineSettingsSectionTitle => 'Settings and support';
+
+  @override
+  String get mineSettingsPanelTitle => 'Settings';
+
+  @override
+  String get mineSettingsThemeTitle => 'Theme mode';
+
+  @override
+  String get mineSettingsThemeValue => 'Follow system';
+
+  @override
+  String get mineSettingsAccountTitle => 'Account and security';
+
+  @override
+  String get mineSettingsLanguageTitle => 'Language';
+
+  @override
+  String get mineSettingsLanguageValue => 'Simplified Chinese';
+
+  @override
+  String get mineSettingsNotificationsTitle => 'Notifications';
+
+  @override
+  String get mineSettingsMoreTitle => 'More settings';
+
+  @override
+  String get mineErrorTitle => 'Mine did not load this time';
+
+  @override
+  String get mineErrorDescription =>
+      'The structure is wired. Retry the mock fetch once.';
+
+  @override
+  String mineActionToast(String action) {
+    return '$action: this will open the related details or settings flow later.';
+  }
+
+  @override
   String get morePageDescription =>
       'Utility tools, emergency help, device management, and lower-frequency features belong here.';
 
