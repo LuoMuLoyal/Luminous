@@ -22,6 +22,7 @@ class MedicinePage extends ConsumerWidget {
     final scheme = theme.colorScheme;
     final surface = theme.extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
+    final isCompact = width < AppBreakpoints.mobile;
     final typography = width < AppBreakpoints.mobile
         ? AppTypographyTokens.mobile(scheme.onSurface)
         : AppTypographyTokens.desktop(scheme.onSurface);
@@ -30,14 +31,18 @@ class MedicinePage extends ConsumerWidget {
       title: l10n.tabMedicine,
       actions: <Widget>[
         MedicineHeaderActionChip(
-          label: l10n.medicineHeaderActionSearch,
+          label: isCompact
+              ? l10n.medicineHeaderActionSearchCompact
+              : l10n.medicineHeaderActionSearch,
           icon: Icons.search_rounded,
           typography: typography,
           surface: surface,
           onTap: () => context.push('/medicine/search'),
         ),
         MedicineHeaderActionChip(
-          label: l10n.medicineHeaderActionAdd,
+          label: isCompact
+              ? l10n.medicineHeaderActionAddCompact
+              : l10n.medicineHeaderActionAdd,
           icon: Icons.add_rounded,
           emphasized: true,
           typography: typography,
@@ -45,7 +50,7 @@ class MedicinePage extends ConsumerWidget {
           onTap: () => _showHeaderActionMessage(
             context,
             l10n.medicineHeaderActionAdd,
-            '会打开添加药品与识别入口。',
+            l10n.medicineHeaderAddToast,
           ),
         ),
       ],
