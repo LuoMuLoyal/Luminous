@@ -152,6 +152,486 @@ abstract class AppLocalizations {
   /// **'记录页的第一步先搭结构，不急着恢复旧逻辑。'**
   String get recordSectionSubtitle;
 
+  /// No description provided for @recordTodayAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天'**
+  String get recordTodayAction;
+
+  /// No description provided for @recordPreviousDayAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'上一天'**
+  String get recordPreviousDayAction;
+
+  /// No description provided for @recordNextDayAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'下一天'**
+  String get recordNextDayAction;
+
+  /// No description provided for @recordPickDateAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择日期'**
+  String get recordPickDateAction;
+
+  /// No description provided for @recordAddAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录'**
+  String get recordAddAction;
+
+  /// No description provided for @recordAddCompactAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录'**
+  String get recordAddCompactAction;
+
+  /// No description provided for @recordQuickSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'快速记录'**
+  String get recordQuickSectionTitle;
+
+  /// No description provided for @recordSummarySectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'当天摘要'**
+  String get recordSummarySectionTitle;
+
+  /// No description provided for @recordSummaryDateLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'2025年5月15日（周四）'**
+  String get recordSummaryDateLabel;
+
+  /// No description provided for @recordTimelineSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'时间线'**
+  String get recordTimelineSectionTitle;
+
+  /// No description provided for @recordTrendsSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'趋势查看'**
+  String get recordTrendsSectionTitle;
+
+  /// No description provided for @recordNewEntrySectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'新建记录'**
+  String get recordNewEntrySectionTitle;
+
+  /// No description provided for @recordFilterSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录类型'**
+  String get recordFilterSectionTitle;
+
+  /// No description provided for @recordFilterSelectAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全选'**
+  String get recordFilterSelectAll;
+
+  /// No description provided for @recordAllTypesAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部类型'**
+  String get recordAllTypesAction;
+
+  /// No description provided for @recordEditAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑'**
+  String get recordEditAction;
+
+  /// No description provided for @recordMonthLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'2025年5月'**
+  String get recordMonthLabel;
+
+  /// No description provided for @recordOpenDateAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看日期'**
+  String get recordOpenDateAction;
+
+  /// No description provided for @recordNotEnabledLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开启'**
+  String get recordNotEnabledLabel;
+
+  /// No description provided for @recordVoiceAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'语音记录（长按说话）'**
+  String get recordVoiceAction;
+
+  /// No description provided for @recordActionToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'{action}：后续会打开对应操作。'**
+  String recordActionToast(String action);
+
+  /// No description provided for @recordErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录页暂时没有加载出来'**
+  String get recordErrorTitle;
+
+  /// No description provided for @recordErrorDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'Mock 数据边界已经接好，可以重新拉取一次。'**
+  String get recordErrorDescription;
+
+  /// No description provided for @recordWeekdaySun.
+  ///
+  /// In zh, this message translates to:
+  /// **'日'**
+  String get recordWeekdaySun;
+
+  /// No description provided for @recordWeekdayMon.
+  ///
+  /// In zh, this message translates to:
+  /// **'一'**
+  String get recordWeekdayMon;
+
+  /// No description provided for @recordWeekdayTue.
+  ///
+  /// In zh, this message translates to:
+  /// **'二'**
+  String get recordWeekdayTue;
+
+  /// No description provided for @recordWeekdayWed.
+  ///
+  /// In zh, this message translates to:
+  /// **'三'**
+  String get recordWeekdayWed;
+
+  /// No description provided for @recordWeekdayThu.
+  ///
+  /// In zh, this message translates to:
+  /// **'四'**
+  String get recordWeekdayThu;
+
+  /// No description provided for @recordWeekdayFri.
+  ///
+  /// In zh, this message translates to:
+  /// **'五'**
+  String get recordWeekdayFri;
+
+  /// No description provided for @recordWeekdaySat.
+  ///
+  /// In zh, this message translates to:
+  /// **'六'**
+  String get recordWeekdaySat;
+
+  /// No description provided for @recordTypeMeal.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮食'**
+  String get recordTypeMeal;
+
+  /// No description provided for @recordTypeVitals.
+  ///
+  /// In zh, this message translates to:
+  /// **'体征'**
+  String get recordTypeVitals;
+
+  /// No description provided for @recordTypeWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水'**
+  String get recordTypeWater;
+
+  /// No description provided for @recordTypeMood.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪'**
+  String get recordTypeMood;
+
+  /// No description provided for @recordTypeSymptom.
+  ///
+  /// In zh, this message translates to:
+  /// **'症状'**
+  String get recordTypeSymptom;
+
+  /// No description provided for @recordTypeActivity.
+  ///
+  /// In zh, this message translates to:
+  /// **'运动'**
+  String get recordTypeActivity;
+
+  /// No description provided for @recordTypeMedication.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药'**
+  String get recordTypeMedication;
+
+  /// No description provided for @recordTypeWomenHealth.
+  ///
+  /// In zh, this message translates to:
+  /// **'女性健康'**
+  String get recordTypeWomenHealth;
+
+  /// No description provided for @recordTypeHeartRate.
+  ///
+  /// In zh, this message translates to:
+  /// **'心率'**
+  String get recordTypeHeartRate;
+
+  /// No description provided for @recordTypeWeight.
+  ///
+  /// In zh, this message translates to:
+  /// **'体重'**
+  String get recordTypeWeight;
+
+  /// No description provided for @recordQuickWomenSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开启'**
+  String get recordQuickWomenSubtitle;
+
+  /// No description provided for @recordSummaryMealTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮食记录'**
+  String get recordSummaryMealTitle;
+
+  /// No description provided for @recordSummaryWaterTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水进度'**
+  String get recordSummaryWaterTitle;
+
+  /// No description provided for @recordSummaryLatestVitalTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'最新体征'**
+  String get recordSummaryLatestVitalTitle;
+
+  /// No description provided for @recordSummaryMoodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪记录'**
+  String get recordSummaryMoodTitle;
+
+  /// No description provided for @recordSummaryActivityTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'运动完成度'**
+  String get recordSummaryActivityTitle;
+
+  /// No description provided for @recordSummaryTimesUnit.
+  ///
+  /// In zh, this message translates to:
+  /// **'次'**
+  String get recordSummaryTimesUnit;
+
+  /// No description provided for @recordSummaryCupsUnit.
+  ///
+  /// In zh, this message translates to:
+  /// **'杯'**
+  String get recordSummaryCupsUnit;
+
+  /// No description provided for @recordSummaryRecorded.
+  ///
+  /// In zh, this message translates to:
+  /// **'已记录'**
+  String get recordSummaryRecorded;
+
+  /// No description provided for @recordSummaryNormal.
+  ///
+  /// In zh, this message translates to:
+  /// **'正常'**
+  String get recordSummaryNormal;
+
+  /// No description provided for @recordTimelineMealLunch.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮食 · 午餐'**
+  String get recordTimelineMealLunch;
+
+  /// No description provided for @recordTimelineMealName.
+  ///
+  /// In zh, this message translates to:
+  /// **'鸡胸肉藜麦沙拉'**
+  String get recordTimelineMealName;
+
+  /// No description provided for @recordTimelineMealNutrition.
+  ///
+  /// In zh, this message translates to:
+  /// **'热量约 520 kcal · 蛋白质 32g · 碳水 45g · 脂肪 12g'**
+  String get recordTimelineMealNutrition;
+
+  /// No description provided for @recordTimelineAiBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 识别'**
+  String get recordTimelineAiBadge;
+
+  /// No description provided for @recordTimelineBloodPressure.
+  ///
+  /// In zh, this message translates to:
+  /// **'血压'**
+  String get recordTimelineBloodPressure;
+
+  /// No description provided for @recordTimelineBloodPressureDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'来源：手动记录 · 正常'**
+  String get recordTimelineBloodPressureDetail;
+
+  /// No description provided for @recordTimelineManualBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动记录'**
+  String get recordTimelineManualBadge;
+
+  /// No description provided for @recordTimelineWaterAmount.
+  ///
+  /// In zh, this message translates to:
+  /// **'1 杯 250ml'**
+  String get recordTimelineWaterAmount;
+
+  /// No description provided for @recordTimelineWaterProgress.
+  ///
+  /// In zh, this message translates to:
+  /// **'第 4 / 8 杯'**
+  String get recordTimelineWaterProgress;
+
+  /// No description provided for @recordTimelineMedicationName.
+  ///
+  /// In zh, this message translates to:
+  /// **'阿托伐他汀 20mg'**
+  String get recordTimelineMedicationName;
+
+  /// No description provided for @recordTimelineMedicationDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'已服用 · 与用药计划同步'**
+  String get recordTimelineMedicationDetail;
+
+  /// No description provided for @recordTimelineMoodCalm.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪 · 平静'**
+  String get recordTimelineMoodCalm;
+
+  /// No description provided for @recordTimelineMoodDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'心情不错，睡得还可以'**
+  String get recordTimelineMoodDetail;
+
+  /// No description provided for @recordTimelineHeartRateDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'72 次/分 · 来源：手表 · 正常'**
+  String get recordTimelineHeartRateDetail;
+
+  /// No description provided for @recordTimelineActivityWalk.
+  ///
+  /// In zh, this message translates to:
+  /// **'运动 · 快走'**
+  String get recordTimelineActivityWalk;
+
+  /// No description provided for @recordTimelineActivityDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'30 分钟 · 2.6 km · 180 kcal'**
+  String get recordTimelineActivityDetail;
+
+  /// No description provided for @recordTimelineWeightDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'来源：体脂秤 · BMI 22.5'**
+  String get recordTimelineWeightDetail;
+
+  /// No description provided for @recordTrendBloodSugarTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮食-血糖'**
+  String get recordTrendBloodSugarTitle;
+
+  /// No description provided for @recordTrendBloodSugarLegend.
+  ///
+  /// In zh, this message translates to:
+  /// **'餐后血糖 (mmol/L)'**
+  String get recordTrendBloodSugarLegend;
+
+  /// No description provided for @recordTrendSleepMoodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪-睡眠'**
+  String get recordTrendSleepMoodTitle;
+
+  /// No description provided for @recordTrendSleepLegend.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠时长（小时）'**
+  String get recordTrendSleepLegend;
+
+  /// No description provided for @recordTrendMoodLegend.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪评分（分）'**
+  String get recordTrendMoodLegend;
+
+  /// No description provided for @recordTrendHydrationTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水完成率'**
+  String get recordTrendHydrationTitle;
+
+  /// No description provided for @recordRange7Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 7 天'**
+  String get recordRange7Days;
+
+  /// No description provided for @recordRange30Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 30 天'**
+  String get recordRange30Days;
+
+  /// No description provided for @recordHealthBagTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'专科健康档案袋'**
+  String get recordHealthBagTitle;
+
+  /// No description provided for @recordHealthBagBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看与管理牙齿、眼科、听力等专科记录与报告'**
+  String get recordHealthBagBody;
+
+  /// No description provided for @recordHealthBagLatest.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近更新：2025-05-10'**
+  String get recordHealthBagLatest;
+
+  /// No description provided for @recordHealthBagNext.
+  ///
+  /// In zh, this message translates to:
+  /// **'下次复查：2025-06-15'**
+  String get recordHealthBagNext;
+
+  /// No description provided for @recordFoodImagePlaceholder.
+  ///
+  /// In zh, this message translates to:
+  /// **'餐图占位'**
+  String get recordFoodImagePlaceholder;
+
   /// No description provided for @medicinePageDescription.
   ///
   /// In zh, this message translates to:

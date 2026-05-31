@@ -10,7 +10,7 @@ Last updated: 2026-05-31-12:55
 
 ## Current Scope
 
-- App title, tabs, Today dashboard/image placeholders, Medicine workspace/search, placeholders
+- App title, tabs, Today dashboard/image placeholders, Record dashboard, Medicine workspace/search, placeholders
 - Login / Register / Forgot Password / Change Email / AuthShell
 - Auth empty-field toast prompts
 - Network `Accept-Language`

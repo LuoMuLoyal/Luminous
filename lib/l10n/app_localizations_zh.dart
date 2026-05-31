@@ -36,6 +36,249 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordSectionSubtitle => '记录页的第一步先搭结构，不急着恢复旧逻辑。';
 
   @override
+  String get recordTodayAction => '今天';
+
+  @override
+  String get recordPreviousDayAction => '上一天';
+
+  @override
+  String get recordNextDayAction => '下一天';
+
+  @override
+  String get recordPickDateAction => '选择日期';
+
+  @override
+  String get recordAddAction => '记录';
+
+  @override
+  String get recordAddCompactAction => '记录';
+
+  @override
+  String get recordQuickSectionTitle => '快速记录';
+
+  @override
+  String get recordSummarySectionTitle => '当天摘要';
+
+  @override
+  String get recordSummaryDateLabel => '2025年5月15日（周四）';
+
+  @override
+  String get recordTimelineSectionTitle => '时间线';
+
+  @override
+  String get recordTrendsSectionTitle => '趋势查看';
+
+  @override
+  String get recordNewEntrySectionTitle => '新建记录';
+
+  @override
+  String get recordFilterSectionTitle => '记录类型';
+
+  @override
+  String get recordFilterSelectAll => '全选';
+
+  @override
+  String get recordAllTypesAction => '全部类型';
+
+  @override
+  String get recordEditAction => '编辑';
+
+  @override
+  String get recordMonthLabel => '2025年5月';
+
+  @override
+  String get recordOpenDateAction => '查看日期';
+
+  @override
+  String get recordNotEnabledLabel => '未开启';
+
+  @override
+  String get recordVoiceAction => '语音记录（长按说话）';
+
+  @override
+  String recordActionToast(String action) {
+    return '$action：后续会打开对应操作。';
+  }
+
+  @override
+  String get recordErrorTitle => '记录页暂时没有加载出来';
+
+  @override
+  String get recordErrorDescription => 'Mock 数据边界已经接好，可以重新拉取一次。';
+
+  @override
+  String get recordWeekdaySun => '日';
+
+  @override
+  String get recordWeekdayMon => '一';
+
+  @override
+  String get recordWeekdayTue => '二';
+
+  @override
+  String get recordWeekdayWed => '三';
+
+  @override
+  String get recordWeekdayThu => '四';
+
+  @override
+  String get recordWeekdayFri => '五';
+
+  @override
+  String get recordWeekdaySat => '六';
+
+  @override
+  String get recordTypeMeal => '饮食';
+
+  @override
+  String get recordTypeVitals => '体征';
+
+  @override
+  String get recordTypeWater => '饮水';
+
+  @override
+  String get recordTypeMood => '情绪';
+
+  @override
+  String get recordTypeSymptom => '症状';
+
+  @override
+  String get recordTypeActivity => '运动';
+
+  @override
+  String get recordTypeMedication => '用药';
+
+  @override
+  String get recordTypeWomenHealth => '女性健康';
+
+  @override
+  String get recordTypeHeartRate => '心率';
+
+  @override
+  String get recordTypeWeight => '体重';
+
+  @override
+  String get recordQuickWomenSubtitle => '未开启';
+
+  @override
+  String get recordSummaryMealTitle => '饮食记录';
+
+  @override
+  String get recordSummaryWaterTitle => '饮水进度';
+
+  @override
+  String get recordSummaryLatestVitalTitle => '最新体征';
+
+  @override
+  String get recordSummaryMoodTitle => '情绪记录';
+
+  @override
+  String get recordSummaryActivityTitle => '运动完成度';
+
+  @override
+  String get recordSummaryTimesUnit => '次';
+
+  @override
+  String get recordSummaryCupsUnit => '杯';
+
+  @override
+  String get recordSummaryRecorded => '已记录';
+
+  @override
+  String get recordSummaryNormal => '正常';
+
+  @override
+  String get recordTimelineMealLunch => '饮食 · 午餐';
+
+  @override
+  String get recordTimelineMealName => '鸡胸肉藜麦沙拉';
+
+  @override
+  String get recordTimelineMealNutrition =>
+      '热量约 520 kcal · 蛋白质 32g · 碳水 45g · 脂肪 12g';
+
+  @override
+  String get recordTimelineAiBadge => 'AI 识别';
+
+  @override
+  String get recordTimelineBloodPressure => '血压';
+
+  @override
+  String get recordTimelineBloodPressureDetail => '来源：手动记录 · 正常';
+
+  @override
+  String get recordTimelineManualBadge => '手动记录';
+
+  @override
+  String get recordTimelineWaterAmount => '1 杯 250ml';
+
+  @override
+  String get recordTimelineWaterProgress => '第 4 / 8 杯';
+
+  @override
+  String get recordTimelineMedicationName => '阿托伐他汀 20mg';
+
+  @override
+  String get recordTimelineMedicationDetail => '已服用 · 与用药计划同步';
+
+  @override
+  String get recordTimelineMoodCalm => '情绪 · 平静';
+
+  @override
+  String get recordTimelineMoodDetail => '心情不错，睡得还可以';
+
+  @override
+  String get recordTimelineHeartRateDetail => '72 次/分 · 来源：手表 · 正常';
+
+  @override
+  String get recordTimelineActivityWalk => '运动 · 快走';
+
+  @override
+  String get recordTimelineActivityDetail => '30 分钟 · 2.6 km · 180 kcal';
+
+  @override
+  String get recordTimelineWeightDetail => '来源：体脂秤 · BMI 22.5';
+
+  @override
+  String get recordTrendBloodSugarTitle => '饮食-血糖';
+
+  @override
+  String get recordTrendBloodSugarLegend => '餐后血糖 (mmol/L)';
+
+  @override
+  String get recordTrendSleepMoodTitle => '情绪-睡眠';
+
+  @override
+  String get recordTrendSleepLegend => '睡眠时长（小时）';
+
+  @override
+  String get recordTrendMoodLegend => '情绪评分（分）';
+
+  @override
+  String get recordTrendHydrationTitle => '饮水完成率';
+
+  @override
+  String get recordRange7Days => '近 7 天';
+
+  @override
+  String get recordRange30Days => '近 30 天';
+
+  @override
+  String get recordHealthBagTitle => '专科健康档案袋';
+
+  @override
+  String get recordHealthBagBody => '查看与管理牙齿、眼科、听力等专科记录与报告';
+
+  @override
+  String get recordHealthBagLatest => '最近更新：2025-05-10';
+
+  @override
+  String get recordHealthBagNext => '下次复查：2025-06-15';
+
+  @override
+  String get recordFoodImagePlaceholder => '餐图占位';
+
+  @override
   String get medicinePageDescription =>
       '拍照识别、条码扫描、手动搜索、服药计划和安全提醒先在这里合成一个可继续接后端的工作台。';
 

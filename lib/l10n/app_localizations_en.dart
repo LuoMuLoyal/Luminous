@@ -38,6 +38,253 @@ class AppLocalizationsEn extends AppLocalizations {
       'The first rebuild step for Record is structure, not logic.';
 
   @override
+  String get recordTodayAction => 'Today';
+
+  @override
+  String get recordPreviousDayAction => 'Previous day';
+
+  @override
+  String get recordNextDayAction => 'Next day';
+
+  @override
+  String get recordPickDateAction => 'Pick date';
+
+  @override
+  String get recordAddAction => 'Record';
+
+  @override
+  String get recordAddCompactAction => 'Record';
+
+  @override
+  String get recordQuickSectionTitle => 'Quick record';
+
+  @override
+  String get recordSummarySectionTitle => 'Day summary';
+
+  @override
+  String get recordSummaryDateLabel => 'May 15, 2025 (Thu)';
+
+  @override
+  String get recordTimelineSectionTitle => 'Timeline';
+
+  @override
+  String get recordTrendsSectionTitle => 'Trends';
+
+  @override
+  String get recordNewEntrySectionTitle => 'New record';
+
+  @override
+  String get recordFilterSectionTitle => 'Record types';
+
+  @override
+  String get recordFilterSelectAll => 'Select all';
+
+  @override
+  String get recordAllTypesAction => 'All types';
+
+  @override
+  String get recordEditAction => 'Edit';
+
+  @override
+  String get recordMonthLabel => 'May 2025';
+
+  @override
+  String get recordOpenDateAction => 'Open date';
+
+  @override
+  String get recordNotEnabledLabel => 'Off';
+
+  @override
+  String get recordVoiceAction => 'Voice record (hold to talk)';
+
+  @override
+  String recordActionToast(String action) {
+    return '$action: this will open the related action later.';
+  }
+
+  @override
+  String get recordErrorTitle => 'Record did not load this time';
+
+  @override
+  String get recordErrorDescription =>
+      'The mock data boundary is wired, so try fetching it again.';
+
+  @override
+  String get recordWeekdaySun => 'Sun';
+
+  @override
+  String get recordWeekdayMon => 'Mon';
+
+  @override
+  String get recordWeekdayTue => 'Tue';
+
+  @override
+  String get recordWeekdayWed => 'Wed';
+
+  @override
+  String get recordWeekdayThu => 'Thu';
+
+  @override
+  String get recordWeekdayFri => 'Fri';
+
+  @override
+  String get recordWeekdaySat => 'Sat';
+
+  @override
+  String get recordTypeMeal => 'Meal';
+
+  @override
+  String get recordTypeVitals => 'Vitals';
+
+  @override
+  String get recordTypeWater => 'Water';
+
+  @override
+  String get recordTypeMood => 'Mood';
+
+  @override
+  String get recordTypeSymptom => 'Symptom';
+
+  @override
+  String get recordTypeActivity => 'Activity';
+
+  @override
+  String get recordTypeMedication => 'Medication';
+
+  @override
+  String get recordTypeWomenHealth => 'Women\'s health';
+
+  @override
+  String get recordTypeHeartRate => 'Heart rate';
+
+  @override
+  String get recordTypeWeight => 'Weight';
+
+  @override
+  String get recordQuickWomenSubtitle => 'Off';
+
+  @override
+  String get recordSummaryMealTitle => 'Meal records';
+
+  @override
+  String get recordSummaryWaterTitle => 'Water progress';
+
+  @override
+  String get recordSummaryLatestVitalTitle => 'Latest vital';
+
+  @override
+  String get recordSummaryMoodTitle => 'Mood record';
+
+  @override
+  String get recordSummaryActivityTitle => 'Activity completion';
+
+  @override
+  String get recordSummaryTimesUnit => 'times';
+
+  @override
+  String get recordSummaryCupsUnit => 'cups';
+
+  @override
+  String get recordSummaryRecorded => 'Recorded';
+
+  @override
+  String get recordSummaryNormal => 'Normal';
+
+  @override
+  String get recordTimelineMealLunch => 'Meal · Lunch';
+
+  @override
+  String get recordTimelineMealName => 'Chicken quinoa salad';
+
+  @override
+  String get recordTimelineMealNutrition =>
+      'About 520 kcal · protein 32g · carbs 45g · fat 12g';
+
+  @override
+  String get recordTimelineAiBadge => 'AI read';
+
+  @override
+  String get recordTimelineBloodPressure => 'Blood pressure';
+
+  @override
+  String get recordTimelineBloodPressureDetail =>
+      'Source: manual entry · normal';
+
+  @override
+  String get recordTimelineManualBadge => 'Manual';
+
+  @override
+  String get recordTimelineWaterAmount => '1 cup 250ml';
+
+  @override
+  String get recordTimelineWaterProgress => 'Cup 4 / 8';
+
+  @override
+  String get recordTimelineMedicationName => 'Atorvastatin 20mg';
+
+  @override
+  String get recordTimelineMedicationDetail =>
+      'Taken · synced with medication plan';
+
+  @override
+  String get recordTimelineMoodCalm => 'Mood · Calm';
+
+  @override
+  String get recordTimelineMoodDetail => 'Mood is steady, sleep was okay';
+
+  @override
+  String get recordTimelineHeartRateDetail => '72 bpm · source: watch · normal';
+
+  @override
+  String get recordTimelineActivityWalk => 'Activity · Brisk walk';
+
+  @override
+  String get recordTimelineActivityDetail => '30 min · 2.6 km · 180 kcal';
+
+  @override
+  String get recordTimelineWeightDetail => 'Source: smart scale · BMI 22.5';
+
+  @override
+  String get recordTrendBloodSugarTitle => 'Meal-blood sugar';
+
+  @override
+  String get recordTrendBloodSugarLegend => 'Post-meal glucose (mmol/L)';
+
+  @override
+  String get recordTrendSleepMoodTitle => 'Mood-sleep';
+
+  @override
+  String get recordTrendSleepLegend => 'Sleep duration (hours)';
+
+  @override
+  String get recordTrendMoodLegend => 'Mood score';
+
+  @override
+  String get recordTrendHydrationTitle => 'Water completion';
+
+  @override
+  String get recordRange7Days => 'Last 7 days';
+
+  @override
+  String get recordRange30Days => 'Last 30 days';
+
+  @override
+  String get recordHealthBagTitle => 'Specialist health bag';
+
+  @override
+  String get recordHealthBagBody =>
+      'Review and manage dental, eye, hearing, and other specialist reports';
+
+  @override
+  String get recordHealthBagLatest => 'Last updated: 2025-05-10';
+
+  @override
+  String get recordHealthBagNext => 'Next review: 2025-06-15';
+
+  @override
+  String get recordFoodImagePlaceholder => 'Meal image placeholder';
+
+  @override
   String get medicinePageDescription =>
       'Photo recognition, barcode scan, manual search, dosing plans, and safety signals come together here as an API-ready medication workspace.';
 
