@@ -1982,6 +1982,414 @@ abstract class AppLocalizations {
   /// **'这一栏会收纳低频但依然重要的工作流。'**
   String get moreSectionSubtitle;
 
+  /// No description provided for @moreHeaderNotifications.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知'**
+  String get moreHeaderNotifications;
+
+  /// No description provided for @moreHeaderSupport.
+  ///
+  /// In zh, this message translates to:
+  /// **'帮助'**
+  String get moreHeaderSupport;
+
+  /// No description provided for @moreEmergencySectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'紧急救助'**
+  String get moreEmergencySectionTitle;
+
+  /// No description provided for @moreFamilySectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'家庭健康'**
+  String get moreFamilySectionTitle;
+
+  /// No description provided for @moreAiSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 识别工具箱'**
+  String get moreAiSectionTitle;
+
+  /// No description provided for @moreDeviceSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'智能设备管理'**
+  String get moreDeviceSectionTitle;
+
+  /// No description provided for @moreKnowledgeSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'知识与服务'**
+  String get moreKnowledgeSectionTitle;
+
+  /// No description provided for @moreEnvironmentSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'环境与健康提醒中心'**
+  String get moreEnvironmentSectionTitle;
+
+  /// No description provided for @moreEnvironmentMoreAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'更多'**
+  String get moreEnvironmentMoreAction;
+
+  /// No description provided for @moreRecentSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近使用'**
+  String get moreRecentSectionTitle;
+
+  /// No description provided for @moreRecentViewAllAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看全部'**
+  String get moreRecentViewAllAction;
+
+  /// No description provided for @moreQuickSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'快捷入口'**
+  String get moreQuickSectionTitle;
+
+  /// No description provided for @moreCareNoteTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'温馨提示'**
+  String get moreCareNoteTitle;
+
+  /// No description provided for @moreEmergencySosTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'SOS 紧急求助'**
+  String get moreEmergencySosTitle;
+
+  /// No description provided for @moreEmergencySosSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'一键呼救，快速联系紧急联系人'**
+  String get moreEmergencySosSubtitle;
+
+  /// No description provided for @moreEmergencyMentalHotlineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'心理援助热线'**
+  String get moreEmergencyMentalHotlineTitle;
+
+  /// No description provided for @moreEmergencyMentalHotlineSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'24h 心理支持与危机干预'**
+  String get moreEmergencyMentalHotlineSubtitle;
+
+  /// No description provided for @moreEmergencyLockscreenTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'锁屏医疗信息'**
+  String get moreEmergencyLockscreenTitle;
+
+  /// No description provided for @moreEmergencyLockscreenSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'紧急情况下展示你的医疗信息'**
+  String get moreEmergencyLockscreenSubtitle;
+
+  /// No description provided for @moreFamilyProfilesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'家人档案'**
+  String get moreFamilyProfilesTitle;
+
+  /// No description provided for @moreFamilyProfilesSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理家人健康档案'**
+  String get moreFamilyProfilesSubtitle;
+
+  /// No description provided for @moreFamilyVaccinationTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'接种与体检提醒'**
+  String get moreFamilyVaccinationTitle;
+
+  /// No description provided for @moreFamilyVaccinationSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'为家人设置接种 / 体检提醒'**
+  String get moreFamilyVaccinationSubtitle;
+
+  /// No description provided for @moreFamilyAlertTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'异常预警'**
+  String get moreFamilyAlertTitle;
+
+  /// No description provided for @moreFamilyAlertSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'家人健康异常及时提醒'**
+  String get moreFamilyAlertSubtitle;
+
+  /// No description provided for @moreAiSkinTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'皮肤 / 皮疹识别'**
+  String get moreAiSkinTitle;
+
+  /// No description provided for @moreAiSkinSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照识别皮肤问题初步识别参考'**
+  String get moreAiSkinSubtitle;
+
+  /// No description provided for @moreAiMentalScaleTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'心理量表评估'**
+  String get moreAiMentalScaleTitle;
+
+  /// No description provided for @moreAiMentalScaleSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'多种量表自助评估结果仅供参考'**
+  String get moreAiMentalScaleSubtitle;
+
+  /// No description provided for @moreAiReportImportTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'报告拍照导入'**
+  String get moreAiReportImportTitle;
+
+  /// No description provided for @moreAiReportImportSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照识别化验单 / 病历等报告'**
+  String get moreAiReportImportSubtitle;
+
+  /// No description provided for @moreDeviceMineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的设备'**
+  String get moreDeviceMineTitle;
+
+  /// No description provided for @moreDeviceMineSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理已连接设备当前 2 台设备'**
+  String get moreDeviceMineSubtitle;
+
+  /// No description provided for @moreDeviceAddTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加设备'**
+  String get moreDeviceAddTitle;
+
+  /// No description provided for @moreDeviceAddSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接手表、血压计、体脂秤等设备'**
+  String get moreDeviceAddSubtitle;
+
+  /// No description provided for @moreDeviceSyncTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步状态'**
+  String get moreDeviceSyncTitle;
+
+  /// No description provided for @moreDeviceSyncSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据同步与历史同步：刚刚'**
+  String get moreDeviceSyncSubtitle;
+
+  /// No description provided for @moreKnowledgeSleepTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠改善'**
+  String get moreKnowledgeSleepTitle;
+
+  /// No description provided for @moreKnowledgeSleepSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠方案与个性化建议'**
+  String get moreKnowledgeSleepSubtitle;
+
+  /// No description provided for @moreKnowledgeMindfulnessTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'正念课程'**
+  String get moreKnowledgeMindfulnessTitle;
+
+  /// No description provided for @moreKnowledgeMindfulnessSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'冥想练习与放松训练'**
+  String get moreKnowledgeMindfulnessSubtitle;
+
+  /// No description provided for @moreKnowledgeWomenTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'女性健康专栏'**
+  String get moreKnowledgeWomenTitle;
+
+  /// No description provided for @moreKnowledgeWomenSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期管理 / 备孕 / 更年期'**
+  String get moreKnowledgeWomenSubtitle;
+
+  /// No description provided for @moreEnvironmentPollenTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'花粉'**
+  String get moreEnvironmentPollenTitle;
+
+  /// No description provided for @moreEnvironmentPollenValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'较高'**
+  String get moreEnvironmentPollenValue;
+
+  /// No description provided for @moreEnvironmentUvTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'紫外线'**
+  String get moreEnvironmentUvTitle;
+
+  /// No description provided for @moreEnvironmentUvValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'中等'**
+  String get moreEnvironmentUvValue;
+
+  /// No description provided for @moreEnvironmentAirTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'空气污染'**
+  String get moreEnvironmentAirTitle;
+
+  /// No description provided for @moreEnvironmentAirValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'良'**
+  String get moreEnvironmentAirValue;
+
+  /// No description provided for @moreEnvironmentAdviceTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'过敏防护建议'**
+  String get moreEnvironmentAdviceTitle;
+
+  /// No description provided for @moreEnvironmentAdviceBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'基于你的过敏史，今天建议加强外出防护。'**
+  String get moreEnvironmentAdviceBody;
+
+  /// No description provided for @moreEnvironmentAdviceAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看'**
+  String get moreEnvironmentAdviceAction;
+
+  /// No description provided for @moreRecentSkinTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天 10:21'**
+  String get moreRecentSkinTime;
+
+  /// No description provided for @moreRecentVaccinationTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'昨天 18:30'**
+  String get moreRecentVaccinationTime;
+
+  /// No description provided for @moreRecentDeviceTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'昨天 09:15'**
+  String get moreRecentDeviceTime;
+
+  /// No description provided for @moreRecentHotlineTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'05-12 21:40'**
+  String get moreRecentHotlineTime;
+
+  /// No description provided for @moreQuickCalculatorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康计算器'**
+  String get moreQuickCalculatorTitle;
+
+  /// No description provided for @moreQuickCalculatorSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'BMI / BMR 等'**
+  String get moreQuickCalculatorSubtitle;
+
+  /// No description provided for @moreQuickBarcodeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'药品条码识别'**
+  String get moreQuickBarcodeTitle;
+
+  /// No description provided for @moreQuickBarcodeSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫码识别药品'**
+  String get moreQuickBarcodeSubtitle;
+
+  /// No description provided for @moreQuickConverterTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'单位换算'**
+  String get moreQuickConverterTitle;
+
+  /// No description provided for @moreQuickConverterSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'体重 / 温度等'**
+  String get moreQuickConverterSubtitle;
+
+  /// No description provided for @moreQuickExportTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据导出'**
+  String get moreQuickExportTitle;
+
+  /// No description provided for @moreQuickExportSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出健康数据'**
+  String get moreQuickExportSubtitle;
+
+  /// No description provided for @moreCareNoteBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'本应用提供的内容仅供参考，不替代医生诊断与治疗建议。'**
+  String get moreCareNoteBody;
+
+  /// No description provided for @moreErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'更多页面暂时没有加载出来'**
+  String get moreErrorTitle;
+
+  /// No description provided for @moreErrorDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'mock 结构已经接好，重新拉一次即可。'**
+  String get moreErrorDescription;
+
+  /// No description provided for @moreActionToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'{action}：后续会打开对应工具或详情流程。'**
+  String moreActionToast(String action);
+
   /// No description provided for @todaySectionTitle.
   ///
   /// In zh, this message translates to:

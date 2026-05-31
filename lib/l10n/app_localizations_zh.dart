@@ -962,6 +962,212 @@ class AppLocalizationsZh extends AppLocalizations {
   String get moreSectionSubtitle => '这一栏会收纳低频但依然重要的工作流。';
 
   @override
+  String get moreHeaderNotifications => '通知';
+
+  @override
+  String get moreHeaderSupport => '帮助';
+
+  @override
+  String get moreEmergencySectionTitle => '紧急救助';
+
+  @override
+  String get moreFamilySectionTitle => '家庭健康';
+
+  @override
+  String get moreAiSectionTitle => 'AI 识别工具箱';
+
+  @override
+  String get moreDeviceSectionTitle => '智能设备管理';
+
+  @override
+  String get moreKnowledgeSectionTitle => '知识与服务';
+
+  @override
+  String get moreEnvironmentSectionTitle => '环境与健康提醒中心';
+
+  @override
+  String get moreEnvironmentMoreAction => '更多';
+
+  @override
+  String get moreRecentSectionTitle => '最近使用';
+
+  @override
+  String get moreRecentViewAllAction => '查看全部';
+
+  @override
+  String get moreQuickSectionTitle => '快捷入口';
+
+  @override
+  String get moreCareNoteTitle => '温馨提示';
+
+  @override
+  String get moreEmergencySosTitle => 'SOS 紧急求助';
+
+  @override
+  String get moreEmergencySosSubtitle => '一键呼救，快速联系紧急联系人';
+
+  @override
+  String get moreEmergencyMentalHotlineTitle => '心理援助热线';
+
+  @override
+  String get moreEmergencyMentalHotlineSubtitle => '24h 心理支持与危机干预';
+
+  @override
+  String get moreEmergencyLockscreenTitle => '锁屏医疗信息';
+
+  @override
+  String get moreEmergencyLockscreenSubtitle => '紧急情况下展示你的医疗信息';
+
+  @override
+  String get moreFamilyProfilesTitle => '家人档案';
+
+  @override
+  String get moreFamilyProfilesSubtitle => '管理家人健康档案';
+
+  @override
+  String get moreFamilyVaccinationTitle => '接种与体检提醒';
+
+  @override
+  String get moreFamilyVaccinationSubtitle => '为家人设置接种 / 体检提醒';
+
+  @override
+  String get moreFamilyAlertTitle => '异常预警';
+
+  @override
+  String get moreFamilyAlertSubtitle => '家人健康异常及时提醒';
+
+  @override
+  String get moreAiSkinTitle => '皮肤 / 皮疹识别';
+
+  @override
+  String get moreAiSkinSubtitle => '拍照识别皮肤问题初步识别参考';
+
+  @override
+  String get moreAiMentalScaleTitle => '心理量表评估';
+
+  @override
+  String get moreAiMentalScaleSubtitle => '多种量表自助评估结果仅供参考';
+
+  @override
+  String get moreAiReportImportTitle => '报告拍照导入';
+
+  @override
+  String get moreAiReportImportSubtitle => '拍照识别化验单 / 病历等报告';
+
+  @override
+  String get moreDeviceMineTitle => '我的设备';
+
+  @override
+  String get moreDeviceMineSubtitle => '管理已连接设备当前 2 台设备';
+
+  @override
+  String get moreDeviceAddTitle => '添加设备';
+
+  @override
+  String get moreDeviceAddSubtitle => '连接手表、血压计、体脂秤等设备';
+
+  @override
+  String get moreDeviceSyncTitle => '同步状态';
+
+  @override
+  String get moreDeviceSyncSubtitle => '数据同步与历史同步：刚刚';
+
+  @override
+  String get moreKnowledgeSleepTitle => '睡眠改善';
+
+  @override
+  String get moreKnowledgeSleepSubtitle => '睡眠方案与个性化建议';
+
+  @override
+  String get moreKnowledgeMindfulnessTitle => '正念课程';
+
+  @override
+  String get moreKnowledgeMindfulnessSubtitle => '冥想练习与放松训练';
+
+  @override
+  String get moreKnowledgeWomenTitle => '女性健康专栏';
+
+  @override
+  String get moreKnowledgeWomenSubtitle => '经期管理 / 备孕 / 更年期';
+
+  @override
+  String get moreEnvironmentPollenTitle => '花粉';
+
+  @override
+  String get moreEnvironmentPollenValue => '较高';
+
+  @override
+  String get moreEnvironmentUvTitle => '紫外线';
+
+  @override
+  String get moreEnvironmentUvValue => '中等';
+
+  @override
+  String get moreEnvironmentAirTitle => '空气污染';
+
+  @override
+  String get moreEnvironmentAirValue => '良';
+
+  @override
+  String get moreEnvironmentAdviceTitle => '过敏防护建议';
+
+  @override
+  String get moreEnvironmentAdviceBody => '基于你的过敏史，今天建议加强外出防护。';
+
+  @override
+  String get moreEnvironmentAdviceAction => '查看';
+
+  @override
+  String get moreRecentSkinTime => '今天 10:21';
+
+  @override
+  String get moreRecentVaccinationTime => '昨天 18:30';
+
+  @override
+  String get moreRecentDeviceTime => '昨天 09:15';
+
+  @override
+  String get moreRecentHotlineTime => '05-12 21:40';
+
+  @override
+  String get moreQuickCalculatorTitle => '健康计算器';
+
+  @override
+  String get moreQuickCalculatorSubtitle => 'BMI / BMR 等';
+
+  @override
+  String get moreQuickBarcodeTitle => '药品条码识别';
+
+  @override
+  String get moreQuickBarcodeSubtitle => '扫码识别药品';
+
+  @override
+  String get moreQuickConverterTitle => '单位换算';
+
+  @override
+  String get moreQuickConverterSubtitle => '体重 / 温度等';
+
+  @override
+  String get moreQuickExportTitle => '数据导出';
+
+  @override
+  String get moreQuickExportSubtitle => '导出健康数据';
+
+  @override
+  String get moreCareNoteBody => '本应用提供的内容仅供参考，不替代医生诊断与治疗建议。';
+
+  @override
+  String get moreErrorTitle => '更多页面暂时没有加载出来';
+
+  @override
+  String get moreErrorDescription => 'mock 结构已经接好，重新拉一次即可。';
+
+  @override
+  String moreActionToast(String action) {
+    return '$action：后续会打开对应工具或详情流程。';
+  }
+
+  @override
   String get todaySectionTitle => '今日工作区';
 
   @override

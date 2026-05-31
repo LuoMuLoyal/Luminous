@@ -1016,6 +1016,229 @@ class AppLocalizationsEn extends AppLocalizations {
       'This tab will gather the lower-frequency but still important workflows.';
 
   @override
+  String get moreHeaderNotifications => 'Notifications';
+
+  @override
+  String get moreHeaderSupport => 'Support';
+
+  @override
+  String get moreEmergencySectionTitle => 'Emergency help';
+
+  @override
+  String get moreFamilySectionTitle => 'Family health';
+
+  @override
+  String get moreAiSectionTitle => 'AI recognition toolbox';
+
+  @override
+  String get moreDeviceSectionTitle => 'Smart device management';
+
+  @override
+  String get moreKnowledgeSectionTitle => 'Knowledge and services';
+
+  @override
+  String get moreEnvironmentSectionTitle =>
+      'Environment and health reminder center';
+
+  @override
+  String get moreEnvironmentMoreAction => 'More';
+
+  @override
+  String get moreRecentSectionTitle => 'Recent activity';
+
+  @override
+  String get moreRecentViewAllAction => 'View all';
+
+  @override
+  String get moreQuickSectionTitle => 'Quick entries';
+
+  @override
+  String get moreCareNoteTitle => 'Care note';
+
+  @override
+  String get moreEmergencySosTitle => 'SOS emergency help';
+
+  @override
+  String get moreEmergencySosSubtitle =>
+      'One tap away. Reach emergency contacts quickly.';
+
+  @override
+  String get moreEmergencyMentalHotlineTitle => 'Mental health hotline';
+
+  @override
+  String get moreEmergencyMentalHotlineSubtitle =>
+      '24h emotional support and crisis intervention.';
+
+  @override
+  String get moreEmergencyLockscreenTitle => 'Lock-screen medical info';
+
+  @override
+  String get moreEmergencyLockscreenSubtitle =>
+      'Show your key medical info in emergencies.';
+
+  @override
+  String get moreFamilyProfilesTitle => 'Family profiles';
+
+  @override
+  String get moreFamilyProfilesSubtitle =>
+      'Manage health records for family members.';
+
+  @override
+  String get moreFamilyVaccinationTitle => 'Vaccination and checkup reminders';
+
+  @override
+  String get moreFamilyVaccinationSubtitle =>
+      'Track routine vaccines and checkups.';
+
+  @override
+  String get moreFamilyAlertTitle => 'Abnormal alerts';
+
+  @override
+  String get moreFamilyAlertSubtitle =>
+      'Notice unusual health signals in time.';
+
+  @override
+  String get moreAiSkinTitle => 'Skin / rash recognition';
+
+  @override
+  String get moreAiSkinSubtitle =>
+      'Take or upload photos for a first-pass reference.';
+
+  @override
+  String get moreAiMentalScaleTitle => 'Mental health scales';
+
+  @override
+  String get moreAiMentalScaleSubtitle =>
+      'Use short scales for reference results.';
+
+  @override
+  String get moreAiReportImportTitle => 'Report photo import';
+
+  @override
+  String get moreAiReportImportSubtitle =>
+      'Import lab sheets or reports for structured reading.';
+
+  @override
+  String get moreDeviceMineTitle => 'My devices';
+
+  @override
+  String get moreDeviceMineSubtitle => '2 connected devices managed here.';
+
+  @override
+  String get moreDeviceAddTitle => 'Add device';
+
+  @override
+  String get moreDeviceAddSubtitle =>
+      'Connect watch, cuff, or respiratory device.';
+
+  @override
+  String get moreDeviceSyncTitle => 'Sync status';
+
+  @override
+  String get moreDeviceSyncSubtitle => 'Last sync: just now.';
+
+  @override
+  String get moreKnowledgeSleepTitle => 'Sleep improvement';
+
+  @override
+  String get moreKnowledgeSleepSubtitle =>
+      'Sleep plans and practical suggestions.';
+
+  @override
+  String get moreKnowledgeMindfulnessTitle => 'Mindfulness courses';
+
+  @override
+  String get moreKnowledgeMindfulnessSubtitle =>
+      'Breathing, meditation, and relaxation sessions.';
+
+  @override
+  String get moreKnowledgeWomenTitle => 'Women\'s health channel';
+
+  @override
+  String get moreKnowledgeWomenSubtitle =>
+      'Menstruation, pregnancy, and menopause topics.';
+
+  @override
+  String get moreEnvironmentPollenTitle => 'Pollen';
+
+  @override
+  String get moreEnvironmentPollenValue => 'High';
+
+  @override
+  String get moreEnvironmentUvTitle => 'UV';
+
+  @override
+  String get moreEnvironmentUvValue => 'Medium';
+
+  @override
+  String get moreEnvironmentAirTitle => 'Air quality';
+
+  @override
+  String get moreEnvironmentAirValue => 'Good';
+
+  @override
+  String get moreEnvironmentAdviceTitle => 'Allergy protection advice';
+
+  @override
+  String get moreEnvironmentAdviceBody =>
+      'Based on your history, outdoor protection is recommended today.';
+
+  @override
+  String get moreEnvironmentAdviceAction => 'Review';
+
+  @override
+  String get moreRecentSkinTime => 'Today 10:21';
+
+  @override
+  String get moreRecentVaccinationTime => 'Yesterday 18:30';
+
+  @override
+  String get moreRecentDeviceTime => 'Yesterday 09:15';
+
+  @override
+  String get moreRecentHotlineTime => '05-12 21:40';
+
+  @override
+  String get moreQuickCalculatorTitle => 'Health calculator';
+
+  @override
+  String get moreQuickCalculatorSubtitle => 'BMI / BMR and more';
+
+  @override
+  String get moreQuickBarcodeTitle => 'Medicine barcode scan';
+
+  @override
+  String get moreQuickBarcodeSubtitle => 'Scan and identify medicine items';
+
+  @override
+  String get moreQuickConverterTitle => 'Unit converter';
+
+  @override
+  String get moreQuickConverterSubtitle => 'Weight / temperature and more';
+
+  @override
+  String get moreQuickExportTitle => 'Data export';
+
+  @override
+  String get moreQuickExportSubtitle => 'Export health data copies';
+
+  @override
+  String get moreCareNoteBody =>
+      'The content and suggestions in this app are for reference and do not replace diagnosis or treatment advice.';
+
+  @override
+  String get moreErrorTitle => 'More did not load this time';
+
+  @override
+  String get moreErrorDescription =>
+      'The mock structure is wired. Retry the fetch once.';
+
+  @override
+  String moreActionToast(String action) {
+    return '$action: this will open the related tool or detail flow later.';
+  }
+
+  @override
   String get todaySectionTitle => 'Today workspace';
 
   @override
