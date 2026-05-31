@@ -1376,11 +1376,29 @@ abstract class AppLocalizations {
   /// **'把今天的状态收拢一下，给明天留出节奏。'**
   String get todayGreetingSubtitleEvening;
 
+  /// No description provided for @todayHeroCareLine.
+  ///
+  /// In zh, this message translates to:
+  /// **'我们会在需要时，给你恰到好处的提醒'**
+  String get todayHeroCareLine;
+
+  /// No description provided for @todayHeroImagePlaceholder.
+  ///
+  /// In zh, this message translates to:
+  /// **'Banner 图片占位'**
+  String get todayHeroImagePlaceholder;
+
   /// No description provided for @todayWaterCardTitle.
   ///
   /// In zh, this message translates to:
   /// **'今日喝水'**
   String get todayWaterCardTitle;
+
+  /// No description provided for @todayWaterUnit.
+  ///
+  /// In zh, this message translates to:
+  /// **'次'**
+  String get todayWaterUnit;
 
   /// No description provided for @todayWaterCount.
   ///
@@ -1466,6 +1484,18 @@ abstract class AppLocalizations {
   /// **'小时'**
   String get todayVitalSleepUnit;
 
+  /// No description provided for @todayVitalStatusNormal.
+  ///
+  /// In zh, this message translates to:
+  /// **'正常'**
+  String get todayVitalStatusNormal;
+
+  /// No description provided for @todayVitalStatusGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'良好'**
+  String get todayVitalStatusGood;
+
   /// No description provided for @todayMealCardTitle.
   ///
   /// In zh, this message translates to:
@@ -1483,6 +1513,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'鸡胸肉、藜麦、时蔬沙拉'**
   String get todayMealHighProteinBalancedDescription;
+
+  /// No description provided for @todayMealEnergyHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'补充优质蛋白，均衡营养，给身体满满能量。'**
+  String get todayMealEnergyHint;
+
+  /// No description provided for @todayMealImagePlaceholder.
+  ///
+  /// In zh, this message translates to:
+  /// **'餐图占位'**
+  String get todayMealImagePlaceholder;
 
   /// No description provided for @todayMealRefreshAction.
   ///
@@ -1526,6 +1568,18 @@ abstract class AppLocalizations {
   /// **'较高'**
   String get todayEnvironmentLevelHigh;
 
+  /// No description provided for @todayMoreAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'更多'**
+  String get todayMoreAction;
+
+  /// No description provided for @todayViewDetailsAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看详情'**
+  String get todayViewDetailsAction;
+
   /// No description provided for @todayLumiCardTitle.
   ///
   /// In zh, this message translates to:
@@ -1555,6 +1609,24 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'Mock provider 和页面结构已经接好，可以重新拉取一次看看。'**
   String get todayErrorDescription;
+
+  /// No description provided for @todayEmptyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'你还没有任何记录'**
+  String get todayEmptyTitle;
+
+  /// No description provided for @todayEmptyDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'先记录饮水、用药或体征，我们会为你提供个性化建议。'**
+  String get todayEmptyDescription;
+
+  /// No description provided for @todayEmptyAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去记录'**
+  String get todayEmptyAction;
 
   /// No description provided for @todayRetryAction.
   ///

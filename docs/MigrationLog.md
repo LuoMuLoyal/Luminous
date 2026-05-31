@@ -16,6 +16,15 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-05-31
 
+### Today Concept Alignment
+
+- Refined the Today tab against the 2026-05-31 concept image: mobile keeps the compact health feed, while desktop now expands into a wide dashboard instead of being capped at phone width.
+- Split Today visual primitives into `today_components.dart` so the panel, section header, text action, water ring, mascot, meal illustration, environment chip, and health metric tile can be reused by later Today-adjacent modules.
+- Added `lib/core/widgets/app_state_views.dart` for reusable loading skeleton and error/empty state surfaces; Today now uses it for loading/error and has an empty state component ready for real data integration.
+- Expanded zh/en Today copy for the concept-aligned hero, status labels, actions, and empty state, then regenerated localizations.
+- Extended `test/today_page_test.dart` to cover both the existing mobile section flow and the new desktop dashboard branch.
+- Simplified the Today visual treatment to match the plainer medicine workspace style: removed Today entrance/stagger animations and background glow orbs, fixed the hero double-surface shadow, replaced unavailable hero/meal artwork with localized image placeholders, and switched health/environment summaries to single surfaces separated by dividers.
+
 ### Medicine Mock Workspace Foundation
 
 - Replaced the `medicine` tab placeholder with a mobile-first mock medication workspace that surfaces photo recognition, barcode scan, manual search, today's dosing plan, refill risk, interaction alerts, and a clear safety-boundary block.

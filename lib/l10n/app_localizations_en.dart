@@ -720,7 +720,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Gather today\'s signals gently and leave room for tomorrow.';
 
   @override
+  String get todayHeroCareLine =>
+      'When you need a nudge, we will keep it timely and gentle.';
+
+  @override
+  String get todayHeroImagePlaceholder => 'Banner image placeholder';
+
+  @override
   String get todayWaterCardTitle => 'Today\'s water';
+
+  @override
+  String get todayWaterUnit => 'times';
 
   @override
   String todayWaterCount(int count) {
@@ -775,6 +785,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayVitalSleepUnit => 'h';
 
   @override
+  String get todayVitalStatusNormal => 'Normal';
+
+  @override
+  String get todayVitalStatusGood => 'Good';
+
+  @override
   String get todayMealCardTitle => 'Today\'s meal suggestion';
 
   @override
@@ -783,6 +799,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get todayMealHighProteinBalancedDescription =>
       'Chicken breast, quinoa, and seasonal salad';
+
+  @override
+  String get todayMealEnergyHint =>
+      'Add quality protein and balanced nutrition for steady energy.';
+
+  @override
+  String get todayMealImagePlaceholder => 'Meal image placeholder';
 
   @override
   String get todayMealRefreshAction => 'Refresh';
@@ -806,6 +829,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayEnvironmentLevelHigh => 'High';
 
   @override
+  String get todayMoreAction => 'More';
+
+  @override
+  String get todayViewDetailsAction => 'Details';
+
+  @override
   String get todayLumiCardTitle => 'Lumi note';
 
   @override
@@ -821,6 +850,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get todayErrorDescription =>
       'The mock provider and page structure are wired up, so try fetching it again.';
+
+  @override
+  String get todayEmptyTitle => 'No records yet';
+
+  @override
+  String get todayEmptyDescription =>
+      'Log water, medication, or vitals first, then we can shape personalized suggestions.';
+
+  @override
+  String get todayEmptyAction => 'Start logging';
 
   @override
   String get todayRetryAction => 'Retry';
