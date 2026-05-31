@@ -14,7 +14,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Login / Register pages
 - Persisted `system / light / dark` theme preference foundation
 - Mobile bottom nav + desktop rail
-- Today mobile-first mock dashboard UI with repository/provider boundary
+- Today concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop wide dashboard, plainer medicine-style surfaces, localized image placeholders, reusable Today primitives, and shared state views
 - Medicine mobile-first mock workspace UI with repository/provider boundary
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel
 
