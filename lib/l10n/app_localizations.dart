@@ -1400,6 +1400,570 @@ abstract class AppLocalizations {
   /// **'身份、目标与隐私控制会共享在这一块安静的界面里。'**
   String get mineSectionSubtitle;
 
+  /// No description provided for @mineHeaderNotifications.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知'**
+  String get mineHeaderNotifications;
+
+  /// No description provided for @mineHeaderSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'页面设置'**
+  String get mineHeaderSettings;
+
+  /// No description provided for @mineAccountDisplayName.
+  ///
+  /// In zh, this message translates to:
+  /// **'Lumi 用户'**
+  String get mineAccountDisplayName;
+
+  /// No description provided for @mineAccountSignedIn.
+  ///
+  /// In zh, this message translates to:
+  /// **'已登录'**
+  String get mineAccountSignedIn;
+
+  /// No description provided for @mineAccountMeta.
+  ///
+  /// In zh, this message translates to:
+  /// **'会员到期：2026-05-20'**
+  String get mineAccountMeta;
+
+  /// No description provided for @mineCompletionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'档案完整度'**
+  String get mineCompletionTitle;
+
+  /// No description provided for @mineCompletionSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'完成度良好，继续完善更准确的建议'**
+  String get mineCompletionSubtitle;
+
+  /// No description provided for @mineSummaryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康上下文摘要'**
+  String get mineSummaryTitle;
+
+  /// No description provided for @mineSummaryUpdatedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'更新于 2025-05-15'**
+  String get mineSummaryUpdatedAt;
+
+  /// No description provided for @mineSummaryAge.
+  ///
+  /// In zh, this message translates to:
+  /// **'年龄'**
+  String get mineSummaryAge;
+
+  /// No description provided for @mineSummaryAllergies.
+  ///
+  /// In zh, this message translates to:
+  /// **'过敏'**
+  String get mineSummaryAllergies;
+
+  /// No description provided for @mineSummaryConditions.
+  ///
+  /// In zh, this message translates to:
+  /// **'慢病/条件'**
+  String get mineSummaryConditions;
+
+  /// No description provided for @mineSummaryMedicines.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前用药'**
+  String get mineSummaryMedicines;
+
+  /// No description provided for @mineSummaryMissingInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'缺失信息：生日、性别、单位制、孕哺状态'**
+  String get mineSummaryMissingInfo;
+
+  /// No description provided for @mineSummaryCompleteAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去完善'**
+  String get mineSummaryCompleteAction;
+
+  /// No description provided for @mineProfileTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康档案'**
+  String get mineProfileTitle;
+
+  /// No description provided for @mineProfileBasicInfoTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'基础资料'**
+  String get mineProfileBasicInfoTitle;
+
+  /// No description provided for @mineProfileBasicInfoSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'个人基本信息'**
+  String get mineProfileBasicInfoSubtitle;
+
+  /// No description provided for @mineProfileAllergiesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'过敏史'**
+  String get mineProfileAllergiesTitle;
+
+  /// No description provided for @mineProfileAllergiesSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'2 项记录'**
+  String get mineProfileAllergiesSubtitle;
+
+  /// No description provided for @mineProfileConditionsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'基础病史'**
+  String get mineProfileConditionsTitle;
+
+  /// No description provided for @mineProfileConditionsSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'1 项记录'**
+  String get mineProfileConditionsSubtitle;
+
+  /// No description provided for @mineProfileMedicinesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前用药'**
+  String get mineProfileMedicinesTitle;
+
+  /// No description provided for @mineProfileMedicinesSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'3 种药品'**
+  String get mineProfileMedicinesSubtitle;
+
+  /// No description provided for @mineProfileWomenTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'女性/孕哺状态'**
+  String get mineProfileWomenTitle;
+
+  /// No description provided for @mineProfileWomenSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'未填写'**
+  String get mineProfileWomenSubtitle;
+
+  /// No description provided for @mineProfileSpecialistTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'专科档案'**
+  String get mineProfileSpecialistTitle;
+
+  /// No description provided for @mineProfileSpecialistSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'口腔/视力/听力等'**
+  String get mineProfileSpecialistSubtitle;
+
+  /// No description provided for @mineProfileLifestyleTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'生活习惯'**
+  String get mineProfileLifestyleTitle;
+
+  /// No description provided for @mineProfileLifestyleSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮食/运动/睡眠'**
+  String get mineProfileLifestyleSubtitle;
+
+  /// No description provided for @mineProfileFamilyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'家族史'**
+  String get mineProfileFamilyTitle;
+
+  /// No description provided for @mineProfileFamilySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'遗传与家族病史'**
+  String get mineProfileFamilySubtitle;
+
+  /// No description provided for @minePlansTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康计划中心'**
+  String get minePlansTitle;
+
+  /// No description provided for @minePlansViewAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看全部'**
+  String get minePlansViewAll;
+
+  /// No description provided for @minePlanBloodSugarTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'控糖计划'**
+  String get minePlanBloodSugarTitle;
+
+  /// No description provided for @minePlanBloodSugarStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'进行中'**
+  String get minePlanBloodSugarStatus;
+
+  /// No description provided for @minePlanBloodSugarDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'已坚持 12 天'**
+  String get minePlanBloodSugarDetail;
+
+  /// No description provided for @minePlanWeightTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'减重计划'**
+  String get minePlanWeightTitle;
+
+  /// No description provided for @minePlanWeightStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开始'**
+  String get minePlanWeightStatus;
+
+  /// No description provided for @minePlanWeightDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置目标'**
+  String get minePlanWeightDetail;
+
+  /// No description provided for @minePlanSleepTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'助眠计划'**
+  String get minePlanSleepTitle;
+
+  /// No description provided for @minePlanSleepStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'进行中'**
+  String get minePlanSleepStatus;
+
+  /// No description provided for @minePlanSleepDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠改善中'**
+  String get minePlanSleepDetail;
+
+  /// No description provided for @minePlanMoodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪稳定计划'**
+  String get minePlanMoodTitle;
+
+  /// No description provided for @minePlanMoodStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开始'**
+  String get minePlanMoodStatus;
+
+  /// No description provided for @minePlanMoodDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'关注情绪健康'**
+  String get minePlanMoodDetail;
+
+  /// No description provided for @minePlanPregnancyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'备孕计划'**
+  String get minePlanPregnancyTitle;
+
+  /// No description provided for @minePlanPregnancyStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开始'**
+  String get minePlanPregnancyStatus;
+
+  /// No description provided for @minePlanPregnancyDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'科学备孕'**
+  String get minePlanPregnancyDetail;
+
+  /// No description provided for @mineReportTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康报告'**
+  String get mineReportTitle;
+
+  /// No description provided for @mineReportBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'周/月报表、趋势回顾、健康洞察'**
+  String get mineReportBody;
+
+  /// No description provided for @mineReportMeta.
+  ///
+  /// In zh, this message translates to:
+  /// **'上次生成：2025-05-12'**
+  String get mineReportMeta;
+
+  /// No description provided for @mineReportAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看报告'**
+  String get mineReportAction;
+
+  /// No description provided for @minePrivacyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私控制'**
+  String get minePrivacyTitle;
+
+  /// No description provided for @minePrivacyBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据可见性、共享授权、云同步范围'**
+  String get minePrivacyBody;
+
+  /// No description provided for @minePrivacyMeta.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保护 8 大类敏感数据'**
+  String get minePrivacyMeta;
+
+  /// No description provided for @minePrivacyAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理隐私'**
+  String get minePrivacyAction;
+
+  /// No description provided for @mineStatusPanelTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'档案状态'**
+  String get mineStatusPanelTitle;
+
+  /// No description provided for @mineStatusBasicTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'基础资料'**
+  String get mineStatusBasicTitle;
+
+  /// No description provided for @mineStatusBasicValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'1/4 完成'**
+  String get mineStatusBasicValue;
+
+  /// No description provided for @mineStatusAllergiesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'过敏史'**
+  String get mineStatusAllergiesTitle;
+
+  /// No description provided for @mineStatusAllergiesValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'2 项'**
+  String get mineStatusAllergiesValue;
+
+  /// No description provided for @mineStatusConditionsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'慢病/条件'**
+  String get mineStatusConditionsTitle;
+
+  /// No description provided for @mineStatusConditionsValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'1 项'**
+  String get mineStatusConditionsValue;
+
+  /// No description provided for @mineStatusMedicinesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前用药'**
+  String get mineStatusMedicinesTitle;
+
+  /// No description provided for @mineStatusMedicinesValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'3 种'**
+  String get mineStatusMedicinesValue;
+
+  /// No description provided for @mineStatusWomenTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'孕哺状态'**
+  String get mineStatusWomenTitle;
+
+  /// No description provided for @mineStatusWomenValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'未填写'**
+  String get mineStatusWomenValue;
+
+  /// No description provided for @mineOnboardingTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'Onboarding 进度'**
+  String get mineOnboardingTitle;
+
+  /// No description provided for @mineOnboardingBasicTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'基础信息'**
+  String get mineOnboardingBasicTitle;
+
+  /// No description provided for @mineOnboardingContextTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康上下文'**
+  String get mineOnboardingContextTitle;
+
+  /// No description provided for @mineOnboardingMedicineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药设置'**
+  String get mineOnboardingMedicineTitle;
+
+  /// No description provided for @mineOnboardingGoalTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康目标'**
+  String get mineOnboardingGoalTitle;
+
+  /// No description provided for @mineOnboardingPrivacyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私设置'**
+  String get mineOnboardingPrivacyTitle;
+
+  /// No description provided for @mineOnboardingProgress.
+  ///
+  /// In zh, this message translates to:
+  /// **'{completed}/{total} 完成'**
+  String mineOnboardingProgress(int completed, int total);
+
+  /// No description provided for @mineQuickEntriesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'快捷入口'**
+  String get mineQuickEntriesTitle;
+
+  /// No description provided for @mineQuickExportTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出健康数据'**
+  String get mineQuickExportTitle;
+
+  /// No description provided for @mineQuickExportSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载健康数据副本'**
+  String get mineQuickExportSubtitle;
+
+  /// No description provided for @mineQuickDoctorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'共享给医生'**
+  String get mineQuickDoctorTitle;
+
+  /// No description provided for @mineQuickDoctorSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'授权查看健康信息'**
+  String get mineQuickDoctorSubtitle;
+
+  /// No description provided for @mineQuickEmergencyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'紧急联系人'**
+  String get mineQuickEmergencyTitle;
+
+  /// No description provided for @mineQuickEmergencySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'已设置 1 位联系人'**
+  String get mineQuickEmergencySubtitle;
+
+  /// No description provided for @mineSettingsSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置与支持'**
+  String get mineSettingsSectionTitle;
+
+  /// No description provided for @mineSettingsPanelTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置'**
+  String get mineSettingsPanelTitle;
+
+  /// No description provided for @mineSettingsThemeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'主题模式'**
+  String get mineSettingsThemeTitle;
+
+  /// No description provided for @mineSettingsThemeValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随系统'**
+  String get mineSettingsThemeValue;
+
+  /// No description provided for @mineSettingsAccountTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号与安全'**
+  String get mineSettingsAccountTitle;
+
+  /// No description provided for @mineSettingsLanguageTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'语言'**
+  String get mineSettingsLanguageTitle;
+
+  /// No description provided for @mineSettingsLanguageValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'简体中文'**
+  String get mineSettingsLanguageValue;
+
+  /// No description provided for @mineSettingsNotificationsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知设置'**
+  String get mineSettingsNotificationsTitle;
+
+  /// No description provided for @mineSettingsMoreTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'更多设置'**
+  String get mineSettingsMoreTitle;
+
+  /// No description provided for @mineErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的页面暂时没有加载出来'**
+  String get mineErrorTitle;
+
+  /// No description provided for @mineErrorDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'结构已经接好，重新拉一次 mock 数据即可。'**
+  String get mineErrorDescription;
+
+  /// No description provided for @mineActionToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'{action}：后续会接入对应详情或设置流程。'**
+  String mineActionToast(String action);
+
   /// No description provided for @morePageDescription.
   ///
   /// In zh, this message translates to:

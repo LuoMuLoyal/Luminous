@@ -667,6 +667,292 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineSectionSubtitle => '身份、目标与隐私控制会共享在这一块安静的界面里。';
 
   @override
+  String get mineHeaderNotifications => '通知';
+
+  @override
+  String get mineHeaderSettings => '页面设置';
+
+  @override
+  String get mineAccountDisplayName => 'Lumi 用户';
+
+  @override
+  String get mineAccountSignedIn => '已登录';
+
+  @override
+  String get mineAccountMeta => '会员到期：2026-05-20';
+
+  @override
+  String get mineCompletionTitle => '档案完整度';
+
+  @override
+  String get mineCompletionSubtitle => '完成度良好，继续完善更准确的建议';
+
+  @override
+  String get mineSummaryTitle => '健康上下文摘要';
+
+  @override
+  String get mineSummaryUpdatedAt => '更新于 2025-05-15';
+
+  @override
+  String get mineSummaryAge => '年龄';
+
+  @override
+  String get mineSummaryAllergies => '过敏';
+
+  @override
+  String get mineSummaryConditions => '慢病/条件';
+
+  @override
+  String get mineSummaryMedicines => '当前用药';
+
+  @override
+  String get mineSummaryMissingInfo => '缺失信息：生日、性别、单位制、孕哺状态';
+
+  @override
+  String get mineSummaryCompleteAction => '去完善';
+
+  @override
+  String get mineProfileTitle => '健康档案';
+
+  @override
+  String get mineProfileBasicInfoTitle => '基础资料';
+
+  @override
+  String get mineProfileBasicInfoSubtitle => '个人基本信息';
+
+  @override
+  String get mineProfileAllergiesTitle => '过敏史';
+
+  @override
+  String get mineProfileAllergiesSubtitle => '2 项记录';
+
+  @override
+  String get mineProfileConditionsTitle => '基础病史';
+
+  @override
+  String get mineProfileConditionsSubtitle => '1 项记录';
+
+  @override
+  String get mineProfileMedicinesTitle => '当前用药';
+
+  @override
+  String get mineProfileMedicinesSubtitle => '3 种药品';
+
+  @override
+  String get mineProfileWomenTitle => '女性/孕哺状态';
+
+  @override
+  String get mineProfileWomenSubtitle => '未填写';
+
+  @override
+  String get mineProfileSpecialistTitle => '专科档案';
+
+  @override
+  String get mineProfileSpecialistSubtitle => '口腔/视力/听力等';
+
+  @override
+  String get mineProfileLifestyleTitle => '生活习惯';
+
+  @override
+  String get mineProfileLifestyleSubtitle => '饮食/运动/睡眠';
+
+  @override
+  String get mineProfileFamilyTitle => '家族史';
+
+  @override
+  String get mineProfileFamilySubtitle => '遗传与家族病史';
+
+  @override
+  String get minePlansTitle => '健康计划中心';
+
+  @override
+  String get minePlansViewAll => '查看全部';
+
+  @override
+  String get minePlanBloodSugarTitle => '控糖计划';
+
+  @override
+  String get minePlanBloodSugarStatus => '进行中';
+
+  @override
+  String get minePlanBloodSugarDetail => '已坚持 12 天';
+
+  @override
+  String get minePlanWeightTitle => '减重计划';
+
+  @override
+  String get minePlanWeightStatus => '未开始';
+
+  @override
+  String get minePlanWeightDetail => '设置目标';
+
+  @override
+  String get minePlanSleepTitle => '助眠计划';
+
+  @override
+  String get minePlanSleepStatus => '进行中';
+
+  @override
+  String get minePlanSleepDetail => '睡眠改善中';
+
+  @override
+  String get minePlanMoodTitle => '情绪稳定计划';
+
+  @override
+  String get minePlanMoodStatus => '未开始';
+
+  @override
+  String get minePlanMoodDetail => '关注情绪健康';
+
+  @override
+  String get minePlanPregnancyTitle => '备孕计划';
+
+  @override
+  String get minePlanPregnancyStatus => '未开始';
+
+  @override
+  String get minePlanPregnancyDetail => '科学备孕';
+
+  @override
+  String get mineReportTitle => '健康报告';
+
+  @override
+  String get mineReportBody => '周/月报表、趋势回顾、健康洞察';
+
+  @override
+  String get mineReportMeta => '上次生成：2025-05-12';
+
+  @override
+  String get mineReportAction => '查看报告';
+
+  @override
+  String get minePrivacyTitle => '隐私控制';
+
+  @override
+  String get minePrivacyBody => '数据可见性、共享授权、云同步范围';
+
+  @override
+  String get minePrivacyMeta => '已保护 8 大类敏感数据';
+
+  @override
+  String get minePrivacyAction => '管理隐私';
+
+  @override
+  String get mineStatusPanelTitle => '档案状态';
+
+  @override
+  String get mineStatusBasicTitle => '基础资料';
+
+  @override
+  String get mineStatusBasicValue => '1/4 完成';
+
+  @override
+  String get mineStatusAllergiesTitle => '过敏史';
+
+  @override
+  String get mineStatusAllergiesValue => '2 项';
+
+  @override
+  String get mineStatusConditionsTitle => '慢病/条件';
+
+  @override
+  String get mineStatusConditionsValue => '1 项';
+
+  @override
+  String get mineStatusMedicinesTitle => '当前用药';
+
+  @override
+  String get mineStatusMedicinesValue => '3 种';
+
+  @override
+  String get mineStatusWomenTitle => '孕哺状态';
+
+  @override
+  String get mineStatusWomenValue => '未填写';
+
+  @override
+  String get mineOnboardingTitle => 'Onboarding 进度';
+
+  @override
+  String get mineOnboardingBasicTitle => '基础信息';
+
+  @override
+  String get mineOnboardingContextTitle => '健康上下文';
+
+  @override
+  String get mineOnboardingMedicineTitle => '用药设置';
+
+  @override
+  String get mineOnboardingGoalTitle => '健康目标';
+
+  @override
+  String get mineOnboardingPrivacyTitle => '隐私设置';
+
+  @override
+  String mineOnboardingProgress(int completed, int total) {
+    return '$completed/$total 完成';
+  }
+
+  @override
+  String get mineQuickEntriesTitle => '快捷入口';
+
+  @override
+  String get mineQuickExportTitle => '导出健康数据';
+
+  @override
+  String get mineQuickExportSubtitle => '下载健康数据副本';
+
+  @override
+  String get mineQuickDoctorTitle => '共享给医生';
+
+  @override
+  String get mineQuickDoctorSubtitle => '授权查看健康信息';
+
+  @override
+  String get mineQuickEmergencyTitle => '紧急联系人';
+
+  @override
+  String get mineQuickEmergencySubtitle => '已设置 1 位联系人';
+
+  @override
+  String get mineSettingsSectionTitle => '设置与支持';
+
+  @override
+  String get mineSettingsPanelTitle => '设置';
+
+  @override
+  String get mineSettingsThemeTitle => '主题模式';
+
+  @override
+  String get mineSettingsThemeValue => '跟随系统';
+
+  @override
+  String get mineSettingsAccountTitle => '账号与安全';
+
+  @override
+  String get mineSettingsLanguageTitle => '语言';
+
+  @override
+  String get mineSettingsLanguageValue => '简体中文';
+
+  @override
+  String get mineSettingsNotificationsTitle => '通知设置';
+
+  @override
+  String get mineSettingsMoreTitle => '更多设置';
+
+  @override
+  String get mineErrorTitle => '我的页面暂时没有加载出来';
+
+  @override
+  String get mineErrorDescription => '结构已经接好，重新拉一次 mock 数据即可。';
+
+  @override
+  String mineActionToast(String action) {
+    return '$action：后续会接入对应详情或设置流程。';
+  }
+
+  @override
   String get morePageDescription => '工具箱、紧急帮助、设备管理和低频但重要的能力归在这里。';
 
   @override
