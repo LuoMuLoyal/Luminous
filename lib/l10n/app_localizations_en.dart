@@ -55,6 +55,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineHeaderActionAdd => 'Add medicine';
 
   @override
+  String get medicineHeaderActionSearchCompact => 'Search';
+
+  @override
+  String get medicineHeaderActionAddCompact => 'Add';
+
+  @override
+  String get medicineHeaderAddToast =>
+      'This will open medicine addition and recognition.';
+
+  @override
   String get medicineHeroEyebrow => 'PERSONAL DRUGBOX';
 
   @override
@@ -72,10 +82,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineHeroMetricTodayCountLabel => 'Doses today';
 
   @override
+  String get medicineHeroMetricTodayCountUnit => ' meds';
+
+  @override
   String get medicineHeroMetricAdherenceValue => '100%';
 
   @override
   String get medicineHeroMetricAdherenceLabel => 'On-time adherence';
+
+  @override
+  String get medicineHeroMetricAdherenceUnit => '%';
 
   @override
   String get medicineHeroMetricNextDoseValue => '20:00';
@@ -145,10 +161,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineMockScheduleMorningEvening => 'Twice daily';
 
   @override
-  String get medicineMockTime0800Taken => '08:00 taken';
+  String get medicineMockTime0800 => '08:00';
 
   @override
-  String get medicineMockTime2000Pending => '20:00 pending';
+  String get medicineMockTime1200 => '12:00';
+
+  @override
+  String get medicineMockTime2000 => '20:00';
+
+  @override
+  String get medicineDoseStatusTaken => 'Taken';
+
+  @override
+  String get medicineDoseStatusPending => 'Pending';
 
   @override
   String get medicineMockStock7Days => '7 days left';
@@ -157,41 +182,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineStatusStable => 'Stable routine';
 
   @override
-  String get medicineMockNameVitaminD => 'Vitamin D3';
+  String get medicineMockNameAtorvastatin => 'Atorvastatin calcium';
 
   @override
-  String get medicineMockDoseVitaminD => '1000 IU';
+  String get medicineMockDoseAtorvastatin => '20 mg';
 
   @override
   String get medicineMockScheduleDailyOnce => 'Once daily';
 
   @override
-  String get medicineMockWithDinner => 'Take with dinner';
-
-  @override
   String get medicineMockStock15Days => '15 days left';
 
   @override
-  String get medicineStatusNeedsCheckin => 'Check in tonight';
+  String get medicineStatusNeedsCheckin => 'Stable routine';
 
   @override
-  String get medicineMockNameSertraline => 'Sertraline';
+  String get medicineMockNameOmeprazole => 'Omeprazole capsules';
 
   @override
-  String get medicineMockDoseSertraline => '50 mg';
-
-  @override
-  String get medicineMockTime2200Pending => '22:00 pending';
-
-  @override
-  String get medicineMockStressRisk =>
-      'Recent stress is raising missed-dose risk';
+  String get medicineMockDoseOmeprazole => '20 mg';
 
   @override
   String get medicineMockStock3Days => '3 days left';
 
   @override
-  String get medicineStatusNeedRefillSoon => 'Refill soon';
+  String get medicineStatusNeedRefillSoon => 'Needs attention';
+
+  @override
+  String get medicineStockWarningLow => 'Stock is low. Refill soon.';
 
   @override
   String get medicineSafetyPanelTitle => 'Safety and refill';
@@ -204,8 +222,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineAlertRefillTitle => 'Refill reminder';
 
   @override
-  String get medicineAlertRefillBody =>
-      'Vitamin D is under a 7-day supply. Refill soon.';
+  String get medicineAlertRefillBody => 'Vitamin D softgels have 3 days left';
+
+  @override
+  String get medicineAlertRefillDetail => 'Refill soon to avoid interruption';
 
   @override
   String get medicineAlertRefillAction => 'Refill now';
@@ -218,10 +238,28 @@ class AppLocalizationsEn extends AppLocalizations {
       'Aspirin with ibuprofen may increase bleeding risk.';
 
   @override
+  String get medicineAlertInteractionDetail =>
+      'Use together only with clinical advice';
+
+  @override
   String get medicineAlertInteractionAction => 'Review details';
 
   @override
-  String get medicinePromiseTitle => 'Luminous medication boundary';
+  String get medicineAlertOtherTitle => 'Other safety reminder';
+
+  @override
+  String get medicineAlertOtherBody =>
+      'Ibuprofen is not recommended for continuous use beyond 5 days';
+
+  @override
+  String get medicineAlertOtherDetail =>
+      'Ask a clinician if longer use is needed';
+
+  @override
+  String get medicineAlertOtherAction => 'Review details';
+
+  @override
+  String get medicinePromiseTitle => 'Safety boundary';
 
   @override
   String get medicinePromiseBody =>
@@ -229,15 +267,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicinePromisePointBoundary =>
-      'All results are reference-only and do not replace a clinician\'s diagnosis or treatment decision.';
+      'Results are reference-only and do not replace diagnosis or treatment.';
 
   @override
   String get medicinePromisePointPregnancy =>
-      'Pregnancy, lactation, pediatric, and psychiatric medicines should be warned at higher priority.';
+      'Pregnancy, lactation, pediatric, and psychiatric medicines get higher-priority alerts.';
 
   @override
   String get medicinePromisePointPrivacy =>
-      'Photos, prescriptions, and high-sensitivity medicine data should follow a minimum-exposure handling model first.';
+      'Prescriptions, photos, and sensitive medicine data follow minimum exposure first.';
+
+  @override
+  String get medicinePromisePointDiagnosis =>
+      'We do not diagnose, replace clinicians, or invent medicine facts.';
+
+  @override
+  String get medicinePromiseAction => 'Learn more about safety';
+
+  @override
+  String get medicineViewPlanToast =>
+      'This will open the full medication list and history.';
+
+  @override
+  String get medicineOpenPlanItemToast =>
+      'This will open medicine details, reminders, and dose history.';
+
+  @override
+  String get medicineOpenPromiseToast =>
+      'This will open safety boundaries, special-population alerts, and privacy notes.';
+
+  @override
+  String get medicineQuickActionCameraToast =>
+      'This will open camera recognition for boxes, blisters, or labels.';
+
+  @override
+  String get medicineQuickActionBarcodeToast =>
+      'This will open barcode scan and fill medicine information.';
+
+  @override
+  String get medicineQuickActionPrescriptionToast =>
+      'This will open image import and prescription recognition.';
+
+  @override
+  String get medicineAlertRefillToast =>
+      'This will open refill and stock details.';
+
+  @override
+  String get medicineAlertInteractionToast =>
+      'This will open interaction details and risk notes.';
+
+  @override
+  String get medicineAlertOtherToast =>
+      'This will open other safety reminder details.';
 
   @override
   String get medicineSearchPageTitle => 'Search medicine';

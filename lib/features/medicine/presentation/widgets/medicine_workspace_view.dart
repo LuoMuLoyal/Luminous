@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -7,6 +8,7 @@ import 'package:luminous/features/medicine/domain/entities/medicine_workspace.da
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:shimmer/shimmer.dart';
 
 class MedicineWorkspaceView extends StatelessWidget {
   const MedicineWorkspaceView({super.key, required this.workspace});
@@ -20,98 +22,70 @@ class MedicineWorkspaceView extends StatelessWidget {
     final scheme = theme.colorScheme;
     final surface = theme.extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
-    final layout = AppLayoutTokens.resolve(width);
     final typography = width < AppBreakpoints.mobile
         ? AppTypographyTokens.mobile(scheme.onSurface)
         : AppTypographyTokens.desktop(scheme.onSurface);
     final isDesktop = width >= AppBreakpoints.desktop;
 
+    final primaryColumn = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _MedicineMetricsPanel(
+          key: const Key('medicine-hero'),
+          workspace: workspace,
+          typography: typography,
+          surface: surface,
+          l10n: l10n,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _QuickActionSection(
+          key: const Key('medicine-quick-actions'),
+          workspace: workspace,
+          typography: typography,
+          surface: surface,
+          l10n: l10n,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _TodayPlanSection(
+          key: const Key('medicine-today-plan'),
+          workspace: workspace,
+          typography: typography,
+          surface: surface,
+          l10n: l10n,
+        ),
+      ],
+    );
+
+    final safetyColumn = _SafetyPanel(
+      key: const Key('medicine-safety-panel'),
+      workspace: workspace,
+      typography: typography,
+      surface: surface,
+      l10n: l10n,
+    );
+
     final content = isDesktop
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 8,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _MedicineHero(
-                      key: const Key('medicine-hero'),
-                      workspace: workspace,
-                      typography: typography,
-                      surface: surface,
-                      l10n: l10n,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.lg),
-                    _QuickActionSection(
-                      key: const Key('medicine-quick-actions'),
-                      workspace: workspace,
-                      typography: typography,
-                      surface: surface,
-                      l10n: l10n,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.lg),
-                    _TodayPlanSection(
-                      key: const Key('medicine-today-plan'),
-                      workspace: workspace,
-                      typography: typography,
-                      surface: surface,
-                      l10n: l10n,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(width: layout.componentGap * 2),
-              Expanded(
-                flex: 5,
-                child: _SafetyPanel(
-                  key: const Key('medicine-safety-panel'),
-                  workspace: workspace,
-                  typography: typography,
-                  surface: surface,
-                  l10n: l10n,
-                ),
-              ),
+              Expanded(flex: 7, child: primaryColumn),
+              const SizedBox(width: AppSpacingTokens.lg),
+              Expanded(flex: 3, child: safetyColumn),
             ],
           )
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _MedicineHero(
-                key: const Key('medicine-hero'),
-                workspace: workspace,
-                typography: typography,
-                surface: surface,
-                l10n: l10n,
-              ),
-              const SizedBox(height: AppSpacingTokens.lg),
-              _QuickActionSection(
-                key: const Key('medicine-quick-actions'),
-                workspace: workspace,
-                typography: typography,
-                surface: surface,
-                l10n: l10n,
-              ),
-              const SizedBox(height: AppSpacingTokens.lg),
-              _TodayPlanSection(
-                key: const Key('medicine-today-plan'),
-                workspace: workspace,
-                typography: typography,
-                surface: surface,
-                l10n: l10n,
-              ),
-              const SizedBox(height: AppSpacingTokens.lg),
-              _SafetyPanel(
-                key: const Key('medicine-safety-panel'),
-                workspace: workspace,
-                typography: typography,
-                surface: surface,
-                l10n: l10n,
-              ),
+              primaryColumn,
+              const SizedBox(height: AppSpacingTokens.md),
+              safetyColumn,
             ],
           );
 
-    return content;
+    return content
+        .animate()
+        .fadeIn(duration: 240.ms)
+        .slideY(begin: 0.025, end: 0, duration: 260.ms);
   }
 }
 
@@ -120,16 +94,24 @@ class MedicineLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _SkeletonBlock(height: 220, color: surface.canvas),
-        const SizedBox(height: AppSpacingTokens.lg),
-        _SkeletonBlock(height: 148, color: surface.canvas),
-        const SizedBox(height: AppSpacingTokens.lg),
-        _SkeletonBlock(height: 260, color: surface.canvas),
-      ],
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+
+    return Shimmer.fromColors(
+      baseColor: surface.canvas.withValues(
+        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
+      ),
+      highlightColor: surface.canvasSoft2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          _SkeletonBlock(height: 126),
+          SizedBox(height: AppSpacingTokens.md),
+          _SkeletonBlock(height: 160),
+          SizedBox(height: AppSpacingTokens.md),
+          _SkeletonBlock(height: 500),
+        ],
+      ),
     );
   }
 }
@@ -161,8 +143,8 @@ class MedicineErrorView extends StatelessWidget {
   }
 }
 
-class _MedicineHero extends StatelessWidget {
-  const _MedicineHero({
+class _MedicineMetricsPanel extends StatelessWidget {
+  const _MedicineMetricsPanel({
     super.key,
     required this.workspace,
     required this.typography,
@@ -177,60 +159,100 @@ class _MedicineHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadiusTokens.xl + 4),
-        color: surface.canvas,
-        border: Border.all(color: surface.hairline.withValues(alpha: 0.82)),
-        boxShadow: AppShadowTokens.level2,
+    return MedicineSectionSurface(
+      title: '',
+      typography: typography,
+      surface: surface,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.lg,
+        vertical: AppSpacingTokens.md,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        children: [
+          Expanded(
+            child: _MetricBlock(
+              label: l10n.medicineHeroMetricTodayCountLabel,
+              value: workspace.hero.metricDosesToday,
+              typography: typography,
+              surface: surface,
+              suffix: l10n.medicineHeroMetricTodayCountUnit,
+            ),
+          ),
+          Container(width: 1, height: 70, color: surface.hairline),
+          Expanded(
+            child: _MetricBlock(
+              label: l10n.medicineHeroMetricAdherenceLabel,
+              value: workspace.hero.metricAdherence.replaceAll('%', ''),
+              typography: typography,
+              surface: surface,
+              suffix: l10n.medicineHeroMetricAdherenceUnit,
+              showInfo: true,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricBlock extends StatelessWidget {
+  const _MetricBlock({
+    required this.label,
+    required this.value,
+    required this.typography,
+    required this.surface,
+    required this.suffix,
+    this.showInfo = false,
+  });
+
+  final String label;
+  final String value;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+  final String suffix;
+  final bool showInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  label,
+                  style: typography.bodySm.copyWith(color: surface.body),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (showInfo) ...[
+                const SizedBox(width: AppSpacingTokens.xxs),
+                Icon(Icons.info_outline_rounded, size: 14, color: surface.mute),
+              ],
+            ],
+          ),
+          const SizedBox(height: AppSpacingTokens.xs),
+          RichText(
+            text: TextSpan(
+              style: typography.displayXl.copyWith(
+                color: _MedicinePalette.green,
+                fontWeight: FontWeight.w600,
+              ),
               children: [
-                Expanded(
-                  child: Center(
-                    child: _HeroMetric(
-                      data: _HeroMetricData(
-                        value: workspace.hero.metricDosesToday,
-                        label: l10n.medicineHeroMetricTodayCountLabel,
-                      ),
-                      typography: typography,
-                      surface: surface,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.lg,
-                  ),
-                  child: Container(
-                    width: 1,
-                    height: 72,
-                    color: surface.hairlineStrong.withValues(alpha: 0.38),
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: _HeroMetric(
-                      data: _HeroMetricData(
-                        value: workspace.hero.metricAdherence,
-                        label: l10n.medicineHeroMetricAdherenceLabel,
-                      ),
-                      typography: typography,
-                      surface: surface,
-                      emphasized: true,
-                    ),
+                TextSpan(text: value),
+                TextSpan(
+                  text: suffix,
+                  style: typography.bodySmStrong.copyWith(
+                    color: _MedicinePalette.green,
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -252,35 +274,29 @@ class _QuickActionSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    final isCompact = width < AppBreakpoints.tablet;
-
     return MedicineSectionSurface(
       title: l10n.medicineQuickActionSectionTitle,
       typography: typography,
       surface: surface,
       child: Row(
-        children: workspace.quickActions
-            .map(
-              (action) => Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    right: action == workspace.quickActions.last
-                        ? 0
-                        : (isCompact
-                              ? AppSpacingTokens.sm
-                              : AppSpacingTokens.md),
-                  ),
-                  child: _QuickActionTile(
-                    action: action,
-                    typography: typography,
-                    surface: surface,
-                    l10n: l10n,
-                  ),
+        children: [
+          for (var index = 0; index < workspace.quickActions.length; index += 1)
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  right: index == workspace.quickActions.length - 1
+                      ? 0
+                      : AppSpacingTokens.sm,
+                ),
+                child: _QuickActionTile(
+                  action: workspace.quickActions[index],
+                  typography: typography,
+                  surface: surface,
+                  l10n: l10n,
                 ),
               ),
-            )
-            .toList(),
+            ),
+        ],
       ),
     );
   }
@@ -309,29 +325,32 @@ class _QuickActionTile extends StatelessWidget {
           medicineCopy(l10n, action.titleKey),
           _quickActionResult(action.titleKey, l10n),
         ),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppSpacingTokens.sm,
-              horizontal: AppSpacingTokens.sm,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(action.icon, color: action.accent, size: 22),
-                const SizedBox(height: AppSpacingTokens.sm),
-                Text(
-                  medicineCopy(l10n, action.titleKey),
-                  style: typography.bodySmStrong,
-                  textAlign: TextAlign.center,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+          child: Column(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: action.accent.withValues(alpha: 0.11),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+                  border: Border.all(
+                    color: action.accent.withValues(alpha: 0.12),
+                  ),
                 ),
-              ],
-            ),
+                child: Icon(action.icon, color: action.accent, size: 32),
+              ),
+              const SizedBox(height: AppSpacingTokens.sm),
+              Text(
+                medicineCopy(l10n, action.titleKey),
+                style: typography.bodySmStrong,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
       ),
@@ -357,43 +376,36 @@ class _TodayPlanSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return MedicineSectionSurface(
       title: l10n.medicineTodayPlanTitle,
-      trailing: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => _showPlannedAction(
-            context,
-            l10n.medicineTodayPlanInspectAction,
-            '会打开完整的今日用药列表与历史记录。',
-          ),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.xs,
-              vertical: AppSpacingTokens.xs,
-            ),
-            child: Text(
-              l10n.medicineTodayPlanInspectAction,
-              style: typography.bodySmStrong.copyWith(color: surface.link),
-            ),
-          ),
+      trailing: _SectionTextAction(
+        label:
+            '${l10n.medicineTodayPlanInspectAction}(${workspace.plan.items.length})',
+        typography: typography,
+        surface: surface,
+        onTap: () => _showPlannedAction(
+          context,
+          l10n.medicineTodayPlanInspectAction,
+          l10n.medicineViewPlanToast,
         ),
       ),
       typography: typography,
       surface: surface,
       child: Column(
-        children: workspace.plan.items
-            .map(
-              (item) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
-                child: _MedicationPlanTile(
-                  item: item,
-                  typography: typography,
-                  surface: surface,
-                  l10n: l10n,
-                ),
+        children: [
+          for (var index = 0; index < workspace.plan.items.length; index += 1)
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: index == workspace.plan.items.length - 1
+                    ? 0
+                    : AppSpacingTokens.md,
               ),
-            )
-            .toList(),
+              child: _MedicationPlanTile(
+                item: workspace.plan.items[index],
+                typography: typography,
+                surface: surface,
+                l10n: l10n,
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -414,102 +426,211 @@ class _MedicationPlanTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final warningKey = item.stockWarningKey;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () => _showPlannedAction(
           context,
           medicineCopy(l10n, item.nameKey),
-          '会打开药品详情、提醒设置和历史服用记录。',
+          l10n.medicineOpenPlanItemToast,
         ),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: surface.canvasSoft,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+            color: surface.canvas,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
             border: Border.all(color: surface.hairline),
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacingTokens.md),
-            child: Row(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: item.color.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-                  ),
-                  child: Icon(
-                    Icons.medication_outlined,
-                    color: item.color,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: AppSpacingTokens.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  medicineCopy(l10n, item.nameKey),
-                                  style: typography.bodyMdStrong,
-                                ),
-                                const SizedBox(height: AppSpacingTokens.xs),
-                                Text(
-                                  '${medicineCopy(l10n, item.dosageKey)}  ·  ${medicineCopy(l10n, item.scheduleKey)}',
-                                  style: typography.bodySm.copyWith(
-                                    color: surface.body,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacingTokens.sm),
                           Text(
-                            medicineCopy(l10n, item.stockKey),
-                            style: typography.caption.copyWith(
-                              color: surface.mute,
+                            medicineCopy(l10n, item.nameKey),
+                            style: typography.bodyMdStrong.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacingTokens.xs),
+                          Text(
+                            '${medicineCopy(l10n, item.dosageKey)} · ${medicineCopy(l10n, item.scheduleKey)}',
+                            style: typography.bodySm.copyWith(
+                              color: surface.body,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: AppSpacingTokens.md),
-                      Wrap(
-                        spacing: AppSpacingTokens.sm,
-                        runSpacing: AppSpacingTokens.sm,
-                        children: [
-                          MedicinePlanPill(
-                            label: medicineCopy(l10n, item.nextSlotKey),
-                            color: item.color,
-                            typography: typography,
-                          ),
-                          MedicinePlanPill(
-                            label: medicineCopy(l10n, item.laterSlotKey),
-                            color: surface.hairlineStrong,
-                            typography: typography,
-                          ),
-                          MedicinePlanPill(
-                            label: medicineCopy(l10n, item.stateKey),
-                            color: item.stateColor,
-                            typography: typography,
-                          ),
-                        ],
-                      ),
+                    ),
+                    const SizedBox(width: AppSpacingTokens.sm),
+                    _StatusBadge(
+                      label: medicineCopy(l10n, item.stateKey),
+                      color: item.stateColor,
+                      typography: typography,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.md),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.inventory_2_outlined,
+                      size: 16,
+                      color: surface.body,
+                    ),
+                    const SizedBox(width: AppSpacingTokens.xs),
+                    Text(
+                      medicineCopy(l10n, item.stockKey),
+                      style: typography.bodySm.copyWith(color: surface.body),
+                    ),
+                    const Spacer(),
+                    Icon(Icons.chevron_right_rounded, color: surface.mute),
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.md),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: surface.canvasSoft,
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                    border: Border.all(color: surface.hairline),
+                  ),
+                  child: Column(
+                    children: [
+                      for (var index = 0; index < item.slots.length; index += 1)
+                        _DoseSlotRow(
+                          slot: item.slots[index],
+                          typography: typography,
+                          surface: surface,
+                          l10n: l10n,
+                          showDivider: index < item.slots.length - 1,
+                        ),
                     ],
                   ),
                 ),
+                if (warningKey != null) ...[
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  _StockWarning(
+                    label: medicineCopy(l10n, warningKey),
+                    typography: typography,
+                  ),
+                ],
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DoseSlotRow extends StatelessWidget {
+  const _DoseSlotRow({
+    required this.slot,
+    required this.typography,
+    required this.surface,
+    required this.l10n,
+    required this.showDivider,
+  });
+
+  final MedicineDoseSlot slot;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+  final AppLocalizations l10n;
+  final bool showDivider;
+
+  @override
+  Widget build(BuildContext context) {
+    final isTaken = slot.status == MedicineDoseStatus.taken;
+    final color = isTaken ? _MedicinePalette.green : _MedicinePalette.orange;
+    final icon = isTaken ? Icons.check_circle_rounded : Icons.schedule_rounded;
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 56,
+                child: Text(
+                  medicineCopy(l10n, slot.timeKey),
+                  style: typography.bodySmStrong,
+                ),
+              ),
+              Icon(icon, color: color, size: 20),
+              const SizedBox(width: AppSpacingTokens.sm),
+              Expanded(
+                child: Text(
+                  medicineCopy(l10n, slot.statusKey),
+                  style: typography.bodySm.copyWith(color: color),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (showDivider)
+          Padding(
+            padding: const EdgeInsets.only(
+              left: AppSpacingTokens.md,
+              right: AppSpacingTokens.md,
+            ),
+            child: Divider(height: 1, color: surface.hairline),
+          ),
+      ],
+    );
+  }
+}
+
+class _StockWarning extends StatelessWidget {
+  const _StockWarning({required this.label, required this.typography});
+
+  final String label;
+  final AppTypographyScale typography;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: _MedicinePalette.orangeSoft,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(
+          color: _MedicinePalette.orange.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.md,
+          vertical: AppSpacingTokens.sm,
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.notifications_none_rounded,
+              color: _MedicinePalette.orange,
+              size: 18,
+            ),
+            const SizedBox(width: AppSpacingTokens.xs),
+            Expanded(
+              child: Text(
+                label,
+                style: typography.bodySm.copyWith(
+                  color: _MedicinePalette.orange,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -532,112 +653,39 @@ class _SafetyPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MedicineSectionSurface(
-      title: l10n.medicineSafetyPanelTitle,
-      typography: typography,
-      surface: surface,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ...workspace.alerts.map(
-            (alert) => Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
-              child: _AlertTile(
-                alert: alert,
-                typography: typography,
-                surface: surface,
-                l10n: l10n,
-              ),
-            ),
-          ),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => _showPlannedAction(
-                context,
-                l10n.medicinePromiseTitle,
-                '会打开安全边界、特殊人群提示和隐私处理说明。',
-              ),
-              borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: surface.canvasSoft,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-                  border: Border.all(color: surface.hairline),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.md),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              color: surface.success.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(
-                                AppRadiusTokens.md,
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.verified_user_outlined,
-                              color: surface.success,
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacingTokens.sm),
-                          Expanded(
-                            child: Text(
-                              l10n.medicinePromiseTitle,
-                              style: typography.bodyMdStrong,
-                            ),
-                          ),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            color: surface.mute,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacingTokens.md),
-                      ...workspace.promisePoints.map(
-                        (point) => Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: AppSpacingTokens.sm,
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 6),
-                                child: Icon(
-                                  Icons.circle,
-                                  size: 7,
-                                  color: surface.success,
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacingTokens.sm),
-                              Expanded(
-                                child: Text(
-                                  medicineCopy(l10n, point.copyKey),
-                                  style: typography.bodySm.copyWith(
-                                    color: surface.body,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+    return Column(
+      children: [
+        MedicineSectionSurface(
+          title: l10n.medicineSafetyPanelTitle,
+          typography: typography,
+          surface: surface,
+          child: Column(
+            children: [
+              for (var index = 0; index < workspace.alerts.length; index += 1)
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: index == workspace.alerts.length - 1
+                        ? 0
+                        : AppSpacingTokens.md,
+                  ),
+                  child: _AlertTile(
+                    alert: workspace.alerts[index],
+                    typography: typography,
+                    surface: surface,
+                    l10n: l10n,
                   ),
                 ),
-              ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _PromisePanel(
+          workspace: workspace,
+          typography: typography,
+          surface: surface,
+          l10n: l10n,
+        ),
+      ],
     );
   }
 }
@@ -660,56 +708,58 @@ class _AlertTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: alert.softColor.withValues(alpha: 0.42),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-        border: Border.all(color: alert.color.withValues(alpha: 0.24)),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: alert.color.withValues(alpha: 0.18)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.md),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.72),
-                borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-              ),
-              child: Icon(alert.icon, color: alert.color, size: 20),
-            ),
-            const SizedBox(width: AppSpacingTokens.sm),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+            Row(
+              children: [
+                Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: _alertIconBackground(context),
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+                  ),
+                  child: Icon(alert.icon, color: alert.color, size: 18),
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                Expanded(
+                  child: Text(
                     medicineCopy(l10n, alert.titleKey),
-                    style: typography.bodyMdStrong,
+                    style: typography.bodySmStrong.copyWith(color: alert.color),
                   ),
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  Text(
-                    medicineCopy(l10n, alert.bodyKey),
-                    style: typography.bodySm.copyWith(color: surface.body),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
-            SizedBox(
-              height: 36,
-              child: TextButton(
-                onPressed: () => _showPlannedAction(
+            const SizedBox(height: AppSpacingTokens.sm),
+            Text(
+              medicineCopy(l10n, alert.bodyKey),
+              style: typography.bodyMdStrong,
+            ),
+            const SizedBox(height: AppSpacingTokens.xs),
+            Text(
+              medicineCopy(l10n, alert.detailKey),
+              style: typography.bodySm.copyWith(color: surface.body),
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: _AlertActionButton(
+                label: medicineCopy(l10n, alert.actionKey),
+                color: alert.color,
+                typography: typography,
+                emphasized:
+                    alert.actionKey == MedicineCopyKey.alertRefillAction,
+                onTap: () => _showPlannedAction(
                   context,
                   medicineCopy(l10n, alert.titleKey),
                   _alertActionResult(alert.actionKey, l10n),
                 ),
-                style: TextButton.styleFrom(
-                  foregroundColor: alert.color,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.sm,
-                  ),
-                ),
-                child: Text(medicineCopy(l10n, alert.actionKey)),
               ),
             ),
           ],
@@ -717,73 +767,274 @@ class _AlertTile extends StatelessWidget {
       ),
     );
   }
+
+  Color _alertIconBackground(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark
+        ? Colors.black.withValues(alpha: 0.18)
+        : Colors.white.withValues(alpha: 0.78);
+  }
 }
 
-class _HeroMetric extends StatelessWidget {
-  const _HeroMetric({
-    required this.data,
+class _AlertActionButton extends StatelessWidget {
+  const _AlertActionButton({
+    required this.label,
+    required this.color,
     required this.typography,
-    required this.surface,
-    this.emphasized = false,
+    required this.emphasized,
+    required this.onTap,
   });
 
-  final _HeroMetricData data;
+  final String label;
+  final Color color;
+  final AppTypographyScale typography;
+  final bool emphasized;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: emphasized
+                ? _MedicinePalette.green
+                : color.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+            border: Border.all(
+              color: emphasized
+                  ? _MedicinePalette.green
+                  : color.withValues(alpha: 0.28),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.md,
+              vertical: AppSpacingTokens.sm,
+            ),
+            child: Text(
+              label,
+              style: typography.bodySmStrong.copyWith(
+                color: emphasized ? Colors.white : color,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PromisePanel extends StatelessWidget {
+  const _PromisePanel({
+    required this.workspace,
+    required this.typography,
+    required this.surface,
+    required this.l10n,
+  });
+
+  final MedicineWorkspace workspace;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
-  final bool emphasized;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _showPlannedAction(
+          context,
+          l10n.medicinePromiseTitle,
+          l10n.medicineOpenPromiseToast,
+        ),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: _MedicinePalette.greenSoft,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            border: Border.all(color: _MedicinePalette.greenLine),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacingTokens.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.gpp_good_outlined,
+                      color: _MedicinePalette.green,
+                      size: 22,
+                    ),
+                    const SizedBox(width: AppSpacingTokens.sm),
+                    Expanded(
+                      child: Text(
+                        l10n.medicinePromiseTitle,
+                        style: typography.bodyMdStrong.copyWith(
+                          color: _MedicinePalette.green,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.md),
+                ...workspace.promisePoints.map(
+                  (point) => Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
+                    child: _PromisePoint(
+                      label: medicineCopy(l10n, point.copyKey),
+                      typography: typography,
+                      surface: surface,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacingTokens.xs),
+                Row(
+                  children: [
+                    Text(
+                      l10n.medicinePromiseAction,
+                      style: typography.bodySmStrong.copyWith(
+                        color: _MedicinePalette.green,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacingTokens.xs),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      color: _MedicinePalette.green,
+                      size: 18,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PromisePoint extends StatelessWidget {
+  const _PromisePoint({
+    required this.label,
+    required this.typography,
+    required this.surface,
+  });
+
+  final String label;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(
+          Icons.check_circle_outline_rounded,
+          color: _MedicinePalette.green,
+          size: 18,
+        ),
+        const SizedBox(width: AppSpacingTokens.sm),
+        Expanded(
+          child: Text(
+            label,
+            style: typography.bodySm.copyWith(color: surface.body),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SectionTextAction extends StatelessWidget {
+  const _SectionTextAction({
+    required this.label,
+    required this.typography,
+    required this.surface,
+    required this.onTap,
+  });
+
+  final String label;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.xs,
+            vertical: AppSpacingTokens.xs,
+          ),
+          child: Text(
+            label,
+            style: typography.bodySm.copyWith(color: surface.body),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  const _StatusBadge({
+    required this.label,
+    required this.color,
+    required this.typography,
+  });
+
+  final String label;
+  final Color color;
+  final AppTypographyScale typography;
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.xs,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.sm,
+          vertical: AppSpacingTokens.xs,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              data.label,
-              style: typography.bodySm.copyWith(color: surface.body),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacingTokens.xs),
-            Text(
-              data.value,
-              style: emphasized ? typography.displayLg : typography.displayMd,
-              textAlign: TextAlign.center,
-            ),
-          ],
+        child: Text(
+          label,
+          style: typography.caption.copyWith(
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
   }
 }
 
-class _HeroMetricData {
-  const _HeroMetricData({required this.value, required this.label});
-
-  final String value;
-  final String label;
-}
-
 class _SkeletonBlock extends StatelessWidget {
-  const _SkeletonBlock({required this.height, required this.color});
+  const _SkeletonBlock({required this.height});
 
   final double height;
-  final Color color;
 
   @override
   Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: color,
+        color: surface.canvas,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
       ),
     );
@@ -792,21 +1043,34 @@ class _SkeletonBlock extends StatelessWidget {
 
 String _quickActionResult(MedicineCopyKey key, AppLocalizations l10n) {
   return switch (key) {
-    MedicineCopyKey.quickActionCameraTitle => '会调用相机拍摄药盒、药板或标签并开始识别。',
-    MedicineCopyKey.quickActionBarcodeTitle => '会打开扫码流程，识别条形码并补齐药品信息。',
-    MedicineCopyKey.quickActionPrescriptionTitle => '会打开图片导入与处方识别流程。',
+    MedicineCopyKey.quickActionCameraTitle =>
+      l10n.medicineQuickActionCameraToast,
+    MedicineCopyKey.quickActionBarcodeTitle =>
+      l10n.medicineQuickActionBarcodeToast,
+    MedicineCopyKey.quickActionPrescriptionTitle =>
+      l10n.medicineQuickActionPrescriptionToast,
     _ => l10n.todayRetryAction,
   };
 }
 
 String _alertActionResult(MedicineCopyKey key, AppLocalizations l10n) {
   return switch (key) {
-    MedicineCopyKey.alertRefillAction => '会打开补药与库存详情。',
-    MedicineCopyKey.alertInteractionAction => '会打开相互作用详情与风险说明。',
+    MedicineCopyKey.alertRefillAction => l10n.medicineAlertRefillToast,
+    MedicineCopyKey.alertInteractionAction =>
+      l10n.medicineAlertInteractionToast,
+    MedicineCopyKey.alertOtherAction => l10n.medicineAlertOtherToast,
     _ => l10n.todayRetryAction,
   };
 }
 
 void _showPlannedAction(BuildContext context, String title, String message) {
   AppToast.show(context, '$title: $message');
+}
+
+abstract final class _MedicinePalette {
+  static const Color green = Color(0xFF159B55);
+  static const Color greenSoft = Color(0xFFEFFAF3);
+  static const Color greenLine = Color(0xFFCFEFDB);
+  static const Color orange = Color(0xFFFF7A1A);
+  static const Color orangeSoft = Color(0xFFFFF3E8);
 }

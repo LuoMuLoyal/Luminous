@@ -26,6 +26,8 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Added zh/en localization strings for the medicine workspace and a widget test covering the core mock sections.
 - Tightened the medicine UI toward the five-tab concept image: the hero now foregrounds only `today doses` and `on-time adherence`, click feedback now uses `core/feedback/AppToast`, extra nested boxes were reduced, and the page radius treatment was pushed larger to better match the current visual direction.
 - Added `/medicine/search` as a source-aware mock search workspace under the standalone `lib/features/search/` feature, with domain/repository/provider/data boundaries, zh/en text, mobile search flow, desktop result/preview layout, and a widget test. Real Lucent search, detail, recognition, and add-to-drugbox calls remain intentionally unwired until the UI stabilizes.
+- Refined the medicine tab against the 2026-05-31 concept image: mobile keeps a single stacked feed, desktop uses main workspace plus right-side safety rail, plan cards now show nested dose rows and stock warnings, safety cards split refill / interaction / other reminders, and the safety-boundary block uses a calmer green reference-only treatment.
+- Expanded the mock medicine contract with dose slots, alert details, a low-stock warning, and localized click-feedback copy while keeping Lucent API calls intentionally mocked.
 
 ### Auth Contract Sync
 
