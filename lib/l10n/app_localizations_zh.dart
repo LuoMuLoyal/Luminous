@@ -36,13 +36,218 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordSectionSubtitle => '记录页的第一步先搭结构，不急着恢复旧逻辑。';
 
   @override
-  String get medicinePageDescription => '今日用药计划、依从性、补药状态与安全提醒会在这一栏汇合。';
+  String get medicinePageDescription =>
+      '拍照识别、条码扫描、手动搜索、服药计划和安全提醒先在这里合成一个可继续接后端的工作台。';
 
   @override
   String get medicineSectionTitle => '用药工作区';
 
   @override
   String get medicineSectionSubtitle => '这里会承接基于 Lucent 重建后的完整用药闭环。';
+
+  @override
+  String get medicineHeaderActionSearch => '搜索药品';
+
+  @override
+  String get medicineHeaderActionAdd => '添加药品';
+
+  @override
+  String get medicineHeroEyebrow => 'PERSONAL DRUGBOX';
+
+  @override
+  String get medicineHeroTitle => '先把今天的药、风险和补药节奏看清。';
+
+  @override
+  String get medicineHeroSubtitle =>
+      '这个 mock 页面先把拍照识别、条码扫描、手动搜索和用药安全工作台落下来，后续再替换成真实 Lucent 数据。';
+
+  @override
+  String get medicineHeroMetricTodayCountValue => '2';
+
+  @override
+  String get medicineHeroMetricTodayCountLabel => '今日需服用';
+
+  @override
+  String get medicineHeroMetricAdherenceValue => '100%';
+
+  @override
+  String get medicineHeroMetricAdherenceLabel => '按时服用率';
+
+  @override
+  String get medicineHeroMetricNextDoseValue => '20:00';
+
+  @override
+  String get medicineHeroMetricNextDoseLabel => '下一次提醒';
+
+  @override
+  String get medicineHeroBannerTitle => '安全底线先行';
+
+  @override
+  String get medicineHeroBannerBody =>
+      '识别结果、相互作用和特殊人群提醒都会明确标注“仅供参考”，避免把 AI 结果误当成诊断。';
+
+  @override
+  String get medicineQuickActionSectionTitle => '识别与录入';
+
+  @override
+  String get medicineQuickActionSectionSubtitle => '先把药品带进来，再逐步补齐提醒、安全和补药闭环。';
+
+  @override
+  String get medicineQuickActionCameraTitle => '拍照识别药品';
+
+  @override
+  String get medicineQuickActionCameraSubtitle => '识别包装、药盒与处方标签';
+
+  @override
+  String get medicineQuickActionBarcodeTitle => '扫描条形码';
+
+  @override
+  String get medicineQuickActionBarcodeSubtitle => '补齐规格、厂家与常见别名';
+
+  @override
+  String get medicineQuickActionSearchTitle => '手动搜索药品';
+
+  @override
+  String get medicineQuickActionSearchSubtitle => '按药名、成分或症状快速查找';
+
+  @override
+  String get medicineQuickActionPrescriptionTitle => '导入处方与包装';
+
+  @override
+  String get medicineQuickActionPrescriptionSubtitle => '后续可接 OCR 与复诊提醒';
+
+  @override
+  String get medicineSearchPanelTitle => '手动搜索';
+
+  @override
+  String get medicineSearchPanelSubtitle => '后续这里会接 Lucent 药品搜索、缓存旁路刷新和详情页入口。';
+
+  @override
+  String get medicineSearchInputPlaceholder => '搜索药名、成分、适应症或商品名';
+
+  @override
+  String get medicineSearchMockBadge => 'Mock';
+
+  @override
+  String get medicineSearchSuggestionBloodPressure => '降压药';
+
+  @override
+  String get medicineSearchSuggestionCold => '感冒药';
+
+  @override
+  String get medicineSearchSuggestionSupplement => '维生素 D';
+
+  @override
+  String get medicineSearchCalloutTitle => '准备接入的真实能力';
+
+  @override
+  String get medicineSearchCalloutBody =>
+      '药品搜索和详情未来会优先走缓存，必要时再通过请求头触发 fresh read，避免用户看到旧数据。';
+
+  @override
+  String get medicineTodayPlanTitle => '今日服用计划';
+
+  @override
+  String get medicineTodayPlanSubtitle => 'Mock 数据先把节奏、库存和风险位置站稳。';
+
+  @override
+  String get medicineTodayPlanInspectAction => '查看全部';
+
+  @override
+  String get medicineMockNameMetformin => '二甲双胍缓释片';
+
+  @override
+  String get medicineMockDoseMetformin => '0.5 g';
+
+  @override
+  String get medicineMockScheduleMorningEvening => '每日 2 次';
+
+  @override
+  String get medicineMockTime0800Taken => '08:00 已服用';
+
+  @override
+  String get medicineMockTime2000Pending => '20:00 待服用';
+
+  @override
+  String get medicineMockStock7Days => '剩余 7 天';
+
+  @override
+  String get medicineStatusStable => '稳定服用';
+
+  @override
+  String get medicineMockNameVitaminD => '维生素 D3';
+
+  @override
+  String get medicineMockDoseVitaminD => '1000 IU';
+
+  @override
+  String get medicineMockScheduleDailyOnce => '每日 1 次';
+
+  @override
+  String get medicineMockWithDinner => '建议随晚餐';
+
+  @override
+  String get medicineMockStock15Days => '剩余 15 天';
+
+  @override
+  String get medicineStatusNeedsCheckin => '今晚记得打卡';
+
+  @override
+  String get medicineMockNameSertraline => '舍曲林';
+
+  @override
+  String get medicineMockDoseSertraline => '50 mg';
+
+  @override
+  String get medicineMockTime2200Pending => '22:00 待服用';
+
+  @override
+  String get medicineMockStressRisk => '近期压力偏高，漏服风险上升';
+
+  @override
+  String get medicineMockStock3Days => '剩余 3 天';
+
+  @override
+  String get medicineStatusNeedRefillSoon => '需要尽快补药';
+
+  @override
+  String get medicineSafetyPanelTitle => '安全与补药';
+
+  @override
+  String get medicineSafetyPanelSubtitle => '高风险提醒、临期库存和依从性风险会集中在这里。';
+
+  @override
+  String get medicineAlertRefillTitle => '补充提醒';
+
+  @override
+  String get medicineAlertRefillBody => '维生素 D 低于 7 天，请及时补货。';
+
+  @override
+  String get medicineAlertRefillAction => '去补药';
+
+  @override
+  String get medicineAlertInteractionTitle => '相互作用提醒';
+
+  @override
+  String get medicineAlertInteractionBody => '阿司匹林与布洛芬可能增加出血风险。';
+
+  @override
+  String get medicineAlertInteractionAction => '查看详情';
+
+  @override
+  String get medicinePromiseTitle => 'Luminous 用药边界';
+
+  @override
+  String get medicinePromiseBody => '这个页面会主动帮你发现风险，但不会伪装成诊断结论。';
+
+  @override
+  String get medicinePromisePointBoundary => '所有结果都作为参考，不替代医生诊断或治疗决定。';
+
+  @override
+  String get medicinePromisePointPregnancy => '孕期、哺乳期、儿童和精神类药物会被更高优先级地警示。';
+
+  @override
+  String get medicinePromisePointPrivacy => '拍照、处方和高敏感药物信息会优先按最小暴露原则处理。';
 
   @override
   String get minePageDescription => '档案、目标、隐私与账号设置会在这里重建。';

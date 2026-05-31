@@ -4,6 +4,7 @@ import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/responsive_content_frame.dart';
+import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/core/widgets/placeholder_page.dart';
 import 'package:luminous/features/shell/presentation/shell_tab.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
@@ -16,7 +17,7 @@ class ShellPage extends ConsumerWidget {
   static const _pages = <Widget>[
     TodayPage(),
     PlaceholderPage(label: '记录'),
-    PlaceholderPage(label: '用药'),
+    MedicinePage(),
     PlaceholderPage(label: '我的'),
     PlaceholderPage(label: '更多'),
   ];

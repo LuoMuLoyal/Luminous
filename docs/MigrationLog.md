@@ -1,6 +1,6 @@
 # Luminous Migration Log
 
-Last updated: 2026-05-30
+Last updated: 2026-05-31
 
 Records changes after the full reset only. Pre-reset history: `MigrationLog_Archive_PreReset.md`.
 
@@ -13,6 +13,18 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Added `MockTodayRepository` and a Riverpod `todayDashboardProvider`; later API integration can replace the repository implementation without rewriting the page structure.
 - Split Today UI into dedicated widgets under `lib/features/today/presentation/widgets/` and replaced the old shell-card placeholder content.
 - Added zh/en localization strings for the full Today dashboard and a widget test covering the core Today sections.
+
+## 2026-05-31
+
+### Medicine Mock Workspace Foundation
+
+- Replaced the `medicine` tab placeholder with a mobile-first mock medication workspace that surfaces photo recognition, barcode scan, manual search, today's dosing plan, refill risk, interaction alerts, and a clear safety-boundary block.
+- Kept this step UI-first: no real Lucent medicine API calls yet, but the page structure now matches the intended medication intake and safety workflow.
+- Reworked the `medicine` feature into the repo's feature-first layering instead of keeping one oversized page file:
+  `domain/entities` for workspace models, `domain/repositories` for the repository contract, `data/repositories` for mock data, `presentation/providers` for Riverpod state, and `presentation/widgets` for the split UI surface.
+- Wired `ShellPage` to render the real `MedicinePage` instead of a placeholder tab label.
+- Added zh/en localization strings for the medicine workspace and a widget test covering the core mock sections.
+- Tightened the medicine UI toward the five-tab concept image: the hero now foregrounds only `today doses` and `on-time adherence`, click feedback now uses `core/feedback/AppToast`, extra nested boxes were reduced, and the page radius treatment was pushed larger to better match the current visual direction.
 
 ### Auth Contract Sync
 
@@ -68,6 +80,7 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 - Added `l10n.yaml`, zh/en ARB files, and generated localizations.
 - Moved app title, tabs, Today, placeholders, Login, Register, and AuthShell text to l10n.
+- Expanded l10n coverage to the medicine workspace mock UI.
 
 ### Network
 
@@ -114,6 +127,7 @@ flutter analyze
 flutter test
 flutter test test/app_theme_controller_test.dart test/widget_test.dart test/auth_widgets_test.dart
 flutter test test/today_page_test.dart
+flutter test test/medicine_page_test.dart
 
 cd ../Lucent
 pnpm build
@@ -124,6 +138,6 @@ pnpm test:e2e
 ## Next
 
 1. Replace Today mock repository data with Lucent-backed sources when the API contract is ready.
-2. Upgrade `record / medicine / mine / more` skeletons.
-3. Rebuild medicine / reminder flows.
+2. Upgrade `record / mine / more` skeletons.
+3. Replace medicine mock repository data with Lucent-backed search, detail, recognition, and reminder flows.
 4. Add theme selection UI under Mine/settings and later expand palette variants.

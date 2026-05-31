@@ -1,6 +1,6 @@
 # Luminous UI Plan
 
-Last updated: 2026-05-30
+Last updated: 2026-05-31
 
 Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADMAP.md`.
 
@@ -15,15 +15,16 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Persisted `system / light / dark` theme preference foundation
 - Mobile bottom nav + desktop rail
 - Today mobile-first mock dashboard UI with repository/provider boundary
+- Medicine mobile-first mock workspace UI with repository/provider boundary
 
-Not restored yet: medicine loop, reminders, scan/upload, settings, theme selection UI, real feature data.
+Not restored yet: real medicine loop, live reminders, real scan/upload, settings, theme selection UI, real feature data.
 
 ## UI Priority
 
 1. Connect Today mock data to API-ready datasource/repository implementations.
-2. Upgrade `record / medicine / mine / more` from placeholders to usable skeletons.
-3. Add a Mine/settings theme selector for `system / light / dark`.
-4. Rebuild medicine / reminder flows.
+2. Upgrade `record / mine / more` from placeholders to usable skeletons.
+3. Replace medicine mock data with Lucent-backed search, recognition, detail, and reminder flows.
+4. Add a Mine/settings theme selector for `system / light / dark`.
 5. Add palette variants after the fixed-token surfaces have been reduced.
 
 ## Rules
