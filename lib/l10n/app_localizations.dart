@@ -155,7 +155,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicinePageDescription.
   ///
   /// In zh, this message translates to:
-  /// **'今日用药计划、依从性、补药状态与安全提醒会在这一栏汇合。'**
+  /// **'拍照识别、条码扫描、手动搜索、服药计划和安全提醒先在这里合成一个可继续接后端的工作台。'**
   String get medicinePageDescription;
 
   /// No description provided for @medicineSectionTitle.
@@ -169,6 +169,408 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'这里会承接基于 Lucent 重建后的完整用药闭环。'**
   String get medicineSectionSubtitle;
+
+  /// No description provided for @medicineHeaderActionSearch.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索药品'**
+  String get medicineHeaderActionSearch;
+
+  /// No description provided for @medicineHeaderActionAdd.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加药品'**
+  String get medicineHeaderActionAdd;
+
+  /// No description provided for @medicineHeroEyebrow.
+  ///
+  /// In zh, this message translates to:
+  /// **'PERSONAL DRUGBOX'**
+  String get medicineHeroEyebrow;
+
+  /// No description provided for @medicineHeroTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'先把今天的药、风险和补药节奏看清。'**
+  String get medicineHeroTitle;
+
+  /// No description provided for @medicineHeroSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'这个 mock 页面先把拍照识别、条码扫描、手动搜索和用药安全工作台落下来，后续再替换成真实 Lucent 数据。'**
+  String get medicineHeroSubtitle;
+
+  /// No description provided for @medicineHeroMetricTodayCountValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'2'**
+  String get medicineHeroMetricTodayCountValue;
+
+  /// No description provided for @medicineHeroMetricTodayCountLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日需服用'**
+  String get medicineHeroMetricTodayCountLabel;
+
+  /// No description provided for @medicineHeroMetricAdherenceValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'100%'**
+  String get medicineHeroMetricAdherenceValue;
+
+  /// No description provided for @medicineHeroMetricAdherenceLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'按时服用率'**
+  String get medicineHeroMetricAdherenceLabel;
+
+  /// No description provided for @medicineHeroMetricNextDoseValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'20:00'**
+  String get medicineHeroMetricNextDoseValue;
+
+  /// No description provided for @medicineHeroMetricNextDoseLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'下一次提醒'**
+  String get medicineHeroMetricNextDoseLabel;
+
+  /// No description provided for @medicineHeroBannerTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'安全底线先行'**
+  String get medicineHeroBannerTitle;
+
+  /// No description provided for @medicineHeroBannerBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'识别结果、相互作用和特殊人群提醒都会明确标注“仅供参考”，避免把 AI 结果误当成诊断。'**
+  String get medicineHeroBannerBody;
+
+  /// No description provided for @medicineQuickActionSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'识别与录入'**
+  String get medicineQuickActionSectionTitle;
+
+  /// No description provided for @medicineQuickActionSectionSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'先把药品带进来，再逐步补齐提醒、安全和补药闭环。'**
+  String get medicineQuickActionSectionSubtitle;
+
+  /// No description provided for @medicineQuickActionCameraTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照识别药品'**
+  String get medicineQuickActionCameraTitle;
+
+  /// No description provided for @medicineQuickActionCameraSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'识别包装、药盒与处方标签'**
+  String get medicineQuickActionCameraSubtitle;
+
+  /// No description provided for @medicineQuickActionBarcodeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫描条形码'**
+  String get medicineQuickActionBarcodeTitle;
+
+  /// No description provided for @medicineQuickActionBarcodeSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'补齐规格、厂家与常见别名'**
+  String get medicineQuickActionBarcodeSubtitle;
+
+  /// No description provided for @medicineQuickActionSearchTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动搜索药品'**
+  String get medicineQuickActionSearchTitle;
+
+  /// No description provided for @medicineQuickActionSearchSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'按药名、成分或症状快速查找'**
+  String get medicineQuickActionSearchSubtitle;
+
+  /// No description provided for @medicineQuickActionPrescriptionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入处方与包装'**
+  String get medicineQuickActionPrescriptionTitle;
+
+  /// No description provided for @medicineQuickActionPrescriptionSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'后续可接 OCR 与复诊提醒'**
+  String get medicineQuickActionPrescriptionSubtitle;
+
+  /// No description provided for @medicineSearchPanelTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动搜索'**
+  String get medicineSearchPanelTitle;
+
+  /// No description provided for @medicineSearchPanelSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'后续这里会接 Lucent 药品搜索、缓存旁路刷新和详情页入口。'**
+  String get medicineSearchPanelSubtitle;
+
+  /// No description provided for @medicineSearchInputPlaceholder.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索药名、成分、适应症或商品名'**
+  String get medicineSearchInputPlaceholder;
+
+  /// No description provided for @medicineSearchMockBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'Mock'**
+  String get medicineSearchMockBadge;
+
+  /// No description provided for @medicineSearchSuggestionBloodPressure.
+  ///
+  /// In zh, this message translates to:
+  /// **'降压药'**
+  String get medicineSearchSuggestionBloodPressure;
+
+  /// No description provided for @medicineSearchSuggestionCold.
+  ///
+  /// In zh, this message translates to:
+  /// **'感冒药'**
+  String get medicineSearchSuggestionCold;
+
+  /// No description provided for @medicineSearchSuggestionSupplement.
+  ///
+  /// In zh, this message translates to:
+  /// **'维生素 D'**
+  String get medicineSearchSuggestionSupplement;
+
+  /// No description provided for @medicineSearchCalloutTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'准备接入的真实能力'**
+  String get medicineSearchCalloutTitle;
+
+  /// No description provided for @medicineSearchCalloutBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'药品搜索和详情未来会优先走缓存，必要时再通过请求头触发 fresh read，避免用户看到旧数据。'**
+  String get medicineSearchCalloutBody;
+
+  /// No description provided for @medicineTodayPlanTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日服用计划'**
+  String get medicineTodayPlanTitle;
+
+  /// No description provided for @medicineTodayPlanSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'Mock 数据先把节奏、库存和风险位置站稳。'**
+  String get medicineTodayPlanSubtitle;
+
+  /// No description provided for @medicineTodayPlanInspectAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看全部'**
+  String get medicineTodayPlanInspectAction;
+
+  /// No description provided for @medicineMockNameMetformin.
+  ///
+  /// In zh, this message translates to:
+  /// **'二甲双胍缓释片'**
+  String get medicineMockNameMetformin;
+
+  /// No description provided for @medicineMockDoseMetformin.
+  ///
+  /// In zh, this message translates to:
+  /// **'0.5 g'**
+  String get medicineMockDoseMetformin;
+
+  /// No description provided for @medicineMockScheduleMorningEvening.
+  ///
+  /// In zh, this message translates to:
+  /// **'每日 2 次'**
+  String get medicineMockScheduleMorningEvening;
+
+  /// No description provided for @medicineMockTime0800Taken.
+  ///
+  /// In zh, this message translates to:
+  /// **'08:00 已服用'**
+  String get medicineMockTime0800Taken;
+
+  /// No description provided for @medicineMockTime2000Pending.
+  ///
+  /// In zh, this message translates to:
+  /// **'20:00 待服用'**
+  String get medicineMockTime2000Pending;
+
+  /// No description provided for @medicineMockStock7Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'剩余 7 天'**
+  String get medicineMockStock7Days;
+
+  /// No description provided for @medicineStatusStable.
+  ///
+  /// In zh, this message translates to:
+  /// **'稳定服用'**
+  String get medicineStatusStable;
+
+  /// No description provided for @medicineMockNameVitaminD.
+  ///
+  /// In zh, this message translates to:
+  /// **'维生素 D3'**
+  String get medicineMockNameVitaminD;
+
+  /// No description provided for @medicineMockDoseVitaminD.
+  ///
+  /// In zh, this message translates to:
+  /// **'1000 IU'**
+  String get medicineMockDoseVitaminD;
+
+  /// No description provided for @medicineMockScheduleDailyOnce.
+  ///
+  /// In zh, this message translates to:
+  /// **'每日 1 次'**
+  String get medicineMockScheduleDailyOnce;
+
+  /// No description provided for @medicineMockWithDinner.
+  ///
+  /// In zh, this message translates to:
+  /// **'建议随晚餐'**
+  String get medicineMockWithDinner;
+
+  /// No description provided for @medicineMockStock15Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'剩余 15 天'**
+  String get medicineMockStock15Days;
+
+  /// No description provided for @medicineStatusNeedsCheckin.
+  ///
+  /// In zh, this message translates to:
+  /// **'今晚记得打卡'**
+  String get medicineStatusNeedsCheckin;
+
+  /// No description provided for @medicineMockNameSertraline.
+  ///
+  /// In zh, this message translates to:
+  /// **'舍曲林'**
+  String get medicineMockNameSertraline;
+
+  /// No description provided for @medicineMockDoseSertraline.
+  ///
+  /// In zh, this message translates to:
+  /// **'50 mg'**
+  String get medicineMockDoseSertraline;
+
+  /// No description provided for @medicineMockTime2200Pending.
+  ///
+  /// In zh, this message translates to:
+  /// **'22:00 待服用'**
+  String get medicineMockTime2200Pending;
+
+  /// No description provided for @medicineMockStressRisk.
+  ///
+  /// In zh, this message translates to:
+  /// **'近期压力偏高，漏服风险上升'**
+  String get medicineMockStressRisk;
+
+  /// No description provided for @medicineMockStock3Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'剩余 3 天'**
+  String get medicineMockStock3Days;
+
+  /// No description provided for @medicineStatusNeedRefillSoon.
+  ///
+  /// In zh, this message translates to:
+  /// **'需要尽快补药'**
+  String get medicineStatusNeedRefillSoon;
+
+  /// No description provided for @medicineSafetyPanelTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'安全与补药'**
+  String get medicineSafetyPanelTitle;
+
+  /// No description provided for @medicineSafetyPanelSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'高风险提醒、临期库存和依从性风险会集中在这里。'**
+  String get medicineSafetyPanelSubtitle;
+
+  /// No description provided for @medicineAlertRefillTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'补充提醒'**
+  String get medicineAlertRefillTitle;
+
+  /// No description provided for @medicineAlertRefillBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'维生素 D 低于 7 天，请及时补货。'**
+  String get medicineAlertRefillBody;
+
+  /// No description provided for @medicineAlertRefillAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去补药'**
+  String get medicineAlertRefillAction;
+
+  /// No description provided for @medicineAlertInteractionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'相互作用提醒'**
+  String get medicineAlertInteractionTitle;
+
+  /// No description provided for @medicineAlertInteractionBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'阿司匹林与布洛芬可能增加出血风险。'**
+  String get medicineAlertInteractionBody;
+
+  /// No description provided for @medicineAlertInteractionAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看详情'**
+  String get medicineAlertInteractionAction;
+
+  /// No description provided for @medicinePromiseTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'Luminous 用药边界'**
+  String get medicinePromiseTitle;
+
+  /// No description provided for @medicinePromiseBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'这个页面会主动帮你发现风险，但不会伪装成诊断结论。'**
+  String get medicinePromiseBody;
+
+  /// No description provided for @medicinePromisePointBoundary.
+  ///
+  /// In zh, this message translates to:
+  /// **'所有结果都作为参考，不替代医生诊断或治疗决定。'**
+  String get medicinePromisePointBoundary;
+
+  /// No description provided for @medicinePromisePointPregnancy.
+  ///
+  /// In zh, this message translates to:
+  /// **'孕期、哺乳期、儿童和精神类药物会被更高优先级地警示。'**
+  String get medicinePromisePointPregnancy;
+
+  /// No description provided for @medicinePromisePointPrivacy.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照、处方和高敏感药物信息会优先按最小暴露原则处理。'**
+  String get medicinePromisePointPrivacy;
 
   /// No description provided for @minePageDescription.
   ///

@@ -39,7 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicinePageDescription =>
-      'Today plans, adherence, refill status, and safety will anchor this tab.';
+      'Photo recognition, barcode scan, manual search, dosing plans, and safety signals come together here as an API-ready medication workspace.';
 
   @override
   String get medicineSectionTitle => 'Medication workspace';
@@ -47,6 +47,227 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get medicineSectionSubtitle =>
       'This section will host the rebuilt medication flow on top of Lucent.';
+
+  @override
+  String get medicineHeaderActionSearch => 'Search medicine';
+
+  @override
+  String get medicineHeaderActionAdd => 'Add medicine';
+
+  @override
+  String get medicineHeroEyebrow => 'PERSONAL DRUGBOX';
+
+  @override
+  String get medicineHeroTitle =>
+      'See today\'s medicines, risks, and refill rhythm clearly first.';
+
+  @override
+  String get medicineHeroSubtitle =>
+      'This mock page lands photo recognition, barcode scan, manual search, and a medication safety workspace first, then later swaps in real Lucent data.';
+
+  @override
+  String get medicineHeroMetricTodayCountValue => '2';
+
+  @override
+  String get medicineHeroMetricTodayCountLabel => 'Doses today';
+
+  @override
+  String get medicineHeroMetricAdherenceValue => '100%';
+
+  @override
+  String get medicineHeroMetricAdherenceLabel => 'On-time adherence';
+
+  @override
+  String get medicineHeroMetricNextDoseValue => '20:00';
+
+  @override
+  String get medicineHeroMetricNextDoseLabel => 'Next reminder';
+
+  @override
+  String get medicineHeroBannerTitle => 'Safety boundary first';
+
+  @override
+  String get medicineHeroBannerBody =>
+      'Recognition results, interactions, and special-population alerts stay clearly marked as reference-only so AI output is not mistaken for diagnosis.';
+
+  @override
+  String get medicineQuickActionSectionTitle => 'Recognition and intake';
+
+  @override
+  String get medicineQuickActionSectionSubtitle =>
+      'Bring medicines in first, then layer reminders, safety checks, and refill workflows on top.';
+
+  @override
+  String get medicineQuickActionCameraTitle => 'Recognize by camera';
+
+  @override
+  String get medicineQuickActionCameraSubtitle =>
+      'Read packaging, boxes, and prescription labels';
+
+  @override
+  String get medicineQuickActionBarcodeTitle => 'Scan barcode';
+
+  @override
+  String get medicineQuickActionBarcodeSubtitle =>
+      'Fill dosage form, manufacturer, and common aliases';
+
+  @override
+  String get medicineQuickActionSearchTitle => 'Search manually';
+
+  @override
+  String get medicineQuickActionSearchSubtitle =>
+      'Find medicines by name, ingredient, or symptom';
+
+  @override
+  String get medicineQuickActionPrescriptionTitle => 'Import prescription';
+
+  @override
+  String get medicineQuickActionPrescriptionSubtitle =>
+      'OCR and follow-up reminders can attach later';
+
+  @override
+  String get medicineSearchPanelTitle => 'Manual search';
+
+  @override
+  String get medicineSearchPanelSubtitle =>
+      'This area will later connect Lucent medicine search, cache-bypass refresh, and detail entry points.';
+
+  @override
+  String get medicineSearchInputPlaceholder =>
+      'Search medicine name, ingredient, indication, or brand';
+
+  @override
+  String get medicineSearchMockBadge => 'Mock';
+
+  @override
+  String get medicineSearchSuggestionBloodPressure => 'Blood pressure medicine';
+
+  @override
+  String get medicineSearchSuggestionCold => 'Cold medicine';
+
+  @override
+  String get medicineSearchSuggestionSupplement => 'Vitamin D';
+
+  @override
+  String get medicineSearchCalloutTitle => 'Real capability planned next';
+
+  @override
+  String get medicineSearchCalloutBody =>
+      'Medicine search and detail should prefer cached reads first, then use a header-triggered fresh read only when needed so users are not shown stale data.';
+
+  @override
+  String get medicineTodayPlanTitle => 'Today\'s dosing plan';
+
+  @override
+  String get medicineTodayPlanSubtitle =>
+      'Mock data is enough to lock the rhythm, stock position, and risk placement first.';
+
+  @override
+  String get medicineTodayPlanInspectAction => 'View all';
+
+  @override
+  String get medicineMockNameMetformin => 'Metformin XR';
+
+  @override
+  String get medicineMockDoseMetformin => '0.5 g';
+
+  @override
+  String get medicineMockScheduleMorningEvening => 'Twice daily';
+
+  @override
+  String get medicineMockTime0800Taken => '08:00 taken';
+
+  @override
+  String get medicineMockTime2000Pending => '20:00 pending';
+
+  @override
+  String get medicineMockStock7Days => '7 days left';
+
+  @override
+  String get medicineStatusStable => 'Stable routine';
+
+  @override
+  String get medicineMockNameVitaminD => 'Vitamin D3';
+
+  @override
+  String get medicineMockDoseVitaminD => '1000 IU';
+
+  @override
+  String get medicineMockScheduleDailyOnce => 'Once daily';
+
+  @override
+  String get medicineMockWithDinner => 'Take with dinner';
+
+  @override
+  String get medicineMockStock15Days => '15 days left';
+
+  @override
+  String get medicineStatusNeedsCheckin => 'Check in tonight';
+
+  @override
+  String get medicineMockNameSertraline => 'Sertraline';
+
+  @override
+  String get medicineMockDoseSertraline => '50 mg';
+
+  @override
+  String get medicineMockTime2200Pending => '22:00 pending';
+
+  @override
+  String get medicineMockStressRisk =>
+      'Recent stress is raising missed-dose risk';
+
+  @override
+  String get medicineMockStock3Days => '3 days left';
+
+  @override
+  String get medicineStatusNeedRefillSoon => 'Refill soon';
+
+  @override
+  String get medicineSafetyPanelTitle => 'Safety and refill';
+
+  @override
+  String get medicineSafetyPanelSubtitle =>
+      'High-risk alerts, near-empty stock, and adherence risk collect here.';
+
+  @override
+  String get medicineAlertRefillTitle => 'Refill reminder';
+
+  @override
+  String get medicineAlertRefillBody =>
+      'Vitamin D is under a 7-day supply. Refill soon.';
+
+  @override
+  String get medicineAlertRefillAction => 'Refill now';
+
+  @override
+  String get medicineAlertInteractionTitle => 'Interaction warning';
+
+  @override
+  String get medicineAlertInteractionBody =>
+      'Aspirin with ibuprofen may increase bleeding risk.';
+
+  @override
+  String get medicineAlertInteractionAction => 'Review details';
+
+  @override
+  String get medicinePromiseTitle => 'Luminous medication boundary';
+
+  @override
+  String get medicinePromiseBody =>
+      'This page should help surface risk early without pretending to be a diagnosis.';
+
+  @override
+  String get medicinePromisePointBoundary =>
+      'All results are reference-only and do not replace a clinician\'s diagnosis or treatment decision.';
+
+  @override
+  String get medicinePromisePointPregnancy =>
+      'Pregnancy, lactation, pediatric, and psychiatric medicines should be warned at higher priority.';
+
+  @override
+  String get medicinePromisePointPrivacy =>
+      'Photos, prescriptions, and high-sensitivity medicine data should follow a minimum-exposure handling model first.';
 
   @override
   String get minePageDescription =>
