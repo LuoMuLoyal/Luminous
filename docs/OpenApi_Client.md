@@ -17,6 +17,7 @@ Last updated: 2026-05-30
 - Authorization is injected when an access token exists; generated `secure` metadata is not trusted because the current generator emits empty lists
 - `401002` triggers refresh and retry
 - Dio errors are unwrapped through `LucentErrorMapper`
+- Medicines API is now generated into `packages/lucent_openapi`; call sites should use `LucentDioClient.medicinesHeaders(bypassCache: true)` when a one-off medicines refresh must bypass Lucent read cache.
 - `ChangeEmailDto` follows Lucent contract: `newEmail` + `code`
 - `RegisterDto` follows Lucent contract: `email` + `password` + register-scene `code`; successful registration returns a verified email.
 

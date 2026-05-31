@@ -7,6 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'logout_dto.g.dart';
 
+
 @JsonSerializable(
   checked: true,
   createToJson: true,
@@ -15,22 +16,35 @@ part 'logout_dto.g.dart';
 )
 class LogoutDto {
   /// Returns a new [LogoutDto] instance.
-  LogoutDto({required this.refreshToken});
+  LogoutDto({
 
-  /// 刷新令牌
-  @JsonKey(name: r'refreshToken', required: true, includeIfNull: false)
+    required  this.refreshToken,
+  });
+
+      /// 刷新令牌
+  @JsonKey(
+    
+    name: r'refreshToken',
+    required: true,
+    includeIfNull: false,
+  )
+
+
   final String refreshToken;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is LogoutDto && other.refreshToken == refreshToken;
 
-  @override
-  int get hashCode => refreshToken.hashCode;
 
-  factory LogoutDto.fromJson(Map<String, dynamic> json) =>
-      _$LogoutDtoFromJson(json);
+
+
+    @override
+    bool operator ==(Object other) => identical(this, other) || other is LogoutDto &&
+      other.refreshToken == refreshToken;
+
+    @override
+    int get hashCode =>
+        refreshToken.hashCode;
+
+  factory LogoutDto.fromJson(Map<String, dynamic> json) => _$LogoutDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$LogoutDtoToJson(this);
 
@@ -38,4 +52,6 @@ class LogoutDto {
   String toString() {
     return toJson().toString();
   }
+
 }
+
