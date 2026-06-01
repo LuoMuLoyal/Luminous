@@ -24,6 +24,7 @@ class MedicinesApi {
   /// Parameters:
   /// * [id] - Medicine id in the selected source
   /// * [source_] - Knowledge source selector.
+  /// * [xBypassCache] - Set to true/1/no-cache to bypass medicines read cache for this request only.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -36,6 +37,7 @@ class MedicinesApi {
   Future<Response<MedicineDetailResponseDto>> medicinesControllerGetDetailV1({ 
     required String id,
     String? source_ = 'drugbank',
+    String? xBypassCache,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -47,6 +49,7 @@ class MedicinesApi {
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
+        if (xBypassCache != null) r'x-bypass-cache': xBypassCache,
         ...?headers,
       },
       extra: <String, dynamic>{
@@ -105,6 +108,7 @@ _responseData = rawData == null ? null : deserialize<MedicineDetailResponseDto, 
   /// * [q] - Search keyword.
   /// * [page] - Page number, 1-based.
   /// * [pageSize] - Page size.
+  /// * [xBypassCache] - Set to true/1/no-cache to bypass medicines read cache for this request only.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -119,6 +123,7 @@ _responseData = rawData == null ? null : deserialize<MedicineDetailResponseDto, 
     String? q,
     Object? page = 1,
     Object? pageSize = 20,
+    String? xBypassCache,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -130,6 +135,7 @@ _responseData = rawData == null ? null : deserialize<MedicineDetailResponseDto, 
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
+        if (xBypassCache != null) r'x-bypass-cache': xBypassCache,
         ...?headers,
       },
       extra: <String, dynamic>{
