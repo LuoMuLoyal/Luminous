@@ -170,3 +170,46 @@ class _SkeletonBlock extends StatelessWidget {
     );
   }
 }
+
+/// Full-page error view that wraps [AppStateMessageView] with centered layout.
+/// Use this for page-level error states (skeleton timeout, network failure).
+class AppStateErrorView extends StatelessWidget {
+  const AppStateErrorView({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.icon,
+    this.actionLabel,
+    this.onAction,
+    this.tone = AppStateTone.neutral,
+  });
+
+  final String title;
+  final String description;
+  final IconData icon;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+  final AppStateTone tone;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: AppStateMessageView(
+              title: title,
+              description: description,
+              icon: icon,
+              actionLabel: actionLabel,
+              onAction: onAction,
+              tone: tone,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

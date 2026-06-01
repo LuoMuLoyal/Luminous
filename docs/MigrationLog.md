@@ -16,6 +16,21 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-01
 
+### 增加 5 秒请求超时
+
+- Today、Mine、More、Record、Search 五个页面的 dashboard provider 添加 .timeout(Duration(seconds: 5))，超时后触发 error 显示 AppStateErrorView。
+
+## 2026-06-01
+
+### 统一页面错误视图 + 修复居中
+
+- 创建 AppStateErrorView 封装组件（SizedBox.expand + Center + SingleChildScrollView + AppStateMessageView），替代各页面手写的 ErrorView。
+- Today、Record、Mine、More、Search 五个页面的 ErrorView 全部替换为 AppStateErrorView，错误卡片居中展示。
+- 修复 Mine 页面错误视图不居中的问题。
+- 添加 Search 缺失的 ARB key medicineSearchErrorDescription。
+
+## 2026-06-01
+
 ### 统一页面骨架屏
 
 - Record: _RecordLoadingView 从纯色块改为 Shimmer 骨架屏，与 mine/more/medicine 保持一致。

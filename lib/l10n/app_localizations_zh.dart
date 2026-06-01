@@ -658,6 +658,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineSearchErrorTitle => '搜索页暂时没有加载出来';
 
   @override
+  String get medicineSearchErrorDescription => '请检查网络连接后重试。';
+
+  @override
   String get minePageDescription => '档案、目标、隐私与账号设置会在这里重建。';
 
   @override

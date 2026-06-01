@@ -170,10 +170,10 @@ class MoreErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return AppStateMessageView(
+    return AppStateErrorView(
       title: l10n.moreErrorTitle,
       description: l10n.moreErrorDescription,
-      icon: Icons.widgets_outlined,
+      icon: Icons.more_horiz_rounded,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: AppStateTone.warning,

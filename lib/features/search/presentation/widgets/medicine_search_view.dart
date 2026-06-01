@@ -6,6 +6,7 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/responsive_content_frame.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/search/domain/entities/medicine_search.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -98,34 +99,14 @@ class MedicineSearchErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
-      child: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l10n.medicineSearchErrorTitle,
-                  style: typography.displaySm,
-                ),
-                const SizedBox(height: AppSpacingTokens.md),
-                OutlinedButton(
-                  onPressed: onRetry,
-                  child: Text(l10n.todayRetryAction),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return AppStateErrorView(
+      title: l10n.medicineSearchErrorTitle,
+      description: l10n.medicineSearchErrorDescription,
+      icon: Icons.search_off_rounded,
+      actionLabel: l10n.todayRetryAction,
+      onAction: onRetry,
+      tone: AppStateTone.warning,
     );
   }
 }

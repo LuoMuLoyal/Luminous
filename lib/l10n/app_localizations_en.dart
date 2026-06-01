@@ -702,6 +702,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineSearchErrorTitle => 'Search did not load this time';
 
   @override
+  String get medicineSearchErrorDescription =>
+      'Please check your network and try again.';
+
+  @override
   String get minePageDescription =>
       'Profile, goals, privacy, and account settings will be rebuilt here.';
 

@@ -1382,6 +1382,12 @@ abstract class AppLocalizations {
   /// **'搜索页暂时没有加载出来'**
   String get medicineSearchErrorTitle;
 
+  /// No description provided for @medicineSearchErrorDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'请检查网络连接后重试。'**
+  String get medicineSearchErrorDescription;
+
   /// No description provided for @minePageDescription.
   ///
   /// In zh, this message translates to:
