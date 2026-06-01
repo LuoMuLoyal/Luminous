@@ -1553,4 +1553,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get placeholderDescription => '这一栏的结构已经预留完成，下一步会按新的多端设计系统重建。';
+
+  @override
+  String get mineThemeModeSystem => '跟随系统';
+
+  @override
+  String get mineThemeModeLight => '浅色';
+
+  @override
+  String get mineThemeModeDark => '深色';
 }

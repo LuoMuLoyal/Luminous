@@ -1646,4 +1646,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get placeholderDescription =>
       'This area is reserved structurally and will be rebuilt with the new multi-platform design system.';
+
+  @override
+  String get mineThemeModeSystem => 'System';
+
+  @override
+  String get mineThemeModeLight => 'Light';
+
+  @override
+  String get mineThemeModeDark => 'Dark';
 }

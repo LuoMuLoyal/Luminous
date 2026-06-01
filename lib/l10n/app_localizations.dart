@@ -3121,6 +3121,24 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'这一栏的结构已经预留完成，下一步会按新的多端设计系统重建。'**
   String get placeholderDescription;
+
+  /// No description provided for @mineThemeModeSystem.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随系统'**
+  String get mineThemeModeSystem;
+
+  /// No description provided for @mineThemeModeLight.
+  ///
+  /// In zh, this message translates to:
+  /// **'浅色'**
+  String get mineThemeModeLight;
+
+  /// No description provided for @mineThemeModeDark.
+  ///
+  /// In zh, this message translates to:
+  /// **'深色'**
+  String get mineThemeModeDark;
 }
 
 class _AppLocalizationsDelegate

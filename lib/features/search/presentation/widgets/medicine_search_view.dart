@@ -5,6 +5,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/responsive_content_frame.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:luminous/features/search/domain/entities/medicine_search.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -61,10 +62,30 @@ class MedicineSearchLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
-      child: const SafeArea(child: Center(child: CircularProgressIndicator())),
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+
+    return Shimmer.fromColors(
+      baseColor: surface.canvas.withValues(
+        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
+      ),
+      highlightColor: surface.canvasSoft2,
+      child: const Padding(
+        padding: EdgeInsets.all(AppSpacingTokens.md),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _SkeletonBlock(height: 48),
+              SizedBox(height: AppSpacingTokens.md),
+              _SkeletonBlock(height: 160),
+              SizedBox(height: AppSpacingTokens.md),
+              _SkeletonBlock(height: 160),
+              SizedBox(height: AppSpacingTokens.md),
+              _SkeletonBlock(height: 160),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -310,6 +331,25 @@ class _DesktopSearchPanel extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SkeletonBlock extends StatelessWidget {
+  const _SkeletonBlock({required this.height});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvas,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+      ),
+      child: SizedBox(height: height, width: double.infinity),
     );
   }
 }

@@ -16,6 +16,22 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-01
 
+### 统一页面骨架屏
+
+- Record: _RecordLoadingView 从纯色块改为 Shimmer 骨架屏，与 mine/more/medicine 保持一致。
+- Search: MedicineSearchLoadingView 从 CircularProgressIndicator 改为 Shimmer 骨架屏。
+- 新页面 loading 时统一使用 Shimmer.fromColors + _SkeletonBlock 模式，优先复用 AppStateSkeletonView（非嵌套滚动场景）或直接 Column + SizedBox 块（嵌套滚动场景）。
+
+## 2026-06-01
+
+### 主题模式选择 UI
+
+- 创建 ThemeModeSheet 底部弹窗，system/light/dark 三个选项。
+- 将 Mine 设置中的主题行从 toast 改为弹出 sheet，写入 appThemeControllerProvider。
+- 在 ARB 中添加 mineThemeModeSystem/Light/Dark 三个文案。
+
+## 2026-06-01
+
 ### 网络层暴露 UserHealthContextApi
 
 ### 构建 health-context 共享数据层

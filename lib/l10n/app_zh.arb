@@ -610,5 +610,8 @@
       }
     }
   },
-  "placeholderDescription": "这一栏的结构已经预留完成，下一步会按新的多端设计系统重建。"
+  "placeholderDescription": "这一栏的结构已经预留完成，下一步会按新的多端设计系统重建。",
+  "mineThemeModeSystem": "跟随系统",
+  "mineThemeModeLight": "浅色",
+  "mineThemeModeDark": "深色"
 }
