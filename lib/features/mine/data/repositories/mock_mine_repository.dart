@@ -7,15 +7,34 @@ import 'package:luminous/features/mine/domain/repositories/mine_repository.dart'
 class MockMineRepository implements MineRepository {
   const MockMineRepository();
 
+  static MineDashboard get signedOutDashboard {
+    return _buildDashboard(
+      const MineAccount(
+        isAuthenticated: false,
+        displayNameKey: MineCopyKey.accountGuestDisplayName,
+        email: '',
+        statusKey: MineCopyKey.accountSignedOut,
+        metaKey: MineCopyKey.accountSignedOutMeta,
+      ),
+    );
+  }
+
   @override
   Future<MineDashboard> fetchDashboard() async {
-    return const MineDashboard(
-      account: MineAccount(
+    return _buildDashboard(
+      const MineAccount(
+        isAuthenticated: true,
         displayNameKey: MineCopyKey.accountDisplayName,
         email: 'lumi@example.com',
         statusKey: MineCopyKey.accountSignedIn,
         metaKey: MineCopyKey.accountMeta,
       ),
+    );
+  }
+
+  static MineDashboard _buildDashboard(MineAccount account) {
+    return MineDashboard(
+      account: account,
       completion: MineCompletion(
         progress: 0.72,
         percentLabel: '72%',

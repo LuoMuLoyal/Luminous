@@ -4,8 +4,13 @@ import 'package:luminous/l10n/app_localizations.dart';
 String mineCopy(AppLocalizations l10n, MineCopyKey key) {
   return switch (key) {
     MineCopyKey.accountDisplayName => l10n.mineAccountDisplayName,
+    MineCopyKey.accountGuestDisplayName => l10n.mineAccountGuestDisplayName,
     MineCopyKey.accountSignedIn => l10n.mineAccountSignedIn,
+    MineCopyKey.accountSignedOut => l10n.mineAccountSignedOut,
     MineCopyKey.accountMeta => l10n.mineAccountMeta,
+    MineCopyKey.accountSignedOutMeta => l10n.mineAccountSignedOutMeta,
+    MineCopyKey.signedOutNoticeTitle => l10n.mineSignedOutNoticeTitle,
+    MineCopyKey.signedOutNoticeDescription => l10n.mineSignedOutNoticeDescription,
     MineCopyKey.completionTitle => l10n.mineCompletionTitle,
     MineCopyKey.completionSubtitle => l10n.mineCompletionSubtitle,
     MineCopyKey.summaryUpdatedAt => l10n.mineSummaryUpdatedAt,
