@@ -69,18 +69,13 @@ class TodayErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 520),
-        child: AppStateMessageView(
-          title: l10n.todayErrorTitle,
-          description: l10n.todayErrorDescription,
-          icon: Icons.question_mark_rounded,
-          actionLabel: l10n.todayRetryAction,
-          onAction: onRetry,
-          tone: AppStateTone.danger,
-        ),
-      ),
+    return AppStateErrorView(
+      title: l10n.todayErrorTitle,
+      description: l10n.todayErrorDescription,
+      icon: Icons.question_mark_rounded,
+      actionLabel: l10n.todayRetryAction,
+      onAction: onRetry,
+      tone: AppStateTone.danger,
     );
   }
 }

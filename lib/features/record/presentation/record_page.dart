@@ -74,7 +74,7 @@ class RecordPage extends ConsumerWidget {
         dashboardAsync.when(
           data: (dashboard) => RecordDashboardView(dashboard: dashboard),
           loading: () => const _RecordLoadingView(),
-          error: (_, __) => AppStateMessageView(
+          error: (_, __) => AppStateErrorView(
             title: l10n.recordErrorTitle,
             description: l10n.recordErrorDescription,
             icon: Icons.edit_calendar_outlined,

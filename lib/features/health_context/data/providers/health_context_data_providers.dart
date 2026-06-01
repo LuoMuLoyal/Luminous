@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:async';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/features/health_context/data/datasources/health_context_remote_data_source.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context_mapper.dart';
@@ -25,6 +26,6 @@ final healthContextRepositoryProvider = Provider<HealthContextRepository>((ref) 
 final healthContextSnapshotProvider = FutureProvider<HealthContextSnapshot>(
   (ref) {
     final repository = ref.watch(healthContextRepositoryProvider);
-    return repository.fetchHealthContext();
+    return repository.fetchHealthContext().timeout(const Duration(seconds: 5), onTimeout: () => throw TimeoutException("请求超时，请检查网络后重试。"));
   },
 );

@@ -228,6 +228,7 @@
   "medicineSearchNoResultSwitch": "Switch source",
   "medicineSearchNoResultScan": "Photo or scan",
   "medicineSearchErrorTitle": "Search did not load this time",
+  "medicineSearchErrorDescription": "Please check your network and try again.",
   "minePageDescription": "Profile, goals, privacy, and account settings will be rebuilt here.",
   "mineSectionTitle": "Personal workspace",
   "mineSectionSubtitle": "Identity, goals, and privacy controls will share one calm surface here.",

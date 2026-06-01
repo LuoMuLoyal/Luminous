@@ -182,7 +182,7 @@ class MineErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return AppStateMessageView(
+    return AppStateErrorView(
       title: l10n.mineErrorTitle,
       description: l10n.mineErrorDescription,
       icon: Icons.person_search_outlined,
@@ -192,7 +192,6 @@ class MineErrorView extends StatelessWidget {
     );
   }
 }
-
 class _AccountHeaderSection extends StatelessWidget {
   const _AccountHeaderSection({
     super.key,
