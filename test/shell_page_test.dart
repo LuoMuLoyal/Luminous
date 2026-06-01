@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -10,6 +12,33 @@ void main() {
   testWidgets('Shell page uses five desktop tabs plus settings/help actions', (
     tester,
   ) async {
+    final mockSnapshot = HealthContextSnapshot(
+      summary: const HealthSummary(
+        age: 27,
+        onboardingCompleted: true,
+        activeAllergyCount: 2,
+        conditionCount: 1,
+        currentMedicineCount: 3,
+        missingCoreProfileFields: [],
+      ),
+      profile: const HealthProfile(
+        birthDate: null,
+        sexAtBirth: null,
+        heightCm: null,
+        pregnancyState: null,
+        lactationState: null,
+        bloodType: null,
+        locale: null,
+        timezone: null,
+        unitSystem: null,
+        onboardingCompletedAt: null,
+        extras: {},
+      ),
+      allergies: const [],
+      conditions: const [],
+      currentMedicines: const [],
+    );
+
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(1440, 1000);
     addTearDown(() {
@@ -19,6 +48,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          healthContextSnapshotProvider
+              .overrideWith((ref) => Future.value(mockSnapshot)),
+        ],
         child: MaterialApp(
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
@@ -50,11 +83,11 @@ void main() {
     await tester.tap(find.text('我的').first);
     await tester.pumpAndSettle();
     expect(find.text('我的'), findsAtLeastNWidgets(2));
-    expect(find.text('我的 · 即将上线'), findsOneWidget);
+    expect(find.text('Lumi 用户'), findsOneWidget);
 
     await tester.tap(find.text('更多').first);
     await tester.pumpAndSettle();
     expect(find.text('更多'), findsAtLeastNWidgets(2));
-    expect(find.text('更多 · 即将上线'), findsOneWidget);
+    expect(find.text('SOS 紧急求助'), findsOneWidget);
   });
 }

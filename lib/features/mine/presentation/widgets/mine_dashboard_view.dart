@@ -458,7 +458,7 @@ class _HealthSummarySection extends StatelessWidget {
                     crossAxisCount: 4,
                     crossAxisSpacing: AppSpacingTokens.sm,
                     mainAxisSpacing: AppSpacingTokens.sm,
-                    childAspectRatio: 1.45,
+                    childAspectRatio: 1.15,
                   ),
             itemBuilder: (context, index) {
               final metric = metrics[index];
@@ -743,7 +743,7 @@ class _PlanCenterSection extends StatelessWidget {
                 crossAxisCount: 5,
                 crossAxisSpacing: AppSpacingTokens.sm,
                 mainAxisSpacing: AppSpacingTokens.sm,
-                childAspectRatio: 1.05,
+                childAspectRatio: 0.65,
               ),
               itemBuilder: (context, index) {
                 final entry = entries[index];
