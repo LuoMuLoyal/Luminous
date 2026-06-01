@@ -23,6 +23,19 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Added `UserHealthContextApi` getter to `LucentDioClient`.
 - Added `lucentUserHealthContextApiProvider` to `lucent_network_providers.dart`.
 
+### Build health-context data layer
+
+- Created `health_context` feature: domain entities (snapshot, summary, profile, allergies, conditions, current medicines), repository interface, remote datasource, DTO-to-entity mapper, Lucent repository implementation, and Riverpod providers.
+
+## 2026-06-01
+
+### Expose UserHealthContextApi in network layer
+
+- Regenerated Lucent OpenAPI client from updated `openapi.json`.
+- Fixed `packages/lucent_openapi/pubspec.yaml` SDK constraint reset by the generator (sdk `>=3.12.0`, `json_annotation ^4.12.0`).
+- Added `UserHealthContextApi` getter to `LucentDioClient`.
+- Added `lucentUserHealthContextApiProvider` to `lucent_network_providers.dart`.
+
 ## 2026-05-31
 
 ### Record Mock Dashboard Foundation
