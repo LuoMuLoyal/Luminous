@@ -1424,17 +1424,47 @@ abstract class AppLocalizations {
   /// **'Lumi 用户'**
   String get mineAccountDisplayName;
 
+  /// No description provided for @mineAccountGuestDisplayName.
+  ///
+  /// In zh, this message translates to:
+  /// **'访客'**
+  String get mineAccountGuestDisplayName;
+
   /// No description provided for @mineAccountSignedIn.
   ///
   /// In zh, this message translates to:
   /// **'已登录'**
   String get mineAccountSignedIn;
 
+  /// No description provided for @mineAccountSignedOut.
+  ///
+  /// In zh, this message translates to:
+  /// **'未登录'**
+  String get mineAccountSignedOut;
+
   /// No description provided for @mineAccountMeta.
   ///
   /// In zh, this message translates to:
   /// **'会员到期：2026-05-20'**
   String get mineAccountMeta;
+
+  /// No description provided for @mineAccountSignedOutMeta.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录后可同步档案、提醒与个性化健康数据'**
+  String get mineAccountSignedOutMeta;
+
+  /// No description provided for @mineSignedOutNoticeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前未登录'**
+  String get mineSignedOutNoticeTitle;
+
+  /// No description provided for @mineSignedOutNoticeDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。'**
+  String get mineSignedOutNoticeDescription;
 
   /// No description provided for @mineCompletionTitle.
   ///

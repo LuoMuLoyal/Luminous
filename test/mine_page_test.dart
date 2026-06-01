@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/mine/presentation/mine_page.dart';
@@ -70,6 +71,51 @@ void main() {
     expect(find.text('快捷入口'), findsOneWidget);
     expect(find.text('主题模式'), findsOneWidget);
   });
+
+  testWidgets('Mine page renders signed-out static view without loading', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => _SignedOutAuthSessionNotifier()),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => throw Exception('should not fetch when signed out'),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const MinePage(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text('当前未登录'), findsOneWidget);
+    expect(find.text('访客'), findsOneWidget);
+    expect(find.text('未登录'), findsOneWidget);
+    expect(find.text('去登录'), findsOneWidget);
+    expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
+    expect(find.text('我的页面暂时没有加载出来'), findsNothing);
+  });
 }
 
 Future<void> _pumpMinePage(WidgetTester tester) async {
@@ -101,8 +147,9 @@ Future<void> _pumpMinePage(WidgetTester tester) async {
   );
 
   await tester.pumpWidget(
-    ProviderScope(
+      ProviderScope(
       overrides: [
+        authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
         healthContextSnapshotProvider
             .overrideWith((ref) => Future.value(mockSnapshot)),
       ],
@@ -121,4 +168,24 @@ Future<void> _pumpMinePage(WidgetTester tester) async {
       ),
     ),
   );
+}
+
+class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(
+      isAuthenticated: false,
+      isLoading: false,
+    );
+  }
+}
+
+class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(
+      isAuthenticated: true,
+      isLoading: false,
+    );
+  }
 }

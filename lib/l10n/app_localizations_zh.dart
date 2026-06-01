@@ -679,10 +679,26 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineAccountDisplayName => 'Lumi 用户';
 
   @override
+  String get mineAccountGuestDisplayName => '访客';
+
+  @override
   String get mineAccountSignedIn => '已登录';
 
   @override
+  String get mineAccountSignedOut => '未登录';
+
+  @override
   String get mineAccountMeta => '会员到期：2026-05-20';
+
+  @override
+  String get mineAccountSignedOutMeta => '登录后可同步档案、提醒与个性化健康数据';
+
+  @override
+  String get mineSignedOutNoticeTitle => '当前未登录';
+
+  @override
+  String get mineSignedOutNoticeDescription =>
+      '我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。';
 
   @override
   String get mineCompletionTitle => '档案完整度';

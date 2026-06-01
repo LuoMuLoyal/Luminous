@@ -17,6 +17,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Today concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop wide dashboard, plainer medicine-style surfaces, localized image placeholders, reusable Today primitives, and shared state views
 - Record concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, and toast-only mock actions
 - Mine concept-aligned mock dashboard UI with repository/provider boundary, mobile profile/plans/privacy surface, and desktop status/onboarding/settings side rail
+- Mine signed-out state now stays on the same static dashboard structure with a login notice instead of page-level skeleton loading
 - More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
 - Medicine mobile-first mock workspace UI with repository/provider boundary
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel

@@ -4,6 +4,8 @@ import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/mine/data/repositories/mock_mine_repository.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_dashboard_view.dart';
@@ -14,6 +16,7 @@ class MinePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authSession = ref.watch(authSessionProvider);
     final dashboardAsync = ref.watch(mineDashboardProvider);
     final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.sizeOf(context).width;
@@ -43,13 +46,16 @@ class MinePage extends ConsumerWidget {
         ),
       ],
       children: [
-        dashboardAsync.when(
-          data: (dashboard) => MineDashboardView(dashboard: dashboard),
-          loading: () => const MineLoadingView(),
-          error: (_, __) => MineErrorView(
-            onRetry: () => ref.invalidate(mineDashboardProvider),
+        if (!authSession.isAuthenticated)
+          MineDashboardView(dashboard: MockMineRepository.signedOutDashboard)
+        else
+          dashboardAsync.when(
+            data: (dashboard) => MineDashboardView(dashboard: dashboard),
+            loading: () => const MineLoadingView(),
+            error: (_, __) => MineErrorView(
+              onRetry: () => ref.invalidate(mineDashboardProvider),
+            ),
           ),
-        ),
       ],
     );
   }

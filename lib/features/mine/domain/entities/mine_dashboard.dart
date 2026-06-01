@@ -30,12 +30,14 @@ class MineDashboard {
 
 class MineAccount {
   const MineAccount({
+    required this.isAuthenticated,
     required this.displayNameKey,
     required this.email,
     required this.statusKey,
     required this.metaKey,
   });
 
+  final bool isAuthenticated;
   final MineCopyKey displayNameKey;
   final String email;
   final MineCopyKey statusKey;
@@ -185,8 +187,13 @@ class MineSettingItem {
 
 enum MineCopyKey {
   accountDisplayName,
+  accountGuestDisplayName,
   accountSignedIn,
+  accountSignedOut,
   accountMeta,
+  accountSignedOutMeta,
+  signedOutNoticeTitle,
+  signedOutNoticeDescription,
   completionTitle,
   completionSubtitle,
   summaryUpdatedAt,

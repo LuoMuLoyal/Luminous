@@ -726,10 +726,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineAccountDisplayName => 'Lumi User';
 
   @override
+  String get mineAccountGuestDisplayName => 'Guest';
+
+  @override
   String get mineAccountSignedIn => 'Signed in';
 
   @override
+  String get mineAccountSignedOut => 'Signed out';
+
+  @override
   String get mineAccountMeta => 'Member until: 2026-05-20';
+
+  @override
+  String get mineAccountSignedOutMeta =>
+      'Sign in to sync profile, reminders, and personalized health data';
+
+  @override
+  String get mineSignedOutNoticeTitle => 'You are not signed in';
+
+  @override
+  String get mineSignedOutNoticeDescription =>
+      'Mine stays on the static layout while signed out so it does not keep hitting the backend. Sign in to load your profile and health context.';
 
   @override
   String get mineCompletionTitle => 'Profile completion';

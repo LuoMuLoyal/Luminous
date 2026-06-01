@@ -37,6 +37,7 @@ class LucentMineRepository implements MineRepository {
 
   MineAccount _buildAccount(HealthContextSnapshot snapshot) {
     return const MineAccount(
+      isAuthenticated: true,
       displayNameKey: MineCopyKey.accountDisplayName,
       email: '',
       statusKey: MineCopyKey.accountSignedIn,

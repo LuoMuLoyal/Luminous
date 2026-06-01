@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_theme_sheet.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
@@ -33,6 +34,10 @@ class MineDashboardView extends StatelessWidget {
     final primary = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (!dashboard.account.isAuthenticated) ...[
+          const _SignedOutNoticeCard(),
+          const SizedBox(height: AppSpacingTokens.md),
+        ],
         _AccountHeaderSection(
           key: const Key('mine-account-header'),
           dashboard: dashboard,
@@ -319,16 +324,20 @@ class _AccountProfileBlock extends StatelessWidget {
                   const SizedBox(width: AppSpacingTokens.sm),
                   MineStatusBadge(
                     label: mineCopy(l10n, account.statusKey),
-                    color: const Color(0xFF159B55),
+                    color: account.isAuthenticated
+                        ? const Color(0xFF159B55)
+                        : const Color(0xFFFF8A00),
                     typography: typography,
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.xs),
-              Text(
-                account.email,
-                style: typography.bodyMd.copyWith(color: surface.body),
-              ),
+              if (account.email.isNotEmpty) ...[
+                const SizedBox(height: AppSpacingTokens.xs),
+                Text(
+                  account.email,
+                  style: typography.bodyMd.copyWith(color: surface.body),
+                ),
+              ],
               const SizedBox(height: AppSpacingTokens.xs),
               Row(
                 children: [
@@ -350,6 +359,28 @@ class _AccountProfileBlock extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SignedOutNoticeCard extends StatelessWidget {
+  const _SignedOutNoticeCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 560),
+      child: AppStateMessageView(
+        title: mineCopy(l10n, MineCopyKey.signedOutNoticeTitle),
+        description: mineCopy(l10n, MineCopyKey.signedOutNoticeDescription),
+        icon: Icons.lock_outline_rounded,
+        actionLabel: l10n.authGoLogin,
+        onAction: () => context.go('/login'),
+        tone: AppStateTone.warning,
+        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+      ),
     );
   }
 }

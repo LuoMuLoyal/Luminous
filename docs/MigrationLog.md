@@ -4,6 +4,15 @@ Last updated: 2026-05-31
 
 Records changes after the full reset only. Pre-reset history: `MigrationLog_Archive_PreReset.md`.
 
+## 2026-06-01
+
+### Mine - Signed-Out Static View
+
+- `mineDashboardProvider` now checks `authSessionProvider` first; when signed out it returns a local static Mine dashboard instead of fetching Lucent health-context data.
+- `MinePage` no longer shows the loading skeleton while signed out, so the page stops repeatedly hitting the backend in the signed-out state.
+- Added a signed-out notice card at the top of Mine with a direct login action, while keeping the rest of the page on the existing static layout.
+- Added zh/en localization keys for signed-out Mine copy and a widget test that asserts signed-out Mine renders without fetching health-context data.
+
 ## 2026-05-30
 
 ### Today Mock UI Foundation

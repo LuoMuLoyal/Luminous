@@ -13,6 +13,7 @@ Last updated: 2026-05-31-15:05
 - App title, tabs, Today dashboard/image placeholders, Record dashboard, Medicine workspace/search, Mine dashboard, More dashboard, placeholders
 - Login / Register / Forgot Password / Change Email / AuthShell
 - Auth empty-field toast prompts
+- Mine signed-out notice / guest state copy
 - Network `Accept-Language`
 
 ## Add Text
