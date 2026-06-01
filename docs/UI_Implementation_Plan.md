@@ -1,6 +1,6 @@
 # Luminous UI Plan
 
-Last updated: 2026-05-31
+Last updated: 2026-06-01
 
 Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADMAP.md`.
 
@@ -21,7 +21,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Medicine mobile-first mock workspace UI with repository/provider boundary
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel
 
-Not restored yet: real medicine loop, live reminders, real scan/upload, real medicine API wiring, Mine write/edit flows, More real tools/device integrations, theme selection persistence UI, real feature data.
+Restored: Search now uses real Lucent medicine search/detail API. Still pending: real medicine loop, live reminders, real scan/upload, Mine write/edit flows, More real tools/device integrations, real feature data.
 
 ## UI Priority
 

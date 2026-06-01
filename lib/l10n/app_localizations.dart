@@ -3145,6 +3145,24 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'深色'**
   String get mineThemeModeDark;
+
+  /// No description provided for @medicineSearchPreviewClinical.
+  ///
+  /// In zh, this message translates to:
+  /// **'临床提示'**
+  String get medicineSearchPreviewClinical;
+
+  /// No description provided for @medicineSearchPreviewSafety.
+  ///
+  /// In zh, this message translates to:
+  /// **'安全确认'**
+  String get medicineSearchPreviewSafety;
+
+  /// No description provided for @medicineSearchPreviewEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择一个药品查看详情'**
+  String get medicineSearchPreviewEmpty;
 }
 
 class _AppLocalizationsDelegate

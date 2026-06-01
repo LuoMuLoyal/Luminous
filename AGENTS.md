@@ -42,7 +42,7 @@ cd ../.. && flutter pub get
 ## Docs
 
 - Read `docs/README.md` before editing docs.
-- Frontend code changed: update `docs/MigrationLog.md`.
+- Frontend code changed: append new log entry at the top of `docs/MigrationLog.md` (newest first).
 - Network / OpenAPI / auth client changed: update `docs/OpenApi_Client.md`.
 - Visible text or l10n flow changed: update `docs/Localization.md`.
 - UI plan changed: update `docs/UI_Implementation_Plan.md`.

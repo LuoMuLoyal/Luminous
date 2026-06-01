@@ -1565,4 +1565,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineThemeModeDark => '深色';
+
+  @override
+  String get medicineSearchPreviewClinical => '临床提示';
+
+  @override
+  String get medicineSearchPreviewSafety => '安全确认';
+
+  @override
+  String get medicineSearchPreviewEmpty => '选择一个药品查看详情';
 }

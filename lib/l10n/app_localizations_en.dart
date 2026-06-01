@@ -1659,4 +1659,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineThemeModeDark => 'Dark';
+
+  @override
+  String get medicineSearchPreviewClinical => 'Clinical Notes';
+
+  @override
+  String get medicineSearchPreviewSafety => 'Safety Checklist';
+
+  @override
+  String get medicineSearchPreviewEmpty => 'Select a medicine to view details';
 }

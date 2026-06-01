@@ -7,15 +7,27 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/responsive_content_frame.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
-import 'package:luminous/features/search/domain/entities/medicine_search.dart';
+import 'package:luminous/features/search/domain/entities/search_entities.dart';
+import 'package:luminous/features/search/presentation/providers/search_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-part 'medicine_search_parts.dart';
+part 'search_parts.dart';
 
 class MedicineSearchView extends StatelessWidget {
-  const MedicineSearchView({super.key, required this.dashboard});
+  const MedicineSearchView({
+    super.key,
+    required this.state,
+    required this.onQueryChanged,
+    required this.onSourceSwitched,
+    required this.onResultSelected,
+    required this.onRetry,
+  });
 
-  final MedicineSearchDashboard dashboard;
+  final MedicineSearchState state;
+  final ValueChanged<String> onQueryChanged;
+  final ValueChanged<MedicineSearchSource> onSourceSwitched;
+  final ValueChanged<String> onResultSelected;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -40,16 +52,24 @@ class MedicineSearchView extends StatelessWidget {
             ),
             child: isDesktop
                 ? _DesktopSearchLayout(
-                    dashboard: dashboard,
+                    state: state,
                     l10n: l10n,
                     typography: typography,
                     surface: surface,
+                    onQueryChanged: onQueryChanged,
+                    onSourceSwitched: onSourceSwitched,
+                    onResultSelected: onResultSelected,
+                    onRetry: onRetry,
                   )
                 : _MobileSearchLayout(
-                    dashboard: dashboard,
+                    state: state,
                     l10n: l10n,
                     typography: typography,
                     surface: surface,
+                    onQueryChanged: onQueryChanged,
+                    onSourceSwitched: onSourceSwitched,
+                    onResultSelected: onResultSelected,
+                    onRetry: onRetry,
                   ),
           ),
         ),
@@ -113,77 +133,100 @@ class MedicineSearchErrorView extends StatelessWidget {
 
 class _MobileSearchLayout extends StatelessWidget {
   const _MobileSearchLayout({
-    required this.dashboard,
+    required this.state,
     required this.l10n,
     required this.typography,
     required this.surface,
+    required this.onQueryChanged,
+    required this.onSourceSwitched,
+    required this.onResultSelected,
+    required this.onRetry,
   });
 
-  final MedicineSearchDashboard dashboard;
+  final MedicineSearchState state;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<String> onQueryChanged;
+  final ValueChanged<MedicineSearchSource> onSourceSwitched;
+  final ValueChanged<String> onResultSelected;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
+    if (state.isSearching) {
+      return const MedicineSearchLoadingView();
+    }
+
+    if (state.errorMessage != null) {
+      return MedicineSearchErrorView(onRetry: onRetry);
+    }
+
     return ListView(
       key: const PageStorageKey<String>('medicine-search-scroll'),
       padding: const EdgeInsets.only(bottom: AppSpacingTokens.xl),
       children: [
         _SearchTopBar(l10n: l10n, typography: typography, surface: surface),
         const SizedBox(height: AppSpacingTokens.lg),
-        _SearchInput(l10n: l10n, typography: typography, surface: surface),
+        _SearchInput(
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+          query: state.query,
+          onChanged: onQueryChanged,
+        ),
         const SizedBox(height: AppSpacingTokens.md),
         _SourceSwitch(
-          selectedSource: dashboard.selectedSource,
+          selectedSource: state.source,
           l10n: l10n,
           typography: typography,
           surface: surface,
+          onChanged: onSourceSwitched,
         ),
         const SizedBox(height: AppSpacingTokens.lg),
-        _RecentSearches(
-          keywords: dashboard.recentKeywords,
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
-        const SizedBox(height: AppSpacingTokens.lg),
-        _QuickActions(
-          actions: dashboard.quickActions,
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
-        const SizedBox(height: AppSpacingTokens.xl),
-        _Categories(
-          categories: dashboard.categories,
-          l10n: l10n,
-          typography: typography,
-        ),
-        const SizedBox(height: AppSpacingTokens.lg),
-        _ReferenceNotice(l10n: l10n, typography: typography),
-        const SizedBox(height: AppSpacingTokens.lg),
-        _ResultsHeader(
-          count: dashboard.results.length,
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        ...dashboard.results.map(
-          (result) => Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
-            child: _SearchResultTile(
-              result: result,
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-              expandedAction: true,
+        if (state.query.trim().isEmpty) ...[
+          _RecentSearches(
+            keywords: const <String>[],
+            l10n: l10n,
+            typography: typography,
+            surface: surface,
+          ),
+          const SizedBox(height: AppSpacingTokens.lg),
+          _QuickActions(
+            actions: const <MedicineSearchQuickAction>[],
+            l10n: l10n,
+            typography: typography,
+            surface: surface,
+          ),
+          const SizedBox(height: AppSpacingTokens.xl),
+          _Categories(
+            categories: const <MedicineSearchCategory>[],
+            l10n: l10n,
+            typography: typography,
+          ),
+        ],
+        if (state.query.trim().isNotEmpty) ...[
+          Text(
+            l10n.medicineSearchResultCount(state.results.length),
+            style: typography.bodySmStrong.copyWith(color: surface.mute),
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          ...state.results.map(
+            (result) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
+              child: _SearchResultTile(
+                result: result,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+                expandedAction: true,
+                onTap: () => onResultSelected(result.id),
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _NoResultTools(l10n: l10n, typography: typography, surface: surface),
+          if (state.results.isEmpty)
+            _NoResultTools(l10n: l10n, typography: typography, surface: surface),
+        ],
       ],
     );
   }
@@ -191,35 +234,55 @@ class _MobileSearchLayout extends StatelessWidget {
 
 class _DesktopSearchLayout extends StatelessWidget {
   const _DesktopSearchLayout({
-    required this.dashboard,
+    required this.state,
     required this.l10n,
     required this.typography,
     required this.surface,
+    required this.onQueryChanged,
+    required this.onSourceSwitched,
+    required this.onResultSelected,
+    required this.onRetry,
   });
 
-  final MedicineSearchDashboard dashboard;
+  final MedicineSearchState state;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<String> onQueryChanged;
+  final ValueChanged<MedicineSearchSource> onSourceSwitched;
+  final ValueChanged<String> onResultSelected;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
+    if (state.isSearching) {
+      return const MedicineSearchLoadingView();
+    }
+
+    if (state.errorMessage != null) {
+      return MedicineSearchErrorView(onRetry: onRetry);
+    }
+
     return Row(
       children: [
         Expanded(
           flex: 7,
           child: _DesktopSearchPanel(
-            dashboard: dashboard,
+            state: state,
             l10n: l10n,
             typography: typography,
             surface: surface,
+            onQueryChanged: onQueryChanged,
+            onSourceSwitched: onSourceSwitched,
+            onResultSelected: onResultSelected,
+            onRetry: onRetry,
           ),
         ),
         const SizedBox(width: AppSpacingTokens.lg),
         Expanded(
           flex: 3,
           child: _PreviewPanel(
-            dashboard: dashboard,
+            state: state,
             l10n: l10n,
             typography: typography,
             surface: surface,
@@ -232,16 +295,24 @@ class _DesktopSearchLayout extends StatelessWidget {
 
 class _DesktopSearchPanel extends StatelessWidget {
   const _DesktopSearchPanel({
-    required this.dashboard,
+    required this.state,
     required this.l10n,
     required this.typography,
     required this.surface,
+    required this.onQueryChanged,
+    required this.onSourceSwitched,
+    required this.onResultSelected,
+    required this.onRetry,
   });
 
-  final MedicineSearchDashboard dashboard;
+  final MedicineSearchState state;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<String> onQueryChanged;
+  final ValueChanged<MedicineSearchSource> onSourceSwitched;
+  final ValueChanged<String> onResultSelected;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -255,60 +326,64 @@ class _DesktopSearchPanel extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.xl),
             Text(l10n.medicineSearchPageTitle, style: typography.displaySm),
             const SizedBox(height: AppSpacingTokens.md),
-            _SearchInput(l10n: l10n, typography: typography, surface: surface),
+            _SearchInput(
+              l10n: l10n,
+              typography: typography,
+              surface: surface,
+              query: state.query,
+              onChanged: onQueryChanged,
+            ),
             const SizedBox(height: AppSpacingTokens.md),
             _SourceSwitch(
-              selectedSource: dashboard.selectedSource,
+              selectedSource: state.source,
               l10n: l10n,
               typography: typography,
               surface: surface,
+              onChanged: onSourceSwitched,
             ),
             const SizedBox(height: AppSpacingTokens.lg),
-            _RecentSearches(
-              keywords: dashboard.recentKeywords,
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-            ),
-            const SizedBox(height: AppSpacingTokens.lg),
-            _QuickActions(
-              actions: dashboard.quickActions,
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-            ),
-            const SizedBox(height: AppSpacingTokens.xl),
-            _Categories(
-              categories: dashboard.categories,
-              l10n: l10n,
-              typography: typography,
-            ),
-            const SizedBox(height: AppSpacingTokens.lg),
-            _ReferenceNotice(l10n: l10n, typography: typography),
-            const SizedBox(height: AppSpacingTokens.lg),
-            _ResultsHeader(
-              count: dashboard.results.length,
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            ...dashboard.results.map(
-              (result) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
-                child: _SearchResultTile(
-                  result: result,
-                  l10n: l10n,
-                  typography: typography,
-                  surface: surface,
+            if (state.query.trim().isEmpty) ...[
+              _RecentSearches(
+                keywords: const <String>[],
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              _QuickActions(
+                actions: const <MedicineSearchQuickAction>[],
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.xl),
+              _Categories(
+                categories: const <MedicineSearchCategory>[],
+                l10n: l10n,
+                typography: typography,
+              ),
+            ],
+            if (state.query.trim().isNotEmpty) ...[
+              Text(
+                l10n.medicineSearchResultCount(state.results.length),
+                style: typography.bodySmStrong.copyWith(color: surface.mute),
+              ),
+              const SizedBox(height: AppSpacingTokens.md),
+              ...state.results.map(
+                (result) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
+                  child: _SearchResultTile(
+                    result: result,
+                    l10n: l10n,
+                    typography: typography,
+                    surface: surface,
+                    onTap: () => onResultSelected(result.id),
+                  ),
                 ),
               ),
-            ),
-            _NoResultTools(
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-            ),
+              if (state.results.isEmpty)
+                _NoResultTools(l10n: l10n, typography: typography, surface: surface),
+            ],
           ],
         ),
       ),
