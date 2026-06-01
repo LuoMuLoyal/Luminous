@@ -614,5 +614,9 @@
   "placeholderDescription": "这一栏的结构已经预留完成，下一步会按新的多端设计系统重建。",
   "mineThemeModeSystem": "跟随系统",
   "mineThemeModeLight": "浅色",
-  "mineThemeModeDark": "深色"
+  "mineThemeModeDark": "深色",
+  "medicineSearchPreviewClinical": "临床提示",
+  "medicineSearchPreviewSafety": "安全确认",
+  "medicineSearchPreviewEmpty": "选择一个药品查看详情"
+
 }

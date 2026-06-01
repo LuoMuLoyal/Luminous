@@ -1,4 +1,4 @@
-part of 'medicine_search_view.dart';
+part of 'search_view.dart';
 
 class _SearchTopBar extends StatelessWidget {
   const _SearchTopBar({
@@ -108,43 +108,91 @@ class _TopTab extends StatelessWidget {
   }
 }
 
-class _SearchInput extends StatelessWidget {
+class _SearchInput extends StatefulWidget {
   const _SearchInput({
     required this.l10n,
     required this.typography,
     required this.surface,
+    required this.query,
+    required this.onChanged,
   });
 
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final String query;
+  final ValueChanged<String> onChanged;
+
+  @override
+  State<_SearchInput> createState() => _SearchInputState();
+}
+
+class _SearchInputState extends State<_SearchInput> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.query);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SearchInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.query != widget.query && widget.query != _controller.text) {
+      _controller.text = widget.query;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: surface.canvas,
+        color: widget.surface.canvas,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         border: Border.all(
-          color: surface.hairlineStrong.withValues(alpha: 0.28),
+          color: widget.surface.hairlineStrong.withValues(alpha: 0.28),
         ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.md,
+          vertical: AppSpacingTokens.sm,
         ),
         child: Row(
           children: [
-            Icon(Icons.search_rounded, color: surface.mute),
+            Icon(Icons.search_rounded, color: widget.surface.mute),
             const SizedBox(width: AppSpacingTokens.sm),
             Expanded(
-              child: Text(
-                l10n.medicineSearchFieldHint,
-                style: typography.bodySm.copyWith(color: surface.mute),
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: widget.l10n.medicineSearchFieldHint,
+                  hintStyle: widget.typography.bodySm.copyWith(color: widget.surface.mute),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                style: widget.typography.bodySm,
+                onChanged: widget.onChanged,
+                textInputAction: TextInputAction.search,
+                onSubmitted: widget.onChanged,
               ),
             ),
-            Icon(Icons.cancel_rounded, color: surface.mute, size: 18),
+            if (_controller.text.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  _controller.clear();
+                  widget.onChanged('');
+                },
+                child: Icon(Icons.cancel_rounded, color: widget.surface.mute, size: 18),
+              ),
           ],
         ),
       ),
@@ -158,12 +206,14 @@ class _SourceSwitch extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    required this.onChanged,
   });
 
   final MedicineSearchSource selectedSource;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<MedicineSearchSource> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -182,10 +232,7 @@ class _SourceSwitch extends StatelessWidget {
                   active: source == selectedSource,
                   typography: typography,
                   surface: surface,
-                  onTap: () => AppToast.show(
-                    context,
-                    '${l10n.medicineSearchSwitchSource}: ${_sourceLabel(l10n, source)}',
-                  ),
+                  onTap: () => onChanged(source),
                 ),
               ),
             ),
@@ -452,75 +499,6 @@ class _CategoryItem extends StatelessWidget {
   }
 }
 
-class _ReferenceNotice extends StatelessWidget {
-  const _ReferenceNotice({required this.l10n, required this.typography});
-
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColorTokens.warningSoft.withValues(alpha: 0.72),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
-        ),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.health_and_safety_outlined,
-              size: 18,
-              color: AppColorTokens.warningDeep,
-            ),
-            const SizedBox(width: AppSpacingTokens.sm),
-            Expanded(
-              child: Text(
-                l10n.medicineSearchReferenceNotice,
-                style: typography.bodySm.copyWith(
-                  color: AppColorTokens.warningDeep,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ResultsHeader extends StatelessWidget {
-  const _ResultsHeader({
-    required this.count,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
-
-  final int count;
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(l10n.medicineSearchResultTitle, style: typography.bodyMdStrong),
-        const Spacer(),
-        Text(
-          l10n.medicineSearchResultCount(count),
-          style: typography.bodySm.copyWith(color: surface.body),
-        ),
-      ],
-    );
-  }
-}
-
 class _SearchResultTile extends StatelessWidget {
   const _SearchResultTile({
     required this.result,
@@ -528,6 +506,7 @@ class _SearchResultTile extends StatelessWidget {
     required this.typography,
     required this.surface,
     this.expandedAction = false,
+    this.onTap,
   });
 
   final MedicineSearchResult result;
@@ -535,16 +514,14 @@ class _SearchResultTile extends StatelessWidget {
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final bool expandedAction;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => AppToast.show(
-          context,
-          '${result.name}: ${l10n.medicineSearchOpenDetailToast}',
-        ),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -677,169 +654,72 @@ class _TagPill extends StatelessWidget {
 
 class _PreviewPanel extends StatelessWidget {
   const _PreviewPanel({
-    required this.dashboard,
+    required this.state,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
 
-  final MedicineSearchDashboard dashboard;
+  final MedicineSearchState state;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    final selected = dashboard.selectedResult;
+    final preview = state.detailPreview;
     return DecoratedBox(
       decoration: _panelDecoration(surface),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.xl),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.medicineSearchPreviewTitle, style: typography.displaySm),
-            const Spacer(),
-            Center(
-              child: Icon(
-                Icons.medication_liquid_outlined,
-                size: 96,
-                color: surface.linkSoft,
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.lg),
-            Text(selected.name, style: typography.displaySm),
-            const SizedBox(height: AppSpacingTokens.xs),
-            Text(
-              selected.subtitle,
-              style: typography.bodySm.copyWith(color: surface.body),
-            ),
-            const SizedBox(height: AppSpacingTokens.xl),
-            _SafetyPreviewCard(
-              preview: dashboard.safetyPreview,
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-            ),
-            const SizedBox(height: AppSpacingTokens.lg),
-            _ChecklistCard(
-              preview: dashboard.safetyPreview,
-              typography: typography,
-              surface: surface,
-            ),
-            const SizedBox(height: AppSpacingTokens.lg),
-            _ReferenceNotice(l10n: l10n, typography: typography),
-            const Spacer(),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SafetyPreviewCard extends StatelessWidget {
-  const _SafetyPreviewCard({
-    required this.preview,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
-
-  final MedicineSearchSafetyPreview preview;
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColorTokens.warningSoft.withValues(alpha: 0.38),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(
-          color: AppColorTokens.warning.withValues(alpha: 0.42),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(preview.title, style: typography.bodyMdStrong),
-            const SizedBox(height: AppSpacingTokens.md),
-            Text(
-              l10n.medicineSearchSafetyLead,
-              style: typography.bodySm.copyWith(color: surface.body),
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            ...preview.conditions.map(
-              (condition) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
-                child: Text('• $condition', style: typography.bodySm),
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            Text(
-              l10n.medicineSearchSafetyAction,
-              style: typography.bodySmStrong.copyWith(
-                color: AppColorTokens.warningDeep,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ChecklistCard extends StatelessWidget {
-  const _ChecklistCard({
-    required this.preview,
-    required this.typography,
-    required this.surface,
-  });
-
-  final MedicineSearchSafetyPreview preview;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvasSoft,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: preview.checklist
-              .map(
-                (item) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.check_box_rounded,
-                        color: Color(0xFF13A66B),
-                        size: 18,
-                      ),
-                      const SizedBox(width: AppSpacingTokens.sm),
-                      Expanded(
-                        child: Text(
-                          item,
-                          style: typography.bodySm.copyWith(
-                            color: surface.body,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.medicineSearchPreviewTitle, style: typography.bodySmStrong),
+              if (preview != null) ...[
+                const SizedBox(height: AppSpacingTokens.lg),
+                Text(preview.title, style: typography.bodyMdStrong),
+                const SizedBox(height: AppSpacingTokens.md),
+                if (preview.conditions.isNotEmpty) ...[
+                  Text(l10n.medicineSearchPreviewClinical, style: typography.bodySmStrong.copyWith(color: surface.mute)),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  ...preview.conditions.map((c) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(padding: EdgeInsets.only(top: 6), child: Icon(Icons.circle, size: 4)),
+                        const SizedBox(width: AppSpacingTokens.sm),
+                        Expanded(child: Text(c, style: typography.bodySm.copyWith(color: surface.body.withValues(alpha: 0.7)))),
+                      ],
+                    ),
+                  )),
+                ],
+                const SizedBox(height: AppSpacingTokens.md),
+                if (preview.checklist.isNotEmpty) ...[
+                  Text(l10n.medicineSearchPreviewSafety, style: typography.bodySmStrong.copyWith(color: surface.mute)),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  ...preview.checklist.map((item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.check_circle_outline, size: 16, color: surface.link),
+                        const SizedBox(width: AppSpacingTokens.sm),
+                        Expanded(child: Text(item, style: typography.bodySm.copyWith(color: surface.body))),
+                      ],
+                    ),
+                  )),
+                ],
+              ],
+              if (preview == null)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacingTokens.lg),
+                  child: Text(l10n.medicineSearchPreviewEmpty, style: typography.bodySm.copyWith(color: surface.mute)),
                 ),
-              )
-              .toList(),
+            ],
+          ),
         ),
       ),
     );

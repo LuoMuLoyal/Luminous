@@ -16,7 +16,27 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-01
 
-### 增加 5 秒请求超时
+### Search - Lucent-Backed Medicine Search
+
+- Regenerated OpenAPI client (Lucent `medicinesApi` updated).
+- Created `lib/features/search/data/datasources/medicine_search_remote_data_source.dart` — wraps `MedicinesApi.search` and `MedicinesApi.getDetail`.
+- Created `lib/features/search/data/mappers/medicine_search_mapper.dart` — converts `MedicineSearchItemDto` to `MedicineSearchResult`.
+- Created `lib/features/search/data/repositories/lucent_medicine_search_repository.dart` — Lucent-backed `MedicineSearchRepository` implementation with `search()` / `fetchDetail()`.
+- Refactored `MedicineSearchRepository` interface from one-shot `fetchDashboard()` to query-driven `search()` / `fetchDetail()`.
+- Refactored `medicineSearchProvider` from `FutureProvider<MedicineSearchDashboard>` to `MedicineSearchNotifier` (a `Notifier<MedicineSearchState>`) with methods: `updateQuery`, `switchSource`, `selectResult`, `retry`.
+- Rewrote `SearchPage` and `MedicineSearchView` to use new `MedicineSearchState` + interactive callbacks.
+- Rewrote `_SearchInput` from static display to real `TextField` with controller.
+- `_SourceSwitch` now calls real `onChanged` callback instead of mock toast.
+- `_SearchResultTile` accepts `onTap` callback for result selection.
+- `_PreviewPanel` now driven by `state.detailPreview` instead of `dashboard.safetyPreview`.
+- Removed unused widgets: `_ReferenceNotice`, `_ResultsHeader`, `_SafetyPreviewCard`, `_ChecklistCard`.
+- Added ARB keys: `medicineSearchPreviewClinical`, `medicineSearchPreviewSafety`, `medicineSearchPreviewEmpty`.
+- Moved old `MockMedicineSearchRepository` to `data/repositories/mock/`.
+- Rewrote `search_page_test.dart` to mock `medicineSearchRepositoryProvider` instead of the old `FutureProvider`.
+
+#
+
+## 增加 5 秒请求超时
 
 - Today、Mine、More、Record、Search 五个页面的 dashboard provider 添加 .timeout(Duration(seconds: 5))，超时后触发 error 显示 AppStateErrorView。
 
@@ -242,10 +262,3 @@ pnpm build
 pnpm test
 pnpm test:e2e
 ```
-
-## Next
-
-1. Replace Today mock repository data with Lucent-backed sources when the API contract is ready.
-2. Upgrade `record / mine / more` skeletons.
-3. Replace medicine mock repository data with Lucent-backed search, detail, recognition, and reminder flows.
-4. Add theme selection UI under Mine/settings and later expand palette variants.
