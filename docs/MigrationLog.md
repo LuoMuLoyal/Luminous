@@ -16,6 +16,25 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-01
 
+### 网络层暴露 UserHealthContextApi
+
+### 构建 health-context 共享数据层
+
+- 创建 health_context feature 目录结构，包含 6 个 freezed entity、repository 接口、remote datasource、mapper、Lucent repository 实现和 provider 层。
+
+### Mine 页面接入真实 health-context 数据
+
+- 创建 LucentMineRepository，从 healthContextSnapshotProvider 读取数据并拼装 MineDashboard，后端不覆盖的字段保留 mock 回退。
+- 切换 mineRepositoryProvider 实现为 LucentMineRepository。
+- 更新 mine_page_test 和 widget_test，注入 mock healthContextSnapshotProvider。
+
+### 网络层暴露 UserHealthContextApi
+
+- 重新生成 Lucent OpenAPI 客户端，修复 SDK 约束。
+- 在 LucentDioClient 添加 userHealthContextApi getter 和对应 provider。
+
+## 2026-06-01
+
 ### Expose UserHealthContextApi in network layer
 
 - Regenerated Lucent OpenAPI client from updated `openapi.json`.

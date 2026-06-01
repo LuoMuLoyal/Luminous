@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/mine/presentation/mine_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -71,8 +73,39 @@ void main() {
 }
 
 Future<void> _pumpMinePage(WidgetTester tester) async {
+  final mockSnapshot = HealthContextSnapshot(
+    summary: const HealthSummary(
+      age: 27,
+      onboardingCompleted: true,
+      activeAllergyCount: 2,
+      conditionCount: 1,
+      currentMedicineCount: 3,
+      missingCoreProfileFields: ['bloodType'],
+    ),
+    profile: const HealthProfile(
+      birthDate: '1999-01-15',
+      sexAtBirth: null,
+      heightCm: null,
+      pregnancyState: null,
+      lactationState: null,
+      bloodType: null,
+      locale: null,
+      timezone: null,
+      unitSystem: null,
+      onboardingCompletedAt: '2026-01-01T00:00:00Z',
+      extras: {},
+    ),
+    allergies: const [],
+    conditions: const [],
+    currentMedicines: const [],
+  );
+
   await tester.pumpWidget(
     ProviderScope(
+      overrides: [
+        healthContextSnapshotProvider
+            .overrideWith((ref) => Future.value(mockSnapshot)),
+      ],
       child: MaterialApp(
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
