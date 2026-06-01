@@ -14,6 +14,15 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Split Today UI into dedicated widgets under `lib/features/today/presentation/widgets/` and replaced the old shell-card placeholder content.
 - Added zh/en localization strings for the full Today dashboard and a widget test covering the core Today sections.
 
+## 2026-06-01
+
+### Expose UserHealthContextApi in network layer
+
+- Regenerated Lucent OpenAPI client from updated `openapi.json`.
+- Fixed `packages/lucent_openapi/pubspec.yaml` SDK constraint reset by the generator (sdk `>=3.12.0`, `json_annotation ^4.12.0`).
+- Added `UserHealthContextApi` getter to `LucentDioClient`.
+- Added `lucentUserHealthContextApiProvider` to `lucent_network_providers.dart`.
+
 ## 2026-05-31
 
 ### Record Mock Dashboard Foundation
