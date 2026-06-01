@@ -9,6 +9,7 @@ import 'package:luminous/features/record/presentation/providers/record_dashboard
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RecordPage extends ConsumerWidget {
   const RecordPage({super.key});
@@ -92,33 +93,41 @@ class _RecordLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
 
-    return Column(
-      children: [
-        _LoadingBlock(surface: surface, height: 118),
-        const SizedBox(height: AppSpacingTokens.md),
-        _LoadingBlock(surface: surface, height: 180),
-        const SizedBox(height: AppSpacingTokens.md),
-        _LoadingBlock(surface: surface, height: 460),
-      ],
+    return Shimmer.fromColors(
+      baseColor: surface.canvas.withValues(
+        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
+      ),
+      highlightColor: surface.canvasSoft2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          _SkeletonBlock(height: 118),
+          SizedBox(height: AppSpacingTokens.md),
+          _SkeletonBlock(height: 180),
+          SizedBox(height: AppSpacingTokens.md),
+          _SkeletonBlock(height: 460),
+        ],
+      ),
     );
   }
 }
 
-class _LoadingBlock extends StatelessWidget {
-  const _LoadingBlock({required this.surface, required this.height});
+class _SkeletonBlock extends StatelessWidget {
+  const _SkeletonBlock({required this.height});
 
-  final AppThemeSurface surface;
   final double height;
 
   @override
   Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: surface.canvas,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
       ),
       child: SizedBox(height: height, width: double.infinity),
     );

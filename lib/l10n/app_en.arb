@@ -610,5 +610,8 @@
       }
     }
   },
-  "placeholderDescription": "This area is reserved structurally and will be rebuilt with the new multi-platform design system."
+  "placeholderDescription": "This area is reserved structurally and will be rebuilt with the new multi-platform design system.",
+  "mineThemeModeSystem": "System",
+  "mineThemeModeLight": "Light",
+  "mineThemeModeDark": "Dark"
 }

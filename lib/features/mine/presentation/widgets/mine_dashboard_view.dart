@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/theme/app_theme_controller.dart';
+import 'package:luminous/features/mine/presentation/widgets/mine_theme_sheet.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -1234,7 +1237,7 @@ class _QuickEntriesPanel extends StatelessWidget {
   }
 }
 
-class _SettingsSection extends StatelessWidget {
+class _SettingsSection extends ConsumerWidget {
   const _SettingsSection({
     super.key,
     required this.title,
@@ -1249,8 +1252,11 @@ class _SettingsSection extends StatelessWidget {
   final AppThemeSurface surface;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final currentTheme =
+        ref.watch(appThemeControllerProvider).value ??
+            AppThemeModePreference.system;
 
     return MineSectionSurface(
       title: title,
@@ -1262,20 +1268,46 @@ class _SettingsSection extends StatelessWidget {
             MineSettingRow(
               icon: dashboard.settings[index].icon,
               title: mineCopy(l10n, dashboard.settings[index].titleKey),
-              value: dashboard.settings[index].valueKey == null
-                  ? null
-                  : mineCopy(l10n, dashboard.settings[index].valueKey!),
+              value: _settingValue(l10n, dashboard.settings[index], currentTheme),
               typography: typography,
               surface: surface,
-              onTap: () => showMineToast(
-                context,
-                mineCopy(l10n, dashboard.settings[index].titleKey),
-              ),
+              onTap: () => _onSettingTap(context, ref, l10n, dashboard.settings[index]),
               showDivider: index < dashboard.settings.length - 1,
             ),
         ],
       ),
     );
+  }
+
+  String? _settingValue(
+    AppLocalizations l10n,
+    MineSettingItem item,
+    AppThemeModePreference currentTheme,
+  ) {
+    if (item.titleKey != MineCopyKey.settingsThemeTitle) {
+      return item.valueKey == null ? null : mineCopy(l10n, item.valueKey!);
+    }
+    return switch (currentTheme) {
+      AppThemeModePreference.system => l10n.mineThemeModeSystem,
+      AppThemeModePreference.light => l10n.mineThemeModeLight,
+      AppThemeModePreference.dark => l10n.mineThemeModeDark,
+    };
+  }
+
+  void _onSettingTap(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    MineSettingItem item,
+  ) {
+    if (item.titleKey == MineCopyKey.settingsThemeTitle) {
+      showModalBottomSheet(
+        context: context,
+        builder: (_) => const ThemeModeSheet(),
+      );
+    } else {
+      showMineToast(context, mineCopy(l10n, item.titleKey));
+    }
   }
 }
 
@@ -1297,3 +1329,4 @@ class _SkeletonBlock extends StatelessWidget {
     );
   }
 }
+
