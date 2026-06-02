@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -36,6 +37,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
           data: (preference) => preference.themeMode,
           orElse: () => ThemeMode.system,
         );
+    final locale = ref.watch(appLocaleControllerProvider).asData?.value;
 
     return MaterialApp.router(
       onGenerateTitle: (context) =>
@@ -44,6 +46,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
+      locale: locale?.flutterLocale,
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

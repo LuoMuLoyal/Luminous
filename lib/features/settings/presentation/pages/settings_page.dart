@@ -3,12 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/i18n/app_locale.dart';
+import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_theme_sheet.dart';
+import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -27,11 +30,14 @@ class SettingsPage extends ConsumerWidget {
     final currentTheme =
         ref.watch(appThemeControllerProvider).value ??
         AppThemeModePreference.system;
+    final currentLocale =
+        ref.watch(appLocaleControllerProvider).asData?.value ??
+        AppLocale.system;
 
     return PageScaffoldShell(
       title: l10n.desktopSidebarSettings,
       centerTitle: true,
-      leading: _BackButton(onTap: () => context.pop()),
+      leading: const SettingsBackButton(),
       children: [
         MineSectionSurface(
           key: const Key('settings-group-account'),
@@ -79,13 +85,10 @@ class SettingsPage extends ConsumerWidget {
                 key: const Key('settings-row-language'),
                 icon: Icons.language_outlined,
                 title: l10n.mineSettingsLanguageTitle,
-                value: l10n.mineSettingsLanguageValue,
+                value: _languageLabel(l10n, currentLocale),
                 typography: typography,
                 surface: surface,
-                onTap: () => showMineToast(
-                  context,
-                  l10n.mineSettingsLanguageTitle,
-                ),
+                onTap: () => context.push('/settings/language'),
                 showDivider: true,
               ),
               MineSettingRow(
@@ -94,7 +97,7 @@ class SettingsPage extends ConsumerWidget {
                 title: l10n.mineSettingsNotificationsTitle,
                 typography: typography,
                 surface: surface,
-                onTap: () {},
+                onTap: () => context.push('/settings/notifications'),
               ),
             ],
           ),
@@ -113,7 +116,7 @@ class SettingsPage extends ConsumerWidget {
                 title: l10n.mineSettingsMoreTitle,
                 typography: typography,
                 surface: surface,
-                onTap: () {},
+                onTap: () => context.push('/settings/more'),
               ),
             ],
           ),
@@ -151,32 +154,13 @@ class SettingsPage extends ConsumerWidget {
       AppThemeModePreference.dark => l10n.mineThemeModeDark,
     };
   }
-}
 
-class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.xs),
-          child: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            size: 18,
-            color: surface.body,
-          ),
-        ),
-      ),
-    );
+  String _languageLabel(AppLocalizations l10n, AppLocale locale) {
+    return switch (locale) {
+      AppLocale.system => l10n.settingsLanguageSystemLabel,
+      AppLocale.en => l10n.settingsLanguageEnglishLabel,
+      AppLocale.zhCn => l10n.settingsLanguageChineseLabel,
+    };
   }
 }
 

@@ -11,7 +11,9 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('Settings page renders grouped settings sections', (tester) async {
+  testWidgets('Settings page renders grouped settings sections', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
 
     await _pumpSettingsPage(
@@ -51,8 +53,7 @@ void main() {
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) =>
-              const Scaffold(body: Text('mine-page')),
+          builder: (context, state) => const Scaffold(body: Text('mine-page')),
         ),
         GoRoute(
           path: '/settings',
@@ -100,6 +101,95 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('account-settings-page'), findsOneWidget);
+  });
+
+  testWidgets('Settings language row routes to language settings page', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await _pumpSettingsPage(
+      tester,
+      router: GoRouter(
+        initialLocation: '/settings',
+        routes: [
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) => const SettingsPage(),
+          ),
+          GoRoute(
+            path: '/settings/language',
+            builder: (context, state) =>
+                const Scaffold(body: Text('language-settings-page')),
+          ),
+        ],
+      ),
+    );
+
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('settings-row-language')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('language-settings-page'), findsOneWidget);
+  });
+
+  testWidgets(
+    'Settings notifications row routes to notifications settings page',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+      await _pumpSettingsPage(
+        tester,
+        router: GoRouter(
+          initialLocation: '/settings',
+          routes: [
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) => const SettingsPage(),
+            ),
+            GoRoute(
+              path: '/settings/notifications',
+              builder: (context, state) =>
+                  const Scaffold(body: Text('notifications-settings-page')),
+            ),
+          ],
+        ),
+      );
+
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('settings-row-notifications')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('notifications-settings-page'), findsOneWidget);
+    },
+  );
+
+  testWidgets('Settings more row routes to more settings page', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await _pumpSettingsPage(
+      tester,
+      router: GoRouter(
+        initialLocation: '/settings',
+        routes: [
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) => const SettingsPage(),
+          ),
+          GoRoute(
+            path: '/settings/more',
+            builder: (context, state) =>
+                const Scaffold(body: Text('more-settings-page')),
+          ),
+        ],
+      ),
+    );
+
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('settings-row-more')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('more-settings-page'), findsOneWidget);
   });
 
   testWidgets('Settings footer action logs out and routes to login page', (

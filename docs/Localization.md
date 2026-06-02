@@ -1,6 +1,6 @@
 # Flutter i18n
 
-Last updated: 2026-05-31-15:05
+Last updated: 2026-06-02
 
 ## Files
 
@@ -14,9 +14,11 @@ Last updated: 2026-05-31-15:05
 - Login / Register / Forgot Password / Change Email / AuthShell
 - Account Settings
 - Standalone Settings page
+- Settings child pages and persisted app locale selection
 - Auth empty-field toast prompts
 - Mine signed-out notice / guest state copy
 - Network `Accept-Language`
+- Flutter UI locale driven by persisted app locale preference
 
 ## UI Copy Rules
 
@@ -28,5 +30,12 @@ Last updated: 2026-05-31-15:05
 1. Add keys to both ARB files.
 2. Run `flutter gen-l10n`.
 3. Read via `AppLocalizations.of(context)`.
+
+## Locale Source
+
+- Persisted locale preference key: `app.locale`
+- Supported in settings flow: `system`, `zh-CN`, `en`
+- `LuminousApp` reads `appLocaleControllerProvider` and passes the resolved locale into `MaterialApp.router.locale`.
+- Lucent network requests reuse the same preference for `Accept-Language`.
 
 Do not hardcode user-visible text in pages.
