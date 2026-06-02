@@ -20,6 +20,7 @@ Last updated: 2026-06-01
 - Medicines API is now generated into `packages/lucent_openapi`; call sites should use `LucentDioClient.medicinesHeaders(bypassCache: true)` when a one-off medicines refresh must bypass Lucent read cache.
 - `ChangeEmailDto` follows Lucent contract: `newEmail` + `code`
 - `RegisterDto` follows Lucent contract: `email` + `password` + register-scene `code`; successful registration returns a verified email.
+- Re-generated from Lucent `openapi.json` on 2026-06-02 after the auth alignment pass. No business-layer SDK surface changes were required in `lib/core/network/`; the only package-level fix still needed after generation is keeping `packages/lucent_openapi/pubspec.yaml` aligned with app constraints (`sdk >=3.12.0 <4.0.0`, `json_annotation ^4.12.0`) before running `build_runner`.
 
 ## Regenerate
 

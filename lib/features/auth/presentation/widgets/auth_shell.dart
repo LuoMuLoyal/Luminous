@@ -16,6 +16,7 @@ class AuthShell extends StatelessWidget {
     required this.form,
     this.aside,
     this.showCompactNarrative = true,
+    this.enableFormAnimation = true,
   });
 
   final String badge;
@@ -24,6 +25,7 @@ class AuthShell extends StatelessWidget {
   final Widget form;
   final Widget? aside;
   final bool showCompactNarrative;
+  final bool enableFormAnimation;
 
   @override
   Widget build(BuildContext context) {
@@ -48,19 +50,19 @@ class AuthShell extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: layout.maxContentWidth),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: layout.pageHorizontalPadding,
-                  vertical: width < AppBreakpoints.mobile
-                      ? AppSpacingTokens.lg
-                      : AppSpacingTokens.xl,
-                ),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: layout.pageHorizontalPadding,
+              vertical: width < AppBreakpoints.mobile
+                  ? AppSpacingTokens.lg
+                  : AppSpacingTokens.xl,
+            ),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: layout.maxContentWidth),
                 child: isWide
                     ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: _AuthNarrativePanel(
@@ -74,7 +76,11 @@ class AuthShell extends StatelessWidget {
                           const SizedBox(width: AppSpacingTokens.xl),
                           SizedBox(
                             width: 420,
-                            child: _AuthFormPanel(form: form, surface: surface),
+                            child: _AuthFormPanel(
+                              form: form,
+                              surface: surface,
+                              enableAnimation: enableFormAnimation,
+                            ),
                           ),
                         ],
                       )
@@ -92,13 +98,40 @@ class AuthShell extends StatelessWidget {
                             ),
                             const SizedBox(height: AppSpacingTokens.lg),
                           ],
-                          _AuthFormPanel(form: form, surface: surface),
+                          _AuthFormPanel(
+                            form: form,
+                            surface: surface,
+                            enableAnimation: enableFormAnimation,
+                          ),
                         ],
                       ),
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class AuthSectionCard extends StatelessWidget {
+  const AuthSectionCard({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvasSoft,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: surface.hairline),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        child: child,
       ),
     );
   }
@@ -184,25 +217,36 @@ class _AuthNarrativePanel extends StatelessWidget {
 }
 
 class _AuthFormPanel extends StatelessWidget {
-  const _AuthFormPanel({required this.form, required this.surface});
+  const _AuthFormPanel({
+    required this.form,
+    required this.surface,
+    required this.enableAnimation,
+  });
 
   final Widget form;
   final AppThemeSurface surface;
+  final bool enableAnimation;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-          decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-            border: Border.all(color: surface.hairline),
-            boxShadow: AppShadowTokens.level4,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.xl),
-            child: form,
-          ),
-        )
+    final panel = DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvas,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+        border: Border.all(color: surface.hairline),
+        boxShadow: AppShadowTokens.level4,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.xl),
+        child: form,
+      ),
+    );
+
+    if (!enableAnimation) {
+      return panel;
+    }
+
+    return panel
         .animate()
         .fadeIn(duration: 180.ms, curve: Curves.easeOut)
         .slideY(

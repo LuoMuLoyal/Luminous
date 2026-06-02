@@ -182,7 +182,7 @@ void main() {
     expect(find.text('login-page'), findsOneWidget);
   });
 
-  testWidgets('Mine account setting routes to change-email page', (
+  testWidgets('Mine account setting routes to account settings page', (
     tester,
   ) async {
     final container = ProviderContainer(
@@ -216,9 +216,9 @@ void main() {
             routes: [
               GoRoute(path: '/', builder: (context, state) => const MinePage()),
               GoRoute(
-                path: '/account/change-email',
+                path: '/account',
                 builder: (context, state) =>
-                    const Scaffold(body: Text('change-email-page')),
+                    const Scaffold(body: Text('account-settings-page')),
               ),
             ],
           ),
@@ -241,7 +241,7 @@ void main() {
     await tester.tap(accountSetting);
     await tester.pumpAndSettle();
 
-    expect(find.text('change-email-page'), findsOneWidget);
+    expect(find.text('account-settings-page'), findsOneWidget);
   });
 
   test('Mine dashboard uses auth session email in account header', () async {
