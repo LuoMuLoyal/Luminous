@@ -46,24 +46,13 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
         : null;
 
     return AuthShell(
-      badge: l10n?.authChangeEmailBadge ?? 'AUTH / EMAIL',
-      title: l10n?.authChangeEmailTitle ?? 'Move account email carefully.',
-      description:
-          l10n?.authChangeEmailDescription ??
-          'Verify the new address before it becomes the account login email.',
+      title: l10n?.authChangeEmailFormTitle ?? 'Change email',
+      leading: _AuthBackButton(onTap: () => context.pop()),
+      centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AuthFormHeader(
-            title: l10n?.authChangeEmailFormTitle ?? 'Change email',
-            description: currentEmail == null
-                ? l10n?.authChangeEmailSignedOutLead ??
-                      'Sign in before changing the account email.'
-                : l10n?.authChangeEmailLead(currentEmail) ??
-                      'Current email: $currentEmail',
-          ),
-          const SizedBox(height: AppSpacingTokens.xl),
           AuthTextField(
             controller: _emailController,
             label: l10n?.authNewEmailLabel ?? 'New email',
@@ -157,5 +146,23 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
     }
     AppToast.show(context, message);
     return false;
+  }
+}
+
+class _AuthBackButton extends StatelessWidget {
+  const _AuthBackButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+      child: const Padding(
+        padding: EdgeInsets.all(AppSpacingTokens.xs),
+        child: Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+      ),
+    );
   }
 }

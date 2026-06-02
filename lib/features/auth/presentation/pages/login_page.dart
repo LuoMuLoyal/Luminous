@@ -43,22 +43,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final l10n = AppLocalizations.of(context);
 
     return AuthShell(
-      badge: l10n?.authLoginBadge ?? 'AUTH / LOGIN',
-      title: l10n?.authLoginTitle ?? 'Sign in with calm, not clutter.',
-      description:
-          l10n?.authLoginDescription ??
-          'Use your Lucent account to enter the rebuilt medication flow, then layer in reminders, snapshots, and multilingual health routines.',
+      title: l10n?.authSignIn ?? 'Sign in',
+      centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AuthFormHeader(
-            title: l10n?.authWelcomeBack ?? 'Welcome back',
-            description:
-                l10n?.authLoginLead ??
-                'Start with email, then choose password or verification code.',
-          ),
-          const SizedBox(height: AppSpacingTokens.xl),
           SizedBox(
             width: double.infinity,
             child: SegmentedButton<AuthLoginMode>(

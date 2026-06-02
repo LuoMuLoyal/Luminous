@@ -18,6 +18,11 @@ Last updated: 2026-05-31-15:05
 - Mine signed-out notice / guest state copy
 - Network `Accept-Language`
 
+## UI Copy Rules
+
+- Normal app pages should keep only necessary titles, labels, values, statuses, and actions.
+- Avoid explanatory, narrative, onboarding, or marketing-style copy unless a task explicitly needs it.
+
 ## Add Text
 
 1. Add keys to both ARB files.

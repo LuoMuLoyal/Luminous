@@ -48,22 +48,12 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         : null;
 
     return AuthShell(
-      badge: l10n?.authForgotPasswordBadge ?? 'AUTH / RESET',
-      title: l10n?.authForgotPasswordTitle ?? 'Reset password from your email.',
-      description:
-          l10n?.authForgotPasswordDescription ??
-          'Send a verification code, set a new password, then return to sign in.',
+      title: l10n?.authResetPasswordAction ?? 'Reset password',
+      centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AuthFormHeader(
-            title: l10n?.authResetPasswordTitle ?? 'Reset password',
-            description:
-                l10n?.authResetPasswordLead ??
-                'Use the email attached to your account to receive a reset code.',
-          ),
-          const SizedBox(height: AppSpacingTokens.xl),
           AuthTextField(
             controller: _emailController,
             label: l10n?.authEmailLabel ?? 'Email',

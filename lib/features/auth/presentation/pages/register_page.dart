@@ -45,22 +45,12 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     final l10n = AppLocalizations.of(context);
 
     return AuthShell(
-      badge: l10n?.authRegisterBadge ?? 'AUTH / REGISTER',
-      title: l10n?.authRegisterTitle ?? 'Create the clean version first.',
-      description:
-          l10n?.authRegisterDescription ??
-          'Register once, then grow medication plans, reminders, and multilingual health workflows on top of Lucent.',
+      title: l10n?.authCreateAccountAction ?? 'Create account',
+      centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AuthFormHeader(
-            title: l10n?.authCreateAccount ?? 'Create account',
-            description:
-                l10n?.authRegisterLead ??
-                'Email and password are enough to start. Nickname is optional.',
-          ),
-          const SizedBox(height: AppSpacingTokens.xl),
           AuthTextField(
             controller: _emailController,
             label: l10n?.authEmailLabel ?? 'Email',

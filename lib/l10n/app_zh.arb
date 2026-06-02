@@ -10,7 +10,6 @@
   "desktopSidebarHelp": "帮助",
   "desktopSidebarSettingsToast": "会打开设置中心。",
   "desktopSidebarHelpToast": "会打开帮助与支持。",
-  "settingsPageDescription": "把账号、主题、语言、通知和低频设置集中在一个独立页面里，避免继续堆在我的页下面。",
   "recordPageDescription": "日历、时间线与多类型每日记录会从这里生长出来。",
   "recordSectionTitle": "每日时间线",
   "recordSectionSubtitle": "记录页的第一步先搭结构，不急着恢复旧逻辑。",
@@ -429,16 +428,8 @@
   },
   "todaySectionTitle": "今日工作区",
   "todaySectionSubtitle": "新的首页会从这里逐步接入提醒、快照、喝水与 Lumi 建议。",
-  "authLoginBadge": "认证 / 登录",
-  "authRegisterBadge": "认证 / 注册",
-  "authLoginTitle": "用更克制的方式登录。",
-  "authLoginDescription": "使用 Lucent 账号进入新的用药主线，后续再逐步解锁提醒、快照和多语言健康流程。",
-  "authRegisterTitle": "先把干净版本搭起来。",
-  "authRegisterDescription": "先完成注册，再在 Lucent 之上逐步生长用药计划、提醒和多语言健康能力。",
   "authWelcomeBack": "欢迎回来",
   "authCreateAccount": "创建账号",
-  "authLoginLead": "先输入邮箱，再选择密码登录或验证码登录。",
-  "authRegisterLead": "先验证邮箱，再设置密码。昵称可选。",
   "authModePassword": "密码",
   "authModeCode": "验证码",
   "authEmailLabel": "邮箱",
@@ -469,35 +460,16 @@
   "authRegisterNowAction": "立即注册",
   "authHaveAccountPrompt": "已经有账号？",
   "authRememberPasswordPrompt": "想起密码了？",
-  "authForgotPasswordBadge": "认证 / 重置",
-  "authForgotPasswordTitle": "通过邮箱重置密码。",
-  "authForgotPasswordDescription": "发送验证码，设置新密码，然后回到登录页重新登录。",
-  "authResetPasswordTitle": "重置密码",
-  "authResetPasswordLead": "使用账号绑定的邮箱接收重置验证码。",
   "authNewPasswordLabel": "新密码",
   "authConfirmPasswordLabel": "确认密码",
   "authPasswordsDoNotMatch": "两次输入的密码不一致。",
   "authResetPasswordSubmit": "重置密码",
   "authResetPasswordSuccess": "密码已更新，请重新登录。",
-  "authChangeEmailBadge": "认证 / 邮箱",
-  "authChangeEmailTitle": "谨慎更换账号邮箱。",
-  "authChangeEmailDescription": "先验证新邮箱，再把它设为账号登录邮箱。",
   "authChangeEmailFormTitle": "更换邮箱",
-  "authChangeEmailLead": "当前邮箱：{email}",
-  "@authChangeEmailLead": {
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
-  },
   "authChangeEmailSignedOutLead": "请先登录，再更换账号邮箱。",
   "authNewEmailLabel": "新邮箱",
   "authChangeEmailSubmit": "更新邮箱",
   "authChangeEmailSuccess": "邮箱已更新。",
-  "authAccountSettingsBadge": "认证 / 账号",
-  "authAccountSettingsTitle": "把账号信息和安全动作收在一个地方。",
-  "authAccountSettingsDescription": "这里直接承接 Lucent 的资料更新、改邮箱、改密码和注销账号接口，不再停留在占位按钮。",
   "authAccountSettingsFormTitle": "账号与安全",
   "authAccountSettingsSignedOutLead": "请先登录，再管理账号信息和安全设置。",
   "authProfileSectionTitle": "资料信息",
@@ -523,20 +495,11 @@
   "authDeleteAccountAction": "注销账号",
   "authDeleteAccountSuccess": "账号已注销。",
   "authBackHomePrompt": "返回首页？",
-  "authSignedInAs": "当前已登录：{email}",
-  "@authSignedInAs": {
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
-  },
   "authCheckingSession": "正在检查登录状态...",
   "authNotSignedIn": "尚未登录。",
   "authGoLogin": "去登录",
   "authGoRegister": "去注册",
   "authSignOut": "退出登录",
-  "authInfraHint": "安全 token 存储、Lucent 多语言响应与会话恢复能力已经接到这层表单之下。",
   "todayHeroTitle": "今日",
   "todayHeroDescription": "新的首页将从这里开始重建：先完成响应式视觉系统，再逐步接入喝水、提醒、健康快照和 Lumi 建议。",
   "todayChipWater": "喝水追踪",

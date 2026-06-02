@@ -10,7 +10,6 @@
   "desktopSidebarHelp": "Help",
   "desktopSidebarSettingsToast": "This will open settings.",
   "desktopSidebarHelpToast": "This will open help and support.",
-  "settingsPageDescription": "Keep account, theme, language, notifications, and lower-frequency settings on one dedicated page instead of stacking them under Mine.",
   "recordPageDescription": "Calendar, timeline, and multi-type daily records will grow here.",
   "recordSectionTitle": "Daily timeline",
   "recordSectionSubtitle": "The first rebuild step for Record is structure, not logic.",
@@ -429,16 +428,8 @@
   },
   "todaySectionTitle": "Today workspace",
   "todaySectionSubtitle": "The new home will gradually attach reminders, snapshots, water tracking, and Lumi guidance here.",
-  "authLoginBadge": "AUTH / LOGIN",
-  "authRegisterBadge": "AUTH / REGISTER",
-  "authLoginTitle": "Sign in with calm, not clutter.",
-  "authLoginDescription": "Use your Lucent account to enter the rebuilt medication flow, then layer in reminders, snapshots, and multilingual health routines.",
-  "authRegisterTitle": "Create the clean version first.",
-  "authRegisterDescription": "Register once, then grow medication plans, reminders, and multilingual health workflows on top of Lucent.",
   "authWelcomeBack": "Welcome back",
   "authCreateAccount": "Create account",
-  "authLoginLead": "Start with email, then choose password or verification code.",
-  "authRegisterLead": "Verify your email, then set a password. Nickname is optional.",
   "authModePassword": "Password",
   "authModeCode": "Code",
   "authEmailLabel": "Email",
@@ -469,35 +460,16 @@
   "authRegisterNowAction": "Register now",
   "authHaveAccountPrompt": "Already have an account?",
   "authRememberPasswordPrompt": "Remember your password?",
-  "authForgotPasswordBadge": "AUTH / RESET",
-  "authForgotPasswordTitle": "Reset password from your email.",
-  "authForgotPasswordDescription": "Send a verification code, set a new password, then return to sign in.",
-  "authResetPasswordTitle": "Reset password",
-  "authResetPasswordLead": "Use the email attached to your account to receive a reset code.",
   "authNewPasswordLabel": "New password",
   "authConfirmPasswordLabel": "Confirm password",
   "authPasswordsDoNotMatch": "Passwords do not match.",
   "authResetPasswordSubmit": "Reset password",
   "authResetPasswordSuccess": "Password updated. Please sign in again.",
-  "authChangeEmailBadge": "AUTH / EMAIL",
-  "authChangeEmailTitle": "Move account email carefully.",
-  "authChangeEmailDescription": "Verify the new address before it becomes the account login email.",
   "authChangeEmailFormTitle": "Change email",
-  "authChangeEmailLead": "Current email: {email}",
-  "@authChangeEmailLead": {
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
-  },
   "authChangeEmailSignedOutLead": "Sign in before changing the account email.",
   "authNewEmailLabel": "New email",
   "authChangeEmailSubmit": "Update email",
   "authChangeEmailSuccess": "Email updated.",
-  "authAccountSettingsBadge": "AUTH / ACCOUNT",
-  "authAccountSettingsTitle": "Keep account details and security actions in one place.",
-  "authAccountSettingsDescription": "This page now fronts Lucent profile updates, email change, password change, and account deletion instead of stopping at placeholder actions.",
   "authAccountSettingsFormTitle": "Account and security",
   "authAccountSettingsSignedOutLead": "Sign in before managing account details and security settings.",
   "authProfileSectionTitle": "Profile details",
@@ -523,20 +495,11 @@
   "authDeleteAccountAction": "Delete account",
   "authDeleteAccountSuccess": "Account deleted.",
   "authBackHomePrompt": "Back to home?",
-  "authSignedInAs": "Signed in as {email}",
-  "@authSignedInAs": {
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
-  },
   "authCheckingSession": "Checking session...",
   "authNotSignedIn": "Not signed in yet.",
   "authGoLogin": "Sign in",
   "authGoRegister": "Create account",
   "authSignOut": "Sign out",
-  "authInfraHint": "Secure session storage, Lucent-backed localized responses, and session restore are already wired beneath this form layer.",
   "todayHeroTitle": "Today",
   "todayHeroDescription": "The new home starts here: we are rebuilding the responsive visual system first, then layering in water tracking, reminders, health snapshots, and Lumi guidance.",
   "todayChipWater": "Water Tracking",

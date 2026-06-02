@@ -30,7 +30,8 @@ class SettingsPage extends ConsumerWidget {
 
     return PageScaffoldShell(
       title: l10n.desktopSidebarSettings,
-      description: l10n.settingsPageDescription,
+      centerTitle: true,
+      leading: _BackButton(onTap: () => context.pop()),
       children: [
         MineSectionSurface(
           key: const Key('settings-group-account'),
@@ -93,10 +94,7 @@ class SettingsPage extends ConsumerWidget {
                 title: l10n.mineSettingsNotificationsTitle,
                 typography: typography,
                 surface: surface,
-                onTap: () => showMineToast(
-                  context,
-                  l10n.mineSettingsNotificationsTitle,
-                ),
+                onTap: () {},
               ),
             ],
           ),
@@ -115,7 +113,7 @@ class SettingsPage extends ConsumerWidget {
                 title: l10n.mineSettingsMoreTitle,
                 typography: typography,
                 surface: surface,
-                onTap: () => showMineToast(context, l10n.mineSettingsMoreTitle),
+                onTap: () {},
               ),
             ],
           ),
@@ -152,6 +150,33 @@ class SettingsPage extends ConsumerWidget {
       AppThemeModePreference.light => l10n.mineThemeModeLight,
       AppThemeModePreference.dark => l10n.mineThemeModeDark,
     };
+  }
+}
+
+class _BackButton extends StatelessWidget {
+  const _BackButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.xs),
+          child: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 18,
+            color: surface.body,
+          ),
+        ),
+      ),
+    );
   }
 }
 
