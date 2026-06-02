@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/mine/presentation/mine_page.dart';
+import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -179,6 +181,86 @@ void main() {
     expect(notifier.logoutCalled, isTrue);
     expect(find.text('login-page'), findsOneWidget);
   });
+
+  testWidgets('Mine account setting routes to change-email page', (
+    tester,
+  ) async {
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(
+          () => _EmailSignedInAuthSessionNotifier(),
+        ),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) => Future.value(_mockSnapshot),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const MinePage()),
+              GoRoute(
+                path: '/account/change-email',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('change-email-page')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final settingsScroll = find.byType(Scrollable).first;
+    final accountSetting = find.text('账号与安全');
+    await tester.scrollUntilVisible(
+      accountSetting,
+      240,
+      scrollable: settingsScroll,
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await tester.tap(accountSetting);
+    await tester.pumpAndSettle();
+
+    expect(find.text('change-email-page'), findsOneWidget);
+  });
+
+  test('Mine dashboard uses auth session email in account header', () async {
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(
+          () => _EmailSignedInAuthSessionNotifier(),
+        ),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) => Future.value(_mockSnapshot),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final dashboard = await container.read(mineDashboardProvider.future);
+
+    expect(dashboard.account.email, 'user@example.com');
+  });
 }
 
 Future<void> _pumpMinePage(WidgetTester tester) async {
@@ -218,6 +300,25 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   @override
   AuthSessionState build() {
     return const AuthSessionState(isAuthenticated: true, isLoading: false);
+  }
+}
+
+class _EmailSignedInAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return AuthSessionState(
+      isAuthenticated: true,
+      isLoading: false,
+      user: AuthUser(
+        id: 'user-1',
+        email: 'user@example.com',
+        nickname: 'Lumi',
+        avatar: null,
+        emailVerified: true,
+        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+      ),
+    );
   }
 }
 

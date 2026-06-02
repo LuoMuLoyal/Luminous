@@ -134,13 +134,10 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
               }
               final ok = await notifier.resetPassword();
               if (ok && context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      l10n?.authResetPasswordSuccess ??
-                          'Password updated. Please sign in again.',
-                    ),
-                  ),
+                await AppToast.show(
+                  context,
+                  l10n?.authResetPasswordSuccess ??
+                      'Password updated. Please sign in again.',
                 );
               }
             },
