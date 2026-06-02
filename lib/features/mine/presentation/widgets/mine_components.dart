@@ -69,14 +69,14 @@ class MineHeaderActionChip extends StatelessWidget {
     required this.icon,
     required this.typography,
     required this.surface,
-    required this.onTap,
+    this.onTap,
   });
 
   final String label;
   final IconData icon;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -89,13 +89,21 @@ class MineHeaderActionChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: surface.canvas,
+              color: onTap == null
+                  ? surface.canvas.withValues(alpha: 0.72)
+                  : surface.canvas,
               borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
               border: Border.all(color: surface.hairline),
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacingTokens.sm),
-              child: Icon(icon, size: 18, color: surface.body),
+              child: Icon(
+                icon,
+                size: 18,
+                color: onTap == null
+                    ? surface.body.withValues(alpha: 0.5)
+                    : surface.body,
+              ),
             ),
           ),
         ),

@@ -4,6 +4,15 @@ Last updated: 2026-05-31
 
 Records changes after the full reset only. Pre-reset history: `MigrationLog_Archive_PreReset.md`.
 
+## 2026-06-02
+
+### Auth Startup Restore + Mine Logout Wiring
+
+- `LuminousApp` now restores `authSessionProvider` once during app startup, so persisted Lucent sessions can recover before the user re-enters auth flows manually.
+- `MinePage` now exposes a real signed-in logout action in the header; tapping it calls `authSessionProvider.logout()` and routes back to `/login`.
+- `MineHeaderActionChip` now supports a disabled state so the logout action cannot be triggered repeatedly while auth state is already loading.
+- Added widget coverage for startup `restore()` execution and for the Mine logout action wiring.
+
 ## 2026-06-01
 
 ### Mine - Signed-Out Static View
