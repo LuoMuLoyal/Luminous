@@ -1355,6 +1355,91 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authChangeEmailSuccess => '邮箱已更新。';
 
   @override
+  String get authAccountSettingsBadge => '认证 / 账号';
+
+  @override
+  String get authAccountSettingsTitle => '把账号信息和安全动作收在一个地方。';
+
+  @override
+  String get authAccountSettingsDescription =>
+      '这里直接承接 Lucent 的资料更新、改邮箱、改密码和注销账号接口，不再停留在占位按钮。';
+
+  @override
+  String get authAccountSettingsFormTitle => '账号与安全';
+
+  @override
+  String get authAccountSettingsSignedOutLead => '请先登录，再管理账号信息和安全设置。';
+
+  @override
+  String get authProfileSectionTitle => '资料信息';
+
+  @override
+  String get authProfileSectionDescription =>
+      '修改昵称或头像地址；留空会按 Lucent 当前规则清空对应字段。';
+
+  @override
+  String get authAvatarLabel => '头像地址';
+
+  @override
+  String get authAvatarHint => 'https://example.com/avatar.png';
+
+  @override
+  String get authProfileSaveAction => '保存资料';
+
+  @override
+  String get authProfileSaveSuccess => '资料已更新。';
+
+  @override
+  String get authEmailSectionTitle => '登录邮箱';
+
+  @override
+  String get authEmailVerifiedDescription => '当前邮箱已经验证，可以继续更换登录邮箱。';
+
+  @override
+  String get authEmailUnverifiedDescription => '当前邮箱仍未验证；你仍可以进入更换邮箱流程。';
+
+  @override
+  String get authEmailChangeAction => '更换邮箱';
+
+  @override
+  String get authPasswordSectionTitle => '修改密码';
+
+  @override
+  String get authPasswordSectionDescription =>
+      '修改后当前账号的 refresh 会话会全部失效，你需要重新登录。';
+
+  @override
+  String get authCurrentPasswordLabel => '当前密码';
+
+  @override
+  String get authCurrentPasswordRequiredToast => '请先填写当前密码。';
+
+  @override
+  String get authNewPasswordRequiredToast => '请先填写新密码。';
+
+  @override
+  String get authChangePasswordAction => '更新密码';
+
+  @override
+  String get authChangePasswordSuccess => '密码已更新，请重新登录。';
+
+  @override
+  String get authDeleteAccountSectionTitle => '注销账号';
+
+  @override
+  String get authDeleteAccountSectionDescription =>
+      '这是高风险操作；提交后会清空本地会话并让 Lucent 将账号标记为删除状态。';
+
+  @override
+  String get authDeleteAccountHint => '输入当前密码以确认注销';
+
+  @override
+  String get authDeleteAccountAction => '注销账号';
+
+  @override
+  String get authDeleteAccountSuccess => '账号已注销。';
+
+  @override
   String get authBackHomePrompt => '返回首页？';
 
   @override

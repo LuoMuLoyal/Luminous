@@ -2750,6 +2750,168 @@ abstract class AppLocalizations {
   /// **'邮箱已更新。'**
   String get authChangeEmailSuccess;
 
+  /// No description provided for @authAccountSettingsBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'认证 / 账号'**
+  String get authAccountSettingsBadge;
+
+  /// No description provided for @authAccountSettingsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'把账号信息和安全动作收在一个地方。'**
+  String get authAccountSettingsTitle;
+
+  /// No description provided for @authAccountSettingsDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'这里直接承接 Lucent 的资料更新、改邮箱、改密码和注销账号接口，不再停留在占位按钮。'**
+  String get authAccountSettingsDescription;
+
+  /// No description provided for @authAccountSettingsFormTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号与安全'**
+  String get authAccountSettingsFormTitle;
+
+  /// No description provided for @authAccountSettingsSignedOutLead.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先登录，再管理账号信息和安全设置。'**
+  String get authAccountSettingsSignedOutLead;
+
+  /// No description provided for @authProfileSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'资料信息'**
+  String get authProfileSectionTitle;
+
+  /// No description provided for @authProfileSectionDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'修改昵称或头像地址；留空会按 Lucent 当前规则清空对应字段。'**
+  String get authProfileSectionDescription;
+
+  /// No description provided for @authAvatarLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'头像地址'**
+  String get authAvatarLabel;
+
+  /// No description provided for @authAvatarHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'https://example.com/avatar.png'**
+  String get authAvatarHint;
+
+  /// No description provided for @authProfileSaveAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存资料'**
+  String get authProfileSaveAction;
+
+  /// No description provided for @authProfileSaveSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'资料已更新。'**
+  String get authProfileSaveSuccess;
+
+  /// No description provided for @authEmailSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录邮箱'**
+  String get authEmailSectionTitle;
+
+  /// No description provided for @authEmailVerifiedDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前邮箱已经验证，可以继续更换登录邮箱。'**
+  String get authEmailVerifiedDescription;
+
+  /// No description provided for @authEmailUnverifiedDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前邮箱仍未验证；你仍可以进入更换邮箱流程。'**
+  String get authEmailUnverifiedDescription;
+
+  /// No description provided for @authEmailChangeAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'更换邮箱'**
+  String get authEmailChangeAction;
+
+  /// No description provided for @authPasswordSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'修改密码'**
+  String get authPasswordSectionTitle;
+
+  /// No description provided for @authPasswordSectionDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'修改后当前账号的 refresh 会话会全部失效，你需要重新登录。'**
+  String get authPasswordSectionDescription;
+
+  /// No description provided for @authCurrentPasswordLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前密码'**
+  String get authCurrentPasswordLabel;
+
+  /// No description provided for @authCurrentPasswordRequiredToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先填写当前密码。'**
+  String get authCurrentPasswordRequiredToast;
+
+  /// No description provided for @authNewPasswordRequiredToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先填写新密码。'**
+  String get authNewPasswordRequiredToast;
+
+  /// No description provided for @authChangePasswordAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'更新密码'**
+  String get authChangePasswordAction;
+
+  /// No description provided for @authChangePasswordSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'密码已更新，请重新登录。'**
+  String get authChangePasswordSuccess;
+
+  /// No description provided for @authDeleteAccountSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'注销账号'**
+  String get authDeleteAccountSectionTitle;
+
+  /// No description provided for @authDeleteAccountSectionDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'这是高风险操作；提交后会清空本地会话并让 Lucent 将账号标记为删除状态。'**
+  String get authDeleteAccountSectionDescription;
+
+  /// No description provided for @authDeleteAccountHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入当前密码以确认注销'**
+  String get authDeleteAccountHint;
+
+  /// No description provided for @authDeleteAccountAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'注销账号'**
+  String get authDeleteAccountAction;
+
+  /// No description provided for @authDeleteAccountSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号已注销。'**
+  String get authDeleteAccountSuccess;
+
   /// No description provided for @authBackHomePrompt.
   ///
   /// In zh, this message translates to:

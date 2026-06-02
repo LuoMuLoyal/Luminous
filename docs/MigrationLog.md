@@ -16,9 +16,21 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 ### Mine Account Entry + Auth Feedback Cleanup
 
 - Lucent-backed Mine account headers now read the current session email from `authSessionProvider`, instead of rendering the signed-in state without an email address.
-- Mine settings `账号与安全 / Account and security` now routes to the real `/account/change-email` auth page instead of showing a placeholder toast.
+- Mine settings `账号与安全 / Account and security` now routes to the real `/account` auth account-settings page instead of showing a placeholder toast.
 - Auth success feedback on forgot-password and change-email now uses shared `AppToast`, matching the project rule against page-local `SnackBar` prompts.
 - Added tests for the Mine account-settings route and the Lucent Mine account email mapping.
+
+### Auth Account Settings Page
+
+- Added `/account` as a real account-settings page under the auth feature instead of leaving `authAccountProvider` half-wired behind provider-only methods.
+- The new page now fronts Lucent-backed `updateProfile`, `changePassword`, and `deleteAccount`, while reusing the existing `/account/change-email` page for email changes.
+- `AuthShell` now supports scrollable long-form pages and an optional form-animation switch so auth pages remain usable on mobile and testable without pending animation timers.
+- Regenerated `gen-l10n` output for the new account-settings copy and added a dedicated widget test for the account page.
+
+### OpenAPI Regeneration Check
+
+- Re-ran Lucent `export:openapi` and regenerated `packages/lucent_openapi`.
+- Confirmed this auth alignment pass did not require business-layer network wrapper changes; the only recurring post-generation fix remains restoring `packages/lucent_openapi/pubspec.yaml` to the app SDK / `json_annotation` constraints before `build_runner`.
 
 ## 2026-06-01
 

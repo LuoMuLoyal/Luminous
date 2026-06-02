@@ -1438,6 +1438,98 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authChangeEmailSuccess => 'Email updated.';
 
   @override
+  String get authAccountSettingsBadge => 'AUTH / ACCOUNT';
+
+  @override
+  String get authAccountSettingsTitle =>
+      'Keep account details and security actions in one place.';
+
+  @override
+  String get authAccountSettingsDescription =>
+      'This page now fronts Lucent profile updates, email change, password change, and account deletion instead of stopping at placeholder actions.';
+
+  @override
+  String get authAccountSettingsFormTitle => 'Account and security';
+
+  @override
+  String get authAccountSettingsSignedOutLead =>
+      'Sign in before managing account details and security settings.';
+
+  @override
+  String get authProfileSectionTitle => 'Profile details';
+
+  @override
+  String get authProfileSectionDescription =>
+      'Update nickname or avatar URL; leaving a field empty will clear it under the current Lucent rules.';
+
+  @override
+  String get authAvatarLabel => 'Avatar URL';
+
+  @override
+  String get authAvatarHint => 'https://example.com/avatar.png';
+
+  @override
+  String get authProfileSaveAction => 'Save profile';
+
+  @override
+  String get authProfileSaveSuccess => 'Profile updated.';
+
+  @override
+  String get authEmailSectionTitle => 'Login email';
+
+  @override
+  String get authEmailVerifiedDescription =>
+      'This email is already verified, and you can continue to the change-email flow.';
+
+  @override
+  String get authEmailUnverifiedDescription =>
+      'This email is still unverified; you can still continue to the change-email flow.';
+
+  @override
+  String get authEmailChangeAction => 'Change email';
+
+  @override
+  String get authPasswordSectionTitle => 'Change password';
+
+  @override
+  String get authPasswordSectionDescription =>
+      'Changing the password invalidates all refresh sessions for this account, so you will need to sign in again.';
+
+  @override
+  String get authCurrentPasswordLabel => 'Current password';
+
+  @override
+  String get authCurrentPasswordRequiredToast =>
+      'Please enter your current password.';
+
+  @override
+  String get authNewPasswordRequiredToast => 'Please enter your new password.';
+
+  @override
+  String get authChangePasswordAction => 'Update password';
+
+  @override
+  String get authChangePasswordSuccess =>
+      'Password updated. Please sign in again.';
+
+  @override
+  String get authDeleteAccountSectionTitle => 'Delete account';
+
+  @override
+  String get authDeleteAccountSectionDescription =>
+      'This is a high-risk action; submitting it clears the local session and asks Lucent to soft-delete the account.';
+
+  @override
+  String get authDeleteAccountHint =>
+      'Enter your current password to confirm deletion';
+
+  @override
+  String get authDeleteAccountAction => 'Delete account';
+
+  @override
+  String get authDeleteAccountSuccess => 'Account deleted.';
+
+  @override
   String get authBackHomePrompt => 'Back to home?';
 
   @override

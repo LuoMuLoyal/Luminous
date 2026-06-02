@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
 import 'package:luminous/features/auth/presentation/pages/change_email_page.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
@@ -18,6 +19,10 @@ final router = GoRouter(
     GoRoute(
       path: '/register',
       builder: (context, state) => const RegisterPage(),
+    ),
+    GoRoute(
+      path: '/account',
+      builder: (context, state) => const AccountSettingsPage(),
     ),
     GoRoute(
       path: '/account/change-email',

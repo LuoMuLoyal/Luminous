@@ -1350,7 +1350,7 @@ class _SettingsSection extends ConsumerWidget {
         builder: (_) => const ThemeModeSheet(),
       );
     } else if (item.titleKey == MineCopyKey.settingsAccountTitle) {
-      context.push('/account/change-email');
+      context.push('/account');
     } else {
       showMineToast(context, mineCopy(l10n, item.titleKey));
     }
