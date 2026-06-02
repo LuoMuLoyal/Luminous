@@ -1014,6 +1014,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineSettingsMoreTitle => 'More settings';
 
   @override
+  String get settingsLanguageSystemLabel => 'Follow system';
+
+  @override
+  String get settingsLanguageChineseLabel => 'Simplified Chinese';
+
+  @override
+  String get settingsLanguageEnglishLabel => 'English';
+
+  @override
+  String get settingsNotificationsMedicationReminders => 'Medication reminders';
+
+  @override
+  String get settingsNotificationsHealthAlerts => 'Health alerts';
+
+  @override
+  String get settingsNotificationsWeeklySummary => 'Weekly summary';
+
+  @override
+  String get settingsMoreClearImageCache => 'Clear image cache';
+
+  @override
+  String get settingsMoreCacheCleared => 'Image cache cleared';
+
+  @override
+  String get settingsMoreResetDefaults => 'Reset defaults';
+
+  @override
+  String get settingsMoreDefaultsReset => 'Defaults restored';
+
+  @override
+  String get settingsMoreOpenSourceLicenses => 'Open source licenses';
+
+  @override
   String get mineErrorTitle => 'Mine did not load this time';
 
   @override

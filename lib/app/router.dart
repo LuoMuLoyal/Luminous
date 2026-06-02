@@ -5,6 +5,9 @@ import 'package:luminous/features/auth/presentation/pages/forgot_password_page.d
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/pages/register_page.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
+import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/more_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 
@@ -28,6 +31,18 @@ final router = GoRouter(
     GoRoute(
       path: '/settings',
       builder: (context, state) => const SettingsPage(),
+    ),
+    GoRoute(
+      path: '/settings/language',
+      builder: (context, state) => const LanguageSettingsPage(),
+    ),
+    GoRoute(
+      path: '/settings/notifications',
+      builder: (context, state) => const NotificationSettingsPage(),
+    ),
+    GoRoute(
+      path: '/settings/more',
+      builder: (context, state) => const MoreSettingsPage(),
     ),
     GoRoute(
       path: '/account/change-email',

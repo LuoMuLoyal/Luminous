@@ -6,6 +6,17 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-02
 
+### Settings Header Decoration Cleanup
+
+- Removed the unexpected text decoration from shared centered child-page headers so settings-related titles no longer show the yellow underline on web/desktop rendering.
+
+### Settings Child Pages + Locale Persistence
+
+- Replaced the remaining placeholder settings entries with real child pages for `语言 / Language`, `通知设置 / Notifications`, and `更多设置 / More settings`.
+- App locale now persists in `SharedPreferences`, drives both Flutter UI locale and Lucent `Accept-Language`, and is configurable from the new language settings page.
+- Notification settings now persist three local toggles for reminder/alert preferences, and more settings now exposes cache clearing, defaults reset, and open-source licenses.
+- Added widget coverage for settings child-page routing, language switching persistence, notification toggle persistence, and kept app startup restore coverage green.
+
 ### Standalone Settings Page
 
 - Added a dedicated `/settings` page so theme, language, notification, and account-entry settings no longer render inline under Mine.

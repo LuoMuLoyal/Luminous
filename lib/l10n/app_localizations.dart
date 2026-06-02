@@ -1982,6 +1982,72 @@ abstract class AppLocalizations {
   /// **'更多设置'**
   String get mineSettingsMoreTitle;
 
+  /// No description provided for @settingsLanguageSystemLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随系统'**
+  String get settingsLanguageSystemLabel;
+
+  /// No description provided for @settingsLanguageChineseLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'简体中文'**
+  String get settingsLanguageChineseLabel;
+
+  /// No description provided for @settingsLanguageEnglishLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'English'**
+  String get settingsLanguageEnglishLabel;
+
+  /// No description provided for @settingsNotificationsMedicationReminders.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药提醒'**
+  String get settingsNotificationsMedicationReminders;
+
+  /// No description provided for @settingsNotificationsHealthAlerts.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康提醒'**
+  String get settingsNotificationsHealthAlerts;
+
+  /// No description provided for @settingsNotificationsWeeklySummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'每周摘要'**
+  String get settingsNotificationsWeeklySummary;
+
+  /// No description provided for @settingsMoreClearImageCache.
+  ///
+  /// In zh, this message translates to:
+  /// **'清理图片缓存'**
+  String get settingsMoreClearImageCache;
+
+  /// No description provided for @settingsMoreCacheCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'图片缓存已清理'**
+  String get settingsMoreCacheCleared;
+
+  /// No description provided for @settingsMoreResetDefaults.
+  ///
+  /// In zh, this message translates to:
+  /// **'恢复默认设置'**
+  String get settingsMoreResetDefaults;
+
+  /// No description provided for @settingsMoreDefaultsReset.
+  ///
+  /// In zh, this message translates to:
+  /// **'已恢复默认设置'**
+  String get settingsMoreDefaultsReset;
+
+  /// No description provided for @settingsMoreOpenSourceLicenses.
+  ///
+  /// In zh, this message translates to:
+  /// **'开源许可'**
+  String get settingsMoreOpenSourceLicenses;
+
   /// No description provided for @mineErrorTitle.
   ///
   /// In zh, this message translates to:

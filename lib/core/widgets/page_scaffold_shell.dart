@@ -65,9 +65,7 @@ class PageScaffoldShell extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(color: surface.canvasSoft),
       child: SafeArea(
-        child: scrollable
-            ? SingleChildScrollView(child: content)
-            : content,
+        child: scrollable ? SingleChildScrollView(child: content) : content,
       ),
     );
   }
@@ -122,7 +120,9 @@ class PageSectionCard extends StatelessWidget {
                         const SizedBox(height: AppSpacingTokens.xs),
                         Text(
                           subtitle!,
-                          style: typography.bodySm.copyWith(color: surface.body),
+                          style: typography.bodySm.copyWith(
+                            color: surface.body,
+                          ),
                         ),
                       ],
                     ],
@@ -174,7 +174,10 @@ class _PageHeader extends StatelessWidget {
             child: Text(
               title,
               textAlign: TextAlign.center,
-              style: typography.displaySm,
+              style: typography.displaySm.copyWith(
+                decoration: TextDecoration.none,
+                decorationColor: Colors.transparent,
+              ),
             ),
           ),
           SizedBox(

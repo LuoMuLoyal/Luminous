@@ -961,6 +961,39 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineSettingsMoreTitle => '更多设置';
 
   @override
+  String get settingsLanguageSystemLabel => '跟随系统';
+
+  @override
+  String get settingsLanguageChineseLabel => '简体中文';
+
+  @override
+  String get settingsLanguageEnglishLabel => 'English';
+
+  @override
+  String get settingsNotificationsMedicationReminders => '用药提醒';
+
+  @override
+  String get settingsNotificationsHealthAlerts => '健康提醒';
+
+  @override
+  String get settingsNotificationsWeeklySummary => '每周摘要';
+
+  @override
+  String get settingsMoreClearImageCache => '清理图片缓存';
+
+  @override
+  String get settingsMoreCacheCleared => '图片缓存已清理';
+
+  @override
+  String get settingsMoreResetDefaults => '恢复默认设置';
+
+  @override
+  String get settingsMoreDefaultsReset => '已恢复默认设置';
+
+  @override
+  String get settingsMoreOpenSourceLicenses => '开源许可';
+
+  @override
   String get mineErrorTitle => '我的页面暂时没有加载出来';
 
   @override
