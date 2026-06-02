@@ -3,10 +3,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import 'auth_test_helpers.dart';
 
 void main() {
   testWidgets('Shell page uses five desktop tabs plus settings/help actions', (
@@ -49,6 +52,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
           healthContextSnapshotProvider
               .overrideWith((ref) => Future.value(mockSnapshot)),
         ],
@@ -83,7 +87,8 @@ void main() {
     await tester.tap(find.text('我的').first);
     await tester.pumpAndSettle();
     expect(find.text('我的'), findsAtLeastNWidgets(2));
-    expect(find.text('Lumi 用户'), findsOneWidget);
+    expect(find.text('Lumi'), findsOneWidget);
+    expect(find.text('user@example.com'), findsOneWidget);
 
     await tester.tap(find.text('更多').first);
     await tester.pumpAndSettle();

@@ -17,7 +17,14 @@ flutter pub get
 flutter run
 flutter analyze
 flutter test
+dart run tool/regenerate_lucent_openapi.dart
 ```
+
+## CI
+
+- GitHub Actions workflow: `.github/workflows/flutter-ci.yml`
+- Current CI scope: `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`
+- Current CI is validation-only. It does not build or publish Android, iOS, desktop, or web artifacts.
 
 ## Docs
 
