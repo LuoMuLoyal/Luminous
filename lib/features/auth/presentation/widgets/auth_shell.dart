@@ -3,29 +3,24 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/l10n/app_localizations.dart';
 
 const double _authControlHeight = 56;
 
 class AuthShell extends StatelessWidget {
   const AuthShell({
     super.key,
-    required this.badge,
     required this.title,
-    required this.description,
     required this.form,
-    this.aside,
-    this.showCompactNarrative = true,
     this.enableFormAnimation = true,
+    this.leading,
+    this.centerTitle = false,
   });
 
-  final String badge;
   final String title;
-  final String description;
   final Widget form;
-  final Widget? aside;
-  final bool showCompactNarrative;
   final bool enableFormAnimation;
+  final Widget? leading;
+  final bool centerTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +32,6 @@ class AuthShell extends StatelessWidget {
     final typography = width < AppBreakpoints.mobile
         ? AppTypographyTokens.mobile(scheme.onSurface)
         : AppTypographyTokens.desktop(scheme.onSurface);
-    final isWide = width >= AppBreakpoints.desktop;
 
     return Scaffold(
       backgroundColor: surface.canvasSoft,
@@ -60,56 +54,64 @@ class AuthShell extends StatelessWidget {
             child: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: layout.maxContentWidth),
-                child: isWide
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: _AuthNarrativePanel(
-                              badge: badge,
-                              title: title,
-                              description: description,
-                              typography: typography,
-                              surface: surface,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacingTokens.xl),
-                          SizedBox(
-                            width: 420,
-                            child: _AuthFormPanel(
-                              form: form,
-                              surface: surface,
-                              enableAnimation: enableFormAnimation,
-                            ),
-                          ),
-                        ],
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (showCompactNarrative) ...[
-                            _AuthNarrativePanel(
-                              badge: badge,
-                              title: title,
-                              description: description,
-                              typography: typography,
-                              surface: surface,
-                              compact: true,
-                            ),
-                            const SizedBox(height: AppSpacingTokens.lg),
-                          ],
-                          _AuthFormPanel(
-                            form: form,
-                            surface: surface,
-                            enableAnimation: enableFormAnimation,
-                          ),
-                        ],
-                      ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _AuthPageHeader(
+                      title: title,
+                      leading: leading,
+                      centerTitle: centerTitle,
+                      typography: typography,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.lg),
+                    _AuthFormPanel(
+                      form: form,
+                      surface: surface,
+                      enableAnimation: enableFormAnimation,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AuthPageHeader extends StatelessWidget {
+  const _AuthPageHeader({
+    required this.title,
+    required this.leading,
+    required this.centerTitle,
+    required this.typography,
+  });
+
+  final String title;
+  final Widget? leading;
+  final bool centerTitle;
+  final AppTypographyScale typography;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 48,
+          child: leading == null
+              ? null
+              : Align(alignment: Alignment.centerLeft, child: leading),
+        ),
+        Expanded(
+          child: Text(
+            title,
+            textAlign: centerTitle ? TextAlign.center : TextAlign.left,
+            style: typography.displaySm,
+          ),
+        ),
+        const SizedBox(width: 48),
+      ],
     );
   }
 }
@@ -132,85 +134,6 @@ class AuthSectionCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.lg),
         child: child,
-      ),
-    );
-  }
-}
-
-class _AuthNarrativePanel extends StatelessWidget {
-  const _AuthNarrativePanel({
-    required this.badge,
-    required this.title,
-    required this.description,
-    required this.typography,
-    required this.surface,
-    this.compact = false,
-  });
-
-  final String badge;
-  final String title;
-  final String description;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-  final bool compact;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            AppColorTokens.canvas,
-            AppColorTokens.canvasSoft,
-            AppColorTokens.linkSoft,
-          ],
-        ),
-        border: Border.all(color: surface.hairline),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(
-          compact ? AppSpacingTokens.lg : AppSpacingTokens.xl,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.sm,
-                vertical: AppSpacingTokens.xs,
-              ),
-              decoration: BoxDecoration(
-                color: surface.canvas,
-                borderRadius: BorderRadius.circular(AppRadiusTokens.full),
-                border: Border.all(color: surface.hairline),
-              ),
-              child: Text(
-                badge,
-                style: typography.captionMono.copyWith(color: surface.body),
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.lg),
-            Text(title, style: typography.displayXl),
-            const SizedBox(height: AppSpacingTokens.sm),
-            Text(
-              description,
-              style: typography.bodyMd.copyWith(color: surface.body),
-            ),
-            if (!compact) ...[
-              const SizedBox(height: AppSpacingTokens.xl),
-              Text(
-                l10n?.authInfraHint ??
-                    'Secure session storage, Lucent-backed localized responses, and session restore are already wired beneath this form layer.',
-                style: typography.bodySm.copyWith(color: surface.mute),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }
@@ -376,39 +299,6 @@ class _AuthControlFrame extends StatelessWidget {
         ),
         child: ClipRRect(borderRadius: borderRadius, child: child),
       ),
-    );
-  }
-}
-
-class AuthFormHeader extends StatelessWidget {
-  const AuthFormHeader({
-    super.key,
-    required this.title,
-    required this.description,
-  });
-
-  final String title;
-  final String description;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: typography.displayMd),
-        const SizedBox(height: AppSpacingTokens.sm),
-        Text(
-          description,
-          style: typography.bodySm.copyWith(color: surface.body),
-        ),
-      ],
     );
   }
 }

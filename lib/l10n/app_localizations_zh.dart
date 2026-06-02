@@ -39,10 +39,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get desktopSidebarHelpToast => '会打开帮助与支持。';
 
   @override
-  String get settingsPageDescription =>
-      '把账号、主题、语言、通知和低频设置集中在一个独立页面里，避免继续堆在我的页下面。';
-
-  @override
   String get recordPageDescription => '日历、时间线与多类型每日记录会从这里生长出来。';
 
   @override
@@ -1197,36 +1193,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todaySectionSubtitle => '新的首页会从这里逐步接入提醒、快照、喝水与 Lumi 建议。';
 
   @override
-  String get authLoginBadge => '认证 / 登录';
-
-  @override
-  String get authRegisterBadge => '认证 / 注册';
-
-  @override
-  String get authLoginTitle => '用更克制的方式登录。';
-
-  @override
-  String get authLoginDescription =>
-      '使用 Lucent 账号进入新的用药主线，后续再逐步解锁提醒、快照和多语言健康流程。';
-
-  @override
-  String get authRegisterTitle => '先把干净版本搭起来。';
-
-  @override
-  String get authRegisterDescription =>
-      '先完成注册，再在 Lucent 之上逐步生长用药计划、提醒和多语言健康能力。';
-
-  @override
   String get authWelcomeBack => '欢迎回来';
 
   @override
   String get authCreateAccount => '创建账号';
-
-  @override
-  String get authLoginLead => '先输入邮箱，再选择密码登录或验证码登录。';
-
-  @override
-  String get authRegisterLead => '先验证邮箱，再设置密码。昵称可选。';
 
   @override
   String get authModePassword => '密码';
@@ -1300,21 +1270,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authRememberPasswordPrompt => '想起密码了？';
 
   @override
-  String get authForgotPasswordBadge => '认证 / 重置';
-
-  @override
-  String get authForgotPasswordTitle => '通过邮箱重置密码。';
-
-  @override
-  String get authForgotPasswordDescription => '发送验证码，设置新密码，然后回到登录页重新登录。';
-
-  @override
-  String get authResetPasswordTitle => '重置密码';
-
-  @override
-  String get authResetPasswordLead => '使用账号绑定的邮箱接收重置验证码。';
-
-  @override
   String get authNewPasswordLabel => '新密码';
 
   @override
@@ -1330,21 +1285,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authResetPasswordSuccess => '密码已更新，请重新登录。';
 
   @override
-  String get authChangeEmailBadge => '认证 / 邮箱';
-
-  @override
-  String get authChangeEmailTitle => '谨慎更换账号邮箱。';
-
-  @override
-  String get authChangeEmailDescription => '先验证新邮箱，再把它设为账号登录邮箱。';
-
-  @override
   String get authChangeEmailFormTitle => '更换邮箱';
-
-  @override
-  String authChangeEmailLead(String email) {
-    return '当前邮箱：$email';
-  }
 
   @override
   String get authChangeEmailSignedOutLead => '请先登录，再更换账号邮箱。';
@@ -1357,16 +1298,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get authChangeEmailSuccess => '邮箱已更新。';
-
-  @override
-  String get authAccountSettingsBadge => '认证 / 账号';
-
-  @override
-  String get authAccountSettingsTitle => '把账号信息和安全动作收在一个地方。';
-
-  @override
-  String get authAccountSettingsDescription =>
-      '这里直接承接 Lucent 的资料更新、改邮箱、改密码和注销账号接口，不再停留在占位按钮。';
 
   @override
   String get authAccountSettingsFormTitle => '账号与安全';
@@ -1447,11 +1378,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authBackHomePrompt => '返回首页？';
 
   @override
-  String authSignedInAs(String email) {
-    return '当前已登录：$email';
-  }
-
-  @override
   String get authCheckingSession => '正在检查登录状态...';
 
   @override
@@ -1465,9 +1391,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get authSignOut => '退出登录';
-
-  @override
-  String get authInfraHint => '安全 token 存储、Lucent 多语言响应与会话恢复能力已经接到这层表单之下。';
 
   @override
   String get todayHeroTitle => '今日';

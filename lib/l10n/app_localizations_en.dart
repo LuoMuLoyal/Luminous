@@ -39,10 +39,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get desktopSidebarHelpToast => 'This will open help and support.';
 
   @override
-  String get settingsPageDescription =>
-      'Keep account, theme, language, notifications, and lower-frequency settings on one dedicated page instead of stacking them under Mine.';
-
-  @override
   String get recordPageDescription =>
       'Calendar, timeline, and multi-type daily records will grow here.';
 
@@ -1271,38 +1267,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The new home will gradually attach reminders, snapshots, water tracking, and Lumi guidance here.';
 
   @override
-  String get authLoginBadge => 'AUTH / LOGIN';
-
-  @override
-  String get authRegisterBadge => 'AUTH / REGISTER';
-
-  @override
-  String get authLoginTitle => 'Sign in with calm, not clutter.';
-
-  @override
-  String get authLoginDescription =>
-      'Use your Lucent account to enter the rebuilt medication flow, then layer in reminders, snapshots, and multilingual health routines.';
-
-  @override
-  String get authRegisterTitle => 'Create the clean version first.';
-
-  @override
-  String get authRegisterDescription =>
-      'Register once, then grow medication plans, reminders, and multilingual health workflows on top of Lucent.';
-
-  @override
   String get authWelcomeBack => 'Welcome back';
 
   @override
   String get authCreateAccount => 'Create account';
-
-  @override
-  String get authLoginLead =>
-      'Start with email, then choose password or verification code.';
-
-  @override
-  String get authRegisterLead =>
-      'Verify your email, then set a password. Nickname is optional.';
 
   @override
   String get authModePassword => 'Password';
@@ -1378,23 +1346,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authRememberPasswordPrompt => 'Remember your password?';
 
   @override
-  String get authForgotPasswordBadge => 'AUTH / RESET';
-
-  @override
-  String get authForgotPasswordTitle => 'Reset password from your email.';
-
-  @override
-  String get authForgotPasswordDescription =>
-      'Send a verification code, set a new password, then return to sign in.';
-
-  @override
-  String get authResetPasswordTitle => 'Reset password';
-
-  @override
-  String get authResetPasswordLead =>
-      'Use the email attached to your account to receive a reset code.';
-
-  @override
   String get authNewPasswordLabel => 'New password';
 
   @override
@@ -1411,22 +1362,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Password updated. Please sign in again.';
 
   @override
-  String get authChangeEmailBadge => 'AUTH / EMAIL';
-
-  @override
-  String get authChangeEmailTitle => 'Move account email carefully.';
-
-  @override
-  String get authChangeEmailDescription =>
-      'Verify the new address before it becomes the account login email.';
-
-  @override
   String get authChangeEmailFormTitle => 'Change email';
-
-  @override
-  String authChangeEmailLead(String email) {
-    return 'Current email: $email';
-  }
 
   @override
   String get authChangeEmailSignedOutLead =>
@@ -1440,17 +1376,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authChangeEmailSuccess => 'Email updated.';
-
-  @override
-  String get authAccountSettingsBadge => 'AUTH / ACCOUNT';
-
-  @override
-  String get authAccountSettingsTitle =>
-      'Keep account details and security actions in one place.';
-
-  @override
-  String get authAccountSettingsDescription =>
-      'This page now fronts Lucent profile updates, email change, password change, and account deletion instead of stopping at placeholder actions.';
 
   @override
   String get authAccountSettingsFormTitle => 'Account and security';
@@ -1537,11 +1462,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authBackHomePrompt => 'Back to home?';
 
   @override
-  String authSignedInAs(String email) {
-    return 'Signed in as $email';
-  }
-
-  @override
   String get authCheckingSession => 'Checking session...';
 
   @override
@@ -1555,10 +1475,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authSignOut => 'Sign out';
-
-  @override
-  String get authInfraHint =>
-      'Secure session storage, Lucent-backed localized responses, and session restore are already wired beneath this form layer.';
 
   @override
   String get todayHeroTitle => 'Today';

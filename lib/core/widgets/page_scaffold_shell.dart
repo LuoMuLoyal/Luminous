@@ -10,6 +10,8 @@ class PageScaffoldShell extends StatelessWidget {
     required this.title,
     this.description,
     this.actions,
+    this.leading,
+    this.centerTitle = false,
     required this.children,
     this.scrollable = true,
   });
@@ -17,6 +19,8 @@ class PageScaffoldShell extends StatelessWidget {
   final String title;
   final String? description;
   final List<Widget>? actions;
+  final Widget? leading;
+  final bool centerTitle;
   final List<Widget> children;
   final bool scrollable;
 
@@ -37,6 +41,8 @@ class PageScaffoldShell extends StatelessWidget {
           title: title,
           description: description,
           actions: actions,
+          leading: leading,
+          centerTitle: centerTitle,
           typography: typography,
           surface: surface,
         ),
@@ -139,6 +145,8 @@ class _PageHeader extends StatelessWidget {
     required this.title,
     required this.description,
     required this.actions,
+    required this.leading,
+    required this.centerTitle,
     required this.typography,
     required this.surface,
   });
@@ -146,14 +154,58 @@ class _PageHeader extends StatelessWidget {
   final String title;
   final String? description;
   final List<Widget>? actions;
+  final Widget? leading;
+  final bool centerTitle;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    if (centerTitle && description == null) {
+      return Row(
+        children: [
+          SizedBox(
+            width: 48,
+            child: leading == null
+                ? null
+                : Align(alignment: Alignment.centerLeft, child: leading),
+          ),
+          Expanded(
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: typography.displaySm,
+            ),
+          ),
+          SizedBox(
+            width: 48,
+            child: actions != null && actions!.isNotEmpty
+                ? Align(
+                    alignment: Alignment.centerRight,
+                    child: actions!.length == 1
+                        ? actions!.first
+                        : Wrap(
+                            spacing: AppSpacingTokens.sm,
+                            runSpacing: AppSpacingTokens.sm,
+                            alignment: WrapAlignment.end,
+                            children: actions!,
+                          ),
+                  )
+                : null,
+          ),
+        ],
+      );
+    }
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (leading != null) ...[
+          Padding(
+            padding: const EdgeInsets.only(right: AppSpacingTokens.md),
+            child: leading!,
+          ),
+        ],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

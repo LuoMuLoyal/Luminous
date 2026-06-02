@@ -158,12 +158,6 @@ abstract class AppLocalizations {
   /// **'会打开帮助与支持。'**
   String get desktopSidebarHelpToast;
 
-  /// No description provided for @settingsPageDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'把账号、主题、语言、通知和低频设置集中在一个独立页面里，避免继续堆在我的页下面。'**
-  String get settingsPageDescription;
-
   /// No description provided for @recordPageDescription.
   ///
   /// In zh, this message translates to:
@@ -2444,42 +2438,6 @@ abstract class AppLocalizations {
   /// **'新的首页会从这里逐步接入提醒、快照、喝水与 Lumi 建议。'**
   String get todaySectionSubtitle;
 
-  /// No description provided for @authLoginBadge.
-  ///
-  /// In zh, this message translates to:
-  /// **'认证 / 登录'**
-  String get authLoginBadge;
-
-  /// No description provided for @authRegisterBadge.
-  ///
-  /// In zh, this message translates to:
-  /// **'认证 / 注册'**
-  String get authRegisterBadge;
-
-  /// No description provided for @authLoginTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'用更克制的方式登录。'**
-  String get authLoginTitle;
-
-  /// No description provided for @authLoginDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'使用 Lucent 账号进入新的用药主线，后续再逐步解锁提醒、快照和多语言健康流程。'**
-  String get authLoginDescription;
-
-  /// No description provided for @authRegisterTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'先把干净版本搭起来。'**
-  String get authRegisterTitle;
-
-  /// No description provided for @authRegisterDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'先完成注册，再在 Lucent 之上逐步生长用药计划、提醒和多语言健康能力。'**
-  String get authRegisterDescription;
-
   /// No description provided for @authWelcomeBack.
   ///
   /// In zh, this message translates to:
@@ -2491,18 +2449,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'创建账号'**
   String get authCreateAccount;
-
-  /// No description provided for @authLoginLead.
-  ///
-  /// In zh, this message translates to:
-  /// **'先输入邮箱，再选择密码登录或验证码登录。'**
-  String get authLoginLead;
-
-  /// No description provided for @authRegisterLead.
-  ///
-  /// In zh, this message translates to:
-  /// **'先验证邮箱，再设置密码。昵称可选。'**
-  String get authRegisterLead;
 
   /// No description provided for @authModePassword.
   ///
@@ -2642,36 +2588,6 @@ abstract class AppLocalizations {
   /// **'想起密码了？'**
   String get authRememberPasswordPrompt;
 
-  /// No description provided for @authForgotPasswordBadge.
-  ///
-  /// In zh, this message translates to:
-  /// **'认证 / 重置'**
-  String get authForgotPasswordBadge;
-
-  /// No description provided for @authForgotPasswordTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'通过邮箱重置密码。'**
-  String get authForgotPasswordTitle;
-
-  /// No description provided for @authForgotPasswordDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'发送验证码，设置新密码，然后回到登录页重新登录。'**
-  String get authForgotPasswordDescription;
-
-  /// No description provided for @authResetPasswordTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'重置密码'**
-  String get authResetPasswordTitle;
-
-  /// No description provided for @authResetPasswordLead.
-  ///
-  /// In zh, this message translates to:
-  /// **'使用账号绑定的邮箱接收重置验证码。'**
-  String get authResetPasswordLead;
-
   /// No description provided for @authNewPasswordLabel.
   ///
   /// In zh, this message translates to:
@@ -2702,35 +2618,11 @@ abstract class AppLocalizations {
   /// **'密码已更新，请重新登录。'**
   String get authResetPasswordSuccess;
 
-  /// No description provided for @authChangeEmailBadge.
-  ///
-  /// In zh, this message translates to:
-  /// **'认证 / 邮箱'**
-  String get authChangeEmailBadge;
-
-  /// No description provided for @authChangeEmailTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'谨慎更换账号邮箱。'**
-  String get authChangeEmailTitle;
-
-  /// No description provided for @authChangeEmailDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'先验证新邮箱，再把它设为账号登录邮箱。'**
-  String get authChangeEmailDescription;
-
   /// No description provided for @authChangeEmailFormTitle.
   ///
   /// In zh, this message translates to:
   /// **'更换邮箱'**
   String get authChangeEmailFormTitle;
-
-  /// No description provided for @authChangeEmailLead.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前邮箱：{email}'**
-  String authChangeEmailLead(String email);
 
   /// No description provided for @authChangeEmailSignedOutLead.
   ///
@@ -2755,24 +2647,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'邮箱已更新。'**
   String get authChangeEmailSuccess;
-
-  /// No description provided for @authAccountSettingsBadge.
-  ///
-  /// In zh, this message translates to:
-  /// **'认证 / 账号'**
-  String get authAccountSettingsBadge;
-
-  /// No description provided for @authAccountSettingsTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'把账号信息和安全动作收在一个地方。'**
-  String get authAccountSettingsTitle;
-
-  /// No description provided for @authAccountSettingsDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'这里直接承接 Lucent 的资料更新、改邮箱、改密码和注销账号接口，不再停留在占位按钮。'**
-  String get authAccountSettingsDescription;
 
   /// No description provided for @authAccountSettingsFormTitle.
   ///
@@ -2924,12 +2798,6 @@ abstract class AppLocalizations {
   /// **'返回首页？'**
   String get authBackHomePrompt;
 
-  /// No description provided for @authSignedInAs.
-  ///
-  /// In zh, this message translates to:
-  /// **'当前已登录：{email}'**
-  String authSignedInAs(String email);
-
   /// No description provided for @authCheckingSession.
   ///
   /// In zh, this message translates to:
@@ -2959,12 +2827,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'退出登录'**
   String get authSignOut;
-
-  /// No description provided for @authInfraHint.
-  ///
-  /// In zh, this message translates to:
-  /// **'安全 token 存储、Lucent 多语言响应与会话恢复能力已经接到这层表单之下。'**
-  String get authInfraHint;
 
   /// No description provided for @todayHeroTitle.
   ///

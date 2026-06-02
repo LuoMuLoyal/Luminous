@@ -13,6 +13,18 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - The new settings page keeps the current Luminous surface style, uses grouped list sections inspired by the referenced settings layout, and ends with a standalone footer sign-out action.
 - Added zh/en localization for the settings-page description and widget coverage for Mine -> Settings, Settings -> Account, and Settings footer logout routing.
 
+### Settings Page Cleanup
+
+- Removed low-value explanatory copy from the standalone settings page and from the currently linked account/settings subpages.
+- Settings, account settings, and change-email pages now use a standard child-page header: left back arrow plus centered title.
+- Kept spacing, radius, and section sizing aligned with the existing app surfaces instead of introducing a separate settings-page style.
+
+### Auth Page Copy Cleanup
+
+- Removed narrative, badge, and explanatory header copy from the auth entry pages that do not need it in normal app flow.
+- Simplified login, register, and forgot-password pages to standard centered-title form pages instead of hybrid narrative panels.
+- Project agent rules now explicitly forbid default explanatory/marketing-style page copy and require standard back-arrow child-page headers for in-app secondary pages.
+
 ### Auth Startup Restore + Mine Logout Wiring
 
 - `LuminousApp` now restores `authSessionProvider` once during app startup, so persisted Lucent sessions can recover before the user re-enters auth flows manually.

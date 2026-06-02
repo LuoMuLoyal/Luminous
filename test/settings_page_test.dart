@@ -33,12 +33,43 @@ void main() {
     expect(find.byKey(const Key('settings-group-account')), findsOneWidget);
     expect(find.byKey(const Key('settings-group-preferences')), findsOneWidget);
     expect(find.byKey(const Key('settings-group-more')), findsOneWidget);
+    expect(find.text('设置'), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back_ios_new_rounded), findsOneWidget);
     expect(find.text('账号与安全'), findsOneWidget);
     expect(find.text('主题模式'), findsOneWidget);
     expect(find.text('语言'), findsOneWidget);
     expect(find.text('通知设置'), findsOneWidget);
     expect(find.text('更多设置'), findsOneWidget);
     expect(find.text('退出登录'), findsOneWidget);
+  });
+
+  testWidgets('Settings back button routes to previous page', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) =>
+              const Scaffold(body: Text('mine-page')),
+        ),
+        GoRoute(
+          path: '/settings',
+          builder: (context, state) => const SettingsPage(),
+        ),
+      ],
+    );
+
+    await _pumpSettingsPage(tester, router: router);
+
+    router.push('/settings');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.arrow_back_ios_new_rounded).first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('mine-page'), findsOneWidget);
   });
 
   testWidgets('Settings account row routes to account settings page', (

@@ -38,6 +38,8 @@ cd ../.. && flutter pub get
 - All page-level error states must use `AppStateErrorView` (from `lib/core/widgets/app_state_views.dart`) instead of hand-written error views. This ensures centered, scrollable layout with consistent icon/tone/action patterns.
 - All page loading states must use shimmer skeleton screens (`Shimmer.fromColors` from `shimmer` package) instead of `CircularProgressIndicator` or plain colored blocks. Reuse `AppStateSkeletonView` when the loading view is not nested inside another scrollable, or define a local `Column` + `_SkeletonBlock` when it is.
 - When refining app UI, prefer flatter surfaces over nested boxes, and align high-level layout/metrics with the approved concept images instead of adding explanatory placeholder copy.
+- Do not add explanatory, narrative, onboarding, or marketing-style copy to normal app pages by default. Keep user-visible text limited to necessary titles, labels, values, statuses, and actions.
+- Child pages reached from settings, mine, or other in-app navigation should default to a standard app header: left back arrow and centered title. Avoid hero-style headers or extra descriptive paragraphs unless the task explicitly requires them.
 
 ## Docs
 

@@ -62,21 +62,14 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
         : null;
 
     return AuthShell(
-      badge: l10n.authAccountSettingsBadge,
-      title: l10n.authAccountSettingsTitle,
-      description: l10n.authAccountSettingsDescription,
+      title: l10n.authAccountSettingsFormTitle,
+      leading: _AuthBackButton(onTap: () => context.pop()),
+      centerTitle: true,
       enableFormAnimation: widget.enableFormAnimation,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AuthFormHeader(
-            title: l10n.authAccountSettingsFormTitle,
-            description: signedOut
-                ? l10n.authAccountSettingsSignedOutLead
-                : l10n.authSignedInAs(user.email),
-          ),
-          const SizedBox(height: AppSpacingTokens.xl),
           if (signedOut) ...[
             AuthStatusMessage(error: l10n.authNotSignedIn),
             const SizedBox(height: AppSpacingTokens.lg),
@@ -92,11 +85,6 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
                   Text(
                     l10n.authProfileSectionTitle,
                     style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  Text(
-                    l10n.authProfileSectionDescription,
-                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(height: AppSpacingTokens.lg),
                   AuthTextField(
@@ -140,13 +128,6 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
                     l10n.authEmailSectionTitle,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  Text(
-                    user.emailVerified
-                        ? l10n.authEmailVerifiedDescription
-                        : l10n.authEmailUnverifiedDescription,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
                   const SizedBox(height: AppSpacingTokens.lg),
                   AuthTextField(
                     controller: _emailController,
@@ -169,11 +150,6 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
                   Text(
                     l10n.authPasswordSectionTitle,
                     style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  Text(
-                    l10n.authPasswordSectionDescription,
-                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(height: AppSpacingTokens.lg),
                   AuthTextField(
@@ -239,11 +215,6 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
                     l10n.authDeleteAccountSectionTitle,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  Text(
-                    l10n.authDeleteAccountSectionDescription,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
                   const SizedBox(height: AppSpacingTokens.lg),
                   AuthTextField(
                     controller: _deletePasswordController,
@@ -294,6 +265,24 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
             ],
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _AuthBackButton extends StatelessWidget {
+  const _AuthBackButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+      child: const Padding(
+        padding: EdgeInsets.all(AppSpacingTokens.xs),
+        child: Icon(Icons.arrow_back_ios_new_rounded, size: 18),
       ),
     );
   }
