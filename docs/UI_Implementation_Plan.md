@@ -18,6 +18,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Record concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, and toast-only mock actions
 - Mine concept-aligned mock dashboard UI with repository/provider boundary, mobile profile/plans/privacy surface, and desktop status/onboarding/settings side rail
 - Mine signed-out state now stays on the same static dashboard structure with a login notice instead of page-level skeleton loading
+- Standalone Settings page at `/settings` now owns theme/language/notification/account-entry settings, while Mine stays focused on dashboard content and entry actions
 - More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
 - Medicine mobile-first mock workspace UI with repository/provider boundary
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel
@@ -29,7 +30,7 @@ Restored: Search now uses real Lucent medicine search/detail API. Still pending:
 1. Connect Today mock data to API-ready datasource/repository implementations.
 2. Connect More mock repository to real emergency, device, tool, and environment data sources.
 3. Replace medicine mock data with Lucent-backed search, recognition, detail, add-to-drugbox, and reminder flows.
-4. Connect Mine mock repository to Lucent account/profile/health-context reads and add a Mine/settings theme selector for `system / light / dark`.
+4. Connect Mine mock repository to Lucent account/profile/health-context reads and keep the standalone settings route wired to real theme/account actions.
 5. Add palette variants after the fixed-token surfaces have been reduced.
 
 ## Rules

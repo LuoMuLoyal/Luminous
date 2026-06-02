@@ -6,6 +6,13 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-02
 
+### Standalone Settings Page
+
+- Added a dedicated `/settings` page so theme, language, notification, and account-entry settings no longer render inline under Mine.
+- Mine header settings action and the desktop sidebar settings action now route to the real settings page instead of showing a placeholder toast.
+- The new settings page keeps the current Luminous surface style, uses grouped list sections inspired by the referenced settings layout, and ends with a standalone footer sign-out action.
+- Added zh/en localization for the settings-page description and widget coverage for Mine -> Settings, Settings -> Account, and Settings footer logout routing.
+
 ### Auth Startup Restore + Mine Logout Wiring
 
 - `LuminousApp` now restores `authSessionProvider` once during app startup, so persisted Lucent sessions can recover before the user re-enters auth flows manually.
