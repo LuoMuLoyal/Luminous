@@ -33,7 +33,6 @@ void main() {
       'mine-profile-grid',
       'mine-plan-center',
       'mine-report-privacy',
-      'mine-settings',
     ];
 
     for (final key in keys) {
@@ -49,7 +48,6 @@ void main() {
     expect(find.text('健康计划中心'), findsOneWidget);
     expect(find.text('健康报告'), findsOneWidget);
     expect(find.text('隐私控制'), findsOneWidget);
-    expect(find.text('设置与支持'), findsOneWidget);
   });
 
   testWidgets('Mine page renders desktop side panels', (tester) async {
@@ -68,11 +66,9 @@ void main() {
     expect(find.byKey(const Key('mine-status-panel')), findsOneWidget);
     expect(find.byKey(const Key('mine-onboarding-panel')), findsOneWidget);
     expect(find.byKey(const Key('mine-quick-entries-panel')), findsOneWidget);
-    expect(find.byKey(const Key('mine-settings-panel')), findsOneWidget);
     expect(find.text('档案状态'), findsOneWidget);
     expect(find.text('Onboarding 进度'), findsOneWidget);
     expect(find.text('快捷入口'), findsOneWidget);
-    expect(find.text('主题模式'), findsOneWidget);
   });
 
   testWidgets('Mine page renders signed-out static view without loading', (
@@ -182,7 +178,7 @@ void main() {
     expect(find.text('login-page'), findsOneWidget);
   });
 
-  testWidgets('Mine account setting routes to account settings page', (
+  testWidgets('Mine settings action routes to settings page', (
     tester,
   ) async {
     final container = ProviderContainer(
@@ -216,9 +212,9 @@ void main() {
             routes: [
               GoRoute(path: '/', builder: (context, state) => const MinePage()),
               GoRoute(
-                path: '/account',
+                path: '/settings',
                 builder: (context, state) =>
-                    const Scaffold(body: Text('account-settings-page')),
+                    const Scaffold(body: Text('settings-page')),
               ),
             ],
           ),
@@ -229,19 +225,10 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final settingsScroll = find.byType(Scrollable).first;
-    final accountSetting = find.text('账号与安全');
-    await tester.scrollUntilVisible(
-      accountSetting,
-      240,
-      scrollable: settingsScroll,
-    );
-    await tester.pump(const Duration(milliseconds: 200));
-
-    await tester.tap(accountSetting);
+    await tester.tap(find.byTooltip('设置'));
     await tester.pumpAndSettle();
 
-    expect(find.text('account-settings-page'), findsOneWidget);
+    expect(find.text('settings-page'), findsOneWidget);
   });
 
   test('Mine dashboard uses auth session email in account header', () async {

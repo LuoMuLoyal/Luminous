@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -173,10 +174,7 @@ class _DesktopSidebar extends StatelessWidget {
               _DesktopSidebarActionItem(
                 icon: Icons.settings_outlined,
                 label: l10n?.desktopSidebarSettings ?? '设置',
-                onTap: () => AppToast.show(
-                  context,
-                  l10n?.desktopSidebarSettingsToast ?? '会打开设置中心。',
-                ),
+                onTap: () => context.push('/settings'),
                 typography: typography,
               ),
               const SizedBox(height: AppSpacingTokens.xs),

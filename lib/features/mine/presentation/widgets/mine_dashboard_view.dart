@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/app_theme_controller.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_theme_sheet.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -79,16 +76,6 @@ class MineDashboardView extends StatelessWidget {
           typography: typography,
           surface: surface,
         ),
-        if (!isDesktop) ...[
-          const SizedBox(height: AppSpacingTokens.md),
-          _SettingsSection(
-            key: const Key('mine-settings'),
-            title: l10n.mineSettingsSectionTitle,
-            dashboard: dashboard,
-            typography: typography,
-            surface: surface,
-          ),
-        ],
       ],
     );
 
@@ -124,14 +111,6 @@ class MineDashboardView extends StatelessWidget {
                       typography: typography,
                       surface: surface,
                       l10n: l10n,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.md),
-                    _SettingsSection(
-                      key: const Key('mine-settings-panel'),
-                      title: l10n.mineSettingsPanelTitle,
-                      dashboard: dashboard,
-                      typography: typography,
-                      surface: surface,
                     ),
                   ],
                 ),
@@ -1273,87 +1252,6 @@ class _QuickEntriesPanel extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class _SettingsSection extends ConsumerWidget {
-  const _SettingsSection({
-    super.key,
-    required this.title,
-    required this.dashboard,
-    required this.typography,
-    required this.surface,
-  });
-
-  final String title;
-  final MineDashboard dashboard;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    final currentTheme =
-        ref.watch(appThemeControllerProvider).value ??
-        AppThemeModePreference.system;
-
-    return MineSectionSurface(
-      title: title,
-      typography: typography,
-      surface: surface,
-      child: Column(
-        children: [
-          for (var index = 0; index < dashboard.settings.length; index += 1)
-            MineSettingRow(
-              icon: dashboard.settings[index].icon,
-              title: mineCopy(l10n, dashboard.settings[index].titleKey),
-              value: _settingValue(
-                l10n,
-                dashboard.settings[index],
-                currentTheme,
-              ),
-              typography: typography,
-              surface: surface,
-              onTap: () =>
-                  _onSettingTap(context, ref, l10n, dashboard.settings[index]),
-              showDivider: index < dashboard.settings.length - 1,
-            ),
-        ],
-      ),
-    );
-  }
-
-  String? _settingValue(
-    AppLocalizations l10n,
-    MineSettingItem item,
-    AppThemeModePreference currentTheme,
-  ) {
-    if (item.titleKey != MineCopyKey.settingsThemeTitle) {
-      return item.valueKey == null ? null : mineCopy(l10n, item.valueKey!);
-    }
-    return switch (currentTheme) {
-      AppThemeModePreference.system => l10n.mineThemeModeSystem,
-      AppThemeModePreference.light => l10n.mineThemeModeLight,
-      AppThemeModePreference.dark => l10n.mineThemeModeDark,
-    };
-  }
-
-  void _onSettingTap(
-    BuildContext context,
-    WidgetRef ref,
-    AppLocalizations l10n,
-    MineSettingItem item,
-  ) {
-    if (item.titleKey == MineCopyKey.settingsThemeTitle) {
-      showModalBottomSheet(
-        context: context,
-        builder: (_) => const ThemeModeSheet(),
-      );
-    } else if (item.titleKey == MineCopyKey.settingsAccountTitle) {
-      context.push('/account');
-    } else {
-      showMineToast(context, mineCopy(l10n, item.titleKey));
-    }
   }
 }
 

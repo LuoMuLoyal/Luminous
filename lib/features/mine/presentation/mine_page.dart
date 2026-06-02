@@ -59,7 +59,7 @@ class MinePage extends ConsumerWidget {
           icon: Icons.settings_outlined,
           typography: typography,
           surface: surface,
-          onTap: () => showMineToast(context, l10n.mineHeaderSettings),
+          onTap: () => context.push('/settings'),
         ),
       ],
       children: [

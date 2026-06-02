@@ -39,6 +39,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get desktopSidebarHelpToast => '会打开帮助与支持。';
 
   @override
+  String get settingsPageDescription =>
+      '把账号、主题、语言、通知和低频设置集中在一个独立页面里，避免继续堆在我的页下面。';
+
+  @override
   String get recordPageDescription => '日历、时间线与多类型每日记录会从这里生长出来。';
 
   @override
@@ -673,7 +677,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineHeaderNotifications => '通知';
 
   @override
-  String get mineHeaderSettings => '页面设置';
+  String get mineHeaderSettings => '设置';
 
   @override
   String get mineAccountDisplayName => 'Lumi 用户';

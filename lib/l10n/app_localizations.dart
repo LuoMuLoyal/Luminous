@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'会打开帮助与支持。'**
   String get desktopSidebarHelpToast;
 
+  /// No description provided for @settingsPageDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'把账号、主题、语言、通知和低频设置集中在一个独立页面里，避免继续堆在我的页下面。'**
+  String get settingsPageDescription;
+
   /// No description provided for @recordPageDescription.
   ///
   /// In zh, this message translates to:
@@ -1415,7 +1421,7 @@ abstract class AppLocalizations {
   /// No description provided for @mineHeaderSettings.
   ///
   /// In zh, this message translates to:
-  /// **'页面设置'**
+  /// **'设置'**
   String get mineHeaderSettings;
 
   /// No description provided for @mineAccountDisplayName.

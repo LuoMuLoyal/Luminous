@@ -39,6 +39,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get desktopSidebarHelpToast => 'This will open help and support.';
 
   @override
+  String get settingsPageDescription =>
+      'Keep account, theme, language, notifications, and lower-frequency settings on one dedicated page instead of stacking them under Mine.';
+
+  @override
   String get recordPageDescription =>
       'Calendar, timeline, and multi-type daily records will grow here.';
 
@@ -720,7 +724,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineHeaderNotifications => 'Notifications';
 
   @override
-  String get mineHeaderSettings => 'Page settings';
+  String get mineHeaderSettings => 'Settings';
 
   @override
   String get mineAccountDisplayName => 'Lumi User';
