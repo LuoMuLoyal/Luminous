@@ -1019,6 +1019,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageEnglishLabel => 'English';
 
   @override
+  String get settingsSyncFailed => 'Failed to sync settings';
+
+  @override
   String get settingsNotificationsMedicationReminders => 'Medication reminders';
 
   @override

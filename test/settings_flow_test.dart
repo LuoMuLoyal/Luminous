@@ -2,13 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:dio/dio.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/app.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
+import 'package:luminous/features/settings/data/datasources/settings_profile_remote_data_source.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
+import 'package:luminous/features/settings/data/providers/settings_profile_data_providers.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/more_settings_page.dart';
@@ -16,7 +20,13 @@ import 'package:luminous/features/settings/presentation/pages/notification_setti
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+late _FakeSettingsProfileRemoteDataSource _fakeSettingsProfileRemote;
+
 void main() {
+  setUp(() {
+    _fakeSettingsProfileRemote = _FakeSettingsProfileRemoteDataSource();
+  });
+
   testWidgets(
     'Language settings updates a visible localized string and persists preference',
     (tester) async {
@@ -38,6 +48,7 @@ void main() {
 
       final preferences = await SharedPreferences.getInstance();
       expect(preferences.getString('app.locale'), 'en');
+      expect(_fakeSettingsProfileRemote.lastLocale, 'en');
 
       await tester.tap(find.byIcon(Icons.arrow_back_ios_new_rounded).first);
       await tester.pumpAndSettle();
@@ -121,6 +132,9 @@ Future<void> _pumpApp(
   final container = ProviderContainer(
     overrides: [
       authSessionProvider.overrideWith(() => _StaticAuthSessionNotifier()),
+      settingsProfileRemoteDataSourceProvider.overrideWithValue(
+        _fakeSettingsProfileRemote,
+      ),
       if (fakeNotificationPermission)
         notificationPermissionServiceProvider.overrideWith(
           (ref) => _FakeNotificationPermissionService(),
@@ -204,6 +218,49 @@ class _FakeNotificationPermissionService
   @override
   Future<NotificationPermissionState> requestPermission() async {
     return NotificationPermissionState.unsupported;
+  }
+}
+
+class _FakeSettingsProfileRemoteDataSource
+    extends SettingsProfileRemoteDataSource {
+  _FakeSettingsProfileRemoteDataSource()
+    : super(api: UserHealthContextApi(Dio()));
+
+  Object? lastLocale;
+
+  @override
+  Future<HealthContextDataDto> updatePreferences({
+    Object? locale,
+    Object? timezone,
+    UnitSystem? unitSystem,
+  }) async {
+    lastLocale = locale;
+    return HealthContextDataDto(
+      summary: UserHealthSummaryDto(
+        age: null,
+        onboardingCompleted: false,
+        activeAllergyCount: 0,
+        conditionCount: 0,
+        currentMedicineCount: 0,
+        missingCoreProfileFields: const [],
+      ),
+      profile: UserHealthProfileDto(
+        birthDate: null,
+        sexAtBirth: null,
+        heightCm: null,
+        pregnancyState: null,
+        lactationState: null,
+        bloodType: null,
+        locale: locale,
+        timezone: timezone,
+        unitSystem: unitSystem,
+        onboardingCompletedAt: null,
+        extras: const <String, Object>{},
+      ),
+      allergies: const [],
+      conditions: const [],
+      currentMedicines: const [],
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-01
+Last updated: 2026-06-02
 
 ## Files
 
@@ -21,6 +21,8 @@ Last updated: 2026-06-01
 - `ChangeEmailDto` follows Lucent contract: `newEmail` + `code`
 - `RegisterDto` follows Lucent contract: `email` + `password` + register-scene `code`; successful registration returns a verified email.
 - Re-generated from Lucent `openapi.json` on 2026-06-02 after the auth alignment pass. No business-layer SDK surface changes were required in `lib/core/network/`; the only package-level fix still needed after generation is keeping `packages/lucent_openapi/pubspec.yaml` aligned with app constraints (`sdk >=3.12.0 <4.0.0`, `json_annotation ^4.12.0`) before running `build_runner`.
+- Re-generated again on 2026-06-02 after Lucent added `PATCH /api/v1/me/health-context/profile`; current app usage only consumes the locale write path from settings.
+- Current generator/toolchain combo can still emit invalid nullable serialization in some generated `packages/lucent_openapi/lib/src/model/*.g.dart` files (`?instance.field`). After regeneration, verify the generated package actually compiles before assuming the client is healthy.
 
 ## Regenerate
 

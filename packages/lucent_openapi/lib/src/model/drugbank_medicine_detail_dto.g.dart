@@ -79,26 +79,33 @@ Map<String, dynamic> _$DrugbankMedicineDetailDtoToJson(
   DrugbankMedicineDetailDto instance,
 ) => <String, dynamic>{
   'kind': instance.kind,
-  'drugType': ?instance.drugType,
-  'state': ?instance.state,
-  'description': ?instance.description,
-  'indication': ?instance.indication,
-  'mechanismOfAction': ?instance.mechanismOfAction,
-  'pharmacodynamics': ?instance.pharmacodynamics,
-  'toxicity': ?instance.toxicity,
-  'metabolism': ?instance.metabolism,
-  'absorption': ?instance.absorption,
-  'halfLife': ?instance.halfLife,
-  'proteinBinding': ?instance.proteinBinding,
-  'routeOfElimination': ?instance.routeOfElimination,
-  'volumeOfDistribution': ?instance.volumeOfDistribution,
-  'clearance': ?instance.clearance,
+  if (instance.drugType != null) 'drugType': instance.drugType,
+  if (instance.state != null) 'state': instance.state,
+  if (instance.description != null) 'description': instance.description,
+  if (instance.indication != null) 'indication': instance.indication,
+  if (instance.mechanismOfAction != null)
+    'mechanismOfAction': instance.mechanismOfAction,
+  if (instance.pharmacodynamics != null)
+    'pharmacodynamics': instance.pharmacodynamics,
+  if (instance.toxicity != null) 'toxicity': instance.toxicity,
+  if (instance.metabolism != null) 'metabolism': instance.metabolism,
+  if (instance.absorption != null) 'absorption': instance.absorption,
+  if (instance.halfLife != null) 'halfLife': instance.halfLife,
+  if (instance.proteinBinding != null)
+    'proteinBinding': instance.proteinBinding,
+  if (instance.routeOfElimination != null)
+    'routeOfElimination': instance.routeOfElimination,
+  if (instance.volumeOfDistribution != null)
+    'volumeOfDistribution': instance.volumeOfDistribution,
+  if (instance.clearance != null) 'clearance': instance.clearance,
   'groups': instance.groups,
   'categories': instance.categories,
   'atcCodes': instance.atcCodes,
   'synonyms': instance.synonyms,
   'foodInteractions': instance.foodInteractions,
-  'drugInteractions': ?instance.drugInteractions,
-  'externalIdentifiers': ?instance.externalIdentifiers,
-  'externalLinks': ?instance.externalLinks,
+  if (instance.drugInteractions != null)
+    'drugInteractions': instance.drugInteractions,
+  if (instance.externalIdentifiers != null)
+    'externalIdentifiers': instance.externalIdentifiers,
+  if (instance.externalLinks != null) 'externalLinks': instance.externalLinks,
 };

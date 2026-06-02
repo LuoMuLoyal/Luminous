@@ -81,6 +81,7 @@ Class | Method | HTTP request | Description
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerGetMeHealthContextV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollergetmehealthcontextv1) | **GET** /api/v1/me/health-context | Get the current user health context aggregate
+[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerUpdateMeHealthContextProfileV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerupdatemehealthcontextprofilev1) | **PATCH** /api/v1/me/health-context/profile | Update the current user health-context profile preferences
 
 
 ## Documentation For Models
@@ -124,6 +125,7 @@ Class | Method | HTTP request | Description
  - [SuccessResponseDto](doc/SuccessResponseDto.md)
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
+ - [UpdateHealthContextProfileDto](doc/UpdateHealthContextProfileDto.md)
  - [UpdateMeDto](doc/UpdateMeDto.md)
  - [UserAllergyItemDto](doc/UserAllergyItemDto.md)
  - [UserAllergyKind](doc/UserAllergyKind.md)

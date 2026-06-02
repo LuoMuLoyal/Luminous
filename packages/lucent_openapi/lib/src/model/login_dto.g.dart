@@ -19,6 +19,6 @@ LoginDto _$LoginDtoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$LoginDtoToJson(LoginDto instance) => <String, dynamic>{
   'email': instance.email,
-  'password': ?instance.password,
-  'code': ?instance.code,
+  if (instance.password != null) 'password': instance.password,
+  if (instance.code != null) 'code': instance.code,
 };

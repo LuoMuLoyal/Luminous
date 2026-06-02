@@ -32,6 +32,7 @@ import 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_openapi/src/model/success_response_dto.dart';
 import 'package:lucent_openapi/src/model/tokens_dto.dart';
+import 'package:lucent_openapi/src/model/update_health_context_profile_dto.dart';
 import 'package:lucent_openapi/src/model/update_me_dto.dart';
 import 'package:lucent_openapi/src/model/user_allergy_item_dto.dart';
 import 'package:lucent_openapi/src/model/user_brief_dto.dart';
@@ -145,6 +146,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
         case 'UnitSystem':
           
           
+        case 'UpdateHealthContextProfileDto':
+          return UpdateHealthContextProfileDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UpdateMeDto':
           return UpdateMeDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UserAllergyItemDto':

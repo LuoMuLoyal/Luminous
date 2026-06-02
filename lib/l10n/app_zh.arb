@@ -340,6 +340,7 @@
   "settingsLanguageSystemLabel": "跟随系统",
   "settingsLanguageChineseLabel": "简体中文",
   "settingsLanguageEnglishLabel": "English",
+  "settingsSyncFailed": "同步设置失败",
   "settingsNotificationsMedicationReminders": "用药提醒",
   "settingsNotificationsHealthAlerts": "健康提醒",
   "settingsNotificationsWeeklySummary": "每周摘要",

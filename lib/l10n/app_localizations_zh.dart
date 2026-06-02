@@ -967,6 +967,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsLanguageEnglishLabel => 'English';
 
   @override
+  String get settingsSyncFailed => '同步设置失败';
+
+  @override
   String get settingsNotificationsMedicationReminders => '用药提醒';
 
   @override

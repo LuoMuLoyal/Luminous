@@ -23,5 +23,5 @@ Map<String, dynamic> _$RegisterDtoToJson(RegisterDto instance) =>
       'email': instance.email,
       'password': instance.password,
       'code': instance.code,
-      'nickname': ?instance.nickname,
+      if (instance.nickname != null) 'nickname': instance.nickname,
     };

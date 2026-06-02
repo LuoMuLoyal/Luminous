@@ -17,6 +17,6 @@ UpdateMeDto _$UpdateMeDtoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$UpdateMeDtoToJson(UpdateMeDto instance) =>
     <String, dynamic>{
-      'nickname': ?instance.nickname,
-      'avatar': ?instance.avatar,
+      if (instance.nickname != null) 'nickname': instance.nickname,
+      if (instance.avatar != null) 'avatar': instance.avatar,
     };

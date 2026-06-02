@@ -53,6 +53,7 @@ export 'package:lucent_openapi/src/model/sex_at_birth.dart';
 export 'package:lucent_openapi/src/model/success_response_dto.dart';
 export 'package:lucent_openapi/src/model/tokens_dto.dart';
 export 'package:lucent_openapi/src/model/unit_system.dart';
+export 'package:lucent_openapi/src/model/update_health_context_profile_dto.dart';
 export 'package:lucent_openapi/src/model/update_me_dto.dart';
 export 'package:lucent_openapi/src/model/user_allergy_item_dto.dart';
 export 'package:lucent_openapi/src/model/user_allergy_kind.dart';

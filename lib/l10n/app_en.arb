@@ -340,6 +340,7 @@
   "settingsLanguageSystemLabel": "Follow system",
   "settingsLanguageChineseLabel": "Simplified Chinese",
   "settingsLanguageEnglishLabel": "English",
+  "settingsSyncFailed": "Failed to sync settings",
   "settingsNotificationsMedicationReminders": "Medication reminders",
   "settingsNotificationsHealthAlerts": "Health alerts",
   "settingsNotificationsWeeklySummary": "Weekly summary",

@@ -1994,6 +1994,12 @@ abstract class AppLocalizations {
   /// **'English'**
   String get settingsLanguageEnglishLabel;
 
+  /// No description provided for @settingsSyncFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步设置失败'**
+  String get settingsSyncFailed;
+
   /// No description provided for @settingsNotificationsMedicationReminders.
   ///
   /// In zh, this message translates to:
