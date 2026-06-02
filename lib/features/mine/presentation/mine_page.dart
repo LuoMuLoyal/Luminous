@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -29,6 +30,22 @@ class MinePage extends ConsumerWidget {
       title: l10n.tabMine,
       description: l10n.minePageDescription,
       actions: [
+        if (authSession.isAuthenticated)
+          MineHeaderActionChip(
+            label: l10n.authSignOut,
+            icon: Icons.logout_rounded,
+            typography: typography,
+            surface: surface,
+            onTap: authSession.isLoading
+                ? null
+                : () async {
+                    await ref.read(authSessionProvider.notifier).logout();
+                    if (!context.mounted) {
+                      return;
+                    }
+                    context.go('/login');
+                  },
+          ),
         if (width >= AppBreakpoints.desktop)
           MineHeaderActionChip(
             label: l10n.mineHeaderNotifications,

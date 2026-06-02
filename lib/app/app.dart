@@ -4,13 +4,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class LuminousApp extends ConsumerWidget {
-  const LuminousApp({super.key});
+class LuminousApp extends ConsumerStatefulWidget {
+  const LuminousApp({super.key, this.routerConfig});
+
+  final RouterConfig<Object>? routerConfig;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LuminousApp> createState() => _LuminousAppState();
+}
+
+class _LuminousAppState extends ConsumerState<LuminousApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ref.read(authSessionProvider.notifier).restore();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeMode = ref
         .watch(appThemeControllerProvider)
         .maybeWhen(
@@ -32,7 +51,7 @@ class LuminousApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: router,
+      routerConfig: widget.routerConfig ?? router,
     );
   }
 }
