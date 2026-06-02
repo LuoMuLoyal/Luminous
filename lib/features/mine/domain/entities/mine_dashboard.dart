@@ -32,6 +32,7 @@ class MineAccount {
   const MineAccount({
     required this.isAuthenticated,
     required this.displayNameKey,
+    this.displayName,
     required this.email,
     required this.statusKey,
     required this.metaKey,
@@ -39,6 +40,7 @@ class MineAccount {
 
   final bool isAuthenticated;
   final MineCopyKey displayNameKey;
+  final String? displayName;
   final String email;
   final MineCopyKey statusKey;
   final MineCopyKey metaKey;

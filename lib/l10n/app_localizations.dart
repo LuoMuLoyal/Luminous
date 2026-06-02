@@ -1388,12 +1388,6 @@ abstract class AppLocalizations {
   /// **'请检查网络连接后重试。'**
   String get medicineSearchErrorDescription;
 
-  /// No description provided for @minePageDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'档案、目标、隐私与账号设置会在这里重建。'**
-  String get minePageDescription;
-
   /// No description provided for @mineSectionTitle.
   ///
   /// In zh, this message translates to:
@@ -2017,6 +2011,24 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'每周摘要'**
   String get settingsNotificationsWeeklySummary;
+
+  /// No description provided for @settingsNotificationsPermissionEnabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'系统通知已开启'**
+  String get settingsNotificationsPermissionEnabled;
+
+  /// No description provided for @settingsNotificationsPermissionDisabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'系统通知未开启'**
+  String get settingsNotificationsPermissionDisabled;
+
+  /// No description provided for @settingsNotificationsPermissionUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台不提供通知权限状态'**
+  String get settingsNotificationsPermissionUnsupported;
 
   /// No description provided for @settingsMoreClearImageCache.
   ///

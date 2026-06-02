@@ -296,7 +296,9 @@ class _AccountProfileBlock extends StatelessWidget {
                 children: [
                   Flexible(
                     child: Text(
-                      mineCopy(l10n, account.displayNameKey),
+                      account.displayName?.isNotEmpty == true
+                          ? account.displayName!
+                          : mineCopy(l10n, account.displayNameKey),
                       style: typography.displaySm,
                       overflow: TextOverflow.ellipsis,
                     ),

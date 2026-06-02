@@ -661,9 +661,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineSearchErrorDescription => '请检查网络连接后重试。';
 
   @override
-  String get minePageDescription => '档案、目标、隐私与账号设置会在这里重建。';
-
-  @override
   String get mineSectionTitle => '个人工作区';
 
   @override
@@ -977,6 +974,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsNotificationsWeeklySummary => '每周摘要';
+
+  @override
+  String get settingsNotificationsPermissionEnabled => '系统通知已开启';
+
+  @override
+  String get settingsNotificationsPermissionDisabled => '系统通知未开启';
+
+  @override
+  String get settingsNotificationsPermissionUnsupported => '当前平台不提供通知权限状态';
 
   @override
   String get settingsMoreClearImageCache => '清理图片缓存';

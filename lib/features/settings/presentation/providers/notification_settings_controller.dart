@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
+import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationSettingsState {
@@ -6,21 +8,25 @@ class NotificationSettingsState {
     this.medicationReminders = true,
     this.healthAlerts = true,
     this.weeklySummary = false,
+    this.permissionState = NotificationPermissionState.unsupported,
   });
 
   final bool medicationReminders;
   final bool healthAlerts;
   final bool weeklySummary;
+  final NotificationPermissionState permissionState;
 
   NotificationSettingsState copyWith({
     bool? medicationReminders,
     bool? healthAlerts,
     bool? weeklySummary,
+    NotificationPermissionState? permissionState,
   }) {
     return NotificationSettingsState(
       medicationReminders: medicationReminders ?? this.medicationReminders,
       healthAlerts: healthAlerts ?? this.healthAlerts,
       weeklySummary: weeklySummary ?? this.weeklySummary,
+      permissionState: permissionState ?? this.permissionState,
     );
   }
 }
@@ -34,11 +40,23 @@ class NotificationSettingsController
   @override
   Future<NotificationSettingsState> build() async {
     final preferences = await SharedPreferences.getInstance();
+    final permissionState = await ref
+        .read(notificationPermissionServiceProvider)
+        .getPermissionState();
     return NotificationSettingsState(
       medicationReminders: preferences.getBool(_medicationKey) ?? true,
       healthAlerts: preferences.getBool(_healthAlertsKey) ?? true,
       weeklySummary: preferences.getBool(_weeklySummaryKey) ?? false,
+      permissionState: permissionState,
     );
+  }
+
+  Future<void> requestPermission() async {
+    final current = state.asData?.value ?? const NotificationSettingsState();
+    final permissionState = await ref
+        .read(notificationPermissionServiceProvider)
+        .requestPermission();
+    state = AsyncData(current.copyWith(permissionState: permissionState));
   }
 
   Future<void> setMedicationReminders(bool enabled) async {
@@ -70,7 +88,11 @@ class NotificationSettingsController
 
   Future<void> reset() async {
     await _save(
-      const NotificationSettingsState(),
+      NotificationSettingsState(
+        permissionState:
+            state.asData?.value.permissionState ??
+            NotificationPermissionState.unsupported,
+      ),
       update: (preferences) async {
         await preferences.remove(_medicationKey);
         await preferences.remove(_healthAlertsKey);

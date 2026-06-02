@@ -706,10 +706,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please check your network and try again.';
 
   @override
-  String get minePageDescription =>
-      'Profile, goals, privacy, and account settings will be rebuilt here.';
-
-  @override
   String get mineSectionTitle => 'Personal workspace';
 
   @override
@@ -1030,6 +1026,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsNotificationsWeeklySummary => 'Weekly summary';
+
+  @override
+  String get settingsNotificationsPermissionEnabled =>
+      'System notifications are enabled';
+
+  @override
+  String get settingsNotificationsPermissionDisabled =>
+      'System notifications are disabled';
+
+  @override
+  String get settingsNotificationsPermissionUnsupported =>
+      'Notification permission status is unavailable on this platform';
 
   @override
   String get settingsMoreClearImageCache => 'Clear image cache';

@@ -6,6 +6,13 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-02
 
+### Settings/API Wiring Cleanup
+
+- Mine page header now removes the leftover descriptive line and uses real session data for the account display name, so profile nickname/email changes made through Lucent-backed account settings show up immediately in Mine.
+- Notification settings now keep local preference persistence but also read/request real system notification permission status through a dedicated settings-side permission service instead of pretending all notification behavior is purely local UI state.
+- Notification settings widget behavior was tightened so row taps toggle once consistently, without double-triggering because of nested switch gestures.
+- Added test-side permission-service fallback injection so settings persistence tests stay deterministic even when local notification plugins are unavailable in widget-test runtime.
+
 ### Settings Header Decoration Cleanup
 
 - Removed the unexpected text decoration from shared centered child-page headers so settings-related titles no longer show the yellow underline on web/desktop rendering.

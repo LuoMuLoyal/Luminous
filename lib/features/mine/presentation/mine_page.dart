@@ -28,7 +28,6 @@ class MinePage extends ConsumerWidget {
 
     return PageScaffoldShell(
       title: l10n.tabMine,
-      description: l10n.minePageDescription,
       actions: [
         if (authSession.isAuthenticated)
           MineHeaderActionChip(

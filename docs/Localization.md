@@ -15,6 +15,7 @@ Last updated: 2026-06-02
 - Account Settings
 - Standalone Settings page
 - Settings child pages and persisted app locale selection
+- Settings notification permission status labels
 - Auth empty-field toast prompts
 - Mine signed-out notice / guest state copy
 - Network `Accept-Language`
