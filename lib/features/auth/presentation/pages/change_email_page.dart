@@ -119,12 +119,9 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
                       code: _codeController.text,
                     );
                     if (ok && context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            l10n?.authChangeEmailSuccess ?? 'Email updated.',
-                          ),
-                        ),
+                      await AppToast.show(
+                        context,
+                        l10n?.authChangeEmailSuccess ?? 'Email updated.',
                       );
                     }
                   },

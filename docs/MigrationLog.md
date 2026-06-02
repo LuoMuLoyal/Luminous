@@ -13,6 +13,13 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - `MineHeaderActionChip` now supports a disabled state so the logout action cannot be triggered repeatedly while auth state is already loading.
 - Added widget coverage for startup `restore()` execution and for the Mine logout action wiring.
 
+### Mine Account Entry + Auth Feedback Cleanup
+
+- Lucent-backed Mine account headers now read the current session email from `authSessionProvider`, instead of rendering the signed-in state without an email address.
+- Mine settings `账号与安全 / Account and security` now routes to the real `/account/change-email` auth page instead of showing a placeholder toast.
+- Auth success feedback on forgot-password and change-email now uses shared `AppToast`, matching the project rule against page-local `SnackBar` prompts.
+- Added tests for the Mine account-settings route and the Lucent Mine account email mapping.
+
 ## 2026-06-01
 
 ### Mine - Signed-Out Static View

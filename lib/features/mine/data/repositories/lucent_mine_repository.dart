@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
@@ -17,8 +18,7 @@ class LucentMineRepository implements MineRepository {
 
   @override
   Future<MineDashboard> fetchDashboard() async {
-    final snapshot =
-        await _ref.watch(healthContextSnapshotProvider.future);
+    final snapshot = await _ref.watch(healthContextSnapshotProvider.future);
 
     return MineDashboard(
       account: _buildAccount(snapshot),
@@ -36,10 +36,12 @@ class LucentMineRepository implements MineRepository {
   }
 
   MineAccount _buildAccount(HealthContextSnapshot snapshot) {
-    return const MineAccount(
+    final currentUser = _ref.read(authSessionProvider).user;
+
+    return MineAccount(
       isAuthenticated: true,
       displayNameKey: MineCopyKey.accountDisplayName,
-      email: '',
+      email: currentUser?.email ?? '',
       statusKey: MineCopyKey.accountSignedIn,
       metaKey: MineCopyKey.accountMeta,
     );

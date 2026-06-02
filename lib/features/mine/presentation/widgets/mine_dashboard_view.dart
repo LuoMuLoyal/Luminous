@@ -197,6 +197,7 @@ class MineErrorView extends StatelessWidget {
     );
   }
 }
+
 class _AccountHeaderSection extends StatelessWidget {
   const _AccountHeaderSection({
     super.key,
@@ -523,15 +524,17 @@ class _HealthSummarySection extends StatelessWidget {
                       ),
                       Text(
                         metric.value,
-                        style: (isCompact
-                                ? typography.bodyMdStrong
-                                : typography.displayMd)
-                            .copyWith(
-                          color: metric.accent,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style:
+                            (isCompact
+                                    ? typography.bodyMdStrong
+                                    : typography.displayMd)
+                                .copyWith(
+                                  color: metric.accent,
+                                  fontWeight: FontWeight.w600,
+                                ),
                       ),
-                      if (!isCompact) const SizedBox(height: AppSpacingTokens.xxs),
+                      if (!isCompact)
+                        const SizedBox(height: AppSpacingTokens.xxs),
                       Text(
                         mineCopy(l10n, metric.titleKey),
                         style: typography.caption.copyWith(color: surface.body),
@@ -651,10 +654,8 @@ class _ProfileGridSection extends StatelessWidget {
           return Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => showMineToast(
-                context,
-                mineCopy(l10n, entry.titleKey),
-              ),
+              onTap: () =>
+                  showMineToast(context, mineCopy(l10n, entry.titleKey)),
               borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -862,19 +863,19 @@ class _PlanCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: AppSpacingTokens.xs),
-                 Text(
-                   mineCopy(l10n, entry.statusKey),
-                   style: typography.caption.copyWith(
-                     color: entry.accent,
-                     fontWeight: FontWeight.w600,
-                   ),
-                 ),
+                Text(
+                  mineCopy(l10n, entry.statusKey),
+                  style: typography.caption.copyWith(
+                    color: entry.accent,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: AppSpacingTokens.md),
-                 Text(
-                   mineCopy(l10n, entry.detailKey),
-                   style: typography.caption.copyWith(color: surface.body),
-                   maxLines: 2,
-                   overflow: TextOverflow.ellipsis,
+                Text(
+                  mineCopy(l10n, entry.detailKey),
+                  style: typography.caption.copyWith(color: surface.body),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -1049,7 +1050,11 @@ class _StatusPanel extends StatelessWidget {
       surface: surface,
       child: Column(
         children: [
-          for (var index = 0; index < dashboard.statusEntries.length; index += 1)
+          for (
+            var index = 0;
+            index < dashboard.statusEntries.length;
+            index += 1
+          )
             Padding(
               padding: EdgeInsets.only(
                 bottom: index == dashboard.statusEntries.length - 1
@@ -1117,7 +1122,11 @@ class _OnboardingPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (var index = 0; index < dashboard.onboardingEntries.length; index += 1)
+          for (
+            var index = 0;
+            index < dashboard.onboardingEntries.length;
+            index += 1
+          )
             Padding(
               padding: EdgeInsets.only(
                 bottom: index == dashboard.onboardingEntries.length - 1
@@ -1286,7 +1295,7 @@ class _SettingsSection extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final currentTheme =
         ref.watch(appThemeControllerProvider).value ??
-            AppThemeModePreference.system;
+        AppThemeModePreference.system;
 
     return MineSectionSurface(
       title: title,
@@ -1298,10 +1307,15 @@ class _SettingsSection extends ConsumerWidget {
             MineSettingRow(
               icon: dashboard.settings[index].icon,
               title: mineCopy(l10n, dashboard.settings[index].titleKey),
-              value: _settingValue(l10n, dashboard.settings[index], currentTheme),
+              value: _settingValue(
+                l10n,
+                dashboard.settings[index],
+                currentTheme,
+              ),
               typography: typography,
               surface: surface,
-              onTap: () => _onSettingTap(context, ref, l10n, dashboard.settings[index]),
+              onTap: () =>
+                  _onSettingTap(context, ref, l10n, dashboard.settings[index]),
               showDivider: index < dashboard.settings.length - 1,
             ),
         ],
@@ -1335,6 +1349,8 @@ class _SettingsSection extends ConsumerWidget {
         context: context,
         builder: (_) => const ThemeModeSheet(),
       );
+    } else if (item.titleKey == MineCopyKey.settingsAccountTitle) {
+      context.push('/account/change-email');
     } else {
       showMineToast(context, mineCopy(l10n, item.titleKey));
     }
@@ -1359,4 +1375,3 @@ class _SkeletonBlock extends StatelessWidget {
     );
   }
 }
-
