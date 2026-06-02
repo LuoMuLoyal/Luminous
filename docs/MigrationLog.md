@@ -25,6 +25,12 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Simplified login, register, and forgot-password pages to standard centered-title form pages instead of hybrid narrative panels.
 - Project agent rules now explicitly forbid default explanatory/marketing-style page copy and require standard back-arrow child-page headers for in-app secondary pages.
 
+### Auth Test Coverage Expansion
+
+- Added widget tests for login, register, forgot-password, and change-email pages to cover verification-code sending, submit flows, and session updates.
+- Expanded account-settings widget coverage to include profile save, password change, and account deletion paths in addition to the existing route checks.
+- Re-ran auth-related widget suites plus static analysis to confirm the current auth flow remains green after the UI cleanup pass.
+
 ### Auth Startup Restore + Mine Logout Wiring
 
 - `LuminousApp` now restores `authSessionProvider` once during app startup, so persisted Lucent sessions can recover before the user re-enters auth flows manually.
