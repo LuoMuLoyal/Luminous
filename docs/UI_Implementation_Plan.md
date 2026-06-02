@@ -20,7 +20,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Mine signed-out state now stays on the same static dashboard structure with a login notice instead of page-level skeleton loading
 - Standalone Settings page at `/settings` now owns theme/language/notification/account-entry settings, while Mine stays focused on dashboard content and entry actions
 - Settings language, notifications, and more entries now each open a standard child page with persisted local preferences or utility actions instead of placeholder callbacks
-- Notification settings now also reflect real system notification permission state; backend-facing settings writes still remain limited to Lucent auth/account APIs, while device/local preferences stay local until Lucent exposes dedicated preference-write endpoints
+- Notification settings now also reflect real system notification permission state; locale can now sync through Lucent health-context profile preferences, while theme and notification toggles still remain local/device-side until Lucent exposes dedicated preference-write endpoints for them
 - More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
 - Medicine mobile-first mock workspace UI with repository/provider boundary
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel

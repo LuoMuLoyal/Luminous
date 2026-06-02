@@ -10,6 +10,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -63,9 +64,15 @@ class MoreSettingsPage extends ConsumerWidget {
                   await ref
                       .read(appThemeControllerProvider.notifier)
                       .setMode(AppThemeModePreference.system);
-                  await ref
-                      .read(appLocaleControllerProvider.notifier)
-                      .setLocale(AppLocale.system);
+                  try {
+                    await ref
+                        .read(settingsProfileSyncProvider.notifier)
+                        .resetLocaleToSystem();
+                  } catch (_) {
+                    await ref
+                        .read(appLocaleControllerProvider.notifier)
+                        .setLocale(AppLocale.system);
+                  }
                   await ref
                       .read(notificationSettingsControllerProvider.notifier)
                       .reset();

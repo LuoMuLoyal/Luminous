@@ -6,6 +6,14 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-02
 
+### Settings Locale Sync To Lucent
+
+- Language settings now persist locally and also sync the selected locale to Lucent through `PATCH /api/v1/me/health-context/profile` when the user is signed in.
+- Switching back to `跟随系统 / Follow system` now clears the stored backend locale preference instead of leaving a stale explicit locale on the server.
+- `更多设置 / More settings -> 恢复默认设置` now resets both the local locale preference and the Lucent-side locale preference together.
+- Re-generated `packages/lucent_openapi` for the new health-context profile write contract, restored the generated package SDK / `json_annotation` constraints, and patched the current generator/toolchain nullable-serialization breakage in several generated `*.g.dart` files.
+- Added settings-flow widget coverage that asserts the language page still persists local locale and also calls the settings profile remote datasource.
+
 ### Settings/API Wiring Cleanup
 
 - Mine page header now removes the leftover descriptive line and uses real session data for the account display name, so profile nickname/email changes made through Lucent-backed account settings show up immediately in Mine.

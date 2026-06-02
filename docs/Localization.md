@@ -15,6 +15,7 @@ Last updated: 2026-06-02
 - Account Settings
 - Standalone Settings page
 - Settings child pages and persisted app locale selection
+- Signed-in settings locale sync to Lucent profile preferences
 - Settings notification permission status labels
 - Auth empty-field toast prompts
 - Mine signed-out notice / guest state copy
@@ -38,5 +39,6 @@ Last updated: 2026-06-02
 - Supported in settings flow: `system`, `zh-CN`, `en`
 - `LuminousApp` reads `appLocaleControllerProvider` and passes the resolved locale into `MaterialApp.router.locale`.
 - Lucent network requests reuse the same preference for `Accept-Language`.
+- When signed in, language changes from settings also sync the explicit locale to Lucent `me/health-context/profile`; choosing `system` clears the backend locale preference.
 
 Do not hardcode user-visible text in pages.
