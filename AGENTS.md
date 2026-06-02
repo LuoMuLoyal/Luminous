@@ -18,11 +18,7 @@ flutter test
 Regenerate Lucent client:
 
 ```bash
-cd ../Lucent && pnpm export:openapi
-cd ../Luminous
-npx @openapitools/openapi-generator-cli generate -g dart-dio -i ../Lucent/docs/openapi.json -o packages/lucent_openapi --additional-properties=serializationLibrary=json_serializable,pubName=lucent_openapi,pubLibrary=lucent_openapi,sourceFolder=src,finalProperties=true,skipCopyWith=true,useEnumExtension=true,enumUnknownDefaultCase=true
-cd packages/lucent_openapi && dart pub get && dart run build_runner build --delete-conflicting-outputs
-cd ../.. && flutter pub get
+dart run tool/regenerate_lucent_openapi.dart
 ```
 
 ## Guardrails
@@ -32,6 +28,7 @@ cd ../.. && flutter pub get
 - API contract: `../Lucent/docs/public/api-contract.md`.
 - Auth API details: `../Lucent/docs/auth-api-mock.md`.
 - Network code belongs in `lib/core/network/`.
+- Do not regenerate `packages/lucent_openapi` with ad-hoc `npx` / `build_runner` commands. Always use `dart run tool/regenerate_lucent_openapi.dart` so generated pubspec constraints and broken nullable `*.g.dart` map entries are normalized automatically.
 - User-visible text goes through ARB + `flutter gen-l10n`.
 - Token storage prefers secure storage, with desktop/web fallback.
 - For lightweight frontend feedback, use shared `lib/core/feedback/app_toast.dart`; do not introduce page-local `SnackBar` prompts for routine click hints.

@@ -1,10 +1,22 @@
 # Luminous Migration Log
 
-Last updated: 2026-05-31
+Last updated: 2026-06-02
 
 Records changes after the full reset only. Pre-reset history: `MigrationLog_Archive_PreReset.md`.
 
 ## 2026-06-02
+
+### Minimal Flutter CI
+
+- Added `.github/workflows/flutter-ci.yml` for Luminous.
+- Current CI runs `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, and `flutter test` on `push`, `pull_request`, and manual dispatch.
+- CI is validation-only for now; no Flutter artifact build or frontend deployment was added in this pass.
+
+### Stable Lucent OpenAPI Regeneration Command
+
+- Added `tool/regenerate_lucent_openapi.dart` as the single supported Lucent client regeneration entrypoint.
+- The wrapper now runs Lucent `export:openapi`, regenerates `packages/lucent_openapi`, restores pinned generated-package constraints, rebuilds serializers, patches the current `json_serializable` nullable-map-entry breakage automatically, analyzes the generated package, and refreshes the root Flutter dependencies.
+- Updated `AGENTS.md`, `README.md`, and `docs/OpenApi_Client.md` so future client regeneration no longer relies on manual repair steps.
 
 ### Settings Locale Sync To Lucent
 
