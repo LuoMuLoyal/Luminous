@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
+import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -27,6 +29,45 @@ class NotificationSettingsPage extends ConsumerWidget {
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
+        if (settings.permissionState != NotificationPermissionState.unsupported)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
+            child: MineSectionSurface(
+              typography: typography,
+              surface: surface,
+              padding: EdgeInsets.zero,
+              child: SettingsListRow(
+                key: const Key('notification-row-permission'),
+                title: _permissionTitle(l10n, settings.permissionState),
+                icon: Icons.notifications_active_outlined,
+                trailing: settings.permissionState ==
+                        NotificationPermissionState.granted
+                    ? Icon(
+                        Icons.check_circle_rounded,
+                        size: 18,
+                        color: theme.colorScheme.primary,
+                      )
+                    : Icon(
+                        Icons.chevron_right_rounded,
+                        size: 18,
+                        color: surface.mute,
+                      ),
+                onTap: () async {
+                  if (settings.permissionState ==
+                      NotificationPermissionState.granted) {
+                    await AppToast.show(
+                      context,
+                      _permissionTitle(l10n, settings.permissionState),
+                    );
+                    return;
+                  }
+                  await ref
+                      .read(notificationSettingsControllerProvider.notifier)
+                      .requestPermission();
+                },
+              ),
+            ),
+          ),
         MineSectionSurface(
           typography: typography,
           surface: surface,
@@ -37,11 +78,11 @@ class NotificationSettingsPage extends ConsumerWidget {
                 key: const Key('notification-row-medication'),
                 title: l10n.settingsNotificationsMedicationReminders,
                 icon: Icons.medication_liquid_outlined,
-                trailing: Switch(
-                  value: settings.medicationReminders,
-                  onChanged: (value) => ref
-                      .read(notificationSettingsControllerProvider.notifier)
-                      .setMedicationReminders(value),
+                trailing: IgnorePointer(
+                  child: Switch(
+                    value: settings.medicationReminders,
+                    onChanged: (_) {},
+                  ),
                 ),
                 onTap: () => ref
                     .read(notificationSettingsControllerProvider.notifier)
@@ -52,11 +93,11 @@ class NotificationSettingsPage extends ConsumerWidget {
                 key: const Key('notification-row-health-alerts'),
                 title: l10n.settingsNotificationsHealthAlerts,
                 icon: Icons.favorite_border_rounded,
-                trailing: Switch(
-                  value: settings.healthAlerts,
-                  onChanged: (value) => ref
-                      .read(notificationSettingsControllerProvider.notifier)
-                      .setHealthAlerts(value),
+                trailing: IgnorePointer(
+                  child: Switch(
+                    value: settings.healthAlerts,
+                    onChanged: (_) {},
+                  ),
                 ),
                 onTap: () => ref
                     .read(notificationSettingsControllerProvider.notifier)
@@ -67,11 +108,11 @@ class NotificationSettingsPage extends ConsumerWidget {
                 key: const Key('notification-row-weekly-summary'),
                 title: l10n.settingsNotificationsWeeklySummary,
                 icon: Icons.calendar_today_outlined,
-                trailing: Switch(
-                  value: settings.weeklySummary,
-                  onChanged: (value) => ref
-                      .read(notificationSettingsControllerProvider.notifier)
-                      .setWeeklySummary(value),
+                trailing: IgnorePointer(
+                  child: Switch(
+                    value: settings.weeklySummary,
+                    onChanged: (_) {},
+                  ),
                 ),
                 onTap: () => ref
                     .read(notificationSettingsControllerProvider.notifier)
@@ -83,6 +124,20 @@ class NotificationSettingsPage extends ConsumerWidget {
       ],
     );
   }
+}
+
+String _permissionTitle(
+  AppLocalizations l10n,
+  NotificationPermissionState state,
+) {
+  return switch (state) {
+    NotificationPermissionState.granted =>
+      l10n.settingsNotificationsPermissionEnabled,
+    NotificationPermissionState.denied =>
+      l10n.settingsNotificationsPermissionDisabled,
+    NotificationPermissionState.unsupported =>
+      l10n.settingsNotificationsPermissionUnsupported,
+  };
 }
 
 AppTypographyScale _typography(BuildContext context) {

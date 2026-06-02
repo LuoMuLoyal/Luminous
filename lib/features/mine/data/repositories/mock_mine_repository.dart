@@ -12,6 +12,7 @@ class MockMineRepository implements MineRepository {
       const MineAccount(
         isAuthenticated: false,
         displayNameKey: MineCopyKey.accountGuestDisplayName,
+        displayName: null,
         email: '',
         statusKey: MineCopyKey.accountSignedOut,
         metaKey: MineCopyKey.accountSignedOutMeta,
@@ -25,6 +26,7 @@ class MockMineRepository implements MineRepository {
       const MineAccount(
         isAuthenticated: true,
         displayNameKey: MineCopyKey.accountDisplayName,
+        displayName: 'Lumi 用户',
         email: 'lumi@example.com',
         statusKey: MineCopyKey.accountSignedIn,
         metaKey: MineCopyKey.accountMeta,

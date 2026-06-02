@@ -8,6 +8,8 @@ import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
+import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
+import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/more_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
@@ -22,7 +24,7 @@ void main() {
         'app.locale': 'zh-CN',
       });
 
-      await _pumpApp(tester);
+      await _pumpApp(tester, fakeNotificationPermission: true);
 
       expect(find.text('设置'), findsOneWidget);
 
@@ -60,20 +62,27 @@ void main() {
       'app.locale': 'zh-CN',
     });
 
-    await _pumpApp(tester);
+    await _pumpApp(tester, fakeNotificationPermission: true);
 
     await tester.tap(find.byKey(const Key('settings-row-notifications')));
     await tester.pumpAndSettle();
 
-    final switchFinder = _findAnySwitch();
-    expect(switchFinder, findsWidgets);
+    final medicationRow = find.byKey(const Key('notification-row-medication'));
+    final switchFinder = find.descendant(
+      of: medicationRow,
+      matching: _findAnySwitch(),
+    );
+    expect(switchFinder, findsOneWidget);
 
     final beforeValue = _readSwitchValue(tester, switchFinder.first);
 
-    await tester.tap(switchFinder.first);
+    await tester.tap(medicationRow);
     await tester.pumpAndSettle();
 
-    final afterValue = _readSwitchValue(tester, _findAnySwitch().first);
+    final afterValue = _readSwitchValue(
+      tester,
+      find.descendant(of: medicationRow, matching: _findAnySwitch()).first,
+    );
     expect(afterValue, isNot(beforeValue));
 
     final preferences = await SharedPreferences.getInstance();
@@ -87,19 +96,35 @@ void main() {
     await tester.pumpAndSettle();
 
     SharedPreferences.setMockInitialValues(snapshot);
-    await _pumpApp(tester);
+    await _pumpApp(tester, fakeNotificationPermission: true);
 
     await tester.tap(find.byKey(const Key('settings-row-notifications')));
     await tester.pumpAndSettle();
 
-    expect(_readSwitchValue(tester, _findAnySwitch().first), afterValue);
+    expect(
+      _readSwitchValue(
+        tester,
+        find.descendant(
+          of: find.byKey(const Key('notification-row-medication')),
+          matching: _findAnySwitch(),
+        ).first,
+      ),
+      afterValue,
+    );
   });
 }
 
-Future<void> _pumpApp(WidgetTester tester) async {
+Future<void> _pumpApp(
+  WidgetTester tester, {
+  bool fakeNotificationPermission = false,
+}) async {
   final container = ProviderContainer(
     overrides: [
       authSessionProvider.overrideWith(() => _StaticAuthSessionNotifier()),
+      if (fakeNotificationPermission)
+        notificationPermissionServiceProvider.overrideWith(
+          (ref) => _FakeNotificationPermissionService(),
+        ),
     ],
   );
   addTearDown(container.dispose);
@@ -164,6 +189,22 @@ class _StaticAuthSessionNotifier extends AuthSessionNotifier {
 
   @override
   Future<void> restore() async {}
+}
+
+class _FakeNotificationPermissionService
+    extends NotificationPermissionService {
+  @override
+  Future<void> ensureInitialized() async {}
+
+  @override
+  Future<NotificationPermissionState> getPermissionState() async {
+    return NotificationPermissionState.unsupported;
+  }
+
+  @override
+  Future<NotificationPermissionState> requestPermission() async {
+    return NotificationPermissionState.unsupported;
+  }
 }
 
 GoRouter _buildSettingsTestRouter() {
