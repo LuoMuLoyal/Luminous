@@ -8,7 +8,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'medicine_search_meta_dto.g.dart';
 
-
 @JsonSerializable(
   checked: true,
   createToJson: true,
@@ -17,34 +16,21 @@ part 'medicine_search_meta_dto.g.dart';
 )
 class MedicineSearchMetaDto {
   /// Returns a new [MedicineSearchMetaDto] instance.
-  MedicineSearchMetaDto({
+  MedicineSearchMetaDto({required this.pagination});
 
-    required  this.pagination,
-  });
-
-  @JsonKey(
-    
-    name: r'pagination',
-    required: true,
-    includeIfNull: false,
-  )
-
-
+  @JsonKey(name: r'pagination', required: true, includeIfNull: false)
   final MedicinePaginationDto pagination;
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MedicineSearchMetaDto && other.pagination == pagination;
 
+  @override
+  int get hashCode => pagination.hashCode;
 
-
-
-    @override
-    bool operator ==(Object other) => identical(this, other) || other is MedicineSearchMetaDto &&
-      other.pagination == pagination;
-
-    @override
-    int get hashCode =>
-        pagination.hashCode;
-
-  factory MedicineSearchMetaDto.fromJson(Map<String, dynamic> json) => _$MedicineSearchMetaDtoFromJson(json);
+  factory MedicineSearchMetaDto.fromJson(Map<String, dynamic> json) =>
+      _$MedicineSearchMetaDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$MedicineSearchMetaDtoToJson(this);
 
@@ -52,6 +38,4 @@ class MedicineSearchMetaDto {
   String toString() {
     return toJson().toString();
   }
-
 }
-

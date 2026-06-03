@@ -3,11 +3,13 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_openapi/src/model/sex_at_birth.dart';
+import 'package:lucent_openapi/src/model/lactation_state.dart';
 import 'package:lucent_openapi/src/model/unit_system.dart';
+import 'package:lucent_openapi/src/model/pregnancy_state.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'update_health_context_profile_dto.g.dart';
-
 
 @JsonSerializable(
   checked: true,
@@ -18,69 +20,117 @@ part 'update_health_context_profile_dto.g.dart';
 class UpdateHealthContextProfileDto {
   /// Returns a new [UpdateHealthContextProfileDto] instance.
   UpdateHealthContextProfileDto({
+    this.locale,
 
-     this.locale,
+    this.timezone,
 
-     this.timezone,
+    this.unitSystem,
 
-     this.unitSystem,
+    this.birthDate,
+
+    this.sexAtBirth,
+
+    this.heightCm,
+
+    this.pregnancyState,
+
+    this.lactationState,
+
+    this.bloodType,
+
+    this.onboardingCompleted,
   });
 
-      /// Preferred locale. Use null to clear and follow the client default.
-  @JsonKey(
-    
-    name: r'locale',
-    required: false,
-    includeIfNull: false,
-  )
-
-
+  /// Preferred locale. Use null or empty string to clear and follow the client default.
+  @JsonKey(name: r'locale', required: false, includeIfNull: false)
   final Object? locale;
 
-
-
-      /// Preferred timezone. Use null to clear.
-  @JsonKey(
-    
-    name: r'timezone',
-    required: false,
-    includeIfNull: false,
-  )
-
-
+  /// Preferred timezone. Use null or empty string to clear.
+  @JsonKey(name: r'timezone', required: false, includeIfNull: false)
   final Object? timezone;
 
-
-
-      /// Preferred unit system. Use null to clear.
+  /// Preferred unit system. Use null to clear.
   @JsonKey(
-    
     name: r'unitSystem',
     required: false,
     includeIfNull: false,
-  unknownEnumValue: UnitSystem.unknownDefaultOpenApi,
+    unknownEnumValue: UnitSystem.unknownDefaultOpenApi,
   )
-
-
   final UnitSystem? unitSystem;
 
+  /// Birth date in YYYY-MM-DD format.
+  @JsonKey(name: r'birthDate', required: false, includeIfNull: false)
+  final Object? birthDate;
 
+  /// Sex assigned at birth. Use null to clear.
+  @JsonKey(
+    name: r'sexAtBirth',
+    required: false,
+    includeIfNull: false,
+    unknownEnumValue: SexAtBirth.unknownDefaultOpenApi,
+  )
+  final SexAtBirth? sexAtBirth;
 
+  /// Height in centimeters. Use null to clear.
+  @JsonKey(name: r'heightCm', required: false, includeIfNull: false)
+  final Object? heightCm;
 
+  /// Pregnancy state for personalized medical guidance. Use null to clear.
+  @JsonKey(
+    name: r'pregnancyState',
+    required: false,
+    includeIfNull: false,
+    unknownEnumValue: PregnancyState.unknownDefaultOpenApi,
+  )
+  final PregnancyState? pregnancyState;
 
-    @override
-    bool operator ==(Object other) => identical(this, other) || other is UpdateHealthContextProfileDto &&
-      other.locale == locale &&
-      other.timezone == timezone &&
-      other.unitSystem == unitSystem;
+  /// Lactation state for personalized medical guidance. Use null to clear.
+  @JsonKey(
+    name: r'lactationState',
+    required: false,
+    includeIfNull: false,
+    unknownEnumValue: LactationState.unknownDefaultOpenApi,
+  )
+  final LactationState? lactationState;
 
-    @override
-    int get hashCode =>
-        (locale == null ? 0 : locale.hashCode) +
-        (timezone == null ? 0 : timezone.hashCode) +
-        (unitSystem == null ? 0 : unitSystem.hashCode);
+  /// Blood type. Use null to clear.
+  @JsonKey(name: r'bloodType', required: false, includeIfNull: false)
+  final Object? bloodType;
 
-  factory UpdateHealthContextProfileDto.fromJson(Map<String, dynamic> json) => _$UpdateHealthContextProfileDtoFromJson(json);
+  /// Set true to complete onboarding (sets completedAt when missing). Set false to clear onboarding completion.
+  @JsonKey(name: r'onboardingCompleted', required: false, includeIfNull: false)
+  final bool? onboardingCompleted;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UpdateHealthContextProfileDto &&
+          other.locale == locale &&
+          other.timezone == timezone &&
+          other.unitSystem == unitSystem &&
+          other.birthDate == birthDate &&
+          other.sexAtBirth == sexAtBirth &&
+          other.heightCm == heightCm &&
+          other.pregnancyState == pregnancyState &&
+          other.lactationState == lactationState &&
+          other.bloodType == bloodType &&
+          other.onboardingCompleted == onboardingCompleted;
+
+  @override
+  int get hashCode =>
+      (locale == null ? 0 : locale.hashCode) +
+      (timezone == null ? 0 : timezone.hashCode) +
+      (unitSystem == null ? 0 : unitSystem.hashCode) +
+      (birthDate == null ? 0 : birthDate.hashCode) +
+      (sexAtBirth == null ? 0 : sexAtBirth.hashCode) +
+      (heightCm == null ? 0 : heightCm.hashCode) +
+      (pregnancyState == null ? 0 : pregnancyState.hashCode) +
+      (lactationState == null ? 0 : lactationState.hashCode) +
+      (bloodType == null ? 0 : bloodType.hashCode) +
+      onboardingCompleted.hashCode;
+
+  factory UpdateHealthContextProfileDto.fromJson(Map<String, dynamic> json) =>
+      _$UpdateHealthContextProfileDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$UpdateHealthContextProfileDtoToJson(this);
 
@@ -88,6 +138,4 @@ class UpdateHealthContextProfileDto {
   String toString() {
     return toJson().toString();
   }
-
 }
-

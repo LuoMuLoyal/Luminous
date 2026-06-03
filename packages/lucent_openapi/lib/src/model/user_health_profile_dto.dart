@@ -11,7 +11,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user_health_profile_dto.g.dart';
 
-
 @JsonSerializable(
   checked: true,
   createToJson: true,
@@ -21,208 +20,125 @@ part 'user_health_profile_dto.g.dart';
 class UserHealthProfileDto {
   /// Returns a new [UserHealthProfileDto] instance.
   UserHealthProfileDto({
+    required this.birthDate,
 
-    required  this.birthDate,
+    required this.sexAtBirth,
 
-    required  this.sexAtBirth,
+    required this.heightCm,
 
-    required  this.heightCm,
+    required this.pregnancyState,
 
-    required  this.pregnancyState,
+    required this.lactationState,
 
-    required  this.lactationState,
+    required this.bloodType,
 
-    required  this.bloodType,
+    required this.locale,
 
-    required  this.locale,
+    required this.timezone,
 
-    required  this.timezone,
+    required this.unitSystem,
 
-    required  this.unitSystem,
+    required this.onboardingCompletedAt,
 
-    required  this.onboardingCompletedAt,
-
-    required  this.extras,
+    required this.extras,
   });
 
-      /// Birth date in YYYY-MM-DD format.
-  @JsonKey(
-    
-    name: r'birthDate',
-    required: true,
-    includeIfNull: true,
-  )
-
-
+  /// Birth date in YYYY-MM-DD format.
+  @JsonKey(name: r'birthDate', required: true, includeIfNull: true)
   final Object? birthDate;
 
-
-
-      /// Sex assigned at birth.
+  /// Sex assigned at birth.
   @JsonKey(
-    
     name: r'sexAtBirth',
     required: true,
     includeIfNull: true,
-  unknownEnumValue: SexAtBirth.unknownDefaultOpenApi,
+    unknownEnumValue: SexAtBirth.unknownDefaultOpenApi,
   )
-
-
   final SexAtBirth? sexAtBirth;
 
-
-
-      /// Height in centimeters.
-  @JsonKey(
-    
-    name: r'heightCm',
-    required: true,
-    includeIfNull: true,
-  )
-
-
+  /// Height in centimeters.
+  @JsonKey(name: r'heightCm', required: true, includeIfNull: true)
   final Object? heightCm;
 
-
-
-      /// Pregnancy state for personalized medical guidance.
+  /// Pregnancy state for personalized medical guidance.
   @JsonKey(
-    
     name: r'pregnancyState',
     required: true,
     includeIfNull: true,
-  unknownEnumValue: PregnancyState.unknownDefaultOpenApi,
+    unknownEnumValue: PregnancyState.unknownDefaultOpenApi,
   )
-
-
   final PregnancyState? pregnancyState;
 
-
-
-      /// Lactation state for personalized medical guidance.
+  /// Lactation state for personalized medical guidance.
   @JsonKey(
-    
     name: r'lactationState',
     required: true,
     includeIfNull: true,
-  unknownEnumValue: LactationState.unknownDefaultOpenApi,
+    unknownEnumValue: LactationState.unknownDefaultOpenApi,
   )
-
-
   final LactationState? lactationState;
 
-
-
-      /// Blood type.
-  @JsonKey(
-    
-    name: r'bloodType',
-    required: true,
-    includeIfNull: true,
-  )
-
-
+  /// Blood type.
+  @JsonKey(name: r'bloodType', required: true, includeIfNull: true)
   final Object? bloodType;
 
-
-
-      /// Preferred locale.
-  @JsonKey(
-    
-    name: r'locale',
-    required: true,
-    includeIfNull: true,
-  )
-
-
+  /// Preferred locale.
+  @JsonKey(name: r'locale', required: true, includeIfNull: true)
   final Object? locale;
 
-
-
-      /// Preferred timezone.
-  @JsonKey(
-    
-    name: r'timezone',
-    required: true,
-    includeIfNull: true,
-  )
-
-
+  /// Preferred timezone.
+  @JsonKey(name: r'timezone', required: true, includeIfNull: true)
   final Object? timezone;
 
-
-
-      /// Preferred unit system.
+  /// Preferred unit system.
   @JsonKey(
-    
     name: r'unitSystem',
     required: true,
     includeIfNull: true,
-  unknownEnumValue: UnitSystem.unknownDefaultOpenApi,
+    unknownEnumValue: UnitSystem.unknownDefaultOpenApi,
   )
-
-
   final UnitSystem? unitSystem;
 
-
-
-      /// When the onboarding flow was completed.
-  @JsonKey(
-    
-    name: r'onboardingCompletedAt',
-    required: true,
-    includeIfNull: true,
-  )
-
-
+  /// When the onboarding flow was completed.
+  @JsonKey(name: r'onboardingCompletedAt', required: true, includeIfNull: true)
   final Object? onboardingCompletedAt;
 
-
-
-      /// Sparse profile extensions stored in jsonb.
-  @JsonKey(
-    
-    name: r'extras',
-    required: true,
-    includeIfNull: true,
-  )
-
-
+  /// Sparse profile extensions stored in jsonb.
+  @JsonKey(name: r'extras', required: true, includeIfNull: true)
   final Map<String, Object>? extras;
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UserHealthProfileDto &&
+          other.birthDate == birthDate &&
+          other.sexAtBirth == sexAtBirth &&
+          other.heightCm == heightCm &&
+          other.pregnancyState == pregnancyState &&
+          other.lactationState == lactationState &&
+          other.bloodType == bloodType &&
+          other.locale == locale &&
+          other.timezone == timezone &&
+          other.unitSystem == unitSystem &&
+          other.onboardingCompletedAt == onboardingCompletedAt &&
+          other.extras == extras;
 
+  @override
+  int get hashCode =>
+      (birthDate == null ? 0 : birthDate.hashCode) +
+      (sexAtBirth == null ? 0 : sexAtBirth.hashCode) +
+      (heightCm == null ? 0 : heightCm.hashCode) +
+      (pregnancyState == null ? 0 : pregnancyState.hashCode) +
+      (lactationState == null ? 0 : lactationState.hashCode) +
+      (bloodType == null ? 0 : bloodType.hashCode) +
+      (locale == null ? 0 : locale.hashCode) +
+      (timezone == null ? 0 : timezone.hashCode) +
+      (unitSystem == null ? 0 : unitSystem.hashCode) +
+      (onboardingCompletedAt == null ? 0 : onboardingCompletedAt.hashCode) +
+      (extras == null ? 0 : extras.hashCode);
 
-
-
-    @override
-    bool operator ==(Object other) => identical(this, other) || other is UserHealthProfileDto &&
-      other.birthDate == birthDate &&
-      other.sexAtBirth == sexAtBirth &&
-      other.heightCm == heightCm &&
-      other.pregnancyState == pregnancyState &&
-      other.lactationState == lactationState &&
-      other.bloodType == bloodType &&
-      other.locale == locale &&
-      other.timezone == timezone &&
-      other.unitSystem == unitSystem &&
-      other.onboardingCompletedAt == onboardingCompletedAt &&
-      other.extras == extras;
-
-    @override
-    int get hashCode =>
-        (birthDate == null ? 0 : birthDate.hashCode) +
-        (sexAtBirth == null ? 0 : sexAtBirth.hashCode) +
-        (heightCm == null ? 0 : heightCm.hashCode) +
-        (pregnancyState == null ? 0 : pregnancyState.hashCode) +
-        (lactationState == null ? 0 : lactationState.hashCode) +
-        (bloodType == null ? 0 : bloodType.hashCode) +
-        (locale == null ? 0 : locale.hashCode) +
-        (timezone == null ? 0 : timezone.hashCode) +
-        (unitSystem == null ? 0 : unitSystem.hashCode) +
-        (onboardingCompletedAt == null ? 0 : onboardingCompletedAt.hashCode) +
-        (extras == null ? 0 : extras.hashCode);
-
-  factory UserHealthProfileDto.fromJson(Map<String, dynamic> json) => _$UserHealthProfileDtoFromJson(json);
+  factory UserHealthProfileDto.fromJson(Map<String, dynamic> json) =>
+      _$UserHealthProfileDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserHealthProfileDtoToJson(this);
 
@@ -230,6 +146,4 @@ class UserHealthProfileDto {
   String toString() {
     return toJson().toString();
   }
-
 }
-

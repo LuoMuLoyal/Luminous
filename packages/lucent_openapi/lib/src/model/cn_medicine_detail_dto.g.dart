@@ -46,7 +46,8 @@ Map<String, dynamic> _$CnMedicineDetailDtoToJson(
   CnMedicineDetailDto instance,
 ) => <String, dynamic>{
   'kind': instance.kind,
-  if (instance.approvalNumber != null) 'approvalNumber': instance.approvalNumber,
+  if (instance.approvalNumber != null)
+    'approvalNumber': instance.approvalNumber,
   if (instance.manufacturer != null) 'manufacturer': instance.manufacturer,
   if (instance.packageSpec != null) 'packageSpec': instance.packageSpec,
   if (instance.brandName != null) 'brandName': instance.brandName,
@@ -71,7 +72,8 @@ Map<String, dynamic> _$CnMedicineDetailDtoToJson(
     'pharmacokinetics': instance.pharmacokinetics,
   if (instance.overdose != null) 'overdose': instance.overdose,
   if (instance.storage != null) 'storage': instance.storage,
-  if (instance.validityPeriod != null) 'validityPeriod': instance.validityPeriod,
+  if (instance.validityPeriod != null)
+    'validityPeriod': instance.validityPeriod,
   if (instance.barcode != null) 'barcode': instance.barcode,
   if (instance.nationalDrugCode != null)
     'nationalDrugCode': instance.nationalDrugCode,

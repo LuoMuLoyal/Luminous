@@ -4,6 +4,9 @@ import 'package:lucent_openapi/src/model/change_email_response_dto.dart';
 import 'package:lucent_openapi/src/model/change_password_dto.dart';
 import 'package:lucent_openapi/src/model/cn_medicine_detail_dto.dart';
 import 'package:lucent_openapi/src/model/cooldown_message_dto.dart';
+import 'package:lucent_openapi/src/model/create_current_medicine_dto.dart';
+import 'package:lucent_openapi/src/model/create_health_context_allergy_dto.dart';
+import 'package:lucent_openapi/src/model/create_health_context_condition_dto.dart';
 import 'package:lucent_openapi/src/model/delete_account_dto.dart';
 import 'package:lucent_openapi/src/model/drugbank_medicine_detail_dto.dart';
 import 'package:lucent_openapi/src/model/forgot_password_dto.dart';
@@ -32,6 +35,9 @@ import 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_openapi/src/model/success_response_dto.dart';
 import 'package:lucent_openapi/src/model/tokens_dto.dart';
+import 'package:lucent_openapi/src/model/update_current_medicine_dto.dart';
+import 'package:lucent_openapi/src/model/update_health_context_allergy_dto.dart';
+import 'package:lucent_openapi/src/model/update_health_context_condition_dto.dart';
 import 'package:lucent_openapi/src/model/update_health_context_profile_dto.dart';
 import 'package:lucent_openapi/src/model/update_me_dto.dart';
 import 'package:lucent_openapi/src/model/user_allergy_item_dto.dart';
@@ -75,6 +81,12 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return CnMedicineDetailDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CooldownMessageDto':
           return CooldownMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'CreateCurrentMedicineDto':
+          return CreateCurrentMedicineDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'CreateHealthContextAllergyDto':
+          return CreateHealthContextAllergyDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'CreateHealthContextConditionDto':
+          return CreateHealthContextConditionDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DeleteAccountDto':
           return DeleteAccountDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DrugbankMedicineDetailDto':
@@ -146,6 +158,12 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
         case 'UnitSystem':
           
           
+        case 'UpdateCurrentMedicineDto':
+          return UpdateCurrentMedicineDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'UpdateHealthContextAllergyDto':
+          return UpdateHealthContextAllergyDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'UpdateHealthContextConditionDto':
+          return UpdateHealthContextConditionDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UpdateHealthContextProfileDto':
           return UpdateHealthContextProfileDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UpdateMeDto':

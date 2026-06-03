@@ -1,8 +1,19 @@
 # Luminous Migration Log
 
-Last updated: 2026-06-02
+Last updated: 2026-06-03
 
 Records changes after the full reset only. Pre-reset history: `MigrationLog_Archive_PreReset.md`.
+
+## 2026-06-03
+
+### Regenerated Lucent OpenAPI Client + Health-Context Write Repository Methods
+
+- Re-ran `dart run tool/regenerate_lucent_openapi.dart` after Lucent added full health-context write APIs.
+- Generated package now includes `CreateCurrentMedicineDto`, `UpdateCurrentMedicineDto`, `CreateHealthContextAllergyDto`, `UpdateHealthContextAllergyDto`, `CreateHealthContextConditionDto`, `UpdateHealthContextConditionDto`, and the expanded `UpdateHealthContextProfileDto`.
+- `HealthContextRemoteDataSource` now exposes 10 write methods: `updateProfile`, `createAllergy`, `updateAllergy`, `deleteAllergy`, `createCondition`, `updateCondition`, `deleteCondition`, `createCurrentMedicine`, `updateCurrentMedicine`, `deleteCurrentMedicine`.
+- `HealthContextRepository` interface expanded with all write methods.
+- `LucentHealthContextRepository` implements the full read/write surface.
+- Updated `docs/OpenApi_Client.md`.
 
 ## 2026-06-02
 

@@ -12,7 +12,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'health_context_data_dto.g.dart';
 
-
 @JsonSerializable(
   checked: true,
   createToJson: true,
@@ -22,97 +21,52 @@ part 'health_context_data_dto.g.dart';
 class HealthContextDataDto {
   /// Returns a new [HealthContextDataDto] instance.
   HealthContextDataDto({
+    required this.summary,
 
-    required  this.summary,
+    required this.profile,
 
-    required  this.profile,
+    required this.allergies,
 
-    required  this.allergies,
+    required this.conditions,
 
-    required  this.conditions,
-
-    required  this.currentMedicines,
+    required this.currentMedicines,
   });
 
-  @JsonKey(
-    
-    name: r'summary',
-    required: true,
-    includeIfNull: false,
-  )
-
-
+  @JsonKey(name: r'summary', required: true, includeIfNull: false)
   final UserHealthSummaryDto summary;
 
-
-
-  @JsonKey(
-    
-    name: r'profile',
-    required: true,
-    includeIfNull: false,
-  )
-
-
+  @JsonKey(name: r'profile', required: true, includeIfNull: false)
   final UserHealthProfileDto profile;
 
-
-
-  @JsonKey(
-    
-    name: r'allergies',
-    required: true,
-    includeIfNull: false,
-  )
-
-
+  @JsonKey(name: r'allergies', required: true, includeIfNull: false)
   final List<UserAllergyItemDto> allergies;
 
-
-
-  @JsonKey(
-    
-    name: r'conditions',
-    required: true,
-    includeIfNull: false,
-  )
-
-
+  @JsonKey(name: r'conditions', required: true, includeIfNull: false)
   final List<UserConditionItemDto> conditions;
 
-
-
-  @JsonKey(
-    
-    name: r'currentMedicines',
-    required: true,
-    includeIfNull: false,
-  )
-
-
+  @JsonKey(name: r'currentMedicines', required: true, includeIfNull: false)
   final List<UserCurrentMedicineItemDto> currentMedicines;
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HealthContextDataDto &&
+          other.summary == summary &&
+          other.profile == profile &&
+          other.allergies == allergies &&
+          other.conditions == conditions &&
+          other.currentMedicines == currentMedicines;
 
+  @override
+  int get hashCode =>
+      summary.hashCode +
+      profile.hashCode +
+      allergies.hashCode +
+      conditions.hashCode +
+      currentMedicines.hashCode;
 
-
-
-    @override
-    bool operator ==(Object other) => identical(this, other) || other is HealthContextDataDto &&
-      other.summary == summary &&
-      other.profile == profile &&
-      other.allergies == allergies &&
-      other.conditions == conditions &&
-      other.currentMedicines == currentMedicines;
-
-    @override
-    int get hashCode =>
-        summary.hashCode +
-        profile.hashCode +
-        allergies.hashCode +
-        conditions.hashCode +
-        currentMedicines.hashCode;
-
-  factory HealthContextDataDto.fromJson(Map<String, dynamic> json) => _$HealthContextDataDtoFromJson(json);
+  factory HealthContextDataDto.fromJson(Map<String, dynamic> json) =>
+      _$HealthContextDataDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$HealthContextDataDtoToJson(this);
 
@@ -120,6 +74,4 @@ class HealthContextDataDto {
   String toString() {
     return toJson().toString();
   }
-
 }
-

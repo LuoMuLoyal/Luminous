@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-02
+Last updated: 2026-06-03
 
 ## Files
 
@@ -22,6 +22,7 @@ Last updated: 2026-06-02
 - `RegisterDto` follows Lucent contract: `email` + `password` + register-scene `code`; successful registration returns a verified email.
 - Re-generated from Lucent `openapi.json` on 2026-06-02 after the auth alignment pass. No business-layer SDK surface changes were required in `lib/core/network/`; regeneration is now expected to go through the repo wrapper instead of manual package repair.
 - Re-generated again on 2026-06-02 after Lucent added `PATCH /api/v1/me/health-context/profile`; current app settings usage now consumes the supported `locale / timezone / unitSystem` preference write path, while theme mode and notification toggles remain local because Lucent does not expose write endpoints for them yet.
+- Re-generated on 2026-06-03 after Lucent added full health-context write APIs (profile expansion, allergy/condition/current-medicine CRUD). The `health_context` feature remote data source now exposes all write methods through the generated `UserHealthContextApi`, and the repository interface + Lucent-backed implementation cover the complete read/write surface. Settings profile sync continues to use the same `PATCH /me/health-context/profile` path unchanged.
 - Current stable regeneration entrypoint is `dart run tool/regenerate_lucent_openapi.dart`.
 - The OpenAPI generator version is already pinned in `openapitools.json`; the recurring breakage is downstream in the Dart package output:
   - `openapi-generator-cli` rewrites `packages/lucent_openapi/pubspec.yaml` back to older constraints.
