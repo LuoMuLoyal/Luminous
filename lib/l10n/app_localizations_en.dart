@@ -1718,4 +1718,115 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineSearchPreviewEmpty => 'Select a medicine to view details';
+
+  @override
+  String get mineEditProfileTitle => 'Edit Profile';
+
+  @override
+  String get mineEditAllergyTitle => 'Edit Allergy';
+
+  @override
+  String get mineEditAllergyNewTitle => 'New Allergy';
+
+  @override
+  String get mineEditConditionTitle => 'Edit Condition';
+
+  @override
+  String get mineEditConditionNewTitle => 'New Condition';
+
+  @override
+  String get mineEditMedicineTitle => 'Edit Medicine';
+
+  @override
+  String get mineEditMedicineNewTitle => 'New Medicine';
+
+  @override
+  String get mineEditSaveAction => 'Save';
+
+  @override
+  String get mineEditDeleteAction => 'Delete';
+
+  @override
+  String get mineEditSavedToast => 'Saved';
+
+  @override
+  String get mineEditDeletedToast => 'Deleted';
+
+  @override
+  String get mineEditFieldBirthDate => 'Birth date (YYYY-MM-DD)';
+
+  @override
+  String get mineEditFieldSexAtBirth => 'Sex at birth';
+
+  @override
+  String get mineEditFieldHeightCm => 'Height (cm)';
+
+  @override
+  String get mineEditFieldPregnancyState => 'Pregnancy state';
+
+  @override
+  String get mineEditFieldLactationState => 'Lactation state';
+
+  @override
+  String get mineEditFieldBloodType => 'Blood type';
+
+  @override
+  String get mineEditFieldLocale => 'Locale';
+
+  @override
+  String get mineEditFieldTimezone => 'Timezone';
+
+  @override
+  String get mineEditFieldUnitSystem => 'Unit system';
+
+  @override
+  String get mineEditFieldOnboardingCompleted => 'Onboarding completed';
+
+  @override
+  String get mineEditFieldKind => 'Kind';
+
+  @override
+  String get mineEditFieldLabel => 'Label';
+
+  @override
+  String get mineEditFieldReaction => 'Reaction';
+
+  @override
+  String get mineEditFieldSeverity => 'Severity';
+
+  @override
+  String get mineEditFieldNote => 'Note';
+
+  @override
+  String get mineEditFieldRecordedAt => 'Recorded at';
+
+  @override
+  String get mineEditFieldStatus => 'Status';
+
+  @override
+  String get mineEditFieldDiagnosedAt => 'Diagnosed at (YYYY-MM-DD)';
+
+  @override
+  String get mineEditFieldSource => 'Source';
+
+  @override
+  String get mineEditFieldSourceRefId => 'Source ref ID';
+
+  @override
+  String get mineEditFieldDisplayName => 'Display name';
+
+  @override
+  String get mineEditFieldStrengthText => 'Strength';
+
+  @override
+  String get mineEditFieldDoseText => 'Dose';
+
+  @override
+  String get mineEditFieldRoute => 'Route';
+
+  @override
+  String get mineEditFieldStartedAt => 'Started at (YYYY-MM-DD)';
+
+  @override
+  String get mineEditFieldEndedAt => 'Ended at (YYYY-MM-DD)';
 }

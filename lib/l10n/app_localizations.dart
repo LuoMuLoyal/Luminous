@@ -3265,6 +3265,228 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'选择一个药品查看详情'**
   String get medicineSearchPreviewEmpty;
+
+  /// No description provided for @mineEditProfileTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑档案'**
+  String get mineEditProfileTitle;
+
+  /// No description provided for @mineEditAllergyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑过敏'**
+  String get mineEditAllergyTitle;
+
+  /// No description provided for @mineEditAllergyNewTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'新增过敏'**
+  String get mineEditAllergyNewTitle;
+
+  /// No description provided for @mineEditConditionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑疾病'**
+  String get mineEditConditionTitle;
+
+  /// No description provided for @mineEditConditionNewTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'新增疾病'**
+  String get mineEditConditionNewTitle;
+
+  /// No description provided for @mineEditMedicineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑用药'**
+  String get mineEditMedicineTitle;
+
+  /// No description provided for @mineEditMedicineNewTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'新增用药'**
+  String get mineEditMedicineNewTitle;
+
+  /// No description provided for @mineEditSaveAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存'**
+  String get mineEditSaveAction;
+
+  /// No description provided for @mineEditDeleteAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除'**
+  String get mineEditDeleteAction;
+
+  /// No description provided for @mineEditSavedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存'**
+  String get mineEditSavedToast;
+
+  /// No description provided for @mineEditDeletedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'已删除'**
+  String get mineEditDeletedToast;
+
+  /// No description provided for @mineEditFieldBirthDate.
+  ///
+  /// In zh, this message translates to:
+  /// **'出生日期 (YYYY-MM-DD)'**
+  String get mineEditFieldBirthDate;
+
+  /// No description provided for @mineEditFieldSexAtBirth.
+  ///
+  /// In zh, this message translates to:
+  /// **'性别'**
+  String get mineEditFieldSexAtBirth;
+
+  /// No description provided for @mineEditFieldHeightCm.
+  ///
+  /// In zh, this message translates to:
+  /// **'身高 (cm)'**
+  String get mineEditFieldHeightCm;
+
+  /// No description provided for @mineEditFieldPregnancyState.
+  ///
+  /// In zh, this message translates to:
+  /// **'怀孕状态'**
+  String get mineEditFieldPregnancyState;
+
+  /// No description provided for @mineEditFieldLactationState.
+  ///
+  /// In zh, this message translates to:
+  /// **'哺乳状态'**
+  String get mineEditFieldLactationState;
+
+  /// No description provided for @mineEditFieldBloodType.
+  ///
+  /// In zh, this message translates to:
+  /// **'血型'**
+  String get mineEditFieldBloodType;
+
+  /// No description provided for @mineEditFieldLocale.
+  ///
+  /// In zh, this message translates to:
+  /// **'语言'**
+  String get mineEditFieldLocale;
+
+  /// No description provided for @mineEditFieldTimezone.
+  ///
+  /// In zh, this message translates to:
+  /// **'时区'**
+  String get mineEditFieldTimezone;
+
+  /// No description provided for @mineEditFieldUnitSystem.
+  ///
+  /// In zh, this message translates to:
+  /// **'单位制'**
+  String get mineEditFieldUnitSystem;
+
+  /// No description provided for @mineEditFieldOnboardingCompleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'完成新手引导'**
+  String get mineEditFieldOnboardingCompleted;
+
+  /// No description provided for @mineEditFieldKind.
+  ///
+  /// In zh, this message translates to:
+  /// **'类型'**
+  String get mineEditFieldKind;
+
+  /// No description provided for @mineEditFieldLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'名称'**
+  String get mineEditFieldLabel;
+
+  /// No description provided for @mineEditFieldReaction.
+  ///
+  /// In zh, this message translates to:
+  /// **'反应'**
+  String get mineEditFieldReaction;
+
+  /// No description provided for @mineEditFieldSeverity.
+  ///
+  /// In zh, this message translates to:
+  /// **'严重程度'**
+  String get mineEditFieldSeverity;
+
+  /// No description provided for @mineEditFieldNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'备注'**
+  String get mineEditFieldNote;
+
+  /// No description provided for @mineEditFieldRecordedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录时间'**
+  String get mineEditFieldRecordedAt;
+
+  /// No description provided for @mineEditFieldStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'状态'**
+  String get mineEditFieldStatus;
+
+  /// No description provided for @mineEditFieldDiagnosedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'诊断日期 (YYYY-MM-DD)'**
+  String get mineEditFieldDiagnosedAt;
+
+  /// No description provided for @mineEditFieldSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'来源'**
+  String get mineEditFieldSource;
+
+  /// No description provided for @mineEditFieldSourceRefId.
+  ///
+  /// In zh, this message translates to:
+  /// **'来源ID'**
+  String get mineEditFieldSourceRefId;
+
+  /// No description provided for @mineEditFieldDisplayName.
+  ///
+  /// In zh, this message translates to:
+  /// **'药品名称'**
+  String get mineEditFieldDisplayName;
+
+  /// No description provided for @mineEditFieldStrengthText.
+  ///
+  /// In zh, this message translates to:
+  /// **'规格'**
+  String get mineEditFieldStrengthText;
+
+  /// No description provided for @mineEditFieldDoseText.
+  ///
+  /// In zh, this message translates to:
+  /// **'剂量'**
+  String get mineEditFieldDoseText;
+
+  /// No description provided for @mineEditFieldRoute.
+  ///
+  /// In zh, this message translates to:
+  /// **'给药途径'**
+  String get mineEditFieldRoute;
+
+  /// No description provided for @mineEditFieldStartedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始日期 (YYYY-MM-DD)'**
+  String get mineEditFieldStartedAt;
+
+  /// No description provided for @mineEditFieldEndedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'结束日期 (YYYY-MM-DD)'**
+  String get mineEditFieldEndedAt;
 }
 
 class _AppLocalizationsDelegate

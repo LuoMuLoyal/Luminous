@@ -1623,4 +1623,115 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineSearchPreviewEmpty => '选择一个药品查看详情';
+
+  @override
+  String get mineEditProfileTitle => '编辑档案';
+
+  @override
+  String get mineEditAllergyTitle => '编辑过敏';
+
+  @override
+  String get mineEditAllergyNewTitle => '新增过敏';
+
+  @override
+  String get mineEditConditionTitle => '编辑疾病';
+
+  @override
+  String get mineEditConditionNewTitle => '新增疾病';
+
+  @override
+  String get mineEditMedicineTitle => '编辑用药';
+
+  @override
+  String get mineEditMedicineNewTitle => '新增用药';
+
+  @override
+  String get mineEditSaveAction => '保存';
+
+  @override
+  String get mineEditDeleteAction => '删除';
+
+  @override
+  String get mineEditSavedToast => '已保存';
+
+  @override
+  String get mineEditDeletedToast => '已删除';
+
+  @override
+  String get mineEditFieldBirthDate => '出生日期 (YYYY-MM-DD)';
+
+  @override
+  String get mineEditFieldSexAtBirth => '性别';
+
+  @override
+  String get mineEditFieldHeightCm => '身高 (cm)';
+
+  @override
+  String get mineEditFieldPregnancyState => '怀孕状态';
+
+  @override
+  String get mineEditFieldLactationState => '哺乳状态';
+
+  @override
+  String get mineEditFieldBloodType => '血型';
+
+  @override
+  String get mineEditFieldLocale => '语言';
+
+  @override
+  String get mineEditFieldTimezone => '时区';
+
+  @override
+  String get mineEditFieldUnitSystem => '单位制';
+
+  @override
+  String get mineEditFieldOnboardingCompleted => '完成新手引导';
+
+  @override
+  String get mineEditFieldKind => '类型';
+
+  @override
+  String get mineEditFieldLabel => '名称';
+
+  @override
+  String get mineEditFieldReaction => '反应';
+
+  @override
+  String get mineEditFieldSeverity => '严重程度';
+
+  @override
+  String get mineEditFieldNote => '备注';
+
+  @override
+  String get mineEditFieldRecordedAt => '记录时间';
+
+  @override
+  String get mineEditFieldStatus => '状态';
+
+  @override
+  String get mineEditFieldDiagnosedAt => '诊断日期 (YYYY-MM-DD)';
+
+  @override
+  String get mineEditFieldSource => '来源';
+
+  @override
+  String get mineEditFieldSourceRefId => '来源ID';
+
+  @override
+  String get mineEditFieldDisplayName => '药品名称';
+
+  @override
+  String get mineEditFieldStrengthText => '规格';
+
+  @override
+  String get mineEditFieldDoseText => '剂量';
+
+  @override
+  String get mineEditFieldRoute => '给药途径';
+
+  @override
+  String get mineEditFieldStartedAt => '开始日期 (YYYY-MM-DD)';
+
+  @override
+  String get mineEditFieldEndedAt => '结束日期 (YYYY-MM-DD)';
 }
