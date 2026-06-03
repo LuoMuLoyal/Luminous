@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/features/today/data/repositories/lucent_today_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/today_repository.dart';
 
@@ -50,5 +51,5 @@ class MockTodayRepository implements TodayRepository {
 }
 
 final todayRepositoryProvider = Provider<TodayRepository>((ref) {
-  return const MockTodayRepository();
+  return LucentTodayRepository(ref: ref);
 });

@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
+import 'package:luminous/features/today/domain/repositories/today_repository.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -10,6 +12,11 @@ void main() {
   testWidgets('Today page renders key dashboard sections', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+        ],
         child: MaterialApp(
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
@@ -60,6 +67,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+        ],
         child: MaterialApp(
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,

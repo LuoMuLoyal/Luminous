@@ -510,7 +510,8 @@ class _TodayMedicationCard extends StatelessWidget {
                     Text(
                       l10n.todayMedicationNextDose(
                         medication.nextDoseTimeLabel,
-                        _medicationName(l10n, medication.nextMedicine),
+                        medication.nextMedicineName ??
+                            _medicationName(l10n, medication.nextMedicine),
                       ),
                       style: typography.bodySm.copyWith(color: surface.body),
                     ),
