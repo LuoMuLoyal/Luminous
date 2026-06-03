@@ -507,6 +507,7 @@ class _SearchResultTile extends StatelessWidget {
     required this.surface,
     this.expandedAction = false,
     this.onTap,
+    this.onAddToCurrentMedicines,
   });
 
   final MedicineSearchResult result;
@@ -515,6 +516,7 @@ class _SearchResultTile extends StatelessWidget {
   final AppThemeSurface surface;
   final bool expandedAction;
   final VoidCallback? onTap;
+  final VoidCallback? onAddToCurrentMedicines;
 
   @override
   Widget build(BuildContext context) {
@@ -578,10 +580,7 @@ class _SearchResultTile extends StatelessWidget {
                   child: SizedBox(
                     width: expandedAction ? double.infinity : null,
                     child: FilledButton(
-                      onPressed: () => AppToast.show(
-                        context,
-                        '${result.name}: ${l10n.medicineSearchAddToast}',
-                      ),
+                      onPressed: onAddToCurrentMedicines,
                       child: Text(l10n.medicineSearchAddToBoxAction),
                     ),
                   ),
