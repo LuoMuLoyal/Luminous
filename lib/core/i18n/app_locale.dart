@@ -36,6 +36,22 @@ enum AppLocale {
     return AppLocale.system;
   }
 
+  static AppLocale? fromBackendPreference(String? value) {
+    final normalized = value?.trim();
+    if (normalized == null || normalized.isEmpty) {
+      return AppLocale.system;
+    }
+
+    final lower = normalized.toLowerCase();
+    if (lower.startsWith('zh')) {
+      return AppLocale.zhCn;
+    }
+    if (lower.startsWith('en')) {
+      return AppLocale.en;
+    }
+    return null;
+  }
+
   static AppLocale fromFlutterLocale(Locale locale) {
     return switch (locale.languageCode) {
       'zh' => AppLocale.zhCn,

@@ -262,30 +262,6 @@ class MockMineRepository implements MineRepository {
           subtitleKey: MineCopyKey.quickEmergencySubtitle,
         ),
       ],
-      settings: <MineSettingItem>[
-        MineSettingItem(
-          icon: Icons.dark_mode_outlined,
-          titleKey: MineCopyKey.settingsThemeTitle,
-          valueKey: MineCopyKey.settingsThemeValue,
-        ),
-        MineSettingItem(
-          icon: Icons.verified_user_outlined,
-          titleKey: MineCopyKey.settingsAccountTitle,
-        ),
-        MineSettingItem(
-          icon: Icons.language_outlined,
-          titleKey: MineCopyKey.settingsLanguageTitle,
-          valueKey: MineCopyKey.settingsLanguageValue,
-        ),
-        MineSettingItem(
-          icon: Icons.notifications_none_rounded,
-          titleKey: MineCopyKey.settingsNotificationsTitle,
-        ),
-        MineSettingItem(
-          icon: Icons.tune_rounded,
-          titleKey: MineCopyKey.settingsMoreTitle,
-        ),
-      ],
     );
   }
 

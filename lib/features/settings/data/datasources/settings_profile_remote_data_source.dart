@@ -1,24 +1,57 @@
+import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 
-class SettingsProfileRemoteDataSource {
-  const SettingsProfileRemoteDataSource({required this.api});
+const Object settingsProfileNoChange = Object();
 
-  final UserHealthContextApi api;
+class SettingsProfileRemoteDataSource {
+  const SettingsProfileRemoteDataSource({required this.dio});
+
+  final Dio dio;
 
   Future<HealthContextDataDto> updatePreferences({
-    Object? locale,
-    Object? timezone,
-    UnitSystem? unitSystem,
+    Object? locale = settingsProfileNoChange,
+    Object? timezone = settingsProfileNoChange,
+    Object? unitSystem = settingsProfileNoChange,
   }) async {
-    final response = await api
-        .userHealthContextControllerUpdateMeHealthContextProfileV1(
-          updateHealthContextProfileDto: UpdateHealthContextProfileDto(
-            locale: locale,
-            timezone: timezone,
-            unitSystem: unitSystem,
-          ),
-        );
+    final payload = <String, dynamic>{};
+    if (!identical(locale, settingsProfileNoChange)) {
+      payload['locale'] = locale;
+    }
+    if (!identical(timezone, settingsProfileNoChange)) {
+      payload['timezone'] = timezone;
+    }
+    if (!identical(unitSystem, settingsProfileNoChange)) {
+      payload['unitSystem'] = unitSystem;
+    }
 
-    return response.data!.data;
+    final response = await dio.patch<Object>(
+      '/api/v1/me/health-context/profile',
+      data: payload,
+      options: Options(contentType: Headers.jsonContentType),
+    );
+
+    final body = _coerceToMap(response.data);
+    if (body == null) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        error: 'Lucent health-context profile response is empty.',
+      );
+    }
+
+    return HealthContextResponseDto.fromJson(body).data;
+  }
+
+  Map<String, dynamic>? _coerceToMap(Object? value) {
+    if (value is Map<String, dynamic>) {
+      return value;
+    }
+    if (value is Map) {
+      return value.map(
+        (key, entryValue) => MapEntry(key.toString(), entryValue),
+      );
+    }
+    return null;
   }
 }

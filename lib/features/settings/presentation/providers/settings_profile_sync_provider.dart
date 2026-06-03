@@ -10,36 +10,70 @@ class SettingsProfileSyncNotifier extends Notifier<void> {
   @override
   void build() {}
 
-  Future<void> setLocale(AppLocale locale) async {
+  Future<void> syncPreferences({
+    AppLocale? locale,
+    Object? timezone = _noChange,
+    Object? unitSystem = _noChange,
+  }) async {
+    final hasLocaleChange = locale != null;
     final previousLocale =
         ref.read(appLocaleControllerProvider).asData?.value ?? AppLocale.system;
 
-    await ref.read(appLocaleControllerProvider.notifier).setLocale(locale);
+    if (hasLocaleChange) {
+      await ref.read(appLocaleControllerProvider.notifier).setLocale(locale);
+    }
 
     try {
-      await _syncLocaleToBackend(locale);
+      await _syncPreferencesToBackend(
+        locale: hasLocaleChange ? locale : null,
+        timezone: timezone,
+        unitSystem: unitSystem,
+      );
       _refreshDerivedState();
     } catch (error) {
-      await ref.read(appLocaleControllerProvider.notifier).setLocale(
-        previousLocale,
-      );
+      if (hasLocaleChange) {
+        await ref.read(appLocaleControllerProvider.notifier).setLocale(
+          previousLocale,
+        );
+      }
       rethrow;
     }
+  }
+
+  Future<void> setLocale(AppLocale locale) async {
+    await syncPreferences(locale: locale);
   }
 
   Future<void> resetLocaleToSystem() async {
     await setLocale(AppLocale.system);
   }
 
-  Future<void> _syncLocaleToBackend(AppLocale locale) async {
+  Future<void> resetProfilePreferences() async {
+    await syncPreferences(
+      locale: AppLocale.system,
+      timezone: '',
+      unitSystem: null,
+    );
+  }
+
+  Future<void> _syncPreferencesToBackend({
+    AppLocale? locale,
+    Object? timezone = _noChange,
+    Object? unitSystem = _noChange,
+  }) async {
     final session = ref.read(authSessionProvider);
     if (!session.isAuthenticated) {
       return;
     }
 
+    final backendTimezone = identical(timezone, _noChange) ? _noChange : timezone;
     await ref
         .read(settingsProfileRemoteDataSourceProvider)
-        .updatePreferences(locale: _toBackendLocale(locale));
+        .updatePreferences(
+          locale: locale == null ? _noChange : _toBackendLocale(locale),
+          timezone: backendTimezone,
+          unitSystem: unitSystem,
+        );
   }
 
   void _refreshDerivedState() {
@@ -55,6 +89,8 @@ class SettingsProfileSyncNotifier extends Notifier<void> {
     };
   }
 }
+
+const Object _noChange = Object();
 
 final settingsProfileSyncProvider =
     NotifierProvider<SettingsProfileSyncNotifier, void>(

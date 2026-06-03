@@ -12,7 +12,6 @@ class MineDashboard {
     required this.statusEntries,
     required this.onboardingEntries,
     required this.quickEntries,
-    required this.settings,
   });
 
   final MineAccount account;
@@ -25,7 +24,6 @@ class MineDashboard {
   final List<MineStatusEntry> statusEntries;
   final List<MineOnboardingEntry> onboardingEntries;
   final List<MineQuickEntry> quickEntries;
-  final List<MineSettingItem> settings;
 }
 
 class MineAccount {
@@ -175,18 +173,6 @@ class MineQuickEntry {
   final MineCopyKey subtitleKey;
 }
 
-class MineSettingItem {
-  const MineSettingItem({
-    required this.icon,
-    required this.titleKey,
-    this.valueKey,
-  });
-
-  final IconData icon;
-  final MineCopyKey titleKey;
-  final MineCopyKey? valueKey;
-}
-
 enum MineCopyKey {
   accountDisplayName,
   accountGuestDisplayName,
@@ -265,11 +251,4 @@ enum MineCopyKey {
   quickDoctorSubtitle,
   quickEmergencyTitle,
   quickEmergencySubtitle,
-  settingsThemeTitle,
-  settingsThemeValue,
-  settingsAccountTitle,
-  settingsLanguageTitle,
-  settingsLanguageValue,
-  settingsNotificationsTitle,
-  settingsMoreTitle,
 }

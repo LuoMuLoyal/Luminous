@@ -224,17 +224,21 @@ class _FakeNotificationPermissionService
 class _FakeSettingsProfileRemoteDataSource
     extends SettingsProfileRemoteDataSource {
   _FakeSettingsProfileRemoteDataSource()
-    : super(api: UserHealthContextApi(Dio()));
+    : super(dio: Dio());
 
   Object? lastLocale;
+  Object? lastTimezone = settingsProfileNoChange;
+  Object? lastUnitSystem = settingsProfileNoChange;
 
   @override
   Future<HealthContextDataDto> updatePreferences({
-    Object? locale,
-    Object? timezone,
-    UnitSystem? unitSystem,
+    Object? locale = settingsProfileNoChange,
+    Object? timezone = settingsProfileNoChange,
+    Object? unitSystem = settingsProfileNoChange,
   }) async {
     lastLocale = locale;
+    lastTimezone = timezone;
+    lastUnitSystem = unitSystem;
     return HealthContextDataDto(
       summary: UserHealthSummaryDto(
         age: null,
@@ -251,9 +255,13 @@ class _FakeSettingsProfileRemoteDataSource
         pregnancyState: null,
         lactationState: null,
         bloodType: null,
-        locale: locale,
-        timezone: timezone,
-        unitSystem: unitSystem,
+        locale: identical(locale, settingsProfileNoChange) ? null : locale,
+        timezone: identical(timezone, settingsProfileNoChange)
+            ? null
+            : timezone,
+        unitSystem: identical(unitSystem, settingsProfileNoChange)
+            ? null
+            : unitSystem as UnitSystem?,
         onboardingCompletedAt: null,
         extras: const <String, Object>{},
       ),

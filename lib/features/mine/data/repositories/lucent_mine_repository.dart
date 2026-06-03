@@ -31,7 +31,6 @@ class LucentMineRepository implements MineRepository {
       statusEntries: _buildStatusEntries(snapshot),
       onboardingEntries: _buildOnboardingEntries(snapshot),
       quickEntries: _staticQuickEntries,
-      settings: _staticSettings,
     );
   }
 
@@ -300,32 +299,6 @@ class LucentMineRepository implements MineRepository {
       subtitleKey: MineCopyKey.quickEmergencySubtitle,
     ),
   ];
-
-  static const _staticSettings = [
-    MineSettingItem(
-      icon: Icons.dark_mode_outlined,
-      titleKey: MineCopyKey.settingsThemeTitle,
-      valueKey: MineCopyKey.settingsThemeValue,
-    ),
-    MineSettingItem(
-      icon: Icons.verified_user_outlined,
-      titleKey: MineCopyKey.settingsAccountTitle,
-    ),
-    MineSettingItem(
-      icon: Icons.language_outlined,
-      titleKey: MineCopyKey.settingsLanguageTitle,
-      valueKey: MineCopyKey.settingsLanguageValue,
-    ),
-    MineSettingItem(
-      icon: Icons.notifications_none_rounded,
-      titleKey: MineCopyKey.settingsNotificationsTitle,
-    ),
-    MineSettingItem(
-      icon: Icons.tune_rounded,
-      titleKey: MineCopyKey.settingsMoreTitle,
-    ),
-  ];
-
   static const _green = Color(0xFF159B55);
   static const _greenSoft = Color(0xFFEAF8EE);
   static const _blue = Color(0xFF428BFF);

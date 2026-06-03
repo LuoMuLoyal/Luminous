@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LuminousApp extends ConsumerStatefulWidget {
@@ -31,6 +35,29 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AuthSessionState>(authSessionProvider, (previous, next) {
+      final previousUserId = previous?.user?.id;
+      final nextUserId = next.user?.id;
+
+      if (previous?.isAuthenticated == true && !next.isAuthenticated) {
+        ref.invalidate(healthContextSnapshotProvider);
+        return;
+      }
+
+      if (!next.isAuthenticated || next.isLoading) {
+        return;
+      }
+
+      final becameAuthenticated = previous?.isAuthenticated != true;
+      final switchedUser = previousUserId != null && previousUserId != nextUserId;
+      if (!becameAuthenticated && !switchedUser) {
+        return;
+      }
+
+      ref.invalidate(healthContextSnapshotProvider);
+      unawaited(_restoreLocaleFromProfile());
+    });
+
     final themeMode = ref
         .watch(appThemeControllerProvider)
         .maybeWhen(
@@ -56,5 +83,24 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: widget.routerConfig ?? router,
     );
+  }
+
+  Future<void> _restoreLocaleFromProfile() async {
+    try {
+      final snapshot = await ref.read(healthContextSnapshotProvider.future);
+      final locale = AppLocale.fromBackendPreference(snapshot.profile.locale);
+      if (locale == null) {
+        return;
+      }
+
+      final currentLocale = ref.read(appLocaleControllerProvider).asData?.value;
+      if (currentLocale == locale) {
+        return;
+      }
+
+      await ref.read(appLocaleControllerProvider.notifier).setLocale(locale);
+    } catch (_) {
+      // Locale backfill is best-effort and should not block app startup.
+    }
   }
 }

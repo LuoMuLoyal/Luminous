@@ -103,6 +103,54 @@ void main() {
     expect(find.text('account-settings-page'), findsOneWidget);
   });
 
+  testWidgets('Settings account row routes to login page when signed out', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedOutAuthSessionNotifier(),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/settings',
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsPage(),
+              ),
+              GoRoute(
+                path: '/login',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('login-page')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('settings-row-account')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('login-page'), findsOneWidget);
+  });
+
   testWidgets('Settings language row routes to language settings page', (
     tester,
   ) async {
@@ -306,5 +354,12 @@ class _LogoutTrackingAuthSessionNotifier extends AuthSessionNotifier {
   Future<void> logout() async {
     logoutCalled = true;
     state = const AuthSessionState(isAuthenticated: false, isLoading: false);
+  }
+}
+
+class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(isAuthenticated: false, isLoading: false);
   }
 }

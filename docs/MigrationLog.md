@@ -6,6 +6,23 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-02
 
+### Settings Locale Backfill From Lucent
+
+- `LuminousApp` now listens for authenticated session restore/sign-in and best-effort backfills the local app locale from Lucent `health-context.profile.locale`.
+- Backend locale values only map into the currently supported frontend set (`zh-CN / en / system`); unknown values are ignored instead of forcing a wrong local override.
+- Added startup widget coverage for the locale backfill path so app language can converge to the signed-in Lucent preference automatically.
+
+### Settings Cloud-Sync Boundary Cleanup
+
+- Expanded the settings profile-sync path so the shared notifier now models the real Lucent-backed preference write surface: `locale / timezone / unitSystem`.
+- `更多设置 / More settings -> 恢复默认设置` now clears the full supported Lucent preference set instead of only resetting locale locally plus partially on the backend.
+- Updated OpenAPI/localization/UI docs to state the real sync boundary explicitly: theme mode and notification toggles are still device-local because Lucent does not yet expose write endpoints for them.
+
+### Mine Settings Residue Cleanup
+
+- Removed the old Mine-dashboard `settings` data payload and related `MineSettingItem` model now that settings lives exclusively under the standalone `/settings` route.
+- Cleared the leftover mock/Lucent repository settings arrays so Mine data no longer carries dead settings rows that could be accidentally rendered again later.
+
 ### Minimal Flutter CI
 
 - Added `.github/workflows/flutter-ci.yml` for Luminous.
