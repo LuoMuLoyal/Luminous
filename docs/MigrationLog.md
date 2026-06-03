@@ -6,7 +6,32 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-03
 
-### Mine Edit Flows
+### Regression, Docs, and Audit Package (Task 11)
+
+- Full regression: Lucent 21/21 unit + 19/19 e2e + build, Luminous 45/45 tests + analyze clean.
+- Verified all docs updated: `api-contract.md`, `backend-user-domain.md`, `OpenApi_Client.md`, `Localization.md`, `MigrationLog.md`, `CHANGELOG.md`.
+- Final git status clean in both repos. No unrelated dirty work absorbed.
+- All new visible text in ARB; `flutter gen-l10n` refreshed.
+
+### Today Tab Wired to Real Health-Context Signals (Task 10)
+
+- Created `LucentTodayRepository` merging real data (medicineCount, nextMedicine from health context) with static mock sections (water, vitals, meal, environment, lumi) clearly annotated as unsupported.
+- `TodayMedicationSummary` now supports `nextMedicineName` raw string; `moment` derived from system time via `todayDayMomentFromHour()`.
+- Provider swapped from `MockTodayRepository` to `LucentTodayRepository`.
+
+### Connect Search Add-To-Current-Medicines (Task 8)
+
+- `SearchPage` now calls `healthContextRepository.createCurrentMedicine()` when tapping "Add to drugbox".
+- Callback threaded through `MedicineSearchView` → `_MobileSearchLayout` / `_DesktopSearchLayout` → `_DesktopSearchPanel` → `_SearchResultTile`.
+- Success shows "Saved" toast and invalidates `healthContextSnapshotProvider`.
+
+### Medicine Tab Wired to Real Current Medicines (Task 9)
+
+- Created `LucentMedicineWorkspaceRepository` reading from health context.
+- `MedicinePlanItem` extended with `rawName`/`rawDosage`/`rawSchedule`/`rawStock`/`rawState` fields; view uses raw strings when present.
+- Provider swapped from mock to real; hero metrics show actual medicine count.
+
+### Mine Edit Flows (Task 7)
 
 - Added 4 edit pages under `lib/features/mine/presentation/pages/`:
   - `profile_edit_page.dart` — edit health profile fields (birthDate, sexAtBirth, heightCm, pregnancyState, lactationState, bloodType, unitSystem, onboardingCompleted).
