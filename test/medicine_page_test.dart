@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
+import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -12,6 +14,11 @@ void main() {
   ) async {
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+        ],
         child: MaterialApp(
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
