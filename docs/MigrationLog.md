@@ -6,6 +6,18 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-03
 
+### Mine Edit Flows
+
+- Added 4 edit pages under `lib/features/mine/presentation/pages/`:
+  - `profile_edit_page.dart` — edit health profile fields (birthDate, sexAtBirth, heightCm, pregnancyState, lactationState, bloodType, unitSystem, onboardingCompleted).
+  - `allergy_edit_page.dart` — create and edit allergy records (kind, label, reaction, severity, note), with delete.
+  - `condition_edit_page.dart` — create and edit condition records (label, status, diagnosedAt, note), with delete.
+  - `current_medicine_edit_page.dart` — create and edit current medicine records (source, displayName, strengthText, doseText, route, startedAt, note), with delete.
+- Added form providers under `lib/features/mine/presentation/providers/health_profile_form_provider.dart` for profile, allergy, condition, and current medicine writes.
+- Registered 8 new routes in `router.dart`: `/mine/profile/edit`, `/mine/allergy/new`, `/mine/allergy/:id/edit`, `/mine/condition/new`, `/mine/condition/:id/edit`, `/mine/medicine/new`, `/mine/medicine/:id/edit`.
+- Added 38 ARB keys for edit page titles, field labels, and action buttons in both `app_en.arb` and `app_zh.arb`.
+- Generated `gen-l10n` output.
+
 ### Regenerated Lucent OpenAPI Client + Health-Context Write Repository Methods
 
 - Re-ran `dart run tool/regenerate_lucent_openapi.dart` after Lucent added full health-context write APIs.
