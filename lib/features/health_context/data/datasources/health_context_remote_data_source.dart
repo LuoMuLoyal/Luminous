@@ -1,14 +1,17 @@
 // ignore_for_file: prefer_initializing_formals
 
+import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/network/lucent_api.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 
 /// Remote data source that fetches and writes health-context data to Lucent.
 class HealthContextRemoteDataSource {
-  HealthContextRemoteDataSource({required UserHealthContextApi api})
-    : _api = api;
+  HealthContextRemoteDataSource({required UserHealthContextApi api, required Dio dio})
+    : _api = api,
+      _dio = dio;
 
   final UserHealthContextApi _api;
+  final Dio _dio;
 
   /// Calls GET /api/v1/me/health-context and returns the parsed DTO.
   Future<HealthContextDataDto> fetchHealthContext() async {
@@ -16,115 +19,260 @@ class HealthContextRemoteDataSource {
     return response.data!.data;
   }
 
-  // ── Profile ──
-
   /// Calls PATCH /api/v1/me/health-context/profile and returns the parsed DTO.
   Future<HealthContextDataDto> updateProfile(
-    UpdateHealthContextProfileDto dto,
-  ) async {
-    final response = await _api
-        .userHealthContextControllerUpdateMeHealthContextProfileV1(
-          updateHealthContextProfileDto: dto,
-        );
-    return response.data!.data;
+    HealthProfileUpdateInput input,
+  ) {
+    return _write(
+      method: 'PATCH',
+      path: '/api/v1/me/health-context/profile',
+      payload: healthProfileUpdatePayload(input),
+    );
   }
-
-  // ── Allergies ──
 
   /// Calls POST /api/v1/me/health-context/allergies and returns the parsed DTO.
   Future<HealthContextDataDto> createAllergy(
-    CreateHealthContextAllergyDto dto,
-  ) async {
-    final response = await _api.userHealthContextControllerCreateAllergyV1(
-      createHealthContextAllergyDto: dto,
+    HealthAllergyWriteInput input,
+  ) {
+    return _write(
+      method: 'POST',
+      path: '/api/v1/me/health-context/allergies',
+      payload: healthAllergyCreatePayload(input),
     );
-    return response.data!.data;
   }
 
   /// Calls PATCH /api/v1/me/health-context/allergies/:id and returns the parsed DTO.
   Future<HealthContextDataDto> updateAllergy(
     String id,
-    UpdateHealthContextAllergyDto dto,
-  ) async {
-    final response = await _api.userHealthContextControllerUpdateAllergyV1(
-      id: id,
-      updateHealthContextAllergyDto: dto,
+    HealthAllergyUpdateInput input,
+  ) {
+    return _write(
+      method: 'PATCH',
+      path: '/api/v1/me/health-context/allergies/$id',
+      payload: healthAllergyUpdatePayload(input),
     );
-    return response.data!.data;
   }
 
   /// Calls DELETE /api/v1/me/health-context/allergies/:id and returns the parsed DTO.
-  Future<HealthContextDataDto> deleteAllergy(String id) async {
-    final response = await _api.userHealthContextControllerDeleteAllergyV1(
-      id: id,
+  Future<HealthContextDataDto> deleteAllergy(String id) {
+    return _write(
+      method: 'DELETE',
+      path: '/api/v1/me/health-context/allergies/$id',
     );
-    return response.data!.data;
   }
-
-  // ── Conditions ──
 
   /// Calls POST /api/v1/me/health-context/conditions and returns the parsed DTO.
   Future<HealthContextDataDto> createCondition(
-    CreateHealthContextConditionDto dto,
-  ) async {
-    final response = await _api.userHealthContextControllerCreateConditionV1(
-      createHealthContextConditionDto: dto,
+    HealthConditionWriteInput input,
+  ) {
+    return _write(
+      method: 'POST',
+      path: '/api/v1/me/health-context/conditions',
+      payload: healthConditionCreatePayload(input),
     );
-    return response.data!.data;
   }
 
   /// Calls PATCH /api/v1/me/health-context/conditions/:id and returns the parsed DTO.
   Future<HealthContextDataDto> updateCondition(
     String id,
-    UpdateHealthContextConditionDto dto,
-  ) async {
-    final response = await _api.userHealthContextControllerUpdateConditionV1(
-      id: id,
-      updateHealthContextConditionDto: dto,
+    HealthConditionUpdateInput input,
+  ) {
+    return _write(
+      method: 'PATCH',
+      path: '/api/v1/me/health-context/conditions/$id',
+      payload: healthConditionUpdatePayload(input),
     );
-    return response.data!.data;
   }
 
   /// Calls DELETE /api/v1/me/health-context/conditions/:id and returns the parsed DTO.
-  Future<HealthContextDataDto> deleteCondition(String id) async {
-    final response = await _api.userHealthContextControllerDeleteConditionV1(
-      id: id,
+  Future<HealthContextDataDto> deleteCondition(String id) {
+    return _write(
+      method: 'DELETE',
+      path: '/api/v1/me/health-context/conditions/$id',
     );
-    return response.data!.data;
   }
-
-  // ── Current Medicines ──
 
   /// Calls POST /api/v1/me/health-context/current-medicines and returns the parsed DTO.
   Future<HealthContextDataDto> createCurrentMedicine(
-    CreateCurrentMedicineDto dto,
-  ) async {
-    final response =
-        await _api.userHealthContextControllerCreateCurrentMedicineV1(
-          createCurrentMedicineDto: dto,
-        );
-    return response.data!.data;
+    CurrentMedicineWriteInput input,
+  ) {
+    return _write(
+      method: 'POST',
+      path: '/api/v1/me/health-context/current-medicines',
+      payload: currentMedicineCreatePayload(input),
+    );
   }
 
   /// Calls PATCH /api/v1/me/health-context/current-medicines/:id and returns the parsed DTO.
   Future<HealthContextDataDto> updateCurrentMedicine(
     String id,
-    UpdateCurrentMedicineDto dto,
-  ) async {
-    final response =
-        await _api.userHealthContextControllerUpdateCurrentMedicineV1(
-          id: id,
-          updateCurrentMedicineDto: dto,
-        );
-    return response.data!.data;
+    CurrentMedicineUpdateInput input,
+  ) {
+    return _write(
+      method: 'PATCH',
+      path: '/api/v1/me/health-context/current-medicines/$id',
+      payload: currentMedicineUpdatePayload(input),
+    );
   }
 
   /// Calls DELETE /api/v1/me/health-context/current-medicines/:id and returns the parsed DTO.
-  Future<HealthContextDataDto> deleteCurrentMedicine(String id) async {
-    final response =
-        await _api.userHealthContextControllerDeleteCurrentMedicineV1(
-          id: id,
-        );
-    return response.data!.data;
+  Future<HealthContextDataDto> deleteCurrentMedicine(String id) {
+    return _write(
+      method: 'DELETE',
+      path: '/api/v1/me/health-context/current-medicines/$id',
+    );
   }
+
+  Future<HealthContextDataDto> _write({
+    required String method,
+    required String path,
+    Map<String, dynamic>? payload,
+  }) async {
+    final response = await _dio.request<Object>(
+      path,
+      data: payload,
+      options: Options(method: method, contentType: Headers.jsonContentType),
+    );
+
+    final body = _coerceToMap(response.data);
+    if (body == null) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        error: 'Lucent health-context response is empty.',
+      );
+    }
+
+    return HealthContextResponseDto.fromJson(body).data;
+  }
+
+  static Map<String, dynamic>? _coerceToMap(Object? value) {
+    if (value is Map<String, dynamic>) {
+      return value;
+    }
+    if (value is Map) {
+      return value.map(
+        (key, entryValue) => MapEntry(key.toString(), entryValue),
+      );
+    }
+    return null;
+  }
+}
+
+Map<String, dynamic> healthProfileUpdatePayload(
+  HealthProfileUpdateInput input,
+) {
+  final payload = <String, dynamic>{};
+  _putIfChanged(payload, 'locale', input.locale);
+  _putIfChanged(payload, 'timezone', input.timezone);
+  _putIfChanged(payload, 'unitSystem', input.unitSystem);
+  _putIfChanged(payload, 'birthDate', input.birthDate);
+  _putIfChanged(payload, 'sexAtBirth', input.sexAtBirth);
+  _putIfChanged(payload, 'heightCm', input.heightCm);
+  _putIfChanged(payload, 'pregnancyState', input.pregnancyState);
+  _putIfChanged(payload, 'lactationState', input.lactationState);
+  _putIfChanged(payload, 'bloodType', input.bloodType);
+  _putIfChanged(payload, 'onboardingCompleted', input.onboardingCompleted);
+  return payload;
+}
+
+Map<String, dynamic> healthAllergyCreatePayload(
+  HealthAllergyWriteInput input,
+) {
+  return _compactCreatePayload(<String, dynamic>{
+    'kind': input.kind.value,
+    'label': input.label,
+    'reaction': input.reaction,
+    'severity': input.severity?.value,
+    'note': input.note,
+    'recordedAt': input.recordedAt,
+  });
+}
+
+Map<String, dynamic> healthAllergyUpdatePayload(
+  HealthAllergyUpdateInput input,
+) {
+  final payload = <String, dynamic>{};
+  _putIfChanged(payload, 'kind', input.kind);
+  _putIfChanged(payload, 'label', input.label);
+  _putIfChanged(payload, 'reaction', input.reaction);
+  _putIfChanged(payload, 'severity', input.severity);
+  _putIfChanged(payload, 'note', input.note);
+  _putIfChanged(payload, 'recordedAt', input.recordedAt);
+  _putIfChanged(payload, 'isActive', input.isActive);
+  return payload;
+}
+
+Map<String, dynamic> healthConditionCreatePayload(
+  HealthConditionWriteInput input,
+) {
+  return _compactCreatePayload(<String, dynamic>{
+    'label': input.label,
+    'status': input.status?.value,
+    'diagnosedAt': input.diagnosedAt,
+    'note': input.note,
+  });
+}
+
+Map<String, dynamic> healthConditionUpdatePayload(
+  HealthConditionUpdateInput input,
+) {
+  final payload = <String, dynamic>{};
+  _putIfChanged(payload, 'label', input.label);
+  _putIfChanged(payload, 'status', input.status);
+  _putIfChanged(payload, 'diagnosedAt', input.diagnosedAt);
+  _putIfChanged(payload, 'note', input.note);
+  return payload;
+}
+
+Map<String, dynamic> currentMedicineCreatePayload(
+  CurrentMedicineWriteInput input,
+) {
+  return _compactCreatePayload(<String, dynamic>{
+    'source': input.source.value,
+    'sourceRefId': input.sourceRefId,
+    'displayName': input.displayName,
+    'strengthText': input.strengthText,
+    'doseText': input.doseText,
+    'route': input.route,
+    'startedAt': input.startedAt,
+    'endedAt': input.endedAt,
+    'note': input.note,
+  });
+}
+
+Map<String, dynamic> currentMedicineUpdatePayload(
+  CurrentMedicineUpdateInput input,
+) {
+  final payload = <String, dynamic>{};
+  _putIfChanged(payload, 'source', input.source);
+  _putIfChanged(payload, 'sourceRefId', input.sourceRefId);
+  _putIfChanged(payload, 'displayName', input.displayName);
+  _putIfChanged(payload, 'strengthText', input.strengthText);
+  _putIfChanged(payload, 'doseText', input.doseText);
+  _putIfChanged(payload, 'route', input.route);
+  _putIfChanged(payload, 'startedAt', input.startedAt);
+  _putIfChanged(payload, 'endedAt', input.endedAt);
+  _putIfChanged(payload, 'note', input.note);
+  _putIfChanged(payload, 'isCurrent', input.isCurrent);
+  return payload;
+}
+
+Map<String, dynamic> _compactCreatePayload(Map<String, dynamic> payload) {
+  return Map<String, dynamic>.from(payload)..removeWhere((_, value) => value == null);
+}
+
+void _putIfChanged(Map<String, dynamic> payload, String key, Object? value) {
+  if (identical(value, healthContextNoChange)) {
+    return;
+  }
+  payload[key] = _wireValue(value);
+}
+
+Object? _wireValue(Object? value) {
+  if (value is HealthContextWireEnum) {
+    return value.value;
+  }
+  return value;
 }

@@ -62,8 +62,8 @@ class PageScaffoldShell extends StatelessWidget {
       ),
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
+    return Material(
+      color: surface.canvasSoft,
       child: SafeArea(
         child: scrollable ? SingleChildScrollView(child: content) : content,
       ),

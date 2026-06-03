@@ -6,6 +6,15 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-03
 
+### Post-Audit Health Context Write Boundary Fix
+
+- Replaced health-context write DTO usage in domain/presentation with local domain inputs and enums so generated `lucent_openapi` models stay in the data layer.
+- Health-context writes now serialize raw Dio JSON maps, preserving explicit `null` values for field clearing instead of losing them through generated `includeIfNull: false` DTO serializers.
+- Search add-to-current-medicines now checks auth state, routes signed-out users to `/login`, and invalidates both health-context and medicine workspace state after a successful add.
+- Mine dashboard profile cards now route to real edit flows for profile, allergy, condition, and current medicine creation.
+- `PageScaffoldShell` now provides a Material surface and Mine edit pages no longer nest vertical `ListView`s inside the shell scroll view.
+- Added regression coverage for health-context write payloads, Mine edit save input, Mine profile-card routing, Search signed-in/signed-out add behavior, and Medicine workspace real-data mapping.
+
 ### Regression, Docs, and Audit Package (Task 11)
 
 - Full regression: Lucent 21/21 unit + 19/19 e2e + build, Luminous 45/45 tests + analyze clean.

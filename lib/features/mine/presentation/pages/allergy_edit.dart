@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -22,8 +22,8 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
   final _reactionController = TextEditingController();
   final _noteController = TextEditingController();
 
-  UserAllergyKind _kind = UserAllergyKind.drug;
-  UserAllergySeverity _severity = UserAllergySeverity.unknown;
+  HealthAllergyKind _kind = HealthAllergyKind.drug;
+  HealthAllergySeverity _severity = HealthAllergySeverity.unknown;
 
   @override
   void dispose() {
@@ -54,65 +54,69 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
-        ListView(
+        Padding(
           padding: const EdgeInsets.all(16),
-          children: [
-            _enumDropdown<UserAllergyKind>(
-              label: l10n.mineEditFieldKind,
-              value: _kind,
-              values: UserAllergyKind.values,
-              onChanged: (v) => setState(() => _kind = v),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _labelController,
-              decoration: InputDecoration(labelText: l10n.mineEditFieldLabel),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _reactionController,
-              decoration: InputDecoration(
-                labelText: l10n.mineEditFieldReaction,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _enumDropdown<HealthAllergyKind>(
+                label: l10n.mineEditFieldKind,
+                value: _kind,
+                values: HealthAllergyKind.values,
+                onChanged: (v) => setState(() => _kind = v),
               ),
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<UserAllergySeverity>(
-              initialValue: _severity,
-              decoration: InputDecoration(
-                labelText: l10n.mineEditFieldSeverity,
-              ),
-              items:
-                  UserAllergySeverity.values
-                      .map(
-                        (v) => DropdownMenuItem(value: v, child: Text(v.name)),
-                      )
-                      .toList(),
-              onChanged: (v) {
-                if (v != null) setState(() => _severity = v);
-              },
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _noteController,
-              decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _onSave,
-              child: Text(l10n.mineEditSaveAction),
-            ),
-            if (!isNew) ...[
               const SizedBox(height: 12),
-              OutlinedButton(
-                onPressed: _onDelete,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
-                ),
-                child: Text(l10n.mineEditDeleteAction),
+              TextField(
+                controller: _labelController,
+                decoration: InputDecoration(labelText: l10n.mineEditFieldLabel),
               ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _reactionController,
+                decoration: InputDecoration(
+                  labelText: l10n.mineEditFieldReaction,
+                ),
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<HealthAllergySeverity>(
+                initialValue: _severity,
+                decoration: InputDecoration(
+                  labelText: l10n.mineEditFieldSeverity,
+                ),
+                items:
+                    HealthAllergySeverity.values
+                        .map(
+                          (v) =>
+                              DropdownMenuItem(value: v, child: Text(v.value)),
+                        )
+                        .toList(),
+                onChanged: (v) {
+                  if (v != null) setState(() => _severity = v);
+                },
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _noteController,
+                decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _onSave,
+                child: Text(l10n.mineEditSaveAction),
+              ),
+              if (!isNew) ...[
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: _onDelete,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  child: Text(l10n.mineEditDeleteAction),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ],
     );
@@ -121,9 +125,9 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
   void _onSave() {
     if (widget.allergyId != null) {
       ref.read(allergyFormProvider.notifier).save(
-        create: CreateHealthContextAllergyDto(kind: _kind, label: ''),
+        create: HealthAllergyWriteInput(kind: _kind, label: ''),
         id: widget.allergyId,
-        update: UpdateHealthContextAllergyDto(
+        update: HealthAllergyUpdateInput(
           kind: _kind,
           label: _labelController.text,
           reaction:
@@ -136,7 +140,7 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
       );
     } else {
       ref.read(allergyFormProvider.notifier).save(
-        create: CreateHealthContextAllergyDto(
+        create: HealthAllergyWriteInput(
           kind: _kind,
           label: _labelController.text,
           reaction:
@@ -157,7 +161,7 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
   }
 }
 
-Widget _enumDropdown<T extends Enum>({
+Widget _enumDropdown<T extends HealthContextWireEnum>({
   required String label,
   required T value,
   required List<T> values,
@@ -168,7 +172,7 @@ Widget _enumDropdown<T extends Enum>({
     decoration: InputDecoration(labelText: label),
     items:
         values
-            .map((v) => DropdownMenuItem(value: v, child: Text(v.name)))
+            .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
             .toList(),
     onChanged: (v) {
       if (v != null) onChanged(v);

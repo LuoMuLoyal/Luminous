@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 
 /// Form state for the profile edit page.
 class HealthProfileFormState {
@@ -19,12 +19,12 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
   @override
   HealthProfileFormState build() => const HealthProfileFormState();
 
-  Future<void> save(UpdateHealthContextProfileDto dto) async {
+  Future<void> save(HealthProfileUpdateInput input) async {
     state = const HealthProfileFormState(isSaving: true);
 
     try {
       final repository = ref.read(healthContextRepositoryProvider);
-      await repository.updateProfile(dto);
+      await repository.updateProfile(input);
       ref.invalidate(healthContextSnapshotProvider);
       state = const HealthProfileFormState(saved: true);
     } catch (e) {
@@ -58,9 +58,9 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
   AllergyFormState build() => const AllergyFormState();
 
   Future<void> save({
-    required CreateHealthContextAllergyDto create,
+    required HealthAllergyWriteInput create,
     String? id,
-    UpdateHealthContextAllergyDto? update,
+    HealthAllergyUpdateInput? update,
   }) async {
     state = const AllergyFormState(isSaving: true);
 
@@ -122,9 +122,9 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
   ConditionFormState build() => const ConditionFormState();
 
   Future<void> save({
-    required CreateHealthContextConditionDto create,
+    required HealthConditionWriteInput create,
     String? id,
-    UpdateHealthContextConditionDto? update,
+    HealthConditionUpdateInput? update,
   }) async {
     state = const ConditionFormState(isSaving: true);
 
@@ -184,9 +184,9 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
   CurrentMedicineFormState build() => const CurrentMedicineFormState();
 
   Future<void> save({
-    required CreateCurrentMedicineDto create,
+    required CurrentMedicineWriteInput create,
     String? id,
-    UpdateCurrentMedicineDto? update,
+    CurrentMedicineUpdateInput? update,
   }) async {
     state = const CurrentMedicineFormState(isSaving: true);
 

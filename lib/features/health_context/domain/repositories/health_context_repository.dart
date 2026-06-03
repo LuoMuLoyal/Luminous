@@ -1,5 +1,5 @@
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 
 /// Repository interface for reading and writing the authenticated user health context.
 abstract class HealthContextRepository {
@@ -7,15 +7,15 @@ abstract class HealthContextRepository {
   Future<HealthContextSnapshot> fetchHealthContext();
 
   /// Updates the profile and returns the refreshed snapshot.
-  Future<HealthContextSnapshot> updateProfile(UpdateHealthContextProfileDto dto);
+  Future<HealthContextSnapshot> updateProfile(HealthProfileUpdateInput input);
 
   /// Creates an allergy and returns the refreshed snapshot.
-  Future<HealthContextSnapshot> createAllergy(CreateHealthContextAllergyDto dto);
+  Future<HealthContextSnapshot> createAllergy(HealthAllergyWriteInput input);
 
   /// Updates an allergy and returns the refreshed snapshot.
   Future<HealthContextSnapshot> updateAllergy(
     String id,
-    UpdateHealthContextAllergyDto dto,
+    HealthAllergyUpdateInput input,
   );
 
   /// Deletes (soft-deactivates) an allergy and returns the refreshed snapshot.
@@ -23,13 +23,13 @@ abstract class HealthContextRepository {
 
   /// Creates a condition and returns the refreshed snapshot.
   Future<HealthContextSnapshot> createCondition(
-    CreateHealthContextConditionDto dto,
+    HealthConditionWriteInput input,
   );
 
   /// Updates a condition and returns the refreshed snapshot.
   Future<HealthContextSnapshot> updateCondition(
     String id,
-    UpdateHealthContextConditionDto dto,
+    HealthConditionUpdateInput input,
   );
 
   /// Deletes (soft-resolves) a condition and returns the refreshed snapshot.
@@ -37,13 +37,13 @@ abstract class HealthContextRepository {
 
   /// Creates a current medicine and returns the refreshed snapshot.
   Future<HealthContextSnapshot> createCurrentMedicine(
-    CreateCurrentMedicineDto dto,
+    CurrentMedicineWriteInput input,
   );
 
   /// Updates a current medicine and returns the refreshed snapshot.
   Future<HealthContextSnapshot> updateCurrentMedicine(
     String id,
-    UpdateCurrentMedicineDto dto,
+    CurrentMedicineUpdateInput input,
   );
 
   /// Deletes (soft-deactivates) a current medicine and returns the refreshed snapshot.

@@ -635,8 +635,7 @@ class _ProfileGridSection extends StatelessWidget {
           return Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () =>
-                  showMineToast(context, mineCopy(l10n, entry.titleKey)),
+              onTap: () => _openProfileEntry(context, l10n, entry),
               borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -716,6 +715,27 @@ class _ProfileGridSection extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _openProfileEntry(
+    BuildContext context,
+    AppLocalizations l10n,
+    MineProfileEntry entry,
+  ) {
+    final route = switch (entry.titleKey) {
+      MineCopyKey.profileBasicInfoTitle => '/mine/profile/edit',
+      MineCopyKey.profileAllergiesTitle => '/mine/allergy/new',
+      MineCopyKey.profileConditionsTitle => '/mine/condition/new',
+      MineCopyKey.profileMedicinesTitle => '/mine/medicine/new',
+      _ => null,
+    };
+
+    if (route == null) {
+      showMineToast(context, mineCopy(l10n, entry.titleKey));
+      return;
+    }
+
+    context.push(route);
   }
 }
 

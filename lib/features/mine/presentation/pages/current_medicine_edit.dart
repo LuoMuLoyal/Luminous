@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -28,7 +28,7 @@ class _CurrentMedicineEditPageState
   final _startedAtController = TextEditingController();
   final _noteController = TextEditingController();
 
-  MedicineSource _source = MedicineSource.manual;
+  HealthMedicineSource _source = HealthMedicineSource.manual;
 
   @override
   void dispose() {
@@ -65,77 +65,80 @@ class _CurrentMedicineEditPageState
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
-        ListView(
+        Padding(
           padding: const EdgeInsets.all(16),
-          children: [
-            _enumDropdown<MedicineSource>(
-              label: l10n.mineEditFieldSource,
-              value: _source,
-              values: MedicineSource.values,
-              onChanged: (v) => setState(() => _source = v),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _sourceRefIdController,
-              decoration: InputDecoration(
-                labelText: l10n.mineEditFieldSourceRefId,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _enumDropdown<HealthMedicineSource>(
+                label: l10n.mineEditFieldSource,
+                value: _source,
+                values: HealthMedicineSource.values,
+                onChanged: (v) => setState(() => _source = v),
               ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _displayNameController,
-              decoration: InputDecoration(
-                labelText: l10n.mineEditFieldDisplayName,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _strengthTextController,
-              decoration: InputDecoration(
-                labelText: l10n.mineEditFieldStrengthText,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _doseTextController,
-              decoration: InputDecoration(
-                labelText: l10n.mineEditFieldDoseText,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _routeController,
-              decoration: InputDecoration(labelText: l10n.mineEditFieldRoute),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _startedAtController,
-              decoration: InputDecoration(
-                labelText: l10n.mineEditFieldStartedAt,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _noteController,
-              decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _onSave,
-              child: Text(l10n.mineEditSaveAction),
-            ),
-            if (!isNew) ...[
               const SizedBox(height: 12),
-              OutlinedButton(
-                onPressed: _onDelete,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
+              TextField(
+                controller: _sourceRefIdController,
+                decoration: InputDecoration(
+                  labelText: l10n.mineEditFieldSourceRefId,
                 ),
-                child: Text(l10n.mineEditDeleteAction),
               ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _displayNameController,
+                decoration: InputDecoration(
+                  labelText: l10n.mineEditFieldDisplayName,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _strengthTextController,
+                decoration: InputDecoration(
+                  labelText: l10n.mineEditFieldStrengthText,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _doseTextController,
+                decoration: InputDecoration(
+                  labelText: l10n.mineEditFieldDoseText,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _routeController,
+                decoration: InputDecoration(labelText: l10n.mineEditFieldRoute),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _startedAtController,
+                decoration: InputDecoration(
+                  labelText: l10n.mineEditFieldStartedAt,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _noteController,
+                decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _onSave,
+                child: Text(l10n.mineEditSaveAction),
+              ),
+              if (!isNew) ...[
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: _onDelete,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  child: Text(l10n.mineEditDeleteAction),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ],
     );
@@ -144,13 +147,13 @@ class _CurrentMedicineEditPageState
   void _onSave() {
     if (widget.medicineId != null) {
       ref.read(currentMedicineFormProvider.notifier).save(
-        create: CreateCurrentMedicineDto(
-          source_: MedicineSource.manual,
+        create: CurrentMedicineWriteInput(
+          source: HealthMedicineSource.manual,
           displayName: '',
         ),
         id: widget.medicineId,
-        update: UpdateCurrentMedicineDto(
-          source_: _source,
+        update: CurrentMedicineUpdateInput(
+          source: _source,
           sourceRefId:
               _sourceRefIdController.text.isEmpty
                   ? null
@@ -176,8 +179,8 @@ class _CurrentMedicineEditPageState
       );
     } else {
       ref.read(currentMedicineFormProvider.notifier).save(
-        create: CreateCurrentMedicineDto(
-          source_: _source,
+        create: CurrentMedicineWriteInput(
+          source: _source,
           sourceRefId:
               _sourceRefIdController.text.isEmpty
                   ? null
@@ -213,7 +216,7 @@ class _CurrentMedicineEditPageState
   }
 }
 
-Widget _enumDropdown<T extends Enum>({
+Widget _enumDropdown<T extends HealthContextWireEnum>({
   required String label,
   required T value,
   required List<T> values,
@@ -224,7 +227,7 @@ Widget _enumDropdown<T extends Enum>({
     decoration: InputDecoration(labelText: label),
     items:
         values
-            .map((v) => DropdownMenuItem(value: v, child: Text(v.name)))
+            .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
             .toList(),
     onChanged: (v) {
       if (v != null) onChanged(v);
