@@ -33,9 +33,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get desktopSidebarHelp => '帮助';
 
   @override
-  String get desktopSidebarSettingsToast => '会打开设置中心。';
-
-  @override
   String get desktopSidebarHelpToast => '会打开帮助与支持。';
 
   @override
@@ -931,25 +928,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineQuickEmergencySubtitle => '已设置 1 位联系人';
 
   @override
-  String get mineSettingsSectionTitle => '设置与支持';
-
-  @override
-  String get mineSettingsPanelTitle => '设置';
-
-  @override
   String get mineSettingsThemeTitle => '主题模式';
-
-  @override
-  String get mineSettingsThemeValue => '跟随系统';
 
   @override
   String get mineSettingsAccountTitle => '账号与安全';
 
   @override
   String get mineSettingsLanguageTitle => '语言';
-
-  @override
-  String get mineSettingsLanguageValue => '简体中文';
 
   @override
   String get mineSettingsNotificationsTitle => '通知设置';
@@ -1330,9 +1315,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authChangeEmailFormTitle => '更换邮箱';
 
   @override
-  String get authChangeEmailSignedOutLead => '请先登录，再更换账号邮箱。';
-
-  @override
   String get authNewEmailLabel => '新邮箱';
 
   @override
@@ -1343,9 +1325,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get authAccountSettingsFormTitle => '账号与安全';
-
-  @override
-  String get authAccountSettingsSignedOutLead => '请先登录，再管理账号信息和安全设置。';
 
   @override
   String get authProfileSectionTitle => '资料信息';

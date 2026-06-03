@@ -53,7 +53,9 @@ class SettingsPage extends ConsumerWidget {
                 value: session.user?.email ?? l10n.mineAccountSignedOut,
                 typography: typography,
                 surface: surface,
-                onTap: () => context.push('/account'),
+                onTap: () => context.push(
+                  session.isAuthenticated ? '/account' : '/login',
+                ),
               ),
             ],
           ),

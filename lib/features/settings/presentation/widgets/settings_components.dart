@@ -38,6 +38,7 @@ class SettingsListRow extends StatelessWidget {
     required this.onTap,
     this.icon,
     this.trailing,
+    this.showChevron = false,
     this.showDivider = false,
   });
 
@@ -45,6 +46,7 @@ class SettingsListRow extends StatelessWidget {
   final VoidCallback onTap;
   final IconData? icon;
   final Widget? trailing;
+  final bool showChevron;
   final bool showDivider;
 
   @override
@@ -83,6 +85,13 @@ class SettingsListRow extends StatelessWidget {
               if (trailing != null) ...[
                 const SizedBox(width: AppSpacingTokens.md),
                 trailing!,
+              ] else if (showChevron) ...[
+                const SizedBox(width: AppSpacingTokens.md),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 18,
+                  color: surface.mute,
+                ),
               ],
             ],
           ),

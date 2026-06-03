@@ -146,12 +146,6 @@ abstract class AppLocalizations {
   /// **'帮助'**
   String get desktopSidebarHelp;
 
-  /// No description provided for @desktopSidebarSettingsToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'会打开设置中心。'**
-  String get desktopSidebarSettingsToast;
-
   /// No description provided for @desktopSidebarHelpToast.
   ///
   /// In zh, this message translates to:
@@ -1922,29 +1916,11 @@ abstract class AppLocalizations {
   /// **'已设置 1 位联系人'**
   String get mineQuickEmergencySubtitle;
 
-  /// No description provided for @mineSettingsSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'设置与支持'**
-  String get mineSettingsSectionTitle;
-
-  /// No description provided for @mineSettingsPanelTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'设置'**
-  String get mineSettingsPanelTitle;
-
   /// No description provided for @mineSettingsThemeTitle.
   ///
   /// In zh, this message translates to:
   /// **'主题模式'**
   String get mineSettingsThemeTitle;
-
-  /// No description provided for @mineSettingsThemeValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'跟随系统'**
-  String get mineSettingsThemeValue;
 
   /// No description provided for @mineSettingsAccountTitle.
   ///
@@ -1957,12 +1933,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'语言'**
   String get mineSettingsLanguageTitle;
-
-  /// No description provided for @mineSettingsLanguageValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'简体中文'**
-  String get mineSettingsLanguageValue;
 
   /// No description provided for @mineSettingsNotificationsTitle.
   ///
@@ -2708,12 +2678,6 @@ abstract class AppLocalizations {
   /// **'更换邮箱'**
   String get authChangeEmailFormTitle;
 
-  /// No description provided for @authChangeEmailSignedOutLead.
-  ///
-  /// In zh, this message translates to:
-  /// **'请先登录，再更换账号邮箱。'**
-  String get authChangeEmailSignedOutLead;
-
   /// No description provided for @authNewEmailLabel.
   ///
   /// In zh, this message translates to:
@@ -2737,12 +2701,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'账号与安全'**
   String get authAccountSettingsFormTitle;
-
-  /// No description provided for @authAccountSettingsSignedOutLead.
-  ///
-  /// In zh, this message translates to:
-  /// **'请先登录，再管理账号信息和安全设置。'**
-  String get authAccountSettingsSignedOutLead;
 
   /// No description provided for @authProfileSectionTitle.
   ///

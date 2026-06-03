@@ -33,9 +33,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get desktopSidebarHelp => 'Help';
 
   @override
-  String get desktopSidebarSettingsToast => 'This will open settings.';
-
-  @override
   String get desktopSidebarHelpToast => 'This will open help and support.';
 
   @override
@@ -983,25 +980,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineQuickEmergencySubtitle => '1 contact configured';
 
   @override
-  String get mineSettingsSectionTitle => 'Settings and support';
-
-  @override
-  String get mineSettingsPanelTitle => 'Settings';
-
-  @override
   String get mineSettingsThemeTitle => 'Theme mode';
-
-  @override
-  String get mineSettingsThemeValue => 'Follow system';
 
   @override
   String get mineSettingsAccountTitle => 'Account and security';
 
   @override
   String get mineSettingsLanguageTitle => 'Language';
-
-  @override
-  String get mineSettingsLanguageValue => 'Simplified Chinese';
 
   @override
   String get mineSettingsNotificationsTitle => 'Notifications';
@@ -1409,10 +1394,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authChangeEmailFormTitle => 'Change email';
 
   @override
-  String get authChangeEmailSignedOutLead =>
-      'Sign in before changing the account email.';
-
-  @override
   String get authNewEmailLabel => 'New email';
 
   @override
@@ -1423,10 +1404,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authAccountSettingsFormTitle => 'Account and security';
-
-  @override
-  String get authAccountSettingsSignedOutLead =>
-      'Sign in before managing account details and security settings.';
 
   @override
   String get authProfileSectionTitle => 'Profile details';

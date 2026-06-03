@@ -4,6 +4,6 @@ import 'package:luminous/features/settings/data/datasources/settings_profile_rem
 
 final settingsProfileRemoteDataSourceProvider =
     Provider<SettingsProfileRemoteDataSource>((ref) {
-      final api = ref.watch(lucentUserHealthContextApiProvider);
-      return SettingsProfileRemoteDataSource(api: api);
+      final dio = ref.watch(lucentDioClientProvider).dio;
+      return SettingsProfileRemoteDataSource(dio: dio);
     });

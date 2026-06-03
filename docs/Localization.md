@@ -39,6 +39,7 @@ Last updated: 2026-06-02
 - Supported in settings flow: `system`, `zh-CN`, `en`
 - `LuminousApp` reads `appLocaleControllerProvider` and passes the resolved locale into `MaterialApp.router.locale`.
 - Lucent network requests reuse the same preference for `Accept-Language`.
-- When signed in, language changes from settings also sync the explicit locale to Lucent `me/health-context/profile`; choosing `system` clears the backend locale preference.
+- When signed in, settings preference sync currently writes the supported Lucent profile fields `locale / timezone / unitSystem`; language changes use that same path, and choosing `system` clears the backend locale preference.
+- After auth restore or sign-in, `LuminousApp` best-effort backfills the local app locale from Lucent `profile.locale` when the backend value maps cleanly to the supported `zh-CN / en / system` set.
 
 Do not hardcode user-visible text in pages.

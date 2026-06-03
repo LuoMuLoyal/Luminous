@@ -39,11 +39,6 @@ class MoreSettingsPage extends ConsumerWidget {
                 key: const Key('more-settings-row-clear-cache'),
                 title: l10n.settingsMoreClearImageCache,
                 icon: Icons.image_outlined,
-                trailing: Icon(
-                  Icons.chevron_right_rounded,
-                  size: 18,
-                  color: surface.mute,
-                ),
                 onTap: () async {
                   imageCache.clear();
                   imageCache.clearLiveImages();
@@ -55,11 +50,6 @@ class MoreSettingsPage extends ConsumerWidget {
                 key: const Key('more-settings-row-reset-defaults'),
                 title: l10n.settingsMoreResetDefaults,
                 icon: Icons.refresh_rounded,
-                trailing: Icon(
-                  Icons.chevron_right_rounded,
-                  size: 18,
-                  color: surface.mute,
-                ),
                 onTap: () async {
                   await ref
                       .read(appThemeControllerProvider.notifier)
@@ -67,7 +57,7 @@ class MoreSettingsPage extends ConsumerWidget {
                   try {
                     await ref
                         .read(settingsProfileSyncProvider.notifier)
-                        .resetLocaleToSystem();
+                        .resetProfilePreferences();
                   } catch (_) {
                     await ref
                         .read(appLocaleControllerProvider.notifier)
@@ -87,11 +77,7 @@ class MoreSettingsPage extends ConsumerWidget {
                 key: const Key('more-settings-row-licenses'),
                 title: l10n.settingsMoreOpenSourceLicenses,
                 icon: Icons.description_outlined,
-                trailing: Icon(
-                  Icons.chevron_right_rounded,
-                  size: 18,
-                  color: surface.mute,
-                ),
+                showChevron: true,
                 onTap: () => showLicensePage(
                   context: context,
                   applicationName: 'Luminous',

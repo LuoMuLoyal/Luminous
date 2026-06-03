@@ -81,13 +81,5 @@ String mineCopy(AppLocalizations l10n, MineCopyKey key) {
     MineCopyKey.quickDoctorSubtitle => l10n.mineQuickDoctorSubtitle,
     MineCopyKey.quickEmergencyTitle => l10n.mineQuickEmergencyTitle,
     MineCopyKey.quickEmergencySubtitle => l10n.mineQuickEmergencySubtitle,
-    MineCopyKey.settingsThemeTitle => l10n.mineSettingsThemeTitle,
-    MineCopyKey.settingsThemeValue => l10n.mineSettingsThemeValue,
-    MineCopyKey.settingsAccountTitle => l10n.mineSettingsAccountTitle,
-    MineCopyKey.settingsLanguageTitle => l10n.mineSettingsLanguageTitle,
-    MineCopyKey.settingsLanguageValue => l10n.mineSettingsLanguageValue,
-    MineCopyKey.settingsNotificationsTitle =>
-      l10n.mineSettingsNotificationsTitle,
-    MineCopyKey.settingsMoreTitle => l10n.mineSettingsMoreTitle,
   };
 }
