@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/mine/presentation/providers/health_profile_form_provider.dart';
+import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

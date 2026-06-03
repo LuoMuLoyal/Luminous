@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
-import 'package:luminous/features/medicine/data/repositories/lucent_medicine_workspace_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/lucent_medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 
