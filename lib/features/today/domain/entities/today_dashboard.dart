@@ -1,3 +1,9 @@
+TodayDayMoment todayDayMomentFromHour(int hour) {
+  if (hour < 12) return TodayDayMoment.morning;
+  if (hour < 18) return TodayDayMoment.afternoon;
+  return TodayDayMoment.evening;
+}
+
 enum TodayDayMoment { morning, afternoon, evening }
 
 enum TodayMedicationKind { atorvastatin }
@@ -68,12 +74,17 @@ class TodayMedicationSummary {
     required this.pendingCount,
     required this.nextDoseTimeLabel,
     required this.nextMedicine,
+    this.nextMedicineName,
   });
 
   final int medicineCount;
   final int pendingCount;
   final String nextDoseTimeLabel;
   final TodayMedicationKind nextMedicine;
+
+  /// When non-null, the view should use this raw name instead of the
+  /// [nextMedicine] enum. Set by the real repository from health-context data.
+  final String? nextMedicineName;
 }
 
 class TodayVitalSummary {
