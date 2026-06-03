@@ -427,13 +427,18 @@ class _MedicationPlanTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final warningKey = item.stockWarningKey;
+    final nameText = item.rawName ?? medicineCopy(l10n, item.nameKey);
+    final dosageText = item.rawDosage ?? medicineCopy(l10n, item.dosageKey);
+    final scheduleText = item.rawSchedule ?? medicineCopy(l10n, item.scheduleKey);
+    final stockText = item.rawStock ?? medicineCopy(l10n, item.stockKey);
+    final stateText = item.rawState ?? medicineCopy(l10n, item.stateKey);
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () => _showPlannedAction(
           context,
-          medicineCopy(l10n, item.nameKey),
+          nameText,
           l10n.medicineOpenPlanItemToast,
         ),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
@@ -456,14 +461,14 @@ class _MedicationPlanTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            medicineCopy(l10n, item.nameKey),
+                            nameText,
                             style: typography.bodyMdStrong.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           const SizedBox(height: AppSpacingTokens.xs),
                           Text(
-                            '${medicineCopy(l10n, item.dosageKey)} · ${medicineCopy(l10n, item.scheduleKey)}',
+                            '$dosageText · $scheduleText',
                             style: typography.bodySm.copyWith(
                               color: surface.body,
                             ),
@@ -473,7 +478,7 @@ class _MedicationPlanTile extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacingTokens.sm),
                     _StatusBadge(
-                      label: medicineCopy(l10n, item.stateKey),
+                      label: stateText,
                       color: item.stateColor,
                       typography: typography,
                     ),
@@ -489,7 +494,7 @@ class _MedicationPlanTile extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacingTokens.xs),
                     Text(
-                      medicineCopy(l10n, item.stockKey),
+                      stockText,
                       style: typography.bodySm.copyWith(color: surface.body),
                     ),
                     const Spacer(),

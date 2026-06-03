@@ -59,6 +59,11 @@ class MedicinePlanItem {
     required this.stateKey,
     required this.stateColor,
     this.stockWarningKey,
+    this.rawName,
+    this.rawDosage,
+    this.rawSchedule,
+    this.rawStock,
+    this.rawState,
   });
 
   final Color color;
@@ -70,6 +75,15 @@ class MedicinePlanItem {
   final MedicineCopyKey stateKey;
   final Color stateColor;
   final MedicineCopyKey? stockWarningKey;
+
+  /// When non-null, the view should use these raw strings instead of
+  /// resolving [nameKey]/[dosageKey]/[scheduleKey]/[stockKey]/[stateKey]
+  /// through [medicineCopy].
+  final String? rawName;
+  final String? rawDosage;
+  final String? rawSchedule;
+  final String? rawStock;
+  final String? rawState;
 }
 
 class MedicineDoseSlot {
