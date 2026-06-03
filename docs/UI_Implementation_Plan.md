@@ -1,6 +1,6 @@
 # Luminous UI Plan
 
-Last updated: 2026-06-02
+Last updated: 2026-06-03
 
 Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADMAP.md`.
 
@@ -24,16 +24,20 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
 - Medicine mobile-first mock workspace UI with repository/provider boundary
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel
+- Lucent-backed health-context write flows for Mine profile, allergies, conditions, and current medicines, with domain write inputs keeping generated OpenAPI DTOs out of presentation code
+- Search add-to-current-medicines now writes through Lucent for signed-in users and routes signed-out users to `/login`
+- Medicine and Today now consume the safe current-medicine subset from health context
 
-Restored: Search now uses real Lucent medicine search/detail API. Still pending: real medicine loop, live reminders, real scan/upload, Mine write/edit flows, More real tools/device integrations, real feature data.
+Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Medicine and Today read the safe current-medicine subset. Still pending: real daily records, manual medicine adherence logs, live reminders, real scan/upload, More real tools/device integrations, and broader feature data.
 
 ## UI Priority
 
-1. Connect Today mock data to API-ready datasource/repository implementations.
-2. Connect More mock repository to real emergency, device, tool, and environment data sources.
-3. Replace medicine mock data with Lucent-backed search, recognition, detail, add-to-drugbox, and reminder flows.
-4. Connect Mine mock repository to Lucent account/profile/health-context reads and keep the standalone settings route wired to real theme/account actions.
-5. Add palette variants after the fixed-token surfaces have been reduced.
+1. Harden Mine health-context edit flows with edit-prefill, validation, and route tests.
+2. Add Lucent-backed daily records and connect the Record tab timeline/edit flows.
+3. Connect Today to factual daily-record summaries while keeping unsupported advice/static sections clear.
+4. Add manual medicine adherence logs and connect Medicine/Today status actions.
+5. Connect More mock repository to real emergency, device, tool, and environment data sources after the Record/Medicine loop is stable.
+6. Add palette variants after the fixed-token surfaces have been reduced.
 
 ## Rules
 
