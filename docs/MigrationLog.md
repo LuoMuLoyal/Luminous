@@ -6,6 +6,12 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-03
 
+### Follow-Up Daily Record And Dose-Log Plan
+
+- Added `docs/superpowers/plans/2026-06-03-fifteen-day-lumos-followup-plan.md` for the next DeepSeek execution window.
+- The follow-up plan incorporates the post-audit lessons from the health-context run: no generated DTO leakage outside data layers, explicit nullable-write coverage, auth branch tests, provider invalidation checks, upsert create/update coverage, and nested-scroll layout checks.
+- Updated `docs/UI_Implementation_Plan.md` to reflect that Mine health-context writes, Search add-to-current-medicines, and safe Medicine/Today current-medicine reads are restored; the next product focus is daily records and manual medicine adherence logs.
+
 ### Post-Audit Health Context Write Boundary Fix
 
 - Replaced health-context write DTO usage in domain/presentation with local domain inputs and enums so generated `lucent_openapi` models stay in the data layer.
@@ -43,10 +49,10 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 ### Mine Edit Flows (Task 7)
 
 - Added 4 edit pages under `lib/features/mine/presentation/pages/`:
-  - `profile_edit_page.dart` — edit health profile fields (birthDate, sexAtBirth, heightCm, pregnancyState, lactationState, bloodType, unitSystem, onboardingCompleted).
-  - `allergy_edit_page.dart` — create and edit allergy records (kind, label, reaction, severity, note), with delete.
-  - `condition_edit_page.dart` — create and edit condition records (label, status, diagnosedAt, note), with delete.
-  - `current_medicine_edit_page.dart` — create and edit current medicine records (source, displayName, strengthText, doseText, route, startedAt, note), with delete.
+  - `profile_edit.dart` — edit health profile fields (birthDate, sexAtBirth, heightCm, pregnancyState, lactationState, bloodType, unitSystem, onboardingCompleted).
+  - `allergy_edit.dart` — create and edit allergy records (kind, label, reaction, severity, note), with delete.
+  - `condition_edit.dart` — create and edit condition records (label, status, diagnosedAt, note), with delete.
+  - `current_medicine_edit.dart` — create and edit current medicine records (source, displayName, strengthText, doseText, route, startedAt, note), with delete.
 - Added form providers under `lib/features/mine/presentation/providers/health_profile_form_provider.dart` for profile, allergy, condition, and current medicine writes.
 - Registered 8 new routes in `router.dart`: `/mine/profile/edit`, `/mine/allergy/new`, `/mine/allergy/:id/edit`, `/mine/condition/new`, `/mine/condition/:id/edit`, `/mine/medicine/new`, `/mine/medicine/:id/edit`.
 - Added 38 ARB keys for edit page titles, field labels, and action buttons in both `app_en.arb` and `app_zh.arb`.
