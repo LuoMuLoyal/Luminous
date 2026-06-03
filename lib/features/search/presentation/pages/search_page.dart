@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
+import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/features/search/presentation/providers/search_provider.dart';
 import 'package:luminous/features/search/presentation/widgets/search_view.dart';
@@ -39,21 +42,30 @@ class SearchPage extends ConsumerWidget {
     AppLocalizations l10n,
     MedicineSearchResult result,
   ) async {
+    final authSession = ref.read(authSessionProvider);
+    if (!authSession.isAuthenticated) {
+      if (context.mounted) {
+        context.go('/login');
+      }
+      return;
+    }
+
     final repository = ref.read(healthContextRepositoryProvider);
 
     final medicineSource = result.source == MedicineSearchSource.drugbank
-        ? MedicineSource.drugbank
-        : MedicineSource.cn;
+        ? HealthMedicineSource.drugbank
+        : HealthMedicineSource.cn;
 
-    final dto = CreateCurrentMedicineDto(
-      source_: medicineSource,
+    final input = CurrentMedicineWriteInput(
+      source: medicineSource,
       sourceRefId: result.id,
       displayName: result.name,
     );
 
     try {
-      await repository.createCurrentMedicine(dto);
+      await repository.createCurrentMedicine(input);
       ref.invalidate(healthContextSnapshotProvider);
+      ref.invalidate(medicineWorkspaceProvider);
 
       if (context.mounted) {
         AppToast.show(context, l10n.mineEditSavedToast);

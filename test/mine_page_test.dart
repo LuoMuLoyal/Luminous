@@ -8,6 +8,7 @@ import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/mine_page.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -229,6 +230,71 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('settings-page'), findsOneWidget);
+  });
+
+  testWidgets('Mine profile grid routes basic info to edit page', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(
+          () => _EmailSignedInAuthSessionNotifier(),
+        ),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) => Future.value(_mockSnapshot),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const MinePage()),
+              GoRoute(
+                path: '/mine/profile/edit',
+                builder: (context, state) => const ProfileEditPage(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final basicInfo = find.text('基础资料');
+    await tester.scrollUntilVisible(
+      basicInfo,
+      240,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(basicInfo);
+    await tester.pumpAndSettle();
+
+    expect(find.text('编辑档案'), findsOneWidget);
   });
 
   test('Mine dashboard uses auth session email in account header', () async {

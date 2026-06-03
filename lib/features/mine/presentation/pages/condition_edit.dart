@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -22,7 +22,7 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
   final _diagnosedAtController = TextEditingController();
   final _noteController = TextEditingController();
 
-  UserConditionStatus _status = UserConditionStatus.active;
+  HealthConditionStatus _status = HealthConditionStatus.active;
 
   @override
   void dispose() {
@@ -52,49 +52,52 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
-        ListView(
+        Padding(
           padding: const EdgeInsets.all(16),
-          children: [
-            TextField(
-              controller: _labelController,
-              decoration: InputDecoration(labelText: l10n.mineEditFieldLabel),
-            ),
-            const SizedBox(height: 12),
-            _enumDropdown<UserConditionStatus>(
-              label: l10n.mineEditFieldStatus,
-              value: _status,
-              values: UserConditionStatus.values,
-              onChanged: (v) => setState(() => _status = v),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _diagnosedAtController,
-              decoration: InputDecoration(
-                labelText: l10n.mineEditFieldDiagnosedAt,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _labelController,
+                decoration: InputDecoration(labelText: l10n.mineEditFieldLabel),
               ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _noteController,
-              decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _onSave,
-              child: Text(l10n.mineEditSaveAction),
-            ),
-            if (!isNew) ...[
               const SizedBox(height: 12),
-              OutlinedButton(
-                onPressed: _onDelete,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
-                ),
-                child: Text(l10n.mineEditDeleteAction),
+              _enumDropdown<HealthConditionStatus>(
+                label: l10n.mineEditFieldStatus,
+                value: _status,
+                values: HealthConditionStatus.values,
+                onChanged: (v) => setState(() => _status = v),
               ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _diagnosedAtController,
+                decoration: InputDecoration(
+                  labelText: l10n.mineEditFieldDiagnosedAt,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _noteController,
+                decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _onSave,
+                child: Text(l10n.mineEditSaveAction),
+              ),
+              if (!isNew) ...[
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: _onDelete,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  child: Text(l10n.mineEditDeleteAction),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ],
     );
@@ -103,9 +106,9 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
   void _onSave() {
     if (widget.conditionId != null) {
       ref.read(conditionFormProvider.notifier).save(
-        create: CreateHealthContextConditionDto(label: ''),
+        create: HealthConditionWriteInput(label: ''),
         id: widget.conditionId,
-        update: UpdateHealthContextConditionDto(
+        update: HealthConditionUpdateInput(
           label: _labelController.text,
           status: _status,
           diagnosedAt:
@@ -117,7 +120,7 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
       );
     } else {
       ref.read(conditionFormProvider.notifier).save(
-        create: CreateHealthContextConditionDto(
+        create: HealthConditionWriteInput(
           label: _labelController.text,
           status: _status,
           diagnosedAt:
@@ -137,7 +140,7 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
   }
 }
 
-Widget _enumDropdown<T extends Enum>({
+Widget _enumDropdown<T extends HealthContextWireEnum>({
   required String label,
   required T value,
   required List<T> values,
@@ -148,7 +151,7 @@ Widget _enumDropdown<T extends Enum>({
     decoration: InputDecoration(labelText: label),
     items:
         values
-            .map((v) => DropdownMenuItem(value: v, child: Text(v.name)))
+            .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
             .toList(),
     onChanged: (v) {
       if (v != null) onChanged(v);
