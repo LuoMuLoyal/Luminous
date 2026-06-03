@@ -4,10 +4,10 @@ import 'package:luminous/features/auth/presentation/pages/change_email_page.dart
 import 'package:luminous/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/pages/register_page.dart';
-import 'package:luminous/features/mine/presentation/pages/allergy_edit_page.dart';
-import 'package:luminous/features/mine/presentation/pages/condition_edit_page.dart';
-import 'package:luminous/features/mine/presentation/pages/current_medicine_edit_page.dart';
-import 'package:luminous/features/mine/presentation/pages/profile_edit_page.dart';
+import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
+import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
+import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
+import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/more_settings_page.dart';

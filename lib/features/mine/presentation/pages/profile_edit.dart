@@ -6,7 +6,7 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
-import 'package:luminous/features/mine/presentation/providers/health_profile_form_provider.dart';
+import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
