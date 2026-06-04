@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
+import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
+import 'package:luminous/features/record/data/repositories/lucent_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
 
@@ -552,5 +554,6 @@ class MockRecordRepository implements RecordRepository {
 }
 
 final recordRepositoryProvider = Provider<RecordRepository>((ref) {
-  return const MockRecordRepository();
+  final dailyRecordRepo = ref.watch(dailyRecordRepositoryProvider);
+  return LucentRecordRepository(dailyRecordRepo: dailyRecordRepo);
 });

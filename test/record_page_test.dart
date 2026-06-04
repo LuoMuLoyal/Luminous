@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
+import 'package:luminous/features/record/domain/repositories/record_repository.dart';
 import 'package:luminous/features/record/presentation/record_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -59,6 +61,11 @@ void main() {
 Future<void> _pumpRecordPage(WidgetTester tester) async {
   await tester.pumpWidget(
     ProviderScope(
+      overrides: [
+        recordRepositoryProvider.overrideWithValue(
+          const MockRecordRepository(),
+        ),
+      ],
       child: MaterialApp(
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,

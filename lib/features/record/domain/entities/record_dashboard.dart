@@ -135,6 +135,7 @@ class RecordTimelineEntry {
     this.badgeKey,
     this.imagePlaceholderKey,
     this.trailingIcon,
+    this.rawTitle,
   });
 
   final String time;
@@ -150,6 +151,10 @@ class RecordTimelineEntry {
   final RecordCopyKey? badgeKey;
   final RecordCopyKey? imagePlaceholderKey;
   final IconData? trailingIcon;
+
+  /// When non-null, the view should use this raw string instead of resolving
+  /// [titleKey] through [recordCopy].
+  final String? rawTitle;
 }
 
 class RecordTrend {
