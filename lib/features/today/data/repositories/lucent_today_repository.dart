@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/today_repository.dart';
 
-/// Lucent-backed [TodayRepository] that merges real health-context signals
-/// with static mock sections for surfaces the backend does not yet support.
+/// Lucent-backed [TodayRepository] that merges real health-context and
+/// daily-record signals with static mock sections for unsupported surfaces.
 class LucentTodayRepository implements TodayRepository {
   LucentTodayRepository({required this.ref});
 
@@ -13,47 +14,64 @@ class LucentTodayRepository implements TodayRepository {
   @override
   Future<TodayDashboard> fetchDashboard() async {
     final snapshot = await ref.read(healthContextSnapshotProvider.future);
-
     final medicines = snapshot.currentMedicines;
+
+    // Fetch daily record summary for today
+    final today = DateTime.now();
+    final dateStr =
+        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+
+    Map<String, num> recordCounts = {};
+    Map<String, String?> recordLatest = {};
+    try {
+      final summary =
+          await ref.read(dailyRecordRepositoryProvider).fetchSummary(dateStr);
+      for (final s in summary.summaries) {
+        recordCounts[s.kind.name] = s.count;
+        recordLatest[s.kind.name] = s.latest?.value;
+      }
+    } catch (_) {
+      // Fall back to static mock if records aren't available
+    }
+
+    final waterCount = (recordCounts['water'] ?? 0).toInt();
 
     return TodayDashboard(
       user: TodayUserSnapshot(
-        moment: todayDayMomentFromHour(DateTime.now().hour),
-        hasUnreadNotifications: true, // mock: no notification service yet
+        moment: todayDayMomentFromHour(today.hour),
+        hasUnreadNotifications: true, // mock
       ),
-      water:
-          _staticWater, // mock: backend does not yet provide water tracking
+      water: TodayWaterSummary(
+        completedCount: waterCount,
+        targetCount: 8,
+      ),
       medication: TodayMedicationSummary(
         medicineCount: snapshot.summary.currentMedicineCount,
-        pendingCount: 0, // mock: no dose schedule yet
-        nextDoseTimeLabel: '--', // mock
-        nextMedicine: TodayMedicationKind.atorvastatin, // fallback enum
+        pendingCount: 0,
+        nextDoseTimeLabel: '--',
+        nextMedicine: TodayMedicationKind.atorvastatin,
         nextMedicineName:
             medicines.isNotEmpty ? medicines.first.displayName : null,
       ),
-      vitals:
-          _staticVitals, // mock: backend does not yet provide vitals/records
-      mealSuggestion:
-          _staticMealSuggestion, // mock: no meal service yet
-      environment:
-          _staticEnvironment, // mock: no environment API yet
-      lumiSuggestion:
-          _staticLumiSuggestion, // mock: no AI suggestion layer yet
+      vitals: [
+        TodayVitalSummary(
+          type: TodayVitalType.heartRate,
+          valueLabel: recordLatest['vital'] ?? '--',
+        ),
+        TodayVitalSummary(
+          type: TodayVitalType.bloodPressure,
+          valueLabel: '--',
+        ),
+        TodayVitalSummary(
+          type: TodayVitalType.sleep,
+          valueLabel: '--',
+        ),
+      ],
+      mealSuggestion: _staticMealSuggestion,
+      environment: _staticEnvironment,
+      lumiSuggestion: _staticLumiSuggestion,
     );
   }
-
-  // --- mock sections (backend does not yet provide) ---
-
-  static const _staticWater = TodayWaterSummary(
-    completedCount: 5,
-    targetCount: 8,
-  );
-
-  static const _staticVitals = <TodayVitalSummary>[
-    TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '72'),
-    TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '118/76'),
-    TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '7.2'),
-  ];
 
   static const _staticMealSuggestion = TodayMealSuggestion(
     type: TodayMealSuggestionType.highProteinBalancedLunch,
