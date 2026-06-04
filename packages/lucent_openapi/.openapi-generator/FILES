@@ -11,6 +11,7 @@ doc/ChangePasswordDto.md
 doc/CnMedicineDetailDto.md
 doc/CooldownMessageDto.md
 doc/CreateDailyRecordDto.md
+doc/CreateDoseLogDto.md
 doc/DailyRecordItemDto.md
 doc/DailyRecordKind.md
 doc/DailyRecordListDataDto.md
@@ -21,6 +22,7 @@ doc/DailyRecordSummaryDto.md
 doc/DailyRecordSummaryResponseDto.md
 doc/DailyRecordsApi.md
 doc/DeleteAccountDto.md
+doc/DoseLogStatus.md
 doc/DrugbankMedicineDetailDto.md
 doc/ForgotPasswordDto.md
 doc/ForgotPasswordResponseDto.md
@@ -35,6 +37,7 @@ doc/MeResponseDto.md
 doc/MedicineDetailDataDto.md
 doc/MedicineDetailDataDtoDetail.md
 doc/MedicineDetailResponseDto.md
+doc/MedicineDoseLogsApi.md
 doc/MedicinePaginationDto.md
 doc/MedicineSearchItemDto.md
 doc/MedicineSearchMetaDto.md
@@ -55,6 +58,7 @@ doc/SuccessResponseDto.md
 doc/TokensDto.md
 doc/UnitSystem.md
 doc/UpdateDailyRecordDto.md
+doc/UpdateDoseLogDto.md
 doc/UpdateHealthContextProfileDto.md
 doc/UpdateMeDto.md
 doc/UserAllergyItemDto.md
@@ -76,6 +80,7 @@ lib/src/api.dart
 lib/src/api/app_api.dart
 lib/src/api/auth_api.dart
 lib/src/api/daily_records_api.dart
+lib/src/api/medicine_dose_logs_api.dart
 lib/src/api/medicines_api.dart
 lib/src/api/user_health_context_api.dart
 lib/src/auth/api_key_auth.dart
@@ -91,6 +96,7 @@ lib/src/model/change_password_dto.dart
 lib/src/model/cn_medicine_detail_dto.dart
 lib/src/model/cooldown_message_dto.dart
 lib/src/model/create_daily_record_dto.dart
+lib/src/model/create_dose_log_dto.dart
 lib/src/model/daily_record_item_dto.dart
 lib/src/model/daily_record_kind.dart
 lib/src/model/daily_record_list_data_dto.dart
@@ -100,6 +106,7 @@ lib/src/model/daily_record_summary_data_dto.dart
 lib/src/model/daily_record_summary_dto.dart
 lib/src/model/daily_record_summary_response_dto.dart
 lib/src/model/delete_account_dto.dart
+lib/src/model/dose_log_status.dart
 lib/src/model/drugbank_medicine_detail_dto.dart
 lib/src/model/forgot_password_dto.dart
 lib/src/model/forgot_password_response_dto.dart
@@ -133,6 +140,7 @@ lib/src/model/success_response_dto.dart
 lib/src/model/tokens_dto.dart
 lib/src/model/unit_system.dart
 lib/src/model/update_daily_record_dto.dart
+lib/src/model/update_dose_log_dto.dart
 lib/src/model/update_health_context_profile_dto.dart
 lib/src/model/update_me_dto.dart
 lib/src/model/user_allergy_item_dto.dart
@@ -149,14 +157,7 @@ lib/src/model/verify_email_data_dto.dart
 lib/src/model/verify_email_dto.dart
 lib/src/model/verify_email_response_dto.dart
 pubspec.yaml
-test/create_daily_record_dto_test.dart
-test/daily_record_item_dto_test.dart
-test/daily_record_kind_test.dart
-test/daily_record_list_data_dto_test.dart
-test/daily_record_list_response_dto_test.dart
-test/daily_record_response_dto_test.dart
-test/daily_record_summary_data_dto_test.dart
-test/daily_record_summary_dto_test.dart
-test/daily_record_summary_response_dto_test.dart
-test/daily_records_api_test.dart
-test/update_daily_record_dto_test.dart
+test/create_dose_log_dto_test.dart
+test/dose_log_status_test.dart
+test/medicine_dose_logs_api_test.dart
+test/update_dose_log_dto_test.dart

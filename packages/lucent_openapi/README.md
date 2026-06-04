@@ -83,6 +83,10 @@ Class | Method | HTTP request | Description
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerListV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerlistv1) | **GET** /api/v1/me/daily-records | List daily records for a given date
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerSummaryV1**](doc/DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/me/daily-records/summary | Get daily record summary (counts by kind)
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerUpdateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerupdatev1) | **PATCH** /api/v1/me/daily-records/{id} | Update a daily record
+[*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerCreateV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollercreatev1) | **POST** /api/v1/me/medicine-dose-logs | Create a dose log
+[*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerDeleteV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerdeletev1) | **DELETE** /api/v1/me/medicine-dose-logs/{id} | Soft-delete a dose log
+[*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerListV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerlistv1) | **GET** /api/v1/me/medicine-dose-logs | List dose logs for a date
+[*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerUpdateV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerupdatev1) | **PATCH** /api/v1/me/medicine-dose-logs/{id} | Update a dose log
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerGetMeHealthContextV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollergetmehealthcontextv1) | **GET** /api/v1/me/health-context | Get the current user health context aggregate
@@ -98,6 +102,7 @@ Class | Method | HTTP request | Description
  - [CnMedicineDetailDto](doc/CnMedicineDetailDto.md)
  - [CooldownMessageDto](doc/CooldownMessageDto.md)
  - [CreateDailyRecordDto](doc/CreateDailyRecordDto.md)
+ - [CreateDoseLogDto](doc/CreateDoseLogDto.md)
  - [DailyRecordItemDto](doc/DailyRecordItemDto.md)
  - [DailyRecordKind](doc/DailyRecordKind.md)
  - [DailyRecordListDataDto](doc/DailyRecordListDataDto.md)
@@ -107,6 +112,7 @@ Class | Method | HTTP request | Description
  - [DailyRecordSummaryDto](doc/DailyRecordSummaryDto.md)
  - [DailyRecordSummaryResponseDto](doc/DailyRecordSummaryResponseDto.md)
  - [DeleteAccountDto](doc/DeleteAccountDto.md)
+ - [DoseLogStatus](doc/DoseLogStatus.md)
  - [DrugbankMedicineDetailDto](doc/DrugbankMedicineDetailDto.md)
  - [ForgotPasswordDto](doc/ForgotPasswordDto.md)
  - [ForgotPasswordResponseDto](doc/ForgotPasswordResponseDto.md)
@@ -140,6 +146,7 @@ Class | Method | HTTP request | Description
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
  - [UpdateDailyRecordDto](doc/UpdateDailyRecordDto.md)
+ - [UpdateDoseLogDto](doc/UpdateDoseLogDto.md)
  - [UpdateHealthContextProfileDto](doc/UpdateHealthContextProfileDto.md)
  - [UpdateMeDto](doc/UpdateMeDto.md)
  - [UserAllergyItemDto](doc/UserAllergyItemDto.md)

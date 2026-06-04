@@ -5,6 +5,7 @@ import 'package:lucent_openapi/src/model/change_password_dto.dart';
 import 'package:lucent_openapi/src/model/cn_medicine_detail_dto.dart';
 import 'package:lucent_openapi/src/model/cooldown_message_dto.dart';
 import 'package:lucent_openapi/src/model/create_daily_record_dto.dart';
+import 'package:lucent_openapi/src/model/create_dose_log_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_item_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_list_data_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_list_response_dto.dart';
@@ -41,6 +42,7 @@ import 'package:lucent_openapi/src/model/send_verification_code_response_dto.dar
 import 'package:lucent_openapi/src/model/success_response_dto.dart';
 import 'package:lucent_openapi/src/model/tokens_dto.dart';
 import 'package:lucent_openapi/src/model/update_daily_record_dto.dart';
+import 'package:lucent_openapi/src/model/update_dose_log_dto.dart';
 import 'package:lucent_openapi/src/model/update_health_context_profile_dto.dart';
 import 'package:lucent_openapi/src/model/update_me_dto.dart';
 import 'package:lucent_openapi/src/model/user_allergy_item_dto.dart';
@@ -86,6 +88,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return CooldownMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CreateDailyRecordDto':
           return CreateDailyRecordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'CreateDoseLogDto':
+          return CreateDoseLogDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordItemDto':
           return DailyRecordItemDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordKind':
@@ -105,6 +109,9 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return DailyRecordSummaryResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DeleteAccountDto':
           return DeleteAccountDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DoseLogStatus':
+          
+          
         case 'DrugbankMedicineDetailDto':
           return DrugbankMedicineDetailDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ForgotPasswordDto':
@@ -176,6 +183,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           
         case 'UpdateDailyRecordDto':
           return UpdateDailyRecordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'UpdateDoseLogDto':
+          return UpdateDoseLogDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UpdateHealthContextProfileDto':
           return UpdateHealthContextProfileDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UpdateMeDto':
