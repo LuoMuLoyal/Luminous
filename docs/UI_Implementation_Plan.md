@@ -1,6 +1,6 @@
 # Luminous UI Plan
 
-Last updated: 2026-06-03
+Last updated: 2026-06-04
 
 Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADMAP.md`.
 
@@ -15,7 +15,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Persisted `system / light / dark` theme preference foundation
 - Mobile bottom nav + desktop rail
 - Today concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop wide dashboard, plainer medicine-style surfaces, localized image placeholders, reusable Today primitives, and shared state views
-- Record concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, and toast-only mock actions
+- Record concept-aligned dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, Lucent-backed daily-record timeline, and quick-create flow
 - Mine concept-aligned mock dashboard UI with repository/provider boundary, mobile profile/plans/privacy surface, and desktop status/onboarding/settings side rail
 - Mine signed-out state now stays on the same static dashboard structure with a login notice instead of page-level skeleton loading
 - Standalone Settings page at `/settings` now owns theme/language/notification/account-entry settings, while Mine stays focused on dashboard content and entry actions
@@ -27,17 +27,18 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Lucent-backed health-context write flows for Mine profile, allergies, conditions, and current medicines, with domain write inputs keeping generated OpenAPI DTOs out of presentation code
 - Search add-to-current-medicines now writes through Lucent for signed-in users and routes signed-out users to `/login`
 - Medicine and Today now consume the safe current-medicine subset from health context
+- Today now also consumes Lucent daily-record water/vital summaries while unsupported meal/environment/Lumi sections remain static
+- Medicine now reads manual dose-log status for current medicines; this is not push reminder scheduling
 
-Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Medicine and Today read the safe current-medicine subset. Still pending: real daily records, manual medicine adherence logs, live reminders, real scan/upload, More real tools/device integrations, and broader feature data.
+Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual dose-log status; Today reads safe current-medicine and daily-record water/vital summaries. Still pending: live reminders, real scan/upload, More real tools/device integrations, richer record analytics, and broader feature data.
 
 ## UI Priority
 
-1. Harden Mine health-context edit flows with edit-prefill, validation, and route tests.
-2. Add Lucent-backed daily records and connect the Record tab timeline/edit flows.
-3. Connect Today to factual daily-record summaries while keeping unsupported advice/static sections clear.
-4. Add manual medicine adherence logs and connect Medicine/Today status actions.
-5. Connect More mock repository to real emergency, device, tool, and environment data sources after the Record/Medicine loop is stable.
-6. Add palette variants after the fixed-token surfaces have been reduced.
+1. Harden the new daily-record and manual dose-log flows with e2e/widget coverage for auth, ownership, null clearing, and provider invalidation.
+2. Expand Record beyond quick-create only when Lucent contracts exist for the specific record type.
+3. Keep Today factual: daily-record summaries may be real, but unsupported advice/static sections must stay clearly bounded.
+4. Connect More mock repository to real emergency, device, tool, and environment data sources after their Lucent contracts exist.
+5. Add palette variants after the fixed-token surfaces have been reduced.
 
 ## Rules
 

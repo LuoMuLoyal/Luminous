@@ -1,10 +1,16 @@
 # Luminous Migration Log
 
-Last updated: 2026-06-03
+Last updated: 2026-06-04
 
 Records changes after the full reset only. Pre-reset history: `MigrationLog_Archive_PreReset.md`.
 
 ## 2026-06-04
+
+### Project Error Audit
+
+- Added `docs/Project_Error_Audit.md` as the cross-repo error and recurring-risk audit register for Lucent/Luminous.
+- The audit consolidates documented backend, frontend, OpenAPI, infra, UI, test, and process mistakes from changelogs, migration logs, restart plans, and superpowers plans.
+- Updated `docs/README.md` so the error audit is part of the standard read-first doc set.
 
 ### Follow-Up Plan Handoff (Task 12)
 
