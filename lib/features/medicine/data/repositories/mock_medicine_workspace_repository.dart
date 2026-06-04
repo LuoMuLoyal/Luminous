@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
+import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/lucent_medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
@@ -134,8 +136,15 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   }
 }
 
+final doseLogRemoteDataSourceProvider = Provider<DoseLogRemoteDataSource>((ref) {
+  final api = ref.watch(lucentMedicineDoseLogsApiProvider);
+  final dio = ref.watch(lucentDioClientProvider).dio;
+  return DoseLogRemoteDataSource(api: api, dio: dio);
+});
+
 final medicineWorkspaceRepositoryProvider =
     Provider<MedicineWorkspaceRepository>((ref) {
       final healthRepo = ref.watch(healthContextRepositoryProvider);
-      return LucentMedicineWorkspaceRepository(healthRepo: healthRepo);
+      final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
+      return LucentMedicineWorkspaceRepository(healthRepo: healthRepo, doseLogDs: doseLogDs);
     });
