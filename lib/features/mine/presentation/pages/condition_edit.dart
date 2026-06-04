@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
@@ -24,6 +26,9 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
 
   HealthConditionStatus _status = HealthConditionStatus.active;
 
+  bool _prefilled = false;
+  bool _notFound = false;
+
   @override
   void dispose() {
     _labelController.dispose();
@@ -32,10 +37,42 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
     super.dispose();
   }
 
+  void _tryPrefill() {
+    if (_prefilled) return;
+    final snapshot = ref.read(healthContextSnapshotProvider).asData?.value;
+    if (snapshot == null) return;
+
+    final id = widget.conditionId;
+    if (id == null) {
+      _prefilled = true;
+      return;
+    }
+
+    final item = snapshot.conditions.cast<dynamic>().firstWhere(
+      (c) => c.id == id,
+      orElse: () => null,
+    );
+    if (item == null) {
+      _notFound = true;
+      _prefilled = true;
+      return;
+    }
+
+    _prefilled = true;
+    _labelController.text = item.label ?? '';
+    _diagnosedAtController.text = item.diagnosedAt ?? '';
+    _noteController.text = item.note ?? '';
+    setState(() {
+      _status = HealthConditionStatus.fromValue(item.status) ??
+          HealthConditionStatus.active;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isNew = widget.conditionId == null;
+    final isEdit = !isNew;
 
     ref.listen<ConditionFormState>(conditionFormProvider, (_, next) {
       if (next.saved) {
@@ -43,6 +80,35 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
         if (context.mounted) context.pop();
       }
     });
+
+    final snapshot = ref.watch(healthContextSnapshotProvider);
+    snapshot.whenOrNull(data: (_) => _tryPrefill());
+
+    if (_notFound) {
+      return PageScaffoldShell(
+        title: l10n.mineEditConditionTitle,
+        centerTitle: true,
+        leading: const SettingsBackButton(),
+        children: [
+          AppStateErrorView(
+            title: l10n.mineErrorDescription,
+            description: '',
+            icon: Icons.error_outline_rounded,
+            actionLabel: l10n.todayRetryAction,
+            onAction: () => context.pop(),
+          ),
+        ],
+      );
+    }
+
+    if (isEdit && !_prefilled && !snapshot.hasError) {
+      return PageScaffoldShell(
+        title: l10n.mineEditConditionTitle,
+        centerTitle: true,
+        leading: const SettingsBackButton(),
+        children: [const Center(child: CircularProgressIndicator())],
+      );
+    }
 
     return PageScaffoldShell(
       title:
@@ -58,6 +124,7 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextField(
+                key: const Key('condition-label-field'),
                 controller: _labelController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldLabel),
               ),
@@ -83,12 +150,14 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
+                key: const Key('condition-save-button'),
                 onPressed: _onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
               if (!isNew) ...[
                 const SizedBox(height: 12),
                 OutlinedButton(
+                  key: const Key('condition-delete-button'),
                   onPressed: _onDelete,
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.error,
@@ -104,6 +173,11 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
   }
 
   void _onSave() {
+    if (_labelController.text.trim().isEmpty) {
+      AppToast.show(context, AppLocalizations.of(context)!.authCodeRequiredToast);
+      return;
+    }
+
     if (widget.conditionId != null) {
       ref.read(conditionFormProvider.notifier).save(
         create: HealthConditionWriteInput(label: ''),
