@@ -767,6 +767,30 @@ Current status: `MigrationLog.md` 已对齐实际文件名。
 
 Future audit: 文档中出现具体文件名时，用 `Test-Path` / `rg --files` 验证。
 
+### ERR-FE-029: Medicine skipped dose log 被重新显示为 pending
+
+Area: frontend / medicine / today consistency
+
+What went wrong: Medicine 写入 `skipped` dose log 后，Today 已把 `taken` 和 `skipped` 都算作已处理，但 Medicine workspace 重新读取 dose logs 时只识别 `taken`，导致跳过后又显示成 `pending`。
+
+Evidence: 2026-06-04 post-audit fix during DeepSeek follow-up review.
+
+Current status: Medicine 状态模型已补 `taken / skipped / pending` 三态，Lucent-backed workspace 按当天 dose log 的最新状态映射为对应 label，并新增 skipped regression。
+
+Future audit: 任何跨页共享状态必须统一状态枚举和完成口径；新增 dose-log 状态时同时检查 Medicine、Today、repository tests 和 ARB。
+
+### ERR-FE-030: OpenAPI generator 生成 Markdown 尾随空格
+
+Area: frontend / generated client / docs hygiene
+
+What went wrong: `dart run tool/regenerate_lucent_openapi.dart` 生成的新 DTO Markdown 中保留表格行尾空格和多余 EOF 空行，导致 `git diff --check` 在提交前失败。
+
+Evidence: 2026-06-04 Luminous dose-log client regeneration; affected files included `packages/lucent_openapi/doc/DoseLogItemDto.md`, `DoseLogListDataDto.md`, `DoseLogListResponseDto.md`, and `DoseLogResponseDto.md`.
+
+Current status: 已清理本次生成文档的尾随空格，并在提交前重新运行 `git diff --check`。
+
+Future audit: OpenAPI client 再生后必须运行 `git -C Luminous diff --check`；如果只影响生成 Markdown 空白，可机械清理后再提交，不要跳过检查。
+
 ## Cross-Repo Contract And Process Errors
 
 ### ERR-XR-001: Lucent/Luminous 当前仓库边界容易混淆

@@ -16,7 +16,7 @@ Method | HTTP request | Description
 
 
 # **medicineDoseLogsControllerCreateV1**
-> medicineDoseLogsControllerCreateV1(createDoseLogDto)
+> DoseLogResponseDto medicineDoseLogsControllerCreateV1(createDoseLogDto)
 
 Create a dose log
 
@@ -28,7 +28,8 @@ final api = LucentOpenapi().getMedicineDoseLogsApi();
 final CreateDoseLogDto createDoseLogDto = ; // CreateDoseLogDto | 
 
 try {
-    api.medicineDoseLogsControllerCreateV1(createDoseLogDto);
+    final response = api.medicineDoseLogsControllerCreateV1(createDoseLogDto);
+    print(response);
 } on DioException catch (e) {
     print('Exception when calling MedicineDoseLogsApi->medicineDoseLogsControllerCreateV1: $e\n');
 }
@@ -42,7 +43,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-void (empty response body)
+[**DoseLogResponseDto**](DoseLogResponseDto.md)
 
 ### Authorization
 
@@ -51,7 +52,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -96,7 +97,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **medicineDoseLogsControllerListV1**
-> medicineDoseLogsControllerListV1(date)
+> DoseLogListResponseDto medicineDoseLogsControllerListV1(date)
 
 List dose logs for a date
 
@@ -108,7 +109,8 @@ final api = LucentOpenapi().getMedicineDoseLogsApi();
 final String date = 2026-06-04; // String | 
 
 try {
-    api.medicineDoseLogsControllerListV1(date);
+    final response = api.medicineDoseLogsControllerListV1(date);
+    print(response);
 } on DioException catch (e) {
     print('Exception when calling MedicineDoseLogsApi->medicineDoseLogsControllerListV1: $e\n');
 }
@@ -122,7 +124,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-void (empty response body)
+[**DoseLogListResponseDto**](DoseLogListResponseDto.md)
 
 ### Authorization
 
@@ -131,12 +133,12 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **medicineDoseLogsControllerUpdateV1**
-> medicineDoseLogsControllerUpdateV1(id, updateDoseLogDto)
+> DoseLogResponseDto medicineDoseLogsControllerUpdateV1(id, updateDoseLogDto)
 
 Update a dose log
 
@@ -149,7 +151,8 @@ final String id = id_example; // String |
 final UpdateDoseLogDto updateDoseLogDto = ; // UpdateDoseLogDto | 
 
 try {
-    api.medicineDoseLogsControllerUpdateV1(id, updateDoseLogDto);
+    final response = api.medicineDoseLogsControllerUpdateV1(id, updateDoseLogDto);
+    print(response);
 } on DioException catch (e) {
     print('Exception when calling MedicineDoseLogsApi->medicineDoseLogsControllerUpdateV1: $e\n');
 }
@@ -164,7 +167,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-void (empty response body)
+[**DoseLogResponseDto**](DoseLogResponseDto.md)
 
 ### Authorization
 
@@ -173,7 +176,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

@@ -63,6 +63,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordAddCompactAction => '记录';
 
   @override
+  String get recordCreateFieldKind => '类型';
+
+  @override
+  String get recordCreateFieldUnit => '单位';
+
+  @override
+  String get recordCreateFieldTitleOptional => '标题（可选）';
+
+  @override
+  String get recordCreateFieldNote => '备注';
+
+  @override
+  String get recordCreateKindNote => '备注';
+
+  @override
+  String get recordCreateValueWater => '杯数';
+
+  @override
+  String get recordCreateValueMeal => '名称 / 描述';
+
+  @override
+  String get recordCreateValueVital => '数值（如 120/80）';
+
+  @override
+  String get recordCreateFailedToast => '记录未保存';
+
+  @override
   String get recordQuickSectionTitle => '快速记录';
 
   @override
@@ -413,7 +440,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineDoseStatusTaken => '已服用';
 
   @override
+  String get medicineDoseStatusSkipped => '已跳过';
+
+  @override
   String get medicineDoseStatusPending => '待服用';
+
+  @override
+  String get medicineDoseActionTaken => '已服用';
+
+  @override
+  String get medicineDoseActionSkipped => '跳过';
+
+  @override
+  String get medicineDoseActionSavedToast => '用药打卡已保存';
+
+  @override
+  String get medicineDoseActionFailedToast => '用药打卡未保存';
 
   @override
   String get medicineMockStock7Days => '剩余 7 天';

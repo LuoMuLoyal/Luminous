@@ -206,6 +206,60 @@ abstract class AppLocalizations {
   /// **'记录'**
   String get recordAddCompactAction;
 
+  /// No description provided for @recordCreateFieldKind.
+  ///
+  /// In zh, this message translates to:
+  /// **'类型'**
+  String get recordCreateFieldKind;
+
+  /// No description provided for @recordCreateFieldUnit.
+  ///
+  /// In zh, this message translates to:
+  /// **'单位'**
+  String get recordCreateFieldUnit;
+
+  /// No description provided for @recordCreateFieldTitleOptional.
+  ///
+  /// In zh, this message translates to:
+  /// **'标题（可选）'**
+  String get recordCreateFieldTitleOptional;
+
+  /// No description provided for @recordCreateFieldNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'备注'**
+  String get recordCreateFieldNote;
+
+  /// No description provided for @recordCreateKindNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'备注'**
+  String get recordCreateKindNote;
+
+  /// No description provided for @recordCreateValueWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'杯数'**
+  String get recordCreateValueWater;
+
+  /// No description provided for @recordCreateValueMeal.
+  ///
+  /// In zh, this message translates to:
+  /// **'名称 / 描述'**
+  String get recordCreateValueMeal;
+
+  /// No description provided for @recordCreateValueVital.
+  ///
+  /// In zh, this message translates to:
+  /// **'数值（如 120/80）'**
+  String get recordCreateValueVital;
+
+  /// No description provided for @recordCreateFailedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录未保存'**
+  String get recordCreateFailedToast;
+
   /// No description provided for @recordQuickSectionTitle.
   ///
   /// In zh, this message translates to:
@@ -896,11 +950,41 @@ abstract class AppLocalizations {
   /// **'已服用'**
   String get medicineDoseStatusTaken;
 
+  /// No description provided for @medicineDoseStatusSkipped.
+  ///
+  /// In zh, this message translates to:
+  /// **'已跳过'**
+  String get medicineDoseStatusSkipped;
+
   /// No description provided for @medicineDoseStatusPending.
   ///
   /// In zh, this message translates to:
   /// **'待服用'**
   String get medicineDoseStatusPending;
+
+  /// No description provided for @medicineDoseActionTaken.
+  ///
+  /// In zh, this message translates to:
+  /// **'已服用'**
+  String get medicineDoseActionTaken;
+
+  /// No description provided for @medicineDoseActionSkipped.
+  ///
+  /// In zh, this message translates to:
+  /// **'跳过'**
+  String get medicineDoseActionSkipped;
+
+  /// No description provided for @medicineDoseActionSavedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药打卡已保存'**
+  String get medicineDoseActionSavedToast;
+
+  /// No description provided for @medicineDoseActionFailedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药打卡未保存'**
+  String get medicineDoseActionFailedToast;
 
   /// No description provided for @medicineMockStock7Days.
   ///

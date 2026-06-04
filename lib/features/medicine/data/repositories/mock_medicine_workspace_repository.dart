@@ -136,7 +136,9 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   }
 }
 
-final doseLogRemoteDataSourceProvider = Provider<DoseLogRemoteDataSource>((ref) {
+final doseLogRemoteDataSourceProvider = Provider<DoseLogRemoteDataSource>((
+  ref,
+) {
   final api = ref.watch(lucentMedicineDoseLogsApiProvider);
   final dio = ref.watch(lucentDioClientProvider).dio;
   return DoseLogRemoteDataSource(api: api, dio: dio);
@@ -146,5 +148,8 @@ final medicineWorkspaceRepositoryProvider =
     Provider<MedicineWorkspaceRepository>((ref) {
       final healthRepo = ref.watch(healthContextRepositoryProvider);
       final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
-      return LucentMedicineWorkspaceRepository(healthRepo: healthRepo, doseLogDs: doseLogDs);
+      return LucentMedicineWorkspaceRepository(
+        healthRepo: healthRepo,
+        doseLogDs: doseLogDs,
+      );
     });

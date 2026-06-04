@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart' show DoseLogRemoteDataSource, DoseLogStatus;
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
+    show DoseLogRemoteDataSource, DoseLogStatus;
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 
 /// Lucent-backed [MedicineWorkspaceRepository] that derives the medicine
 /// workspace from the current user's real health-context data.
-class LucentMedicineWorkspaceRepository
-    implements MedicineWorkspaceRepository {
-  LucentMedicineWorkspaceRepository({required this.healthRepo, required this.doseLogDs});
+class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
+  LucentMedicineWorkspaceRepository({
+    required this.healthRepo,
+    required this.doseLogDs,
+  });
 
   final HealthContextRepository healthRepo;
   final DoseLogRemoteDataSource doseLogDs;
@@ -21,30 +24,50 @@ class LucentMedicineWorkspaceRepository
 
     // Fetch today's dose logs
     final today = DateTime.now();
-    final dateStr = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-    Set<String> takenMeds = {};
+    final dateStr =
+        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    final doseStatusByMedicine = <String, DoseLogStatus>{};
     try {
       final logs = await doseLogDs.fetchForDate(dateStr);
-      takenMeds = logs.where((l) => l.status == DoseLogStatus.taken && l.currentMedicineId != null)
-          .map((l) => l.currentMedicineId!).toSet();
+      for (final log in logs) {
+        final medicineId = log.currentMedicineId;
+        if (medicineId == null ||
+            doseStatusByMedicine.containsKey(medicineId)) {
+          continue;
+        }
+        if (log.status == DoseLogStatus.taken ||
+            log.status == DoseLogStatus.skipped) {
+          doseStatusByMedicine[medicineId] = log.status;
+        }
+      }
     } catch (_) {}
 
     final planItems = medicines.map((m) {
-      final isTaken = takenMeds.contains(m.id);
+      final doseStatus = doseStatusByMedicine[m.id];
+      final stateKey = switch (doseStatus) {
+        DoseLogStatus.taken => MedicineCopyKey.doseStatusTaken,
+        DoseLogStatus.skipped => MedicineCopyKey.doseStatusSkipped,
+        _ => MedicineCopyKey.doseStatusPending,
+      };
+      final stateColor = switch (doseStatus) {
+        DoseLogStatus.taken => AppColorTokens.success,
+        DoseLogStatus.skipped => AppColorTokens.warningDeep,
+        _ => AppColorTokens.warning,
+      };
       return MedicinePlanItem(
         color: AppColorTokens.link,
         nameKey: MedicineCopyKey.mockNameMetformin,
         dosageKey: MedicineCopyKey.mockDoseMetformin,
         scheduleKey: MedicineCopyKey.mockScheduleMorningEvening,
         stockKey: MedicineCopyKey.mockStock7Days,
-        stateKey: MedicineCopyKey.statusStable,
-        stateColor: isTaken ? AppColorTokens.success : AppColorTokens.warning,
+        stateKey: stateKey,
+        stateColor: stateColor,
         slots: const [],
         rawName: m.displayName,
         rawDosage: m.strengthText ?? '',
         rawSchedule: m.doseText ?? '',
         rawStock: m.route ?? '',
-        rawState: isTaken ? 'Taken' : 'Pending',
+        currentMedicineId: m.id,
       );
     }).toList();
 

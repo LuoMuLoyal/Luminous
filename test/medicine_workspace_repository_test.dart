@@ -1,30 +1,71 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_openapi/lucent_openapi.dart' show MedicineDoseLogsApi;
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/lucent_medicine_workspace.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 
 void main() {
-  test('Lucent medicine workspace maps current medicines from health context', () async {
-    final repository = LucentMedicineWorkspaceRepository(
-      healthRepo: _FakeHealthContextRepository(),
-      doseLogDs: _FakeDoseLogDataSource(),
-    );
+  test(
+    'Lucent medicine workspace maps current medicines from health context',
+    () async {
+      final repository = LucentMedicineWorkspaceRepository(
+        healthRepo: _FakeHealthContextRepository(),
+        doseLogDs: _FakeDoseLogDataSource(),
+      );
 
-    final workspace = await repository.fetchWorkspace();
+      final workspace = await repository.fetchWorkspace();
 
-    expect(workspace.hero.metricDosesToday, '2');
-    expect(workspace.plan.items, hasLength(2));
-    expect(workspace.plan.items[0].rawName, 'Metformin XR');
-    expect(workspace.plan.items[0].rawDosage, '500 mg');
-    expect(workspace.plan.items[0].rawSchedule, 'Morning and evening');
-    expect(workspace.plan.items[0].rawStock, 'oral');
-    expect(workspace.plan.items[0].rawState, 'Pending');
-    expect(workspace.plan.items[1].rawState, 'Pending');
-  });
+      expect(workspace.hero.metricDosesToday, '2');
+      expect(workspace.plan.items, hasLength(2));
+      expect(workspace.plan.items[0].rawName, 'Metformin XR');
+      expect(workspace.plan.items[0].rawDosage, '500 mg');
+      expect(workspace.plan.items[0].rawSchedule, 'Morning and evening');
+      expect(workspace.plan.items[0].rawStock, 'oral');
+      expect(workspace.plan.items[0].rawState, isNull);
+      expect(workspace.plan.items[0].currentMedicineId, 'med-1');
+      expect(
+        workspace.plan.items[0].stateKey,
+        MedicineCopyKey.doseStatusPending,
+      );
+      expect(
+        workspace.plan.items[1].stateKey,
+        MedicineCopyKey.doseStatusPending,
+      );
+    },
+  );
+
+  test(
+    'Lucent medicine workspace maps skipped dose logs as completed state',
+    () async {
+      final repository = LucentMedicineWorkspaceRepository(
+        healthRepo: _FakeHealthContextRepository(),
+        doseLogDs: _FakeDoseLogDataSource([
+          const DoseLogItem(
+            id: 'dose-1',
+            currentMedicineId: 'med-1',
+            status: DoseLogStatus.skipped,
+            scheduledFor: '2026-06-04',
+            createdAt: '2026-06-04T08:00:00.000Z',
+          ),
+        ]),
+      );
+
+      final workspace = await repository.fetchWorkspace();
+
+      expect(
+        workspace.plan.items[0].stateKey,
+        MedicineCopyKey.doseStatusSkipped,
+      );
+      expect(
+        workspace.plan.items[1].stateKey,
+        MedicineCopyKey.doseStatusPending,
+      );
+    },
+  );
 }
 
 class _FakeHealthContextRepository implements HealthContextRepository {
@@ -81,10 +122,16 @@ class _FakeHealthContextRepository implements HealthContextRepository {
 }
 
 class _FakeDoseLogDataSource extends DoseLogRemoteDataSource {
-  _FakeDoseLogDataSource() : super(api: MedicineDoseLogsApi(Dio(BaseOptions())), dio: Dio(BaseOptions()));
+  _FakeDoseLogDataSource([this._items = const []])
+    : super(
+        api: MedicineDoseLogsApi(Dio(BaseOptions())),
+        dio: Dio(BaseOptions()),
+      );
+
+  final List<DoseLogItem> _items;
 
   @override
-  Future<List<DoseLogItem>> fetchForDate(String date) async => [];
+  Future<List<DoseLogItem>> fetchForDate(String date) async => _items;
 }
 
 const _snapshot = HealthContextSnapshot(

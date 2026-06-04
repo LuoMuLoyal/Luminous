@@ -1,6 +1,6 @@
 # Flutter i18n
 
-Last updated: 2026-06-02
+Last updated: 2026-06-04
 
 ## Files
 
@@ -19,6 +19,8 @@ Last updated: 2026-06-02
 - Settings notification permission status labels
 - Auth empty-field toast prompts
 - Mine signed-out notice / guest state copy
+- Record quick-create form labels and save failure toast
+- Medicine manual dose-log actions, saved/failed toasts, and taken/skipped/pending status labels
 - Network `Accept-Language`
 - Flutter UI locale driven by persisted app locale preference
 

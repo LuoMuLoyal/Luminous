@@ -64,6 +64,7 @@ class MedicinePlanItem {
     this.rawSchedule,
     this.rawStock,
     this.rawState,
+    this.currentMedicineId,
   });
 
   final Color color;
@@ -84,6 +85,7 @@ class MedicinePlanItem {
   final String? rawSchedule;
   final String? rawStock;
   final String? rawState;
+  final String? currentMedicineId;
 }
 
 class MedicineDoseSlot {
@@ -98,7 +100,7 @@ class MedicineDoseSlot {
   final MedicineDoseStatus status;
 }
 
-enum MedicineDoseStatus { taken, pending }
+enum MedicineDoseStatus { taken, skipped, pending }
 
 class MedicineAlert {
   const MedicineAlert({
@@ -142,6 +144,7 @@ enum MedicineCopyKey {
   mockTime1200,
   mockTime2000,
   doseStatusTaken,
+  doseStatusSkipped,
   doseStatusPending,
   mockStock7Days,
   statusStable,

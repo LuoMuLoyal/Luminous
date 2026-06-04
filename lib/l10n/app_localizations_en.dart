@@ -65,6 +65,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordAddCompactAction => 'Record';
 
   @override
+  String get recordCreateFieldKind => 'Kind';
+
+  @override
+  String get recordCreateFieldUnit => 'Unit';
+
+  @override
+  String get recordCreateFieldTitleOptional => 'Title (optional)';
+
+  @override
+  String get recordCreateFieldNote => 'Note';
+
+  @override
+  String get recordCreateKindNote => 'Note';
+
+  @override
+  String get recordCreateValueWater => 'Cups';
+
+  @override
+  String get recordCreateValueMeal => 'Name / description';
+
+  @override
+  String get recordCreateValueVital => 'Value (e.g. 120/80)';
+
+  @override
+  String get recordCreateFailedToast => 'Record was not saved.';
+
+  @override
   String get recordQuickSectionTitle => 'Quick record';
 
   @override
@@ -429,7 +456,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineDoseStatusTaken => 'Taken';
 
   @override
+  String get medicineDoseStatusSkipped => 'Skipped';
+
+  @override
   String get medicineDoseStatusPending => 'Pending';
+
+  @override
+  String get medicineDoseActionTaken => 'Taken';
+
+  @override
+  String get medicineDoseActionSkipped => 'Skipped';
+
+  @override
+  String get medicineDoseActionSavedToast => 'Dose log saved.';
+
+  @override
+  String get medicineDoseActionFailedToast => 'Dose log was not saved.';
 
   @override
   String get medicineMockStock7Days => '7 days left';
