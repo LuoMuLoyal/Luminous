@@ -1,13 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/lucent_medicine_workspace.dart';
 
 void main() {
   test('Lucent medicine workspace maps current medicines from health context', () async {
     final repository = LucentMedicineWorkspaceRepository(
       healthRepo: _FakeHealthContextRepository(),
+      doseLogDs: _FakeDoseLogDataSource(),
     );
 
     final workspace = await repository.fetchWorkspace();
@@ -18,8 +22,8 @@ void main() {
     expect(workspace.plan.items[0].rawDosage, '500 mg');
     expect(workspace.plan.items[0].rawSchedule, 'Morning and evening');
     expect(workspace.plan.items[0].rawStock, 'oral');
-    expect(workspace.plan.items[0].rawState, 'In use');
-    expect(workspace.plan.items[1].rawState, 'Stopped');
+    expect(workspace.plan.items[0].rawState, 'Pending');
+    expect(workspace.plan.items[1].rawState, 'Pending');
   });
 }
 
@@ -74,6 +78,13 @@ class _FakeHealthContextRepository implements HealthContextRepository {
   @override
   Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async =>
       _snapshot;
+}
+
+class _FakeDoseLogDataSource extends DoseLogRemoteDataSource {
+  _FakeDoseLogDataSource() : super(api: MedicineDoseLogsApi(Dio(BaseOptions())), dio: Dio(BaseOptions()));
+
+  @override
+  Future<List<DoseLogItem>> fetchForDate(String date) async => [];
 }
 
 const _snapshot = HealthContextSnapshot(

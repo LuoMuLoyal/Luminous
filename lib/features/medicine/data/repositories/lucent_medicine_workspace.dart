@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart' show DoseLogRemoteDataSource, DoseLogStatus;
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 
@@ -8,31 +9,42 @@ import 'package:luminous/features/medicine/domain/repositories/medicine_workspac
 /// workspace from the current user's real health-context data.
 class LucentMedicineWorkspaceRepository
     implements MedicineWorkspaceRepository {
-  LucentMedicineWorkspaceRepository({required this.healthRepo});
+  LucentMedicineWorkspaceRepository({required this.healthRepo, required this.doseLogDs});
 
   final HealthContextRepository healthRepo;
+  final DoseLogRemoteDataSource doseLogDs;
 
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {
     final snapshot = await healthRepo.fetchHealthContext();
     final medicines = snapshot.currentMedicines;
 
+    // Fetch today's dose logs
+    final today = DateTime.now();
+    final dateStr = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    Set<String> takenMeds = {};
+    try {
+      final logs = await doseLogDs.fetchForDate(dateStr);
+      takenMeds = logs.where((l) => l.status == DoseLogStatus.taken && l.currentMedicineId != null)
+          .map((l) => l.currentMedicineId!).toSet();
+    } catch (_) {}
+
     final planItems = medicines.map((m) {
+      final isTaken = takenMeds.contains(m.id);
       return MedicinePlanItem(
         color: AppColorTokens.link,
-        // Fallback copy keys for the mock path — never used when raw* are set.
         nameKey: MedicineCopyKey.mockNameMetformin,
         dosageKey: MedicineCopyKey.mockDoseMetformin,
         scheduleKey: MedicineCopyKey.mockScheduleMorningEvening,
         stockKey: MedicineCopyKey.mockStock7Days,
         stateKey: MedicineCopyKey.statusStable,
-        stateColor: AppColorTokens.success,
+        stateColor: isTaken ? AppColorTokens.success : AppColorTokens.warning,
         slots: const [],
         rawName: m.displayName,
         rawDosage: m.strengthText ?? '',
         rawSchedule: m.doseText ?? '',
         rawStock: m.route ?? '',
-        rawState: m.isCurrent ? 'In use' : 'Stopped',
+        rawState: isTaken ? 'Taken' : 'Pending',
       );
     }).toList();
 
