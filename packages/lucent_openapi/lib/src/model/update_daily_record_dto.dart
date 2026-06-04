@@ -1,0 +1,90 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+// ignore_for_file: unused_element
+import 'package:lucent_openapi/src/model/daily_record_kind.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'update_daily_record_dto.g.dart';
+
+@JsonSerializable(
+  checked: true,
+  createToJson: true,
+  disallowUnrecognizedKeys: false,
+  explicitToJson: true,
+)
+class UpdateDailyRecordDto {
+  /// Returns a new [UpdateDailyRecordDto] instance.
+  UpdateDailyRecordDto({
+    this.kind,
+
+    this.occurredAt,
+
+    this.title,
+
+    this.value,
+
+    this.unit,
+
+    this.note,
+  });
+
+  @JsonKey(
+    name: r'kind',
+    required: false,
+    includeIfNull: false,
+    unknownEnumValue: DailyRecordKind.unknownDefaultOpenApi,
+  )
+  final DailyRecordKind? kind;
+
+  /// Date in YYYY-MM-DD format.
+  @JsonKey(name: r'occurredAt', required: false, includeIfNull: false)
+  final String? occurredAt;
+
+  /// Short label. Use null to clear.
+  @JsonKey(name: r'title', required: false, includeIfNull: false)
+  final Object? title;
+
+  /// Measured value. Use null to clear.
+  @JsonKey(name: r'value', required: false, includeIfNull: false)
+  final Object? value;
+
+  /// Unit label. Use null to clear.
+  @JsonKey(name: r'unit', required: false, includeIfNull: false)
+  final Object? unit;
+
+  /// Free-text note. Use null to clear.
+  @JsonKey(name: r'note', required: false, includeIfNull: false)
+  final Object? note;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UpdateDailyRecordDto &&
+          other.kind == kind &&
+          other.occurredAt == occurredAt &&
+          other.title == title &&
+          other.value == value &&
+          other.unit == unit &&
+          other.note == note;
+
+  @override
+  int get hashCode =>
+      kind.hashCode +
+      occurredAt.hashCode +
+      (title == null ? 0 : title.hashCode) +
+      (value == null ? 0 : value.hashCode) +
+      (unit == null ? 0 : unit.hashCode) +
+      (note == null ? 0 : note.hashCode);
+
+  factory UpdateDailyRecordDto.fromJson(Map<String, dynamic> json) =>
+      _$UpdateDailyRecordDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UpdateDailyRecordDtoToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
+}

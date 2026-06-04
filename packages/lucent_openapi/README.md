@@ -78,19 +78,15 @@ Class | Method | HTTP request | Description
 [*AuthApi*](doc/AuthApi.md) | [**authControllerSendVerificationCodeV1**](doc/AuthApi.md#authcontrollersendverificationcodev1) | **POST** /api/v1/auth/send-verification-code | 发送邮箱验证码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerUpdateMeV1**](doc/AuthApi.md#authcontrollerupdatemev1) | **PATCH** /api/v1/auth/me | 更新当前用户信息
 [*AuthApi*](doc/AuthApi.md) | [**authControllerVerifyEmailV1**](doc/AuthApi.md#authcontrollerverifyemailv1) | **POST** /api/v1/auth/verify-email | 验证邮箱
+[*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/me/daily-records | Create a daily record
+[*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerDeleteV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/me/daily-records/{id} | Soft-delete a daily record
+[*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerListV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerlistv1) | **GET** /api/v1/me/daily-records | List daily records for a given date
+[*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerSummaryV1**](doc/DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/me/daily-records/summary | Get daily record summary (counts by kind)
+[*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerUpdateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerupdatev1) | **PATCH** /api/v1/me/daily-records/{id} | Update a daily record
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/me/health-context/allergies | Create an allergy record
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateConditionV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateconditionv1) | **POST** /api/v1/me/health-context/conditions | Create a condition record
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateCurrentMedicineV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreatecurrentmedicinev1) | **POST** /api/v1/me/health-context/current-medicines | Add a current medicine record
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerDeleteAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerdeleteallergyv1) | **DELETE** /api/v1/me/health-context/allergies/{id} | Deactivate an allergy record (soft delete)
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerDeleteConditionV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerdeleteconditionv1) | **DELETE** /api/v1/me/health-context/conditions/{id} | Resolve a condition record (soft delete)
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerDeleteCurrentMedicineV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerdeletecurrentmedicinev1) | **DELETE** /api/v1/me/health-context/current-medicines/{id} | Deactivate a current medicine record (soft delete)
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerGetMeHealthContextV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollergetmehealthcontextv1) | **GET** /api/v1/me/health-context | Get the current user health context aggregate
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerUpdateAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerupdateallergyv1) | **PATCH** /api/v1/me/health-context/allergies/{id} | Update an allergy record
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerUpdateConditionV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerupdateconditionv1) | **PATCH** /api/v1/me/health-context/conditions/{id} | Update a condition record
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerUpdateCurrentMedicineV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerupdatecurrentmedicinev1) | **PATCH** /api/v1/me/health-context/current-medicines/{id} | Update a current medicine record
-[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerUpdateMeHealthContextProfileV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerupdatemehealthcontextprofilev1) | **PATCH** /api/v1/me/health-context/profile | Update the current user health-context profile
+[*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerUpdateMeHealthContextProfileV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerupdatemehealthcontextprofilev1) | **PATCH** /api/v1/me/health-context/profile | Update the current user health-context profile preferences
 
 
 ## Documentation For Models
@@ -101,9 +97,15 @@ Class | Method | HTTP request | Description
  - [ChangePasswordDto](doc/ChangePasswordDto.md)
  - [CnMedicineDetailDto](doc/CnMedicineDetailDto.md)
  - [CooldownMessageDto](doc/CooldownMessageDto.md)
- - [CreateCurrentMedicineDto](doc/CreateCurrentMedicineDto.md)
- - [CreateHealthContextAllergyDto](doc/CreateHealthContextAllergyDto.md)
- - [CreateHealthContextConditionDto](doc/CreateHealthContextConditionDto.md)
+ - [CreateDailyRecordDto](doc/CreateDailyRecordDto.md)
+ - [DailyRecordItemDto](doc/DailyRecordItemDto.md)
+ - [DailyRecordKind](doc/DailyRecordKind.md)
+ - [DailyRecordListDataDto](doc/DailyRecordListDataDto.md)
+ - [DailyRecordListResponseDto](doc/DailyRecordListResponseDto.md)
+ - [DailyRecordResponseDto](doc/DailyRecordResponseDto.md)
+ - [DailyRecordSummaryDataDto](doc/DailyRecordSummaryDataDto.md)
+ - [DailyRecordSummaryDto](doc/DailyRecordSummaryDto.md)
+ - [DailyRecordSummaryResponseDto](doc/DailyRecordSummaryResponseDto.md)
  - [DeleteAccountDto](doc/DeleteAccountDto.md)
  - [DrugbankMedicineDetailDto](doc/DrugbankMedicineDetailDto.md)
  - [ForgotPasswordDto](doc/ForgotPasswordDto.md)
@@ -137,9 +139,7 @@ Class | Method | HTTP request | Description
  - [SuccessResponseDto](doc/SuccessResponseDto.md)
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
- - [UpdateCurrentMedicineDto](doc/UpdateCurrentMedicineDto.md)
- - [UpdateHealthContextAllergyDto](doc/UpdateHealthContextAllergyDto.md)
- - [UpdateHealthContextConditionDto](doc/UpdateHealthContextConditionDto.md)
+ - [UpdateDailyRecordDto](doc/UpdateDailyRecordDto.md)
  - [UpdateHealthContextProfileDto](doc/UpdateHealthContextProfileDto.md)
  - [UpdateMeDto](doc/UpdateMeDto.md)
  - [UserAllergyItemDto](doc/UserAllergyItemDto.md)
