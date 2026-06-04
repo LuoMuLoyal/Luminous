@@ -11,9 +11,15 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shimmer/shimmer.dart';
 
 class MedicineWorkspaceView extends StatelessWidget {
-  const MedicineWorkspaceView({super.key, required this.workspace});
+  const MedicineWorkspaceView({
+    super.key,
+    required this.workspace,
+    this.onMarkDose,
+  });
 
   final MedicineWorkspace workspace;
+  final void Function(String currentMedicineId, MedicineDoseAction action)?
+  onMarkDose;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +58,7 @@ class MedicineWorkspaceView extends StatelessWidget {
           typography: typography,
           surface: surface,
           l10n: l10n,
+          onMarkDose: onMarkDose,
         ),
       ],
     );
@@ -365,12 +372,15 @@ class _TodayPlanSection extends StatelessWidget {
     required this.typography,
     required this.surface,
     required this.l10n,
+    required this.onMarkDose,
   });
 
   final MedicineWorkspace workspace;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final AppLocalizations l10n;
+  final void Function(String currentMedicineId, MedicineDoseAction action)?
+  onMarkDose;
 
   @override
   Widget build(BuildContext context) {
@@ -403,6 +413,7 @@ class _TodayPlanSection extends StatelessWidget {
                 typography: typography,
                 surface: surface,
                 l10n: l10n,
+                onMarkDose: onMarkDose,
               ),
             ),
         ],
@@ -417,21 +428,26 @@ class _MedicationPlanTile extends StatelessWidget {
     required this.typography,
     required this.surface,
     required this.l10n,
+    required this.onMarkDose,
   });
 
   final MedicinePlanItem item;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final AppLocalizations l10n;
+  final void Function(String currentMedicineId, MedicineDoseAction action)?
+  onMarkDose;
 
   @override
   Widget build(BuildContext context) {
     final warningKey = item.stockWarningKey;
     final nameText = item.rawName ?? medicineCopy(l10n, item.nameKey);
     final dosageText = item.rawDosage ?? medicineCopy(l10n, item.dosageKey);
-    final scheduleText = item.rawSchedule ?? medicineCopy(l10n, item.scheduleKey);
+    final scheduleText =
+        item.rawSchedule ?? medicineCopy(l10n, item.scheduleKey);
     final stockText = item.rawStock ?? medicineCopy(l10n, item.stockKey);
     final stateText = item.rawState ?? medicineCopy(l10n, item.stateKey);
+    final currentMedicineId = item.currentMedicineId;
 
     return Material(
       color: Colors.transparent,
@@ -528,9 +544,77 @@ class _MedicationPlanTile extends StatelessWidget {
                     typography: typography,
                   ),
                 ],
+                if (currentMedicineId != null && onMarkDose != null) ...[
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _DoseActionButton(
+                          label: l10n.medicineDoseActionTaken,
+                          icon: Icons.check_rounded,
+                          color: _MedicinePalette.green,
+                          typography: typography,
+                          onTap: () => onMarkDose!(
+                            currentMedicineId,
+                            MedicineDoseAction.taken,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacingTokens.sm),
+                      Expanded(
+                        child: _DoseActionButton(
+                          label: l10n.medicineDoseActionSkipped,
+                          icon: Icons.remove_done_rounded,
+                          color: _MedicinePalette.orange,
+                          typography: typography,
+                          onTap: () => onMarkDose!(
+                            currentMedicineId,
+                            MedicineDoseAction.skipped,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+enum MedicineDoseAction { taken, skipped }
+
+class _DoseActionButton extends StatelessWidget {
+  const _DoseActionButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.typography,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final AppTypographyScale typography;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon, size: 16),
+      label: Text(label, overflow: TextOverflow.ellipsis),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: color,
+        textStyle: typography.bodySmStrong,
+        side: BorderSide(color: color.withValues(alpha: 0.34)),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.sm,
+          vertical: AppSpacingTokens.sm,
         ),
       ),
     );

@@ -28,13 +28,13 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Search add-to-current-medicines now writes through Lucent for signed-in users and routes signed-out users to `/login`
 - Medicine and Today now consume the safe current-medicine subset from health context
 - Today now also consumes Lucent daily-record water/vital summaries while unsupported meal/environment/Lumi sections remain static
-- Medicine now reads manual dose-log status for current medicines; this is not push reminder scheduling
+- Medicine now reads and writes manual dose-log status for current medicines, including taken/skipped/pending; this is not push reminder scheduling
 
-Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual dose-log status; Today reads safe current-medicine and daily-record water/vital summaries. Still pending: live reminders, real scan/upload, More real tools/device integrations, richer record analytics, and broader feature data.
+Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual taken/skipped dose-log status; Today reads safe current-medicine, daily-record water/vital summaries, and manual dose-log pending counts. Still pending: live reminders, real scan/upload, More real tools/device integrations, richer record analytics, and broader feature data.
 
 ## UI Priority
 
-1. Harden the new daily-record and manual dose-log flows with e2e/widget coverage for auth, ownership, null clearing, and provider invalidation.
+1. Keep the daily-record and manual dose-log flows under regression as they expand; current auth, ownership, null clearing, skipped/taken status, and provider invalidation coverage exists.
 2. Expand Record beyond quick-create only when Lucent contracts exist for the specific record type.
 3. Keep Today factual: daily-record summaries may be real, but unsupported advice/static sections must stay clearly bounded.
 4. Connect More mock repository to real emergency, device, tool, and environment data sources after their Lucent contracts exist.

@@ -11,7 +11,15 @@ class DoseLogItem {
   final String? doseText;
   final String? note;
   final String createdAt;
-  const DoseLogItem({required this.id, this.currentMedicineId, required this.status, required this.scheduledFor, this.doseText, this.note, required this.createdAt});
+  const DoseLogItem({
+    required this.id,
+    this.currentMedicineId,
+    required this.status,
+    required this.scheduledFor,
+    this.doseText,
+    this.note,
+    required this.createdAt,
+  });
 }
 
 class DoseLogRemoteDataSource {
@@ -20,17 +28,32 @@ class DoseLogRemoteDataSource {
   final Dio dio;
 
   Future<List<DoseLogItem>> fetchForDate(String date) async {
-    final response = await dio.get<Object>('/api/v1/me/medicine-dose-logs', queryParameters: {'date': date});
+    final response = await dio.get<Object>(
+      '/api/v1/me/medicine-dose-logs',
+      queryParameters: {'date': date},
+    );
     final body = _coerce(response.data);
     final data = body!['data'] as Map<String, dynamic>;
-    return (data['items'] as List).map<DoseLogItem>((d) => DoseLogItem(
-      id: (d as Map<String, dynamic>)['id'] as String, currentMedicineId: d['currentMedicineId'] as String?,
-      status: _parseStatus(d['status'] as String), scheduledFor: d['scheduledFor'] as String,
-      doseText: d['doseText'] as String?, note: d['note'] as String?, createdAt: d['createdAt'] as String,
-    )).toList();
+    return (data['items'] as List)
+        .map<DoseLogItem>(
+          (d) => DoseLogItem(
+            id: (d as Map<String, dynamic>)['id'] as String,
+            currentMedicineId: d['currentMedicineId'] as String?,
+            status: _parseStatus(d['status'] as String),
+            scheduledFor: d['scheduledFor'] as String,
+            doseText: d['doseText'] as String?,
+            note: d['note'] as String?,
+            createdAt: d['createdAt'] as String,
+          ),
+        )
+        .toList();
   }
 
-  Future<DoseLogItem> create(String currentMedicineId, String status, String date) async {
+  Future<DoseLogItem> create(
+    String currentMedicineId,
+    String status,
+    String date,
+  ) async {
     final payload = <String, dynamic>{
       'currentMedicineId': currentMedicineId,
       'status': status,
@@ -44,13 +67,18 @@ class DoseLogRemoteDataSource {
     final body = _coerce(response.data);
     final d = body!['data'] as Map<String, dynamic>;
     return DoseLogItem(
-      id: d['id'] as String, currentMedicineId: d['currentMedicineId'] as String?,
-      status: _parseStatus(d['status'] as String), scheduledFor: d['scheduledFor'] as String,
-      doseText: d['doseText'] as String?, note: d['note'] as String?, createdAt: d['createdAt'] as String,
+      id: d['id'] as String,
+      currentMedicineId: d['currentMedicineId'] as String?,
+      status: _parseStatus(d['status'] as String),
+      scheduledFor: d['scheduledFor'] as String,
+      doseText: d['doseText'] as String?,
+      note: d['note'] as String?,
+      createdAt: d['createdAt'] as String,
     );
   }
 
-  DoseLogStatus _parseStatus(String s) => DoseLogStatus.values.firstWhere((e) => e.name == s);
+  DoseLogStatus _parseStatus(String s) =>
+      DoseLogStatus.values.firstWhere((e) => e.name == s);
 
   Map<String, dynamic>? _coerce(Object? v) {
     if (v is Map<String, dynamic>) return v;

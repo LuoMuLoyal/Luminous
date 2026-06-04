@@ -4,6 +4,11 @@ import 'package:luminous/features/today/data/repositories/mock_today_repository.
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 
 final todayDashboardProvider = FutureProvider<TodayDashboard>((ref) {
-  return ref.watch(todayRepositoryProvider).fetchDashboard().timeout(const Duration(seconds: 5), onTimeout: () => throw TimeoutException("请求超时，请检查网络后重试。"));
+  return ref
+      .watch(todayRepositoryProvider)
+      .fetchDashboard()
+      .timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => throw TimeoutException("请求超时，请检查网络后重试。"),
+      );
 });
-

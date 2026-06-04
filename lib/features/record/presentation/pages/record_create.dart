@@ -9,6 +9,7 @@ import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordCreatePage extends ConsumerStatefulWidget {
@@ -84,9 +85,16 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
             children: [
               DropdownButtonFormField<DailyRecordKind>(
                 initialValue: _kind,
-                decoration: const InputDecoration(labelText: 'Kind'),
+                decoration: InputDecoration(
+                  labelText: l10n.recordCreateFieldKind,
+                ),
                 items: DailyRecordKind.values
-                    .map((k) => DropdownMenuItem(value: k, child: Text(k.name)))
+                    .map(
+                      (k) => DropdownMenuItem(
+                        value: k,
+                        child: Text(_kindLabel(l10n, k)),
+                      ),
+                    )
                     .toList(),
                 onChanged: (v) {
                   if (v != null) setState(() => _kind = v);
@@ -97,28 +105,35 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
                 TextField(
                   controller: _valueController,
                   decoration: InputDecoration(
-                    labelText: _valueLabel(_kind),
+                    labelText: _valueLabel(l10n, _kind),
                   ),
                 ),
                 const SizedBox(height: 12),
               ],
-              if (_kind == DailyRecordKind.vital || _kind == DailyRecordKind.water) ...[
+              if (_kind == DailyRecordKind.vital ||
+                  _kind == DailyRecordKind.water) ...[
                 TextField(
                   controller: _unitController,
-                  decoration: const InputDecoration(labelText: 'Unit'),
+                  decoration: InputDecoration(
+                    labelText: l10n.recordCreateFieldUnit,
+                  ),
                 ),
                 const SizedBox(height: 12),
               ],
               if (_kind != DailyRecordKind.water) ...[
                 TextField(
                   controller: _titleController,
-                  decoration: const InputDecoration(labelText: 'Title (optional)'),
+                  decoration: InputDecoration(
+                    labelText: l10n.recordCreateFieldTitleOptional,
+                  ),
                 ),
                 const SizedBox(height: 12),
               ],
               TextField(
                 controller: _noteController,
-                decoration: const InputDecoration(labelText: 'Note'),
+                decoration: InputDecoration(
+                  labelText: l10n.recordCreateFieldNote,
+                ),
                 maxLines: 3,
               ),
               const SizedBox(height: 24),
@@ -133,15 +148,27 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     );
   }
 
-  String _valueLabel(DailyRecordKind kind) {
+  String _kindLabel(AppLocalizations l10n, DailyRecordKind kind) {
     return switch (kind) {
-      DailyRecordKind.water => 'Cups',
-      DailyRecordKind.meal => 'Name / description',
-      DailyRecordKind.vital => 'Value (e.g. 120/80)',
-      DailyRecordKind.mood => 'Mood',
-      DailyRecordKind.symptom => 'Symptom',
-      DailyRecordKind.activity => 'Activity',
-      DailyRecordKind.note => 'Note',
+      DailyRecordKind.water => l10n.recordTypeWater,
+      DailyRecordKind.meal => l10n.recordTypeMeal,
+      DailyRecordKind.vital => l10n.recordTypeVitals,
+      DailyRecordKind.mood => l10n.recordTypeMood,
+      DailyRecordKind.symptom => l10n.recordTypeSymptom,
+      DailyRecordKind.activity => l10n.recordTypeActivity,
+      DailyRecordKind.note => l10n.recordCreateKindNote,
+    };
+  }
+
+  String _valueLabel(AppLocalizations l10n, DailyRecordKind kind) {
+    return switch (kind) {
+      DailyRecordKind.water => l10n.recordCreateValueWater,
+      DailyRecordKind.meal => l10n.recordCreateValueMeal,
+      DailyRecordKind.vital => l10n.recordCreateValueVital,
+      DailyRecordKind.mood => l10n.recordTypeMood,
+      DailyRecordKind.symptom => l10n.recordTypeSymptom,
+      DailyRecordKind.activity => l10n.recordTypeActivity,
+      DailyRecordKind.note => l10n.recordCreateFieldNote,
     };
   }
 
@@ -149,22 +176,31 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     setState(() => _saving = true);
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
-      await repo.create(DailyRecordCreateInput(
-        kind: _kind,
-        occurredAt: dateStr,
-        title: _titleController.text.isEmpty ? null : _titleController.text,
-        value: _valueController.text.isEmpty ? null : _valueController.text,
-        unit: _unitController.text.isEmpty ? null : _unitController.text,
-        note: _noteController.text.isEmpty ? null : _noteController.text,
-      ));
+      await repo.create(
+        DailyRecordCreateInput(
+          kind: _kind,
+          occurredAt: dateStr,
+          title: _titleController.text.isEmpty ? null : _titleController.text,
+          value: _valueController.text.isEmpty ? null : _valueController.text,
+          unit: _unitController.text.isEmpty ? null : _unitController.text,
+          note: _noteController.text.isEmpty ? null : _noteController.text,
+        ),
+      );
       ref.invalidate(recordDashboardProvider);
+      ref.invalidate(todayDashboardProvider);
       if (mounted) {
-        AppToast.show(context, AppLocalizations.of(context)!.mineEditSavedToast);
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.mineEditSavedToast,
+        );
         context.pop();
       }
     } catch (e) {
       if (mounted) {
-        AppToast.show(context, 'Error: $e');
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.recordCreateFailedToast,
+        );
       }
     } finally {
       if (mounted) setState(() => _saving = false);

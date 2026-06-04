@@ -9,14 +9,19 @@ class DailyRecordRemoteDataSource {
   final DailyRecordsApi api;
   final Dio dio;
 
-  Future<DailyRecordListData> fetchRecords(String date, {String? kind, int page = 1, int pageSize = 50}) async {
+  Future<DailyRecordListData> fetchRecords(
+    String date, {
+    String? kind,
+    int page = 1,
+    int pageSize = 50,
+  }) async {
     final response = await api.dailyRecordsControllerListV1(
       date: date,
       kind: kind,
       page: page.toString(),
       pageSize: pageSize.toString(),
     );
-    final dto = response.data!.data!;
+    final dto = response.data!.data;
     return DailyRecordListData(
       items: dto.items.map(_toItem).toList(),
       total: dto.total,
@@ -25,13 +30,17 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
     final response = await api.dailyRecordsControllerSummaryV1(date: date);
-    final dto = response.data!.data!;
+    final dto = response.data!.data;
     return DailyRecordSummaryData(
-      summaries: dto.summaries.map((s) => DailyRecordSummary(
-        kind: _parseKind(s.kind.value),
-        count: s.count,
-        latest: s.latest != null ? _toItem(s.latest!) : null,
-      )).toList(),
+      summaries: dto.summaries
+          .map(
+            (s) => DailyRecordSummary(
+              kind: _parseKind(s.kind.value),
+              count: s.count,
+              latest: s.latest != null ? _toItem(s.latest!) : null,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -49,16 +58,33 @@ class DailyRecordRemoteDataSource {
     return _toItem(response);
   }
 
-  Future<DailyRecordItem> update(String id, DailyRecordUpdateInput input) async {
+  Future<DailyRecordItem> update(
+    String id,
+    DailyRecordUpdateInput input,
+  ) async {
     final payload = <String, dynamic>{};
-    _putIfChanged(payload, 'kind', input.kind, (v) => (v as DailyRecordKind).name);
-    _putIfChanged<String?>(payload, 'occurredAt', input.occurredAt, (v) => v as String?);
+    _putIfChanged(
+      payload,
+      'kind',
+      input.kind,
+      (v) => (v as DailyRecordKind).name,
+    );
+    _putIfChanged<String?>(
+      payload,
+      'occurredAt',
+      input.occurredAt,
+      (v) => v as String?,
+    );
     _putIfChanged<String?>(payload, 'title', input.title, (v) => v as String?);
     _putIfChanged<String?>(payload, 'value', input.value, (v) => v as String?);
     _putIfChanged<String?>(payload, 'unit', input.unit, (v) => v as String?);
     _putIfChanged<String?>(payload, 'note', input.note, (v) => v as String?);
 
-    final response = await _write('PATCH', '/api/v1/me/daily-records/$id', payload);
+    final response = await _write(
+      'PATCH',
+      '/api/v1/me/daily-records/$id',
+      payload,
+    );
     return _toItem(response);
   }
 
@@ -66,7 +92,11 @@ class DailyRecordRemoteDataSource {
     await _write('DELETE', '/api/v1/me/daily-records/$id', null);
   }
 
-  Future<DailyRecordItemDto> _write(String method, String path, Map<String, dynamic>? payload) async {
+  Future<DailyRecordItemDto> _write(
+    String method,
+    String path,
+    Map<String, dynamic>? payload,
+  ) async {
     final response = await dio.request<Object>(
       path,
       data: payload,
@@ -83,8 +113,7 @@ class DailyRecordRemoteDataSource {
       );
     }
 
-    final result = DailyRecordResponseDto.fromJson(body).data;
-    return result!;
+    return DailyRecordResponseDto.fromJson(body).data;
   }
 
   DailyRecordItem _toItem(DailyRecordItemDto item) {
@@ -112,7 +141,12 @@ class DailyRecordRemoteDataSource {
     }
   }
 
-  void _putIfChanged<T>(Map<String, dynamic> payload, String key, Object value, T Function(dynamic v) convert) {
+  void _putIfChanged<T>(
+    Map<String, dynamic> payload,
+    String key,
+    Object value,
+    T Function(dynamic v) convert,
+  ) {
     if (identical(value, dailyRecordNoChange)) return;
     payload[key] = convert(value);
   }

@@ -27,6 +27,7 @@ String medicineCopy(AppLocalizations l10n, MedicineCopyKey key) {
     MedicineCopyKey.mockTime1200 => l10n.medicineMockTime1200,
     MedicineCopyKey.mockTime2000 => l10n.medicineMockTime2000,
     MedicineCopyKey.doseStatusTaken => l10n.medicineDoseStatusTaken,
+    MedicineCopyKey.doseStatusSkipped => l10n.medicineDoseStatusSkipped,
     MedicineCopyKey.doseStatusPending => l10n.medicineDoseStatusPending,
     MedicineCopyKey.mockStock7Days => l10n.medicineMockStock7Days,
     MedicineCopyKey.statusStable => l10n.medicineStatusStable,

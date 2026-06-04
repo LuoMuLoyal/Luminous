@@ -6,9 +6,11 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_view.dart';
+import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicinePage extends ConsumerWidget {
@@ -56,7 +58,11 @@ class MedicinePage extends ConsumerWidget {
       ],
       children: [
         workspaceAsync.when(
-          data: (workspace) => MedicineWorkspaceView(workspace: workspace),
+          data: (workspace) => MedicineWorkspaceView(
+            workspace: workspace,
+            onMarkDose: (currentMedicineId, action) =>
+                _markDose(context, ref, currentMedicineId, action),
+          ),
           loading: () => const MedicineLoadingView(),
           error: (_, __) => MedicineErrorView(
             onRetry: () => ref.invalidate(medicineWorkspaceProvider),
@@ -64,6 +70,33 @@ class MedicinePage extends ConsumerWidget {
         ),
       ],
     );
+  }
+}
+
+Future<void> _markDose(
+  BuildContext context,
+  WidgetRef ref,
+  String currentMedicineId,
+  MedicineDoseAction action,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  final today = DateTime.now();
+  final dateStr =
+      '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+
+  try {
+    await ref
+        .read(doseLogRemoteDataSourceProvider)
+        .create(currentMedicineId, action.name, dateStr);
+    ref.invalidate(medicineWorkspaceProvider);
+    ref.invalidate(todayDashboardProvider);
+    if (context.mounted) {
+      AppToast.show(context, l10n.medicineDoseActionSavedToast);
+    }
+  } catch (error) {
+    if (context.mounted) {
+      AppToast.show(context, l10n.medicineDoseActionFailedToast);
+    }
   }
 }
 

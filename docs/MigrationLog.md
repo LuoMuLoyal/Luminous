@@ -6,6 +6,16 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-04
 
+### Post-Audit Follow-Up Fixes
+
+- Restored the Lucent `dev` branch health-context write surface that had been lost across branch history, then regenerated the Luminous OpenAPI client.
+- Added the missing Lucent medicine dose-log migration, response DTOs, unit/e2e coverage, and OpenAPI response schemas.
+- Medicine actions now write real `taken` / `skipped` dose logs, invalidate Medicine and Today providers, and display the refreshed status from Lucent instead of raw hardcoded English state text.
+- Today now treats both `taken` and `skipped` dose logs as completed for pending-count purposes.
+- Record quick-create now invalidates Today after saving and keeps all visible form/error text in ARB.
+- Added a regression for the skipped-dose path so it renders as skipped instead of falling back to pending.
+- Verified Lucent full regression and Luminous 64-test/analyze regression after the fix.
+
 ### Project Error Audit
 
 - Added `docs/Project_Error_Audit.md` as the cross-repo error and recurring-risk audit register for Lucent/Luminous.
@@ -14,19 +24,19 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ### Follow-Up Plan Handoff (Task 12)
 
-- Full regression: Lucent 31 unit + build, Luminous 63 tests + analyze clean.
+- Full regression: Lucent 120 unit + 71 e2e + build/lint/OpenAPI, Luminous 64 tests + analyze clean.
 - OpenAPI regenerated through supported wrapper; generated DTOs confined to data layer.
 - Daily records: schema + CRUD APIs (7 unit + 6 e2e) + Record timeline + create page.
-- Medicine dose-logs: schema + CRUD APIs (3 unit) + workspace dose-log status.
-- Today: daily-record water/vital summaries integrated.
+- Medicine dose-logs: schema + migration + CRUD APIs + unit/e2e coverage + workspace taken/skipped status.
+- Today: daily-record water/vital summaries and manual dose-log pending count integrated.
 
 ### Medicine Dose-Log Integration (Task 11)
 
-- Medicine workspace reads today's dose logs; marks medicines as taken/pending.
+- Medicine workspace reads today's dose logs; marks medicines as taken/skipped/pending.
 
 ### Medicine Dose-Log APIs (Task 10)
 
-- Lucent: 4 endpoints, 3 unit tests. Luminous: regenerated client + API provider.
+- Lucent: 4 endpoints, response DTOs, unit/e2e coverage. Luminous: regenerated client + API provider.
 
 ### Medicine Dose-Log Schema (Task 9)
 
