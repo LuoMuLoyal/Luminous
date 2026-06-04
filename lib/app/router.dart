@@ -8,6 +8,7 @@ import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
+import 'package:luminous/features/record/presentation/pages/record_create.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/more_settings_page.dart';
@@ -86,6 +87,10 @@ final router = GoRouter(
       path: '/mine/medicine/:id/edit',
       builder: (context, state) =>
           CurrentMedicineEditPage(medicineId: state.pathParameters['id']),
+    ),
+    GoRoute(
+      path: '/record/create',
+      builder: (context, state) => const RecordCreatePage(),
     ),
   ],
 );
