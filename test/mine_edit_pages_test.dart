@@ -419,7 +419,7 @@ const _snapshotWithItems = HealthContextSnapshot(
     onboardingCompletedAt: '2026-01-01T00:00:00.000Z',
     extras: {},
   ),
-  allergies: [const AllergyItem(id: 'allergy-1', label: 'Penicillin', kind: 'drug', reaction: 'Rash', severity: 'moderate', isActive: true, note: null, createdAt: '', updatedAt: '')],
-  conditions: [const ConditionItem(id: 'cond-1', label: 'Asthma', status: 'active', diagnosedAt: '2024-02-01', resolvedAt: null, note: null, createdAt: '', updatedAt: '')],
-  currentMedicines: [const CurrentMedicineItem(id: 'med-1', source: 'drugbank', sourceRefId: 'DB01050', displayName: 'Ibuprofen', strengthText: '200mg', doseText: null, route: 'oral', startedAt: '2026-01-01', endedAt: null, isCurrent: true, note: null, createdAt: '', updatedAt: '')],
+  allergies: [AllergyItem(id: 'allergy-1', label: 'Penicillin', kind: 'drug', reaction: 'Rash', severity: 'moderate', isActive: true, note: null, createdAt: '', updatedAt: '')],
+  conditions: [ConditionItem(id: 'cond-1', label: 'Asthma', status: 'active', diagnosedAt: '2024-02-01', resolvedAt: null, note: null, createdAt: '', updatedAt: '')],
+  currentMedicines: [CurrentMedicineItem(id: 'med-1', source: 'drugbank', sourceRefId: 'DB01050', displayName: 'Ibuprofen', strengthText: '200mg', doseText: null, route: 'oral', startedAt: '2026-01-01', endedAt: null, isCurrent: true, note: null, createdAt: '', updatedAt: '')],
 );
