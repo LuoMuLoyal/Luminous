@@ -4,6 +4,56 @@ Last updated: 2026-06-03
 
 Records changes after the full reset only. Pre-reset history: `MigrationLog_Archive_PreReset.md`.
 
+## 2026-06-04
+
+### Follow-Up Plan Handoff (Task 12)
+
+- Full regression: Lucent 31 unit + build, Luminous 63 tests + analyze clean.
+- OpenAPI regenerated through supported wrapper; generated DTOs confined to data layer.
+- Daily records: schema + CRUD APIs (7 unit + 6 e2e) + Record timeline + create page.
+- Medicine dose-logs: schema + CRUD APIs (3 unit) + workspace dose-log status.
+- Today: daily-record water/vital summaries integrated.
+
+### Medicine Dose-Log Integration (Task 11)
+
+- Medicine workspace reads today's dose logs; marks medicines as taken/pending.
+
+### Medicine Dose-Log APIs (Task 10)
+
+- Lucent: 4 endpoints, 3 unit tests. Luminous: regenerated client + API provider.
+
+### Medicine Dose-Log Schema (Task 9)
+
+- `UserMedicineDoseLog` model + `DoseLogStatus` enum; migration applied.
+
+### Today Daily-Record Summaries (Task 8)
+
+- `LucentTodayRepository` reads daily-record summary for water count and vitals.
+
+### Record Quick Create (Task 7)
+
+- `/record/create` page with kind selector, signed-out routing, provider invalidation.
+
+### Record Tab Real Timeline (Task 6)
+
+- `LucentRecordRepository` maps daily records into timeline with `rawTitle` support.
+
+### Daily-Record Data Layer (Task 5)
+
+- Regenerated Luminous client; domain entities/inputs/repository/data source.
+
+### Lucent Daily-Record APIs (Task 4)
+
+- Full CRUD + summary; 7 unit + 6 e2e tests.
+
+### Daily-Record Schema (Task 3)
+
+- `UserDailyRecord` model + `DailyRecordKind` enum; migration.
+
+### Health-Context Edit Harden (Task 2)
+
+- Prefill, validation, error states; 11 edit page tests.
+
 ## 2026-06-03
 
 ### Follow-Up Daily Record And Dose-Log Plan
