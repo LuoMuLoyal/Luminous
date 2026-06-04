@@ -7,6 +7,8 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
+import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
+import 'package:luminous/features/record/domain/repositories/record_repository.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -58,6 +60,9 @@ void main() {
               .overrideWith((ref) => Future.value(mockSnapshot)),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             const MockMedicineWorkspaceRepository(),
+          ),
+          recordRepositoryProvider.overrideWithValue(
+            const MockRecordRepository(),
           ),
         ],
         child: MaterialApp(

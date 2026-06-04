@@ -142,7 +142,7 @@ class _TimelineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = recordCopy(l10n, entry.titleKey);
+    final label = entry.rawTitle ?? recordCopy(l10n, entry.titleKey);
     final value = entry.valueKey == null
         ? entry.value
         : recordCopy(l10n, entry.valueKey!);
