@@ -45,3 +45,7 @@ final lucentUserHealthContextApiProvider = Provider<UserHealthContextApi>((
 final lucentDailyRecordsApiProvider = Provider<DailyRecordsApi>((ref) {
   return ref.watch(lucentDioClientProvider).dailyRecordsApi;
 });
+
+final lucentMedicineDoseLogsApiProvider = Provider<MedicineDoseLogsApi>((ref) {
+  return ref.watch(lucentDioClientProvider).medicineDoseLogsApi;
+});
