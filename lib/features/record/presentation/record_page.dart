@@ -4,6 +4,7 @@ import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
@@ -67,7 +68,7 @@ class RecordPage extends ConsumerWidget {
           emphasized: true,
           typography: typography,
           surface: surface,
-          onTap: () => showRecordToast(context, l10n.recordAddAction),
+          onTap: () => context.push('/record/create'),
         ),
       ],
       children: [
