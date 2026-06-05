@@ -10,7 +10,6 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_theme_sheet.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -78,12 +77,7 @@ class SettingsPage extends ConsumerWidget {
                 value: _themeModeLabel(l10n, currentTheme),
                 typography: typography,
                 surface: surface,
-                onTap: () {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    builder: (_) => const ThemeModeSheet(),
-                  );
-                },
+                onTap: () => context.push('/settings/theme'),
                 showDivider: true,
               ),
               MineSettingRow(

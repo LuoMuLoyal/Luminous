@@ -14,6 +14,7 @@ import 'package:luminous/features/settings/presentation/pages/language_settings_
 import 'package:luminous/features/settings/presentation/pages/more_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 
 final router = GoRouter(
@@ -54,6 +55,10 @@ final router = GoRouter(
     GoRoute(
       path: '/settings/language',
       builder: (context, state) => const LanguageSettingsPage(),
+    ),
+    GoRoute(
+      path: '/settings/theme',
+      builder: (context, state) => const ThemeSettingsPage(),
     ),
     GoRoute(
       path: '/settings/notifications',
