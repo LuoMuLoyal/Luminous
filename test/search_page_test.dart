@@ -14,6 +14,8 @@ import 'package:luminous/features/medicine/presentation/providers/medicine_works
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/search/data/repositories/mock/mock_repository.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
+import 'package:luminous/features/search/domain/entities/search_entities.dart';
+import 'package:luminous/features/search/domain/repositories/search_repository.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'auth_test_helpers.dart';
@@ -26,10 +28,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.text('搜索药品'), findsOneWidget);
-    expect(
-      find.text('搜索药品、成分、疾病、症状...'),
-      findsOneWidget,
-    );
+    expect(find.text('搜索药品、成分、疾病、症状...'), findsOneWidget);
 
     await tester.enterText(find.byType(TextField), '布洛芬');
     await tester.pump(const Duration(milliseconds: 500));
@@ -90,18 +89,59 @@ void main() {
     expect(input.displayName, '布洛芬片');
     expect(workspaceBuildCount, greaterThan(1));
   });
+
+  testWidgets(
+    'source switch searches selected source and writes result source',
+    (tester) async {
+      final fakeSearchRepo = _SourceAwareSearchRepository();
+      final fakeHealthRepo = _FakeHealthContextRepository();
+
+      await _pumpSearchApp(
+        tester,
+        medicineSearchRepository: fakeSearchRepo,
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          healthContextRepositoryProvider.overrideWithValue(fakeHealthRepo),
+        ],
+      );
+
+      await _searchForIbuprofen(tester);
+      expect(fakeSearchRepo.searchSources, [MedicineSearchSource.cn]);
+
+      await tester.tap(find.text('药物知识（DrugBank）').first);
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('Ibuprofen'), findsOneWidget);
+      expect(fakeSearchRepo.searchSources, [
+        MedicineSearchSource.cn,
+        MedicineSearchSource.drugbank,
+      ]);
+
+      await tester.tap(find.text('加入药箱').first);
+      await tester.pump(const Duration(seconds: 2));
+
+      final input = fakeHealthRepo.createdCurrentMedicine;
+      expect(input, isNotNull);
+      expect(input!.source, HealthMedicineSource.drugbank);
+      expect(input.sourceRefId, 'DB01050');
+      expect(input.displayName, 'Ibuprofen');
+    },
+  );
 }
 
 Future<void> _pumpSearchApp(
   WidgetTester tester, {
   GoRouter? router,
+  MedicineSearchRepository medicineSearchRepository =
+      const MockMedicineSearchRepository(),
   List overrides = const [],
 }) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        medicineSearchRepositoryProvider
-            .overrideWith((ref) => const MockMedicineSearchRepository()),
+        medicineSearchRepositoryProvider.overrideWith(
+          (ref) => medicineSearchRepository,
+        ),
         ...overrides,
       ],
       child: MaterialApp.router(
@@ -220,6 +260,57 @@ class _FakeHealthContextRepository implements HealthContextRepository {
   @override
   Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async =>
       _snapshot;
+}
+
+class _SourceAwareSearchRepository implements MedicineSearchRepository {
+  final searchSources = <MedicineSearchSource>[];
+
+  @override
+  Future<List<MedicineSearchResult>> search({
+    required String query,
+    required MedicineSearchSource source,
+    int page = 1,
+    int pageSize = 20,
+  }) async {
+    searchSources.add(source);
+    if (source == MedicineSearchSource.drugbank) {
+      return const [
+        MedicineSearchResult(
+          id: 'DB01050',
+          source: MedicineSearchSource.drugbank,
+          name: 'Ibuprofen',
+          subtitle: 'Small molecule',
+          summary: 'A nonsteroidal anti-inflammatory drug.',
+          tags: <String>['approved', 'anti-inflammatory'],
+          matchType: MedicineSearchMatchType.name,
+        ),
+      ];
+    }
+
+    return const [
+      MedicineSearchResult(
+        id: 'cn_ibuprofen_1',
+        source: MedicineSearchSource.cn,
+        name: '布洛芬片',
+        subtitle: '0.2g*12片 · 石药集团欧意药业有限公司',
+        summary: '用于缓解轻至中度疼痛。',
+        tags: <String>['解热镇痛', '非处方药'],
+        matchType: MedicineSearchMatchType.ingredient,
+      ),
+    ];
+  }
+
+  @override
+  Future<MedicineSearchSafetyPreview?> fetchDetail(
+    String id,
+    MedicineSearchSource source,
+  ) async {
+    return MedicineSearchSafetyPreview(
+      title: id,
+      conditions: const [],
+      checklist: const [],
+    );
+  }
 }
 
 const _snapshot = HealthContextSnapshot(
