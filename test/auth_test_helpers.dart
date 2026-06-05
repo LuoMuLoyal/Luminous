@@ -60,6 +60,9 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   String? changePasswordOldPassword;
   String? changePasswordNewPassword;
   String? deleteAccountPassword;
+  bool createWechatAuthorizeCalled = false;
+  String? wechatCallbackCode;
+  String? wechatCallbackState;
 
   @override
   Future<AuthSession> login({
@@ -71,6 +74,27 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
     loginPassword = password;
     loginCode = code;
     return testSession(email: email);
+  }
+
+  @override
+  Future<OAuthAuthorizeDataDto> createWechatWebAuthorizeUrl() async {
+    createWechatAuthorizeCalled = true;
+    return OAuthAuthorizeDataDto(
+      authorizeUrl:
+          'https://open.weixin.qq.com/connect/qrconnect?state=state-1',
+      state: 'state-1',
+      expiresIn: 600,
+    );
+  }
+
+  @override
+  Future<AuthSession> loginWithWechatWeb({
+    required String code,
+    required String state,
+  }) async {
+    wechatCallbackCode = code;
+    wechatCallbackState = state;
+    return testSession(email: 'wechat@example.com', nickname: 'WechatUser');
   }
 
   @override

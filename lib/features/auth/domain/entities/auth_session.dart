@@ -7,7 +7,7 @@ part 'auth_session.g.dart';
 abstract class AuthUser with _$AuthUser {
   const factory AuthUser({
     required String id,
-    required String email,
+    required String? email,
     required String? nickname,
     required String? avatar,
     required bool emailVerified,

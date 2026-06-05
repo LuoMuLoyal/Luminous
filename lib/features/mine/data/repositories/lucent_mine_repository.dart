@@ -36,10 +36,9 @@ class LucentMineRepository implements MineRepository {
 
   MineAccount _buildAccount(HealthContextSnapshot snapshot) {
     final currentUser = _ref.read(authSessionProvider).user;
-    final displayName =
-        currentUser?.nickname?.trim().isNotEmpty == true
+    final displayName = currentUser?.nickname?.trim().isNotEmpty == true
         ? currentUser!.nickname!.trim()
-        : currentUser?.email ?? '';
+        : currentUser?.email ?? currentUser?.id ?? '';
 
     return MineAccount(
       isAuthenticated: true,

@@ -22,6 +22,13 @@ final router = GoRouter(
     GoRoute(path: '/', builder: (context, state) => const ShellPage()),
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
+      path: '/login/oauth/wechat',
+      builder: (context, state) => LoginPage(
+        wechatCode: state.uri.queryParameters['code'],
+        wechatState: state.uri.queryParameters['state'],
+      ),
+    ),
+    GoRoute(
       path: '/forgot-password',
       builder: (context, state) => const ForgotPasswordPage(),
     ),

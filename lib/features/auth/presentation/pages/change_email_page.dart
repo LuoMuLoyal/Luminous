@@ -40,7 +40,7 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
     final accountNotifier = ref.read(authAccountProvider.notifier);
     final session = ref.watch(authSessionProvider);
     final l10n = AppLocalizations.of(context);
-    final currentEmail = session.user?.email;
+    final isSignedIn = session.isAuthenticated && session.user != null;
     final success = accountState.successMessage?.isNotEmpty == true
         ? accountState.successMessage
         : null;
@@ -68,7 +68,7 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
                 : l10n?.authSendCodeAgain(accountState.lastCooldownSeconds!) ??
                       'Send again (${accountState.lastCooldownSeconds}s)',
             isLoading: accountState.isSendingCode,
-            onSendCode: currentEmail == null
+            onSendCode: !isSignedIn
                 ? null
                 : () async {
                     if (_emailController.text.trim().isEmpty) {
@@ -97,7 +97,7 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
           AuthPrimaryButton(
             label: l10n?.authChangeEmailSubmit ?? 'Update email',
             isLoading: accountState.isSubmitting,
-            onPressed: currentEmail == null
+            onPressed: !isSignedIn
                 ? null
                 : () async {
                     if (!_validateSubmit(context, l10n)) {
@@ -117,14 +117,13 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
           ),
           const SizedBox(height: AppSpacingTokens.sm),
           AuthFooterAction(
-            prompt: currentEmail == null
+            prompt: !isSignedIn
                 ? l10n?.authNotSignedIn ?? 'Not signed in yet.'
                 : l10n?.authBackHomePrompt ?? 'Back to home?',
-            actionLabel: currentEmail == null
+            actionLabel: !isSignedIn
                 ? l10n?.authSignIn ?? 'Sign in'
                 : l10n?.todayHeroTitle ?? 'Today',
-            onPressed: () =>
-                context.push(currentEmail == null ? '/login' : '/'),
+            onPressed: () => context.push(!isSignedIn ? '/login' : '/'),
           ),
         ],
       ),
