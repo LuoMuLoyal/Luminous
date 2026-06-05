@@ -446,6 +446,7 @@ class _EmailSignedInAuthSessionNotifier extends AuthSessionNotifier {
         lastLoginAt: DateTime.parse('2026-01-02T08:30:00Z'),
         linkedIdentities: [
           AuthLinkedIdentity(
+            id: 'identity-1',
             provider: 'wechat_web',
             email: null,
             emailVerifiedAt: null,

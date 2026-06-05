@@ -121,6 +121,15 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
     });
   }
 
+  Future<bool> unlinkIdentity({required String identityId}) async {
+    return _run(() async {
+      final user = await ref
+          .read(authRemoteDataSourceProvider)
+          .unlinkIdentity(identityId: identityId);
+      ref.read(authSessionProvider.notifier).applyUser(user);
+    });
+  }
+
   Future<bool> _run(Future<void> Function() action) async {
     state = state.copyWith(
       isSubmitting: true,

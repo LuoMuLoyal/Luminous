@@ -60,6 +60,7 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   String? changePasswordOldPassword;
   String? changePasswordNewPassword;
   String? deleteAccountPassword;
+  String? unlinkIdentityId;
   bool createWechatAuthorizeCalled = false;
   String? wechatAuthorizeCallbackUri;
   String? wechatCallbackCode;
@@ -194,6 +195,21 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   @override
   Future<void> deleteAccount({required String password}) async {
     deleteAccountPassword = password;
+  }
+
+  @override
+  Future<AuthUser> unlinkIdentity({required String identityId}) async {
+    unlinkIdentityId = identityId;
+    return AuthUser(
+      id: 'user-1',
+      email: 'user@example.com',
+      nickname: 'Lumi',
+      avatar: null,
+      emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+      hasPassword: true,
+      createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+      updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+    );
   }
 }
 

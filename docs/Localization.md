@@ -13,7 +13,7 @@ Last updated: 2026-06-05
 - App title, tabs, Today dashboard/image placeholders, Record dashboard, Medicine workspace/search, Mine dashboard, More dashboard, placeholders
 - Login / Register / Forgot Password / Change Email / AuthShell
 - WeChat Web OAuth login action, callback input, and OAuth feedback toasts
-- Account Settings
+- Account Settings, account status, and linked identity management labels
 - Standalone Settings page
 - Settings child pages and persisted app locale selection
 - Signed-in settings locale sync to Lucent profile preferences
