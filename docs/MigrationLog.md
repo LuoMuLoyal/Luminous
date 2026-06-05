@@ -6,6 +6,12 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-05
 
+### Medicine Search Source Contract
+
+- Confirmed the medicine search page renders a source selector for Chinese package inserts and DrugBank in both mobile and desktop layouts, and the selected source is passed through the search notifier to Lucent's OpenAPI medicines client.
+- Added widget coverage for switching the search source to DrugBank and writing the selected result back to current medicines with the returned `source` / `sourceRefId`.
+- Added mapper coverage for Lucent medicine search DTO fields (`id`, `source`, `name`, `subtitle`, `summary`, `tags`, `matchedBy`) so CN and DrugBank search responses stay aligned with the frontend entity contract.
+
 ### Android Built-in Kotlin
 
 - Migrated the Android app Gradle configuration to Flutter Built-in Kotlin: enabled `android.builtInKotlin=true`, removed the app-level `kotlin-android` plugin application, and moved the Kotlin JVM target to `kotlin.compilerOptions`.
