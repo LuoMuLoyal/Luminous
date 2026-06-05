@@ -6,6 +6,12 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-04
 
+### Error Prevention Plan
+
+- Added `docs/superpowers/plans/2026-06-04-lumos-error-prevention-plan.md` as the next DeepSeek/Codex guardrail plan.
+- Expanded `docs/Project_Error_Audit.md` with branch-baseline, dose-log contract bundle, provider invalidation, generated import conflict, and OpenAPI generated Markdown whitespace checks.
+- Updated `docs/OpenApi_Client.md` to require `git -C Luminous diff --check` after client regeneration.
+
 ### Post-Audit Follow-Up Fixes
 
 - Restored the Lucent `dev` branch health-context write surface that had been lost across branch history, then regenerated the Luminous OpenAPI client.
