@@ -52,6 +52,44 @@ class AuthRemoteDataSource {
     return session;
   }
 
+  Future<OAuthAuthorizeDataDto> createWechatWebAuthorizeUrl() async {
+    final response = await _client.authApi
+        .authControllerCreateWechatWebAuthorizeUrlV1();
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(
+        message: 'WeChat authorize response is empty.',
+      );
+    }
+    return body.data;
+  }
+
+  Future<AuthSession> loginWithWechatWeb({
+    required String code,
+    required String state,
+  }) async {
+    final response = await _client.authApi.authControllerLoginWithWechatWebV1(
+      oAuthCallbackDto: OAuthCallbackDto(
+        code: code.trim(),
+        state: state.trim(),
+      ),
+    );
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(
+        message: 'WeChat login response is empty.',
+      );
+    }
+    final session = AuthMapper.toSessionFromLogin(body);
+    await _client.writeSession(
+      LucentSessionTokens(
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+      ),
+    );
+    return session;
+  }
+
   Future<AuthSession> register({
     required String email,
     required String password,
@@ -102,7 +140,7 @@ class AuthRemoteDataSource {
     final user = body.data;
     return AuthUser(
       id: user.id,
-      email: user.email,
+      email: user.email?.toString(),
       nickname: user.nickname?.toString(),
       avatar: user.avatar?.toString(),
       emailVerified: user.emailVerified,
@@ -182,7 +220,7 @@ class AuthRemoteDataSource {
     final user = body.data;
     return AuthUser(
       id: user.id,
-      email: user.email,
+      email: user.email?.toString(),
       nickname: user.nickname?.toString(),
       avatar: user.avatar?.toString(),
       emailVerified: user.emailVerified,

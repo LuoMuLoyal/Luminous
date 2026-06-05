@@ -19,6 +19,7 @@ import 'package:lucent_openapi/src/model/update_health_context_condition_dto.dar
 import 'package:lucent_openapi/src/model/update_health_context_profile_dto.dart';
 
 class UserHealthContextApi {
+
   final Dio _dio;
 
   const UserHealthContextApi(this._dio);
@@ -37,8 +38,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerCreateAllergyV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerCreateAllergyV1({
     required CreateHealthContextAllergyDto createHealthContextAllergyDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -50,8 +50,13 @@ class UserHealthContextApi {
     final _path = r'/api/v1/me/health-context/allergies';
     final _options = Options(
       method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -60,9 +65,13 @@ class UserHealthContextApi {
 
     try {
       _bodyData = jsonEncode(createHealthContextAllergyDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -81,14 +90,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -125,8 +129,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerCreateConditionV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerCreateConditionV1({
     required CreateHealthContextConditionDto createHealthContextConditionDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -138,8 +141,13 @@ class UserHealthContextApi {
     final _path = r'/api/v1/me/health-context/conditions';
     final _options = Options(
       method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -148,9 +156,13 @@ class UserHealthContextApi {
 
     try {
       _bodyData = jsonEncode(createHealthContextConditionDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -169,14 +181,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -213,8 +220,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerCreateCurrentMedicineV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerCreateCurrentMedicineV1({
     required CreateCurrentMedicineDto createCurrentMedicineDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -226,8 +232,13 @@ class UserHealthContextApi {
     final _path = r'/api/v1/me/health-context/current-medicines';
     final _options = Options(
       method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -236,9 +247,13 @@ class UserHealthContextApi {
 
     try {
       _bodyData = jsonEncode(createCurrentMedicineDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -257,14 +272,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -301,8 +311,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerDeleteAllergyV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerDeleteAllergyV1({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -311,16 +320,16 @@ class UserHealthContextApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/allergies/{id}'.replaceAll(
-      '{'
-      r'id'
-      '}',
-      id.toString(),
-    );
+    final _path = r'/api/v1/me/health-context/allergies/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       validateStatus: validateStatus,
     );
 
@@ -335,14 +344,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -379,8 +383,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerDeleteConditionV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerDeleteConditionV1({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -389,16 +392,16 @@ class UserHealthContextApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/conditions/{id}'.replaceAll(
-      '{'
-      r'id'
-      '}',
-      id.toString(),
-    );
+    final _path = r'/api/v1/me/health-context/conditions/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       validateStatus: validateStatus,
     );
 
@@ -413,14 +416,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -457,8 +455,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerDeleteCurrentMedicineV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerDeleteCurrentMedicineV1({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -467,17 +464,16 @@ class UserHealthContextApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/current-medicines/{id}'
-        .replaceAll(
-          '{'
-          r'id'
-          '}',
-          id.toString(),
-        );
+    final _path = r'/api/v1/me/health-context/current-medicines/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       validateStatus: validateStatus,
     );
 
@@ -492,14 +488,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -535,8 +526,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerGetMeHealthContextV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerGetMeHealthContextV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -547,8 +537,13 @@ class UserHealthContextApi {
     final _path = r'/api/v1/me/health-context';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       validateStatus: validateStatus,
     );
 
@@ -563,14 +558,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -608,8 +598,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerUpdateAllergyV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerUpdateAllergyV1({
     required String id,
     required UpdateHealthContextAllergyDto updateHealthContextAllergyDto,
     CancelToken? cancelToken,
@@ -619,16 +608,16 @@ class UserHealthContextApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/allergies/{id}'.replaceAll(
-      '{'
-      r'id'
-      '}',
-      id.toString(),
-    );
+    final _path = r'/api/v1/me/health-context/allergies/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -637,9 +626,13 @@ class UserHealthContextApi {
 
     try {
       _bodyData = jsonEncode(updateHealthContextAllergyDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -658,14 +651,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -703,8 +691,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerUpdateConditionV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerUpdateConditionV1({
     required String id,
     required UpdateHealthContextConditionDto updateHealthContextConditionDto,
     CancelToken? cancelToken,
@@ -714,16 +701,16 @@ class UserHealthContextApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/conditions/{id}'.replaceAll(
-      '{'
-      r'id'
-      '}',
-      id.toString(),
-    );
+    final _path = r'/api/v1/me/health-context/conditions/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -732,9 +719,13 @@ class UserHealthContextApi {
 
     try {
       _bodyData = jsonEncode(updateHealthContextConditionDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -753,14 +744,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -798,8 +784,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerUpdateCurrentMedicineV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerUpdateCurrentMedicineV1({
     required String id,
     required UpdateCurrentMedicineDto updateCurrentMedicineDto,
     CancelToken? cancelToken,
@@ -809,17 +794,16 @@ class UserHealthContextApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/current-medicines/{id}'
-        .replaceAll(
-          '{'
-          r'id'
-          '}',
-          id.toString(),
-        );
+    final _path = r'/api/v1/me/health-context/current-medicines/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -828,9 +812,13 @@ class UserHealthContextApi {
 
     try {
       _bodyData = jsonEncode(updateCurrentMedicineDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -849,14 +837,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -893,8 +876,7 @@ class UserHealthContextApi {
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>>
-  userHealthContextControllerUpdateMeHealthContextProfileV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerUpdateMeHealthContextProfileV1({
     required UpdateHealthContextProfileDto updateHealthContextProfileDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -906,8 +888,13 @@ class UserHealthContextApi {
     final _path = r'/api/v1/me/health-context/profile';
     final _options = Options(
       method: r'PATCH',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -916,9 +903,13 @@ class UserHealthContextApi {
 
     try {
       _bodyData = jsonEncode(updateHealthContextProfileDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -937,14 +928,9 @@ class UserHealthContextApi {
     HealthContextResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<HealthContextResponseDto, HealthContextResponseDto>(
-              rawData,
-              'HealthContextResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<HealthContextResponseDto, HealthContextResponseDto>(rawData, 'HealthContextResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -966,4 +952,5 @@ class UserHealthContextApi {
       extra: _response.extra,
     );
   }
+
 }

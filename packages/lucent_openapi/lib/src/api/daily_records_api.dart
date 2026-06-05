@@ -22,10 +22,10 @@ class DailyRecordsApi {
   const DailyRecordsApi(this._dio);
 
   /// Create a daily record
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [createDailyRecordDto] 
+  /// * [createDailyRecordDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -35,7 +35,7 @@ class DailyRecordsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [DailyRecordResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordResponseDto>> dailyRecordsControllerCreateV1({ 
+  Future<Response<DailyRecordResponseDto>> dailyRecordsControllerCreateV1({
     required CreateDailyRecordDto createDailyRecordDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -113,10 +113,10 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
   }
 
   /// Soft-delete a daily record
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [id] 
+  /// * [id]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -126,7 +126,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> dailyRecordsControllerDeleteV1({ 
+  Future<Response<void>> dailyRecordsControllerDeleteV1({
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -160,13 +160,13 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
   }
 
   /// List daily records for a given date
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [date] 
-  /// * [kind] 
-  /// * [page] 
-  /// * [pageSize] 
+  /// * [date]
+  /// * [kind]
+  /// * [page]
+  /// * [pageSize]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -176,7 +176,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
   ///
   /// Returns a [Future] containing a [Response] with a [DailyRecordListResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordListResponseDto>> dailyRecordsControllerListV1({ 
+  Future<Response<DailyRecordListResponseDto>> dailyRecordsControllerListV1({
     required String date,
     String? kind,
     String? page,
@@ -246,10 +246,10 @@ _responseData = rawData == null ? null : deserialize<DailyRecordListResponseDto,
   }
 
   /// Get daily record summary (counts by kind)
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [date] 
+  /// * [date]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -259,7 +259,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordListResponseDto,
   ///
   /// Returns a [Future] containing a [Response] with a [DailyRecordSummaryResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordSummaryResponseDto>> dailyRecordsControllerSummaryV1({ 
+  Future<Response<DailyRecordSummaryResponseDto>> dailyRecordsControllerSummaryV1({
     required String date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -323,11 +323,11 @@ _responseData = rawData == null ? null : deserialize<DailyRecordSummaryResponseD
   }
 
   /// Update a daily record
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [id] 
-  /// * [updateDailyRecordDto] 
+  /// * [id]
+  /// * [updateDailyRecordDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -337,7 +337,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordSummaryResponseD
   ///
   /// Returns a [Future] containing a [Response] with a [DailyRecordResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordResponseDto>> dailyRecordsControllerUpdateV1({ 
+  Future<Response<DailyRecordResponseDto>> dailyRecordsControllerUpdateV1({
     required String id,
     required UpdateDailyRecordDto updateDailyRecordDto,
     CancelToken? cancelToken,

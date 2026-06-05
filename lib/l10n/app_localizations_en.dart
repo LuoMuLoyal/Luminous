@@ -1396,6 +1396,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authSignIn => 'Sign in';
 
   @override
+  String get authWechatSignIn => 'Sign in with WeChat';
+
+  @override
+  String get authWechatAuthorizeOpened =>
+      'WeChat authorization opened in your browser.';
+
+  @override
+  String get authWechatBrowserOpenFailed =>
+      'Could not open the WeChat authorization page.';
+
+  @override
+  String get authWechatCallbackLabel => 'WeChat callback link / code';
+
+  @override
+  String get authWechatCallbackHint => 'Paste the callback URL after scanning';
+
+  @override
+  String get authWechatCompleteAction => 'Complete WeChat sign-in';
+
+  @override
+  String get authWechatCallbackRequiredToast =>
+      'Paste the WeChat callback link first.';
+
+  @override
+  String get authWechatCallbackInvalidToast =>
+      'The WeChat callback link is missing code or state.';
+
+  @override
   String get authCreateAccountAction => 'Create account';
 
   @override

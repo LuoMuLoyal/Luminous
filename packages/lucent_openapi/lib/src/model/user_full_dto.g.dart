@@ -22,7 +22,7 @@ UserFullDto _$UserFullDtoFromJson(Map<String, dynamic> json) =>
       );
       final val = UserFullDto(
         id: $checkedConvert('id', (v) => v as String),
-        email: $checkedConvert('email', (v) => v as String),
+        email: $checkedConvert('email', (v) => v),
         nickname: $checkedConvert('nickname', (v) => v),
         avatar: $checkedConvert('avatar', (v) => v),
         emailVerified: $checkedConvert('emailVerified', (v) => v as bool),

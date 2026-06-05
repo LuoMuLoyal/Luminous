@@ -67,10 +67,13 @@ Class | Method | HTTP request | Description
 [*AppApi*](doc/AppApi.md) | [**appControllerGetHealthV1**](doc/AppApi.md#appcontrollergethealthv1) | **GET** /api/v1/health | 
 [*AuthApi*](doc/AuthApi.md) | [**authControllerChangeEmailV1**](doc/AuthApi.md#authcontrollerchangeemailv1) | **POST** /api/v1/auth/me/email | 修改邮箱
 [*AuthApi*](doc/AuthApi.md) | [**authControllerChangePasswordV1**](doc/AuthApi.md#authcontrollerchangepasswordv1) | **POST** /api/v1/auth/me/password | 修改密码
+[*AuthApi*](doc/AuthApi.md) | [**authControllerCreateWechatWebAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
 [*AuthApi*](doc/AuthApi.md) | [**authControllerDeleteAccountV1**](doc/AuthApi.md#authcontrollerdeleteaccountv1) | **DELETE** /api/v1/auth/me | 注销账户
 [*AuthApi*](doc/AuthApi.md) | [**authControllerForgotPasswordV1**](doc/AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerGetMeV1**](doc/AuthApi.md#authcontrollergetmev1) | **GET** /api/v1/auth/me | 获取当前用户信息
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginV1**](doc/AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
+[*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatMobileV1**](doc/AuthApi.md#authcontrollerloginwithwechatmobilev1) | **POST** /api/v1/auth/oauth/wechat-mobile/callback | 微信移动端登录回调
+[*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatWebV1**](doc/AuthApi.md#authcontrollerloginwithwechatwebv1) | **POST** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录回调登录
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLogoutV1**](doc/AuthApi.md#authcontrollerlogoutv1) | **POST** /api/v1/auth/logout | 用户登出
 [*AuthApi*](doc/AuthApi.md) | [**authControllerRefreshV1**](doc/AuthApi.md#authcontrollerrefreshv1) | **POST** /api/v1/auth/refresh | 刷新令牌
 [*AuthApi*](doc/AuthApi.md) | [**authControllerRegisterV1**](doc/AuthApi.md#authcontrollerregisterv1) | **POST** /api/v1/auth/register | 用户注册
@@ -148,6 +151,10 @@ Class | Method | HTTP request | Description
  - [MedicineSearchMetaDto](doc/MedicineSearchMetaDto.md)
  - [MedicineSearchResponseDto](doc/MedicineSearchResponseDto.md)
  - [MedicineSource](doc/MedicineSource.md)
+ - [OAuthAuthorizeDataDto](doc/OAuthAuthorizeDataDto.md)
+ - [OAuthAuthorizeResponseDto](doc/OAuthAuthorizeResponseDto.md)
+ - [OAuthCallbackDto](doc/OAuthCallbackDto.md)
+ - [OAuthCodeCallbackDto](doc/OAuthCodeCallbackDto.md)
  - [PregnancyState](doc/PregnancyState.md)
  - [RefreshDto](doc/RefreshDto.md)
  - [RefreshResponseDto](doc/RefreshResponseDto.md)

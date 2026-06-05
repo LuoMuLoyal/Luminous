@@ -31,9 +31,9 @@ class UserBriefDto {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
-  /// 邮箱地址
-  @JsonKey(name: r'email', required: true, includeIfNull: false)
-  final String email;
+  /// 邮箱地址，第三方账号可能为空
+  @JsonKey(name: r'email', required: true, includeIfNull: true)
+  final Object? email;
 
   /// 昵称
   @JsonKey(name: r'nickname', required: true, includeIfNull: true)
@@ -60,7 +60,7 @@ class UserBriefDto {
   @override
   int get hashCode =>
       id.hashCode +
-      email.hashCode +
+      (email == null ? 0 : email.hashCode) +
       (nickname == null ? 0 : nickname.hashCode) +
       emailVerified.hashCode +
       createdAt.hashCode;

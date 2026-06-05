@@ -3,10 +3,7 @@ import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 
 abstract final class AuthMapper {
   static AuthSession toSessionFromLogin(LoginResponseDto response) {
-    return _toSession(
-      user: response.data.user,
-      tokens: response.data.tokens,
-    );
+    return _toSession(user: response.data.user, tokens: response.data.tokens);
   }
 
   static AuthSession toSessionFromRegister(RegisterResponseDto response) {
@@ -15,7 +12,7 @@ abstract final class AuthMapper {
     return AuthSession(
       user: AuthUser(
         id: user.id,
-        email: user.email,
+        email: user.email?.toString(),
         nickname: user.nickname?.toString(),
         avatar: null,
         emailVerified: user.emailVerified,
@@ -35,7 +32,7 @@ abstract final class AuthMapper {
     return AuthSession(
       user: AuthUser(
         id: user.id,
-        email: user.email,
+        email: user.email?.toString(),
         nickname: user.nickname?.toString(),
         avatar: user.avatar?.toString(),
         emailVerified: user.emailVerified,

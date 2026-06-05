@@ -19,7 +19,7 @@ class MedicinesApi {
   const MedicinesApi(this._dio);
 
   /// Get medicine detail from a selected knowledge source
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [id] - Medicine id in the selected source
@@ -34,7 +34,7 @@ class MedicinesApi {
   ///
   /// Returns a [Future] containing a [Response] with a [MedicineDetailResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineDetailResponseDto>> medicinesControllerGetDetailV1({ 
+  Future<Response<MedicineDetailResponseDto>> medicinesControllerGetDetailV1({
     required String id,
     String? source_ = 'drugbank',
     String? xBypassCache,
@@ -101,7 +101,7 @@ _responseData = rawData == null ? null : deserialize<MedicineDetailResponseDto, 
   }
 
   /// Search medicines from a selected knowledge source
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [source_] - Knowledge source selector.
@@ -118,7 +118,7 @@ _responseData = rawData == null ? null : deserialize<MedicineDetailResponseDto, 
   ///
   /// Returns a [Future] containing a [Response] with a [MedicineSearchResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineSearchResponseDto>> medicinesControllerSearchV1({ 
+  Future<Response<MedicineSearchResponseDto>> medicinesControllerSearchV1({
     String? source_ = 'drugbank',
     String? q,
     Object? page = 1,

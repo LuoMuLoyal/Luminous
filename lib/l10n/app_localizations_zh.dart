@@ -1318,6 +1318,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authSignIn => '登录';
 
   @override
+  String get authWechatSignIn => '微信登录';
+
+  @override
+  String get authWechatAuthorizeOpened => '已在浏览器打开微信授权页。';
+
+  @override
+  String get authWechatBrowserOpenFailed => '无法打开微信授权页。';
+
+  @override
+  String get authWechatCallbackLabel => '微信回调链接 / 授权码';
+
+  @override
+  String get authWechatCallbackHint => '扫码后粘贴回调链接';
+
+  @override
+  String get authWechatCompleteAction => '完成微信登录';
+
+  @override
+  String get authWechatCallbackRequiredToast => '请先粘贴微信回调链接。';
+
+  @override
+  String get authWechatCallbackInvalidToast => '微信回调链接缺少 code 或 state。';
+
+  @override
   String get authCreateAccountAction => '创建账号';
 
   @override

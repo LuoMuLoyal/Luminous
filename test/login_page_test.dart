@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
@@ -15,9 +16,7 @@ void main() {
   ) async {
     final remote = FakeAuthRemoteDataSource();
     final container = ProviderContainer(
-      overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
-      ],
+      overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
     );
     addTearDown(container.dispose);
 
@@ -55,9 +54,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
-        ],
+        overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
         child: TestAuthApp(
           router: GoRouter(
             initialLocation: '/login',
@@ -81,4 +78,97 @@ void main() {
     expect(remote.sentCodeEmail, 'code@example.com');
     expect(remote.sentCodeScene, AuthVerificationScene.login);
   });
+
+  testWidgets('Login page opens WeChat authorize URL', (tester) async {
+    final remote = FakeAuthRemoteDataSource();
+    final launcher = _FakeExternalUrlLauncher();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authRemoteDataSourceProvider.overrideWithValue(remote),
+          externalUrlLauncherProvider.overrideWithValue(launcher),
+        ],
+        child: TestAuthApp(
+          router: GoRouter(
+            initialLocation: '/login',
+            routes: [
+              GoRoute(
+                path: '/login',
+                builder: (context, state) => const LoginPage(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('wechat-login-start-button')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(remote.createWechatAuthorizeCalled, isTrue);
+    expect(
+      launcher.openedUri.toString(),
+      'https://open.weixin.qq.com/connect/qrconnect?state=state-1',
+    );
+    expect(find.byKey(const Key('wechat-callback-input')), findsOneWidget);
+  });
+
+  testWidgets('Login page completes WeChat callback login', (tester) async {
+    final remote = FakeAuthRemoteDataSource();
+    final launcher = _FakeExternalUrlLauncher();
+    final container = ProviderContainer(
+      overrides: [
+        authRemoteDataSourceProvider.overrideWithValue(remote),
+        externalUrlLauncherProvider.overrideWithValue(launcher),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestAuthApp(
+          router: GoRouter(
+            initialLocation: '/login',
+            routes: [
+              GoRoute(
+                path: '/login',
+                builder: (context, state) => const LoginPage(),
+              ),
+              GoRoute(path: '/', builder: (context, state) => const SizedBox()),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('wechat-login-start-button')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+    await tester.enterText(
+      find.byKey(const Key('wechat-callback-input')),
+      'https://app.example.com/oauth/wechat/callback?code=wechat-code&state=state-1',
+    );
+    final completeButton = find.widgetWithText(FilledButton, '完成微信登录');
+    await tester.ensureVisible(completeButton);
+    await tester.tap(completeButton);
+    await tester.pumpAndSettle();
+
+    expect(remote.wechatCallbackCode, 'wechat-code');
+    expect(remote.wechatCallbackState, 'state-1');
+    expect(container.read(authSessionProvider).isAuthenticated, isTrue);
+    expect(container.read(authSessionProvider).user?.nickname, 'WechatUser');
+  });
+}
+
+class _FakeExternalUrlLauncher extends ExternalUrlLauncher {
+  Uri? openedUri;
+
+  @override
+  Future<bool> open(Uri uri) async {
+    openedUri = uri;
+    return true;
+  }
 }

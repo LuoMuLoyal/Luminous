@@ -4,12 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/presentation/providers/login_form_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({super.key, this.wechatCode, this.wechatState});
+
+  final String? wechatCode;
+  final String? wechatState;
 
   @override
   ConsumerState<LoginPage> createState() => _LoginPageState();
@@ -19,6 +23,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   late final TextEditingController _codeController;
+  late final TextEditingController _wechatCallbackController;
 
   @override
   void initState() {
@@ -26,6 +31,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _codeController = TextEditingController();
+    _wechatCallbackController = TextEditingController();
+
+    if ((widget.wechatCode?.isNotEmpty ?? false) &&
+        (widget.wechatState?.isNotEmpty ?? false)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _completeWechatLogin(widget.wechatCode!, widget.wechatState!);
+      });
+    }
   }
 
   @override
@@ -33,6 +49,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _codeController.dispose();
+    _wechatCallbackController.dispose();
     super.dispose();
   }
 
@@ -159,9 +176,124 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 l10n?.authForgotPasswordPrompt ?? 'Forgot your password?',
             onForgotPassword: () => context.push('/forgot-password'),
           ),
+          const SizedBox(height: AppSpacingTokens.lg),
+          _WechatOAuthPanel(
+            callbackController: _wechatCallbackController,
+            isStarting: state.isStartingWechatLogin,
+            isCompleting: state.isCompletingWechatLogin,
+            authorizeUrl: state.wechatAuthorizeUrl,
+            onStart: () => _startWechatLogin(context, l10n),
+            onComplete: () => _completeWechatLoginFromInput(context, l10n),
+          ),
         ],
       ),
     );
+  }
+
+  Future<void> _startWechatLogin(
+    BuildContext context,
+    AppLocalizations? l10n,
+  ) async {
+    final notifier = ref.read(loginFormProvider.notifier);
+    final authorize = await notifier.createWechatWebAuthorizeUrl();
+    if (authorize == null || !context.mounted) {
+      return;
+    }
+
+    final opened = await ref
+        .read(externalUrlLauncherProvider)
+        .open(Uri.parse(authorize.authorizeUrl));
+    if (!context.mounted) {
+      return;
+    }
+    if (!opened) {
+      await AppToast.show(
+        context,
+        l10n?.authWechatBrowserOpenFailed ??
+            'Could not open the WeChat authorization page.',
+      );
+      return;
+    }
+    await AppToast.show(
+      context,
+      l10n?.authWechatAuthorizeOpened ??
+          'WeChat authorization opened in your browser.',
+    );
+  }
+
+  Future<void> _completeWechatLoginFromInput(
+    BuildContext context,
+    AppLocalizations? l10n,
+  ) async {
+    final notifier = ref.read(loginFormProvider.notifier);
+    notifier.updateWechatCallbackInput(_wechatCallbackController.text);
+    final state = ref.read(loginFormProvider);
+    final callback = _parseWechatCallback(
+      _wechatCallbackController.text,
+      state.wechatState,
+    );
+    if (callback == null) {
+      final message = _wechatCallbackController.text.trim().isEmpty
+          ? l10n?.authWechatCallbackRequiredToast ??
+                'Paste the WeChat callback link first.'
+          : l10n?.authWechatCallbackInvalidToast ??
+                'The WeChat callback link is missing code or state.';
+      await AppToast.show(context, message);
+      return;
+    }
+    await _completeWechatLogin(callback.code, callback.state);
+  }
+
+  Future<void> _completeWechatLogin(String code, String state) async {
+    final session = await ref
+        .read(loginFormProvider.notifier)
+        .completeWechatWebLogin(code: code, state: state);
+    if (session == null || !mounted) {
+      return;
+    }
+    context.go('/');
+  }
+
+  _WechatCallback? _parseWechatCallback(String raw, String? fallbackState) {
+    final input = raw.trim();
+    if (input.isEmpty) {
+      return null;
+    }
+
+    final uri = Uri.tryParse(input);
+    final uriCode = uri?.queryParameters['code']?.trim();
+    final uriState = uri?.queryParameters['state']?.trim();
+    if (uriCode?.isNotEmpty == true &&
+        (uriState?.isNotEmpty == true || fallbackState?.isNotEmpty == true)) {
+      return _WechatCallback(
+        code: uriCode!,
+        state: uriState?.isNotEmpty == true ? uriState! : fallbackState!,
+      );
+    }
+
+    final query = input.startsWith('?') ? input.substring(1) : input;
+    if (query.contains('=')) {
+      try {
+        final values = Uri.splitQueryString(query);
+        final code = values['code']?.trim();
+        final state = values['state']?.trim();
+        if (code?.isNotEmpty == true &&
+            (state?.isNotEmpty == true || fallbackState?.isNotEmpty == true)) {
+          return _WechatCallback(
+            code: code!,
+            state: state?.isNotEmpty == true ? state! : fallbackState!,
+          );
+        }
+      } on FormatException {
+        return null;
+      }
+    }
+
+    if (!input.contains(RegExp(r'\s')) && fallbackState?.isNotEmpty == true) {
+      return _WechatCallback(code: input, state: fallbackState!);
+    }
+
+    return null;
   }
 
   bool _validateSubmit(
@@ -188,4 +320,71 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     AppToast.show(context, message);
     return false;
   }
+}
+
+class _WechatOAuthPanel extends StatelessWidget {
+  const _WechatOAuthPanel({
+    required this.callbackController,
+    required this.isStarting,
+    required this.isCompleting,
+    required this.authorizeUrl,
+    required this.onStart,
+    required this.onComplete,
+  });
+
+  final TextEditingController callbackController;
+  final bool isStarting;
+  final bool isCompleting;
+  final String? authorizeUrl;
+  final VoidCallback onStart;
+  final VoidCallback onComplete;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        OutlinedButton.icon(
+          key: const Key('wechat-login-start-button'),
+          onPressed: isStarting || isCompleting ? null : onStart,
+          icon: isStarting
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.qr_code_rounded, size: 18),
+          label: Text(l10n?.authWechatSignIn ?? 'Sign in with WeChat'),
+        ),
+        if (authorizeUrl?.isNotEmpty == true) ...[
+          const SizedBox(height: AppSpacingTokens.md),
+          AuthTextField(
+            key: const Key('wechat-callback-input'),
+            controller: callbackController,
+            label:
+                l10n?.authWechatCallbackLabel ?? 'WeChat callback link / code',
+            hint:
+                l10n?.authWechatCallbackHint ??
+                'Paste the callback URL after scanning',
+            keyboardType: TextInputType.url,
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          AuthPrimaryButton(
+            label: l10n?.authWechatCompleteAction ?? 'Complete WeChat sign-in',
+            isLoading: isCompleting,
+            onPressed: onComplete,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _WechatCallback {
+  const _WechatCallback({required this.code, required this.state});
+
+  final String code;
+  final String state;
 }

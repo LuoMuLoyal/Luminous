@@ -8,7 +8,7 @@ part of 'auth_session.dart';
 
 _AuthUser _$AuthUserFromJson(Map<String, dynamic> json) => _AuthUser(
   id: json['id'] as String,
-  email: json['email'] as String,
+  email: json['email'] as String?,
   nickname: json['nickname'] as String?,
   avatar: json['avatar'] as String?,
   emailVerified: json['emailVerified'] as bool,

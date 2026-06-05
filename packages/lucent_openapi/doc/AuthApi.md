@@ -11,10 +11,13 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**authControllerChangeEmailV1**](AuthApi.md#authcontrollerchangeemailv1) | **POST** /api/v1/auth/me/email | 修改邮箱
 [**authControllerChangePasswordV1**](AuthApi.md#authcontrollerchangepasswordv1) | **POST** /api/v1/auth/me/password | 修改密码
+[**authControllerCreateWechatWebAuthorizeUrlV1**](AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
 [**authControllerDeleteAccountV1**](AuthApi.md#authcontrollerdeleteaccountv1) | **DELETE** /api/v1/auth/me | 注销账户
 [**authControllerForgotPasswordV1**](AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
 [**authControllerGetMeV1**](AuthApi.md#authcontrollergetmev1) | **GET** /api/v1/auth/me | 获取当前用户信息
 [**authControllerLoginV1**](AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
+[**authControllerLoginWithWechatMobileV1**](AuthApi.md#authcontrollerloginwithwechatmobilev1) | **POST** /api/v1/auth/oauth/wechat-mobile/callback | 微信移动端登录回调
+[**authControllerLoginWithWechatWebV1**](AuthApi.md#authcontrollerloginwithwechatwebv1) | **POST** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录回调登录
 [**authControllerLogoutV1**](AuthApi.md#authcontrollerlogoutv1) | **POST** /api/v1/auth/logout | 用户登出
 [**authControllerRefreshV1**](AuthApi.md#authcontrollerrefreshv1) | **POST** /api/v1/auth/refresh | 刷新令牌
 [**authControllerRegisterV1**](AuthApi.md#authcontrollerregisterv1) | **POST** /api/v1/auth/register | 用户注册
@@ -34,7 +37,7 @@ Method | HTTP request | Description
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto | 
+final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto |
 
 try {
     final response = api.authControllerChangeEmailV1(changeEmailDto);
@@ -48,7 +51,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **changeEmailDto** | [**ChangeEmailDto**](ChangeEmailDto.md)|  | 
+ **changeEmailDto** | [**ChangeEmailDto**](ChangeEmailDto.md)|  |
 
 ### Return type
 
@@ -75,7 +78,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final ChangePasswordDto changePasswordDto = ; // ChangePasswordDto | 
+final ChangePasswordDto changePasswordDto = ; // ChangePasswordDto |
 
 try {
     final response = api.authControllerChangePasswordV1(changePasswordDto);
@@ -89,7 +92,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **changePasswordDto** | [**ChangePasswordDto**](ChangePasswordDto.md)|  | 
+ **changePasswordDto** | [**ChangePasswordDto**](ChangePasswordDto.md)|  |
 
 ### Return type
 
@@ -106,6 +109,43 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **authControllerCreateWechatWebAuthorizeUrlV1**
+> OAuthAuthorizeResponseDto authControllerCreateWechatWebAuthorizeUrlV1()
+
+创建微信网页登录授权地址
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getAuthApi();
+
+try {
+    final response = api.authControllerCreateWechatWebAuthorizeUrlV1();
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling AuthApi->authControllerCreateWechatWebAuthorizeUrlV1: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**OAuthAuthorizeResponseDto**](OAuthAuthorizeResponseDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **authControllerDeleteAccountV1**
 > SuccessResponseDto authControllerDeleteAccountV1(deleteAccountDto)
 
@@ -116,7 +156,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final DeleteAccountDto deleteAccountDto = ; // DeleteAccountDto | 
+final DeleteAccountDto deleteAccountDto = ; // DeleteAccountDto |
 
 try {
     final response = api.authControllerDeleteAccountV1(deleteAccountDto);
@@ -130,7 +170,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **deleteAccountDto** | [**DeleteAccountDto**](DeleteAccountDto.md)|  | 
+ **deleteAccountDto** | [**DeleteAccountDto**](DeleteAccountDto.md)|  |
 
 ### Return type
 
@@ -157,7 +197,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final ForgotPasswordDto forgotPasswordDto = ; // ForgotPasswordDto | 
+final ForgotPasswordDto forgotPasswordDto = ; // ForgotPasswordDto |
 
 try {
     final response = api.authControllerForgotPasswordV1(forgotPasswordDto);
@@ -171,7 +211,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **forgotPasswordDto** | [**ForgotPasswordDto**](ForgotPasswordDto.md)|  | 
+ **forgotPasswordDto** | [**ForgotPasswordDto**](ForgotPasswordDto.md)|  |
 
 ### Return type
 
@@ -235,7 +275,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final LoginDto loginDto = ; // LoginDto | 
+final LoginDto loginDto = ; // LoginDto |
 
 try {
     final response = api.authControllerLoginV1(loginDto);
@@ -249,7 +289,89 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **loginDto** | [**LoginDto**](LoginDto.md)|  | 
+ **loginDto** | [**LoginDto**](LoginDto.md)|  |
+
+### Return type
+
+[**LoginResponseDto**](LoginResponseDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **authControllerLoginWithWechatMobileV1**
+> LoginResponseDto authControllerLoginWithWechatMobileV1(oAuthCodeCallbackDto)
+
+微信移动端登录回调
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getAuthApi();
+final OAuthCodeCallbackDto oAuthCodeCallbackDto = ; // OAuthCodeCallbackDto |
+
+try {
+    final response = api.authControllerLoginWithWechatMobileV1(oAuthCodeCallbackDto);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling AuthApi->authControllerLoginWithWechatMobileV1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **oAuthCodeCallbackDto** | [**OAuthCodeCallbackDto**](OAuthCodeCallbackDto.md)|  |
+
+### Return type
+
+[**LoginResponseDto**](LoginResponseDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **authControllerLoginWithWechatWebV1**
+> LoginResponseDto authControllerLoginWithWechatWebV1(oAuthCallbackDto)
+
+微信网页登录回调登录
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getAuthApi();
+final OAuthCallbackDto oAuthCallbackDto = ; // OAuthCallbackDto |
+
+try {
+    final response = api.authControllerLoginWithWechatWebV1(oAuthCallbackDto);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling AuthApi->authControllerLoginWithWechatWebV1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **oAuthCallbackDto** | [**OAuthCallbackDto**](OAuthCallbackDto.md)|  |
 
 ### Return type
 
@@ -276,7 +398,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final LogoutDto logoutDto = ; // LogoutDto | 
+final LogoutDto logoutDto = ; // LogoutDto |
 
 try {
     final response = api.authControllerLogoutV1(logoutDto);
@@ -290,7 +412,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **logoutDto** | [**LogoutDto**](LogoutDto.md)|  | 
+ **logoutDto** | [**LogoutDto**](LogoutDto.md)|  |
 
 ### Return type
 
@@ -317,7 +439,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final RefreshDto refreshDto = ; // RefreshDto | 
+final RefreshDto refreshDto = ; // RefreshDto |
 
 try {
     final response = api.authControllerRefreshV1(refreshDto);
@@ -331,7 +453,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **refreshDto** | [**RefreshDto**](RefreshDto.md)|  | 
+ **refreshDto** | [**RefreshDto**](RefreshDto.md)|  |
 
 ### Return type
 
@@ -358,7 +480,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final RegisterDto registerDto = ; // RegisterDto | 
+final RegisterDto registerDto = ; // RegisterDto |
 
 try {
     final response = api.authControllerRegisterV1(registerDto);
@@ -372,7 +494,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **registerDto** | [**RegisterDto**](RegisterDto.md)|  | 
+ **registerDto** | [**RegisterDto**](RegisterDto.md)|  |
 
 ### Return type
 
@@ -399,7 +521,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final ResetPasswordDto resetPasswordDto = ; // ResetPasswordDto | 
+final ResetPasswordDto resetPasswordDto = ; // ResetPasswordDto |
 
 try {
     final response = api.authControllerResetPasswordV1(resetPasswordDto);
@@ -413,7 +535,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **resetPasswordDto** | [**ResetPasswordDto**](ResetPasswordDto.md)|  | 
+ **resetPasswordDto** | [**ResetPasswordDto**](ResetPasswordDto.md)|  |
 
 ### Return type
 
@@ -440,7 +562,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final SendVerificationCodeDto sendVerificationCodeDto = ; // SendVerificationCodeDto | 
+final SendVerificationCodeDto sendVerificationCodeDto = ; // SendVerificationCodeDto |
 
 try {
     final response = api.authControllerSendVerificationCodeV1(sendVerificationCodeDto);
@@ -454,7 +576,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **sendVerificationCodeDto** | [**SendVerificationCodeDto**](SendVerificationCodeDto.md)|  | 
+ **sendVerificationCodeDto** | [**SendVerificationCodeDto**](SendVerificationCodeDto.md)|  |
 
 ### Return type
 
@@ -481,7 +603,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final UpdateMeDto updateMeDto = ; // UpdateMeDto | 
+final UpdateMeDto updateMeDto = ; // UpdateMeDto |
 
 try {
     final response = api.authControllerUpdateMeV1(updateMeDto);
@@ -495,7 +617,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **updateMeDto** | [**UpdateMeDto**](UpdateMeDto.md)|  | 
+ **updateMeDto** | [**UpdateMeDto**](UpdateMeDto.md)|  |
 
 ### Return type
 
@@ -522,7 +644,7 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
-final VerifyEmailDto verifyEmailDto = ; // VerifyEmailDto | 
+final VerifyEmailDto verifyEmailDto = ; // VerifyEmailDto |
 
 try {
     final response = api.authControllerVerifyEmailV1(verifyEmailDto);
@@ -536,7 +658,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **verifyEmailDto** | [**VerifyEmailDto**](VerifyEmailDto.md)|  | 
+ **verifyEmailDto** | [**VerifyEmailDto**](VerifyEmailDto.md)|  |
 
 ### Return type
 
@@ -552,4 +674,3 @@ No authorization required
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-

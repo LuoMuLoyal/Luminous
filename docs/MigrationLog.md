@@ -1,8 +1,18 @@
 # Luminous Migration Log
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
 
 Records changes after the full reset only. Pre-reset history: `MigrationLog_Archive_PreReset.md`.
+
+## 2026-06-05
+
+### Desktop WeChat OAuth Login
+
+- Regenerated `packages/lucent_openapi` from Lucent `openapi.json` after the backend added WeChat Web/Mobile OAuth endpoints (`30 paths / 80 schemas`).
+- Added a desktop WeChat Web OAuth entry on the login page: Luminous asks Lucent for a WeChat authorize URL, opens it through `url_launcher`, and can complete login from a callback URL/query/code.
+- Added `/login/oauth/wechat` so a configured callback/deep-link target can pass `code` and `state` directly into the login page.
+- Made `AuthUser.email` nullable and updated account/settings/mine display fallbacks because WeChat OAuth users may not have an email address.
+- Added localized zh/en OAuth copy and widget coverage for opening the WeChat authorize URL and completing callback login.
 
 ## 2026-06-04
 

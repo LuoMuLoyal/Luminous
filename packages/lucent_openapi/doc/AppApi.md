@@ -9,7 +9,7 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**appControllerGetHealthV1**](AppApi.md#appcontrollergethealthv1) | **GET** /api/v1/health | 
+[**appControllerGetHealthV1**](AppApi.md#appcontrollergethealthv1) | **GET** /api/v1/health |
 
 
 # **appControllerGetHealthV1**
@@ -47,4 +47,3 @@ No authorization required
  - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-

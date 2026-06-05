@@ -50,7 +50,10 @@ class SettingsPage extends ConsumerWidget {
                 key: const Key('settings-row-account'),
                 icon: Icons.verified_user_outlined,
                 title: l10n.mineSettingsAccountTitle,
-                value: session.user?.email ?? l10n.mineAccountSignedOut,
+                value:
+                    session.user?.email ??
+                    session.user?.nickname ??
+                    l10n.mineAccountSignedOut,
                 typography: typography,
                 surface: surface,
                 onTap: () => context.push(

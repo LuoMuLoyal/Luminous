@@ -16,9 +16,14 @@ abstract class LoginFormState with _$LoginFormState {
     @Default('') String email,
     @Default('') String password,
     @Default('') String code,
+    @Default('') String wechatCallbackInput,
     @Default(AuthLoginMode.password) AuthLoginMode mode,
     @Default(false) bool isSubmitting,
     @Default(false) bool isSendingCode,
+    @Default(false) bool isStartingWechatLogin,
+    @Default(false) bool isCompletingWechatLogin,
+    String? wechatAuthorizeUrl,
+    String? wechatState,
     String? errorMessage,
   }) = _LoginFormState;
 }
@@ -37,6 +42,10 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
 
   void updateCode(String value) {
     state = state.copyWith(code: value, errorMessage: null);
+  }
+
+  void updateWechatCallbackInput(String value) {
+    state = state.copyWith(wechatCallbackInput: value, errorMessage: null);
   }
 
   void updateMode(AuthLoginMode mode) {
@@ -83,6 +92,53 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSendingCode: false,
+        errorMessage: apiError.message,
+      );
+      return null;
+    }
+  }
+
+  Future<OAuthAuthorizeDataDto?> createWechatWebAuthorizeUrl() async {
+    state = state.copyWith(isStartingWechatLogin: true, errorMessage: null);
+    try {
+      final result = await ref
+          .read(authRemoteDataSourceProvider)
+          .createWechatWebAuthorizeUrl();
+      state = state.copyWith(
+        isStartingWechatLogin: false,
+        wechatAuthorizeUrl: result.authorizeUrl,
+        wechatState: result.state,
+      );
+      return result;
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
+      state = state.copyWith(
+        isStartingWechatLogin: false,
+        errorMessage: apiError.message,
+      );
+      return null;
+    }
+  }
+
+  Future<AuthSession?> completeWechatWebLogin({
+    required String code,
+    required String state,
+  }) async {
+    this.state = this.state.copyWith(
+      isCompletingWechatLogin: true,
+      errorMessage: null,
+    );
+    try {
+      final session = await ref
+          .read(authRemoteDataSourceProvider)
+          .loginWithWechatWeb(code: code, state: state);
+      await ref.read(authSessionProvider.notifier).applySession(session);
+      this.state = this.state.copyWith(isCompletingWechatLogin: false);
+      return session;
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
+      this.state = this.state.copyWith(
+        isCompletingWechatLogin: false,
         errorMessage: apiError.message,
       );
       return null;

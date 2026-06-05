@@ -20,7 +20,7 @@ UserBriefDto _$UserBriefDtoFromJson(Map<String, dynamic> json) =>
       );
       final val = UserBriefDto(
         id: $checkedConvert('id', (v) => v as String),
-        email: $checkedConvert('email', (v) => v as String),
+        email: $checkedConvert('email', (v) => v),
         nickname: $checkedConvert('nickname', (v) => v),
         emailVerified: $checkedConvert('emailVerified', (v) => v as bool),
         createdAt: $checkedConvert('createdAt', (v) => v as String),

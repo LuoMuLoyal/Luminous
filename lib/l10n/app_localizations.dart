@@ -2684,6 +2684,54 @@ abstract class AppLocalizations {
   /// **'登录'**
   String get authSignIn;
 
+  /// No description provided for @authWechatSignIn.
+  ///
+  /// In zh, this message translates to:
+  /// **'微信登录'**
+  String get authWechatSignIn;
+
+  /// No description provided for @authWechatAuthorizeOpened.
+  ///
+  /// In zh, this message translates to:
+  /// **'已在浏览器打开微信授权页。'**
+  String get authWechatAuthorizeOpened;
+
+  /// No description provided for @authWechatBrowserOpenFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法打开微信授权页。'**
+  String get authWechatBrowserOpenFailed;
+
+  /// No description provided for @authWechatCallbackLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'微信回调链接 / 授权码'**
+  String get authWechatCallbackLabel;
+
+  /// No description provided for @authWechatCallbackHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫码后粘贴回调链接'**
+  String get authWechatCallbackHint;
+
+  /// No description provided for @authWechatCompleteAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'完成微信登录'**
+  String get authWechatCompleteAction;
+
+  /// No description provided for @authWechatCallbackRequiredToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先粘贴微信回调链接。'**
+  String get authWechatCallbackRequiredToast;
+
+  /// No description provided for @authWechatCallbackInvalidToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'微信回调链接缺少 code 或 state。'**
+  String get authWechatCallbackInvalidToast;
+
   /// No description provided for @authCreateAccountAction.
   ///
   /// In zh, this message translates to:

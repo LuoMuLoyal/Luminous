@@ -20,5 +20,3 @@ Name | Type | Description | Notes
 **onboardingCompleted** | **bool** | Set true to complete onboarding (sets completedAt when missing). Set false to clear onboarding completion. | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
-
-

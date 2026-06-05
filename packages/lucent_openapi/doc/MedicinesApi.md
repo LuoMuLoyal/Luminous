@@ -39,9 +39,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**| Medicine id in the selected source | 
+ **id** | **String**| Medicine id in the selected source |
  **source_** | **String**| Knowledge source selector. | [optional] [default to 'drugbank']
- **xBypassCache** | **String**| Set to true/1/no-cache to bypass medicines read cache for this request only. | [optional] 
+ **xBypassCache** | **String**| Set to true/1/no-cache to bypass medicines read cache for this request only. | [optional]
 
 ### Return type
 
@@ -87,10 +87,10 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **source_** | **String**| Knowledge source selector. | [optional] [default to 'drugbank']
- **q** | **String**| Search keyword. | [optional] 
+ **q** | **String**| Search keyword. | [optional]
  **page** | [**Object**](.md)| Page number, 1-based. | [optional] [default to 1]
  **pageSize** | [**Object**](.md)| Page size. | [optional] [default to 20]
- **xBypassCache** | **String**| Set to true/1/no-cache to bypass medicines read cache for this request only. | [optional] 
+ **xBypassCache** | **String**| Set to true/1/no-cache to bypass medicines read cache for this request only. | [optional]
 
 ### Return type
 
@@ -106,4 +106,3 @@ No authorization required
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-

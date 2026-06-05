@@ -19,6 +19,9 @@ import 'package:lucent_openapi/src/model/login_dto.dart';
 import 'package:lucent_openapi/src/model/login_response_dto.dart';
 import 'package:lucent_openapi/src/model/logout_dto.dart';
 import 'package:lucent_openapi/src/model/me_response_dto.dart';
+import 'package:lucent_openapi/src/model/o_auth_authorize_response_dto.dart';
+import 'package:lucent_openapi/src/model/o_auth_callback_dto.dart';
+import 'package:lucent_openapi/src/model/o_auth_code_callback_dto.dart';
 import 'package:lucent_openapi/src/model/refresh_dto.dart';
 import 'package:lucent_openapi/src/model/refresh_response_dto.dart';
 import 'package:lucent_openapi/src/model/register_dto.dart';
@@ -38,10 +41,10 @@ class AuthApi {
   const AuthApi(this._dio);
 
   /// 修改邮箱
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [changeEmailDto] 
+  /// * [changeEmailDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -51,7 +54,7 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [ChangeEmailResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ChangeEmailResponseDto>> authControllerChangeEmailV1({ 
+  Future<Response<ChangeEmailResponseDto>> authControllerChangeEmailV1({
     required ChangeEmailDto changeEmailDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -129,10 +132,10 @@ _responseData = rawData == null ? null : deserialize<ChangeEmailResponseDto, Cha
   }
 
   /// 修改密码
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [changePasswordDto] 
+  /// * [changePasswordDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -142,7 +145,7 @@ _responseData = rawData == null ? null : deserialize<ChangeEmailResponseDto, Cha
   ///
   /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> authControllerChangePasswordV1({ 
+  Future<Response<SuccessResponseDto>> authControllerChangePasswordV1({
     required ChangePasswordDto changePasswordDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -219,11 +222,81 @@ _responseData = rawData == null ? null : deserialize<SuccessResponseDto, Success
     );
   }
 
-  /// 注销账户
-  /// 
+  /// 创建微信网页登录授权地址
+  ///
   ///
   /// Parameters:
-  /// * [deleteAccountDto] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [OAuthAuthorizeResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<OAuthAuthorizeResponseDto>> authControllerCreateWechatWebAuthorizeUrlV1({
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/auth/oauth/wechat-web/authorize';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    OAuthAuthorizeResponseDto? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<OAuthAuthorizeResponseDto, OAuthAuthorizeResponseDto>(rawData, 'OAuthAuthorizeResponseDto', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<OAuthAuthorizeResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// 注销账户
+  ///
+  ///
+  /// Parameters:
+  /// * [deleteAccountDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -233,7 +306,7 @@ _responseData = rawData == null ? null : deserialize<SuccessResponseDto, Success
   ///
   /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> authControllerDeleteAccountV1({ 
+  Future<Response<SuccessResponseDto>> authControllerDeleteAccountV1({
     required DeleteAccountDto deleteAccountDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -311,10 +384,10 @@ _responseData = rawData == null ? null : deserialize<SuccessResponseDto, Success
   }
 
   /// 忘记密码
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [forgotPasswordDto] 
+  /// * [forgotPasswordDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -324,7 +397,7 @@ _responseData = rawData == null ? null : deserialize<SuccessResponseDto, Success
   ///
   /// Returns a [Future] containing a [Response] with a [ForgotPasswordResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ForgotPasswordResponseDto>> authControllerForgotPasswordV1({ 
+  Future<Response<ForgotPasswordResponseDto>> authControllerForgotPasswordV1({
     required ForgotPasswordDto forgotPasswordDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -402,7 +475,7 @@ _responseData = rawData == null ? null : deserialize<ForgotPasswordResponseDto, 
   }
 
   /// 获取当前用户信息
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -414,7 +487,7 @@ _responseData = rawData == null ? null : deserialize<ForgotPasswordResponseDto, 
   ///
   /// Returns a [Future] containing a [Response] with a [MeResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MeResponseDto>> authControllerGetMeV1({ 
+  Future<Response<MeResponseDto>> authControllerGetMeV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -472,10 +545,10 @@ _responseData = rawData == null ? null : deserialize<MeResponseDto, MeResponseDt
   }
 
   /// 用户登录
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [loginDto] 
+  /// * [loginDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -485,7 +558,7 @@ _responseData = rawData == null ? null : deserialize<MeResponseDto, MeResponseDt
   ///
   /// Returns a [Future] containing a [Response] with a [LoginResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<LoginResponseDto>> authControllerLoginV1({ 
+  Future<Response<LoginResponseDto>> authControllerLoginV1({
     required LoginDto loginDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -562,11 +635,193 @@ _responseData = rawData == null ? null : deserialize<LoginResponseDto, LoginResp
     );
   }
 
-  /// 用户登出
-  /// 
+  /// 微信移动端登录回调
+  ///
   ///
   /// Parameters:
-  /// * [logoutDto] 
+  /// * [oAuthCodeCallbackDto]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [LoginResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<LoginResponseDto>> authControllerLoginWithWechatMobileV1({
+    required OAuthCodeCallbackDto oAuthCodeCallbackDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/auth/oauth/wechat-mobile/callback';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(oAuthCodeCallbackDto);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    LoginResponseDto? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<LoginResponseDto, LoginResponseDto>(rawData, 'LoginResponseDto', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<LoginResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// 微信网页登录回调登录
+  ///
+  ///
+  /// Parameters:
+  /// * [oAuthCallbackDto]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [LoginResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<LoginResponseDto>> authControllerLoginWithWechatWebV1({
+    required OAuthCallbackDto oAuthCallbackDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/auth/oauth/wechat-web/callback';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(oAuthCallbackDto);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    LoginResponseDto? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<LoginResponseDto, LoginResponseDto>(rawData, 'LoginResponseDto', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<LoginResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// 用户登出
+  ///
+  ///
+  /// Parameters:
+  /// * [logoutDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -576,7 +831,7 @@ _responseData = rawData == null ? null : deserialize<LoginResponseDto, LoginResp
   ///
   /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> authControllerLogoutV1({ 
+  Future<Response<SuccessResponseDto>> authControllerLogoutV1({
     required LogoutDto logoutDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -654,10 +909,10 @@ _responseData = rawData == null ? null : deserialize<SuccessResponseDto, Success
   }
 
   /// 刷新令牌
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [refreshDto] 
+  /// * [refreshDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -667,7 +922,7 @@ _responseData = rawData == null ? null : deserialize<SuccessResponseDto, Success
   ///
   /// Returns a [Future] containing a [Response] with a [RefreshResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<RefreshResponseDto>> authControllerRefreshV1({ 
+  Future<Response<RefreshResponseDto>> authControllerRefreshV1({
     required RefreshDto refreshDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -745,10 +1000,10 @@ _responseData = rawData == null ? null : deserialize<RefreshResponseDto, Refresh
   }
 
   /// 用户注册
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [registerDto] 
+  /// * [registerDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -758,7 +1013,7 @@ _responseData = rawData == null ? null : deserialize<RefreshResponseDto, Refresh
   ///
   /// Returns a [Future] containing a [Response] with a [RegisterResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<RegisterResponseDto>> authControllerRegisterV1({ 
+  Future<Response<RegisterResponseDto>> authControllerRegisterV1({
     required RegisterDto registerDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -836,10 +1091,10 @@ _responseData = rawData == null ? null : deserialize<RegisterResponseDto, Regist
   }
 
   /// 重置密码
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [resetPasswordDto] 
+  /// * [resetPasswordDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -849,7 +1104,7 @@ _responseData = rawData == null ? null : deserialize<RegisterResponseDto, Regist
   ///
   /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> authControllerResetPasswordV1({ 
+  Future<Response<SuccessResponseDto>> authControllerResetPasswordV1({
     required ResetPasswordDto resetPasswordDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -927,10 +1182,10 @@ _responseData = rawData == null ? null : deserialize<SuccessResponseDto, Success
   }
 
   /// 发送邮箱验证码
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [sendVerificationCodeDto] 
+  /// * [sendVerificationCodeDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -940,7 +1195,7 @@ _responseData = rawData == null ? null : deserialize<SuccessResponseDto, Success
   ///
   /// Returns a [Future] containing a [Response] with a [SendVerificationCodeResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SendVerificationCodeResponseDto>> authControllerSendVerificationCodeV1({ 
+  Future<Response<SendVerificationCodeResponseDto>> authControllerSendVerificationCodeV1({
     required SendVerificationCodeDto sendVerificationCodeDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1018,10 +1273,10 @@ _responseData = rawData == null ? null : deserialize<SendVerificationCodeRespons
   }
 
   /// 更新当前用户信息
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [updateMeDto] 
+  /// * [updateMeDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1031,7 +1286,7 @@ _responseData = rawData == null ? null : deserialize<SendVerificationCodeRespons
   ///
   /// Returns a [Future] containing a [Response] with a [MeResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MeResponseDto>> authControllerUpdateMeV1({ 
+  Future<Response<MeResponseDto>> authControllerUpdateMeV1({
     required UpdateMeDto updateMeDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1109,10 +1364,10 @@ _responseData = rawData == null ? null : deserialize<MeResponseDto, MeResponseDt
   }
 
   /// 验证邮箱
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [verifyEmailDto] 
+  /// * [verifyEmailDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1122,7 +1377,7 @@ _responseData = rawData == null ? null : deserialize<MeResponseDto, MeResponseDt
   ///
   /// Returns a [Future] containing a [Response] with a [VerifyEmailResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<VerifyEmailResponseDto>> authControllerVerifyEmailV1({ 
+  Future<Response<VerifyEmailResponseDto>> authControllerVerifyEmailV1({
     required VerifyEmailDto verifyEmailDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,

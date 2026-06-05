@@ -26,7 +26,7 @@ Create a daily record
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getDailyRecordsApi();
-final CreateDailyRecordDto createDailyRecordDto = ; // CreateDailyRecordDto | 
+final CreateDailyRecordDto createDailyRecordDto = ; // CreateDailyRecordDto |
 
 try {
     final response = api.dailyRecordsControllerCreateV1(createDailyRecordDto);
@@ -40,7 +40,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **createDailyRecordDto** | [**CreateDailyRecordDto**](CreateDailyRecordDto.md)|  | 
+ **createDailyRecordDto** | [**CreateDailyRecordDto**](CreateDailyRecordDto.md)|  |
 
 ### Return type
 
@@ -67,7 +67,7 @@ Soft-delete a daily record
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getDailyRecordsApi();
-final String id = id_example; // String | 
+final String id = id_example; // String |
 
 try {
     api.dailyRecordsControllerDeleteV1(id);
@@ -80,7 +80,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**|  | 
+ **id** | **String**|  |
 
 ### Return type
 
@@ -107,10 +107,10 @@ List daily records for a given date
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getDailyRecordsApi();
-final String date = 2026-06-04; // String | 
-final String kind = kind_example; // String | 
-final String page = page_example; // String | 
-final String pageSize = pageSize_example; // String | 
+final String date = 2026-06-04; // String |
+final String kind = kind_example; // String |
+final String page = page_example; // String |
+final String pageSize = pageSize_example; // String |
 
 try {
     final response = api.dailyRecordsControllerListV1(date, kind, page, pageSize);
@@ -124,10 +124,10 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **date** | **String**|  | 
- **kind** | **String**|  | [optional] 
- **page** | **String**|  | [optional] 
- **pageSize** | **String**|  | [optional] 
+ **date** | **String**|  |
+ **kind** | **String**|  | [optional]
+ **page** | **String**|  | [optional]
+ **pageSize** | **String**|  | [optional]
 
 ### Return type
 
@@ -154,7 +154,7 @@ Get daily record summary (counts by kind)
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getDailyRecordsApi();
-final String date = 2026-06-04; // String | 
+final String date = 2026-06-04; // String |
 
 try {
     final response = api.dailyRecordsControllerSummaryV1(date);
@@ -168,7 +168,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **date** | **String**|  | 
+ **date** | **String**|  |
 
 ### Return type
 
@@ -195,8 +195,8 @@ Update a daily record
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getDailyRecordsApi();
-final String id = id_example; // String | 
-final UpdateDailyRecordDto updateDailyRecordDto = ; // UpdateDailyRecordDto | 
+final String id = id_example; // String |
+final UpdateDailyRecordDto updateDailyRecordDto = ; // UpdateDailyRecordDto |
 
 try {
     final response = api.dailyRecordsControllerUpdateV1(id, updateDailyRecordDto);
@@ -210,8 +210,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**|  | 
- **updateDailyRecordDto** | [**UpdateDailyRecordDto**](UpdateDailyRecordDto.md)|  | 
+ **id** | **String**|  |
+ **updateDailyRecordDto** | [**UpdateDailyRecordDto**](UpdateDailyRecordDto.md)|  |
 
 ### Return type
 
@@ -227,4 +227,3 @@ No authorization required
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
