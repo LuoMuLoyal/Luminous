@@ -10,6 +10,7 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 - Regenerated `packages/lucent_openapi` from Lucent `openapi.json` after the backend added the desktop WeChat Web OAuth callback URI contract (`30 paths / 81 schemas`).
 - Added mobile WeChat SDK login through `fluwx`: Android/iOS obtains an auth code from the native SDK, then calls Lucent's WeChat mobile callback endpoint for token exchange and account linking. SDK AppId and iOS Universal Link are supplied by Dart defines, with native Android/iOS WeChat Open Platform setup handled outside Dart.
+- Added iOS native WeChat SDK plumbing: `fluwx` is compiled with SceneDelegate support, `Info.plist` declares WeChat query schemes and reads the URL Scheme from `WECHAT_MOBILE_APP_ID`, and `ios/Flutter/Wechat.example.xcconfig` documents the local/CI native AppId injection path.
 - Added a desktop WeChat Web OAuth flow: Luminous starts a loopback callback listener, asks Lucent for a WeChat authorize URL with that callback URI, opens it through `url_launcher`, verifies the returned `state`, and completes login automatically when the browser callback returns `code` and `state`.
 - Mobile SDK login is attempted before the desktop/Web browser OAuth path; unsupported platforms keep the existing desktop/Web/manual fallback behavior.
 - Kept the manual callback URL/query/code completion path as a fallback when loopback listening is unavailable or the browser handoff fails.
