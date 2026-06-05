@@ -15,7 +15,8 @@ Mobile WeChat SDK builds need:
 
 - Dart define `WECHAT_MOBILE_APP_ID=<wx app id>`
 - iOS Dart define `WECHAT_IOS_UNIVERSAL_LINK=<universal link>` when applicable
-- Matching Android signature/package and iOS URL Scheme/Universal Link setup in the WeChat Open Platform console and native projects
+- iOS native URL Scheme build setting: copy `ios/Flutter/Wechat.example.xcconfig` to `ios/Flutter/Wechat.xcconfig` and set the same `WECHAT_MOBILE_APP_ID`
+- Matching Android signature/package and iOS URL Scheme/Universal Link setup in the WeChat Open Platform console and native projects. iOS Universal Link still requires real Associated Domains configuration in the Apple developer account and release signing setup.
 
 ## Commands
 

@@ -1,0 +1,3 @@
+// Copy this file to Wechat.xcconfig and fill real values locally or in CI.
+// WECHAT_MOBILE_APP_ID must match the WeChat Open Platform iOS app.
+WECHAT_MOBILE_APP_ID = wx_app_id_here
