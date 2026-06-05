@@ -39,6 +39,7 @@ import 'package:lucent_openapi/src/model/medicine_search_item_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_search_meta_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_search_response_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_authorize_data_dto.dart';
+import 'package:lucent_openapi/src/model/o_auth_authorize_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_authorize_response_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_callback_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_code_callback_dto.dart';
@@ -182,6 +183,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           
         case 'OAuthAuthorizeDataDto':
           return OAuthAuthorizeDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'OAuthAuthorizeDto':
+          return OAuthAuthorizeDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'OAuthAuthorizeResponseDto':
           return OAuthAuthorizeResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'OAuthCallbackDto':

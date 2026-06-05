@@ -61,6 +61,7 @@ export 'package:lucent_openapi/src/model/medicine_search_meta_dto.dart';
 export 'package:lucent_openapi/src/model/medicine_search_response_dto.dart';
 export 'package:lucent_openapi/src/model/medicine_source.dart';
 export 'package:lucent_openapi/src/model/o_auth_authorize_data_dto.dart';
+export 'package:lucent_openapi/src/model/o_auth_authorize_dto.dart';
 export 'package:lucent_openapi/src/model/o_auth_authorize_response_dto.dart';
 export 'package:lucent_openapi/src/model/o_auth_callback_dto.dart';
 export 'package:lucent_openapi/src/model/o_auth_code_callback_dto.dart';

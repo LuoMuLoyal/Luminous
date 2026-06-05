@@ -21,6 +21,8 @@ class OAuthAuthorizeDataDto {
     required this.state,
 
     required this.expiresIn,
+
+    this.callbackUri,
   });
 
   /// 第三方授权地址
@@ -35,17 +37,25 @@ class OAuthAuthorizeDataDto {
   @JsonKey(name: r'expiresIn', required: true, includeIfNull: false)
   final num expiresIn;
 
+  /// 客户端回跳地址。桌面端 loopback 登录时返回。
+  @JsonKey(name: r'callbackUri', required: false, includeIfNull: false)
+  final String? callbackUri;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is OAuthAuthorizeDataDto &&
           other.authorizeUrl == authorizeUrl &&
           other.state == state &&
-          other.expiresIn == expiresIn;
+          other.expiresIn == expiresIn &&
+          other.callbackUri == callbackUri;
 
   @override
   int get hashCode =>
-      authorizeUrl.hashCode + state.hashCode + expiresIn.hashCode;
+      authorizeUrl.hashCode +
+      state.hashCode +
+      expiresIn.hashCode +
+      callbackUri.hashCode;
 
   factory OAuthAuthorizeDataDto.fromJson(Map<String, dynamic> json) =>
       _$OAuthAuthorizeDataDtoFromJson(json);

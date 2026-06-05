@@ -19,6 +19,7 @@ Method | HTTP request | Description
 [**authControllerLoginWithWechatMobileV1**](AuthApi.md#authcontrollerloginwithwechatmobilev1) | **POST** /api/v1/auth/oauth/wechat-mobile/callback | 微信移动端登录回调
 [**authControllerLoginWithWechatWebV1**](AuthApi.md#authcontrollerloginwithwechatwebv1) | **POST** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录回调登录
 [**authControllerLogoutV1**](AuthApi.md#authcontrollerlogoutv1) | **POST** /api/v1/auth/logout | 用户登出
+[**authControllerRedirectWechatWebCallbackV1**](AuthApi.md#authcontrollerredirectwechatwebcallbackv1) | **GET** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录浏览器回跳
 [**authControllerRefreshV1**](AuthApi.md#authcontrollerrefreshv1) | **POST** /api/v1/auth/refresh | 刷新令牌
 [**authControllerRegisterV1**](AuthApi.md#authcontrollerregisterv1) | **POST** /api/v1/auth/register | 用户注册
 [**authControllerResetPasswordV1**](AuthApi.md#authcontrollerresetpasswordv1) | **POST** /api/v1/auth/reset-password | 重置密码
@@ -110,7 +111,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **authControllerCreateWechatWebAuthorizeUrlV1**
-> OAuthAuthorizeResponseDto authControllerCreateWechatWebAuthorizeUrlV1()
+> OAuthAuthorizeResponseDto authControllerCreateWechatWebAuthorizeUrlV1(oAuthAuthorizeDto)
 
 创建微信网页登录授权地址
 
@@ -119,9 +120,10 @@ No authorization required
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAuthApi();
+final OAuthAuthorizeDto oAuthAuthorizeDto = ; // OAuthAuthorizeDto |
 
 try {
-    final response = api.authControllerCreateWechatWebAuthorizeUrlV1();
+    final response = api.authControllerCreateWechatWebAuthorizeUrlV1(oAuthAuthorizeDto);
     print(response);
 } on DioException catch (e) {
     print('Exception when calling AuthApi->authControllerCreateWechatWebAuthorizeUrlV1: $e\n');
@@ -129,7 +131,10 @@ try {
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **oAuthAuthorizeDto** | [**OAuthAuthorizeDto**](OAuthAuthorizeDto.md)|  | [optional]
 
 ### Return type
 
@@ -141,7 +146,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -426,6 +431,48 @@ No authorization required
 
  - **Content-Type**: application/json
  - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **authControllerRedirectWechatWebCallbackV1**
+> authControllerRedirectWechatWebCallbackV1(code, state)
+
+微信网页登录浏览器回跳
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getAuthApi();
+final String code = code_example; // String | OAuth 授权码
+final String state = state_example; // String | 授权时生成的 state
+
+try {
+    api.authControllerRedirectWechatWebCallbackV1(code, state);
+} on DioException catch (e) {
+    print('Exception when calling AuthApi->authControllerRedirectWechatWebCallbackV1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **code** | **String**| OAuth 授权码 |
+ **state** | **String**| 授权时生成的 state |
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

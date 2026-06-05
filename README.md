@@ -9,7 +9,7 @@ Flutter personal health copilot. Current mainline is the reset five-tab shell ba
 - API client: `packages/lucent_openapi`
 - Network layer: `lib/core/network/`
 - i18n: Flutter `gen-l10n`
-- Desktop OAuth: WeChat Web login opens the Lucent-provided authorize URL in the system browser through `url_launcher`; `/login/oauth/wechat` can complete login when a callback supplies `code` and `state`.
+- Desktop OAuth: WeChat Web login starts a loopback callback listener, asks Lucent for an authorize URL with that callback URI, opens the system browser, and completes login automatically when Lucent redirects back with `code` and `state`. Manual callback paste remains as a fallback.
 
 ## Commands
 

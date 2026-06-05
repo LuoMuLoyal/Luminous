@@ -75,6 +75,7 @@ Class | Method | HTTP request | Description
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatMobileV1**](doc/AuthApi.md#authcontrollerloginwithwechatmobilev1) | **POST** /api/v1/auth/oauth/wechat-mobile/callback | 微信移动端登录回调
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatWebV1**](doc/AuthApi.md#authcontrollerloginwithwechatwebv1) | **POST** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录回调登录
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLogoutV1**](doc/AuthApi.md#authcontrollerlogoutv1) | **POST** /api/v1/auth/logout | 用户登出
+[*AuthApi*](doc/AuthApi.md) | [**authControllerRedirectWechatWebCallbackV1**](doc/AuthApi.md#authcontrollerredirectwechatwebcallbackv1) | **GET** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录浏览器回跳
 [*AuthApi*](doc/AuthApi.md) | [**authControllerRefreshV1**](doc/AuthApi.md#authcontrollerrefreshv1) | **POST** /api/v1/auth/refresh | 刷新令牌
 [*AuthApi*](doc/AuthApi.md) | [**authControllerRegisterV1**](doc/AuthApi.md#authcontrollerregisterv1) | **POST** /api/v1/auth/register | 用户注册
 [*AuthApi*](doc/AuthApi.md) | [**authControllerResetPasswordV1**](doc/AuthApi.md#authcontrollerresetpasswordv1) | **POST** /api/v1/auth/reset-password | 重置密码
@@ -152,6 +153,7 @@ Class | Method | HTTP request | Description
  - [MedicineSearchResponseDto](doc/MedicineSearchResponseDto.md)
  - [MedicineSource](doc/MedicineSource.md)
  - [OAuthAuthorizeDataDto](doc/OAuthAuthorizeDataDto.md)
+ - [OAuthAuthorizeDto](doc/OAuthAuthorizeDto.md)
  - [OAuthAuthorizeResponseDto](doc/OAuthAuthorizeResponseDto.md)
  - [OAuthCallbackDto](doc/OAuthCallbackDto.md)
  - [OAuthCodeCallbackDto](doc/OAuthCodeCallbackDto.md)

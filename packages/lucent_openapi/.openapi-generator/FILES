@@ -52,6 +52,7 @@ doc/MedicineSearchResponseDto.md
 doc/MedicineSource.md
 doc/MedicinesApi.md
 doc/OAuthAuthorizeDataDto.md
+doc/OAuthAuthorizeDto.md
 doc/OAuthAuthorizeResponseDto.md
 doc/OAuthCallbackDto.md
 doc/OAuthCodeCallbackDto.md
@@ -148,6 +149,7 @@ lib/src/model/medicine_search_meta_dto.dart
 lib/src/model/medicine_search_response_dto.dart
 lib/src/model/medicine_source.dart
 lib/src/model/o_auth_authorize_data_dto.dart
+lib/src/model/o_auth_authorize_dto.dart
 lib/src/model/o_auth_authorize_response_dto.dart
 lib/src/model/o_auth_callback_dto.dart
 lib/src/model/o_auth_code_callback_dto.dart
@@ -185,7 +187,4 @@ lib/src/model/verify_email_data_dto.dart
 lib/src/model/verify_email_dto.dart
 lib/src/model/verify_email_response_dto.dart
 pubspec.yaml
-test/o_auth_authorize_data_dto_test.dart
-test/o_auth_authorize_response_dto_test.dart
-test/o_auth_callback_dto_test.dart
-test/o_auth_code_callback_dto_test.dart
+test/o_auth_authorize_dto_test.dart

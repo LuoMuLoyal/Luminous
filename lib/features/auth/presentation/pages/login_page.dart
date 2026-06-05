@@ -195,6 +195,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     AppLocalizations? l10n,
   ) async {
     final notifier = ref.read(loginFormProvider.notifier);
+    final desktopSession = await notifier.startWechatDesktopWebLogin();
+    if (desktopSession != null) {
+      if (context.mounted) {
+        context.go('/');
+      }
+      return;
+    }
+    final afterDesktopAttempt = ref.read(loginFormProvider);
+    if (afterDesktopAttempt.errorMessage?.isNotEmpty == true) {
+      return;
+    }
+
     final authorize = await notifier.createWechatWebAuthorizeUrl();
     if (authorize == null || !context.mounted) {
       return;
