@@ -1159,7 +1159,7 @@ class _ActionCard extends StatelessWidget {
             color: surface.canvas,
             borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
             border: Border.all(color: surface.hairline),
-            boxShadow: AppShadowTokens.level2,
+            boxShadow: AppShadowTokens.level1,
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacingTokens.lg),

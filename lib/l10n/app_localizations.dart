@@ -2102,6 +2102,36 @@ abstract class AppLocalizations {
   /// **'English'**
   String get settingsLanguageEnglishLabel;
 
+  /// No description provided for @settingsThemeAppearanceTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'外观'**
+  String get settingsThemeAppearanceTitle;
+
+  /// No description provided for @settingsThemePaletteTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'配色'**
+  String get settingsThemePaletteTitle;
+
+  /// No description provided for @settingsThemePaletteClassic.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认'**
+  String get settingsThemePaletteClassic;
+
+  /// No description provided for @settingsThemePaletteBluePink.
+  ///
+  /// In zh, this message translates to:
+  /// **'蓝粉'**
+  String get settingsThemePaletteBluePink;
+
+  /// No description provided for @settingsThemePaletteYellowGreen.
+  ///
+  /// In zh, this message translates to:
+  /// **'黄绿'**
+  String get settingsThemePaletteYellowGreen;
+
   /// No description provided for @settingsSyncFailed.
   ///
   /// In zh, this message translates to:

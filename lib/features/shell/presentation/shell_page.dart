@@ -71,7 +71,7 @@ class ShellPage extends ConsumerWidget {
                             AppRadiusTokens.xl,
                           ),
                           border: Border.all(color: surface.hairline),
-                          boxShadow: AppShadowTokens.level2,
+                          boxShadow: AppShadowTokens.level1,
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(
@@ -143,7 +143,7 @@ class _DesktopSidebar extends StatelessWidget {
           color: surface.canvas,
           borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
           border: Border.all(color: surface.hairline),
-          boxShadow: AppShadowTokens.level2,
+          boxShadow: AppShadowTokens.level1,
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(

@@ -15,7 +15,7 @@ Last updated: 2026-06-05
 - WeChat Web OAuth login action, callback input, and OAuth feedback toasts
 - Account Settings, account status, linked identity management labels, and WeChat identity binding feedback
 - Standalone Settings page
-- Settings child pages, persisted theme mode selection, and persisted app locale selection
+- Settings child pages, persisted theme mode / palette selection, and persisted app locale selection
 - Signed-in settings locale sync to Lucent profile preferences
 - Settings notification permission status labels
 - Auth empty-field toast prompts
@@ -40,7 +40,8 @@ Last updated: 2026-06-05
 ## Locale Source
 
 - Persisted locale preference key: `app.locale`
-- Persisted theme preference key: `theme.mode`
+- Persisted theme mode preference key: `theme.mode`
+- Persisted theme palette preference key: `theme.palette`
 - Supported in settings flow: `system`, `zh-CN`, `en`
 - `LuminousApp` reads `appLocaleControllerProvider` and passes the resolved locale into `MaterialApp.router.locale`.
 - Lucent network requests reuse the same preference for `Accept-Language`.

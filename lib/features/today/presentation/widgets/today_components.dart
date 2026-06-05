@@ -27,7 +27,7 @@ class TodayPanel extends StatelessWidget {
     this.padding = const EdgeInsets.all(AppSpacingTokens.lg),
     this.color,
     this.radius = AppRadiusTokens.lg,
-    this.shadow = AppShadowTokens.level2,
+    this.shadow = AppShadowTokens.level1,
   });
 
   final Widget child;

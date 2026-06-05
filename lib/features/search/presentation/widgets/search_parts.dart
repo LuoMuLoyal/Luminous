@@ -174,7 +174,9 @@ class _SearchInputState extends State<_SearchInput> {
                 controller: _controller,
                 decoration: InputDecoration(
                   hintText: widget.l10n.medicineSearchFieldHint,
-                  hintStyle: widget.typography.bodySm.copyWith(color: widget.surface.mute),
+                  hintStyle: widget.typography.bodySm.copyWith(
+                    color: widget.surface.mute,
+                  ),
                   border: InputBorder.none,
                   isDense: true,
                   contentPadding: EdgeInsets.zero,
@@ -191,7 +193,11 @@ class _SearchInputState extends State<_SearchInput> {
                   _controller.clear();
                   widget.onChanged('');
                 },
-                child: Icon(Icons.cancel_rounded, color: widget.surface.mute, size: 18),
+                child: Icon(
+                  Icons.cancel_rounded,
+                  color: widget.surface.mute,
+                  size: 18,
+                ),
               ),
           ],
         ),
@@ -675,47 +681,88 @@ class _PreviewPanel extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.medicineSearchPreviewTitle, style: typography.bodySmStrong),
+              Text(
+                l10n.medicineSearchPreviewTitle,
+                style: typography.bodySmStrong,
+              ),
               if (preview != null) ...[
                 const SizedBox(height: AppSpacingTokens.lg),
                 Text(preview.title, style: typography.bodyMdStrong),
                 const SizedBox(height: AppSpacingTokens.md),
                 if (preview.conditions.isNotEmpty) ...[
-                  Text(l10n.medicineSearchPreviewClinical, style: typography.bodySmStrong.copyWith(color: surface.mute)),
-                  const SizedBox(height: AppSpacingTokens.sm),
-                  ...preview.conditions.map((c) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(padding: EdgeInsets.only(top: 6), child: Icon(Icons.circle, size: 4)),
-                        const SizedBox(width: AppSpacingTokens.sm),
-                        Expanded(child: Text(c, style: typography.bodySm.copyWith(color: surface.body.withValues(alpha: 0.7)))),
-                      ],
+                  Text(
+                    l10n.medicineSearchPreviewClinical,
+                    style: typography.bodySmStrong.copyWith(
+                      color: surface.mute,
                     ),
-                  )),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  ...preview.conditions.map(
+                    (c) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 6),
+                            child: Icon(Icons.circle, size: 4),
+                          ),
+                          const SizedBox(width: AppSpacingTokens.sm),
+                          Expanded(
+                            child: Text(
+                              c,
+                              style: typography.bodySm.copyWith(
+                                color: surface.body.withValues(alpha: 0.7),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
                 const SizedBox(height: AppSpacingTokens.md),
                 if (preview.checklist.isNotEmpty) ...[
-                  Text(l10n.medicineSearchPreviewSafety, style: typography.bodySmStrong.copyWith(color: surface.mute)),
-                  const SizedBox(height: AppSpacingTokens.sm),
-                  ...preview.checklist.map((item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(Icons.check_circle_outline, size: 16, color: surface.link),
-                        const SizedBox(width: AppSpacingTokens.sm),
-                        Expanded(child: Text(item, style: typography.bodySm.copyWith(color: surface.body))),
-                      ],
+                  Text(
+                    l10n.medicineSearchPreviewSafety,
+                    style: typography.bodySmStrong.copyWith(
+                      color: surface.mute,
                     ),
-                  )),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  ...preview.checklist.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.check_circle_outline,
+                            size: 16,
+                            color: surface.link,
+                          ),
+                          const SizedBox(width: AppSpacingTokens.sm),
+                          Expanded(
+                            child: Text(
+                              item,
+                              style: typography.bodySm.copyWith(
+                                color: surface.body,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ],
               if (preview == null)
                 Padding(
                   padding: const EdgeInsets.only(top: AppSpacingTokens.lg),
-                  child: Text(l10n.medicineSearchPreviewEmpty, style: typography.bodySm.copyWith(color: surface.mute)),
+                  child: Text(
+                    l10n.medicineSearchPreviewEmpty,
+                    style: typography.bodySm.copyWith(color: surface.mute),
+                  ),
                 ),
             ],
           ),
@@ -823,7 +870,7 @@ BoxDecoration _panelDecoration(AppThemeSurface surface) {
     color: surface.canvas,
     borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
     border: Border.all(color: surface.hairline),
-    boxShadow: AppShadowTokens.level2,
+    boxShadow: AppShadowTokens.level1,
   );
 }
 

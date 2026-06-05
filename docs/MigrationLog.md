@@ -6,10 +6,16 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-05
 
+### Settings Child Pages
+
+- Removed the unused shared `AppBottomSheet` helper after settings interactions moved to standard child pages.
+
 ### Settings Theme System
 
-- Moved theme mode selection from the legacy bottom sheet into a standard `/settings/theme` child page with the shared settings header and `system / light / dark` rows.
+- Moved theme mode selection from the legacy bottom sheet into a standard `/settings/theme` child page with the shared settings header and separate appearance / palette groups.
+- Added local theme palette selection with default, blue-pink, and yellow-green palettes derived from the new low-saturation references. Palette preference is stored under `theme.palette` and feeds `MaterialApp.router` light/dark themes.
 - Kept theme mode local to the device via `appThemeControllerProvider` and `SharedPreferences` key `theme.mode`; selecting a mode updates `MaterialApp.router.themeMode`.
+- Standardized page-level surfaces on the existing `AppShadowTokens.level1`; floating feedback and the auth panel keep higher elevation where they need separation.
 - Fixed theme controller coverage to restore from the real `theme.mode` storage key and added settings flow coverage for theme page navigation, persistence, and restore.
 
 ### Account API Naming And Email Verification

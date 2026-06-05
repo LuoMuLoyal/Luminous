@@ -101,7 +101,7 @@ class PageSectionCard extends StatelessWidget {
         color: surface.canvas,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         border: Border.all(color: surface.hairline),
-        boxShadow: AppShadowTokens.level3,
+        boxShadow: AppShadowTokens.level1,
       ),
       child: Padding(
         padding: EdgeInsets.all(layout.cardPaddingLarge),

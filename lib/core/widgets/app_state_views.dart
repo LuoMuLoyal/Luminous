@@ -37,7 +37,7 @@ class AppStateMessageView extends StatelessWidget {
         color: _backgroundFor(surface, accent),
         borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
         border: Border.all(color: accent.withValues(alpha: 0.18)),
-        boxShadow: AppShadowTokens.level2,
+        boxShadow: AppShadowTokens.level1,
       ),
       child: Padding(
         padding: padding,

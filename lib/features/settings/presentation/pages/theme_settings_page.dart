@@ -21,12 +21,17 @@ class ThemeSettingsPage extends ConsumerWidget {
     final currentTheme =
         ref.watch(appThemeControllerProvider).asData?.value ??
         AppThemeModePreference.system;
+    final currentPalette =
+        ref.watch(appThemePaletteControllerProvider).asData?.value ??
+        AppThemePalettePreference.classic;
 
     return PageScaffoldShell(
       title: l10n.mineSettingsThemeTitle,
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
+        _SectionLabel(label: l10n.settingsThemeAppearanceTitle),
+        const SizedBox(height: AppSpacingTokens.sm),
         MineSectionSurface(
           typography: typography,
           surface: surface,
@@ -40,10 +45,8 @@ class ThemeSettingsPage extends ConsumerWidget {
                 trailing: _SelectionIcon(
                   selected: currentTheme == AppThemeModePreference.system,
                 ),
-                onTap: () => _handleThemeTap(
-                  ref,
-                  AppThemeModePreference.system,
-                ),
+                onTap: () =>
+                    _handleThemeTap(ref, AppThemeModePreference.system),
                 showDivider: true,
               ),
               SettingsListRow(
@@ -53,10 +56,7 @@ class ThemeSettingsPage extends ConsumerWidget {
                 trailing: _SelectionIcon(
                   selected: currentTheme == AppThemeModePreference.light,
                 ),
-                onTap: () => _handleThemeTap(
-                  ref,
-                  AppThemeModePreference.light,
-                ),
+                onTap: () => _handleThemeTap(ref, AppThemeModePreference.light),
                 showDivider: true,
               ),
               SettingsListRow(
@@ -66,9 +66,69 @@ class ThemeSettingsPage extends ConsumerWidget {
                 trailing: _SelectionIcon(
                   selected: currentTheme == AppThemeModePreference.dark,
                 ),
-                onTap: () => _handleThemeTap(
+                onTap: () => _handleThemeTap(ref, AppThemeModePreference.dark),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacingTokens.lg),
+        _SectionLabel(label: l10n.settingsThemePaletteTitle),
+        const SizedBox(height: AppSpacingTokens.sm),
+        MineSectionSurface(
+          typography: typography,
+          surface: surface,
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              SettingsListRow(
+                key: const Key('theme-palette-row-classic'),
+                title: l10n.settingsThemePaletteClassic,
+                icon: Icons.contrast_rounded,
+                trailing: _PaletteTrailing(
+                  swatches: const [
+                    Color(0xFFFFFFFF),
+                    Color(0xFFF5F5F5),
+                    Color(0xFF171717),
+                  ],
+                  selected: currentPalette == AppThemePalettePreference.classic,
+                ),
+                onTap: () =>
+                    _handlePaletteTap(ref, AppThemePalettePreference.classic),
+                showDivider: true,
+              ),
+              SettingsListRow(
+                key: const Key('theme-palette-row-blue-pink'),
+                title: l10n.settingsThemePaletteBluePink,
+                icon: Icons.palette_outlined,
+                trailing: _PaletteTrailing(
+                  swatches: const [
+                    Color(0xFF95CEE8),
+                    Color(0xFF47A0C9),
+                    Color(0xFFDF8CAD),
+                  ],
+                  selected:
+                      currentPalette == AppThemePalettePreference.bluePink,
+                ),
+                onTap: () =>
+                    _handlePaletteTap(ref, AppThemePalettePreference.bluePink),
+                showDivider: true,
+              ),
+              SettingsListRow(
+                key: const Key('theme-palette-row-yellow-green'),
+                title: l10n.settingsThemePaletteYellowGreen,
+                icon: Icons.palette_outlined,
+                trailing: _PaletteTrailing(
+                  swatches: const [
+                    Color(0xFFE7F0D6),
+                    Color(0xFF4AA112),
+                    Color(0xFFD4B01D),
+                  ],
+                  selected:
+                      currentPalette == AppThemePalettePreference.yellowGreen,
+                ),
+                onTap: () => _handlePaletteTap(
                   ref,
-                  AppThemeModePreference.dark,
+                  AppThemePalettePreference.yellowGreen,
                 ),
               ),
             ],
@@ -84,6 +144,80 @@ Future<void> _handleThemeTap(
   AppThemeModePreference preference,
 ) async {
   await ref.read(appThemeControllerProvider.notifier).setMode(preference);
+}
+
+Future<void> _handlePaletteTap(
+  WidgetRef ref,
+  AppThemePalettePreference preference,
+) async {
+  await ref
+      .read(appThemePaletteControllerProvider.notifier)
+      .setPalette(preference);
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final typography = _typography(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xs),
+      child: Text(
+        label,
+        style: typography.caption.copyWith(
+          color: surface.mute,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _PaletteTrailing extends StatelessWidget {
+  const _PaletteTrailing({required this.swatches, required this.selected});
+
+  final List<Color> swatches;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final color in swatches) ...[
+          _Swatch(color: color),
+          const SizedBox(width: AppSpacingTokens.xxs),
+        ],
+        const SizedBox(width: AppSpacingTokens.xs),
+        _SelectionIcon(selected: selected),
+      ],
+    );
+  }
+}
+
+class _Swatch extends StatelessWidget {
+  const _Swatch({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        border: Border.all(color: surface.hairline),
+      ),
+      child: const SizedBox.square(dimension: 18),
+    );
+  }
 }
 
 class _SelectionIcon extends StatelessWidget {

@@ -303,7 +303,7 @@ class _TodayHero extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         border: Border.all(color: surface.hairline),
-        boxShadow: AppShadowTokens.level2,
+        boxShadow: AppShadowTokens.level1,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),

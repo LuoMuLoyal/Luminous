@@ -1077,6 +1077,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageEnglishLabel => 'English';
 
   @override
+  String get settingsThemeAppearanceTitle => 'Appearance';
+
+  @override
+  String get settingsThemePaletteTitle => 'Palette';
+
+  @override
+  String get settingsThemePaletteClassic => 'Default';
+
+  @override
+  String get settingsThemePaletteBluePink => 'Blue pink';
+
+  @override
+  String get settingsThemePaletteYellowGreen => 'Yellow green';
+
+  @override
   String get settingsSyncFailed => 'Failed to sync settings';
 
   @override
