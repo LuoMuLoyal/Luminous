@@ -1530,6 +1530,15 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get authIdentityLinkWechatAction => '绑定微信';
+
+  @override
+  String get authIdentityLinkSuccess => '微信身份已绑定。';
+
+  @override
+  String get authIdentityLinkUnsupported => '当前平台无法打开微信绑定。';
+
+  @override
   String get authCancelAction => '取消';
 
   @override

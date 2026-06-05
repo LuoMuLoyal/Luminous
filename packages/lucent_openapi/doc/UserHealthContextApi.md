@@ -32,7 +32,7 @@ Create an allergy record
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getUserHealthContextApi();
-final CreateHealthContextAllergyDto createHealthContextAllergyDto = ; // CreateHealthContextAllergyDto |
+final CreateHealthContextAllergyDto createHealthContextAllergyDto = ; // CreateHealthContextAllergyDto | 
 
 try {
     final response = api.userHealthContextControllerCreateAllergyV1(createHealthContextAllergyDto);
@@ -46,7 +46,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **createHealthContextAllergyDto** | [**CreateHealthContextAllergyDto**](CreateHealthContextAllergyDto.md)|  |
+ **createHealthContextAllergyDto** | [**CreateHealthContextAllergyDto**](CreateHealthContextAllergyDto.md)|  | 
 
 ### Return type
 
@@ -73,7 +73,7 @@ Create a condition record
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getUserHealthContextApi();
-final CreateHealthContextConditionDto createHealthContextConditionDto = ; // CreateHealthContextConditionDto |
+final CreateHealthContextConditionDto createHealthContextConditionDto = ; // CreateHealthContextConditionDto | 
 
 try {
     final response = api.userHealthContextControllerCreateConditionV1(createHealthContextConditionDto);
@@ -87,7 +87,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **createHealthContextConditionDto** | [**CreateHealthContextConditionDto**](CreateHealthContextConditionDto.md)|  |
+ **createHealthContextConditionDto** | [**CreateHealthContextConditionDto**](CreateHealthContextConditionDto.md)|  | 
 
 ### Return type
 
@@ -114,7 +114,7 @@ Add a current medicine record
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getUserHealthContextApi();
-final CreateCurrentMedicineDto createCurrentMedicineDto = ; // CreateCurrentMedicineDto |
+final CreateCurrentMedicineDto createCurrentMedicineDto = ; // CreateCurrentMedicineDto | 
 
 try {
     final response = api.userHealthContextControllerCreateCurrentMedicineV1(createCurrentMedicineDto);
@@ -128,7 +128,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **createCurrentMedicineDto** | [**CreateCurrentMedicineDto**](CreateCurrentMedicineDto.md)|  |
+ **createCurrentMedicineDto** | [**CreateCurrentMedicineDto**](CreateCurrentMedicineDto.md)|  | 
 
 ### Return type
 
@@ -169,7 +169,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**| Allergy id |
+ **id** | **String**| Allergy id | 
 
 ### Return type
 
@@ -210,7 +210,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**| Condition id |
+ **id** | **String**| Condition id | 
 
 ### Return type
 
@@ -251,7 +251,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**| Current medicine id |
+ **id** | **String**| Current medicine id | 
 
 ### Return type
 
@@ -316,7 +316,7 @@ import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getUserHealthContextApi();
 final String id = id_example; // String | Allergy id
-final UpdateHealthContextAllergyDto updateHealthContextAllergyDto = ; // UpdateHealthContextAllergyDto |
+final UpdateHealthContextAllergyDto updateHealthContextAllergyDto = ; // UpdateHealthContextAllergyDto | 
 
 try {
     final response = api.userHealthContextControllerUpdateAllergyV1(id, updateHealthContextAllergyDto);
@@ -330,8 +330,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**| Allergy id |
- **updateHealthContextAllergyDto** | [**UpdateHealthContextAllergyDto**](UpdateHealthContextAllergyDto.md)|  |
+ **id** | **String**| Allergy id | 
+ **updateHealthContextAllergyDto** | [**UpdateHealthContextAllergyDto**](UpdateHealthContextAllergyDto.md)|  | 
 
 ### Return type
 
@@ -359,7 +359,7 @@ import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getUserHealthContextApi();
 final String id = id_example; // String | Condition id
-final UpdateHealthContextConditionDto updateHealthContextConditionDto = ; // UpdateHealthContextConditionDto |
+final UpdateHealthContextConditionDto updateHealthContextConditionDto = ; // UpdateHealthContextConditionDto | 
 
 try {
     final response = api.userHealthContextControllerUpdateConditionV1(id, updateHealthContextConditionDto);
@@ -373,8 +373,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**| Condition id |
- **updateHealthContextConditionDto** | [**UpdateHealthContextConditionDto**](UpdateHealthContextConditionDto.md)|  |
+ **id** | **String**| Condition id | 
+ **updateHealthContextConditionDto** | [**UpdateHealthContextConditionDto**](UpdateHealthContextConditionDto.md)|  | 
 
 ### Return type
 
@@ -402,7 +402,7 @@ import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getUserHealthContextApi();
 final String id = id_example; // String | Current medicine id
-final UpdateCurrentMedicineDto updateCurrentMedicineDto = ; // UpdateCurrentMedicineDto |
+final UpdateCurrentMedicineDto updateCurrentMedicineDto = ; // UpdateCurrentMedicineDto | 
 
 try {
     final response = api.userHealthContextControllerUpdateCurrentMedicineV1(id, updateCurrentMedicineDto);
@@ -416,8 +416,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**| Current medicine id |
- **updateCurrentMedicineDto** | [**UpdateCurrentMedicineDto**](UpdateCurrentMedicineDto.md)|  |
+ **id** | **String**| Current medicine id | 
+ **updateCurrentMedicineDto** | [**UpdateCurrentMedicineDto**](UpdateCurrentMedicineDto.md)|  | 
 
 ### Return type
 
@@ -444,7 +444,7 @@ Update the current user health-context profile
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getUserHealthContextApi();
-final UpdateHealthContextProfileDto updateHealthContextProfileDto = ; // UpdateHealthContextProfileDto |
+final UpdateHealthContextProfileDto updateHealthContextProfileDto = ; // UpdateHealthContextProfileDto | 
 
 try {
     final response = api.userHealthContextControllerUpdateMeHealthContextProfileV1(updateHealthContextProfileDto);
@@ -458,7 +458,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **updateHealthContextProfileDto** | [**UpdateHealthContextProfileDto**](UpdateHealthContextProfileDto.md)|  |
+ **updateHealthContextProfileDto** | [**UpdateHealthContextProfileDto**](UpdateHealthContextProfileDto.md)|  | 
 
 ### Return type
 
@@ -474,3 +474,4 @@ No authorization required
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+

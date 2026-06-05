@@ -11,8 +11,11 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**accountControllerChangeEmailV1**](AccountApi.md#accountcontrollerchangeemailv1) | **POST** /api/v1/account/email | Change authenticated account email
 [**accountControllerChangePasswordV1**](AccountApi.md#accountcontrollerchangepasswordv1) | **POST** /api/v1/account/password | Change authenticated account password
+[**accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1**](AccountApi.md#accountcontrollercreatewechatwebidentitylinkauthorizeurlv1) | **POST** /api/v1/account/identities/wechat-web/authorize | Create WeChat web OAuth authorize URL for linking
 [**accountControllerDeleteAccountV1**](AccountApi.md#accountcontrollerdeleteaccountv1) | **DELETE** /api/v1/account | Delete authenticated account
 [**accountControllerGetAccountV1**](AccountApi.md#accountcontrollergetaccountv1) | **GET** /api/v1/account | Get authenticated account profile
+[**accountControllerLinkWechatMobileIdentityV1**](AccountApi.md#accountcontrollerlinkwechatmobileidentityv1) | **POST** /api/v1/account/identities/wechat-mobile/callback | Link WeChat mobile identity to authenticated account
+[**accountControllerLinkWechatWebIdentityV1**](AccountApi.md#accountcontrollerlinkwechatwebidentityv1) | **POST** /api/v1/account/identities/wechat-web/callback | Link WeChat web identity to authenticated account
 [**accountControllerUnlinkIdentityV1**](AccountApi.md#accountcontrollerunlinkidentityv1) | **DELETE** /api/v1/account/identities/{identityId} | Unlink authenticated account OAuth identity
 [**accountControllerUpdateAccountV1**](AccountApi.md#accountcontrollerupdateaccountv1) | **PATCH** /api/v1/account | Update authenticated account profile
 
@@ -27,7 +30,7 @@ Change authenticated account email
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAccountApi();
-final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto |
+final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto | 
 
 try {
     final response = api.accountControllerChangeEmailV1(changeEmailDto);
@@ -41,7 +44,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **changeEmailDto** | [**ChangeEmailDto**](ChangeEmailDto.md)|  |
+ **changeEmailDto** | [**ChangeEmailDto**](ChangeEmailDto.md)|  | 
 
 ### Return type
 
@@ -68,7 +71,7 @@ Change authenticated account password
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAccountApi();
-final ChangePasswordDto changePasswordDto = ; // ChangePasswordDto |
+final ChangePasswordDto changePasswordDto = ; // ChangePasswordDto | 
 
 try {
     final response = api.accountControllerChangePasswordV1(changePasswordDto);
@@ -82,11 +85,52 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **changePasswordDto** | [**ChangePasswordDto**](ChangePasswordDto.md)|  |
+ **changePasswordDto** | [**ChangePasswordDto**](ChangePasswordDto.md)|  | 
 
 ### Return type
 
 [**SuccessResponseDto**](SuccessResponseDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1**
+> OAuthAuthorizeResponseDto accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1(oAuthAuthorizeDto)
+
+Create WeChat web OAuth authorize URL for linking
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getAccountApi();
+final OAuthAuthorizeDto oAuthAuthorizeDto = ; // OAuthAuthorizeDto | 
+
+try {
+    final response = api.accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1(oAuthAuthorizeDto);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling AccountApi->accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **oAuthAuthorizeDto** | [**OAuthAuthorizeDto**](OAuthAuthorizeDto.md)|  | [optional] 
+
+### Return type
+
+[**OAuthAuthorizeResponseDto**](OAuthAuthorizeResponseDto.md)
 
 ### Authorization
 
@@ -109,7 +153,7 @@ Delete authenticated account
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAccountApi();
-final DeleteAccountDto deleteAccountDto = ; // DeleteAccountDto |
+final DeleteAccountDto deleteAccountDto = ; // DeleteAccountDto | 
 
 try {
     final response = api.accountControllerDeleteAccountV1(deleteAccountDto);
@@ -123,7 +167,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **deleteAccountDto** | [**DeleteAccountDto**](DeleteAccountDto.md)|  |
+ **deleteAccountDto** | [**DeleteAccountDto**](DeleteAccountDto.md)|  | 
 
 ### Return type
 
@@ -177,6 +221,88 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **accountControllerLinkWechatMobileIdentityV1**
+> AccountResponseDto accountControllerLinkWechatMobileIdentityV1(oAuthCodeCallbackDto)
+
+Link WeChat mobile identity to authenticated account
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getAccountApi();
+final OAuthCodeCallbackDto oAuthCodeCallbackDto = ; // OAuthCodeCallbackDto | 
+
+try {
+    final response = api.accountControllerLinkWechatMobileIdentityV1(oAuthCodeCallbackDto);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling AccountApi->accountControllerLinkWechatMobileIdentityV1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **oAuthCodeCallbackDto** | [**OAuthCodeCallbackDto**](OAuthCodeCallbackDto.md)|  | 
+
+### Return type
+
+[**AccountResponseDto**](AccountResponseDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **accountControllerLinkWechatWebIdentityV1**
+> AccountResponseDto accountControllerLinkWechatWebIdentityV1(oAuthCallbackDto)
+
+Link WeChat web identity to authenticated account
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getAccountApi();
+final OAuthCallbackDto oAuthCallbackDto = ; // OAuthCallbackDto | 
+
+try {
+    final response = api.accountControllerLinkWechatWebIdentityV1(oAuthCallbackDto);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling AccountApi->accountControllerLinkWechatWebIdentityV1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **oAuthCallbackDto** | [**OAuthCallbackDto**](OAuthCallbackDto.md)|  | 
+
+### Return type
+
+[**AccountResponseDto**](AccountResponseDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **accountControllerUnlinkIdentityV1**
 > AccountResponseDto accountControllerUnlinkIdentityV1(identityId)
 
@@ -187,7 +313,7 @@ Unlink authenticated account OAuth identity
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAccountApi();
-final String identityId = identityId_example; // String |
+final String identityId = identityId_example; // String | 
 
 try {
     final response = api.accountControllerUnlinkIdentityV1(identityId);
@@ -201,7 +327,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **identityId** | **String**|  |
+ **identityId** | **String**|  | 
 
 ### Return type
 
@@ -228,7 +354,7 @@ Update authenticated account profile
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getAccountApi();
-final UpdateAccountDto updateAccountDto = ; // UpdateAccountDto |
+final UpdateAccountDto updateAccountDto = ; // UpdateAccountDto | 
 
 try {
     final response = api.accountControllerUpdateAccountV1(updateAccountDto);
@@ -242,7 +368,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **updateAccountDto** | [**UpdateAccountDto**](UpdateAccountDto.md)|  |
+ **updateAccountDto** | [**UpdateAccountDto**](UpdateAccountDto.md)|  | 
 
 ### Return type
 
@@ -258,3 +384,4 @@ No authorization required
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+

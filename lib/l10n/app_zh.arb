@@ -578,6 +578,9 @@
       }
     }
   },
+  "authIdentityLinkWechatAction": "绑定微信",
+  "authIdentityLinkSuccess": "微信身份已绑定。",
+  "authIdentityLinkUnsupported": "当前平台无法打开微信绑定。",
   "authCancelAction": "取消",
   "authPasswordSectionTitle": "修改密码",
   "authPasswordSectionDescription": "修改后当前账号的 refresh 会话会全部失效，你需要重新登录。",

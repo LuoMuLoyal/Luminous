@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/auth/data/datasources/wechat_mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
@@ -312,6 +313,66 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
   });
 
+  testWidgets('Account settings links WeChat identity through account flow', (
+    tester,
+  ) async {
+    final remote = FakeAuthRemoteDataSource();
+    final mobileClient = _FakeWechatMobileAuthClient(code: 'mobile-link-code');
+    final container = ProviderContainer(
+      overrides: [
+        authRemoteDataSourceProvider.overrideWithValue(remote),
+        wechatMobileAuthClientProvider.overrideWithValue(mobileClient),
+        authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/account',
+            routes: [
+              GoRoute(
+                path: '/account',
+                builder: (context, state) =>
+                    const AccountSettingsPage(enableFormAnimation: false),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    final linkButton = find.byKey(const Key('wechat-identity-link-button'));
+    await tester.scrollUntilVisible(
+      linkButton,
+      240,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(linkButton);
+    await tester.pump();
+
+    expect(mobileClient.authorizeCalled, isTrue);
+    expect(remote.wechatMobileIdentityLinkCallbackCode, 'mobile-link-code');
+    expect(
+      container.read(authSessionProvider).user?.linkedIdentities.single.provider,
+      'wechat_mobile',
+    );
+    await tester.pump(const Duration(seconds: 2));
+  });
+
   testWidgets('Account settings protects OAuth-only last sign-in method', (
     tester,
   ) async {
@@ -349,6 +410,22 @@ void main() {
     expect(find.widgetWithText(FilledButton, '更新密码'), findsNothing);
     expect(find.widgetWithText(FilledButton, '注销账号'), findsNothing);
   });
+}
+
+class _FakeWechatMobileAuthClient extends WechatMobileAuthClient {
+  _FakeWechatMobileAuthClient({required this.code});
+
+  final String code;
+  bool authorizeCalled = false;
+
+  @override
+  bool get isSupported => true;
+
+  @override
+  Future<String> authorize() async {
+    authorizeCalled = true;
+    return code;
+  }
 }
 
 Future<void> _pumpAccountSettingsPage(

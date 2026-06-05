@@ -8,8 +8,10 @@ import 'package:lucent_openapi/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**accessToken** | **String** | 访问令牌 |
-**refreshToken** | **String** | 刷新令牌 |
-**expiresIn** | **num** | 访问令牌过期时间（秒） |
+**accessToken** | **String** | 访问令牌 | 
+**refreshToken** | **String** | 刷新令牌 | 
+**expiresIn** | **num** | 访问令牌过期时间（秒） | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+

@@ -14,19 +14,24 @@ import 'package:lucent_openapi/src/model/account_response_dto.dart';
 import 'package:lucent_openapi/src/model/change_email_dto.dart';
 import 'package:lucent_openapi/src/model/change_password_dto.dart';
 import 'package:lucent_openapi/src/model/delete_account_dto.dart';
+import 'package:lucent_openapi/src/model/o_auth_authorize_dto.dart';
+import 'package:lucent_openapi/src/model/o_auth_authorize_response_dto.dart';
+import 'package:lucent_openapi/src/model/o_auth_callback_dto.dart';
+import 'package:lucent_openapi/src/model/o_auth_code_callback_dto.dart';
 import 'package:lucent_openapi/src/model/success_response_dto.dart';
 import 'package:lucent_openapi/src/model/update_account_dto.dart';
 
 class AccountApi {
+
   final Dio _dio;
 
   const AccountApi(this._dio);
 
   /// Change authenticated account email
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [changeEmailDto]
+  /// * [changeEmailDto] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -36,7 +41,7 @@ class AccountApi {
   ///
   /// Returns a [Future] containing a [Response] with a [AccountEmailResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AccountEmailResponseDto>> accountControllerChangeEmailV1({
+  Future<Response<AccountEmailResponseDto>> accountControllerChangeEmailV1({ 
     required ChangeEmailDto changeEmailDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -48,8 +53,13 @@ class AccountApi {
     final _path = r'/api/v1/account/email';
     final _options = Options(
       method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -58,9 +68,13 @@ class AccountApi {
 
     try {
       _bodyData = jsonEncode(changeEmailDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -79,14 +93,9 @@ class AccountApi {
     AccountEmailResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<AccountEmailResponseDto, AccountEmailResponseDto>(
-              rawData,
-              'AccountEmailResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<AccountEmailResponseDto, AccountEmailResponseDto>(rawData, 'AccountEmailResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -110,10 +119,10 @@ class AccountApi {
   }
 
   /// Change authenticated account password
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [changePasswordDto]
+  /// * [changePasswordDto] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -123,7 +132,7 @@ class AccountApi {
   ///
   /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> accountControllerChangePasswordV1({
+  Future<Response<SuccessResponseDto>> accountControllerChangePasswordV1({ 
     required ChangePasswordDto changePasswordDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -135,8 +144,13 @@ class AccountApi {
     final _path = r'/api/v1/account/password';
     final _options = Options(
       method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -145,9 +159,13 @@ class AccountApi {
 
     try {
       _bodyData = jsonEncode(changePasswordDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -166,14 +184,9 @@ class AccountApi {
     SuccessResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<SuccessResponseDto, SuccessResponseDto>(
-              rawData,
-              'SuccessResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<SuccessResponseDto, SuccessResponseDto>(rawData, 'SuccessResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -196,11 +209,102 @@ class AccountApi {
     );
   }
 
-  /// Delete authenticated account
-  ///
+  /// Create WeChat web OAuth authorize URL for linking
+  /// 
   ///
   /// Parameters:
-  /// * [deleteAccountDto]
+  /// * [oAuthAuthorizeDto] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [OAuthAuthorizeResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<OAuthAuthorizeResponseDto>> accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1({ 
+    OAuthAuthorizeDto? oAuthAuthorizeDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/account/identities/wechat-web/authorize';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(oAuthAuthorizeDto);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    OAuthAuthorizeResponseDto? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<OAuthAuthorizeResponseDto, OAuthAuthorizeResponseDto>(rawData, 'OAuthAuthorizeResponseDto', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<OAuthAuthorizeResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Delete authenticated account
+  /// 
+  ///
+  /// Parameters:
+  /// * [deleteAccountDto] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -210,7 +314,7 @@ class AccountApi {
   ///
   /// Returns a [Future] containing a [Response] with a [SuccessResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SuccessResponseDto>> accountControllerDeleteAccountV1({
+  Future<Response<SuccessResponseDto>> accountControllerDeleteAccountV1({ 
     required DeleteAccountDto deleteAccountDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -222,8 +326,13 @@ class AccountApi {
     final _path = r'/api/v1/account';
     final _options = Options(
       method: r'DELETE',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -232,9 +341,13 @@ class AccountApi {
 
     try {
       _bodyData = jsonEncode(deleteAccountDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -253,14 +366,9 @@ class AccountApi {
     SuccessResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<SuccessResponseDto, SuccessResponseDto>(
-              rawData,
-              'SuccessResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<SuccessResponseDto, SuccessResponseDto>(rawData, 'SuccessResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -284,7 +392,7 @@ class AccountApi {
   }
 
   /// Get authenticated account profile
-  ///
+  /// 
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -296,7 +404,7 @@ class AccountApi {
   ///
   /// Returns a [Future] containing a [Response] with a [AccountResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AccountResponseDto>> accountControllerGetAccountV1({
+  Future<Response<AccountResponseDto>> accountControllerGetAccountV1({ 
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -307,8 +415,13 @@ class AccountApi {
     final _path = r'/api/v1/account';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       validateStatus: validateStatus,
     );
 
@@ -323,14 +436,191 @@ class AccountApi {
     AccountResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<AccountResponseDto, AccountResponseDto>(
-              rawData,
-              'AccountResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<AccountResponseDto, AccountResponseDto>(rawData, 'AccountResponseDto', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<AccountResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Link WeChat mobile identity to authenticated account
+  /// 
+  ///
+  /// Parameters:
+  /// * [oAuthCodeCallbackDto] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [AccountResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<AccountResponseDto>> accountControllerLinkWechatMobileIdentityV1({ 
+    required OAuthCodeCallbackDto oAuthCodeCallbackDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/account/identities/wechat-mobile/callback';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(oAuthCodeCallbackDto);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    AccountResponseDto? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<AccountResponseDto, AccountResponseDto>(rawData, 'AccountResponseDto', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<AccountResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Link WeChat web identity to authenticated account
+  /// 
+  ///
+  /// Parameters:
+  /// * [oAuthCallbackDto] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [AccountResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<AccountResponseDto>> accountControllerLinkWechatWebIdentityV1({ 
+    required OAuthCallbackDto oAuthCallbackDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/account/identities/wechat-web/callback';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(oAuthCallbackDto);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    AccountResponseDto? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<AccountResponseDto, AccountResponseDto>(rawData, 'AccountResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -354,10 +644,10 @@ class AccountApi {
   }
 
   /// Unlink authenticated account OAuth identity
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [identityId]
+  /// * [identityId] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -367,7 +657,7 @@ class AccountApi {
   ///
   /// Returns a [Future] containing a [Response] with a [AccountResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AccountResponseDto>> accountControllerUnlinkIdentityV1({
+  Future<Response<AccountResponseDto>> accountControllerUnlinkIdentityV1({ 
     required String identityId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -376,16 +666,16 @@ class AccountApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/account/identities/{identityId}'.replaceAll(
-      '{'
-      r'identityId'
-      '}',
-      identityId.toString(),
-    );
+    final _path = r'/api/v1/account/identities/{identityId}'.replaceAll('{' r'identityId' '}', identityId.toString());
     final _options = Options(
       method: r'DELETE',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       validateStatus: validateStatus,
     );
 
@@ -400,14 +690,9 @@ class AccountApi {
     AccountResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<AccountResponseDto, AccountResponseDto>(
-              rawData,
-              'AccountResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<AccountResponseDto, AccountResponseDto>(rawData, 'AccountResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -431,10 +716,10 @@ class AccountApi {
   }
 
   /// Update authenticated account profile
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [updateAccountDto]
+  /// * [updateAccountDto] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -444,7 +729,7 @@ class AccountApi {
   ///
   /// Returns a [Future] containing a [Response] with a [AccountResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AccountResponseDto>> accountControllerUpdateAccountV1({
+  Future<Response<AccountResponseDto>> accountControllerUpdateAccountV1({ 
     required UpdateAccountDto updateAccountDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -456,8 +741,13 @@ class AccountApi {
     final _path = r'/api/v1/account';
     final _options = Options(
       method: r'PATCH',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -466,9 +756,13 @@ class AccountApi {
 
     try {
       _bodyData = jsonEncode(updateAccountDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -487,14 +781,9 @@ class AccountApi {
     AccountResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<AccountResponseDto, AccountResponseDto>(
-              rawData,
-              'AccountResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<AccountResponseDto, AccountResponseDto>(rawData, 'AccountResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -516,4 +805,5 @@ class AccountApi {
       extra: _response.extra,
     );
   }
+
 }

@@ -25,7 +25,7 @@ Create a dose log
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getMedicineDoseLogsApi();
-final CreateDoseLogDto createDoseLogDto = ; // CreateDoseLogDto |
+final CreateDoseLogDto createDoseLogDto = ; // CreateDoseLogDto | 
 
 try {
     final response = api.medicineDoseLogsControllerCreateV1(createDoseLogDto);
@@ -39,7 +39,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **createDoseLogDto** | [**CreateDoseLogDto**](CreateDoseLogDto.md)|  |
+ **createDoseLogDto** | [**CreateDoseLogDto**](CreateDoseLogDto.md)|  | 
 
 ### Return type
 
@@ -66,7 +66,7 @@ Soft-delete a dose log
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getMedicineDoseLogsApi();
-final String id = id_example; // String |
+final String id = id_example; // String | 
 
 try {
     api.medicineDoseLogsControllerDeleteV1(id);
@@ -79,7 +79,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**|  |
+ **id** | **String**|  | 
 
 ### Return type
 
@@ -106,7 +106,7 @@ List dose logs for a date
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getMedicineDoseLogsApi();
-final String date = 2026-06-04; // String |
+final String date = 2026-06-04; // String | 
 
 try {
     final response = api.medicineDoseLogsControllerListV1(date);
@@ -120,7 +120,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **date** | **String**|  |
+ **date** | **String**|  | 
 
 ### Return type
 
@@ -147,8 +147,8 @@ Update a dose log
 import 'package:lucent_openapi/api.dart';
 
 final api = LucentOpenapi().getMedicineDoseLogsApi();
-final String id = id_example; // String |
-final UpdateDoseLogDto updateDoseLogDto = ; // UpdateDoseLogDto |
+final String id = id_example; // String | 
+final UpdateDoseLogDto updateDoseLogDto = ; // UpdateDoseLogDto | 
 
 try {
     final response = api.medicineDoseLogsControllerUpdateV1(id, updateDoseLogDto);
@@ -162,8 +162,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | **String**|  |
- **updateDoseLogDto** | [**UpdateDoseLogDto**](UpdateDoseLogDto.md)|  |
+ **id** | **String**|  | 
+ **updateDoseLogDto** | [**UpdateDoseLogDto**](UpdateDoseLogDto.md)|  | 
 
 ### Return type
 
@@ -179,3 +179,4 @@ No authorization required
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+

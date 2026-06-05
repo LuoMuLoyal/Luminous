@@ -49,7 +49,7 @@ import 'package:lucent_openapi/lucent_openapi.dart';
 
 
 final api = LucentOpenapi().getAccountApi();
-final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto |
+final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto | 
 
 try {
     final response = await api.accountControllerChangeEmailV1(changeEmailDto);
@@ -68,11 +68,14 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerChangeEmailV1**](doc/AccountApi.md#accountcontrollerchangeemailv1) | **POST** /api/v1/account/email | Change authenticated account email
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerChangePasswordV1**](doc/AccountApi.md#accountcontrollerchangepasswordv1) | **POST** /api/v1/account/password | Change authenticated account password
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1**](doc/AccountApi.md#accountcontrollercreatewechatwebidentitylinkauthorizeurlv1) | **POST** /api/v1/account/identities/wechat-web/authorize | Create WeChat web OAuth authorize URL for linking
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerDeleteAccountV1**](doc/AccountApi.md#accountcontrollerdeleteaccountv1) | **DELETE** /api/v1/account | Delete authenticated account
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerGetAccountV1**](doc/AccountApi.md#accountcontrollergetaccountv1) | **GET** /api/v1/account | Get authenticated account profile
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerLinkWechatMobileIdentityV1**](doc/AccountApi.md#accountcontrollerlinkwechatmobileidentityv1) | **POST** /api/v1/account/identities/wechat-mobile/callback | Link WeChat mobile identity to authenticated account
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerLinkWechatWebIdentityV1**](doc/AccountApi.md#accountcontrollerlinkwechatwebidentityv1) | **POST** /api/v1/account/identities/wechat-web/callback | Link WeChat web identity to authenticated account
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerUnlinkIdentityV1**](doc/AccountApi.md#accountcontrollerunlinkidentityv1) | **DELETE** /api/v1/account/identities/{identityId} | Unlink authenticated account OAuth identity
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerUpdateAccountV1**](doc/AccountApi.md#accountcontrollerupdateaccountv1) | **PATCH** /api/v1/account | Update authenticated account profile
-[*AppApi*](doc/AppApi.md) | [**appControllerGetHealthV1**](doc/AppApi.md#appcontrollergethealthv1) | **GET** /api/v1/health |
+[*AppApi*](doc/AppApi.md) | [**appControllerGetHealthV1**](doc/AppApi.md#appcontrollergethealthv1) | **GET** /api/v1/health | 
 [*AuthApi*](doc/AuthApi.md) | [**authControllerCreateWechatWebAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
 [*AuthApi*](doc/AuthApi.md) | [**authControllerForgotPasswordV1**](doc/AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginV1**](doc/AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
@@ -203,3 +206,6 @@ Endpoints do not require authorization.
 
 
 ## Author
+
+
+

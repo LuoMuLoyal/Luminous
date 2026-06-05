@@ -62,10 +62,15 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   String? deleteAccountPassword;
   String? unlinkIdentityId;
   bool createWechatAuthorizeCalled = false;
+  bool createWechatIdentityLinkAuthorizeCalled = false;
   String? wechatAuthorizeCallbackUri;
+  String? wechatIdentityLinkAuthorizeCallbackUri;
   String? wechatCallbackCode;
   String? wechatCallbackState;
   String? wechatMobileCallbackCode;
+  String? wechatIdentityLinkCallbackCode;
+  String? wechatIdentityLinkCallbackState;
+  String? wechatMobileIdentityLinkCallbackCode;
 
   @override
   Future<AuthSession> login({
@@ -95,6 +100,21 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   }
 
   @override
+  Future<OAuthAuthorizeDataDto> createWechatWebIdentityLinkAuthorizeUrl({
+    String? callbackUri,
+  }) async {
+    createWechatIdentityLinkAuthorizeCalled = true;
+    wechatIdentityLinkAuthorizeCallbackUri = callbackUri;
+    return OAuthAuthorizeDataDto(
+      authorizeUrl:
+          'https://open.weixin.qq.com/connect/qrconnect?state=link-state-1',
+      state: 'link-state-1',
+      expiresIn: 600,
+      callbackUri: callbackUri,
+    );
+  }
+
+  @override
   Future<AuthSession> loginWithWechatWeb({
     required String code,
     required String state,
@@ -111,6 +131,22 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
       email: 'wechat-mobile@example.com',
       nickname: 'WxMobile',
     );
+  }
+
+  @override
+  Future<AuthUser> linkWechatWebIdentity({
+    required String code,
+    required String state,
+  }) async {
+    wechatIdentityLinkCallbackCode = code;
+    wechatIdentityLinkCallbackState = state;
+    return _linkedWechatUser(provider: 'wechat_web');
+  }
+
+  @override
+  Future<AuthUser> linkWechatMobileIdentity({required String code}) async {
+    wechatMobileIdentityLinkCallbackCode = code;
+    return _linkedWechatUser(provider: 'wechat_mobile');
   }
 
   @override
@@ -207,6 +243,28 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
       avatar: null,
       emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
       hasPassword: true,
+      createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+      updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+    );
+  }
+
+  AuthUser _linkedWechatUser({required String provider}) {
+    return AuthUser(
+      id: 'user-1',
+      email: 'user@example.com',
+      nickname: 'Lumi',
+      avatar: null,
+      emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+      hasPassword: true,
+      linkedIdentities: [
+        AuthLinkedIdentity(
+          id: 'identity-linked',
+          provider: provider,
+          email: null,
+          emailVerifiedAt: null,
+          linkedAt: DateTime.parse('2026-01-03T00:00:00Z'),
+        ),
+      ],
       createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
       updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
     );

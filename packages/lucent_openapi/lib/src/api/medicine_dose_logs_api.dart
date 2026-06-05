@@ -15,15 +15,16 @@ import 'package:lucent_openapi/src/model/dose_log_response_dto.dart';
 import 'package:lucent_openapi/src/model/update_dose_log_dto.dart';
 
 class MedicineDoseLogsApi {
+
   final Dio _dio;
 
   const MedicineDoseLogsApi(this._dio);
 
   /// Create a dose log
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [createDoseLogDto]
+  /// * [createDoseLogDto] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -33,7 +34,7 @@ class MedicineDoseLogsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [DoseLogResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerCreateV1({
+  Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerCreateV1({ 
     required CreateDoseLogDto createDoseLogDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -45,8 +46,13 @@ class MedicineDoseLogsApi {
     final _path = r'/api/v1/me/medicine-dose-logs';
     final _options = Options(
       method: r'POST',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -55,9 +61,13 @@ class MedicineDoseLogsApi {
 
     try {
       _bodyData = jsonEncode(createDoseLogDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -76,14 +86,9 @@ class MedicineDoseLogsApi {
     DoseLogResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<DoseLogResponseDto, DoseLogResponseDto>(
-              rawData,
-              'DoseLogResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLogResponseDto>(rawData, 'DoseLogResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -107,10 +112,10 @@ class MedicineDoseLogsApi {
   }
 
   /// Soft-delete a dose log
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [id]
+  /// * [id] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -120,7 +125,7 @@ class MedicineDoseLogsApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> medicineDoseLogsControllerDeleteV1({
+  Future<Response<void>> medicineDoseLogsControllerDeleteV1({ 
     required String id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -129,16 +134,16 @@ class MedicineDoseLogsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll(
-      '{'
-      r'id'
-      '}',
-      id.toString(),
-    );
+    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       validateStatus: validateStatus,
     );
 
@@ -154,10 +159,10 @@ class MedicineDoseLogsApi {
   }
 
   /// List dose logs for a date
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [date]
+  /// * [date] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -167,7 +172,7 @@ class MedicineDoseLogsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [DoseLogListResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DoseLogListResponseDto>> medicineDoseLogsControllerListV1({
+  Future<Response<DoseLogListResponseDto>> medicineDoseLogsControllerListV1({ 
     required String date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -179,12 +184,19 @@ class MedicineDoseLogsApi {
     final _path = r'/api/v1/me/medicine-dose-logs';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       validateStatus: validateStatus,
     );
 
-    final _queryParameters = <String, dynamic>{r'date': date};
+    final _queryParameters = <String, dynamic>{
+      r'date': date,
+    };
 
     final _response = await _dio.request<Object>(
       _path,
@@ -198,14 +210,9 @@ class MedicineDoseLogsApi {
     DoseLogListResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<DoseLogListResponseDto, DoseLogListResponseDto>(
-              rawData,
-              'DoseLogListResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<DoseLogListResponseDto, DoseLogListResponseDto>(rawData, 'DoseLogListResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -229,11 +236,11 @@ class MedicineDoseLogsApi {
   }
 
   /// Update a dose log
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [id]
-  /// * [updateDoseLogDto]
+  /// * [id] 
+  /// * [updateDoseLogDto] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -243,7 +250,7 @@ class MedicineDoseLogsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [DoseLogResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerUpdateV1({
+  Future<Response<DoseLogResponseDto>> medicineDoseLogsControllerUpdateV1({ 
     required String id,
     required UpdateDoseLogDto updateDoseLogDto,
     CancelToken? cancelToken,
@@ -253,16 +260,16 @@ class MedicineDoseLogsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll(
-      '{'
-      r'id'
-      '}',
-      id.toString(),
-    );
+    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
-      headers: <String, dynamic>{...?headers},
-      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -271,9 +278,13 @@ class MedicineDoseLogsApi {
 
     try {
       _bodyData = jsonEncode(updateDoseLogDto);
-    } catch (error, stackTrace) {
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(_dio.options, _path),
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -292,14 +303,9 @@ class MedicineDoseLogsApi {
     DoseLogResponseDto? _responseData;
 
     try {
-      final rawData = _response.data;
-      _responseData = rawData == null
-          ? null
-          : deserialize<DoseLogResponseDto, DoseLogResponseDto>(
-              rawData,
-              'DoseLogResponseDto',
-              growable: true,
-            );
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLogResponseDto>(rawData, 'DoseLogResponseDto', growable: true);
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -321,4 +327,5 @@ class MedicineDoseLogsApi {
       extra: _response.extra,
     );
   }
+
 }

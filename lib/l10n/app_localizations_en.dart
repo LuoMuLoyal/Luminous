@@ -1615,6 +1615,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get authIdentityLinkWechatAction => 'Link WeChat';
+
+  @override
+  String get authIdentityLinkSuccess => 'WeChat identity linked.';
+
+  @override
+  String get authIdentityLinkUnsupported =>
+      'WeChat linking cannot be opened on this platform.';
+
+  @override
   String get authCancelAction => 'Cancel';
 
   @override

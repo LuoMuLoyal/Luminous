@@ -3086,6 +3086,24 @@ abstract class AppLocalizations {
   /// **'确定要解绑 {provider}？'**
   String authIdentityUnlinkConfirmMessage(String provider);
 
+  /// No description provided for @authIdentityLinkWechatAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'绑定微信'**
+  String get authIdentityLinkWechatAction;
+
+  /// No description provided for @authIdentityLinkSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'微信身份已绑定。'**
+  String get authIdentityLinkSuccess;
+
+  /// No description provided for @authIdentityLinkUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前平台无法打开微信绑定。'**
+  String get authIdentityLinkUnsupported;
+
   /// No description provided for @authCancelAction.
   ///
   /// In zh, this message translates to:

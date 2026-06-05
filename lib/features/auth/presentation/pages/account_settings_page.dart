@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -11,9 +12,16 @@ import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AccountSettingsPage extends ConsumerStatefulWidget {
-  const AccountSettingsPage({super.key, this.enableFormAnimation = true});
+  const AccountSettingsPage({
+    super.key,
+    this.enableFormAnimation = true,
+    this.wechatCode,
+    this.wechatState,
+  });
 
   final bool enableFormAnimation;
+  final String? wechatCode;
+  final String? wechatState;
 
   @override
   ConsumerState<AccountSettingsPage> createState() =>
@@ -38,6 +46,16 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
     _oldPasswordController = TextEditingController();
     _newPasswordController = TextEditingController();
     _deletePasswordController = TextEditingController();
+
+    if ((widget.wechatCode?.isNotEmpty ?? false) &&
+        (widget.wechatState?.isNotEmpty ?? false)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _completeWechatIdentityLink(widget.wechatCode!, widget.wechatState!);
+      });
+    }
   }
 
   @override
@@ -138,6 +156,7 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
               child: _LinkedIdentitiesSection(
                 user: user,
                 isSubmitting: accountState.isSubmitting,
+                onLinkWechat: () => _startWechatIdentityLink(context, l10n),
                 onUnlink: (identity) async {
                   final confirmed = await _confirmUnlinkIdentity(
                     context,
@@ -247,6 +266,67 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
       ),
     );
   }
+
+  Future<void> _completeWechatIdentityLink(String code, String state) async {
+    final l10n = AppLocalizations.of(context)!;
+    final session = ref.read(authSessionProvider);
+    if (!session.isAuthenticated) {
+      context.go('/login');
+      return;
+    }
+
+    final ok = await ref
+        .read(authAccountProvider.notifier)
+        .completeWechatWebIdentityLink(code: code, state: state);
+    if (!mounted) {
+      return;
+    }
+    if (ok) {
+      await AppToast.show(context, l10n.authIdentityLinkSuccess);
+      if (mounted) {
+        context.go('/account');
+      }
+    }
+  }
+}
+
+Future<void> _startWechatIdentityLink(
+  BuildContext context,
+  AppLocalizations l10n,
+) async {
+  final container = ProviderScope.containerOf(context, listen: false);
+  final result = await container
+      .read(authAccountProvider.notifier)
+      .startWechatIdentityLink(webCallbackUri: _webWechatLinkCallbackUri());
+  if (!context.mounted || result == null) {
+    return;
+  }
+
+  switch (result) {
+    case WechatIdentityLinkResult.completed:
+      await AppToast.show(context, l10n.authIdentityLinkSuccess);
+      return;
+    case WechatIdentityLinkResult.opened:
+      await AppToast.show(context, l10n.authWechatAuthorizeOpened);
+      return;
+    case WechatIdentityLinkResult.unsupported:
+      await AppToast.show(context, l10n.authIdentityLinkUnsupported);
+      return;
+  }
+}
+
+String? _webWechatLinkCallbackUri() {
+  if (!kIsWeb) {
+    return null;
+  }
+
+  final base = Uri.base;
+  return Uri(
+    scheme: base.scheme,
+    host: base.host,
+    port: base.hasPort ? base.port : null,
+    path: '/account/oauth/wechat',
+  ).toString();
 }
 
 Future<bool> _confirmUnlinkIdentity(
@@ -363,11 +443,13 @@ class _LinkedIdentitiesSection extends StatelessWidget {
   const _LinkedIdentitiesSection({
     required this.user,
     required this.isSubmitting,
+    required this.onLinkWechat,
     required this.onUnlink,
   });
 
   final AuthUser user;
   final bool isSubmitting;
+  final Future<void> Function() onLinkWechat;
   final Future<void> Function(AuthLinkedIdentity identity) onUnlink;
 
   @override
@@ -387,6 +469,18 @@ class _LinkedIdentitiesSection extends StatelessWidget {
               onUnlink: () => onUnlink(identity),
             ),
           ),
+        OutlinedButton.icon(
+          key: const Key('wechat-identity-link-button'),
+          onPressed: isSubmitting ? null : onLinkWechat,
+          icon: isSubmitting
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.add_link_rounded, size: 18),
+          label: Text(l10n.authIdentityLinkWechatAction),
+        ),
       ],
     );
   }
