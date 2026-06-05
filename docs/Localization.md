@@ -20,6 +20,7 @@ Last updated: 2026-06-05
 - Settings notification permission status labels
 - Auth empty-field toast prompts
 - Mine signed-out notice / guest state copy
+- Mine signed-in account detail labels and account management action
 - Record quick-create form labels and save failure toast
 - Medicine manual dose-log actions, saved/failed toasts, and taken/skipped/pending status labels
 - Network `Accept-Language`

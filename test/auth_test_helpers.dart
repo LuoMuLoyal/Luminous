@@ -161,11 +161,14 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   }) async {
     changeEmailNewEmail = newEmail;
     changeEmailCode = code;
-    return currentUser.copyWith(email: newEmail, emailVerified: false);
+    return currentUser.copyWith(email: newEmail, emailVerifiedAt: null);
   }
 
   @override
-  Future<AuthUser> updateMe({String? nickname, String? avatar}) async {
+  Future<AuthUser> updateAccountProfile({
+    String? nickname,
+    String? avatar,
+  }) async {
     updateProfileNickname = nickname;
     updateProfileAvatar = avatar;
     return AuthUser(
@@ -173,7 +176,7 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
       email: 'user@example.com',
       nickname: nickname,
       avatar: avatar,
-      emailVerified: true,
+      emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
       createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
       updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
     );
@@ -224,7 +227,7 @@ AuthSession testSession({required String email, String? nickname}) {
       email: email,
       nickname: nickname,
       avatar: null,
-      emailVerified: true,
+      emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
       createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
       updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
     ),
@@ -249,7 +252,7 @@ class SignedInAuthSessionNotifier extends AuthSessionNotifier {
         email: email,
         nickname: 'Lumi',
         avatar: null,
-        emailVerified: true,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
         createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
       ),

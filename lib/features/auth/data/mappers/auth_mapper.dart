@@ -15,7 +15,7 @@ abstract final class AuthMapper {
         email: user.email?.toString(),
         nickname: user.nickname?.toString(),
         avatar: null,
-        emailVerified: user.emailVerified,
+        emailVerifiedAt: _parseOptionalDateTime(user.emailVerifiedAt),
         createdAt: DateTime.parse(user.createdAt),
         updatedAt: DateTime.parse(user.createdAt),
       ),
@@ -35,7 +35,7 @@ abstract final class AuthMapper {
         email: user.email?.toString(),
         nickname: user.nickname?.toString(),
         avatar: user.avatar?.toString(),
-        emailVerified: user.emailVerified,
+        emailVerifiedAt: _parseOptionalDateTime(user.emailVerifiedAt),
         createdAt: DateTime.parse(user.createdAt),
         updatedAt: DateTime.parse(user.updatedAt),
       ),
@@ -43,5 +43,13 @@ abstract final class AuthMapper {
       refreshToken: tokens.refreshToken,
       expiresInSeconds: tokens.expiresIn.toInt(),
     );
+  }
+
+  static DateTime? _parseOptionalDateTime(Object? value) {
+    final raw = value?.toString();
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+    return DateTime.parse(raw);
   }
 }

@@ -10,7 +10,8 @@ String mineCopy(AppLocalizations l10n, MineCopyKey key) {
     MineCopyKey.accountMeta => l10n.mineAccountMeta,
     MineCopyKey.accountSignedOutMeta => l10n.mineAccountSignedOutMeta,
     MineCopyKey.signedOutNoticeTitle => l10n.mineSignedOutNoticeTitle,
-    MineCopyKey.signedOutNoticeDescription => l10n.mineSignedOutNoticeDescription,
+    MineCopyKey.signedOutNoticeDescription =>
+      l10n.mineSignedOutNoticeDescription,
     MineCopyKey.completionTitle => l10n.mineCompletionTitle,
     MineCopyKey.completionSubtitle => l10n.mineCompletionSubtitle,
     MineCopyKey.summaryUpdatedAt => l10n.mineSummaryUpdatedAt,
@@ -31,8 +32,7 @@ String mineCopy(AppLocalizations l10n, MineCopyKey key) {
     MineCopyKey.profileWomenTitle => l10n.mineProfileWomenTitle,
     MineCopyKey.profileWomenSubtitle => l10n.mineProfileWomenSubtitle,
     MineCopyKey.profileSpecialistTitle => l10n.mineProfileSpecialistTitle,
-    MineCopyKey.profileSpecialistSubtitle =>
-      l10n.mineProfileSpecialistSubtitle,
+    MineCopyKey.profileSpecialistSubtitle => l10n.mineProfileSpecialistSubtitle,
     MineCopyKey.profileLifestyleTitle => l10n.mineProfileLifestyleTitle,
     MineCopyKey.profileLifestyleSubtitle => l10n.mineProfileLifestyleSubtitle,
     MineCopyKey.profileFamilyTitle => l10n.mineProfileFamilyTitle,

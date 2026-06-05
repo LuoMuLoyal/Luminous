@@ -34,6 +34,10 @@ class MineAccount {
     required this.email,
     required this.statusKey,
     required this.metaKey,
+    this.emailVerified = false,
+    this.hasPassword = false,
+    this.linkedIdentityCount = 0,
+    this.lastLoginAt,
   });
 
   final bool isAuthenticated;
@@ -42,6 +46,10 @@ class MineAccount {
   final String email;
   final MineCopyKey statusKey;
   final MineCopyKey metaKey;
+  final bool emailVerified;
+  final bool hasPassword;
+  final int linkedIdentityCount;
+  final DateTime? lastLoginAt;
 }
 
 class MineCompletion {

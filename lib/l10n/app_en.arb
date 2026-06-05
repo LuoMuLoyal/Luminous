@@ -252,6 +252,29 @@
   "mineAccountSignedOut": "Signed out",
   "mineAccountMeta": "Member until: 2026-05-20",
   "mineAccountSignedOutMeta": "Sign in to sync profile, reminders, and personalized health data",
+  "mineAccountManageAction": "Manage account",
+  "mineAccountEmailVerified": "Email verified",
+  "mineAccountEmailUnverified": "Email unverified",
+  "mineAccountPasswordSet": "Password set",
+  "mineAccountPasswordUnset": "No password",
+  "mineAccountLinkedIdentityCount": "{count} linked",
+  "@mineAccountLinkedIdentityCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineAccountLinkedIdentityNone": "No linked identity",
+  "mineAccountLastLogin": "Last login {date}",
+  "@mineAccountLastLogin": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "mineAccountLastLoginNone": "Last login --",
   "mineSignedOutNoticeTitle": "You are not signed in",
   "mineSignedOutNoticeDescription": "Mine stays on the static layout while signed out so it does not keep hitting the backend. Sign in to load your profile and health context.",
   "mineCompletionTitle": "Profile completion",

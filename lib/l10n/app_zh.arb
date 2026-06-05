@@ -252,6 +252,29 @@
   "mineAccountSignedOut": "未登录",
   "mineAccountMeta": "会员到期：2026-05-20",
   "mineAccountSignedOutMeta": "登录后可同步档案、提醒与个性化健康数据",
+  "mineAccountManageAction": "管理账号",
+  "mineAccountEmailVerified": "邮箱已验证",
+  "mineAccountEmailUnverified": "邮箱未验证",
+  "mineAccountPasswordSet": "已设置密码",
+  "mineAccountPasswordUnset": "未设置密码",
+  "mineAccountLinkedIdentityCount": "已绑定 {count} 个",
+  "@mineAccountLinkedIdentityCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineAccountLinkedIdentityNone": "未绑定第三方",
+  "mineAccountLastLogin": "上次登录 {date}",
+  "@mineAccountLastLogin": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "mineAccountLastLoginNone": "上次登录 --",
   "mineSignedOutNoticeTitle": "当前未登录",
   "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。",
   "mineCompletionTitle": "档案完整度",

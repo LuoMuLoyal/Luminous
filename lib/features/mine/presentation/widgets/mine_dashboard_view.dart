@@ -204,7 +204,7 @@ class _AccountHeaderSection extends StatelessWidget {
           ? Row(
               children: [
                 Expanded(
-                  child: _AccountProfileBlock(
+                  child: _AccountSummaryBlock(
                     account: account,
                     typography: typography,
                     surface: surface,
@@ -232,7 +232,7 @@ class _AccountHeaderSection extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _AccountProfileBlock(
+                _AccountSummaryBlock(
                   account: account,
                   typography: typography,
                   surface: surface,
@@ -247,6 +247,57 @@ class _AccountHeaderSection extends StatelessWidget {
                 ),
               ],
             ),
+    );
+  }
+}
+
+class _AccountSummaryBlock extends StatelessWidget {
+  const _AccountSummaryBlock({
+    required this.account,
+    required this.typography,
+    required this.surface,
+  });
+
+  final MineAccount account;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _AccountProfileBlock(
+          account: account,
+          typography: typography,
+          surface: surface,
+        ),
+        if (account.isAuthenticated) ...[
+          const SizedBox(height: AppSpacingTokens.md),
+          _AccountDetailStrip(
+            account: account,
+            typography: typography,
+            surface: surface,
+          ),
+        ],
+      ],
+    );
+
+    if (!account.isAuthenticated) {
+      return content;
+    }
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        key: const Key('mine-account-manage-link'),
+        onTap: () => context.push('/account'),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.xs),
+          child: content,
+        ),
+      ),
     );
   }
 }
@@ -337,10 +388,149 @@ class _AccountProfileBlock extends StatelessWidget {
                   ),
                 ],
               ),
+              if (account.isAuthenticated) ...[
+                const SizedBox(height: AppSpacingTokens.xs),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      l10n.mineAccountManageAction,
+                      style: typography.caption.copyWith(color: surface.body),
+                    ),
+                    const SizedBox(width: AppSpacingTokens.xxs),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      size: 16,
+                      color: surface.mute,
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+class _AccountDetailStrip extends StatelessWidget {
+  const _AccountDetailStrip({
+    required this.account,
+    required this.typography,
+    required this.surface,
+  });
+
+  final MineAccount account;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final linkedIdentityLabel = account.linkedIdentityCount > 0
+        ? l10n.mineAccountLinkedIdentityCount(account.linkedIdentityCount)
+        : l10n.mineAccountLinkedIdentityNone;
+    final lastLoginLabel = account.lastLoginAt == null
+        ? l10n.mineAccountLastLoginNone
+        : l10n.mineAccountLastLogin(_formatDate(account.lastLoginAt!));
+
+    return Wrap(
+      spacing: AppSpacingTokens.sm,
+      runSpacing: AppSpacingTokens.sm,
+      children: [
+        _AccountDetailPill(
+          icon: account.emailVerified
+              ? Icons.mark_email_read_outlined
+              : Icons.mark_email_unread_outlined,
+          label: account.emailVerified
+              ? l10n.mineAccountEmailVerified
+              : l10n.mineAccountEmailUnverified,
+          color: account.emailVerified
+              ? const Color(0xFF159B55)
+              : const Color(0xFFFF8A00),
+          typography: typography,
+          surface: surface,
+        ),
+        _AccountDetailPill(
+          icon: account.hasPassword
+              ? Icons.lock_outline_rounded
+              : Icons.lock_open_outlined,
+          label: account.hasPassword
+              ? l10n.mineAccountPasswordSet
+              : l10n.mineAccountPasswordUnset,
+          color: account.hasPassword
+              ? const Color(0xFF159B55)
+              : const Color(0xFFFF8A00),
+          typography: typography,
+          surface: surface,
+        ),
+        _AccountDetailPill(
+          icon: Icons.link_rounded,
+          label: linkedIdentityLabel,
+          color: const Color(0xFF428BFF),
+          typography: typography,
+          surface: surface,
+        ),
+        _AccountDetailPill(
+          icon: Icons.schedule_rounded,
+          label: lastLoginLabel,
+          color: surface.body,
+          typography: typography,
+          surface: surface,
+        ),
+      ],
+    );
+  }
+
+  String _formatDate(DateTime value) {
+    final local = value.toLocal();
+    final month = local.month.toString().padLeft(2, '0');
+    final day = local.day.toString().padLeft(2, '0');
+    return '${local.year}-$month-$day';
+  }
+}
+
+class _AccountDetailPill extends StatelessWidget {
+  const _AccountDetailPill({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.typography,
+    required this.surface,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvasSoft,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+        border: Border.all(color: surface.hairline),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.sm,
+          vertical: AppSpacingTokens.xs,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: color),
+            const SizedBox(width: AppSpacingTokens.xxs),
+            Text(
+              label,
+              style: typography.caption.copyWith(color: surface.body),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

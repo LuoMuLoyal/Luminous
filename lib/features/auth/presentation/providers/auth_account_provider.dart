@@ -57,9 +57,10 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
           .verifyEmail(email: email, code: code);
       final currentUser = ref.read(authSessionProvider).user;
       if (currentUser != null && currentUser.email == email.trim()) {
-        ref
-            .read(authSessionProvider.notifier)
-            .applyUser(currentUser.copyWith(emailVerified: true));
+        final user = await ref
+            .read(authRemoteDataSourceProvider)
+            .fetchAccount();
+        ref.read(authSessionProvider.notifier).applyUser(user);
       }
     });
   }
@@ -68,7 +69,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
     return _run(() async {
       final user = await ref
           .read(authRemoteDataSourceProvider)
-          .updateMe(nickname: nickname, avatar: avatar);
+          .updateAccountProfile(nickname: nickname, avatar: avatar);
       ref.read(authSessionProvider.notifier).applyUser(user);
     });
   }

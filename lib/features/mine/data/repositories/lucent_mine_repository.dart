@@ -47,6 +47,10 @@ class LucentMineRepository implements MineRepository {
       email: currentUser?.email ?? '',
       statusKey: MineCopyKey.accountSignedIn,
       metaKey: MineCopyKey.accountMeta,
+      emailVerified: currentUser?.emailVerified ?? false,
+      hasPassword: currentUser?.hasPassword ?? false,
+      linkedIdentityCount: currentUser?.linkedIdentities.length ?? 0,
+      lastLoginAt: currentUser?.lastLoginAt,
     );
   }
 

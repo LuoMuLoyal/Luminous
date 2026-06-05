@@ -5,18 +5,38 @@ part 'auth_session.g.dart';
 
 @freezed
 abstract class AuthUser with _$AuthUser {
+  const AuthUser._();
+
   const factory AuthUser({
     required String id,
     required String? email,
     required String? nickname,
     required String? avatar,
-    required bool emailVerified,
+    required DateTime? emailVerifiedAt,
+    @Default(false) bool hasPassword,
+    DateTime? lastLoginAt,
+    @Default(<AuthLinkedIdentity>[]) List<AuthLinkedIdentity> linkedIdentities,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _AuthUser;
 
+  bool get emailVerified => emailVerifiedAt != null;
+
   factory AuthUser.fromJson(Map<String, Object?> json) =>
       _$AuthUserFromJson(json);
+}
+
+@freezed
+abstract class AuthLinkedIdentity with _$AuthLinkedIdentity {
+  const factory AuthLinkedIdentity({
+    required String provider,
+    required String? email,
+    required DateTime? emailVerifiedAt,
+    required DateTime linkedAt,
+  }) = _AuthLinkedIdentity;
+
+  factory AuthLinkedIdentity.fromJson(Map<String, Object?> json) =>
+      _$AuthLinkedIdentityFromJson(json);
 }
 
 @freezed
