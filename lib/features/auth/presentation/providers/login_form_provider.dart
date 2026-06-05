@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:luminous/features/auth/data/datasources/wechat_desktop_oauth_callback_server.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -98,12 +100,14 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
     }
   }
 
-  Future<OAuthAuthorizeDataDto?> createWechatWebAuthorizeUrl() async {
+  Future<OAuthAuthorizeDataDto?> createWechatWebAuthorizeUrl({
+    String? callbackUri,
+  }) async {
     state = state.copyWith(isStartingWechatLogin: true, errorMessage: null);
     try {
       final result = await ref
           .read(authRemoteDataSourceProvider)
-          .createWechatWebAuthorizeUrl();
+          .createWechatWebAuthorizeUrl(callbackUri: callbackUri);
       state = state.copyWith(
         isStartingWechatLogin: false,
         wechatAuthorizeUrl: result.authorizeUrl,
@@ -117,6 +121,60 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
         errorMessage: apiError.message,
       );
       return null;
+    }
+  }
+
+  Future<AuthSession?> startWechatDesktopWebLogin() async {
+    final listener = ref.read(wechatDesktopOAuthCallbackListenerProvider);
+    if (!listener.isSupported) {
+      return null;
+    }
+
+    state = state.copyWith(isStartingWechatLogin: true, errorMessage: null);
+    WechatDesktopOAuthCallbackServer? server;
+    try {
+      server = await listener.start();
+      final result = await ref
+          .read(authRemoteDataSourceProvider)
+          .createWechatWebAuthorizeUrl(
+            callbackUri: server.callbackUri.toString(),
+          );
+      state = state.copyWith(
+        wechatAuthorizeUrl: result.authorizeUrl,
+        wechatState: result.state,
+      );
+
+      final opened = await ref
+          .read(externalUrlLauncherProvider)
+          .open(Uri.parse(result.authorizeUrl));
+      if (!opened) {
+        state = state.copyWith(isStartingWechatLogin: false);
+        return null;
+      }
+
+      final callback = await server.callback.timeout(
+        Duration(seconds: result.expiresIn.toInt()),
+      );
+      state = state.copyWith(
+        isStartingWechatLogin: false,
+        isCompletingWechatLogin: true,
+      );
+      final session = await ref
+          .read(authRemoteDataSourceProvider)
+          .loginWithWechatWeb(code: callback.code, state: callback.state);
+      await ref.read(authSessionProvider.notifier).applySession(session);
+      state = state.copyWith(isCompletingWechatLogin: false);
+      return session;
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
+      state = state.copyWith(
+        isStartingWechatLogin: false,
+        isCompletingWechatLogin: false,
+        errorMessage: apiError.message,
+      );
+      return null;
+    } finally {
+      await server?.close();
     }
   }
 

@@ -52,9 +52,15 @@ class AuthRemoteDataSource {
     return session;
   }
 
-  Future<OAuthAuthorizeDataDto> createWechatWebAuthorizeUrl() async {
+  Future<OAuthAuthorizeDataDto> createWechatWebAuthorizeUrl({
+    String? callbackUri,
+  }) async {
     final response = await _client.authApi
-        .authControllerCreateWechatWebAuthorizeUrlV1();
+        .authControllerCreateWechatWebAuthorizeUrlV1(
+          oAuthAuthorizeDto: callbackUri?.trim().isEmpty ?? true
+              ? null
+              : OAuthAuthorizeDto(callbackUri: callbackUri!.trim()),
+        );
     final body = response.data;
     if (body == null) {
       throw const LucentApiException(
