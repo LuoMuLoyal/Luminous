@@ -6,6 +6,43 @@ import 'package:luminous/features/today/domain/repositories/today_repository.dar
 class MockTodayRepository implements TodayRepository {
   const MockTodayRepository();
 
+  static const placeholderDashboard = TodayDashboard(
+    user: TodayUserSnapshot(
+      moment: TodayDayMoment.morning,
+      hasUnreadNotifications: false,
+    ),
+    water: TodayWaterSummary(completedCount: 0, targetCount: 8),
+    medication: TodayMedicationSummary(
+      medicineCount: 0,
+      pendingCount: 0,
+      nextDoseTimeLabel: '--:--',
+      nextMedicine: TodayMedicationKind.atorvastatin,
+    ),
+    vitals: <TodayVitalSummary>[
+      TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
+      TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
+      TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
+    ],
+    mealSuggestion: TodayMealSuggestion(
+      type: TodayMealSuggestionType.highProteinBalancedLunch,
+    ),
+    environment: TodayEnvironmentSummary(
+      signals: <TodayEnvironmentSignal>[
+        TodayEnvironmentSignal(
+          type: TodayEnvironmentSignalType.pollen,
+          level: TodayEnvironmentLevel.low,
+        ),
+        TodayEnvironmentSignal(
+          type: TodayEnvironmentSignalType.uv,
+          level: TodayEnvironmentLevel.low,
+        ),
+      ],
+    ),
+    lumiSuggestion: TodayLumiSuggestion(
+      type: TodayLumiSuggestionType.pollenProtection,
+    ),
+  );
+
   @override
   Future<TodayDashboard> fetchDashboard() async {
     return const TodayDashboard(

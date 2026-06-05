@@ -8,7 +8,6 @@ import 'package:luminous/features/more/domain/entities/more_dashboard.dart';
 import 'package:luminous/features/more/presentation/widgets/more_dashboard_panels.dart';
 import 'package:luminous/features/more/presentation/widgets/more_dashboard_sections.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shimmer/shimmer.dart';
 
 class MoreDashboardView extends StatelessWidget {
   const MoreDashboardView({super.key, required this.dashboard});
@@ -130,37 +129,6 @@ class MoreDashboardView extends StatelessWidget {
   }
 }
 
-class MoreLoadingView extends StatelessWidget {
-  const MoreLoadingView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-
-    return Shimmer.fromColors(
-      baseColor: surface.canvas.withValues(
-        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
-      ),
-      highlightColor: surface.canvasSoft2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          _SkeletonBlock(height: 176),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 176),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 186),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 186),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 186),
-        ],
-      ),
-    );
-  }
-}
-
 class MoreErrorView extends StatelessWidget {
   const MoreErrorView({super.key, required this.onRetry});
 
@@ -177,26 +145,6 @@ class MoreErrorView extends StatelessWidget {
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: AppStateTone.warning,
-    );
-  }
-}
-
-class _SkeletonBlock extends StatelessWidget {
-  const _SkeletonBlock({required this.height});
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-      ),
-      child: SizedBox(height: height, width: double.infinity),
     );
   }
 }

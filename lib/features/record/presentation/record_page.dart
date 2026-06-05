@@ -10,7 +10,6 @@ import 'package:luminous/features/record/presentation/providers/record_dashboard
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shimmer/shimmer.dart';
 
 class RecordPage extends ConsumerWidget {
   const RecordPage({super.key});
@@ -94,43 +93,25 @@ class _RecordLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-
-    return Shimmer.fromColors(
-      baseColor: surface.canvas.withValues(
-        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
-      ),
-      highlightColor: surface.canvasSoft2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          _SkeletonBlock(height: 118),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 180),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 460),
-        ],
-      ),
-    );
-  }
-}
-
-class _SkeletonBlock extends StatelessWidget {
-  const _SkeletonBlock({required this.height});
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-      ),
-      child: SizedBox(height: height, width: double.infinity),
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 16, widthFactor: 0.34),
+            AppInlineSkeletonBlock(height: 34),
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.72),
+          ],
+        ),
+        SizedBox(height: AppSpacingTokens.md),
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.42),
+            AppInlineSkeletonBlock(height: 54),
+            AppInlineSkeletonBlock(height: 54),
+          ],
+        ),
+      ],
     );
   }
 }

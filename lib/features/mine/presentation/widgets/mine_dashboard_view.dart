@@ -9,7 +9,6 @@ import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shimmer/shimmer.dart';
 
 class MineDashboardView extends StatelessWidget {
   const MineDashboardView({super.key, required this.dashboard});
@@ -131,28 +130,43 @@ class MineLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-
-    return Shimmer.fromColors(
-      baseColor: surface.canvas.withValues(
-        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
-      ),
-      highlightColor: surface.canvasSoft2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          _SkeletonBlock(height: 154),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 218),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 248),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 220),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 180),
-        ],
-      ),
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppInlineSkeletonSection(
+          children: [
+            Row(
+              children: [
+                AppInlineSkeletonCircle(size: 72),
+                SizedBox(width: AppSpacingTokens.md),
+                Expanded(
+                  child: AppInlineSkeleton(
+                    children: [
+                      AppInlineSkeletonBlock(height: 22, widthFactor: 0.56),
+                      AppInlineSkeletonBlock(height: 16, widthFactor: 0.82),
+                      AppInlineSkeletonBlock(height: 16, widthFactor: 0.64),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        SizedBox(height: AppSpacingTokens.md),
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.42),
+            AppInlineSkeletonBlock(height: 58),
+          ],
+        ),
+        SizedBox(height: AppSpacingTokens.md),
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.38),
+            AppInlineSkeletonBlock(height: 74),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -1463,25 +1477,6 @@ class _QuickEntriesPanel extends StatelessWidget {
             ),
         ],
       ),
-    );
-  }
-}
-
-class _SkeletonBlock extends StatelessWidget {
-  const _SkeletonBlock({required this.height});
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-      ),
-      child: SizedBox(height: height, width: double.infinity),
     );
   }
 }

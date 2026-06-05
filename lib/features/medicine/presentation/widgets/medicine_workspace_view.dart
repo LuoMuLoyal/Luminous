@@ -4,11 +4,11 @@ import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shimmer/shimmer.dart';
 
 class MedicineWorkspaceView extends StatelessWidget {
   const MedicineWorkspaceView({
@@ -96,29 +96,36 @@ class MedicineWorkspaceView extends StatelessWidget {
   }
 }
 
-class MedicineLoadingView extends StatelessWidget {
-  const MedicineLoadingView({super.key});
+class MedicineWorkspaceLoadingView extends StatelessWidget {
+  const MedicineWorkspaceLoadingView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-
-    return Shimmer.fromColors(
-      baseColor: surface.canvas.withValues(
-        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
-      ),
-      highlightColor: surface.canvasSoft2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          _SkeletonBlock(height: 126),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 160),
-          SizedBox(height: AppSpacingTokens.md),
-          _SkeletonBlock(height: 500),
-        ],
-      ),
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.42),
+            AppInlineSkeletonBlock(height: 36),
+          ],
+        ),
+        SizedBox(height: AppSpacingTokens.md),
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.5),
+            AppInlineSkeletonBlock(height: 76),
+          ],
+        ),
+        SizedBox(height: AppSpacingTokens.md),
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.38),
+            AppInlineSkeletonBlock(height: 82),
+            AppInlineSkeletonBlock(height: 82),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -1106,25 +1113,6 @@ class _StatusBadge extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SkeletonBlock extends StatelessWidget {
-  const _SkeletonBlock({required this.height});
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
       ),
     );
   }

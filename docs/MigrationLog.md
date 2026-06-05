@@ -6,6 +6,14 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-05
 
+### Launch Screen And Local Loading States
+
+- Fixed the Android launch screen to use a white background across light/dark and Android 12+ resources, with the centered splash vector scaled inside the system safe area so the app icon is not clipped.
+- Added the tracked root `assets/` directory and registered it in `pubspec.yaml` for upcoming static app assets.
+- Added `assets/icons/luminous_app_icon.png`, configured `flutter_launcher_icons`, and regenerated launcher icons for Android, iOS, Web, Windows, and macOS with a white adaptive-icon background.
+- Reworked main-tab loading states away from full-page skeletons: static page headers/actions and mock-only content render immediately, while Today, Record, Medicine, and Mine show smaller local skeleton sections only where backend-backed data is still loading.
+- More now renders its static mock dashboard during the local repository Future instead of flashing a page-level skeleton.
+
 ### Settings Child Pages
 
 - Removed the unused shared `AppBottomSheet` helper after settings interactions moved to standard child pages.

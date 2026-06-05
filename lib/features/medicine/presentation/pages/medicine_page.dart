@@ -63,7 +63,7 @@ class MedicinePage extends ConsumerWidget {
             onMarkDose: (currentMedicineId, action) =>
                 _markDose(context, ref, currentMedicineId, action),
           ),
-          loading: () => const MedicineLoadingView(),
+          loading: () => const MedicineWorkspaceLoadingView(),
           error: (_, __) => MedicineErrorView(
             onRetry: () => ref.invalidate(medicineWorkspaceProvider),
           ),

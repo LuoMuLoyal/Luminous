@@ -136,6 +136,125 @@ class AppStateSkeletonView extends StatelessWidget {
   }
 }
 
+class AppInlineSkeleton extends StatelessWidget {
+  const AppInlineSkeleton({
+    super.key,
+    required this.children,
+    this.spacing = AppSpacingTokens.sm,
+  });
+
+  final List<Widget> children;
+  final double spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+
+    return Shimmer.fromColors(
+      baseColor: surface.canvas.withValues(
+        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
+      ),
+      highlightColor: surface.canvasSoft2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (var index = 0; index < children.length; index += 1) ...[
+            children[index],
+            if (index < children.length - 1) SizedBox(height: spacing),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class AppInlineSkeletonBlock extends StatelessWidget {
+  const AppInlineSkeletonBlock({
+    super.key,
+    required this.height,
+    this.width,
+    this.widthFactor = 1,
+    this.radius = AppRadiusTokens.lg,
+  }) : assert(widthFactor > 0 && widthFactor <= 1);
+
+  final double height;
+  final double? width;
+  final double widthFactor;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    final block = DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvas,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+      child: SizedBox(height: height, width: width),
+    );
+
+    if (width != null) {
+      return block;
+    }
+
+    return FractionallySizedBox(
+      widthFactor: widthFactor,
+      alignment: Alignment.centerLeft,
+      child: block,
+    );
+  }
+}
+
+class AppInlineSkeletonCircle extends StatelessWidget {
+  const AppInlineSkeletonCircle({super.key, required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(color: surface.canvas, shape: BoxShape.circle),
+      child: SizedBox.square(dimension: size),
+    );
+  }
+}
+
+class AppInlineSkeletonSection extends StatelessWidget {
+  const AppInlineSkeletonSection({
+    super.key,
+    required this.children,
+    this.height,
+  });
+
+  final List<Widget> children;
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvas,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: surface.hairline),
+        boxShadow: AppShadowTokens.level1,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        child: SizedBox(
+          height: height,
+          child: AppInlineSkeleton(children: children),
+        ),
+      ),
+    );
+  }
+}
+
 class AppStateSkeletonBlock {
   const AppStateSkeletonBlock({
     required this.height,

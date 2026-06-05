@@ -8,55 +8,24 @@ import 'package:luminous/features/today/presentation/widgets/today_components.da
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayDashboardView extends StatelessWidget {
-  const TodayDashboardView({super.key, required this.dashboard});
+  const TodayDashboardView({
+    super.key,
+    required this.dashboard,
+    this.isLoading = false,
+  });
 
   final TodayDashboard dashboard;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
     final content = isDesktop
-        ? _DesktopTodayDashboard(dashboard: dashboard)
-        : _MobileTodayDashboard(dashboard: dashboard);
+        ? _DesktopTodayDashboard(dashboard: dashboard, isLoading: isLoading)
+        : _MobileTodayDashboard(dashboard: dashboard, isLoading: isLoading);
 
     return content;
-  }
-}
-
-class TodayLoadingView extends StatelessWidget {
-  const TodayLoadingView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
-
-    return AppStateSkeletonView(
-      padding: EdgeInsets.fromLTRB(
-        isDesktop ? AppSpacingTokens.md : AppSpacingTokens.md,
-        isDesktop ? AppSpacingTokens.lg : AppSpacingTokens.sm,
-        isDesktop ? AppSpacingTokens.md : AppSpacingTokens.md,
-        AppSpacingTokens.xl,
-      ),
-      blocks: isDesktop
-          ? const [
-              AppStateSkeletonBlock(height: 180, radius: 24),
-              AppStateSkeletonBlock(height: 150, widthFactor: 0.72),
-              AppStateSkeletonBlock(height: 118),
-              AppStateSkeletonBlock(height: 126, widthFactor: 0.78),
-            ]
-          : const [
-              AppStateSkeletonBlock(height: 44, radius: 20),
-              AppStateSkeletonBlock(height: 116, radius: 24),
-              AppStateSkeletonBlock(height: 150, radius: 24),
-              AppStateSkeletonBlock(height: 92, radius: 24),
-              AppStateSkeletonBlock(height: 112, radius: 24),
-              AppStateSkeletonBlock(height: 110, radius: 24),
-              AppStateSkeletonBlock(height: 92, radius: 24),
-              AppStateSkeletonBlock(height: 104, radius: 24),
-            ],
-    );
   }
 }
 
@@ -104,9 +73,13 @@ class TodayEmptyView extends StatelessWidget {
 }
 
 class _MobileTodayDashboard extends StatelessWidget {
-  const _MobileTodayDashboard({required this.dashboard});
+  const _MobileTodayDashboard({
+    required this.dashboard,
+    required this.isLoading,
+  });
 
   final TodayDashboard dashboard;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -115,11 +88,17 @@ class _MobileTodayDashboard extends StatelessWidget {
         hasUnreadNotifications: dashboard.user.hasUnreadNotifications,
       ),
       _TodayHero(moment: dashboard.user.moment),
-      _TodayWaterCard(water: dashboard.water),
-      _TodayMedicationCard(medication: dashboard.medication),
-      _TodayHealthSummaryCard(vitals: dashboard.vitals),
+      _TodayWaterCard(water: dashboard.water, isLoading: isLoading),
+      _TodayMedicationCard(
+        medication: dashboard.medication,
+        isLoading: isLoading,
+      ),
+      _TodayHealthSummaryCard(vitals: dashboard.vitals, isLoading: isLoading),
       _TodayMealSuggestionCard(mealSuggestion: dashboard.mealSuggestion),
-      _TodayEnvironmentCard(environment: dashboard.environment),
+      _TodayEnvironmentCard(
+        environment: dashboard.environment,
+        isLoading: isLoading,
+      ),
       _TodayLumiCard(suggestion: dashboard.lumiSuggestion),
     ];
 
@@ -141,9 +120,13 @@ class _MobileTodayDashboard extends StatelessWidget {
 }
 
 class _DesktopTodayDashboard extends StatelessWidget {
-  const _DesktopTodayDashboard({required this.dashboard});
+  const _DesktopTodayDashboard({
+    required this.dashboard,
+    required this.isLoading,
+  });
 
   final TodayDashboard dashboard;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -161,16 +144,29 @@ class _DesktopTodayDashboard extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(flex: 5, child: _TodayWaterCard(water: dashboard.water)),
+            Expanded(
+              flex: 5,
+              child: _TodayWaterCard(
+                water: dashboard.water,
+                isLoading: isLoading,
+              ),
+            ),
             const SizedBox(width: AppSpacingTokens.md),
             Expanded(
               flex: 5,
-              child: _TodayMedicationCard(medication: dashboard.medication),
+              child: _TodayMedicationCard(
+                medication: dashboard.medication,
+                isLoading: isLoading,
+              ),
             ),
           ],
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _TodayHealthSummaryCard(vitals: dashboard.vitals, desktop: true),
+        _TodayHealthSummaryCard(
+          vitals: dashboard.vitals,
+          desktop: true,
+          isLoading: isLoading,
+        ),
         const SizedBox(height: AppSpacingTokens.md),
         _TodayMealSuggestionCard(
           mealSuggestion: dashboard.mealSuggestion,
@@ -181,7 +177,10 @@ class _DesktopTodayDashboard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: _TodayEnvironmentCard(environment: dashboard.environment),
+              child: _TodayEnvironmentCard(
+                environment: dashboard.environment,
+                isLoading: isLoading,
+              ),
             ),
             const SizedBox(width: AppSpacingTokens.md),
             Expanded(
@@ -356,9 +355,10 @@ class _TodayHero extends StatelessWidget {
 }
 
 class _TodayWaterCard extends StatelessWidget {
-  const _TodayWaterCard({required this.water});
+  const _TodayWaterCard({required this.water, required this.isLoading});
 
   final TodayWaterSummary water;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -384,54 +384,71 @@ class _TodayWaterCard extends StatelessWidget {
                 compact: true,
               ),
               const SizedBox(height: AppSpacingTokens.md),
-              Row(
-                children: [
-                  TodayWaterArc(
-                    completedCount: water.completedCount,
-                    targetCount: water.targetCount,
-                    size: compact ? 112 : 128,
-                  ),
-                  const SizedBox(width: AppSpacingTokens.lg),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            style: typography.displayMd.copyWith(
-                              color: theme.colorScheme.onSurface,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            children: [
-                              TextSpan(text: '${water.completedCount}'),
-                              TextSpan(
-                                text: ' ${l10n.todayWaterUnit}',
-                                style: typography.bodyMd.copyWith(
-                                  color: surface.body,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacingTokens.xs),
-                        Text(
-                          l10n.todayWaterGoalCount(water.targetCount),
-                          style: typography.bodySm.copyWith(
-                            color: surface.body,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacingTokens.md),
-                        Text(
-                          l10n.todayWaterRemainingCount(water.remainingCount),
-                          style: typography.bodyMdStrong.copyWith(
-                            color: TodayPalette.brand,
-                          ),
-                        ),
-                      ],
+              if (isLoading)
+                Row(
+                  children: [
+                    AppInlineSkeletonCircle(size: compact ? 112 : 128),
+                    const SizedBox(width: AppSpacingTokens.lg),
+                    const Expanded(
+                      child: AppInlineSkeleton(
+                        children: [
+                          AppInlineSkeletonBlock(height: 28, widthFactor: 0.45),
+                          AppInlineSkeletonBlock(height: 16, widthFactor: 0.8),
+                          AppInlineSkeletonBlock(height: 18, widthFactor: 0.62),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                )
+              else
+                Row(
+                  children: [
+                    TodayWaterArc(
+                      completedCount: water.completedCount,
+                      targetCount: water.targetCount,
+                      size: compact ? 112 : 128,
+                    ),
+                    const SizedBox(width: AppSpacingTokens.lg),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style: typography.displayMd.copyWith(
+                                color: theme.colorScheme.onSurface,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              children: [
+                                TextSpan(text: '${water.completedCount}'),
+                                TextSpan(
+                                  text: ' ${l10n.todayWaterUnit}',
+                                  style: typography.bodyMd.copyWith(
+                                    color: surface.body,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacingTokens.xs),
+                          Text(
+                            l10n.todayWaterGoalCount(water.targetCount),
+                            style: typography.bodySm.copyWith(
+                              color: surface.body,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacingTokens.md),
+                          Text(
+                            l10n.todayWaterRemainingCount(water.remainingCount),
+                            style: typography.bodyMdStrong.copyWith(
+                              color: TodayPalette.brand,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
             ],
           );
         },
@@ -441,9 +458,13 @@ class _TodayWaterCard extends StatelessWidget {
 }
 
 class _TodayMedicationCard extends StatelessWidget {
-  const _TodayMedicationCard({required this.medication});
+  const _TodayMedicationCard({
+    required this.medication,
+    required this.isLoading,
+  });
 
   final TodayMedicationSummary medication;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -478,48 +499,56 @@ class _TodayMedicationCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          Row(
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: TodayPalette.amberSoft,
-                  shape: BoxShape.circle,
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(AppSpacingTokens.md),
-                  child: Icon(
-                    Icons.medication_rounded,
-                    color: TodayPalette.amber,
-                    size: 30,
+          if (isLoading)
+            const AppInlineSkeleton(
+              children: [
+                AppInlineSkeletonBlock(height: 20, widthFactor: 0.72),
+                AppInlineSkeletonBlock(height: 16, widthFactor: 0.86),
+              ],
+            )
+          else
+            Row(
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: TodayPalette.amberSoft,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(AppSpacingTokens.md),
+                    child: Icon(
+                      Icons.medication_rounded,
+                      color: TodayPalette.amber,
+                      size: 30,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: AppSpacingTokens.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.todayMedicationSummary(
-                        medication.medicineCount,
-                        medication.pendingCount,
+                const SizedBox(width: AppSpacingTokens.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.todayMedicationSummary(
+                          medication.medicineCount,
+                          medication.pendingCount,
+                        ),
+                        style: typography.bodyMdStrong,
                       ),
-                      style: typography.bodyMdStrong,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.xs),
-                    Text(
-                      l10n.todayMedicationNextDose(
-                        medication.nextDoseTimeLabel,
-                        medication.nextMedicineName ??
-                            _medicationName(l10n, medication.nextMedicine),
+                      const SizedBox(height: AppSpacingTokens.xs),
+                      Text(
+                        l10n.todayMedicationNextDose(
+                          medication.nextDoseTimeLabel,
+                          medication.nextMedicineName ??
+                              _medicationName(l10n, medication.nextMedicine),
+                        ),
+                        style: typography.bodySm.copyWith(color: surface.body),
                       ),
-                      style: typography.bodySm.copyWith(color: surface.body),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );
@@ -527,9 +556,14 @@ class _TodayMedicationCard extends StatelessWidget {
 }
 
 class _TodayHealthSummaryCard extends StatelessWidget {
-  const _TodayHealthSummaryCard({required this.vitals, this.desktop = false});
+  const _TodayHealthSummaryCard({
+    required this.vitals,
+    required this.isLoading,
+    this.desktop = false,
+  });
 
   final List<TodayVitalSummary> vitals;
+  final bool isLoading;
   final bool desktop;
 
   @override
@@ -575,7 +609,16 @@ class _TodayHealthSummaryCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          TodayMetricList(desktop: desktop, children: metricTiles),
+          if (isLoading)
+            const AppInlineSkeleton(
+              children: [
+                AppInlineSkeletonBlock(height: 18, widthFactor: 0.42),
+                AppInlineSkeletonBlock(height: 34),
+                AppInlineSkeletonBlock(height: 18, widthFactor: 0.72),
+              ],
+            )
+          else
+            TodayMetricList(desktop: desktop, children: metricTiles),
         ],
       ),
     );
@@ -680,9 +723,13 @@ class _TodayMealSuggestionCard extends StatelessWidget {
 }
 
 class _TodayEnvironmentCard extends StatelessWidget {
-  const _TodayEnvironmentCard({required this.environment});
+  const _TodayEnvironmentCard({
+    required this.environment,
+    required this.isLoading,
+  });
 
   final TodayEnvironmentSummary environment;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -712,7 +759,15 @@ class _TodayEnvironmentCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          TodaySignalList(children: chips),
+          if (isLoading)
+            const AppInlineSkeleton(
+              children: [
+                AppInlineSkeletonBlock(height: 18, widthFactor: 0.46),
+                AppInlineSkeletonBlock(height: 32),
+              ],
+            )
+          else
+            TodaySignalList(children: chips),
         ],
       ),
     );
