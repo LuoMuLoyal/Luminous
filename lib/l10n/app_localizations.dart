@@ -2888,6 +2888,72 @@ abstract class AppLocalizations {
   /// **'账号与安全'**
   String get authAccountSettingsFormTitle;
 
+  /// No description provided for @authAccountOverviewTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号状态'**
+  String get authAccountOverviewTitle;
+
+  /// No description provided for @authAccountOverviewEmail.
+  ///
+  /// In zh, this message translates to:
+  /// **'邮箱'**
+  String get authAccountOverviewEmail;
+
+  /// No description provided for @authAccountOverviewEmailVerified.
+  ///
+  /// In zh, this message translates to:
+  /// **'邮箱验证'**
+  String get authAccountOverviewEmailVerified;
+
+  /// No description provided for @authAccountOverviewPassword.
+  ///
+  /// In zh, this message translates to:
+  /// **'密码'**
+  String get authAccountOverviewPassword;
+
+  /// No description provided for @authAccountOverviewLastLogin.
+  ///
+  /// In zh, this message translates to:
+  /// **'上次登录'**
+  String get authAccountOverviewLastLogin;
+
+  /// No description provided for @authEmailMissing.
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置'**
+  String get authEmailMissing;
+
+  /// No description provided for @authEmailVerifiedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'{time} 已验证'**
+  String authEmailVerifiedAt(String time);
+
+  /// No description provided for @authEmailUnverifiedStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'未验证'**
+  String get authEmailUnverifiedStatus;
+
+  /// No description provided for @authPasswordSetStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'已设置'**
+  String get authPasswordSetStatus;
+
+  /// No description provided for @authPasswordUnsetStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置'**
+  String get authPasswordUnsetStatus;
+
+  /// No description provided for @authLastLoginUnknown.
+  ///
+  /// In zh, this message translates to:
+  /// **'未知'**
+  String get authLastLoginUnknown;
+
   /// No description provided for @authProfileSectionTitle.
   ///
   /// In zh, this message translates to:
@@ -2942,11 +3008,89 @@ abstract class AppLocalizations {
   /// **'当前邮箱仍未验证；你仍可以进入更换邮箱流程。'**
   String get authEmailUnverifiedDescription;
 
+  /// No description provided for @authEmailAddAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加邮箱'**
+  String get authEmailAddAction;
+
   /// No description provided for @authEmailChangeAction.
   ///
   /// In zh, this message translates to:
   /// **'更换邮箱'**
   String get authEmailChangeAction;
+
+  /// No description provided for @authLinkedIdentitiesSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'第三方身份'**
+  String get authLinkedIdentitiesSectionTitle;
+
+  /// No description provided for @authLinkedIdentityNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'尚未绑定第三方身份。'**
+  String get authLinkedIdentityNone;
+
+  /// No description provided for @authLinkedIdentityEmailMissing.
+  ///
+  /// In zh, this message translates to:
+  /// **'无第三方邮箱'**
+  String get authLinkedIdentityEmailMissing;
+
+  /// No description provided for @authLinkedIdentityLinkedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'{date} 绑定'**
+  String authLinkedIdentityLinkedAt(String date);
+
+  /// No description provided for @authIdentityProviderWechatWeb.
+  ///
+  /// In zh, this message translates to:
+  /// **'微信网页'**
+  String get authIdentityProviderWechatWeb;
+
+  /// No description provided for @authIdentityProviderWechatMobile.
+  ///
+  /// In zh, this message translates to:
+  /// **'微信移动端'**
+  String get authIdentityProviderWechatMobile;
+
+  /// No description provided for @authIdentityUnlinkAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'解绑'**
+  String get authIdentityUnlinkAction;
+
+  /// No description provided for @authIdentityUnlinkDisabledAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'保留'**
+  String get authIdentityUnlinkDisabledAction;
+
+  /// No description provided for @authIdentityUnlinkSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'身份已解绑。'**
+  String get authIdentityUnlinkSuccess;
+
+  /// No description provided for @authIdentityUnlinkConfirmTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'解绑身份'**
+  String get authIdentityUnlinkConfirmTitle;
+
+  /// No description provided for @authIdentityUnlinkConfirmMessage.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定要解绑 {provider}？'**
+  String authIdentityUnlinkConfirmMessage(String provider);
+
+  /// No description provided for @authCancelAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消'**
+  String get authCancelAction;
 
   /// No description provided for @authPasswordSectionTitle.
   ///
@@ -2959,6 +3103,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'修改后当前账号的 refresh 会话会全部失效，你需要重新登录。'**
   String get authPasswordSectionDescription;
+
+  /// No description provided for @authPasswordUnsetManagementHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前账号还没有本地密码。'**
+  String get authPasswordUnsetManagementHint;
 
   /// No description provided for @authCurrentPasswordLabel.
   ///
@@ -3001,6 +3151,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'这是高风险操作；提交后会清空本地会话并让 Lucent 将账号标记为删除状态。'**
   String get authDeleteAccountSectionDescription;
+
+  /// No description provided for @authDeleteAccountPasswordRequiredHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前账号暂不能在这里注销。'**
+  String get authDeleteAccountPasswordRequiredHint;
 
   /// No description provided for @authDeleteAccountHint.
   ///

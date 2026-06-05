@@ -70,6 +70,7 @@ Class | Method | HTTP request | Description
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerChangePasswordV1**](doc/AccountApi.md#accountcontrollerchangepasswordv1) | **POST** /api/v1/account/password | Change authenticated account password
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerDeleteAccountV1**](doc/AccountApi.md#accountcontrollerdeleteaccountv1) | **DELETE** /api/v1/account | Delete authenticated account
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerGetAccountV1**](doc/AccountApi.md#accountcontrollergetaccountv1) | **GET** /api/v1/account | Get authenticated account profile
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerUnlinkIdentityV1**](doc/AccountApi.md#accountcontrollerunlinkidentityv1) | **DELETE** /api/v1/account/identities/{identityId} | Unlink authenticated account OAuth identity
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerUpdateAccountV1**](doc/AccountApi.md#accountcontrollerupdateaccountv1) | **PATCH** /api/v1/account | Update authenticated account profile
 [*AppApi*](doc/AppApi.md) | [**appControllerGetHealthV1**](doc/AppApi.md#appcontrollergethealthv1) | **GET** /api/v1/health |
 [*AuthApi*](doc/AuthApi.md) | [**authControllerCreateWechatWebAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址

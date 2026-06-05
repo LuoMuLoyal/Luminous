@@ -13,7 +13,6 @@ import 'package:lucent_openapi/src/model/medicine_detail_response_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_search_response_dto.dart';
 
 class MedicinesApi {
-
   final Dio _dio;
 
   const MedicinesApi(this._dio);
@@ -45,17 +44,19 @@ class MedicinesApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/medicines/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/medicines/{id}'.replaceAll(
+      '{'
+      r'id'
+      '}',
+      id.toString(),
+    );
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
         if (xBypassCache != null) r'x-bypass-cache': xBypassCache,
         ...?headers,
       },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
@@ -75,9 +76,14 @@ class MedicinesApi {
     MedicineDetailResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<MedicineDetailResponseDto, MedicineDetailResponseDto>(rawData, 'MedicineDetailResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<MedicineDetailResponseDto, MedicineDetailResponseDto>(
+              rawData,
+              'MedicineDetailResponseDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -138,10 +144,7 @@ _responseData = rawData == null ? null : deserialize<MedicineDetailResponseDto, 
         if (xBypassCache != null) r'x-bypass-cache': xBypassCache,
         ...?headers,
       },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
@@ -164,9 +167,14 @@ _responseData = rawData == null ? null : deserialize<MedicineDetailResponseDto, 
     MedicineSearchResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<MedicineSearchResponseDto, MedicineSearchResponseDto>(rawData, 'MedicineSearchResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<MedicineSearchResponseDto, MedicineSearchResponseDto>(
+              rawData,
+              'MedicineSearchResponseDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -188,5 +196,4 @@ _responseData = rawData == null ? null : deserialize<MedicineSearchResponseDto, 
       extra: _response.extra,
     );
   }
-
 }

@@ -42,6 +42,7 @@ Map<String, dynamic> _$AuthUserToJson(_AuthUser instance) => <String, dynamic>{
 
 _AuthLinkedIdentity _$AuthLinkedIdentityFromJson(Map<String, dynamic> json) =>
     _AuthLinkedIdentity(
+      id: json['id'] as String,
       provider: json['provider'] as String,
       email: json['email'] as String?,
       emailVerifiedAt: json['emailVerifiedAt'] == null
@@ -52,6 +53,7 @@ _AuthLinkedIdentity _$AuthLinkedIdentityFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$AuthLinkedIdentityToJson(_AuthLinkedIdentity instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'provider': instance.provider,
       'email': instance.email,
       'emailVerifiedAt': instance.emailVerifiedAt?.toIso8601String(),

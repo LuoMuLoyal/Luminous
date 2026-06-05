@@ -13,6 +13,7 @@ Method | HTTP request | Description
 [**accountControllerChangePasswordV1**](AccountApi.md#accountcontrollerchangepasswordv1) | **POST** /api/v1/account/password | Change authenticated account password
 [**accountControllerDeleteAccountV1**](AccountApi.md#accountcontrollerdeleteaccountv1) | **DELETE** /api/v1/account | Delete authenticated account
 [**accountControllerGetAccountV1**](AccountApi.md#accountcontrollergetaccountv1) | **GET** /api/v1/account | Get authenticated account profile
+[**accountControllerUnlinkIdentityV1**](AccountApi.md#accountcontrollerunlinkidentityv1) | **DELETE** /api/v1/account/identities/{identityId} | Unlink authenticated account OAuth identity
 [**accountControllerUpdateAccountV1**](AccountApi.md#accountcontrollerupdateaccountv1) | **PATCH** /api/v1/account | Update authenticated account profile
 
 
@@ -160,6 +161,47 @@ try {
 
 ### Parameters
 This endpoint does not need any parameter.
+
+### Return type
+
+[**AccountResponseDto**](AccountResponseDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **accountControllerUnlinkIdentityV1**
+> AccountResponseDto accountControllerUnlinkIdentityV1(identityId)
+
+Unlink authenticated account OAuth identity
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getAccountApi();
+final String identityId = identityId_example; // String |
+
+try {
+    final response = api.accountControllerUnlinkIdentityV1(identityId);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling AccountApi->accountControllerUnlinkIdentityV1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **identityId** | **String**|  |
 
 ### Return type
 

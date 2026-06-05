@@ -16,6 +16,8 @@ part 'account_identity_dto.g.dart';
 class AccountIdentityDto {
   /// Returns a new [AccountIdentityDto] instance.
   AccountIdentityDto({
+    required this.id,
+
     required this.provider,
 
     required this.email,
@@ -24,6 +26,10 @@ class AccountIdentityDto {
 
     required this.linkedAt,
   });
+
+  /// Account identity ID.
+  @JsonKey(name: r'id', required: true, includeIfNull: false)
+  final String id;
 
   /// OAuth provider name.
   @JsonKey(name: r'provider', required: true, includeIfNull: false)
@@ -45,6 +51,7 @@ class AccountIdentityDto {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AccountIdentityDto &&
+          other.id == id &&
           other.provider == provider &&
           other.email == email &&
           other.emailVerifiedAt == emailVerifiedAt &&
@@ -52,6 +59,7 @@ class AccountIdentityDto {
 
   @override
   int get hashCode =>
+      id.hashCode +
       provider.hashCode +
       (email == null ? 0 : email.hashCode) +
       (emailVerifiedAt == null ? 0 : emailVerifiedAt.hashCode) +

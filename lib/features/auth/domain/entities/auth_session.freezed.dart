@@ -311,7 +311,7 @@ as DateTime,
 /// @nodoc
 mixin _$AuthLinkedIdentity {
 
- String get provider; String? get email; DateTime? get emailVerifiedAt; DateTime get linkedAt;
+ String get id; String get provider; String? get email; DateTime? get emailVerifiedAt; DateTime get linkedAt;
 /// Create a copy of AuthLinkedIdentity
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -324,16 +324,16 @@ $AuthLinkedIdentityCopyWith<AuthLinkedIdentity> get copyWith => _$AuthLinkedIden
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthLinkedIdentity&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.email, email) || other.email == email)&&(identical(other.emailVerifiedAt, emailVerifiedAt) || other.emailVerifiedAt == emailVerifiedAt)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthLinkedIdentity&&(identical(other.id, id) || other.id == id)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.email, email) || other.email == email)&&(identical(other.emailVerifiedAt, emailVerifiedAt) || other.emailVerifiedAt == emailVerifiedAt)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,email,emailVerifiedAt,linkedAt);
+int get hashCode => Object.hash(runtimeType,id,provider,email,emailVerifiedAt,linkedAt);
 
 @override
 String toString() {
-  return 'AuthLinkedIdentity(provider: $provider, email: $email, emailVerifiedAt: $emailVerifiedAt, linkedAt: $linkedAt)';
+  return 'AuthLinkedIdentity(id: $id, provider: $provider, email: $email, emailVerifiedAt: $emailVerifiedAt, linkedAt: $linkedAt)';
 }
 
 
@@ -344,7 +344,7 @@ abstract mixin class $AuthLinkedIdentityCopyWith<$Res>  {
   factory $AuthLinkedIdentityCopyWith(AuthLinkedIdentity value, $Res Function(AuthLinkedIdentity) _then) = _$AuthLinkedIdentityCopyWithImpl;
 @useResult
 $Res call({
- String provider, String? email, DateTime? emailVerifiedAt, DateTime linkedAt
+ String id, String provider, String? email, DateTime? emailVerifiedAt, DateTime linkedAt
 });
 
 
@@ -361,9 +361,10 @@ class _$AuthLinkedIdentityCopyWithImpl<$Res>
 
 /// Create a copy of AuthLinkedIdentity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? provider = null,Object? email = freezed,Object? emailVerifiedAt = freezed,Object? linkedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? provider = null,Object? email = freezed,Object? emailVerifiedAt = freezed,Object? linkedAt = null,}) {
   return _then(_self.copyWith(
-provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,emailVerifiedAt: freezed == emailVerifiedAt ? _self.emailVerifiedAt : emailVerifiedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,linkedAt: null == linkedAt ? _self.linkedAt : linkedAt // ignore: cast_nullable_to_non_nullable
@@ -452,10 +453,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String provider,  String? email,  DateTime? emailVerifiedAt,  DateTime linkedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String provider,  String? email,  DateTime? emailVerifiedAt,  DateTime linkedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthLinkedIdentity() when $default != null:
-return $default(_that.provider,_that.email,_that.emailVerifiedAt,_that.linkedAt);case _:
+return $default(_that.id,_that.provider,_that.email,_that.emailVerifiedAt,_that.linkedAt);case _:
   return orElse();
 
 }
@@ -473,10 +474,10 @@ return $default(_that.provider,_that.email,_that.emailVerifiedAt,_that.linkedAt)
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String provider,  String? email,  DateTime? emailVerifiedAt,  DateTime linkedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String provider,  String? email,  DateTime? emailVerifiedAt,  DateTime linkedAt)  $default,) {final _that = this;
 switch (_that) {
 case _AuthLinkedIdentity():
-return $default(_that.provider,_that.email,_that.emailVerifiedAt,_that.linkedAt);case _:
+return $default(_that.id,_that.provider,_that.email,_that.emailVerifiedAt,_that.linkedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -493,10 +494,10 @@ return $default(_that.provider,_that.email,_that.emailVerifiedAt,_that.linkedAt)
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String provider,  String? email,  DateTime? emailVerifiedAt,  DateTime linkedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String provider,  String? email,  DateTime? emailVerifiedAt,  DateTime linkedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthLinkedIdentity() when $default != null:
-return $default(_that.provider,_that.email,_that.emailVerifiedAt,_that.linkedAt);case _:
+return $default(_that.id,_that.provider,_that.email,_that.emailVerifiedAt,_that.linkedAt);case _:
   return null;
 
 }
@@ -508,9 +509,10 @@ return $default(_that.provider,_that.email,_that.emailVerifiedAt,_that.linkedAt)
 @JsonSerializable()
 
 class _AuthLinkedIdentity implements AuthLinkedIdentity {
-  const _AuthLinkedIdentity({required this.provider, required this.email, required this.emailVerifiedAt, required this.linkedAt});
+  const _AuthLinkedIdentity({required this.id, required this.provider, required this.email, required this.emailVerifiedAt, required this.linkedAt});
   factory _AuthLinkedIdentity.fromJson(Map<String, dynamic> json) => _$AuthLinkedIdentityFromJson(json);
 
+@override final  String id;
 @override final  String provider;
 @override final  String? email;
 @override final  DateTime? emailVerifiedAt;
@@ -529,16 +531,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthLinkedIdentity&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.email, email) || other.email == email)&&(identical(other.emailVerifiedAt, emailVerifiedAt) || other.emailVerifiedAt == emailVerifiedAt)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthLinkedIdentity&&(identical(other.id, id) || other.id == id)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.email, email) || other.email == email)&&(identical(other.emailVerifiedAt, emailVerifiedAt) || other.emailVerifiedAt == emailVerifiedAt)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,email,emailVerifiedAt,linkedAt);
+int get hashCode => Object.hash(runtimeType,id,provider,email,emailVerifiedAt,linkedAt);
 
 @override
 String toString() {
-  return 'AuthLinkedIdentity(provider: $provider, email: $email, emailVerifiedAt: $emailVerifiedAt, linkedAt: $linkedAt)';
+  return 'AuthLinkedIdentity(id: $id, provider: $provider, email: $email, emailVerifiedAt: $emailVerifiedAt, linkedAt: $linkedAt)';
 }
 
 
@@ -549,7 +551,7 @@ abstract mixin class _$AuthLinkedIdentityCopyWith<$Res> implements $AuthLinkedId
   factory _$AuthLinkedIdentityCopyWith(_AuthLinkedIdentity value, $Res Function(_AuthLinkedIdentity) _then) = __$AuthLinkedIdentityCopyWithImpl;
 @override @useResult
 $Res call({
- String provider, String? email, DateTime? emailVerifiedAt, DateTime linkedAt
+ String id, String provider, String? email, DateTime? emailVerifiedAt, DateTime linkedAt
 });
 
 
@@ -566,9 +568,10 @@ class __$AuthLinkedIdentityCopyWithImpl<$Res>
 
 /// Create a copy of AuthLinkedIdentity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? provider = null,Object? email = freezed,Object? emailVerifiedAt = freezed,Object? linkedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? provider = null,Object? email = freezed,Object? emailVerifiedAt = freezed,Object? linkedAt = null,}) {
   return _then(_AuthLinkedIdentity(
-provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,emailVerifiedAt: freezed == emailVerifiedAt ? _self.emailVerifiedAt : emailVerifiedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,linkedAt: null == linkedAt ? _self.linkedAt : linkedAt // ignore: cast_nullable_to_non_nullable

@@ -29,6 +29,7 @@ abstract class AuthUser with _$AuthUser {
 @freezed
 abstract class AuthLinkedIdentity with _$AuthLinkedIdentity {
   const factory AuthLinkedIdentity({
+    required String id,
     required String provider,
     required String? email,
     required DateTime? emailVerifiedAt,

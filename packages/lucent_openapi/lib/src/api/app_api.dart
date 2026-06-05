@@ -9,9 +9,7 @@ import 'dart:convert';
 import 'package:lucent_openapi/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-
 class AppApi {
-
   final Dio _dio;
 
   const AppApi(this._dio);
@@ -40,13 +38,8 @@ class AppApi {
     final _path = r'/api/v1/health';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
@@ -60,5 +53,4 @@ class AppApi {
 
     return _response;
   }
-
 }

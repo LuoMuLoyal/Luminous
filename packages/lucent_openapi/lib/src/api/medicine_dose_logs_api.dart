@@ -15,7 +15,6 @@ import 'package:lucent_openapi/src/model/dose_log_response_dto.dart';
 import 'package:lucent_openapi/src/model/update_dose_log_dto.dart';
 
 class MedicineDoseLogsApi {
-
   final Dio _dio;
 
   const MedicineDoseLogsApi(this._dio);
@@ -46,13 +45,8 @@ class MedicineDoseLogsApi {
     final _path = r'/api/v1/me/medicine-dose-logs';
     final _options = Options(
       method: r'POST',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -61,13 +55,9 @@ class MedicineDoseLogsApi {
 
     try {
       _bodyData = jsonEncode(createDoseLogDto);
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
-          _dio.options,
-          _path,
-        ),
+        requestOptions: _options.compose(_dio.options, _path),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -86,9 +76,14 @@ class MedicineDoseLogsApi {
     DoseLogResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLogResponseDto>(rawData, 'DoseLogResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<DoseLogResponseDto, DoseLogResponseDto>(
+              rawData,
+              'DoseLogResponseDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -134,16 +129,16 @@ _responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLog
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll(
+      '{'
+      r'id'
+      '}',
+      id.toString(),
+    );
     final _options = Options(
       method: r'DELETE',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
@@ -184,19 +179,12 @@ _responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLog
     final _path = r'/api/v1/me/medicine-dose-logs';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
-    final _queryParameters = <String, dynamic>{
-      r'date': date,
-    };
+    final _queryParameters = <String, dynamic>{r'date': date};
 
     final _response = await _dio.request<Object>(
       _path,
@@ -210,9 +198,14 @@ _responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLog
     DoseLogListResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<DoseLogListResponseDto, DoseLogListResponseDto>(rawData, 'DoseLogListResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<DoseLogListResponseDto, DoseLogListResponseDto>(
+              rawData,
+              'DoseLogListResponseDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -260,16 +253,16 @@ _responseData = rawData == null ? null : deserialize<DoseLogListResponseDto, Dos
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll(
+      '{'
+      r'id'
+      '}',
+      id.toString(),
+    );
     final _options = Options(
       method: r'PATCH',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -278,13 +271,9 @@ _responseData = rawData == null ? null : deserialize<DoseLogListResponseDto, Dos
 
     try {
       _bodyData = jsonEncode(updateDoseLogDto);
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
-          _dio.options,
-          _path,
-        ),
+        requestOptions: _options.compose(_dio.options, _path),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -303,9 +292,14 @@ _responseData = rawData == null ? null : deserialize<DoseLogListResponseDto, Dos
     DoseLogResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLogResponseDto>(rawData, 'DoseLogResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<DoseLogResponseDto, DoseLogResponseDto>(
+              rawData,
+              'DoseLogResponseDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -327,5 +321,4 @@ _responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLog
       extra: _response.extra,
     );
   }
-
 }

@@ -524,6 +524,24 @@
   "authChangeEmailSubmit": "Update email",
   "authChangeEmailSuccess": "Email updated.",
   "authAccountSettingsFormTitle": "Account and security",
+  "authAccountOverviewTitle": "Account status",
+  "authAccountOverviewEmail": "Email",
+  "authAccountOverviewEmailVerified": "Email verification",
+  "authAccountOverviewPassword": "Password",
+  "authAccountOverviewLastLogin": "Last login",
+  "authEmailMissing": "Not set",
+  "authEmailVerifiedAt": "Verified {time}",
+  "@authEmailVerifiedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "authEmailUnverifiedStatus": "Unverified",
+  "authPasswordSetStatus": "Set",
+  "authPasswordUnsetStatus": "Not set",
+  "authLastLoginUnknown": "Unknown",
   "authProfileSectionTitle": "Profile details",
   "authProfileSectionDescription": "Update nickname or avatar URL; leaving a field empty will clear it under the current Lucent rules.",
   "authAvatarLabel": "Avatar URL",
@@ -533,9 +551,37 @@
   "authEmailSectionTitle": "Login email",
   "authEmailVerifiedDescription": "This email is already verified, and you can continue to the change-email flow.",
   "authEmailUnverifiedDescription": "This email is still unverified; you can still continue to the change-email flow.",
+  "authEmailAddAction": "Add email",
   "authEmailChangeAction": "Change email",
+  "authLinkedIdentitiesSectionTitle": "Linked identities",
+  "authLinkedIdentityNone": "No third-party identity linked.",
+  "authLinkedIdentityEmailMissing": "No provider email",
+  "authLinkedIdentityLinkedAt": "Linked {date}",
+  "@authLinkedIdentityLinkedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "authIdentityProviderWechatWeb": "WeChat Web",
+  "authIdentityProviderWechatMobile": "WeChat Mobile",
+  "authIdentityUnlinkAction": "Unlink",
+  "authIdentityUnlinkDisabledAction": "Keep",
+  "authIdentityUnlinkSuccess": "Identity unlinked.",
+  "authIdentityUnlinkConfirmTitle": "Unlink identity",
+  "authIdentityUnlinkConfirmMessage": "Unlink {provider} from this account?",
+  "@authIdentityUnlinkConfirmMessage": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "authCancelAction": "Cancel",
   "authPasswordSectionTitle": "Change password",
   "authPasswordSectionDescription": "Changing the password invalidates all refresh sessions for this account, so you will need to sign in again.",
+  "authPasswordUnsetManagementHint": "This account does not have a local password yet.",
   "authCurrentPasswordLabel": "Current password",
   "authCurrentPasswordRequiredToast": "Please enter your current password.",
   "authNewPasswordRequiredToast": "Please enter your new password.",
@@ -543,6 +589,7 @@
   "authChangePasswordSuccess": "Password updated. Please sign in again.",
   "authDeleteAccountSectionTitle": "Delete account",
   "authDeleteAccountSectionDescription": "This is a high-risk action; submitting it clears the local session and asks Lucent to soft-delete the account.",
+  "authDeleteAccountPasswordRequiredHint": "This account cannot be deleted from here yet.",
   "authDeleteAccountHint": "Enter your current password to confirm deletion",
   "authDeleteAccountAction": "Delete account",
   "authDeleteAccountSuccess": "Account deleted.",

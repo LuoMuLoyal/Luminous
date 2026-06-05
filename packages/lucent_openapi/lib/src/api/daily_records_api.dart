@@ -16,7 +16,6 @@ import 'package:lucent_openapi/src/model/daily_record_summary_response_dto.dart'
 import 'package:lucent_openapi/src/model/update_daily_record_dto.dart';
 
 class DailyRecordsApi {
-
   final Dio _dio;
 
   const DailyRecordsApi(this._dio);
@@ -47,13 +46,8 @@ class DailyRecordsApi {
     final _path = r'/api/v1/me/daily-records';
     final _options = Options(
       method: r'POST',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -62,13 +56,9 @@ class DailyRecordsApi {
 
     try {
       _bodyData = jsonEncode(createDailyRecordDto);
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
-          _dio.options,
-          _path,
-        ),
+        requestOptions: _options.compose(_dio.options, _path),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -87,9 +77,14 @@ class DailyRecordsApi {
     DailyRecordResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, DailyRecordResponseDto>(rawData, 'DailyRecordResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<DailyRecordResponseDto, DailyRecordResponseDto>(
+              rawData,
+              'DailyRecordResponseDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -135,16 +130,16 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/daily-records/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/me/daily-records/{id}'.replaceAll(
+      '{'
+      r'id'
+      '}',
+      id.toString(),
+    );
     final _options = Options(
       method: r'DELETE',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
@@ -191,13 +186,8 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
     final _path = r'/api/v1/me/daily-records';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
@@ -220,9 +210,14 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
     DailyRecordListResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<DailyRecordListResponseDto, DailyRecordListResponseDto>(rawData, 'DailyRecordListResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<DailyRecordListResponseDto, DailyRecordListResponseDto>(
+              rawData,
+              'DailyRecordListResponseDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -259,7 +254,8 @@ _responseData = rawData == null ? null : deserialize<DailyRecordListResponseDto,
   ///
   /// Returns a [Future] containing a [Response] with a [DailyRecordSummaryResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<DailyRecordSummaryResponseDto>> dailyRecordsControllerSummaryV1({
+  Future<Response<DailyRecordSummaryResponseDto>>
+  dailyRecordsControllerSummaryV1({
     required String date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -271,19 +267,12 @@ _responseData = rawData == null ? null : deserialize<DailyRecordListResponseDto,
     final _path = r'/api/v1/me/daily-records/summary';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
-    final _queryParameters = <String, dynamic>{
-      r'date': date,
-    };
+    final _queryParameters = <String, dynamic>{r'date': date};
 
     final _response = await _dio.request<Object>(
       _path,
@@ -297,9 +286,13 @@ _responseData = rawData == null ? null : deserialize<DailyRecordListResponseDto,
     DailyRecordSummaryResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<DailyRecordSummaryResponseDto, DailyRecordSummaryResponseDto>(rawData, 'DailyRecordSummaryResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              DailyRecordSummaryResponseDto,
+              DailyRecordSummaryResponseDto
+            >(rawData, 'DailyRecordSummaryResponseDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -347,16 +340,16 @@ _responseData = rawData == null ? null : deserialize<DailyRecordSummaryResponseD
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/daily-records/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/me/daily-records/{id}'.replaceAll(
+      '{'
+      r'id'
+      '}',
+      id.toString(),
+    );
     final _options = Options(
       method: r'PATCH',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
@@ -365,13 +358,9 @@ _responseData = rawData == null ? null : deserialize<DailyRecordSummaryResponseD
 
     try {
       _bodyData = jsonEncode(updateDailyRecordDto);
-
-    } catch(error, stackTrace) {
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
-          _dio.options,
-          _path,
-        ),
+        requestOptions: _options.compose(_dio.options, _path),
         type: DioExceptionType.unknown,
         error: error,
         stackTrace: stackTrace,
@@ -390,9 +379,14 @@ _responseData = rawData == null ? null : deserialize<DailyRecordSummaryResponseD
     DailyRecordResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, DailyRecordResponseDto>(rawData, 'DailyRecordResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<DailyRecordResponseDto, DailyRecordResponseDto>(
+              rawData,
+              'DailyRecordResponseDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -414,5 +408,4 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
       extra: _response.extra,
     );
   }
-
 }

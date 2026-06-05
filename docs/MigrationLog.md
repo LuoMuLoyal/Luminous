@@ -8,6 +8,8 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ### Account API Naming And Email Verification
 
+- Added account identity unlinking to the Lucent OpenAPI client (`31 paths / 83 schemas`), including identity IDs on `AuthLinkedIdentity` so Luminous can call the generated `AccountApi` unlink method.
+- Expanded `/account` into a management view for account status, linked OAuth identities, OAuth-only password/delete protection states, and confirmed identity unlinking.
 - Re-generated `packages/lucent_openapi` from Lucent `openapi.json` after removing legacy `/auth/me*` routes (`30 paths / 83 schemas`), deleting stale generated `MeResponseDto` / `UpdateMeDto` artifacts, and keeping account profile/security actions only under `AccountApi`.
 - Added a signed-in Mine account detail strip for email verification, password, linked identity count, and last login; tapping the account header now routes to `/account`.
 - Regenerated `packages/lucent_openapi` from Lucent `openapi.json` after adding the account resource (`33 paths / 87 schemas`), including generated `AccountApi`, `AccountDto`, `AccountIdentityDto`, and account email/profile response models.

@@ -1424,6 +1424,41 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authAccountSettingsFormTitle => '账号与安全';
 
   @override
+  String get authAccountOverviewTitle => '账号状态';
+
+  @override
+  String get authAccountOverviewEmail => '邮箱';
+
+  @override
+  String get authAccountOverviewEmailVerified => '邮箱验证';
+
+  @override
+  String get authAccountOverviewPassword => '密码';
+
+  @override
+  String get authAccountOverviewLastLogin => '上次登录';
+
+  @override
+  String get authEmailMissing => '未设置';
+
+  @override
+  String authEmailVerifiedAt(String time) {
+    return '$time 已验证';
+  }
+
+  @override
+  String get authEmailUnverifiedStatus => '未验证';
+
+  @override
+  String get authPasswordSetStatus => '已设置';
+
+  @override
+  String get authPasswordUnsetStatus => '未设置';
+
+  @override
+  String get authLastLoginUnknown => '未知';
+
+  @override
   String get authProfileSectionTitle => '资料信息';
 
   @override
@@ -1452,7 +1487,50 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authEmailUnverifiedDescription => '当前邮箱仍未验证；你仍可以进入更换邮箱流程。';
 
   @override
+  String get authEmailAddAction => '添加邮箱';
+
+  @override
   String get authEmailChangeAction => '更换邮箱';
+
+  @override
+  String get authLinkedIdentitiesSectionTitle => '第三方身份';
+
+  @override
+  String get authLinkedIdentityNone => '尚未绑定第三方身份。';
+
+  @override
+  String get authLinkedIdentityEmailMissing => '无第三方邮箱';
+
+  @override
+  String authLinkedIdentityLinkedAt(String date) {
+    return '$date 绑定';
+  }
+
+  @override
+  String get authIdentityProviderWechatWeb => '微信网页';
+
+  @override
+  String get authIdentityProviderWechatMobile => '微信移动端';
+
+  @override
+  String get authIdentityUnlinkAction => '解绑';
+
+  @override
+  String get authIdentityUnlinkDisabledAction => '保留';
+
+  @override
+  String get authIdentityUnlinkSuccess => '身份已解绑。';
+
+  @override
+  String get authIdentityUnlinkConfirmTitle => '解绑身份';
+
+  @override
+  String authIdentityUnlinkConfirmMessage(String provider) {
+    return '确定要解绑 $provider？';
+  }
+
+  @override
+  String get authCancelAction => '取消';
 
   @override
   String get authPasswordSectionTitle => '修改密码';
@@ -1460,6 +1538,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get authPasswordSectionDescription =>
       '修改后当前账号的 refresh 会话会全部失效，你需要重新登录。';
+
+  @override
+  String get authPasswordUnsetManagementHint => '当前账号还没有本地密码。';
 
   @override
   String get authCurrentPasswordLabel => '当前密码';
@@ -1482,6 +1563,9 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get authDeleteAccountSectionDescription =>
       '这是高风险操作；提交后会清空本地会话并让 Lucent 将账号标记为删除状态。';
+
+  @override
+  String get authDeleteAccountPasswordRequiredHint => '当前账号暂不能在这里注销。';
 
   @override
   String get authDeleteAccountHint => '输入当前密码以确认注销';

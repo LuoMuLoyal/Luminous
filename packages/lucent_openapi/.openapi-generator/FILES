@@ -193,4 +193,3 @@ lib/src/model/verify_email_data_dto.dart
 lib/src/model/verify_email_dto.dart
 lib/src/model/verify_email_response_dto.dart
 pubspec.yaml
-test/auth_api_test.dart

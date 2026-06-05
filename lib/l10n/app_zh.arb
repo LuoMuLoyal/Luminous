@@ -524,6 +524,24 @@
   "authChangeEmailSubmit": "更新邮箱",
   "authChangeEmailSuccess": "邮箱已更新。",
   "authAccountSettingsFormTitle": "账号与安全",
+  "authAccountOverviewTitle": "账号状态",
+  "authAccountOverviewEmail": "邮箱",
+  "authAccountOverviewEmailVerified": "邮箱验证",
+  "authAccountOverviewPassword": "密码",
+  "authAccountOverviewLastLogin": "上次登录",
+  "authEmailMissing": "未设置",
+  "authEmailVerifiedAt": "{time} 已验证",
+  "@authEmailVerifiedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "authEmailUnverifiedStatus": "未验证",
+  "authPasswordSetStatus": "已设置",
+  "authPasswordUnsetStatus": "未设置",
+  "authLastLoginUnknown": "未知",
   "authProfileSectionTitle": "资料信息",
   "authProfileSectionDescription": "修改昵称或头像地址；留空会按 Lucent 当前规则清空对应字段。",
   "authAvatarLabel": "头像地址",
@@ -533,9 +551,37 @@
   "authEmailSectionTitle": "登录邮箱",
   "authEmailVerifiedDescription": "当前邮箱已经验证，可以继续更换登录邮箱。",
   "authEmailUnverifiedDescription": "当前邮箱仍未验证；你仍可以进入更换邮箱流程。",
+  "authEmailAddAction": "添加邮箱",
   "authEmailChangeAction": "更换邮箱",
+  "authLinkedIdentitiesSectionTitle": "第三方身份",
+  "authLinkedIdentityNone": "尚未绑定第三方身份。",
+  "authLinkedIdentityEmailMissing": "无第三方邮箱",
+  "authLinkedIdentityLinkedAt": "{date} 绑定",
+  "@authLinkedIdentityLinkedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "authIdentityProviderWechatWeb": "微信网页",
+  "authIdentityProviderWechatMobile": "微信移动端",
+  "authIdentityUnlinkAction": "解绑",
+  "authIdentityUnlinkDisabledAction": "保留",
+  "authIdentityUnlinkSuccess": "身份已解绑。",
+  "authIdentityUnlinkConfirmTitle": "解绑身份",
+  "authIdentityUnlinkConfirmMessage": "确定要解绑 {provider}？",
+  "@authIdentityUnlinkConfirmMessage": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "authCancelAction": "取消",
   "authPasswordSectionTitle": "修改密码",
   "authPasswordSectionDescription": "修改后当前账号的 refresh 会话会全部失效，你需要重新登录。",
+  "authPasswordUnsetManagementHint": "当前账号还没有本地密码。",
   "authCurrentPasswordLabel": "当前密码",
   "authCurrentPasswordRequiredToast": "请先填写当前密码。",
   "authNewPasswordRequiredToast": "请先填写新密码。",
@@ -543,6 +589,7 @@
   "authChangePasswordSuccess": "密码已更新，请重新登录。",
   "authDeleteAccountSectionTitle": "注销账号",
   "authDeleteAccountSectionDescription": "这是高风险操作；提交后会清空本地会话并让 Lucent 将账号标记为删除状态。",
+  "authDeleteAccountPasswordRequiredHint": "当前账号暂不能在这里注销。",
   "authDeleteAccountHint": "输入当前密码以确认注销",
   "authDeleteAccountAction": "注销账号",
   "authDeleteAccountSuccess": "账号已注销。",

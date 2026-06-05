@@ -1507,6 +1507,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authAccountSettingsFormTitle => 'Account and security';
 
   @override
+  String get authAccountOverviewTitle => 'Account status';
+
+  @override
+  String get authAccountOverviewEmail => 'Email';
+
+  @override
+  String get authAccountOverviewEmailVerified => 'Email verification';
+
+  @override
+  String get authAccountOverviewPassword => 'Password';
+
+  @override
+  String get authAccountOverviewLastLogin => 'Last login';
+
+  @override
+  String get authEmailMissing => 'Not set';
+
+  @override
+  String authEmailVerifiedAt(String time) {
+    return 'Verified $time';
+  }
+
+  @override
+  String get authEmailUnverifiedStatus => 'Unverified';
+
+  @override
+  String get authPasswordSetStatus => 'Set';
+
+  @override
+  String get authPasswordUnsetStatus => 'Not set';
+
+  @override
+  String get authLastLoginUnknown => 'Unknown';
+
+  @override
   String get authProfileSectionTitle => 'Profile details';
 
   @override
@@ -1537,7 +1572,50 @@ class AppLocalizationsEn extends AppLocalizations {
       'This email is still unverified; you can still continue to the change-email flow.';
 
   @override
+  String get authEmailAddAction => 'Add email';
+
+  @override
   String get authEmailChangeAction => 'Change email';
+
+  @override
+  String get authLinkedIdentitiesSectionTitle => 'Linked identities';
+
+  @override
+  String get authLinkedIdentityNone => 'No third-party identity linked.';
+
+  @override
+  String get authLinkedIdentityEmailMissing => 'No provider email';
+
+  @override
+  String authLinkedIdentityLinkedAt(String date) {
+    return 'Linked $date';
+  }
+
+  @override
+  String get authIdentityProviderWechatWeb => 'WeChat Web';
+
+  @override
+  String get authIdentityProviderWechatMobile => 'WeChat Mobile';
+
+  @override
+  String get authIdentityUnlinkAction => 'Unlink';
+
+  @override
+  String get authIdentityUnlinkDisabledAction => 'Keep';
+
+  @override
+  String get authIdentityUnlinkSuccess => 'Identity unlinked.';
+
+  @override
+  String get authIdentityUnlinkConfirmTitle => 'Unlink identity';
+
+  @override
+  String authIdentityUnlinkConfirmMessage(String provider) {
+    return 'Unlink $provider from this account?';
+  }
+
+  @override
+  String get authCancelAction => 'Cancel';
 
   @override
   String get authPasswordSectionTitle => 'Change password';
@@ -1545,6 +1623,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authPasswordSectionDescription =>
       'Changing the password invalidates all refresh sessions for this account, so you will need to sign in again.';
+
+  @override
+  String get authPasswordUnsetManagementHint =>
+      'This account does not have a local password yet.';
 
   @override
   String get authCurrentPasswordLabel => 'Current password';
@@ -1569,6 +1651,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authDeleteAccountSectionDescription =>
       'This is a high-risk action; submitting it clears the local session and asks Lucent to soft-delete the account.';
+
+  @override
+  String get authDeleteAccountPasswordRequiredHint =>
+      'This account cannot be deleted from here yet.';
 
   @override
   String get authDeleteAccountHint =>

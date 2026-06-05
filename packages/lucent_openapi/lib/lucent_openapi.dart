@@ -8,7 +8,6 @@ export 'package:lucent_openapi/src/auth/basic_auth.dart';
 export 'package:lucent_openapi/src/auth/bearer_auth.dart';
 export 'package:lucent_openapi/src/auth/oauth.dart';
 
-
 export 'package:lucent_openapi/src/api/account_api.dart';
 export 'package:lucent_openapi/src/api/app_api.dart';
 export 'package:lucent_openapi/src/api/auth_api.dart';

@@ -243,16 +243,125 @@ void main() {
     expect(find.text('login-page'), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
   });
+
+  testWidgets('Account settings unlinks a linked identity after confirmation', (
+    tester,
+  ) async {
+    final remote = FakeAuthRemoteDataSource();
+    final container = ProviderContainer(
+      overrides: [
+        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authSessionProvider.overrideWith(
+          () => _SignedInAuthSessionNotifier(
+            linkedIdentities: [
+              AuthLinkedIdentity(
+                id: 'identity-1',
+                provider: 'wechat_web',
+                email: null,
+                emailVerifiedAt: null,
+                linkedAt: DateTime.parse('2026-01-03T00:00:00Z'),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/account',
+            routes: [
+              GoRoute(
+                path: '/account',
+                builder: (context, state) =>
+                    const AccountSettingsPage(enableFormAnimation: false),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    final unlinkButton = find.widgetWithText(TextButton, '解绑');
+    await tester.scrollUntilVisible(
+      unlinkButton,
+      240,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(unlinkButton);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, '解绑'));
+    await tester.pump();
+
+    expect(remote.unlinkIdentityId, 'identity-1');
+    expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);
+    await tester.pump(const Duration(seconds: 2));
+  });
+
+  testWidgets('Account settings protects OAuth-only last sign-in method', (
+    tester,
+  ) async {
+    await _pumpAccountSettingsPage(
+      tester,
+      router: GoRouter(
+        initialLocation: '/account',
+        routes: [
+          GoRoute(
+            path: '/account',
+            builder: (context, state) =>
+                const AccountSettingsPage(enableFormAnimation: false),
+          ),
+        ],
+      ),
+      sessionNotifier: _SignedInAuthSessionNotifier(
+        hasPassword: false,
+        linkedIdentities: [
+          AuthLinkedIdentity(
+            id: 'identity-1',
+            provider: 'wechat_web',
+            email: null,
+            emailVerifiedAt: null,
+            linkedAt: DateTime.parse('2026-01-03T00:00:00Z'),
+          ),
+        ],
+      ),
+    );
+
+    await tester.pump();
+
+    expect(find.text('当前账号还没有本地密码。'), findsOneWidget);
+    expect(find.text('当前账号暂不能在这里注销。'), findsOneWidget);
+    expect(find.widgetWithText(TextButton, '保留'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, '更新密码'), findsNothing);
+    expect(find.widgetWithText(FilledButton, '注销账号'), findsNothing);
+  });
 }
 
 Future<void> _pumpAccountSettingsPage(
   WidgetTester tester, {
   required GoRouter router,
+  AuthSessionNotifier? sessionNotifier,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
+        authSessionProvider.overrideWith(
+          () => sessionNotifier ?? _SignedInAuthSessionNotifier(),
+        ),
       ],
       child: MaterialApp.router(
         theme: AppTheme.light,
@@ -272,6 +381,14 @@ Future<void> _pumpAccountSettingsPage(
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
+  _SignedInAuthSessionNotifier({
+    this.hasPassword = true,
+    this.linkedIdentities = const <AuthLinkedIdentity>[],
+  });
+
+  final bool hasPassword;
+  final List<AuthLinkedIdentity> linkedIdentities;
+
   @override
   AuthSessionState build() {
     return AuthSessionState(
@@ -283,6 +400,8 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
         nickname: 'Lumi',
         avatar: null,
         emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        hasPassword: hasPassword,
+        linkedIdentities: linkedIdentities,
         createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
       ),

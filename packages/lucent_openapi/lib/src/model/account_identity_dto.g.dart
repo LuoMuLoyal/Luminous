@@ -11,6 +11,7 @@ AccountIdentityDto _$AccountIdentityDtoFromJson(Map<String, dynamic> json) =>
       $checkKeys(
         json,
         requiredKeys: const [
+          'id',
           'provider',
           'email',
           'emailVerifiedAt',
@@ -18,6 +19,7 @@ AccountIdentityDto _$AccountIdentityDtoFromJson(Map<String, dynamic> json) =>
         ],
       );
       final val = AccountIdentityDto(
+        id: $checkedConvert('id', (v) => v as String),
         provider: $checkedConvert('provider', (v) => v as String),
         email: $checkedConvert('email', (v) => v),
         emailVerifiedAt: $checkedConvert('emailVerifiedAt', (v) => v),
@@ -28,6 +30,7 @@ AccountIdentityDto _$AccountIdentityDtoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$AccountIdentityDtoToJson(AccountIdentityDto instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'provider': instance.provider,
       'email': instance.email,
       'emailVerifiedAt': instance.emailVerifiedAt,

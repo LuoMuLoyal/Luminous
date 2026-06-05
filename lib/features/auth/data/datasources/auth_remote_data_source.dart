@@ -285,6 +285,19 @@ class AuthRemoteDataSource {
     await _client.clearSession();
   }
 
+  Future<AuthUser> unlinkIdentity({required String identityId}) async {
+    final response = await _client.accountApi.accountControllerUnlinkIdentityV1(
+      identityId: identityId,
+    );
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(
+        message: 'Unlink identity response is empty.',
+      );
+    }
+    return _authUserFromAccount(body.data);
+  }
+
   AuthUser _authUserFromAccount(AccountDto user) {
     return AuthUser(
       id: user.id,
@@ -297,6 +310,7 @@ class AuthRemoteDataSource {
       linkedIdentities: user.linkedIdentities
           .map(
             (identity) => AuthLinkedIdentity(
+              id: identity.id,
               provider: identity.provider,
               email: identity.email?.toString(),
               emailVerifiedAt: _parseOptionalDateTime(identity.emailVerifiedAt),
