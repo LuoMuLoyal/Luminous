@@ -1,6 +1,6 @@
 # Luminous UI Plan
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
 
 Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADMAP.md`.
 
@@ -12,14 +12,14 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Flutter `gen-l10n`
 - Auth datasource / session / login / register providers
 - Login / Register pages
-- Persisted `system / light / dark` theme preference foundation
+- Persisted `system / light / dark` theme preference with a standard `/settings/theme` child page
 - Mobile bottom nav + desktop rail
 - Today concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop wide dashboard, plainer medicine-style surfaces, localized image placeholders, reusable Today primitives, and shared state views
 - Record concept-aligned dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, Lucent-backed daily-record timeline, and quick-create flow
 - Mine concept-aligned mock dashboard UI with repository/provider boundary, mobile profile/plans/privacy surface, and desktop status/onboarding/settings side rail
 - Mine signed-out state now stays on the same static dashboard structure with a login notice instead of page-level skeleton loading
 - Standalone Settings page at `/settings` now owns theme/language/notification/account-entry settings, while Mine stays focused on dashboard content and entry actions
-- Settings language, notifications, and more entries now each open a standard child page with persisted local preferences or utility actions instead of placeholder callbacks
+- Settings theme, language, notifications, and more entries now each open a standard child page with persisted local preferences or utility actions instead of placeholder callbacks
 - Notification settings now also reflect real system notification permission state; supported Lucent profile preferences (`locale / timezone / unitSystem`) can sync through settings, and the app locale can now also backfill from Lucent on auth restore/sign-in, while theme and notification toggles still remain local/device-side until Lucent exposes dedicated preference-write endpoints for them
 - More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
 - Medicine mobile-first mock workspace UI with repository/provider boundary

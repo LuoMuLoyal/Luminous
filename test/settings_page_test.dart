@@ -181,6 +181,36 @@ void main() {
     expect(find.text('language-settings-page'), findsOneWidget);
   });
 
+  testWidgets('Settings theme row routes to theme settings page', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await _pumpSettingsPage(
+      tester,
+      router: GoRouter(
+        initialLocation: '/settings',
+        routes: [
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) => const SettingsPage(),
+          ),
+          GoRoute(
+            path: '/settings/theme',
+            builder: (context, state) =>
+                const Scaffold(body: Text('theme-settings-page')),
+          ),
+        ],
+      ),
+    );
+
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('settings-row-theme')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('theme-settings-page'), findsOneWidget);
+  });
+
   testWidgets(
     'Settings notifications row routes to notifications settings page',
     (tester) async {

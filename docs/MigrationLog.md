@@ -6,6 +6,12 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-05
 
+### Settings Theme System
+
+- Moved theme mode selection from the legacy bottom sheet into a standard `/settings/theme` child page with the shared settings header and `system / light / dark` rows.
+- Kept theme mode local to the device via `appThemeControllerProvider` and `SharedPreferences` key `theme.mode`; selecting a mode updates `MaterialApp.router.themeMode`.
+- Fixed theme controller coverage to restore from the real `theme.mode` storage key and added settings flow coverage for theme page navigation, persistence, and restore.
+
 ### Account API Naming And Email Verification
 
 - Added Lucent account identity binding endpoints to the generated `AccountApi` (`34 paths / 83 schemas`) and wired Luminous account settings to bind WeChat through mobile SDK, desktop loopback OAuth, or Web `/account/oauth/wechat` callback.

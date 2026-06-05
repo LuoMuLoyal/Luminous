@@ -18,6 +18,7 @@ import 'package:luminous/features/settings/presentation/pages/language_settings_
 import 'package:luminous/features/settings/presentation/pages/more_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 late _FakeSettingsProfileRemoteDataSource _fakeSettingsProfileRemote;
@@ -124,6 +125,47 @@ void main() {
       ),
       afterValue,
     );
+  });
+
+  testWidgets('Theme settings updates app theme mode and persists preference', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{
+      'app.locale': 'zh-CN',
+    });
+
+    await _pumpApp(tester);
+
+    await tester.tap(find.byKey(const Key('settings-row-theme')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('主题模式'), findsOneWidget);
+    expect(find.byKey(const Key('theme-row-dark')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('theme-row-dark')));
+    await tester.pumpAndSettle();
+
+    final preferences = await SharedPreferences.getInstance();
+    expect(preferences.getString('theme.mode'), 'dark');
+
+    final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.themeMode, ThemeMode.dark);
+
+    await tester.tap(find.byIcon(Icons.arrow_back_ios_new_rounded).first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('深色'), findsOneWidget);
+
+    final snapshot = _snapshotPreferences(preferences);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpAndSettle();
+
+    SharedPreferences.setMockInitialValues(snapshot);
+    await _pumpApp(tester);
+
+    final restoredApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(restoredApp.themeMode, ThemeMode.dark);
+    expect(find.text('深色'), findsOneWidget);
   });
 }
 
@@ -288,6 +330,10 @@ GoRouter _buildSettingsTestRouter() {
       GoRoute(
         path: '/settings/language',
         builder: (context, state) => const LanguageSettingsPage(),
+      ),
+      GoRoute(
+        path: '/settings/theme',
+        builder: (context, state) => const ThemeSettingsPage(),
       ),
       GoRoute(
         path: '/settings/notifications',

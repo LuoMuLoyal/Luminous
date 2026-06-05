@@ -17,7 +17,7 @@ void main() {
 
   test('theme controller restores and persists the selected mode', () async {
     SharedPreferences.setMockInitialValues(<String, Object>{
-      'flutter.theme.mode': AppThemeModePreference.dark.storageValue,
+      'theme.mode': AppThemeModePreference.dark.storageValue,
     });
 
     final container = ProviderContainer.test();
