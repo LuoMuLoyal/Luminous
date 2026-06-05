@@ -155,6 +155,10 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
       final callback = await server.callback.timeout(
         Duration(seconds: result.expiresIn.toInt()),
       );
+      if (callback.state != result.state) {
+        state = state.copyWith(isStartingWechatLogin: false);
+        return null;
+      }
       state = state.copyWith(
         isStartingWechatLogin: false,
         isCompletingWechatLogin: true,
@@ -175,6 +179,36 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
       return null;
     } finally {
       await server?.close();
+    }
+  }
+
+  Future<AuthSession?> startWechatMobileLogin() async {
+    final client = ref.read(wechatMobileAuthClientProvider);
+    if (!client.isSupported) {
+      return null;
+    }
+
+    state = state.copyWith(isStartingWechatLogin: true, errorMessage: null);
+    try {
+      final code = await client.authorize();
+      state = state.copyWith(
+        isStartingWechatLogin: false,
+        isCompletingWechatLogin: true,
+      );
+      final session = await ref
+          .read(authRemoteDataSourceProvider)
+          .loginWithWechatMobile(code: code);
+      await ref.read(authSessionProvider.notifier).applySession(session);
+      state = state.copyWith(isCompletingWechatLogin: false);
+      return session;
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
+      state = state.copyWith(
+        isStartingWechatLogin: false,
+        isCompletingWechatLogin: false,
+        errorMessage: apiError.message,
+      );
+      return null;
     }
   }
 

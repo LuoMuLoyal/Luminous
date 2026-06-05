@@ -96,6 +96,27 @@ class AuthRemoteDataSource {
     return session;
   }
 
+  Future<AuthSession> loginWithWechatMobile({required String code}) async {
+    final response = await _client.authApi
+        .authControllerLoginWithWechatMobileV1(
+          oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
+        );
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(
+        message: 'WeChat mobile login response is empty.',
+      );
+    }
+    final session = AuthMapper.toSessionFromLogin(body);
+    await _client.writeSession(
+      LucentSessionTokens(
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+      ),
+    );
+    return session;
+  }
+
   Future<AuthSession> register({
     required String email,
     required String password,

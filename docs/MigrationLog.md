@@ -6,14 +6,16 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-05
 
-### Desktop WeChat OAuth Login
+### WeChat OAuth Login
 
 - Regenerated `packages/lucent_openapi` from Lucent `openapi.json` after the backend added the desktop WeChat Web OAuth callback URI contract (`30 paths / 81 schemas`).
-- Added a desktop WeChat Web OAuth flow: Luminous starts a loopback callback listener, asks Lucent for a WeChat authorize URL with that callback URI, opens it through `url_launcher`, and completes login automatically when the browser callback returns `code` and `state`.
+- Added mobile WeChat SDK login through `fluwx`: Android/iOS obtains an auth code from the native SDK, then calls Lucent's WeChat mobile callback endpoint for token exchange and account linking. SDK AppId and iOS Universal Link are supplied by Dart defines, with native Android/iOS WeChat Open Platform setup handled outside Dart.
+- Added a desktop WeChat Web OAuth flow: Luminous starts a loopback callback listener, asks Lucent for a WeChat authorize URL with that callback URI, opens it through `url_launcher`, verifies the returned `state`, and completes login automatically when the browser callback returns `code` and `state`.
+- Mobile SDK login is attempted before the desktop/Web browser OAuth path; unsupported platforms keep the existing desktop/Web/manual fallback behavior.
 - Kept the manual callback URL/query/code completion path as a fallback when loopback listening is unavailable or the browser handoff fails.
-- Added `/login/oauth/wechat` so a configured callback/deep-link target can pass `code` and `state` directly into the login page.
+- Added `/login/oauth/wechat` so a configured Web callback/deep-link target can pass `code` and `state` directly into the login page.
 - Made `AuthUser.email` nullable and updated account/settings/mine display fallbacks because WeChat OAuth users may not have an email address.
-- Added provider/widget coverage for opening the WeChat authorize URL, completing callback login, and completing the desktop loopback callback login path.
+- Added provider/widget coverage for mobile SDK callback login, opening the WeChat authorize URL, completing callback login, and completing the desktop loopback callback login path.
 
 ## 2026-06-04
 
