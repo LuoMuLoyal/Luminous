@@ -15,6 +15,17 @@ void main() {
     );
   });
 
+  test('theme palette defaults to classic for empty or unknown values', () {
+    expect(
+      AppThemePalettePreference.fromStorage(null),
+      AppThemePalettePreference.classic,
+    );
+    expect(
+      AppThemePalettePreference.fromStorage('unexpected'),
+      AppThemePalettePreference.classic,
+    );
+  });
+
   test('theme controller restores and persists the selected mode', () async {
     SharedPreferences.setMockInitialValues(<String, Object>{
       'theme.mode': AppThemeModePreference.dark.storageValue,
@@ -40,4 +51,33 @@ void main() {
     final preferences = await SharedPreferences.getInstance();
     expect(preferences.getString('theme.mode'), 'light');
   });
+
+  test(
+    'theme palette controller restores and persists the selected palette',
+    () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        'theme.palette': AppThemePalettePreference.bluePink.storageValue,
+      });
+
+      final container = ProviderContainer.test();
+      addTearDown(container.dispose);
+
+      await expectLater(
+        container.read(appThemePaletteControllerProvider.future),
+        completion(AppThemePalettePreference.bluePink),
+      );
+
+      await container
+          .read(appThemePaletteControllerProvider.notifier)
+          .setPalette(AppThemePalettePreference.yellowGreen);
+
+      expect(
+        container.read(appThemePaletteControllerProvider).requireValue,
+        AppThemePalettePreference.yellowGreen,
+      );
+
+      final preferences = await SharedPreferences.getInstance();
+      expect(preferences.getString('theme.palette'), 'yellow-green');
+    },
+  );
 }

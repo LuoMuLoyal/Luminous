@@ -49,7 +49,8 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       }
 
       final becameAuthenticated = previous?.isAuthenticated != true;
-      final switchedUser = previousUserId != null && previousUserId != nextUserId;
+      final switchedUser =
+          previousUserId != null && previousUserId != nextUserId;
       if (!becameAuthenticated && !switchedUser) {
         return;
       }
@@ -64,14 +65,17 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
           data: (preference) => preference.themeMode,
           orElse: () => ThemeMode.system,
         );
+    final themePalette =
+        ref.watch(appThemePaletteControllerProvider).asData?.value ??
+        AppThemePalettePreference.classic;
     final locale = ref.watch(appLocaleControllerProvider).asData?.value;
 
     return MaterialApp.router(
       onGenerateTitle: (context) =>
           AppLocalizations.of(context)?.appTitle ?? 'Luminous',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
+      theme: AppTheme.lightFor(themePalette),
+      darkTheme: AppTheme.darkFor(themePalette),
       themeMode: themeMode,
       locale: locale?.flutterLocale,
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[

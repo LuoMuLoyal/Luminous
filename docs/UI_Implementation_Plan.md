@@ -12,7 +12,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Flutter `gen-l10n`
 - Auth datasource / session / login / register providers
 - Login / Register pages
-- Persisted `system / light / dark` theme preference with a standard `/settings/theme` child page
+- Persisted `system / light / dark` theme preference and `default / blue-pink / yellow-green` palette preference with a standard `/settings/theme` child page
 - Mobile bottom nav + desktop rail
 - Today concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop wide dashboard, plainer medicine-style surfaces, localized image placeholders, reusable Today primitives, and shared state views
 - Record concept-aligned dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, Lucent-backed daily-record timeline, and quick-create flow
@@ -20,6 +20,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Mine signed-out state now stays on the same static dashboard structure with a login notice instead of page-level skeleton loading
 - Standalone Settings page at `/settings` now owns theme/language/notification/account-entry settings, while Mine stays focused on dashboard content and entry actions
 - Settings theme, language, notifications, and more entries now each open a standard child page with persisted local preferences or utility actions instead of placeholder callbacks
+- Page-level surfaces should use `AppShadowTokens.level1`; reserve higher shadow levels for floating feedback, modal-like panels, or authentication surfaces that need stronger separation.
 - Notification settings now also reflect real system notification permission state; supported Lucent profile preferences (`locale / timezone / unitSystem`) can sync through settings, and the app locale can now also backfill from Lucent on auth restore/sign-in, while theme and notification toggles still remain local/device-side until Lucent exposes dedicated preference-write endpoints for them
 - More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
 - Medicine mobile-first mock workspace UI with repository/provider boundary
@@ -38,7 +39,7 @@ Restored: Search now uses real Lucent medicine search/detail API; Mine health-co
 2. Expand Record beyond quick-create only when Lucent contracts exist for the specific record type.
 3. Keep Today factual: daily-record summaries may be real, but unsupported advice/static sections must stay clearly bounded.
 4. Connect More mock repository to real emergency, device, tool, and environment data sources after their Lucent contracts exist.
-5. Add palette variants after the fixed-token surfaces have been reduced.
+5. Expand palette variants only after default / blue-pink / yellow-green prove stable across the main settings, mine, today, medicine, and record surfaces.
 
 ## Rules
 

@@ -29,6 +29,9 @@ class SettingsPage extends ConsumerWidget {
     final currentTheme =
         ref.watch(appThemeControllerProvider).value ??
         AppThemeModePreference.system;
+    final currentPalette =
+        ref.watch(appThemePaletteControllerProvider).value ??
+        AppThemePalettePreference.classic;
     final currentLocale =
         ref.watch(appLocaleControllerProvider).asData?.value ??
         AppLocale.system;
@@ -74,7 +77,7 @@ class SettingsPage extends ConsumerWidget {
                 key: const Key('settings-row-theme'),
                 icon: Icons.dark_mode_outlined,
                 title: l10n.mineSettingsThemeTitle,
-                value: _themeModeLabel(l10n, currentTheme),
+                value: _themeSettingsLabel(l10n, currentTheme, currentPalette),
                 typography: typography,
                 surface: surface,
                 onTap: () => context.push('/settings/theme'),
@@ -161,6 +164,26 @@ class SettingsPage extends ConsumerWidget {
       AppLocale.zhCn => l10n.settingsLanguageChineseLabel,
     };
   }
+
+  String _themePaletteLabel(
+    AppLocalizations l10n,
+    AppThemePalettePreference preference,
+  ) {
+    return switch (preference) {
+      AppThemePalettePreference.classic => l10n.settingsThemePaletteClassic,
+      AppThemePalettePreference.bluePink => l10n.settingsThemePaletteBluePink,
+      AppThemePalettePreference.yellowGreen =>
+        l10n.settingsThemePaletteYellowGreen,
+    };
+  }
+
+  String _themeSettingsLabel(
+    AppLocalizations l10n,
+    AppThemeModePreference mode,
+    AppThemePalettePreference palette,
+  ) {
+    return '${_themeModeLabel(l10n, mode)} · ${_themePaletteLabel(l10n, palette)}';
+  }
 }
 
 class _FooterActionButton extends StatelessWidget {
@@ -199,7 +222,7 @@ class _FooterActionButton extends StatelessWidget {
             color: surface.canvas,
             borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
             border: Border.all(color: surface.hairline),
-            boxShadow: AppShadowTokens.level2,
+            boxShadow: AppShadowTokens.level1,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.lg),
