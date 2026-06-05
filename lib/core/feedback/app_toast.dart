@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:luminous/core/design/app_radius_tokens.dart';
 import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/design/app_shadow_tokens.dart';
@@ -9,32 +10,57 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 class AppToast {
   const AppToast._();
 
+  static OverlayEntry? _currentEntry;
+  static Timer? _currentTimer;
+
   static Future<bool?> show(BuildContext context, String message) async {
+    final overlay = Overlay.maybeOf(context, rootOverlay: true);
+    if (overlay == null) {
+      return false;
+    }
+
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>();
     final backgroundColor = surface?.canvas ?? Colors.white;
     final textColor = theme.colorScheme.onSurface;
     final topOffset = MediaQuery.paddingOf(context).top + AppSpacingTokens.xl;
 
-    FToast()
-      ..init(context)
-      ..removeQueuedCustomToasts()
-      ..showToast(
-        gravity: ToastGravity.TOP,
-        toastDuration: const Duration(milliseconds: 1800),
-        fadeDuration: const Duration(milliseconds: 160),
-        ignorePointer: true,
-        positionedToastBuilder: (context, child, gravity) {
-          return Positioned(top: topOffset, left: 24, right: 24, child: child);
-        },
-        child: _AppToastSurface(
-          message: message,
-          backgroundColor: backgroundColor,
-          borderColor: surface?.hairline ?? const Color(0xFFE8E8E8),
-          textColor: textColor,
-        ),
-      );
+    _removeCurrentToast();
+
+    final entry = OverlayEntry(
+      builder: (context) {
+        return Positioned(
+          top: topOffset,
+          left: 24,
+          right: 24,
+          child: IgnorePointer(
+            child: _AppToastSurface(
+              message: message,
+              backgroundColor: backgroundColor,
+              borderColor: surface?.hairline ?? const Color(0xFFE8E8E8),
+              textColor: textColor,
+            ),
+          ),
+        );
+      },
+    );
+
+    _currentEntry = entry;
+    overlay.insert(entry);
+    _currentTimer = Timer(const Duration(milliseconds: 1800), () {
+      if (identical(_currentEntry, entry)) {
+        _removeCurrentToast();
+      }
+    });
+
     return true;
+  }
+
+  static void _removeCurrentToast() {
+    _currentTimer?.cancel();
+    _currentTimer = null;
+    _currentEntry?.remove();
+    _currentEntry = null;
   }
 }
 

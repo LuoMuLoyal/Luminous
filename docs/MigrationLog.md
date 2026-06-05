@@ -6,6 +6,13 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-05
 
+### Android Built-in Kotlin
+
+- Migrated the Android app Gradle configuration to Flutter Built-in Kotlin: enabled `android.builtInKotlin=true`, removed the app-level `kotlin-android` plugin application, and moved the Kotlin JVM target to `kotlin.compilerOptions`.
+- Reduced Android KGP migration warnings by upgrading `image_picker_android` / `shared_preferences_android` through `pub get`, removing unused `flutter_timezone`, and replacing `fluttertoast` with the shared in-app `OverlayEntry` toast implementation.
+- Upgraded `flutter_secure_storage` to the current compatible line so the Web debug build's Wasm dry run no longer reports `dart:html` / `package:js` incompatibilities from `flutter_secure_storage_web`.
+- Remaining Android Built-in Kotlin warning is from `fluwx 5.7.5`, which is still required for mobile WeChat SDK login and still applies KGP inside the plugin package.
+
 ### WeChat OAuth Login
 
 - Regenerated `packages/lucent_openapi` from Lucent `openapi.json` after the backend added the desktop WeChat Web OAuth callback URI contract (`30 paths / 81 schemas`).
