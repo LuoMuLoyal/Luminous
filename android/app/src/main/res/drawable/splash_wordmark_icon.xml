@@ -8,8 +8,8 @@
     <group
         android:pivotX="512"
         android:pivotY="512"
-        android:scaleX="0.74"
-        android:scaleY="0.74">
+        android:scaleX="0.56"
+        android:scaleY="0.56">
     <path android:pathData="M128,512c0,212.08 171.92,384 384,384s384,-171.92 384,-384c0,-212.08 -171.92,-384 -384,-384S128,299.92 128,512z">
         <aapt:attr name="android:fillColor">
             <gradient

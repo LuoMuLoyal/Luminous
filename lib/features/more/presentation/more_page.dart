@@ -4,6 +4,7 @@ import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/more/data/repositories/mock_more_repository.dart';
 import 'package:luminous/features/more/presentation/providers/more_dashboard_provider.dart';
 import 'package:luminous/features/more/presentation/widgets/more_components.dart';
 import 'package:luminous/features/more/presentation/widgets/more_dashboard_view.dart';
@@ -46,7 +47,8 @@ class MorePage extends ConsumerWidget {
       children: [
         dashboardAsync.when(
           data: (dashboard) => MoreDashboardView(dashboard: dashboard),
-          loading: () => const MoreLoadingView(),
+          loading: () =>
+              const MoreDashboardView(dashboard: MockMoreRepository.dashboard),
           error: (_, __) => MoreErrorView(
             onRetry: () => ref.invalidate(moreDashboardProvider),
           ),
