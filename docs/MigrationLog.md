@@ -8,6 +8,8 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ### Account API Naming And Email Verification
 
+- Added Lucent account identity binding endpoints to the generated `AccountApi` (`34 paths / 83 schemas`) and wired Luminous account settings to bind WeChat through mobile SDK, desktop loopback OAuth, or Web `/account/oauth/wechat` callback.
+- Updated OpenAPI generated-package hygiene: `packages/lucent_openapi/**` remains excluded from analyzer and is now excluded from whitespace `diff --check`; generated Markdown blank-line/trailing-space diffs are no longer manually normalized.
 - Added account identity unlinking to the Lucent OpenAPI client (`31 paths / 83 schemas`), including identity IDs on `AuthLinkedIdentity` so Luminous can call the generated `AccountApi` unlink method.
 - Expanded `/account` into a management view for account status, linked OAuth identities, OAuth-only password/delete protection states, and confirmed identity unlinking.
 - Re-generated `packages/lucent_openapi` from Lucent `openapi.json` after removing legacy `/auth/me*` routes (`30 paths / 83 schemas`), deleting stale generated `MeResponseDto` / `UpdateMeDto` artifacts, and keeping account profile/security actions only under `AccountApi`.

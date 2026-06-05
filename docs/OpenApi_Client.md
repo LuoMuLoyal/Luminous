@@ -36,7 +36,7 @@ Last updated: 2026-06-05
   - `openapi-generator-cli` rewrites `packages/lucent_openapi/pubspec.yaml` back to older constraints.
   - `json_serializable 6.14.0` currently emits invalid nullable map entries in generated `packages/lucent_openapi/lib/src/model/*.g.dart` for this package shape (`'field': ?instance.field`).
 - `tool/regenerate_lucent_openapi.dart` is the supported fix path. It exports Lucent OpenAPI, regenerates the Dart client, restores the generated package constraints (`sdk 3.12`, `json_annotation 4.12.0`, `build_runner 2.15.0`, `json_serializable 6.14.0`), rebuilds serializers, patches the broken nullable map entries, formats the model files, analyzes the generated package, and refreshes root Flutter dependencies.
-- After regeneration, always run `git -C Luminous diff --check`. The generator can emit Markdown tables with trailing whitespace even when the Dart package analyzes cleanly; clean generated Markdown whitespace before committing rather than skipping the check.
+- After regeneration, run whitespace checks excluding the generated package: `git -C Luminous diff --check -- . ':!packages/lucent_openapi/**'`. Do not manually normalize generated Markdown blank lines or trailing whitespace; generated diffs are accepted as generator output.
 
 ## Regenerate
 

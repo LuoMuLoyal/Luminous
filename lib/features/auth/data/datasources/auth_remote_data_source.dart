@@ -70,6 +70,24 @@ class AuthRemoteDataSource {
     return body.data;
   }
 
+  Future<OAuthAuthorizeDataDto> createWechatWebIdentityLinkAuthorizeUrl({
+    String? callbackUri,
+  }) async {
+    final response = await _client.accountApi
+        .accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1(
+          oAuthAuthorizeDto: callbackUri?.trim().isEmpty ?? true
+              ? null
+              : OAuthAuthorizeDto(callbackUri: callbackUri!.trim()),
+        );
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(
+        message: 'WeChat identity link authorize response is empty.',
+      );
+    }
+    return body.data;
+  }
+
   Future<AuthSession> loginWithWechatWeb({
     required String code,
     required String state,
@@ -115,6 +133,40 @@ class AuthRemoteDataSource {
       ),
     );
     return session;
+  }
+
+  Future<AuthUser> linkWechatWebIdentity({
+    required String code,
+    required String state,
+  }) async {
+    final response = await _client.accountApi
+        .accountControllerLinkWechatWebIdentityV1(
+          oAuthCallbackDto: OAuthCallbackDto(
+            code: code.trim(),
+            state: state.trim(),
+          ),
+        );
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(
+        message: 'WeChat identity link response is empty.',
+      );
+    }
+    return _authUserFromAccount(body.data);
+  }
+
+  Future<AuthUser> linkWechatMobileIdentity({required String code}) async {
+    final response = await _client.accountApi
+        .accountControllerLinkWechatMobileIdentityV1(
+          oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
+        );
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(
+        message: 'WeChat mobile identity link response is empty.',
+      );
+    }
+    return _authUserFromAccount(body.data);
   }
 
   Future<AuthSession> register({

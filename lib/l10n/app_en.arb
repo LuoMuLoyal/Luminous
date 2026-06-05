@@ -578,6 +578,9 @@
       }
     }
   },
+  "authIdentityLinkWechatAction": "Link WeChat",
+  "authIdentityLinkSuccess": "WeChat identity linked.",
+  "authIdentityLinkUnsupported": "WeChat linking cannot be opened on this platform.",
   "authCancelAction": "Cancel",
   "authPasswordSectionTitle": "Change password",
   "authPasswordSectionDescription": "Changing the password invalidates all refresh sessions for this account, so you will need to sign in again.",

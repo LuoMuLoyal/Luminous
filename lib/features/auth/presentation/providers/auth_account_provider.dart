@@ -1,11 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:luminous/features/auth/data/datasources/wechat_desktop_oauth_callback_listener.dart';
+import 'package:luminous/features/auth/data/datasources/wechat_desktop_oauth_callback_server.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 
 part 'auth_account_provider.freezed.dart';
+
+enum WechatIdentityLinkResult { completed, opened, unsupported }
 
 @freezed
 abstract class AuthAccountState with _$AuthAccountState {
@@ -130,6 +135,70 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
     });
   }
 
+  Future<WechatIdentityLinkResult?> startWechatIdentityLink({
+    String? webCallbackUri,
+  }) async {
+    state = state.copyWith(
+      isSubmitting: true,
+      errorMessage: null,
+      successMessage: null,
+    );
+
+    final mobileClient = ref.read(wechatMobileAuthClientProvider);
+    if (mobileClient.isSupported) {
+      try {
+        final code = await mobileClient.authorize();
+        final user = await ref
+            .read(authRemoteDataSourceProvider)
+            .linkWechatMobileIdentity(code: code);
+        ref.read(authSessionProvider.notifier).applyUser(user);
+        state = state.copyWith(isSubmitting: false, successMessage: '');
+        return WechatIdentityLinkResult.completed;
+      } catch (error) {
+        return _failWithResult(error);
+      }
+    }
+
+    final desktopListener = ref.read(wechatDesktopOAuthCallbackListenerProvider);
+    if (desktopListener.isSupported) {
+      return _startWechatDesktopIdentityLink(desktopListener);
+    }
+
+    if (webCallbackUri == null || webCallbackUri.trim().isEmpty) {
+      state = state.copyWith(isSubmitting: false);
+      return WechatIdentityLinkResult.unsupported;
+    }
+
+    try {
+      final authorize = await ref
+          .read(authRemoteDataSourceProvider)
+          .createWechatWebIdentityLinkAuthorizeUrl(
+            callbackUri: webCallbackUri,
+          );
+      final opened = await ref
+          .read(externalUrlLauncherProvider)
+          .open(Uri.parse(authorize.authorizeUrl));
+      state = state.copyWith(isSubmitting: false);
+      return opened
+          ? WechatIdentityLinkResult.opened
+          : WechatIdentityLinkResult.unsupported;
+    } catch (error) {
+      return _failWithResult(error);
+    }
+  }
+
+  Future<bool> completeWechatWebIdentityLink({
+    required String code,
+    required String state,
+  }) async {
+    return _run(() async {
+      final user = await ref
+          .read(authRemoteDataSourceProvider)
+          .linkWechatWebIdentity(code: code, state: state);
+      ref.read(authSessionProvider.notifier).applyUser(user);
+    });
+  }
+
   Future<bool> _run(Future<void> Function() action) async {
     state = state.copyWith(
       isSubmitting: true,
@@ -154,6 +223,51 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
       successMessage: null,
     );
     return false;
+  }
+
+  Future<WechatIdentityLinkResult?> _startWechatDesktopIdentityLink(
+    WechatDesktopOAuthCallbackListener desktopListener,
+  ) async {
+    WechatDesktopOAuthCallbackServer? server;
+    try {
+      server = await desktopListener.start();
+      final authorize = await ref
+          .read(authRemoteDataSourceProvider)
+          .createWechatWebIdentityLinkAuthorizeUrl(
+            callbackUri: server.callbackUri.toString(),
+          );
+      final opened = await ref
+          .read(externalUrlLauncherProvider)
+          .open(Uri.parse(authorize.authorizeUrl));
+      if (!opened) {
+        state = state.copyWith(isSubmitting: false);
+        return WechatIdentityLinkResult.unsupported;
+      }
+
+      final callback = await server.callback.timeout(
+        Duration(seconds: authorize.expiresIn.toInt()),
+      );
+      if (callback.state != authorize.state) {
+        state = state.copyWith(isSubmitting: false);
+        return WechatIdentityLinkResult.unsupported;
+      }
+
+      final user = await ref
+          .read(authRemoteDataSourceProvider)
+          .linkWechatWebIdentity(code: callback.code, state: callback.state);
+      ref.read(authSessionProvider.notifier).applyUser(user);
+      state = state.copyWith(isSubmitting: false, successMessage: '');
+      return WechatIdentityLinkResult.completed;
+    } catch (error) {
+      return _failWithResult(error);
+    } finally {
+      await server?.close();
+    }
+  }
+
+  WechatIdentityLinkResult? _failWithResult(Object error) {
+    _fail(error);
+    return null;
   }
 }
 

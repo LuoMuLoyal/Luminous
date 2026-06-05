@@ -7,6 +7,7 @@ import 'package:luminous/features/auth/data/datasources/wechat_desktop_oauth_cal
 import 'package:luminous/features/auth/data/datasources/wechat_desktop_oauth_callback_server.dart';
 import 'package:luminous/features/auth/data/datasources/wechat_mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_account_provider.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/providers/login_form_provider.dart';
 
@@ -124,6 +125,127 @@ void main() {
       expect(container.read(authSessionProvider).isAuthenticated, isFalse);
     },
   );
+
+  test('startWechatIdentityLink completes mobile SDK identity linking', () async {
+    final remote = FakeAuthRemoteDataSource();
+    final mobileClient = _FakeWechatMobileAuthClient(code: 'mobile-link-code');
+    final container = ProviderContainer(
+      overrides: [
+        authRemoteDataSourceProvider.overrideWithValue(remote),
+        wechatMobileAuthClientProvider.overrideWithValue(mobileClient),
+        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final result = await container
+        .read(authAccountProvider.notifier)
+        .startWechatIdentityLink();
+
+    expect(result, WechatIdentityLinkResult.completed);
+    expect(mobileClient.authorizeCalled, isTrue);
+    expect(remote.wechatMobileIdentityLinkCallbackCode, 'mobile-link-code');
+    expect(
+      container.read(authSessionProvider).user?.linkedIdentities.single.provider,
+      'wechat_mobile',
+    );
+  });
+
+  test('startWechatIdentityLink completes desktop identity linking', () async {
+    final remote = FakeAuthRemoteDataSource();
+    final launcher = _FakeExternalUrlLauncher();
+    final callbackCompleter = Completer<WechatOAuthCallback>();
+    var isCallbackServerClosed = false;
+    final callbackServer = WechatDesktopOAuthCallbackServer(
+      callbackUri: Uri.parse('http://127.0.0.1:49152/oauth/wechat'),
+      callback: callbackCompleter.future,
+      close: () async {
+        isCallbackServerClosed = true;
+      },
+    );
+    final listener = _FakeWechatDesktopOAuthCallbackListener(callbackServer);
+    final container = ProviderContainer(
+      overrides: [
+        authRemoteDataSourceProvider.overrideWithValue(remote),
+        externalUrlLauncherProvider.overrideWithValue(launcher),
+        wechatDesktopOAuthCallbackListenerProvider.overrideWithValue(listener),
+        wechatMobileAuthClientProvider.overrideWithValue(
+          _UnsupportedWechatMobileAuthClient(),
+        ),
+        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final linkFuture = container
+        .read(authAccountProvider.notifier)
+        .startWechatIdentityLink();
+    await Future<void>.delayed(Duration.zero);
+    callbackCompleter.complete(
+      const WechatOAuthCallback(code: 'wechat-link-code', state: 'link-state-1'),
+    );
+    final result = await linkFuture;
+
+    expect(result, WechatIdentityLinkResult.completed);
+    expect(remote.createWechatIdentityLinkAuthorizeCalled, isTrue);
+    expect(
+      remote.wechatIdentityLinkAuthorizeCallbackUri,
+      'http://127.0.0.1:49152/oauth/wechat',
+    );
+    expect(
+      launcher.openedUri.toString(),
+      'https://open.weixin.qq.com/connect/qrconnect?state=link-state-1',
+    );
+    expect(remote.wechatIdentityLinkCallbackCode, 'wechat-link-code');
+    expect(remote.wechatIdentityLinkCallbackState, 'link-state-1');
+    expect(isCallbackServerClosed, isTrue);
+    expect(
+      container.read(authSessionProvider).user?.linkedIdentities.single.provider,
+      'wechat_web',
+    );
+  });
+
+  test('startWechatIdentityLink ignores mismatched desktop callback state', () async {
+    final remote = FakeAuthRemoteDataSource();
+    final launcher = _FakeExternalUrlLauncher();
+    final callbackCompleter = Completer<WechatOAuthCallback>();
+    var isCallbackServerClosed = false;
+    final callbackServer = WechatDesktopOAuthCallbackServer(
+      callbackUri: Uri.parse('http://127.0.0.1:49152/oauth/wechat'),
+      callback: callbackCompleter.future,
+      close: () async {
+        isCallbackServerClosed = true;
+      },
+    );
+    final listener = _FakeWechatDesktopOAuthCallbackListener(callbackServer);
+    final container = ProviderContainer(
+      overrides: [
+        authRemoteDataSourceProvider.overrideWithValue(remote),
+        externalUrlLauncherProvider.overrideWithValue(launcher),
+        wechatDesktopOAuthCallbackListenerProvider.overrideWithValue(listener),
+        wechatMobileAuthClientProvider.overrideWithValue(
+          _UnsupportedWechatMobileAuthClient(),
+        ),
+        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final linkFuture = container
+        .read(authAccountProvider.notifier)
+        .startWechatIdentityLink();
+    await Future<void>.delayed(Duration.zero);
+    callbackCompleter.complete(
+      const WechatOAuthCallback(code: 'wechat-link-code', state: 'wrong-state'),
+    );
+    final result = await linkFuture;
+
+    expect(result, WechatIdentityLinkResult.unsupported);
+    expect(remote.wechatIdentityLinkCallbackCode, isNull);
+    expect(remote.wechatIdentityLinkCallbackState, isNull);
+    expect(isCallbackServerClosed, isTrue);
+    expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);
+  });
 }
 
 class _FakeWechatMobileAuthClient extends WechatMobileAuthClient {
@@ -139,6 +261,16 @@ class _FakeWechatMobileAuthClient extends WechatMobileAuthClient {
   Future<String> authorize() async {
     authorizeCalled = true;
     return code;
+  }
+}
+
+class _UnsupportedWechatMobileAuthClient extends WechatMobileAuthClient {
+  @override
+  bool get isSupported => false;
+
+  @override
+  Future<String> authorize() {
+    throw UnsupportedError('unsupported');
   }
 }
 

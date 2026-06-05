@@ -41,6 +41,13 @@ final router = GoRouter(
       builder: (context, state) => const AccountSettingsPage(),
     ),
     GoRoute(
+      path: '/account/oauth/wechat',
+      builder: (context, state) => AccountSettingsPage(
+        wechatCode: state.uri.queryParameters['code'],
+        wechatState: state.uri.queryParameters['state'],
+      ),
+    ),
+    GoRoute(
       path: '/settings',
       builder: (context, state) => const SettingsPage(),
     ),
