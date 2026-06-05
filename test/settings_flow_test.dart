@@ -115,10 +115,12 @@ void main() {
     expect(
       _readSwitchValue(
         tester,
-        find.descendant(
-          of: find.byKey(const Key('notification-row-medication')),
-          matching: _findAnySwitch(),
-        ).first,
+        find
+            .descendant(
+              of: find.byKey(const Key('notification-row-medication')),
+              matching: _findAnySwitch(),
+            )
+            .first,
       ),
       afterValue,
     );
@@ -194,7 +196,7 @@ class _StaticAuthSessionNotifier extends AuthSessionNotifier {
         email: 'user@example.com',
         nickname: 'Lumi',
         avatar: null,
-        emailVerified: true,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
         createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
       ),
@@ -205,8 +207,7 @@ class _StaticAuthSessionNotifier extends AuthSessionNotifier {
   Future<void> restore() async {}
 }
 
-class _FakeNotificationPermissionService
-    extends NotificationPermissionService {
+class _FakeNotificationPermissionService extends NotificationPermissionService {
   @override
   Future<void> ensureInitialized() async {}
 
@@ -223,8 +224,7 @@ class _FakeNotificationPermissionService
 
 class _FakeSettingsProfileRemoteDataSource
     extends SettingsProfileRemoteDataSource {
-  _FakeSettingsProfileRemoteDataSource()
-    : super(dio: Dio());
+  _FakeSettingsProfileRemoteDataSource() : super(dio: Dio());
 
   Object? lastLocale;
   Object? lastTimezone = settingsProfileNoChange;

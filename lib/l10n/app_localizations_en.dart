@@ -777,6 +777,37 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sign in to sync profile, reminders, and personalized health data';
 
   @override
+  String get mineAccountManageAction => 'Manage account';
+
+  @override
+  String get mineAccountEmailVerified => 'Email verified';
+
+  @override
+  String get mineAccountEmailUnverified => 'Email unverified';
+
+  @override
+  String get mineAccountPasswordSet => 'Password set';
+
+  @override
+  String get mineAccountPasswordUnset => 'No password';
+
+  @override
+  String mineAccountLinkedIdentityCount(int count) {
+    return '$count linked';
+  }
+
+  @override
+  String get mineAccountLinkedIdentityNone => 'No linked identity';
+
+  @override
+  String mineAccountLastLogin(String date) {
+    return 'Last login $date';
+  }
+
+  @override
+  String get mineAccountLastLoginNone => 'Last login --';
+
+  @override
   String get mineSignedOutNoticeTitle => 'You are not signed in';
 
   @override

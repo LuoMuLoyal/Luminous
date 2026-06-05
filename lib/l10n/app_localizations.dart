@@ -1526,6 +1526,60 @@ abstract class AppLocalizations {
   /// **'登录后可同步档案、提醒与个性化健康数据'**
   String get mineAccountSignedOutMeta;
 
+  /// No description provided for @mineAccountManageAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理账号'**
+  String get mineAccountManageAction;
+
+  /// No description provided for @mineAccountEmailVerified.
+  ///
+  /// In zh, this message translates to:
+  /// **'邮箱已验证'**
+  String get mineAccountEmailVerified;
+
+  /// No description provided for @mineAccountEmailUnverified.
+  ///
+  /// In zh, this message translates to:
+  /// **'邮箱未验证'**
+  String get mineAccountEmailUnverified;
+
+  /// No description provided for @mineAccountPasswordSet.
+  ///
+  /// In zh, this message translates to:
+  /// **'已设置密码'**
+  String get mineAccountPasswordSet;
+
+  /// No description provided for @mineAccountPasswordUnset.
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置密码'**
+  String get mineAccountPasswordUnset;
+
+  /// No description provided for @mineAccountLinkedIdentityCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'已绑定 {count} 个'**
+  String mineAccountLinkedIdentityCount(int count);
+
+  /// No description provided for @mineAccountLinkedIdentityNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'未绑定第三方'**
+  String get mineAccountLinkedIdentityNone;
+
+  /// No description provided for @mineAccountLastLogin.
+  ///
+  /// In zh, this message translates to:
+  /// **'上次登录 {date}'**
+  String mineAccountLastLogin(String date);
+
+  /// No description provided for @mineAccountLastLoginNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'上次登录 --'**
+  String get mineAccountLastLoginNone;
+
   /// No description provided for @mineSignedOutNoticeTitle.
   ///
   /// In zh, this message translates to:

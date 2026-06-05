@@ -179,9 +179,7 @@ void main() {
     expect(find.text('login-page'), findsOneWidget);
   });
 
-  testWidgets('Mine settings action routes to settings page', (
-    tester,
-  ) async {
+  testWidgets('Mine settings action routes to settings page', (tester) async {
     final container = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWith(
@@ -231,6 +229,75 @@ void main() {
 
     expect(find.text('settings-page'), findsOneWidget);
   });
+
+  testWidgets(
+    'Mine account header shows account detail and routes to account',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(393, 852);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _EmailSignedInAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(_mockSnapshot),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            locale: const Locale('zh'),
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: GoRouter(
+              initialLocation: '/',
+              routes: [
+                GoRoute(
+                  path: '/',
+                  builder: (context, state) => const MinePage(),
+                ),
+                GoRoute(
+                  path: '/account',
+                  builder: (context, state) =>
+                      const Scaffold(body: Text('account-page')),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('邮箱已验证'), findsOneWidget);
+      expect(find.text('已设置密码'), findsOneWidget);
+      expect(find.text('已绑定 1 个'), findsOneWidget);
+      expect(find.text('上次登录 2026-01-02'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('mine-account-manage-link')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('account-page'), findsOneWidget);
+    },
+  );
 
   testWidgets('Mine profile grid routes basic info to edit page', (
     tester,
@@ -313,6 +380,13 @@ void main() {
     final dashboard = await container.read(mineDashboardProvider.future);
 
     expect(dashboard.account.email, 'user@example.com');
+    expect(dashboard.account.emailVerified, isTrue);
+    expect(dashboard.account.hasPassword, isTrue);
+    expect(dashboard.account.linkedIdentityCount, 1);
+    expect(
+      dashboard.account.lastLoginAt,
+      DateTime.parse('2026-01-02T08:30:00Z'),
+    );
   });
 }
 
@@ -367,7 +441,17 @@ class _EmailSignedInAuthSessionNotifier extends AuthSessionNotifier {
         email: 'user@example.com',
         nickname: 'Lumi',
         avatar: null,
-        emailVerified: true,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        hasPassword: true,
+        lastLoginAt: DateTime.parse('2026-01-02T08:30:00Z'),
+        linkedIdentities: [
+          AuthLinkedIdentity(
+            provider: 'wechat_web',
+            email: null,
+            emailVerifiedAt: null,
+            linkedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+          ),
+        ],
         createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
       ),

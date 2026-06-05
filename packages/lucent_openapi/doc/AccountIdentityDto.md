@@ -1,4 +1,4 @@
-# lucent_openapi.model.UpdateMeDto
+# lucent_openapi.model.AccountIdentityDto
 
 ## Load the model package
 ```dart
@@ -8,7 +8,9 @@ import 'package:lucent_openapi/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**nickname** | **String** | 昵称 | [optional]
-**avatar** | **String** | 头像 URL | [optional]
+**provider** | **String** | OAuth provider name. |
+**email** | **Object** | Provider email when the provider exposes one. |
+**emailVerifiedAt** | **Object** | Provider email verification time in ISO 8601. |
+**linkedAt** | **String** | Identity linked time in ISO 8601. |
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -15,6 +15,7 @@ UserBriefDto _$UserBriefDtoFromJson(Map<String, dynamic> json) =>
           'email',
           'nickname',
           'emailVerified',
+          'emailVerifiedAt',
           'createdAt',
         ],
       );
@@ -23,6 +24,7 @@ UserBriefDto _$UserBriefDtoFromJson(Map<String, dynamic> json) =>
         email: $checkedConvert('email', (v) => v),
         nickname: $checkedConvert('nickname', (v) => v),
         emailVerified: $checkedConvert('emailVerified', (v) => v as bool),
+        emailVerifiedAt: $checkedConvert('emailVerifiedAt', (v) => v),
         createdAt: $checkedConvert('createdAt', (v) => v as String),
       );
       return val;
@@ -34,5 +36,6 @@ Map<String, dynamic> _$UserBriefDtoToJson(UserBriefDto instance) =>
       'email': instance.email,
       'nickname': instance.nickname,
       'emailVerified': instance.emailVerified,
+      'emailVerifiedAt': instance.emailVerifiedAt,
       'createdAt': instance.createdAt,
     };

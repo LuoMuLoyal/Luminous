@@ -139,7 +139,9 @@ void main() {
       ProviderScope(
         overrides: [
           authRemoteDataSourceProvider.overrideWithValue(remote),
-          authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light,
@@ -195,7 +197,9 @@ void main() {
       ProviderScope(
         overrides: [
           authRemoteDataSourceProvider.overrideWithValue(remote),
-          authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light,
@@ -278,7 +282,7 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
         email: 'user@example.com',
         nickname: 'Lumi',
         avatar: null,
-        emailVerified: true,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
         createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
       ),

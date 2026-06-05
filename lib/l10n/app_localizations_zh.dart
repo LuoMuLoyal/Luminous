@@ -730,6 +730,37 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineAccountSignedOutMeta => '登录后可同步档案、提醒与个性化健康数据';
 
   @override
+  String get mineAccountManageAction => '管理账号';
+
+  @override
+  String get mineAccountEmailVerified => '邮箱已验证';
+
+  @override
+  String get mineAccountEmailUnverified => '邮箱未验证';
+
+  @override
+  String get mineAccountPasswordSet => '已设置密码';
+
+  @override
+  String get mineAccountPasswordUnset => '未设置密码';
+
+  @override
+  String mineAccountLinkedIdentityCount(int count) {
+    return '已绑定 $count 个';
+  }
+
+  @override
+  String get mineAccountLinkedIdentityNone => '未绑定第三方';
+
+  @override
+  String mineAccountLastLogin(String date) {
+    return '上次登录 $date';
+  }
+
+  @override
+  String get mineAccountLastLoginNone => '上次登录 --';
+
+  @override
   String get mineSignedOutNoticeTitle => '当前未登录';
 
   @override

@@ -5,7 +5,7 @@
 // ignore_for_file: unused_element
 import 'package:json_annotation/json_annotation.dart';
 
-part 'update_me_dto.g.dart';
+part 'update_account_dto.g.dart';
 
 @JsonSerializable(
   checked: true,
@@ -13,32 +13,32 @@ part 'update_me_dto.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class UpdateMeDto {
-  /// Returns a new [UpdateMeDto] instance.
-  UpdateMeDto({this.nickname, this.avatar});
+class UpdateAccountDto {
+  /// Returns a new [UpdateAccountDto] instance.
+  UpdateAccountDto({this.nickname, this.avatar});
 
-  /// 昵称
+  /// Display nickname. Send an empty string to clear it.
   @JsonKey(name: r'nickname', required: false, includeIfNull: false)
   final String? nickname;
 
-  /// 头像 URL
+  /// Avatar URL. Send an empty string to clear it.
   @JsonKey(name: r'avatar', required: false, includeIfNull: false)
   final String? avatar;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UpdateMeDto &&
+      other is UpdateAccountDto &&
           other.nickname == nickname &&
           other.avatar == avatar;
 
   @override
   int get hashCode => nickname.hashCode + avatar.hashCode;
 
-  factory UpdateMeDto.fromJson(Map<String, dynamic> json) =>
-      _$UpdateMeDtoFromJson(json);
+  factory UpdateAccountDto.fromJson(Map<String, dynamic> json) =>
+      _$UpdateAccountDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UpdateMeDtoToJson(this);
+  Map<String, dynamic> toJson() => _$UpdateAccountDtoToJson(this);
 
   @override
   String toString() {

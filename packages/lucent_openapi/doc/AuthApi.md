@@ -9,12 +9,8 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**authControllerChangeEmailV1**](AuthApi.md#authcontrollerchangeemailv1) | **POST** /api/v1/auth/me/email | 修改邮箱
-[**authControllerChangePasswordV1**](AuthApi.md#authcontrollerchangepasswordv1) | **POST** /api/v1/auth/me/password | 修改密码
 [**authControllerCreateWechatWebAuthorizeUrlV1**](AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
-[**authControllerDeleteAccountV1**](AuthApi.md#authcontrollerdeleteaccountv1) | **DELETE** /api/v1/auth/me | 注销账户
 [**authControllerForgotPasswordV1**](AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
-[**authControllerGetMeV1**](AuthApi.md#authcontrollergetmev1) | **GET** /api/v1/auth/me | 获取当前用户信息
 [**authControllerLoginV1**](AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
 [**authControllerLoginWithWechatMobileV1**](AuthApi.md#authcontrollerloginwithwechatmobilev1) | **POST** /api/v1/auth/oauth/wechat-mobile/callback | 微信移动端登录回调
 [**authControllerLoginWithWechatWebV1**](AuthApi.md#authcontrollerloginwithwechatwebv1) | **POST** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录回调登录
@@ -24,91 +20,8 @@ Method | HTTP request | Description
 [**authControllerRegisterV1**](AuthApi.md#authcontrollerregisterv1) | **POST** /api/v1/auth/register | 用户注册
 [**authControllerResetPasswordV1**](AuthApi.md#authcontrollerresetpasswordv1) | **POST** /api/v1/auth/reset-password | 重置密码
 [**authControllerSendVerificationCodeV1**](AuthApi.md#authcontrollersendverificationcodev1) | **POST** /api/v1/auth/send-verification-code | 发送邮箱验证码
-[**authControllerUpdateMeV1**](AuthApi.md#authcontrollerupdatemev1) | **PATCH** /api/v1/auth/me | 更新当前用户信息
 [**authControllerVerifyEmailV1**](AuthApi.md#authcontrollerverifyemailv1) | **POST** /api/v1/auth/verify-email | 验证邮箱
 
-
-# **authControllerChangeEmailV1**
-> ChangeEmailResponseDto authControllerChangeEmailV1(changeEmailDto)
-
-修改邮箱
-
-### Example
-```dart
-import 'package:lucent_openapi/api.dart';
-
-final api = LucentOpenapi().getAuthApi();
-final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto |
-
-try {
-    final response = api.authControllerChangeEmailV1(changeEmailDto);
-    print(response);
-} on DioException catch (e) {
-    print('Exception when calling AuthApi->authControllerChangeEmailV1: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **changeEmailDto** | [**ChangeEmailDto**](ChangeEmailDto.md)|  |
-
-### Return type
-
-[**ChangeEmailResponseDto**](ChangeEmailResponseDto.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **authControllerChangePasswordV1**
-> SuccessResponseDto authControllerChangePasswordV1(changePasswordDto)
-
-修改密码
-
-### Example
-```dart
-import 'package:lucent_openapi/api.dart';
-
-final api = LucentOpenapi().getAuthApi();
-final ChangePasswordDto changePasswordDto = ; // ChangePasswordDto |
-
-try {
-    final response = api.authControllerChangePasswordV1(changePasswordDto);
-    print(response);
-} on DioException catch (e) {
-    print('Exception when calling AuthApi->authControllerChangePasswordV1: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **changePasswordDto** | [**ChangePasswordDto**](ChangePasswordDto.md)|  |
-
-### Return type
-
-[**SuccessResponseDto**](SuccessResponseDto.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **authControllerCreateWechatWebAuthorizeUrlV1**
 > OAuthAuthorizeResponseDto authControllerCreateWechatWebAuthorizeUrlV1(oAuthAuthorizeDto)
@@ -139,47 +52,6 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**OAuthAuthorizeResponseDto**](OAuthAuthorizeResponseDto.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **authControllerDeleteAccountV1**
-> SuccessResponseDto authControllerDeleteAccountV1(deleteAccountDto)
-
-注销账户
-
-### Example
-```dart
-import 'package:lucent_openapi/api.dart';
-
-final api = LucentOpenapi().getAuthApi();
-final DeleteAccountDto deleteAccountDto = ; // DeleteAccountDto |
-
-try {
-    final response = api.authControllerDeleteAccountV1(deleteAccountDto);
-    print(response);
-} on DioException catch (e) {
-    print('Exception when calling AuthApi->authControllerDeleteAccountV1: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **deleteAccountDto** | [**DeleteAccountDto**](DeleteAccountDto.md)|  |
-
-### Return type
-
-[**SuccessResponseDto**](SuccessResponseDto.md)
 
 ### Authorization
 
@@ -229,43 +101,6 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **authControllerGetMeV1**
-> MeResponseDto authControllerGetMeV1()
-
-获取当前用户信息
-
-### Example
-```dart
-import 'package:lucent_openapi/api.dart';
-
-final api = LucentOpenapi().getAuthApi();
-
-try {
-    final response = api.authControllerGetMeV1();
-    print(response);
-} on DioException catch (e) {
-    print('Exception when calling AuthApi->authControllerGetMeV1: $e\n');
-}
-```
-
-### Parameters
-This endpoint does not need any parameter.
-
-### Return type
-
-[**MeResponseDto**](MeResponseDto.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -628,47 +463,6 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**SendVerificationCodeResponseDto**](SendVerificationCodeResponseDto.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **authControllerUpdateMeV1**
-> MeResponseDto authControllerUpdateMeV1(updateMeDto)
-
-更新当前用户信息
-
-### Example
-```dart
-import 'package:lucent_openapi/api.dart';
-
-final api = LucentOpenapi().getAuthApi();
-final UpdateMeDto updateMeDto = ; // UpdateMeDto |
-
-try {
-    final response = api.authControllerUpdateMeV1(updateMeDto);
-    print(response);
-} on DioException catch (e) {
-    print('Exception when calling AuthApi->authControllerUpdateMeV1: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **updateMeDto** | [**UpdateMeDto**](UpdateMeDto.md)|  |
-
-### Return type
-
-[**MeResponseDto**](MeResponseDto.md)
 
 ### Authorization
 

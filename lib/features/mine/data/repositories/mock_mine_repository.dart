@@ -23,13 +23,17 @@ class MockMineRepository implements MineRepository {
   @override
   Future<MineDashboard> fetchDashboard() async {
     return _buildDashboard(
-      const MineAccount(
+      MineAccount(
         isAuthenticated: true,
         displayNameKey: MineCopyKey.accountDisplayName,
         displayName: 'Lumi 用户',
         email: 'lumi@example.com',
         statusKey: MineCopyKey.accountSignedIn,
         metaKey: MineCopyKey.accountMeta,
+        emailVerified: true,
+        hasPassword: true,
+        linkedIdentityCount: 1,
+        lastLoginAt: DateTime.utc(2026, 1, 2, 8, 30),
       ),
     );
   }

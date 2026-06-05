@@ -158,22 +158,14 @@ class AuthRemoteDataSource {
     await _client.clearSession();
   }
 
-  Future<AuthUser> fetchMe() async {
-    final response = await _client.authApi.authControllerGetMeV1();
+  Future<AuthUser> fetchAccount() async {
+    final response = await _client.accountApi.accountControllerGetAccountV1();
     final body = response.data;
     if (body == null) {
-      throw const LucentApiException(message: 'Me response is empty.');
+      throw const LucentApiException(message: 'Account response is empty.');
     }
     final user = body.data;
-    return AuthUser(
-      id: user.id,
-      email: user.email?.toString(),
-      nickname: user.nickname?.toString(),
-      avatar: user.avatar?.toString(),
-      emailVerified: user.emailVerified,
-      createdAt: DateTime.parse(user.createdAt),
-      updatedAt: DateTime.parse(user.updatedAt),
-    );
+    return _authUserFromAccount(user);
   }
 
   Future<CooldownMessageDto> sendVerificationCode({
@@ -231,11 +223,14 @@ class AuthRemoteDataSource {
     );
   }
 
-  Future<AuthUser> updateMe({String? nickname, String? avatar}) async {
-    final response = await _client.authApi.authControllerUpdateMeV1(
-      updateMeDto: UpdateMeDto(
-        nickname: nickname?.trim().isEmpty ?? true ? null : nickname!.trim(),
-        avatar: avatar?.trim().isEmpty ?? true ? null : avatar!.trim(),
+  Future<AuthUser> updateAccountProfile({
+    String? nickname,
+    String? avatar,
+  }) async {
+    final response = await _client.accountApi.accountControllerUpdateAccountV1(
+      updateAccountDto: UpdateAccountDto(
+        nickname: nickname?.trim(),
+        avatar: avatar?.trim(),
       ),
     );
     final body = response.data;
@@ -244,23 +239,14 @@ class AuthRemoteDataSource {
         message: 'Update profile response is empty.',
       );
     }
-    final user = body.data;
-    return AuthUser(
-      id: user.id,
-      email: user.email?.toString(),
-      nickname: user.nickname?.toString(),
-      avatar: user.avatar?.toString(),
-      emailVerified: user.emailVerified,
-      createdAt: DateTime.parse(user.createdAt),
-      updatedAt: DateTime.parse(user.updatedAt),
-    );
+    return _authUserFromAccount(body.data);
   }
 
   Future<void> changePassword({
     required String oldPassword,
     required String newPassword,
   }) async {
-    await _client.authApi.authControllerChangePasswordV1(
+    await _client.accountApi.accountControllerChangePasswordV1(
       changePasswordDto: ChangePasswordDto(
         oldPassword: oldPassword.trim(),
         newPassword: newPassword.trim(),
@@ -274,7 +260,7 @@ class AuthRemoteDataSource {
     required String code,
     required AuthUser currentUser,
   }) async {
-    final response = await _client.authApi.authControllerChangeEmailV1(
+    final response = await _client.accountApi.accountControllerChangeEmailV1(
       changeEmailDto: ChangeEmailDto(
         newEmail: newEmail.trim(),
         code: code.trim(),
@@ -288,14 +274,46 @@ class AuthRemoteDataSource {
     }
     return currentUser.copyWith(
       email: body.data.email,
-      emailVerified: body.data.emailVerified,
+      emailVerifiedAt: DateTime.parse(body.data.emailVerifiedAt),
     );
   }
 
   Future<void> deleteAccount({required String password}) async {
-    await _client.authApi.authControllerDeleteAccountV1(
+    await _client.accountApi.accountControllerDeleteAccountV1(
       deleteAccountDto: DeleteAccountDto(password: password.trim()),
     );
     await _client.clearSession();
+  }
+
+  AuthUser _authUserFromAccount(AccountDto user) {
+    return AuthUser(
+      id: user.id,
+      email: user.email?.toString(),
+      nickname: user.nickname?.toString(),
+      avatar: user.avatar?.toString(),
+      emailVerifiedAt: _parseOptionalDateTime(user.emailVerifiedAt),
+      hasPassword: user.hasPassword,
+      lastLoginAt: _parseOptionalDateTime(user.lastLoginAt),
+      linkedIdentities: user.linkedIdentities
+          .map(
+            (identity) => AuthLinkedIdentity(
+              provider: identity.provider,
+              email: identity.email?.toString(),
+              emailVerifiedAt: _parseOptionalDateTime(identity.emailVerifiedAt),
+              linkedAt: DateTime.parse(identity.linkedAt),
+            ),
+          )
+          .toList(),
+      createdAt: DateTime.parse(user.createdAt),
+      updatedAt: DateTime.parse(user.updatedAt),
+    );
+  }
+
+  DateTime? _parseOptionalDateTime(Object? value) {
+    final raw = value?.toString();
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+    return DateTime.parse(raw);
   }
 }

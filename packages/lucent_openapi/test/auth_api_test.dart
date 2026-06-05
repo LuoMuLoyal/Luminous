@@ -1,30 +1,15 @@
 import 'package:test/test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 
-
 /// tests for AuthApi
 void main() {
   final instance = LucentOpenapi().getAuthApi();
 
   group(AuthApi, () {
-    // 修改邮箱
+    // 创建微信网页登录授权地址
     //
-    //Future<ChangeEmailResponseDto> authControllerChangeEmailV1(ChangeEmailDto changeEmailDto) async
-    test('test authControllerChangeEmailV1', () async {
-      // TODO
-    });
-
-    // 修改密码
-    //
-    //Future<SuccessResponseDto> authControllerChangePasswordV1(ChangePasswordDto changePasswordDto) async
-    test('test authControllerChangePasswordV1', () async {
-      // TODO
-    });
-
-    // 注销账户
-    //
-    //Future<SuccessResponseDto> authControllerDeleteAccountV1(DeleteAccountDto deleteAccountDto) async
-    test('test authControllerDeleteAccountV1', () async {
+    //Future<OAuthAuthorizeResponseDto> authControllerCreateWechatWebAuthorizeUrlV1({ OAuthAuthorizeDto oAuthAuthorizeDto }) async
+    test('test authControllerCreateWechatWebAuthorizeUrlV1', () async {
       // TODO
     });
 
@@ -35,13 +20,6 @@ void main() {
       // TODO
     });
 
-    // 获取当前用户信息
-    //
-    //Future<MeResponseDto> authControllerGetMeV1() async
-    test('test authControllerGetMeV1', () async {
-      // TODO
-    });
-
     // 用户登录
     //
     //Future<LoginResponseDto> authControllerLoginV1(LoginDto loginDto) async
@@ -49,10 +27,31 @@ void main() {
       // TODO
     });
 
+    // 微信移动端登录回调
+    //
+    //Future<LoginResponseDto> authControllerLoginWithWechatMobileV1(OAuthCodeCallbackDto oAuthCodeCallbackDto) async
+    test('test authControllerLoginWithWechatMobileV1', () async {
+      // TODO
+    });
+
+    // 微信网页登录回调登录
+    //
+    //Future<LoginResponseDto> authControllerLoginWithWechatWebV1(OAuthCallbackDto oAuthCallbackDto) async
+    test('test authControllerLoginWithWechatWebV1', () async {
+      // TODO
+    });
+
     // 用户登出
     //
     //Future<SuccessResponseDto> authControllerLogoutV1(LogoutDto logoutDto) async
     test('test authControllerLogoutV1', () async {
+      // TODO
+    });
+
+    // 微信网页登录浏览器回跳
+    //
+    //Future authControllerRedirectWechatWebCallbackV1(String code, String state) async
+    test('test authControllerRedirectWechatWebCallbackV1', () async {
       // TODO
     });
 
@@ -84,19 +83,11 @@ void main() {
       // TODO
     });
 
-    // 更新当前用户信息
-    //
-    //Future<MeResponseDto> authControllerUpdateMeV1(UpdateMeDto updateMeDto) async
-    test('test authControllerUpdateMeV1', () async {
-      // TODO
-    });
-
     // 验证邮箱
     //
     //Future<VerifyEmailResponseDto> authControllerVerifyEmailV1(VerifyEmailDto verifyEmailDto) async
     test('test authControllerVerifyEmailV1', () async {
       // TODO
     });
-
   });
 }

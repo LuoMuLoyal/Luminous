@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **nickname** | **Object** | 昵称 |
 **avatar** | **Object** | 头像 URL |
 **emailVerified** | **bool** | 邮箱是否已验证 |
+**emailVerifiedAt** | **Object** | 邮箱验证时间 (ISO 8601) |
 **createdAt** | **String** | 创建时间 (ISO 8601) |
 **updatedAt** | **String** | 更新时间 (ISO 8601) |
 

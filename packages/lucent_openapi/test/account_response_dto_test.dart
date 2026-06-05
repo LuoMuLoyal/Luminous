@@ -1,25 +1,25 @@
 import 'package:test/test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 
-// tests for MeResponseDto
+// tests for AccountResponseDto
 void main() {
-  final MeResponseDto? instance = /* MeResponseDto(...) */ null;
+  final AccountResponseDto? instance = /* AccountResponseDto(...) */ null;
   // TODO add properties to the entity
 
-  group(MeResponseDto, () {
-    // 结果码
+  group(AccountResponseDto, () {
+    // Result code.
     // num code
     test('to test the property `code`', () async {
       // TODO
     });
 
-    // 提示消息
+    // Message.
     // String message
     test('to test the property `message`', () async {
       // TODO
     });
 
-    // UserFullDto data
+    // AccountDto data
     test('to test the property `data`', () async {
       // TODO
     });

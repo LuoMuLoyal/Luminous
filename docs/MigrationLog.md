@@ -6,6 +6,14 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-05
 
+### Account API Naming And Email Verification
+
+- Re-generated `packages/lucent_openapi` from Lucent `openapi.json` after removing legacy `/auth/me*` routes (`30 paths / 83 schemas`), deleting stale generated `MeResponseDto` / `UpdateMeDto` artifacts, and keeping account profile/security actions only under `AccountApi`.
+- Added a signed-in Mine account detail strip for email verification, password, linked identity count, and last login; tapping the account header now routes to `/account`.
+- Regenerated `packages/lucent_openapi` from Lucent `openapi.json` after adding the account resource (`33 paths / 87 schemas`), including generated `AccountApi`, `AccountDto`, `AccountIdentityDto`, and account email/profile response models.
+- Moved Luminous account restore/profile/password/email/delete calls from the legacy auth `me` methods to `LucentDioClient.accountApi`, while keeping the `mine` page name as frontend navigation language only.
+- Unified frontend auth state around `emailVerifiedAt`; `AuthUser.emailVerified` is now derived locally from the timestamp, and account detail mapping preserves `hasPassword`, `lastLoginAt`, and linked OAuth identities.
+
 ### Medicine Search Source Contract
 
 - Confirmed the medicine search page renders a source selector for Chinese package inserts and DrugBank in both mobile and desktop layouts, and the selected source is passed through the search notifier to Lucent's OpenAPI medicines client.

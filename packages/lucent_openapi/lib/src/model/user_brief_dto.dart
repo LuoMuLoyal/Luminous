@@ -24,6 +24,8 @@ class UserBriefDto {
 
     required this.emailVerified,
 
+    required this.emailVerifiedAt,
+
     required this.createdAt,
   });
 
@@ -43,6 +45,10 @@ class UserBriefDto {
   @JsonKey(name: r'emailVerified', required: true, includeIfNull: false)
   final bool emailVerified;
 
+  /// 邮箱验证时间 (ISO 8601)
+  @JsonKey(name: r'emailVerifiedAt', required: true, includeIfNull: true)
+  final Object? emailVerifiedAt;
+
   /// 创建时间 (ISO 8601)
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
   final String createdAt;
@@ -55,6 +61,7 @@ class UserBriefDto {
           other.email == email &&
           other.nickname == nickname &&
           other.emailVerified == emailVerified &&
+          other.emailVerifiedAt == emailVerifiedAt &&
           other.createdAt == createdAt;
 
   @override
@@ -63,6 +70,7 @@ class UserBriefDto {
       (email == null ? 0 : email.hashCode) +
       (nickname == null ? 0 : nickname.hashCode) +
       emailVerified.hashCode +
+      (emailVerifiedAt == null ? 0 : emailVerifiedAt.hashCode) +
       createdAt.hashCode;
 
   factory UserBriefDto.fromJson(Map<String, dynamic> json) =>

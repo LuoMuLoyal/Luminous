@@ -37,7 +37,7 @@ class OAuthAuthorizeDataDto {
   @JsonKey(name: r'expiresIn', required: true, includeIfNull: false)
   final num expiresIn;
 
-  /// 客户端回跳地址。桌面端 loopback 登录时返回。
+  /// 客户端回跳地址。桌面端 loopback 或可信 Web 回调登录时返回。
   @JsonKey(name: r'callbackUri', required: false, includeIfNull: false)
   final String? callbackUri;
 

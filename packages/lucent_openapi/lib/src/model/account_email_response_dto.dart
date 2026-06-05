@@ -3,10 +3,10 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_openapi/src/model/user_full_dto.dart';
+import 'package:lucent_openapi/src/model/account_email_data_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'me_response_dto.g.dart';
+part 'account_email_response_dto.g.dart';
 
 @JsonSerializable(
   checked: true,
@@ -14,9 +14,9 @@ part 'me_response_dto.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class MeResponseDto {
-  /// Returns a new [MeResponseDto] instance.
-  MeResponseDto({
+class AccountEmailResponseDto {
+  /// Returns a new [AccountEmailResponseDto] instance.
+  AccountEmailResponseDto({
     required this.code,
 
     required this.message,
@@ -24,21 +24,21 @@ class MeResponseDto {
     required this.data,
   });
 
-  /// 结果码
+  /// Result code.
   @JsonKey(name: r'code', required: true, includeIfNull: false)
   final num code;
 
-  /// 提示消息
+  /// Message.
   @JsonKey(name: r'message', required: true, includeIfNull: false)
   final String message;
 
   @JsonKey(name: r'data', required: true, includeIfNull: false)
-  final UserFullDto data;
+  final AccountEmailDataDto data;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MeResponseDto &&
+      other is AccountEmailResponseDto &&
           other.code == code &&
           other.message == message &&
           other.data == data;
@@ -46,10 +46,10 @@ class MeResponseDto {
   @override
   int get hashCode => code.hashCode + message.hashCode + data.hashCode;
 
-  factory MeResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$MeResponseDtoFromJson(json);
+  factory AccountEmailResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$AccountEmailResponseDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MeResponseDtoToJson(this);
+  Map<String, dynamic> toJson() => _$AccountEmailResponseDtoToJson(this);
 
   @override
   String toString() {

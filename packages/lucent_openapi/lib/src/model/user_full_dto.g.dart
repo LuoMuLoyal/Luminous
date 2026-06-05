@@ -16,6 +16,7 @@ UserFullDto _$UserFullDtoFromJson(Map<String, dynamic> json) =>
           'nickname',
           'avatar',
           'emailVerified',
+          'emailVerifiedAt',
           'createdAt',
           'updatedAt',
         ],
@@ -26,6 +27,7 @@ UserFullDto _$UserFullDtoFromJson(Map<String, dynamic> json) =>
         nickname: $checkedConvert('nickname', (v) => v),
         avatar: $checkedConvert('avatar', (v) => v),
         emailVerified: $checkedConvert('emailVerified', (v) => v as bool),
+        emailVerifiedAt: $checkedConvert('emailVerifiedAt', (v) => v),
         createdAt: $checkedConvert('createdAt', (v) => v as String),
         updatedAt: $checkedConvert('updatedAt', (v) => v as String),
       );
@@ -39,6 +41,7 @@ Map<String, dynamic> _$UserFullDtoToJson(UserFullDto instance) =>
       'nickname': instance.nickname,
       'avatar': instance.avatar,
       'emailVerified': instance.emailVerified,
+      'emailVerifiedAt': instance.emailVerifiedAt,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
     };

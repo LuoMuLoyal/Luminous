@@ -48,12 +48,14 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import 'package:lucent_openapi/lucent_openapi.dart';
 
 
-final api = LucentOpenapi().getAppApi();
+final api = LucentOpenapi().getAccountApi();
+final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto |
 
 try {
-    api.appControllerGetHealthV1();
+    final response = await api.accountControllerChangeEmailV1(changeEmailDto);
+    print(response);
 } on DioException catch (e) {
-    print("Exception when calling AppApi->appControllerGetHealthV1: $e\n");
+    print("Exception when calling AccountApi->accountControllerChangeEmailV1: $e\n");
 }
 
 ```
@@ -64,13 +66,14 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-[*AppApi*](doc/AppApi.md) | [**appControllerGetHealthV1**](doc/AppApi.md#appcontrollergethealthv1) | **GET** /api/v1/health | 
-[*AuthApi*](doc/AuthApi.md) | [**authControllerChangeEmailV1**](doc/AuthApi.md#authcontrollerchangeemailv1) | **POST** /api/v1/auth/me/email | 修改邮箱
-[*AuthApi*](doc/AuthApi.md) | [**authControllerChangePasswordV1**](doc/AuthApi.md#authcontrollerchangepasswordv1) | **POST** /api/v1/auth/me/password | 修改密码
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerChangeEmailV1**](doc/AccountApi.md#accountcontrollerchangeemailv1) | **POST** /api/v1/account/email | Change authenticated account email
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerChangePasswordV1**](doc/AccountApi.md#accountcontrollerchangepasswordv1) | **POST** /api/v1/account/password | Change authenticated account password
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerDeleteAccountV1**](doc/AccountApi.md#accountcontrollerdeleteaccountv1) | **DELETE** /api/v1/account | Delete authenticated account
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerGetAccountV1**](doc/AccountApi.md#accountcontrollergetaccountv1) | **GET** /api/v1/account | Get authenticated account profile
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerUpdateAccountV1**](doc/AccountApi.md#accountcontrollerupdateaccountv1) | **PATCH** /api/v1/account | Update authenticated account profile
+[*AppApi*](doc/AppApi.md) | [**appControllerGetHealthV1**](doc/AppApi.md#appcontrollergethealthv1) | **GET** /api/v1/health |
 [*AuthApi*](doc/AuthApi.md) | [**authControllerCreateWechatWebAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
-[*AuthApi*](doc/AuthApi.md) | [**authControllerDeleteAccountV1**](doc/AuthApi.md#authcontrollerdeleteaccountv1) | **DELETE** /api/v1/auth/me | 注销账户
 [*AuthApi*](doc/AuthApi.md) | [**authControllerForgotPasswordV1**](doc/AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
-[*AuthApi*](doc/AuthApi.md) | [**authControllerGetMeV1**](doc/AuthApi.md#authcontrollergetmev1) | **GET** /api/v1/auth/me | 获取当前用户信息
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginV1**](doc/AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatMobileV1**](doc/AuthApi.md#authcontrollerloginwithwechatmobilev1) | **POST** /api/v1/auth/oauth/wechat-mobile/callback | 微信移动端登录回调
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatWebV1**](doc/AuthApi.md#authcontrollerloginwithwechatwebv1) | **POST** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录回调登录
@@ -80,7 +83,6 @@ Class | Method | HTTP request | Description
 [*AuthApi*](doc/AuthApi.md) | [**authControllerRegisterV1**](doc/AuthApi.md#authcontrollerregisterv1) | **POST** /api/v1/auth/register | 用户注册
 [*AuthApi*](doc/AuthApi.md) | [**authControllerResetPasswordV1**](doc/AuthApi.md#authcontrollerresetpasswordv1) | **POST** /api/v1/auth/reset-password | 重置密码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerSendVerificationCodeV1**](doc/AuthApi.md#authcontrollersendverificationcodev1) | **POST** /api/v1/auth/send-verification-code | 发送邮箱验证码
-[*AuthApi*](doc/AuthApi.md) | [**authControllerUpdateMeV1**](doc/AuthApi.md#authcontrollerupdatemev1) | **PATCH** /api/v1/auth/me | 更新当前用户信息
 [*AuthApi*](doc/AuthApi.md) | [**authControllerVerifyEmailV1**](doc/AuthApi.md#authcontrollerverifyemailv1) | **POST** /api/v1/auth/verify-email | 验证邮箱
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/me/daily-records | Create a daily record
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerDeleteV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/me/daily-records/{id} | Soft-delete a daily record
@@ -108,9 +110,12 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
- - [ChangeEmailDataDto](doc/ChangeEmailDataDto.md)
+ - [AccountDto](doc/AccountDto.md)
+ - [AccountEmailDataDto](doc/AccountEmailDataDto.md)
+ - [AccountEmailResponseDto](doc/AccountEmailResponseDto.md)
+ - [AccountIdentityDto](doc/AccountIdentityDto.md)
+ - [AccountResponseDto](doc/AccountResponseDto.md)
  - [ChangeEmailDto](doc/ChangeEmailDto.md)
- - [ChangeEmailResponseDto](doc/ChangeEmailResponseDto.md)
  - [ChangePasswordDto](doc/ChangePasswordDto.md)
  - [CnMedicineDetailDto](doc/CnMedicineDetailDto.md)
  - [CooldownMessageDto](doc/CooldownMessageDto.md)
@@ -143,7 +148,6 @@ Class | Method | HTTP request | Description
  - [LoginDto](doc/LoginDto.md)
  - [LoginResponseDto](doc/LoginResponseDto.md)
  - [LogoutDto](doc/LogoutDto.md)
- - [MeResponseDto](doc/MeResponseDto.md)
  - [MedicineDetailDataDto](doc/MedicineDetailDataDto.md)
  - [MedicineDetailDataDtoDetail](doc/MedicineDetailDataDtoDetail.md)
  - [MedicineDetailResponseDto](doc/MedicineDetailResponseDto.md)
@@ -170,13 +174,13 @@ Class | Method | HTTP request | Description
  - [SuccessResponseDto](doc/SuccessResponseDto.md)
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
+ - [UpdateAccountDto](doc/UpdateAccountDto.md)
  - [UpdateCurrentMedicineDto](doc/UpdateCurrentMedicineDto.md)
  - [UpdateDailyRecordDto](doc/UpdateDailyRecordDto.md)
  - [UpdateDoseLogDto](doc/UpdateDoseLogDto.md)
  - [UpdateHealthContextAllergyDto](doc/UpdateHealthContextAllergyDto.md)
  - [UpdateHealthContextConditionDto](doc/UpdateHealthContextConditionDto.md)
  - [UpdateHealthContextProfileDto](doc/UpdateHealthContextProfileDto.md)
- - [UpdateMeDto](doc/UpdateMeDto.md)
  - [UserAllergyItemDto](doc/UserAllergyItemDto.md)
  - [UserAllergyKind](doc/UserAllergyKind.md)
  - [UserAllergySeverity](doc/UserAllergySeverity.md)
@@ -198,6 +202,3 @@ Endpoints do not require authorization.
 
 
 ## Author
-
-
-

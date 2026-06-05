@@ -31,7 +31,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
         return;
       }
 
-      final user = await ref.read(authRemoteDataSourceProvider).fetchMe();
+      final user = await ref.read(authRemoteDataSourceProvider).fetchAccount();
       state = AuthSessionState(user: user, isAuthenticated: true);
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
