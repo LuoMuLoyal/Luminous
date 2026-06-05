@@ -64,6 +64,7 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   String? wechatAuthorizeCallbackUri;
   String? wechatCallbackCode;
   String? wechatCallbackState;
+  String? wechatMobileCallbackCode;
 
   @override
   Future<AuthSession> login({
@@ -100,6 +101,15 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
     wechatCallbackCode = code;
     wechatCallbackState = state;
     return testSession(email: 'wechat@example.com', nickname: 'WechatUser');
+  }
+
+  @override
+  Future<AuthSession> loginWithWechatMobile({required String code}) async {
+    wechatMobileCallbackCode = code;
+    return testSession(
+      email: 'wechat-mobile@example.com',
+      nickname: 'WxMobile',
+    );
   }
 
   @override

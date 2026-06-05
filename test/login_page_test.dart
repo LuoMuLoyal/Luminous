@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:luminous/features/auth/data/datasources/wechat_mobile_auth_client.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 
@@ -115,6 +116,49 @@ void main() {
     expect(find.byKey(const Key('wechat-callback-input')), findsOneWidget);
   });
 
+  testWidgets('Login page uses mobile WeChat SDK before browser OAuth', (
+    tester,
+  ) async {
+    final remote = FakeAuthRemoteDataSource();
+    final launcher = _FakeExternalUrlLauncher();
+    final mobileClient = _FakeWechatMobileAuthClient(code: 'mobile-code');
+    final container = ProviderContainer(
+      overrides: [
+        authRemoteDataSourceProvider.overrideWithValue(remote),
+        externalUrlLauncherProvider.overrideWithValue(launcher),
+        wechatMobileAuthClientProvider.overrideWithValue(mobileClient),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestAuthApp(
+          router: GoRouter(
+            initialLocation: '/login',
+            routes: [
+              GoRoute(
+                path: '/login',
+                builder: (context, state) => const LoginPage(),
+              ),
+              GoRoute(path: '/', builder: (context, state) => const SizedBox()),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('wechat-login-start-button')));
+    await tester.pumpAndSettle();
+
+    expect(mobileClient.authorizeCalled, isTrue);
+    expect(remote.wechatMobileCallbackCode, 'mobile-code');
+    expect(remote.createWechatAuthorizeCalled, isFalse);
+    expect(launcher.openedUri, isNull);
+    expect(container.read(authSessionProvider).isAuthenticated, isTrue);
+  });
+
   testWidgets('Login page completes WeChat callback login', (tester) async {
     final remote = FakeAuthRemoteDataSource();
     final launcher = _FakeExternalUrlLauncher();
@@ -161,6 +205,22 @@ void main() {
     expect(container.read(authSessionProvider).isAuthenticated, isTrue);
     expect(container.read(authSessionProvider).user?.nickname, 'WechatUser');
   });
+}
+
+class _FakeWechatMobileAuthClient extends WechatMobileAuthClient {
+  _FakeWechatMobileAuthClient({required this.code});
+
+  final String code;
+  bool authorizeCalled = false;
+
+  @override
+  bool get isSupported => true;
+
+  @override
+  Future<String> authorize() async {
+    authorizeCalled = true;
+    return code;
+  }
 }
 
 class _FakeExternalUrlLauncher extends ExternalUrlLauncher {

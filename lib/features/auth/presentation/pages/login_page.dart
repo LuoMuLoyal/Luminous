@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -195,6 +196,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     AppLocalizations? l10n,
   ) async {
     final notifier = ref.read(loginFormProvider.notifier);
+    final mobileSession = await notifier.startWechatMobileLogin();
+    if (mobileSession != null) {
+      if (context.mounted) {
+        context.go('/');
+      }
+      return;
+    }
+    final afterMobileAttempt = ref.read(loginFormProvider);
+    if (afterMobileAttempt.errorMessage?.isNotEmpty == true) {
+      return;
+    }
+
     final desktopSession = await notifier.startWechatDesktopWebLogin();
     if (desktopSession != null) {
       if (context.mounted) {
@@ -207,7 +220,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       return;
     }
 
-    final authorize = await notifier.createWechatWebAuthorizeUrl();
+    final authorize = await notifier.createWechatWebAuthorizeUrl(
+      callbackUri: _webWechatCallbackUri(),
+    );
     if (authorize == null || !context.mounted) {
       return;
     }
@@ -231,6 +246,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       l10n?.authWechatAuthorizeOpened ??
           'WeChat authorization opened in your browser.',
     );
+  }
+
+  String? _webWechatCallbackUri() {
+    if (!kIsWeb) {
+      return null;
+    }
+
+    final base = Uri.base;
+    return Uri(
+      scheme: base.scheme,
+      host: base.host,
+      port: base.hasPort ? base.port : null,
+      path: '/login/oauth/wechat',
+    ).toString();
   }
 
   Future<void> _completeWechatLoginFromInput(

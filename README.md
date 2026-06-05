@@ -9,7 +9,13 @@ Flutter personal health copilot. Current mainline is the reset five-tab shell ba
 - API client: `packages/lucent_openapi`
 - Network layer: `lib/core/network/`
 - i18n: Flutter `gen-l10n`
-- Desktop OAuth: WeChat Web login starts a loopback callback listener, asks Lucent for an authorize URL with that callback URI, opens the system browser, and completes login automatically when Lucent redirects back with `code` and `state`. Manual callback paste remains as a fallback.
+- WeChat OAuth: Android/iOS uses the WeChat SDK through `fluwx` to obtain an auth code and then calls Lucent's mobile callback endpoint. Desktop login starts a loopback callback listener, asks Lucent for an authorize URL with that callback URI, opens the system browser, verifies the returned `state`, and completes login automatically when Lucent redirects back with `code` and `state`. Web login passes `/login/oauth/wechat` as the callback path. Manual callback paste remains as a fallback.
+
+Mobile WeChat SDK builds need:
+
+- Dart define `WECHAT_MOBILE_APP_ID=<wx app id>`
+- iOS Dart define `WECHAT_IOS_UNIVERSAL_LINK=<universal link>` when applicable
+- Matching Android signature/package and iOS URL Scheme/Universal Link setup in the WeChat Open Platform console and native projects
 
 ## Commands
 
