@@ -34,6 +34,13 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
   }
 
   @override
+  Future<DailyRecordAttachmentInput> uploadImage(
+    DailyRecordImageUploadInput input,
+  ) {
+    return dataSource.uploadImage(input);
+  }
+
+  @override
   Future<DailyRecordItem> create(DailyRecordCreateInput input) {
     return dataSource.create(input);
   }

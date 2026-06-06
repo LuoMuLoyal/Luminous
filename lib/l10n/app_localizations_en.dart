@@ -92,6 +92,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordCreateFailedToast => 'Record was not saved.';
 
   @override
+  String get recordImageSectionTitle => 'Image attachment';
+
+  @override
+  String get recordImageEmptyLabel => 'No image attached';
+
+  @override
+  String get recordImageAttachedLabel => 'Image attached';
+
+  @override
+  String get recordImagePickAction => 'Choose image';
+
+  @override
+  String get recordImageReplaceAction => 'Replace image';
+
+  @override
+  String get recordImageRemoveAction => 'Remove';
+
+  @override
+  String get recordImageUnsupportedToast =>
+      'Only JPG, PNG, WEBP, or GIF images are supported.';
+
+  @override
+  String get recordImagePickFailedToast => 'Image was not selected.';
+
+  @override
   String get recordQuickSectionTitle => 'Quick record';
 
   @override

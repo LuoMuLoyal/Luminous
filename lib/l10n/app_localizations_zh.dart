@@ -90,6 +90,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordCreateFailedToast => '记录未保存';
 
   @override
+  String get recordImageSectionTitle => '图片附件';
+
+  @override
+  String get recordImageEmptyLabel => '未添加图片';
+
+  @override
+  String get recordImageAttachedLabel => '已添加图片';
+
+  @override
+  String get recordImagePickAction => '选择图片';
+
+  @override
+  String get recordImageReplaceAction => '更换图片';
+
+  @override
+  String get recordImageRemoveAction => '移除';
+
+  @override
+  String get recordImageUnsupportedToast => '仅支持 JPG、PNG、WEBP 或 GIF 图片';
+
+  @override
+  String get recordImagePickFailedToast => '图片未选择';
+
+  @override
   String get recordQuickSectionTitle => '快速记录';
 
   @override

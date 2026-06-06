@@ -3,6 +3,7 @@ import 'package:lucent_openapi/src/model/account_email_data_dto.dart';
 import 'package:lucent_openapi/src/model/account_email_response_dto.dart';
 import 'package:lucent_openapi/src/model/account_identity_dto.dart';
 import 'package:lucent_openapi/src/model/account_response_dto.dart';
+import 'package:lucent_openapi/src/model/air_quality_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/change_email_dto.dart';
 import 'package:lucent_openapi/src/model/change_password_dto.dart';
 import 'package:lucent_openapi/src/model/cn_medicine_detail_dto.dart';
@@ -30,10 +31,13 @@ import 'package:lucent_openapi/src/model/dose_log_list_data_dto.dart';
 import 'package:lucent_openapi/src/model/dose_log_list_response_dto.dart';
 import 'package:lucent_openapi/src/model/dose_log_response_dto.dart';
 import 'package:lucent_openapi/src/model/drugbank_medicine_detail_dto.dart';
+import 'package:lucent_openapi/src/model/environment_snapshot_dto.dart';
+import 'package:lucent_openapi/src/model/environment_snapshot_response_dto.dart';
 import 'package:lucent_openapi/src/model/forgot_password_dto.dart';
 import 'package:lucent_openapi/src/model/forgot_password_response_dto.dart';
 import 'package:lucent_openapi/src/model/health_context_data_dto.dart';
 import 'package:lucent_openapi/src/model/health_context_response_dto.dart';
+import 'package:lucent_openapi/src/model/humidity_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/login_data_dto.dart';
 import 'package:lucent_openapi/src/model/login_dto.dart';
 import 'package:lucent_openapi/src/model/login_response_dto.dart';
@@ -50,6 +54,7 @@ import 'package:lucent_openapi/src/model/o_auth_authorize_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_authorize_response_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_callback_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_code_callback_dto.dart';
+import 'package:lucent_openapi/src/model/pollen_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/refresh_dto.dart';
 import 'package:lucent_openapi/src/model/refresh_response_dto.dart';
 import 'package:lucent_openapi/src/model/register_data_dto.dart';
@@ -59,6 +64,7 @@ import 'package:lucent_openapi/src/model/reset_password_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_response_dto.dart';
 import 'package:lucent_openapi/src/model/success_response_dto.dart';
+import 'package:lucent_openapi/src/model/temperature_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/tokens_dto.dart';
 import 'package:lucent_openapi/src/model/update_account_dto.dart';
 import 'package:lucent_openapi/src/model/update_current_medicine_dto.dart';
@@ -74,6 +80,7 @@ import 'package:lucent_openapi/src/model/user_current_medicine_item_dto.dart';
 import 'package:lucent_openapi/src/model/user_full_dto.dart';
 import 'package:lucent_openapi/src/model/user_health_profile_dto.dart';
 import 'package:lucent_openapi/src/model/user_health_summary_dto.dart';
+import 'package:lucent_openapi/src/model/uv_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/verify_email_data_dto.dart';
 import 'package:lucent_openapi/src/model/verify_email_dto.dart';
 import 'package:lucent_openapi/src/model/verify_email_response_dto.dart';
@@ -106,6 +113,11 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return AccountIdentityDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AccountResponseDto':
           return AccountResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AirQualityIndicatorDto':
+          return AirQualityIndicatorDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AirQualityLevel':
+          
+          
         case 'ChangeEmailDto':
           return ChangeEmailDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ChangePasswordDto':
@@ -169,6 +181,13 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           
         case 'DrugbankMedicineDetailDto':
           return DrugbankMedicineDetailDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'EnvironmentDataSource':
+          
+          
+        case 'EnvironmentSnapshotDto':
+          return EnvironmentSnapshotDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'EnvironmentSnapshotResponseDto':
+          return EnvironmentSnapshotResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ForgotPasswordDto':
           return ForgotPasswordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ForgotPasswordResponseDto':
@@ -177,6 +196,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return HealthContextDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'HealthContextResponseDto':
           return HealthContextResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'HumidityIndicatorDto':
+          return HumidityIndicatorDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'LactationState':
           
           
@@ -215,6 +236,11 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return OAuthCallbackDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'OAuthCodeCallbackDto':
           return OAuthCodeCallbackDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'PollenIndicatorDto':
+          return PollenIndicatorDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'PollenLevel':
+          
+          
         case 'PregnancyState':
           
           
@@ -239,6 +265,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           
         case 'SuccessResponseDto':
           return SuccessResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'TemperatureIndicatorDto':
+          return TemperatureIndicatorDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'TokensDto':
           return TokensDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UnitSystem':
@@ -281,6 +309,11 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return UserHealthProfileDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UserHealthSummaryDto':
           return UserHealthSummaryDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'UvIndicatorDto':
+          return UvIndicatorDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'UvLevel':
+          
+          
         case 'VerifyEmailDataDto':
           return VerifyEmailDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'VerifyEmailDto':

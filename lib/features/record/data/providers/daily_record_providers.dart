@@ -4,11 +4,12 @@ import 'package:luminous/features/record/data/datasources/daily_record_remote_da
 import 'package:luminous/features/record/data/repositories/lucent_daily_record_repository.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 
-final dailyRecordRemoteDataSourceProvider = Provider<DailyRecordRemoteDataSource>((ref) {
-  final api = ref.watch(lucentDailyRecordsApiProvider);
-  final dio = ref.watch(lucentDioClientProvider).dio;
-  return DailyRecordRemoteDataSource(api: api, dio: dio);
-});
+final dailyRecordRemoteDataSourceProvider =
+    Provider<DailyRecordRemoteDataSource>((ref) {
+      final api = ref.watch(lucentDailyRecordsApiProvider);
+      final dio = ref.watch(lucentDioClientProvider).dio;
+      return DailyRecordRemoteDataSource(api: api, dio: dio);
+    });
 
 final dailyRecordRepositoryProvider = Provider<DailyRecordRepository>((ref) {
   final dataSource = ref.watch(dailyRecordRemoteDataSourceProvider);

@@ -260,6 +260,54 @@ abstract class AppLocalizations {
   /// **'记录未保存'**
   String get recordCreateFailedToast;
 
+  /// No description provided for @recordImageSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'图片附件'**
+  String get recordImageSectionTitle;
+
+  /// No description provided for @recordImageEmptyLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'未添加图片'**
+  String get recordImageEmptyLabel;
+
+  /// No description provided for @recordImageAttachedLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'已添加图片'**
+  String get recordImageAttachedLabel;
+
+  /// No description provided for @recordImagePickAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择图片'**
+  String get recordImagePickAction;
+
+  /// No description provided for @recordImageReplaceAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'更换图片'**
+  String get recordImageReplaceAction;
+
+  /// No description provided for @recordImageRemoveAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除'**
+  String get recordImageRemoveAction;
+
+  /// No description provided for @recordImageUnsupportedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅支持 JPG、PNG、WEBP 或 GIF 图片'**
+  String get recordImageUnsupportedToast;
+
+  /// No description provided for @recordImagePickFailedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'图片未选择'**
+  String get recordImagePickFailedToast;
+
   /// No description provided for @recordQuickSectionTitle.
   ///
   /// In zh, this message translates to:

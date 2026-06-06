@@ -123,6 +123,7 @@ class LucentDioClient {
   AuthApi get authApi => _openapi.getAuthApi();
 
   MedicinesApi get medicinesApi => _openapi.getMedicinesApi();
+  EnvironmentApi get environmentApi => _openapi.getEnvironmentApi();
   UserHealthContextApi get userHealthContextApi =>
       _openapi.getUserHealthContextApi();
   DailyRecordsApi get dailyRecordsApi => _openapi.getDailyRecordsApi();

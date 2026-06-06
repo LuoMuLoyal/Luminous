@@ -95,6 +95,7 @@ Class | Method | HTTP request | Description
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerListV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerlistv1) | **GET** /api/v1/me/daily-records | List daily records for a given date
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerSummaryV1**](doc/DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/me/daily-records/summary | Get daily record summary (counts by kind)
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerUpdateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerupdatev1) | **PATCH** /api/v1/me/daily-records/{id} | Update a daily record
+[*EnvironmentApi*](doc/EnvironmentApi.md) | [**environmentControllerGetSnapshotV1**](doc/EnvironmentApi.md#environmentcontrollergetsnapshotv1) | **GET** /api/v1/environment/snapshot | Get static environment snapshot reference data
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerCreateV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollercreatev1) | **POST** /api/v1/me/medicine-dose-logs | Create a dose log
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerDeleteV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerdeletev1) | **DELETE** /api/v1/me/medicine-dose-logs/{id} | Soft-delete a dose log
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerListV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerlistv1) | **GET** /api/v1/me/medicine-dose-logs | List dose logs for a date
@@ -121,6 +122,8 @@ Class | Method | HTTP request | Description
  - [AccountEmailResponseDto](doc/AccountEmailResponseDto.md)
  - [AccountIdentityDto](doc/AccountIdentityDto.md)
  - [AccountResponseDto](doc/AccountResponseDto.md)
+ - [AirQualityIndicatorDto](doc/AirQualityIndicatorDto.md)
+ - [AirQualityLevel](doc/AirQualityLevel.md)
  - [ChangeEmailDto](doc/ChangeEmailDto.md)
  - [ChangePasswordDto](doc/ChangePasswordDto.md)
  - [CnMedicineDetailDto](doc/CnMedicineDetailDto.md)
@@ -151,10 +154,14 @@ Class | Method | HTTP request | Description
  - [DoseLogResponseDto](doc/DoseLogResponseDto.md)
  - [DoseLogStatus](doc/DoseLogStatus.md)
  - [DrugbankMedicineDetailDto](doc/DrugbankMedicineDetailDto.md)
+ - [EnvironmentDataSource](doc/EnvironmentDataSource.md)
+ - [EnvironmentSnapshotDto](doc/EnvironmentSnapshotDto.md)
+ - [EnvironmentSnapshotResponseDto](doc/EnvironmentSnapshotResponseDto.md)
  - [ForgotPasswordDto](doc/ForgotPasswordDto.md)
  - [ForgotPasswordResponseDto](doc/ForgotPasswordResponseDto.md)
  - [HealthContextDataDto](doc/HealthContextDataDto.md)
  - [HealthContextResponseDto](doc/HealthContextResponseDto.md)
+ - [HumidityIndicatorDto](doc/HumidityIndicatorDto.md)
  - [LactationState](doc/LactationState.md)
  - [LoginDataDto](doc/LoginDataDto.md)
  - [LoginDto](doc/LoginDto.md)
@@ -173,6 +180,8 @@ Class | Method | HTTP request | Description
  - [OAuthAuthorizeResponseDto](doc/OAuthAuthorizeResponseDto.md)
  - [OAuthCallbackDto](doc/OAuthCallbackDto.md)
  - [OAuthCodeCallbackDto](doc/OAuthCodeCallbackDto.md)
+ - [PollenIndicatorDto](doc/PollenIndicatorDto.md)
+ - [PollenLevel](doc/PollenLevel.md)
  - [PregnancyState](doc/PregnancyState.md)
  - [RefreshDto](doc/RefreshDto.md)
  - [RefreshResponseDto](doc/RefreshResponseDto.md)
@@ -184,6 +193,7 @@ Class | Method | HTTP request | Description
  - [SendVerificationCodeResponseDto](doc/SendVerificationCodeResponseDto.md)
  - [SexAtBirth](doc/SexAtBirth.md)
  - [SuccessResponseDto](doc/SuccessResponseDto.md)
+ - [TemperatureIndicatorDto](doc/TemperatureIndicatorDto.md)
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
  - [UpdateAccountDto](doc/UpdateAccountDto.md)
@@ -203,6 +213,8 @@ Class | Method | HTTP request | Description
  - [UserFullDto](doc/UserFullDto.md)
  - [UserHealthProfileDto](doc/UserHealthProfileDto.md)
  - [UserHealthSummaryDto](doc/UserHealthSummaryDto.md)
+ - [UvIndicatorDto](doc/UvIndicatorDto.md)
+ - [UvLevel](doc/UvLevel.md)
  - [VerifyEmailDataDto](doc/VerifyEmailDataDto.md)
  - [VerifyEmailDto](doc/VerifyEmailDto.md)
  - [VerifyEmailResponseDto](doc/VerifyEmailResponseDto.md)

@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
@@ -9,6 +12,7 @@ import 'package:luminous/features/record/data/providers/daily_record_providers.d
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/widgets/daily_record_image_attachment_field.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -26,8 +30,10 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
   final _unitController = TextEditingController();
   final _noteController = TextEditingController();
   final _titleController = TextEditingController();
+  final _imagePicker = ImagePicker();
 
   bool _saving = false;
+  _PendingDailyRecordImage? _selectedImage;
 
   @override
   void dispose() {
@@ -137,6 +143,16 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
                 ),
                 maxLines: 3,
               ),
+              const SizedBox(height: 12),
+              DailyRecordImageAttachmentField(
+                l10n: l10n,
+                selectedBytes: _selectedImage?.bytes,
+                selectedFileName: _selectedImage?.fileName,
+                existingAttachment: null,
+                onPick: _onPickImage,
+                onRemove: _onRemoveImage,
+                enabled: !_saving,
+              ),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _saving ? null : () => _onSave(dateStr),
@@ -177,6 +193,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     setState(() => _saving = true);
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
+      final attachments = await _uploadSelectedImage();
       await repo.create(
         DailyRecordCreateInput(
           kind: _kind,
@@ -185,6 +202,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
           value: _valueController.text.isEmpty ? null : _valueController.text,
           unit: _unitController.text.isEmpty ? null : _unitController.text,
           note: _noteController.text.isEmpty ? null : _noteController.text,
+          attachments: attachments,
         ),
       );
       ref.invalidate(recordDashboardProvider);
@@ -207,4 +225,93 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
       if (mounted) setState(() => _saving = false);
     }
   }
+
+  Future<void> _onPickImage() async {
+    try {
+      final image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        requestFullMetadata: false,
+      );
+      if (image == null) return;
+
+      final contentType = _resolveImageContentType(image);
+      if (contentType == null) {
+        if (mounted) {
+          await AppToast.show(
+            context,
+            AppLocalizations.of(context)!.recordImageUnsupportedToast,
+          );
+        }
+        return;
+      }
+
+      final bytes = await image.readAsBytes();
+      if (!mounted) return;
+      setState(() {
+        _selectedImage = _PendingDailyRecordImage(
+          bytes: bytes,
+          fileName: image.name,
+          contentType: contentType,
+        );
+      });
+    } catch (_) {
+      if (mounted) {
+        await AppToast.show(
+          context,
+          AppLocalizations.of(context)!.recordImagePickFailedToast,
+        );
+      }
+    }
+  }
+
+  void _onRemoveImage() {
+    setState(() => _selectedImage = null);
+  }
+
+  Future<List<DailyRecordAttachmentInput>> _uploadSelectedImage() async {
+    final image = _selectedImage;
+    if (image == null) return const <DailyRecordAttachmentInput>[];
+
+    final repo = ref.read(dailyRecordRepositoryProvider);
+    final attachment = await repo.uploadImage(
+      DailyRecordImageUploadInput(
+        bytes: image.bytes,
+        contentType: image.contentType,
+        sizeBytes: image.bytes.length,
+        fileName: image.fileName,
+      ),
+    );
+    return <DailyRecordAttachmentInput>[attachment];
+  }
+
+  String? _resolveImageContentType(XFile image) {
+    final mimeType = image.mimeType?.trim().toLowerCase();
+    if (_allowedImageContentTypes.contains(mimeType)) return mimeType;
+
+    final name = image.name.toLowerCase();
+    if (name.endsWith('.jpg') || name.endsWith('.jpeg')) return 'image/jpeg';
+    if (name.endsWith('.png')) return 'image/png';
+    if (name.endsWith('.webp')) return 'image/webp';
+    if (name.endsWith('.gif')) return 'image/gif';
+    return null;
+  }
+}
+
+const _allowedImageContentTypes = <String>{
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+};
+
+class _PendingDailyRecordImage {
+  const _PendingDailyRecordImage({
+    required this.bytes,
+    required this.fileName,
+    required this.contentType,
+  });
+
+  final Uint8List bytes;
+  final String fileName;
+  final String contentType;
 }
