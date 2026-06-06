@@ -473,6 +473,8 @@
   "moreErrorTitle": "More did not load this time",
   "moreErrorDescription": "The mock structure is wired. Retry the fetch once.",
   "moreActionToast": "{action}: this will open the related tool or detail flow later.",
+  "morePlannedToast": "{action} — this feature is not yet available.",
+  "morePlannedBadge": "Planned",
   "@moreActionToast": {
     "placeholders": {
       "action": {

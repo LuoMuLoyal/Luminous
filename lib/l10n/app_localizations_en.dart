@@ -1389,6 +1389,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String morePlannedToast(Object action) {
+    return '$action — this feature is not yet available.';
+  }
+
+  @override
+  String get morePlannedBadge => 'Planned';
+
+  @override
   String get todaySectionTitle => 'Today workspace';
 
   @override

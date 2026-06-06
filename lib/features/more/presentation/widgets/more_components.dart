@@ -12,6 +12,7 @@ class MoreSectionSurface extends StatelessWidget {
     required this.surface,
     this.title,
     this.trailing,
+    this.planned = false,
     this.padding = const EdgeInsets.all(AppSpacingTokens.lg),
   });
 
@@ -20,6 +21,7 @@ class MoreSectionSurface extends StatelessWidget {
   final AppThemeSurface surface;
   final String? title;
   final Widget? trailing;
+  final bool planned;
   final EdgeInsetsGeometry padding;
 
   @override
@@ -42,8 +44,17 @@ class MoreSectionSurface extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (title != null && title!.isNotEmpty)
+                  if (title != null && title!.isNotEmpty) ...[
                     Expanded(child: Text(title!, style: typography.displaySm)),
+                    if (planned) ...[
+                      const SizedBox(width: AppSpacingTokens.sm),
+                      _PlannedBadge(
+                        label: AppLocalizations.of(context)!.morePlannedBadge,
+                        typography: typography,
+                        surface: surface,
+                      ),
+                    ],
+                  ],
                   if (trailing != null) ...[
                     const SizedBox(width: AppSpacingTokens.md),
                     trailing!,
@@ -580,5 +591,37 @@ class MoreRecentRow extends StatelessWidget {
 
 void showMoreToast(BuildContext context, String action) {
   final l10n = AppLocalizations.of(context)!;
-  AppToast.show(context, l10n.moreActionToast(action));
+  AppToast.show(context, l10n.morePlannedToast(action));
+}
+
+class _PlannedBadge extends StatelessWidget {
+  const _PlannedBadge({
+    required this.label,
+    required this.typography,
+    required this.surface,
+  });
+
+  final String label;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvasSoft2,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pillSm),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.sm,
+          vertical: 2,
+        ),
+        child: Text(
+          label,
+          style: typography.caption.copyWith(color: surface.mute),
+        ),
+      ),
+    );
+  }
 }

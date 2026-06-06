@@ -26,6 +26,7 @@ class MoreEnvironmentPanel extends StatelessWidget {
 
     return MoreSectionSurface(
       title: l10n.moreEnvironmentSectionTitle,
+      planned: true,
       trailing: MoreTextAction(
         label: l10n.moreEnvironmentMoreAction,
         typography: typography,
@@ -123,6 +124,7 @@ class MoreRecentPanel extends StatelessWidget {
       title: l10n.moreRecentSectionTitle,
       typography: typography,
       surface: surface,
+      planned: true,
       child: Column(
         children: [
           for (var index = 0; index < dashboard.recentItems.length; index += 1)
@@ -180,6 +182,7 @@ class MoreQuickEntriesPanel extends StatelessWidget {
       title: l10n.moreQuickSectionTitle,
       typography: typography,
       surface: surface,
+      planned: true,
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

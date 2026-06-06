@@ -2666,6 +2666,18 @@ abstract class AppLocalizations {
   /// **'{action}：后续会打开对应工具或详情流程。'**
   String moreActionToast(String action);
 
+  /// No description provided for @morePlannedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'{action} — 此功能尚未开放。'**
+  String morePlannedToast(Object action);
+
+  /// No description provided for @morePlannedBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'计划中'**
+  String get morePlannedBadge;
+
   /// No description provided for @todaySectionTitle.
   ///
   /// In zh, this message translates to:

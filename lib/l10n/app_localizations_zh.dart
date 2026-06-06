@@ -1313,6 +1313,14 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String morePlannedToast(Object action) {
+    return '$action — 此功能尚未开放。';
+  }
+
+  @override
+  String get morePlannedBadge => '计划中';
+
+  @override
   String get todaySectionTitle => '今日工作区';
 
   @override
