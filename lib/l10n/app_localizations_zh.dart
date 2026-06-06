@@ -1064,6 +1064,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsNotificationsPermissionUnsupported => '当前平台不提供通知权限状态';
 
   @override
+  String get settingsNotificationsPermissionEnabledHint =>
+      '通知已授权。下方开关可控制各类通知的显示。';
+
+  @override
+  String get settingsNotificationsPermissionDisabledHint =>
+      '点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。';
+
+  @override
   String get settingsMoreClearImageCache => '清理图片缓存';
 
   @override

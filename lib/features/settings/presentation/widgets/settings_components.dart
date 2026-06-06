@@ -37,6 +37,7 @@ class SettingsListRow extends StatelessWidget {
     required this.title,
     required this.onTap,
     this.icon,
+    this.subtitle,
     this.trailing,
     this.showChevron = false,
     this.showDivider = false,
@@ -45,6 +46,7 @@ class SettingsListRow extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
   final IconData? icon;
+  final String? subtitle;
   final Widget? trailing;
   final bool showChevron;
   final bool showDivider;
@@ -75,11 +77,25 @@ class SettingsListRow extends StatelessWidget {
                 const SizedBox(width: AppSpacingTokens.md),
               ],
               Expanded(
-                child: Text(
-                  title,
-                  style: typography.bodyMd.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: typography.bodyMd.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: AppSpacingTokens.xxs),
+                      Text(
+                        subtitle!,
+                        style: typography.bodySm.copyWith(
+                          color: surface.mute,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
               if (trailing != null) ...[

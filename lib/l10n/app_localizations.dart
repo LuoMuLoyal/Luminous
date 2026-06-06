@@ -2180,6 +2180,18 @@ abstract class AppLocalizations {
   /// **'当前平台不提供通知权限状态'**
   String get settingsNotificationsPermissionUnsupported;
 
+  /// No description provided for @settingsNotificationsPermissionEnabledHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知已授权。下方开关可控制各类通知的显示。'**
+  String get settingsNotificationsPermissionEnabledHint;
+
+  /// No description provided for @settingsNotificationsPermissionDisabledHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'**
+  String get settingsNotificationsPermissionDisabledHint;
+
   /// No description provided for @settingsMoreClearImageCache.
   ///
   /// In zh, this message translates to:

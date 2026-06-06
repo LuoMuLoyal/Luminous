@@ -385,6 +385,8 @@
   "settingsNotificationsPermissionEnabled": "System notifications are enabled",
   "settingsNotificationsPermissionDisabled": "System notifications are disabled",
   "settingsNotificationsPermissionUnsupported": "Notification permission status is unavailable on this platform",
+  "settingsNotificationsPermissionEnabledHint": "Notifications are allowed. Preference toggles below control which types appear.",
+  "settingsNotificationsPermissionDisabledHint": "Tap to open the system permission dialog. Notifications need system approval before local reminders can appear.",
   "settingsMoreClearImageCache": "Clear image cache",
   "settingsMoreCacheCleared": "Image cache cleared",
   "settingsMoreResetDefaults": "Reset defaults",

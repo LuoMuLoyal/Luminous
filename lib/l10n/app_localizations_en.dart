@@ -1120,6 +1120,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Notification permission status is unavailable on this platform';
 
   @override
+  String get settingsNotificationsPermissionEnabledHint =>
+      'Notifications are allowed. Preference toggles below control which types appear.';
+
+  @override
+  String get settingsNotificationsPermissionDisabledHint =>
+      'Tap to open the system permission dialog. Notifications need system approval before local reminders can appear.';
+
+  @override
   String get settingsMoreClearImageCache => 'Clear image cache';
 
   @override
