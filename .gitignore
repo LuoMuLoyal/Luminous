@@ -24,6 +24,10 @@ migrate_working_dir/
 !.vscode/extensions.json
 !.vscode/settings.json
 
+# Environment
+.env
+!.env.example
+
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
