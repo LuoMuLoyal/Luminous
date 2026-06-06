@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -51,7 +52,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
         children: [
           Center(
             child: Padding(
-              padding: const EdgeInsets.all(32),
+              padding: const EdgeInsets.all(AppSpacingTokens.xl),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -79,7 +80,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
       leading: const SettingsBackButton(),
       children: [
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacingTokens.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
