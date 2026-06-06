@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
+import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
+import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
+import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 
 /// Form state for the profile edit page.
 class HealthProfileFormState {
@@ -26,6 +29,7 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
       final repository = ref.read(healthContextRepositoryProvider);
       await repository.updateProfile(input);
       ref.invalidate(healthContextSnapshotProvider);
+      ref.invalidate(mineDashboardProvider);
       state = const HealthProfileFormState(saved: true);
     } catch (e) {
       state = HealthProfileFormState(
@@ -72,6 +76,7 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
         await repository.createAllergy(create);
       }
       ref.invalidate(healthContextSnapshotProvider);
+      ref.invalidate(mineDashboardProvider);
       state = const AllergyFormState(saved: true);
     } catch (e) {
       state = AllergyFormState(
@@ -88,6 +93,7 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
       final repository = ref.read(healthContextRepositoryProvider);
       await repository.deleteAllergy(id);
       ref.invalidate(healthContextSnapshotProvider);
+      ref.invalidate(mineDashboardProvider);
       state = const AllergyFormState(saved: true);
     } catch (e) {
       state = AllergyFormState(
@@ -136,6 +142,7 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
         await repository.createCondition(create);
       }
       ref.invalidate(healthContextSnapshotProvider);
+      ref.invalidate(mineDashboardProvider);
       state = const ConditionFormState(saved: true);
     } catch (e) {
       state = ConditionFormState(
@@ -152,6 +159,7 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
       final repository = ref.read(healthContextRepositoryProvider);
       await repository.deleteCondition(id);
       ref.invalidate(healthContextSnapshotProvider);
+      ref.invalidate(mineDashboardProvider);
       state = const ConditionFormState(saved: true);
     } catch (e) {
       state = ConditionFormState(
@@ -198,6 +206,9 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
         await repository.createCurrentMedicine(create);
       }
       ref.invalidate(healthContextSnapshotProvider);
+      ref.invalidate(mineDashboardProvider);
+      ref.invalidate(medicineWorkspaceProvider);
+      ref.invalidate(todayDashboardProvider);
       state = const CurrentMedicineFormState(saved: true);
     } catch (e) {
       state = CurrentMedicineFormState(
@@ -214,6 +225,9 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
       final repository = ref.read(healthContextRepositoryProvider);
       await repository.deleteCurrentMedicine(id);
       ref.invalidate(healthContextSnapshotProvider);
+      ref.invalidate(mineDashboardProvider);
+      ref.invalidate(medicineWorkspaceProvider);
+      ref.invalidate(todayDashboardProvider);
       state = const CurrentMedicineFormState(saved: true);
     } catch (e) {
       state = CurrentMedicineFormState(
