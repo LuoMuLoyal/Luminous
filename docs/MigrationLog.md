@@ -49,6 +49,16 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Explicitly excluded: FCM/APNs push delivery, real-time/WebSocket, third-party services
 - Updated ROADMAP.md and UI_Implementation_Plan.md to reference the contract
 
+### Task 13: More Real-Contract Design For Environment
+
+- Created `Lucent/docs/public/environment-contract.md` defining the first real More integration:
+  - **Environment snapshot API:** pollen, UV, air quality, temperature, humidity via `GET /api/v1/environment/snapshot`
+  - **Static reference data first:** seasonal averages per region, no external API keys needed
+  - **Data freshness:** `updatedAt` + `dataSource` field to distinguish static vs live data
+  - **Optional advice endpoint** for contextual health suggestions (future)
+- Explicitly excluded: real-time weather APIs, user location tracking, health diagnosis, push alerts
+- Updated `ROADMAP.md` and `UI_Implementation_Plan.md` to reference the contract
+
 ### Task 5: Account Security UX Hardening
 
 - Audited account settings page across four dimensions: password set/unset status, linked identity management, email verification state, and destructive action protections.
