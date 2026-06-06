@@ -21,7 +21,7 @@ Last updated: 2026-06-06
 - Auth empty-field toast prompts
 - Mine signed-out notice / guest state copy
 - Mine signed-in account detail labels and account management action
-- Record quick-create form labels and save failure toast
+- Record quick-create/detail form labels, detail page labels, and save/delete failure toast
 - Medicine manual dose-log actions, saved/failed toasts, and taken/skipped/pending status labels
 - Network `Accept-Language`
 - Flutter UI locale driven by persisted app locale preference

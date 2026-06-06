@@ -10,7 +10,7 @@ Move from a stable five-tab baseline into real daily health loops without presen
 
 ### Target 1: Record Stability And Date Navigation
 
-Status: in progress. Daily-record single-image create/edit, upload, metadata save, and timeline/detail display are implemented. Record date navigation and timeline time mapping were stabilized on 2026-06-06.
+Status: in progress. Daily-record single-image create/edit, upload, metadata save, timeline/detail display, date navigation, and timeline time mapping were stabilized on 2026-06-06.
 
 Goal: make the daily-record loop dependable before expanding other modules.
 
@@ -28,22 +28,24 @@ Observable result:
 
 - A signed-in user can switch Record dates, add/edit/delete records with one image, reopen the timeline, and see the correct day/time/image state.
 
-### Target 2: Record Detail And Form Quality
+### Target 2: Record Form Quality
 
-Goal: make record detail/edit feel complete without adding unsupported medical complexity.
+Status: detail page implemented on 2026-06-06; form-by-kind refinement remains.
+
+Goal: make record create/edit feel complete without adding unsupported medical complexity.
 
 Scope:
 
-- Show complete fields: type, occurred time, value, unit, title, note, and image attachment where available.
+- Keep the detail page showing complete fields: type, occurred time, value, unit, title, note, source, updated time, and image attachment where available.
 - Keep edit/delete entry points clear from the timeline/detail path.
 - Tighten the form for common types first: water, vital, symptom, and note.
 - Keep richer analytics, medical document import, and multi-image gallery out of scope.
 
-Why second: date navigation and attachments must be stable before detail UX and type-specific forms are worth polishing.
+Why second: date navigation, attachments, and detail must stay stable before type-specific forms are worth polishing.
 
 Observable result:
 
-- A user can open an existing record and understand exactly what was saved before editing it.
+- A user can create or edit common record types with fields that fit the selected type.
 
 ### Target 3: Local Reminder Scheduling
 
@@ -85,8 +87,8 @@ Observable result:
 ## Immediate Work Order
 
 1. Keep Record attachment/date/timeline behavior under regression and fix defects as they surface.
-2. Expand daily-record detail UX after the image upload flow and date navigation stay stable.
-3. Tighten Record forms by type for water, vital, symptom, and note.
+2. Tighten Record forms by type for water, vital, symptom, and note.
+3. Keep daily-record detail UX under regression while forms change.
 4. Implement local notification scheduling after the first reminder schedule source is explicit.
 5. Keep auth/account deferred TODOs explicit until product/security decisions are made.
 

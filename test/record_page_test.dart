@@ -14,6 +14,7 @@ import 'package:luminous/features/record/domain/entities/daily_record_inputs.dar
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
+import 'package:luminous/features/record/presentation/pages/record_detail.dart';
 import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/record_page.dart';
@@ -267,6 +268,80 @@ void main() {
     expect(repo.fetchRecordsCalled, isFalse);
   });
 
+  testWidgets('Record detail page renders full saved fields', (tester) async {
+    final repo = _FakeDailyRecordRepository(
+      itemOccurredAt: '2026-06-06T09:45:00',
+      withAttachment: true,
+    );
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: repo,
+      initialLocation: '/record/test-id-1',
+    );
+    await tester.pumpAndSettle();
+
+    expect(repo.getCalledWith, 'test-id-1');
+    expect(find.byType(RecordDetailPage), findsOneWidget);
+    expect(find.text('记录详情'), findsOneWidget);
+    expect(find.text('Blood pressure'), findsOneWidget);
+    expect(find.text('2026-06-06 09:45'), findsOneWidget);
+    expect(find.text('118/76 mmHg'), findsOneWidget);
+    expect(find.text('This is a note'), findsOneWidget);
+    expect(find.text('manual'), findsOneWidget);
+    expect(find.text('test.jpg'), findsOneWidget);
+  });
+
+  testWidgets('Record timeline opens detail page for real record entries', (
+    tester,
+  ) async {
+    final dailyRepo = _FakeDailyRecordRepository();
+    final recordRepo = _FakeRecordRepository(withRecordEntry: true);
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      recordRepository: recordRepo,
+    );
+    await tester.pumpAndSettle();
+
+    final entry = find.text('Blood pressure');
+    await tester.scrollUntilVisible(entry, 240);
+    await tester.tap(entry);
+    await tester.pumpAndSettle();
+
+    expect(dailyRepo.getCalledWith, 'test-id-1');
+    expect(find.byType(RecordDetailPage), findsOneWidget);
+  });
+
+  testWidgets('Record detail page confirms and deletes record', (tester) async {
+    final repo = _FakeDailyRecordRepository();
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: repo,
+      initialLocation: '/record/test-id-1',
+    );
+    await tester.pumpAndSettle();
+
+    final deleteButton = find.widgetWithText(OutlinedButton, '删除');
+    expect(deleteButton, findsOneWidget);
+    await tester.ensureVisible(deleteButton);
+    await tester.tap(deleteButton);
+    await tester.pumpAndSettle();
+
+    final confirmButton = find.descendant(
+      of: find.byType(AlertDialog),
+      matching: find.widgetWithText(FilledButton, '删除'),
+    );
+    expect(confirmButton, findsOneWidget);
+    await tester.tap(confirmButton);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 3));
+
+    expect(repo.deleteCalledWith, 'test-id-1');
+  });
+
   testWidgets('Record page previous day action reloads selected date', (
     tester,
   ) async {
@@ -324,6 +399,40 @@ void main() {
   });
 }
 
+Future<void> _pumpRecordRouter(
+  WidgetTester tester, {
+  DailyRecordRepository? dailyRecordRepository,
+  RecordRepository? recordRepository,
+  String initialLocation = '/',
+}) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        dailyRecordRepositoryProvider.overrideWithValue(
+          dailyRecordRepository ?? _FakeDailyRecordRepository(),
+        ),
+        recordRepositoryProvider.overrideWithValue(
+          recordRepository ?? const MockRecordRepository(),
+        ),
+        authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+      ],
+      child: MaterialApp.router(
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        locale: const Locale('zh'),
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: _buildRecordTestRouter(initialLocation),
+      ),
+    ),
+  );
+}
+
 Future<void> _pumpRecordPage(
   WidgetTester tester, {
   RecordRepository recordRepository = const MockRecordRepository(),
@@ -370,6 +479,29 @@ class _FixedSelectedRecordDateNotifier extends SelectedRecordDateNotifier {
       DateTime(initialDate.year, initialDate.month, initialDate.day);
 }
 
+GoRouter _buildRecordTestRouter(String initialLocation) {
+  return GoRouter(
+    initialLocation: initialLocation,
+    routes: [
+      GoRoute(path: '/', builder: (context, state) => const RecordPage()),
+      GoRoute(
+        path: '/record/:id',
+        builder: (context, state) =>
+            RecordDetailPage(recordId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/record/:id/edit',
+        builder: (context, state) =>
+            RecordEditPage(recordId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const Scaffold(body: Text('login-page')),
+      ),
+    ],
+  );
+}
+
 GoRouter _buildEditTestRouter({
   String initialLocation = '/record/test-id-1/edit',
 }) {
@@ -390,9 +522,13 @@ GoRouter _buildEditTestRouter({
 }
 
 class _FakeDailyRecordRepository implements DailyRecordRepository {
-  _FakeDailyRecordRepository({this.itemOccurredAt});
+  _FakeDailyRecordRepository({
+    this.itemOccurredAt,
+    this.withAttachment = false,
+  });
 
   final String? itemOccurredAt;
+  final bool withAttachment;
   String? deleteCalledWith;
   String? updateCalledWith;
   String? getCalledWith;
@@ -434,12 +570,26 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     return DailyRecordItem(
       id: id,
       kind: DailyRecordKind.vital,
-      occurredAt: '2026-05-20',
+      occurredAt: itemOccurredAt ?? '2026-05-20',
       title: 'Blood pressure',
       value: '118/76',
       unit: 'mmHg',
       note: 'This is a note',
       source: 'manual',
+      attachments: withAttachment
+          ? [
+              DailyRecordAttachment(
+                id: 'attachment-1',
+                kind: DailyRecordAttachmentKind.image,
+                objectKey: 'daily-records/user-1/test.jpg',
+                fileName: 'test.jpg',
+                contentType: 'image/jpeg',
+                sizeBytes: 12,
+                publicUrl: 'https://cdn.example.com/test.jpg',
+                createdAt: DateTime.now().toIso8601String(),
+              ),
+            ]
+          : const <DailyRecordAttachment>[],
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
     );
@@ -498,6 +648,9 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
 }
 
 class _FakeRecordRepository implements RecordRepository {
+  _FakeRecordRepository({this.withRecordEntry = false});
+
+  final bool withRecordEntry;
   final requestedDates = <DateTime>[];
 
   @override
@@ -506,6 +659,21 @@ class _FakeRecordRepository implements RecordRepository {
     final mock = await const MockRecordRepository().fetchDashboard(
       selectedDate,
     );
+    final timeline = withRecordEntry
+        ? [
+            const RecordTimelineEntry(
+              time: '09:45',
+              type: RecordEntryType.vitals,
+              icon: Icons.favorite_rounded,
+              accent: Color(0xFFFF4D57),
+              softColor: Color(0xFFFFEEEE),
+              titleKey: RecordCopyKey.typeVitals,
+              rawTitle: 'Blood pressure',
+              value: '118/76 mmHg',
+              recordId: 'test-id-1',
+            ),
+          ]
+        : mock.timeline;
     return RecordDashboard(
       selectedDay: selectedDate.day,
       weekDays: mock.weekDays,
@@ -513,7 +681,7 @@ class _FakeRecordRepository implements RecordRepository {
       quickActions: mock.quickActions,
       summary: mock.summary,
       filters: mock.filters,
-      timeline: mock.timeline,
+      timeline: timeline,
       trends: mock.trends,
       healthBag: mock.healthBag,
     );
