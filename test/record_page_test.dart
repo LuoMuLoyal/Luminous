@@ -108,7 +108,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Find and tap delete button
-    final deleteButton = find.widgetWithText(OutlinedButton, '注销账号');
+    final deleteButton = find.widgetWithText(OutlinedButton, '删除');
     expect(deleteButton, findsOneWidget);
     await tester.tap(deleteButton);
     await tester.pumpAndSettle();
@@ -116,7 +116,7 @@ void main() {
     // Confirm delete in dialog
     final confirmButton = find.descendant(
       of: find.byType(AlertDialog),
-      matching: find.widgetWithText(FilledButton, '注销账号'),
+      matching: find.widgetWithText(FilledButton, '删除'),
     );
     expect(confirmButton, findsOneWidget);
     await tester.tap(confirmButton);

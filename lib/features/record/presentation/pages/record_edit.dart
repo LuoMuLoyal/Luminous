@@ -206,7 +206,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.delete_outline_rounded, size: 18),
-                label: Text(_deleting ? '...' : l10n.authDeleteAccountAction),
+                label: Text(_deleting ? '...' : l10n.recordDeleteAction),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.error,
                 ),
@@ -285,7 +285,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
           ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(l10n.authDeleteAccountAction),
+            child: Text(l10n.recordDeleteAction),
           ),
         ],
       ),
