@@ -6,6 +6,11 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-06
 
+### Lucent COS Upload Contract Sync
+
+- Re-generated the Lucent OpenAPI client after Lucent added Tencent COS daily-record image upload signing.
+- Generated `DailyRecordsApi.dailyRecordsControllerCreateImageUploadV1` plus the upload request/response DTOs; no app UI flow consumes it yet.
+
 ### Daily Record Detail And Attachment Contract
 
 - Re-generated the Lucent OpenAPI client after Lucent added daily-record image attachment metadata and `GET /api/v1/me/daily-records/:id`.
