@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
@@ -105,6 +106,13 @@ class LucentRecordRepository implements RecordRepository {
           ? '${record.value}${record.unit != null ? ' ${record.unit}' : ''}'
           : record.note,
       detailKey: record.note != null && record.value != null ? null : null,
+      imageUrl: record.attachments
+          .where(
+            (attachment) => attachment.kind == DailyRecordAttachmentKind.image,
+          )
+          .map((attachment) => attachment.displayUrl)
+          .whereType<String>()
+          .firstOrNull,
       recordId: record.id,
     );
   }

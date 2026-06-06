@@ -15,8 +15,9 @@ Last updated: 2026-06-06
 - API base: `/api/v1`.
 - Envelope: `{ code, message, data }`.
 - Generated API contract: `Lucent/docs/openapi.json`.
-- Current OpenAPI export after Tencent COS upload signing: 35 paths / 89 schemas.
+- Current OpenAPI export after Environment Snapshot: 36 paths / 100 schemas.
 - Daily records support CRUD, detail by id, attachment metadata, and Tencent COS image upload signing.
+- Environment snapshot static reference API is implemented at `GET /api/v1/environment/snapshot`.
 - Object storage provider is intentionally only Tencent COS for now.
 - CI/CD deploys the app image as `latest`; there is no automatic rollback to a `sha-<commit>` image tag.
 
@@ -25,8 +26,9 @@ Last updated: 2026-06-06
 - Flutter five-tab shell: `today / record / medicine / mine / more`.
 - State/navigation: Riverpod + GoRouter.
 - Generated Lucent client: `packages/lucent_openapi`.
-- Current generated client includes `DailyRecordsApi.dailyRecordsControllerCreateImageUploadV1`.
-- Real Lucent-backed flows: auth/account, health-context edits, medicine search/detail, current medicines, manual dose logs, daily-record timeline/create/edit/delete.
+- Current generated client includes `DailyRecordsApi.dailyRecordsControllerCreateImageUploadV1` and generated `EnvironmentApi`.
+- Real Lucent-backed flows: auth/account, health-context edits, medicine search/detail, current medicines, manual dose logs, daily-record timeline/create/edit/delete, daily-record single-image attachment upload/display.
+- Environment snapshot is backend-ready but frontend-planned: More still uses static mock data until the next wiring pass.
 - Still mock/static or planned: live reminders, OCR/barcode scanning, smart devices, family profiles, push notifications, richer record analytics.
 
 ## Verification Baseline

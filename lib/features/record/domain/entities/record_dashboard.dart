@@ -134,6 +134,7 @@ class RecordTimelineEntry {
     this.detailKey,
     this.badgeKey,
     this.imagePlaceholderKey,
+    this.imageUrl,
     this.trailingIcon,
     this.rawTitle,
     this.recordId,
@@ -151,6 +152,7 @@ class RecordTimelineEntry {
   final RecordCopyKey? detailKey;
   final RecordCopyKey? badgeKey;
   final RecordCopyKey? imagePlaceholderKey;
+  final String? imageUrl;
   final IconData? trailingIcon;
 
   /// When non-null, the view should use this raw string instead of resolving

@@ -121,7 +121,10 @@ void main() {
       await tester.enterText(fields.at(index), '');
     }
 
-    await tester.tap(find.widgetWithText(ElevatedButton, '保存'));
+    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    await tester.ensureVisible(saveButton);
+    await tester.pump();
+    await tester.tap(saveButton);
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 3));
 
@@ -168,6 +171,8 @@ void main() {
     // Find and tap delete button
     final deleteButton = find.widgetWithText(OutlinedButton, '删除');
     expect(deleteButton, findsOneWidget);
+    await tester.ensureVisible(deleteButton);
+    await tester.pump();
     await tester.tap(deleteButton);
     await tester.pumpAndSettle();
 
@@ -372,6 +377,21 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
       source: 'manual',
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
+    );
+  }
+
+  @override
+  Future<DailyRecordAttachmentInput> uploadImage(
+    DailyRecordImageUploadInput input,
+  ) async {
+    return DailyRecordAttachmentInput(
+      objectKey: 'daily-records/user-1/test.jpg',
+      bucket: 'bucket',
+      provider: 'tencent-cos',
+      fileName: input.fileName,
+      contentType: input.contentType,
+      sizeBytes: input.sizeBytes,
+      publicUrl: 'https://cdn.example.com/test.jpg',
     );
   }
 

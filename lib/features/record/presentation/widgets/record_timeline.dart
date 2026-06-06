@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -243,7 +244,14 @@ class _TimelineCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (entry.imagePlaceholderKey != null && !dense) ...[
+                if (entry.imageUrl != null && !dense) ...[
+                  const SizedBox(width: AppSpacingTokens.md),
+                  _TimelineImageThumbnail(
+                    imageUrl: entry.imageUrl!,
+                    label: label,
+                    surface: surface,
+                  ),
+                ] else if (entry.imagePlaceholderKey != null && !dense) ...[
                   const SizedBox(width: AppSpacingTokens.md),
                   AppImagePlaceholder(
                     label: recordCopy(l10n, entry.imagePlaceholderKey!),
@@ -271,5 +279,63 @@ class _TimelineCard extends StatelessWidget {
       return const Color(0xFF159B55);
     }
     return surface.mute;
+  }
+}
+
+class _TimelineImageThumbnail extends StatelessWidget {
+  const _TimelineImageThumbnail({
+    required this.imageUrl,
+    required this.label,
+    required this.surface,
+  });
+
+  final String imageUrl;
+  final String label;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      child: SizedBox(
+        width: 96,
+        height: 72,
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => _TimelineImageFallback(
+            surface: surface,
+            icon: Icons.image_outlined,
+          ),
+          errorWidget: (context, url, error) => _TimelineImageFallback(
+            surface: surface,
+            icon: Icons.broken_image_outlined,
+          ),
+          imageBuilder: (context, provider) => Semantics(
+            label: label,
+            image: true,
+            child: Image(image: provider, fit: BoxFit.cover),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TimelineImageFallback extends StatelessWidget {
+  const _TimelineImageFallback({required this.surface, required this.icon});
+
+  final AppThemeSurface surface;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvasSoft2,
+        border: Border.all(color: surface.hairline),
+      ),
+      child: Center(child: Icon(icon, color: surface.mute, size: 22)),
+    );
   }
 }

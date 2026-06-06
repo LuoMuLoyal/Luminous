@@ -10,6 +10,9 @@ abstract class DailyRecordRepository {
   });
   Future<DailyRecordSummaryData> fetchSummary(String date);
   Future<DailyRecordItem> get(String id);
+  Future<DailyRecordAttachmentInput> uploadImage(
+    DailyRecordImageUploadInput input,
+  );
   Future<DailyRecordItem> create(DailyRecordCreateInput input);
   Future<DailyRecordItem> update(String id, DailyRecordUpdateInput input);
   Future<void> delete(String id);
