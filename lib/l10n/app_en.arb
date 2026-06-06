@@ -699,6 +699,7 @@
   "todayMoreAction": "More",
   "todayViewDetailsAction": "Details",
   "todayLumiCardTitle": "Lumi note",
+  "todayPreviewBadge": "Preview",
   "todayLumiPollenProtectionBody": "Pollen is elevated today. Consider a mask outdoors and reduce respiratory irritation where possible.",
   "todayLumiAction": "View details",
   "todayErrorTitle": "Today did not load this time",

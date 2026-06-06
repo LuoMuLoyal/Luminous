@@ -801,7 +801,28 @@ class _TodayLumiCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.todayLumiCardTitle, style: typography.bodyMdStrong),
+                Row(
+                  children: [
+                    Text(l10n.todayLumiCardTitle, style: typography.bodyMdStrong),
+                    const SizedBox(width: AppSpacingTokens.sm),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: surface.canvasSoft2,
+                        borderRadius: BorderRadius.circular(AppRadiusTokens.pillSm),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacingTokens.sm,
+                          vertical: 2,
+                        ),
+                        child: Text(
+                          l10n.todayPreviewBadge,
+                          style: typography.caption.copyWith(color: surface.mute),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: AppSpacingTokens.xs),
                 Text(
                   _lumiBody(l10n, suggestion.type),
