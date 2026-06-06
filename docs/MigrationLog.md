@@ -49,6 +49,14 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Explicitly excluded: FCM/APNs push delivery, real-time/WebSocket, third-party services
 - Updated ROADMAP.md and UI_Implementation_Plan.md to reference the contract
 
+### Task 16: Test Suite Speed And Determinism Pass
+
+- Frontend: 95 widget + unit tests pass in ~9 seconds; no flaky tests detected across two consecutive runs.
+- Backend: 162 unit tests pass in ~3.7 seconds (17 suites); no flaky tests detected.
+- No tests use `skip:` or platform-conditional `defaultTargetPlatform` guards.
+- `pump(Duration(seconds: N))` calls (24 occurrences) are all for toast animation settling or async provider resolution — no arbitrary waits found.
+- Desktop layout tests correctly use `tester.view.physicalSize` overrides, not platform checks.
+
 ### Task 13: More Real-Contract Design For Environment
 
 - Created `Lucent/docs/public/environment-contract.md` defining the first real More integration:
