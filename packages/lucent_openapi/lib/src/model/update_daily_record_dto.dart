@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_openapi/src/model/daily_record_attachment_input_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_kind.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -28,6 +29,8 @@ class UpdateDailyRecordDto {
     this.unit,
 
     this.note,
+
+    this.attachments,
   });
 
   @JsonKey(
@@ -58,6 +61,10 @@ class UpdateDailyRecordDto {
   @JsonKey(name: r'note', required: false, includeIfNull: false)
   final Object? note;
 
+  /// Replacement attachment metadata list. Omit to keep existing attachments; send [] to clear.
+  @JsonKey(name: r'attachments', required: false, includeIfNull: false)
+  final List<DailyRecordAttachmentInputDto>? attachments;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -67,7 +74,8 @@ class UpdateDailyRecordDto {
           other.title == title &&
           other.value == value &&
           other.unit == unit &&
-          other.note == note;
+          other.note == note &&
+          other.attachments == attachments;
 
   @override
   int get hashCode =>
@@ -76,7 +84,8 @@ class UpdateDailyRecordDto {
       (title == null ? 0 : title.hashCode) +
       (value == null ? 0 : value.hashCode) +
       (unit == null ? 0 : unit.hashCode) +
-      (note == null ? 0 : note.hashCode);
+      (note == null ? 0 : note.hashCode) +
+      attachments.hashCode;
 
   factory UpdateDailyRecordDto.fromJson(Map<String, dynamic> json) =>
       _$UpdateDailyRecordDtoFromJson(json);

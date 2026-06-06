@@ -12,6 +12,8 @@ import 'package:lucent_openapi/src/model/create_daily_record_dto.dart';
 import 'package:lucent_openapi/src/model/create_dose_log_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_allergy_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_condition_dto.dart';
+import 'package:lucent_openapi/src/model/daily_record_attachment_dto.dart';
+import 'package:lucent_openapi/src/model/daily_record_attachment_input_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_item_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_list_data_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_list_response_dto.dart';
@@ -119,6 +121,13 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return CreateHealthContextAllergyDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CreateHealthContextConditionDto':
           return CreateHealthContextConditionDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DailyRecordAttachmentDto':
+          return DailyRecordAttachmentDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DailyRecordAttachmentInputDto':
+          return DailyRecordAttachmentInputDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DailyRecordAttachmentKind':
+          
+          
         case 'DailyRecordItemDto':
           return DailyRecordItemDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordKind':

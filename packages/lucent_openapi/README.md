@@ -90,6 +90,7 @@ Class | Method | HTTP request | Description
 [*AuthApi*](doc/AuthApi.md) | [**authControllerVerifyEmailV1**](doc/AuthApi.md#authcontrollerverifyemailv1) | **POST** /api/v1/auth/verify-email | 验证邮箱
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/me/daily-records | Create a daily record
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerDeleteV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/me/daily-records/{id} | Soft-delete a daily record
+[*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerGetV1**](doc/DailyRecordsApi.md#dailyrecordscontrollergetv1) | **GET** /api/v1/me/daily-records/{id} | Get a daily record by id
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerListV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerlistv1) | **GET** /api/v1/me/daily-records | List daily records for a given date
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerSummaryV1**](doc/DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/me/daily-records/summary | Get daily record summary (counts by kind)
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerUpdateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerupdatev1) | **PATCH** /api/v1/me/daily-records/{id} | Update a daily record
@@ -128,6 +129,9 @@ Class | Method | HTTP request | Description
  - [CreateDoseLogDto](doc/CreateDoseLogDto.md)
  - [CreateHealthContextAllergyDto](doc/CreateHealthContextAllergyDto.md)
  - [CreateHealthContextConditionDto](doc/CreateHealthContextConditionDto.md)
+ - [DailyRecordAttachmentDto](doc/DailyRecordAttachmentDto.md)
+ - [DailyRecordAttachmentInputDto](doc/DailyRecordAttachmentInputDto.md)
+ - [DailyRecordAttachmentKind](doc/DailyRecordAttachmentKind.md)
  - [DailyRecordItemDto](doc/DailyRecordItemDto.md)
  - [DailyRecordKind](doc/DailyRecordKind.md)
  - [DailyRecordListDataDto](doc/DailyRecordListDataDto.md)

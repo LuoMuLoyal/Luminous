@@ -137,7 +137,6 @@ class RecordTimelineEntry {
     this.trailingIcon,
     this.rawTitle,
     this.recordId,
-    this.recordDate,
   });
 
   final String time;
@@ -161,9 +160,6 @@ class RecordTimelineEntry {
   /// When non-null, this timeline entry represents a real daily record
   /// that can be edited or deleted via the daily-record API.
   final String? recordId;
-
-  /// Date used by the list API to retrieve [recordId] for editing.
-  final String? recordDate;
 }
 
 class RecordTrend {

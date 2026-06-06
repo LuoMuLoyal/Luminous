@@ -23,6 +23,16 @@ UpdateDailyRecordDto _$UpdateDailyRecordDtoFromJson(
     value: $checkedConvert('value', (v) => v),
     unit: $checkedConvert('unit', (v) => v),
     note: $checkedConvert('note', (v) => v),
+    attachments: $checkedConvert(
+      'attachments',
+      (v) => (v as List<dynamic>?)
+          ?.map(
+            (e) => DailyRecordAttachmentInputDto.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
+    ),
   );
   return val;
 });
@@ -37,6 +47,8 @@ Map<String, dynamic> _$UpdateDailyRecordDtoToJson(
   if (instance.value != null) 'value': instance.value,
   if (instance.unit != null) 'unit': instance.unit,
   if (instance.note != null) 'note': instance.note,
+  if (instance.attachments?.map((e) => e.toJson()).toList() != null)
+    'attachments': instance.attachments?.map((e) => e.toJson()).toList(),
 };
 
 const _$DailyRecordKindEnumMap = {

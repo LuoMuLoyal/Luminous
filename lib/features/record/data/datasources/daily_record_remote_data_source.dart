@@ -44,6 +44,11 @@ class DailyRecordRemoteDataSource {
     );
   }
 
+  Future<DailyRecordItem> get(String id) async {
+    final response = await api.dailyRecordsControllerGetV1(id: id);
+    return _toItem(response.data!.data);
+  }
+
   Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
     final payload = <String, dynamic>{
       'kind': input.kind.name,

@@ -11,6 +11,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**dailyRecordsControllerCreateV1**](DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/me/daily-records | Create a daily record
 [**dailyRecordsControllerDeleteV1**](DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/me/daily-records/{id} | Soft-delete a daily record
+[**dailyRecordsControllerGetV1**](DailyRecordsApi.md#dailyrecordscontrollergetv1) | **GET** /api/v1/me/daily-records/{id} | Get a daily record by id
 [**dailyRecordsControllerListV1**](DailyRecordsApi.md#dailyrecordscontrollerlistv1) | **GET** /api/v1/me/daily-records | List daily records for a given date
 [**dailyRecordsControllerSummaryV1**](DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/me/daily-records/summary | Get daily record summary (counts by kind)
 [**dailyRecordsControllerUpdateV1**](DailyRecordsApi.md#dailyrecordscontrollerupdatev1) | **PATCH** /api/v1/me/daily-records/{id} | Update a daily record
@@ -94,6 +95,47 @@ No authorization required
 
  - **Content-Type**: Not defined
  - **Accept**: Not defined
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **dailyRecordsControllerGetV1**
+> DailyRecordResponseDto dailyRecordsControllerGetV1(id)
+
+Get a daily record by id
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getDailyRecordsApi();
+final String id = id_example; // String | 
+
+try {
+    final response = api.dailyRecordsControllerGetV1(id);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling DailyRecordsApi->dailyRecordsControllerGetV1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **String**|  | 
+
+### Return type
+
+[**DailyRecordResponseDto**](DailyRecordResponseDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

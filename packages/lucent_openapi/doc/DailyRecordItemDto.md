@@ -16,6 +16,7 @@ Name | Type | Description | Notes
 **unit** | **Object** | Unit label. | [optional] 
 **note** | **Object** | Free-text note. | [optional] 
 **source_** | **Object** | Source. | [optional] 
+**attachments** | [**List&lt;DailyRecordAttachmentDto&gt;**](DailyRecordAttachmentDto.md) |  | 
 **createdAt** | **String** | Created at (ISO 8601). | 
 **updatedAt** | **String** | Updated at (ISO 8601). | 
 

@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_openapi/src/model/daily_record_attachment_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_kind.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -32,6 +33,8 @@ class DailyRecordItemDto {
     this.note,
 
     this.source_,
+
+    required this.attachments,
 
     required this.createdAt,
 
@@ -74,6 +77,9 @@ class DailyRecordItemDto {
   @JsonKey(name: r'source', required: false, includeIfNull: false)
   final Object? source_;
 
+  @JsonKey(name: r'attachments', required: true, includeIfNull: false)
+  final List<DailyRecordAttachmentDto> attachments;
+
   /// Created at (ISO 8601).
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
   final String createdAt;
@@ -94,6 +100,7 @@ class DailyRecordItemDto {
           other.unit == unit &&
           other.note == note &&
           other.source_ == source_ &&
+          other.attachments == attachments &&
           other.createdAt == createdAt &&
           other.updatedAt == updatedAt;
 
@@ -107,6 +114,7 @@ class DailyRecordItemDto {
       unit.hashCode +
       note.hashCode +
       source_.hashCode +
+      attachments.hashCode +
       createdAt.hashCode +
       updatedAt.hashCode;
 

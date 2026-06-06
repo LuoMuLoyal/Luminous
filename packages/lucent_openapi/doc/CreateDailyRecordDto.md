@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **value** | **String** | Measured value. | [optional] 
 **unit** | **String** | Unit label. | [optional] 
 **note** | **String** | Free-text note. | [optional] 
+**attachments** | [**List&lt;DailyRecordAttachmentInputDto&gt;**](DailyRecordAttachmentInputDto.md) | Attachment metadata. File upload itself is handled separately. | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
