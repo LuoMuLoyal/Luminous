@@ -7,16 +7,18 @@ import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
-import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart' show DailyRecordUpdateInput, dailyRecordNoChange;
+import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart'
+    show DailyRecordUpdateInput;
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordEditPage extends ConsumerStatefulWidget {
-  const RecordEditPage({super.key, required this.recordId});
+  const RecordEditPage({super.key, required this.recordId, this.recordDate});
 
   final String recordId;
+  final String? recordDate;
 
   @override
   ConsumerState<RecordEditPage> createState() => _RecordEditPageState();
@@ -56,12 +58,17 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   Future<void> _loadRecord() async {
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
-      final dateStr = _todayString();
+      final dateStr = widget.recordDate ?? _todayString();
       final result = await repo.fetchRecords(dateStr, pageSize: 100);
-      final record = result.items.where((r) => r.id == widget.recordId).firstOrNull;
+      final record = result.items
+          .where((r) => r.id == widget.recordId)
+          .firstOrNull;
       if (!mounted) return;
       if (record == null) {
-        AppToast.show(context, AppLocalizations.of(context)!.recordCreateFailedToast);
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.recordCreateFailedToast,
+        );
         context.pop();
         return;
       }
@@ -75,7 +82,10 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
       });
     } catch (_) {
       if (mounted) {
-        AppToast.show(context, AppLocalizations.of(context)!.recordCreateFailedToast);
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.recordCreateFailedToast,
+        );
         context.pop();
       }
     }
@@ -250,21 +260,27 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
         widget.recordId,
         DailyRecordUpdateInput(
           kind: _kind,
-          title: _titleController.text.isEmpty ? dailyRecordNoChange : _titleController.text,
-          value: _valueController.text.isEmpty ? dailyRecordNoChange : _valueController.text,
-          unit: _unitController.text.isEmpty ? dailyRecordNoChange : _unitController.text,
-          note: _noteController.text.isEmpty ? dailyRecordNoChange : _noteController.text,
+          title: _optionalText(_titleController),
+          value: _optionalText(_valueController),
+          unit: _optionalText(_unitController),
+          note: _optionalText(_noteController),
         ),
       );
       _invalidateProviders();
       if (mounted) {
-        await AppToast.show(context, AppLocalizations.of(context)!.mineEditSavedToast);
+        await AppToast.show(
+          context,
+          AppLocalizations.of(context)!.mineEditSavedToast,
+        );
         if (!mounted) return;
         context.pop();
       }
     } catch (_) {
       if (mounted) {
-        await AppToast.show(context, AppLocalizations.of(context)!.recordCreateFailedToast);
+        await AppToast.show(
+          context,
+          AppLocalizations.of(context)!.recordCreateFailedToast,
+        );
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -319,5 +335,10 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   String _todayString() {
     final today = DateTime.now();
     return '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+  }
+
+  String? _optionalText(TextEditingController controller) {
+    final value = controller.text.trim();
+    return value.isEmpty ? null : value;
   }
 }

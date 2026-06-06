@@ -31,10 +31,10 @@ class DailyRecordUpdateInput {
     this.note = dailyRecordNoChange,
   });
 
-  final Object kind;
-  final Object occurredAt;
-  final Object title;
-  final Object value;
-  final Object unit;
-  final Object note;
+  final Object? kind;
+  final Object? occurredAt;
+  final Object? title;
+  final Object? value;
+  final Object? unit;
+  final Object? note;
 }

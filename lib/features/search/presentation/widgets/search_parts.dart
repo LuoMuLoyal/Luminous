@@ -709,7 +709,9 @@ class _PreviewPanel extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.sm),
                   ...preview.conditions.map(
                     (c) => Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacingTokens.xxs),
+                      padding: const EdgeInsets.only(
+                        bottom: AppSpacingTokens.xxs,
+                      ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -742,7 +744,9 @@ class _PreviewPanel extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.sm),
                   ...preview.checklist.map(
                     (item) => Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacingTokens.xxs),
+                      padding: const EdgeInsets.only(
+                        bottom: AppSpacingTokens.xxs,
+                      ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -798,7 +802,6 @@ class _NoResultTools extends StatelessWidget {
     final actions = <(IconData, String)>[
       (Icons.manage_search_rounded, l10n.medicineSearchNoResultKeyword),
       (Icons.swap_horiz_rounded, l10n.medicineSearchNoResultSwitch),
-      (Icons.center_focus_strong_rounded, l10n.medicineSearchNoResultScan),
     ];
     return DecoratedBox(
       decoration: BoxDecoration(

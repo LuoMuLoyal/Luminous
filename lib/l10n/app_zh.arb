@@ -241,7 +241,6 @@
   "medicineSearchNoResultTitle": "无结果？",
   "medicineSearchNoResultKeyword": "检查关键词",
   "medicineSearchNoResultSwitch": "切换数据源",
-  "medicineSearchNoResultScan": "拍照或扫码",
   "medicineSearchErrorTitle": "搜索页暂时没有加载出来",
   "medicineSearchErrorDescription": "请检查网络连接后重试。",
   "mineSectionTitle": "个人工作区",

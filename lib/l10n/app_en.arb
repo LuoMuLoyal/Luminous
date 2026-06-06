@@ -241,7 +241,6 @@
   "medicineSearchNoResultTitle": "No result?",
   "medicineSearchNoResultKeyword": "Check keywords",
   "medicineSearchNoResultSwitch": "Switch source",
-  "medicineSearchNoResultScan": "Photo or scan",
   "medicineSearchErrorTitle": "Search did not load this time",
   "medicineSearchErrorDescription": "Please check your network and try again.",
   "mineSectionTitle": "Personal workspace",

@@ -114,8 +114,10 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/record/:id/edit',
-      builder: (context, state) =>
-          RecordEditPage(recordId: state.pathParameters['id']!),
+      builder: (context, state) => RecordEditPage(
+        recordId: state.pathParameters['id']!,
+        recordDate: state.uri.queryParameters['date'],
+      ),
     ),
   ],
 );
