@@ -40,6 +40,15 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - All remaining TODOs rewritten with owner tag + blocked reason.
 - No OAuth credentials, callback domains, or production behavior changed.
 
+### Task 10: Notification/Reminder Contract Design
+
+- Created Lucent/docs/public/reminder-contract.md defining the notification/reminder boundary:
+  - Device-local layer: system permission, preference toggles, local-only notifications
+  - Backend-owned layer: reminder schedules, notification preferences, delivery log
+- Defined planned API surface: UserNotificationPreference, UserMedicineReminder, UserReminderDelivery
+- Explicitly excluded: FCM/APNs push delivery, real-time/WebSocket, third-party services
+- Updated ROADMAP.md and UI_Implementation_Plan.md to reference the contract
+
 ### Task 5: Account Security UX Hardening
 
 - Audited account settings page across four dimensions: password set/unset status, linked identity management, email verification state, and destructive action protections.
