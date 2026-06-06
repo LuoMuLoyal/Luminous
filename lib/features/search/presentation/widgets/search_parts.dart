@@ -1,5 +1,7 @@
 part of 'search_view.dart';
 
+// go_router is available via search_view.dart's imports
+
 class _SearchTopBar extends StatelessWidget {
   const _SearchTopBar({
     required this.l10n,

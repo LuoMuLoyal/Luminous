@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'编辑'**
   String get recordEditAction;
 
+  /// No description provided for @recordDeleteAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除'**
+  String get recordDeleteAction;
+
   /// No description provided for @recordDeleteConfirmMessage.
   ///
   /// In zh, this message translates to:

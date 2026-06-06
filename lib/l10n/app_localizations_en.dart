@@ -122,6 +122,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordEditAction => 'Edit';
 
   @override
+  String get recordDeleteAction => 'Delete';
+
+  @override
   String get recordDeleteConfirmMessage =>
       'Delete this record? This action cannot be undone.';
 

@@ -37,6 +37,7 @@
   "recordFilterSelectAll": "全选",
   "recordAllTypesAction": "全部类型",
   "recordEditAction": "编辑",
+  "recordDeleteAction": "删除",
   "recordDeleteConfirmMessage": "确定删除此记录？此操作不可撤销。",
   "recordMonthLabel": "2025年5月",
   "recordOpenDateAction": "查看日期",
