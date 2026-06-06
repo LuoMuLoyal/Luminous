@@ -699,7 +699,7 @@ class _PreviewPanel extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.sm),
                   ...preview.conditions.map(
                     (c) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
+                      padding: const EdgeInsets.only(bottom: AppSpacingTokens.xxs),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -732,7 +732,7 @@ class _PreviewPanel extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.sm),
                   ...preview.checklist.map(
                     (item) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
+                      padding: const EdgeInsets.only(bottom: AppSpacingTokens.xxs),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

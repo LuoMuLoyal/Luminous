@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
@@ -121,7 +122,7 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
       leading: const SettingsBackButton(),
       children: [
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacingTokens.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

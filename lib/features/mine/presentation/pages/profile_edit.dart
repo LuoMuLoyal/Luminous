@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -85,7 +86,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
 
   Widget _buildForm(BuildContext context, AppLocalizations l10n) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacingTokens.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
