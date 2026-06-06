@@ -1,0 +1,741 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:lucent_openapi/lucent_openapi.dart'
+    show CooldownMessageDto, MedicineDoseLogsApi;
+import 'package:luminous/app/app.dart';
+import 'package:luminous/app/router.dart' show router;
+import 'package:luminous/core/network/lucent_dio_client.dart';
+import 'package:luminous/core/network/lucent_session_store.dart';
+import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
+import 'package:luminous/features/auth/domain/entities/auth_session.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
+import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
+import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
+import 'package:luminous/features/mine/data/repositories/mock_mine_repository.dart'
+    show MockMineRepository;
+import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart'
+    show mineRepositoryProvider;
+import 'package:luminous/features/more/data/repositories/mock_more_repository.dart';
+import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
+import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
+import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
+import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
+import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
+import 'package:luminous/features/record/domain/repositories/record_repository.dart';
+import 'package:luminous/features/search/data/repositories/lucent_repository.dart'
+    show medicineSearchRepositoryProvider;
+import 'package:luminous/features/search/data/repositories/mock/mock_repository.dart';
+import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
+import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
+import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+export 'package:flutter/material.dart';
+export 'package:flutter_test/flutter_test.dart';
+export 'package:integration_test/integration_test.dart';
+export 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart'
+    show authSessionProvider;
+export 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
+export 'package:luminous/features/record/domain/entities/daily_record.dart'
+    show DailyRecordKind;
+export 'package:luminous/features/settings/data/services/notification_permission_service.dart';
+export 'package:shared_preferences/shared_preferences.dart';
+
+Future<ProviderContainer> pumpOfflineApp(
+  WidgetTester tester, {
+  AuthSessionNotifier Function()? authSessionOverride,
+  AuthRemoteDataSource? authRemoteDataSource,
+  HealthContextRepository? healthContextRepository,
+  NotificationPermissionService? notificationPermissionService,
+  DailyRecordRepository? dailyRecordRepository,
+  RecordRepository? recordRepository,
+  MedicineWorkspaceRepository? medicineWorkspaceRepository,
+  DoseLogRemoteDataSource? doseLogRemoteDataSource,
+}) async {
+  SharedPreferences.setMockInitialValues(const <String, Object>{
+    'app.locale': 'zh-CN',
+  });
+  router.go('/');
+
+  final container = ProviderContainer(
+    overrides: [
+      authSessionProvider.overrideWith(
+        authSessionOverride ?? _NoopRestoreAuthSessionNotifier.new,
+      ),
+      if (authRemoteDataSource != null)
+        authRemoteDataSourceProvider.overrideWithValue(authRemoteDataSource),
+      healthContextSnapshotProvider.overrideWith(
+        (ref) => Future.value(_emptyHealthContextSnapshot),
+      ),
+      if (healthContextRepository != null)
+        healthContextRepositoryProvider.overrideWithValue(
+          healthContextRepository,
+        ),
+      if (notificationPermissionService != null)
+        notificationPermissionServiceProvider.overrideWithValue(
+          notificationPermissionService,
+        ),
+      if (dailyRecordRepository != null)
+        dailyRecordRepositoryProvider.overrideWithValue(dailyRecordRepository),
+      if (doseLogRemoteDataSource != null)
+        doseLogRemoteDataSourceProvider.overrideWithValue(
+          doseLogRemoteDataSource,
+        ),
+      todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
+      recordRepositoryProvider.overrideWithValue(
+        recordRepository ?? const MockRecordRepository(),
+      ),
+      medicineWorkspaceRepositoryProvider.overrideWithValue(
+        medicineWorkspaceRepository ?? const MockMedicineWorkspaceRepository(),
+      ),
+      mineRepositoryProvider.overrideWithValue(const MockMineRepository()),
+      moreRepositoryProvider.overrideWithValue(const MockMoreRepository()),
+      medicineSearchRepositoryProvider.overrideWithValue(
+        const MockMedicineSearchRepository(),
+      ),
+    ],
+  );
+  addTearDown(container.dispose);
+
+  await tester.pumpWidget(
+    UncontrolledProviderScope(container: container, child: const LuminousApp()),
+  );
+
+  await tester.pumpAndSettle();
+  return container;
+}
+
+Future<void> openTab(WidgetTester tester, String label) async {
+  final tab = find.descendant(
+    of: find.byType(NavigationBar),
+    matching: find.text(label),
+  );
+  await tester.tap(tab);
+  await tester.pumpAndSettle();
+}
+
+Future<void> openSettings(WidgetTester tester) async {
+  await openTab(tester, '我的');
+  await tester.tap(find.byKey(const Key('mine-settings-action')));
+  await tester.pumpAndSettle();
+  expect(find.text('设置'), findsOneWidget);
+}
+
+Future<void> openLoginFromMedicineDose(WidgetTester tester) async {
+  await openTab(tester, '用药');
+
+  final medicine = find.text('E2E medicine');
+  await tester.scrollUntilVisible(medicine, 240);
+  await tester.tap(find.text('已服用'));
+  await tester.pumpAndSettle();
+
+  expect(find.text('邮箱'), findsOneWidget);
+  expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+}
+
+String todayDateString() {
+  final today = DateTime.now();
+  return '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+}
+
+Finder switchIn(Finder parent) {
+  return find.descendant(of: parent, matching: find.byType(Switch)).first;
+}
+
+bool readSwitchValue(WidgetTester tester, Finder finder) {
+  return tester.widget<Switch>(finder).value;
+}
+
+Future<void> openMineProfileEntry(WidgetTester tester, String label) async {
+  await openTab(tester, '我的');
+  final profileGrid = find.byKey(const Key('mine-profile-grid'));
+  expect(profileGrid, findsOneWidget);
+
+  final entry = find.descendant(of: profileGrid, matching: find.text(label));
+  await tester.scrollUntilVisible(
+    entry,
+    240,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.tap(entry);
+  await tester.pumpAndSettle();
+}
+
+class _NoopRestoreAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  Future<void> restore() async {}
+}
+
+class SignedInAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return AuthSessionState(
+      isAuthenticated: true,
+      isLoading: false,
+      user: AuthUser(
+        id: 'e2e-user-1',
+        email: 'e2e@example.com',
+        nickname: 'E2E User',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        hasPassword: true,
+        createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+      ),
+    );
+  }
+
+  @override
+  Future<void> restore() async {}
+}
+
+class SignedInWithWechatIdentityAuthSessionNotifier
+    extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return AuthSessionState(
+      isAuthenticated: true,
+      isLoading: false,
+      user: AuthUser(
+        id: 'e2e-user-1',
+        email: 'e2e@example.com',
+        nickname: 'E2E User',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        hasPassword: true,
+        linkedIdentities: [
+          AuthLinkedIdentity(
+            id: 'e2e-identity-1',
+            provider: 'wechat_web',
+            email: null,
+            emailVerifiedAt: null,
+            linkedAt: DateTime.parse('2026-06-06T01:00:00Z'),
+          ),
+        ],
+        createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+      ),
+    );
+  }
+
+  @override
+  Future<void> restore() async {}
+}
+
+class E2eAuthRemoteDataSource extends AuthRemoteDataSource {
+  E2eAuthRemoteDataSource()
+    : super(
+        LucentDioClient(
+          baseUrl: 'http://localhost',
+          sessionStore: _MemorySessionStore(),
+        ),
+      );
+
+  String? loginEmail;
+  String? loginPassword;
+  String? loginCode;
+  String? registerEmail;
+  String? registerPassword;
+  String? registerCode;
+  String? registerNickname;
+  String? sentCodeEmail;
+  AuthVerificationScene? sentCodeScene;
+  String? forgotPasswordEmail;
+  String? resetPasswordEmail;
+  String? resetPasswordCode;
+  String? resetPasswordValue;
+  String? changeEmailNewEmail;
+  String? changeEmailCode;
+  String? updateProfileNickname;
+  String? updateProfileAvatar;
+  String? changePasswordOldPassword;
+  String? changePasswordNewPassword;
+  String? deleteAccountPassword;
+  String? unlinkIdentityId;
+
+  @override
+  Future<AuthSession> login({
+    required String email,
+    String? password,
+    String? code,
+  }) async {
+    loginEmail = email;
+    loginPassword = password;
+    loginCode = code;
+    return AuthSession(
+      user: AuthUser(
+        id: 'e2e-auth-user-1',
+        email: email,
+        nickname: 'E2E Auth User',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        hasPassword: true,
+        createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+      ),
+      accessToken: 'e2e-access-token',
+      refreshToken: 'e2e-refresh-token',
+      expiresInSeconds: 3600,
+    );
+  }
+
+  @override
+  Future<AuthSession> register({
+    required String email,
+    required String password,
+    required String code,
+    String? nickname,
+  }) async {
+    registerEmail = email;
+    registerPassword = password;
+    registerCode = code;
+    registerNickname = nickname;
+    return AuthSession(
+      user: AuthUser(
+        id: 'e2e-register-user-1',
+        email: email,
+        nickname: nickname,
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        hasPassword: true,
+        createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+      ),
+      accessToken: 'e2e-register-access-token',
+      refreshToken: 'e2e-register-refresh-token',
+      expiresInSeconds: 3600,
+    );
+  }
+
+  @override
+  Future<CooldownMessageDto> sendVerificationCode({
+    required String email,
+    required AuthVerificationScene scene,
+  }) async {
+    sentCodeEmail = email;
+    sentCodeScene = scene;
+    return CooldownMessageDto(message: 'sent', cooldown: 60);
+  }
+
+  @override
+  Future<CooldownMessageDto> forgotPassword({required String email}) async {
+    forgotPasswordEmail = email;
+    return CooldownMessageDto(message: 'sent', cooldown: 60);
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String password,
+  }) async {
+    resetPasswordEmail = email;
+    resetPasswordCode = code;
+    resetPasswordValue = password;
+  }
+
+  @override
+  Future<AuthUser> changeEmail({
+    required String newEmail,
+    required String code,
+    required AuthUser currentUser,
+  }) async {
+    changeEmailNewEmail = newEmail;
+    changeEmailCode = code;
+    return currentUser.copyWith(
+      email: newEmail,
+      emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+      updatedAt: DateTime.parse('2026-06-06T02:00:00Z'),
+    );
+  }
+
+  @override
+  Future<AuthUser> updateAccountProfile({
+    String? nickname,
+    String? avatar,
+  }) async {
+    updateProfileNickname = nickname;
+    updateProfileAvatar = avatar;
+    return AuthUser(
+      id: 'e2e-user-1',
+      email: 'e2e@example.com',
+      nickname: nickname,
+      avatar: avatar,
+      emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+      hasPassword: true,
+      createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+      updatedAt: DateTime.parse('2026-06-06T01:00:00Z'),
+    );
+  }
+
+  @override
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    changePasswordOldPassword = oldPassword;
+    changePasswordNewPassword = newPassword;
+  }
+
+  @override
+  Future<void> deleteAccount({required String password}) async {
+    deleteAccountPassword = password;
+  }
+
+  @override
+  Future<AuthUser> unlinkIdentity({required String identityId}) async {
+    unlinkIdentityId = identityId;
+    return AuthUser(
+      id: 'e2e-user-1',
+      email: 'e2e@example.com',
+      nickname: 'E2E User',
+      avatar: null,
+      emailVerifiedAt: DateTime.parse('2026-06-06T00:00:00Z'),
+      hasPassword: true,
+      linkedIdentities: const [],
+      createdAt: DateTime.parse('2026-06-06T00:00:00Z'),
+      updatedAt: DateTime.parse('2026-06-06T03:00:00Z'),
+    );
+  }
+}
+
+class _MemorySessionStore implements LucentSessionStore {
+  LucentSessionTokens? tokens;
+
+  @override
+  Future<void> clear() async {
+    tokens = null;
+  }
+
+  @override
+  Future<LucentSessionTokens?> read() async => tokens;
+
+  @override
+  Future<String?> readAccessToken() async => tokens?.accessToken;
+
+  @override
+  Future<String?> readRefreshToken() async => tokens?.refreshToken;
+
+  @override
+  Future<void> write(LucentSessionTokens tokens) async {
+    this.tokens = tokens;
+  }
+}
+
+class E2eNotificationPermissionService extends NotificationPermissionService {
+  E2eNotificationPermissionService({
+    this.state = NotificationPermissionState.unsupported,
+  });
+
+  final NotificationPermissionState state;
+
+  @override
+  Future<void> ensureInitialized() async {}
+
+  @override
+  Future<NotificationPermissionState> getPermissionState() async {
+    return state;
+  }
+
+  @override
+  Future<NotificationPermissionState> requestPermission() async {
+    return state;
+  }
+}
+
+class E2eHealthContextRepository implements HealthContextRepository {
+  HealthProfileUpdateInput? profileUpdate;
+  HealthAllergyWriteInput? allergyCreate;
+  HealthConditionWriteInput? conditionCreate;
+  CurrentMedicineWriteInput? medicineCreate;
+
+  @override
+  Future<HealthContextSnapshot> fetchHealthContext() async {
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> updateProfile(
+    HealthProfileUpdateInput input,
+  ) async {
+    profileUpdate = input;
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> createAllergy(
+    HealthAllergyWriteInput input,
+  ) async {
+    allergyCreate = input;
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> updateAllergy(
+    String id,
+    HealthAllergyUpdateInput input,
+  ) async {
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> deleteAllergy(String id) async {
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> createCondition(
+    HealthConditionWriteInput input,
+  ) async {
+    conditionCreate = input;
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> updateCondition(
+    String id,
+    HealthConditionUpdateInput input,
+  ) async {
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> deleteCondition(String id) async {
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> createCurrentMedicine(
+    CurrentMedicineWriteInput input,
+  ) async {
+    medicineCreate = input;
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> updateCurrentMedicine(
+    String id,
+    CurrentMedicineUpdateInput input,
+  ) async {
+    return _emptyHealthContextSnapshot;
+  }
+
+  @override
+  Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async {
+    return _emptyHealthContextSnapshot;
+  }
+}
+
+class E2eRecordRepository implements RecordRepository {
+  final requestedDates = <DateTime>[];
+
+  @override
+  Future<RecordDashboard> fetchDashboard(DateTime selectedDate) async {
+    requestedDates.add(selectedDate);
+    final mock = await const MockRecordRepository().fetchDashboard(
+      selectedDate,
+    );
+
+    return RecordDashboard(
+      selectedDay: selectedDate.day,
+      weekDays: mock.weekDays,
+      monthDays: mock.monthDays,
+      quickActions: mock.quickActions,
+      summary: mock.summary,
+      filters: mock.filters,
+      timeline: const [
+        RecordTimelineEntry(
+          time: '09:45',
+          type: RecordEntryType.vitals,
+          icon: Icons.favorite_rounded,
+          accent: Color(0xFFFF4D57),
+          softColor: Color(0xFFFFEEEE),
+          titleKey: RecordCopyKey.typeVitals,
+          rawTitle: 'E2E blood pressure',
+          value: '118/76 mmHg',
+          recordId: 'e2e-record-1',
+        ),
+      ],
+      trends: mock.trends,
+      healthBag: mock.healthBag,
+    );
+  }
+}
+
+class E2eDailyRecordRepository implements DailyRecordRepository {
+  String? getCalledWith;
+  String? deleteCalledWith;
+  DailyRecordCreateInput? createInput;
+
+  @override
+  Future<DailyRecordListData> fetchRecords(
+    String date, {
+    String? kind,
+    int page = 1,
+    int pageSize = 50,
+  }) async {
+    return DailyRecordListData(items: [_record], total: 1);
+  }
+
+  @override
+  Future<DailyRecordSummaryData> fetchSummary(String date) async {
+    return const DailyRecordSummaryData(summaries: []);
+  }
+
+  @override
+  Future<DailyRecordItem> get(String id) async {
+    getCalledWith = id;
+    return _record;
+  }
+
+  @override
+  Future<DailyRecordAttachmentInput> uploadImage(
+    DailyRecordImageUploadInput input,
+  ) async {
+    return DailyRecordAttachmentInput(
+      objectKey: 'daily-records/e2e/test.jpg',
+      fileName: input.fileName,
+      contentType: input.contentType,
+      sizeBytes: input.sizeBytes,
+      publicUrl: 'https://cdn.example.com/e2e.jpg',
+    );
+  }
+
+  @override
+  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
+    createInput = input;
+    return _record;
+  }
+
+  @override
+  Future<DailyRecordItem> update(
+    String id,
+    DailyRecordUpdateInput input,
+  ) async {
+    return _record;
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    deleteCalledWith = id;
+  }
+
+  static final _record = DailyRecordItem(
+    id: 'e2e-record-1',
+    kind: DailyRecordKind.vital,
+    occurredAt: '2026-06-06T09:45:00',
+    title: 'E2E blood pressure',
+    value: '118/76',
+    unit: 'mmHg',
+    note: 'E2E detail note',
+    source: 'manual',
+    createdAt: '2026-06-06T09:45:00',
+    updatedAt: '2026-06-06T10:00:00',
+  );
+}
+
+class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
+  @override
+  Future<MedicineWorkspace> fetchWorkspace() async {
+    final mock = await const MockMedicineWorkspaceRepository().fetchWorkspace();
+    return MedicineWorkspace(
+      hero: mock.hero,
+      quickActions: mock.quickActions,
+      plan: const MedicinePlanSurface(
+        items: [
+          MedicinePlanItem(
+            color: Color(0xFF159B55),
+            nameKey: MedicineCopyKey.mockNameMetformin,
+            dosageKey: MedicineCopyKey.mockDoseMetformin,
+            scheduleKey: MedicineCopyKey.mockScheduleMorningEvening,
+            slots: [
+              MedicineDoseSlot(
+                timeKey: MedicineCopyKey.mockTime0800,
+                statusKey: MedicineCopyKey.doseStatusPending,
+                status: MedicineDoseStatus.pending,
+              ),
+            ],
+            stockKey: MedicineCopyKey.mockStock7Days,
+            stateKey: MedicineCopyKey.statusStable,
+            stateColor: Color(0xFF159B55),
+            rawName: 'E2E medicine',
+            rawDosage: '1 tablet',
+            rawSchedule: 'morning',
+            rawStock: '7 days',
+            rawState: 'pending',
+            currentMedicineId: 'e2e-medicine-1',
+          ),
+        ],
+      ),
+      alerts: mock.alerts,
+      promisePoints: mock.promisePoints,
+    );
+  }
+}
+
+class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {
+  E2eDoseLogRemoteDataSource()
+    : super(
+        api: MedicineDoseLogsApi(Dio(BaseOptions())),
+        dio: Dio(BaseOptions()),
+      );
+
+  String? createCurrentMedicineId;
+  String? createStatus;
+  String? createDate;
+
+  @override
+  Future<DoseLogItem> create(
+    String currentMedicineId,
+    String status,
+    String date,
+  ) async {
+    createCurrentMedicineId = currentMedicineId;
+    createStatus = status;
+    createDate = date;
+    return DoseLogItem(
+      id: 'e2e-dose-log-1',
+      currentMedicineId: currentMedicineId,
+      status: DoseLogStatus.values.firstWhere((item) => item.name == status),
+      scheduledFor: date,
+      createdAt: '${date}T08:00:00.000Z',
+    );
+  }
+}
+
+const _emptyHealthContextSnapshot = HealthContextSnapshot(
+  summary: HealthSummary(
+    age: null,
+    onboardingCompleted: false,
+    activeAllergyCount: 0,
+    conditionCount: 0,
+    currentMedicineCount: 0,
+    missingCoreProfileFields: <String>[],
+  ),
+  profile: HealthProfile(
+    birthDate: null,
+    sexAtBirth: null,
+    heightCm: null,
+    pregnancyState: null,
+    lactationState: null,
+    bloodType: null,
+    locale: null,
+    timezone: null,
+    unitSystem: null,
+    onboardingCompletedAt: null,
+    extras: <String, dynamic>{},
+  ),
+  allergies: <AllergyItem>[],
+  conditions: <ConditionItem>[],
+  currentMedicines: <CurrentMedicineItem>[],
+);
