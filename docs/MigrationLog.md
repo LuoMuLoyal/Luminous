@@ -1,8 +1,15 @@
 # Luminous Migration Log
 
-Last updated: 2026-06-05
+Last updated: 2026-06-06
 
 Records changes after the full reset only. Pre-reset history: `MigrationLog_Archive_PreReset.md`.
+
+## 2026-06-06
+
+### Thirty-Day DeepSeek Execution Plan
+
+- Added `docs/superpowers/plans/2026-06-06-thirty-day-lumos-deepseek-plan.md` as the next one-month execution plan for DeepSeek-style task-by-task delivery.
+- The plan keeps the existing superpowers evidence bundle, branch/status baseline, Codex review protocol, and error-prevention gates while focusing the next month on identity/theme polish, auth/account closeout, daily-record quality, medicine adherence, notification boundaries, More integration planning, and full regression.
 
 ## 2026-06-05
 
