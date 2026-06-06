@@ -3692,6 +3692,18 @@ abstract class AppLocalizations {
   /// **'选择一个药品查看详情'**
   String get medicineSearchPreviewEmpty;
 
+  /// No description provided for @medicineSearchSourceRefCn.
+  ///
+  /// In zh, this message translates to:
+  /// **'批准文号：{id}'**
+  String medicineSearchSourceRefCn(String id);
+
+  /// No description provided for @medicineSearchSourceRefDrugbank.
+  ///
+  /// In zh, this message translates to:
+  /// **'DrugBank ID：{id}'**
+  String medicineSearchSourceRefDrugbank(String id);
+
   /// No description provided for @mineEditProfileTitle.
   ///
   /// In zh, this message translates to:

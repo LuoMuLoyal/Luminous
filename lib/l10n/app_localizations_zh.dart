@@ -1852,6 +1852,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineSearchPreviewEmpty => '选择一个药品查看详情';
 
   @override
+  String medicineSearchSourceRefCn(String id) {
+    return '批准文号：$id';
+  }
+
+  @override
+  String medicineSearchSourceRefDrugbank(String id) {
+    return 'DrugBank ID：$id';
+  }
+
+  @override
   String get mineEditProfileTitle => '编辑档案';
 
   @override

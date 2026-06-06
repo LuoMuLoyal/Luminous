@@ -1955,6 +1955,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineSearchPreviewEmpty => 'Select a medicine to view details';
 
   @override
+  String medicineSearchSourceRefCn(String id) {
+    return 'Approval No. $id';
+  }
+
+  @override
+  String medicineSearchSourceRefDrugbank(String id) {
+    return 'DrugBank ID: $id';
+  }
+
+  @override
   String get mineEditProfileTitle => 'Edit Profile';
 
   @override

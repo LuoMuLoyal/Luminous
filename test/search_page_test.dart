@@ -90,6 +90,43 @@ void main() {
     expect(workspaceBuildCount, greaterThan(1));
   });
 
+  testWidgets('search shows no-result tools when query returns empty', (
+    tester,
+  ) async {
+    final emptyRepo = _EmptySearchRepository();
+
+    await _pumpSearchApp(
+      tester,
+      medicineSearchRepository: emptyRepo,
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.enterText(find.byType(TextField), 'empty');
+    await tester.pump(const Duration(seconds: 1));
+
+    // No results — show the "no result" suggestions
+    expect(find.text('无结果？'), findsOneWidget);
+    expect(find.text('检查关键词'), findsOneWidget);
+  });
+
+  testWidgets('search shows error view when search fails', (tester) async {
+    final errorRepo = _ErrorSearchRepository();
+
+    await _pumpSearchApp(
+      tester,
+      medicineSearchRepository: errorRepo,
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.enterText(find.byType(TextField), 'error test');
+    await tester.pump(const Duration(seconds: 2));
+
+    // Error view should appear
+    expect(find.text('搜索页暂时没有加载出来'), findsOneWidget);
+  });
+
   testWidgets(
     'source switch searches selected source and writes result source',
     (tester) async {
@@ -339,6 +376,38 @@ const _snapshot = HealthContextSnapshot(
   conditions: [],
   currentMedicines: [],
 );
+
+class _EmptySearchRepository implements MedicineSearchRepository {
+  @override
+  Future<List<MedicineSearchResult>> search({
+    required String query,
+    required MedicineSearchSource source,
+    int page = 1,
+    int pageSize = 20,
+  }) async => const [];
+
+  @override
+  Future<MedicineSearchSafetyPreview?> fetchDetail(
+    String id,
+    MedicineSearchSource source,
+  ) async => null;
+}
+
+class _ErrorSearchRepository implements MedicineSearchRepository {
+  @override
+  Future<List<MedicineSearchResult>> search({
+    required String query,
+    required MedicineSearchSource source,
+    int page = 1,
+    int pageSize = 20,
+  }) async => throw Exception('Search failed');
+
+  @override
+  Future<MedicineSearchSafetyPreview?> fetchDetail(
+    String id,
+    MedicineSearchSource source,
+  ) async => throw Exception('Detail failed');
+}
 
 const _workspace = MedicineWorkspace(
   hero: MedicineHero(
