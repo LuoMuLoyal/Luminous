@@ -17,10 +17,7 @@ class _SearchTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-        ),
+        BackButton(onPressed: () => context.pop()),
         Expanded(
           child: Text(
             l10n.medicineSearchPageTitle,

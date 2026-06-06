@@ -27,6 +27,7 @@ flutter pub get
 flutter run
 flutter analyze
 flutter test
+flutter test integration_test/app_smoke_test.dart
 dart run tool/regenerate_lucent_openapi.dart
 ```
 
@@ -35,6 +36,7 @@ dart run tool/regenerate_lucent_openapi.dart
 - GitHub Actions workflow: `.github/workflows/flutter-ci.yml`
 - Current CI scope: `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`
 - Current CI is validation-only. It does not build or publish Android, iOS, desktop, or web artifacts.
+- Device/emulator smoke E2E is available locally with `flutter test integration_test/app_smoke_test.dart`.
 
 ## Docs
 

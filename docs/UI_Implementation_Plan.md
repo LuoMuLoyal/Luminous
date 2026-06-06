@@ -58,6 +58,7 @@ Restored: Search now uses real Lucent medicine search/detail API; Mine health-co
 ```bash
 flutter analyze
 flutter test
+flutter test integration_test/app_smoke_test.dart
 ```
 
 For responsive UI, also check mobile overflow, desktop spacing, and zh/en text fit.

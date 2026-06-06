@@ -13,20 +13,9 @@ class SettingsBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap ?? () => context.pop(),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.xs),
-          child: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            size: 18,
-            color: surface.body,
-          ),
-        ),
-      ),
+    return BackButton(
+      color: surface.body,
+      onPressed: onTap ?? () => context.pop(),
     );
   }
 }
@@ -90,9 +79,7 @@ class SettingsListRow extends StatelessWidget {
                       const SizedBox(height: AppSpacingTokens.xxs),
                       Text(
                         subtitle!,
-                        style: typography.bodySm.copyWith(
-                          color: surface.mute,
-                        ),
+                        style: typography.bodySm.copyWith(color: surface.mute),
                       ),
                     ],
                   ],

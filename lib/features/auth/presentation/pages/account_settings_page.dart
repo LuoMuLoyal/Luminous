@@ -83,7 +83,7 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
 
     return AuthShell(
       title: l10n.authAccountSettingsFormTitle,
-      leading: _AuthBackButton(onTap: () => context.pop()),
+      leading: BackButton(onPressed: () => context.pop()),
       centerTitle: true,
       enableFormAnimation: widget.enableFormAnimation,
       form: Column(
@@ -745,22 +745,4 @@ String _formatDateTime(DateTime value) {
   final hour = local.hour.toString().padLeft(2, '0');
   final minute = local.minute.toString().padLeft(2, '0');
   return '${_formatDate(local)} $hour:$minute';
-}
-
-class _AuthBackButton extends StatelessWidget {
-  const _AuthBackButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-      child: const Padding(
-        padding: EdgeInsets.all(AppSpacingTokens.xs),
-        child: Icon(Icons.arrow_back_ios_new_rounded, size: 18),
-      ),
-    );
-  }
 }

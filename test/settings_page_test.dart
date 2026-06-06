@@ -36,7 +36,7 @@ void main() {
     expect(find.byKey(const Key('settings-group-preferences')), findsOneWidget);
     expect(find.byKey(const Key('settings-group-more')), findsOneWidget);
     expect(find.text('设置'), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back_ios_new_rounded), findsOneWidget);
+    expect(find.byType(BackButton), findsOneWidget);
     expect(find.text('账号与安全'), findsOneWidget);
     expect(find.text('主题模式'), findsOneWidget);
     expect(find.text('语言'), findsOneWidget);
@@ -67,7 +67,7 @@ void main() {
     router.push('/settings');
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.arrow_back_ios_new_rounded).first);
+    await tester.tap(find.byType(BackButton).first);
     await tester.pumpAndSettle();
 
     expect(find.text('mine-page'), findsOneWidget);
