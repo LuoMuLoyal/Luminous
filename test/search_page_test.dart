@@ -110,6 +110,25 @@ void main() {
     expect(find.text('检查关键词'), findsOneWidget);
   });
 
+  testWidgets('search result shows source reference ID', (tester) async {
+    await _pumpSearchApp(tester);
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.enterText(find.byType(TextField), '布洛芬');
+    await tester.pump(const Duration(seconds: 1));
+
+    // CN result should show approval number
+    expect(find.textContaining('批准文号'), findsWidgets);
+
+    // Switch to DrugBank and search
+    await tester.tap(find.text('药物知识（DrugBank）').first);
+    await tester.pump(const Duration(seconds: 1));
+
+    // DrugBank result should show DrugBank ID
+    expect(find.textContaining('DrugBank'), findsOneWidget);
+  });
+
   testWidgets('search shows error view when search fails', (tester) async {
     final errorRepo = _ErrorSearchRepository();
 
