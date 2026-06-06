@@ -136,6 +136,7 @@ class RecordTimelineEntry {
     this.imagePlaceholderKey,
     this.trailingIcon,
     this.rawTitle,
+    this.recordId,
   });
 
   final String time;
@@ -155,6 +156,10 @@ class RecordTimelineEntry {
   /// When non-null, the view should use this raw string instead of resolving
   /// [titleKey] through [recordCopy].
   final String? rawTitle;
+
+  /// When non-null, this timeline entry represents a real daily record
+  /// that can be edited or deleted via the daily-record API.
+  final String? recordId;
 }
 
 class RecordTrend {

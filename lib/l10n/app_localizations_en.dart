@@ -122,6 +122,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordEditAction => 'Edit';
 
   @override
+  String get recordDeleteConfirmMessage =>
+      'Delete this record? This action cannot be undone.';
+
+  @override
   String get recordMonthLabel => 'May 2025';
 
   @override

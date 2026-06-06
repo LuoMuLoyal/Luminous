@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'编辑'**
   String get recordEditAction;
 
+  /// No description provided for @recordDeleteConfirmMessage.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除此记录？此操作不可撤销。'**
+  String get recordDeleteConfirmMessage;
+
   /// No description provided for @recordMonthLabel.
   ///
   /// In zh, this message translates to:

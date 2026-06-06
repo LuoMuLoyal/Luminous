@@ -120,6 +120,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordEditAction => '编辑';
 
   @override
+  String get recordDeleteConfirmMessage => '确定删除此记录？此操作不可撤销。';
+
+  @override
   String get recordMonthLabel => '2025年5月';
 
   @override

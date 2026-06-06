@@ -37,6 +37,7 @@
   "recordFilterSelectAll": "Select all",
   "recordAllTypesAction": "All types",
   "recordEditAction": "Edit",
+  "recordDeleteConfirmMessage": "Delete this record? This action cannot be undone.",
   "recordMonthLabel": "May 2025",
   "recordOpenDateAction": "Open date",
   "recordNotEnabledLabel": "Off",
