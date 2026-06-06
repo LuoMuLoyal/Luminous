@@ -7,6 +7,7 @@ import 'package:luminous/features/health_context/data/providers/health_context_d
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
+import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/features/search/presentation/providers/search_provider.dart';
 import 'package:luminous/features/search/presentation/widgets/search_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -66,6 +67,7 @@ class SearchPage extends ConsumerWidget {
       await repository.createCurrentMedicine(input);
       ref.invalidate(healthContextSnapshotProvider);
       ref.invalidate(medicineWorkspaceProvider);
+      ref.invalidate(todayDashboardProvider);
 
       if (context.mounted) {
         AppToast.show(context, l10n.mineEditSavedToast);
