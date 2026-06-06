@@ -3566,6 +3566,12 @@ abstract class AppLocalizations {
   /// **'Lumi 建议'**
   String get todayLumiCardTitle;
 
+  /// No description provided for @todayPreviewBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'预览'**
+  String get todayPreviewBadge;
+
   /// No description provided for @todayLumiPollenProtectionBody.
   ///
   /// In zh, this message translates to:

@@ -1882,6 +1882,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayLumiCardTitle => 'Lumi note';
 
   @override
+  String get todayPreviewBadge => 'Preview';
+
+  @override
   String get todayLumiPollenProtectionBody =>
       'Pollen is elevated today. Consider a mask outdoors and reduce respiratory irritation where possible.';
 

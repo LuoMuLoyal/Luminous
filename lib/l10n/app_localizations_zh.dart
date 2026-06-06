@@ -1783,6 +1783,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayLumiCardTitle => 'Lumi 建议';
 
   @override
+  String get todayPreviewBadge => '预览';
+
+  @override
   String get todayLumiPollenProtectionBody => '今天空气中花粉较多，建议外出佩戴口罩，注意防护呼吸敏感。';
 
   @override
