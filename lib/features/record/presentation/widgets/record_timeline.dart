@@ -160,7 +160,7 @@ class _TimelineCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (entry.recordId != null) {
-            context.push('/record/${entry.recordId}/edit');
+            context.push('/record/${entry.recordId}');
           } else {
             showRecordToast(context, label);
           }

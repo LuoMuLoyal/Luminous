@@ -141,6 +141,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordAllTypesAction => '全部类型';
 
   @override
+  String get recordDetailTitle => '记录详情';
+
+  @override
+  String get recordDetailErrorTitle => '记录详情暂时没有加载出来';
+
+  @override
+  String get recordDetailValueLabel => '数值';
+
+  @override
+  String get recordDetailSourceLabel => '来源';
+
+  @override
+  String get recordDetailUpdatedAtLabel => '更新于';
+
+  @override
   String get recordEditAction => '编辑';
 
   @override

@@ -362,6 +362,36 @@ abstract class AppLocalizations {
   /// **'全部类型'**
   String get recordAllTypesAction;
 
+  /// No description provided for @recordDetailTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录详情'**
+  String get recordDetailTitle;
+
+  /// No description provided for @recordDetailErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录详情暂时没有加载出来'**
+  String get recordDetailErrorTitle;
+
+  /// No description provided for @recordDetailValueLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'数值'**
+  String get recordDetailValueLabel;
+
+  /// No description provided for @recordDetailSourceLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'来源'**
+  String get recordDetailSourceLabel;
+
+  /// No description provided for @recordDetailUpdatedAtLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'更新于'**
+  String get recordDetailUpdatedAtLabel;
+
   /// No description provided for @recordEditAction.
   ///
   /// In zh, this message translates to:

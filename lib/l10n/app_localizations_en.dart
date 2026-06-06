@@ -144,6 +144,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordAllTypesAction => 'All types';
 
   @override
+  String get recordDetailTitle => 'Record details';
+
+  @override
+  String get recordDetailErrorTitle => 'Record details did not load this time';
+
+  @override
+  String get recordDetailValueLabel => 'Value';
+
+  @override
+  String get recordDetailSourceLabel => 'Source';
+
+  @override
+  String get recordDetailUpdatedAtLabel => 'Updated at';
+
+  @override
   String get recordEditAction => 'Edit';
 
   @override

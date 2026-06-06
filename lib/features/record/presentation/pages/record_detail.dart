@@ -1,0 +1,491 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
+import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+class RecordDetailPage extends ConsumerWidget {
+  const RecordDetailPage({super.key, required this.recordId});
+
+  final String recordId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final session = ref.watch(authSessionProvider);
+
+    if (!session.isAuthenticated) {
+      return PageScaffoldShell(
+        title: l10n.recordDetailTitle,
+        centerTitle: true,
+        leading: const SettingsBackButton(),
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacingTokens.xl),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(l10n.authNotSignedIn),
+                  const SizedBox(height: AppSpacingTokens.md),
+                  ElevatedButton(
+                    onPressed: () => context.push('/login'),
+                    child: Text(l10n.authGoLogin),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    final detail = ref.watch(dailyRecordDetailProvider(recordId));
+
+    return PageScaffoldShell(
+      title: l10n.recordDetailTitle,
+      centerTitle: true,
+      leading: const SettingsBackButton(),
+      actions: [
+        IconButton(
+          tooltip: l10n.recordEditAction,
+          onPressed: () => context.push('/record/$recordId/edit'),
+          icon: const Icon(Icons.edit_outlined),
+        ),
+      ],
+      children: [
+        detail.when(
+          data: (record) => _RecordDetailBody(record: record),
+          loading: () => const _RecordDetailLoading(),
+          error: (_, __) => AppStateErrorView(
+            title: l10n.recordDetailErrorTitle,
+            description: l10n.recordErrorDescription,
+            icon: Icons.edit_calendar_outlined,
+            actionLabel: l10n.todayRetryAction,
+            onAction: () => ref.invalidate(dailyRecordDetailProvider(recordId)),
+            tone: AppStateTone.warning,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RecordDetailBody extends ConsumerWidget {
+  const _RecordDetailBody({required this.record});
+
+  final DailyRecordItem record;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final imageAttachment = record.attachments
+        .where((item) => item.kind == DailyRecordAttachmentKind.image)
+        .firstOrNull;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _DetailSurface(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _KindIcon(kind: record.kind),
+                  const SizedBox(width: AppSpacingTokens.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          record.title ?? _kindLabel(l10n, record.kind),
+                          style: typography.displaySm,
+                        ),
+                        const SizedBox(height: AppSpacingTokens.xs),
+                        Text(
+                          _formatDateTime(record.occurredAt),
+                          style: typography.bodySm.copyWith(
+                            color: surface.body,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              _DetailRows(
+                rows: [
+                  _DetailRowData(
+                    l10n.recordCreateFieldKind,
+                    _kindLabel(l10n, record.kind),
+                  ),
+                  if (_nonEmpty(record.value) != null)
+                    _DetailRowData(
+                      l10n.recordDetailValueLabel,
+                      _valueWithUnit(record.value!, record.unit),
+                    ),
+                  if (_nonEmpty(record.note) != null)
+                    _DetailRowData(l10n.recordCreateFieldNote, record.note!),
+                  if (_nonEmpty(record.source) != null)
+                    _DetailRowData(
+                      l10n.recordDetailSourceLabel,
+                      record.source!,
+                    ),
+                  _DetailRowData(
+                    l10n.recordDetailUpdatedAtLabel,
+                    _formatDateTime(record.updatedAt),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        if (imageAttachment != null) ...[
+          const SizedBox(height: AppSpacingTokens.md),
+          _DetailSurface(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.recordImageSectionTitle,
+                  style: typography.bodyMdStrong,
+                ),
+                const SizedBox(height: AppSpacingTokens.md),
+                _RecordDetailImage(attachment: imageAttachment),
+                if (_nonEmpty(imageAttachment.fileName) != null) ...[
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  Text(
+                    imageAttachment.fileName!,
+                    style: typography.caption.copyWith(color: surface.body),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+        const SizedBox(height: AppSpacingTokens.md),
+        FilledButton.icon(
+          onPressed: () => context.push('/record/${record.id}/edit'),
+          icon: const Icon(Icons.edit_outlined, size: 18),
+          label: Text(l10n.recordEditAction),
+        ),
+        const SizedBox(height: AppSpacingTokens.sm),
+        OutlinedButton.icon(
+          onPressed: () => _deleteRecord(context, ref, record.id),
+          icon: const Icon(Icons.delete_outline_rounded, size: 18),
+          label: Text(l10n.recordDeleteAction),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: theme.colorScheme.error,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _deleteRecord(
+    BuildContext context,
+    WidgetRef ref,
+    String recordId,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.recordDeleteAction),
+        content: Text(l10n.recordDeleteConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.authCancelAction),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.recordDeleteAction),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      await ref.read(dailyRecordRepositoryProvider).delete(recordId);
+      ref.invalidate(dailyRecordDetailProvider(recordId));
+      ref.invalidate(recordDashboardProvider);
+      ref.invalidate(todayDashboardProvider);
+      if (!context.mounted) return;
+      await AppToast.show(context, l10n.mineEditDeletedToast);
+      if (context.mounted) context.pop();
+    } catch (_) {
+      if (context.mounted) {
+        await AppToast.show(context, l10n.recordCreateFailedToast);
+      }
+    }
+  }
+}
+
+class _DetailRows extends StatelessWidget {
+  const _DetailRows({required this.rows});
+
+  final List<_DetailRowData> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (var index = 0; index < rows.length; index += 1) ...[
+          _DetailRow(data: rows[index]),
+          if (index != rows.length - 1)
+            const SizedBox(height: AppSpacingTokens.md),
+        ],
+      ],
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  const _DetailRow({required this.data});
+
+  final _DetailRowData data;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 88,
+          child: Text(
+            data.label,
+            style: typography.bodySm.copyWith(color: surface.body),
+          ),
+        ),
+        const SizedBox(width: AppSpacingTokens.md),
+        Expanded(
+          child: Text(
+            data.value,
+            style: typography.bodySmStrong,
+            overflow: TextOverflow.visible,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DetailRowData {
+  const _DetailRowData(this.label, this.value);
+
+  final String label;
+  final String value;
+}
+
+class _DetailSurface extends StatelessWidget {
+  const _DetailSurface({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvas,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: surface.hairline),
+        boxShadow: AppShadowTokens.level1,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _KindIcon extends StatelessWidget {
+  const _KindIcon({required this.kind});
+
+  final DailyRecordKind kind;
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, color, background) = switch (kind) {
+      DailyRecordKind.water => (
+        Icons.water_drop_rounded,
+        const Color(0xFF428BFF),
+        const Color(0xFFE8F2FF),
+      ),
+      DailyRecordKind.meal => (
+        Icons.restaurant_rounded,
+        const Color(0xFFFF8A00),
+        const Color(0xFFFFF2E0),
+      ),
+      DailyRecordKind.vital => (
+        Icons.favorite_rounded,
+        const Color(0xFFFF4D57),
+        const Color(0xFFFFEEEE),
+      ),
+      DailyRecordKind.mood => (
+        Icons.sentiment_satisfied_rounded,
+        const Color(0xFF7D67E8),
+        const Color(0xFFF0ECFF),
+      ),
+      DailyRecordKind.symptom => (
+        Icons.healing_rounded,
+        const Color(0xFFFF8A00),
+        const Color(0xFFFFF2E0),
+      ),
+      DailyRecordKind.activity => (
+        Icons.directions_run_rounded,
+        const Color(0xFF16A66A),
+        const Color(0xFFEAF9F1),
+      ),
+      DailyRecordKind.note => (
+        Icons.notes_rounded,
+        const Color(0xFF428BFF),
+        const Color(0xFFE8F2FF),
+      ),
+    };
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      ),
+      child: SizedBox.square(
+        dimension: 44,
+        child: Icon(icon, color: color, size: 22),
+      ),
+    );
+  }
+}
+
+class _RecordDetailImage extends StatelessWidget {
+  const _RecordDetailImage({required this.attachment});
+
+  final DailyRecordAttachment attachment;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final imageUrl = attachment.displayUrl;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: DecoratedBox(
+          decoration: BoxDecoration(color: surface.canvasSoft2),
+          child: imageUrl == null
+              ? Center(
+                  child: Icon(
+                    Icons.image_outlined,
+                    color: surface.mute,
+                    size: 28,
+                  ),
+                )
+              : CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Center(
+                    child: Icon(
+                      Icons.image_outlined,
+                      color: surface.mute,
+                      size: 28,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Center(
+                    child: Icon(
+                      Icons.broken_image_outlined,
+                      color: surface.mute,
+                      size: 28,
+                    ),
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RecordDetailLoading extends StatelessWidget {
+  const _RecordDetailLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.34),
+            AppInlineSkeletonBlock(height: 42),
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.74),
+          ],
+        ),
+        SizedBox(height: AppSpacingTokens.md),
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 160),
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.42),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+String _kindLabel(AppLocalizations l10n, DailyRecordKind kind) {
+  return switch (kind) {
+    DailyRecordKind.water => l10n.recordTypeWater,
+    DailyRecordKind.meal => l10n.recordTypeMeal,
+    DailyRecordKind.vital => l10n.recordTypeVitals,
+    DailyRecordKind.mood => l10n.recordTypeMood,
+    DailyRecordKind.symptom => l10n.recordTypeSymptom,
+    DailyRecordKind.activity => l10n.recordTypeActivity,
+    DailyRecordKind.note => l10n.recordCreateKindNote,
+  };
+}
+
+String _valueWithUnit(String value, String? unit) {
+  final trimmedUnit = unit?.trim();
+  if (trimmedUnit == null || trimmedUnit.isEmpty) return value;
+  return '$value $trimmedUnit';
+}
+
+String? _nonEmpty(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) return null;
+  return trimmed;
+}
+
+String _formatDateTime(String value) {
+  final parsed = DateTime.tryParse(value);
+  if (parsed == null) return value;
+  final local = parsed.toLocal();
+  return '${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+}
