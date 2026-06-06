@@ -9,6 +9,7 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**dailyRecordsControllerCreateImageUploadV1**](DailyRecordsApi.md#dailyrecordscontrollercreateimageuploadv1) | **POST** /api/v1/me/daily-records/attachments/images/presign-upload | Create a Tencent COS signed URL for daily record image upload
 [**dailyRecordsControllerCreateV1**](DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/me/daily-records | Create a daily record
 [**dailyRecordsControllerDeleteV1**](DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/me/daily-records/{id} | Soft-delete a daily record
 [**dailyRecordsControllerGetV1**](DailyRecordsApi.md#dailyrecordscontrollergetv1) | **GET** /api/v1/me/daily-records/{id} | Get a daily record by id
@@ -16,6 +17,47 @@ Method | HTTP request | Description
 [**dailyRecordsControllerSummaryV1**](DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/me/daily-records/summary | Get daily record summary (counts by kind)
 [**dailyRecordsControllerUpdateV1**](DailyRecordsApi.md#dailyrecordscontrollerupdatev1) | **PATCH** /api/v1/me/daily-records/{id} | Update a daily record
 
+
+# **dailyRecordsControllerCreateImageUploadV1**
+> DailyRecordImageUploadResponseDto dailyRecordsControllerCreateImageUploadV1(createDailyRecordImageUploadDto)
+
+Create a Tencent COS signed URL for daily record image upload
+
+### Example
+```dart
+import 'package:lucent_openapi/api.dart';
+
+final api = LucentOpenapi().getDailyRecordsApi();
+final CreateDailyRecordImageUploadDto createDailyRecordImageUploadDto = ; // CreateDailyRecordImageUploadDto | 
+
+try {
+    final response = api.dailyRecordsControllerCreateImageUploadV1(createDailyRecordImageUploadDto);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling DailyRecordsApi->dailyRecordsControllerCreateImageUploadV1: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **createDailyRecordImageUploadDto** | [**CreateDailyRecordImageUploadDto**](CreateDailyRecordImageUploadDto.md)|  | 
+
+### Return type
+
+[**DailyRecordImageUploadResponseDto**](DailyRecordImageUploadResponseDto.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **dailyRecordsControllerCreateV1**
 > DailyRecordResponseDto dailyRecordsControllerCreateV1(createDailyRecordDto)

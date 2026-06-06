@@ -88,6 +88,7 @@ Class | Method | HTTP request | Description
 [*AuthApi*](doc/AuthApi.md) | [**authControllerResetPasswordV1**](doc/AuthApi.md#authcontrollerresetpasswordv1) | **POST** /api/v1/auth/reset-password | 重置密码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerSendVerificationCodeV1**](doc/AuthApi.md#authcontrollersendverificationcodev1) | **POST** /api/v1/auth/send-verification-code | 发送邮箱验证码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerVerifyEmailV1**](doc/AuthApi.md#authcontrollerverifyemailv1) | **POST** /api/v1/auth/verify-email | 验证邮箱
+[*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateImageUploadV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreateimageuploadv1) | **POST** /api/v1/me/daily-records/attachments/images/presign-upload | Create a Tencent COS signed URL for daily record image upload
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/me/daily-records | Create a daily record
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerDeleteV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/me/daily-records/{id} | Soft-delete a daily record
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerGetV1**](doc/DailyRecordsApi.md#dailyrecordscontrollergetv1) | **GET** /api/v1/me/daily-records/{id} | Get a daily record by id
@@ -126,12 +127,15 @@ Class | Method | HTTP request | Description
  - [CooldownMessageDto](doc/CooldownMessageDto.md)
  - [CreateCurrentMedicineDto](doc/CreateCurrentMedicineDto.md)
  - [CreateDailyRecordDto](doc/CreateDailyRecordDto.md)
+ - [CreateDailyRecordImageUploadDto](doc/CreateDailyRecordImageUploadDto.md)
  - [CreateDoseLogDto](doc/CreateDoseLogDto.md)
  - [CreateHealthContextAllergyDto](doc/CreateHealthContextAllergyDto.md)
  - [CreateHealthContextConditionDto](doc/CreateHealthContextConditionDto.md)
  - [DailyRecordAttachmentDto](doc/DailyRecordAttachmentDto.md)
  - [DailyRecordAttachmentInputDto](doc/DailyRecordAttachmentInputDto.md)
  - [DailyRecordAttachmentKind](doc/DailyRecordAttachmentKind.md)
+ - [DailyRecordImageUploadDto](doc/DailyRecordImageUploadDto.md)
+ - [DailyRecordImageUploadResponseDto](doc/DailyRecordImageUploadResponseDto.md)
  - [DailyRecordItemDto](doc/DailyRecordItemDto.md)
  - [DailyRecordKind](doc/DailyRecordKind.md)
  - [DailyRecordListDataDto](doc/DailyRecordListDataDto.md)

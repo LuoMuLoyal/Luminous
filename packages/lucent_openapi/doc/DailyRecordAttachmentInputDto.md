@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **kind** | [**DailyRecordAttachmentKind**](DailyRecordAttachmentKind.md) |  | [optional] [default to DailyRecordAttachmentKind.image]
 **objectKey** | **String** | Object storage key, stable across signed URL rotations. | 
 **bucket** | **Object** | Object storage bucket. | [optional] 
-**provider** | **Object** | Storage provider, e.g. s3/oss/cos/r2. | [optional] 
+**provider** | **Object** | Storage provider, currently tencent-cos. | [optional] 
 **fileName** | **Object** | Original file name. | [optional] 
 **contentType** | **Object** | MIME content type. | [optional] 
 **sizeBytes** | **Object** | File size in bytes. | [optional] 

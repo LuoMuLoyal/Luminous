@@ -9,11 +9,14 @@ import 'package:lucent_openapi/src/model/cn_medicine_detail_dto.dart';
 import 'package:lucent_openapi/src/model/cooldown_message_dto.dart';
 import 'package:lucent_openapi/src/model/create_current_medicine_dto.dart';
 import 'package:lucent_openapi/src/model/create_daily_record_dto.dart';
+import 'package:lucent_openapi/src/model/create_daily_record_image_upload_dto.dart';
 import 'package:lucent_openapi/src/model/create_dose_log_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_allergy_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_condition_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_attachment_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_attachment_input_dto.dart';
+import 'package:lucent_openapi/src/model/daily_record_image_upload_dto.dart';
+import 'package:lucent_openapi/src/model/daily_record_image_upload_response_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_item_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_list_data_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_list_response_dto.dart';
@@ -115,6 +118,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return CreateCurrentMedicineDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CreateDailyRecordDto':
           return CreateDailyRecordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'CreateDailyRecordImageUploadDto':
+          return CreateDailyRecordImageUploadDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CreateDoseLogDto':
           return CreateDoseLogDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CreateHealthContextAllergyDto':
@@ -128,6 +133,10 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
         case 'DailyRecordAttachmentKind':
           
           
+        case 'DailyRecordImageUploadDto':
+          return DailyRecordImageUploadDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DailyRecordImageUploadResponseDto':
+          return DailyRecordImageUploadResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordItemDto':
           return DailyRecordItemDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordKind':
