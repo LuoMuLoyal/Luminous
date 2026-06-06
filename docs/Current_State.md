@@ -34,5 +34,5 @@ Last updated: 2026-06-06
 ## Verification Baseline
 
 - Lucent: `pnpm lint:check`, `pnpm build`, `pnpm test:ci`, relevant e2e, `pnpm export:openapi`.
-- Luminous: `flutter analyze`, `flutter test`, and local device/emulator smoke E2E with `flutter test integration_test/app_smoke_test.dart`.
+- Luminous: `flutter analyze`, `flutter test`, and local device/emulator E2E with `flutter test integration_test` or a single module file under `integration_test/`.
 - OpenAPI sync: run `dart run tool/regenerate_lucent_openapi.dart` from `Luminous`.
