@@ -1,6 +1,6 @@
 # Luminous UI Plan
 
-Last updated: 2026-06-05
+Last updated: 2026-06-06
 
 Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADMAP.md`.
 
@@ -23,6 +23,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Page-level surfaces should use `AppShadowTokens.level1`; reserve higher shadow levels for floating feedback, modal-like panels, or authentication surfaces that need stronger separation.
 - Loading states should preserve static page chrome and known local/mock content; use shimmer only inside the specific sections that wait on backend-backed data, not as full-page replacement screens.
 - Notification settings now also reflect real system notification permission state; supported Lucent profile preferences (`locale / timezone / unitSystem`) can sync through settings, and the app locale can now also backfill from Lucent on auth restore/sign-in, while theme and notification toggles still remain local/device-side until Lucent exposes dedicated preference-write endpoints for them
+- Reminder/notification contract defined in `../Lucent/docs/public/reminder-contract.md`: local notification permission + preference toggles are device-local; backend-owned reminder schedules, notification preferences, and delivery log are planned but not implemented; no FCM/APNs push delivery in scope
 - More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
 - Medicine mobile-first mock workspace UI with repository/provider boundary
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel
@@ -32,7 +33,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Today now also consumes Lucent daily-record water/vital summaries while unsupported meal/environment/Lumi sections remain static
 - Medicine now reads and writes manual dose-log status for current medicines, including taken/skipped/pending; this is not push reminder scheduling
 
-Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual taken/skipped dose-log status; Today reads safe current-medicine, daily-record water/vital summaries, and manual dose-log pending counts. Still pending: live reminders, real scan/upload, More real tools/device integrations, richer record analytics, and broader feature data.
+Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual taken/skipped dose-log status; Today reads safe current-medicine, daily-record water/vital summaries, and manual dose-log pending counts. Still pending: live reminders (contract defined in `../Lucent/docs/public/reminder-contract.md` but not implemented), real scan/upload, More real tools/device integrations, richer record analytics, and broader feature data.
 
 ## UI Priority
 
