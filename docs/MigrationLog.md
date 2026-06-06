@@ -64,6 +64,48 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - No regressions detected. No new issues to track.
 
 
+### Task 20: Final Handoff And Next-Month Backlog
+
+**30-Day Plan Completed** — 20 tasks executed from 2026-06-06 through 2026-06-06 (single session).
+
+**Lucent (dev):** 7 commits
+- Auth TODO triage + OAuth boot validation
+- Reminder contract document
+- Environment snapshot contract document
+- CHANGELOG.md created, docs aligned
+- 162 unit tests, 0 TS compilation issues, 34 OpenAPI paths / 83 schemas
+
+**Luminous (refactor):** 20 commits
+- Visual identity audit (Task 2)
+- Theme token normalization (Task 3)
+- Auth/account TODO classification (Task 4)
+- Account security UX audit (Task 5)
+- Record edit/delete page (Task 6)
+- Today factual data boundary + Lumi preview badge (Task 7)
+- Medicine dose signed-out guard (Task 8)
+- Provider invalidation matrix fix: 7 missing invalidations (Task 9)
+- Reminder + environment contracts (Tasks 10, 13)
+- Notification permission states + planned badge (Tasks 11, 12)
+- Search sourceRef display + scan icon removed (Task 14)
+- Settings/account navigation consistency (Task 15)
+- Test suite audit: 96 tests, 0 flaky (Task 16)
+- Documentation alignment (Task 17)
+- Full regression (Task 18)
+- Reviewer buffer (Task 19)
+- flutter_dotenv integration
+
+**Test totals:** Lucent 162 unit + Luminous 96 widget = 258 tests, all passing.
+
+**Unsupported features (explicit):**
+- Live reminders / push notifications (no FCM/APNs)
+- OCR / barcode scanning
+- Smart device integration
+- Family profiles
+- Real-time weather/environment data (static only)
+- E2E tests (Docker unavailable in sandbox)
+
+**Next-month backlog:** `docs/superpowers/plans/next-month-backlog.md`
+
 ### Task 13: More Real-Contract Design For Environment
 
 - Created `Lucent/docs/public/environment-contract.md` defining the first real More integration:
