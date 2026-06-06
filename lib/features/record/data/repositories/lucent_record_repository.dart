@@ -108,6 +108,7 @@ class LucentRecordRepository implements RecordRepository {
       detailKey: record.note != null && record.value != null
           ? null
           : null,
+      recordId: record.id,
     );
   }
 

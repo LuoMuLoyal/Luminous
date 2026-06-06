@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_image_placeholder.dart';
@@ -156,7 +157,13 @@ class _TimelineCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showRecordToast(context, label),
+        onTap: () {
+          if (entry.recordId != null) {
+            context.push('/record/${entry.recordId}/edit');
+          } else {
+            showRecordToast(context, label);
+          }
+        },
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
