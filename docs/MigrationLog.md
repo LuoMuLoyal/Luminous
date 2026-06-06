@@ -21,6 +21,26 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - Verified Windows: app_icon.ico present; macOS: all AppIcon sizes generated.
 - No icon or splash resources changed; current state confirmed as intentional from 2026-06-05 launch-screen polish.
 
+
+### Task 3: Theme System Regression And Token Usage Audit
+
+- Audited page-level spacing, radius, shadow, typography, and layout token usage across all features (today, record, medicine, mine, more, search, settings, shell, auth).
+- Fixed 7 hardcoded EdgeInsets values that bypassed AppSpacingTokens: 4 mine edit pages (16→md), record create page (32→xl, 16→md), search parts (4→xxs ×2).
+- Confirmed shadow usage follows project rules: AppShadowTokens.level1 for page surfaces, level4 for auth modal.
+- Confirmed theme tests (palette persistence, settings flow navigation) are comprehensive — no gaps found.
+- No token numeric values changed; all replacements are semantically identical.
+
+### Task 4: Auth/Account TODO Triage And Safe Closeout
+
+- Searched Lucent src/modules/auth + src/modules/account and Luminous lib/features/auth + lib/features/mine for TODO/FIXME markers.
+- Found 8 TODOs, all in Lucent auth module (none in account module or Luminous frontend).
+- Classification:
+  - **Implemented (2):** OAuth config boot validation — WechatMobileOAuthProvider and WechatWebOAuthProvider now implement OnModuleInit and log a warning at startup when OAuth is not fully configured, removing the need to wait until first request.
+  - **Remain TODO (6):** 2FA (product decision), session management (feature scope), OAuth-only set-password (security review), OAuth-only delete verification (depends on set-password), security notifications (needs notification infra), Apple/Google providers (platform credentials).
+- All remaining TODOs rewritten with owner tag + blocked reason.
+- No OAuth credentials, callback domains, or production behavior changed.
+
+
 ## 2026-06-05
 
 ### Launch Screen And Local Loading States
