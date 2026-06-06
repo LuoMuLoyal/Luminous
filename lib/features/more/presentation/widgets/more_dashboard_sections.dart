@@ -180,6 +180,7 @@ class MoreEnvironmentSection extends StatelessWidget {
       ),
       typography: typography,
       surface: surface,
+      planned: true,
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -285,6 +286,7 @@ class _ToolSection extends StatelessWidget {
       title: title,
       typography: typography,
       surface: surface,
+      planned: true,
       child: isDesktop
           ? _DesktopToolGrid(
               items: items,

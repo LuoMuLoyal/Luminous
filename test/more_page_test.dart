@@ -45,6 +45,8 @@ void main() {
     expect(find.text('环境与健康提醒中心'), findsOneWidget);
     expect(find.text('SOS 紧急求助'), findsOneWidget);
     expect(find.text('我的设备'), findsOneWidget);
+    // Planned badge should appear on mock sections
+    expect(find.text('计划中'), findsWidgets);
   });
 
   testWidgets('More page renders desktop side panels', (tester) async {
@@ -69,6 +71,8 @@ void main() {
     expect(find.text('快捷入口'), findsOneWidget);
     expect(find.text('温馨提示'), findsOneWidget);
     expect(find.text('过敏防护建议'), findsOneWidget);
+    // Planned badge should appear on mock sections
+    expect(find.text('计划中'), findsWidgets);
   });
 }
 

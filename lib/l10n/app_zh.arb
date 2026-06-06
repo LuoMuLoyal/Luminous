@@ -473,6 +473,8 @@
   "moreErrorTitle": "更多页面暂时没有加载出来",
   "moreErrorDescription": "mock 结构已经接好，重新拉一次即可。",
   "moreActionToast": "{action}：后续会打开对应工具或详情流程。",
+  "morePlannedToast": "{action} — 此功能尚未开放。",
+  "morePlannedBadge": "计划中",
   "@moreActionToast": {
     "placeholders": {
       "action": {
