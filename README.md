@@ -1,5 +1,7 @@
 # Luminous
 
+[![Backend: Lucent](https://img.shields.io/badge/backend-LuoMuLoyal%2FLucent-2563eb?logo=github)](https://github.com/LuoMuLoyal/Lucent)
+
 Flutter personal health copilot. Current mainline is the reset five-tab shell backed by Lucent.
 
 ## Baseline
@@ -41,12 +43,15 @@ Start with [docs/README.md](docs/README.md).
 Key shared docs live in `../Lucent/docs/public/`:
 
 - [ROADMAP](../Lucent/docs/public/ROADMAP.md)
-- [api-contract](../Lucent/docs/public/api-contract.md)
-- [design-system](../Lucent/docs/public/design-system.md)
+- [reminder-contract](../Lucent/docs/public/reminder-contract.md)
+- [environment-contract](../Lucent/docs/public/environment-contract.md)
 
 Key frontend docs:
 
+- [docs/Current_State.md](docs/Current_State.md)
 - [docs/MigrationLog.md](docs/MigrationLog.md)
+- [docs/Next_Plan.md](docs/Next_Plan.md)
+- [docs/Project_Guardrails.md](docs/Project_Guardrails.md)
 - [docs/OpenApi_Client.md](docs/OpenApi_Client.md)
 - [docs/Localization.md](docs/Localization.md)
 - [docs/UI_Implementation_Plan.md](docs/UI_Implementation_Plan.md)

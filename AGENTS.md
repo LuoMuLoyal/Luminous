@@ -25,8 +25,7 @@ dart run tool/regenerate_lucent_openapi.dart
 
 - New code goes under `lib/features/`, `lib/core/`, or `lib/shared/`.
 - Do not add code to legacy `lib/pages/`, `lib/stores/`, `lib/viewmodels/`, `lib/components/`.
-- API contract: `../Lucent/docs/public/api-contract.md`.
-- Auth API details: `../Lucent/docs/auth-api-mock.md`.
+- API contract: Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`.
 - Network code belongs in `lib/core/network/`.
 - Do not regenerate `packages/lucent_openapi` with ad-hoc `npx` / `build_runner` commands. Always use `dart run tool/regenerate_lucent_openapi.dart` so generated pubspec constraints and broken nullable `*.g.dart` map entries are normalized automatically.
 - User-visible text goes through ARB + `flutter gen-l10n`.
@@ -41,8 +40,10 @@ dart run tool/regenerate_lucent_openapi.dart
 ## Docs
 
 - Read `docs/README.md` before editing docs.
-- Frontend code changed: append new log entry at the top of `docs/MigrationLog.md` (newest first).
+- Frontend code changed: append the entry to today's `docs/migration-log/YYYY-MM-DD.md`; keep `docs/MigrationLog.md` as the index only.
 - Network / OpenAPI / auth client changed: update `docs/OpenApi_Client.md`.
 - Visible text or l10n flow changed: update `docs/Localization.md`.
 - UI plan changed: update `docs/UI_Implementation_Plan.md`.
-- `docs/RestartPlan.md` and `docs/MigrationLog_Archive_PreReset.md` are reference only.
+- Project state changed: update `docs/Current_State.md`.
+- Next work changed: update `docs/Next_Plan.md`.
+- Recurring mistakes or rules changed: update `docs/Project_Guardrails.md`.
