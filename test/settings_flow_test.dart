@@ -189,6 +189,29 @@ void main() {
     expect(find.byIcon(Icons.chevron_right_rounded), findsOneWidget);
   });
 
+  testWidgets('More settings page is reachable and shows actions', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{
+      'app.locale': 'zh-CN',
+    });
+
+    await _pumpApp(tester);
+
+    await tester.tap(find.byKey(const Key('settings-row-more')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('更多设置'), findsOneWidget);
+    expect(find.text('清理图片缓存'), findsOneWidget);
+    expect(find.text('恢复默认设置'), findsOneWidget);
+    expect(find.text('开源许可'), findsOneWidget);
+
+    // Back navigation returns to settings
+    await tester.tap(find.byIcon(Icons.arrow_back_ios_new_rounded).first);
+    await tester.pumpAndSettle();
+    expect(find.text('设置'), findsOneWidget);
+  });
+
   testWidgets('Theme settings updates mode and palette preferences', (
     tester,
   ) async {
