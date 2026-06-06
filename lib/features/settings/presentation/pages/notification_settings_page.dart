@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
@@ -36,35 +35,66 @@ class NotificationSettingsPage extends ConsumerWidget {
               typography: typography,
               surface: surface,
               padding: EdgeInsets.zero,
-              child: SettingsListRow(
-                key: const Key('notification-row-permission'),
-                title: _permissionTitle(l10n, settings.permissionState),
-                icon: Icons.notifications_active_outlined,
-                trailing: settings.permissionState ==
-                        NotificationPermissionState.granted
-                    ? Icon(
-                        Icons.check_circle_rounded,
-                        size: 18,
-                        color: theme.colorScheme.primary,
-                      )
-                    : Icon(
-                        Icons.chevron_right_rounded,
-                        size: 18,
-                        color: surface.mute,
-                      ),
-                onTap: () async {
-                  if (settings.permissionState ==
-                      NotificationPermissionState.granted) {
-                    await AppToast.show(
-                      context,
-                      _permissionTitle(l10n, settings.permissionState),
-                    );
-                    return;
-                  }
-                  await ref
-                      .read(notificationSettingsControllerProvider.notifier)
-                      .requestPermission();
-                },
+              child: Column(
+                children: [
+                  SettingsListRow(
+                    key: const Key('notification-row-permission'),
+                    title: _permissionTitle(l10n, settings.permissionState),
+                    subtitle: _permissionSubtitle(
+                      l10n,
+                      settings.permissionState,
+                    ),
+                    icon: Icons.notifications_active_outlined,
+                    trailing: settings.permissionState ==
+                            NotificationPermissionState.granted
+                        ? Icon(
+                            Icons.check_circle_rounded,
+                            size: 18,
+                            color: theme.colorScheme.primary,
+                          )
+                        : Icon(
+                            Icons.chevron_right_rounded,
+                            size: 18,
+                            color: surface.mute,
+                          ),
+                    onTap: () async {
+                      if (settings.permissionState ==
+                          NotificationPermissionState.granted) {
+                        return;
+                      }
+                      await ref
+                          .read(
+                            notificationSettingsControllerProvider.notifier,
+                          )
+                          .requestPermission();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
+            child: MineSectionSurface(
+              typography: typography,
+              surface: surface,
+              padding: const EdgeInsets.all(AppSpacingTokens.md),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.notifications_off_outlined,
+                    size: 18,
+                    color: surface.mute,
+                  ),
+                  const SizedBox(width: AppSpacingTokens.sm),
+                  Expanded(
+                    child: Text(
+                      l10n.settingsNotificationsPermissionUnsupported,
+                      style: typography.bodySm.copyWith(color: surface.mute),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -137,6 +167,19 @@ String _permissionTitle(
       l10n.settingsNotificationsPermissionDisabled,
     NotificationPermissionState.unsupported =>
       l10n.settingsNotificationsPermissionUnsupported,
+  };
+}
+
+String? _permissionSubtitle(
+  AppLocalizations l10n,
+  NotificationPermissionState state,
+) {
+  return switch (state) {
+    NotificationPermissionState.granted =>
+      l10n.settingsNotificationsPermissionEnabledHint,
+    NotificationPermissionState.denied =>
+      l10n.settingsNotificationsPermissionDisabledHint,
+    NotificationPermissionState.unsupported => null,
   };
 }
 

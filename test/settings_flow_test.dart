@@ -35,7 +35,12 @@ void main() {
         'app.locale': 'zh-CN',
       });
 
-      await _pumpApp(tester, fakeNotificationPermission: true);
+      await _pumpApp(
+        tester,
+        notificationService: _FakeNotificationPermissionService(
+          state: NotificationPermissionState.granted,
+        ),
+      );
 
       expect(find.text('设置'), findsOneWidget);
 
@@ -74,7 +79,12 @@ void main() {
       'app.locale': 'zh-CN',
     });
 
-    await _pumpApp(tester, fakeNotificationPermission: true);
+    await _pumpApp(
+      tester,
+      notificationService: _FakeNotificationPermissionService(
+        state: NotificationPermissionState.granted,
+      ),
+    );
 
     await tester.tap(find.byKey(const Key('settings-row-notifications')));
     await tester.pumpAndSettle();
@@ -108,7 +118,12 @@ void main() {
     await tester.pumpAndSettle();
 
     SharedPreferences.setMockInitialValues(snapshot);
-    await _pumpApp(tester, fakeNotificationPermission: true);
+    await _pumpApp(
+      tester,
+      notificationService: _FakeNotificationPermissionService(
+        state: NotificationPermissionState.granted,
+      ),
+    );
 
     await tester.tap(find.byKey(const Key('settings-row-notifications')));
     await tester.pumpAndSettle();
@@ -125,6 +140,53 @@ void main() {
       ),
       afterValue,
     );
+  });
+
+  testWidgets('Notification settings shows granted permission state', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{
+      'app.locale': 'zh-CN',
+    });
+
+    await _pumpApp(
+      tester,
+      notificationService: _FakeNotificationPermissionService(
+        state: NotificationPermissionState.granted,
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('settings-row-notifications')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('系统通知已开启'), findsOneWidget);
+    expect(find.text('通知已授权。下方开关可控制各类通知的显示。'), findsOneWidget);
+    expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
+  });
+
+  testWidgets('Notification settings shows denied permission state', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{
+      'app.locale': 'zh-CN',
+    });
+
+    await _pumpApp(
+      tester,
+      notificationService: _FakeNotificationPermissionService(
+        state: NotificationPermissionState.denied,
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('settings-row-notifications')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('系统通知未开启'), findsOneWidget);
+    expect(
+      find.text('点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'),
+      findsOneWidget,
+    );
+    expect(find.byIcon(Icons.chevron_right_rounded), findsOneWidget);
   });
 
   testWidgets('Theme settings updates mode and palette preferences', (
@@ -181,7 +243,7 @@ void main() {
 
 Future<void> _pumpApp(
   WidgetTester tester, {
-  bool fakeNotificationPermission = false,
+  NotificationPermissionService? notificationService,
 }) async {
   final container = ProviderContainer(
     overrides: [
@@ -189,10 +251,9 @@ Future<void> _pumpApp(
       settingsProfileRemoteDataSourceProvider.overrideWithValue(
         _fakeSettingsProfileRemote,
       ),
-      if (fakeNotificationPermission)
-        notificationPermissionServiceProvider.overrideWith(
-          (ref) => _FakeNotificationPermissionService(),
-        ),
+      notificationPermissionServiceProvider.overrideWithValue(
+        notificationService ?? _FakeNotificationPermissionService(),
+      ),
     ],
   );
   addTearDown(container.dispose);
@@ -260,17 +321,21 @@ class _StaticAuthSessionNotifier extends AuthSessionNotifier {
 }
 
 class _FakeNotificationPermissionService extends NotificationPermissionService {
+  _FakeNotificationPermissionService({this.state = NotificationPermissionState.unsupported});
+
+  final NotificationPermissionState state;
+
   @override
   Future<void> ensureInitialized() async {}
 
   @override
   Future<NotificationPermissionState> getPermissionState() async {
-    return NotificationPermissionState.unsupported;
+    return state;
   }
 
   @override
   Future<NotificationPermissionState> requestPermission() async {
-    return NotificationPermissionState.unsupported;
+    return state;
   }
 }
 
