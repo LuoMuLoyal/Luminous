@@ -57,6 +57,13 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - `pump(Duration(seconds: N))` calls (24 occurrences) are all for toast animation settling or async provider resolution — no arbitrary waits found.
 - Desktop layout tests correctly use `tester.view.physicalSize` overrides, not platform checks.
 
+### Task 18: Full Regression And Issue Ledger
+
+- **Lucent:** lint OK, build (148 files, 0 TS issues), Prisma validate OK, unit tests (17 suites, 162 tests), OpenAPI export (34 paths / 83 schemas).
+- **Luminous:** analyze (0 issues), widget tests (96 tests), APK build (debug, fluwx KGP warning only).
+- No regressions detected. No new issues to track.
+
+
 ### Task 13: More Real-Contract Design For Environment
 
 - Created `Lucent/docs/public/environment-contract.md` defining the first real More integration:
