@@ -6,6 +6,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
@@ -79,6 +80,14 @@ Future<void> _markDose(
   String currentMedicineId,
   MedicineDoseAction action,
 ) async {
+  final session = ref.read(authSessionProvider);
+  if (!session.isAuthenticated) {
+    if (context.mounted) {
+      context.push('/login');
+    }
+    return;
+  }
+
   final l10n = AppLocalizations.of(context)!;
   final today = DateTime.now();
   final dateStr =
