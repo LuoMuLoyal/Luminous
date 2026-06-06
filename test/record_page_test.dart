@@ -8,10 +8,14 @@ import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
+import 'package:luminous/features/record/data/repositories/lucent_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
+import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
+import 'package:luminous/features/record/domain/repositories/record_repository.dart';
 import 'package:luminous/features/record/presentation/pages/record_edit.dart';
+import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/record_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -263,6 +267,43 @@ void main() {
     expect(repo.fetchRecordsCalled, isFalse);
   });
 
+  testWidgets('Record page previous day action reloads selected date', (
+    tester,
+  ) async {
+    final repo = _FakeRecordRepository();
+
+    await _pumpRecordPage(
+      tester,
+      recordRepository: repo,
+      authSessionNotifier: _SignedInAuthSessionNotifier.new,
+      selectedDate: DateTime(2026, 6, 6),
+    );
+    await tester.pumpAndSettle();
+
+    expect(repo.requestedDates, contains(DateTime(2026, 6, 6)));
+
+    await tester.tap(find.byTooltip('上一天'));
+    await tester.pumpAndSettle();
+
+    expect(repo.requestedDates, contains(DateTime(2026, 6, 5)));
+  });
+
+  test(
+    'Lucent record repository uses selected date and occurredAt time',
+    () async {
+      final dailyRepo = _FakeDailyRecordRepository(
+        itemOccurredAt: '2026-06-06T09:45:00',
+      );
+      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+
+      expect(dailyRepo.fetchDate, '2026-06-06');
+      expect(dashboard.selectedDay, 6);
+      expect(dashboard.timeline.single.time, '09:45');
+    },
+  );
+
   testWidgets('Record page uses desktop side rails', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(1440, 1000);
@@ -283,14 +324,25 @@ void main() {
   });
 }
 
-Future<void> _pumpRecordPage(WidgetTester tester) async {
+Future<void> _pumpRecordPage(
+  WidgetTester tester, {
+  RecordRepository recordRepository = const MockRecordRepository(),
+  AuthSessionNotifier Function()? authSessionNotifier,
+  DateTime? selectedDate,
+}) async {
+  final overrides = [
+    recordRepositoryProvider.overrideWithValue(recordRepository),
+    if (authSessionNotifier != null)
+      authSessionProvider.overrideWith(authSessionNotifier),
+    if (selectedDate != null)
+      selectedRecordDateProvider.overrideWith(
+        () => _FixedSelectedRecordDateNotifier(selectedDate),
+      ),
+  ];
+
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [
-        recordRepositoryProvider.overrideWithValue(
-          const MockRecordRepository(),
-        ),
-      ],
+      overrides: overrides,
       child: MaterialApp(
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
@@ -306,6 +358,16 @@ Future<void> _pumpRecordPage(WidgetTester tester) async {
       ),
     ),
   );
+}
+
+class _FixedSelectedRecordDateNotifier extends SelectedRecordDateNotifier {
+  _FixedSelectedRecordDateNotifier(this.initialDate);
+
+  final DateTime initialDate;
+
+  @override
+  DateTime build() =>
+      DateTime(initialDate.year, initialDate.month, initialDate.day);
 }
 
 GoRouter _buildEditTestRouter({
@@ -328,6 +390,9 @@ GoRouter _buildEditTestRouter({
 }
 
 class _FakeDailyRecordRepository implements DailyRecordRepository {
+  _FakeDailyRecordRepository({this.itemOccurredAt});
+
+  final String? itemOccurredAt;
   String? deleteCalledWith;
   String? updateCalledWith;
   String? getCalledWith;
@@ -349,7 +414,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
         DailyRecordItem(
           id: 'test-id-1',
           kind: DailyRecordKind.vital,
-          occurredAt: date,
+          occurredAt: itemOccurredAt ?? date,
           title: 'Blood pressure',
           value: '118/76',
           unit: 'mmHg',
@@ -429,6 +494,29 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   @override
   Future<void> delete(String id) async {
     deleteCalledWith = id;
+  }
+}
+
+class _FakeRecordRepository implements RecordRepository {
+  final requestedDates = <DateTime>[];
+
+  @override
+  Future<RecordDashboard> fetchDashboard(DateTime selectedDate) async {
+    requestedDates.add(selectedDate);
+    final mock = await const MockRecordRepository().fetchDashboard(
+      selectedDate,
+    );
+    return RecordDashboard(
+      selectedDay: selectedDate.day,
+      weekDays: mock.weekDays,
+      monthDays: mock.monthDays,
+      quickActions: mock.quickActions,
+      summary: mock.summary,
+      filters: mock.filters,
+      timeline: mock.timeline,
+      trends: mock.trends,
+      healthBag: mock.healthBag,
+    );
   }
 }
 

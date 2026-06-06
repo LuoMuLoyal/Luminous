@@ -17,6 +17,7 @@ class RecordPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardAsync = ref.watch(recordDashboardProvider);
+    final selectedDate = ref.watch(selectedRecordDateProvider);
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
@@ -34,7 +35,7 @@ class RecordPage extends ConsumerWidget {
           icon: Icons.today_outlined,
           typography: typography,
           surface: surface,
-          onTap: () => showRecordToast(context, l10n.recordTodayAction),
+          onTap: () => _setSelectedDate(ref, DateTime.now()),
           iconOnly: isCompact,
         ),
         RecordHeaderActionChip(
@@ -42,7 +43,10 @@ class RecordPage extends ConsumerWidget {
           icon: Icons.chevron_left_rounded,
           typography: typography,
           surface: surface,
-          onTap: () => showRecordToast(context, l10n.recordPreviousDayAction),
+          onTap: () => _setSelectedDate(
+            ref,
+            selectedDate.subtract(const Duration(days: 1)),
+          ),
           iconOnly: true,
         ),
         RecordHeaderActionChip(
@@ -50,7 +54,8 @@ class RecordPage extends ConsumerWidget {
           icon: Icons.chevron_right_rounded,
           typography: typography,
           surface: surface,
-          onTap: () => showRecordToast(context, l10n.recordNextDayAction),
+          onTap: () =>
+              _setSelectedDate(ref, selectedDate.add(const Duration(days: 1))),
           iconOnly: true,
         ),
         RecordHeaderActionChip(
@@ -58,7 +63,7 @@ class RecordPage extends ConsumerWidget {
           icon: Icons.calendar_month_outlined,
           typography: typography,
           surface: surface,
-          onTap: () => showRecordToast(context, l10n.recordPickDateAction),
+          onTap: () => _pickSelectedDate(context, ref, selectedDate),
           iconOnly: true,
         ),
         RecordHeaderActionChip(
@@ -85,6 +90,30 @@ class RecordPage extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  void _setSelectedDate(WidgetRef ref, DateTime date) {
+    ref.read(selectedRecordDateProvider.notifier).setDate(date);
+  }
+
+  Future<void> _pickSelectedDate(
+    BuildContext context,
+    WidgetRef ref,
+    DateTime selectedDate,
+  ) async {
+    final today = _dateOnly(DateTime.now());
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: today.add(const Duration(days: 365)),
+    );
+    if (picked == null) return;
+    _setSelectedDate(ref, picked);
+  }
+
+  DateTime _dateOnly(DateTime value) {
+    return DateTime(value.year, value.month, value.day);
   }
 }
 

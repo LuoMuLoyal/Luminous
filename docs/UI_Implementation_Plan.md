@@ -15,7 +15,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Persisted `system / light / dark` theme preference and `default / blue-pink / yellow-green` palette preference with a standard `/settings/theme` child page
 - Mobile bottom nav + desktop rail
 - Today concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop wide dashboard, plainer medicine-style surfaces, localized image placeholders, reusable Today primitives, and shared state views
-- Record concept-aligned dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, Lucent-backed daily-record timeline, and quick-create flow
+- Record concept-aligned dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, Lucent-backed daily-record timeline, real selected-date header navigation, occurredAt-based timeline time, and quick-create flow
 - Mine concept-aligned mock dashboard UI with repository/provider boundary, mobile profile/plans/privacy surface, and desktop status/onboarding/settings side rail
 - Mine signed-out state now stays on the same static dashboard structure with a login notice instead of page-level skeleton loading
 - Standalone Settings page at `/settings` now owns theme/language/notification/account-entry settings, while Mine stays focused on dashboard content and entry actions
@@ -38,8 +38,8 @@ Restored: Search now uses real Lucent medicine search/detail API; Mine health-co
 
 ## UI Priority
 
-1. Keep the daily-record and manual dose-log flows under regression as they expand; current auth, ownership, null clearing, skipped/taken status, and provider invalidation coverage exists.
-2. Expand Record beyond quick-create only when Lucent contracts exist for the specific record type.
+1. Keep the daily-record and manual dose-log flows under regression as they expand; current auth, ownership, selected-date reload, occurredAt timeline time, null clearing, skipped/taken status, and provider invalidation coverage exists.
+2. Expand Record detail/forms before starting deferred More wiring; only add fields when Lucent contracts exist for the specific record type.
 3. Keep Today factual: daily-record summaries may be real, but unsupported advice/static sections must stay clearly bounded.
 4. Connect More mock repository to real emergency, device, tool, and environment data sources after their Lucent contracts exist.
 5. Expand palette variants only after default / blue-pink / yellow-green prove stable across the main settings, mine, today, medicine, and record surfaces.

@@ -15,10 +15,13 @@ class LucentRecordRepository implements RecordRepository {
   final DailyRecordRepository dailyRecordRepo;
 
   @override
-  Future<RecordDashboard> fetchDashboard() async {
-    final today = DateTime.now();
-    final dateStr =
-        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+  Future<RecordDashboard> fetchDashboard(DateTime selectedDate) async {
+    final date = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+    );
+    final dateStr = _formatDate(date);
 
     List<DailyRecordItem> records;
     try {
@@ -31,9 +34,9 @@ class LucentRecordRepository implements RecordRepository {
     final timeline = records.map(_toTimelineEntry).toList();
 
     return RecordDashboard(
-      selectedDay: today.day,
-      weekDays: _staticWeekDays(today),
-      monthDays: _staticMonthDays(today),
+      selectedDay: date.day,
+      weekDays: _staticWeekDays(date),
+      monthDays: _staticMonthDays(date),
       quickActions: _staticQuickActions,
       summary: _staticSummary,
       filters: _staticFilters,
@@ -45,9 +48,7 @@ class LucentRecordRepository implements RecordRepository {
 
   RecordTimelineEntry _toTimelineEntry(DailyRecordItem record) {
     final kind = record.kind;
-    final now = DateTime.now();
-    final timeStr =
-        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+    final timeStr = _formatRecordTime(record.occurredAt);
 
     final (icon, accent, soft, type) = switch (kind) {
       DailyRecordKind.water => (
@@ -165,6 +166,17 @@ class LucentRecordRepository implements RecordRepository {
       6 => RecordCopyKey.weekdaySat,
       _ => RecordCopyKey.weekdaySun,
     };
+  }
+
+  static String _formatDate(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  static String _formatRecordTime(String occurredAt) {
+    final parsed = DateTime.tryParse(occurredAt);
+    final time = parsed?.toLocal();
+    if (time == null) return '--:--';
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
   static final _staticQuickActions = <RecordQuickAction>[
