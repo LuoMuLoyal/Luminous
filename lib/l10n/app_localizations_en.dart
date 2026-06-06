@@ -742,9 +742,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineSearchNoResultSwitch => 'Switch source';
 
   @override
-  String get medicineSearchNoResultScan => 'Photo or scan';
-
-  @override
   String get medicineSearchErrorTitle => 'Search did not load this time';
 
   @override

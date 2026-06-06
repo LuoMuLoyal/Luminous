@@ -6,6 +6,12 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-06
 
+### Review Fix: Daily Record Edit And Search Empty State
+
+- Made `.env` loading optional so startup no longer depends on a checked-in `.env` asset.
+- Fixed daily record edit from timeline routes to carry the original record date and allow clearing nullable text fields by sending explicit `null` values.
+- Removed the unavailable scan/photo action from medicine search no-result tools and updated l10n/tests.
+
 ### Thirty-Day DeepSeek Execution Plan
 
 - Added `docs/superpowers/plans/2026-06-06-thirty-day-lumos-deepseek-plan.md` as the next one-month execution plan for DeepSeek-style task-by-task delivery.

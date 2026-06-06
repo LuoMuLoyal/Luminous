@@ -95,10 +95,7 @@ void main() {
   ) async {
     final emptyRepo = _EmptySearchRepository();
 
-    await _pumpSearchApp(
-      tester,
-      medicineSearchRepository: emptyRepo,
-    );
+    await _pumpSearchApp(tester, medicineSearchRepository: emptyRepo);
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
@@ -108,6 +105,7 @@ void main() {
     // No results — show the "no result" suggestions
     expect(find.text('无结果？'), findsOneWidget);
     expect(find.text('检查关键词'), findsOneWidget);
+    expect(find.text('拍照或扫码'), findsNothing);
   });
 
   testWidgets('search result shows source reference ID', (tester) async {
@@ -132,10 +130,7 @@ void main() {
   testWidgets('search shows error view when search fails', (tester) async {
     final errorRepo = _ErrorSearchRepository();
 
-    await _pumpSearchApp(
-      tester,
-      medicineSearchRepository: errorRepo,
-    );
+    await _pumpSearchApp(tester, medicineSearchRepository: errorRepo);
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));

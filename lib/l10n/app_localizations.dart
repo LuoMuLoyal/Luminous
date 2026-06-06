@@ -1460,12 +1460,6 @@ abstract class AppLocalizations {
   /// **'切换数据源'**
   String get medicineSearchNoResultSwitch;
 
-  /// No description provided for @medicineSearchNoResultScan.
-  ///
-  /// In zh, this message translates to:
-  /// **'拍照或扫码'**
-  String get medicineSearchNoResultScan;
-
   /// No description provided for @medicineSearchErrorTitle.
   ///
   /// In zh, this message translates to:

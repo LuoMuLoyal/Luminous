@@ -54,7 +54,9 @@ void main() {
       ProviderScope(
         overrides: [
           dailyRecordRepositoryProvider.overrideWithValue(repo),
-          authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light,
@@ -78,6 +80,61 @@ void main() {
     expect(find.text('备注'), findsWidgets);
   });
 
+  testWidgets(
+    'Record edit page loads by route date and clears nullable fields',
+    (tester) async {
+      final repo = _FakeDailyRecordRepository();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            dailyRecordRepositoryProvider.overrideWithValue(repo),
+            authSessionProvider.overrideWith(
+              () => _SignedInAuthSessionNotifier(),
+            ),
+          ],
+          child: MaterialApp.router(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            locale: const Locale('zh'),
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: _buildEditTestRouter(
+              initialLocation: '/record/test-id-1/edit?date=2026-05-20',
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(repo.fetchDate, '2026-05-20');
+
+      final fields = find.byType(TextField);
+      expect(fields, findsNWidgets(4));
+      for (var index = 0; index < 4; index += 1) {
+        await tester.enterText(fields.at(index), '');
+      }
+
+      await tester.tap(find.widgetWithText(ElevatedButton, '保存'));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 3));
+
+      expect(repo.updateCalledWith, 'test-id-1');
+      final input = repo.lastUpdateInput;
+      expect(input, isNotNull);
+      expect(input!.title, isNull);
+      expect(input.value, isNull);
+      expect(input.unit, isNull);
+      expect(input.note, isNull);
+    },
+  );
+
   testWidgets('Record edit page shows delete confirmation and deletes', (
     tester,
   ) async {
@@ -87,7 +144,9 @@ void main() {
       ProviderScope(
         overrides: [
           dailyRecordRepositoryProvider.overrideWithValue(repo),
-          authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light,
@@ -136,7 +195,9 @@ void main() {
       ProviderScope(
         overrides: [
           dailyRecordRepositoryProvider.overrideWithValue(repo),
-          authSessionProvider.overrideWith(() => _SignedOutAuthSessionNotifier()),
+          authSessionProvider.overrideWith(
+            () => _SignedOutAuthSessionNotifier(),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light,
@@ -172,7 +233,9 @@ void main() {
       ProviderScope(
         overrides: [
           dailyRecordRepositoryProvider.overrideWithValue(repo),
-          authSessionProvider.overrideWith(() => _SignedOutAuthSessionNotifier()),
+          authSessionProvider.overrideWith(
+            () => _SignedOutAuthSessionNotifier(),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.light,
@@ -241,19 +304,22 @@ Future<void> _pumpRecordPage(WidgetTester tester) async {
   );
 }
 
-GoRouter _buildEditTestRouter() {
+GoRouter _buildEditTestRouter({
+  String initialLocation = '/record/test-id-1/edit',
+}) {
   return GoRouter(
-    initialLocation: '/record/test-id-1/edit',
+    initialLocation: initialLocation,
     routes: [
       GoRoute(
         path: '/record/:id/edit',
-        builder: (context, state) =>
-            RecordEditPage(recordId: state.pathParameters['id']!),
+        builder: (context, state) => RecordEditPage(
+          recordId: state.pathParameters['id']!,
+          recordDate: state.uri.queryParameters['date'],
+        ),
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) =>
-            const Scaffold(body: Text('login-page')),
+        builder: (context, state) => const Scaffold(body: Text('login-page')),
       ),
     ],
   );
@@ -261,6 +327,9 @@ GoRouter _buildEditTestRouter() {
 
 class _FakeDailyRecordRepository implements DailyRecordRepository {
   String? deleteCalledWith;
+  String? updateCalledWith;
+  String? fetchDate;
+  DailyRecordUpdateInput? lastUpdateInput;
   bool fetchRecordsCalled = false;
 
   @override
@@ -271,15 +340,16 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     int pageSize = 50,
   }) async {
     fetchRecordsCalled = true;
+    fetchDate = date;
     return DailyRecordListData(
       items: [
         DailyRecordItem(
           id: 'test-id-1',
-          kind: DailyRecordKind.note,
+          kind: DailyRecordKind.vital,
           occurredAt: date,
-          title: 'Test note',
-          value: 'some value',
-          unit: 'ml',
+          title: 'Blood pressure',
+          value: '118/76',
+          unit: 'mmHg',
           note: 'This is a note',
           source: 'manual',
           createdAt: DateTime.now().toIso8601String(),
@@ -301,8 +371,24 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   }
 
   @override
-  Future<DailyRecordItem> update(String id, DailyRecordUpdateInput input) async {
-    throw UnimplementedError();
+  Future<DailyRecordItem> update(
+    String id,
+    DailyRecordUpdateInput input,
+  ) async {
+    updateCalledWith = id;
+    lastUpdateInput = input;
+    return DailyRecordItem(
+      id: id,
+      kind: DailyRecordKind.vital,
+      occurredAt: fetchDate ?? '2026-05-20',
+      title: input.title as String?,
+      value: input.value as String?,
+      unit: input.unit as String?,
+      note: input.note as String?,
+      source: 'manual',
+      createdAt: DateTime.now().toIso8601String(),
+      updatedAt: DateTime.now().toIso8601String(),
+    );
   }
 
   @override

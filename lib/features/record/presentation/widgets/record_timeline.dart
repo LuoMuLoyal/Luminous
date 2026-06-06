@@ -159,7 +159,11 @@ class _TimelineCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (entry.recordId != null) {
-            context.push('/record/${entry.recordId}/edit');
+            final date = entry.recordDate;
+            final query = date == null || date.isEmpty
+                ? ''
+                : '?date=${Uri.encodeQueryComponent(date)}';
+            context.push('/record/${entry.recordId}/edit$query');
           } else {
             showRecordToast(context, label);
           }

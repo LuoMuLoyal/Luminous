@@ -697,9 +697,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineSearchNoResultSwitch => '切换数据源';
 
   @override
-  String get medicineSearchNoResultScan => '拍照或扫码';
-
-  @override
   String get medicineSearchErrorTitle => '搜索页暂时没有加载出来';
 
   @override

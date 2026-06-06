@@ -101,14 +101,12 @@ class LucentRecordRepository implements RecordRepository {
       softColor: soft,
       titleKey: RecordCopyKey.typeMood,
       rawTitle: record.title ?? '${kind.name} ${record.value ?? ''}'.trim(),
-      value:
-          record.value != null
-              ? '${record.value}${record.unit != null ? ' ${record.unit}' : ''}'
-              : record.note,
-      detailKey: record.note != null && record.value != null
-          ? null
-          : null,
+      value: record.value != null
+          ? '${record.value}${record.unit != null ? ' ${record.unit}' : ''}'
+          : record.note,
+      detailKey: record.note != null && record.value != null ? null : null,
       recordId: record.id,
+      recordDate: record.occurredAt,
     );
   }
 
@@ -133,15 +131,19 @@ class LucentRecordRepository implements RecordRepository {
     final startOffset = first.weekday - 1;
     final days = <RecordCalendarDay>[];
     for (var i = 0; i < startOffset; i++) {
-      days.add(RecordCalendarDay(day: 0, inMonth: false, selected: false, markers: []));
+      days.add(
+        RecordCalendarDay(day: 0, inMonth: false, selected: false, markers: []),
+      );
     }
     for (var d = 1; d <= last.day; d++) {
-      days.add(RecordCalendarDay(
-        day: d,
-        inMonth: true,
-        selected: d == today.day,
-        markers: d == today.day ? [const Color(0xFF428BFF)] : [],
-      ));
+      days.add(
+        RecordCalendarDay(
+          day: d,
+          inMonth: true,
+          selected: d == today.day,
+          markers: d == today.day ? [const Color(0xFF428BFF)] : [],
+        ),
+      );
     }
     return days;
   }
@@ -159,10 +161,38 @@ class LucentRecordRepository implements RecordRepository {
   }
 
   static final _staticQuickActions = <RecordQuickAction>[
-    RecordQuickAction(type: RecordEntryType.meal, icon: Icons.restaurant_rounded, titleKey: RecordCopyKey.typeMeal, subtitleKey: RecordCopyKey.typeWomenHealth, accent: AppColorTokens.warning, softColor: AppColorTokens.warningSoft),
-    RecordQuickAction(type: RecordEntryType.vitals, icon: Icons.favorite_rounded, titleKey: RecordCopyKey.typeVitals, subtitleKey: RecordCopyKey.typeWomenHealth, accent: AppColorTokens.error, softColor: AppColorTokens.errorSoft),
-    RecordQuickAction(type: RecordEntryType.water, icon: Icons.water_drop_rounded, titleKey: RecordCopyKey.typeWater, subtitleKey: RecordCopyKey.typeWomenHealth, accent: const Color(0xFF428BFF), softColor: const Color(0xFFE8F2FF)),
-    RecordQuickAction(type: RecordEntryType.mood, icon: Icons.sentiment_satisfied_rounded, titleKey: RecordCopyKey.typeMood, subtitleKey: RecordCopyKey.typeWomenHealth, accent: const Color(0xFF7D67E8), softColor: const Color(0xFFF0ECFF)),
+    RecordQuickAction(
+      type: RecordEntryType.meal,
+      icon: Icons.restaurant_rounded,
+      titleKey: RecordCopyKey.typeMeal,
+      subtitleKey: RecordCopyKey.typeWomenHealth,
+      accent: AppColorTokens.warning,
+      softColor: AppColorTokens.warningSoft,
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.vitals,
+      icon: Icons.favorite_rounded,
+      titleKey: RecordCopyKey.typeVitals,
+      subtitleKey: RecordCopyKey.typeWomenHealth,
+      accent: AppColorTokens.error,
+      softColor: AppColorTokens.errorSoft,
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.water,
+      icon: Icons.water_drop_rounded,
+      titleKey: RecordCopyKey.typeWater,
+      subtitleKey: RecordCopyKey.typeWomenHealth,
+      accent: const Color(0xFF428BFF),
+      softColor: const Color(0xFFE8F2FF),
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.mood,
+      icon: Icons.sentiment_satisfied_rounded,
+      titleKey: RecordCopyKey.typeMood,
+      subtitleKey: RecordCopyKey.typeWomenHealth,
+      accent: const Color(0xFF7D67E8),
+      softColor: const Color(0xFFF0ECFF),
+    ),
   ];
 
   static const _staticSummary = RecordDaySummary(items: []);
@@ -172,7 +202,14 @@ class LucentRecordRepository implements RecordRepository {
   static const _staticTimeline = <RecordTimelineEntry>[];
 
   static const _staticTrends = <RecordTrend>[
-    RecordTrend(kind: RecordTrendKind.bloodSugar, titleKey: RecordCopyKey.trendBloodSugarTitle, rangeKey: RecordCopyKey.range7Days, color: AppColorTokens.link, points: [5.1, 5.8, 5.4, 6.2, 5.6, 6.5, 5.9], legendKey: RecordCopyKey.trendBloodSugarLegend),
+    RecordTrend(
+      kind: RecordTrendKind.bloodSugar,
+      titleKey: RecordCopyKey.trendBloodSugarTitle,
+      rangeKey: RecordCopyKey.range7Days,
+      color: AppColorTokens.link,
+      points: [5.1, 5.8, 5.4, 6.2, 5.6, 6.5, 5.9],
+      legendKey: RecordCopyKey.trendBloodSugarLegend,
+    ),
   ];
 
   static const _staticHealthBag = RecordHealthBag(

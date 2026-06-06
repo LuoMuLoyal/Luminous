@@ -144,7 +144,7 @@ class DailyRecordRemoteDataSource {
   void _putIfChanged<T>(
     Map<String, dynamic> payload,
     String key,
-    Object value,
+    Object? value,
     T Function(dynamic v) convert,
   ) {
     if (identical(value, dailyRecordNoChange)) return;
