@@ -1,33 +1,37 @@
 # Luminous Docs
 
-Last updated: 2026-06-04
+Last updated: 2026-06-06
 
-## Read First
+## Current Entry Points
 
-1. `../README.md`
-2. `MigrationLog.md`
-3. `Project_Error_Audit.md`
-4. `UI_Implementation_Plan.md`
-5. `OpenApi_Client.md`
-6. `Localization.md`
-7. `../Lucent/docs/public/ROADMAP.md`
+| Need | Read |
+| --- | --- |
+| Current project state | `Current_State.md` |
+| Recent changes | `MigrationLog.md` index and `migration-log/YYYY-MM-DD.md` entries |
+| Next goals / planning | `Next_Plan.md` |
+| Common mistakes to avoid | `Project_Guardrails.md` |
+| UI status and rules | `UI_Implementation_Plan.md` |
+| OpenAPI client workflow | `OpenApi_Client.md` |
+| Localization workflow | `Localization.md` |
 
 ## Update Map
 
 | Change | Update |
 | --- | --- |
-| frontend code | `MigrationLog.md` |
+| frontend code | today's `migration-log/YYYY-MM-DD.md` |
 | network / OpenAPI / auth client | `OpenApi_Client.md` |
 | visible text / l10n flow | `Localization.md` |
-| UI plan / page skeleton | `UI_Implementation_Plan.md` |
-| API contract | `../Lucent/docs/public/api-contract.md` |
-| historical errors / recurring audit checks | `Project_Error_Audit.md` |
+| UI plan or page state changed | `UI_Implementation_Plan.md` |
+| project state changed | `Current_State.md` |
+| next work changed | `Next_Plan.md` |
+| recurring mistake / guardrail changed | `Project_Guardrails.md` |
 
-## Reference Only
+## Archived Outside Git
 
-- `RestartPlan.md`
-- `MigrationLog_Archive_PreReset.md`
-- `DESIGN.md`
-- `TODO.md`
+Old long-form plans, old audits, reset notes, and early design references were moved to:
 
-Do not duplicate current status across docs. Link to the owner document instead.
+```text
+D:\25080\Documents\VSCodeProject\Lumos\docs-archive\2026-06-06-doc-cleanup
+```
+
+Do not re-add archived docs here unless they become operational again.

@@ -1,6 +1,6 @@
 # Lumos Thirty-Day DeepSeek Execution Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:executing-plans` to execute this plan task-by-task. Before every task, apply the relevant gates from `2026-06-04-lumos-error-prevention-plan.md`. Use `superpowers:subagent-driven-development` only when Codex explicitly splits a backend/frontend task boundary for review.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:executing-plans` to execute this plan task-by-task. Before every task, apply the relevant guardrails from `Luminous/docs/Project_Guardrails.md`. Use `superpowers:subagent-driven-development` only when Codex explicitly splits a backend/frontend task boundary for review.
 
 **Goal:** From 2026-06-06 through 2026-07-05, move Lumos from a stable five-tab health assistant baseline into a stronger personal health loop: polished app identity/theme/loading states, closed auth/account debt, reliable daily-record and medicine-adherence workflows, first real notification/reminder boundaries, and a clearer plan for More/device/tool integrations without presenting mock features as real.
 
@@ -42,18 +42,20 @@ Read these files before editing:
 - `Lucent/README.md`
 - `Lucent/docs/README.md`
 - `Lucent/docs/public/ROADMAP.md`
-- `Lucent/docs/public/api-contract.md`
-- `Lucent/docs/backend-user-domain.md`
+- `Lucent/docs/openapi.json`
+- `Lucent/docs/public/reminder-contract.md`
+- `Lucent/docs/public/environment-contract.md`
 - `Lucent/prisma/schema.prisma`
 - `Luminous/AGENTS.md`
 - `Luminous/README.md`
 - `Luminous/docs/README.md`
-- `Luminous/docs/Project_Error_Audit.md`
+- `Luminous/docs/Current_State.md`
+- `Luminous/docs/Next_Plan.md`
+- `Luminous/docs/Project_Guardrails.md`
 - `Luminous/docs/OpenApi_Client.md`
 - `Luminous/docs/UI_Implementation_Plan.md`
 - `Luminous/docs/Localization.md`
 - `Luminous/docs/MigrationLog.md`
-- `Luminous/docs/superpowers/plans/2026-06-04-lumos-error-prevention-plan.md`
 
 ## Execution Protocol For DeepSeek
 
@@ -113,7 +115,7 @@ Luminous/docs/superpowers/plans/2026-06-06-thirty-day-lumos-deepseek-plan.md
 
 Before editing:
 - read the Required Reading list if not already done
-- apply relevant gates from 2026-06-04-lumos-error-prevention-plan.md
+- apply relevant guardrails from Luminous/docs/Project_Guardrails.md
 - run branch/status/log in Lucent and Luminous
 - protect unrelated dirty work
 
@@ -160,7 +162,7 @@ Do not start Task <N+1>.
 
 - Read required docs.
 - Confirm clean branch/status/log evidence for both repos.
-- Update `Luminous/docs/MigrationLog.md` with this plan entry.
+- Update today's `Luminous/docs/migration-log/YYYY-MM-DD.md` with this plan entry.
 - Do not change runtime code.
 
 ### Commands
@@ -179,7 +181,7 @@ git -C Luminous diff --check -- . ':!packages/lucent_openapi/**'
 ### Acceptance
 
 - Evidence bundle names active branch and latest commit in both repos.
-- The plan is discoverable from `MigrationLog.md`.
+- The plan is discoverable from the `MigrationLog.md` index.
 - No runtime code changes.
 
 ### Suggested Commit
@@ -303,6 +305,7 @@ git -C Luminous commit -m "fix(theme): 统一页面token使用"
 - `Luminous/lib/features/auth/**`
 - `Luminous/lib/features/mine/**`
 - `Luminous/docs/MigrationLog.md`
+- today's `Luminous/docs/migration-log/YYYY-MM-DD.md`
 
 ### Verification
 
@@ -560,11 +563,10 @@ git -C Luminous commit -m "test(state): 补齐跨页刷新覆盖"
 
 ### Likely Files
 
-- `Lucent/docs/public/api-contract.md`
-- `Lucent/docs/backend-user-domain.md`
+- `Lucent/docs/public/reminder-contract.md`
 - `Lucent/CHANGELOG.md`
 - `Luminous/docs/UI_Implementation_Plan.md`
-- `Luminous/docs/MigrationLog.md`
+- today's `Luminous/docs/migration-log/YYYY-MM-DD.md`
 
 ### Verification
 
@@ -686,8 +688,7 @@ git -C Luminous commit -m "fix(more): 明确更多功能实现边界"
 
 ### Likely Files
 
-- `Lucent/docs/public/api-contract.md`
-- `Lucent/docs/backend-user-domain.md`
+- `Lucent/docs/public/environment-contract.md`
 - `Lucent/CHANGELOG.md`
 - `Luminous/docs/UI_Implementation_Plan.md`
 
@@ -812,7 +813,7 @@ git -C Luminous commit -m "fix(settings): 统一设置子页面导航"
 
 - `Luminous/test/**`
 - `Lucent/test/**`
-- `Luminous/docs/Project_Error_Audit.md` if new recurring risk is found
+- `Luminous/docs/Project_Guardrails.md` if a new recurring risk is found
 
 ### Verification
 
@@ -844,20 +845,24 @@ git -C Lucent commit -m "test: 提升后端测试稳定性"
 ### Scope
 
 - Update owner docs only; do not duplicate long status blocks.
-- Check README, MigrationLog, OpenApi_Client, Localization, UI plan, Lucent API contract, backend user domain, and changelog.
+- Check README, MigrationLog, OpenApi_Client, Localization, UI plan, Lucent docs/OpenAPI output, public contracts, and changelog.
 - Mark mock/static/unsupported features explicitly.
 - Use absolute dates.
 
 ### Likely Files
 
 - `Lucent/CHANGELOG.md`
-- `Lucent/docs/public/api-contract.md`
-- `Lucent/docs/backend-user-domain.md`
+- `Lucent/docs/README.md`
+- `Lucent/docs/openapi.json`
+- `Lucent/docs/public/*.md`
 - `Luminous/docs/MigrationLog.md`
+- affected `Luminous/docs/migration-log/YYYY-MM-DD.md` entries
 - `Luminous/docs/OpenApi_Client.md`
 - `Luminous/docs/UI_Implementation_Plan.md`
 - `Luminous/docs/Localization.md`
-- `Luminous/docs/Project_Error_Audit.md`
+- `Luminous/docs/Current_State.md`
+- `Luminous/docs/Next_Plan.md`
+- `Luminous/docs/Project_Guardrails.md`
 
 ### Verification
 
@@ -967,7 +972,7 @@ git -C Lucent commit -m "fix: 处理月度计划复审问题"
 ### Scope
 
 - Summarize completed tasks, commits, tests, and remaining unsupported features.
-- Update `Luminous/docs/MigrationLog.md`.
+- Update today's `Luminous/docs/migration-log/YYYY-MM-DD.md`.
 - Update `Luminous/docs/UI_Implementation_Plan.md`.
 - If backend contracts changed, update `Lucent/CHANGELOG.md` and API docs.
 - Create a short next-month candidate list, not a full new plan.

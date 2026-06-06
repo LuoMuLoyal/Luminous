@@ -42,4 +42,4 @@ These need a contract document (like environment-contract.md) before implementat
 
 - Active contracts: `reminder-contract.md`, `environment-contract.md`
 - Product roadmap: `Lucent/docs/public/ROADMAP.md`
-- Error audit: `Luminous/docs/Project_Error_Audit.md`
+- Current guardrails: `Luminous/docs/Project_Guardrails.md`
