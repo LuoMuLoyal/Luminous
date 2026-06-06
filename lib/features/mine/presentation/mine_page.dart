@@ -54,6 +54,7 @@ class MinePage extends ConsumerWidget {
             onTap: () => showMineToast(context, l10n.mineHeaderNotifications),
           ),
         MineHeaderActionChip(
+          key: const Key('mine-settings-action'),
           label: l10n.mineHeaderSettings,
           icon: Icons.settings_outlined,
           typography: typography,

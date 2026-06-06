@@ -56,7 +56,7 @@ void main() {
       expect(preferences.getString('app.locale'), 'en');
       expect(_fakeSettingsProfileRemote.lastLocale, 'en');
 
-      await tester.tap(find.byIcon(Icons.arrow_back_ios_new_rounded).first);
+      await tester.tap(find.byType(BackButton).first);
       await tester.pumpAndSettle();
 
       expect(find.text('Settings'), findsOneWidget);
@@ -182,10 +182,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('系统通知未开启'), findsOneWidget);
-    expect(
-      find.text('点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'),
-      findsOneWidget,
-    );
+    expect(find.text('点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right_rounded), findsOneWidget);
   });
 
@@ -207,7 +204,7 @@ void main() {
     expect(find.text('开源许可'), findsOneWidget);
 
     // Back navigation returns to settings
-    await tester.tap(find.byIcon(Icons.arrow_back_ios_new_rounded).first);
+    await tester.tap(find.byType(BackButton).first);
     await tester.pumpAndSettle();
     expect(find.text('设置'), findsOneWidget);
   });
@@ -245,7 +242,7 @@ void main() {
     expect(app.theme?.colorScheme.primary, const Color(0xFF47A0C9));
     expect(app.darkTheme?.colorScheme.primary, const Color(0xFF95CEE8));
 
-    await tester.tap(find.byIcon(Icons.arrow_back_ios_new_rounded).first);
+    await tester.tap(find.byType(BackButton).first);
     await tester.pumpAndSettle();
 
     expect(find.text('深色 · 蓝粉'), findsOneWidget);
@@ -344,7 +341,9 @@ class _StaticAuthSessionNotifier extends AuthSessionNotifier {
 }
 
 class _FakeNotificationPermissionService extends NotificationPermissionService {
-  _FakeNotificationPermissionService({this.state = NotificationPermissionState.unsupported});
+  _FakeNotificationPermissionService({
+    this.state = NotificationPermissionState.unsupported,
+  });
 
   final NotificationPermissionState state;
 

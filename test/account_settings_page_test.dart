@@ -122,7 +122,9 @@ void main() {
       find.byType(EditableText).at(1),
       'https://example.com/avatar.png',
     );
-    await tester.tap(find.widgetWithText(FilledButton, '保存资料'));
+    final saveProfileButton = find.widgetWithText(FilledButton, '保存资料');
+    await tester.ensureVisible(saveProfileButton);
+    await tester.tap(saveProfileButton);
     await tester.pump();
 
     expect(remote.updateProfileNickname, 'NewNick');
@@ -367,7 +369,12 @@ void main() {
     expect(mobileClient.authorizeCalled, isTrue);
     expect(remote.wechatMobileIdentityLinkCallbackCode, 'mobile-link-code');
     expect(
-      container.read(authSessionProvider).user?.linkedIdentities.single.provider,
+      container
+          .read(authSessionProvider)
+          .user
+          ?.linkedIdentities
+          .single
+          .provider,
       'wechat_mobile',
     );
     await tester.pump(const Duration(seconds: 2));
