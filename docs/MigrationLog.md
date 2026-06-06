@@ -40,6 +40,14 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 - All remaining TODOs rewritten with owner tag + blocked reason.
 - No OAuth credentials, callback domains, or production behavior changed.
 
+### Task 5: Account Security UX Hardening
+
+- Audited account settings page across four dimensions: password set/unset status, linked identity management, email verification state, and destructive action protections.
+- Confirmed OAuth-only users are blocked from impossible flows: password change hidden (authPasswordUnsetManagementHint), account deletion hidden (authDeleteAccountPasswordRequiredHint), last identity unlink disabled (authIdentityUnlinkDisabledAction).
+- Confirmed backend protections: unlinkIdentity rejects last sign-in method for OAuth-only users (403 FORBIDDEN), changePassword and deleteAccount reject passwordless users (401 WRONG_PASSWORD).
+- Test coverage verified: frontend OAuth-only protection test + backend unit tests for password change/delete rejection + e2e for identity unlink protection.
+- No backend behavior changes needed; current state confirmed as properly hardened from 2026-06-05 account management work.
+
 
 ## 2026-06-05
 
