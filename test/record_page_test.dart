@@ -80,60 +80,59 @@ void main() {
     expect(find.text('备注'), findsWidgets);
   });
 
-  testWidgets(
-    'Record edit page loads by route date and clears nullable fields',
-    (tester) async {
-      final repo = _FakeDailyRecordRepository();
+  testWidgets('Record edit page loads by id and clears nullable fields', (
+    tester,
+  ) async {
+    final repo = _FakeDailyRecordRepository();
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            dailyRecordRepositoryProvider.overrideWithValue(repo),
-            authSessionProvider.overrideWith(
-              () => _SignedInAuthSessionNotifier(),
-            ),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
           ],
-          child: MaterialApp.router(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            routerConfig: _buildEditTestRouter(
-              initialLocation: '/record/test-id-1/edit?date=2026-05-20',
-            ),
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: _buildEditTestRouter(
+            initialLocation: '/record/test-id-1/edit',
           ),
         ),
-      );
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      expect(repo.fetchDate, '2026-05-20');
+    expect(repo.getCalledWith, 'test-id-1');
 
-      final fields = find.byType(TextField);
-      expect(fields, findsNWidgets(4));
-      for (var index = 0; index < 4; index += 1) {
-        await tester.enterText(fields.at(index), '');
-      }
+    final fields = find.byType(TextField);
+    expect(fields, findsNWidgets(4));
+    for (var index = 0; index < 4; index += 1) {
+      await tester.enterText(fields.at(index), '');
+    }
 
-      await tester.tap(find.widgetWithText(ElevatedButton, '保存'));
-      await tester.pumpAndSettle();
-      await tester.pump(const Duration(seconds: 3));
+    await tester.tap(find.widgetWithText(ElevatedButton, '保存'));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 3));
 
-      expect(repo.updateCalledWith, 'test-id-1');
-      final input = repo.lastUpdateInput;
-      expect(input, isNotNull);
-      expect(input!.title, isNull);
-      expect(input.value, isNull);
-      expect(input.unit, isNull);
-      expect(input.note, isNull);
-    },
-  );
+    expect(repo.updateCalledWith, 'test-id-1');
+    final input = repo.lastUpdateInput;
+    expect(input, isNotNull);
+    expect(input!.title, isNull);
+    expect(input.value, isNull);
+    expect(input.unit, isNull);
+    expect(input.note, isNull);
+  });
 
   testWidgets('Record edit page shows delete confirmation and deletes', (
     tester,
@@ -312,10 +311,8 @@ GoRouter _buildEditTestRouter({
     routes: [
       GoRoute(
         path: '/record/:id/edit',
-        builder: (context, state) => RecordEditPage(
-          recordId: state.pathParameters['id']!,
-          recordDate: state.uri.queryParameters['date'],
-        ),
+        builder: (context, state) =>
+            RecordEditPage(recordId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: '/login',
@@ -328,6 +325,7 @@ GoRouter _buildEditTestRouter({
 class _FakeDailyRecordRepository implements DailyRecordRepository {
   String? deleteCalledWith;
   String? updateCalledWith;
+  String? getCalledWith;
   String? fetchDate;
   DailyRecordUpdateInput? lastUpdateInput;
   bool fetchRecordsCalled = false;
@@ -357,6 +355,23 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
         ),
       ],
       total: 1,
+    );
+  }
+
+  @override
+  Future<DailyRecordItem> get(String id) async {
+    getCalledWith = id;
+    return DailyRecordItem(
+      id: id,
+      kind: DailyRecordKind.vital,
+      occurredAt: '2026-05-20',
+      title: 'Blood pressure',
+      value: '118/76',
+      unit: 'mmHg',
+      note: 'This is a note',
+      source: 'manual',
+      createdAt: DateTime.now().toIso8601String(),
+      updatedAt: DateTime.now().toIso8601String(),
     );
   }
 

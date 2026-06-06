@@ -15,10 +15,9 @@ import 'package:luminous/features/today/presentation/providers/today_dashboard_p
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordEditPage extends ConsumerStatefulWidget {
-  const RecordEditPage({super.key, required this.recordId, this.recordDate});
+  const RecordEditPage({super.key, required this.recordId});
 
   final String recordId;
-  final String? recordDate;
 
   @override
   ConsumerState<RecordEditPage> createState() => _RecordEditPageState();
@@ -58,20 +57,8 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   Future<void> _loadRecord() async {
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
-      final dateStr = widget.recordDate ?? _todayString();
-      final result = await repo.fetchRecords(dateStr, pageSize: 100);
-      final record = result.items
-          .where((r) => r.id == widget.recordId)
-          .firstOrNull;
+      final record = await repo.get(widget.recordId);
       if (!mounted) return;
-      if (record == null) {
-        AppToast.show(
-          context,
-          AppLocalizations.of(context)!.recordCreateFailedToast,
-        );
-        context.pop();
-        return;
-      }
       setState(() {
         _kind = record.kind;
         _valueController.text = record.value ?? '';
@@ -330,11 +317,6 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   void _invalidateProviders() {
     ref.invalidate(recordDashboardProvider);
     ref.invalidate(todayDashboardProvider);
-  }
-
-  String _todayString() {
-    final today = DateTime.now();
-    return '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
   }
 
   String? _optionalText(TextEditingController controller) {

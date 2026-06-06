@@ -9,13 +9,28 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
   final DailyRecordRemoteDataSource dataSource;
 
   @override
-  Future<DailyRecordListData> fetchRecords(String date, {String? kind, int page = 1, int pageSize = 50}) {
-    return dataSource.fetchRecords(date, kind: kind, page: page, pageSize: pageSize);
+  Future<DailyRecordListData> fetchRecords(
+    String date, {
+    String? kind,
+    int page = 1,
+    int pageSize = 50,
+  }) {
+    return dataSource.fetchRecords(
+      date,
+      kind: kind,
+      page: page,
+      pageSize: pageSize,
+    );
   }
 
   @override
   Future<DailyRecordSummaryData> fetchSummary(String date) {
     return dataSource.fetchSummary(date);
+  }
+
+  @override
+  Future<DailyRecordItem> get(String id) {
+    return dataSource.get(id);
   }
 
   @override

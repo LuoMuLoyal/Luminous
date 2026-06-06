@@ -6,10 +6,15 @@ Records changes after the full reset only. Pre-reset history: `MigrationLog_Arch
 
 ## 2026-06-06
 
+### Daily Record Detail And Attachment Contract
+
+- Re-generated the Lucent OpenAPI client after Lucent added daily-record image attachment metadata and `GET /api/v1/me/daily-records/:id`.
+- Record edit now loads by record id through the detail endpoint instead of falling back to a date-scoped list lookup.
+
 ### Review Fix: Daily Record Edit And Search Empty State
 
 - Made `.env` loading optional so startup no longer depends on a checked-in `.env` asset.
-- Fixed daily record edit from timeline routes to carry the original record date and allow clearing nullable text fields by sending explicit `null` values.
+- Fixed daily record edit to load records by id and allow clearing nullable text fields by sending explicit `null` values.
 - Removed the unavailable scan/photo action from medicine search no-result tools and updated l10n/tests.
 
 ### Thirty-Day DeepSeek Execution Plan
