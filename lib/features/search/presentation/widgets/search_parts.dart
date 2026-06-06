@@ -26,10 +26,7 @@ class _SearchTopBar extends StatelessWidget {
             style: typography.displaySm,
           ),
         ),
-        IconButton(
-          onPressed: () => AppToast.show(context, l10n.medicineSearchScanHint),
-          icon: const Icon(Icons.center_focus_strong_rounded, size: 22),
-        ),
+        // No scan action — unsupported feature
       ],
     );
   }
@@ -552,9 +549,20 @@ class _SearchResultTile extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacingTokens.xs),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        result.subtitle,
+                        style: typography.bodySm.copyWith(color: surface.body),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
-                  result.subtitle,
-                  style: typography.bodySm.copyWith(color: surface.body),
+                  _sourceRefLabel(l10n, result.source, result.id),
+                  style: typography.caption.copyWith(color: surface.mute),
                 ),
                 const SizedBox(height: AppSpacingTokens.md),
                 Text(
@@ -916,5 +924,16 @@ String _matchTypeLabel(AppLocalizations l10n, MedicineSearchMatchType type) {
   return switch (type) {
     MedicineSearchMatchType.ingredient => l10n.medicineSearchMatchIngredient,
     MedicineSearchMatchType.name => l10n.medicineSearchMatchName,
+  };
+}
+
+String _sourceRefLabel(
+  AppLocalizations l10n,
+  MedicineSearchSource source,
+  String id,
+) {
+  return switch (source) {
+    MedicineSearchSource.cn => l10n.medicineSearchSourceRefCn(id),
+    MedicineSearchSource.drugbank => l10n.medicineSearchSourceRefDrugbank(id),
   };
 }
