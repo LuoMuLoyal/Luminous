@@ -43,9 +43,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 export 'package:flutter/material.dart';
 export 'package:flutter_test/flutter_test.dart';
 export 'package:integration_test/integration_test.dart';
+export 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart'
+    show AuthVerificationScene;
 export 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart'
     show authSessionProvider;
 export 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
+export 'package:luminous/features/record/domain/entities/daily_record_inputs.dart'
+    show dailyRecordNoChange;
 export 'package:luminous/features/record/domain/entities/daily_record.dart'
     show DailyRecordKind;
 export 'package:luminous/features/settings/data/services/notification_permission_service.dart';
@@ -262,6 +266,7 @@ class E2eAuthRemoteDataSource extends AuthRemoteDataSource {
   String? changePasswordNewPassword;
   String? deleteAccountPassword;
   String? unlinkIdentityId;
+  bool logoutCalled = false;
 
   @override
   Future<AuthSession> login({
@@ -407,6 +412,11 @@ class E2eAuthRemoteDataSource extends AuthRemoteDataSource {
       updatedAt: DateTime.parse('2026-06-06T03:00:00Z'),
     );
   }
+
+  @override
+  Future<void> logout() async {
+    logoutCalled = true;
+  }
 }
 
 class _MemorySessionStore implements LucentSessionStore {
@@ -438,6 +448,7 @@ class E2eNotificationPermissionService extends NotificationPermissionService {
   });
 
   final NotificationPermissionState state;
+  int requestCount = 0;
 
   @override
   Future<void> ensureInitialized() async {}
@@ -449,6 +460,7 @@ class E2eNotificationPermissionService extends NotificationPermissionService {
 
   @override
   Future<NotificationPermissionState> requestPermission() async {
+    requestCount += 1;
     return state;
   }
 }
@@ -574,8 +586,10 @@ class E2eRecordRepository implements RecordRepository {
 
 class E2eDailyRecordRepository implements DailyRecordRepository {
   String? getCalledWith;
+  String? updateCalledWith;
   String? deleteCalledWith;
   DailyRecordCreateInput? createInput;
+  DailyRecordUpdateInput? updateInput;
 
   @override
   Future<DailyRecordListData> fetchRecords(
@@ -622,6 +636,8 @@ class E2eDailyRecordRepository implements DailyRecordRepository {
     String id,
     DailyRecordUpdateInput input,
   ) async {
+    updateCalledWith = id;
+    updateInput = input;
     return _record;
   }
 

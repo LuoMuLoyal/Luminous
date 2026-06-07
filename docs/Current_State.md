@@ -1,6 +1,14 @@
 # Lumos Current State
 
-Last updated: 2026-06-06
+Last updated: 2026-06-07
+
+## Product Direction
+
+- Competition north star: Luminous is an AI health management and medication safety companion for college students and young adults in China.
+- Core loop: record -> understand -> remind -> self-intervene -> connect services.
+- Primary differentiator: Chinese medication safety as the trust base, connected with common young-adult scenarios such as symptoms, mood, sleep, diet, hydration, period, and campus service guidance.
+- Terminal strategy: mobile app is the MVP surface; web is optional for reports and competition display; desktop app is out of MVP scope.
+- Product north star reference: `docs/Product_North_Star.md`.
 
 ## Runtime Split
 

@@ -62,6 +62,39 @@ void main() {
     expect(find.text('布洛芬片'), findsOneWidget);
   });
 
+  testWidgets('medicine search add routes signed-out user to login', (
+    tester,
+  ) async {
+    final healthContextRepository = E2eHealthContextRepository();
+
+    await pumpOfflineApp(
+      tester,
+      healthContextRepository: healthContextRepository,
+    );
+
+    await openTab(tester, '用药');
+    await tester.tap(find.byIcon(Icons.search_rounded).last);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), '布洛芬');
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.text('布洛芬片'), findsOneWidget);
+
+    final addButton = find.text('加入药箱').first;
+    await tester.scrollUntilVisible(
+      addButton,
+      240,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(addButton);
+    await tester.pumpAndSettle();
+
+    expect(healthContextRepository.medicineCreate, isNull);
+    expect(find.text('邮箱'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+  });
+
   testWidgets('medicine dose action routes signed-out user to login', (
     tester,
   ) async {
@@ -104,6 +137,33 @@ void main() {
 
     expect(doseLogRemoteDataSource.createCurrentMedicineId, 'e2e-medicine-1');
     expect(doseLogRemoteDataSource.createStatus, 'taken');
+    expect(doseLogRemoteDataSource.createDate, todayDateString());
+    expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
+  });
+
+  testWidgets('medicine skipped dose action saves signed-in dose log', (
+    tester,
+  ) async {
+    final doseLogRemoteDataSource = E2eDoseLogRemoteDataSource();
+
+    await pumpOfflineApp(
+      tester,
+      authSessionOverride: SignedInAuthSessionNotifier.new,
+      medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
+      doseLogRemoteDataSource: doseLogRemoteDataSource,
+    );
+
+    await openTab(tester, '用药');
+
+    final medicine = find.text('E2E medicine');
+    await tester.scrollUntilVisible(medicine, 240);
+    expect(medicine, findsOneWidget);
+
+    await tester.tap(find.text('跳过'));
+    await tester.pumpAndSettle();
+
+    expect(doseLogRemoteDataSource.createCurrentMedicineId, 'e2e-medicine-1');
+    expect(doseLogRemoteDataSource.createStatus, 'skipped');
     expect(doseLogRemoteDataSource.createDate, todayDateString());
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
   });
