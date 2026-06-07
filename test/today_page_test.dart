@@ -72,6 +72,7 @@ void main() {
       user: const TodayUserSnapshot(
         moment: TodayDayMoment.morning,
         hasUnreadNotifications: false,
+        updatedAtLabel: '--:--',
       ),
       water: const TodayWaterSummary(completedCount: 0, targetCount: 8),
       medication: const TodayMedicationSummary(
@@ -86,6 +87,7 @@ void main() {
         TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
       ],
+      period: const TodayPeriodSummary(day: 2),
       mealSuggestion: const TodayMealSuggestion(
         type: TodayMealSuggestionType.highProteinBalancedLunch,
       ),
@@ -132,7 +134,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    // Should render without crashing — water card and medication card present
+    // Should render without crashing - water card and medication card present.
     expect(find.byKey(const Key('today-water-card')), findsOneWidget);
     expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
     // Unsupported sections should still render with locale-aware mock copy.
@@ -141,8 +143,9 @@ void main() {
     );
     await tester.scrollUntilVisible(recommendationCard, 240);
     await tester.pump(const Duration(milliseconds: 200));
-    expect(find.text('为你推荐'), findsOneWidget);
-    expect(find.text('平稳'), findsWidgets);
+    final l10n = AppLocalizations.of(tester.element(find.byType(TodayPage)))!;
+    expect(find.text(l10n.todayRecommendationSectionTitle), findsOneWidget);
+    expect(find.text(l10n.todayMoodStableValue), findsWidgets);
   });
 
   testWidgets('Today page uses wide dashboard layout on desktop', (

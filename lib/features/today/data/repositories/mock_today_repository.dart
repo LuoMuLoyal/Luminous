@@ -10,6 +10,7 @@ class MockTodayRepository implements TodayRepository {
     user: TodayUserSnapshot(
       moment: TodayDayMoment.morning,
       hasUnreadNotifications: false,
+      updatedAtLabel: '--:--',
     ),
     water: TodayWaterSummary(completedCount: 0, targetCount: 8),
     medication: TodayMedicationSummary(
@@ -24,6 +25,7 @@ class MockTodayRepository implements TodayRepository {
       TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
       TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
     ],
+    period: TodayPeriodSummary(day: 2),
     mealSuggestion: TodayMealSuggestion(
       type: TodayMealSuggestionType.highProteinBalancedLunch,
     ),
@@ -48,14 +50,14 @@ class MockTodayRepository implements TodayRepository {
     user: TodayUserSnapshot(
       moment: TodayDayMoment.morning,
       hasUnreadNotifications: true,
+      updatedAtLabel: '08:30',
     ),
     water: TodayWaterSummary(completedCount: 5, targetCount: 8),
     medication: TodayMedicationSummary(
       medicineCount: 1,
       pendingCount: 1,
       nextDoseTimeLabel: '12:30',
-      nextMedicine: TodayMedicationKind.atorvastatin,
-      nextMedicineName: '维生素B族',
+      nextMedicine: TodayMedicationKind.vitaminBComplex,
     ),
     vitals: <TodayVitalSummary>[
       TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '72'),
@@ -64,8 +66,9 @@ class MockTodayRepository implements TodayRepository {
         valueLabel: '118/76',
       ),
       TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '7.2'),
-      TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '平稳'),
+      TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
     ],
+    period: TodayPeriodSummary(day: 2),
     mealSuggestion: TodayMealSuggestion(
       type: TodayMealSuggestionType.highProteinBalancedLunch,
     ),

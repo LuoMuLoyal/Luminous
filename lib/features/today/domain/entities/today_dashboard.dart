@@ -6,7 +6,7 @@ TodayDayMoment todayDayMomentFromHour(int hour) {
 
 enum TodayDayMoment { morning, afternoon, evening }
 
-enum TodayMedicationKind { atorvastatin }
+enum TodayMedicationKind { atorvastatin, vitaminBComplex }
 
 enum TodayVitalType { heartRate, bloodPressure, sleep, mood }
 
@@ -24,6 +24,7 @@ class TodayDashboard {
     required this.water,
     required this.medication,
     required this.vitals,
+    required this.period,
     required this.mealSuggestion,
     required this.environment,
     required this.lumiSuggestion,
@@ -33,6 +34,7 @@ class TodayDashboard {
   final TodayWaterSummary water;
   final TodayMedicationSummary medication;
   final List<TodayVitalSummary> vitals;
+  final TodayPeriodSummary period;
   final TodayMealSuggestion mealSuggestion;
   final TodayEnvironmentSummary environment;
   final TodayLumiSuggestion lumiSuggestion;
@@ -42,10 +44,12 @@ class TodayUserSnapshot {
   const TodayUserSnapshot({
     required this.moment,
     required this.hasUnreadNotifications,
+    required this.updatedAtLabel,
   });
 
   final TodayDayMoment moment;
   final bool hasUnreadNotifications;
+  final String updatedAtLabel;
 }
 
 class TodayWaterSummary {
@@ -92,6 +96,12 @@ class TodayVitalSummary {
 
   final TodayVitalType type;
   final String valueLabel;
+}
+
+class TodayPeriodSummary {
+  const TodayPeriodSummary({required this.day});
+
+  final int day;
 }
 
 class TodayMealSuggestion {
