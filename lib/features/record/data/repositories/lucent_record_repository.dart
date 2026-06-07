@@ -34,6 +34,7 @@ class LucentRecordRepository implements RecordRepository {
     final timeline = records.map(_toTimelineEntry).toList();
 
     return RecordDashboard(
+      selectedDate: date,
       selectedDay: date.day,
       weekDays: _staticWeekDays(date),
       monthDays: _staticMonthDays(date),
@@ -181,36 +182,52 @@ class LucentRecordRepository implements RecordRepository {
 
   static final _staticQuickActions = <RecordQuickAction>[
     RecordQuickAction(
-      type: RecordEntryType.meal,
-      icon: Icons.restaurant_rounded,
-      titleKey: RecordCopyKey.typeMeal,
+      type: RecordEntryType.symptom,
+      icon: Icons.medical_services_outlined,
+      titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.typeWomenHealth,
       accent: AppColorTokens.warning,
       softColor: AppColorTokens.warningSoft,
     ),
     RecordQuickAction(
-      type: RecordEntryType.vitals,
-      icon: Icons.favorite_rounded,
-      titleKey: RecordCopyKey.typeVitals,
+      type: RecordEntryType.medication,
+      icon: Icons.medication_rounded,
+      titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.typeWomenHealth,
-      accent: AppColorTokens.error,
-      softColor: AppColorTokens.errorSoft,
-    ),
-    RecordQuickAction(
-      type: RecordEntryType.water,
-      icon: Icons.water_drop_rounded,
-      titleKey: RecordCopyKey.typeWater,
-      subtitleKey: RecordCopyKey.typeWomenHealth,
-      accent: const Color(0xFF428BFF),
-      softColor: const Color(0xFFE8F2FF),
+      accent: AppColorTokens.cyanDeep,
+      softColor: AppColorTokens.cyanSoft,
     ),
     RecordQuickAction(
       type: RecordEntryType.mood,
       icon: Icons.sentiment_satisfied_rounded,
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.typeWomenHealth,
-      accent: const Color(0xFF7D67E8),
-      softColor: const Color(0xFFF0ECFF),
+      accent: AppColorTokens.violet,
+      softColor: AppColorTokens.violetSoft,
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.meal,
+      icon: Icons.restaurant_rounded,
+      titleKey: RecordCopyKey.typeMeal,
+      subtitleKey: RecordCopyKey.typeWomenHealth,
+      accent: AppColorTokens.cyanDeep,
+      softColor: AppColorTokens.cyanSoft,
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.water,
+      icon: Icons.water_drop_rounded,
+      titleKey: RecordCopyKey.typeWater,
+      subtitleKey: RecordCopyKey.typeWomenHealth,
+      accent: AppColorTokens.link,
+      softColor: AppColorTokens.linkSoft,
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.womenHealth,
+      icon: Icons.calendar_month_rounded,
+      titleKey: RecordCopyKey.typeWomenHealth,
+      subtitleKey: RecordCopyKey.typeWomenHealth,
+      accent: AppColorTokens.highlightMagenta,
+      softColor: AppColorTokens.errorSoft,
     ),
   ];
 

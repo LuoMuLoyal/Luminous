@@ -59,6 +59,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordPickDateAction => 'Pick date';
 
   @override
+  String get recordSearchAction => 'Search';
+
+  @override
+  String get recordFilterAction => 'Filter';
+
+  @override
+  String get recordSwitchDateAction => 'Switch date';
+
+  @override
+  String recordDatePillLabel(int month, int day, String weekday) {
+    return '$month/$day · $weekday';
+  }
+
+  @override
+  String recordTodayEntriesTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Today entries · $count',
+      one: 'Today entry · 1',
+      zero: 'Today entries · 0',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recordQuickActionLabel(String type) {
+    return 'Log $type';
+  }
+
+  @override
+  String get recordQuickPeriodAction => 'Log period';
+
+  @override
   String get recordAddAction => 'Record';
 
   @override
@@ -366,6 +400,115 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordFoodImagePlaceholder => 'Meal image placeholder';
+
+  @override
+  String get recordSymptomTrackingSectionTitle => 'Symptom tracking';
+
+  @override
+  String get recordSymptomHeadache => 'Headache';
+
+  @override
+  String recordSymptomLoggedAt(String time) {
+    return 'Logged today at $time';
+  }
+
+  @override
+  String get recordBodyPartLabel => 'Body part';
+
+  @override
+  String get recordBodyPartForehead => 'Head (forehead)';
+
+  @override
+  String get recordAccompanyingSymptomsLabel => 'Other symptoms';
+
+  @override
+  String get recordSymptomNausea => 'Mild nausea';
+
+  @override
+  String get recordSymptomLightSensitive => 'Light sensitive';
+
+  @override
+  String get recordPainRatingLabel => 'Pain rating';
+
+  @override
+  String get recordPainModerate => 'Moderate';
+
+  @override
+  String get recordViewTrendAction => 'View trend';
+
+  @override
+  String get recordMoodTrendSectionTitle => 'Mood trend';
+
+  @override
+  String get recordMoodAverage => 'Average';
+
+  @override
+  String get recordMoodGood => 'Good';
+
+  @override
+  String get recordMoodPoor => 'Poor';
+
+  @override
+  String get recordMoodStable => 'Stable';
+
+  @override
+  String get recordCycleDietSectionTitle => 'Period and diet';
+
+  @override
+  String get recordPeriodTitle => 'Period';
+
+  @override
+  String recordPeriodDayValue(int day) {
+    return 'Day $day';
+  }
+
+  @override
+  String recordPeriodEndsIn(int days) {
+    return 'Expected to end in $days days';
+  }
+
+  @override
+  String get recordPeriodRecordAction => 'Log period';
+
+  @override
+  String get recordDietTitle => 'Meal records';
+
+  @override
+  String recordMealCountValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meals today',
+      one: '1 meal today',
+      zero: '0 meals today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recordMealLogging => 'Logging';
+
+  @override
+  String get recordDietRecordAction => 'Log meal';
+
+  @override
+  String get recordSpecialistPackTitle => 'Specialist health pack';
+
+  @override
+  String get recordSpecialistPackSubtitle =>
+      'Track specialist health for a fuller record';
+
+  @override
+  String get recordDentalRecordTitle => 'Dental';
+
+  @override
+  String get recordEyeRecordTitle => 'Eye';
+
+  @override
+  String get recordHearingRecordTitle => 'Hearing';
+
+  @override
+  String get recordZeroCountLabel => '0 records';
 
   @override
   String get medicinePageDescription =>

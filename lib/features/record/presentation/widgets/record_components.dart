@@ -104,7 +104,7 @@ class RecordHeaderActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF159B55);
+    const accent = AppColorTokens.cyanDeep;
     final foreground = emphasized
         ? Colors.white
         : Theme.of(context).colorScheme.onSurface;

@@ -24,6 +24,14 @@ void main() {
   testWidgets('Record page renders mobile mock dashboard sections', (
     tester,
   ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
     await _pumpRecordPage(tester);
 
     await tester.pump();
@@ -45,9 +53,9 @@ void main() {
       expect(finder, findsOneWidget);
     }
 
-    expect(find.text('快速记录'), findsOneWidget);
-    expect(find.text('鸡胸肉藜麦沙拉'), findsOneWidget);
-    expect(find.text('趋势查看'), findsOneWidget);
+    expect(find.text(l10n.recordQuickSectionTitle), findsOneWidget);
+    expect(find.textContaining(l10n.recordTimelineMealName), findsOneWidget);
+    expect(find.text(l10n.recordMoodTrendSectionTitle), findsOneWidget);
   });
 
   testWidgets('Record edit page pre-fills fields from existing record', (
@@ -345,6 +353,13 @@ void main() {
   testWidgets('Record page previous day action reloads selected date', (
     tester,
   ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1440, 1000);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final repo = _FakeRecordRepository();
 
     await _pumpRecordPage(
@@ -357,7 +372,7 @@ void main() {
 
     expect(repo.requestedDates, contains(DateTime(2026, 6, 6)));
 
-    await tester.tap(find.byTooltip('上一天'));
+    await tester.tap(find.byTooltip(l10n.recordPreviousDayAction).first);
     await tester.pumpAndSettle();
 
     expect(repo.requestedDates, contains(DateTime(2026, 6, 5)));
@@ -675,6 +690,7 @@ class _FakeRecordRepository implements RecordRepository {
           ]
         : mock.timeline;
     return RecordDashboard(
+      selectedDate: selectedDate,
       selectedDay: selectedDate.day,
       weekDays: mock.weekDays,
       monthDays: mock.monthDays,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class RecordDashboard {
   const RecordDashboard({
+    required this.selectedDate,
     required this.selectedDay,
     required this.weekDays,
     required this.monthDays,
@@ -13,6 +14,7 @@ class RecordDashboard {
     required this.healthBag,
   });
 
+  final DateTime selectedDate;
   final int selectedDay;
   final List<RecordWeekDay> weekDays;
   final List<RecordCalendarDay> monthDays;

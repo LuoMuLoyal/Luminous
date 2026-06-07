@@ -15,7 +15,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Persisted `system / light / dark` theme preference and `default / blue-pink / yellow-green` palette preference with a standard `/settings/theme` child page
 - Mobile bottom nav + desktop rail
 - Today mobile north-star dashboard UI with repository/provider boundary, backend-backed current-medicine / water / vital / mood / dose-log summaries where available, bounded mock sections for unsupported concepts, lightweight placeholders for complex graphics, reusable Today primitives, and shared state views
-- Record concept-aligned dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, Lucent-backed daily-record timeline/detail, real selected-date header navigation, occurredAt-based timeline time, and quick-create flow
+- Record mobile north-star dashboard UI with repository/provider boundary, search/filter header, selected-date pill, six quick-record actions, timeline, symptom/mood/period/diet/specialist placeholders, desktop calendar/filter + timeline + trends workspace, Lucent-backed daily-record timeline/detail, real selected-date navigation, occurredAt-based timeline time, and quick-create flow
 - Mine concept-aligned mock dashboard UI with repository/provider boundary, mobile profile/plans/privacy surface, and desktop status/onboarding/settings side rail
 - Mine signed-out state now stays on the same static dashboard structure with a login notice instead of page-level skeleton loading
 - Standalone Settings page at `/settings` now owns theme/language/notification/account-entry settings, while Mine stays focused on dashboard content and entry actions

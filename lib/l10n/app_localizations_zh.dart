@@ -57,6 +57,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordPickDateAction => '选择日期';
 
   @override
+  String get recordSearchAction => '搜索';
+
+  @override
+  String get recordFilterAction => '筛选';
+
+  @override
+  String get recordSwitchDateAction => '切换日期';
+
+  @override
+  String recordDatePillLabel(int month, int day, String weekday) {
+    return '$month 月 $day 日  星期$weekday';
+  }
+
+  @override
+  String recordTodayEntriesTitle(int count) {
+    return '今日记录 · $count 条';
+  }
+
+  @override
+  String recordQuickActionLabel(String type) {
+    return '记$type';
+  }
+
+  @override
+  String get recordQuickPeriodAction => '记经期';
+
+  @override
   String get recordAddAction => '记录';
 
   @override
@@ -358,6 +385,107 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordFoodImagePlaceholder => '餐图占位';
+
+  @override
+  String get recordSymptomTrackingSectionTitle => '症状跟踪';
+
+  @override
+  String get recordSymptomHeadache => '头痛';
+
+  @override
+  String recordSymptomLoggedAt(String time) {
+    return '今天 $time 记录';
+  }
+
+  @override
+  String get recordBodyPartLabel => '部位';
+
+  @override
+  String get recordBodyPartForehead => '头部（前额）';
+
+  @override
+  String get recordAccompanyingSymptomsLabel => '伴随症状';
+
+  @override
+  String get recordSymptomNausea => '轻微恶心';
+
+  @override
+  String get recordSymptomLightSensitive => '对光敏感';
+
+  @override
+  String get recordPainRatingLabel => '疼痛评分';
+
+  @override
+  String get recordPainModerate => '中等';
+
+  @override
+  String get recordViewTrendAction => '查看趋势';
+
+  @override
+  String get recordMoodTrendSectionTitle => '情绪趋势';
+
+  @override
+  String get recordMoodAverage => '一般';
+
+  @override
+  String get recordMoodGood => '良好';
+
+  @override
+  String get recordMoodPoor => '较差';
+
+  @override
+  String get recordMoodStable => '平稳';
+
+  @override
+  String get recordCycleDietSectionTitle => '经期与饮食';
+
+  @override
+  String get recordPeriodTitle => '经期';
+
+  @override
+  String recordPeriodDayValue(int day) {
+    return '经期第 $day 天';
+  }
+
+  @override
+  String recordPeriodEndsIn(int days) {
+    return '预计还有 $days 天结束';
+  }
+
+  @override
+  String get recordPeriodRecordAction => '记录经期';
+
+  @override
+  String get recordDietTitle => '饮食记录';
+
+  @override
+  String recordMealCountValue(int count) {
+    return '今日 $count 餐';
+  }
+
+  @override
+  String get recordMealLogging => '记录中';
+
+  @override
+  String get recordDietRecordAction => '记录饮食';
+
+  @override
+  String get recordSpecialistPackTitle => '专科健康包';
+
+  @override
+  String get recordSpecialistPackSubtitle => '关注专科健康，记录更全面';
+
+  @override
+  String get recordDentalRecordTitle => '牙科记录';
+
+  @override
+  String get recordEyeRecordTitle => '眼科记录';
+
+  @override
+  String get recordHearingRecordTitle => '听力记录';
+
+  @override
+  String get recordZeroCountLabel => '0 条记录';
 
   @override
   String get medicinePageDescription =>

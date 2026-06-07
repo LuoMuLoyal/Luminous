@@ -9,6 +9,7 @@ import 'package:luminous/features/health_context/domain/entities/health_context_
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
+import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'auth_test_helpers.dart';
@@ -17,6 +18,7 @@ void main() {
   testWidgets('Shell page uses five desktop tabs plus settings/help actions', (
     tester,
   ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final mockSnapshot = HealthContextSnapshot(
       summary: const HealthSummary(
         age: 27,
@@ -64,6 +66,9 @@ void main() {
           recordRepositoryProvider.overrideWithValue(
             const MockRecordRepository(),
           ),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -84,24 +89,24 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text('Luminous'), findsOneWidget);
-    expect(find.text('今日'), findsOneWidget);
-    expect(find.text('记录'), findsAtLeastNWidgets(1));
-    expect(find.text('用药'), findsOneWidget);
-    expect(find.text('我的'), findsOneWidget);
-    expect(find.text('更多'), findsAtLeastNWidgets(1));
-    expect(find.text('设置'), findsOneWidget);
-    expect(find.text('帮助'), findsOneWidget);
+    expect(find.text(l10n.appTitle), findsOneWidget);
+    expect(find.text(l10n.tabToday), findsAtLeastNWidgets(1));
+    expect(find.text(l10n.tabRecord), findsAtLeastNWidgets(1));
+    expect(find.text(l10n.tabMedicine), findsAtLeastNWidgets(1));
+    expect(find.text(l10n.tabMine), findsAtLeastNWidgets(1));
+    expect(find.text(l10n.tabMore), findsAtLeastNWidgets(1));
+    expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
+    expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
 
-    await tester.tap(find.text('我的').first);
+    await tester.tap(find.text(l10n.tabMine).first);
     await tester.pumpAndSettle();
-    expect(find.text('我的'), findsAtLeastNWidgets(2));
+    expect(find.text(l10n.tabMine), findsAtLeastNWidgets(2));
     expect(find.text('Lumi'), findsOneWidget);
     expect(find.text('user@example.com'), findsOneWidget);
 
-    await tester.tap(find.text('更多').first);
+    await tester.tap(find.text(l10n.tabMore).first);
     await tester.pumpAndSettle();
-    expect(find.text('更多'), findsAtLeastNWidgets(2));
-    expect(find.text('SOS 紧急求助'), findsOneWidget);
+    expect(find.text(l10n.tabMore), findsAtLeastNWidgets(2));
+    expect(find.text(l10n.moreEmergencySosTitle), findsOneWidget);
   });
 }

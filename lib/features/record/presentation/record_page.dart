@@ -23,58 +23,82 @@ class RecordPage extends ConsumerWidget {
     final surface = theme.extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
     final isCompact = width < AppBreakpoints.mobile;
+    final isMobileLayout = width < AppBreakpoints.desktop;
     final typography = isCompact
         ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
         : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
 
     return PageScaffoldShell(
       title: l10n.tabRecord,
-      actions: [
-        RecordHeaderActionChip(
-          label: l10n.recordTodayAction,
-          icon: Icons.today_outlined,
-          typography: typography,
-          surface: surface,
-          onTap: () => _setSelectedDate(ref, DateTime.now()),
-          iconOnly: isCompact,
-        ),
-        RecordHeaderActionChip(
-          label: l10n.recordPreviousDayAction,
-          icon: Icons.chevron_left_rounded,
-          typography: typography,
-          surface: surface,
-          onTap: () => _setSelectedDate(
-            ref,
-            selectedDate.subtract(const Duration(days: 1)),
-          ),
-          iconOnly: true,
-        ),
-        RecordHeaderActionChip(
-          label: l10n.recordNextDayAction,
-          icon: Icons.chevron_right_rounded,
-          typography: typography,
-          surface: surface,
-          onTap: () =>
-              _setSelectedDate(ref, selectedDate.add(const Duration(days: 1))),
-          iconOnly: true,
-        ),
-        RecordHeaderActionChip(
-          label: l10n.recordPickDateAction,
-          icon: Icons.calendar_month_outlined,
-          typography: typography,
-          surface: surface,
-          onTap: () => _pickSelectedDate(context, ref, selectedDate),
-          iconOnly: true,
-        ),
-        RecordHeaderActionChip(
-          label: isCompact ? l10n.recordAddCompactAction : l10n.recordAddAction,
-          icon: Icons.add_rounded,
-          emphasized: true,
-          typography: typography,
-          surface: surface,
-          onTap: () => context.push('/record/create'),
-        ),
-      ],
+      actions: isMobileLayout
+          ? [
+              RecordHeaderActionChip(
+                label: l10n.recordSearchAction,
+                icon: Icons.search_rounded,
+                typography: typography,
+                surface: surface,
+                onTap: () => showRecordToast(context, l10n.recordSearchAction),
+                iconOnly: true,
+              ),
+              RecordHeaderActionChip(
+                label: l10n.recordFilterAction,
+                icon: Icons.filter_alt_outlined,
+                typography: typography,
+                surface: surface,
+                onTap: () => showRecordToast(context, l10n.recordFilterAction),
+                iconOnly: true,
+              ),
+            ]
+          : [
+              RecordHeaderActionChip(
+                label: l10n.recordTodayAction,
+                icon: Icons.today_outlined,
+                typography: typography,
+                surface: surface,
+                onTap: () => _setSelectedDate(ref, DateTime.now()),
+                iconOnly: isCompact,
+              ),
+              RecordHeaderActionChip(
+                label: l10n.recordPreviousDayAction,
+                icon: Icons.chevron_left_rounded,
+                typography: typography,
+                surface: surface,
+                onTap: () => _setSelectedDate(
+                  ref,
+                  selectedDate.subtract(const Duration(days: 1)),
+                ),
+                iconOnly: true,
+              ),
+              RecordHeaderActionChip(
+                label: l10n.recordNextDayAction,
+                icon: Icons.chevron_right_rounded,
+                typography: typography,
+                surface: surface,
+                onTap: () => _setSelectedDate(
+                  ref,
+                  selectedDate.add(const Duration(days: 1)),
+                ),
+                iconOnly: true,
+              ),
+              RecordHeaderActionChip(
+                label: l10n.recordPickDateAction,
+                icon: Icons.calendar_month_outlined,
+                typography: typography,
+                surface: surface,
+                onTap: () => _pickSelectedDate(context, ref, selectedDate),
+                iconOnly: true,
+              ),
+              RecordHeaderActionChip(
+                label: isCompact
+                    ? l10n.recordAddCompactAction
+                    : l10n.recordAddAction,
+                icon: Icons.add_rounded,
+                emphasized: true,
+                typography: typography,
+                surface: surface,
+                onTap: () => context.push('/record/create'),
+              ),
+            ],
       children: [
         dashboardAsync.when(
           data: (dashboard) => RecordDashboardView(dashboard: dashboard),

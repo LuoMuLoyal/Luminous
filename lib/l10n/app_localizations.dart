@@ -194,6 +194,48 @@ abstract class AppLocalizations {
   /// **'选择日期'**
   String get recordPickDateAction;
 
+  /// No description provided for @recordSearchAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索'**
+  String get recordSearchAction;
+
+  /// No description provided for @recordFilterAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'筛选'**
+  String get recordFilterAction;
+
+  /// No description provided for @recordSwitchDateAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'切换日期'**
+  String get recordSwitchDateAction;
+
+  /// No description provided for @recordDatePillLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'{month} 月 {day} 日  星期{weekday}'**
+  String recordDatePillLabel(int month, int day, String weekday);
+
+  /// No description provided for @recordTodayEntriesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日记录 · {count} 条'**
+  String recordTodayEntriesTitle(int count);
+
+  /// No description provided for @recordQuickActionLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'记{type}'**
+  String recordQuickActionLabel(String type);
+
+  /// No description provided for @recordQuickPeriodAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'记经期'**
+  String get recordQuickPeriodAction;
+
   /// No description provided for @recordAddAction.
   ///
   /// In zh, this message translates to:
@@ -793,6 +835,192 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'餐图占位'**
   String get recordFoodImagePlaceholder;
+
+  /// No description provided for @recordSymptomTrackingSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'症状跟踪'**
+  String get recordSymptomTrackingSectionTitle;
+
+  /// No description provided for @recordSymptomHeadache.
+  ///
+  /// In zh, this message translates to:
+  /// **'头痛'**
+  String get recordSymptomHeadache;
+
+  /// No description provided for @recordSymptomLoggedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天 {time} 记录'**
+  String recordSymptomLoggedAt(String time);
+
+  /// No description provided for @recordBodyPartLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'部位'**
+  String get recordBodyPartLabel;
+
+  /// No description provided for @recordBodyPartForehead.
+  ///
+  /// In zh, this message translates to:
+  /// **'头部（前额）'**
+  String get recordBodyPartForehead;
+
+  /// No description provided for @recordAccompanyingSymptomsLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'伴随症状'**
+  String get recordAccompanyingSymptomsLabel;
+
+  /// No description provided for @recordSymptomNausea.
+  ///
+  /// In zh, this message translates to:
+  /// **'轻微恶心'**
+  String get recordSymptomNausea;
+
+  /// No description provided for @recordSymptomLightSensitive.
+  ///
+  /// In zh, this message translates to:
+  /// **'对光敏感'**
+  String get recordSymptomLightSensitive;
+
+  /// No description provided for @recordPainRatingLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'疼痛评分'**
+  String get recordPainRatingLabel;
+
+  /// No description provided for @recordPainModerate.
+  ///
+  /// In zh, this message translates to:
+  /// **'中等'**
+  String get recordPainModerate;
+
+  /// No description provided for @recordViewTrendAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看趋势'**
+  String get recordViewTrendAction;
+
+  /// No description provided for @recordMoodTrendSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪趋势'**
+  String get recordMoodTrendSectionTitle;
+
+  /// No description provided for @recordMoodAverage.
+  ///
+  /// In zh, this message translates to:
+  /// **'一般'**
+  String get recordMoodAverage;
+
+  /// No description provided for @recordMoodGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'良好'**
+  String get recordMoodGood;
+
+  /// No description provided for @recordMoodPoor.
+  ///
+  /// In zh, this message translates to:
+  /// **'较差'**
+  String get recordMoodPoor;
+
+  /// No description provided for @recordMoodStable.
+  ///
+  /// In zh, this message translates to:
+  /// **'平稳'**
+  String get recordMoodStable;
+
+  /// No description provided for @recordCycleDietSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期与饮食'**
+  String get recordCycleDietSectionTitle;
+
+  /// No description provided for @recordPeriodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期'**
+  String get recordPeriodTitle;
+
+  /// No description provided for @recordPeriodDayValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期第 {day} 天'**
+  String recordPeriodDayValue(int day);
+
+  /// No description provided for @recordPeriodEndsIn.
+  ///
+  /// In zh, this message translates to:
+  /// **'预计还有 {days} 天结束'**
+  String recordPeriodEndsIn(int days);
+
+  /// No description provided for @recordPeriodRecordAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录经期'**
+  String get recordPeriodRecordAction;
+
+  /// No description provided for @recordDietTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮食记录'**
+  String get recordDietTitle;
+
+  /// No description provided for @recordMealCountValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日 {count} 餐'**
+  String recordMealCountValue(int count);
+
+  /// No description provided for @recordMealLogging.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录中'**
+  String get recordMealLogging;
+
+  /// No description provided for @recordDietRecordAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录饮食'**
+  String get recordDietRecordAction;
+
+  /// No description provided for @recordSpecialistPackTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'专科健康包'**
+  String get recordSpecialistPackTitle;
+
+  /// No description provided for @recordSpecialistPackSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'关注专科健康，记录更全面'**
+  String get recordSpecialistPackSubtitle;
+
+  /// No description provided for @recordDentalRecordTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'牙科记录'**
+  String get recordDentalRecordTitle;
+
+  /// No description provided for @recordEyeRecordTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'眼科记录'**
+  String get recordEyeRecordTitle;
+
+  /// No description provided for @recordHearingRecordTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'听力记录'**
+  String get recordHearingRecordTitle;
+
+  /// No description provided for @recordZeroCountLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'0 条记录'**
+  String get recordZeroCountLabel;
 
   /// No description provided for @medicinePageDescription.
   ///

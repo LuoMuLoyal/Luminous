@@ -36,6 +36,7 @@ Last updated: 2026-06-07
 - Generated Lucent client: `packages/lucent_openapi`.
 - Current generated client includes `DailyRecordsApi.dailyRecordsControllerCreateImageUploadV1` and generated `EnvironmentApi`.
 - Real Lucent-backed flows: auth/account, health-context edits, medicine search/detail, current medicines, manual dose logs, daily-record timeline/detail/create/edit/delete, selected-date timeline reload, occurredAt-based timeline time, daily-record single-image attachment upload/display.
+- Mobile north-star UI is active for Today and Record; Record keeps real daily-record timeline/detail data while symptom, mood trend, period/diet, and specialist pack sections are static placeholders.
 - Environment snapshot is backend-ready but frontend-deferred: More still uses static mock data until core modules are steadier.
 - Still mock/static or planned: live reminders, OCR/barcode scanning, smart devices, family profiles, push notifications, richer record analytics.
 
