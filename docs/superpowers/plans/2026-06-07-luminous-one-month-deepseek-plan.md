@@ -4,7 +4,7 @@
 
 **Goal:** From 2026-06-07 through 2026-07-06, move Luminous from the latest committed five-tab health assistant baseline into steadier real health loops: Mine post-refactor hardening, Record type-specific forms, environment snapshot wiring, cross-feature state refresh coverage, and reminder scheduling groundwork without presenting planned features as real.
 
-**Architecture:** Keep Lucent as the only backend contract source and Luminous as the Flutter client. Add narrow feature/repository boundaries before wiring real data, keep generated OpenAPI DTOs inside data-layer code, and keep unsupported surfaces explicitly mock/static/planned.
+**Architecture:** Keep Lucent as the only backend contract source and Luminous as the Flutter client. Add narrow feature/repository boundaries before wiring real data, keep generated OpenAPI DTOs inside data-layer code, and keep unsupported surfaces explicitly mock/static/planned. The mobile UI architecture is frozen as five bottom tabs: `today / record / medicine / report / mine`; do not add or revive a generic More tab.
 
 **Tech Stack:** Flutter, Riverpod, GoRouter, Flutter gen-l10n ARB files, Dio, generated `packages/lucent_openapi`, Lucent NestJS/OpenAPI, widget tests, integration tests.
 
@@ -31,6 +31,7 @@ Before Task 1, read these committed files:
 - `Luminous/AGENTS.md`
 - `Luminous/README.md`
 - `Luminous/docs/README.md`
+- `Luminous/docs/Product_North_Star.md`
 - `Luminous/docs/Current_State.md`
 - `Luminous/docs/Next_Plan.md`
 - `Luminous/docs/Project_Guardrails.md`
@@ -58,12 +59,7 @@ Planned Luminous files and responsibilities:
 - `lib/features/environment/data/mappers/environment_mapper.dart`: maps generated DTOs to Luminous domain entities.
 - `lib/features/environment/data/repositories/lucent_environment_repository.dart`: Lucent-backed environment repository with static mock fallback at caller boundary.
 - `lib/features/environment/data/providers/environment_data_providers.dart`: Riverpod providers for Environment API/data source/repository.
-- `lib/features/more/data/repositories/mock_more_repository.dart`: keep static non-environment More sections available as fallback and planned placeholders.
-- `lib/features/more/data/repositories/lucent_more_repository.dart`: merge static More tools with real environment snapshot.
-- `lib/features/more/domain/entities/more_dashboard.dart`: add source/update metadata to `MoreEnvironmentSnapshot`.
-- `lib/features/more/presentation/providers/more_dashboard_provider.dart`: remove stale environment backend wait marker and use the real repository provider.
-- `test/more_environment_repository_test.dart`: maps static/live/error environment states into More dashboard.
-- `test/more_page_test.dart`: More planned badges plus real environment/reference badge coverage.
+- `test/environment_repository_test.dart`: maps static/live/error environment snapshot states without importing generated DTOs outside data-layer tests.
 - `lib/features/today/data/repositories/lucent_today_repository.dart`: consume the shared environment repository for Today environment signals.
 - `lib/features/today/domain/entities/today_dashboard.dart`: carry environment source metadata needed by the view.
 - `test/today_page_test.dart`: Today real/static/partial-data coverage.
@@ -76,7 +72,7 @@ Planned Luminous files and responsibilities:
 - `docs/migration-log/2026-06-11.md`: Task 3 Record form extraction entry.
 - `docs/migration-log/2026-06-14.md`: Task 4 Record common type entry.
 - `docs/migration-log/2026-06-18.md`: Task 5 provider invalidation entry.
-- `docs/migration-log/2026-06-21.md`: Task 6 More environment entry.
+- `docs/migration-log/2026-06-21.md`: Task 6 environment repository entry.
 - `docs/migration-log/2026-06-24.md`: Task 7 Today environment entry.
 - `docs/migration-log/2026-06-26.md`: Task 8 medicine adherence entry.
 - `docs/migration-log/2026-06-29.md`: Task 9 OpenAPI reminder sync entry.
@@ -131,7 +127,7 @@ Commit:
 | 2026-06-11 to 2026-06-13 | Task 3: Record reusable form fields |
 | 2026-06-14 to 2026-06-17 | Task 4: Record common type refinement |
 | 2026-06-18 to 2026-06-20 | Task 5: Cross-feature provider invalidation coverage |
-| 2026-06-21 to 2026-06-23 | Task 6: Environment repository and More integration |
+| 2026-06-21 to 2026-06-23 | Task 6: Environment repository foundation |
 | 2026-06-24 to 2026-06-25 | Task 7: Today environment integration |
 | 2026-06-26 to 2026-06-28 | Task 8: Medicine adherence and reminder source audit |
 | 2026-06-29 to 2026-07-01 | Task 9: Lucent reminder schedule API, no push delivery |
@@ -493,9 +489,9 @@ git add lib/features test docs/Project_Guardrails.md docs/migration-log/2026-06-
 git commit -m "test(state): 补齐跨功能刷新覆盖"
 ```
 
-## Task 6: Environment Repository And More Integration
+## Task 6: Environment Repository Foundation
 
-**Intent:** use Lucent's committed environment snapshot API in More while keeping the rest of More explicitly planned/mock.
+**Intent:** create the shared Lucent environment snapshot boundary without wiring a standalone More/generic utility UI.
 
 **Files:**
 
@@ -505,31 +501,23 @@ git commit -m "test(state): 补齐跨功能刷新覆盖"
 - Create: `lib/features/environment/data/mappers/environment_mapper.dart`
 - Create: `lib/features/environment/data/repositories/lucent_environment_repository.dart`
 - Create: `lib/features/environment/data/providers/environment_data_providers.dart`
-- Create: `lib/features/more/data/repositories/lucent_more_repository.dart`
-- Modify: `lib/features/more/data/repositories/mock_more_repository.dart`
-- Modify: `lib/features/more/domain/entities/more_dashboard.dart`
-- Modify: `lib/features/more/presentation/providers/more_dashboard_provider.dart`
-- Modify: `lib/features/more/presentation/widgets/more_dashboard_sections.dart`
-- Modify: `lib/features/more/presentation/widgets/more_dashboard_panels.dart`
-- Modify: `lib/features/more/presentation/widgets/more_copy.dart`
-- Create: `test/more_environment_repository_test.dart`
-- Modify: `test/more_page_test.dart`
-- Modify: `lib/l10n/app_zh.arb`
-- Modify: `lib/l10n/app_en.arb`
-- Generated: `lib/l10n/app_localizations*.dart`
+- Create: `test/environment_repository_test.dart`
+- Modify: `docs/migration-log/2026-06-21.md`
+- Modify: `docs/Current_State.md`
+- Modify: `docs/Next_Plan.md`
 
 - [ ] **Step 1: Write repository tests**
 
 Create tests proving:
 
 - generated `EnvironmentSnapshotDto.dataSource == 'static'` maps to a visible reference/source state.
-- More dashboard still contains emergency/family/AI/device/knowledge planned sections from the mock dashboard.
-- API failure falls back to the current static environment values and marks the source as fallback/static.
+- generated DTOs are mapped into Luminous-owned domain entities before the presentation/domain layer sees them.
+- API failure falls back to bounded static/reference values and marks the source as fallback/static.
 
 Run:
 
 ```powershell
-flutter test test/more_environment_repository_test.dart
+flutter test test/environment_repository_test.dart
 ```
 
 Expected: FAIL because the environment feature does not exist.
@@ -576,13 +564,13 @@ environmentApi.environmentControllerGetSnapshotV1(lat: lat, lon: lon)
 
 Use `lucentEnvironmentApiProvider` or `LucentDioClient.environmentApi`; do not instantiate `LucentOpenapi` directly.
 
-- [ ] **Step 4: Wire More repository**
+- [ ] **Step 4: Keep UI target explicit**
 
-`LucentMoreRepository` should fetch the mock base dashboard, replace only `dashboard.environment`, and leave other More sections unchanged. Remove the stale environment wait marker from `more_dashboard_provider.dart`.
+Do not wire `lib/features/more/**`, add a More tab, or create a generic utility hub. Task 6 stops at the shared environment data boundary. UI consumption belongs to Task 7 Today integration or a later Mine service-resource task with an explicit user job.
 
 - [ ] **Step 5: Add source labels**
 
-Add localized labels:
+Keep source labels ready for the first consuming UI:
 
 - Chinese: `参考值`, `实时`, `本地参考`
 - English: `Reference`, `Live`, `Local reference`
@@ -596,7 +584,7 @@ Run:
 ```powershell
 flutter gen-l10n
 flutter analyze
-flutter test test/more_environment_repository_test.dart test/more_page_test.dart
+flutter test test/environment_repository_test.dart
 ```
 
 Expected: PASS.
@@ -604,13 +592,13 @@ Expected: PASS.
 - [ ] **Step 7: Commit**
 
 ```powershell
-git add lib/features/environment lib/features/more lib/l10n test/more_environment_repository_test.dart test/more_page_test.dart docs/migration-log/2026-06-21.md docs/Localization.md docs/Current_State.md docs/Next_Plan.md
-git commit -m "feat(more): 接入环境快照参考数据"
+git add lib/features/environment lib/l10n test/environment_repository_test.dart docs/migration-log/2026-06-21.md docs/Localization.md docs/Current_State.md docs/Next_Plan.md
+git commit -m "feat(environment): 接入环境快照参考数据"
 ```
 
 ## Task 7: Today Environment Integration
 
-**Intent:** replace Today's static environment signals with the same real Lucent snapshot path used by More.
+**Intent:** replace Today's static environment signals with the shared real Lucent snapshot path.
 
 **Files:**
 
@@ -619,7 +607,7 @@ git commit -m "feat(more): 接入环境快照参考数据"
 - Modify: `lib/features/today/presentation/widgets/today_dashboard_view.dart`
 - Modify: `lib/features/environment/**`
 - Modify: `test/today_page_test.dart`
-- Modify: `test/more_environment_repository_test.dart`
+- Modify: `test/environment_repository_test.dart`
 - Modify: `lib/l10n/app_zh.arb`
 - Modify: `lib/l10n/app_en.arb`
 - Generated: `lib/l10n/app_localizations*.dart`
@@ -677,7 +665,7 @@ Run:
 ```powershell
 flutter gen-l10n
 flutter analyze
-flutter test test/today_page_test.dart test/more_environment_repository_test.dart
+flutter test test/today_page_test.dart test/environment_repository_test.dart
 ```
 
 Expected: PASS.
@@ -685,7 +673,7 @@ Expected: PASS.
 - [ ] **Step 6: Commit**
 
 ```powershell
-git add lib/features/today lib/features/environment lib/l10n test/today_page_test.dart test/more_environment_repository_test.dart docs/migration-log/2026-06-24.md docs/Localization.md docs/Current_State.md docs/Next_Plan.md
+git add lib/features/today lib/features/environment lib/l10n test/today_page_test.dart test/environment_repository_test.dart docs/migration-log/2026-06-24.md docs/Localization.md docs/Current_State.md docs/Next_Plan.md
 git commit -m "feat(today): 使用环境快照参考数据"
 ```
 
@@ -1006,7 +994,7 @@ Docs must state:
 - Record common forms are supported only for water, vital, symptom, and note.
 - Environment data comes from Lucent snapshot and is static/reference unless `dataSource == live`.
 - Reminder schedules are local notification triggers from structured reminders, not push delivery.
-- More family/device/OCR/barcode/report-import features remain planned/mock unless separate tasks implemented them.
+- Family/device/OCR/barcode/report-import features remain planned/mock or deferred unless separate tasks implement them under a clear Today, Medicine, Report, or Mine user job. Do not restore a standalone More tab.
 
 - [ ] **Step 4: Verify docs**
 

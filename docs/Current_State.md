@@ -38,8 +38,8 @@ Last updated: 2026-06-07
 - Real Lucent-backed flows: auth/account, health-context edits, medicine search/detail, current medicines, manual dose logs, daily-record timeline/detail/create/edit/delete, selected-date timeline reload, occurredAt-based timeline time, daily-record single-image attachment upload/display.
 - Auth/session state is explicitly split into restoring, confirmed signed-out, and signed-in protected-data access. Protected providers do not call Lucent while auth is restoring or signed out; confirmed signed-out main tabs use local/mock static surfaces, while signed-in tabs and edit flows use protected repositories.
 - Mobile north-star UI is active for Today, Record, Medicine, Report, and Mine. These five main tabs share partial skeleton loading: stable page chrome plus local/mock/static sections render immediately, while backend-backed fields render shimmer slots through the shared skeleton primitives. Record keeps real daily-record timeline/detail data while symptom, mood trend, period/diet, and specialist pack sections are static placeholders. Medicine keeps real current-medicine and manual dose-log data where available while safety engine, scan/OCR, report, reference notice, and safety tips are bounded mock/placeholder sections. Report uses a feature-local mock repository for weekly score, trends, findings, exports, privacy controls, and pattern analysis until Lucent exposes report/insight APIs. Mine reads real auth/account plus health-context profile/allergy/condition/current-medicine data while campus services, privacy permissions, reminders, and secondary settings remain bounded mock entries.
-- Environment snapshot is backend-ready but frontend-deferred: More still uses static mock data until core modules are steadier.
-- Still mock/static or planned: live reminders, Mine campus/privacy/reminder/settings contracts, Report insights/export data, Medicine OCR/barcode scanning and richer safety-engine data, smart devices, family profiles, push notifications, richer record analytics.
+- Environment snapshot is backend-ready but frontend-deferred. Future frontend wiring should target contextual Today signals and/or Mine service-resource entries, not a standalone generic More tab.
+- Still mock/static or planned: live reminders, Mine campus/privacy/reminder/settings contracts, Report insights/export data, Medicine OCR/barcode scanning and richer safety-engine data, smart devices, family profiles, push notifications, richer record analytics, and other low-frequency utilities that do not yet have a north-star tab home.
 
 ## UI Status
 
@@ -49,6 +49,7 @@ Last updated: 2026-06-07
 - Page-level surfaces should use `AppShadowTokens.level1`; reserve higher shadow levels for floating feedback, modal-like panels, or authentication surfaces that need stronger separation.
 - Loading states should preserve static page chrome and known local/mock content. Use skeleton shimmer only inside sections that wait on backend-backed data, through `AppSkeletonScope` and skeleton slots where possible.
 - Auth-gated UI distinguishes session restoring, confirmed signed-out, and signed-in protected-data states. Restoring sessions keep skeleton/loading surfaces and must not redirect to login or call protected Lucent APIs; confirmed signed-out main tabs may show local/mock static surfaces; signed-in states may call protected repositories.
+- UI review on 2026-06-07 found the mobile five-tab surface suitable to freeze for logic-layer work. Do not add a sixth tab or revive a generic utility hub; route low-frequency entries through Mine, contextual Today actions, or defer them.
 
 ## UI Rules
 
@@ -62,11 +63,11 @@ Last updated: 2026-06-07
 ## UI Priorities
 
 1. Keep daily-record and manual dose-log flows under regression as they expand; current auth, ownership, selected-date reload, occurredAt timeline time, null clearing, skipped/taken status, and provider invalidation coverage exists.
-2. Expand Record forms before deferred More wiring; only add fields when Lucent contracts exist for the specific record type.
+2. Expand Record forms before deferred environment/utility wiring; only add fields when Lucent contracts exist for the specific record type.
 3. Keep Today factual: daily-record and dose-log summaries may be real, but unsupported advice/static sections must stay clearly bounded and use placeholders instead of hand-drawn complex graphics.
 4. Connect Report mock repository to real report/insight/export data sources after Lucent contracts exist; keep complex charts as placeholders until the data contract and chart requirements are stable.
 5. Connect Mine campus service, privacy permission, reminder, and settings extras to real Lucent data sources after those contracts exist; keep bounded mock entries explicit until then.
-6. Connect More mock repository to real emergency, device, tool, and environment data sources after their Lucent contracts exist.
+6. Keep low-frequency utilities out of the bottom navigation; wire environment or service resources contextually through Today/Mine only after the relevant contracts and user jobs are stable.
 7. Expand palette variants only after default / blue-pink / yellow-green prove stable across the main settings, mine, today, medicine, report, and record surfaces.
 
 ## Verification Baseline

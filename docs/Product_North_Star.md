@@ -35,6 +35,18 @@ The mobile product uses five tabs:
 
 Do not use a generic catch-all bottom tab in the north-star architecture. Low-frequency features should be placed under `我的`, entered contextually from `今日`, or deferred to future scope.
 
+## Tab Boundaries
+
+The five tabs intentionally overlap at the data level, but not at the job level:
+
+- `今日` is the daily command surface. It may summarize today's medicine, water, mood, sleep, period, environment, and campus signals, but it should only start lightweight actions or route to the owning tab for deeper work.
+- `记录` owns raw daily capture and the timeline. It should not become the report-analysis surface.
+- `用药` owns medicine search, personal medication box, dose status, and medication safety boundaries. It can consume profile/current-medicine data, but profile editing stays under `我的`.
+- `报告` owns retrospective summaries, explainable trends, export preview, and doctor/counselor-friendly views. It should not own daily input controls.
+- `我的` owns identity, health profile, privacy, permissions, account settings, campus resources, and low-frequency service entries. It is the only allowed home for low-frequency utility-style entries in the mobile MVP.
+
+Shared facts such as current medicines, dose logs, daily records, environment reference data, and privacy state should be modeled once in the logic/data layer and then rendered in the tab that matches the user's current job.
+
 ## Concept Screens
 
 Long, readable concept screens for the five-tab mobile structure:
@@ -54,6 +66,8 @@ The web concept remains a lightweight report view for weekly summaries, export p
 | Scope | Concept Image |
 | --- | --- |
 | Web report view | `docs/assets/product-north-star-web-report-v1.png` |
+
+Web is read/export oriented in the MVP. It can show report summaries, export previews, print-friendly views, and competition demo materials. It should not own daily recording, medication reminders, privacy settings, profile editing, or mobile-first intervention flows unless the north-star strategy changes.
 
 ## MVP Demo Scenarios
 
