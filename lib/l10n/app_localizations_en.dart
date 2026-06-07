@@ -157,6 +157,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordQuickSectionTitle => 'Quick record';
 
   @override
+  String get recordAiInputHint =>
+      'My stomach feels a bit bloated after eating...';
+
+  @override
+  String get recordAiBadge => 'AI';
+
+  @override
   String get recordSummarySectionTitle => 'Day summary';
 
   @override
@@ -175,10 +182,92 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordFilterSectionTitle => 'Record types';
 
   @override
+  String get recordFilterMobileTitle => 'Record filter';
+
+  @override
+  String get recordFilterAllAction => 'All';
+
+  @override
   String get recordFilterSelectAll => 'Select all';
 
   @override
   String get recordAllTypesAction => 'All types';
+
+  @override
+  String get recordCalendarOverviewTitle => 'Calendar overview';
+
+  @override
+  String get recordTodayOverviewTitle => 'Today overview';
+
+  @override
+  String get recordTodayOverviewEvents => 'Events';
+
+  @override
+  String recordTodayOverviewEventCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+      zero: '0 items',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recordTodayOverviewWater => 'Water';
+
+  @override
+  String recordTodayOverviewWaterValue(String amount) {
+    return '$amount cups';
+  }
+
+  @override
+  String get recordTodayOverviewSleep => 'Sleep';
+
+  @override
+  String recordTodayOverviewSleepValue(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String get recordTodayOverviewMoodAverage => 'Mood avg';
+
+  @override
+  String recordTodayOverviewMoodValue(String score) {
+    return '$score / 5';
+  }
+
+  @override
+  String get recordTodayOverviewReportAction => 'View today\'s report';
+
+  @override
+  String get recordQuickOperationTitle => 'Quick actions';
+
+  @override
+  String get recordVoiceInputTitle => 'Voice input';
+
+  @override
+  String get recordVoiceInputSubtitle => 'Speak and auto-log';
+
+  @override
+  String get recordPhotoRecordTitle => 'Photo record';
+
+  @override
+  String get recordPhotoRecordSubtitle => 'Recognize food/meds';
+
+  @override
+  String get recordTemplateRecordTitle => 'Template';
+
+  @override
+  String get recordTemplateRecordSubtitle => 'Symptom/meal/vital templates';
+
+  @override
+  String get recordGuideHint =>
+      'Tip: steady records help you understand your health better';
+
+  @override
+  String get recordGuideAction => 'View record guide';
 
   @override
   String get recordDetailTitle => 'Record details';
@@ -275,6 +364,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordTypeWomenHealth => 'Women\'s health';
 
   @override
+  String get recordTypeSleep => 'Sleep';
+
+  @override
   String get recordTypeHeartRate => 'Heart rate';
 
   @override
@@ -351,6 +443,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordTimelineMoodDetail => 'Mood is steady, sleep was okay';
+
+  @override
+  String get recordTimelineSymptomRecord => 'Symptom record';
+
+  @override
+  String get recordTimelineSymptomDetail => 'Headache · pain score 3/5';
+
+  @override
+  String get recordTimelineWomenHealthRecord => 'Period record';
+
+  @override
+  String get recordTimelineWomenHealthDetail => 'Period day 2 · mild bloating';
+
+  @override
+  String get recordTimelineSleepRecord => 'Sleep record';
+
+  @override
+  String get recordTimelineSleepDetail =>
+      'Bedtime 23:30 · sleep duration 7.0 h';
 
   @override
   String get recordTimelineHeartRateDetail => '72 bpm · source: watch · normal';

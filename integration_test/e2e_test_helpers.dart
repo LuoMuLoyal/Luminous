@@ -553,10 +553,14 @@ class E2eRecordRepository implements RecordRepository {
   final requestedDates = <DateTime>[];
 
   @override
-  Future<RecordDashboard> fetchDashboard(DateTime selectedDate) async {
+  Future<RecordDashboard> fetchDashboard(
+    DateTime selectedDate, {
+    bool showWomenHealth = false,
+  }) async {
     requestedDates.add(selectedDate);
     final mock = await const MockRecordRepository().fetchDashboard(
       selectedDate,
+      showWomenHealth: showWomenHealth,
     );
 
     return RecordDashboard(
@@ -582,6 +586,7 @@ class E2eRecordRepository implements RecordRepository {
       ],
       trends: mock.trends,
       healthBag: mock.healthBag,
+      showWomenHealth: showWomenHealth,
     );
   }
 }

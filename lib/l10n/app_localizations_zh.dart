@@ -147,6 +147,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordQuickSectionTitle => '快速记录';
 
   @override
+  String get recordAiInputHint => '刚吃完饭胃有点胀...';
+
+  @override
+  String get recordAiBadge => 'AI';
+
+  @override
   String get recordSummarySectionTitle => '当天摘要';
 
   @override
@@ -165,10 +171,84 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordFilterSectionTitle => '记录类型';
 
   @override
+  String get recordFilterMobileTitle => '记录筛选';
+
+  @override
+  String get recordFilterAllAction => '全部';
+
+  @override
   String get recordFilterSelectAll => '全选';
 
   @override
   String get recordAllTypesAction => '全部类型';
+
+  @override
+  String get recordCalendarOverviewTitle => '日历概览';
+
+  @override
+  String get recordTodayOverviewTitle => '今日记录概览';
+
+  @override
+  String get recordTodayOverviewEvents => '记录事件';
+
+  @override
+  String recordTodayOverviewEventCount(int count) {
+    return '$count 条';
+  }
+
+  @override
+  String get recordTodayOverviewWater => '饮水';
+
+  @override
+  String recordTodayOverviewWaterValue(String amount) {
+    return '$amount 杯';
+  }
+
+  @override
+  String get recordTodayOverviewSleep => '睡眠';
+
+  @override
+  String recordTodayOverviewSleepValue(String hours) {
+    return '$hours 小时';
+  }
+
+  @override
+  String get recordTodayOverviewMoodAverage => '情绪平均';
+
+  @override
+  String recordTodayOverviewMoodValue(String score) {
+    return '$score / 5';
+  }
+
+  @override
+  String get recordTodayOverviewReportAction => '查看今日报告';
+
+  @override
+  String get recordQuickOperationTitle => '快捷操作';
+
+  @override
+  String get recordVoiceInputTitle => '语音输入';
+
+  @override
+  String get recordVoiceInputSubtitle => '说一说，自动记录';
+
+  @override
+  String get recordPhotoRecordTitle => '拍照记录';
+
+  @override
+  String get recordPhotoRecordSubtitle => '拍照识别食物/药品';
+
+  @override
+  String get recordTemplateRecordTitle => '模板记录';
+
+  @override
+  String get recordTemplateRecordSubtitle => '症状/饮食/体征模板';
+
+  @override
+  String get recordGuideHint => '小贴士：坚持记录有助于更好地了解自己的健康状态';
+
+  @override
+  String get recordGuideAction => '查看记录指南';
 
   @override
   String get recordDetailTitle => '记录详情';
@@ -263,6 +343,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordTypeWomenHealth => '女性健康';
 
   @override
+  String get recordTypeSleep => '睡眠';
+
+  @override
   String get recordTypeHeartRate => '心率';
 
   @override
@@ -337,6 +420,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordTimelineMoodDetail => '心情不错，睡得还可以';
+
+  @override
+  String get recordTimelineSymptomRecord => '症状记录';
+
+  @override
+  String get recordTimelineSymptomDetail => '头痛 · 疼痛评分 3/5';
+
+  @override
+  String get recordTimelineWomenHealthRecord => '经期记录';
+
+  @override
+  String get recordTimelineWomenHealthDetail => '经期第 2 天 · 轻微腹胀';
+
+  @override
+  String get recordTimelineSleepRecord => '睡眠记录';
+
+  @override
+  String get recordTimelineSleepDetail => '上床 23:30 · 睡眠时长 7.0 小时';
 
   @override
   String get recordTimelineHeartRateDetail => '72 次/分 · 来源：手表 · 正常';

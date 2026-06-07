@@ -168,9 +168,15 @@ class _CountingRecordRepository implements RecordRepository {
   int calls = 0;
 
   @override
-  Future<RecordDashboard> fetchDashboard(DateTime selectedDate) async {
+  Future<RecordDashboard> fetchDashboard(
+    DateTime selectedDate, {
+    bool showWomenHealth = false,
+  }) async {
     calls += 1;
-    return const MockRecordRepository().fetchDashboard(selectedDate);
+    return const MockRecordRepository().fetchDashboard(
+      selectedDate,
+      showWomenHealth: showWomenHealth,
+    );
   }
 }
 

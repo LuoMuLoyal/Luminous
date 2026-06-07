@@ -10,24 +10,33 @@ class MockRecordRepository implements RecordRepository {
   const MockRecordRepository();
 
   @override
-  Future<RecordDashboard> fetchDashboard(DateTime selectedDate) async {
-    return dashboardFor(selectedDate);
+  Future<RecordDashboard> fetchDashboard(
+    DateTime selectedDate, {
+    bool showWomenHealth = false,
+  }) async {
+    return dashboardFor(selectedDate, showWomenHealth: showWomenHealth);
   }
 
-  static RecordDashboard loadingDashboard(DateTime selectedDate) {
-    return dashboardFor(selectedDate);
+  static RecordDashboard loadingDashboard(
+    DateTime selectedDate, {
+    bool showWomenHealth = false,
+  }) {
+    return dashboardFor(selectedDate, showWomenHealth: showWomenHealth);
   }
 
-  static RecordDashboard dashboardFor(DateTime selectedDate) {
+  static RecordDashboard dashboardFor(
+    DateTime selectedDate, {
+    bool showWomenHealth = false,
+  }) {
     return RecordDashboard(
       selectedDate: selectedDate,
       selectedDay: selectedDate.day,
       weekDays: _weekDays,
       monthDays: _monthDays,
-      quickActions: _quickActions,
+      quickActions: _quickActionsFor(showWomenHealth),
       summary: const RecordDaySummary(items: _summaryItems),
-      filters: _filters,
-      timeline: _timeline,
+      filters: _filtersFor(showWomenHealth),
+      timeline: _timelineFor(showWomenHealth),
       trends: _trends,
       healthBag: const RecordHealthBag(
         titleKey: RecordCopyKey.healthBagTitle,
@@ -35,6 +44,7 @@ class MockRecordRepository implements RecordRepository {
         latestKey: RecordCopyKey.healthBagLatest,
         nextKey: RecordCopyKey.healthBagNext,
       ),
+      showWomenHealth: showWomenHealth,
     );
   }
 
@@ -54,6 +64,8 @@ class MockRecordRepository implements RecordRepository {
   static const _medicationSoft = Color(0xFFFFF0E6);
   static const _women = Color(0xFFFF6F91);
   static const _womenSoft = Color(0xFFFFEEF3);
+  static const _sleep = Color(0xFF7B61FF);
+  static const _sleepSoft = Color(0xFFF0ECFF);
 
   static const _weekDays = <RecordWeekDay>[
     RecordWeekDay(
@@ -305,7 +317,22 @@ class MockRecordRepository implements RecordRepository {
       accent: _women,
       softColor: _womenSoft,
     ),
+    RecordQuickAction(
+      type: RecordEntryType.sleep,
+      icon: Icons.dark_mode_rounded,
+      titleKey: RecordCopyKey.typeSleep,
+      subtitleKey: RecordCopyKey.summaryRecorded,
+      accent: _sleep,
+      softColor: _sleepSoft,
+    ),
   ];
+
+  static List<RecordQuickAction> _quickActionsFor(bool showWomenHealth) {
+    if (showWomenHealth) return _quickActions;
+    return _quickActions
+        .where((action) => action.type != RecordEntryType.womenHealth)
+        .toList(growable: false);
+  }
 
   static const _summaryItems = <RecordSummaryItem>[
     RecordSummaryItem(
@@ -413,46 +440,30 @@ class MockRecordRepository implements RecordRepository {
       selected: true,
       locked: true,
     ),
+    RecordFilter(
+      type: RecordEntryType.sleep,
+      titleKey: RecordCopyKey.typeSleep,
+      icon: Icons.dark_mode_rounded,
+      accent: _sleep,
+      selected: true,
+    ),
   ];
 
+  static List<RecordFilter> _filtersFor(bool showWomenHealth) {
+    if (showWomenHealth) return _filters;
+    return _filters
+        .where((filter) => filter.type != RecordEntryType.womenHealth)
+        .toList(growable: false);
+  }
+
+  static List<RecordTimelineEntry> _timelineFor(bool showWomenHealth) {
+    if (showWomenHealth) return _timeline;
+    return _timeline
+        .where((entry) => entry.type != RecordEntryType.womenHealth)
+        .toList(growable: false);
+  }
+
   static const _timeline = <RecordTimelineEntry>[
-    RecordTimelineEntry(
-      time: '12:30',
-      type: RecordEntryType.meal,
-      icon: Icons.restaurant_menu_rounded,
-      accent: _meal,
-      softColor: _mealSoft,
-      titleKey: RecordCopyKey.timelineMealLunch,
-      valueKey: RecordCopyKey.timelineMealName,
-      detailKey: RecordCopyKey.timelineMealNutrition,
-      badgeKey: RecordCopyKey.timelineAiBadge,
-      imagePlaceholderKey: RecordCopyKey.foodImagePlaceholder,
-      trailingIcon: Icons.more_horiz_rounded,
-    ),
-    RecordTimelineEntry(
-      time: '11:20',
-      type: RecordEntryType.vitals,
-      icon: Icons.favorite_rounded,
-      accent: _vitals,
-      softColor: _vitalsSoft,
-      titleKey: RecordCopyKey.timelineBloodPressure,
-      value: '118/76',
-      unitKey: RecordCopyKey.summaryNormal,
-      detailKey: RecordCopyKey.timelineBloodPressureDetail,
-      badgeKey: RecordCopyKey.timelineManualBadge,
-      trailingIcon: Icons.chevron_right_rounded,
-    ),
-    RecordTimelineEntry(
-      time: '10:00',
-      type: RecordEntryType.water,
-      icon: Icons.local_drink_rounded,
-      accent: _water,
-      softColor: _waterSoft,
-      titleKey: RecordCopyKey.typeWater,
-      valueKey: RecordCopyKey.timelineWaterAmount,
-      detailKey: RecordCopyKey.timelineWaterProgress,
-      trailingIcon: Icons.chevron_right_rounded,
-    ),
     RecordTimelineEntry(
       time: '08:30',
       type: RecordEntryType.medication,
@@ -465,7 +476,18 @@ class MockRecordRepository implements RecordRepository {
       trailingIcon: Icons.check_circle_outline_rounded,
     ),
     RecordTimelineEntry(
-      time: '07:40',
+      time: '09:15',
+      type: RecordEntryType.water,
+      icon: Icons.local_drink_rounded,
+      accent: _water,
+      softColor: _waterSoft,
+      titleKey: RecordCopyKey.typeWater,
+      valueKey: RecordCopyKey.timelineWaterAmount,
+      detailKey: RecordCopyKey.timelineWaterProgress,
+      trailingIcon: Icons.chevron_right_rounded,
+    ),
+    RecordTimelineEntry(
+      time: '10:30',
       type: RecordEntryType.mood,
       icon: Icons.mood_rounded,
       accent: _mood,
@@ -475,15 +497,48 @@ class MockRecordRepository implements RecordRepository {
       trailingIcon: Icons.chevron_right_rounded,
     ),
     RecordTimelineEntry(
-      time: '07:00',
-      type: RecordEntryType.heartRate,
-      icon: Icons.favorite_rounded,
-      accent: _vitals,
-      softColor: _vitalsSoft,
-      titleKey: RecordCopyKey.typeHeartRate,
-      value: '72',
-      unitKey: RecordCopyKey.timelineHeartRateDetail,
-      detailKey: RecordCopyKey.timelineHeartRateDetail,
+      time: '12:45',
+      type: RecordEntryType.meal,
+      icon: Icons.restaurant_menu_rounded,
+      accent: _meal,
+      softColor: _mealSoft,
+      titleKey: RecordCopyKey.timelineMealLunch,
+      valueKey: RecordCopyKey.timelineMealName,
+      detailKey: RecordCopyKey.timelineMealNutrition,
+      badgeKey: RecordCopyKey.timelineAiBadge,
+      imagePlaceholderKey: RecordCopyKey.foodImagePlaceholder,
+      trailingIcon: Icons.more_horiz_rounded,
+    ),
+    RecordTimelineEntry(
+      time: '15:20',
+      type: RecordEntryType.symptom,
+      icon: Icons.sick_outlined,
+      accent: _symptom,
+      softColor: _symptomSoft,
+      titleKey: RecordCopyKey.timelineSymptomRecord,
+      detailKey: RecordCopyKey.timelineSymptomDetail,
+      badgeKey: RecordCopyKey.timelineManualBadge,
+      trailingIcon: Icons.chevron_right_rounded,
+    ),
+    RecordTimelineEntry(
+      time: '20:10',
+      type: RecordEntryType.womenHealth,
+      icon: Icons.local_florist_rounded,
+      accent: _women,
+      softColor: _womenSoft,
+      titleKey: RecordCopyKey.timelineWomenHealthRecord,
+      detailKey: RecordCopyKey.timelineWomenHealthDetail,
+      trailingIcon: Icons.chevron_right_rounded,
+    ),
+    RecordTimelineEntry(
+      time: '23:30',
+      type: RecordEntryType.sleep,
+      icon: Icons.dark_mode_rounded,
+      accent: _sleep,
+      softColor: _sleepSoft,
+      titleKey: RecordCopyKey.timelineSleepRecord,
+      detailKey: RecordCopyKey.timelineSleepDetail,
+      badgeKey: RecordCopyKey.summaryNormal,
       trailingIcon: Icons.chevron_right_rounded,
     ),
     RecordTimelineEntry(

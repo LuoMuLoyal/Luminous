@@ -362,6 +362,18 @@ abstract class AppLocalizations {
   /// **'快速记录'**
   String get recordQuickSectionTitle;
 
+  /// No description provided for @recordAiInputHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'刚吃完饭胃有点胀...'**
+  String get recordAiInputHint;
+
+  /// No description provided for @recordAiBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI'**
+  String get recordAiBadge;
+
   /// No description provided for @recordSummarySectionTitle.
   ///
   /// In zh, this message translates to:
@@ -398,6 +410,18 @@ abstract class AppLocalizations {
   /// **'记录类型'**
   String get recordFilterSectionTitle;
 
+  /// No description provided for @recordFilterMobileTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录筛选'**
+  String get recordFilterMobileTitle;
+
+  /// No description provided for @recordFilterAllAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部'**
+  String get recordFilterAllAction;
+
   /// No description provided for @recordFilterSelectAll.
   ///
   /// In zh, this message translates to:
@@ -409,6 +433,126 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'全部类型'**
   String get recordAllTypesAction;
+
+  /// No description provided for @recordCalendarOverviewTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'日历概览'**
+  String get recordCalendarOverviewTitle;
+
+  /// No description provided for @recordTodayOverviewTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日记录概览'**
+  String get recordTodayOverviewTitle;
+
+  /// No description provided for @recordTodayOverviewEvents.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录事件'**
+  String get recordTodayOverviewEvents;
+
+  /// No description provided for @recordTodayOverviewEventCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 条'**
+  String recordTodayOverviewEventCount(int count);
+
+  /// No description provided for @recordTodayOverviewWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水'**
+  String get recordTodayOverviewWater;
+
+  /// No description provided for @recordTodayOverviewWaterValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'{amount} 杯'**
+  String recordTodayOverviewWaterValue(String amount);
+
+  /// No description provided for @recordTodayOverviewSleep.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠'**
+  String get recordTodayOverviewSleep;
+
+  /// No description provided for @recordTodayOverviewSleepValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'{hours} 小时'**
+  String recordTodayOverviewSleepValue(String hours);
+
+  /// No description provided for @recordTodayOverviewMoodAverage.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪平均'**
+  String get recordTodayOverviewMoodAverage;
+
+  /// No description provided for @recordTodayOverviewMoodValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'{score} / 5'**
+  String recordTodayOverviewMoodValue(String score);
+
+  /// No description provided for @recordTodayOverviewReportAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看今日报告'**
+  String get recordTodayOverviewReportAction;
+
+  /// No description provided for @recordQuickOperationTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'快捷操作'**
+  String get recordQuickOperationTitle;
+
+  /// No description provided for @recordVoiceInputTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'语音输入'**
+  String get recordVoiceInputTitle;
+
+  /// No description provided for @recordVoiceInputSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'说一说，自动记录'**
+  String get recordVoiceInputSubtitle;
+
+  /// No description provided for @recordPhotoRecordTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照记录'**
+  String get recordPhotoRecordTitle;
+
+  /// No description provided for @recordPhotoRecordSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照识别食物/药品'**
+  String get recordPhotoRecordSubtitle;
+
+  /// No description provided for @recordTemplateRecordTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'模板记录'**
+  String get recordTemplateRecordTitle;
+
+  /// No description provided for @recordTemplateRecordSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'症状/饮食/体征模板'**
+  String get recordTemplateRecordSubtitle;
+
+  /// No description provided for @recordGuideHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'小贴士：坚持记录有助于更好地了解自己的健康状态'**
+  String get recordGuideHint;
+
+  /// No description provided for @recordGuideAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看记录指南'**
+  String get recordGuideAction;
 
   /// No description provided for @recordDetailTitle.
   ///
@@ -590,6 +734,12 @@ abstract class AppLocalizations {
   /// **'女性健康'**
   String get recordTypeWomenHealth;
 
+  /// No description provided for @recordTypeSleep.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠'**
+  String get recordTypeSleep;
+
   /// No description provided for @recordTypeHeartRate.
   ///
   /// In zh, this message translates to:
@@ -739,6 +889,42 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'心情不错，睡得还可以'**
   String get recordTimelineMoodDetail;
+
+  /// No description provided for @recordTimelineSymptomRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'症状记录'**
+  String get recordTimelineSymptomRecord;
+
+  /// No description provided for @recordTimelineSymptomDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'头痛 · 疼痛评分 3/5'**
+  String get recordTimelineSymptomDetail;
+
+  /// No description provided for @recordTimelineWomenHealthRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期记录'**
+  String get recordTimelineWomenHealthRecord;
+
+  /// No description provided for @recordTimelineWomenHealthDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期第 2 天 · 轻微腹胀'**
+  String get recordTimelineWomenHealthDetail;
+
+  /// No description provided for @recordTimelineSleepRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠记录'**
+  String get recordTimelineSleepRecord;
+
+  /// No description provided for @recordTimelineSleepDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'上床 23:30 · 睡眠时长 7.0 小时'**
+  String get recordTimelineSleepDetail;
 
   /// No description provided for @recordTimelineHeartRateDetail.
   ///

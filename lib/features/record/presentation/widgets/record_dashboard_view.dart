@@ -67,8 +67,11 @@ class _MobileRecordDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quickActions = _mobileQuickActions(dashboard.quickActions);
-    final timeline = dashboard.timeline.take(4).toList(growable: false);
+    final quickActions = _mobileQuickActions(
+      dashboard.quickActions,
+      showWomenHealth: dashboard.showWomenHealth,
+    );
+    final timeline = dashboard.timeline.take(7).toList(growable: false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,32 +90,37 @@ class _MobileRecordDashboard extends StatelessWidget {
           surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
+        _MobileAiInputBar(l10n: l10n, typography: typography, surface: surface),
+        const SizedBox(height: AppSpacingTokens.md),
         _MobileTimelinePanel(
           entries: timeline,
+          totalCount: dashboard.timeline.length,
           l10n: l10n,
           typography: typography,
           surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _MobileSymptomPanel(
+        _MobileFilterChipsPanel(
+          filters: _mobileFilters(dashboard.filters),
           l10n: l10n,
           typography: typography,
           surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _MobileMoodTrendPanel(
+        _MobileOverviewPanels(
+          dashboard: dashboard,
           l10n: l10n,
           typography: typography,
           surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _MobileCycleDietPanel(
+        _MobileQuickOperationPanel(
           l10n: l10n,
           typography: typography,
           surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _MobileSpecialistPackPanel(
+        _MobileRecordGuideRow(
           l10n: l10n,
           typography: typography,
           surface: surface,
@@ -229,7 +237,7 @@ class _MobileQuickRecordPanel extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          const columns = 3;
+          const columns = 4;
           final tileWidth =
               (constraints.maxWidth - AppSpacingTokens.sm * (columns - 1)) /
               columns;
@@ -308,7 +316,7 @@ class _MobileQuickRecordTile extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                   textAlign: TextAlign.center,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -323,12 +331,14 @@ class _MobileQuickRecordTile extends StatelessWidget {
 class _MobileTimelinePanel extends StatelessWidget {
   const _MobileTimelinePanel({
     required this.entries,
+    required this.totalCount,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
 
   final List<RecordTimelineEntry> entries;
+  final int totalCount;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
@@ -337,7 +347,7 @@ class _MobileTimelinePanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return RecordSectionSurface(
       key: const Key('record-timeline'),
-      title: l10n.recordTodayEntriesTitle(entries.length),
+      title: l10n.recordTodayEntriesTitle(totalCount),
       typography: typography,
       surface: surface,
       padding: const EdgeInsets.all(AppSpacingTokens.md),
@@ -518,8 +528,8 @@ class _MobileTimelineRow extends StatelessWidget {
   }
 }
 
-class _MobileSymptomPanel extends StatelessWidget {
-  const _MobileSymptomPanel({
+class _MobileAiInputBar extends StatelessWidget {
+  const _MobileAiInputBar({
     required this.l10n,
     required this.typography,
     required this.surface,
@@ -531,136 +541,346 @@ class _MobileSymptomPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
-      key: const Key('record-summary'),
-      title: l10n.recordSymptomTrackingSectionTitle,
-      typography: typography,
-      surface: surface,
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Color.alphaBlend(
-            AppColorTokens.warningSoft.withValues(alpha: 0.42),
-            surface.canvas,
+    return Material(
+      key: const Key('record-ai-input'),
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => showRecordToast(context, l10n.recordAiInputHint),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: surface.canvas,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            border: Border.all(color: AppColorTokens.cyanDeep),
+            boxShadow: AppShadowTokens.level1,
           ),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-          border: Border.all(
-            color: AppColorTokens.warning.withValues(alpha: 0.2),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  RecordIconBadge(
-                    icon: Icons.psychology_alt_outlined,
-                    color: AppColorTokens.warning,
-                    backgroundColor: AppColorTokens.warningSoft,
-                    size: AppSpacingTokens.x3l,
-                    iconSize: AppSpacingTokens.lg,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.md,
+              vertical: AppSpacingTokens.sm,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.auto_awesome_rounded,
+                  color: AppColorTokens.gradientPreviewStart,
+                  size: AppSpacingTokens.xl,
+                ),
+                const SizedBox(width: AppSpacingTokens.md),
+                Expanded(
+                  child: Text(
+                    l10n.recordAiInputHint,
+                    style: typography.bodyMd.copyWith(color: surface.mute),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(width: AppSpacingTokens.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.recordSymptomHeadache,
-                          style: typography.bodyMdStrong.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacingTokens.xxs),
-                        Text(
-                          l10n.recordSymptomLoggedAt('08:20'),
-                          style: typography.caption.copyWith(
-                            color: surface.body,
-                          ),
-                        ),
-                      ],
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColorTokens.cyanDeep.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacingTokens.sm,
+                      vertical: AppSpacingTokens.xxs,
+                    ),
+                    child: Text(
+                      l10n.recordAiBadge,
+                      style: typography.caption.copyWith(
+                        color: AppColorTokens.cyanDeep,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: AppSpacingTokens.md),
-              _InfoLine(
-                label: l10n.recordBodyPartLabel,
-                value: l10n.recordBodyPartForehead,
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                Tooltip(
+                  message: l10n.recordVoiceInputTitle,
+                  child: Icon(
+                    Icons.mic_none_rounded,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    size: AppSpacingTokens.lg,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MobileFilterChipsPanel extends StatelessWidget {
+  const _MobileFilterChipsPanel({
+    required this.filters,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final List<RecordFilter> filters;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      key: const Key('record-filter-chips'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.recordFilterMobileTitle, style: typography.displaySm),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Wrap(
+          spacing: AppSpacingTokens.xs,
+          runSpacing: AppSpacingTokens.xs,
+          children: [
+            _MobileFilterChip(
+              label: l10n.recordFilterAllAction,
+              color: AppColorTokens.cyanDeep,
+              selected: true,
+              typography: typography,
+              surface: surface,
+            ),
+            for (final filter in filters)
+              _MobileFilterChip(
+                label: _mobileFilterLabel(l10n, filter),
+                color: filter.accent,
+                selected: false,
                 typography: typography,
                 surface: surface,
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
-              Text(
-                l10n.recordAccompanyingSymptomsLabel,
-                style: typography.bodySm.copyWith(color: surface.body),
-              ),
-              const SizedBox(height: AppSpacingTokens.xs),
-              Wrap(
-                spacing: AppSpacingTokens.xs,
-                runSpacing: AppSpacingTokens.xs,
-                children: [
-                  RecordPill(
-                    label: l10n.recordSymptomNausea,
-                    color: AppColorTokens.warning,
-                    typography: typography,
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _MobileFilterChip extends StatelessWidget {
+  const _MobileFilterChip({
+    required this.label,
+    required this.color,
+    required this.selected,
+    required this.typography,
+    required this.surface,
+  });
+
+  final String label;
+  final Color color;
+  final bool selected;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final foreground = selected ? color : surface.body;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => showRecordToast(context, label),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: selected ? color.withValues(alpha: 0.1) : surface.canvas,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+            border: Border.all(color: selected ? color : surface.hairline),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.md,
+              vertical: AppSpacingTokens.xs,
+            ),
+            child: Text(
+              label,
+              style: typography.bodySmStrong.copyWith(color: foreground),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MobileOverviewPanels extends StatelessWidget {
+  const _MobileOverviewPanels({
+    required this.dashboard,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final RecordDashboard dashboard;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 6,
+          child: _MobileCalendarOverviewPanel(
+            days: dashboard.weekDays,
+            l10n: l10n,
+            typography: typography,
+            surface: surface,
+          ),
+        ),
+        const SizedBox(width: AppSpacingTokens.sm),
+        Expanded(
+          flex: 5,
+          child: _MobileTodayOverviewPanel(
+            eventCount: dashboard.timeline.length,
+            l10n: l10n,
+            typography: typography,
+            surface: surface,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MobileCalendarOverviewPanel extends StatelessWidget {
+  const _MobileCalendarOverviewPanel({
+    required this.days,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final List<RecordWeekDay> days;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return RecordSectionSurface(
+      key: const Key('record-calendar-overview'),
+      title: l10n.recordCalendarOverviewTitle,
+      typography: typography,
+      surface: surface,
+      padding: const EdgeInsets.all(AppSpacingTokens.md),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              for (final day in days)
+                Expanded(
+                  child: Text(
+                    recordCopy(l10n, day.weekdayKey),
+                    textAlign: TextAlign.center,
+                    style: typography.caption.copyWith(color: surface.body),
                   ),
-                  RecordPill(
-                    label: l10n.recordSymptomLightSensitive,
-                    color: AppColorTokens.warning,
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacingTokens.sm),
+          Row(
+            children: [
+              for (final day in days)
+                Expanded(
+                  child: _MobileCalendarDay(
+                    day: day,
+                    l10n: l10n,
                     typography: typography,
+                    surface: surface,
                   ),
-                ],
-              ),
-              const SizedBox(height: AppSpacingTokens.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.recordPainRatingLabel,
-                          style: typography.caption.copyWith(
-                            color: surface.body,
-                          ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MobileCalendarDay extends StatelessWidget {
+  const _MobileCalendarDay({
+    required this.day,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final RecordWeekDay day;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final foreground = day.selected
+        ? AppColorTokens.cyanDeep
+        : Theme.of(context).colorScheme.onSurface;
+    final markerColors = day.hasAlert
+        ? [...day.markers, AppColorTokens.highlightMagenta]
+        : day.markers;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () =>
+            showRecordToast(context, '${l10n.recordOpenDateAction} ${day.day}'),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xxs),
+          child: Column(
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: day.selected
+                      ? AppColorTokens.cyanDeep.withValues(alpha: 0.08)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+                  border: day.selected
+                      ? Border.all(color: AppColorTokens.cyanDeep)
+                      : null,
+                ),
+                child: SizedBox(
+                  height: AppSpacingTokens.x3l,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${day.day}',
+                        style: typography.bodySmStrong.copyWith(
+                          color: foreground,
                         ),
-                        const SizedBox(height: AppSpacingTokens.xxs),
-                        Text.rich(
-                          TextSpan(
-                            style: typography.displaySm.copyWith(
-                              color: AppColorTokens.warning,
-                              fontWeight: FontWeight.w800,
-                            ),
-                            children: [
-                              const TextSpan(text: '4'),
-                              TextSpan(
-                                text: '/10',
-                                style: typography.caption.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface,
+                      ),
+                      const SizedBox(height: AppSpacingTokens.xxs),
+                      SizedBox(
+                        height: 6,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (final marker in markerColors.take(2))
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 1.2,
+                                ),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: marker,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const SizedBox.square(dimension: 4),
                                 ),
                               ),
-                            ],
-                          ),
+                          ],
                         ),
-                        const SizedBox(height: AppSpacingTokens.xxs),
-                        Text(
-                          l10n.recordPainModerate,
-                          style: typography.bodySmStrong,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  FilledButton(
-                    onPressed: () =>
-                        showRecordToast(context, l10n.recordViewTrendAction),
-                    child: Text(l10n.recordViewTrendAction),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -670,156 +890,97 @@ class _MobileSymptomPanel extends StatelessWidget {
   }
 }
 
-class _MobileMoodTrendPanel extends StatelessWidget {
-  const _MobileMoodTrendPanel({
+class _MobileTodayOverviewPanel extends StatelessWidget {
+  const _MobileTodayOverviewPanel({
+    required this.eventCount,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
 
+  final int eventCount;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      (
-        date: '5/17',
-        icon: Icons.sentiment_neutral_rounded,
-        label: l10n.recordMoodAverage,
-        color: AppColorTokens.warning,
-      ),
-      (
-        date: '5/18',
-        icon: Icons.sentiment_satisfied_rounded,
-        label: l10n.recordMoodGood,
-        color: AppColorTokens.cyanDeep,
-      ),
-      (
-        date: '5/19',
-        icon: Icons.sentiment_dissatisfied_rounded,
-        label: l10n.recordMoodPoor,
-        color: AppColorTokens.error,
-      ),
-      (
-        date: '5/20',
-        icon: Icons.sentiment_satisfied_rounded,
-        label: l10n.recordMoodGood,
-        color: AppColorTokens.cyanDeep,
-      ),
-      (
-        date: l10n.recordTodayAction,
-        icon: Icons.sentiment_satisfied_alt_rounded,
-        label: l10n.recordMoodStable,
-        color: AppColorTokens.violet,
-      ),
-    ];
-
     return RecordSectionSurface(
-      key: const Key('record-trends'),
-      title: l10n.recordMoodTrendSectionTitle,
+      key: const Key('record-today-overview'),
+      title: l10n.recordTodayOverviewTitle,
       typography: typography,
       surface: surface,
       padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Row(
+      child: Column(
         children: [
-          for (var index = 0; index < items.length; index += 1) ...[
-            Expanded(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: index == items.length - 1
-                      ? AppColorTokens.violetSoft.withValues(alpha: 0.36)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-                  border: index == items.length - 1
-                      ? Border.all(color: AppColorTokens.violet)
-                      : null,
+          _MobileOverviewLine(
+            icon: Icons.event_note_outlined,
+            color: AppColorTokens.link,
+            label: l10n.recordTodayOverviewEvents,
+            value: l10n.recordTodayOverviewEventCount(eventCount),
+            typography: typography,
+            surface: surface,
+          ),
+          const SizedBox(height: AppSpacingTokens.xs),
+          _MobileOverviewLine(
+            icon: Icons.local_drink_rounded,
+            color: AppColorTokens.link,
+            label: l10n.recordTodayOverviewWater,
+            value: l10n.recordTodayOverviewWaterValue('2.5'),
+            typography: typography,
+            surface: surface,
+          ),
+          const SizedBox(height: AppSpacingTokens.xs),
+          _MobileOverviewLine(
+            icon: Icons.dark_mode_rounded,
+            color: AppColorTokens.violet,
+            label: l10n.recordTodayOverviewSleep,
+            value: l10n.recordTodayOverviewSleepValue('7.0'),
+            typography: typography,
+            surface: surface,
+          ),
+          const SizedBox(height: AppSpacingTokens.xs),
+          _MobileOverviewLine(
+            icon: Icons.sentiment_satisfied_rounded,
+            color: AppColorTokens.warning,
+            label: l10n.recordTodayOverviewMoodAverage,
+            value: l10n.recordTodayOverviewMoodValue('3.0'),
+            typography: typography,
+            surface: surface,
+          ),
+          const SizedBox(height: AppSpacingTokens.sm),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => showRecordToast(
+                context,
+                l10n.recordTodayOverviewReportAction,
+              ),
+              borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSpacingTokens.xs,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacingTokens.sm,
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        items[index].date,
-                        style: typography.caption.copyWith(color: surface.body),
-                      ),
-                      const SizedBox(height: AppSpacingTokens.xs),
-                      Icon(
-                        items[index].icon,
-                        color: items[index].color,
-                        size: AppSpacingTokens.xl,
-                      ),
-                      const SizedBox(height: AppSpacingTokens.xxs),
-                      Text(
-                        items[index].label,
-                        style: typography.caption.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontWeight: FontWeight.w700,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.recordTodayOverviewReportAction,
+                        style: typography.bodySmStrong.copyWith(
+                          color: AppColorTokens.link,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
+                    ),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      color: surface.body,
+                      size: AppSpacingTokens.lg,
+                    ),
+                  ],
                 ),
               ),
-            ),
-            if (index < items.length - 1)
-              const SizedBox(width: AppSpacingTokens.xs),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _MobileCycleDietPanel extends StatelessWidget {
-  const _MobileCycleDietPanel({
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
-
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-
-  @override
-  Widget build(BuildContext context) {
-    return RecordSectionSurface(
-      title: l10n.recordCycleDietSectionTitle,
-      typography: typography,
-      surface: surface,
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: _MiniActionCard(
-              icon: Icons.calendar_month_rounded,
-              color: AppColorTokens.highlightMagenta,
-              title: l10n.recordPeriodTitle,
-              primary: l10n.recordPeriodDayValue(2),
-              secondary: l10n.recordPeriodEndsIn(5),
-              action: l10n.recordPeriodRecordAction,
-              typography: typography,
-              surface: surface,
-            ),
-          ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          Expanded(
-            child: _MiniActionCard(
-              icon: Icons.ramen_dining_rounded,
-              color: AppColorTokens.cyanDeep,
-              title: l10n.recordDietTitle,
-              primary: l10n.recordMealCountValue(2),
-              secondary: l10n.recordMealLogging,
-              action: l10n.recordDietRecordAction,
-              typography: typography,
-              surface: surface,
             ),
           ),
         ],
@@ -828,177 +989,18 @@ class _MobileCycleDietPanel extends StatelessWidget {
   }
 }
 
-class _MobileSpecialistPackPanel extends StatelessWidget {
-  const _MobileSpecialistPackPanel({
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
-
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-
-  @override
-  Widget build(BuildContext context) {
-    final items = [
-      (
-        icon: Icons.health_and_safety_outlined,
-        color: AppColorTokens.link,
-        title: l10n.recordDentalRecordTitle,
-      ),
-      (
-        icon: Icons.visibility_outlined,
-        color: AppColorTokens.cyanDeep,
-        title: l10n.recordEyeRecordTitle,
-      ),
-      (
-        icon: Icons.hearing_outlined,
-        color: AppColorTokens.warning,
-        title: l10n.recordHearingRecordTitle,
-      ),
-    ];
-
-    return RecordSectionSurface(
-      key: const Key('record-health-bag'),
-      title: l10n.recordSpecialistPackTitle,
-      subtitle: l10n.recordSpecialistPackSubtitle,
-      typography: typography,
-      surface: surface,
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Row(
-        children: [
-          for (var index = 0; index < items.length; index += 1) ...[
-            Expanded(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: items[index].color.withValues(alpha: 0.06),
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-                  border: Border.all(
-                    color: items[index].color.withValues(alpha: 0.18),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.sm),
-                  child: Row(
-                    children: [
-                      Icon(
-                        items[index].icon,
-                        color: items[index].color,
-                        size: AppSpacingTokens.xl,
-                      ),
-                      const SizedBox(width: AppSpacingTokens.xs),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              items[index].title,
-                              style: typography.bodySmStrong,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(
-                              l10n.recordZeroCountLabel,
-                              style: typography.caption.copyWith(
-                                color: surface.body,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            if (index < items.length - 1)
-              const SizedBox(width: AppSpacingTokens.sm),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _MiniActionCard extends StatelessWidget {
-  const _MiniActionCard({
+class _MobileOverviewLine extends StatelessWidget {
+  const _MobileOverviewLine({
     required this.icon,
     required this.color,
-    required this.title,
-    required this.primary,
-    required this.secondary,
-    required this.action,
-    required this.typography,
-    required this.surface,
-  });
-
-  final IconData icon;
-  final Color color;
-  final String title;
-  final String primary;
-  final String secondary;
-  final String action;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: color.withValues(alpha: 0.18)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: color, size: AppSpacingTokens.xl),
-            const SizedBox(height: AppSpacingTokens.sm),
-            Text(title, style: typography.bodySm.copyWith(color: surface.body)),
-            const SizedBox(height: AppSpacingTokens.xxs),
-            Text(
-              primary,
-              style: typography.bodyMdStrong.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.xs),
-            LinearProgressIndicator(
-              value: 0.62,
-              color: color,
-              backgroundColor: surface.hairline,
-              minHeight: AppSpacingTokens.xxs,
-              borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-            ),
-            const SizedBox(height: AppSpacingTokens.xs),
-            Text(
-              secondary,
-              style: typography.caption.copyWith(color: surface.body),
-            ),
-            const SizedBox(height: AppSpacingTokens.sm),
-            FilledButton(
-              onPressed: () => showRecordToast(context, action),
-              style: FilledButton.styleFrom(backgroundColor: color),
-              child: Text(action),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoLine extends StatelessWidget {
-  const _InfoLine({
     required this.label,
     required this.value,
     required this.typography,
     required this.surface,
   });
 
+  final IconData icon;
+  final Color color;
   final String label;
   final String value;
   final AppTypographyScale typography;
@@ -1006,25 +1008,245 @@ class _InfoLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(label, style: typography.bodySm.copyWith(color: surface.body)),
-        const SizedBox(height: AppSpacingTokens.xxs),
-        Text(value, style: typography.bodyMdStrong),
+        Icon(icon, color: color, size: AppSpacingTokens.md),
+        const SizedBox(width: AppSpacingTokens.xs),
+        Expanded(
+          child: Text(
+            label,
+            style: typography.caption.copyWith(color: surface.body),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: AppSpacingTokens.xs),
+        AppSkeletonText(
+          text: value,
+          style: typography.bodySmStrong,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          width: 38,
+        ),
       ],
     );
   }
 }
 
-List<RecordQuickAction> _mobileQuickActions(List<RecordQuickAction> actions) {
-  const preferredTypes = <RecordEntryType>[
-    RecordEntryType.symptom,
+class _MobileQuickOperationPanel extends StatelessWidget {
+  const _MobileQuickOperationPanel({
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      (
+        icon: Icons.mic_rounded,
+        color: AppColorTokens.cyanDeep,
+        title: l10n.recordVoiceInputTitle,
+        subtitle: l10n.recordVoiceInputSubtitle,
+      ),
+      (
+        icon: Icons.photo_camera_rounded,
+        color: AppColorTokens.link,
+        title: l10n.recordPhotoRecordTitle,
+        subtitle: l10n.recordPhotoRecordSubtitle,
+      ),
+      (
+        icon: Icons.fact_check_outlined,
+        color: AppColorTokens.linkDeep,
+        title: l10n.recordTemplateRecordTitle,
+        subtitle: l10n.recordTemplateRecordSubtitle,
+      ),
+    ];
+
+    return Column(
+      key: const Key('record-quick-operations'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.recordQuickOperationTitle, style: typography.displaySm),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Row(
+          children: [
+            for (var index = 0; index < items.length; index += 1) ...[
+              Expanded(
+                child: _MobileQuickOperationCard(
+                  icon: items[index].icon,
+                  color: items[index].color,
+                  title: items[index].title,
+                  subtitle: items[index].subtitle,
+                  typography: typography,
+                  surface: surface,
+                ),
+              ),
+              if (index < items.length - 1)
+                const SizedBox(width: AppSpacingTokens.sm),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _MobileQuickOperationCard extends StatelessWidget {
+  const _MobileQuickOperationCard({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.typography,
+    required this.surface,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => showRecordToast(context, title),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: surface.canvas,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            border: Border.all(color: surface.hairline),
+            boxShadow: AppShadowTokens.level1,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacingTokens.sm),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                RecordIconBadge(
+                  icon: icon,
+                  color: color,
+                  backgroundColor: color.withValues(alpha: 0.12),
+                  size: AppSpacingTokens.x2l,
+                  iconSize: AppSpacingTokens.lg,
+                ),
+                const SizedBox(height: AppSpacingTokens.xs),
+                Text(
+                  title,
+                  style: typography.bodySmStrong,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: AppSpacingTokens.xxs),
+                Text(
+                  subtitle,
+                  style: typography.caption.copyWith(color: surface.body),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MobileRecordGuideRow extends StatelessWidget {
+  const _MobileRecordGuideRow({
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      key: const Key('record-guide-row'),
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => showRecordToast(context, l10n.recordGuideAction),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: surface.canvas,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            border: Border.all(color: surface.hairline),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.md,
+              vertical: AppSpacingTokens.sm,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.lightbulb_outline_rounded,
+                  color: AppColorTokens.warning,
+                  size: AppSpacingTokens.lg,
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                Expanded(
+                  child: Text(
+                    l10n.recordGuideHint,
+                    style: typography.bodySm.copyWith(color: surface.body),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                Text(
+                  l10n.recordGuideAction,
+                  style: typography.bodySmStrong.copyWith(
+                    color: AppColorTokens.link,
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColorTokens.link,
+                  size: AppSpacingTokens.lg,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+List<RecordQuickAction> _mobileQuickActions(
+  List<RecordQuickAction> actions, {
+  required bool showWomenHealth,
+}) {
+  final conditionalType = showWomenHealth
+      ? RecordEntryType.womenHealth
+      : RecordEntryType.vitals;
+  final preferredTypes = <RecordEntryType>[
     RecordEntryType.medication,
+    RecordEntryType.symptom,
     RecordEntryType.mood,
-    RecordEntryType.meal,
     RecordEntryType.water,
-    RecordEntryType.womenHealth,
+    RecordEntryType.meal,
+    conditionalType,
+    RecordEntryType.sleep,
+    RecordEntryType.activity,
   ];
   final byType = {for (final action in actions) action.type: action};
   final ordered = <RecordQuickAction>[
@@ -1034,7 +1256,37 @@ List<RecordQuickAction> _mobileQuickActions(List<RecordQuickAction> actions) {
   for (final action in actions) {
     if (!ordered.contains(action)) ordered.add(action);
   }
-  return ordered.take(6).toList(growable: false);
+  return ordered.take(8).toList(growable: false);
+}
+
+List<RecordFilter> _mobileFilters(List<RecordFilter> filters) {
+  const preferredTypes = <RecordEntryType>[
+    RecordEntryType.medication,
+    RecordEntryType.symptom,
+    RecordEntryType.mood,
+    RecordEntryType.water,
+    RecordEntryType.meal,
+    RecordEntryType.womenHealth,
+    RecordEntryType.vitals,
+    RecordEntryType.sleep,
+    RecordEntryType.activity,
+  ];
+  final byType = {for (final filter in filters) filter.type: filter};
+  final ordered = <RecordFilter>[
+    for (final type in preferredTypes)
+      if (byType[type] != null) byType[type]!,
+  ];
+  for (final filter in filters) {
+    if (!ordered.contains(filter)) ordered.add(filter);
+  }
+  return ordered.toList(growable: false);
+}
+
+String _mobileFilterLabel(AppLocalizations l10n, RecordFilter filter) {
+  if (filter.type == RecordEntryType.womenHealth) {
+    return l10n.recordPeriodTitle;
+  }
+  return recordCopy(l10n, filter.titleKey);
 }
 
 RecordCopyKey _weekdayKeyFromDate(DateTime date) {

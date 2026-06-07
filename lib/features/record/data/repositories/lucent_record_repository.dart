@@ -15,7 +15,10 @@ class LucentRecordRepository implements RecordRepository {
   final DailyRecordRepository dailyRecordRepo;
 
   @override
-  Future<RecordDashboard> fetchDashboard(DateTime selectedDate) async {
+  Future<RecordDashboard> fetchDashboard(
+    DateTime selectedDate, {
+    bool showWomenHealth = false,
+  }) async {
     final date = DateTime(
       selectedDate.year,
       selectedDate.month,
@@ -38,12 +41,13 @@ class LucentRecordRepository implements RecordRepository {
       selectedDay: date.day,
       weekDays: _staticWeekDays(date),
       monthDays: _staticMonthDays(date),
-      quickActions: _staticQuickActions,
+      quickActions: _staticQuickActionsFor(showWomenHealth),
       summary: _staticSummary,
-      filters: _staticFilters,
+      filters: _staticFiltersFor(showWomenHealth),
       timeline: timeline.isNotEmpty ? timeline : _staticTimeline,
       trends: _staticTrends,
       healthBag: _staticHealthBag,
+      showWomenHealth: showWomenHealth,
     );
   }
 
@@ -222,6 +226,14 @@ class LucentRecordRepository implements RecordRepository {
       softColor: AppColorTokens.linkSoft,
     ),
     RecordQuickAction(
+      type: RecordEntryType.vitals,
+      icon: Icons.favorite_rounded,
+      titleKey: RecordCopyKey.typeVitals,
+      subtitleKey: RecordCopyKey.summaryNormal,
+      accent: AppColorTokens.error,
+      softColor: AppColorTokens.errorSoft,
+    ),
+    RecordQuickAction(
       type: RecordEntryType.womenHealth,
       icon: Icons.calendar_month_rounded,
       titleKey: RecordCopyKey.typeWomenHealth,
@@ -229,11 +241,106 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.highlightMagenta,
       softColor: AppColorTokens.errorSoft,
     ),
+    RecordQuickAction(
+      type: RecordEntryType.activity,
+      icon: Icons.directions_run_rounded,
+      titleKey: RecordCopyKey.typeActivity,
+      subtitleKey: RecordCopyKey.summaryTimesUnit,
+      accent: AppColorTokens.gradientDevelopStart,
+      softColor: const Color(0xFFE8FFF2),
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.sleep,
+      icon: Icons.dark_mode_rounded,
+      titleKey: RecordCopyKey.typeSleep,
+      subtitleKey: RecordCopyKey.summaryRecorded,
+      accent: AppColorTokens.violet,
+      softColor: AppColorTokens.violetSoft,
+    ),
   ];
+
+  static List<RecordQuickAction> _staticQuickActionsFor(bool showWomenHealth) {
+    if (showWomenHealth) return _staticQuickActions;
+    return _staticQuickActions
+        .where((action) => action.type != RecordEntryType.womenHealth)
+        .toList(growable: false);
+  }
 
   static const _staticSummary = RecordDaySummary(items: []);
 
-  static const _staticFilters = <RecordFilter>[];
+  static const _staticFilters = <RecordFilter>[
+    RecordFilter(
+      type: RecordEntryType.medication,
+      titleKey: RecordCopyKey.typeMedication,
+      icon: Icons.medication_rounded,
+      accent: AppColorTokens.cyanDeep,
+      selected: true,
+    ),
+    RecordFilter(
+      type: RecordEntryType.symptom,
+      titleKey: RecordCopyKey.typeSymptom,
+      icon: Icons.medical_services_outlined,
+      accent: AppColorTokens.warning,
+      selected: true,
+    ),
+    RecordFilter(
+      type: RecordEntryType.mood,
+      titleKey: RecordCopyKey.typeMood,
+      icon: Icons.sentiment_satisfied_rounded,
+      accent: AppColorTokens.violet,
+      selected: true,
+    ),
+    RecordFilter(
+      type: RecordEntryType.water,
+      titleKey: RecordCopyKey.typeWater,
+      icon: Icons.water_drop_rounded,
+      accent: AppColorTokens.link,
+      selected: true,
+    ),
+    RecordFilter(
+      type: RecordEntryType.meal,
+      titleKey: RecordCopyKey.typeMeal,
+      icon: Icons.restaurant_rounded,
+      accent: AppColorTokens.cyanDeep,
+      selected: true,
+    ),
+    RecordFilter(
+      type: RecordEntryType.womenHealth,
+      titleKey: RecordCopyKey.typeWomenHealth,
+      icon: Icons.calendar_month_rounded,
+      accent: AppColorTokens.highlightMagenta,
+      selected: true,
+      locked: true,
+    ),
+    RecordFilter(
+      type: RecordEntryType.vitals,
+      titleKey: RecordCopyKey.typeVitals,
+      icon: Icons.favorite_rounded,
+      accent: AppColorTokens.error,
+      selected: true,
+    ),
+    RecordFilter(
+      type: RecordEntryType.sleep,
+      titleKey: RecordCopyKey.typeSleep,
+      icon: Icons.dark_mode_rounded,
+      accent: AppColorTokens.violet,
+      selected: true,
+    ),
+    RecordFilter(
+      type: RecordEntryType.activity,
+      titleKey: RecordCopyKey.typeActivity,
+      icon: Icons.directions_run_rounded,
+      accent: AppColorTokens.gradientDevelopStart,
+      selected: true,
+    ),
+  ];
+
+  static List<RecordFilter> _staticFiltersFor(bool showWomenHealth) {
+    if (showWomenHealth) return _staticFilters;
+    return _staticFilters
+        .where((filter) => filter.type != RecordEntryType.womenHealth)
+        .toList(growable: false);
+  }
 
   static const _staticTimeline = <RecordTimelineEntry>[];
 

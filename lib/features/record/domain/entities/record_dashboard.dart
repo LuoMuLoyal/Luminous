@@ -12,6 +12,7 @@ class RecordDashboard {
     required this.timeline,
     required this.trends,
     required this.healthBag,
+    this.showWomenHealth = false,
   });
 
   final DateTime selectedDate;
@@ -24,6 +25,7 @@ class RecordDashboard {
   final List<RecordTimelineEntry> timeline;
   final List<RecordTrend> trends;
   final RecordHealthBag healthBag;
+  final bool showWomenHealth;
 }
 
 class RecordWeekDay {
@@ -215,6 +217,7 @@ enum RecordEntryType {
   activity,
   medication,
   womenHealth,
+  sleep,
   heartRate,
   weight,
 }
@@ -237,6 +240,7 @@ enum RecordCopyKey {
   typeActivity,
   typeMedication,
   typeWomenHealth,
+  typeSleep,
   typeHeartRate,
   typeWeight,
   quickWomenSubtitle,
@@ -262,6 +266,12 @@ enum RecordCopyKey {
   timelineMedicationDetail,
   timelineMoodCalm,
   timelineMoodDetail,
+  timelineSymptomRecord,
+  timelineSymptomDetail,
+  timelineWomenHealthRecord,
+  timelineWomenHealthDetail,
+  timelineSleepRecord,
+  timelineSleepDetail,
   timelineHeartRateDetail,
   timelineActivityWalk,
   timelineActivityDetail,

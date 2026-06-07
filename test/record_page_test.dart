@@ -9,6 +9,8 @@ import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/data/repositories/lucent_record_repository.dart';
@@ -43,10 +45,13 @@ void main() {
     final scrollable = find.byType(Scrollable);
     final keys = <String>[
       'record-quick-actions',
-      'record-summary',
+      'record-ai-input',
       'record-timeline',
-      'record-trends',
-      'record-health-bag',
+      'record-filter-chips',
+      'record-calendar-overview',
+      'record-today-overview',
+      'record-quick-operations',
+      'record-guide-row',
     ];
 
     for (final key in keys) {
@@ -58,7 +63,45 @@ void main() {
 
     expect(find.text(l10n.recordQuickSectionTitle), findsOneWidget);
     expect(find.textContaining(l10n.recordTimelineMealName), findsOneWidget);
-    expect(find.text(l10n.recordMoodTrendSectionTitle), findsOneWidget);
+    expect(find.byKey(const Key('record-summary')), findsNothing);
+    expect(find.byKey(const Key('record-trends')), findsNothing);
+    expect(find.byKey(const Key('record-health-bag')), findsNothing);
+    expect(find.text(l10n.recordMoodTrendSectionTitle), findsNothing);
+  });
+
+  testWidgets('Record page shows period quick action only for female profile', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await _pumpRecordPage(
+      tester,
+      healthContextSnapshot: _healthSnapshot(sexAtBirth: 'female'),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.recordQuickPeriodAction), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+
+    await _pumpRecordPage(
+      tester,
+      healthContextSnapshot: _healthSnapshot(sexAtBirth: 'male'),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.recordQuickPeriodAction), findsNothing);
+    expect(
+      find.text(l10n.recordQuickActionLabel(l10n.recordTypeVitals)),
+      findsOneWidget,
+    );
   });
 
   testWidgets(
@@ -98,7 +141,7 @@ void main() {
 
       expect(find.text(l10n.tabRecord), findsOneWidget);
       expect(find.text(l10n.recordQuickSectionTitle), findsOneWidget);
-      expect(find.text(l10n.recordSymptomTrackingSectionTitle), findsOneWidget);
+      expect(find.byKey(const Key('record-ai-input')), findsOneWidget);
       expect(find.byKey(const Key('record-timeline')), findsOneWidget);
       expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
     },
@@ -464,6 +507,7 @@ Future<void> _pumpRecordRouter(
   WidgetTester tester, {
   DailyRecordRepository? dailyRecordRepository,
   RecordRepository? recordRepository,
+  HealthContextSnapshot? healthContextSnapshot,
   String initialLocation = '/',
 }) async {
   await tester.pumpWidget(
@@ -476,6 +520,9 @@ Future<void> _pumpRecordRouter(
           recordRepository ?? const MockRecordRepository(),
         ),
         authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) async => healthContextSnapshot ?? _healthSnapshot(),
+        ),
       ],
       child: MaterialApp.router(
         theme: AppTheme.light,
@@ -498,12 +545,16 @@ Future<void> _pumpRecordPage(
   WidgetTester tester, {
   RecordRepository recordRepository = const MockRecordRepository(),
   AuthSessionNotifier Function()? authSessionNotifier,
+  HealthContextSnapshot? healthContextSnapshot,
   DateTime? selectedDate,
 }) async {
   final overrides = [
     recordRepositoryProvider.overrideWithValue(recordRepository),
     authSessionProvider.overrideWith(
       authSessionNotifier ?? _SignedInAuthSessionNotifier.new,
+    ),
+    healthContextSnapshotProvider.overrideWith(
+      (ref) async => healthContextSnapshot ?? _healthSnapshot(),
     ),
     if (selectedDate != null)
       selectedRecordDateProvider.overrideWith(
@@ -716,10 +767,14 @@ class _FakeRecordRepository implements RecordRepository {
   final requestedDates = <DateTime>[];
 
   @override
-  Future<RecordDashboard> fetchDashboard(DateTime selectedDate) async {
+  Future<RecordDashboard> fetchDashboard(
+    DateTime selectedDate, {
+    bool showWomenHealth = false,
+  }) async {
     requestedDates.add(selectedDate);
     final mock = await const MockRecordRepository().fetchDashboard(
       selectedDate,
+      showWomenHealth: showWomenHealth,
     );
     final timeline = withRecordEntry
         ? [
@@ -747,8 +802,38 @@ class _FakeRecordRepository implements RecordRepository {
       timeline: timeline,
       trends: mock.trends,
       healthBag: mock.healthBag,
+      showWomenHealth: showWomenHealth,
     );
   }
+}
+
+HealthContextSnapshot _healthSnapshot({String? sexAtBirth = 'male'}) {
+  return HealthContextSnapshot(
+    summary: const HealthSummary(
+      age: 27,
+      onboardingCompleted: true,
+      activeAllergyCount: 0,
+      conditionCount: 0,
+      currentMedicineCount: 0,
+      missingCoreProfileFields: <String>[],
+    ),
+    profile: HealthProfile(
+      birthDate: '1999-01-15',
+      sexAtBirth: sexAtBirth,
+      heightCm: 165,
+      pregnancyState: null,
+      lactationState: null,
+      bloodType: null,
+      locale: null,
+      timezone: null,
+      unitSystem: null,
+      onboardingCompletedAt: '2026-01-01T00:00:00Z',
+      extras: const <String, dynamic>{},
+    ),
+    allergies: const <AllergyItem>[],
+    conditions: const <ConditionItem>[],
+    currentMedicines: const <CurrentMedicineItem>[],
+  );
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
