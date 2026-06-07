@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
@@ -56,7 +58,20 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final snapshot = ref.watch(healthContextSnapshotProvider);
+    final session = ref.watch(authSessionProvider);
+
+    if (!session.canAccessProtectedData) {
+      return PageScaffoldShell(
+        title: l10n.mineEditProfileTitle,
+        centerTitle: true,
+        leading: const SettingsBackButton(),
+        children: [
+          session.isLoading
+              ? const _MineEditFormLoading()
+              : _MineAuthRequiredPrompt(onLogin: () => context.push('/login')),
+        ],
+      );
+    }
 
     ref.listen<HealthProfileFormState>(healthProfileFormProvider, (_, next) {
       if (next.saved) {
@@ -64,6 +79,8 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
         if (context.mounted) context.pop();
       }
     });
+
+    final snapshot = ref.watch(healthContextSnapshotProvider);
 
     return PageScaffoldShell(
       title: l10n.mineEditProfileTitle,
@@ -75,8 +92,15 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
             _initFromSnapshot(ctx.profile);
             return _buildForm(context, l10n);
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => Center(child: Text(l10n.mineErrorDescription)),
+          loading: () => const _MineEditFormLoading(),
+          error: (_, __) => AppStateErrorView(
+            title: l10n.mineErrorTitle,
+            description: l10n.mineErrorDescription,
+            icon: Icons.badge_outlined,
+            actionLabel: l10n.todayRetryAction,
+            onAction: () => ref.invalidate(healthContextSnapshotProvider),
+            tone: AppStateTone.warning,
+          ),
         ),
       ],
     );
@@ -164,6 +188,49 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
     );
 
     ref.read(healthProfileFormProvider.notifier).save(input);
+  }
+}
+
+class _MineAuthRequiredPrompt extends StatelessWidget {
+  const _MineAuthRequiredPrompt({required this.onLogin});
+
+  final VoidCallback onLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.authNotSignedIn),
+            const SizedBox(height: AppSpacingTokens.md),
+            ElevatedButton(onPressed: onLogin, child: Text(l10n.authGoLogin)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MineEditFormLoading extends StatelessWidget {
+  const _MineEditFormLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AppInlineSkeletonSection(
+      children: [
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 96),
+        AppInlineSkeletonBlock(height: 56),
+      ],
+    );
   }
 }
 

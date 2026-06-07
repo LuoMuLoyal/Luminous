@@ -26,28 +26,17 @@ class RecordDetailPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
 
-    if (!session.isAuthenticated) {
+    if (!session.canAccessProtectedData) {
       return PageScaffoldShell(
         title: l10n.recordDetailTitle,
         centerTitle: true,
         leading: const SettingsBackButton(),
         children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.xl),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(l10n.authNotSignedIn),
-                  const SizedBox(height: AppSpacingTokens.md),
-                  ElevatedButton(
-                    onPressed: () => context.push('/login'),
-                    child: Text(l10n.authGoLogin),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          session.isLoading
+              ? const _RecordDetailLoading()
+              : _RecordAuthRequiredPrompt(
+                  onLogin: () => context.push('/login'),
+                ),
         ],
       );
     }
@@ -79,6 +68,31 @@ class RecordDetailPage extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _RecordAuthRequiredPrompt extends StatelessWidget {
+  const _RecordAuthRequiredPrompt({required this.onLogin});
+
+  final VoidCallback onLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.authNotSignedIn),
+            const SizedBox(height: AppSpacingTokens.md),
+            ElevatedButton(onPressed: onLogin, child: Text(l10n.authGoLogin)),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
@@ -49,29 +50,17 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
 
-    // Signed-out users see login prompt
-    if (!session.isAuthenticated) {
+    if (!session.canAccessProtectedData) {
       return PageScaffoldShell(
         title: l10n.recordAddAction,
         centerTitle: true,
         leading: const SettingsBackButton(),
         children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.xl),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(l10n.authNotSignedIn),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => context.push('/login'),
-                    child: Text(l10n.authGoLogin),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          session.isLoading
+              ? const _RecordFormLoading()
+              : _RecordAuthRequiredPrompt(
+                  onLogin: () => context.push('/login'),
+                ),
         ],
       );
     }
@@ -294,6 +283,48 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     if (name.endsWith('.webp')) return 'image/webp';
     if (name.endsWith('.gif')) return 'image/gif';
     return null;
+  }
+}
+
+class _RecordAuthRequiredPrompt extends StatelessWidget {
+  const _RecordAuthRequiredPrompt({required this.onLogin});
+
+  final VoidCallback onLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.authNotSignedIn),
+            const SizedBox(height: AppSpacingTokens.md),
+            ElevatedButton(onPressed: onLogin, child: Text(l10n.authGoLogin)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RecordFormLoading extends StatelessWidget {
+  const _RecordFormLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AppInlineSkeletonSection(
+      children: [
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 96),
+        AppInlineSkeletonBlock(height: 56),
+      ],
+    );
   }
 }
 

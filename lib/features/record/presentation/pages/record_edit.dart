@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
@@ -43,20 +44,10 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   bool _saving = false;
   bool _deleting = false;
   bool _loaded = false;
+  bool _loadingRecord = false;
   DailyRecordAttachment? _existingImageAttachment;
   _PendingDailyRecordImage? _selectedImage;
   bool _attachmentsChanged = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final session = ref.read(authSessionProvider);
-      if (!session.isAuthenticated) return;
-      _loadRecord();
-    });
-  }
 
   @override
   void dispose() {
@@ -68,6 +59,10 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   }
 
   Future<void> _loadRecord() async {
+    if (_loaded || _loadingRecord) {
+      return;
+    }
+    setState(() => _loadingRecord = true);
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
       final record = await repo.get(widget.recordId);
@@ -87,6 +82,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
         _selectedImage = null;
         _attachmentsChanged = false;
         _loaded = true;
+        _loadingRecord = false;
       });
     } catch (_) {
       if (mounted) {
@@ -96,6 +92,10 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
         );
         context.pop();
       }
+    } finally {
+      if (mounted && !_loaded) {
+        setState(() => _loadingRecord = false);
+      }
     }
   }
 
@@ -104,28 +104,25 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
 
-    if (!session.isAuthenticated) {
+    if (session.canAccessProtectedData && !_loaded && !_loadingRecord) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _loadRecord();
+        }
+      });
+    }
+
+    if (!session.canAccessProtectedData) {
       return PageScaffoldShell(
         title: l10n.recordEditAction,
         centerTitle: true,
         leading: const SettingsBackButton(),
         children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.xl),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(l10n.authNotSignedIn),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => context.push('/login'),
-                    child: Text(l10n.authGoLogin),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          session.isLoading
+              ? const _RecordEditLoading()
+              : _RecordAuthRequiredPrompt(
+                  onLogin: () => context.push('/login'),
+                ),
         ],
       );
     }
@@ -135,14 +132,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
         title: l10n.recordEditAction,
         centerTitle: true,
         leading: const SettingsBackButton(),
-        children: [
-          const Center(
-            child: Padding(
-              padding: EdgeInsets.all(AppSpacingTokens.xl),
-              child: CircularProgressIndicator(),
-            ),
-          ),
-        ],
+        children: const [_RecordEditLoading()],
       );
     }
 
@@ -429,6 +419,49 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
     if (name.endsWith('.webp')) return 'image/webp';
     if (name.endsWith('.gif')) return 'image/gif';
     return null;
+  }
+}
+
+class _RecordAuthRequiredPrompt extends StatelessWidget {
+  const _RecordAuthRequiredPrompt({required this.onLogin});
+
+  final VoidCallback onLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.authNotSignedIn),
+            const SizedBox(height: AppSpacingTokens.md),
+            ElevatedButton(onPressed: onLogin, child: Text(l10n.authGoLogin)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RecordEditLoading extends StatelessWidget {
+  const _RecordEditLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AppInlineSkeletonSection(
+      children: [
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 96),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 44),
+      ],
+    );
   }
 }
 

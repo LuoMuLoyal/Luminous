@@ -1,7 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 
 final medicineWorkspaceProvider = FutureProvider<MedicineWorkspace>((ref) {
+  final session = ref.watch(authSessionProvider);
+  if (session.isConfirmedSignedOut) {
+    return Future.value(MockMedicineWorkspaceRepository.signedOutWorkspace);
+  }
+  if (!session.canAccessProtectedData) {
+    return pendingAuthSessionResolution();
+  }
+
   return ref.watch(medicineWorkspaceRepositoryProvider).fetchWorkspace();
 });

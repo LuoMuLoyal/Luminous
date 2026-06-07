@@ -21,27 +21,20 @@ class MinePage extends ConsumerWidget {
     final dashboardAsync = ref.watch(mineDashboardProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
-    Widget body;
-    if (!authSession.isAuthenticated) {
-      body = MineDashboardView(
-        dashboard: MockMineRepository.signedOutDashboard,
-      );
-    } else {
-      body = dashboardAsync.when(
-        data: (dashboard) => MineDashboardView(dashboard: dashboard),
-        loading: () => MineDashboardView(
-          dashboard: MockMineRepository.loadingDashboard(
-            displayName: authSession.user?.nickname?.trim().isNotEmpty == true
-                ? authSession.user!.nickname!.trim()
-                : authSession.user?.email ?? authSession.user?.id,
-            email: authSession.user?.email ?? '',
-          ),
-          isLoading: true,
+    final body = dashboardAsync.when(
+      data: (dashboard) => MineDashboardView(dashboard: dashboard),
+      loading: () => MineDashboardView(
+        dashboard: MockMineRepository.loadingDashboard(
+          displayName: authSession.user?.nickname?.trim().isNotEmpty == true
+              ? authSession.user!.nickname!.trim()
+              : authSession.user?.email ?? authSession.user?.id,
+          email: authSession.user?.email ?? '',
         ),
-        error: (_, __) =>
-            MineErrorView(onRetry: () => ref.invalidate(mineDashboardProvider)),
-      );
-    }
+        isLoading: true,
+      ),
+      error: (_, __) =>
+          MineErrorView(onRetry: () => ref.invalidate(mineDashboardProvider)),
+    );
 
     return DecoratedBox(
       decoration: BoxDecoration(color: surface.canvasSoft),

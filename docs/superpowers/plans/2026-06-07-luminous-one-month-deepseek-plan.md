@@ -34,7 +34,6 @@ Before Task 1, read these committed files:
 - `Luminous/docs/Current_State.md`
 - `Luminous/docs/Next_Plan.md`
 - `Luminous/docs/Project_Guardrails.md`
-- `Luminous/docs/UI_Implementation_Plan.md`
 - `Luminous/docs/OpenApi_Client.md`
 - `Luminous/docs/Localization.md`
 - `Lucent/docs/public/ROADMAP.md`
@@ -83,7 +82,7 @@ Planned Luminous files and responsibilities:
 - `docs/migration-log/2026-06-29.md`: Task 9 OpenAPI reminder sync entry.
 - `docs/migration-log/2026-07-02.md`: Task 10 reminder UI/local bridge entry.
 - `docs/migration-log/2026-07-05.md`: Task 11 monthly regression entry.
-- `docs/Current_State.md`, `docs/Next_Plan.md`, `docs/UI_Implementation_Plan.md`, `docs/OpenApi_Client.md`, `docs/Localization.md`: update only when the corresponding task changes behavior, docs, OpenAPI, or visible text.
+- `docs/Current_State.md`, `docs/Next_Plan.md`, `docs/OpenApi_Client.md`, `docs/Localization.md`: update only when the corresponding task changes behavior, docs, OpenAPI, or visible text.
 
 Planned Lucent files for reminder contract implementation:
 
@@ -266,7 +265,7 @@ Expected: PASS.
 - [ ] **Step 5: Commit**
 
 ```powershell
-git add lib/features/mine test/mine_page_test.dart test/mine_edit_pages_test.dart docs/migration-log/2026-06-08.md docs/UI_Implementation_Plan.md
+git add lib/features/mine test/mine_page_test.dart test/mine_edit_pages_test.dart docs/migration-log/2026-06-08.md docs/Current_State.md
 git commit -m "fix(mine): 收紧我的页面重做回归"
 ```
 
@@ -371,7 +370,7 @@ Expected: PASS.
 - [ ] **Step 7: Commit**
 
 ```powershell
-git add lib/features/record lib/l10n test/record_form_fields_test.dart test/record_page_test.dart docs/migration-log/2026-06-11.md docs/Localization.md docs/UI_Implementation_Plan.md
+git add lib/features/record lib/l10n test/record_form_fields_test.dart test/record_page_test.dart docs/migration-log/2026-06-11.md docs/Localization.md docs/Current_State.md
 git commit -m "refactor(record): 提取每日记录表单字段"
 ```
 
@@ -605,7 +604,7 @@ Expected: PASS.
 - [ ] **Step 7: Commit**
 
 ```powershell
-git add lib/features/environment lib/features/more lib/l10n test/more_environment_repository_test.dart test/more_page_test.dart docs/migration-log/2026-06-21.md docs/Localization.md docs/UI_Implementation_Plan.md docs/Current_State.md docs/Next_Plan.md
+git add lib/features/environment lib/features/more lib/l10n test/more_environment_repository_test.dart test/more_page_test.dart docs/migration-log/2026-06-21.md docs/Localization.md docs/Current_State.md docs/Next_Plan.md
 git commit -m "feat(more): 接入环境快照参考数据"
 ```
 
@@ -686,7 +685,7 @@ Expected: PASS.
 - [ ] **Step 6: Commit**
 
 ```powershell
-git add lib/features/today lib/features/environment lib/l10n test/today_page_test.dart test/more_environment_repository_test.dart docs/migration-log/2026-06-24.md docs/Localization.md docs/UI_Implementation_Plan.md docs/Current_State.md docs/Next_Plan.md
+git add lib/features/today lib/features/environment lib/l10n test/today_page_test.dart test/more_environment_repository_test.dart docs/migration-log/2026-06-24.md docs/Localization.md docs/Current_State.md docs/Next_Plan.md
 git commit -m "feat(today): 使用环境快照参考数据"
 ```
 
@@ -749,7 +748,7 @@ Expected: PASS.
 - [ ] **Step 5: Commit**
 
 ```powershell
-git add lib/features/medicine lib/features/today test/medicine_page_test.dart test/today_page_test.dart docs/Next_Plan.md docs/migration-log/2026-06-26.md docs/UI_Implementation_Plan.md
+git add lib/features/medicine lib/features/today test/medicine_page_test.dart test/today_page_test.dart docs/Next_Plan.md docs/migration-log/2026-06-26.md docs/Current_State.md
 git commit -m "fix(medicine): 稳定用药打卡状态"
 ```
 
@@ -954,7 +953,7 @@ Expected: PASS.
 - [ ] **Step 7: Commit**
 
 ```powershell
-git add lib/features/reminders lib/features/settings lib/features/medicine lib/app/router.dart lib/l10n test/reminder_repository_test.dart test/local_notification_schedule_service_test.dart test/settings_flow_test.dart test/medicine_page_test.dart docs/migration-log/2026-07-02.md docs/Localization.md docs/UI_Implementation_Plan.md docs/Current_State.md docs/Next_Plan.md
+git add lib/features/reminders lib/features/settings lib/features/medicine lib/app/router.dart lib/l10n test/reminder_repository_test.dart test/local_notification_schedule_service_test.dart test/settings_flow_test.dart test/medicine_page_test.dart docs/migration-log/2026-07-02.md docs/Localization.md docs/Current_State.md docs/Next_Plan.md
 git commit -m "feat(reminders): 添加本地用药提醒计划"
 ```
 
@@ -966,7 +965,7 @@ git commit -m "feat(reminders): 添加本地用药提醒计划"
 
 - Modify: `docs/Current_State.md`
 - Modify: `docs/Next_Plan.md`
-- Modify: `docs/UI_Implementation_Plan.md`
+- Modify: `docs/Current_State.md`
 - Modify: `docs/OpenApi_Client.md`
 - Modify: `docs/Localization.md`
 - Modify: `docs/Project_Guardrails.md`

@@ -502,8 +502,9 @@ Future<void> _pumpRecordPage(
 }) async {
   final overrides = [
     recordRepositoryProvider.overrideWithValue(recordRepository),
-    if (authSessionNotifier != null)
-      authSessionProvider.overrideWith(authSessionNotifier),
+    authSessionProvider.overrideWith(
+      authSessionNotifier ?? _SignedInAuthSessionNotifier.new,
+    ),
     if (selectedDate != null)
       selectedRecordDateProvider.overrideWith(
         () => _FixedSelectedRecordDateNotifier(selectedDate),

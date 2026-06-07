@@ -56,4 +56,3 @@ Key frontend docs:
 - [docs/Project_Guardrails.md](docs/Project_Guardrails.md)
 - [docs/OpenApi_Client.md](docs/OpenApi_Client.md)
 - [docs/Localization.md](docs/Localization.md)
-- [docs/UI_Implementation_Plan.md](docs/UI_Implementation_Plan.md)

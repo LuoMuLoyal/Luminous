@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_account_provider.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -40,7 +41,7 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
     final accountNotifier = ref.read(authAccountProvider.notifier);
     final session = ref.watch(authSessionProvider);
     final l10n = AppLocalizations.of(context);
-    final isSignedIn = session.isAuthenticated && session.user != null;
+    final isSignedIn = session.canAccessProtectedData && session.user != null;
     final success = accountState.successMessage?.isNotEmpty == true
         ? accountState.successMessage
         : null;
@@ -49,84 +50,88 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
       title: l10n?.authChangeEmailFormTitle ?? 'Change email',
       leading: BackButton(onPressed: () => context.pop()),
       centerTitle: true,
-      form: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AuthTextField(
-            controller: _emailController,
-            label: l10n?.authNewEmailLabel ?? 'New email',
-            hint: l10n?.authEmailHint ?? 'name@example.com',
-            keyboardType: TextInputType.emailAddress,
-          ),
-          const SizedBox(height: AppSpacingTokens.md),
-          AuthCodeFieldRow(
-            controller: _codeController,
-            label: l10n?.authCodeLabel ?? 'Verification code',
-            buttonLabel: accountState.lastCooldownSeconds == null
-                ? l10n?.authSendCode ?? 'Send code'
-                : l10n?.authSendCodeAgain(accountState.lastCooldownSeconds!) ??
-                      'Send again (${accountState.lastCooldownSeconds}s)',
-            isLoading: accountState.isSendingCode,
-            onSendCode: !isSignedIn
-                ? null
-                : () async {
-                    if (_emailController.text.trim().isEmpty) {
-                      await AppToast.show(
-                        context,
-                        l10n?.authEmailRequiredToast ??
-                            'Please enter your email.',
-                      );
-                      return;
-                    }
-                    await accountNotifier.sendVerificationCode(
-                      email: _emailController.text,
-                      scene: AuthVerificationScene.changeEmail,
-                    );
-                  },
-          ),
-          if ((accountState.errorMessage?.isNotEmpty ?? false) ||
-              success != null) ...[
-            const SizedBox(height: AppSpacingTokens.md),
-            AuthStatusMessage(
-              error: accountState.errorMessage,
-              success: success,
+      form: session.isLoading
+          ? const _ChangeEmailLoading()
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AuthTextField(
+                  controller: _emailController,
+                  label: l10n?.authNewEmailLabel ?? 'New email',
+                  hint: l10n?.authEmailHint ?? 'name@example.com',
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: AppSpacingTokens.md),
+                AuthCodeFieldRow(
+                  controller: _codeController,
+                  label: l10n?.authCodeLabel ?? 'Verification code',
+                  buttonLabel: accountState.lastCooldownSeconds == null
+                      ? l10n?.authSendCode ?? 'Send code'
+                      : l10n?.authSendCodeAgain(
+                              accountState.lastCooldownSeconds!,
+                            ) ??
+                            'Send again (${accountState.lastCooldownSeconds}s)',
+                  isLoading: accountState.isSendingCode,
+                  onSendCode: !isSignedIn
+                      ? null
+                      : () async {
+                          if (_emailController.text.trim().isEmpty) {
+                            await AppToast.show(
+                              context,
+                              l10n?.authEmailRequiredToast ??
+                                  'Please enter your email.',
+                            );
+                            return;
+                          }
+                          await accountNotifier.sendVerificationCode(
+                            email: _emailController.text,
+                            scene: AuthVerificationScene.changeEmail,
+                          );
+                        },
+                ),
+                if ((accountState.errorMessage?.isNotEmpty ?? false) ||
+                    success != null) ...[
+                  const SizedBox(height: AppSpacingTokens.md),
+                  AuthStatusMessage(
+                    error: accountState.errorMessage,
+                    success: success,
+                  ),
+                ],
+                const SizedBox(height: AppSpacingTokens.xl),
+                AuthPrimaryButton(
+                  label: l10n?.authChangeEmailSubmit ?? 'Update email',
+                  isLoading: accountState.isSubmitting,
+                  onPressed: !isSignedIn
+                      ? null
+                      : () async {
+                          if (!_validateSubmit(context, l10n)) {
+                            return;
+                          }
+                          final ok = await accountNotifier.changeEmail(
+                            newEmail: _emailController.text,
+                            code: _codeController.text,
+                          );
+                          if (ok && context.mounted) {
+                            await AppToast.show(
+                              context,
+                              l10n?.authChangeEmailSuccess ?? 'Email updated.',
+                            );
+                          }
+                        },
+                ),
+                const SizedBox(height: AppSpacingTokens.sm),
+                AuthFooterAction(
+                  prompt: !isSignedIn
+                      ? l10n?.authNotSignedIn ?? 'Not signed in yet.'
+                      : l10n?.authBackHomePrompt ?? 'Back to home?',
+                  actionLabel: !isSignedIn
+                      ? l10n?.authSignIn ?? 'Sign in'
+                      : l10n?.todayHeroTitle ?? 'Today',
+                  onPressed: () => context.push(!isSignedIn ? '/login' : '/'),
+                ),
+              ],
             ),
-          ],
-          const SizedBox(height: AppSpacingTokens.xl),
-          AuthPrimaryButton(
-            label: l10n?.authChangeEmailSubmit ?? 'Update email',
-            isLoading: accountState.isSubmitting,
-            onPressed: !isSignedIn
-                ? null
-                : () async {
-                    if (!_validateSubmit(context, l10n)) {
-                      return;
-                    }
-                    final ok = await accountNotifier.changeEmail(
-                      newEmail: _emailController.text,
-                      code: _codeController.text,
-                    );
-                    if (ok && context.mounted) {
-                      await AppToast.show(
-                        context,
-                        l10n?.authChangeEmailSuccess ?? 'Email updated.',
-                      );
-                    }
-                  },
-          ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          AuthFooterAction(
-            prompt: !isSignedIn
-                ? l10n?.authNotSignedIn ?? 'Not signed in yet.'
-                : l10n?.authBackHomePrompt ?? 'Back to home?',
-            actionLabel: !isSignedIn
-                ? l10n?.authSignIn ?? 'Sign in'
-                : l10n?.todayHeroTitle ?? 'Today',
-            onPressed: () => context.push(!isSignedIn ? '/login' : '/'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -145,5 +150,20 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
     }
     AppToast.show(context, message);
     return false;
+  }
+}
+
+class _ChangeEmailLoading extends StatelessWidget {
+  const _ChangeEmailLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AppInlineSkeleton(
+      children: [
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+      ],
+    );
   }
 }

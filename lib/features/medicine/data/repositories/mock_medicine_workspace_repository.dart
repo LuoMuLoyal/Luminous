@@ -16,6 +16,18 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     return previewWorkspace;
   }
 
+  static final signedOutWorkspace = MedicineWorkspace(
+    hero: MedicineHero(
+      metricDosesToday: '0',
+      metricAdherence: '--',
+      metricNextDose: '--',
+    ),
+    quickActions: previewWorkspace.quickActions,
+    plan: MedicinePlanSurface(items: <MedicinePlanItem>[]),
+    alerts: previewWorkspace.alerts,
+    promisePoints: previewWorkspace.promisePoints,
+  );
+
   static const loadingWorkspace = previewWorkspace;
 
   static const previewWorkspace = MedicineWorkspace(

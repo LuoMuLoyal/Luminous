@@ -55,7 +55,10 @@ Future<void> _markDose(
   MedicineDoseAction action,
 ) async {
   final session = ref.read(authSessionProvider);
-  if (!session.isAuthenticated) {
+  if (!session.canAccessProtectedData) {
+    if (session.isLoading) {
+      return;
+    }
     if (context.mounted) {
       context.push('/login');
     }
