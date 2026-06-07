@@ -71,14 +71,66 @@
   "recordImageUnsupportedToast": "Only JPG, PNG, WEBP, or GIF images are supported.",
   "recordImagePickFailedToast": "Image was not selected.",
   "recordQuickSectionTitle": "Quick record",
+  "recordAiInputHint": "My stomach feels a bit bloated after eating...",
+  "recordAiBadge": "AI",
   "recordSummarySectionTitle": "Day summary",
   "recordSummaryDateLabel": "May 15, 2025 (Thu)",
   "recordTimelineSectionTitle": "Timeline",
   "recordTrendsSectionTitle": "Trends",
   "recordNewEntrySectionTitle": "New record",
   "recordFilterSectionTitle": "Record types",
+  "recordFilterMobileTitle": "Record filter",
+  "recordFilterAllAction": "All",
   "recordFilterSelectAll": "Select all",
   "recordAllTypesAction": "All types",
+  "recordCalendarOverviewTitle": "Calendar overview",
+  "recordTodayOverviewTitle": "Today overview",
+  "recordTodayOverviewEvents": "Events",
+  "recordTodayOverviewEventCount": "{count, plural, =0{0 items} =1{1 item} other{{count} items}}",
+  "@recordTodayOverviewEventCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordTodayOverviewWater": "Water",
+  "recordTodayOverviewWaterValue": "{amount} cups",
+  "@recordTodayOverviewWaterValue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayOverviewSleep": "Sleep",
+  "recordTodayOverviewSleepValue": "{hours} h",
+  "@recordTodayOverviewSleepValue": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayOverviewMoodAverage": "Mood avg",
+  "recordTodayOverviewMoodValue": "{score} / 5",
+  "@recordTodayOverviewMoodValue": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayOverviewReportAction": "View today's report",
+  "recordQuickOperationTitle": "Quick actions",
+  "recordVoiceInputTitle": "Voice input",
+  "recordVoiceInputSubtitle": "Speak and auto-log",
+  "recordPhotoRecordTitle": "Photo record",
+  "recordPhotoRecordSubtitle": "Recognize food/meds",
+  "recordTemplateRecordTitle": "Template",
+  "recordTemplateRecordSubtitle": "Symptom/meal/vital templates",
+  "recordGuideHint": "Tip: steady records help you understand your health better",
+  "recordGuideAction": "View record guide",
   "recordDetailTitle": "Record details",
   "recordDetailErrorTitle": "Record details did not load this time",
   "recordDetailValueLabel": "Value",
@@ -116,6 +168,7 @@
   "recordTypeActivity": "Activity",
   "recordTypeMedication": "Medication",
   "recordTypeWomenHealth": "Women's health",
+  "recordTypeSleep": "Sleep",
   "recordTypeHeartRate": "Heart rate",
   "recordTypeWeight": "Weight",
   "recordQuickWomenSubtitle": "Off",
@@ -141,6 +194,12 @@
   "recordTimelineMedicationDetail": "Taken · synced with medication plan",
   "recordTimelineMoodCalm": "Mood · Calm",
   "recordTimelineMoodDetail": "Mood is steady, sleep was okay",
+  "recordTimelineSymptomRecord": "Symptom record",
+  "recordTimelineSymptomDetail": "Headache · pain score 3/5",
+  "recordTimelineWomenHealthRecord": "Period record",
+  "recordTimelineWomenHealthDetail": "Period day 2 · mild bloating",
+  "recordTimelineSleepRecord": "Sleep record",
+  "recordTimelineSleepDetail": "Bedtime 23:30 · sleep duration 7.0 h",
   "recordTimelineHeartRateDetail": "72 bpm · source: watch · normal",
   "recordTimelineActivityWalk": "Activity · Brisk walk",
   "recordTimelineActivityDetail": "30 min · 2.6 km · 180 kcal",

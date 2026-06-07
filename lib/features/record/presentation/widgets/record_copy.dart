@@ -18,6 +18,7 @@ String recordCopy(AppLocalizations l10n, RecordCopyKey key) {
     RecordCopyKey.typeActivity => l10n.recordTypeActivity,
     RecordCopyKey.typeMedication => l10n.recordTypeMedication,
     RecordCopyKey.typeWomenHealth => l10n.recordTypeWomenHealth,
+    RecordCopyKey.typeSleep => l10n.recordTypeSleep,
     RecordCopyKey.typeHeartRate => l10n.recordTypeHeartRate,
     RecordCopyKey.typeWeight => l10n.recordTypeWeight,
     RecordCopyKey.quickWomenSubtitle => l10n.recordQuickWomenSubtitle,
@@ -45,6 +46,14 @@ String recordCopy(AppLocalizations l10n, RecordCopyKey key) {
       l10n.recordTimelineMedicationDetail,
     RecordCopyKey.timelineMoodCalm => l10n.recordTimelineMoodCalm,
     RecordCopyKey.timelineMoodDetail => l10n.recordTimelineMoodDetail,
+    RecordCopyKey.timelineSymptomRecord => l10n.recordTimelineSymptomRecord,
+    RecordCopyKey.timelineSymptomDetail => l10n.recordTimelineSymptomDetail,
+    RecordCopyKey.timelineWomenHealthRecord =>
+      l10n.recordTimelineWomenHealthRecord,
+    RecordCopyKey.timelineWomenHealthDetail =>
+      l10n.recordTimelineWomenHealthDetail,
+    RecordCopyKey.timelineSleepRecord => l10n.recordTimelineSleepRecord,
+    RecordCopyKey.timelineSleepDetail => l10n.recordTimelineSleepDetail,
     RecordCopyKey.timelineHeartRateDetail => l10n.recordTimelineHeartRateDetail,
     RecordCopyKey.timelineActivityWalk => l10n.recordTimelineActivityWalk,
     RecordCopyKey.timelineActivityDetail => l10n.recordTimelineActivityDetail,

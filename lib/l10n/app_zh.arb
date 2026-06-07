@@ -71,14 +71,66 @@
   "recordImageUnsupportedToast": "仅支持 JPG、PNG、WEBP 或 GIF 图片",
   "recordImagePickFailedToast": "图片未选择",
   "recordQuickSectionTitle": "快速记录",
+  "recordAiInputHint": "刚吃完饭胃有点胀...",
+  "recordAiBadge": "AI",
   "recordSummarySectionTitle": "当天摘要",
   "recordSummaryDateLabel": "2025年5月15日（周四）",
   "recordTimelineSectionTitle": "时间线",
   "recordTrendsSectionTitle": "趋势查看",
   "recordNewEntrySectionTitle": "新建记录",
   "recordFilterSectionTitle": "记录类型",
+  "recordFilterMobileTitle": "记录筛选",
+  "recordFilterAllAction": "全部",
   "recordFilterSelectAll": "全选",
   "recordAllTypesAction": "全部类型",
+  "recordCalendarOverviewTitle": "日历概览",
+  "recordTodayOverviewTitle": "今日记录概览",
+  "recordTodayOverviewEvents": "记录事件",
+  "recordTodayOverviewEventCount": "{count} 条",
+  "@recordTodayOverviewEventCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordTodayOverviewWater": "饮水",
+  "recordTodayOverviewWaterValue": "{amount} 杯",
+  "@recordTodayOverviewWaterValue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayOverviewSleep": "睡眠",
+  "recordTodayOverviewSleepValue": "{hours} 小时",
+  "@recordTodayOverviewSleepValue": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayOverviewMoodAverage": "情绪平均",
+  "recordTodayOverviewMoodValue": "{score} / 5",
+  "@recordTodayOverviewMoodValue": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayOverviewReportAction": "查看今日报告",
+  "recordQuickOperationTitle": "快捷操作",
+  "recordVoiceInputTitle": "语音输入",
+  "recordVoiceInputSubtitle": "说一说，自动记录",
+  "recordPhotoRecordTitle": "拍照记录",
+  "recordPhotoRecordSubtitle": "拍照识别食物/药品",
+  "recordTemplateRecordTitle": "模板记录",
+  "recordTemplateRecordSubtitle": "症状/饮食/体征模板",
+  "recordGuideHint": "小贴士：坚持记录有助于更好地了解自己的健康状态",
+  "recordGuideAction": "查看记录指南",
   "recordDetailTitle": "记录详情",
   "recordDetailErrorTitle": "记录详情暂时没有加载出来",
   "recordDetailValueLabel": "数值",
@@ -116,6 +168,7 @@
   "recordTypeActivity": "运动",
   "recordTypeMedication": "用药",
   "recordTypeWomenHealth": "女性健康",
+  "recordTypeSleep": "睡眠",
   "recordTypeHeartRate": "心率",
   "recordTypeWeight": "体重",
   "recordQuickWomenSubtitle": "未开启",
@@ -141,6 +194,12 @@
   "recordTimelineMedicationDetail": "已服用 · 与用药计划同步",
   "recordTimelineMoodCalm": "情绪 · 平静",
   "recordTimelineMoodDetail": "心情不错，睡得还可以",
+  "recordTimelineSymptomRecord": "症状记录",
+  "recordTimelineSymptomDetail": "头痛 · 疼痛评分 3/5",
+  "recordTimelineWomenHealthRecord": "经期记录",
+  "recordTimelineWomenHealthDetail": "经期第 2 天 · 轻微腹胀",
+  "recordTimelineSleepRecord": "睡眠记录",
+  "recordTimelineSleepDetail": "上床 23:30 · 睡眠时长 7.0 小时",
   "recordTimelineHeartRateDetail": "72 次/分 · 来源：手表 · 正常",
   "recordTimelineActivityWalk": "运动 · 快走",
   "recordTimelineActivityDetail": "30 分钟 · 2.6 km · 180 kcal",

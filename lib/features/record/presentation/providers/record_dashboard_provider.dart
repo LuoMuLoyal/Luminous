@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 
 class SelectedRecordDateNotifier extends Notifier<DateTime> {
   @override
@@ -18,19 +19,27 @@ final selectedRecordDateProvider =
       SelectedRecordDateNotifier.new,
     );
 
-final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) {
+final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) async {
   final session = ref.watch(authSessionProvider);
   final selectedDate = ref.watch(selectedRecordDateProvider);
   if (session.isConfirmedSignedOut) {
     return const MockRecordRepository().fetchDashboard(selectedDate);
   }
   if (!session.canAccessProtectedData) {
-    return pendingAuthSessionResolution();
+    return pendingAuthSessionResolution<RecordDashboard>();
+  }
+
+  var showWomenHealth = false;
+  try {
+    final healthContext = await ref.watch(healthContextSnapshotProvider.future);
+    showWomenHealth = healthContext.profile.sexAtBirth == 'female';
+  } catch (_) {
+    showWomenHealth = false;
   }
 
   return ref
       .watch(recordRepositoryProvider)
-      .fetchDashboard(selectedDate)
+      .fetchDashboard(selectedDate, showWomenHealth: showWomenHealth)
       .timeout(
         const Duration(seconds: 5),
         onTimeout: () => throw TimeoutException("请求超时，请检查网络后重试。"),
