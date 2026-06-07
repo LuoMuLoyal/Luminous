@@ -63,6 +63,41 @@ void main() {
     expect(find.text('Settings'), findsOneWidget);
   });
 
+  testWidgets('settings footer login action routes signed-out user to login', (
+    tester,
+  ) async {
+    await pumpOfflineApp(tester);
+
+    await openSettings(tester);
+
+    await tester.tap(find.byKey(const Key('settings-footer-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('邮箱'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+  });
+
+  testWidgets('settings footer sign out clears session and routes to login', (
+    tester,
+  ) async {
+    final remote = E2eAuthRemoteDataSource();
+    final container = await pumpOfflineApp(
+      tester,
+      authSessionOverride: SignedInAuthSessionNotifier.new,
+      authRemoteDataSource: remote,
+    );
+
+    await openSettings(tester);
+
+    await tester.tap(find.byKey(const Key('settings-footer-action')));
+    await tester.pumpAndSettle();
+
+    expect(remote.logoutCalled, isTrue);
+    expect(container.read(authSessionProvider).isAuthenticated, isFalse);
+    expect(find.text('邮箱'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+  });
+
   testWidgets('settings notification toggle persists preference', (
     tester,
   ) async {
@@ -102,77 +137,31 @@ void main() {
     expect(find.text('设置'), findsOneWidget);
   });
 
-  testWidgets('settings more reset defaults restores app preferences', (
+  testWidgets('settings notification permission row requests permission', (
     tester,
   ) async {
+    final permissionService = E2eNotificationPermissionService(
+      state: NotificationPermissionState.denied,
+    );
+
     await pumpOfflineApp(
       tester,
-      notificationPermissionService: E2eNotificationPermissionService(
-        state: NotificationPermissionState.granted,
-      ),
+      notificationPermissionService: permissionService,
     );
 
     await openSettings(tester);
 
-    await tester.tap(find.byKey(const Key('settings-row-theme')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('theme-row-dark')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('theme-palette-row-blue-pink')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const Key('settings-row-language')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('language-row-en')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
-
     await tester.tap(find.byKey(const Key('settings-row-notifications')));
     await tester.pumpAndSettle();
-    final medicationRow = find.byKey(const Key('notification-row-medication'));
-    expect(readSwitchValue(tester, switchIn(medicationRow)), isTrue);
-    await tester.tap(medicationRow);
-    await tester.pumpAndSettle();
-    expect(readSwitchValue(tester, switchIn(medicationRow)), isFalse);
-    await tester.tap(find.byType(BackButton).first);
+
+    expect(find.text('通知设置'), findsOneWidget);
+    expect(find.text('系统通知未开启'), findsOneWidget);
+    expect(permissionService.requestCount, 0);
+
+    await tester.tap(find.byKey(const Key('notification-row-permission')));
     await tester.pumpAndSettle();
 
-    var preferences = await SharedPreferences.getInstance();
-    expect(preferences.getString('theme.mode'), 'dark');
-    expect(preferences.getString('theme.palette'), 'blue-pink');
-    expect(preferences.getString('app.locale'), 'en');
-    expect(
-      preferences.getBool('settings.notifications.medicationReminders'),
-      isFalse,
-    );
-
-    await tester.tap(find.byKey(const Key('settings-row-more')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('more-settings-row-reset-defaults')));
-    await tester.pumpAndSettle();
-
-    preferences = await SharedPreferences.getInstance();
-    expect(preferences.getString('theme.mode'), 'system');
-    expect(preferences.getString('theme.palette'), 'classic');
-    expect(preferences.getString('app.locale'), 'system');
-    expect(
-      preferences.getBool('settings.notifications.medicationReminders'),
-      isNull,
-    );
-
-    await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
-    expect(
-      readSwitchValue(
-        tester,
-        switchIn(find.byKey(const Key('notification-row-medication'))),
-      ),
-      isTrue,
-    );
+    expect(permissionService.requestCount, 1);
+    expect(find.text('系统通知未开启'), findsOneWidget);
   });
 }

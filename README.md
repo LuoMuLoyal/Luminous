@@ -36,7 +36,7 @@ dart run tool/regenerate_lucent_openapi.dart
 - GitHub Actions workflow: `.github/workflows/flutter-ci.yml`
 - Current CI scope: `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`
 - Current CI is validation-only. It does not build or publish Android, iOS, desktop, or web artifacts.
-- Device/emulator E2E is split by module under `integration_test/`; run all with `flutter test integration_test` or a single module with `flutter test integration_test/settings_e2e_test.dart`.
+- Device/emulator E2E is split by module and scenario under `integration_test/`; run all with `flutter test integration_test` or one scenario with `flutter test integration_test/settings_preferences_e2e_test.dart`.
 
 ## Docs
 

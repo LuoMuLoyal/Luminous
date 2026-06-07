@@ -3,6 +3,20 @@ import 'e2e_test_helpers.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+  testWidgets('mine signed-out notice routes to login', (tester) async {
+    await pumpOfflineApp(tester);
+
+    await openTab(tester, '我的');
+
+    expect(find.text('当前未登录'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(OutlinedButton, '去登录'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('邮箱'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+  });
+
   testWidgets('mine profile edit saves health context and returns', (
     tester,
   ) async {
