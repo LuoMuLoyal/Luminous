@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
@@ -57,6 +60,49 @@ void main() {
     expect(find.textContaining(l10n.recordTimelineMealName), findsOneWidget);
     expect(find.text(l10n.recordMoodTrendSectionTitle), findsOneWidget);
   });
+
+  testWidgets(
+    'Record loading keeps static sections visible with skeleton slots',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      final pending = Completer<RecordDashboard>();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            recordDashboardProvider.overrideWith((ref) => pending.future),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            locale: const Locale('zh'),
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const RecordPage(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text(l10n.tabRecord), findsOneWidget);
+      expect(find.text(l10n.recordQuickSectionTitle), findsOneWidget);
+      expect(find.text(l10n.recordSymptomTrackingSectionTitle), findsOneWidget);
+      expect(find.byKey(const Key('record-timeline')), findsOneWidget);
+      expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    },
+  );
 
   testWidgets('Record edit page pre-fills fields from existing record', (
     tester,

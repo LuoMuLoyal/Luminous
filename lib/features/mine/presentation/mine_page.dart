@@ -29,7 +29,15 @@ class MinePage extends ConsumerWidget {
     } else {
       body = dashboardAsync.when(
         data: (dashboard) => MineDashboardView(dashboard: dashboard),
-        loading: () => const MineLoadingView(),
+        loading: () => MineDashboardView(
+          dashboard: MockMineRepository.loadingDashboard(
+            displayName: authSession.user?.nickname?.trim().isNotEmpty == true
+                ? authSession.user!.nickname!.trim()
+                : authSession.user?.email ?? authSession.user?.id,
+            email: authSession.user?.email ?? '',
+          ),
+          isLoading: true,
+        ),
         error: (_, __) =>
             MineErrorView(onRetry: () => ref.invalidate(mineDashboardProvider)),
       );
@@ -60,50 +68,6 @@ class MinePage extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class MineLoadingView extends StatelessWidget {
-  const MineLoadingView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppInlineSkeleton(
-      spacing: AppSpacingTokens.md,
-      children: [
-        AppInlineSkeletonSection(
-          children: [
-            Row(
-              children: [
-                AppInlineSkeletonCircle(size: 72),
-                SizedBox(width: AppSpacingTokens.md),
-                Expanded(
-                  child: AppInlineSkeleton(
-                    children: [
-                      AppInlineSkeletonBlock(height: 22, widthFactor: 0.5),
-                      AppInlineSkeletonBlock(height: 18, widthFactor: 0.72),
-                      AppInlineSkeletonBlock(height: 12, widthFactor: 0.62),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 92),
-            AppInlineSkeletonBlock(height: 92),
-          ],
-        ),
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.36),
-            AppInlineSkeletonBlock(height: 220),
-          ],
-        ),
-      ],
     );
   }
 }

@@ -1,13 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/mine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
@@ -92,6 +96,49 @@ void main() {
     expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
     expect(find.text(l10n.mineErrorTitle), findsNothing);
   });
+
+  testWidgets(
+    'Mine loading keeps static sections visible with skeleton slots',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(393, 852);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      final pending = Completer<MineDashboard>();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(
+              () => _EmailSignedInAuthSessionNotifier(),
+            ),
+            mineDashboardProvider.overrideWith((ref) => pending.future),
+          ],
+          child: _materialApp(const MinePage()),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.text(l10n.tabMine), findsOneWidget);
+      expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+
+      final scrollable = find.byType(Scrollable).first;
+      for (final finder in [
+        find.text(l10n.mineCampusSectionTitle),
+        find.text(l10n.minePrivacyPermissionTitle),
+        find.text(l10n.mineReminderSectionTitle),
+        find.text(l10n.mineAccountSettingsTitle),
+      ]) {
+        await tester.scrollUntilVisible(finder, 260, scrollable: scrollable);
+        await tester.pump();
+        expect(finder, findsOneWidget);
+      }
+    },
+  );
 
   testWidgets('Mine settings action routes to settings page', (tester) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));

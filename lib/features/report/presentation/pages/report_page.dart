@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
@@ -19,7 +20,12 @@ class ReportPage extends ConsumerWidget {
     return dashboardAsync.when(
       data: (dashboard) =>
           _ReportMobileShell(child: ReportDashboardView(dashboard: dashboard)),
-      loading: () => const _ReportMobileShell(child: ReportLoadingView()),
+      loading: () => const _ReportMobileShell(
+        child: ReportDashboardView(
+          dashboard: MockReportRepository.dashboard,
+          isLoading: true,
+        ),
+      ),
       error: (_, __) {
         final l10n = AppLocalizations.of(context)!;
 

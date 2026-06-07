@@ -11,6 +11,14 @@ class MockRecordRepository implements RecordRepository {
 
   @override
   Future<RecordDashboard> fetchDashboard(DateTime selectedDate) async {
+    return dashboardFor(selectedDate);
+  }
+
+  static RecordDashboard loadingDashboard(DateTime selectedDate) {
+    return dashboardFor(selectedDate);
+  }
+
+  static RecordDashboard dashboardFor(DateTime selectedDate) {
     return RecordDashboard(
       selectedDate: selectedDate,
       selectedDay: selectedDate.day,

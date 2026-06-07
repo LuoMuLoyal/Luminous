@@ -98,40 +98,6 @@ class MedicineWorkspaceView extends StatelessWidget {
   }
 }
 
-class MedicineWorkspaceLoadingView extends StatelessWidget {
-  const MedicineWorkspaceLoadingView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.42),
-            AppInlineSkeletonBlock(height: 36),
-          ],
-        ),
-        SizedBox(height: AppSpacingTokens.md),
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.5),
-            AppInlineSkeletonBlock(height: 76),
-          ],
-        ),
-        SizedBox(height: AppSpacingTokens.md),
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.38),
-            AppInlineSkeletonBlock(height: 82),
-            AppInlineSkeletonBlock(height: 82),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
 class MedicineErrorView extends StatelessWidget {
   const MedicineErrorView({super.key, required this.onRetry});
 

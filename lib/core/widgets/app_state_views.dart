@@ -148,14 +148,7 @@ class AppInlineSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-
-    return Shimmer.fromColors(
-      baseColor: surface.canvas.withValues(
-        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
-      ),
-      highlightColor: surface.canvasSoft2,
+    return AppSkeletonShimmer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -169,6 +162,126 @@ class AppInlineSkeleton extends StatelessWidget {
   }
 }
 
+class AppSkeletonScope extends InheritedWidget {
+  const AppSkeletonScope({
+    super.key,
+    required this.isLoading,
+    required super.child,
+  });
+
+  final bool isLoading;
+
+  static bool isLoadingOf(BuildContext context) {
+    return context
+            .dependOnInheritedWidgetOfExactType<AppSkeletonScope>()
+            ?.isLoading ??
+        false;
+  }
+
+  @override
+  bool updateShouldNotify(AppSkeletonScope oldWidget) {
+    return isLoading != oldWidget.isLoading;
+  }
+}
+
+class AppSkeletonSlot extends StatelessWidget {
+  const AppSkeletonSlot({
+    super.key,
+    required this.child,
+    required this.skeleton,
+    this.isLoading,
+  });
+
+  final Widget child;
+  final Widget skeleton;
+  final bool? isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    final loading = isLoading ?? AppSkeletonScope.isLoadingOf(context);
+
+    if (!loading) {
+      return child;
+    }
+
+    return AppSkeletonShimmer(child: skeleton);
+  }
+}
+
+class AppSkeletonText extends StatelessWidget {
+  const AppSkeletonText({
+    super.key,
+    required this.text,
+    this.style,
+    this.maxLines,
+    this.overflow,
+    this.textAlign,
+    this.width,
+    this.widthFactor = 0.72,
+    this.height,
+    this.radius = AppRadiusTokens.xs,
+    this.isLoading,
+  }) : assert(widthFactor > 0 && widthFactor <= 1);
+
+  final String text;
+  final TextStyle? style;
+  final int? maxLines;
+  final TextOverflow? overflow;
+  final TextAlign? textAlign;
+  final double? width;
+  final double widthFactor;
+  final double? height;
+  final double radius;
+  final bool? isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    final textWidget = Text(
+      text,
+      style: style,
+      maxLines: maxLines,
+      overflow: overflow,
+      textAlign: textAlign,
+    );
+    final resolvedStyle = DefaultTextStyle.of(context).style.merge(style);
+    final fontSize = resolvedStyle.fontSize ?? 14;
+    final lineHeight = resolvedStyle.height == null
+        ? fontSize * 1.18
+        : fontSize * resolvedStyle.height!;
+
+    return AppSkeletonSlot(
+      isLoading: isLoading,
+      skeleton: AppInlineSkeletonBlock(
+        height: height ?? lineHeight,
+        width: width,
+        widthFactor: widthFactor,
+        radius: radius,
+      ),
+      child: textWidget,
+    );
+  }
+}
+
+class AppSkeletonShimmer extends StatelessWidget {
+  const AppSkeletonShimmer({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+
+    return Shimmer.fromColors(
+      baseColor: surface.canvas.withValues(
+        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
+      ),
+      highlightColor: surface.canvasSoft2,
+      child: child,
+    );
+  }
+}
+
 class AppInlineSkeletonBlock extends StatelessWidget {
   const AppInlineSkeletonBlock({
     super.key,
@@ -176,12 +289,15 @@ class AppInlineSkeletonBlock extends StatelessWidget {
     this.width,
     this.widthFactor = 1,
     this.radius = AppRadiusTokens.lg,
-  }) : assert(widthFactor > 0 && widthFactor <= 1);
+    this.fallbackWidth = 96,
+  }) : assert(widthFactor > 0 && widthFactor <= 1),
+       assert(fallbackWidth > 0);
 
   final double height;
   final double? width;
   final double widthFactor;
   final double radius;
+  final double fallbackWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -199,10 +315,18 @@ class AppInlineSkeletonBlock extends StatelessWidget {
       return block;
     }
 
-    return FractionallySizedBox(
-      widthFactor: widthFactor,
-      alignment: Alignment.centerLeft,
-      child: block,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.hasBoundedWidth) {
+          return SizedBox(width: fallbackWidth * widthFactor, child: block);
+        }
+
+        return FractionallySizedBox(
+          widthFactor: widthFactor,
+          alignment: Alignment.centerLeft,
+          child: block,
+        );
+      },
     );
   }
 }

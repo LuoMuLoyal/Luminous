@@ -29,8 +29,12 @@ class MedicinePage extends ConsumerWidget {
               _markDose(context, ref, currentMedicineId, action),
         ),
       ),
-      loading: () =>
-          const _MedicineMobileShell(child: MedicineWorkspaceLoadingView()),
+      loading: () => const _MedicineMobileShell(
+        child: MedicineMobileDashboardView(
+          workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
+          isLoading: true,
+        ),
+      ),
       error: (_, __) => DecoratedBox(
         decoration: BoxDecoration(color: surface.canvasSoft),
         child: SafeArea(

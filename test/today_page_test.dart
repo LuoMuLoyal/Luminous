@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/today_repository.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
+import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -64,6 +68,48 @@ void main() {
 
     await tester.pump(const Duration(milliseconds: 400));
   });
+
+  testWidgets(
+    'Today loading keeps static sections visible with skeleton slots',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      final pending = Completer<TodayDashboard>();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            todayDashboardProvider.overrideWith((ref) => pending.future),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            locale: const Locale('zh'),
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const TodayPage(),
+          ),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.text(l10n.todayHeroTitle), findsOneWidget);
+      expect(find.text(l10n.todayHealthSummaryCardTitle), findsOneWidget);
+      expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
+      expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    },
+  );
 
   testWidgets('Today page shows zero water and medicines without crashing', (
     tester,

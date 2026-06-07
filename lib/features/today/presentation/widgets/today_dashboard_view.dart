@@ -23,9 +23,11 @@ class TodayDashboardView extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
-    return isDesktop
+    final content = isDesktop
         ? _DesktopTodayDashboard(dashboard: dashboard)
         : _MobileTodayDashboard(dashboard: dashboard);
+
+    return AppSkeletonScope(isLoading: isLoading, child: content);
   }
 }
 
@@ -192,12 +194,13 @@ class _TodayTopBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.xxs),
-              Text(
-                _greetingSubtitle(l10n, moment),
+              AppSkeletonText(
+                text: _greetingSubtitle(l10n, moment),
                 style: typography.bodyMd.copyWith(
                   color: Theme.of(context).extension<AppThemeSurface>()!.body,
                   letterSpacing: 0,
                 ),
+                widthFactor: 0.64,
               ),
             ],
           ),
@@ -284,12 +287,19 @@ class _HealthOverviewCard extends StatelessWidget {
               size: AppSpacingTokens.lg,
             ),
             compact: true,
-            trailing: TodayTextAction(
-              label: l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
-              icon: Icons.refresh_rounded,
-              onTap: () => AppToast.show(
-                context,
-                l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
+            trailing: AppSkeletonSlot(
+              skeleton: const AppInlineSkeletonBlock(
+                height: 22,
+                width: 96,
+                radius: AppRadiusTokens.pill,
+              ),
+              child: TodayTextAction(
+                label: l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
+                icon: Icons.refresh_rounded,
+                onTap: () => AppToast.show(
+                  context,
+                  l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
+                ),
               ),
             ),
           ),
@@ -340,21 +350,35 @@ class _OverviewMetric extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: AppSpacingTokens.xs),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              item.value,
-              style: typography.bodyLg.copyWith(
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0,
+          AppSkeletonSlot(
+            skeleton: const AppInlineSkeletonBlock(
+              height: 22,
+              width: 44,
+              radius: AppRadiusTokens.sm,
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                item.value,
+                style: typography.bodyLg.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0,
+                ),
+                maxLines: 1,
               ),
-              maxLines: 1,
             ),
           ),
           const SizedBox(height: AppSpacingTokens.xs),
-          TodayStatusPill(
-            label: item.status,
-            color: item.statusColor ?? item.color,
+          AppSkeletonSlot(
+            skeleton: const AppInlineSkeletonBlock(
+              height: 22,
+              width: 48,
+              radius: AppRadiusTokens.pill,
+            ),
+            child: TodayStatusPill(
+              label: item.status,
+              color: item.statusColor ?? item.color,
+            ),
           ),
         ],
       ),
@@ -442,27 +466,54 @@ class _PriorityCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacingTokens.lg),
           if (item.progress != null) ...[
-            TodayLinearProgress(progress: item.progress!, color: item.color),
-            const SizedBox(height: AppSpacingTokens.sm),
-            Center(
-              child: Text(
-                item.detail,
-                style: typography.displaySm.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onSurface,
-                  letterSpacing: 0,
-                ),
+            AppSkeletonSlot(
+              skeleton: const Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  AppInlineSkeletonBlock(
+                    height: 8,
+                    radius: AppRadiusTokens.pill,
+                  ),
+                  SizedBox(height: AppSpacingTokens.sm),
+                  Center(
+                    child: AppInlineSkeletonBlock(
+                      height: 18,
+                      width: 42,
+                      radius: AppRadiusTokens.sm,
+                    ),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  TodayLinearProgress(
+                    progress: item.progress!,
+                    color: item.color,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  Center(
+                    child: Text(
+                      item.detail,
+                      style: typography.displaySm.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: theme.colorScheme.onSurface,
+                        letterSpacing: 0,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ] else
-            Text(
-              item.detail,
+            AppSkeletonText(
+              text: item.detail,
               style: typography.bodyMd.copyWith(
                 color: surface.body,
                 letterSpacing: 0,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              widthFactor: 0.74,
             ),
           const SizedBox(height: AppSpacingTokens.lg),
           SizedBox(
@@ -671,16 +722,23 @@ class _TrendCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacingTokens.xs),
-          Text(
-            item.value,
+          AppSkeletonText(
+            text: item.value,
             style: typography.displaySm.copyWith(
               color: item.color,
               fontWeight: FontWeight.w800,
               letterSpacing: 0,
             ),
+            widthFactor: 0.48,
           ),
           const SizedBox(height: AppSpacingTokens.xs),
-          TodayMiniTrendChart(points: item.points, color: item.color),
+          AppSkeletonSlot(
+            skeleton: const AppInlineSkeletonBlock(
+              height: 42,
+              radius: AppRadiusTokens.md,
+            ),
+            child: TodayMiniTrendChart(points: item.points, color: item.color),
+          ),
           const SizedBox(height: AppSpacingTokens.xxs),
           _WeekLabels(color: item.color),
         ],

@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportDashboardView extends StatelessWidget {
-  const ReportDashboardView({super.key, required this.dashboard});
+  const ReportDashboardView({
+    super.key,
+    required this.dashboard,
+    this.isLoading = false,
+  });
 
   final ReportDashboard dashboard;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,7 @@ class ReportDashboardView extends StatelessWidget {
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
-    return Column(
+    final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ReportScoreHero(
@@ -92,6 +98,19 @@ class ReportDashboardView extends StatelessWidget {
           surface: surface,
         ),
       ],
-    ).animate().fadeIn(duration: 220.ms).slideY(begin: 0.02, end: 0);
+    );
+
+    final scopedContent = AppSkeletonScope(
+      isLoading: isLoading,
+      child: content,
+    );
+    if (isLoading) {
+      return scopedContent;
+    }
+
+    return scopedContent
+        .animate()
+        .fadeIn(duration: 220.ms)
+        .slideY(begin: 0.02, end: 0);
   }
 }

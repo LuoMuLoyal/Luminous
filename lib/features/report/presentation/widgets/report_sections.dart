@@ -111,38 +111,6 @@ class ReportPeriodPill extends StatelessWidget {
   }
 }
 
-class ReportLoadingView extends StatelessWidget {
-  const ReportLoadingView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppInlineSkeleton(
-      spacing: AppSpacingTokens.md,
-      children: [
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 20, widthFactor: 0.44),
-            AppInlineSkeletonBlock(height: 68, widthFactor: 0.5),
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.72),
-          ],
-        ),
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 112),
-            AppInlineSkeletonBlock(height: 112),
-          ],
-        ),
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.36),
-            AppInlineSkeletonBlock(height: 180),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
 class ReportScoreHero extends StatelessWidget {
   const ReportScoreHero({
     super.key,
@@ -194,14 +162,21 @@ class ReportScoreHero extends StatelessWidget {
                   spacing: AppSpacingTokens.sm,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Text(
-                      score.value.toString(),
-                      style: typography.displayXl.copyWith(
-                        color: ReportPalette.violet,
-                        fontSize: 58,
-                        height: 1,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
+                    AppSkeletonSlot(
+                      skeleton: const AppInlineSkeletonBlock(
+                        height: 58,
+                        width: 76,
+                        radius: AppRadiusTokens.md,
+                      ),
+                      child: Text(
+                        score.value.toString(),
+                        style: typography.displayXl.copyWith(
+                          color: ReportPalette.violet,
+                          fontSize: 58,
+                          height: 1,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0,
+                        ),
                       ),
                     ),
                     Text(
@@ -211,17 +186,33 @@ class ReportScoreHero extends StatelessWidget {
                         letterSpacing: 0,
                       ),
                     ),
-                    ReportPill(
-                      label: reportCopy(l10n, score.statusKey),
-                      color: ReportPalette.green,
+                    AppSkeletonSlot(
+                      skeleton: const AppInlineSkeletonBlock(
+                        height: 22,
+                        width: 56,
+                        radius: AppRadiusTokens.sm,
+                      ),
+                      child: ReportPill(
+                        label: reportCopy(l10n, score.statusKey),
+                        color: ReportPalette.green,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacingTokens.lg),
-                ReportTextAction(
-                  label: reportCopy(l10n, score.bodyKey),
-                  onTap: () =>
-                      showReportToast(context, reportCopy(l10n, score.bodyKey)),
+                AppSkeletonSlot(
+                  skeleton: const AppInlineSkeletonBlock(
+                    height: 20,
+                    widthFactor: 0.86,
+                    radius: AppRadiusTokens.sm,
+                  ),
+                  child: ReportTextAction(
+                    label: reportCopy(l10n, score.bodyKey),
+                    onTap: () => showReportToast(
+                      context,
+                      reportCopy(l10n, score.bodyKey),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -352,13 +343,14 @@ class _MetricCard extends StatelessWidget {
                 spacing: AppSpacingTokens.xxs,
                 crossAxisAlignment: WrapCrossAlignment.end,
                 children: [
-                  Text(
-                    value,
+                  AppSkeletonText(
+                    text: value,
                     style: typography.displayLg.copyWith(
                       color: metric.color,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0,
                     ),
+                    width: 48,
                   ),
                   if (metric.unitKey != null)
                     Padding(
@@ -378,34 +370,49 @@ class _MetricCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.xs),
               Row(
                 children: [
-                  ReportPill(
-                    label: reportCopy(l10n, metric.statusKey),
-                    color: metric.statusKey == ReportCopyKey.statusNeedsImprove
-                        ? ReportPalette.orange
-                        : ReportPalette.green,
-                    backgroundAlpha: 0.1,
+                  AppSkeletonSlot(
+                    skeleton: const AppInlineSkeletonBlock(
+                      height: 22,
+                      width: 46,
+                      radius: AppRadiusTokens.sm,
+                    ),
+                    child: ReportPill(
+                      label: reportCopy(l10n, metric.statusKey),
+                      color:
+                          metric.statusKey == ReportCopyKey.statusNeedsImprove
+                          ? ReportPalette.orange
+                          : ReportPalette.green,
+                      backgroundAlpha: 0.1,
+                    ),
                   ),
                   const SizedBox(width: AppSpacingTokens.xs),
                   Icon(directionIcon, size: 14, color: directionColor),
                   const SizedBox(width: AppSpacingTokens.xxs),
                   Expanded(
-                    child: Text(
-                      reportCopy(l10n, metric.deltaKey),
+                    child: AppSkeletonText(
+                      text: reportCopy(l10n, metric.deltaKey),
                       style: typography.caption.copyWith(
                         color: surface.body,
                         letterSpacing: 0,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      widthFactor: 0.82,
                     ),
                   ),
                 ],
               ),
               const Spacer(),
-              ReportMetricTrack(
-                values: metric.sparkline,
-                color: metric.color,
-                height: 26,
+              AppSkeletonSlot(
+                skeleton: const AppInlineSkeletonBlock(
+                  height: 26,
+                  radius: AppRadiusTokens.sm,
+                ),
+                child: ReportMetricTrack(
+                  values: metric.sparkline,
+                  color: metric.color,
+                  height: 26,
+                ),
               ),
             ],
           ),
@@ -523,10 +530,17 @@ class _TrendPlaceholder extends StatelessWidget {
                             padding: const EdgeInsets.only(
                               bottom: AppSpacingTokens.xs,
                             ),
-                            child: ReportPill(
-                              label: series.currentValue,
-                              color: series.color,
-                              backgroundAlpha: 0.92,
+                            child: AppSkeletonSlot(
+                              skeleton: const AppInlineSkeletonBlock(
+                                height: 22,
+                                width: 46,
+                                radius: AppRadiusTokens.sm,
+                              ),
+                              child: ReportPill(
+                                label: series.currentValue,
+                                color: series.color,
+                                backgroundAlpha: 0.92,
+                              ),
                             ),
                           ),
                       ],
@@ -538,10 +552,16 @@ class _TrendPlaceholder extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         for (final series in trends)
-                          ReportMetricTrack(
-                            values: series.values,
-                            color: series.color,
-                            height: 30,
+                          AppSkeletonSlot(
+                            skeleton: const AppInlineSkeletonBlock(
+                              height: 30,
+                              radius: AppRadiusTokens.sm,
+                            ),
+                            child: ReportMetricTrack(
+                              values: series.values,
+                              color: series.color,
+                              height: 30,
+                            ),
                           ),
                       ],
                     ),
@@ -676,22 +696,24 @@ class _FindingCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacingTokens.md),
-                Text(
-                  title,
+                AppSkeletonText(
+                  text: title,
                   style: typography.bodyMdStrong.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0,
                   ),
+                  widthFactor: 0.7,
                 ),
                 const SizedBox(height: AppSpacingTokens.sm),
-                Text(
-                  reportCopy(l10n, finding.bodyKey),
+                AppSkeletonText(
+                  text: reportCopy(l10n, finding.bodyKey),
                   style: typography.bodySm.copyWith(
                     color: surface.body,
                     letterSpacing: 0,
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
+                  widthFactor: 0.9,
                 ),
               ],
             ),
@@ -785,12 +807,13 @@ class ReportAiSummarySection extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacingTokens.sm),
                   Expanded(
-                    child: Text(
-                      reportCopy(l10n, bullet.bodyKey),
+                    child: AppSkeletonText(
+                      text: reportCopy(l10n, bullet.bodyKey),
                       style: typography.bodySm.copyWith(
                         color: surface.body,
                         letterSpacing: 0,
                       ),
+                      widthFactor: 0.9,
                     ),
                   ),
                 ],
@@ -1009,33 +1032,41 @@ class _PatternCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacingTokens.md),
-              Text(
-                reportCopy(l10n, pattern.statusKey),
+              AppSkeletonText(
+                text: reportCopy(l10n, pattern.statusKey),
                 style: typography.bodyMdStrong.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                widthFactor: 0.74,
               ),
               const SizedBox(height: AppSpacingTokens.xxs),
-              Text(
-                reportCopy(l10n, pattern.bodyKey),
+              AppSkeletonText(
+                text: reportCopy(l10n, pattern.bodyKey),
                 style: typography.bodySm.copyWith(
                   color: surface.body,
                   letterSpacing: 0,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
+                widthFactor: 0.88,
               ),
               const Spacer(),
               Row(
                 children: [
                   Expanded(
-                    child: ReportMetricTrack(
-                      values: pattern.sparkline,
-                      color: pattern.color,
-                      height: 28,
+                    child: AppSkeletonSlot(
+                      skeleton: const AppInlineSkeletonBlock(
+                        height: 28,
+                        radius: AppRadiusTokens.sm,
+                      ),
+                      child: ReportMetricTrack(
+                        values: pattern.sparkline,
+                        color: pattern.color,
+                        height: 28,
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppSpacingTokens.sm),

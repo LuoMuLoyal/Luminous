@@ -63,27 +63,35 @@ class _NextDoseReminderSection extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    l10n.medicineNextDoseTodayTime(time),
-                    style: typography.displayLg.copyWith(
-                      color: MedicinePalette.teal,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
+                AppSkeletonSlot(
+                  skeleton: const AppInlineSkeletonBlock(
+                    height: 32,
+                    width: 132,
+                    radius: AppRadiusTokens.sm,
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      l10n.medicineNextDoseTodayTime(time),
+                      style: typography.displayLg.copyWith(
+                        color: MedicinePalette.teal,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
                     ),
-                    maxLines: 1,
                   ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
-                Text(
-                  item == null
+                AppSkeletonText(
+                  text: item == null
                       ? l10n.medicineNoMedicineBody
                       : _doseSummary(l10n, item),
                   style: typography.bodyMd.copyWith(letterSpacing: 0),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  widthFactor: 0.76,
                 ),
                 if (canMark) ...[
                   const SizedBox(height: AppSpacingTokens.sm),
@@ -119,9 +127,16 @@ class _NextDoseReminderSection extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              MedicineStatusPill(
-                label: l10n.medicineDoseDueStatus,
-                color: MedicinePalette.teal,
+              AppSkeletonSlot(
+                skeleton: const AppInlineSkeletonBlock(
+                  height: 22,
+                  width: 56,
+                  radius: AppRadiusTokens.pill,
+                ),
+                child: MedicineStatusPill(
+                  label: l10n.medicineDoseDueStatus,
+                  color: MedicinePalette.teal,
+                ),
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               if (canMark)
@@ -251,31 +266,40 @@ class _SafetyAlertCard extends StatelessWidget {
                     iconSize: AppSpacingTokens.lg,
                   ),
                   const Spacer(),
-                  MedicineStatusPill(
-                    label: medicineCopy(l10n, alert.actionKey),
-                    color: alert.color,
+                  AppSkeletonSlot(
+                    skeleton: const AppInlineSkeletonBlock(
+                      height: 22,
+                      width: 54,
+                      radius: AppRadiusTokens.pill,
+                    ),
+                    child: MedicineStatusPill(
+                      label: medicineCopy(l10n, alert.actionKey),
+                      color: alert.color,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: AppSpacingTokens.md),
-              Text(
-                medicineCopy(l10n, alert.titleKey),
+              AppSkeletonText(
+                text: medicineCopy(l10n, alert.titleKey),
                 style: typography.bodyMdStrong.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                widthFactor: 0.74,
               ),
               const SizedBox(height: AppSpacingTokens.xxs),
-              Text(
-                medicineCopy(l10n, alert.bodyKey),
+              AppSkeletonText(
+                text: medicineCopy(l10n, alert.bodyKey),
                 style: typography.bodySm.copyWith(
                   color: surface.body,
                   letterSpacing: 0,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
+                widthFactor: 0.92,
               ),
               const SizedBox(height: AppSpacingTokens.sm),
               Align(
@@ -549,14 +573,16 @@ class _MedicineRecordRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  row.date,
+                AppSkeletonText(
+                  text: row.date,
                   style: typography.bodySm.copyWith(letterSpacing: 0),
+                  width: 34,
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
-                Text(
-                  row.time,
+                AppSkeletonText(
+                  text: row.time,
                   style: typography.bodySm.copyWith(letterSpacing: 0),
+                  width: 32,
                 ),
               ],
             ),
@@ -593,14 +619,15 @@ class _MedicineRecordRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  row.name,
+                AppSkeletonText(
+                  text: row.name,
                   style: typography.bodyMdStrong.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  widthFactor: 0.66,
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Wrap(
@@ -608,16 +635,24 @@ class _MedicineRecordRow extends StatelessWidget {
                   runSpacing: AppSpacingTokens.xxs,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Text(
-                      row.detail,
+                    AppSkeletonText(
+                      text: row.detail,
                       style: typography.bodySm.copyWith(
                         color: surface.body,
                         letterSpacing: 0,
                       ),
+                      width: 94,
                     ),
-                    MedicineStatusPill(
-                      label: row.statusLabel,
-                      color: row.statusColor,
+                    AppSkeletonSlot(
+                      skeleton: const AppInlineSkeletonBlock(
+                        height: 22,
+                        width: 44,
+                        radius: AppRadiusTokens.pill,
+                      ),
+                      child: MedicineStatusPill(
+                        label: row.statusLabel,
+                        color: row.statusColor,
+                      ),
                     ),
                   ],
                 ),

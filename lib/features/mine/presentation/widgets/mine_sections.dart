@@ -153,25 +153,40 @@ class MineAccountHero extends StatelessWidget {
                             letterSpacing: 0,
                           ),
                         ),
-                        Text(
-                          dashboard.completion.percentLabel,
-                          style: typography.bodyLg.copyWith(
-                            color: _mineGreen,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0,
+                        AppSkeletonSlot(
+                          skeleton: const AppInlineSkeletonBlock(
+                            height: 22,
+                            width: 42,
+                            radius: AppRadiusTokens.sm,
+                          ),
+                          child: Text(
+                            dashboard.completion.percentLabel,
+                            style: typography.bodyLg.copyWith(
+                              color: _mineGreen,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0,
+                            ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: AppSpacingTokens.md),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-                      child: LinearProgressIndicator(
-                        minHeight: 8,
-                        value: dashboard.completion.progress,
-                        backgroundColor: _mineGreen.withValues(alpha: 0.12),
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          _mineGreen,
+                    AppSkeletonSlot(
+                      skeleton: const AppInlineSkeletonBlock(
+                        height: 8,
+                        radius: AppRadiusTokens.pill,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          AppRadiusTokens.pill,
+                        ),
+                        child: LinearProgressIndicator(
+                          minHeight: 8,
+                          value: dashboard.completion.progress,
+                          backgroundColor: _mineGreen.withValues(alpha: 0.12),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            _mineGreen,
+                          ),
                         ),
                       ),
                     ),
@@ -611,8 +626,8 @@ class _StatusOverviewItem extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacingTokens.xxs),
-              Text(
-                mineCopy(l10n, entry.subtitleKey),
+              AppSkeletonText(
+                text: mineCopy(l10n, entry.subtitleKey),
                 style: typography.caption.copyWith(
                   color: surface.body,
                   letterSpacing: 0,
@@ -620,12 +635,21 @@ class _StatusOverviewItem extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
+                height: 14,
+                widthFactor: 0.72,
               ),
               const SizedBox(height: AppSpacingTokens.xs),
-              _TinyBadge(
-                label: mineCopy(l10n, entry.badgeKey),
-                color: entry.accent,
-                typography: typography,
+              AppSkeletonSlot(
+                skeleton: const AppInlineSkeletonBlock(
+                  height: 20,
+                  width: 44,
+                  radius: AppRadiusTokens.sm,
+                ),
+                child: _TinyBadge(
+                  label: mineCopy(l10n, entry.badgeKey),
+                  color: entry.accent,
+                  typography: typography,
+                ),
               ),
             ],
           ),
@@ -681,27 +705,35 @@ class _ArchiveRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
-                Text(
-                  subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
+                AppSkeletonText(
+                  text: subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
                   style: typography.bodySm.copyWith(
                     color: surface.body,
                     letterSpacing: 0,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  widthFactor: 0.74,
                 ),
               ],
             ),
           ),
           if (entry.statusKey != null) ...[
             const SizedBox(width: AppSpacingTokens.sm),
-            Text(
-              mineCopy(l10n, entry.statusKey!),
-              style: typography.bodySmStrong.copyWith(
-                color: entry.statusKey == MineCopyKey.archiveNeedsFill
-                    ? AppColorTokens.warning
-                    : _mineGreen,
-                letterSpacing: 0,
+            AppSkeletonSlot(
+              skeleton: const AppInlineSkeletonBlock(
+                height: 18,
+                width: 46,
+                radius: AppRadiusTokens.sm,
+              ),
+              child: Text(
+                mineCopy(l10n, entry.statusKey!),
+                style: typography.bodySmStrong.copyWith(
+                  color: entry.statusKey == MineCopyKey.archiveNeedsFill
+                      ? AppColorTokens.warning
+                      : _mineGreen,
+                  letterSpacing: 0,
+                ),
               ),
             ),
           ],

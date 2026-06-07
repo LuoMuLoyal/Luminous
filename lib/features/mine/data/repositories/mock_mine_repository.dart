@@ -28,6 +28,30 @@ class MockMineRepository implements MineRepository {
     );
   }
 
+  static MineDashboard loadingDashboard({
+    required String? displayName,
+    required String email,
+  }) {
+    return buildDashboard(
+      account: MineAccount(
+        isAuthenticated: true,
+        displayNameKey: MineCopyKey.accountDisplayName,
+        displayName: displayName,
+        email: email,
+        statusKey: MineCopyKey.accountSignedIn,
+        roleKey: MineCopyKey.accountStudentRole,
+      ),
+      profile: _guestProfile,
+      completion: const MineCompletion(
+        progress: 0,
+        percentLabel: '0%',
+        titleKey: MineCopyKey.completionTitle,
+      ),
+      alerts: _mockAlerts,
+      archiveEntries: _mockArchiveEntries,
+    );
+  }
+
   @override
   Future<MineDashboard> fetchDashboard() async {
     return buildDashboard(
