@@ -7,7 +7,10 @@ import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
+import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -19,6 +22,7 @@ class RecordPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardAsync = ref.watch(recordDashboardProvider);
     final selectedDate = ref.watch(selectedRecordDateProvider);
+    final selectedFilter = ref.watch(selectedRecordFilterProvider);
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
@@ -97,15 +101,32 @@ class RecordPage extends ConsumerWidget {
                 emphasized: true,
                 typography: typography,
                 surface: surface,
-                onTap: () => context.push('/record/create'),
+                onTap: () => context.push(
+                  '/record/create?date=${_formatDate(selectedDate)}',
+                ),
               ),
             ],
       children: [
         dashboardAsync.when(
-          data: (dashboard) => RecordDashboardView(dashboard: dashboard),
+          data: (dashboard) => RecordDashboardView(
+            dashboard: dashboard,
+            onFilterSelected: (type) =>
+                ref.read(selectedRecordFilterProvider.notifier).setFilter(type),
+            onDateSelected: (date) => _setSelectedDate(ref, date),
+            onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
+            onQuickAction: (action) => _handleQuickAction(context, ref, action),
+          ),
           loading: () => RecordDashboardView(
-            dashboard: MockRecordRepository.loadingDashboard(selectedDate),
+            dashboard: MockRecordRepository.loadingDashboard(
+              selectedDate,
+              filterType: selectedFilter,
+            ),
             isLoading: true,
+            onFilterSelected: (type) =>
+                ref.read(selectedRecordFilterProvider.notifier).setFilter(type),
+            onDateSelected: (date) => _setSelectedDate(ref, date),
+            onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
+            onQuickAction: (action) => _handleQuickAction(context, ref, action),
           ),
           error: (_, __) => AppStateErrorView(
             title: l10n.recordErrorTitle,
@@ -122,6 +143,24 @@ class RecordPage extends ConsumerWidget {
 
   void _setSelectedDate(WidgetRef ref, DateTime date) {
     ref.read(selectedRecordDateProvider.notifier).setDate(date);
+  }
+
+  void _handleQuickAction(
+    BuildContext context,
+    WidgetRef ref,
+    RecordQuickAction action,
+  ) {
+    final kind = dailyRecordKindForEntryType(action.type);
+    if (kind == null) {
+      showRecordToast(context, _quickActionLabel(context, action));
+      return;
+    }
+
+    final selectedDate = ref.read(selectedRecordDateProvider);
+    context.push(
+      '/record/create?kind=${Uri.encodeComponent(kind.name)}'
+      '&date=${Uri.encodeComponent(_formatDate(selectedDate))}',
+    );
   }
 
   Future<void> _pickSelectedDate(
@@ -142,5 +181,19 @@ class RecordPage extends ConsumerWidget {
 
   DateTime _dateOnly(DateTime value) {
     return DateTime(value.year, value.month, value.day);
+  }
+
+  String _quickActionLabel(BuildContext context, RecordQuickAction action) {
+    final l10n = AppLocalizations.of(context)!;
+    if (action.type == RecordEntryType.womenHealth) {
+      return l10n.recordQuickPeriodAction;
+    }
+    return l10n.recordQuickActionLabel(recordCopy(l10n, action.titleKey));
+  }
+
+  String _formatDate(DateTime value) {
+    return '${value.year.toString().padLeft(4, '0')}-'
+        '${value.month.toString().padLeft(2, '0')}-'
+        '${value.day.toString().padLeft(2, '0')}';
   }
 }

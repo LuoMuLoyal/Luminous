@@ -19,14 +19,17 @@ import 'package:luminous/features/today/presentation/providers/today_dashboard_p
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordCreatePage extends ConsumerStatefulWidget {
-  const RecordCreatePage({super.key});
+  const RecordCreatePage({super.key, this.initialKind, this.initialDate});
+
+  final DailyRecordKind? initialKind;
+  final DateTime? initialDate;
 
   @override
   ConsumerState<RecordCreatePage> createState() => _RecordCreatePageState();
 }
 
 class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
-  DailyRecordKind _kind = DailyRecordKind.water;
+  late DailyRecordKind _kind;
   final _valueController = TextEditingController();
   final _unitController = TextEditingController();
   final _noteController = TextEditingController();
@@ -35,6 +38,12 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
 
   bool _saving = false;
   _PendingDailyRecordImage? _selectedImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _kind = widget.initialKind ?? DailyRecordKind.water;
+  }
 
   @override
   void dispose() {
@@ -65,9 +74,9 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
       );
     }
 
-    final today = DateTime.now();
-    final dateStr =
-        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    final selectedRecordDate = ref.watch(selectedRecordDateProvider);
+    final recordDate = widget.initialDate ?? selectedRecordDate;
+    final dateStr = _formatDate(recordDate);
 
     return PageScaffoldShell(
       title: l10n.recordAddAction,
@@ -145,7 +154,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _saving ? null : () => _onSave(dateStr),
-                child: Text(_saving ? '...' : l10n.mineEditSaveAction),
+                child: Text(l10n.mineEditSaveAction),
               ),
             ],
           ),
@@ -283,6 +292,12 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     if (name.endsWith('.webp')) return 'image/webp';
     if (name.endsWith('.gif')) return 'image/gif';
     return null;
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.year.toString().padLeft(4, '0')}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.day.toString().padLeft(2, '0')}';
   }
 }
 

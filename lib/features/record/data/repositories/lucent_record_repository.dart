@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
 
@@ -18,6 +19,7 @@ class LucentRecordRepository implements RecordRepository {
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     bool showWomenHealth = false,
+    RecordEntryType? filterType,
   }) async {
     final date = DateTime(
       selectedDate.year,
@@ -25,13 +27,25 @@ class LucentRecordRepository implements RecordRepository {
       selectedDate.day,
     );
     final dateStr = _formatDate(date);
+    final selectedKind = filterType == null
+        ? null
+        : dailyRecordKindForEntryType(filterType);
+    final kind = selectedKind?.name;
 
     List<DailyRecordItem> records;
-    try {
-      final result = await dailyRecordRepo.fetchRecords(dateStr, pageSize: 100);
-      records = result.items;
-    } catch (_) {
+    if (filterType != null && selectedKind == null) {
       records = [];
+    } else {
+      try {
+        final result = await dailyRecordRepo.fetchRecords(
+          dateStr,
+          kind: kind,
+          pageSize: 100,
+        );
+        records = result.items;
+      } catch (_) {
+        records = [];
+      }
     }
 
     final timeline = records.map(_toTimelineEntry).toList();
@@ -43,7 +57,7 @@ class LucentRecordRepository implements RecordRepository {
       monthDays: _staticMonthDays(date),
       quickActions: _staticQuickActionsFor(showWomenHealth),
       summary: _staticSummary,
-      filters: _staticFiltersFor(showWomenHealth),
+      filters: _staticFiltersFor(showWomenHealth, filterType),
       timeline: timeline.isNotEmpty ? timeline : _staticTimeline,
       trends: _staticTrends,
       healthBag: _staticHealthBag,
@@ -55,54 +69,47 @@ class LucentRecordRepository implements RecordRepository {
     final kind = record.kind;
     final timeStr = _formatRecordTime(record.occurredAt);
 
-    final (icon, accent, soft, type) = switch (kind) {
+    final (icon, accent, soft) = switch (kind) {
       DailyRecordKind.water => (
         Icons.water_drop_rounded,
         const Color(0xFF428BFF),
         const Color(0xFFE8F2FF),
-        RecordEntryType.water,
       ),
       DailyRecordKind.meal => (
         Icons.restaurant_rounded,
         AppColorTokens.warning,
         AppColorTokens.warningSoft,
-        RecordEntryType.meal,
       ),
       DailyRecordKind.vital => (
         Icons.favorite_rounded,
         AppColorTokens.error,
         AppColorTokens.errorSoft,
-        RecordEntryType.vitals,
       ),
       DailyRecordKind.mood => (
         Icons.sentiment_satisfied_rounded,
         const Color(0xFF7D67E8),
         const Color(0xFFF0ECFF),
-        RecordEntryType.mood,
       ),
       DailyRecordKind.symptom => (
         Icons.healing_rounded,
         AppColorTokens.warningDeep,
         AppColorTokens.warningSoft,
-        RecordEntryType.symptom,
       ),
       DailyRecordKind.activity => (
         Icons.directions_run_rounded,
         AppColorTokens.gradientDevelopStart,
         const Color(0xFFE8FFF2),
-        RecordEntryType.activity,
       ),
       DailyRecordKind.note => (
         Icons.notes_rounded,
         AppColorTokens.link,
         AppColorTokens.linkSoft,
-        RecordEntryType.medication,
       ),
     };
 
     return RecordTimelineEntry(
       time: timeStr,
-      type: type,
+      type: recordEntryTypeForDailyRecordKind(kind),
       icon: icon,
       accent: accent,
       softColor: soft,
@@ -130,9 +137,10 @@ class LucentRecordRepository implements RecordRepository {
     return List.generate(7, (i) {
       final day = monday.add(Duration(days: i));
       return RecordWeekDay(
+        date: day,
         day: day.day,
         weekdayKey: _weekdayKey(day.weekday),
-        selected: day.day == today.day,
+        selected: _isSameDay(day, today),
         markers: day.day == today.day ? [const Color(0xFF428BFF)] : [],
       );
     });
@@ -175,6 +183,10 @@ class LucentRecordRepository implements RecordRepository {
 
   static String _formatDate(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  static bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   static String _formatRecordTime(String occurredAt) {
@@ -335,10 +347,27 @@ class LucentRecordRepository implements RecordRepository {
     ),
   ];
 
-  static List<RecordFilter> _staticFiltersFor(bool showWomenHealth) {
-    if (showWomenHealth) return _staticFilters;
-    return _staticFilters
-        .where((filter) => filter.type != RecordEntryType.womenHealth)
+  static List<RecordFilter> _staticFiltersFor(
+    bool showWomenHealth,
+    RecordEntryType? filterType,
+  ) {
+    final filters = showWomenHealth
+        ? _staticFilters
+        : _staticFilters.where(
+            (filter) => filter.type != RecordEntryType.womenHealth,
+          );
+
+    return filters
+        .map(
+          (filter) => RecordFilter(
+            type: filter.type,
+            titleKey: filter.titleKey,
+            icon: filter.icon,
+            accent: filter.accent,
+            selected: filterType == null || filter.type == filterType,
+            locked: filter.locked,
+          ),
+        )
         .toList(growable: false);
   }
 

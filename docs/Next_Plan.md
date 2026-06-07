@@ -1,6 +1,6 @@
 # Lumos Next Plan
 
-Last updated: 2026-06-07
+Last updated: 2026-06-08
 
 ## Current Goal
 
@@ -10,23 +10,24 @@ Move from a stable five-tab baseline into real daily health loops without presen
 
 ### Target 1: Record Stability And Date Navigation
 
-Status: in progress. Daily-record single-image create/edit, upload, metadata save, timeline/detail display, date navigation, and timeline time mapping were stabilized on 2026-06-06.
+Status: completed for the first mobile logic pass. Daily-record single-image create/edit, upload, metadata save, timeline/detail display, date navigation, and timeline time mapping were stabilized on 2026-06-06. Record mobile logic v1 was completed on 2026-06-07: supported quick actions route to create with selected kind/date, date chips reload selected-day data, and filter chips map to supported Lucent daily-record kinds.
 
 Goal: make the daily-record loop dependable before expanding other modules.
 
 Scope:
 
 - Keep daily-record image selection, preview, upload, metadata save, edit prefill, replace, and remove under regression.
-- Record header date controls update the selected day and reload the Lucent-backed timeline.
-- Record timeline displays each record's own `occurredAt` time instead of the current clock time.
+- Keep Record date controls updating the selected day and reloading the Lucent-backed timeline.
+- Keep Record timeline entries displaying each record's own `occurredAt` time instead of the current clock time.
 - Keep provider invalidation for Record and Today after create/edit/delete.
+- Keep quick-action routing and filter mapping under regression as type-specific forms expand.
 - Add TODOs/tests when attachment failure, edit detail, or form-by-kind gaps are found.
 
 Why first: Record is already a real Lucent-backed loop, and small correctness fixes here improve the main daily workflow more than expanding deferred utility surfaces.
 
 Observable result:
 
-- A signed-in user can switch Record dates, add/edit/delete records with one image, reopen the timeline, and see the correct day/time/image state.
+- A signed-in user can switch Record dates, filter supported daily-record kinds, add/edit/delete records with one image, reopen the timeline, and see the correct day/time/image state.
 
 ### Target 2: Record Form Quality
 
@@ -87,8 +88,8 @@ Observable result:
 
 ## Immediate Work Order
 
-1. Keep Record attachment/date/timeline behavior under regression and fix defects as they surface.
-2. Tighten Record forms by type for water, vital, symptom, and note.
+1. Tighten Record forms by type for water, vital, symptom, and note.
+2. Keep Record quick-action routing, filter chips, selected-date reload, attachment handling, and timeline time display under regression while forms change.
 3. Keep daily-record detail UX under regression while forms change.
 4. Implement local notification scheduling after the first reminder schedule source is explicit.
 5. Keep auth/account deferred TODOs explicit until product/security decisions are made.

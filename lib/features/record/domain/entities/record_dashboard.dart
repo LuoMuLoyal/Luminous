@@ -30,6 +30,7 @@ class RecordDashboard {
 
 class RecordWeekDay {
   const RecordWeekDay({
+    required this.date,
     required this.day,
     required this.weekdayKey,
     required this.selected,
@@ -37,6 +38,7 @@ class RecordWeekDay {
     this.hasAlert = false,
   });
 
+  final DateTime date;
   final int day;
   final RecordCopyKey weekdayKey;
   final bool selected;

@@ -8,6 +8,7 @@ import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
+import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
 import 'package:luminous/features/record/presentation/pages/record_create.dart';
 import 'package:luminous/features/record/presentation/pages/record_detail.dart';
 import 'package:luminous/features/record/presentation/pages/record_edit.dart';
@@ -111,7 +112,10 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/record/create',
-      builder: (context, state) => const RecordCreatePage(),
+      builder: (context, state) => RecordCreatePage(
+        initialKind: dailyRecordKindFromName(state.uri.queryParameters['kind']),
+        initialDate: _parseRecordDate(state.uri.queryParameters['date']),
+      ),
     ),
     GoRoute(
       path: '/record/:id',
@@ -125,3 +129,10 @@ final router = GoRouter(
     ),
   ],
 );
+
+DateTime? _parseRecordDate(String? value) {
+  if (value == null) return null;
+  final parsed = DateTime.tryParse(value);
+  if (parsed == null) return null;
+  return DateTime(parsed.year, parsed.month, parsed.day);
+}

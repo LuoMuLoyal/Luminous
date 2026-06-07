@@ -19,11 +19,29 @@ final selectedRecordDateProvider =
       SelectedRecordDateNotifier.new,
     );
 
+class SelectedRecordFilterNotifier extends Notifier<RecordEntryType?> {
+  @override
+  RecordEntryType? build() => null;
+
+  void setFilter(RecordEntryType? value) {
+    state = value;
+  }
+}
+
+final selectedRecordFilterProvider =
+    NotifierProvider<SelectedRecordFilterNotifier, RecordEntryType?>(
+      SelectedRecordFilterNotifier.new,
+    );
+
 final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) async {
   final session = ref.watch(authSessionProvider);
   final selectedDate = ref.watch(selectedRecordDateProvider);
+  final selectedFilter = ref.watch(selectedRecordFilterProvider);
   if (session.isConfirmedSignedOut) {
-    return const MockRecordRepository().fetchDashboard(selectedDate);
+    return const MockRecordRepository().fetchDashboard(
+      selectedDate,
+      filterType: selectedFilter,
+    );
   }
   if (!session.canAccessProtectedData) {
     return pendingAuthSessionResolution<RecordDashboard>();
@@ -39,7 +57,11 @@ final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) async {
 
   return ref
       .watch(recordRepositoryProvider)
-      .fetchDashboard(selectedDate, showWomenHealth: showWomenHealth)
+      .fetchDashboard(
+        selectedDate,
+        showWomenHealth: showWomenHealth,
+        filterType: selectedFilter,
+      )
       .timeout(
         const Duration(seconds: 5),
         onTimeout: () => throw TimeoutException("请求超时，请检查网络后重试。"),
