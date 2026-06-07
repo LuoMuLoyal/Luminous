@@ -1142,6 +1142,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineAccountLastLoginNone => '上次登录 --';
 
   @override
+  String get mineAccountStudentRole => '大学生';
+
+  @override
   String get mineSignedOutNoticeTitle => '当前未登录';
 
   @override
@@ -1150,6 +1153,212 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineCompletionTitle => '档案完整度';
+
+  @override
+  String get mineAlertAllergyTitle => '过敏史';
+
+  @override
+  String get mineAlertAllergySubtitle => '花粉、青霉素';
+
+  @override
+  String get mineAlertAllergyBadge => '2 项';
+
+  @override
+  String get mineAlertMedicineTitle => '当前用药';
+
+  @override
+  String get mineAlertMedicineSubtitle => '2 种药物';
+
+  @override
+  String get mineAlertMedicineBadge => '按时服用';
+
+  @override
+  String get mineAlertPrivacyTitle => '隐私状态';
+
+  @override
+  String get mineAlertPrivacySubtitle => '良好保护中';
+
+  @override
+  String get mineAlertPrivacyBadge => '可放心使用';
+
+  @override
+  String get mineArchiveBasicTitle => '基础信息';
+
+  @override
+  String get mineArchiveBasicSubtitle => '个人信息与健康信息';
+
+  @override
+  String get mineArchiveAllergyTitle => '过敏史';
+
+  @override
+  String get mineArchiveAllergySubtitle => '食物、药物、环境过敏记录';
+
+  @override
+  String get mineArchiveMedicineTitle => '当前用药';
+
+  @override
+  String get mineArchiveMedicineSubtitle => '正在使用的药品与用药记录';
+
+  @override
+  String get mineArchiveWomenTitle => '女性健康';
+
+  @override
+  String get mineArchiveWomenSubtitle => '经期记录与健康管理';
+
+  @override
+  String get mineArchiveEmergencyTitle => '紧急联系人';
+
+  @override
+  String get mineArchiveEmergencySubtitle => '1 位联系人';
+
+  @override
+  String get mineArchiveCompleted => '已完善';
+
+  @override
+  String get mineArchiveNeedsFill => '待补充';
+
+  @override
+  String get mineCampusSectionTitle => '校园服务';
+
+  @override
+  String get mineCampusHospitalTitle => '校医院';
+
+  @override
+  String get mineCampusHospitalSubtitle => '在线预约挂号';
+
+  @override
+  String get mineCampusCounselingTitle => '心理咨询';
+
+  @override
+  String get mineCampusCounselingSubtitle => '预约心理服务';
+
+  @override
+  String get mineCampusPharmacyTitle => '校园药房';
+
+  @override
+  String get mineCampusPharmacySubtitle => '校内药品查询';
+
+  @override
+  String get mineCampusEmergencyTitle => '紧急帮助';
+
+  @override
+  String get mineCampusEmergencySubtitle => '紧急电话与指南';
+
+  @override
+  String get minePrivacyPermissionTitle => '隐私与权限';
+
+  @override
+  String get minePrivacyProtectionAction => '隐私保护说明';
+
+  @override
+  String get minePrivacyMoodTitle => '心理记录';
+
+  @override
+  String get minePrivacyMoodSubtitle => '情绪打卡、咨询记录等';
+
+  @override
+  String get minePrivacyPeriodTitle => '经期数据';
+
+  @override
+  String get minePrivacyPeriodSubtitle => '经期预测、症状记录等';
+
+  @override
+  String get minePrivacyReportTitle => '报告分享';
+
+  @override
+  String get minePrivacyReportSubtitle => '健康报告、趋势分析';
+
+  @override
+  String get minePrivacyAiTitle => 'AI 记忆';
+
+  @override
+  String get minePrivacyAiSubtitle => '个性化建议与记忆';
+
+  @override
+  String get minePrivacyOnlyMe => '仅自己可见';
+
+  @override
+  String get minePrivacyShareAfterGrant => '授权后分享';
+
+  @override
+  String get mineReminderSectionTitle => '提醒设置';
+
+  @override
+  String get mineReminderMedicineTitle => '用药提醒';
+
+  @override
+  String get mineReminderWaterTitle => '饮水提醒';
+
+  @override
+  String get mineReminderSleepTitle => '睡眠提醒';
+
+  @override
+  String get mineReminderPeriodTitle => '经期提醒';
+
+  @override
+  String get mineReminderEnabled => '已开启';
+
+  @override
+  String get mineAccountSettingsTitle => '账号与设置';
+
+  @override
+  String get mineSettingLanguageTitle => '语言设置';
+
+  @override
+  String get mineSettingLanguageValue => '简体中文';
+
+  @override
+  String get mineSettingExportTitle => '数据导出';
+
+  @override
+  String get mineSettingExportValue => '导出我的健康数据';
+
+  @override
+  String get mineSettingHelpTitle => '帮助与反馈';
+
+  @override
+  String get mineSettingHelpValue => '常见问题与意见反馈';
+
+  @override
+  String get mineSettingAboutTitle => '关于 Luminous';
+
+  @override
+  String get mineSettingAboutValue => '版本 1.2.0';
+
+  @override
+  String get minePrivacyNoticeTitle => '敏感数据默认保护，可随时撤回授权';
+
+  @override
+  String get minePrivacyNoticeAction => '查看隐私政策';
+
+  @override
+  String get mineProfileUnknownValue => '--';
+
+  @override
+  String get mineProfileSexFemale => '女';
+
+  @override
+  String get mineProfileSexMale => '男';
+
+  @override
+  String mineProfileAgeYears(int age) {
+    return '$age岁';
+  }
+
+  @override
+  String mineProfileHeightCm(int height) {
+    return '${height}cm';
+  }
+
+  @override
+  String mineProfileWeightKg(int weight) {
+    return '${weight}kg';
+  }
+
+  @override
+  String mineProfileMeta(String age, String sex, String height, String weight) {
+    return '$age · $sex · $height · $weight';
+  }
 
   @override
   String get mineCompletionSubtitle => '完成度良好，继续完善更准确的建议';

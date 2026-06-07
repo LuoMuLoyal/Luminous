@@ -78,7 +78,8 @@ class _CurrentMedicineEditPageState
     _startedAtController.text = item.startedAt ?? '';
     _noteController.text = item.note ?? '';
     setState(() {
-      _source = HealthMedicineSource.fromValue(item.source) ??
+      _source =
+          HealthMedicineSource.fromValue(item.source) ??
           HealthMedicineSource.manual;
     });
   }
@@ -89,15 +90,15 @@ class _CurrentMedicineEditPageState
     final isNew = widget.medicineId == null;
     final isEdit = !isNew;
 
-    ref.listen<CurrentMedicineFormState>(
-      currentMedicineFormProvider,
-      (_, next) {
-        if (next.saved) {
-          AppToast.show(context, l10n.mineEditSavedToast);
-          if (context.mounted) context.pop();
-        }
-      },
-    );
+    ref.listen<CurrentMedicineFormState>(currentMedicineFormProvider, (
+      _,
+      next,
+    ) {
+      if (next.saved) {
+        AppToast.show(context, l10n.mineEditSavedToast);
+        if (context.mounted) context.pop();
+      }
+    });
 
     final snapshot = ref.watch(healthContextSnapshotProvider);
     snapshot.whenOrNull(data: (_) => _tryPrefill());
@@ -129,10 +130,7 @@ class _CurrentMedicineEditPageState
     }
 
     return PageScaffoldShell(
-      title:
-          isNew
-              ? l10n.mineEditMedicineNewTitle
-              : l10n.mineEditMedicineTitle,
+      title: isNew ? l10n.mineEditMedicineNewTitle : l10n.mineEditMedicineTitle,
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
@@ -220,77 +218,74 @@ class _CurrentMedicineEditPageState
 
   void _onSave() {
     if (_displayNameController.text.trim().isEmpty) {
-      AppToast.show(context, AppLocalizations.of(context)!.authCodeRequiredToast);
+      AppToast.show(
+        context,
+        AppLocalizations.of(context)!.authCodeRequiredToast,
+      );
       return;
     }
 
     if (widget.medicineId != null) {
-      ref.read(currentMedicineFormProvider.notifier).save(
-        create: CurrentMedicineWriteInput(
-          source: HealthMedicineSource.manual,
-          displayName: '',
-        ),
-        id: widget.medicineId,
-        update: CurrentMedicineUpdateInput(
-          source: _source,
-          sourceRefId:
-              _sourceRefIdController.text.isEmpty
+      ref
+          .read(currentMedicineFormProvider.notifier)
+          .save(
+            create: CurrentMedicineWriteInput(
+              source: HealthMedicineSource.manual,
+              displayName: '',
+            ),
+            id: widget.medicineId,
+            update: CurrentMedicineUpdateInput(
+              source: _source,
+              sourceRefId: _sourceRefIdController.text.isEmpty
                   ? null
                   : _sourceRefIdController.text,
-          displayName: _displayNameController.text,
-          strengthText:
-              _strengthTextController.text.isEmpty
+              displayName: _displayNameController.text,
+              strengthText: _strengthTextController.text.isEmpty
                   ? null
                   : _strengthTextController.text,
-          doseText:
-              _doseTextController.text.isEmpty
+              doseText: _doseTextController.text.isEmpty
                   ? null
                   : _doseTextController.text,
-          route:
-              _routeController.text.isEmpty ? null : _routeController.text,
-          startedAt:
-              _startedAtController.text.isEmpty
+              route: _routeController.text.isEmpty
+                  ? null
+                  : _routeController.text,
+              startedAt: _startedAtController.text.isEmpty
                   ? null
                   : _startedAtController.text,
-          note:
-              _noteController.text.isEmpty ? null : _noteController.text,
-        ),
-      );
+              note: _noteController.text.isEmpty ? null : _noteController.text,
+            ),
+          );
     } else {
-      ref.read(currentMedicineFormProvider.notifier).save(
-        create: CurrentMedicineWriteInput(
-          source: _source,
-          sourceRefId:
-              _sourceRefIdController.text.isEmpty
+      ref
+          .read(currentMedicineFormProvider.notifier)
+          .save(
+            create: CurrentMedicineWriteInput(
+              source: _source,
+              sourceRefId: _sourceRefIdController.text.isEmpty
                   ? null
                   : _sourceRefIdController.text,
-          displayName: _displayNameController.text,
-          strengthText:
-              _strengthTextController.text.isEmpty
+              displayName: _displayNameController.text,
+              strengthText: _strengthTextController.text.isEmpty
                   ? null
                   : _strengthTextController.text,
-          doseText:
-              _doseTextController.text.isEmpty
+              doseText: _doseTextController.text.isEmpty
                   ? null
                   : _doseTextController.text,
-          route:
-              _routeController.text.isEmpty ? null : _routeController.text,
-          startedAt:
-              _startedAtController.text.isEmpty
+              route: _routeController.text.isEmpty
+                  ? null
+                  : _routeController.text,
+              startedAt: _startedAtController.text.isEmpty
                   ? null
                   : _startedAtController.text,
-          note:
-              _noteController.text.isEmpty ? null : _noteController.text,
-        ),
-      );
+              note: _noteController.text.isEmpty ? null : _noteController.text,
+            ),
+          );
     }
   }
 
   void _onDelete() {
     if (widget.medicineId != null) {
-      ref.read(currentMedicineFormProvider.notifier).delete(
-        widget.medicineId!,
-      );
+      ref.read(currentMedicineFormProvider.notifier).delete(widget.medicineId!);
     }
   }
 }
@@ -304,10 +299,9 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   return DropdownButtonFormField<T>(
     initialValue: value,
     decoration: InputDecoration(labelText: label),
-    items:
-        values
-            .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
-            .toList(),
+    items: values
+        .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
+        .toList(),
     onChanged: (v) {
       if (v != null) onChanged(v);
     },

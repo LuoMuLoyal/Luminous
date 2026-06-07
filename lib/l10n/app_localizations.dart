@@ -2306,6 +2306,12 @@ abstract class AppLocalizations {
   /// **'上次登录 --'**
   String get mineAccountLastLoginNone;
 
+  /// No description provided for @mineAccountStudentRole.
+  ///
+  /// In zh, this message translates to:
+  /// **'大学生'**
+  String get mineAccountStudentRole;
+
   /// No description provided for @mineSignedOutNoticeTitle.
   ///
   /// In zh, this message translates to:
@@ -2323,6 +2329,402 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'档案完整度'**
   String get mineCompletionTitle;
+
+  /// No description provided for @mineAlertAllergyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'过敏史'**
+  String get mineAlertAllergyTitle;
+
+  /// No description provided for @mineAlertAllergySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'花粉、青霉素'**
+  String get mineAlertAllergySubtitle;
+
+  /// No description provided for @mineAlertAllergyBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'2 项'**
+  String get mineAlertAllergyBadge;
+
+  /// No description provided for @mineAlertMedicineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前用药'**
+  String get mineAlertMedicineTitle;
+
+  /// No description provided for @mineAlertMedicineSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'2 种药物'**
+  String get mineAlertMedicineSubtitle;
+
+  /// No description provided for @mineAlertMedicineBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'按时服用'**
+  String get mineAlertMedicineBadge;
+
+  /// No description provided for @mineAlertPrivacyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私状态'**
+  String get mineAlertPrivacyTitle;
+
+  /// No description provided for @mineAlertPrivacySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'良好保护中'**
+  String get mineAlertPrivacySubtitle;
+
+  /// No description provided for @mineAlertPrivacyBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'可放心使用'**
+  String get mineAlertPrivacyBadge;
+
+  /// No description provided for @mineArchiveBasicTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'基础信息'**
+  String get mineArchiveBasicTitle;
+
+  /// No description provided for @mineArchiveBasicSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'个人信息与健康信息'**
+  String get mineArchiveBasicSubtitle;
+
+  /// No description provided for @mineArchiveAllergyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'过敏史'**
+  String get mineArchiveAllergyTitle;
+
+  /// No description provided for @mineArchiveAllergySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'食物、药物、环境过敏记录'**
+  String get mineArchiveAllergySubtitle;
+
+  /// No description provided for @mineArchiveMedicineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前用药'**
+  String get mineArchiveMedicineTitle;
+
+  /// No description provided for @mineArchiveMedicineSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在使用的药品与用药记录'**
+  String get mineArchiveMedicineSubtitle;
+
+  /// No description provided for @mineArchiveWomenTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'女性健康'**
+  String get mineArchiveWomenTitle;
+
+  /// No description provided for @mineArchiveWomenSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期记录与健康管理'**
+  String get mineArchiveWomenSubtitle;
+
+  /// No description provided for @mineArchiveEmergencyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'紧急联系人'**
+  String get mineArchiveEmergencyTitle;
+
+  /// No description provided for @mineArchiveEmergencySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'1 位联系人'**
+  String get mineArchiveEmergencySubtitle;
+
+  /// No description provided for @mineArchiveCompleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已完善'**
+  String get mineArchiveCompleted;
+
+  /// No description provided for @mineArchiveNeedsFill.
+  ///
+  /// In zh, this message translates to:
+  /// **'待补充'**
+  String get mineArchiveNeedsFill;
+
+  /// No description provided for @mineCampusSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'校园服务'**
+  String get mineCampusSectionTitle;
+
+  /// No description provided for @mineCampusHospitalTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'校医院'**
+  String get mineCampusHospitalTitle;
+
+  /// No description provided for @mineCampusHospitalSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'在线预约挂号'**
+  String get mineCampusHospitalSubtitle;
+
+  /// No description provided for @mineCampusCounselingTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'心理咨询'**
+  String get mineCampusCounselingTitle;
+
+  /// No description provided for @mineCampusCounselingSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'预约心理服务'**
+  String get mineCampusCounselingSubtitle;
+
+  /// No description provided for @mineCampusPharmacyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'校园药房'**
+  String get mineCampusPharmacyTitle;
+
+  /// No description provided for @mineCampusPharmacySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'校内药品查询'**
+  String get mineCampusPharmacySubtitle;
+
+  /// No description provided for @mineCampusEmergencyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'紧急帮助'**
+  String get mineCampusEmergencyTitle;
+
+  /// No description provided for @mineCampusEmergencySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'紧急电话与指南'**
+  String get mineCampusEmergencySubtitle;
+
+  /// No description provided for @minePrivacyPermissionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私与权限'**
+  String get minePrivacyPermissionTitle;
+
+  /// No description provided for @minePrivacyProtectionAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私保护说明'**
+  String get minePrivacyProtectionAction;
+
+  /// No description provided for @minePrivacyMoodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'心理记录'**
+  String get minePrivacyMoodTitle;
+
+  /// No description provided for @minePrivacyMoodSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪打卡、咨询记录等'**
+  String get minePrivacyMoodSubtitle;
+
+  /// No description provided for @minePrivacyPeriodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期数据'**
+  String get minePrivacyPeriodTitle;
+
+  /// No description provided for @minePrivacyPeriodSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期预测、症状记录等'**
+  String get minePrivacyPeriodSubtitle;
+
+  /// No description provided for @minePrivacyReportTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'报告分享'**
+  String get minePrivacyReportTitle;
+
+  /// No description provided for @minePrivacyReportSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康报告、趋势分析'**
+  String get minePrivacyReportSubtitle;
+
+  /// No description provided for @minePrivacyAiTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 记忆'**
+  String get minePrivacyAiTitle;
+
+  /// No description provided for @minePrivacyAiSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'个性化建议与记忆'**
+  String get minePrivacyAiSubtitle;
+
+  /// No description provided for @minePrivacyOnlyMe.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅自己可见'**
+  String get minePrivacyOnlyMe;
+
+  /// No description provided for @minePrivacyShareAfterGrant.
+  ///
+  /// In zh, this message translates to:
+  /// **'授权后分享'**
+  String get minePrivacyShareAfterGrant;
+
+  /// No description provided for @mineReminderSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒设置'**
+  String get mineReminderSectionTitle;
+
+  /// No description provided for @mineReminderMedicineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药提醒'**
+  String get mineReminderMedicineTitle;
+
+  /// No description provided for @mineReminderWaterTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水提醒'**
+  String get mineReminderWaterTitle;
+
+  /// No description provided for @mineReminderSleepTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠提醒'**
+  String get mineReminderSleepTitle;
+
+  /// No description provided for @mineReminderPeriodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期提醒'**
+  String get mineReminderPeriodTitle;
+
+  /// No description provided for @mineReminderEnabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'已开启'**
+  String get mineReminderEnabled;
+
+  /// No description provided for @mineAccountSettingsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号与设置'**
+  String get mineAccountSettingsTitle;
+
+  /// No description provided for @mineSettingLanguageTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'语言设置'**
+  String get mineSettingLanguageTitle;
+
+  /// No description provided for @mineSettingLanguageValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'简体中文'**
+  String get mineSettingLanguageValue;
+
+  /// No description provided for @mineSettingExportTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据导出'**
+  String get mineSettingExportTitle;
+
+  /// No description provided for @mineSettingExportValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出我的健康数据'**
+  String get mineSettingExportValue;
+
+  /// No description provided for @mineSettingHelpTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'帮助与反馈'**
+  String get mineSettingHelpTitle;
+
+  /// No description provided for @mineSettingHelpValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'常见问题与意见反馈'**
+  String get mineSettingHelpValue;
+
+  /// No description provided for @mineSettingAboutTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'关于 Luminous'**
+  String get mineSettingAboutTitle;
+
+  /// No description provided for @mineSettingAboutValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'版本 1.2.0'**
+  String get mineSettingAboutValue;
+
+  /// No description provided for @minePrivacyNoticeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'敏感数据默认保护，可随时撤回授权'**
+  String get minePrivacyNoticeTitle;
+
+  /// No description provided for @minePrivacyNoticeAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看隐私政策'**
+  String get minePrivacyNoticeAction;
+
+  /// No description provided for @mineProfileUnknownValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'--'**
+  String get mineProfileUnknownValue;
+
+  /// No description provided for @mineProfileSexFemale.
+  ///
+  /// In zh, this message translates to:
+  /// **'女'**
+  String get mineProfileSexFemale;
+
+  /// No description provided for @mineProfileSexMale.
+  ///
+  /// In zh, this message translates to:
+  /// **'男'**
+  String get mineProfileSexMale;
+
+  /// No description provided for @mineProfileAgeYears.
+  ///
+  /// In zh, this message translates to:
+  /// **'{age}岁'**
+  String mineProfileAgeYears(int age);
+
+  /// No description provided for @mineProfileHeightCm.
+  ///
+  /// In zh, this message translates to:
+  /// **'{height}cm'**
+  String mineProfileHeightCm(int height);
+
+  /// No description provided for @mineProfileWeightKg.
+  ///
+  /// In zh, this message translates to:
+  /// **'{weight}kg'**
+  String mineProfileWeightKg(int weight);
+
+  /// No description provided for @mineProfileMeta.
+  ///
+  /// In zh, this message translates to:
+  /// **'{age} · {sex} · {height} · {weight}'**
+  String mineProfileMeta(String age, String sex, String height, String weight);
 
   /// No description provided for @mineCompletionSubtitle.
   ///

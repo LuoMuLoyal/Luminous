@@ -1226,6 +1226,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineAccountLastLoginNone => 'Last login --';
 
   @override
+  String get mineAccountStudentRole => 'Student';
+
+  @override
   String get mineSignedOutNoticeTitle => 'You are not signed in';
 
   @override
@@ -1234,6 +1237,215 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineCompletionTitle => 'Profile completion';
+
+  @override
+  String get mineAlertAllergyTitle => 'Allergies';
+
+  @override
+  String get mineAlertAllergySubtitle => 'Pollen, penicillin';
+
+  @override
+  String get mineAlertAllergyBadge => '2 items';
+
+  @override
+  String get mineAlertMedicineTitle => 'Current meds';
+
+  @override
+  String get mineAlertMedicineSubtitle => '2 medicines';
+
+  @override
+  String get mineAlertMedicineBadge => 'On schedule';
+
+  @override
+  String get mineAlertPrivacyTitle => 'Privacy status';
+
+  @override
+  String get mineAlertPrivacySubtitle => 'Protected well';
+
+  @override
+  String get mineAlertPrivacyBadge => 'Safe to use';
+
+  @override
+  String get mineArchiveBasicTitle => 'Basic info';
+
+  @override
+  String get mineArchiveBasicSubtitle => 'Personal and health information';
+
+  @override
+  String get mineArchiveAllergyTitle => 'Allergies';
+
+  @override
+  String get mineArchiveAllergySubtitle =>
+      'Food, medicine, and environment allergy records';
+
+  @override
+  String get mineArchiveMedicineTitle => 'Current meds';
+
+  @override
+  String get mineArchiveMedicineSubtitle =>
+      'Active medicines and medication records';
+
+  @override
+  String get mineArchiveWomenTitle => 'Women\'s health';
+
+  @override
+  String get mineArchiveWomenSubtitle => 'Cycle records and health management';
+
+  @override
+  String get mineArchiveEmergencyTitle => 'Emergency contact';
+
+  @override
+  String get mineArchiveEmergencySubtitle => '1 contact';
+
+  @override
+  String get mineArchiveCompleted => 'Complete';
+
+  @override
+  String get mineArchiveNeedsFill => 'Needs info';
+
+  @override
+  String get mineCampusSectionTitle => 'Campus services';
+
+  @override
+  String get mineCampusHospitalTitle => 'Campus clinic';
+
+  @override
+  String get mineCampusHospitalSubtitle => 'Book an appointment';
+
+  @override
+  String get mineCampusCounselingTitle => 'Counseling';
+
+  @override
+  String get mineCampusCounselingSubtitle => 'Book counseling support';
+
+  @override
+  String get mineCampusPharmacyTitle => 'Campus pharmacy';
+
+  @override
+  String get mineCampusPharmacySubtitle => 'Search campus medicines';
+
+  @override
+  String get mineCampusEmergencyTitle => 'Emergency help';
+
+  @override
+  String get mineCampusEmergencySubtitle => 'Hotlines and guides';
+
+  @override
+  String get minePrivacyPermissionTitle => 'Privacy and permissions';
+
+  @override
+  String get minePrivacyProtectionAction => 'Privacy protection';
+
+  @override
+  String get minePrivacyMoodTitle => 'Mental records';
+
+  @override
+  String get minePrivacyMoodSubtitle => 'Mood check-ins, counseling records';
+
+  @override
+  String get minePrivacyPeriodTitle => 'Cycle data';
+
+  @override
+  String get minePrivacyPeriodSubtitle => 'Predictions and symptom records';
+
+  @override
+  String get minePrivacyReportTitle => 'Report sharing';
+
+  @override
+  String get minePrivacyReportSubtitle => 'Health reports and trend analysis';
+
+  @override
+  String get minePrivacyAiTitle => 'AI memory';
+
+  @override
+  String get minePrivacyAiSubtitle => 'Personalized advice and memory';
+
+  @override
+  String get minePrivacyOnlyMe => 'Only me';
+
+  @override
+  String get minePrivacyShareAfterGrant => 'Share after grant';
+
+  @override
+  String get mineReminderSectionTitle => 'Reminder settings';
+
+  @override
+  String get mineReminderMedicineTitle => 'Medication';
+
+  @override
+  String get mineReminderWaterTitle => 'Water';
+
+  @override
+  String get mineReminderSleepTitle => 'Sleep';
+
+  @override
+  String get mineReminderPeriodTitle => 'Cycle';
+
+  @override
+  String get mineReminderEnabled => 'Enabled';
+
+  @override
+  String get mineAccountSettingsTitle => 'Account and settings';
+
+  @override
+  String get mineSettingLanguageTitle => 'Language';
+
+  @override
+  String get mineSettingLanguageValue => 'English';
+
+  @override
+  String get mineSettingExportTitle => 'Data export';
+
+  @override
+  String get mineSettingExportValue => 'Export my health data';
+
+  @override
+  String get mineSettingHelpTitle => 'Help and feedback';
+
+  @override
+  String get mineSettingHelpValue => 'FAQ and feedback';
+
+  @override
+  String get mineSettingAboutTitle => 'About Luminous';
+
+  @override
+  String get mineSettingAboutValue => 'Version 1.2.0';
+
+  @override
+  String get minePrivacyNoticeTitle =>
+      'Sensitive data is protected by default, and grants can be revoked anytime';
+
+  @override
+  String get minePrivacyNoticeAction => 'View privacy policy';
+
+  @override
+  String get mineProfileUnknownValue => '--';
+
+  @override
+  String get mineProfileSexFemale => 'Female';
+
+  @override
+  String get mineProfileSexMale => 'Male';
+
+  @override
+  String mineProfileAgeYears(int age) {
+    return '${age}y';
+  }
+
+  @override
+  String mineProfileHeightCm(int height) {
+    return '${height}cm';
+  }
+
+  @override
+  String mineProfileWeightKg(int weight) {
+    return '${weight}kg';
+  }
+
+  @override
+  String mineProfileMeta(String age, String sex, String height, String weight) {
+    return '$age · $sex · $height · $weight';
+  }
 
   @override
   String get mineCompletionSubtitle =>

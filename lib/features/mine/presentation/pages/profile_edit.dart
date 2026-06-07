@@ -76,9 +76,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
             return _buildForm(context, l10n);
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => Center(
-            child: Text(l10n.mineErrorDescription),
-          ),
+          error: (_, __) => Center(child: Text(l10n.mineErrorDescription)),
         ),
       ],
     );
@@ -151,18 +149,16 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
 
   void _onSave() {
     final input = HealthProfileUpdateInput(
-      birthDate:
-          _birthDateController.text.isEmpty
-              ? null
-              : _birthDateController.text,
+      birthDate: _birthDateController.text.isEmpty
+          ? null
+          : _birthDateController.text,
       sexAtBirth: _sexAtBirth,
       heightCm: int.tryParse(_heightCmController.text),
       pregnancyState: _pregnancyState,
       lactationState: _lactationState,
-      bloodType:
-          _bloodTypeController.text.isEmpty
-              ? null
-              : _bloodTypeController.text,
+      bloodType: _bloodTypeController.text.isEmpty
+          ? null
+          : _bloodTypeController.text,
       unitSystem: _unitSystem,
       onboardingCompleted: _onboardingCompleted,
     );
@@ -180,10 +176,9 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   return DropdownButtonFormField<T>(
     initialValue: value,
     decoration: InputDecoration(labelText: label),
-    items:
-        values.map(
-          (v) => DropdownMenuItem(value: v, child: Text(v.value)),
-        ).toList(),
+    items: values
+        .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
+        .toList(),
     onChanged: onChanged,
   );
 }
