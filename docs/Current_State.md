@@ -31,14 +31,14 @@ Last updated: 2026-06-07
 
 ## Luminous
 
-- Flutter five-tab shell: `today / record / medicine / mine / more`.
+- Flutter five-tab shell: `today / record / medicine / report / mine`.
 - State/navigation: Riverpod + GoRouter.
 - Generated Lucent client: `packages/lucent_openapi`.
 - Current generated client includes `DailyRecordsApi.dailyRecordsControllerCreateImageUploadV1` and generated `EnvironmentApi`.
 - Real Lucent-backed flows: auth/account, health-context edits, medicine search/detail, current medicines, manual dose logs, daily-record timeline/detail/create/edit/delete, selected-date timeline reload, occurredAt-based timeline time, daily-record single-image attachment upload/display.
-- Mobile north-star UI is active for Today, Record, and Medicine. Record keeps real daily-record timeline/detail data while symptom, mood trend, period/diet, and specialist pack sections are static placeholders. Medicine keeps real current-medicine and manual dose-log data where available while safety engine, scan/OCR, report, reference notice, and safety tips are bounded mock/placeholder sections.
+- Mobile north-star UI is active for Today, Record, Medicine, and Report. Record keeps real daily-record timeline/detail data while symptom, mood trend, period/diet, and specialist pack sections are static placeholders. Medicine keeps real current-medicine and manual dose-log data where available while safety engine, scan/OCR, report, reference notice, and safety tips are bounded mock/placeholder sections. Report uses a feature-local mock repository for weekly score, trends, findings, exports, privacy controls, and pattern analysis until Lucent exposes report/insight APIs.
 - Environment snapshot is backend-ready but frontend-deferred: More still uses static mock data until core modules are steadier.
-- Still mock/static or planned: live reminders, Medicine OCR/barcode scanning and richer safety-engine data, smart devices, family profiles, push notifications, richer record analytics.
+- Still mock/static or planned: live reminders, Report insights/export data, Medicine OCR/barcode scanning and richer safety-engine data, smart devices, family profiles, push notifications, richer record analytics.
 
 ## Verification Baseline
 

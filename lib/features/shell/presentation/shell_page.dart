@@ -7,8 +7,8 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/mine/presentation/mine_page.dart';
-import 'package:luminous/features/more/presentation/more_page.dart';
 import 'package:luminous/features/record/presentation/record_page.dart';
+import 'package:luminous/features/report/presentation/pages/report_page.dart';
 import 'package:luminous/features/shell/presentation/shell_tab.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
@@ -21,8 +21,8 @@ class ShellPage extends ConsumerWidget {
     TodayPage(),
     RecordPage(),
     MedicinePage(),
+    ReportPage(),
     MinePage(),
-    MorePage(),
   ];
 
   @override

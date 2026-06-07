@@ -6,7 +6,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 
 ## Baseline
 
-- Five-tab shell: `today / record / medicine / mine / more`
+- Five-tab shell: `today / record / medicine / report / mine`
 - Responsive design tokens
 - Lucent OpenAPI client
 - Flutter `gen-l10n`
@@ -25,7 +25,8 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Notification settings now also reflect real system notification permission state; supported Lucent profile preferences (`locale / timezone / unitSystem`) can sync through settings, and the app locale can now also backfill from Lucent on auth restore/sign-in, while theme and notification toggles still remain local/device-side until Lucent exposes dedicated preference-write endpoints for them
 - Reminder/notification contract defined in `../Lucent/docs/public/reminder-contract.md`: local notification permission + preference toggles are device-local; backend-owned reminder schedules, notification preferences, and delivery log are planned but not implemented; no FCM/APNs push delivery in scope
 - Environment snapshot contract defined in `../Lucent/docs/public/environment-contract.md`: pollen / UV / air quality / temperature API; static seasonal reference data as initial implementation, no external API keys required
-- More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
+- Report mobile north-star dashboard UI with repository/provider boundary, weekly score, metric cards, trend placeholder, key findings, AI summary, export/privacy actions, pattern analysis, and bounded mock content until Lucent exposes report/insight contracts
+- More concept-aligned mock utility workspace UI remains feature-local/deferred with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
 - Medicine mobile north-star dashboard UI with repository/provider boundary, mobile header/search, drugbox, next-dose reminder, safety engine placeholders, quick operations, medication records, reference notice, safety tips, Lucent-backed current-medicine/manual dose-log data where available, and bounded mock content for unsupported scan/OCR/report/safety concepts
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel
 - Lucent-backed health-context write flows for Mine profile, allergies, conditions, and current medicines, with domain write inputs keeping generated OpenAPI DTOs out of presentation code
@@ -34,15 +35,16 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Today now consumes Lucent daily-record water/vital/mood summaries while unsupported recommendation, trend, period, campus-guide, and quick-action sections remain mock/placeholder-backed
 - Medicine now reads and writes manual dose-log status for current medicines, including taken/skipped/pending; this is not push reminder scheduling
 
-Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual taken/skipped dose-log status; Today reads safe current-medicine, daily-record water/vital summaries, and manual dose-log pending counts. Still pending: live reminders (contract defined in `../Lucent/docs/public/reminder-contract.md` but not implemented), Medicine real scan/OCR/report/safety-engine backend data, More real tools/device integrations, richer record analytics, and broader feature data.
+Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual taken/skipped dose-log status; Today reads safe current-medicine, daily-record water/vital summaries, and manual dose-log pending counts. Still pending: live reminders (contract defined in `../Lucent/docs/public/reminder-contract.md` but not implemented), Report real insight/export backend data, Medicine real scan/OCR/report/safety-engine backend data, More real tools/device integrations, richer record analytics, and broader feature data.
 
 ## UI Priority
 
 1. Keep the daily-record and manual dose-log flows under regression as they expand; current auth, ownership, selected-date reload, occurredAt timeline time, null clearing, skipped/taken status, and provider invalidation coverage exists.
 2. Expand Record forms before starting deferred More wiring; only add fields when Lucent contracts exist for the specific record type.
 3. Keep Today factual: daily-record and dose-log summaries may be real, but unsupported advice/static sections must stay clearly bounded and use placeholders instead of hand-drawn complex graphics.
-4. Connect More mock repository to real emergency, device, tool, and environment data sources after their Lucent contracts exist.
-5. Expand palette variants only after default / blue-pink / yellow-green prove stable across the main settings, mine, today, medicine, and record surfaces.
+4. Connect Report mock repository to real report/insight/export data sources after their Lucent contracts exist; keep complex charts as placeholders until the data contract and chart requirements are stable.
+5. Connect More mock repository to real emergency, device, tool, and environment data sources after their Lucent contracts exist.
+6. Expand palette variants only after default / blue-pink / yellow-green prove stable across the main settings, mine, today, medicine, report, and record surfaces.
 
 ## Rules
 

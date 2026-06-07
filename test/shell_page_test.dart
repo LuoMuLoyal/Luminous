@@ -93,20 +93,20 @@ void main() {
     expect(find.text(l10n.tabToday), findsAtLeastNWidgets(1));
     expect(find.text(l10n.tabRecord), findsAtLeastNWidgets(1));
     expect(find.text(l10n.tabMedicine), findsAtLeastNWidgets(1));
+    expect(find.text(l10n.tabReport), findsAtLeastNWidgets(1));
     expect(find.text(l10n.tabMine), findsAtLeastNWidgets(1));
-    expect(find.text(l10n.tabMore), findsAtLeastNWidgets(1));
     expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
     expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
+
+    await tester.tap(find.text(l10n.tabReport).first);
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.tabReport), findsAtLeastNWidgets(2));
+    expect(find.text(l10n.reportScoreTitle), findsOneWidget);
 
     await tester.tap(find.text(l10n.tabMine).first);
     await tester.pumpAndSettle();
     expect(find.text(l10n.tabMine), findsAtLeastNWidgets(2));
     expect(find.text('Lumi'), findsOneWidget);
     expect(find.text('user@example.com'), findsOneWidget);
-
-    await tester.tap(find.text(l10n.tabMore).first);
-    await tester.pumpAndSettle();
-    expect(find.text(l10n.tabMore), findsAtLeastNWidgets(2));
-    expect(find.text(l10n.moreEmergencySosTitle), findsOneWidget);
   });
 }
