@@ -16,6 +16,40 @@
   "recordPreviousDayAction": "Previous day",
   "recordNextDayAction": "Next day",
   "recordPickDateAction": "Pick date",
+  "recordSearchAction": "Search",
+  "recordFilterAction": "Filter",
+  "recordSwitchDateAction": "Switch date",
+  "recordDatePillLabel": "{month}/{day} · {weekday}",
+  "@recordDatePillLabel": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayEntriesTitle": "{count, plural, =0{Today entries · 0} =1{Today entry · 1} other{Today entries · {count}}}",
+  "@recordTodayEntriesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordQuickActionLabel": "Log {type}",
+  "@recordQuickActionLabel": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "recordQuickPeriodAction": "Log period",
   "recordAddAction": "Record",
   "recordAddCompactAction": "Record",
   "recordCreateFieldKind": "Kind",
@@ -123,6 +157,65 @@
   "recordHealthBagLatest": "Last updated: 2025-05-10",
   "recordHealthBagNext": "Next review: 2025-06-15",
   "recordFoodImagePlaceholder": "Meal image placeholder",
+  "recordSymptomTrackingSectionTitle": "Symptom tracking",
+  "recordSymptomHeadache": "Headache",
+  "recordSymptomLoggedAt": "Logged today at {time}",
+  "@recordSymptomLoggedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "recordBodyPartLabel": "Body part",
+  "recordBodyPartForehead": "Head (forehead)",
+  "recordAccompanyingSymptomsLabel": "Other symptoms",
+  "recordSymptomNausea": "Mild nausea",
+  "recordSymptomLightSensitive": "Light sensitive",
+  "recordPainRatingLabel": "Pain rating",
+  "recordPainModerate": "Moderate",
+  "recordViewTrendAction": "View trend",
+  "recordMoodTrendSectionTitle": "Mood trend",
+  "recordMoodAverage": "Average",
+  "recordMoodGood": "Good",
+  "recordMoodPoor": "Poor",
+  "recordMoodStable": "Stable",
+  "recordCycleDietSectionTitle": "Period and diet",
+  "recordPeriodTitle": "Period",
+  "recordPeriodDayValue": "Day {day}",
+  "@recordPeriodDayValue": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "recordPeriodEndsIn": "Expected to end in {days} days",
+  "@recordPeriodEndsIn": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "recordPeriodRecordAction": "Log period",
+  "recordDietTitle": "Meal records",
+  "recordMealCountValue": "{count, plural, =0{0 meals today} =1{1 meal today} other{{count} meals today}}",
+  "@recordMealCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordMealLogging": "Logging",
+  "recordDietRecordAction": "Log meal",
+  "recordSpecialistPackTitle": "Specialist health pack",
+  "recordSpecialistPackSubtitle": "Track specialist health for a fuller record",
+  "recordDentalRecordTitle": "Dental",
+  "recordEyeRecordTitle": "Eye",
+  "recordHearingRecordTitle": "Hearing",
+  "recordZeroCountLabel": "0 records",
   "medicinePageDescription": "Photo recognition, barcode scan, manual search, dosing plans, and safety signals come together here as an API-ready medication workspace.",
   "medicineSectionTitle": "Medication workspace",
   "medicineSectionSubtitle": "This section will host the rebuilt medication flow on top of Lucent.",

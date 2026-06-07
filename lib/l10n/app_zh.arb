@@ -16,6 +16,40 @@
   "recordPreviousDayAction": "上一天",
   "recordNextDayAction": "下一天",
   "recordPickDateAction": "选择日期",
+  "recordSearchAction": "搜索",
+  "recordFilterAction": "筛选",
+  "recordSwitchDateAction": "切换日期",
+  "recordDatePillLabel": "{month} 月 {day} 日  星期{weekday}",
+  "@recordDatePillLabel": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayEntriesTitle": "今日记录 · {count} 条",
+  "@recordTodayEntriesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordQuickActionLabel": "记{type}",
+  "@recordQuickActionLabel": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "recordQuickPeriodAction": "记经期",
   "recordAddAction": "记录",
   "recordAddCompactAction": "记录",
   "recordCreateFieldKind": "类型",
@@ -123,6 +157,65 @@
   "recordHealthBagLatest": "最近更新：2025-05-10",
   "recordHealthBagNext": "下次复查：2025-06-15",
   "recordFoodImagePlaceholder": "餐图占位",
+  "recordSymptomTrackingSectionTitle": "症状跟踪",
+  "recordSymptomHeadache": "头痛",
+  "recordSymptomLoggedAt": "今天 {time} 记录",
+  "@recordSymptomLoggedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "recordBodyPartLabel": "部位",
+  "recordBodyPartForehead": "头部（前额）",
+  "recordAccompanyingSymptomsLabel": "伴随症状",
+  "recordSymptomNausea": "轻微恶心",
+  "recordSymptomLightSensitive": "对光敏感",
+  "recordPainRatingLabel": "疼痛评分",
+  "recordPainModerate": "中等",
+  "recordViewTrendAction": "查看趋势",
+  "recordMoodTrendSectionTitle": "情绪趋势",
+  "recordMoodAverage": "一般",
+  "recordMoodGood": "良好",
+  "recordMoodPoor": "较差",
+  "recordMoodStable": "平稳",
+  "recordCycleDietSectionTitle": "经期与饮食",
+  "recordPeriodTitle": "经期",
+  "recordPeriodDayValue": "经期第 {day} 天",
+  "@recordPeriodDayValue": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "recordPeriodEndsIn": "预计还有 {days} 天结束",
+  "@recordPeriodEndsIn": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "recordPeriodRecordAction": "记录经期",
+  "recordDietTitle": "饮食记录",
+  "recordMealCountValue": "今日 {count} 餐",
+  "@recordMealCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordMealLogging": "记录中",
+  "recordDietRecordAction": "记录饮食",
+  "recordSpecialistPackTitle": "专科健康包",
+  "recordSpecialistPackSubtitle": "关注专科健康，记录更全面",
+  "recordDentalRecordTitle": "牙科记录",
+  "recordEyeRecordTitle": "眼科记录",
+  "recordHearingRecordTitle": "听力记录",
+  "recordZeroCountLabel": "0 条记录",
   "medicinePageDescription": "拍照识别、条码扫描、手动搜索、服药计划和安全提醒先在这里合成一个可继续接后端的工作台。",
   "medicineSectionTitle": "用药工作区",
   "medicineSectionSubtitle": "这里会承接基于 Lucent 重建后的完整用药闭环。",
