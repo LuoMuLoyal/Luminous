@@ -18,10 +18,18 @@ class RecordDashboardView extends StatelessWidget {
     super.key,
     required this.dashboard,
     this.isLoading = false,
+    this.onQuickAction,
+    this.onFilterSelected,
+    this.onDateSelected,
+    this.onPickDate,
   });
 
   final RecordDashboard dashboard;
   final bool isLoading;
+  final ValueChanged<RecordQuickAction>? onQuickAction;
+  final ValueChanged<RecordEntryType?>? onFilterSelected;
+  final ValueChanged<DateTime>? onDateSelected;
+  final VoidCallback? onPickDate;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +54,10 @@ class RecordDashboardView extends StatelessWidget {
             l10n: l10n,
             typography: typography,
             surface: surface,
+            onQuickAction: onQuickAction,
+            onFilterSelected: onFilterSelected,
+            onDateSelected: onDateSelected,
+            onPickDate: onPickDate,
           );
 
     return AppSkeletonScope(isLoading: isLoading, child: content);
@@ -58,12 +70,20 @@ class _MobileRecordDashboard extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onQuickAction,
+    this.onFilterSelected,
+    this.onDateSelected,
+    this.onPickDate,
   });
 
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<RecordQuickAction>? onQuickAction;
+  final ValueChanged<RecordEntryType?>? onFilterSelected;
+  final ValueChanged<DateTime>? onDateSelected;
+  final VoidCallback? onPickDate;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +101,7 @@ class _MobileRecordDashboard extends StatelessWidget {
           l10n: l10n,
           typography: typography,
           surface: surface,
+          onPickDate: onPickDate,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         _MobileQuickRecordPanel(
@@ -88,6 +109,7 @@ class _MobileRecordDashboard extends StatelessWidget {
           l10n: l10n,
           typography: typography,
           surface: surface,
+          onQuickAction: onQuickAction,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         _MobileAiInputBar(l10n: l10n, typography: typography, surface: surface),
@@ -105,6 +127,7 @@ class _MobileRecordDashboard extends StatelessWidget {
           l10n: l10n,
           typography: typography,
           surface: surface,
+          onFilterSelected: onFilterSelected,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         _MobileOverviewPanels(
@@ -112,6 +135,7 @@ class _MobileRecordDashboard extends StatelessWidget {
           l10n: l10n,
           typography: typography,
           surface: surface,
+          onDateSelected: onDateSelected,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         _MobileQuickOperationPanel(
@@ -136,12 +160,14 @@ class _MobileRecordDateBar extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onPickDate,
   });
 
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final VoidCallback? onPickDate;
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +183,9 @@ class _MobileRecordDateBar extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => showRecordToast(context, l10n.recordPickDateAction),
+              onTap:
+                  onPickDate ??
+                  () => showRecordToast(context, l10n.recordPickDateAction),
               borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -207,7 +235,9 @@ class _MobileRecordDateBar extends StatelessWidget {
           icon: Icons.calendar_today_outlined,
           typography: typography,
           surface: surface,
-          onTap: () => showRecordToast(context, l10n.recordSwitchDateAction),
+          onTap:
+              onPickDate ??
+              () => showRecordToast(context, l10n.recordSwitchDateAction),
         ),
       ],
     );
@@ -220,12 +250,14 @@ class _MobileQuickRecordPanel extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onQuickAction,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
   Widget build(BuildContext context) {
@@ -254,6 +286,7 @@ class _MobileQuickRecordPanel extends StatelessWidget {
                     l10n: l10n,
                     typography: typography,
                     surface: surface,
+                    onQuickAction: onQuickAction,
                   ),
                 ),
             ],
@@ -270,21 +303,26 @@ class _MobileQuickRecordTile extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onQuickAction,
   });
 
   final RecordQuickAction action;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
   Widget build(BuildContext context) {
     final label = _quickRecordLabel(l10n, action);
 
     return Material(
+      key: Key('record-quick-${action.type.name}'),
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showRecordToast(context, label),
+        onTap: onQuickAction == null
+            ? () => showRecordToast(context, label)
+            : () => onQuickAction!(action),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -619,15 +657,19 @@ class _MobileFilterChipsPanel extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onFilterSelected,
   });
 
   final List<RecordFilter> filters;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<RecordEntryType?>? onFilterSelected;
 
   @override
   Widget build(BuildContext context) {
+    final allSelected = filters.every((filter) => filter.selected);
+
     return Column(
       key: const Key('record-filter-chips'),
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -639,19 +681,30 @@ class _MobileFilterChipsPanel extends StatelessWidget {
           runSpacing: AppSpacingTokens.xs,
           children: [
             _MobileFilterChip(
+              chipKey: const Key('record-filter-all'),
               label: l10n.recordFilterAllAction,
               color: AppColorTokens.cyanDeep,
-              selected: true,
+              selected: allSelected,
               typography: typography,
               surface: surface,
+              onTap: onFilterSelected == null
+                  ? () => showRecordToast(context, l10n.recordFilterAllAction)
+                  : () => onFilterSelected!(null),
             ),
             for (final filter in filters)
               _MobileFilterChip(
+                chipKey: Key('record-filter-${filter.type.name}'),
                 label: _mobileFilterLabel(l10n, filter),
                 color: filter.accent,
-                selected: false,
+                selected: filter.selected,
                 typography: typography,
                 surface: surface,
+                onTap: onFilterSelected == null
+                    ? () => showRecordToast(
+                        context,
+                        _mobileFilterLabel(l10n, filter),
+                      )
+                    : () => onFilterSelected!(filter.type),
               ),
           ],
         ),
@@ -662,27 +715,32 @@ class _MobileFilterChipsPanel extends StatelessWidget {
 
 class _MobileFilterChip extends StatelessWidget {
   const _MobileFilterChip({
+    required this.chipKey,
     required this.label,
     required this.color,
     required this.selected,
     required this.typography,
     required this.surface,
+    required this.onTap,
   });
 
+  final Key chipKey;
   final String label;
   final Color color;
   final bool selected;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final foreground = selected ? color : surface.body;
 
     return Material(
+      key: chipKey,
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showRecordToast(context, label),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -712,12 +770,14 @@ class _MobileOverviewPanels extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onDateSelected,
   });
 
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<DateTime>? onDateSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -731,6 +791,7 @@ class _MobileOverviewPanels extends StatelessWidget {
             l10n: l10n,
             typography: typography,
             surface: surface,
+            onDateSelected: onDateSelected,
           ),
         ),
         const SizedBox(width: AppSpacingTokens.sm),
@@ -754,12 +815,14 @@ class _MobileCalendarOverviewPanel extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onDateSelected,
   });
 
   final List<RecordWeekDay> days;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<DateTime>? onDateSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -793,6 +856,7 @@ class _MobileCalendarOverviewPanel extends StatelessWidget {
                     l10n: l10n,
                     typography: typography,
                     surface: surface,
+                    onDateSelected: onDateSelected,
                   ),
                 ),
             ],
@@ -809,12 +873,14 @@ class _MobileCalendarDay extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onDateSelected,
   });
 
   final RecordWeekDay day;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<DateTime>? onDateSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -826,10 +892,15 @@ class _MobileCalendarDay extends StatelessWidget {
         : day.markers;
 
     return Material(
+      key: Key('record-weekday-${_formatDateKey(day.date)}'),
       color: Colors.transparent,
       child: InkWell(
-        onTap: () =>
-            showRecordToast(context, '${l10n.recordOpenDateAction} ${day.day}'),
+        onTap: onDateSelected == null
+            ? () => showRecordToast(
+                context,
+                '${l10n.recordOpenDateAction} ${day.day}',
+              )
+            : () => onDateSelected!(day.date),
         borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xxs),
@@ -1306,6 +1377,12 @@ String _quickRecordLabel(AppLocalizations l10n, RecordQuickAction action) {
     return l10n.recordQuickPeriodAction;
   }
   return l10n.recordQuickActionLabel(recordCopy(l10n, action.titleKey));
+}
+
+String _formatDateKey(DateTime date) {
+  return '${date.year.toString().padLeft(4, '0')}-'
+      '${date.month.toString().padLeft(2, '0')}-'
+      '${date.day.toString().padLeft(2, '0')}';
 }
 
 class _DesktopRecordDashboard extends StatelessWidget {

@@ -4,5 +4,6 @@ abstract interface class RecordRepository {
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     bool showWomenHealth = false,
+    RecordEntryType? filterType,
   });
 }

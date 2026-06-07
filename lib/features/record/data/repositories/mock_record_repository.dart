@@ -13,30 +13,44 @@ class MockRecordRepository implements RecordRepository {
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     bool showWomenHealth = false,
+    RecordEntryType? filterType,
   }) async {
-    return dashboardFor(selectedDate, showWomenHealth: showWomenHealth);
+    return dashboardFor(
+      selectedDate,
+      showWomenHealth: showWomenHealth,
+      filterType: filterType,
+    );
   }
 
   static RecordDashboard loadingDashboard(
     DateTime selectedDate, {
     bool showWomenHealth = false,
+    RecordEntryType? filterType,
   }) {
-    return dashboardFor(selectedDate, showWomenHealth: showWomenHealth);
+    return dashboardFor(
+      selectedDate,
+      showWomenHealth: showWomenHealth,
+      filterType: filterType,
+    );
   }
 
   static RecordDashboard dashboardFor(
     DateTime selectedDate, {
     bool showWomenHealth = false,
+    RecordEntryType? filterType,
   }) {
+    final filters = _filtersFor(showWomenHealth, filterType);
+    final timeline = _timelineFor(showWomenHealth, filterType);
+
     return RecordDashboard(
       selectedDate: selectedDate,
       selectedDay: selectedDate.day,
-      weekDays: _weekDays,
+      weekDays: _weekDaysFor(selectedDate),
       monthDays: _monthDays,
       quickActions: _quickActionsFor(showWomenHealth),
       summary: const RecordDaySummary(items: _summaryItems),
-      filters: _filtersFor(showWomenHealth),
-      timeline: _timelineFor(showWomenHealth),
+      filters: filters,
+      timeline: timeline,
       trends: _trends,
       healthBag: const RecordHealthBag(
         titleKey: RecordCopyKey.healthBagTitle,
@@ -67,51 +81,35 @@ class MockRecordRepository implements RecordRepository {
   static const _sleep = Color(0xFF7B61FF);
   static const _sleepSoft = Color(0xFFF0ECFF);
 
-  static const _weekDays = <RecordWeekDay>[
-    RecordWeekDay(
-      day: 12,
-      weekdayKey: RecordCopyKey.weekdayMon,
-      selected: false,
-      markers: <Color>[_meal],
-    ),
-    RecordWeekDay(
-      day: 13,
-      weekdayKey: RecordCopyKey.weekdayTue,
-      selected: false,
-      markers: <Color>[_meal],
-    ),
-    RecordWeekDay(
-      day: 14,
-      weekdayKey: RecordCopyKey.weekdayWed,
-      selected: false,
-      markers: <Color>[_activity],
-    ),
-    RecordWeekDay(
-      day: 15,
-      weekdayKey: RecordCopyKey.weekdayThu,
-      selected: true,
-      markers: <Color>[_meal, _water],
-    ),
-    RecordWeekDay(
-      day: 16,
-      weekdayKey: RecordCopyKey.weekdayFri,
-      selected: false,
-      markers: <Color>[_mood],
-    ),
-    RecordWeekDay(
-      day: 17,
-      weekdayKey: RecordCopyKey.weekdaySat,
-      selected: false,
-      markers: <Color>[_vitals],
-      hasAlert: true,
-    ),
-    RecordWeekDay(
-      day: 18,
-      weekdayKey: RecordCopyKey.weekdaySun,
-      selected: false,
-      markers: <Color>[_water],
-    ),
-  ];
+  static List<RecordWeekDay> _weekDaysFor(DateTime selectedDate) {
+    final date = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+    );
+    final monday = date.subtract(Duration(days: date.weekday - 1));
+    const markerPattern = <List<Color>>[
+      <Color>[_meal],
+      <Color>[_meal],
+      <Color>[_activity],
+      <Color>[_meal, _water],
+      <Color>[_mood],
+      <Color>[_vitals],
+      <Color>[_water],
+    ];
+
+    return List.generate(7, (index) {
+      final day = monday.add(Duration(days: index));
+      return RecordWeekDay(
+        date: day,
+        day: day.day,
+        weekdayKey: _weekdayKey(day.weekday),
+        selected: _isSameDay(day, date),
+        markers: markerPattern[index],
+        hasAlert: index == 5,
+      );
+    });
+  }
 
   static const _monthDays = <RecordCalendarDay>[
     RecordCalendarDay(day: 28, inMonth: false, selected: false, markers: []),
@@ -449,17 +447,42 @@ class MockRecordRepository implements RecordRepository {
     ),
   ];
 
-  static List<RecordFilter> _filtersFor(bool showWomenHealth) {
-    if (showWomenHealth) return _filters;
-    return _filters
-        .where((filter) => filter.type != RecordEntryType.womenHealth)
+  static List<RecordFilter> _filtersFor(
+    bool showWomenHealth,
+    RecordEntryType? filterType,
+  ) {
+    final filters = showWomenHealth
+        ? _filters
+        : _filters.where(
+            (filter) => filter.type != RecordEntryType.womenHealth,
+          );
+
+    return filters
+        .map(
+          (filter) => RecordFilter(
+            type: filter.type,
+            titleKey: filter.titleKey,
+            icon: filter.icon,
+            accent: filter.accent,
+            selected: filterType == null || filter.type == filterType,
+            locked: filter.locked,
+          ),
+        )
         .toList(growable: false);
   }
 
-  static List<RecordTimelineEntry> _timelineFor(bool showWomenHealth) {
-    if (showWomenHealth) return _timeline;
-    return _timeline
-        .where((entry) => entry.type != RecordEntryType.womenHealth)
+  static List<RecordTimelineEntry> _timelineFor(
+    bool showWomenHealth,
+    RecordEntryType? filterType,
+  ) {
+    final timeline = showWomenHealth
+        ? _timeline
+        : _timeline.where((entry) => entry.type != RecordEntryType.womenHealth);
+    if (filterType == null) {
+      return timeline.toList(growable: false);
+    }
+    return timeline
+        .where((entry) => entry.type == filterType)
         .toList(growable: false);
   }
 
@@ -615,6 +638,22 @@ class MockRecordRepository implements RecordRepository {
       ],
     ),
   ];
+
+  static RecordCopyKey _weekdayKey(int weekday) {
+    return switch (weekday) {
+      1 => RecordCopyKey.weekdayMon,
+      2 => RecordCopyKey.weekdayTue,
+      3 => RecordCopyKey.weekdayWed,
+      4 => RecordCopyKey.weekdayThu,
+      5 => RecordCopyKey.weekdayFri,
+      6 => RecordCopyKey.weekdaySat,
+      _ => RecordCopyKey.weekdaySun,
+    };
+  }
+
+  static bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
 }
 
 final recordRepositoryProvider = Provider<RecordRepository>((ref) {

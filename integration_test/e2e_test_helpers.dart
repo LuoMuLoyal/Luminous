@@ -556,11 +556,13 @@ class E2eRecordRepository implements RecordRepository {
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     bool showWomenHealth = false,
+    RecordEntryType? filterType,
   }) async {
     requestedDates.add(selectedDate);
     final mock = await const MockRecordRepository().fetchDashboard(
       selectedDate,
       showWomenHealth: showWomenHealth,
+      filterType: filterType,
     );
 
     return RecordDashboard(

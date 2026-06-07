@@ -17,8 +17,10 @@ import 'package:luminous/features/record/data/repositories/lucent_record_reposit
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
+import 'package:luminous/features/record/presentation/pages/record_create.dart';
 import 'package:luminous/features/record/presentation/pages/record_detail.dart';
 import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
@@ -467,6 +469,67 @@ void main() {
     expect(repo.requestedDates, contains(DateTime(2026, 6, 5)));
   });
 
+  testWidgets(
+    'Record mobile quick action opens create page with kind and date',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final dailyRepo = _FakeDailyRecordRepository();
+
+      await _pumpRecordRouter(
+        tester,
+        dailyRecordRepository: dailyRepo,
+        selectedDate: DateTime(2026, 6, 6),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('record-quick-water')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(RecordCreatePage), findsOneWidget);
+      final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
+        find.byType(DropdownButtonFormField<DailyRecordKind>),
+      );
+      expect(dropdown.initialValue, DailyRecordKind.water);
+
+      await tester.tap(find.widgetWithText(ElevatedButton, '保存'));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 2));
+
+      expect(dailyRepo.createInput?.kind, DailyRecordKind.water);
+      expect(dailyRepo.createInput?.occurredAt, '2026-06-06');
+    },
+  );
+
+  testWidgets('Record mobile filter chip reloads dashboard by type', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final repo = _FakeRecordRepository();
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await _pumpRecordRouter(tester, recordRepository: repo);
+    await tester.pumpAndSettle();
+
+    final filter = find.byKey(const Key('record-filter-water'));
+    await tester.scrollUntilVisible(filter, 240);
+    await tester.tap(filter);
+    await tester.pumpAndSettle();
+
+    expect(repo.requestedFilters, contains(RecordEntryType.water));
+    expect(find.textContaining(l10n.recordTimelineWaterAmount), findsOneWidget);
+    expect(find.textContaining(l10n.recordTimelineMealName), findsNothing);
+  });
+
   test(
     'Lucent record repository uses selected date and occurredAt time',
     () async {
@@ -509,6 +572,7 @@ Future<void> _pumpRecordRouter(
   RecordRepository? recordRepository,
   HealthContextSnapshot? healthContextSnapshot,
   String initialLocation = '/',
+  DateTime? selectedDate,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
@@ -523,6 +587,10 @@ Future<void> _pumpRecordRouter(
         healthContextSnapshotProvider.overrideWith(
           (ref) async => healthContextSnapshot ?? _healthSnapshot(),
         ),
+        if (selectedDate != null)
+          selectedRecordDateProvider.overrideWith(
+            () => _FixedSelectedRecordDateNotifier(selectedDate),
+          ),
       ],
       child: MaterialApp.router(
         theme: AppTheme.light,
@@ -598,6 +666,15 @@ GoRouter _buildRecordTestRouter(String initialLocation) {
     routes: [
       GoRoute(path: '/', builder: (context, state) => const RecordPage()),
       GoRoute(
+        path: '/record/create',
+        builder: (context, state) => RecordCreatePage(
+          initialKind: dailyRecordKindFromName(
+            state.uri.queryParameters['kind'],
+          ),
+          initialDate: _parseRecordDate(state.uri.queryParameters['date']),
+        ),
+      ),
+      GoRoute(
         path: '/record/:id',
         builder: (context, state) =>
             RecordDetailPage(recordId: state.pathParameters['id']!),
@@ -613,6 +690,13 @@ GoRouter _buildRecordTestRouter(String initialLocation) {
       ),
     ],
   );
+}
+
+DateTime? _parseRecordDate(String? value) {
+  if (value == null) return null;
+  final parsed = DateTime.tryParse(value);
+  if (parsed == null) return null;
+  return DateTime(parsed.year, parsed.month, parsed.day);
 }
 
 GoRouter _buildEditTestRouter({
@@ -647,6 +731,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   String? getCalledWith;
   String? fetchDate;
   DailyRecordUpdateInput? lastUpdateInput;
+  DailyRecordCreateInput? createInput;
   bool fetchRecordsCalled = false;
 
   @override
@@ -730,7 +815,19 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
 
   @override
   Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
-    throw UnimplementedError();
+    createInput = input;
+    return DailyRecordItem(
+      id: 'created-id-1',
+      kind: input.kind,
+      occurredAt: input.occurredAt,
+      title: input.title,
+      value: input.value,
+      unit: input.unit,
+      note: input.note,
+      source: 'manual',
+      createdAt: DateTime.now().toIso8601String(),
+      updatedAt: DateTime.now().toIso8601String(),
+    );
   }
 
   @override
@@ -765,16 +862,20 @@ class _FakeRecordRepository implements RecordRepository {
 
   final bool withRecordEntry;
   final requestedDates = <DateTime>[];
+  final requestedFilters = <RecordEntryType?>[];
 
   @override
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     bool showWomenHealth = false,
+    RecordEntryType? filterType,
   }) async {
     requestedDates.add(selectedDate);
+    requestedFilters.add(filterType);
     final mock = await const MockRecordRepository().fetchDashboard(
       selectedDate,
       showWomenHealth: showWomenHealth,
+      filterType: filterType,
     );
     final timeline = withRecordEntry
         ? [
