@@ -6,7 +6,7 @@ Flutter personal health copilot. Current mainline is the reset five-tab shell ba
 
 ## Baseline
 
-- Tabs: `today / record / medicine / mine / more`
+- Tabs: `today / record / medicine / report / mine`
 - Design tokens: color / type / spacing / radius / shadow / breakpoints
 - API client: `packages/lucent_openapi`
 - Network layer: `lib/core/network/`

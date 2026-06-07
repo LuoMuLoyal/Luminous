@@ -1,6 +1,6 @@
 # Lumos Next Plan
 
-Last updated: 2026-06-06
+Last updated: 2026-06-07
 
 ## Current Goal
 
@@ -22,7 +22,7 @@ Scope:
 - Keep provider invalidation for Record and Today after create/edit/delete.
 - Add TODOs/tests when attachment failure, edit detail, or form-by-kind gaps are found.
 
-Why first: Record is already a real Lucent-backed loop, and small correctness fixes here improve the main daily workflow more than expanding More.
+Why first: Record is already a real Lucent-backed loop, and small correctness fixes here improve the main daily workflow more than expanding deferred utility surfaces.
 
 Observable result:
 
@@ -64,25 +64,26 @@ Observable result:
 
 - A user can enable a local reminder and receive a device-local notification in a testable path.
 
-### Deferred: Environment Snapshot / More
+### Deferred: Environment Snapshot / Contextual Surfaces
 
-Status: Lucent endpoint implemented on 2026-06-06; Luminous More wiring is intentionally deferred until core modules are steadier.
+Status: Lucent endpoint implemented on 2026-06-06; Luminous frontend wiring is intentionally deferred until core modules are steadier.
 
-Goal: replace the More environment mock with a small real Lucent endpoint.
+Goal: expose environment reference data only where it supports a concrete mobile job, such as Today contextual signals or Mine campus/service resources.
 
 Scope:
 
 - Lucent adds static reference data and `GET /api/v1/environment/snapshot`.
 - Lucent exports OpenAPI.
-- Luminous regenerates the client and wires More environment data to the endpoint.
+- Luminous regenerates the client and creates a shared environment repository.
+- Today and/or Mine consume the repository only when the UI job is explicit.
 - Luminous keeps a "reference/static" label when dataSource is `static`.
 - No third-party weather API, location tracking, or push alert behavior.
 
-Why deferred: More is useful, but it should wait until Record / Today / Medicine core flows are steadier.
+Why deferred: environment data is useful only as context. It should wait until Record / Today / Medicine core flows are steadier and must not reintroduce a generic More tab.
 
 Observable result:
 
-- More displays environment data from Lucent instead of `MockMoreRepository`.
+- Today or Mine displays environment data from Lucent with a visible reference/static source label.
 
 ## Immediate Work Order
 
@@ -108,4 +109,5 @@ Observable result:
 - Smart device registry.
 - Watch companion app.
 - Paid or credentialed external services without explicit approval.
-- More environment frontend wiring until Record / Today / Medicine core flows are steadier.
+- Environment frontend wiring until Record / Today / Medicine core flows are steadier and the target Today/Mine job is explicit.
+- Standalone More tab or generic utility hub.

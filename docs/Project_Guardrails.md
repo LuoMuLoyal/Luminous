@@ -1,6 +1,6 @@
 # Lumos Project Guardrails
 
-Last updated: 2026-06-06
+Last updated: 2026-06-07
 
 This replaces the long historical error audit as the current quick-read checklist.
 
@@ -30,6 +30,7 @@ This replaces the long historical error audit as the current quick-read checklis
 - Do not add visible text without ARB/l10n.
 - Do not let signed-out pages repeatedly call protected APIs; show stable signed-out state or route to login.
 - Do not present mock/static/unsupported features as real capability.
+- The mobile MVP bottom navigation is frozen as `today / record / medicine / report / mine`. Do not add or revive a generic More tab; route low-frequency utilities through Mine, contextual Today actions, or defer them.
 
 ## CI/CD And Generated Files
 
