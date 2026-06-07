@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabMedicine => 'Medicine';
 
   @override
+  String get tabReport => 'Report';
+
+  @override
   String get tabMine => 'Mine';
 
   @override
@@ -2650,4 +2653,255 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineEditFieldEndedAt => 'Ended at (YYYY-MM-DD)';
+
+  @override
+  String get reportWeekDateRange => 'May 19 - May 25';
+
+  @override
+  String get reportPeriodThisWeek => 'This week';
+
+  @override
+  String get reportShareTooltip => 'Share report';
+
+  @override
+  String get reportScoreTitle => 'This week\'s health summary';
+
+  @override
+  String reportScoreOutOf(int max) {
+    return 'pts / $max';
+  }
+
+  @override
+  String get reportStatusOverallStable => 'Overall stable';
+
+  @override
+  String get reportScoreBody => 'Keep the good habits going';
+
+  @override
+  String get reportMetricMedicationTitle => 'Medication';
+
+  @override
+  String get reportMetricSleepTitle => 'Sleep';
+
+  @override
+  String get reportMetricWaterTitle => 'Water';
+
+  @override
+  String get reportMetricMoodTitle => 'Mood';
+
+  @override
+  String get reportMetricMoodStableValue => 'Stable';
+
+  @override
+  String get reportUnitPercent => '%';
+
+  @override
+  String get reportUnitHour => 'hours';
+
+  @override
+  String get reportUnitLiter => 'L';
+
+  @override
+  String get reportStatusGood => 'Good';
+
+  @override
+  String get reportStatusNeedsImprove => 'Needs lift';
+
+  @override
+  String get reportStatusStable => 'Stable';
+
+  @override
+  String get reportDeltaMedication => '9%';
+
+  @override
+  String get reportDeltaSleep => '0.6';
+
+  @override
+  String get reportDeltaWater => '0.2';
+
+  @override
+  String get reportDeltaMood => '';
+
+  @override
+  String get reportTrendSectionTitle => 'Health trends';
+
+  @override
+  String get reportRangeLast7Days => 'Last 7 days';
+
+  @override
+  String get reportTrendSleepLabel => 'Sleep (h)';
+
+  @override
+  String get reportTrendMoodLabel => 'Mood';
+
+  @override
+  String get reportTrendWaterLabel => 'Water (L)';
+
+  @override
+  String get reportTrendMedicationLabel => 'Medication (%)';
+
+  @override
+  String get reportTrendDateLabels => '5/19|5/20|5/21|5/22|5/23|5/24|5/25';
+
+  @override
+  String get reportViewDetailsAction => 'View detailed data';
+
+  @override
+  String get reportFindingsSectionTitle => 'Key findings';
+
+  @override
+  String get reportFindingCoffeeTitle => 'Caffeine affects sleep';
+
+  @override
+  String get reportFindingCoffeeBody =>
+      'Sleep duration dropped after afternoon coffee.';
+
+  @override
+  String get reportFindingPeriodTitle => 'Pre-period mood swings';
+
+  @override
+  String get reportFindingPeriodBody =>
+      'Mood changes were clearer two days before the period.';
+
+  @override
+  String get reportFindingMedicineTitle => 'Medication routine is steady';
+
+  @override
+  String get reportFindingMedicineBody =>
+      'Medication was taken on time for seven consecutive days.';
+
+  @override
+  String get reportAiSummaryTitle => 'Summary';
+
+  @override
+  String get reportAiSummarySubtitle =>
+      'Smart analysis based on this week\'s records';
+
+  @override
+  String get reportViewAdviceAction => 'View advice';
+
+  @override
+  String get reportAiBulletSleep =>
+      'Sleep quality was good overall, with slight weekend variation. A steady routine can help energy.';
+
+  @override
+  String get reportAiBulletMood =>
+      'Mood was mostly stable. Thursday was slightly lower; exercise or meditation may help relax.';
+
+  @override
+  String get reportAiBulletWater =>
+      'Water completion was moderate, with a few lower days. Carry water and drink small amounts often.';
+
+  @override
+  String get reportAiBulletMedicine =>
+      'Medication adherence stayed high. Keep the on-time routine.';
+
+  @override
+  String get reportAiBulletDiet =>
+      'Meals were mostly balanced, but fruit and vegetable intake could increase.';
+
+  @override
+  String get reportExportSectionTitle => 'Export summary';
+
+  @override
+  String get reportExportHospitalTitle => 'For clinic';
+
+  @override
+  String get reportExportHospitalSubtitle => 'Export health summary';
+
+  @override
+  String get reportExportCounselorTitle => 'For counselor';
+
+  @override
+  String get reportExportCounselorSubtitle => 'Export health summary';
+
+  @override
+  String get reportExportMonthlyTitle => 'Monthly report';
+
+  @override
+  String get reportExportMonthlySubtitle => 'PDF format';
+
+  @override
+  String get reportExportPrintTitle => 'Print preview';
+
+  @override
+  String get reportExportPrintSubtitle => 'Paper preview';
+
+  @override
+  String get reportPatternSectionTitle => 'Health pattern analysis';
+
+  @override
+  String get reportPatternSleepMoodTitle => 'Sleep and mood';
+
+  @override
+  String get reportPatternSleepMoodStatus => 'Medium link';
+
+  @override
+  String get reportPatternSleepMoodBody =>
+      'A regular rhythm helps stabilize mood.';
+
+  @override
+  String get reportPatternDietWaterTitle => 'Diet and water';
+
+  @override
+  String get reportPatternDietWaterStatus => 'Good pairing';
+
+  @override
+  String get reportPatternDietWaterBody =>
+      'Energy is easier to keep steady when hydration is enough.';
+
+  @override
+  String get reportPatternMedicationTitle => 'Medication adherence';
+
+  @override
+  String get reportPatternMedicationStatus => 'Excellent';
+
+  @override
+  String get reportPatternMedicationBody =>
+      'Taking medicine on time helps maintain health status.';
+
+  @override
+  String get reportPatternCycleTitle => 'Cycle and discomfort';
+
+  @override
+  String get reportPatternCycleStatus => 'Regular records';
+
+  @override
+  String get reportPatternCycleBody =>
+      'Continuous records help identify cycle changes.';
+
+  @override
+  String get reportPrivacyTitle => 'Privacy and security';
+
+  @override
+  String get reportPrivacyBody =>
+      'All data is used only for your health management and analysis, and is not shared without authorization.';
+
+  @override
+  String get reportLearnMoreAction => 'Learn more';
+
+  @override
+  String get reportPrivacySettingsTitle => 'Privacy settings';
+
+  @override
+  String get reportPrivacyHideMood => 'Hide mood';
+
+  @override
+  String get reportPrivacyHidePeriod => 'Hide period';
+
+  @override
+  String get reportReferenceNotice =>
+      'This report is for reference only and is not diagnosis or treatment advice.';
+
+  @override
+  String reportActionToast(String action) {
+    return '$action: this will open the related action later.';
+  }
+
+  @override
+  String get reportErrorTitle => 'Report did not load this time';
+
+  @override
+  String get reportErrorDescription =>
+      'The mock data boundary is wired, so try fetching it again.';
 }

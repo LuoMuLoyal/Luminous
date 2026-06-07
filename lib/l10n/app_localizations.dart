@@ -122,6 +122,12 @@ abstract class AppLocalizations {
   /// **'用药'**
   String get tabMedicine;
 
+  /// No description provided for @tabReport.
+  ///
+  /// In zh, this message translates to:
+  /// **'报告'**
+  String get tabReport;
+
   /// No description provided for @tabMine.
   ///
   /// In zh, this message translates to:
@@ -4945,6 +4951,468 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'结束日期 (YYYY-MM-DD)'**
   String get mineEditFieldEndedAt;
+
+  /// No description provided for @reportWeekDateRange.
+  ///
+  /// In zh, this message translates to:
+  /// **'5月19日 - 5月25日'**
+  String get reportWeekDateRange;
+
+  /// No description provided for @reportPeriodThisWeek.
+  ///
+  /// In zh, this message translates to:
+  /// **'本周'**
+  String get reportPeriodThisWeek;
+
+  /// No description provided for @reportShareTooltip.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享报告'**
+  String get reportShareTooltip;
+
+  /// No description provided for @reportScoreTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'本周健康总结'**
+  String get reportScoreTitle;
+
+  /// No description provided for @reportScoreOutOf.
+  ///
+  /// In zh, this message translates to:
+  /// **'分 / {max}'**
+  String reportScoreOutOf(int max);
+
+  /// No description provided for @reportStatusOverallStable.
+  ///
+  /// In zh, this message translates to:
+  /// **'整体稳定'**
+  String get reportStatusOverallStable;
+
+  /// No description provided for @reportScoreBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'坚持良好习惯，继续保持'**
+  String get reportScoreBody;
+
+  /// No description provided for @reportMetricMedicationTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药完成率'**
+  String get reportMetricMedicationTitle;
+
+  /// No description provided for @reportMetricSleepTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠'**
+  String get reportMetricSleepTitle;
+
+  /// No description provided for @reportMetricWaterTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水'**
+  String get reportMetricWaterTitle;
+
+  /// No description provided for @reportMetricMoodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪'**
+  String get reportMetricMoodTitle;
+
+  /// No description provided for @reportMetricMoodStableValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'稳定'**
+  String get reportMetricMoodStableValue;
+
+  /// No description provided for @reportUnitPercent.
+  ///
+  /// In zh, this message translates to:
+  /// **'%'**
+  String get reportUnitPercent;
+
+  /// No description provided for @reportUnitHour.
+  ///
+  /// In zh, this message translates to:
+  /// **'小时'**
+  String get reportUnitHour;
+
+  /// No description provided for @reportUnitLiter.
+  ///
+  /// In zh, this message translates to:
+  /// **'L'**
+  String get reportUnitLiter;
+
+  /// No description provided for @reportStatusGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'良好'**
+  String get reportStatusGood;
+
+  /// No description provided for @reportStatusNeedsImprove.
+  ///
+  /// In zh, this message translates to:
+  /// **'待提升'**
+  String get reportStatusNeedsImprove;
+
+  /// No description provided for @reportStatusStable.
+  ///
+  /// In zh, this message translates to:
+  /// **'稳定'**
+  String get reportStatusStable;
+
+  /// No description provided for @reportDeltaMedication.
+  ///
+  /// In zh, this message translates to:
+  /// **'9%'**
+  String get reportDeltaMedication;
+
+  /// No description provided for @reportDeltaSleep.
+  ///
+  /// In zh, this message translates to:
+  /// **'0.6'**
+  String get reportDeltaSleep;
+
+  /// No description provided for @reportDeltaWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'0.2'**
+  String get reportDeltaWater;
+
+  /// No description provided for @reportDeltaMood.
+  ///
+  /// In zh, this message translates to:
+  /// **''**
+  String get reportDeltaMood;
+
+  /// No description provided for @reportTrendSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康趋势'**
+  String get reportTrendSectionTitle;
+
+  /// No description provided for @reportRangeLast7Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 7 天'**
+  String get reportRangeLast7Days;
+
+  /// No description provided for @reportTrendSleepLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠(小时)'**
+  String get reportTrendSleepLabel;
+
+  /// No description provided for @reportTrendMoodLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪(分)'**
+  String get reportTrendMoodLabel;
+
+  /// No description provided for @reportTrendWaterLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水(L)'**
+  String get reportTrendWaterLabel;
+
+  /// No description provided for @reportTrendMedicationLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药完成率(%)'**
+  String get reportTrendMedicationLabel;
+
+  /// No description provided for @reportTrendDateLabels.
+  ///
+  /// In zh, this message translates to:
+  /// **'5/19|5/20|5/21|5/22|5/23|5/24|5/25'**
+  String get reportTrendDateLabels;
+
+  /// No description provided for @reportViewDetailsAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看详细数据'**
+  String get reportViewDetailsAction;
+
+  /// No description provided for @reportFindingsSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'重点发现'**
+  String get reportFindingsSectionTitle;
+
+  /// No description provided for @reportFindingCoffeeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'咖啡因影响睡眠'**
+  String get reportFindingCoffeeTitle;
+
+  /// No description provided for @reportFindingCoffeeBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'下午摄入咖啡后睡眠时长下降'**
+  String get reportFindingCoffeeBody;
+
+  /// No description provided for @reportFindingPeriodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期前情绪波动'**
+  String get reportFindingPeriodTitle;
+
+  /// No description provided for @reportFindingPeriodBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期前 2 天情绪波动较为明显'**
+  String get reportFindingPeriodBody;
+
+  /// No description provided for @reportFindingMedicineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'按时用药稳定'**
+  String get reportFindingMedicineTitle;
+
+  /// No description provided for @reportFindingMedicineBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'连续 7 天按时用药状态良好'**
+  String get reportFindingMedicineBody;
+
+  /// No description provided for @reportAiSummaryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'总结'**
+  String get reportAiSummaryTitle;
+
+  /// No description provided for @reportAiSummarySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'基于本周记录的智能分析'**
+  String get reportAiSummarySubtitle;
+
+  /// No description provided for @reportViewAdviceAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看建议'**
+  String get reportViewAdviceAction;
+
+  /// No description provided for @reportAiBulletSleep.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠质量整体良好，周末略有波动，保持规律作息有助于提升精力。'**
+  String get reportAiBulletSleep;
+
+  /// No description provided for @reportAiBulletMood.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪总体稳定，周四稍低，尝试运动或冥想有助于放松心情。'**
+  String get reportAiBulletMood;
+
+  /// No description provided for @reportAiBulletWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水达成率中等，部分天数偏低，记得随身带水，少量多次补水。'**
+  String get reportAiBulletWater;
+
+  /// No description provided for @reportAiBulletMedicine.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药达成率较高，继续保持按时服药的好习惯。'**
+  String get reportAiBulletMedicine;
+
+  /// No description provided for @reportAiBulletDiet.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮食多为均衡搭配，但水果与蔬菜摄入偏少，可适当增加。'**
+  String get reportAiBulletDiet;
+
+  /// No description provided for @reportExportSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出摘要'**
+  String get reportExportSectionTitle;
+
+  /// No description provided for @reportExportHospitalTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'给校医院'**
+  String get reportExportHospitalTitle;
+
+  /// No description provided for @reportExportHospitalSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出健康摘要'**
+  String get reportExportHospitalSubtitle;
+
+  /// No description provided for @reportExportCounselorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'给咨询师'**
+  String get reportExportCounselorTitle;
+
+  /// No description provided for @reportExportCounselorSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出健康摘要'**
+  String get reportExportCounselorSubtitle;
+
+  /// No description provided for @reportExportMonthlyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'月度报告'**
+  String get reportExportMonthlyTitle;
+
+  /// No description provided for @reportExportMonthlySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'PDF 格式'**
+  String get reportExportMonthlySubtitle;
+
+  /// No description provided for @reportExportPrintTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'打印预览'**
+  String get reportExportPrintTitle;
+
+  /// No description provided for @reportExportPrintSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'纸质版预览'**
+  String get reportExportPrintSubtitle;
+
+  /// No description provided for @reportPatternSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康模式分析'**
+  String get reportPatternSectionTitle;
+
+  /// No description provided for @reportPatternSleepMoodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠与情绪'**
+  String get reportPatternSleepMoodTitle;
+
+  /// No description provided for @reportPatternSleepMoodStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'关联度中等'**
+  String get reportPatternSleepMoodStatus;
+
+  /// No description provided for @reportPatternSleepMoodBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'保持规律有助于稳定情绪'**
+  String get reportPatternSleepMoodBody;
+
+  /// No description provided for @reportPatternDietWaterTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮食与饮水'**
+  String get reportPatternDietWaterTitle;
+
+  /// No description provided for @reportPatternDietWaterStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'良好搭配'**
+  String get reportPatternDietWaterStatus;
+
+  /// No description provided for @reportPatternDietWaterBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水充足时，精力更容易保持稳定'**
+  String get reportPatternDietWaterBody;
+
+  /// No description provided for @reportPatternMedicationTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药依从性'**
+  String get reportPatternMedicationTitle;
+
+  /// No description provided for @reportPatternMedicationStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'表现优秀'**
+  String get reportPatternMedicationStatus;
+
+  /// No description provided for @reportPatternMedicationBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'按时服药有助于维持健康状态'**
+  String get reportPatternMedicationBody;
+
+  /// No description provided for @reportPatternCycleTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期与不适'**
+  String get reportPatternCycleTitle;
+
+  /// No description provided for @reportPatternCycleStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'规律记录'**
+  String get reportPatternCycleStatus;
+
+  /// No description provided for @reportPatternCycleBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'持续记录有助于识别周期变化'**
+  String get reportPatternCycleBody;
+
+  /// No description provided for @reportPrivacyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私与安全'**
+  String get reportPrivacyTitle;
+
+  /// No description provided for @reportPrivacyBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'所有数据仅用于您的健康管理与分析，不会未经授权分享。'**
+  String get reportPrivacyBody;
+
+  /// No description provided for @reportLearnMoreAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'了解更多'**
+  String get reportLearnMoreAction;
+
+  /// No description provided for @reportPrivacySettingsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私设置'**
+  String get reportPrivacySettingsTitle;
+
+  /// No description provided for @reportPrivacyHideMood.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏情绪'**
+  String get reportPrivacyHideMood;
+
+  /// No description provided for @reportPrivacyHidePeriod.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏经期'**
+  String get reportPrivacyHidePeriod;
+
+  /// No description provided for @reportReferenceNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'本报告仅供参考，不构成诊断或治疗建议。'**
+  String get reportReferenceNotice;
+
+  /// No description provided for @reportActionToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'{action}：后续会打开对应操作。'**
+  String reportActionToast(String action);
+
+  /// No description provided for @reportErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'报告页暂时没有加载出来'**
+  String get reportErrorTitle;
+
+  /// No description provided for @reportErrorDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'Mock 数据边界已经接好，可以重新拉取一次。'**
+  String get reportErrorDescription;
 }
 
 class _AppLocalizationsDelegate

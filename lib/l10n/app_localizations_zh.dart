@@ -21,6 +21,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tabMedicine => '用药';
 
   @override
+  String get tabReport => '报告';
+
+  @override
   String get tabMine => '我的';
 
   @override
@@ -2507,4 +2510,239 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineEditFieldEndedAt => '结束日期 (YYYY-MM-DD)';
+
+  @override
+  String get reportWeekDateRange => '5月19日 - 5月25日';
+
+  @override
+  String get reportPeriodThisWeek => '本周';
+
+  @override
+  String get reportShareTooltip => '分享报告';
+
+  @override
+  String get reportScoreTitle => '本周健康总结';
+
+  @override
+  String reportScoreOutOf(int max) {
+    return '分 / $max';
+  }
+
+  @override
+  String get reportStatusOverallStable => '整体稳定';
+
+  @override
+  String get reportScoreBody => '坚持良好习惯，继续保持';
+
+  @override
+  String get reportMetricMedicationTitle => '用药完成率';
+
+  @override
+  String get reportMetricSleepTitle => '睡眠';
+
+  @override
+  String get reportMetricWaterTitle => '饮水';
+
+  @override
+  String get reportMetricMoodTitle => '情绪';
+
+  @override
+  String get reportMetricMoodStableValue => '稳定';
+
+  @override
+  String get reportUnitPercent => '%';
+
+  @override
+  String get reportUnitHour => '小时';
+
+  @override
+  String get reportUnitLiter => 'L';
+
+  @override
+  String get reportStatusGood => '良好';
+
+  @override
+  String get reportStatusNeedsImprove => '待提升';
+
+  @override
+  String get reportStatusStable => '稳定';
+
+  @override
+  String get reportDeltaMedication => '9%';
+
+  @override
+  String get reportDeltaSleep => '0.6';
+
+  @override
+  String get reportDeltaWater => '0.2';
+
+  @override
+  String get reportDeltaMood => '';
+
+  @override
+  String get reportTrendSectionTitle => '健康趋势';
+
+  @override
+  String get reportRangeLast7Days => '近 7 天';
+
+  @override
+  String get reportTrendSleepLabel => '睡眠(小时)';
+
+  @override
+  String get reportTrendMoodLabel => '情绪(分)';
+
+  @override
+  String get reportTrendWaterLabel => '饮水(L)';
+
+  @override
+  String get reportTrendMedicationLabel => '用药完成率(%)';
+
+  @override
+  String get reportTrendDateLabels => '5/19|5/20|5/21|5/22|5/23|5/24|5/25';
+
+  @override
+  String get reportViewDetailsAction => '查看详细数据';
+
+  @override
+  String get reportFindingsSectionTitle => '重点发现';
+
+  @override
+  String get reportFindingCoffeeTitle => '咖啡因影响睡眠';
+
+  @override
+  String get reportFindingCoffeeBody => '下午摄入咖啡后睡眠时长下降';
+
+  @override
+  String get reportFindingPeriodTitle => '经期前情绪波动';
+
+  @override
+  String get reportFindingPeriodBody => '经期前 2 天情绪波动较为明显';
+
+  @override
+  String get reportFindingMedicineTitle => '按时用药稳定';
+
+  @override
+  String get reportFindingMedicineBody => '连续 7 天按时用药状态良好';
+
+  @override
+  String get reportAiSummaryTitle => '总结';
+
+  @override
+  String get reportAiSummarySubtitle => '基于本周记录的智能分析';
+
+  @override
+  String get reportViewAdviceAction => '查看建议';
+
+  @override
+  String get reportAiBulletSleep => '睡眠质量整体良好，周末略有波动，保持规律作息有助于提升精力。';
+
+  @override
+  String get reportAiBulletMood => '情绪总体稳定，周四稍低，尝试运动或冥想有助于放松心情。';
+
+  @override
+  String get reportAiBulletWater => '饮水达成率中等，部分天数偏低，记得随身带水，少量多次补水。';
+
+  @override
+  String get reportAiBulletMedicine => '用药达成率较高，继续保持按时服药的好习惯。';
+
+  @override
+  String get reportAiBulletDiet => '饮食多为均衡搭配，但水果与蔬菜摄入偏少，可适当增加。';
+
+  @override
+  String get reportExportSectionTitle => '导出摘要';
+
+  @override
+  String get reportExportHospitalTitle => '给校医院';
+
+  @override
+  String get reportExportHospitalSubtitle => '导出健康摘要';
+
+  @override
+  String get reportExportCounselorTitle => '给咨询师';
+
+  @override
+  String get reportExportCounselorSubtitle => '导出健康摘要';
+
+  @override
+  String get reportExportMonthlyTitle => '月度报告';
+
+  @override
+  String get reportExportMonthlySubtitle => 'PDF 格式';
+
+  @override
+  String get reportExportPrintTitle => '打印预览';
+
+  @override
+  String get reportExportPrintSubtitle => '纸质版预览';
+
+  @override
+  String get reportPatternSectionTitle => '健康模式分析';
+
+  @override
+  String get reportPatternSleepMoodTitle => '睡眠与情绪';
+
+  @override
+  String get reportPatternSleepMoodStatus => '关联度中等';
+
+  @override
+  String get reportPatternSleepMoodBody => '保持规律有助于稳定情绪';
+
+  @override
+  String get reportPatternDietWaterTitle => '饮食与饮水';
+
+  @override
+  String get reportPatternDietWaterStatus => '良好搭配';
+
+  @override
+  String get reportPatternDietWaterBody => '饮水充足时，精力更容易保持稳定';
+
+  @override
+  String get reportPatternMedicationTitle => '用药依从性';
+
+  @override
+  String get reportPatternMedicationStatus => '表现优秀';
+
+  @override
+  String get reportPatternMedicationBody => '按时服药有助于维持健康状态';
+
+  @override
+  String get reportPatternCycleTitle => '经期与不适';
+
+  @override
+  String get reportPatternCycleStatus => '规律记录';
+
+  @override
+  String get reportPatternCycleBody => '持续记录有助于识别周期变化';
+
+  @override
+  String get reportPrivacyTitle => '隐私与安全';
+
+  @override
+  String get reportPrivacyBody => '所有数据仅用于您的健康管理与分析，不会未经授权分享。';
+
+  @override
+  String get reportLearnMoreAction => '了解更多';
+
+  @override
+  String get reportPrivacySettingsTitle => '隐私设置';
+
+  @override
+  String get reportPrivacyHideMood => '隐藏情绪';
+
+  @override
+  String get reportPrivacyHidePeriod => '隐藏经期';
+
+  @override
+  String get reportReferenceNotice => '本报告仅供参考，不构成诊断或治疗建议。';
+
+  @override
+  String reportActionToast(String action) {
+    return '$action：后续会打开对应操作。';
+  }
+
+  @override
+  String get reportErrorTitle => '报告页暂时没有加载出来';
+
+  @override
+  String get reportErrorDescription => 'Mock 数据边界已经接好，可以重新拉取一次。';
 }

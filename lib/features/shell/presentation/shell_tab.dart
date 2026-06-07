@@ -5,8 +5,8 @@ enum ShellTab {
   today(Icons.home_outlined, Icons.home),
   record(Icons.edit_calendar_outlined, Icons.edit_calendar),
   medicine(Icons.medication_outlined, Icons.medication),
-  mine(Icons.person_outline, Icons.person),
-  more(Icons.more_horiz, Icons.more_horiz);
+  report(Icons.bar_chart_outlined, Icons.bar_chart_rounded),
+  mine(Icons.person_outline, Icons.person);
 
   const ShellTab(this.icon, this.activeIcon);
 
@@ -18,8 +18,8 @@ enum ShellTab {
       ShellTab.today => l10n?.tabToday ?? 'Today',
       ShellTab.record => l10n?.tabRecord ?? 'Record',
       ShellTab.medicine => l10n?.tabMedicine ?? 'Medicine',
+      ShellTab.report => l10n?.tabReport ?? 'Report',
       ShellTab.mine => l10n?.tabMine ?? 'Mine',
-      ShellTab.more => l10n?.tabMore ?? 'More',
     };
   }
 }
