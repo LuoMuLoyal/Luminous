@@ -3443,19 +3443,19 @@ abstract class AppLocalizations {
   /// No description provided for @todayGreetingSubtitleMorning.
   ///
   /// In zh, this message translates to:
-  /// **'你昨晚睡得还不错，喝神净满满！'**
+  /// **'早上好，照顾好自己每一天'**
   String get todayGreetingSubtitleMorning;
 
   /// No description provided for @todayGreetingSubtitleAfternoon.
   ///
   /// In zh, this message translates to:
-  /// **'午后先补水，再把提醒和状态慢慢对齐。'**
+  /// **'下午好，照顾好自己每一天'**
   String get todayGreetingSubtitleAfternoon;
 
   /// No description provided for @todayGreetingSubtitleEvening.
   ///
   /// In zh, this message translates to:
-  /// **'把今天的状态收拢一下，给明天留出节奏。'**
+  /// **'晚上好，照顾好自己每一天'**
   String get todayGreetingSubtitleEvening;
 
   /// No description provided for @todayHeroCareLine.
@@ -3533,7 +3533,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayHealthSummaryCardTitle.
   ///
   /// In zh, this message translates to:
-  /// **'健康摘要'**
+  /// **'健康状态总览'**
   String get todayHealthSummaryCardTitle;
 
   /// No description provided for @todayVitalHeartRateLabel.
@@ -3721,6 +3721,300 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'重试'**
   String get todayRetryAction;
+
+  /// No description provided for @todayUpdatedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'更新于 {time}'**
+  String todayUpdatedAt(String time);
+
+  /// No description provided for @todayHydrationOverviewLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水'**
+  String get todayHydrationOverviewLabel;
+
+  /// No description provided for @todayMoodOverviewLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪'**
+  String get todayMoodOverviewLabel;
+
+  /// No description provided for @todayMedicationOverviewLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药'**
+  String get todayMedicationOverviewLabel;
+
+  /// No description provided for @todayPeriodOverviewLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期'**
+  String get todayPeriodOverviewLabel;
+
+  /// No description provided for @todayPeriodDayValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'第 {day} 天'**
+  String todayPeriodDayValue(int day);
+
+  /// No description provided for @todayPeriodStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期中'**
+  String get todayPeriodStatus;
+
+  /// No description provided for @todayStatusNeedsImprovement.
+  ///
+  /// In zh, this message translates to:
+  /// **'待提升'**
+  String get todayStatusNeedsImprovement;
+
+  /// No description provided for @todayStatusCompleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已完成'**
+  String get todayStatusCompleted;
+
+  /// No description provided for @todayMedicationPendingStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'待服用'**
+  String get todayMedicationPendingStatus;
+
+  /// No description provided for @todayMoodStableValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'平稳'**
+  String get todayMoodStableValue;
+
+  /// No description provided for @todayPrioritySectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日优先事项'**
+  String get todayPrioritySectionTitle;
+
+  /// No description provided for @todayManageAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理'**
+  String get todayManageAction;
+
+  /// No description provided for @todayMedicationPrioritySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日 {count} 条待服用'**
+  String todayMedicationPrioritySubtitle(int count);
+
+  /// No description provided for @todayMedicationPriorityDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'{time} {medicineName}'**
+  String todayMedicationPriorityDetail(String time, String medicineName);
+
+  /// No description provided for @todayMedicationTakeAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去服用'**
+  String get todayMedicationTakeAction;
+
+  /// No description provided for @todayWaterPriorityTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水目标'**
+  String get todayWaterPriorityTitle;
+
+  /// No description provided for @todayWaterGoalMl.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日目标 2000 ml'**
+  String get todayWaterGoalMl;
+
+  /// No description provided for @todayDrinkWaterAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去喝水'**
+  String get todayDrinkWaterAction;
+
+  /// No description provided for @todayMoodCheckinTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪打卡'**
+  String get todayMoodCheckinTitle;
+
+  /// No description provided for @todayMoodCheckinSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'关注情绪变化'**
+  String get todayMoodCheckinSubtitle;
+
+  /// No description provided for @todayMoodNoRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日未记录'**
+  String get todayMoodNoRecord;
+
+  /// No description provided for @todayMoodCheckinAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去打卡'**
+  String get todayMoodCheckinAction;
+
+  /// No description provided for @todayCampusGuideTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'校园就医指南'**
+  String get todayCampusGuideTitle;
+
+  /// No description provided for @todayCampusGuideSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'校医院与服务指引'**
+  String get todayCampusGuideSubtitle;
+
+  /// No description provided for @todayCampusGuideDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'快速了解就医流程'**
+  String get todayCampusGuideDetail;
+
+  /// No description provided for @todayViewAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去查看'**
+  String get todayViewAction;
+
+  /// No description provided for @todayRecommendationSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'为你推荐'**
+  String get todayRecommendationSectionTitle;
+
+  /// No description provided for @todayViewMoreAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看更多'**
+  String get todayViewMoreAction;
+
+  /// No description provided for @todayRecommendationMedicineSafetyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药安全小贴士'**
+  String get todayRecommendationMedicineSafetyTitle;
+
+  /// No description provided for @todayRecommendationMedicineSafetyBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'按时按量用药，勿随意增减或停药'**
+  String get todayRecommendationMedicineSafetyBody;
+
+  /// No description provided for @todayRecommendationSleepTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡前放松，助力睡眠'**
+  String get todayRecommendationSleepTitle;
+
+  /// No description provided for @todayRecommendationSleepBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡前 1 小时减少蓝光，放松身心'**
+  String get todayRecommendationSleepBody;
+
+  /// No description provided for @todayRecommendationWaterTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'少量多次喝水'**
+  String get todayRecommendationWaterTitle;
+
+  /// No description provided for @todayRecommendationWaterBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'保持身体水分，有助于专注与代谢'**
+  String get todayRecommendationWaterBody;
+
+  /// No description provided for @todayRecommendationCoffeeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'咖啡因适量，注意时间'**
+  String get todayRecommendationCoffeeTitle;
+
+  /// No description provided for @todayRecommendationCoffeeBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'下午 3 点后尽量避免，影响睡眠质量'**
+  String get todayRecommendationCoffeeBody;
+
+  /// No description provided for @todayLearnMoreAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'了解更多'**
+  String get todayLearnMoreAction;
+
+  /// No description provided for @todayCompleteAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去完成'**
+  String get todayCompleteAction;
+
+  /// No description provided for @todayTrendSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日趋势'**
+  String get todayTrendSectionTitle;
+
+  /// No description provided for @todayTrendAnalysisAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看趋势分析'**
+  String get todayTrendAnalysisAction;
+
+  /// No description provided for @todayTrendSleepTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠时长'**
+  String get todayTrendSleepTitle;
+
+  /// No description provided for @todayTrendWaterTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水进度'**
+  String get todayTrendWaterTitle;
+
+  /// No description provided for @todayTrendMoodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪状态'**
+  String get todayTrendMoodTitle;
+
+  /// No description provided for @todayQuickRecordSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'快捷记录'**
+  String get todayQuickRecordSectionTitle;
+
+  /// No description provided for @todayQuickMedication.
+  ///
+  /// In zh, this message translates to:
+  /// **'记用药'**
+  String get todayQuickMedication;
+
+  /// No description provided for @todayQuickSymptom.
+  ///
+  /// In zh, this message translates to:
+  /// **'记症状'**
+  String get todayQuickSymptom;
+
+  /// No description provided for @todayQuickMood.
+  ///
+  /// In zh, this message translates to:
+  /// **'记情绪'**
+  String get todayQuickMood;
+
+  /// No description provided for @todayQuickWater.
+  ///
+  /// In zh, this message translates to:
+  /// **'记饮水'**
+  String get todayQuickWater;
 
   /// No description provided for @placeholderSoon.
   ///

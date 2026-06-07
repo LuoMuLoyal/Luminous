@@ -19,17 +19,9 @@ class TodayPage extends ConsumerWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            brightness == Brightness.dark
-                ? const Color(0xFF101312)
-                : const Color(0xFFF8FDFB),
-            surface.canvasSoft,
-            surface.canvasSoft,
-          ],
-        ),
+        color: brightness == Brightness.dark
+            ? surface.canvas
+            : const Color(0xFFFAFCFD),
       ),
       child: SafeArea(
         bottom: false,
@@ -46,7 +38,7 @@ class TodayPage extends ConsumerWidget {
                 child: dashboardAsync.when(
                   data: (dashboard) => TodayDashboardView(dashboard: dashboard),
                   loading: () => const TodayDashboardView(
-                    dashboard: MockTodayRepository.placeholderDashboard,
+                    dashboard: MockTodayRepository.previewDashboard,
                     isLoading: true,
                   ),
                   error: (_, __) => TodayErrorView(

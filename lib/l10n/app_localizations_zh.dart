@@ -1714,13 +1714,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayGreetingTitleEvening => '晚上好，准备轻松收尾';
 
   @override
-  String get todayGreetingSubtitleMorning => '你昨晚睡得还不错，喝神净满满！';
+  String get todayGreetingSubtitleMorning => '早上好，照顾好自己每一天';
 
   @override
-  String get todayGreetingSubtitleAfternoon => '午后先补水，再把提醒和状态慢慢对齐。';
+  String get todayGreetingSubtitleAfternoon => '下午好，照顾好自己每一天';
 
   @override
-  String get todayGreetingSubtitleEvening => '把今天的状态收拢一下，给明天留出节奏。';
+  String get todayGreetingSubtitleEvening => '晚上好，照顾好自己每一天';
 
   @override
   String get todayHeroCareLine => '我们会在需要时，给你恰到好处的提醒';
@@ -1769,7 +1769,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayMedicationNameAtorvastatin => '阿托伐他汀';
 
   @override
-  String get todayHealthSummaryCardTitle => '健康摘要';
+  String get todayHealthSummaryCardTitle => '健康状态总览';
 
   @override
   String get todayVitalHeartRateLabel => '心率';
@@ -1863,6 +1863,161 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayRetryAction => '重试';
+
+  @override
+  String todayUpdatedAt(String time) {
+    return '更新于 $time';
+  }
+
+  @override
+  String get todayHydrationOverviewLabel => '饮水';
+
+  @override
+  String get todayMoodOverviewLabel => '情绪';
+
+  @override
+  String get todayMedicationOverviewLabel => '用药';
+
+  @override
+  String get todayPeriodOverviewLabel => '经期';
+
+  @override
+  String todayPeriodDayValue(int day) {
+    return '第 $day 天';
+  }
+
+  @override
+  String get todayPeriodStatus => '经期中';
+
+  @override
+  String get todayStatusNeedsImprovement => '待提升';
+
+  @override
+  String get todayStatusCompleted => '已完成';
+
+  @override
+  String get todayMedicationPendingStatus => '待服用';
+
+  @override
+  String get todayMoodStableValue => '平稳';
+
+  @override
+  String get todayPrioritySectionTitle => '今日优先事项';
+
+  @override
+  String get todayManageAction => '管理';
+
+  @override
+  String todayMedicationPrioritySubtitle(int count) {
+    return '今日 $count 条待服用';
+  }
+
+  @override
+  String todayMedicationPriorityDetail(String time, String medicineName) {
+    return '$time $medicineName';
+  }
+
+  @override
+  String get todayMedicationTakeAction => '去服用';
+
+  @override
+  String get todayWaterPriorityTitle => '饮水目标';
+
+  @override
+  String get todayWaterGoalMl => '今日目标 2000 ml';
+
+  @override
+  String get todayDrinkWaterAction => '去喝水';
+
+  @override
+  String get todayMoodCheckinTitle => '情绪打卡';
+
+  @override
+  String get todayMoodCheckinSubtitle => '关注情绪变化';
+
+  @override
+  String get todayMoodNoRecord => '今日未记录';
+
+  @override
+  String get todayMoodCheckinAction => '去打卡';
+
+  @override
+  String get todayCampusGuideTitle => '校园就医指南';
+
+  @override
+  String get todayCampusGuideSubtitle => '校医院与服务指引';
+
+  @override
+  String get todayCampusGuideDetail => '快速了解就医流程';
+
+  @override
+  String get todayViewAction => '去查看';
+
+  @override
+  String get todayRecommendationSectionTitle => '为你推荐';
+
+  @override
+  String get todayViewMoreAction => '查看更多';
+
+  @override
+  String get todayRecommendationMedicineSafetyTitle => '用药安全小贴士';
+
+  @override
+  String get todayRecommendationMedicineSafetyBody => '按时按量用药，勿随意增减或停药';
+
+  @override
+  String get todayRecommendationSleepTitle => '睡前放松，助力睡眠';
+
+  @override
+  String get todayRecommendationSleepBody => '睡前 1 小时减少蓝光，放松身心';
+
+  @override
+  String get todayRecommendationWaterTitle => '少量多次喝水';
+
+  @override
+  String get todayRecommendationWaterBody => '保持身体水分，有助于专注与代谢';
+
+  @override
+  String get todayRecommendationCoffeeTitle => '咖啡因适量，注意时间';
+
+  @override
+  String get todayRecommendationCoffeeBody => '下午 3 点后尽量避免，影响睡眠质量';
+
+  @override
+  String get todayLearnMoreAction => '了解更多';
+
+  @override
+  String get todayCompleteAction => '去完成';
+
+  @override
+  String get todayTrendSectionTitle => '今日趋势';
+
+  @override
+  String get todayTrendAnalysisAction => '查看趋势分析';
+
+  @override
+  String get todayTrendSleepTitle => '睡眠时长';
+
+  @override
+  String get todayTrendWaterTitle => '饮水进度';
+
+  @override
+  String get todayTrendMoodTitle => '情绪状态';
+
+  @override
+  String get todayQuickRecordSectionTitle => '快捷记录';
+
+  @override
+  String get todayQuickMedication => '记用药';
+
+  @override
+  String get todayQuickSymptom => '记症状';
+
+  @override
+  String get todayQuickMood => '记情绪';
+
+  @override
+  String get todayQuickWater => '记饮水';
 
   @override
   String placeholderSoon(String label) {

@@ -1,6 +1,6 @@
 # Flutter i18n
 
-Last updated: 2026-06-06
+Last updated: 2026-06-07
 
 ## Files
 
@@ -10,7 +10,7 @@ Last updated: 2026-06-06
 
 ## Current Scope
 
-- App title, tabs, Today dashboard/image placeholders, Record dashboard, Medicine workspace/search empty states, Mine dashboard, More dashboard, placeholders
+- App title, tabs, Today mobile dashboard/priority/recommendation/trend-placeholder/quick-record copy, Record dashboard, Medicine workspace/search empty states, Mine dashboard, More dashboard, placeholders
 - Login / Register / Forgot Password / Change Email / AuthShell
 - WeChat Web OAuth login action, callback input, and OAuth feedback toasts
 - Account Settings, account status, linked identity management labels, and WeChat identity binding feedback

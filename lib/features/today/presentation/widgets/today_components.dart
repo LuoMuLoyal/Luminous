@@ -1,51 +1,72 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 abstract final class TodayPalette {
-  static const Color brand = Color(0xFF139F5A);
-  static const Color brandDeep = Color(0xFF087A45);
-  static const Color brandSoft = Color(0xFFEAF8EE);
-  static const Color brandSoftLine = Color(0xFFC7EBD3);
-  static const Color mintSoft = Color(0xFFEAF8E8);
-  static const Color coralStrong = Color(0xFFFF4D4F);
-  static const Color coralSoft = Color(0xFFFFEDEC);
-  static const Color violetStrong = Color(0xFF7D67E8);
-  static const Color violetSoft = Color(0xFFF0ECFF);
-  static const Color amber = Color(0xFFFF8A00);
-  static const Color amberSoft = Color(0xFFFFF2DD);
-  static const Color waterTop = Color(0xFF96E8B5);
-  static const Color waterBottom = Color(0xFF19A75D);
+  static const Color ink = Color(0xFF111827);
+  static const Color body = Color(0xFF5B667A);
+  static const Color mute = Color(0xFF8A94A8);
+  static const Color panel = Color(0xFFFFFFFF);
+  static const Color panelSoft = Color(0xFFF8FBFF);
+  static const Color line = Color(0xFFE7EDF4);
+  static const Color lineStrong = Color(0xFFD8E5F2);
+  static const Color teal = Color(0xFF12B8A6);
+  static const Color tealDeep = Color(0xFF0BA88E);
+  static const Color tealSoft = Color(0xFFE8F8F5);
+  static const Color blue = Color(0xFF1677FF);
+  static const Color blueDeep = Color(0xFF0D63F3);
+  static const Color blueSoft = Color(0xFFEAF3FF);
+  static const Color violet = Color(0xFF7C55E7);
+  static const Color violetSoft = Color(0xFFF2ECFF);
+  static const Color pink = Color(0xFFFF4B82);
+  static const Color pinkSoft = Color(0xFFFFEDF3);
+  static const Color amber = Color(0xFFFF8C2A);
+  static const Color amberSoft = Color(0xFFFFF3E6);
+  static const Color green = Color(0xFF18B26B);
+  static const Color greenSoft = Color(0xFFEAF8EF);
 }
+
+const List<BoxShadow> _todaySoftShadow = <BoxShadow>[
+  BoxShadow(
+    color: Color(0x0D1A3554),
+    offset: Offset(0, 6),
+    blurRadius: 18,
+    spreadRadius: -8,
+  ),
+  BoxShadow(color: Color(0x08000000), blurRadius: 1),
+];
 
 class TodayPanel extends StatelessWidget {
   const TodayPanel({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(AppSpacingTokens.lg),
+    this.padding = const EdgeInsets.all(AppSpacingTokens.md),
     this.color,
-    this.radius = AppRadiusTokens.lg,
-    this.shadow = AppShadowTokens.level1,
+    this.radius = AppRadiusTokens.xl,
+    this.borderColor,
+    this.shadow = _todaySoftShadow,
   });
 
   final Widget child;
   final EdgeInsetsGeometry padding;
   final Color? color;
   final double radius;
+  final Color? borderColor;
   final List<BoxShadow> shadow;
 
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color ?? surface.canvas,
+        color: color ?? (dark ? surface.canvasSoft : TodayPalette.panel),
         borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: surface.hairline),
-        boxShadow: shadow,
+        border: Border.all(
+          color: borderColor ?? (dark ? surface.hairline : TodayPalette.line),
+        ),
+        boxShadow: dark ? AppShadowTokens.level1 : shadow,
       ),
       child: Padding(padding: padding, child: child),
     );
@@ -56,11 +77,13 @@ class TodaySectionHeader extends StatelessWidget {
   const TodaySectionHeader({
     super.key,
     required this.title,
+    this.leading,
     this.trailing,
     this.compact = false,
   });
 
   final String title;
+  final Widget? leading;
   final Widget? trailing;
   final bool compact;
 
@@ -73,12 +96,21 @@ class TodaySectionHeader extends StatelessWidget {
         : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        if (leading != null) ...[
+          leading!,
+          const SizedBox(width: AppSpacingTokens.xs),
+        ],
         Expanded(
           child: Text(
             title,
             style: (compact ? typography.bodyMdStrong : typography.displaySm)
-                .copyWith(fontWeight: FontWeight.w600),
+                .copyWith(
+                  color: theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0,
+                ),
           ),
         ),
         if (trailing != null) trailing!,
@@ -92,7 +124,7 @@ class TodayTextAction extends StatelessWidget {
     super.key,
     required this.label,
     required this.onTap,
-    this.icon,
+    this.icon = Icons.chevron_right_rounded,
     this.emphasized = false,
   });
 
@@ -106,40 +138,31 @@ class TodayTextAction extends StatelessWidget {
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-    final foreground = emphasized ? TodayPalette.brand : surface.body;
-    final borderColor = emphasized
-        ? TodayPalette.brand.withValues(alpha: 0.55)
-        : surface.hairline;
+    final foreground = emphasized ? TodayPalette.tealDeep : surface.body;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: emphasized ? TodayPalette.brandSoft : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-            border: Border.all(color: borderColor),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.xs,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  style: typography.buttonMd.copyWith(color: foreground),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xxs),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: typography.bodySmStrong.copyWith(
+                  color: foreground,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0,
                 ),
-                if (icon != null) ...[
-                  const SizedBox(width: AppSpacingTokens.xxs),
-                  Icon(icon, size: 16, color: foreground),
-                ],
+              ),
+              if (icon != null) ...[
+                const SizedBox(width: 2),
+                Icon(icon, size: 18, color: foreground),
               ],
-            ),
+            ],
           ),
         ),
       ),
@@ -147,431 +170,197 @@ class TodayTextAction extends StatelessWidget {
   }
 }
 
-class TodayStatusDot extends StatelessWidget {
-  const TodayStatusDot({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: TodayPalette.coralStrong,
-        shape: BoxShape.circle,
-      ),
-      child: SizedBox(
-        width: 16,
-        height: 16,
-        child: Center(
-          child: Text(
-            '1',
-            style: AppTypographyTokens.mobile(
-              Colors.white,
-            ).caption.copyWith(fontWeight: FontWeight.w600, height: 1),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TodayWaterArc extends StatelessWidget {
-  const TodayWaterArc({
+class TodayGlyphTile extends StatelessWidget {
+  const TodayGlyphTile({
     super.key,
-    required this.completedCount,
-    required this.targetCount,
-    this.size = 128,
+    required this.icon,
+    required this.color,
+    this.size = 58,
+    this.radius = AppRadiusTokens.md,
+    this.gradient = true,
   });
 
-  final int completedCount;
-  final int targetCount;
+  final IconData icon;
+  final Color color;
   final double size;
+  final double radius;
+  final bool gradient;
 
   @override
   Widget build(BuildContext context) {
-    final progress = (completedCount / targetCount).clamp(0, 1).toDouble();
+    final decoration = gradient
+        ? BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [color.withValues(alpha: 0.92), color],
+            ),
+            borderRadius: BorderRadius.circular(radius),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.18),
+                offset: const Offset(0, 8),
+                blurRadius: 18,
+                spreadRadius: -10,
+              ),
+            ],
+          )
+        : BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(radius),
+          );
 
-    return SizedBox.square(
-      dimension: size,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CustomPaint(
-            size: Size.square(size),
-            painter: _RingPainter(progress: progress),
-          ),
-          const TodayWaterCup(width: 42, height: 54, filled: true),
-        ],
+    return DecoratedBox(
+      decoration: decoration,
+      child: SizedBox.square(
+        dimension: size,
+        child: Icon(
+          icon,
+          color: gradient ? Colors.white : color,
+          size: size * 0.5,
+        ),
       ),
     );
   }
 }
 
-class TodayWaterCup extends StatelessWidget {
-  const TodayWaterCup({
-    super.key,
-    required this.width,
-    required this.height,
-    required this.filled,
-  });
+class TodayStatusPill extends StatelessWidget {
+  const TodayStatusPill({super.key, required this.label, required this.color});
 
-  final double width;
-  final double height;
-  final bool filled;
+  final String label;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(
+      Theme.of(context).colorScheme.onSurface,
+    );
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: filled
-            ? TodayPalette.brandSoft.withValues(alpha: 0.72)
-            : surface.canvas.withValues(alpha: 0.74),
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(width * 0.2),
-          bottom: Radius.circular(width * 0.32),
-        ),
-        border: Border.all(
-          color: filled
-              ? TodayPalette.brand.withValues(alpha: 0.35)
-              : surface.hairlineStrong.withValues(alpha: 0.28),
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+        child: Text(
+          label,
+          style: typography.caption.copyWith(
+            color: color,
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            width * 0.18,
-            height * 0.22,
-            width * 0.18,
-            height * 0.12,
+    );
+  }
+}
+
+class TodayLinearProgress extends StatelessWidget {
+  const TodayLinearProgress({
+    super.key,
+    required this.progress,
+    required this.color,
+    this.height = 8,
+  });
+
+  final double progress;
+  final Color color;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final value = progress.clamp(0, 1).toDouble();
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+      child: Stack(
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(color: const Color(0xFFE8EEF2)),
+            child: SizedBox(height: height, width: double.infinity),
           ),
-          child: Align(
-            alignment: Alignment.bottomCenter,
+          FractionallySizedBox(
+            widthFactor: value,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: filled
-                      ? const [TodayPalette.waterTop, TodayPalette.waterBottom]
-                      : [surface.canvasSoft2, surface.canvasSoft2],
+                  colors: [color.withValues(alpha: 0.82), color],
                 ),
-                borderRadius: BorderRadius.circular(width),
               ),
-              child: SizedBox(
-                width: double.infinity,
-                height: filled ? height * 0.42 : height * 0.08,
-              ),
+              child: SizedBox(height: height, width: double.infinity),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class TodayImagePlaceholder extends StatelessWidget {
-  const TodayImagePlaceholder({
-    super.key,
-    required this.label,
-    this.width,
-    this.height,
-    this.icon = Icons.image_outlined,
-  });
-
-  final String label;
-  final double? width;
-  final double? height;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas.withValues(alpha: 0.62),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-      ),
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.sm,
-              vertical: AppSpacingTokens.xs,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 22, color: surface.mute),
-                const SizedBox(height: AppSpacingTokens.xxs),
-                Text(
-                  label,
-                  style: typography.caption.copyWith(color: surface.body),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TodaySignalPill extends StatelessWidget {
-  const TodaySignalPill({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.level,
-    required this.color,
-  });
-
-  final IconData icon;
-  final String label;
-  final String level;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.sm),
-      child: Row(
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.xs),
-              child: Icon(icon, size: 18, color: color),
-            ),
-          ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          Expanded(
-            child: Text(
-              label,
-              style: typography.bodySmStrong,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Text(level, style: typography.bodySmStrong.copyWith(color: color)),
         ],
       ),
     );
   }
 }
 
-class TodayHealthMetricTile extends StatelessWidget {
-  const TodayHealthMetricTile({
+class TodayMiniTrendChart extends StatelessWidget {
+  const TodayMiniTrendChart({
     super.key,
-    required this.icon,
+    required this.points,
     required this.color,
-    required this.label,
-    required this.value,
-    this.unit,
-    this.status,
+    this.height = 68,
   });
 
-  final IconData icon;
+  final List<double> points;
   final Color color;
-  final String label;
-  final String value;
-  final String? unit;
-  final String? status;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final width = MediaQuery.sizeOf(context).width;
-    final typography = width < 600
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.sm),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: color, size: 18),
-              const SizedBox(width: AppSpacingTokens.xs),
-              Expanded(
-                child: Text(
-                  label,
-                  style: typography.bodySm.copyWith(color: surface.body),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacingTokens.xs),
-          RichText(
-            text: TextSpan(
-              style: typography.displaySm.copyWith(
-                color: theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
-              children: [
-                TextSpan(text: value),
-                if (unit != null)
-                  TextSpan(
-                    text: ' $unit',
-                    style: typography.caption.copyWith(color: surface.body),
-                  ),
-              ],
-            ),
-          ),
-          if (status != null) ...[
-            const SizedBox(height: AppSpacingTokens.xxs),
-            Text(
-              status!,
-              style: typography.caption.copyWith(
-                color: TodayPalette.brand,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class TodayMetricDivider extends StatelessWidget {
-  const TodayMetricDivider({super.key, this.height = 64});
-
   final double height;
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final tickCount = points.isEmpty ? 7 : points.length;
 
-    return SizedBox(
-      height: height,
-      child: VerticalDivider(width: 1, thickness: 1, color: surface.hairline),
-    );
-  }
-}
-
-class TodayMetricList extends StatelessWidget {
-  const TodayMetricList({
-    super.key,
-    required this.children,
-    this.desktop = false,
-  });
-
-  final List<Widget> children;
-  final bool desktop;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        for (var index = 0; index < children.length; index += 1) ...[
-          Expanded(child: children[index]),
-          if (index < children.length - 1)
-            TodayMetricDivider(height: desktop ? 76 : 64),
-        ],
-      ],
-    );
-  }
-}
-
-class TodaySignalList extends StatelessWidget {
-  const TodaySignalList({super.key, required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        for (var index = 0; index < children.length; index += 1) ...[
-          Expanded(child: children[index]),
-          if (index < children.length - 1) const TodayMetricDivider(height: 44),
-        ],
-      ],
-    );
-  }
-}
-
-class TodayLumiAvatarPlaceholder extends StatelessWidget {
-  const TodayLumiAvatarPlaceholder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: TodayPalette.brand.withValues(alpha: 0.1),
-        shape: BoxShape.circle,
+        color: color.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
       ),
-      child: const SizedBox.square(
-        dimension: 46,
-        child: Icon(
-          Icons.auto_awesome_outlined,
-          color: TodayPalette.brand,
-          size: 22,
+      child: SizedBox(
+        height: height,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.xs,
+            vertical: AppSpacingTokens.xs,
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: Icon(
+                    Icons.show_chart_rounded,
+                    color: color.withValues(alpha: 0.74),
+                    size: 28,
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  for (var index = 0; index < tickCount; index += 1) ...[
+                    Expanded(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: index == 3 ? color : TodayPalette.lineStrong,
+                          borderRadius: BorderRadius.circular(
+                            AppRadiusTokens.pill,
+                          ),
+                        ),
+                        child: const SizedBox(height: 3),
+                      ),
+                    ),
+                    if (index < tickCount - 1) const SizedBox(width: 3),
+                  ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
-  }
-}
-
-class _RingPainter extends CustomPainter {
-  const _RingPainter({required this.progress});
-
-  final double progress;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = math.min(size.width, size.height) / 2 - 8;
-    final rect = Rect.fromCircle(center: center, radius: radius);
-    final basePaint = Paint()
-      ..color = TodayPalette.brandSoft
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 10
-      ..strokeCap = StrokeCap.round;
-    final progressPaint = Paint()
-      ..shader = const SweepGradient(
-        colors: [
-          TodayPalette.waterBottom,
-          Color(0xFF72D68E),
-          TodayPalette.waterBottom,
-        ],
-      ).createShader(rect)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 10
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawCircle(center, radius, basePaint);
-    canvas.drawArc(
-      rect,
-      math.pi * 0.8,
-      math.pi * 2 * progress,
-      false,
-      progressPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _RingPainter oldDelegate) {
-    return oldDelegate.progress != progress;
   }
 }

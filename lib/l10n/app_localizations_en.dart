@@ -1809,15 +1809,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayGreetingSubtitleMorning =>
-      'You slept fairly well last night. Time to refill with calm energy.';
+      'Good morning. Take care of yourself today.';
 
   @override
   String get todayGreetingSubtitleAfternoon =>
-      'Start with water, then bring reminders and status back into sync.';
+      'Good afternoon. Take care of yourself today.';
 
   @override
   String get todayGreetingSubtitleEvening =>
-      'Gather today\'s signals gently and leave room for tomorrow.';
+      'Good evening. Take care of yourself today.';
 
   @override
   String get todayHeroCareLine =>
@@ -1867,7 +1867,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayMedicationNameAtorvastatin => 'Atorvastatin';
 
   @override
-  String get todayHealthSummaryCardTitle => 'Health summary';
+  String get todayHealthSummaryCardTitle => 'Health status overview';
 
   @override
   String get todayVitalHeartRateLabel => 'Heart rate';
@@ -1966,6 +1966,165 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayRetryAction => 'Retry';
+
+  @override
+  String todayUpdatedAt(String time) {
+    return 'Updated at $time';
+  }
+
+  @override
+  String get todayHydrationOverviewLabel => 'Water';
+
+  @override
+  String get todayMoodOverviewLabel => 'Mood';
+
+  @override
+  String get todayMedicationOverviewLabel => 'Medication';
+
+  @override
+  String get todayPeriodOverviewLabel => 'Period';
+
+  @override
+  String todayPeriodDayValue(int day) {
+    return 'Day $day';
+  }
+
+  @override
+  String get todayPeriodStatus => 'In period';
+
+  @override
+  String get todayStatusNeedsImprovement => 'Needs lift';
+
+  @override
+  String get todayStatusCompleted => 'Completed';
+
+  @override
+  String get todayMedicationPendingStatus => 'Pending';
+
+  @override
+  String get todayMoodStableValue => 'Stable';
+
+  @override
+  String get todayPrioritySectionTitle => 'Today\'s priorities';
+
+  @override
+  String get todayManageAction => 'Manage';
+
+  @override
+  String todayMedicationPrioritySubtitle(int count) {
+    return '$count pending today';
+  }
+
+  @override
+  String todayMedicationPriorityDetail(String time, String medicineName) {
+    return '$time $medicineName';
+  }
+
+  @override
+  String get todayMedicationTakeAction => 'Take now';
+
+  @override
+  String get todayWaterPriorityTitle => 'Water goal';
+
+  @override
+  String get todayWaterGoalMl => 'Today\'s goal 2000 ml';
+
+  @override
+  String get todayDrinkWaterAction => 'Drink water';
+
+  @override
+  String get todayMoodCheckinTitle => 'Mood check-in';
+
+  @override
+  String get todayMoodCheckinSubtitle => 'Track mood changes';
+
+  @override
+  String get todayMoodNoRecord => 'No record today';
+
+  @override
+  String get todayMoodCheckinAction => 'Check in';
+
+  @override
+  String get todayCampusGuideTitle => 'Campus care guide';
+
+  @override
+  String get todayCampusGuideSubtitle => 'Clinic and service guide';
+
+  @override
+  String get todayCampusGuideDetail => 'Review the care flow quickly';
+
+  @override
+  String get todayViewAction => 'View';
+
+  @override
+  String get todayRecommendationSectionTitle => 'Recommended for you';
+
+  @override
+  String get todayViewMoreAction => 'View more';
+
+  @override
+  String get todayRecommendationMedicineSafetyTitle => 'Medication safety tips';
+
+  @override
+  String get todayRecommendationMedicineSafetyBody =>
+      'Take medicines on time and do not adjust doses casually';
+
+  @override
+  String get todayRecommendationSleepTitle => 'Wind down before sleep';
+
+  @override
+  String get todayRecommendationSleepBody =>
+      'Reduce blue light one hour before bed and relax your body';
+
+  @override
+  String get todayRecommendationWaterTitle => 'Drink small amounts often';
+
+  @override
+  String get todayRecommendationWaterBody =>
+      'Staying hydrated supports focus and metabolism';
+
+  @override
+  String get todayRecommendationCoffeeTitle => 'Keep caffeine timed';
+
+  @override
+  String get todayRecommendationCoffeeBody =>
+      'Avoid it after 3 PM when possible to protect sleep quality';
+
+  @override
+  String get todayLearnMoreAction => 'Learn more';
+
+  @override
+  String get todayCompleteAction => 'Complete';
+
+  @override
+  String get todayTrendSectionTitle => 'Today\'s trends';
+
+  @override
+  String get todayTrendAnalysisAction => 'View trend analysis';
+
+  @override
+  String get todayTrendSleepTitle => 'Sleep duration';
+
+  @override
+  String get todayTrendWaterTitle => 'Water progress';
+
+  @override
+  String get todayTrendMoodTitle => 'Mood state';
+
+  @override
+  String get todayQuickRecordSectionTitle => 'Quick record';
+
+  @override
+  String get todayQuickMedication => 'Log medicine';
+
+  @override
+  String get todayQuickSymptom => 'Log symptom';
+
+  @override
+  String get todayQuickMood => 'Log mood';
+
+  @override
+  String get todayQuickWater => 'Log water';
 
   @override
   String placeholderSoon(String label) {

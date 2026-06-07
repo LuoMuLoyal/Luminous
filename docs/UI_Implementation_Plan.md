@@ -1,6 +1,6 @@
 # Luminous UI Plan
 
-Last updated: 2026-06-06
+Last updated: 2026-06-07
 
 Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADMAP.md`.
 
@@ -14,7 +14,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Login / Register pages
 - Persisted `system / light / dark` theme preference and `default / blue-pink / yellow-green` palette preference with a standard `/settings/theme` child page
 - Mobile bottom nav + desktop rail
-- Today concept-aligned mock dashboard UI with repository/provider boundary, mobile feed, desktop wide dashboard, plainer medicine-style surfaces, localized image placeholders, reusable Today primitives, and shared state views
+- Today mobile north-star dashboard UI with repository/provider boundary, backend-backed current-medicine / water / vital / mood / dose-log summaries where available, bounded mock sections for unsupported concepts, lightweight placeholders for complex graphics, reusable Today primitives, and shared state views
 - Record concept-aligned dashboard UI with repository/provider boundary, mobile feed, desktop calendar/filter + timeline + trends workspace, shared image placeholders, Lucent-backed daily-record timeline/detail, real selected-date header navigation, occurredAt-based timeline time, and quick-create flow
 - Mine concept-aligned mock dashboard UI with repository/provider boundary, mobile profile/plans/privacy surface, and desktop status/onboarding/settings side rail
 - Mine signed-out state now stays on the same static dashboard structure with a login notice instead of page-level skeleton loading
@@ -31,7 +31,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Lucent-backed health-context write flows for Mine profile, allergies, conditions, and current medicines, with domain write inputs keeping generated OpenAPI DTOs out of presentation code
 - Search add-to-current-medicines now writes through Lucent for signed-in users and routes signed-out users to `/login`
 - Medicine and Today now consume the safe current-medicine subset from health context
-- Today now also consumes Lucent daily-record water/vital summaries while unsupported meal/environment/Lumi sections remain static
+- Today now consumes Lucent daily-record water/vital/mood summaries while unsupported recommendation, trend, period, campus-guide, and quick-action sections remain mock/placeholder-backed
 - Medicine now reads and writes manual dose-log status for current medicines, including taken/skipped/pending; this is not push reminder scheduling
 
 Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual taken/skipped dose-log status; Today reads safe current-medicine, daily-record water/vital summaries, and manual dose-log pending counts. Still pending: live reminders (contract defined in `../Lucent/docs/public/reminder-contract.md` but not implemented), real scan/upload, More real tools/device integrations, richer record analytics, and broader feature data.
@@ -40,7 +40,7 @@ Restored: Search now uses real Lucent medicine search/detail API; Mine health-co
 
 1. Keep the daily-record and manual dose-log flows under regression as they expand; current auth, ownership, selected-date reload, occurredAt timeline time, null clearing, skipped/taken status, and provider invalidation coverage exists.
 2. Expand Record forms before starting deferred More wiring; only add fields when Lucent contracts exist for the specific record type.
-3. Keep Today factual: daily-record summaries may be real, but unsupported advice/static sections must stay clearly bounded.
+3. Keep Today factual: daily-record and dose-log summaries may be real, but unsupported advice/static sections must stay clearly bounded and use placeholders instead of hand-drawn complex graphics.
 4. Connect More mock repository to real emergency, device, tool, and environment data sources after their Lucent contracts exist.
 5. Expand palette variants only after default / blue-pink / yellow-green prove stable across the main settings, mine, today, medicine, and record surfaces.
 
@@ -61,4 +61,4 @@ flutter test
 flutter test integration_test
 ```
 
-For responsive UI, also check mobile overflow, desktop spacing, and zh/en text fit.
+For the current Today work, mobile is the target surface; check mobile overflow and zh/en text fit first.
