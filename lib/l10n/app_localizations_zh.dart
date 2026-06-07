@@ -513,6 +513,154 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineHeaderAddToast => '会打开添加药品与识别入口。';
 
   @override
+  String get medicineSafetyGuardLabel => '安全守护';
+
+  @override
+  String get medicineNotificationsTooltip => '用药提醒';
+
+  @override
+  String get medicineHomeSearchHint => '搜索药品或症状';
+
+  @override
+  String get medicineScanAction => '扫码识别';
+
+  @override
+  String get medicineManageMedicinesAction => '管理药品';
+
+  @override
+  String get medicineDrugboxTitle => '我的药盒';
+
+  @override
+  String get medicineDrugboxSubtitle => '管理我的药品';
+
+  @override
+  String get medicineDrugboxTotalPrefix => '药品总数';
+
+  @override
+  String medicineDrugboxTotal(int count) {
+    return '$count 种';
+  }
+
+  @override
+  String get medicineExpiredReminderEnabled => '过期提醒已开启';
+
+  @override
+  String get medicineNextDoseReminderTitle => '下次服药提醒';
+
+  @override
+  String medicineNextDoseTodayTime(String time) {
+    return '今天 $time';
+  }
+
+  @override
+  String get medicineDoseDueStatus => '待服用';
+
+  @override
+  String get medicineTakeNowAction => '去服药';
+
+  @override
+  String get medicineNoMedicineTitle => '暂无药品';
+
+  @override
+  String get medicineNoMedicineBody => '先添加药品后显示提醒';
+
+  @override
+  String get medicineSafetyEngineTitle => '安全引擎';
+
+  @override
+  String get medicineSafetyAllRecordsAction => '全部记录';
+
+  @override
+  String get medicineQuickOperationTitle => '快捷操作';
+
+  @override
+  String get medicineQuickAddTitle => '添加药品';
+
+  @override
+  String get medicineQuickAddSubtitle => '手动添加';
+
+  @override
+  String get medicineQuickScanTitle => '扫码识别';
+
+  @override
+  String get medicineQuickScanSubtitle => '识别药品信息';
+
+  @override
+  String get medicineQuickRecordTitle => '记录服药';
+
+  @override
+  String get medicineQuickRecordSubtitle => '记录用药情况';
+
+  @override
+  String get medicineQuickReportTitle => '用药报告';
+
+  @override
+  String get medicineQuickReportSubtitle => '查看用药概览';
+
+  @override
+  String get medicineQuickRecordToast => '会打开服药记录入口。';
+
+  @override
+  String get medicineQuickReportToast => '会打开用药报告概览。';
+
+  @override
+  String get medicineRecordsTitle => '用药记录';
+
+  @override
+  String get medicineAllMedicinesFilter => '全部药品';
+
+  @override
+  String get medicineLastSevenDaysFilter => '近 7 天';
+
+  @override
+  String get medicineViewMoreRecordsAction => '查看更多记录';
+
+  @override
+  String get medicineRecordTodayLabel => '今天';
+
+  @override
+  String get medicineRecordPreviousDate => '5/19';
+
+  @override
+  String get medicineRecordOlderDate => '5/18';
+
+  @override
+  String get medicineRecordOnTimeStatus => '按时服用';
+
+  @override
+  String get medicineRecordScheduledStatus => '计划中';
+
+  @override
+  String get medicineReferenceNoticeTitle => '仅供参考，必要时咨询医生或药师';
+
+  @override
+  String get medicineReferenceNoticeBody => '本应用不提供诊断服务，如有不适请及时就医。';
+
+  @override
+  String get medicineSafetyTipsTitle => '用药安全小贴士';
+
+  @override
+  String get medicineSafetyTipsRefreshAction => '换一换';
+
+  @override
+  String get medicineSafetyTipSpacing => '服药期间如需饮酒，建议间隔至少 24 小时以上。';
+
+  @override
+  String get medicineSafetyTipCoffee => '咖啡 / 浓茶 / 能量饮料可能影响部分药物效果，注意适量。';
+
+  @override
+  String get medicineSafetyTipTiming => '按时按量用药，不要自行增减或停药。';
+
+  @override
+  String get medicineSafetyTipStorage => '药品请置于阴凉干燥处，避免儿童接触。';
+
+  @override
+  String get medicineErrorTitle => '用药页暂时没有加载出来';
+
+  @override
+  String get medicineErrorDescription => '请检查网络连接后重试。';
+
+  @override
   String get medicineHeroEyebrow => 'PERSONAL DRUGBOX';
 
   @override
@@ -709,6 +857,54 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineAlertOtherAction => '查看详情';
 
   @override
+  String get medicineAlertAlcoholRiskTitle => '酒精风险';
+
+  @override
+  String get medicineAlertAlcoholRiskBody => '饮酒可能增加胃肠不适';
+
+  @override
+  String get medicineAlertAlcoholRiskDetail => '服药期间避免饮酒或先咨询医生';
+
+  @override
+  String get medicineAlertAlcoholRiskStatus => '中风险';
+
+  @override
+  String get medicineAlertCoffeeReminderTitle => '咖啡因提醒';
+
+  @override
+  String get medicineAlertCoffeeReminderBody => '咖啡 / 能量饮料使用建议';
+
+  @override
+  String get medicineAlertCoffeeReminderDetail => '部分药物可能受咖啡因影响';
+
+  @override
+  String get medicineAlertCoffeeReminderStatus => '注意';
+
+  @override
+  String get medicineAlertDuplicateCheckTitle => '重复用药检查';
+
+  @override
+  String get medicineAlertDuplicateCheckBody => '未检测到相同成分药品';
+
+  @override
+  String get medicineAlertDuplicateCheckDetail => '添加新药后会再次检查';
+
+  @override
+  String get medicineAlertDuplicateCheckStatus => '未发现';
+
+  @override
+  String get medicineAlertPeriodPregnancyTitle => '经期/孕哺提示';
+
+  @override
+  String get medicineAlertPeriodPregnancyBody => '记录状态以获得更精准的用药提示';
+
+  @override
+  String get medicineAlertPeriodPregnancyDetail => '特殊状态请优先遵医嘱';
+
+  @override
+  String get medicineAlertPeriodPregnancyStatus => '未记录';
+
+  @override
   String get medicinePromiseTitle => '安全边界';
 
   @override
@@ -755,6 +951,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineAlertOtherToast => '会打开其他安全提醒详情。';
+
+  @override
+  String get medicineAlertAlcoholRiskToast => '会打开酒精风险说明。';
+
+  @override
+  String get medicineAlertCoffeeReminderToast => '会打开咖啡因用药建议。';
+
+  @override
+  String get medicineAlertDuplicateCheckToast => '会打开重复用药检查结果。';
+
+  @override
+  String get medicineAlertPeriodPregnancyToast => '会打开经期、孕期和哺乳期提示。';
 
   @override
   String get medicineSearchPageTitle => '搜索药品';

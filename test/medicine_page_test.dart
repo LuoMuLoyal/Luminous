@@ -8,9 +8,17 @@ import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('Medicine page renders core mock workspace sections', (
+  testWidgets('Medicine page renders mobile north-star sections', (
     tester,
   ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -37,12 +45,19 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
+    expect(find.text(l10n.tabMedicine), findsOneWidget);
+    expect(find.text(l10n.medicineHomeSearchHint), findsOneWidget);
+    expect(find.text(l10n.medicineDrugboxTitle), findsOneWidget);
+    expect(find.text(l10n.medicineMockNameMetformin), findsAtLeastNWidgets(1));
+
     final scrollable = find.byType(Scrollable);
     final keys = <String>[
       'medicine-hero',
+      'medicine-next-reminder',
+      'medicine-safety-panel',
       'medicine-quick-actions',
       'medicine-today-plan',
-      'medicine-safety-panel',
+      'medicine-safety-tips',
     ];
 
     for (final key in keys) {
@@ -52,12 +67,6 @@ void main() {
       expect(finder, findsOneWidget);
     }
 
-    expect(find.text('今日服用计划'), findsOneWidget);
-    expect(find.text('拍照识别药品'), findsOneWidget);
-    expect(find.text('二甲双胍缓释片'), findsOneWidget);
-    expect(find.text('阿托伐他汀钙片'), findsOneWidget);
-    expect(find.text('奥美拉唑肠溶胶囊'), findsOneWidget);
-    expect(find.text('需补药提醒'), findsOneWidget);
-    expect(find.text('安全边界'), findsOneWidget);
+    expect(find.text(l10n.medicineSafetyTipsTitle), findsOneWidget);
   });
 }

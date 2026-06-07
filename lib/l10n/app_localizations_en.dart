@@ -538,6 +538,162 @@ class AppLocalizationsEn extends AppLocalizations {
       'This will open medicine addition and recognition.';
 
   @override
+  String get medicineSafetyGuardLabel => 'Safe guard';
+
+  @override
+  String get medicineNotificationsTooltip => 'Medication reminders';
+
+  @override
+  String get medicineHomeSearchHint => 'Search medicine or symptom';
+
+  @override
+  String get medicineScanAction => 'Scan';
+
+  @override
+  String get medicineManageMedicinesAction => 'Manage meds';
+
+  @override
+  String get medicineDrugboxTitle => 'My drugbox';
+
+  @override
+  String get medicineDrugboxSubtitle => 'Manage my medicines';
+
+  @override
+  String get medicineDrugboxTotalPrefix => 'Medicine total';
+
+  @override
+  String medicineDrugboxTotal(int count) {
+    return '$count meds';
+  }
+
+  @override
+  String get medicineExpiredReminderEnabled => 'Expiry reminders on';
+
+  @override
+  String get medicineNextDoseReminderTitle => 'Next dose reminder';
+
+  @override
+  String medicineNextDoseTodayTime(String time) {
+    return 'Today $time';
+  }
+
+  @override
+  String get medicineDoseDueStatus => 'Due';
+
+  @override
+  String get medicineTakeNowAction => 'Take';
+
+  @override
+  String get medicineNoMedicineTitle => 'No medicines yet';
+
+  @override
+  String get medicineNoMedicineBody => 'Add medicine to show reminders';
+
+  @override
+  String get medicineSafetyEngineTitle => 'Safety engine';
+
+  @override
+  String get medicineSafetyAllRecordsAction => 'All records';
+
+  @override
+  String get medicineQuickOperationTitle => 'Quick actions';
+
+  @override
+  String get medicineQuickAddTitle => 'Add med';
+
+  @override
+  String get medicineQuickAddSubtitle => 'Manual add';
+
+  @override
+  String get medicineQuickScanTitle => 'Scan';
+
+  @override
+  String get medicineQuickScanSubtitle => 'Read info';
+
+  @override
+  String get medicineQuickRecordTitle => 'Log dose';
+
+  @override
+  String get medicineQuickRecordSubtitle => 'Track use';
+
+  @override
+  String get medicineQuickReportTitle => 'Report';
+
+  @override
+  String get medicineQuickReportSubtitle => 'Overview';
+
+  @override
+  String get medicineQuickRecordToast => 'This will open dose logging.';
+
+  @override
+  String get medicineQuickReportToast =>
+      'This will open medication report overview.';
+
+  @override
+  String get medicineRecordsTitle => 'Medication records';
+
+  @override
+  String get medicineAllMedicinesFilter => 'All meds';
+
+  @override
+  String get medicineLastSevenDaysFilter => 'Last 7 days';
+
+  @override
+  String get medicineViewMoreRecordsAction => 'View more records';
+
+  @override
+  String get medicineRecordTodayLabel => 'Today';
+
+  @override
+  String get medicineRecordPreviousDate => '5/19';
+
+  @override
+  String get medicineRecordOlderDate => '5/18';
+
+  @override
+  String get medicineRecordOnTimeStatus => 'On time';
+
+  @override
+  String get medicineRecordScheduledStatus => 'Planned';
+
+  @override
+  String get medicineReferenceNoticeTitle =>
+      'For reference only. Ask a doctor or pharmacist when needed.';
+
+  @override
+  String get medicineReferenceNoticeBody =>
+      'This app does not provide diagnosis. Seek care promptly if you feel unwell.';
+
+  @override
+  String get medicineSafetyTipsTitle => 'Medication safety tips';
+
+  @override
+  String get medicineSafetyTipsRefreshAction => 'Refresh';
+
+  @override
+  String get medicineSafetyTipSpacing =>
+      'If alcohol is unavoidable during medication, leave at least 24 hours when possible.';
+
+  @override
+  String get medicineSafetyTipCoffee =>
+      'Coffee, strong tea, or energy drinks may affect some medicines. Use moderately.';
+
+  @override
+  String get medicineSafetyTipTiming =>
+      'Take medicines on time and as directed. Do not change or stop them yourself.';
+
+  @override
+  String get medicineSafetyTipStorage =>
+      'Store medicines in a cool, dry place and keep them away from children.';
+
+  @override
+  String get medicineErrorTitle => 'Medication page did not load';
+
+  @override
+  String get medicineErrorDescription =>
+      'Please check your network connection and try again.';
+
+  @override
   String get medicineHeroEyebrow => 'PERSONAL DRUGBOX';
 
   @override
@@ -747,6 +903,62 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineAlertOtherAction => 'Review details';
 
   @override
+  String get medicineAlertAlcoholRiskTitle => 'Alcohol risk';
+
+  @override
+  String get medicineAlertAlcoholRiskBody =>
+      'Alcohol may increase stomach discomfort';
+
+  @override
+  String get medicineAlertAlcoholRiskDetail =>
+      'Avoid alcohol while medicated or ask a clinician first';
+
+  @override
+  String get medicineAlertAlcoholRiskStatus => 'Medium';
+
+  @override
+  String get medicineAlertCoffeeReminderTitle => 'Caffeine reminder';
+
+  @override
+  String get medicineAlertCoffeeReminderBody =>
+      'Coffee / energy drink use guidance';
+
+  @override
+  String get medicineAlertCoffeeReminderDetail =>
+      'Some medicines can be affected by caffeine';
+
+  @override
+  String get medicineAlertCoffeeReminderStatus => 'Notice';
+
+  @override
+  String get medicineAlertDuplicateCheckTitle => 'Duplicate check';
+
+  @override
+  String get medicineAlertDuplicateCheckBody =>
+      'No same-ingredient medicines detected';
+
+  @override
+  String get medicineAlertDuplicateCheckDetail =>
+      'New medicines will trigger another check';
+
+  @override
+  String get medicineAlertDuplicateCheckStatus => 'Clear';
+
+  @override
+  String get medicineAlertPeriodPregnancyTitle => 'Period / pregnancy note';
+
+  @override
+  String get medicineAlertPeriodPregnancyBody =>
+      'Record status for more precise medication tips';
+
+  @override
+  String get medicineAlertPeriodPregnancyDetail =>
+      'Follow clinical advice first in special states';
+
+  @override
+  String get medicineAlertPeriodPregnancyStatus => 'Missing';
+
+  @override
   String get medicinePromiseTitle => 'Safety boundary';
 
   @override
@@ -807,6 +1019,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get medicineAlertOtherToast =>
       'This will open other safety reminder details.';
+
+  @override
+  String get medicineAlertAlcoholRiskToast =>
+      'This will open alcohol risk guidance.';
+
+  @override
+  String get medicineAlertCoffeeReminderToast =>
+      'This will open caffeine guidance.';
+
+  @override
+  String get medicineAlertDuplicateCheckToast =>
+      'This will open duplicate medicine check results.';
+
+  @override
+  String get medicineAlertPeriodPregnancyToast =>
+      'This will open period, pregnancy, and lactation notes.';
 
   @override
   String get medicineSearchPageTitle => 'Search medicine';

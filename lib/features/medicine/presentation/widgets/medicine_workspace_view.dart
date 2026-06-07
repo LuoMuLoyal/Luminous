@@ -7,6 +7,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
+import 'package:luminous/features/medicine/presentation/widgets/medicine_mobile_dashboard_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -32,6 +33,16 @@ class MedicineWorkspaceView extends StatelessWidget {
         ? AppTypographyTokens.mobile(scheme.onSurface)
         : AppTypographyTokens.desktop(scheme.onSurface);
     final isDesktop = width >= AppBreakpoints.desktop;
+
+    if (!isDesktop) {
+      return MedicineMobileDashboardView(
+            workspace: workspace,
+            onMarkDose: onMarkDose,
+          )
+          .animate()
+          .fadeIn(duration: 220.ms)
+          .slideY(begin: 0.018, end: 0, duration: 240.ms);
+    }
 
     final primaryColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,23 +82,14 @@ class MedicineWorkspaceView extends StatelessWidget {
       l10n: l10n,
     );
 
-    final content = isDesktop
-        ? Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(flex: 7, child: primaryColumn),
-              const SizedBox(width: AppSpacingTokens.lg),
-              Expanded(flex: 3, child: safetyColumn),
-            ],
-          )
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              primaryColumn,
-              const SizedBox(height: AppSpacingTokens.md),
-              safetyColumn,
-            ],
-          );
+    final content = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(flex: 7, child: primaryColumn),
+        const SizedBox(width: AppSpacingTokens.lg),
+        Expanded(flex: 3, child: safetyColumn),
+      ],
+    );
 
     return content
         .animate()
@@ -138,21 +140,14 @@ class MedicineErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final scheme = Theme.of(context).colorScheme;
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(scheme.onSurface);
 
-    return MedicineSectionSurface(
-      title: l10n.medicineTodayPlanTitle,
-      typography: typography,
-      surface: surface,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: OutlinedButton(
-          onPressed: onRetry,
-          child: Text(l10n.todayRetryAction),
-        ),
-      ),
+    return AppStateErrorView(
+      title: l10n.medicineErrorTitle,
+      description: l10n.medicineErrorDescription,
+      icon: Icons.medication_liquid_outlined,
+      actionLabel: l10n.todayRetryAction,
+      onAction: onRetry,
+      tone: AppStateTone.warning,
     );
   }
 }
@@ -591,8 +586,6 @@ class _MedicationPlanTile extends StatelessWidget {
     );
   }
 }
-
-enum MedicineDoseAction { taken, skipped }
 
 class _DoseActionButton extends StatelessWidget {
   const _DoseActionButton({
@@ -1136,6 +1129,14 @@ String _alertActionResult(MedicineCopyKey key, AppLocalizations l10n) {
     MedicineCopyKey.alertInteractionAction =>
       l10n.medicineAlertInteractionToast,
     MedicineCopyKey.alertOtherAction => l10n.medicineAlertOtherToast,
+    MedicineCopyKey.alertAlcoholRiskStatus =>
+      l10n.medicineAlertAlcoholRiskToast,
+    MedicineCopyKey.alertCoffeeReminderStatus =>
+      l10n.medicineAlertCoffeeReminderToast,
+    MedicineCopyKey.alertDuplicateCheckStatus =>
+      l10n.medicineAlertDuplicateCheckToast,
+    MedicineCopyKey.alertPeriodPregnancyStatus =>
+      l10n.medicineAlertPeriodPregnancyToast,
     _ => l10n.todayRetryAction,
   };
 }
@@ -1145,9 +1146,9 @@ void _showPlannedAction(BuildContext context, String title, String message) {
 }
 
 abstract final class _MedicinePalette {
-  static const Color green = Color(0xFF159B55);
-  static const Color greenSoft = Color(0xFFEFFAF3);
-  static const Color greenLine = Color(0xFFCFEFDB);
-  static const Color orange = Color(0xFFFF7A1A);
-  static const Color orangeSoft = Color(0xFFFFF3E8);
+  static const Color green = AppColorTokens.cyanDeep;
+  static const Color greenSoft = AppColorTokens.cyanSoft;
+  static const Color greenLine = AppColorTokens.cyanSoft;
+  static const Color orange = AppColorTokens.warning;
+  static const Color orangeSoft = AppColorTokens.warningSoft;
 }

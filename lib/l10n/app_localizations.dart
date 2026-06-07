@@ -1070,6 +1070,294 @@ abstract class AppLocalizations {
   /// **'会打开添加药品与识别入口。'**
   String get medicineHeaderAddToast;
 
+  /// No description provided for @medicineSafetyGuardLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'安全守护'**
+  String get medicineSafetyGuardLabel;
+
+  /// No description provided for @medicineNotificationsTooltip.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药提醒'**
+  String get medicineNotificationsTooltip;
+
+  /// No description provided for @medicineHomeSearchHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索药品或症状'**
+  String get medicineHomeSearchHint;
+
+  /// No description provided for @medicineScanAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫码识别'**
+  String get medicineScanAction;
+
+  /// No description provided for @medicineManageMedicinesAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理药品'**
+  String get medicineManageMedicinesAction;
+
+  /// No description provided for @medicineDrugboxTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的药盒'**
+  String get medicineDrugboxTitle;
+
+  /// No description provided for @medicineDrugboxSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理我的药品'**
+  String get medicineDrugboxSubtitle;
+
+  /// No description provided for @medicineDrugboxTotalPrefix.
+  ///
+  /// In zh, this message translates to:
+  /// **'药品总数'**
+  String get medicineDrugboxTotalPrefix;
+
+  /// No description provided for @medicineDrugboxTotal.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 种'**
+  String medicineDrugboxTotal(int count);
+
+  /// No description provided for @medicineExpiredReminderEnabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'过期提醒已开启'**
+  String get medicineExpiredReminderEnabled;
+
+  /// No description provided for @medicineNextDoseReminderTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'下次服药提醒'**
+  String get medicineNextDoseReminderTitle;
+
+  /// No description provided for @medicineNextDoseTodayTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天 {time}'**
+  String medicineNextDoseTodayTime(String time);
+
+  /// No description provided for @medicineDoseDueStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'待服用'**
+  String get medicineDoseDueStatus;
+
+  /// No description provided for @medicineTakeNowAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去服药'**
+  String get medicineTakeNowAction;
+
+  /// No description provided for @medicineNoMedicineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无药品'**
+  String get medicineNoMedicineTitle;
+
+  /// No description provided for @medicineNoMedicineBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'先添加药品后显示提醒'**
+  String get medicineNoMedicineBody;
+
+  /// No description provided for @medicineSafetyEngineTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'安全引擎'**
+  String get medicineSafetyEngineTitle;
+
+  /// No description provided for @medicineSafetyAllRecordsAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部记录'**
+  String get medicineSafetyAllRecordsAction;
+
+  /// No description provided for @medicineQuickOperationTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'快捷操作'**
+  String get medicineQuickOperationTitle;
+
+  /// No description provided for @medicineQuickAddTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加药品'**
+  String get medicineQuickAddTitle;
+
+  /// No description provided for @medicineQuickAddSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动添加'**
+  String get medicineQuickAddSubtitle;
+
+  /// No description provided for @medicineQuickScanTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫码识别'**
+  String get medicineQuickScanTitle;
+
+  /// No description provided for @medicineQuickScanSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'识别药品信息'**
+  String get medicineQuickScanSubtitle;
+
+  /// No description provided for @medicineQuickRecordTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录服药'**
+  String get medicineQuickRecordTitle;
+
+  /// No description provided for @medicineQuickRecordSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录用药情况'**
+  String get medicineQuickRecordSubtitle;
+
+  /// No description provided for @medicineQuickReportTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药报告'**
+  String get medicineQuickReportTitle;
+
+  /// No description provided for @medicineQuickReportSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看用药概览'**
+  String get medicineQuickReportSubtitle;
+
+  /// No description provided for @medicineQuickRecordToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开服药记录入口。'**
+  String get medicineQuickRecordToast;
+
+  /// No description provided for @medicineQuickReportToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开用药报告概览。'**
+  String get medicineQuickReportToast;
+
+  /// No description provided for @medicineRecordsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药记录'**
+  String get medicineRecordsTitle;
+
+  /// No description provided for @medicineAllMedicinesFilter.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部药品'**
+  String get medicineAllMedicinesFilter;
+
+  /// No description provided for @medicineLastSevenDaysFilter.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 7 天'**
+  String get medicineLastSevenDaysFilter;
+
+  /// No description provided for @medicineViewMoreRecordsAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看更多记录'**
+  String get medicineViewMoreRecordsAction;
+
+  /// No description provided for @medicineRecordTodayLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天'**
+  String get medicineRecordTodayLabel;
+
+  /// No description provided for @medicineRecordPreviousDate.
+  ///
+  /// In zh, this message translates to:
+  /// **'5/19'**
+  String get medicineRecordPreviousDate;
+
+  /// No description provided for @medicineRecordOlderDate.
+  ///
+  /// In zh, this message translates to:
+  /// **'5/18'**
+  String get medicineRecordOlderDate;
+
+  /// No description provided for @medicineRecordOnTimeStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'按时服用'**
+  String get medicineRecordOnTimeStatus;
+
+  /// No description provided for @medicineRecordScheduledStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'计划中'**
+  String get medicineRecordScheduledStatus;
+
+  /// No description provided for @medicineReferenceNoticeTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅供参考，必要时咨询医生或药师'**
+  String get medicineReferenceNoticeTitle;
+
+  /// No description provided for @medicineReferenceNoticeBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'本应用不提供诊断服务，如有不适请及时就医。'**
+  String get medicineReferenceNoticeBody;
+
+  /// No description provided for @medicineSafetyTipsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药安全小贴士'**
+  String get medicineSafetyTipsTitle;
+
+  /// No description provided for @medicineSafetyTipsRefreshAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'换一换'**
+  String get medicineSafetyTipsRefreshAction;
+
+  /// No description provided for @medicineSafetyTipSpacing.
+  ///
+  /// In zh, this message translates to:
+  /// **'服药期间如需饮酒，建议间隔至少 24 小时以上。'**
+  String get medicineSafetyTipSpacing;
+
+  /// No description provided for @medicineSafetyTipCoffee.
+  ///
+  /// In zh, this message translates to:
+  /// **'咖啡 / 浓茶 / 能量饮料可能影响部分药物效果，注意适量。'**
+  String get medicineSafetyTipCoffee;
+
+  /// No description provided for @medicineSafetyTipTiming.
+  ///
+  /// In zh, this message translates to:
+  /// **'按时按量用药，不要自行增减或停药。'**
+  String get medicineSafetyTipTiming;
+
+  /// No description provided for @medicineSafetyTipStorage.
+  ///
+  /// In zh, this message translates to:
+  /// **'药品请置于阴凉干燥处，避免儿童接触。'**
+  String get medicineSafetyTipStorage;
+
+  /// No description provided for @medicineErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药页暂时没有加载出来'**
+  String get medicineErrorTitle;
+
+  /// No description provided for @medicineErrorDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'请检查网络连接后重试。'**
+  String get medicineErrorDescription;
+
   /// No description provided for @medicineHeroEyebrow.
   ///
   /// In zh, this message translates to:
@@ -1460,6 +1748,102 @@ abstract class AppLocalizations {
   /// **'查看详情'**
   String get medicineAlertOtherAction;
 
+  /// No description provided for @medicineAlertAlcoholRiskTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'酒精风险'**
+  String get medicineAlertAlcoholRiskTitle;
+
+  /// No description provided for @medicineAlertAlcoholRiskBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮酒可能增加胃肠不适'**
+  String get medicineAlertAlcoholRiskBody;
+
+  /// No description provided for @medicineAlertAlcoholRiskDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'服药期间避免饮酒或先咨询医生'**
+  String get medicineAlertAlcoholRiskDetail;
+
+  /// No description provided for @medicineAlertAlcoholRiskStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'中风险'**
+  String get medicineAlertAlcoholRiskStatus;
+
+  /// No description provided for @medicineAlertCoffeeReminderTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'咖啡因提醒'**
+  String get medicineAlertCoffeeReminderTitle;
+
+  /// No description provided for @medicineAlertCoffeeReminderBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'咖啡 / 能量饮料使用建议'**
+  String get medicineAlertCoffeeReminderBody;
+
+  /// No description provided for @medicineAlertCoffeeReminderDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'部分药物可能受咖啡因影响'**
+  String get medicineAlertCoffeeReminderDetail;
+
+  /// No description provided for @medicineAlertCoffeeReminderStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'注意'**
+  String get medicineAlertCoffeeReminderStatus;
+
+  /// No description provided for @medicineAlertDuplicateCheckTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'重复用药检查'**
+  String get medicineAlertDuplicateCheckTitle;
+
+  /// No description provided for @medicineAlertDuplicateCheckBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'未检测到相同成分药品'**
+  String get medicineAlertDuplicateCheckBody;
+
+  /// No description provided for @medicineAlertDuplicateCheckDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加新药后会再次检查'**
+  String get medicineAlertDuplicateCheckDetail;
+
+  /// No description provided for @medicineAlertDuplicateCheckStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'未发现'**
+  String get medicineAlertDuplicateCheckStatus;
+
+  /// No description provided for @medicineAlertPeriodPregnancyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'经期/孕哺提示'**
+  String get medicineAlertPeriodPregnancyTitle;
+
+  /// No description provided for @medicineAlertPeriodPregnancyBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录状态以获得更精准的用药提示'**
+  String get medicineAlertPeriodPregnancyBody;
+
+  /// No description provided for @medicineAlertPeriodPregnancyDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'特殊状态请优先遵医嘱'**
+  String get medicineAlertPeriodPregnancyDetail;
+
+  /// No description provided for @medicineAlertPeriodPregnancyStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'未记录'**
+  String get medicineAlertPeriodPregnancyStatus;
+
   /// No description provided for @medicinePromiseTitle.
   ///
   /// In zh, this message translates to:
@@ -1555,6 +1939,30 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'会打开其他安全提醒详情。'**
   String get medicineAlertOtherToast;
+
+  /// No description provided for @medicineAlertAlcoholRiskToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开酒精风险说明。'**
+  String get medicineAlertAlcoholRiskToast;
+
+  /// No description provided for @medicineAlertCoffeeReminderToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开咖啡因用药建议。'**
+  String get medicineAlertCoffeeReminderToast;
+
+  /// No description provided for @medicineAlertDuplicateCheckToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开重复用药检查结果。'**
+  String get medicineAlertDuplicateCheckToast;
+
+  /// No description provided for @medicineAlertPeriodPregnancyToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开经期、孕期和哺乳期提示。'**
+  String get medicineAlertPeriodPregnancyToast;
 
   /// No description provided for @medicineSearchPageTitle.
   ///

@@ -26,7 +26,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Reminder/notification contract defined in `../Lucent/docs/public/reminder-contract.md`: local notification permission + preference toggles are device-local; backend-owned reminder schedules, notification preferences, and delivery log are planned but not implemented; no FCM/APNs push delivery in scope
 - Environment snapshot contract defined in `../Lucent/docs/public/environment-contract.md`: pollen / UV / air quality / temperature API; static seasonal reference data as initial implementation, no external API keys required
 - More concept-aligned mock utility workspace UI with repository/provider boundary, mobile emergency/family/tools stack, and desktop reminder/recent/quick-entry side rail
-- Medicine mobile-first mock workspace UI with repository/provider boundary
+- Medicine mobile north-star dashboard UI with repository/provider boundary, mobile header/search, drugbox, next-dose reminder, safety engine placeholders, quick operations, medication records, reference notice, safety tips, Lucent-backed current-medicine/manual dose-log data where available, and bounded mock content for unsupported scan/OCR/report/safety concepts
 - Standalone Search feature at `/medicine/search` with source-aware medicine mock data, mobile workflow, and desktop preview panel
 - Lucent-backed health-context write flows for Mine profile, allergies, conditions, and current medicines, with domain write inputs keeping generated OpenAPI DTOs out of presentation code
 - Search add-to-current-medicines now writes through Lucent for signed-in users and routes signed-out users to `/login`
@@ -34,7 +34,7 @@ Current timeline: `MigrationLog.md`. Product stage: `../Lucent/docs/public/ROADM
 - Today now consumes Lucent daily-record water/vital/mood summaries while unsupported recommendation, trend, period, campus-guide, and quick-action sections remain mock/placeholder-backed
 - Medicine now reads and writes manual dose-log status for current medicines, including taken/skipped/pending; this is not push reminder scheduling
 
-Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual taken/skipped dose-log status; Today reads safe current-medicine, daily-record water/vital summaries, and manual dose-log pending counts. Still pending: live reminders (contract defined in `../Lucent/docs/public/reminder-contract.md` but not implemented), real scan/upload, More real tools/device integrations, richer record analytics, and broader feature data.
+Restored: Search now uses real Lucent medicine search/detail API; Mine health-context edit flows write to Lucent; Record daily-record timeline/create uses Lucent; Medicine reads current medicines plus manual taken/skipped dose-log status; Today reads safe current-medicine, daily-record water/vital summaries, and manual dose-log pending counts. Still pending: live reminders (contract defined in `../Lucent/docs/public/reminder-contract.md` but not implemented), Medicine real scan/OCR/report/safety-engine backend data, More real tools/device integrations, richer record analytics, and broader feature data.
 
 ## UI Priority
 
@@ -62,4 +62,4 @@ flutter test
 flutter test integration_test
 ```
 
-For the current Today work, mobile is the target surface; check mobile overflow and zh/en text fit first.
+For the current north-star UI work, mobile is the target surface; check mobile overflow and zh/en text fit first. Desktop/web visual behavior is not a current implementation target.
