@@ -7,7 +7,7 @@ import 'package:luminous/features/today/data/repositories/mock_today_repository.
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/today_dashboard_view.dart';
 
-/// 今日页。
+/// Today page.
 class TodayPage extends ConsumerWidget {
   const TodayPage({super.key});
 
@@ -21,7 +21,7 @@ class TodayPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: brightness == Brightness.dark
             ? surface.canvas
-            : const Color(0xFFFAFCFD),
+            : surface.canvasSoft,
       ),
       child: SafeArea(
         bottom: false,

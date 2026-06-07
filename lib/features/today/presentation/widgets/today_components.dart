@@ -3,38 +3,28 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 abstract final class TodayPalette {
-  static const Color ink = Color(0xFF111827);
-  static const Color body = Color(0xFF5B667A);
-  static const Color mute = Color(0xFF8A94A8);
-  static const Color panel = Color(0xFFFFFFFF);
-  static const Color panelSoft = Color(0xFFF8FBFF);
-  static const Color line = Color(0xFFE7EDF4);
-  static const Color lineStrong = Color(0xFFD8E5F2);
-  static const Color teal = Color(0xFF12B8A6);
-  static const Color tealDeep = Color(0xFF0BA88E);
-  static const Color tealSoft = Color(0xFFE8F8F5);
-  static const Color blue = Color(0xFF1677FF);
-  static const Color blueDeep = Color(0xFF0D63F3);
-  static const Color blueSoft = Color(0xFFEAF3FF);
-  static const Color violet = Color(0xFF7C55E7);
-  static const Color violetSoft = Color(0xFFF2ECFF);
-  static const Color pink = Color(0xFFFF4B82);
-  static const Color pinkSoft = Color(0xFFFFEDF3);
-  static const Color amber = Color(0xFFFF8C2A);
-  static const Color amberSoft = Color(0xFFFFF3E6);
-  static const Color green = Color(0xFF18B26B);
-  static const Color greenSoft = Color(0xFFEAF8EF);
+  static const Color ink = AppColorTokens.ink;
+  static const Color body = AppColorTokens.body;
+  static const Color mute = AppColorTokens.mute;
+  static const Color panel = AppColorTokens.canvas;
+  static const Color panelSoft = AppColorTokens.canvasSoft;
+  static const Color line = AppColorTokens.hairline;
+  static const Color lineStrong = AppColorTokens.hairlineStrong;
+  static const Color teal = AppColorTokens.cyanDeep;
+  static const Color tealDeep = AppColorTokens.cyanDeep;
+  static const Color tealSoft = AppColorTokens.cyanSoft;
+  static const Color blue = AppColorTokens.link;
+  static const Color blueDeep = AppColorTokens.linkDeep;
+  static const Color blueSoft = AppColorTokens.linkSoft;
+  static const Color violet = AppColorTokens.violet;
+  static const Color violetSoft = AppColorTokens.violetSoft;
+  static const Color pink = AppColorTokens.highlightMagenta;
+  static const Color pinkSoft = AppColorTokens.errorSoft;
+  static const Color amber = AppColorTokens.warning;
+  static const Color amberSoft = AppColorTokens.warningSoft;
+  static const Color green = AppColorTokens.cyanDeep;
+  static const Color greenSoft = AppColorTokens.cyanSoft;
 }
-
-const List<BoxShadow> _todaySoftShadow = <BoxShadow>[
-  BoxShadow(
-    color: Color(0x0D1A3554),
-    offset: Offset(0, 6),
-    blurRadius: 18,
-    spreadRadius: -8,
-  ),
-  BoxShadow(color: Color(0x08000000), blurRadius: 1),
-];
 
 class TodayPanel extends StatelessWidget {
   const TodayPanel({
@@ -44,7 +34,7 @@ class TodayPanel extends StatelessWidget {
     this.color,
     this.radius = AppRadiusTokens.xl,
     this.borderColor,
-    this.shadow = _todaySoftShadow,
+    this.shadow = AppShadowTokens.level1,
   });
 
   final Widget child;
@@ -159,8 +149,12 @@ class TodayTextAction extends StatelessWidget {
                 ),
               ),
               if (icon != null) ...[
-                const SizedBox(width: 2),
-                Icon(icon, size: 18, color: foreground),
+                const SizedBox(width: AppSpacingTokens.xxs),
+                Icon(
+                  icon,
+                  size: AppSpacingTokens.md + AppSpacingTokens.xxs,
+                  color: foreground,
+                ),
               ],
             ],
           ),
@@ -175,7 +169,7 @@ class TodayGlyphTile extends StatelessWidget {
     super.key,
     required this.icon,
     required this.color,
-    this.size = 58,
+    this.size = AppSpacingTokens.x3l + AppSpacingTokens.xs,
     this.radius = AppRadiusTokens.md,
     this.gradient = true,
   });
@@ -196,14 +190,7 @@ class TodayGlyphTile extends StatelessWidget {
               colors: [color.withValues(alpha: 0.92), color],
             ),
             borderRadius: BorderRadius.circular(radius),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.18),
-                offset: const Offset(0, 8),
-                blurRadius: 18,
-                spreadRadius: -10,
-              ),
-            ],
+            boxShadow: AppShadowTokens.level1,
           )
         : BoxDecoration(
             color: color.withValues(alpha: 0.1),
@@ -216,7 +203,7 @@ class TodayGlyphTile extends StatelessWidget {
         dimension: size,
         child: Icon(
           icon,
-          color: gradient ? Colors.white : color,
+          color: gradient ? AppColorTokens.onPrimary : color,
           size: size * 0.5,
         ),
       ),
@@ -242,12 +229,14 @@ class TodayStatusPill extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.xs,
+          vertical: AppSpacingTokens.xxs,
+        ),
         child: Text(
           label,
           style: typography.caption.copyWith(
             color: color,
-            fontSize: 10,
             fontWeight: FontWeight.w700,
             letterSpacing: 0,
           ),
@@ -264,7 +253,7 @@ class TodayLinearProgress extends StatelessWidget {
     super.key,
     required this.progress,
     required this.color,
-    this.height = 8,
+    this.height = AppSpacingTokens.xs,
   });
 
   final double progress;
@@ -280,7 +269,7 @@ class TodayLinearProgress extends StatelessWidget {
       child: Stack(
         children: [
           DecoratedBox(
-            decoration: BoxDecoration(color: const Color(0xFFE8EEF2)),
+            decoration: const BoxDecoration(color: TodayPalette.line),
             child: SizedBox(height: height, width: double.infinity),
           ),
           FractionallySizedBox(
@@ -305,7 +294,7 @@ class TodayMiniTrendChart extends StatelessWidget {
     super.key,
     required this.points,
     required this.color,
-    this.height = 68,
+    this.height = AppSpacingTokens.x4l,
   });
 
   final List<double> points;
@@ -335,7 +324,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                   child: Icon(
                     Icons.show_chart_rounded,
                     color: color.withValues(alpha: 0.74),
-                    size: 28,
+                    size: AppSpacingTokens.lg,
                   ),
                 ),
               ),
@@ -350,10 +339,11 @@ class TodayMiniTrendChart extends StatelessWidget {
                             AppRadiusTokens.pill,
                           ),
                         ),
-                        child: const SizedBox(height: 3),
+                        child: const SizedBox(height: AppSpacingTokens.xxs),
                       ),
                     ),
-                    if (index < tickCount - 1) const SizedBox(width: 3),
+                    if (index < tickCount - 1)
+                      const SizedBox(width: AppSpacingTokens.xxs),
                   ],
                 ],
               ),

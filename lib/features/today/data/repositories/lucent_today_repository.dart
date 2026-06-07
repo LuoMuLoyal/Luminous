@@ -62,6 +62,7 @@ class LucentTodayRepository implements TodayRepository {
       user: TodayUserSnapshot(
         moment: todayDayMomentFromHour(today.hour),
         hasUnreadNotifications: true, // mock
+        updatedAtLabel: _formatTimeLabel(today),
       ),
       water: TodayWaterSummary(completedCount: waterCount, targetCount: 8),
       medication: TodayMedicationSummary(
@@ -85,6 +86,7 @@ class LucentTodayRepository implements TodayRepository {
           valueLabel: recordLatest['mood'] ?? '--',
         ),
       ],
+      period: _staticPeriod,
       mealSuggestion: _staticMealSuggestion,
       environment: _staticEnvironment,
       lumiSuggestion: _staticLumiSuggestion,
@@ -94,6 +96,8 @@ class LucentTodayRepository implements TodayRepository {
   static const _staticMealSuggestion = TodayMealSuggestion(
     type: TodayMealSuggestionType.highProteinBalancedLunch,
   );
+
+  static const _staticPeriod = TodayPeriodSummary(day: 2);
 
   static const _staticEnvironment = TodayEnvironmentSummary(
     signals: <TodayEnvironmentSignal>[
@@ -111,4 +115,10 @@ class LucentTodayRepository implements TodayRepository {
   static const _staticLumiSuggestion = TodayLumiSuggestion(
     type: TodayLumiSuggestionType.pollenProtection,
   );
+
+  static String _formatTimeLabel(DateTime value) {
+    final hour = value.hour.toString().padLeft(2, '0');
+    final minute = value.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
 }

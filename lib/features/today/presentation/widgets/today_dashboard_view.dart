@@ -97,10 +97,11 @@ class _MobileTodayDashboard extends StatelessWidget {
         AppSpacingTokens.md,
         AppSpacingTokens.md,
         AppSpacingTokens.md,
-        104,
+        AppSpacingTokens.x5l + AppSpacingTokens.xs,
       ),
       itemBuilder: (context, index) => sections[index],
-      separatorBuilder: (context, index) => const SizedBox(height: 22),
+      separatorBuilder: (context, index) =>
+          const SizedBox(height: AppSpacingTokens.lg),
       itemCount: sections.length,
     );
   }
@@ -216,6 +217,7 @@ class _NotificationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return Tooltip(
       message: l10n.todayNotificationsTooltip,
@@ -225,23 +227,26 @@ class _NotificationButton extends StatelessWidget {
           IconButton(
             onPressed: () =>
                 AppToast.show(context, l10n.todayNotificationsTooltip),
-            icon: const Icon(Icons.notifications_none_rounded, size: 28),
-            color: Theme.of(context).colorScheme.onSurface,
+            icon: const Icon(
+              Icons.notifications_none_rounded,
+              size: AppSpacingTokens.lg + AppSpacingTokens.xxs,
+            ),
+            color: theme.colorScheme.onSurface,
             visualDensity: VisualDensity.compact,
             style: const ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),
           if (hasUnread)
-            const Positioned(
-              right: 11,
-              top: 9,
+            Positioned(
+              right: AppSpacingTokens.sm,
+              top: AppSpacingTokens.xs,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Color(0xFFFF2D3D),
+                  color: theme.colorScheme.error,
                   shape: BoxShape.circle,
                 ),
-                child: SizedBox.square(dimension: 8),
+                child: const SizedBox.square(dimension: AppSpacingTokens.xs),
               ),
             ),
         ],
@@ -276,13 +281,16 @@ class _HealthOverviewCard extends StatelessWidget {
             leading: const Icon(
               Icons.health_and_safety_outlined,
               color: TodayPalette.teal,
-              size: 24,
+              size: AppSpacingTokens.lg,
             ),
             compact: true,
             trailing: TodayTextAction(
-              label: l10n.todayUpdatedAt('08:30'),
+              label: l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
               icon: Icons.refresh_rounded,
-              onTap: () => AppToast.show(context, l10n.todayUpdatedAt('08:30')),
+              onTap: () => AppToast.show(
+                context,
+                l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
+              ),
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
@@ -292,7 +300,9 @@ class _HealthOverviewCard extends StatelessWidget {
               for (var index = 0; index < items.length; index += 1) ...[
                 Expanded(child: _OverviewMetric(item: items[index])),
                 if (index < items.length - 1)
-                  const _VerticalMetricDivider(height: 116),
+                  const _VerticalMetricDivider(
+                    height: AppSpacingTokens.x5l + AppSpacingTokens.md,
+                  ),
               ],
             ],
           ),
@@ -317,7 +327,7 @@ class _OverviewMetric extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
       child: Column(
         children: [
-          Icon(item.icon, color: item.color, size: 34),
+          Icon(item.icon, color: item.color, size: AppSpacingTokens.xl),
           const SizedBox(height: AppSpacingTokens.sm),
           Text(
             item.label,
@@ -334,8 +344,7 @@ class _OverviewMetric extends StatelessWidget {
             fit: BoxFit.scaleDown,
             child: Text(
               item.value,
-              style: typography.bodyMdStrong.copyWith(
-                fontSize: 17,
+              style: typography.bodyLg.copyWith(
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0,
               ),
@@ -368,7 +377,7 @@ class _PrioritySection extends StatelessWidget {
       actionLabel: l10n.todayManageAction,
       onAction: () => AppToast.show(context, l10n.todayManageAction),
       child: _ResponsiveCardGrid(
-        minTileWidth: 160,
+        minTileWidth: AppSpacingTokens.x6l + AppSpacingTokens.xl,
         spacing: AppSpacingTokens.md,
         children: [for (final item in items) _PriorityCard(item: item)],
       ),
@@ -462,8 +471,10 @@ class _PriorityCard extends StatelessWidget {
               onPressed: () => AppToast.show(context, item.action),
               style: FilledButton.styleFrom(
                 backgroundColor: item.color,
-                foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(44),
+                foregroundColor: AppColorTokens.onPrimary,
+                minimumSize: const Size.fromHeight(
+                  AppSpacingTokens.x2l + AppSpacingTokens.xxs,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadiusTokens.md),
                 ),
@@ -508,7 +519,7 @@ class _RecommendationSection extends StatelessWidget {
                 Divider(
                   height: 1,
                   thickness: 1,
-                  indent: 72,
+                  indent: AppSpacingTokens.x4l + AppSpacingTokens.xs,
                   color: surface.hairline.withValues(alpha: 0.62),
                 ),
             ],
@@ -545,7 +556,7 @@ class _RecommendationRow extends StatelessWidget {
               TodayGlyphTile(
                 icon: item.icon,
                 color: item.color,
-                size: 44,
+                size: AppSpacingTokens.x2l + AppSpacingTokens.xxs,
                 radius: AppRadiusTokens.md,
                 gradient: false,
               ),
@@ -563,7 +574,7 @@ class _RecommendationRow extends StatelessWidget {
                       maxLines: compact ? 1 : 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacingTokens.xxs),
                     Text(
                       item.subtitle,
                       style: typography.bodySm.copyWith(
@@ -601,7 +612,11 @@ class _RecommendationRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacingTokens.xs),
-              Icon(Icons.chevron_right_rounded, color: surface.mute, size: 20),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: surface.mute,
+                size: AppSpacingTokens.lg,
+              ),
             ],
           ),
         ),
@@ -625,7 +640,7 @@ class _TrendSection extends StatelessWidget {
       actionLabel: l10n.todayTrendAnalysisAction,
       onAction: () => AppToast.show(context, l10n.todayTrendAnalysisAction),
       child: _ResponsiveCardGrid(
-        minTileWidth: 108,
+        minTileWidth: AppSpacingTokens.x5l + AppSpacingTokens.sm,
         spacing: AppSpacingTokens.sm,
         children: [for (final item in items) _TrendCard(item: item)],
       ),
@@ -708,15 +723,14 @@ class _WeekLabels extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: SizedBox.square(
-                  dimension: 18,
+                  dimension: AppSpacingTokens.md + AppSpacingTokens.xxs,
                   child: Center(
                     child: Text(
                       label.isEmpty ? '' : label.substring(0, 1),
                       style: typography.caption.copyWith(
                         color: label == l10n.recordWeekdayThu
-                            ? Colors.white
+                            ? AppColorTokens.onPrimary
                             : TodayPalette.mute,
-                        fontSize: 10,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0,
                       ),
@@ -765,7 +779,7 @@ class _QuickRecordSection extends StatelessWidget {
     return _TodaySection(
       title: l10n.todayQuickRecordSectionTitle,
       child: _ResponsiveCardGrid(
-        minTileWidth: 78,
+        minTileWidth: AppSpacingTokens.x4l + AppSpacingTokens.md,
         spacing: AppSpacingTokens.sm,
         children: [for (final item in items) _QuickRecordCard(item: item)],
       ),
@@ -797,7 +811,7 @@ class _QuickRecordCard extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(item.icon, color: item.color, size: 34),
+              Icon(item.icon, color: item.color, size: AppSpacingTokens.xl),
               const SizedBox(height: AppSpacingTokens.sm),
               Text(
                 item.label,
@@ -934,7 +948,7 @@ List<_OverviewItem> _overviewItems(
   final sleep = _vitalValue(
     dashboard.vitals,
     TodayVitalType.sleep,
-    fallback: '7.2',
+    fallback: l10n.todaySleepFallbackValue,
   );
   final mood = _vitalValue(
     dashboard.vitals,
@@ -985,7 +999,7 @@ List<_OverviewItem> _overviewItems(
     _OverviewItem(
       icon: Icons.calendar_month_rounded,
       label: l10n.todayPeriodOverviewLabel,
-      value: l10n.todayPeriodDayValue(2),
+      value: l10n.todayPeriodDayValue(dashboard.period.day),
       status: l10n.todayPeriodStatus,
       color: TodayPalette.pink,
     ),
@@ -1092,7 +1106,7 @@ List<_TrendItem> _trendItems(AppLocalizations l10n, TodayDashboard dashboard) {
   final sleep = _vitalValue(
     dashboard.vitals,
     TodayVitalType.sleep,
-    fallback: '7.2',
+    fallback: l10n.todaySleepFallbackValue,
   );
   final mood = _vitalValue(
     dashboard.vitals,
@@ -1147,6 +1161,8 @@ String _greetingSubtitle(AppLocalizations l10n, TodayDayMoment moment) {
 String _medicationName(AppLocalizations l10n, TodayMedicationKind kind) {
   return switch (kind) {
     TodayMedicationKind.atorvastatin => l10n.todayMedicationNameAtorvastatin,
+    TodayMedicationKind.vitaminBComplex =>
+      l10n.todayMedicationNameVitaminBComplex,
   };
 }
 

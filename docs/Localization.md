@@ -10,7 +10,7 @@ Last updated: 2026-06-07
 
 ## Current Scope
 
-- App title, tabs, Today mobile dashboard/priority/recommendation/trend-placeholder/quick-record copy, Record dashboard, Medicine workspace/search empty states, Mine dashboard, More dashboard, placeholders
+- App title, tabs, Today mobile dashboard/priority/recommendation/trend-placeholder/quick-record copy and preview medication names, Record dashboard, Medicine workspace/search empty states, Mine dashboard, More dashboard, placeholders
 - Login / Register / Forgot Password / Change Email / AuthShell
 - WeChat Web OAuth login action, callback input, and OAuth feedback toasts
 - Account Settings, account status, linked identity management labels, and WeChat identity binding feedback

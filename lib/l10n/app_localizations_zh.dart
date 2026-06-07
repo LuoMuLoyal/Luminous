@@ -1769,6 +1769,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayMedicationNameAtorvastatin => '阿托伐他汀';
 
   @override
+  String get todayMedicationNameVitaminBComplex => '维生素B族';
+
+  @override
   String get todayHealthSummaryCardTitle => '健康状态总览';
 
   @override
@@ -1785,6 +1788,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayVitalSleepUnit => '小时';
+
+  @override
+  String get todaySleepFallbackValue => '7.2';
 
   @override
   String get todayVitalStatusNormal => '正常';

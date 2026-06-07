@@ -47,6 +47,7 @@ Restored: Search now uses real Lucent medicine search/detail API; Mine health-co
 ## Rules
 
 - Use `lib/core/design/`, `lib/core/theme/`, `lib/core/constants/app_breakpoints.dart`.
+- Keep mobile feature widgets free of user-visible hardcoded copy and raw visual constants; use ARB/l10n for visible text and existing design tokens before adding feature-local constants.
 - Read app theme mode from `appThemeControllerProvider`; do not hardcode `ThemeMode.system` in app entrypoints.
 - Use `Theme.of(context).colorScheme` and `AppThemeSurface` for theme-aware surfaces before adding palette variants.
 - Put protocol logic in `lib/core/network/`, not `utils`.

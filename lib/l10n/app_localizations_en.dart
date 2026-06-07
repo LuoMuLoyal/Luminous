@@ -1867,6 +1867,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayMedicationNameAtorvastatin => 'Atorvastatin';
 
   @override
+  String get todayMedicationNameVitaminBComplex => 'Vitamin B complex';
+
+  @override
   String get todayHealthSummaryCardTitle => 'Health status overview';
 
   @override
@@ -1883,6 +1886,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayVitalSleepUnit => 'h';
+
+  @override
+  String get todaySleepFallbackValue => '7.2';
 
   @override
   String get todayVitalStatusNormal => 'Normal';

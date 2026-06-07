@@ -3530,6 +3530,12 @@ abstract class AppLocalizations {
   /// **'阿托伐他汀'**
   String get todayMedicationNameAtorvastatin;
 
+  /// No description provided for @todayMedicationNameVitaminBComplex.
+  ///
+  /// In zh, this message translates to:
+  /// **'维生素B族'**
+  String get todayMedicationNameVitaminBComplex;
+
   /// No description provided for @todayHealthSummaryCardTitle.
   ///
   /// In zh, this message translates to:
@@ -3565,6 +3571,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'小时'**
   String get todayVitalSleepUnit;
+
+  /// No description provided for @todaySleepFallbackValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'7.2'**
+  String get todaySleepFallbackValue;
 
   /// No description provided for @todayVitalStatusNormal.
   ///
