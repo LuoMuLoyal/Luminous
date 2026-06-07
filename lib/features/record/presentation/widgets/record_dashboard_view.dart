@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_overview.dart';
@@ -13,9 +14,14 @@ import 'package:luminous/features/record/presentation/widgets/record_trends.dart
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordDashboardView extends StatelessWidget {
-  const RecordDashboardView({super.key, required this.dashboard});
+  const RecordDashboardView({
+    super.key,
+    required this.dashboard,
+    this.isLoading = false,
+  });
 
   final RecordDashboard dashboard;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +34,7 @@ class RecordDashboardView extends StatelessWidget {
         : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
     final isDesktop = width >= AppBreakpoints.desktop;
 
-    return isDesktop
+    final content = isDesktop
         ? _DesktopRecordDashboard(
             dashboard: dashboard,
             l10n: l10n,
@@ -41,6 +47,8 @@ class RecordDashboardView extends StatelessWidget {
             typography: typography,
             surface: surface,
           );
+
+    return AppSkeletonScope(isLoading: isLoading, child: content);
   }
 }
 
@@ -408,11 +416,13 @@ class _MobileTimelineRow extends StatelessWidget {
             children: [
               SizedBox(
                 width: AppSpacingTokens.x3l,
-                child: Text(
-                  entry.time,
+                child: AppSkeletonText(
+                  text: entry.time,
                   style: typography.bodySm.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
+                  widthFactor: 0.68,
+                  maxLines: 1,
                 ),
               ),
               SizedBox(
@@ -457,21 +467,23 @@ class _MobileTimelineRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      label,
+                    AppSkeletonText(
+                      text: label,
                       style: typography.bodyMdStrong.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      widthFactor: 0.64,
                     ),
                     if (subtitle.isNotEmpty) ...[
                       const SizedBox(height: AppSpacingTokens.xxs),
-                      Text(
-                        subtitle,
+                      AppSkeletonText(
+                        text: subtitle,
                         style: typography.bodySm.copyWith(color: surface.body),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                        widthFactor: 0.78,
                       ),
                     ],
                   ],
@@ -479,10 +491,17 @@ class _MobileTimelineRow extends StatelessWidget {
               ),
               if (entry.badgeKey != null) ...[
                 const SizedBox(width: AppSpacingTokens.xs),
-                RecordPill(
-                  label: recordCopy(l10n, entry.badgeKey!),
-                  color: entry.accent,
-                  typography: typography,
+                AppSkeletonSlot(
+                  skeleton: const AppInlineSkeletonBlock(
+                    height: 22,
+                    width: 44,
+                    radius: AppRadiusTokens.sm,
+                  ),
+                  child: RecordPill(
+                    label: recordCopy(l10n, entry.badgeKey!),
+                    color: entry.accent,
+                    typography: typography,
+                  ),
                 ),
               ],
               const SizedBox(width: AppSpacingTokens.xs),

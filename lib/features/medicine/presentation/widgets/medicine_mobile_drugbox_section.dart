@@ -210,14 +210,15 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      name,
+                    AppSkeletonText(
+                      text: name,
                       style: typography.displaySm.copyWith(
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      widthFactor: 0.72,
                     ),
                     const SizedBox(height: AppSpacingTokens.xs),
                     Wrap(
@@ -225,16 +226,24 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                       runSpacing: AppSpacingTokens.xxs,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        Text(
-                          _compactRouteOrSchedule(schedule),
+                        AppSkeletonText(
+                          text: _compactRouteOrSchedule(schedule),
                           style: typography.bodySm.copyWith(
                             color: surface.body,
                             letterSpacing: 0,
                           ),
+                          widthFactor: 0.58,
                         ),
-                        MedicineStatusPill(
-                          label: state,
-                          color: item.stateColor,
+                        AppSkeletonSlot(
+                          skeleton: const AppInlineSkeletonBlock(
+                            height: 22,
+                            width: 54,
+                            radius: AppRadiusTokens.pill,
+                          ),
+                          child: MedicineStatusPill(
+                            label: state,
+                            color: item.stateColor,
+                          ),
                         ),
                       ],
                     ),
@@ -245,18 +254,20 @@ class _DrugBoxMedicationRow extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    dosage,
+                  AppSkeletonText(
+                    text: dosage,
                     style: typography.displaySm.copyWith(
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    widthFactor: 0.66,
                   ),
                   const SizedBox(height: AppSpacingTokens.xxs),
-                  Text(
-                    schedule,
+                  AppSkeletonText(
+                    text: schedule,
                     style: typography.bodySm.copyWith(
                       color: surface.body,
                       letterSpacing: 0,
@@ -264,6 +275,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.right,
+                    widthFactor: 0.84,
                   ),
                 ],
               ),

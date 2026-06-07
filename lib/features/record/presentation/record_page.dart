@@ -6,6 +6,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
@@ -102,7 +103,10 @@ class RecordPage extends ConsumerWidget {
       children: [
         dashboardAsync.when(
           data: (dashboard) => RecordDashboardView(dashboard: dashboard),
-          loading: () => const _RecordLoadingView(),
+          loading: () => RecordDashboardView(
+            dashboard: MockRecordRepository.loadingDashboard(selectedDate),
+            isLoading: true,
+          ),
           error: (_, __) => AppStateErrorView(
             title: l10n.recordErrorTitle,
             description: l10n.recordErrorDescription,
@@ -138,33 +142,5 @@ class RecordPage extends ConsumerWidget {
 
   DateTime _dateOnly(DateTime value) {
     return DateTime(value.year, value.month, value.day);
-  }
-}
-
-class _RecordLoadingView extends StatelessWidget {
-  const _RecordLoadingView();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 16, widthFactor: 0.34),
-            AppInlineSkeletonBlock(height: 34),
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.72),
-          ],
-        ),
-        SizedBox(height: AppSpacingTokens.md),
-        AppInlineSkeletonSection(
-          children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.42),
-            AppInlineSkeletonBlock(height: 54),
-            AppInlineSkeletonBlock(height: 54),
-          ],
-        ),
-      ],
-    );
   }
 }

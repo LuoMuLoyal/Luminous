@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
@@ -17,11 +18,13 @@ class MedicineMobileDashboardView extends StatelessWidget {
     super.key,
     required this.workspace,
     this.onMarkDose,
+    this.isLoading = false,
   });
 
   final MedicineWorkspace workspace;
   final void Function(String currentMedicineId, MedicineDoseAction action)?
   onMarkDose;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
     final nextDose = _nextDoseFor(workspace);
 
-    return Column(
+    final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _DrugBoxSection(
@@ -80,5 +83,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
         ),
       ],
     );
+
+    return AppSkeletonScope(isLoading: isLoading, child: content);
   }
 }
