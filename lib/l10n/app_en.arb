@@ -465,9 +465,113 @@
     }
   },
   "mineAccountLastLoginNone": "Last login --",
+  "mineAccountStudentRole": "Student",
   "mineSignedOutNoticeTitle": "You are not signed in",
   "mineSignedOutNoticeDescription": "Mine stays on the static layout while signed out so it does not keep hitting the backend. Sign in to load your profile and health context.",
   "mineCompletionTitle": "Profile completion",
+  "mineAlertAllergyTitle": "Allergies",
+  "mineAlertAllergySubtitle": "Pollen, penicillin",
+  "mineAlertAllergyBadge": "2 items",
+  "mineAlertMedicineTitle": "Current meds",
+  "mineAlertMedicineSubtitle": "2 medicines",
+  "mineAlertMedicineBadge": "On schedule",
+  "mineAlertPrivacyTitle": "Privacy status",
+  "mineAlertPrivacySubtitle": "Protected well",
+  "mineAlertPrivacyBadge": "Safe to use",
+  "mineArchiveBasicTitle": "Basic info",
+  "mineArchiveBasicSubtitle": "Personal and health information",
+  "mineArchiveAllergyTitle": "Allergies",
+  "mineArchiveAllergySubtitle": "Food, medicine, and environment allergy records",
+  "mineArchiveMedicineTitle": "Current meds",
+  "mineArchiveMedicineSubtitle": "Active medicines and medication records",
+  "mineArchiveWomenTitle": "Women's health",
+  "mineArchiveWomenSubtitle": "Cycle records and health management",
+  "mineArchiveEmergencyTitle": "Emergency contact",
+  "mineArchiveEmergencySubtitle": "1 contact",
+  "mineArchiveCompleted": "Complete",
+  "mineArchiveNeedsFill": "Needs info",
+  "mineCampusSectionTitle": "Campus services",
+  "mineCampusHospitalTitle": "Campus clinic",
+  "mineCampusHospitalSubtitle": "Book an appointment",
+  "mineCampusCounselingTitle": "Counseling",
+  "mineCampusCounselingSubtitle": "Book counseling support",
+  "mineCampusPharmacyTitle": "Campus pharmacy",
+  "mineCampusPharmacySubtitle": "Search campus medicines",
+  "mineCampusEmergencyTitle": "Emergency help",
+  "mineCampusEmergencySubtitle": "Hotlines and guides",
+  "minePrivacyPermissionTitle": "Privacy and permissions",
+  "minePrivacyProtectionAction": "Privacy protection",
+  "minePrivacyMoodTitle": "Mental records",
+  "minePrivacyMoodSubtitle": "Mood check-ins, counseling records",
+  "minePrivacyPeriodTitle": "Cycle data",
+  "minePrivacyPeriodSubtitle": "Predictions and symptom records",
+  "minePrivacyReportTitle": "Report sharing",
+  "minePrivacyReportSubtitle": "Health reports and trend analysis",
+  "minePrivacyAiTitle": "AI memory",
+  "minePrivacyAiSubtitle": "Personalized advice and memory",
+  "minePrivacyOnlyMe": "Only me",
+  "minePrivacyShareAfterGrant": "Share after grant",
+  "mineReminderSectionTitle": "Reminder settings",
+  "mineReminderMedicineTitle": "Medication",
+  "mineReminderWaterTitle": "Water",
+  "mineReminderSleepTitle": "Sleep",
+  "mineReminderPeriodTitle": "Cycle",
+  "mineReminderEnabled": "Enabled",
+  "mineAccountSettingsTitle": "Account and settings",
+  "mineSettingLanguageTitle": "Language",
+  "mineSettingLanguageValue": "English",
+  "mineSettingExportTitle": "Data export",
+  "mineSettingExportValue": "Export my health data",
+  "mineSettingHelpTitle": "Help and feedback",
+  "mineSettingHelpValue": "FAQ and feedback",
+  "mineSettingAboutTitle": "About Luminous",
+  "mineSettingAboutValue": "Version 1.2.0",
+  "minePrivacyNoticeTitle": "Sensitive data is protected by default, and grants can be revoked anytime",
+  "minePrivacyNoticeAction": "View privacy policy",
+  "mineProfileUnknownValue": "--",
+  "mineProfileSexFemale": "Female",
+  "mineProfileSexMale": "Male",
+  "mineProfileAgeYears": "{age}y",
+  "@mineProfileAgeYears": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileHeightCm": "{height}cm",
+  "@mineProfileHeightCm": {
+    "placeholders": {
+      "height": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileWeightKg": "{weight}kg",
+  "@mineProfileWeightKg": {
+    "placeholders": {
+      "weight": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileMeta": "{age} · {sex} · {height} · {weight}",
+  "@mineProfileMeta": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "sex": {
+        "type": "String"
+      },
+      "height": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
   "mineCompletionSubtitle": "Good progress. Keep filling it out for more precise suggestions.",
   "mineSummaryTitle": "Health context summary",
   "mineSummaryUpdatedAt": "Updated 2025-05-15",

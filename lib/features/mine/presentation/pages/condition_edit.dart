@@ -64,7 +64,8 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
     _diagnosedAtController.text = item.diagnosedAt ?? '';
     _noteController.text = item.note ?? '';
     setState(() {
-      _status = HealthConditionStatus.fromValue(item.status) ??
+      _status =
+          HealthConditionStatus.fromValue(item.status) ??
           HealthConditionStatus.active;
     });
   }
@@ -112,10 +113,9 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
     }
 
     return PageScaffoldShell(
-      title:
-          isNew
-              ? l10n.mineEditConditionNewTitle
-              : l10n.mineEditConditionTitle,
+      title: isNew
+          ? l10n.mineEditConditionNewTitle
+          : l10n.mineEditConditionTitle,
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
@@ -175,36 +175,41 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
 
   void _onSave() {
     if (_labelController.text.trim().isEmpty) {
-      AppToast.show(context, AppLocalizations.of(context)!.authCodeRequiredToast);
+      AppToast.show(
+        context,
+        AppLocalizations.of(context)!.authCodeRequiredToast,
+      );
       return;
     }
 
     if (widget.conditionId != null) {
-      ref.read(conditionFormProvider.notifier).save(
-        create: HealthConditionWriteInput(label: ''),
-        id: widget.conditionId,
-        update: HealthConditionUpdateInput(
-          label: _labelController.text,
-          status: _status,
-          diagnosedAt:
-              _diagnosedAtController.text.isEmpty
+      ref
+          .read(conditionFormProvider.notifier)
+          .save(
+            create: HealthConditionWriteInput(label: ''),
+            id: widget.conditionId,
+            update: HealthConditionUpdateInput(
+              label: _labelController.text,
+              status: _status,
+              diagnosedAt: _diagnosedAtController.text.isEmpty
                   ? null
                   : _diagnosedAtController.text,
-          note: _noteController.text.isEmpty ? null : _noteController.text,
-        ),
-      );
+              note: _noteController.text.isEmpty ? null : _noteController.text,
+            ),
+          );
     } else {
-      ref.read(conditionFormProvider.notifier).save(
-        create: HealthConditionWriteInput(
-          label: _labelController.text,
-          status: _status,
-          diagnosedAt:
-              _diagnosedAtController.text.isEmpty
+      ref
+          .read(conditionFormProvider.notifier)
+          .save(
+            create: HealthConditionWriteInput(
+              label: _labelController.text,
+              status: _status,
+              diagnosedAt: _diagnosedAtController.text.isEmpty
                   ? null
                   : _diagnosedAtController.text,
-          note: _noteController.text.isEmpty ? null : _noteController.text,
-        ),
-      );
+              note: _noteController.text.isEmpty ? null : _noteController.text,
+            ),
+          );
     }
   }
 
@@ -224,10 +229,9 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   return DropdownButtonFormField<T>(
     initialValue: value,
     decoration: InputDecoration(labelText: label),
-    items:
-        values
-            .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
-            .toList(),
+    items: values
+        .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
+        .toList(),
     onChanged: (v) {
       if (v != null) onChanged(v);
     },

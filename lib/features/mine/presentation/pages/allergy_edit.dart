@@ -66,7 +66,8 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
     _noteController.text = item.note ?? '';
     setState(() {
       _kind = HealthAllergyKind.fromValue(item.kind) ?? HealthAllergyKind.drug;
-      _severity = HealthAllergySeverity.fromValue(item.severity) ??
+      _severity =
+          HealthAllergySeverity.fromValue(item.severity) ??
           HealthAllergySeverity.unknown;
     });
   }
@@ -116,8 +117,7 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
     }
 
     return PageScaffoldShell(
-      title:
-          isNew ? l10n.mineEditAllergyNewTitle : l10n.mineEditAllergyTitle,
+      title: isNew ? l10n.mineEditAllergyNewTitle : l10n.mineEditAllergyTitle,
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
@@ -151,13 +151,11 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldSeverity,
                 ),
-                items:
-                    HealthAllergySeverity.values
-                        .map(
-                          (v) =>
-                              DropdownMenuItem(value: v, child: Text(v.value)),
-                        )
-                        .toList(),
+                items: HealthAllergySeverity.values
+                    .map(
+                      (v) => DropdownMenuItem(value: v, child: Text(v.value)),
+                    )
+                    .toList(),
                 onChanged: (v) {
                   if (v != null) setState(() => _severity = v);
                 },
@@ -194,38 +192,43 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
 
   void _onSave() {
     if (_labelController.text.trim().isEmpty) {
-      AppToast.show(context, AppLocalizations.of(context)!.authCodeRequiredToast);
+      AppToast.show(
+        context,
+        AppLocalizations.of(context)!.authCodeRequiredToast,
+      );
       return;
     }
 
     if (widget.allergyId != null) {
-      ref.read(allergyFormProvider.notifier).save(
-        create: HealthAllergyWriteInput(kind: _kind, label: ''),
-        id: widget.allergyId,
-        update: HealthAllergyUpdateInput(
-          kind: _kind,
-          label: _labelController.text,
-          reaction:
-              _reactionController.text.isEmpty
+      ref
+          .read(allergyFormProvider.notifier)
+          .save(
+            create: HealthAllergyWriteInput(kind: _kind, label: ''),
+            id: widget.allergyId,
+            update: HealthAllergyUpdateInput(
+              kind: _kind,
+              label: _labelController.text,
+              reaction: _reactionController.text.isEmpty
                   ? null
                   : _reactionController.text,
-          severity: _severity,
-          note: _noteController.text.isEmpty ? null : _noteController.text,
-        ),
-      );
+              severity: _severity,
+              note: _noteController.text.isEmpty ? null : _noteController.text,
+            ),
+          );
     } else {
-      ref.read(allergyFormProvider.notifier).save(
-        create: HealthAllergyWriteInput(
-          kind: _kind,
-          label: _labelController.text,
-          reaction:
-              _reactionController.text.isEmpty
+      ref
+          .read(allergyFormProvider.notifier)
+          .save(
+            create: HealthAllergyWriteInput(
+              kind: _kind,
+              label: _labelController.text,
+              reaction: _reactionController.text.isEmpty
                   ? null
                   : _reactionController.text,
-          severity: _severity,
-          note: _noteController.text.isEmpty ? null : _noteController.text,
-        ),
-      );
+              severity: _severity,
+              note: _noteController.text.isEmpty ? null : _noteController.text,
+            ),
+          );
     }
   }
 
@@ -245,10 +248,9 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   return DropdownButtonFormField<T>(
     initialValue: value,
     decoration: InputDecoration(labelText: label),
-    items:
-        values
-            .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
-            .toList(),
+    items: values
+        .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
+        .toList(),
     onChanged: (v) {
       if (v != null) onChanged(v);
     },

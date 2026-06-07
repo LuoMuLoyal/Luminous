@@ -4,26 +4,52 @@ class MineDashboard {
   const MineDashboard({
     required this.account,
     required this.completion,
-    required this.summary,
-    required this.profileEntries,
-    required this.planEntries,
-    required this.reportCard,
-    required this.privacyCard,
-    required this.statusEntries,
-    required this.onboardingEntries,
-    required this.quickEntries,
+    required this.profile,
+    required this.alerts,
+    required this.archiveEntries,
+    required this.campusServices,
+    required this.privacyEntries,
+    required this.reminders,
+    required this.settingEntries,
+    required this.privacyNotice,
   });
 
   final MineAccount account;
   final MineCompletion completion;
-  final MineSummary summary;
-  final List<MineProfileEntry> profileEntries;
-  final List<MinePlanEntry> planEntries;
-  final MineActionCard reportCard;
-  final MineActionCard privacyCard;
-  final List<MineStatusEntry> statusEntries;
-  final List<MineOnboardingEntry> onboardingEntries;
-  final List<MineQuickEntry> quickEntries;
+  final MineProfileSnapshot profile;
+  final List<MineStatusCard> alerts;
+  final List<MineArchiveEntry> archiveEntries;
+  final List<MineActionEntry> campusServices;
+  final List<MinePrivacyEntry> privacyEntries;
+  final List<MineReminderEntry> reminders;
+  final List<MineSettingEntry> settingEntries;
+  final MinePrivacyNotice privacyNotice;
+}
+
+class MineProfileSnapshot {
+  const MineProfileSnapshot({
+    required this.age,
+    required this.sexAtBirth,
+    required this.heightCm,
+    required this.weightKg,
+    required this.allergyCount,
+    required this.conditionCount,
+    required this.currentMedicineCount,
+    required this.basicInfoCompleted,
+    required this.emergencyContactCompleted,
+    required this.womenHealthCompleted,
+  });
+
+  final int? age;
+  final String? sexAtBirth;
+  final double? heightCm;
+  final double? weightKg;
+  final int allergyCount;
+  final int conditionCount;
+  final int currentMedicineCount;
+  final bool basicInfoCompleted;
+  final bool emergencyContactCompleted;
+  final bool womenHealthCompleted;
 }
 
 class MineAccount {
@@ -33,7 +59,7 @@ class MineAccount {
     this.displayName,
     required this.email,
     required this.statusKey,
-    required this.metaKey,
+    required this.roleKey,
     this.emailVerified = false,
     this.hasPassword = false,
     this.linkedIdentityCount = 0,
@@ -45,7 +71,7 @@ class MineAccount {
   final String? displayName;
   final String email;
   final MineCopyKey statusKey;
-  final MineCopyKey metaKey;
+  final MineCopyKey roleKey;
   final bool emailVerified;
   final bool hasPassword;
   final int linkedIdentityCount;
@@ -57,128 +83,119 @@ class MineCompletion {
     required this.progress,
     required this.percentLabel,
     required this.titleKey,
-    required this.subtitleKey,
   });
 
   final double progress;
   final String percentLabel;
   final MineCopyKey titleKey;
-  final MineCopyKey subtitleKey;
 }
 
-class MineSummary {
-  const MineSummary({
-    required this.updatedAtKey,
-    required this.metrics,
-    required this.missingInfoKey,
-    required this.completeActionKey,
-  });
-
-  final MineCopyKey updatedAtKey;
-  final List<MineSummaryMetric> metrics;
-  final MineCopyKey missingInfoKey;
-  final MineCopyKey completeActionKey;
-}
-
-class MineSummaryMetric {
-  const MineSummaryMetric({
+class MineStatusCard {
+  const MineStatusCard({
     required this.icon,
     required this.accent,
-    required this.softColor,
-    required this.value,
-    required this.titleKey,
-  });
-
-  final IconData icon;
-  final Color accent;
-  final Color softColor;
-  final String value;
-  final MineCopyKey titleKey;
-}
-
-class MineProfileEntry {
-  const MineProfileEntry({
-    required this.icon,
-    required this.accent,
-    required this.softColor,
     required this.titleKey,
     required this.subtitleKey,
+    required this.badgeKey,
   });
 
   final IconData icon;
   final Color accent;
-  final Color softColor;
   final MineCopyKey titleKey;
   final MineCopyKey subtitleKey;
+  final MineCopyKey badgeKey;
 }
 
-class MinePlanEntry {
-  const MinePlanEntry({
+class MineArchiveEntry {
+  const MineArchiveEntry({
     required this.icon,
     required this.accent,
-    required this.softColor,
     required this.titleKey,
-    required this.statusKey,
-    required this.detailKey,
+    required this.subtitleKey,
+    this.statusKey,
+    this.route,
   });
 
   final IconData icon;
   final Color accent;
-  final Color softColor;
   final MineCopyKey titleKey;
-  final MineCopyKey statusKey;
-  final MineCopyKey detailKey;
+  final MineCopyKey subtitleKey;
+  final MineCopyKey? statusKey;
+  final String? route;
 }
 
-class MineActionCard {
-  const MineActionCard({
+class MineActionEntry {
+  const MineActionEntry({
     required this.icon,
     required this.accent,
-    required this.softColor,
     required this.titleKey,
-    required this.bodyKey,
-    required this.metaKey,
+    required this.subtitleKey,
+    this.route,
+  });
+
+  final IconData icon;
+  final Color accent;
+  final MineCopyKey titleKey;
+  final MineCopyKey subtitleKey;
+  final String? route;
+}
+
+class MinePrivacyEntry {
+  const MinePrivacyEntry({
+    required this.icon,
+    required this.accent,
+    required this.titleKey,
+    required this.subtitleKey,
+    required this.trailingKey,
+    this.toggleValue,
+  });
+
+  final IconData icon;
+  final Color accent;
+  final MineCopyKey titleKey;
+  final MineCopyKey subtitleKey;
+  final MineCopyKey trailingKey;
+  final bool? toggleValue;
+}
+
+class MineReminderEntry {
+  const MineReminderEntry({
+    required this.icon,
+    required this.accent,
+    required this.titleKey,
+    required this.statusKey,
+  });
+
+  final IconData icon;
+  final Color accent;
+  final MineCopyKey titleKey;
+  final MineCopyKey statusKey;
+}
+
+class MineSettingEntry {
+  const MineSettingEntry({
+    required this.icon,
+    required this.titleKey,
+    required this.valueKey,
+    this.route,
+  });
+
+  final IconData icon;
+  final MineCopyKey titleKey;
+  final MineCopyKey valueKey;
+  final String? route;
+}
+
+class MinePrivacyNotice {
+  const MinePrivacyNotice({
+    required this.icon,
+    required this.titleKey,
     required this.actionKey,
   });
 
   final IconData icon;
-  final Color accent;
-  final Color softColor;
   final MineCopyKey titleKey;
-  final MineCopyKey bodyKey;
-  final MineCopyKey metaKey;
   final MineCopyKey actionKey;
-}
-
-class MineStatusEntry {
-  const MineStatusEntry({
-    required this.titleKey,
-    required this.valueKey,
-    required this.color,
-  });
-
-  final MineCopyKey titleKey;
-  final MineCopyKey valueKey;
-  final Color color;
-}
-
-class MineOnboardingEntry {
-  const MineOnboardingEntry({required this.titleKey, required this.completed});
-
-  final MineCopyKey titleKey;
-  final bool completed;
-}
-
-class MineQuickEntry {
-  const MineQuickEntry({
-    required this.icon,
-    required this.titleKey,
-    required this.subtitleKey,
-  });
-
-  final IconData icon;
-  final MineCopyKey titleKey;
-  final MineCopyKey subtitleKey;
 }
 
 enum MineCopyKey {
@@ -186,77 +203,62 @@ enum MineCopyKey {
   accountGuestDisplayName,
   accountSignedIn,
   accountSignedOut,
-  accountMeta,
-  accountSignedOutMeta,
+  accountStudentRole,
   signedOutNoticeTitle,
   signedOutNoticeDescription,
   completionTitle,
-  completionSubtitle,
-  summaryUpdatedAt,
-  summaryAge,
-  summaryAllergies,
-  summaryConditions,
-  summaryMedicines,
-  summaryMissingInfo,
-  summaryCompleteAction,
-  profileBasicInfoTitle,
-  profileBasicInfoSubtitle,
-  profileAllergiesTitle,
-  profileAllergiesSubtitle,
-  profileConditionsTitle,
-  profileConditionsSubtitle,
-  profileMedicinesTitle,
-  profileMedicinesSubtitle,
-  profileWomenTitle,
-  profileWomenSubtitle,
-  profileSpecialistTitle,
-  profileSpecialistSubtitle,
-  profileLifestyleTitle,
-  profileLifestyleSubtitle,
-  profileFamilyTitle,
-  profileFamilySubtitle,
-  planBloodSugarTitle,
-  planBloodSugarStatus,
-  planBloodSugarDetail,
-  planWeightTitle,
-  planWeightStatus,
-  planWeightDetail,
-  planSleepTitle,
-  planSleepStatus,
-  planSleepDetail,
-  planMoodTitle,
-  planMoodStatus,
-  planMoodDetail,
-  planPregnancyTitle,
-  planPregnancyStatus,
-  planPregnancyDetail,
-  reportTitle,
-  reportBody,
-  reportMeta,
-  reportAction,
-  privacyTitle,
-  privacyBody,
-  privacyMeta,
-  privacyAction,
-  statusBasicTitle,
-  statusBasicValue,
-  statusAllergiesTitle,
-  statusAllergiesValue,
-  statusConditionsTitle,
-  statusConditionsValue,
-  statusMedicinesTitle,
-  statusMedicinesValue,
-  statusWomenTitle,
-  statusWomenValue,
-  onboardingBasicTitle,
-  onboardingContextTitle,
-  onboardingMedicineTitle,
-  onboardingGoalTitle,
-  onboardingPrivacyTitle,
-  quickExportTitle,
-  quickExportSubtitle,
-  quickDoctorTitle,
-  quickDoctorSubtitle,
-  quickEmergencyTitle,
-  quickEmergencySubtitle,
+  alertAllergyTitle,
+  alertAllergySubtitle,
+  alertAllergyBadge,
+  alertMedicineTitle,
+  alertMedicineSubtitle,
+  alertMedicineBadge,
+  alertPrivacyTitle,
+  alertPrivacySubtitle,
+  alertPrivacyBadge,
+  archiveBasicTitle,
+  archiveBasicSubtitle,
+  archiveAllergyTitle,
+  archiveAllergySubtitle,
+  archiveMedicineTitle,
+  archiveMedicineSubtitle,
+  archiveWomenTitle,
+  archiveWomenSubtitle,
+  archiveEmergencyTitle,
+  archiveEmergencySubtitle,
+  archiveCompleted,
+  archiveNeedsFill,
+  campusHospitalTitle,
+  campusHospitalSubtitle,
+  campusCounselingTitle,
+  campusCounselingSubtitle,
+  campusPharmacyTitle,
+  campusPharmacySubtitle,
+  campusEmergencyTitle,
+  campusEmergencySubtitle,
+  privacyMoodTitle,
+  privacyMoodSubtitle,
+  privacyPeriodTitle,
+  privacyPeriodSubtitle,
+  privacyReportTitle,
+  privacyReportSubtitle,
+  privacyAiTitle,
+  privacyAiSubtitle,
+  privacyOnlyMe,
+  privacyShareAfterGrant,
+  reminderMedicineTitle,
+  reminderWaterTitle,
+  reminderSleepTitle,
+  reminderPeriodTitle,
+  reminderEnabled,
+  settingLanguageTitle,
+  settingLanguageValue,
+  settingExportTitle,
+  settingExportValue,
+  settingHelpTitle,
+  settingHelpValue,
+  settingAboutTitle,
+  settingAboutValue,
+  privacyNoticeTitle,
+  privacyNoticeAction,
 }

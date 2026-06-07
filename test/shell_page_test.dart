@@ -107,6 +107,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(l10n.tabMine), findsAtLeastNWidgets(2));
     expect(find.text('Lumi'), findsOneWidget);
-    expect(find.text('user@example.com'), findsOneWidget);
+    expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
   });
 }

@@ -465,9 +465,113 @@
     }
   },
   "mineAccountLastLoginNone": "上次登录 --",
+  "mineAccountStudentRole": "大学生",
   "mineSignedOutNoticeTitle": "当前未登录",
   "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。",
   "mineCompletionTitle": "档案完整度",
+  "mineAlertAllergyTitle": "过敏史",
+  "mineAlertAllergySubtitle": "花粉、青霉素",
+  "mineAlertAllergyBadge": "2 项",
+  "mineAlertMedicineTitle": "当前用药",
+  "mineAlertMedicineSubtitle": "2 种药物",
+  "mineAlertMedicineBadge": "按时服用",
+  "mineAlertPrivacyTitle": "隐私状态",
+  "mineAlertPrivacySubtitle": "良好保护中",
+  "mineAlertPrivacyBadge": "可放心使用",
+  "mineArchiveBasicTitle": "基础信息",
+  "mineArchiveBasicSubtitle": "个人信息与健康信息",
+  "mineArchiveAllergyTitle": "过敏史",
+  "mineArchiveAllergySubtitle": "食物、药物、环境过敏记录",
+  "mineArchiveMedicineTitle": "当前用药",
+  "mineArchiveMedicineSubtitle": "正在使用的药品与用药记录",
+  "mineArchiveWomenTitle": "女性健康",
+  "mineArchiveWomenSubtitle": "经期记录与健康管理",
+  "mineArchiveEmergencyTitle": "紧急联系人",
+  "mineArchiveEmergencySubtitle": "1 位联系人",
+  "mineArchiveCompleted": "已完善",
+  "mineArchiveNeedsFill": "待补充",
+  "mineCampusSectionTitle": "校园服务",
+  "mineCampusHospitalTitle": "校医院",
+  "mineCampusHospitalSubtitle": "在线预约挂号",
+  "mineCampusCounselingTitle": "心理咨询",
+  "mineCampusCounselingSubtitle": "预约心理服务",
+  "mineCampusPharmacyTitle": "校园药房",
+  "mineCampusPharmacySubtitle": "校内药品查询",
+  "mineCampusEmergencyTitle": "紧急帮助",
+  "mineCampusEmergencySubtitle": "紧急电话与指南",
+  "minePrivacyPermissionTitle": "隐私与权限",
+  "minePrivacyProtectionAction": "隐私保护说明",
+  "minePrivacyMoodTitle": "心理记录",
+  "minePrivacyMoodSubtitle": "情绪打卡、咨询记录等",
+  "minePrivacyPeriodTitle": "经期数据",
+  "minePrivacyPeriodSubtitle": "经期预测、症状记录等",
+  "minePrivacyReportTitle": "报告分享",
+  "minePrivacyReportSubtitle": "健康报告、趋势分析",
+  "minePrivacyAiTitle": "AI 记忆",
+  "minePrivacyAiSubtitle": "个性化建议与记忆",
+  "minePrivacyOnlyMe": "仅自己可见",
+  "minePrivacyShareAfterGrant": "授权后分享",
+  "mineReminderSectionTitle": "提醒设置",
+  "mineReminderMedicineTitle": "用药提醒",
+  "mineReminderWaterTitle": "饮水提醒",
+  "mineReminderSleepTitle": "睡眠提醒",
+  "mineReminderPeriodTitle": "经期提醒",
+  "mineReminderEnabled": "已开启",
+  "mineAccountSettingsTitle": "账号与设置",
+  "mineSettingLanguageTitle": "语言设置",
+  "mineSettingLanguageValue": "简体中文",
+  "mineSettingExportTitle": "数据导出",
+  "mineSettingExportValue": "导出我的健康数据",
+  "mineSettingHelpTitle": "帮助与反馈",
+  "mineSettingHelpValue": "常见问题与意见反馈",
+  "mineSettingAboutTitle": "关于 Luminous",
+  "mineSettingAboutValue": "版本 1.2.0",
+  "minePrivacyNoticeTitle": "敏感数据默认保护，可随时撤回授权",
+  "minePrivacyNoticeAction": "查看隐私政策",
+  "mineProfileUnknownValue": "--",
+  "mineProfileSexFemale": "女",
+  "mineProfileSexMale": "男",
+  "mineProfileAgeYears": "{age}岁",
+  "@mineProfileAgeYears": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileHeightCm": "{height}cm",
+  "@mineProfileHeightCm": {
+    "placeholders": {
+      "height": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileWeightKg": "{weight}kg",
+  "@mineProfileWeightKg": {
+    "placeholders": {
+      "weight": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileMeta": "{age} · {sex} · {height} · {weight}",
+  "@mineProfileMeta": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "sex": {
+        "type": "String"
+      },
+      "height": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
   "mineCompletionSubtitle": "完成度良好，继续完善更准确的建议",
   "mineSummaryTitle": "健康上下文摘要",
   "mineSummaryUpdatedAt": "更新于 2025-05-15",

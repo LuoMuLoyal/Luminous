@@ -8,68 +8,54 @@ import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
-import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/mine_page.dart';
+import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('Mine page renders mobile mock sections', (tester) async {
+  testWidgets('Mine page renders mobile north-star sections', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(393, 852);
     addTearDown(() {
       tester.view.resetDevicePixelRatio();
       tester.view.resetPhysicalSize();
     });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await _pumpMinePage(tester);
-
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text(l10n.tabMine), findsOneWidget);
+    expect(find.text(l10n.mineAccountDisplayName), findsOneWidget);
+    expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
+    expect(find.text(l10n.mineAlertAllergyTitle), findsWidgets);
+    expect(find.text(l10n.mineProfileTitle), findsOneWidget);
 
     final scrollable = find.byType(Scrollable).first;
     final keys = <String>[
       'mine-account-header',
-      'mine-health-summary',
-      'mine-profile-grid',
-      'mine-plan-center',
-      'mine-report-privacy',
+      'mine-status-overview',
+      'mine-archive-section',
+      'mine-campus-section',
+      'mine-privacy-section',
+      'mine-reminder-section',
+      'mine-settings-section',
+      'mine-privacy-notice',
     ];
 
     for (final key in keys) {
       final finder = find.byKey(Key(key));
-      await tester.scrollUntilVisible(finder, 240, scrollable: scrollable);
+      await tester.scrollUntilVisible(finder, 260, scrollable: scrollable);
       await tester.pump(const Duration(milliseconds: 200));
       expect(finder, findsOneWidget);
     }
 
-    expect(find.text('Lumi 用户'), findsOneWidget);
-    expect(find.text('健康上下文摘要'), findsOneWidget);
-    expect(find.text('健康档案'), findsOneWidget);
-    expect(find.text('健康计划中心'), findsOneWidget);
-    expect(find.text('健康报告'), findsOneWidget);
-    expect(find.text('隐私控制'), findsOneWidget);
-  });
-
-  testWidgets('Mine page renders desktop side panels', (tester) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(1440, 1000);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
-    await _pumpMinePage(tester);
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    expect(find.byKey(const Key('mine-status-panel')), findsOneWidget);
-    expect(find.byKey(const Key('mine-onboarding-panel')), findsOneWidget);
-    expect(find.byKey(const Key('mine-quick-entries-panel')), findsOneWidget);
-    expect(find.text('档案状态'), findsOneWidget);
-    expect(find.text('Onboarding 进度'), findsOneWidget);
-    expect(find.text('快捷入口'), findsOneWidget);
+    expect(find.text(l10n.mineCampusSectionTitle), findsOneWidget);
+    expect(find.text(l10n.minePrivacyPermissionTitle), findsOneWidget);
+    expect(find.text(l10n.mineReminderSectionTitle), findsOneWidget);
+    expect(find.text(l10n.mineAccountSettingsTitle), findsOneWidget);
   });
 
   testWidgets('Mine page renders signed-out static view without loading', (
@@ -81,6 +67,7 @@ void main() {
       tester.view.resetDevicePixelRatio();
       tester.view.resetPhysicalSize();
     });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(
       ProviderScope(
@@ -92,94 +79,22 @@ void main() {
             (ref) async => throw Exception('should not fetch when signed out'),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const MinePage(),
-        ),
+        child: _materialApp(const MinePage()),
       ),
     );
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.text('当前未登录'), findsOneWidget);
-    expect(find.text('访客'), findsOneWidget);
-    expect(find.text('未登录'), findsOneWidget);
-    expect(find.text('去登录'), findsOneWidget);
+    expect(find.text(l10n.mineSignedOutNoticeTitle), findsOneWidget);
+    expect(find.text(l10n.mineAccountGuestDisplayName), findsOneWidget);
+    expect(find.text(l10n.authGoLogin), findsOneWidget);
     expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
-    expect(find.text('我的页面暂时没有加载出来'), findsNothing);
-  });
-
-  testWidgets('Mine page shows sign-out action and triggers logout', (
-    tester,
-  ) async {
-    final container = ProviderContainer(
-      overrides: [
-        authSessionProvider.overrideWith(
-          () => _LogoutTrackingAuthSessionNotifier(),
-        ),
-        healthContextSnapshotProvider.overrideWith(
-          (ref) => Future.value(_mockSnapshot),
-        ),
-      ],
-    );
-    addTearDown(container.dispose);
-
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
-            initialLocation: '/',
-            routes: [
-              GoRoute(path: '/', builder: (context, state) => const MinePage()),
-              GoRoute(
-                path: '/login',
-                builder: (context, state) =>
-                    const Scaffold(body: Text('login-page')),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    final signOutTooltip = find.byTooltip('退出登录');
-    expect(signOutTooltip, findsOneWidget);
-
-    await tester.tap(signOutTooltip);
-    await tester.pumpAndSettle();
-
-    final notifier =
-        container.read(authSessionProvider.notifier)
-            as _LogoutTrackingAuthSessionNotifier;
-    expect(notifier.logoutCalled, isTrue);
-    expect(find.text('login-page'), findsOneWidget);
+    expect(find.text(l10n.mineErrorTitle), findsNothing);
   });
 
   testWidgets('Mine settings action routes to settings page', (tester) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final container = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWith(
@@ -195,120 +110,34 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
-            initialLocation: '/',
-            routes: [
-              GoRoute(path: '/', builder: (context, state) => const MinePage()),
-              GoRoute(
-                path: '/settings',
-                builder: (context, state) =>
-                    const Scaffold(body: Text('settings-page')),
-              ),
-            ],
+        child: _routerApp([
+          GoRoute(path: '/', builder: (context, state) => const MinePage()),
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) =>
+                const Scaffold(body: Text('settings-page')),
           ),
-        ),
+        ]),
       ),
     );
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    await tester.tap(find.byTooltip('设置'));
+    await tester.tap(find.byTooltip(l10n.mineHeaderSettings));
     await tester.pumpAndSettle();
 
     expect(find.text('settings-page'), findsOneWidget);
   });
 
-  testWidgets(
-    'Mine account header shows account detail and routes to account',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(393, 852);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-
-      final container = ProviderContainer(
-        overrides: [
-          authSessionProvider.overrideWith(
-            () => _EmailSignedInAuthSessionNotifier(),
-          ),
-          healthContextSnapshotProvider.overrideWith(
-            (ref) => Future.value(_mockSnapshot),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp.router(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            routerConfig: GoRouter(
-              initialLocation: '/',
-              routes: [
-                GoRoute(
-                  path: '/',
-                  builder: (context, state) => const MinePage(),
-                ),
-                GoRoute(
-                  path: '/account',
-                  builder: (context, state) =>
-                      const Scaffold(body: Text('account-page')),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-
-      expect(find.text('邮箱已验证'), findsOneWidget);
-      expect(find.text('已设置密码'), findsOneWidget);
-      expect(find.text('已绑定 1 个'), findsOneWidget);
-      expect(find.text('上次登录 2026-01-02'), findsOneWidget);
-
-      await tester.tap(find.byKey(const Key('mine-account-manage-link')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('account-page'), findsOneWidget);
-    },
-  );
-
-  testWidgets('Mine profile grid routes basic info to edit page', (
-    tester,
-  ) async {
+  testWidgets('Mine account header routes to account page', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(393, 852);
     addTearDown(() {
       tester.view.resetDevicePixelRatio();
       tester.view.resetPhysicalSize();
     });
-
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final container = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWith(
@@ -324,35 +153,66 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
-            initialLocation: '/',
-            routes: [
-              GoRoute(path: '/', builder: (context, state) => const MinePage()),
-              GoRoute(
-                path: '/mine/profile/edit',
-                builder: (context, state) => const ProfileEditPage(),
-              ),
-            ],
+        child: _routerApp([
+          GoRoute(path: '/', builder: (context, state) => const MinePage()),
+          GoRoute(
+            path: '/account',
+            builder: (context, state) =>
+                const Scaffold(body: Text('account-page')),
           ),
-        ),
+        ]),
       ),
     );
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final basicInfo = find.text('基础资料');
+    expect(find.text('Lumi'), findsOneWidget);
+    expect(find.text(l10n.mineAccountStudentRole), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('mine-account-manage-link')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('account-page'), findsOneWidget);
+  });
+
+  testWidgets('Mine archive routes basic info to edit page', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(
+          () => _EmailSignedInAuthSessionNotifier(),
+        ),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) => Future.value(_mockSnapshot),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: _routerApp([
+          GoRoute(path: '/', builder: (context, state) => const MinePage()),
+          GoRoute(
+            path: '/mine/profile/edit',
+            builder: (context, state) => const ProfileEditPage(),
+          ),
+        ]),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final basicInfo = find.text(l10n.mineArchiveBasicTitle);
     await tester.scrollUntilVisible(
       basicInfo,
       240,
@@ -361,10 +221,10 @@ void main() {
     await tester.tap(basicInfo);
     await tester.pumpAndSettle();
 
-    expect(find.text('编辑档案'), findsOneWidget);
+    expect(find.text(l10n.mineEditProfileTitle), findsOneWidget);
   });
 
-  test('Mine dashboard uses auth session email in account header', () async {
+  test('Mine dashboard uses auth and health-context data', () async {
     final container = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWith(
@@ -383,6 +243,10 @@ void main() {
     expect(dashboard.account.emailVerified, isTrue);
     expect(dashboard.account.hasPassword, isTrue);
     expect(dashboard.account.linkedIdentityCount, 1);
+    expect(dashboard.profile.age, 27);
+    expect(dashboard.profile.allergyCount, 2);
+    expect(dashboard.profile.currentMedicineCount, 3);
+    expect(dashboard.completion.percentLabel, '80%');
     expect(
       dashboard.account.lastLoginAt,
       DateTime.parse('2026-01-02T08:30:00Z'),
@@ -399,20 +263,40 @@ Future<void> _pumpMinePage(WidgetTester tester) async {
           (ref) => Future.value(_mockSnapshot),
         ),
       ],
-      child: MaterialApp(
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        locale: const Locale('zh'),
-        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const MinePage(),
-      ),
+      child: _materialApp(const MinePage()),
     ),
+  );
+}
+
+Widget _materialApp(Widget home) {
+  return MaterialApp(
+    theme: AppTheme.light,
+    darkTheme: AppTheme.dark,
+    locale: const Locale('zh'),
+    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: home,
+  );
+}
+
+Widget _routerApp(List<RouteBase> routes) {
+  return MaterialApp.router(
+    theme: AppTheme.light,
+    darkTheme: AppTheme.dark,
+    locale: const Locale('zh'),
+    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
+    routerConfig: GoRouter(initialLocation: '/', routes: routes),
   );
 }
 
@@ -457,21 +341,6 @@ class _EmailSignedInAuthSessionNotifier extends AuthSessionNotifier {
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
       ),
     );
-  }
-}
-
-class _LogoutTrackingAuthSessionNotifier extends AuthSessionNotifier {
-  bool logoutCalled = false;
-
-  @override
-  AuthSessionState build() {
-    return const AuthSessionState(isAuthenticated: true, isLoading: false);
-  }
-
-  @override
-  Future<void> logout() async {
-    logoutCalled = true;
-    state = const AuthSessionState(isAuthenticated: false, isLoading: false);
   }
 }
 

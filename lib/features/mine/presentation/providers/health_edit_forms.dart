@@ -40,8 +40,10 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
   }
 }
 
-final healthProfileFormProvider = NotifierProvider<HealthProfileFormNotifier,
-  HealthProfileFormState>(HealthProfileFormNotifier.new);
+final healthProfileFormProvider =
+    NotifierProvider<HealthProfileFormNotifier, HealthProfileFormState>(
+      HealthProfileFormNotifier.new,
+    );
 
 // ── Allergy ──
 
@@ -79,10 +81,7 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
       ref.invalidate(mineDashboardProvider);
       state = const AllergyFormState(saved: true);
     } catch (e) {
-      state = AllergyFormState(
-        isSaving: false,
-        errorMessage: e.toString(),
-      );
+      state = AllergyFormState(isSaving: false, errorMessage: e.toString());
     }
   }
 
@@ -96,10 +95,7 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
       ref.invalidate(mineDashboardProvider);
       state = const AllergyFormState(saved: true);
     } catch (e) {
-      state = AllergyFormState(
-        isSaving: false,
-        errorMessage: e.toString(),
-      );
+      state = AllergyFormState(isSaving: false, errorMessage: e.toString());
     }
   }
 }
@@ -145,10 +141,7 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
       ref.invalidate(mineDashboardProvider);
       state = const ConditionFormState(saved: true);
     } catch (e) {
-      state = ConditionFormState(
-        isSaving: false,
-        errorMessage: e.toString(),
-      );
+      state = ConditionFormState(isSaving: false, errorMessage: e.toString());
     }
   }
 
@@ -162,16 +155,15 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
       ref.invalidate(mineDashboardProvider);
       state = const ConditionFormState(saved: true);
     } catch (e) {
-      state = ConditionFormState(
-        isSaving: false,
-        errorMessage: e.toString(),
-      );
+      state = ConditionFormState(isSaving: false, errorMessage: e.toString());
     }
   }
 }
 
-final conditionFormProvider = NotifierProvider<ConditionFormNotifier,
-  ConditionFormState>(ConditionFormNotifier.new);
+final conditionFormProvider =
+    NotifierProvider<ConditionFormNotifier, ConditionFormState>(
+      ConditionFormNotifier.new,
+    );
 
 // ── Current Medicine ──
 
@@ -238,5 +230,7 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
   }
 }
 
-final currentMedicineFormProvider = NotifierProvider<CurrentMedicineFormNotifier,
-  CurrentMedicineFormState>(CurrentMedicineFormNotifier.new);
+final currentMedicineFormProvider =
+    NotifierProvider<CurrentMedicineFormNotifier, CurrentMedicineFormState>(
+      CurrentMedicineFormNotifier.new,
+    );
