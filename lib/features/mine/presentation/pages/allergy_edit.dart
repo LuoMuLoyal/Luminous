@@ -5,6 +5,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
@@ -77,6 +78,7 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
     final l10n = AppLocalizations.of(context)!;
     final isNew = widget.allergyId == null;
     final isEdit = !isNew;
+    final session = ref.watch(authSessionProvider);
 
     ref.listen<AllergyFormState>(allergyFormProvider, (_, next) {
       if (next.saved) {
@@ -84,6 +86,19 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
         if (context.mounted) context.pop();
       }
     });
+
+    if (!session.canAccessProtectedData) {
+      return PageScaffoldShell(
+        title: isNew ? l10n.mineEditAllergyNewTitle : l10n.mineEditAllergyTitle,
+        centerTitle: true,
+        leading: const SettingsBackButton(),
+        children: [
+          session.isLoading
+              ? const _MineEditFormLoading()
+              : _MineAuthRequiredPrompt(onLogin: () => context.push('/login')),
+        ],
+      );
+    }
 
     // Watch snapshot for prefill
     final snapshot = ref.watch(healthContextSnapshotProvider);
@@ -112,7 +127,7 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
         title: l10n.mineEditAllergyTitle,
         centerTitle: true,
         leading: const SettingsBackButton(),
-        children: [const Center(child: CircularProgressIndicator())],
+        children: const [_MineEditFormLoading()],
       );
     }
 
@@ -236,6 +251,48 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
     if (widget.allergyId != null) {
       ref.read(allergyFormProvider.notifier).delete(widget.allergyId!);
     }
+  }
+}
+
+class _MineAuthRequiredPrompt extends StatelessWidget {
+  const _MineAuthRequiredPrompt({required this.onLogin});
+
+  final VoidCallback onLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.authNotSignedIn),
+            const SizedBox(height: AppSpacingTokens.md),
+            ElevatedButton(onPressed: onLogin, child: Text(l10n.authGoLogin)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MineEditFormLoading extends StatelessWidget {
+  const _MineEditFormLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AppInlineSkeletonSection(
+      children: [
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 56),
+        AppInlineSkeletonBlock(height: 96),
+        AppInlineSkeletonBlock(height: 56),
+      ],
+    );
   }
 }
 

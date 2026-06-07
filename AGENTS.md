@@ -43,7 +43,6 @@ dart run tool/regenerate_lucent_openapi.dart
 - Frontend code changed: append the entry to today's `docs/migration-log/YYYY-MM-DD.md`; keep `docs/MigrationLog.md` as the index only.
 - Network / OpenAPI / auth client changed: update `docs/OpenApi_Client.md`.
 - Visible text or l10n flow changed: update `docs/Localization.md`.
-- UI plan changed: update `docs/UI_Implementation_Plan.md`.
-- Project state changed: update `docs/Current_State.md`.
+- UI/page state or project state changed: update `docs/Current_State.md`.
 - Next work changed: update `docs/Next_Plan.md`.
 - Recurring mistakes or rules changed: update `docs/Project_Guardrails.md`.

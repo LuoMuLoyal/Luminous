@@ -44,7 +44,10 @@ class SearchPage extends ConsumerWidget {
     MedicineSearchResult result,
   ) async {
     final authSession = ref.read(authSessionProvider);
-    if (!authSession.isAuthenticated) {
+    if (!authSession.canAccessProtectedData) {
+      if (authSession.isLoading) {
+        return;
+      }
       if (context.mounted) {
         context.go('/login');
       }

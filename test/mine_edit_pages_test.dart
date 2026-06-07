@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/auth/domain/entities/auth_session.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/datasources/health_context_remote_data_source.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
@@ -58,7 +60,10 @@ void main() {
     await tester.tap(find.text('open-profile-edit'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('allergy-label-field')), 'Penicillin');
+    await tester.enterText(
+      find.byKey(const Key('allergy-label-field')),
+      'Penicillin',
+    );
     await tester.pump();
     await _scrollToSave(tester);
     await tester.tap(find.byKey(const Key('allergy-save-button')));
@@ -102,7 +107,9 @@ void main() {
     // Should prefill the label
     expect(find.text('Penicillin'), findsOneWidget);
     // Verify text field has the value
-    final field = tester.widget<TextField>(find.byKey(const Key('allergy-label-field')));
+    final field = tester.widget<TextField>(
+      find.byKey(const Key('allergy-label-field')),
+    );
     expect(field.controller?.text, 'Penicillin');
   });
 
@@ -137,7 +144,10 @@ void main() {
     await tester.tap(find.text('open-profile-edit'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('condition-label-field')), 'Asthma');
+    await tester.enterText(
+      find.byKey(const Key('condition-label-field')),
+      'Asthma',
+    );
     await tester.pump();
     await _scrollToSave(tester);
     await tester.tap(find.byKey(const Key('condition-save-button')));
@@ -258,6 +268,7 @@ Widget _app(
 }) {
   return ProviderScope(
     overrides: [
+      authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),
       healthContextRepositoryProvider.overrideWithValue(fakeRepo),
     ],
@@ -284,14 +295,30 @@ Widget _app(
               ),
             ),
           ),
-          GoRoute(
-            path: '/mine-edit',
-            builder: (context, state) => page,
-          ),
+          GoRoute(path: '/mine-edit', builder: (context, state) => page),
         ],
       ),
     ),
   );
+}
+
+class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return AuthSessionState(
+      isAuthenticated: true,
+      isLoading: false,
+      user: AuthUser(
+        id: 'user-1',
+        email: 'user@example.com',
+        nickname: 'Lumi',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+      ),
+    );
+  }
 }
 
 class _FakeHealthContextRepository implements HealthContextRepository {
@@ -310,19 +337,26 @@ class _FakeHealthContextRepository implements HealthContextRepository {
   Future<HealthContextSnapshot> fetchHealthContext() async => _snapshot;
 
   @override
-  Future<HealthContextSnapshot> updateProfile(HealthProfileUpdateInput input) async {
+  Future<HealthContextSnapshot> updateProfile(
+    HealthProfileUpdateInput input,
+  ) async {
     profileUpdate = input;
     return _snapshot;
   }
 
   @override
-  Future<HealthContextSnapshot> createAllergy(HealthAllergyWriteInput input) async {
+  Future<HealthContextSnapshot> createAllergy(
+    HealthAllergyWriteInput input,
+  ) async {
     allergyCreate = input;
     return _snapshot;
   }
 
   @override
-  Future<HealthContextSnapshot> updateAllergy(String id, HealthAllergyUpdateInput input) async {
+  Future<HealthContextSnapshot> updateAllergy(
+    String id,
+    HealthAllergyUpdateInput input,
+  ) async {
     allergyUpdate = input;
     return _snapshot;
   }
@@ -334,13 +368,18 @@ class _FakeHealthContextRepository implements HealthContextRepository {
   }
 
   @override
-  Future<HealthContextSnapshot> createCondition(HealthConditionWriteInput input) async {
+  Future<HealthContextSnapshot> createCondition(
+    HealthConditionWriteInput input,
+  ) async {
     conditionCreate = input;
     return _snapshot;
   }
 
   @override
-  Future<HealthContextSnapshot> updateCondition(String id, HealthConditionUpdateInput input) async {
+  Future<HealthContextSnapshot> updateCondition(
+    String id,
+    HealthConditionUpdateInput input,
+  ) async {
     conditionUpdate = input;
     return _snapshot;
   }
@@ -352,13 +391,18 @@ class _FakeHealthContextRepository implements HealthContextRepository {
   }
 
   @override
-  Future<HealthContextSnapshot> createCurrentMedicine(CurrentMedicineWriteInput input) async {
+  Future<HealthContextSnapshot> createCurrentMedicine(
+    CurrentMedicineWriteInput input,
+  ) async {
     medicineCreate = input;
     return _snapshot;
   }
 
   @override
-  Future<HealthContextSnapshot> updateCurrentMedicine(String id, CurrentMedicineUpdateInput input) async {
+  Future<HealthContextSnapshot> updateCurrentMedicine(
+    String id,
+    CurrentMedicineUpdateInput input,
+  ) async {
     medicineUpdate = input;
     return _snapshot;
   }
@@ -419,7 +463,46 @@ const _snapshotWithItems = HealthContextSnapshot(
     onboardingCompletedAt: '2026-01-01T00:00:00.000Z',
     extras: {},
   ),
-  allergies: [AllergyItem(id: 'allergy-1', label: 'Penicillin', kind: 'drug', reaction: 'Rash', severity: 'moderate', isActive: true, note: null, createdAt: '', updatedAt: '')],
-  conditions: [ConditionItem(id: 'cond-1', label: 'Asthma', status: 'active', diagnosedAt: '2024-02-01', resolvedAt: null, note: null, createdAt: '', updatedAt: '')],
-  currentMedicines: [CurrentMedicineItem(id: 'med-1', source: 'drugbank', sourceRefId: 'DB01050', displayName: 'Ibuprofen', strengthText: '200mg', doseText: null, route: 'oral', startedAt: '2026-01-01', endedAt: null, isCurrent: true, note: null, createdAt: '', updatedAt: '')],
+  allergies: [
+    AllergyItem(
+      id: 'allergy-1',
+      label: 'Penicillin',
+      kind: 'drug',
+      reaction: 'Rash',
+      severity: 'moderate',
+      isActive: true,
+      note: null,
+      createdAt: '',
+      updatedAt: '',
+    ),
+  ],
+  conditions: [
+    ConditionItem(
+      id: 'cond-1',
+      label: 'Asthma',
+      status: 'active',
+      diagnosedAt: '2024-02-01',
+      resolvedAt: null,
+      note: null,
+      createdAt: '',
+      updatedAt: '',
+    ),
+  ],
+  currentMedicines: [
+    CurrentMedicineItem(
+      id: 'med-1',
+      source: 'drugbank',
+      sourceRefId: 'DB01050',
+      displayName: 'Ibuprofen',
+      strengthText: '200mg',
+      doseText: null,
+      route: 'oral',
+      startedAt: '2026-01-01',
+      endedAt: null,
+      isCurrent: true,
+      note: null,
+      createdAt: '',
+      updatedAt: '',
+    ),
+  ],
 );

@@ -12,8 +12,11 @@ final mineRepositoryProvider = Provider<MineRepository>((ref) {
 
 final mineDashboardProvider = FutureProvider<MineDashboard>((ref) {
   final authSession = ref.watch(authSessionProvider);
-  if (!authSession.isAuthenticated) {
+  if (authSession.isConfirmedSignedOut) {
     return Future.value(MockMineRepository.signedOutDashboard);
+  }
+  if (!authSession.canAccessProtectedData) {
+    return pendingAuthSessionResolution();
   }
 
   return ref

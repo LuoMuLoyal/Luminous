@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_account_provider.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -35,6 +38,8 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
   late final TextEditingController _oldPasswordController;
   late final TextEditingController _newPasswordController;
   late final TextEditingController _deletePasswordController;
+  String? _formUserId;
+  bool _wechatIdentityLinkStarted = false;
 
   @override
   void initState() {
@@ -46,6 +51,7 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
     _oldPasswordController = TextEditingController();
     _newPasswordController = TextEditingController();
     _deletePasswordController = TextEditingController();
+    _formUserId = user?.id;
 
     if ((widget.wechatCode?.isNotEmpty ?? false) &&
         (widget.wechatState?.isNotEmpty ?? false)) {
@@ -53,7 +59,7 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
         if (!mounted) {
           return;
         }
-        _completeWechatIdentityLink(widget.wechatCode!, widget.wechatState!);
+        _maybeCompleteWechatIdentityLink();
       });
     }
   }
@@ -76,10 +82,24 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
     final accountNotifier = ref.read(authAccountProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
     final user = session.user;
-    final signedOut = !session.isAuthenticated || user == null;
+    final resolvingSession = session.isLoading;
+    final signedOut = !session.canAccessProtectedData || user == null;
     final success = accountState.successMessage?.isNotEmpty == true
         ? accountState.successMessage
         : null;
+
+    _syncControllersFromUser(user);
+
+    if ((widget.wechatCode?.isNotEmpty ?? false) &&
+        (widget.wechatState?.isNotEmpty ?? false) &&
+        !_wechatIdentityLinkStarted &&
+        !session.isLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _maybeCompleteWechatIdentityLink();
+        }
+      });
+    }
 
     return AuthShell(
       title: l10n.authAccountSettingsFormTitle,
@@ -90,7 +110,9 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (signedOut) ...[
+          if (resolvingSession) ...[
+            const _AccountSettingsLoading(),
+          ] else if (signedOut) ...[
             AuthStatusMessage(error: l10n.authNotSignedIn),
             const SizedBox(height: AppSpacingTokens.lg),
             AuthPrimaryButton(
@@ -267,14 +289,42 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
     );
   }
 
-  Future<void> _completeWechatIdentityLink(String code, String state) async {
-    final l10n = AppLocalizations.of(context)!;
+  void _syncControllersFromUser(AuthUser? user) {
+    if (user == null || _formUserId == user.id) {
+      return;
+    }
+
+    _formUserId = user.id;
+    _emailController.text = user.email ?? '';
+    _nicknameController.text = user.nickname ?? '';
+    _avatarController.text = user.avatar ?? '';
+  }
+
+  void _maybeCompleteWechatIdentityLink() {
+    if (_wechatIdentityLinkStarted ||
+        widget.wechatCode?.isNotEmpty != true ||
+        widget.wechatState?.isNotEmpty != true) {
+      return;
+    }
+
     final session = ref.read(authSessionProvider);
-    if (!session.isAuthenticated) {
+    if (session.isLoading) {
+      return;
+    }
+
+    _wechatIdentityLinkStarted = true;
+    if (!session.canAccessProtectedData) {
       context.go('/login');
       return;
     }
 
+    unawaited(
+      _completeWechatIdentityLink(widget.wechatCode!, widget.wechatState!),
+    );
+  }
+
+  Future<void> _completeWechatIdentityLink(String code, String state) async {
+    final l10n = AppLocalizations.of(context)!;
     final ok = await ref
         .read(authAccountProvider.notifier)
         .completeWechatWebIdentityLink(code: code, state: state);
@@ -287,6 +337,22 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
         context.go('/account');
       }
     }
+  }
+}
+
+class _AccountSettingsLoading extends StatelessWidget {
+  const _AccountSettingsLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AppInlineSkeleton(
+      children: [
+        AppInlineSkeletonBlock(height: 96),
+        AppInlineSkeletonBlock(height: 132),
+        AppInlineSkeletonBlock(height: 96),
+        AppInlineSkeletonBlock(height: 116),
+      ],
+    );
   }
 }
 

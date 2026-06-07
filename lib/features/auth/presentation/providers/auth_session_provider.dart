@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
@@ -16,10 +18,27 @@ abstract class AuthSessionState with _$AuthSessionState {
   }) = _AuthSessionState;
 }
 
+extension AuthSessionStateStatus on AuthSessionState {
+  bool get isRestoring => isLoading && !isAuthenticated;
+
+  bool get isConfirmedSignedOut => !isLoading && !isAuthenticated;
+
+  bool get canAccessProtectedData => !isLoading && isAuthenticated;
+}
+
+class AuthRequiredException implements Exception {
+  const AuthRequiredException();
+
+  @override
+  String toString() => 'AuthRequiredException';
+}
+
+Future<T> pendingAuthSessionResolution<T>() => Completer<T>().future;
+
 class AuthSessionNotifier extends Notifier<AuthSessionState> {
   @override
   AuthSessionState build() {
-    return const AuthSessionState();
+    return const AuthSessionState(isLoading: true);
   }
 
   Future<void> restore() async {
@@ -32,7 +51,11 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
       }
 
       final user = await ref.read(authRemoteDataSourceProvider).fetchAccount();
-      state = AuthSessionState(user: user, isAuthenticated: true);
+      state = AuthSessionState(
+        user: user,
+        isLoading: false,
+        isAuthenticated: true,
+      );
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
       await ref.read(lucentDioClientProvider).clearSession();
@@ -44,7 +67,11 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   }
 
   Future<void> applySession(AuthSession session) async {
-    state = AuthSessionState(user: session.user, isAuthenticated: true);
+    state = AuthSessionState(
+      user: session.user,
+      isLoading: false,
+      isAuthenticated: true,
+    );
   }
 
   void applyUser(AuthUser user) {

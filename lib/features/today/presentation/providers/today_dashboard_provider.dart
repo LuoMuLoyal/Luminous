@@ -1,12 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 
 const _todayDashboardTimeout = Duration(seconds: 5);
 
 final todayDashboardProvider = FutureProvider<TodayDashboard>((ref) {
+  final session = ref.watch(authSessionProvider);
+  if (session.isConfirmedSignedOut) {
+    return Future.value(MockTodayRepository.placeholderDashboard);
+  }
+  if (!session.canAccessProtectedData) {
+    return pendingAuthSessionResolution();
+  }
+
   return ref
       .watch(todayRepositoryProvider)
       .fetchDashboard()

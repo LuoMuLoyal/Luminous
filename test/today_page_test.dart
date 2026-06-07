@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/auth/domain/entities/auth_session.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/today_repository.dart';
@@ -27,6 +29,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
@@ -157,6 +160,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             _StaticTodayRepository(emptyDashboard),
           ),
@@ -207,6 +211,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
@@ -248,5 +253,24 @@ class _StaticTodayRepository implements TodayRepository {
   @override
   Future<TodayDashboard> fetchDashboard() async {
     return dashboard;
+  }
+}
+
+class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return AuthSessionState(
+      isAuthenticated: true,
+      isLoading: false,
+      user: AuthUser(
+        id: 'user-1',
+        email: 'user@example.com',
+        nickname: 'Lumi',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+      ),
+    );
   }
 }

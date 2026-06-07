@@ -7,11 +7,10 @@ Last updated: 2026-06-07
 | Need | Read |
 | --- | --- |
 | Product north star / competition positioning | `Product_North_Star.md` |
-| Current project state | `Current_State.md` |
+| Current project state, UI status, and UI rules | `Current_State.md` |
 | Recent changes | `MigrationLog.md` index and `migration-log/YYYY-MM-DD.md` entries |
 | Next goals / planning | `Next_Plan.md` |
 | Common mistakes to avoid | `Project_Guardrails.md` |
-| UI status and rules | `UI_Implementation_Plan.md` |
 | OpenAPI client workflow | `OpenApi_Client.md` |
 | Localization workflow | `Localization.md` |
 
@@ -23,8 +22,7 @@ Last updated: 2026-06-07
 | frontend code | today's `migration-log/YYYY-MM-DD.md` |
 | network / OpenAPI / auth client | `OpenApi_Client.md` |
 | visible text / l10n flow | `Localization.md` |
-| UI plan or page state changed | `UI_Implementation_Plan.md` |
-| project state changed | `Current_State.md` |
+| UI/page state or project state changed | `Current_State.md` |
 | next work changed | `Next_Plan.md` |
 | recurring mistake / guardrail changed | `Project_Guardrails.md` |
 

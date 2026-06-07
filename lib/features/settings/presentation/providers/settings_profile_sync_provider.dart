@@ -32,9 +32,9 @@ class SettingsProfileSyncNotifier extends Notifier<void> {
       _refreshDerivedState();
     } catch (error) {
       if (hasLocaleChange) {
-        await ref.read(appLocaleControllerProvider.notifier).setLocale(
-          previousLocale,
-        );
+        await ref
+            .read(appLocaleControllerProvider.notifier)
+            .setLocale(previousLocale);
       }
       rethrow;
     }
@@ -62,11 +62,13 @@ class SettingsProfileSyncNotifier extends Notifier<void> {
     Object? unitSystem = _noChange,
   }) async {
     final session = ref.read(authSessionProvider);
-    if (!session.isAuthenticated) {
+    if (!session.canAccessProtectedData) {
       return;
     }
 
-    final backendTimezone = identical(timezone, _noChange) ? _noChange : timezone;
+    final backendTimezone = identical(timezone, _noChange)
+        ? _noChange
+        : timezone;
     await ref
         .read(settingsProfileRemoteDataSourceProvider)
         .updatePreferences(

@@ -35,6 +35,7 @@ class SettingsPage extends ConsumerWidget {
     final currentLocale =
         ref.watch(appLocaleControllerProvider).asData?.value ??
         AppLocale.system;
+    final signedIn = session.canAccessProtectedData;
 
     return PageScaffoldShell(
       title: l10n.desktopSidebarSettings,
@@ -58,9 +59,12 @@ class SettingsPage extends ConsumerWidget {
                     l10n.mineAccountSignedOut,
                 typography: typography,
                 surface: surface,
-                onTap: () => context.push(
-                  session.isAuthenticated ? '/account' : '/login',
-                ),
+                onTap: () {
+                  if (session.isLoading) {
+                    return;
+                  }
+                  context.push(signedIn ? '/account' : '/login');
+                },
               ),
             ],
           ),
@@ -126,12 +130,12 @@ class SettingsPage extends ConsumerWidget {
         const SizedBox(height: AppSpacingTokens.xl),
         _FooterActionButton(
           key: const Key('settings-footer-action'),
-          label: session.isAuthenticated ? l10n.authSignOut : l10n.authGoLogin,
-          destructive: session.isAuthenticated,
+          label: signedIn ? l10n.authSignOut : l10n.authGoLogin,
+          destructive: signedIn,
           onTap: session.isLoading
               ? null
               : () async {
-                  if (!session.isAuthenticated) {
+                  if (!session.canAccessProtectedData) {
                     context.go('/login');
                     return;
                   }

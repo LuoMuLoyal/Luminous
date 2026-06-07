@@ -21,8 +21,11 @@ final selectedRecordDateProvider =
 final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) {
   final session = ref.watch(authSessionProvider);
   final selectedDate = ref.watch(selectedRecordDateProvider);
-  if (!session.isAuthenticated) {
+  if (session.isConfirmedSignedOut) {
     return const MockRecordRepository().fetchDashboard(selectedDate);
+  }
+  if (!session.canAccessProtectedData) {
+    return pendingAuthSessionResolution();
   }
 
   return ref
