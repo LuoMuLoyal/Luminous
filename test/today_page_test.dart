@@ -10,7 +10,16 @@ import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('Today page renders key dashboard sections', (tester) async {
+  testWidgets('Today page renders key mobile dashboard sections', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -38,12 +47,12 @@ void main() {
 
     final scrollable = find.byType(Scrollable);
     final keys = <String>[
-      'today-water-card',
-      'today-medication-card',
       'today-health-summary-card',
-      'today-meal-card',
-      'today-environment-card',
-      'today-lumi-card',
+      'today-medication-card',
+      'today-water-card',
+      'today-mood-card',
+      'today-campus-card',
+      'today-recommendation-card',
     ];
 
     for (final key in keys) {
@@ -75,6 +84,7 @@ void main() {
         TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
+        TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
       ],
       mealSuggestion: const TodayMealSuggestion(
         type: TodayMealSuggestionType.highProteinBalancedLunch,
@@ -125,11 +135,14 @@ void main() {
     // Should render without crashing — water card and medication card present
     expect(find.byKey(const Key('today-water-card')), findsOneWidget);
     expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
-    // Lumi card should show preview badge (scroll to bottom)
-    final lumiCard = find.byKey(const Key('today-lumi-card'));
-    await tester.scrollUntilVisible(lumiCard, 240);
+    // Unsupported sections should still render with locale-aware mock copy.
+    final recommendationCard = find.byKey(
+      const Key('today-recommendation-card'),
+    );
+    await tester.scrollUntilVisible(recommendationCard, 240);
     await tester.pump(const Duration(milliseconds: 200));
-    expect(find.text('预览'), findsOneWidget);
+    expect(find.text('为你推荐'), findsOneWidget);
+    expect(find.text('平稳'), findsWidgets);
   });
 
   testWidgets('Today page uses wide dashboard layout on desktop', (

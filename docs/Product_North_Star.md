@@ -47,6 +47,14 @@ Long, readable concept screens for the five-tab mobile structure:
 | 报告 | `docs/assets/product-north-star-tabs-long-v2/tab-4-report-long.png` |
 | 我的 | `docs/assets/product-north-star-tabs-long-v2/tab-5-mine-long.png` |
 
+## Web Concept Screen
+
+The web concept remains a lightweight report view for weekly summaries, export preview, printing, and competition demos:
+
+| Scope | Concept Image |
+| --- | --- |
+| Web report view | `docs/assets/product-north-star-web-report-v1.png` |
+
 ## MVP Demo Scenarios
 
 1. Cold / fever medication safety

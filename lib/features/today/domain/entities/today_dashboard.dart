@@ -8,7 +8,7 @@ enum TodayDayMoment { morning, afternoon, evening }
 
 enum TodayMedicationKind { atorvastatin }
 
-enum TodayVitalType { heartRate, bloodPressure, sleep }
+enum TodayVitalType { heartRate, bloodPressure, sleep, mood }
 
 enum TodayMealSuggestionType { highProteinBalancedLunch }
 

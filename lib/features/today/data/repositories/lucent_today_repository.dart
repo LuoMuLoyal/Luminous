@@ -80,6 +80,10 @@ class LucentTodayRepository implements TodayRepository {
         ),
         TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
+        TodayVitalSummary(
+          type: TodayVitalType.mood,
+          valueLabel: recordLatest['mood'] ?? '--',
+        ),
       ],
       mealSuggestion: _staticMealSuggestion,
       environment: _staticEnvironment,

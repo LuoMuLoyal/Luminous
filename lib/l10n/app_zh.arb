@@ -637,9 +637,9 @@
   "todayGreetingTitleMorning": "早上好，阳光正好",
   "todayGreetingTitleAfternoon": "下午好，继续稳稳推进",
   "todayGreetingTitleEvening": "晚上好，准备轻松收尾",
-  "todayGreetingSubtitleMorning": "你昨晚睡得还不错，喝神净满满！",
-  "todayGreetingSubtitleAfternoon": "午后先补水，再把提醒和状态慢慢对齐。",
-  "todayGreetingSubtitleEvening": "把今天的状态收拢一下，给明天留出节奏。",
+  "todayGreetingSubtitleMorning": "早上好，照顾好自己每一天",
+  "todayGreetingSubtitleAfternoon": "下午好，照顾好自己每一天",
+  "todayGreetingSubtitleEvening": "晚上好，照顾好自己每一天",
   "todayHeroCareLine": "我们会在需要时，给你恰到好处的提醒",
   "todayHeroImagePlaceholder": "Banner 图片占位",
   "todayWaterCardTitle": "今日喝水",
@@ -693,7 +693,7 @@
     }
   },
   "todayMedicationNameAtorvastatin": "阿托伐他汀",
-  "todayHealthSummaryCardTitle": "健康摘要",
+  "todayHealthSummaryCardTitle": "健康状态总览",
   "todayVitalHeartRateLabel": "心率",
   "todayVitalHeartRateUnit": "次/分",
   "todayVitalBloodPressureLabel": "血压",
@@ -725,6 +725,86 @@
   "todayEmptyDescription": "先记录饮水、用药或体征，我们会为你提供个性化建议。",
   "todayEmptyAction": "去记录",
   "todayRetryAction": "重试",
+  "todayUpdatedAt": "更新于 {time}",
+  "@todayUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "todayHydrationOverviewLabel": "饮水",
+  "todayMoodOverviewLabel": "情绪",
+  "todayMedicationOverviewLabel": "用药",
+  "todayPeriodOverviewLabel": "经期",
+  "todayPeriodDayValue": "第 {day} 天",
+  "@todayPeriodDayValue": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "todayPeriodStatus": "经期中",
+  "todayStatusNeedsImprovement": "待提升",
+  "todayStatusCompleted": "已完成",
+  "todayMedicationPendingStatus": "待服用",
+  "todayMoodStableValue": "平稳",
+  "todayPrioritySectionTitle": "今日优先事项",
+  "todayManageAction": "管理",
+  "todayMedicationPrioritySubtitle": "今日 {count} 条待服用",
+  "@todayMedicationPrioritySubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationPriorityDetail": "{time} {medicineName}",
+  "@todayMedicationPriorityDetail": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "medicineName": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMedicationTakeAction": "去服用",
+  "todayWaterPriorityTitle": "饮水目标",
+  "todayWaterGoalMl": "今日目标 2000 ml",
+  "todayDrinkWaterAction": "去喝水",
+  "todayMoodCheckinTitle": "情绪打卡",
+  "todayMoodCheckinSubtitle": "关注情绪变化",
+  "todayMoodNoRecord": "今日未记录",
+  "todayMoodCheckinAction": "去打卡",
+  "todayCampusGuideTitle": "校园就医指南",
+  "todayCampusGuideSubtitle": "校医院与服务指引",
+  "todayCampusGuideDetail": "快速了解就医流程",
+  "todayViewAction": "去查看",
+  "todayRecommendationSectionTitle": "为你推荐",
+  "todayViewMoreAction": "查看更多",
+  "todayRecommendationMedicineSafetyTitle": "用药安全小贴士",
+  "todayRecommendationMedicineSafetyBody": "按时按量用药，勿随意增减或停药",
+  "todayRecommendationSleepTitle": "睡前放松，助力睡眠",
+  "todayRecommendationSleepBody": "睡前 1 小时减少蓝光，放松身心",
+  "todayRecommendationWaterTitle": "少量多次喝水",
+  "todayRecommendationWaterBody": "保持身体水分，有助于专注与代谢",
+  "todayRecommendationCoffeeTitle": "咖啡因适量，注意时间",
+  "todayRecommendationCoffeeBody": "下午 3 点后尽量避免，影响睡眠质量",
+  "todayLearnMoreAction": "了解更多",
+  "todayCompleteAction": "去完成",
+  "todayTrendSectionTitle": "今日趋势",
+  "todayTrendAnalysisAction": "查看趋势分析",
+  "todayTrendSleepTitle": "睡眠时长",
+  "todayTrendWaterTitle": "饮水进度",
+  "todayTrendMoodTitle": "情绪状态",
+  "todayQuickRecordSectionTitle": "快捷记录",
+  "todayQuickMedication": "记用药",
+  "todayQuickSymptom": "记症状",
+  "todayQuickMood": "记情绪",
+  "todayQuickWater": "记饮水",
   "placeholderSoon": "{label} · 即将上线",
   "@placeholderSoon": {
     "placeholders": {

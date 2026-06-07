@@ -22,6 +22,7 @@ class MockTodayRepository implements TodayRepository {
       TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
       TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
       TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
+      TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
     ],
     mealSuggestion: TodayMealSuggestion(
       type: TodayMealSuggestionType.highProteinBalancedLunch,
@@ -43,47 +44,51 @@ class MockTodayRepository implements TodayRepository {
     ),
   );
 
+  static const previewDashboard = TodayDashboard(
+    user: TodayUserSnapshot(
+      moment: TodayDayMoment.morning,
+      hasUnreadNotifications: true,
+    ),
+    water: TodayWaterSummary(completedCount: 5, targetCount: 8),
+    medication: TodayMedicationSummary(
+      medicineCount: 1,
+      pendingCount: 1,
+      nextDoseTimeLabel: '12:30',
+      nextMedicine: TodayMedicationKind.atorvastatin,
+      nextMedicineName: '维生素B族',
+    ),
+    vitals: <TodayVitalSummary>[
+      TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '72'),
+      TodayVitalSummary(
+        type: TodayVitalType.bloodPressure,
+        valueLabel: '118/76',
+      ),
+      TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '7.2'),
+      TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '平稳'),
+    ],
+    mealSuggestion: TodayMealSuggestion(
+      type: TodayMealSuggestionType.highProteinBalancedLunch,
+    ),
+    environment: TodayEnvironmentSummary(
+      signals: <TodayEnvironmentSignal>[
+        TodayEnvironmentSignal(
+          type: TodayEnvironmentSignalType.pollen,
+          level: TodayEnvironmentLevel.high,
+        ),
+        TodayEnvironmentSignal(
+          type: TodayEnvironmentSignalType.uv,
+          level: TodayEnvironmentLevel.medium,
+        ),
+      ],
+    ),
+    lumiSuggestion: TodayLumiSuggestion(
+      type: TodayLumiSuggestionType.pollenProtection,
+    ),
+  );
+
   @override
   Future<TodayDashboard> fetchDashboard() async {
-    return const TodayDashboard(
-      user: TodayUserSnapshot(
-        moment: TodayDayMoment.morning,
-        hasUnreadNotifications: true,
-      ),
-      water: TodayWaterSummary(completedCount: 5, targetCount: 8),
-      medication: TodayMedicationSummary(
-        medicineCount: 2,
-        pendingCount: 1,
-        nextDoseTimeLabel: '12:00',
-        nextMedicine: TodayMedicationKind.atorvastatin,
-      ),
-      vitals: <TodayVitalSummary>[
-        TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '72'),
-        TodayVitalSummary(
-          type: TodayVitalType.bloodPressure,
-          valueLabel: '118/76',
-        ),
-        TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '7.2'),
-      ],
-      mealSuggestion: TodayMealSuggestion(
-        type: TodayMealSuggestionType.highProteinBalancedLunch,
-      ),
-      environment: TodayEnvironmentSummary(
-        signals: <TodayEnvironmentSignal>[
-          TodayEnvironmentSignal(
-            type: TodayEnvironmentSignalType.pollen,
-            level: TodayEnvironmentLevel.high,
-          ),
-          TodayEnvironmentSignal(
-            type: TodayEnvironmentSignalType.uv,
-            level: TodayEnvironmentLevel.medium,
-          ),
-        ],
-      ),
-      lumiSuggestion: TodayLumiSuggestion(
-        type: TodayLumiSuggestionType.pollenProtection,
-      ),
-    );
+    return previewDashboard;
   }
 }
 

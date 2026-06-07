@@ -637,9 +637,9 @@
   "todayGreetingTitleMorning": "Good morning, the light is perfect",
   "todayGreetingTitleAfternoon": "Good afternoon, keep the rhythm steady",
   "todayGreetingTitleEvening": "Good evening, let's close gently",
-  "todayGreetingSubtitleMorning": "You slept fairly well last night. Time to refill with calm energy.",
-  "todayGreetingSubtitleAfternoon": "Start with water, then bring reminders and status back into sync.",
-  "todayGreetingSubtitleEvening": "Gather today's signals gently and leave room for tomorrow.",
+  "todayGreetingSubtitleMorning": "Good morning. Take care of yourself today.",
+  "todayGreetingSubtitleAfternoon": "Good afternoon. Take care of yourself today.",
+  "todayGreetingSubtitleEvening": "Good evening. Take care of yourself today.",
   "todayHeroCareLine": "When you need a nudge, we will keep it timely and gentle.",
   "todayHeroImagePlaceholder": "Banner image placeholder",
   "todayWaterCardTitle": "Today's water",
@@ -693,7 +693,7 @@
     }
   },
   "todayMedicationNameAtorvastatin": "Atorvastatin",
-  "todayHealthSummaryCardTitle": "Health summary",
+  "todayHealthSummaryCardTitle": "Health status overview",
   "todayVitalHeartRateLabel": "Heart rate",
   "todayVitalHeartRateUnit": "bpm",
   "todayVitalBloodPressureLabel": "Blood pressure",
@@ -725,6 +725,86 @@
   "todayEmptyDescription": "Log water, medication, or vitals first, then we can shape personalized suggestions.",
   "todayEmptyAction": "Start logging",
   "todayRetryAction": "Retry",
+  "todayUpdatedAt": "Updated at {time}",
+  "@todayUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "todayHydrationOverviewLabel": "Water",
+  "todayMoodOverviewLabel": "Mood",
+  "todayMedicationOverviewLabel": "Medication",
+  "todayPeriodOverviewLabel": "Period",
+  "todayPeriodDayValue": "Day {day}",
+  "@todayPeriodDayValue": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "todayPeriodStatus": "In period",
+  "todayStatusNeedsImprovement": "Needs lift",
+  "todayStatusCompleted": "Completed",
+  "todayMedicationPendingStatus": "Pending",
+  "todayMoodStableValue": "Stable",
+  "todayPrioritySectionTitle": "Today's priorities",
+  "todayManageAction": "Manage",
+  "todayMedicationPrioritySubtitle": "{count} pending today",
+  "@todayMedicationPrioritySubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationPriorityDetail": "{time} {medicineName}",
+  "@todayMedicationPriorityDetail": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "medicineName": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMedicationTakeAction": "Take now",
+  "todayWaterPriorityTitle": "Water goal",
+  "todayWaterGoalMl": "Today's goal 2000 ml",
+  "todayDrinkWaterAction": "Drink water",
+  "todayMoodCheckinTitle": "Mood check-in",
+  "todayMoodCheckinSubtitle": "Track mood changes",
+  "todayMoodNoRecord": "No record today",
+  "todayMoodCheckinAction": "Check in",
+  "todayCampusGuideTitle": "Campus care guide",
+  "todayCampusGuideSubtitle": "Clinic and service guide",
+  "todayCampusGuideDetail": "Review the care flow quickly",
+  "todayViewAction": "View",
+  "todayRecommendationSectionTitle": "Recommended for you",
+  "todayViewMoreAction": "View more",
+  "todayRecommendationMedicineSafetyTitle": "Medication safety tips",
+  "todayRecommendationMedicineSafetyBody": "Take medicines on time and do not adjust doses casually",
+  "todayRecommendationSleepTitle": "Wind down before sleep",
+  "todayRecommendationSleepBody": "Reduce blue light one hour before bed and relax your body",
+  "todayRecommendationWaterTitle": "Drink small amounts often",
+  "todayRecommendationWaterBody": "Staying hydrated supports focus and metabolism",
+  "todayRecommendationCoffeeTitle": "Keep caffeine timed",
+  "todayRecommendationCoffeeBody": "Avoid it after 3 PM when possible to protect sleep quality",
+  "todayLearnMoreAction": "Learn more",
+  "todayCompleteAction": "Complete",
+  "todayTrendSectionTitle": "Today's trends",
+  "todayTrendAnalysisAction": "View trend analysis",
+  "todayTrendSleepTitle": "Sleep duration",
+  "todayTrendWaterTitle": "Water progress",
+  "todayTrendMoodTitle": "Mood state",
+  "todayQuickRecordSectionTitle": "Quick record",
+  "todayQuickMedication": "Log medicine",
+  "todayQuickSymptom": "Log symptom",
+  "todayQuickMood": "Log mood",
+  "todayQuickWater": "Log water",
   "placeholderSoon": "{label} · Coming Soon",
   "@placeholderSoon": {
     "placeholders": {

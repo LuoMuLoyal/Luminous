@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
@@ -21,11 +22,10 @@ class TodayDashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
-    final content = isDesktop
-        ? _DesktopTodayDashboard(dashboard: dashboard, isLoading: isLoading)
-        : _MobileTodayDashboard(dashboard: dashboard, isLoading: isLoading);
 
-    return content;
+    return isDesktop
+        ? _DesktopTodayDashboard(dashboard: dashboard)
+        : _MobileTodayDashboard(dashboard: dashboard);
   }
 }
 
@@ -73,120 +73,84 @@ class TodayEmptyView extends StatelessWidget {
 }
 
 class _MobileTodayDashboard extends StatelessWidget {
-  const _MobileTodayDashboard({
-    required this.dashboard,
-    required this.isLoading,
-  });
+  const _MobileTodayDashboard({required this.dashboard});
 
   final TodayDashboard dashboard;
-  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final sections = <Widget>[
       _TodayTopBar(
+        moment: dashboard.user.moment,
         hasUnreadNotifications: dashboard.user.hasUnreadNotifications,
       ),
-      _TodayHero(moment: dashboard.user.moment),
-      _TodayWaterCard(water: dashboard.water, isLoading: isLoading),
-      _TodayMedicationCard(
-        medication: dashboard.medication,
-        isLoading: isLoading,
-      ),
-      _TodayHealthSummaryCard(vitals: dashboard.vitals, isLoading: isLoading),
-      _TodayMealSuggestionCard(mealSuggestion: dashboard.mealSuggestion),
-      _TodayEnvironmentCard(
-        environment: dashboard.environment,
-        isLoading: isLoading,
-      ),
-      _TodayLumiCard(suggestion: dashboard.lumiSuggestion),
+      _HealthOverviewCard(dashboard: dashboard),
+      _PrioritySection(dashboard: dashboard),
+      _RecommendationSection(dashboard: dashboard),
+      _TrendSection(dashboard: dashboard),
+      const _QuickRecordSection(),
     ];
 
     return ListView.separated(
       key: const PageStorageKey<String>('today-dashboard-scroll'),
       padding: const EdgeInsets.fromLTRB(
         AppSpacingTokens.md,
-        AppSpacingTokens.sm,
         AppSpacingTokens.md,
-        AppSpacingTokens.xl,
+        AppSpacingTokens.md,
+        104,
       ),
       itemBuilder: (context, index) => sections[index],
-      separatorBuilder: (context, index) => SizedBox(
-        height: index == 0 ? AppSpacingTokens.md : AppSpacingTokens.sm,
-      ),
+      separatorBuilder: (context, index) => const SizedBox(height: 22),
       itemCount: sections.length,
     );
   }
 }
 
 class _DesktopTodayDashboard extends StatelessWidget {
-  const _DesktopTodayDashboard({
-    required this.dashboard,
-    required this.isLoading,
-  });
+  const _DesktopTodayDashboard({required this.dashboard});
 
   final TodayDashboard dashboard;
-  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       key: const PageStorageKey<String>('today-dashboard-desktop-scroll'),
       padding: const EdgeInsets.fromLTRB(
-        AppSpacingTokens.md,
         AppSpacingTokens.xl,
-        AppSpacingTokens.md,
+        AppSpacingTokens.xl,
+        AppSpacingTokens.xl,
         AppSpacingTokens.xl,
       ),
       children: [
-        _TodayHero(moment: dashboard.user.moment, desktop: true),
-        const SizedBox(height: AppSpacingTokens.md),
+        _TodayTopBar(
+          moment: dashboard.user.moment,
+          hasUnreadNotifications: dashboard.user.hasUnreadNotifications,
+        ),
+        const SizedBox(height: AppSpacingTokens.lg),
+        _HealthOverviewCard(dashboard: dashboard),
+        const SizedBox(height: AppSpacingTokens.lg),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 5,
-              child: _TodayWaterCard(
-                water: dashboard.water,
-                isLoading: isLoading,
+              flex: 7,
+              child: Column(
+                children: [
+                  _PrioritySection(dashboard: dashboard),
+                  const SizedBox(height: AppSpacingTokens.lg),
+                  _TrendSection(dashboard: dashboard),
+                ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.md),
+            const SizedBox(width: AppSpacingTokens.lg),
             Expanded(
               flex: 5,
-              child: _TodayMedicationCard(
-                medication: dashboard.medication,
-                isLoading: isLoading,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _TodayHealthSummaryCard(
-          vitals: dashboard.vitals,
-          desktop: true,
-          isLoading: isLoading,
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _TodayMealSuggestionCard(
-          mealSuggestion: dashboard.mealSuggestion,
-          desktop: true,
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: _TodayEnvironmentCard(
-                environment: dashboard.environment,
-                isLoading: isLoading,
-              ),
-            ),
-            const SizedBox(width: AppSpacingTokens.md),
-            Expanded(
-              child: _TodayLumiCard(
-                suggestion: dashboard.lumiSuggestion,
-                desktop: true,
+              child: Column(
+                children: [
+                  _RecommendationSection(dashboard: dashboard, compact: true),
+                  const SizedBox(height: AppSpacingTokens.lg),
+                  const _QuickRecordSection(),
+                ],
               ),
             ),
           ],
@@ -197,8 +161,12 @@ class _DesktopTodayDashboard extends StatelessWidget {
 }
 
 class _TodayTopBar extends StatelessWidget {
-  const _TodayTopBar({required this.hasUnreadNotifications});
+  const _TodayTopBar({
+    required this.moment,
+    required this.hasUnreadNotifications,
+  });
 
+  final TodayDayMoment moment;
   final bool hasUnreadNotifications;
 
   @override
@@ -208,15 +176,32 @@ class _TodayTopBar extends StatelessWidget {
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.appTitle,
-          style: typography.displaySm.copyWith(
-            color: TodayPalette.brand,
-            fontWeight: FontWeight.w700,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.todayHeroTitle,
+                style: typography.displayXl.copyWith(
+                  color: theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0,
+                ),
+              ),
+              const SizedBox(height: AppSpacingTokens.xxs),
+              Text(
+                _greetingSubtitle(l10n, moment),
+                style: typography.bodyMd.copyWith(
+                  color: Theme.of(context).extension<AppThemeSurface>()!.body,
+                  letterSpacing: 0,
+                ),
+              ),
+            ],
           ),
         ),
-        const Spacer(),
+        const SizedBox(width: AppSpacingTokens.md),
         _NotificationButton(hasUnread: hasUnreadNotifications),
       ],
     );
@@ -231,39 +216,29 @@ class _NotificationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
     return Tooltip(
       message: l10n.todayNotificationsTooltip,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: surface.canvas.withValues(alpha: 0.88),
-              borderRadius: BorderRadius.circular(AppRadiusTokens.pillSm),
-              border: Border.all(color: surface.hairline),
-            ),
-            child: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications_none_rounded,
-                color: Theme.of(context).colorScheme.onSurface,
-                size: 20,
-              ),
-              visualDensity: VisualDensity.compact,
-              style: const ButtonStyle(
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
+          IconButton(
+            onPressed: () =>
+                AppToast.show(context, l10n.todayNotificationsTooltip),
+            icon: const Icon(Icons.notifications_none_rounded, size: 28),
+            color: Theme.of(context).colorScheme.onSurface,
+            visualDensity: VisualDensity.compact,
+            style: const ButtonStyle(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),
           if (hasUnread)
             const Positioned(
-              right: 10,
-              top: 10,
+              right: 11,
+              top: 9,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: TodayPalette.coralStrong,
+                  color: Color(0xFFFF2D3D),
                   shape: BoxShape.circle,
                 ),
                 child: SizedBox.square(dimension: 8),
@@ -275,567 +250,230 @@ class _NotificationButton extends StatelessWidget {
   }
 }
 
-class _TodayHero extends StatelessWidget {
-  const _TodayHero({required this.moment, this.desktop = false});
+class _HealthOverviewCard extends StatelessWidget {
+  const _HealthOverviewCard({required this.dashboard});
 
-  final TodayDayMoment moment;
-  final bool desktop;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = desktop
-        ? AppTypographyTokens.desktop(theme.colorScheme.onSurface)
-        : AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            TodayPalette.mintSoft,
-            surface.canvas.withValues(alpha: 0.94),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-        boxShadow: AppShadowTokens.level1,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: Stack(
-          children: [
-            Positioned(
-              right: desktop ? AppSpacingTokens.xl : AppSpacingTokens.md,
-              bottom: desktop ? AppSpacingTokens.md : AppSpacingTokens.sm,
-              top: desktop ? AppSpacingTokens.md : AppSpacingTokens.sm,
-              child: TodayImagePlaceholder(
-                label: l10n.todayHeroImagePlaceholder,
-                width: desktop ? 230 : 104,
-                icon: Icons.image_outlined,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                desktop ? AppSpacingTokens.xl : AppSpacingTokens.md,
-                desktop ? AppSpacingTokens.lg : AppSpacingTokens.md,
-                desktop ? 286 : 126,
-                desktop ? AppSpacingTokens.lg : AppSpacingTokens.md,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _greetingTitle(l10n, moment),
-                    style:
-                        (desktop ? typography.displayLg : typography.displayMd)
-                            .copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.sm),
-                  Text(
-                    _greetingSubtitle(l10n, moment),
-                    style: typography.bodyMd.copyWith(color: surface.body),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.xxs),
-                  Text(
-                    l10n.todayHeroCareLine,
-                    style: typography.bodyMd.copyWith(color: surface.body),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TodayWaterCard extends StatelessWidget {
-  const _TodayWaterCard({required this.water, required this.isLoading});
-
-  final TodayWaterSummary water;
-  final bool isLoading;
+  final TodayDashboard dashboard;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
-
-    return TodayPanel(
-      key: const Key('today-water-card'),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxWidth < 360;
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TodaySectionHeader(
-                title: l10n.todayWaterCardTitle,
-                compact: true,
-              ),
-              const SizedBox(height: AppSpacingTokens.md),
-              if (isLoading)
-                Row(
-                  children: [
-                    AppInlineSkeletonCircle(size: compact ? 112 : 128),
-                    const SizedBox(width: AppSpacingTokens.lg),
-                    const Expanded(
-                      child: AppInlineSkeleton(
-                        children: [
-                          AppInlineSkeletonBlock(height: 28, widthFactor: 0.45),
-                          AppInlineSkeletonBlock(height: 16, widthFactor: 0.8),
-                          AppInlineSkeletonBlock(height: 18, widthFactor: 0.62),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              else
-                Row(
-                  children: [
-                    TodayWaterArc(
-                      completedCount: water.completedCount,
-                      targetCount: water.targetCount,
-                      size: compact ? 112 : 128,
-                    ),
-                    const SizedBox(width: AppSpacingTokens.lg),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: typography.displayMd.copyWith(
-                                color: theme.colorScheme.onSurface,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              children: [
-                                TextSpan(text: '${water.completedCount}'),
-                                TextSpan(
-                                  text: ' ${l10n.todayWaterUnit}',
-                                  style: typography.bodyMd.copyWith(
-                                    color: surface.body,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacingTokens.xs),
-                          Text(
-                            l10n.todayWaterGoalCount(water.targetCount),
-                            style: typography.bodySm.copyWith(
-                              color: surface.body,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacingTokens.md),
-                          Text(
-                            l10n.todayWaterRemainingCount(water.remainingCount),
-                            style: typography.bodyMdStrong.copyWith(
-                              color: TodayPalette.brand,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _TodayMedicationCard extends StatelessWidget {
-  const _TodayMedicationCard({
-    required this.medication,
-    required this.isLoading,
-  });
-
-  final TodayMedicationSummary medication;
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-
-    return TodayPanel(
-      key: const Key('today-medication-card'),
-      color: Color.alphaBlend(
-        TodayPalette.amberSoft.withValues(alpha: 0.38),
-        surface.canvas,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TodaySectionHeader(
-            title: l10n.todayMedicationCardTitle,
-            compact: true,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const TodayStatusDot(),
-                const SizedBox(width: AppSpacingTokens.sm),
-                TodayTextAction(
-                  label: l10n.todayMedicationAction,
-                  emphasized: true,
-                  onTap: () {},
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacingTokens.md),
-          if (isLoading)
-            const AppInlineSkeleton(
-              children: [
-                AppInlineSkeletonBlock(height: 20, widthFactor: 0.72),
-                AppInlineSkeletonBlock(height: 16, widthFactor: 0.86),
-              ],
-            )
-          else
-            Row(
-              children: [
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: TodayPalette.amberSoft,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(AppSpacingTokens.md),
-                    child: Icon(
-                      Icons.medication_rounded,
-                      color: TodayPalette.amber,
-                      size: 30,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacingTokens.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.todayMedicationSummary(
-                          medication.medicineCount,
-                          medication.pendingCount,
-                        ),
-                        style: typography.bodyMdStrong,
-                      ),
-                      const SizedBox(height: AppSpacingTokens.xs),
-                      Text(
-                        l10n.todayMedicationNextDose(
-                          medication.nextDoseTimeLabel,
-                          medication.nextMedicineName ??
-                              _medicationName(l10n, medication.nextMedicine),
-                        ),
-                        style: typography.bodySm.copyWith(color: surface.body),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TodayHealthSummaryCard extends StatelessWidget {
-  const _TodayHealthSummaryCard({
-    required this.vitals,
-    required this.isLoading,
-    this.desktop = false,
-  });
-
-  final List<TodayVitalSummary> vitals;
-  final bool isLoading;
-  final bool desktop;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final metricTiles = [
-      TodayHealthMetricTile(
-        icon: Icons.favorite_rounded,
-        color: TodayPalette.coralStrong,
-        label: l10n.todayVitalHeartRateLabel,
-        value: _vitalValue(TodayVitalType.heartRate),
-        unit: l10n.todayVitalHeartRateUnit,
-        status: l10n.todayVitalStatusNormal,
-      ),
-      TodayHealthMetricTile(
-        icon: Icons.water_drop_rounded,
-        color: const Color(0xFF428BFF),
-        label: l10n.todayVitalBloodPressureLabel,
-        value: _vitalValue(TodayVitalType.bloodPressure),
-        status: l10n.todayVitalStatusNormal,
-      ),
-      TodayHealthMetricTile(
-        icon: Icons.bedtime_rounded,
-        color: TodayPalette.violetStrong,
-        label: l10n.todayVitalSleepLabel,
-        value: _vitalValue(TodayVitalType.sleep),
-        unit: l10n.todayVitalSleepUnit,
-        status: l10n.todayVitalStatusGood,
-      ),
-    ];
+    final items = _overviewItems(l10n, dashboard);
 
     return TodayPanel(
       key: const Key('today-health-summary-card'),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacingTokens.md,
+        AppSpacingTokens.md,
+        AppSpacingTokens.md,
+        AppSpacingTokens.lg,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TodaySectionHeader(
             title: l10n.todayHealthSummaryCardTitle,
+            leading: const Icon(
+              Icons.health_and_safety_outlined,
+              color: TodayPalette.teal,
+              size: 24,
+            ),
+            compact: true,
             trailing: TodayTextAction(
-              label: l10n.todayMoreAction,
-              icon: Icons.chevron_right_rounded,
-              onTap: () {},
+              label: l10n.todayUpdatedAt('08:30'),
+              icon: Icons.refresh_rounded,
+              onTap: () => AppToast.show(context, l10n.todayUpdatedAt('08:30')),
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          if (isLoading)
-            const AppInlineSkeleton(
-              children: [
-                AppInlineSkeletonBlock(height: 18, widthFactor: 0.42),
-                AppInlineSkeletonBlock(height: 34),
-                AppInlineSkeletonBlock(height: 18, widthFactor: 0.72),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (var index = 0; index < items.length; index += 1) ...[
+                Expanded(child: _OverviewMetric(item: items[index])),
+                if (index < items.length - 1)
+                  const _VerticalMetricDivider(height: 116),
               ],
-            )
-          else
-            TodayMetricList(desktop: desktop, children: metricTiles),
+            ],
+          ),
         ],
       ),
     );
   }
+}
 
-  String _vitalValue(TodayVitalType type) {
-    for (final vital in vitals) {
-      if (vital.type == type) return vital.valueLabel;
-    }
-    return '--';
+class _OverviewMetric extends StatelessWidget {
+  const _OverviewMetric({required this.item});
+
+  final _OverviewItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = AppTypographyTokens.mobile(
+      Theme.of(context).colorScheme.onSurface,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
+      child: Column(
+        children: [
+          Icon(item.icon, color: item.color, size: 34),
+          const SizedBox(height: AppSpacingTokens.sm),
+          Text(
+            item.label,
+            style: typography.bodyMd.copyWith(
+              color: Theme.of(context).extension<AppThemeSurface>()!.body,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: AppSpacingTokens.xs),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              item.value,
+              style: typography.bodyMdStrong.copyWith(
+                fontSize: 17,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0,
+              ),
+              maxLines: 1,
+            ),
+          ),
+          const SizedBox(height: AppSpacingTokens.xs),
+          TodayStatusPill(
+            label: item.status,
+            color: item.statusColor ?? item.color,
+          ),
+        ],
+      ),
+    );
   }
 }
 
-class _TodayMealSuggestionCard extends StatelessWidget {
-  const _TodayMealSuggestionCard({
-    required this.mealSuggestion,
-    this.desktop = false,
-  });
+class _PrioritySection extends StatelessWidget {
+  const _PrioritySection({required this.dashboard});
 
-  final TodayMealSuggestion mealSuggestion;
-  final bool desktop;
+  final TodayDashboard dashboard;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final items = _priorityItems(l10n, dashboard);
+
+    return _TodaySection(
+      title: l10n.todayPrioritySectionTitle,
+      actionLabel: l10n.todayManageAction,
+      onAction: () => AppToast.show(context, l10n.todayManageAction),
+      child: _ResponsiveCardGrid(
+        minTileWidth: 160,
+        spacing: AppSpacingTokens.md,
+        children: [for (final item in items) _PriorityCard(item: item)],
+      ),
+    );
+  }
+}
+
+class _PriorityCard extends StatelessWidget {
+  const _PriorityCard({required this.item});
+
+  final _PriorityItem item;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
-    final typography = desktop
-        ? AppTypographyTokens.desktop(theme.colorScheme.onSurface)
-        : AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
     return TodayPanel(
-      key: const Key('today-meal-card'),
+      key: item.key,
+      padding: const EdgeInsets.all(AppSpacingTokens.md),
+      color: Color.alphaBlend(
+        item.color.withValues(alpha: 0.035),
+        surface.canvas,
+      ),
+      borderColor: item.color.withValues(alpha: 0.18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TodaySectionHeader(
-            title: l10n.todayMealCardTitle,
-            trailing: TodayTextAction(
-              label: l10n.todayMealRefreshAction,
-              icon: Icons.refresh_rounded,
-              onTap: () {},
-            ),
-          ),
-          const SizedBox(height: AppSpacingTokens.md),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final horizontal = constraints.maxWidth >= 420;
-
-              final image = TodayImagePlaceholder(
-                label: l10n.todayMealImagePlaceholder,
-                width: horizontal ? 136 : 116,
-                height: horizontal ? 94 : 82,
-                icon: Icons.restaurant_outlined,
-              );
-              final copy = Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _mealTitle(l10n, mealSuggestion.type),
-                    style: typography.bodyMdStrong.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  Text(
-                    _mealDescription(l10n, mealSuggestion.type),
-                    style: typography.bodySm.copyWith(color: surface.body),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  Text(
-                    l10n.todayMealEnergyHint,
-                    style: typography.bodySm.copyWith(color: surface.body),
-                  ),
-                ],
-              );
-
-              if (!horizontal) {
-                return Column(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              TodayGlyphTile(icon: item.icon, color: item.color),
+              const SizedBox(width: AppSpacingTokens.md),
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    image,
-                    const SizedBox(height: AppSpacingTokens.sm),
-                    copy,
-                  ],
-                );
-              }
-
-              return Row(
-                children: [
-                  image,
-                  const SizedBox(width: AppSpacingTokens.lg),
-                  Expanded(child: copy),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TodayEnvironmentCard extends StatelessWidget {
-  const _TodayEnvironmentCard({
-    required this.environment,
-    required this.isLoading,
-  });
-
-  final TodayEnvironmentSummary environment;
-  final bool isLoading;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final chips = environment.signals
-        .map(
-          (signal) => TodaySignalPill(
-            icon: _environmentIcon(signal.type),
-            label: _environmentLabel(l10n, signal.type),
-            level: _environmentLevelLabel(l10n, signal.level),
-            color: _environmentAccent(signal.type),
-          ),
-        )
-        .toList(growable: false);
-
-    return TodayPanel(
-      key: const Key('today-environment-card'),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TodaySectionHeader(
-            title: l10n.todayEnvironmentCardTitle,
-            trailing: TodayTextAction(
-              label: l10n.todayViewDetailsAction,
-              icon: Icons.chevron_right_rounded,
-              onTap: () {},
-            ),
-          ),
-          const SizedBox(height: AppSpacingTokens.md),
-          if (isLoading)
-            const AppInlineSkeleton(
-              children: [
-                AppInlineSkeletonBlock(height: 18, widthFactor: 0.46),
-                AppInlineSkeletonBlock(height: 32),
-              ],
-            )
-          else
-            TodaySignalList(children: chips),
-        ],
-      ),
-    );
-  }
-}
-
-class _TodayLumiCard extends StatelessWidget {
-  const _TodayLumiCard({required this.suggestion, this.desktop = false});
-
-  final TodayLumiSuggestion suggestion;
-  final bool desktop;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = desktop
-        ? AppTypographyTokens.desktop(theme.colorScheme.onSurface)
-        : AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-
-    return TodayPanel(
-      key: const Key('today-lumi-card'),
-      color: TodayPalette.brandSoft,
-      shadow: AppShadowTokens.level1,
-      child: Row(
-        children: [
-          const TodayLumiAvatarPlaceholder(),
-          const SizedBox(width: AppSpacingTokens.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(l10n.todayLumiCardTitle, style: typography.bodyMdStrong),
-                    const SizedBox(width: AppSpacingTokens.sm),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: surface.canvasSoft2,
-                        borderRadius: BorderRadius.circular(AppRadiusTokens.pillSm),
+                    Text(
+                      item.title,
+                      style: typography.displaySm.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacingTokens.sm,
-                          vertical: 2,
-                        ),
-                        child: Text(
-                          l10n.todayPreviewBadge,
-                          style: typography.caption.copyWith(color: surface.mute),
-                        ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.xxs),
+                    Text(
+                      item.subtitle,
+                      style: typography.bodySm.copyWith(
+                        color: surface.body,
+                        letterSpacing: 0,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.xs),
-                Text(
-                  _lumiBody(l10n, suggestion.type),
-                  style: typography.bodySm.copyWith(color: surface.body),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          const Icon(
-            Icons.chevron_right_rounded,
-            color: TodayPalette.brand,
-            size: 22,
+          const SizedBox(height: AppSpacingTokens.lg),
+          if (item.progress != null) ...[
+            TodayLinearProgress(progress: item.progress!, color: item.color),
+            const SizedBox(height: AppSpacingTokens.sm),
+            Center(
+              child: Text(
+                item.detail,
+                style: typography.displaySm.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: theme.colorScheme.onSurface,
+                  letterSpacing: 0,
+                ),
+              ),
+            ),
+          ] else
+            Text(
+              item.detail,
+              style: typography.bodyMd.copyWith(
+                color: surface.body,
+                letterSpacing: 0,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          const SizedBox(height: AppSpacingTokens.lg),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () => AppToast.show(context, item.action),
+              style: FilledButton.styleFrom(
+                backgroundColor: item.color,
+                foregroundColor: Colors.white,
+                minimumSize: const Size.fromHeight(44),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+                ),
+                textStyle: typography.buttonLg.copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0,
+                ),
+              ),
+              child: Text(item.action),
+            ),
           ),
         ],
       ),
@@ -843,12 +481,659 @@ class _TodayLumiCard extends StatelessWidget {
   }
 }
 
-String _greetingTitle(AppLocalizations l10n, TodayDayMoment moment) {
-  return switch (moment) {
-    TodayDayMoment.morning => l10n.todayGreetingTitleMorning,
-    TodayDayMoment.afternoon => l10n.todayGreetingTitleAfternoon,
-    TodayDayMoment.evening => l10n.todayGreetingTitleEvening,
-  };
+class _RecommendationSection extends StatelessWidget {
+  const _RecommendationSection({required this.dashboard, this.compact = false});
+
+  final TodayDashboard dashboard;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final items = _recommendationItems(l10n, dashboard);
+
+    return _TodaySection(
+      title: l10n.todayRecommendationSectionTitle,
+      actionLabel: l10n.todayViewMoreAction,
+      onAction: () => AppToast.show(context, l10n.todayViewMoreAction),
+      child: TodayPanel(
+        key: const Key('today-recommendation-card'),
+        padding: EdgeInsets.zero,
+        child: Column(
+          children: [
+            for (var index = 0; index < items.length; index += 1) ...[
+              _RecommendationRow(item: items[index], compact: compact),
+              if (index < items.length - 1)
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  indent: 72,
+                  color: surface.hairline.withValues(alpha: 0.62),
+                ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RecommendationRow extends StatelessWidget {
+  const _RecommendationRow({required this.item, required this.compact});
+
+  final _RecommendationItem item;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => AppToast.show(context, item.action),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
+          child: Row(
+            children: [
+              TodayGlyphTile(
+                icon: item.icon,
+                color: item.color,
+                size: 44,
+                radius: AppRadiusTokens.md,
+                gradient: false,
+              ),
+              const SizedBox(width: AppSpacingTokens.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.title,
+                      style: typography.bodyMdStrong.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: compact ? 1 : 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      item.subtitle,
+                      style: typography.bodySm.copyWith(
+                        color: surface.body,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: TodayPalette.tealSoft,
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                  border: Border.all(
+                    color: TodayPalette.teal.withValues(alpha: 0.16),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacingTokens.sm,
+                    vertical: AppSpacingTokens.xxs,
+                  ),
+                  child: Text(
+                    item.action,
+                    style: typography.caption.copyWith(
+                      color: TodayPalette.tealDeep,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacingTokens.xs),
+              Icon(Icons.chevron_right_rounded, color: surface.mute, size: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TrendSection extends StatelessWidget {
+  const _TrendSection({required this.dashboard});
+
+  final TodayDashboard dashboard;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final items = _trendItems(l10n, dashboard);
+
+    return _TodaySection(
+      title: l10n.todayTrendSectionTitle,
+      actionLabel: l10n.todayTrendAnalysisAction,
+      onAction: () => AppToast.show(context, l10n.todayTrendAnalysisAction),
+      child: _ResponsiveCardGrid(
+        minTileWidth: 108,
+        spacing: AppSpacingTokens.sm,
+        children: [for (final item in items) _TrendCard(item: item)],
+      ),
+    );
+  }
+}
+
+class _TrendCard extends StatelessWidget {
+  const _TrendCard({required this.item});
+
+  final _TrendItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+
+    return TodayPanel(
+      padding: const EdgeInsets.all(AppSpacingTokens.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            item.title,
+            style: typography.bodySmStrong.copyWith(
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0,
+            ),
+          ),
+          const SizedBox(height: AppSpacingTokens.xs),
+          Text(
+            item.value,
+            style: typography.displaySm.copyWith(
+              color: item.color,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0,
+            ),
+          ),
+          const SizedBox(height: AppSpacingTokens.xs),
+          TodayMiniTrendChart(points: item.points, color: item.color),
+          const SizedBox(height: AppSpacingTokens.xxs),
+          _WeekLabels(color: item.color),
+        ],
+      ),
+    );
+  }
+}
+
+class _WeekLabels extends StatelessWidget {
+  const _WeekLabels({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final typography = AppTypographyTokens.mobile(
+      Theme.of(context).colorScheme.onSurface,
+    );
+    final labels = [
+      l10n.recordWeekdayMon,
+      l10n.recordWeekdayTue,
+      l10n.recordWeekdayWed,
+      l10n.recordWeekdayThu,
+      l10n.recordWeekdayFri,
+      l10n.recordWeekdaySat,
+      l10n.recordWeekdaySun,
+    ];
+
+    return Row(
+      children: [
+        for (final label in labels)
+          Expanded(
+            child: Center(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: label == l10n.recordWeekdayThu
+                      ? color
+                      : Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: SizedBox.square(
+                  dimension: 18,
+                  child: Center(
+                    child: Text(
+                      label.isEmpty ? '' : label.substring(0, 1),
+                      style: typography.caption.copyWith(
+                        color: label == l10n.recordWeekdayThu
+                            ? Colors.white
+                            : TodayPalette.mute,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _QuickRecordSection extends StatelessWidget {
+  const _QuickRecordSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final items = [
+      _QuickRecordItem(
+        icon: Icons.medication_rounded,
+        label: l10n.todayQuickMedication,
+        color: TodayPalette.blue,
+      ),
+      _QuickRecordItem(
+        icon: Icons.fact_check_rounded,
+        label: l10n.todayQuickSymptom,
+        color: TodayPalette.teal,
+      ),
+      _QuickRecordItem(
+        icon: Icons.sentiment_satisfied_alt_rounded,
+        label: l10n.todayQuickMood,
+        color: TodayPalette.violet,
+      ),
+      _QuickRecordItem(
+        icon: Icons.local_drink_rounded,
+        label: l10n.todayQuickWater,
+        color: TodayPalette.teal,
+      ),
+    ];
+
+    return _TodaySection(
+      title: l10n.todayQuickRecordSectionTitle,
+      child: _ResponsiveCardGrid(
+        minTileWidth: 78,
+        spacing: AppSpacingTokens.sm,
+        children: [for (final item in items) _QuickRecordCard(item: item)],
+      ),
+    );
+  }
+}
+
+class _QuickRecordCard extends StatelessWidget {
+  const _QuickRecordCard({required this.item});
+
+  final _QuickRecordItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = AppTypographyTokens.mobile(
+      Theme.of(context).colorScheme.onSurface,
+    );
+
+    return TodayPanel(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.sm,
+        vertical: AppSpacingTokens.md,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => AppToast.show(context, item.label),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(item.icon, color: item.color, size: 34),
+              const SizedBox(height: AppSpacingTokens.sm),
+              Text(
+                item.label,
+                style: typography.bodySmStrong.copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TodaySection extends StatelessWidget {
+  const _TodaySection({
+    required this.title,
+    required this.child,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final String title;
+  final Widget child;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TodaySectionHeader(
+          title: title,
+          trailing: actionLabel == null
+              ? null
+              : TodayTextAction(label: actionLabel!, onTap: onAction ?? () {}),
+        ),
+        const SizedBox(height: AppSpacingTokens.sm),
+        child,
+      ],
+    );
+  }
+}
+
+class _ResponsiveCardGrid extends StatelessWidget {
+  const _ResponsiveCardGrid({
+    required this.children,
+    required this.minTileWidth,
+    required this.spacing,
+  });
+
+  final List<Widget> children;
+  final double minTileWidth;
+  final double spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final columns = (constraints.maxWidth / minTileWidth)
+            .floor()
+            .clamp(1, children.length)
+            .toInt();
+        final rows = <Widget>[];
+
+        for (var index = 0; index < children.length; index += columns) {
+          final rowChildren = children.skip(index).take(columns).toList();
+          rows.add(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (
+                  var childIndex = 0;
+                  childIndex < rowChildren.length;
+                  childIndex += 1
+                ) ...[
+                  Expanded(child: rowChildren[childIndex]),
+                  if (childIndex < rowChildren.length - 1)
+                    SizedBox(width: spacing),
+                ],
+                if (rowChildren.length < columns)
+                  for (
+                    var filler = rowChildren.length;
+                    filler < columns;
+                    filler += 1
+                  ) ...[
+                    SizedBox(width: spacing),
+                    const Expanded(child: SizedBox.shrink()),
+                  ],
+              ],
+            ),
+          );
+        }
+
+        return Column(
+          children: [
+            for (var index = 0; index < rows.length; index += 1) ...[
+              rows[index],
+              if (index < rows.length - 1) SizedBox(height: spacing),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _VerticalMetricDivider extends StatelessWidget {
+  const _VerticalMetricDivider({required this.height});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return SizedBox(
+      height: height,
+      child: VerticalDivider(width: 1, thickness: 1, color: surface.hairline),
+    );
+  }
+}
+
+List<_OverviewItem> _overviewItems(
+  AppLocalizations l10n,
+  TodayDashboard dashboard,
+) {
+  final sleep = _vitalValue(
+    dashboard.vitals,
+    TodayVitalType.sleep,
+    fallback: '7.2',
+  );
+  final mood = _vitalValue(
+    dashboard.vitals,
+    TodayVitalType.mood,
+    fallback: l10n.todayMoodStableValue,
+  );
+  final medicationDone = dashboard.medication.medicineCount == 0
+      ? 0
+      : dashboard.medication.medicineCount - dashboard.medication.pendingCount;
+  final safeMedicationDone = medicationDone < 0 ? 0 : medicationDone;
+
+  return [
+    _OverviewItem(
+      icon: Icons.bedtime_rounded,
+      label: l10n.todayVitalSleepLabel,
+      value: '$sleep ${l10n.todayVitalSleepUnit}',
+      status: l10n.todayVitalStatusGood,
+      color: TodayPalette.blue,
+    ),
+    _OverviewItem(
+      icon: Icons.water_drop_rounded,
+      label: l10n.todayHydrationOverviewLabel,
+      value: '${(dashboard.water.progress * 100).round()}%',
+      status: dashboard.water.progress >= 0.75
+          ? l10n.todayVitalStatusGood
+          : l10n.todayStatusNeedsImprovement,
+      color: TodayPalette.teal,
+      statusColor: dashboard.water.progress >= 0.75
+          ? TodayPalette.teal
+          : TodayPalette.amber,
+    ),
+    _OverviewItem(
+      icon: Icons.sentiment_satisfied_alt_rounded,
+      label: l10n.todayMoodOverviewLabel,
+      value: mood,
+      status: l10n.todayVitalStatusGood,
+      color: TodayPalette.violet,
+    ),
+    _OverviewItem(
+      icon: Icons.medication_rounded,
+      label: l10n.todayMedicationOverviewLabel,
+      value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
+      status: dashboard.medication.pendingCount == 0
+          ? l10n.todayStatusCompleted
+          : l10n.todayMedicationPendingStatus,
+      color: TodayPalette.green,
+    ),
+    _OverviewItem(
+      icon: Icons.calendar_month_rounded,
+      label: l10n.todayPeriodOverviewLabel,
+      value: l10n.todayPeriodDayValue(2),
+      status: l10n.todayPeriodStatus,
+      color: TodayPalette.pink,
+    ),
+  ];
+}
+
+List<_PriorityItem> _priorityItems(
+  AppLocalizations l10n,
+  TodayDashboard dashboard,
+) {
+  final nextMedicineName =
+      dashboard.medication.nextMedicineName ??
+      _medicationName(l10n, dashboard.medication.nextMedicine);
+  final pending = dashboard.medication.pendingCount;
+  final waterProgress = dashboard.water.progress;
+
+  return [
+    _PriorityItem(
+      key: const Key('today-medication-card'),
+      icon: Icons.medication_rounded,
+      color: TodayPalette.blue,
+      title: l10n.todayMedicationCardTitle,
+      subtitle: l10n.todayMedicationPrioritySubtitle(pending),
+      detail: l10n.todayMedicationPriorityDetail(
+        dashboard.medication.nextDoseTimeLabel,
+        nextMedicineName,
+      ),
+      action: l10n.todayMedicationTakeAction,
+    ),
+    _PriorityItem(
+      key: const Key('today-water-card'),
+      icon: Icons.local_drink_rounded,
+      color: TodayPalette.teal,
+      title: l10n.todayWaterPriorityTitle,
+      subtitle: l10n.todayWaterGoalMl,
+      detail: '${(waterProgress * 100).round()}%',
+      action: l10n.todayDrinkWaterAction,
+      progress: waterProgress,
+    ),
+    _PriorityItem(
+      key: const Key('today-mood-card'),
+      icon: Icons.sentiment_satisfied_alt_rounded,
+      color: TodayPalette.violet,
+      title: l10n.todayMoodCheckinTitle,
+      subtitle: l10n.todayMoodCheckinSubtitle,
+      detail: _vitalValue(
+        dashboard.vitals,
+        TodayVitalType.mood,
+        fallback: l10n.todayMoodNoRecord,
+      ),
+      action: l10n.todayMoodCheckinAction,
+    ),
+    _PriorityItem(
+      key: const Key('today-campus-card'),
+      icon: Icons.local_hospital_rounded,
+      color: TodayPalette.blue,
+      title: l10n.todayCampusGuideTitle,
+      subtitle: l10n.todayCampusGuideSubtitle,
+      detail: l10n.todayCampusGuideDetail,
+      action: l10n.todayViewAction,
+    ),
+  ];
+}
+
+List<_RecommendationItem> _recommendationItems(
+  AppLocalizations l10n,
+  TodayDashboard dashboard,
+) {
+  return [
+    _RecommendationItem(
+      icon: Icons.health_and_safety_outlined,
+      color: TodayPalette.teal,
+      title: l10n.todayRecommendationMedicineSafetyTitle,
+      subtitle: l10n.todayRecommendationMedicineSafetyBody,
+      action: l10n.todayLearnMoreAction,
+    ),
+    _RecommendationItem(
+      icon: Icons.bedtime_rounded,
+      color: TodayPalette.blue,
+      title: l10n.todayRecommendationSleepTitle,
+      subtitle: l10n.todayRecommendationSleepBody,
+      action: l10n.todayLearnMoreAction,
+    ),
+    _RecommendationItem(
+      icon: Icons.water_drop_rounded,
+      color: TodayPalette.teal,
+      title: l10n.todayRecommendationWaterTitle,
+      subtitle: l10n.todayRecommendationWaterBody,
+      action: dashboard.water.progress >= 1
+          ? l10n.todayStatusCompleted
+          : l10n.todayCompleteAction,
+    ),
+    _RecommendationItem(
+      icon: Icons.coffee_rounded,
+      color: TodayPalette.blue,
+      title: l10n.todayRecommendationCoffeeTitle,
+      subtitle: l10n.todayRecommendationCoffeeBody,
+      action: l10n.todayLearnMoreAction,
+    ),
+  ];
+}
+
+List<_TrendItem> _trendItems(AppLocalizations l10n, TodayDashboard dashboard) {
+  final sleep = _vitalValue(
+    dashboard.vitals,
+    TodayVitalType.sleep,
+    fallback: '7.2',
+  );
+  final mood = _vitalValue(
+    dashboard.vitals,
+    TodayVitalType.mood,
+    fallback: l10n.todayMoodStableValue,
+  );
+
+  return [
+    _TrendItem(
+      title: l10n.todayTrendSleepTitle,
+      value: '$sleep ${l10n.todayVitalSleepUnit}',
+      color: TodayPalette.blue,
+      points: const [6.8, 7.0, 7.2, 6.9, 7.1, 7.4, 7.8],
+    ),
+    _TrendItem(
+      title: l10n.todayTrendWaterTitle,
+      value: '${(dashboard.water.progress * 100).round()}%',
+      color: TodayPalette.teal,
+      points: const [62, 58, 54, 48, 57, 65, 74],
+    ),
+    _TrendItem(
+      title: l10n.todayTrendMoodTitle,
+      value: mood,
+      color: TodayPalette.violet,
+      points: const [3, 3.4, 3.9, 3.2, 2.6, 3.4, 4.0],
+    ),
+  ];
+}
+
+String _vitalValue(
+  List<TodayVitalSummary> vitals,
+  TodayVitalType type, {
+  required String fallback,
+}) {
+  for (final vital in vitals) {
+    if (vital.type == type) {
+      final value = vital.valueLabel.trim();
+      if (value.isNotEmpty && value != '--') return value;
+    }
+  }
+  return fallback;
 }
 
 String _greetingSubtitle(AppLocalizations l10n, TodayDayMoment moment) {
@@ -865,58 +1150,84 @@ String _medicationName(AppLocalizations l10n, TodayMedicationKind kind) {
   };
 }
 
-String _mealTitle(AppLocalizations l10n, TodayMealSuggestionType type) {
-  return switch (type) {
-    TodayMealSuggestionType.highProteinBalancedLunch =>
-      l10n.todayMealHighProteinBalancedTitle,
-  };
+class _OverviewItem {
+  const _OverviewItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.status,
+    required this.color,
+    this.statusColor,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final String status;
+  final Color color;
+  final Color? statusColor;
 }
 
-String _mealDescription(AppLocalizations l10n, TodayMealSuggestionType type) {
-  return switch (type) {
-    TodayMealSuggestionType.highProteinBalancedLunch =>
-      l10n.todayMealHighProteinBalancedDescription,
-  };
+class _PriorityItem {
+  const _PriorityItem({
+    required this.key,
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.detail,
+    required this.action,
+    this.progress,
+  });
+
+  final Key key;
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final String detail;
+  final String action;
+  final double? progress;
 }
 
-String _environmentLabel(
-  AppLocalizations l10n,
-  TodayEnvironmentSignalType type,
-) {
-  return switch (type) {
-    TodayEnvironmentSignalType.pollen => l10n.todayEnvironmentPollenLabel,
-    TodayEnvironmentSignalType.uv => l10n.todayEnvironmentUvLabel,
-  };
+class _RecommendationItem {
+  const _RecommendationItem({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.action,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final String action;
 }
 
-String _environmentLevelLabel(
-  AppLocalizations l10n,
-  TodayEnvironmentLevel level,
-) {
-  return switch (level) {
-    TodayEnvironmentLevel.low => l10n.todayEnvironmentLevelLow,
-    TodayEnvironmentLevel.medium => l10n.todayEnvironmentLevelMedium,
-    TodayEnvironmentLevel.high => l10n.todayEnvironmentLevelHigh,
-  };
+class _TrendItem {
+  const _TrendItem({
+    required this.title,
+    required this.value,
+    required this.color,
+    required this.points,
+  });
+
+  final String title;
+  final String value;
+  final Color color;
+  final List<double> points;
 }
 
-IconData _environmentIcon(TodayEnvironmentSignalType type) {
-  return switch (type) {
-    TodayEnvironmentSignalType.pollen => Icons.eco_rounded,
-    TodayEnvironmentSignalType.uv => Icons.wb_sunny_outlined,
-  };
-}
+class _QuickRecordItem {
+  const _QuickRecordItem({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
 
-Color _environmentAccent(TodayEnvironmentSignalType type) {
-  return switch (type) {
-    TodayEnvironmentSignalType.pollen => TodayPalette.brand,
-    TodayEnvironmentSignalType.uv => TodayPalette.amber,
-  };
-}
-
-String _lumiBody(AppLocalizations l10n, TodayLumiSuggestionType type) {
-  return switch (type) {
-    TodayLumiSuggestionType.pollenProtection =>
-      l10n.todayLumiPollenProtectionBody,
-  };
+  final IconData icon;
+  final String label;
+  final Color color;
 }
