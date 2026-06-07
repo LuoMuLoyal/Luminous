@@ -1,0 +1,84 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
+import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
+import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+part 'medicine_mobile_drugbox_section.dart';
+part 'medicine_mobile_sections.dart';
+part 'medicine_mobile_shared.dart';
+
+class MedicineMobileDashboardView extends StatelessWidget {
+  const MedicineMobileDashboardView({
+    super.key,
+    required this.workspace,
+    this.onMarkDose,
+  });
+
+  final MedicineWorkspace workspace;
+  final void Function(String currentMedicineId, MedicineDoseAction action)?
+  onMarkDose;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final nextDose = _nextDoseFor(workspace);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _DrugBoxSection(
+          workspace: workspace,
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _NextDoseReminderSection(
+          nextDose: nextDose,
+          fallbackTime: workspace.hero.metricNextDose,
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+          onMarkDose: onMarkDose,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _SafetyEngineSection(
+          alerts: workspace.alerts.take(4).toList(growable: false),
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _QuickOperationSection(
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _MedicineRecordsSection(
+          items: workspace.plan.items,
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+          onMarkDose: onMarkDose,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _ReferenceNotice(l10n: l10n, typography: typography, surface: surface),
+        const SizedBox(height: AppSpacingTokens.md),
+        _SafetyTipsSection(
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+        ),
+      ],
+    );
+  }
+}

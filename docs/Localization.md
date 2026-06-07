@@ -10,7 +10,7 @@ Last updated: 2026-06-07
 
 ## Current Scope
 
-- App title, tabs, Today mobile dashboard/priority/recommendation/trend-placeholder/quick-record copy and preview medication names, Record mobile dashboard/date/quick-action/symptom/mood/period/diet/specialist copy, Record dashboard, Medicine workspace/search empty states, Mine dashboard, More dashboard, placeholders
+- App title, tabs, Today mobile dashboard/priority/recommendation/trend-placeholder/quick-record copy and preview medication names, Record mobile dashboard/date/quick-action/symptom/mood/period/diet/specialist copy, Record dashboard, Medicine mobile drugbox/next-dose/safety-engine/quick-operation/record/tip copy, Medicine workspace/search empty states, Mine dashboard, More dashboard, placeholders
 - Login / Register / Forgot Password / Change Email / AuthShell
 - WeChat Web OAuth login action, callback input, and OAuth feedback toasts
 - Account Settings, account status, linked identity management labels, and WeChat identity binding feedback
@@ -22,7 +22,7 @@ Last updated: 2026-06-07
 - Mine signed-out notice / guest state copy
 - Mine signed-in account detail labels and account management action
 - Record quick-create/detail form labels, detail page labels, and save/delete failure toast
-- Medicine manual dose-log actions, saved/failed toasts, and taken/skipped/pending status labels
+- Medicine manual dose-log actions, saved/failed toasts, taken/skipped/pending status labels, and mobile safety placeholder action toasts
 - Network `Accept-Language`
 - Flutter UI locale driven by persisted app locale preference
 

@@ -55,6 +55,36 @@ String medicineCopy(AppLocalizations l10n, MedicineCopyKey key) {
     MedicineCopyKey.alertOtherBody => l10n.medicineAlertOtherBody,
     MedicineCopyKey.alertOtherDetail => l10n.medicineAlertOtherDetail,
     MedicineCopyKey.alertOtherAction => l10n.medicineAlertOtherAction,
+    MedicineCopyKey.alertAlcoholRiskTitle => l10n.medicineAlertAlcoholRiskTitle,
+    MedicineCopyKey.alertAlcoholRiskBody => l10n.medicineAlertAlcoholRiskBody,
+    MedicineCopyKey.alertAlcoholRiskDetail =>
+      l10n.medicineAlertAlcoholRiskDetail,
+    MedicineCopyKey.alertAlcoholRiskStatus =>
+      l10n.medicineAlertAlcoholRiskStatus,
+    MedicineCopyKey.alertCoffeeReminderTitle =>
+      l10n.medicineAlertCoffeeReminderTitle,
+    MedicineCopyKey.alertCoffeeReminderBody =>
+      l10n.medicineAlertCoffeeReminderBody,
+    MedicineCopyKey.alertCoffeeReminderDetail =>
+      l10n.medicineAlertCoffeeReminderDetail,
+    MedicineCopyKey.alertCoffeeReminderStatus =>
+      l10n.medicineAlertCoffeeReminderStatus,
+    MedicineCopyKey.alertDuplicateCheckTitle =>
+      l10n.medicineAlertDuplicateCheckTitle,
+    MedicineCopyKey.alertDuplicateCheckBody =>
+      l10n.medicineAlertDuplicateCheckBody,
+    MedicineCopyKey.alertDuplicateCheckDetail =>
+      l10n.medicineAlertDuplicateCheckDetail,
+    MedicineCopyKey.alertDuplicateCheckStatus =>
+      l10n.medicineAlertDuplicateCheckStatus,
+    MedicineCopyKey.alertPeriodPregnancyTitle =>
+      l10n.medicineAlertPeriodPregnancyTitle,
+    MedicineCopyKey.alertPeriodPregnancyBody =>
+      l10n.medicineAlertPeriodPregnancyBody,
+    MedicineCopyKey.alertPeriodPregnancyDetail =>
+      l10n.medicineAlertPeriodPregnancyDetail,
+    MedicineCopyKey.alertPeriodPregnancyStatus =>
+      l10n.medicineAlertPeriodPregnancyStatus,
     MedicineCopyKey.promisePointBoundary => l10n.medicinePromisePointBoundary,
     MedicineCopyKey.promisePointPregnancy => l10n.medicinePromisePointPregnancy,
     MedicineCopyKey.promisePointPrivacy => l10n.medicinePromisePointPrivacy,
