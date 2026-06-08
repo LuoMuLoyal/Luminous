@@ -39,12 +39,6 @@ class MedicineMobileDashboardView extends StatelessWidget {
       children: [
         _DrugBoxSection(
           workspace: workspace,
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _NextDoseReminderSection(
           nextDose: nextDose,
           fallbackTime: workspace.hero.metricNextDose,
           l10n: l10n,
