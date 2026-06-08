@@ -24,12 +24,17 @@ final router = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(path: '/', builder: (context, state) => const ShellPage()),
-    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) =>
+          LoginPage(returnTo: state.uri.queryParameters['returnTo']),
+    ),
     GoRoute(
       path: '/login/oauth/wechat',
       builder: (context, state) => LoginPage(
         wechatCode: state.uri.queryParameters['code'],
         wechatState: state.uri.queryParameters['state'],
+        returnTo: state.uri.queryParameters['returnTo'],
       ),
     ),
     GoRoute(

@@ -117,7 +117,7 @@ void main() {
     expect(find.text('account-settings-page'), findsOneWidget);
   });
 
-  testWidgets('Settings account row routes to login page when signed out', (
+  testWidgets('Settings account row shows login dialog when signed out', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
@@ -149,8 +149,11 @@ void main() {
               ),
               GoRoute(
                 path: '/login',
-                builder: (context, state) =>
-                    const Scaffold(body: Text('login-page')),
+                builder: (context, state) => Scaffold(
+                  body: Text(
+                    "login-page:${state.uri.queryParameters['returnTo']}",
+                  ),
+                ),
               ),
             ],
           ),
@@ -162,7 +165,24 @@ void main() {
     await tester.tap(find.byKey(const Key('settings-row-account')));
     await tester.pumpAndSettle();
 
-    expect(find.text('login-page'), findsOneWidget);
+    expect(find.byType(SettingsPage), findsOneWidget);
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    expect(find.text('尚未登录'), findsOneWidget);
+    expect(find.text('是否去登录'), findsOneWidget);
+    expect(find.text('login-page:/settings'), findsNothing);
+
+    await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
+    expect(find.byType(SettingsPage), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('settings-row-account')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('auth-required-login-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('login-page:/settings'), findsOneWidget);
   });
 
   testWidgets('Settings language row routes to language settings page', (

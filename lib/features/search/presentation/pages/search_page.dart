@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
@@ -49,7 +50,10 @@ class SearchPage extends ConsumerWidget {
         return;
       }
       if (context.mounted) {
-        context.go('/login');
+        await showAuthRequiredDialog(
+          context,
+          onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+        );
       }
       return;
     }

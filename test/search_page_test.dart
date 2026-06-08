@@ -36,7 +36,7 @@ void main() {
     expect(find.text('布洛芬片'), findsOneWidget);
   });
 
-  testWidgets('add to current medicines routes signed-out user to login', (
+  testWidgets('add to current medicines shows login dialog when signed out', (
     tester,
   ) async {
     final fakeRepo = _FakeHealthContextRepository();
@@ -55,7 +55,25 @@ void main() {
     await tester.tap(find.text('加入药箱').first);
     await tester.pumpAndSettle();
 
-    expect(find.text('login-page'), findsOneWidget);
+    expect(find.byType(SearchPage), findsOneWidget);
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    expect(find.text('尚未登录'), findsOneWidget);
+    expect(find.text('是否去登录'), findsOneWidget);
+    expect(find.text('login-page:/medicine/search'), findsNothing);
+    expect(fakeRepo.createdCurrentMedicine, isNull);
+
+    await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
+    expect(find.byType(SearchPage), findsOneWidget);
+
+    await tester.tap(find.text('加入药箱').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('auth-required-login-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('login-page:/medicine/search'), findsOneWidget);
     expect(fakeRepo.createdCurrentMedicine, isNull);
   });
 
@@ -234,7 +252,9 @@ GoRouter _searchRouter({bool watchWorkspace = false}) {
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => const Scaffold(body: Text('login-page')),
+        builder: (context, state) => Scaffold(
+          body: Text("login-page:${state.uri.queryParameters['returnTo']}"),
+        ),
       ),
     ],
   );

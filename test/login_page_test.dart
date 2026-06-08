@@ -50,6 +50,48 @@ void main() {
     expect(container.read(authSessionProvider).user?.email, 'user@example.com');
   });
 
+  testWidgets('Login page returns to returnTo after password login', (
+    tester,
+  ) async {
+    final remote = FakeAuthRemoteDataSource();
+    final container = ProviderContainer(
+      overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestAuthApp(
+          router: GoRouter(
+            initialLocation: '/login?returnTo=/settings',
+            routes: [
+              GoRoute(
+                path: '/login',
+                builder: (context, state) =>
+                    LoginPage(returnTo: state.uri.queryParameters['returnTo']),
+              ),
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('settings-page')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.enterText(find.byType(EditableText).at(0), 'user@example.com');
+    await tester.enterText(find.byType(EditableText).at(1), 'Password123');
+    await tester.tap(find.widgetWithText(FilledButton, '登录'));
+    await tester.pumpAndSettle();
+
+    expect(remote.loginEmail, 'user@example.com');
+    expect(container.read(authSessionProvider).isAuthenticated, isTrue);
+    expect(find.text('settings-page'), findsOneWidget);
+  });
+
   testWidgets('Login page sends code in code mode', (tester) async {
     final remote = FakeAuthRemoteDataSource();
 

@@ -9,6 +9,7 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
@@ -69,8 +70,9 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
         children: [
           session.isLoading
               ? const _RecordFormLoading()
-              : _RecordAuthRequiredPrompt(
-                  onLogin: () => context.push('/login'),
+              : AuthRequiredDialogGate(
+                  onLogin: () =>
+                      context.push(loginRouteForCurrentLocation(context)),
                 ),
         ],
       );
@@ -263,31 +265,6 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     return '${date.year.toString().padLeft(4, '0')}-'
         '${date.month.toString().padLeft(2, '0')}-'
         '${date.day.toString().padLeft(2, '0')}';
-  }
-}
-
-class _RecordAuthRequiredPrompt extends StatelessWidget {
-  const _RecordAuthRequiredPrompt({required this.onLogin});
-
-  final VoidCallback onLogin;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(l10n.authNotSignedIn),
-            const SizedBox(height: AppSpacingTokens.md),
-            ElevatedButton(onPressed: onLogin, child: Text(l10n.authGoLogin)),
-          ],
-        ),
-      ),
-    );
   }
 }
 

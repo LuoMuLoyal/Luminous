@@ -18,7 +18,7 @@ Last updated: 2026-06-08
 - Settings child pages, persisted theme mode / palette selection, and persisted app locale selection
 - Signed-in settings locale sync to Lucent profile preferences
 - Settings notification permission status labels
-- Auth empty-field toast prompts
+- Auth empty-field toast prompts and the shared auth-required dialog prompt
 - Mine signed-out notice / guest state copy
 - Mine signed-in account detail labels and account management action
 - Record quick-create/detail form labels, common type form labels for water/vital/symptom/note, detail page labels, and save/delete failure toast

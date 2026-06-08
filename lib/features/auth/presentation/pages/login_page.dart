@@ -11,10 +11,16 @@ import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
-  const LoginPage({super.key, this.wechatCode, this.wechatState});
+  const LoginPage({
+    super.key,
+    this.wechatCode,
+    this.wechatState,
+    this.returnTo,
+  });
 
   final String? wechatCode;
   final String? wechatState;
+  final String? returnTo;
 
   @override
   ConsumerState<LoginPage> createState() => _LoginPageState();
@@ -165,7 +171,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               if (!_validateSubmit(context, l10n, state.mode)) {
                 return;
               }
-              await notifier.submit();
+              final session = await notifier.submit();
+              if (session != null && context.mounted) {
+                _goAfterLogin();
+              }
             },
           ),
           const SizedBox(height: AppSpacingTokens.sm),
@@ -199,7 +208,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final mobileSession = await notifier.startWechatMobileLogin();
     if (mobileSession != null) {
       if (context.mounted) {
-        context.go('/');
+        _goAfterLogin(fallbackHome: true);
       }
       return;
     }
@@ -211,7 +220,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final desktopSession = await notifier.startWechatDesktopWebLogin();
     if (desktopSession != null) {
       if (context.mounted) {
-        context.go('/');
+        _goAfterLogin(fallbackHome: true);
       }
       return;
     }
@@ -254,11 +263,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     }
 
     final base = Uri.base;
+    final returnTo = _safeReturnTo(widget.returnTo);
     return Uri(
       scheme: base.scheme,
       host: base.host,
       port: base.hasPort ? base.port : null,
       path: '/login/oauth/wechat',
+      queryParameters: returnTo == null ? null : {'returnTo': returnTo},
     ).toString();
   }
 
@@ -292,7 +303,34 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     if (session == null || !mounted) {
       return;
     }
-    context.go('/');
+    _goAfterLogin(fallbackHome: true);
+  }
+
+  void _goAfterLogin({bool fallbackHome = false}) {
+    final target = _safeReturnTo(widget.returnTo);
+    if (target != null) {
+      context.go(target);
+      return;
+    }
+    if (fallbackHome) {
+      context.go('/');
+    }
+  }
+
+  String? _safeReturnTo(String? value) {
+    final trimmed = value?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return null;
+    }
+    if (!trimmed.startsWith('/') || trimmed.startsWith('//')) {
+      return null;
+    }
+    if (trimmed == '/login' ||
+        trimmed.startsWith('/login?') ||
+        trimmed.startsWith('/login/')) {
+      return null;
+    }
+    return trimmed;
   }
 
   _WechatCallback? _parseWechatCallback(String raw, String? fallbackState) {

@@ -6,6 +6,7 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
@@ -95,7 +96,10 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
         children: [
           session.isLoading
               ? const _MineEditFormLoading()
-              : _MineAuthRequiredPrompt(onLogin: () => context.push('/login')),
+              : AuthRequiredDialogGate(
+                  onLogin: () =>
+                      context.push(loginRouteForCurrentLocation(context)),
+                ),
         ],
       );
     }
@@ -234,31 +238,6 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
     if (widget.conditionId != null) {
       ref.read(conditionFormProvider.notifier).delete(widget.conditionId!);
     }
-  }
-}
-
-class _MineAuthRequiredPrompt extends StatelessWidget {
-  const _MineAuthRequiredPrompt({required this.onLogin});
-
-  final VoidCallback onLogin;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(l10n.authNotSignedIn),
-            const SizedBox(height: AppSpacingTokens.md),
-            ElevatedButton(onPressed: onLogin, child: Text(l10n.authGoLogin)),
-          ],
-        ),
-      ),
-    );
   }
 }
 

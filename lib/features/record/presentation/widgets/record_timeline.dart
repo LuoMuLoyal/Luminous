@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_image_placeholder.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
@@ -160,7 +160,7 @@ class _TimelineCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (entry.recordId != null) {
-            context.push('/record/${entry.recordId}');
+            pushAuthRequiredRoute(context, '/record/${entry.recordId}');
           } else {
             showRecordToast(context, label);
           }

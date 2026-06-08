@@ -9,6 +9,7 @@ import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -61,7 +62,7 @@ class SettingsPage extends ConsumerWidget {
                   if (session.isLoading) {
                     return;
                   }
-                  context.push(signedIn ? '/account' : '/login');
+                  pushAuthRequiredRoute(context, '/account');
                 },
               ),
             ],
@@ -280,7 +281,7 @@ class SettingsPage extends ConsumerWidget {
               ? null
               : () async {
                   if (!session.canAccessProtectedData) {
-                    context.go('/login');
+                    context.go(loginRouteForCurrentLocation(context));
                     return;
                   }
                   await ref.read(authSessionProvider.notifier).logout();

@@ -9,6 +9,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
@@ -34,8 +35,9 @@ class RecordDetailPage extends ConsumerWidget {
         children: [
           session.isLoading
               ? const _RecordDetailLoading()
-              : _RecordAuthRequiredPrompt(
-                  onLogin: () => context.push('/login'),
+              : AuthRequiredDialogGate(
+                  onLogin: () =>
+                      context.push(loginRouteForCurrentLocation(context)),
                 ),
         ],
       );
@@ -50,7 +52,8 @@ class RecordDetailPage extends ConsumerWidget {
       actions: [
         IconButton(
           tooltip: l10n.recordEditAction,
-          onPressed: () => context.push('/record/$recordId/edit'),
+          onPressed: () =>
+              pushAuthRequiredRoute(context, '/record/$recordId/edit'),
           icon: const Icon(Icons.edit_outlined),
         ),
       ],
@@ -68,31 +71,6 @@ class RecordDetailPage extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _RecordAuthRequiredPrompt extends StatelessWidget {
-  const _RecordAuthRequiredPrompt({required this.onLogin});
-
-  final VoidCallback onLogin;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(l10n.authNotSignedIn),
-            const SizedBox(height: AppSpacingTokens.md),
-            ElevatedButton(onPressed: onLogin, child: Text(l10n.authGoLogin)),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -198,7 +176,8 @@ class _RecordDetailBody extends ConsumerWidget {
         ],
         const SizedBox(height: AppSpacingTokens.md),
         FilledButton.icon(
-          onPressed: () => context.push('/record/${record.id}/edit'),
+          onPressed: () =>
+              pushAuthRequiredRoute(context, '/record/${record.id}/edit'),
           icon: const Icon(Icons.edit_outlined, size: 18),
           label: Text(l10n.recordEditAction),
         ),

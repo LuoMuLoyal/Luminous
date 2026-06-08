@@ -4,8 +4,8 @@ import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
@@ -101,7 +101,8 @@ class RecordPage extends ConsumerWidget {
                 emphasized: true,
                 typography: typography,
                 surface: surface,
-                onTap: () => context.push(
+                onTap: () => pushAuthRequiredRoute(
+                  context,
                   '/record/create?date=${_formatDate(selectedDate)}',
                 ),
               ),
@@ -157,7 +158,8 @@ class RecordPage extends ConsumerWidget {
     }
 
     final selectedDate = ref.read(selectedRecordDateProvider);
-    context.push(
+    pushAuthRequiredRoute(
+      context,
       '/record/create?kind=${Uri.encodeComponent(kind.name)}'
       '&date=${Uri.encodeComponent(_formatDate(selectedDate))}',
     );

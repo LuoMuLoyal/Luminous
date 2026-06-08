@@ -11,6 +11,7 @@ import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_account_provider.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -113,11 +114,9 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
           if (resolvingSession) ...[
             const _AccountSettingsLoading(),
           ] else if (signedOut) ...[
-            AuthStatusMessage(error: l10n.authNotSignedIn),
-            const SizedBox(height: AppSpacingTokens.lg),
-            AuthPrimaryButton(
-              label: l10n.authGoLogin,
-              onPressed: () => context.go('/login'),
+            AuthRequiredDialogGate(
+              onLogin: () =>
+                  context.push(loginRouteForCurrentLocation(context)),
             ),
           ] else ...[
             AuthSectionCard(
@@ -314,7 +313,7 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
 
     _wechatIdentityLinkStarted = true;
     if (!session.canAccessProtectedData) {
-      context.go('/login');
+      context.go(loginRouteForReturnTo('/account'));
       return;
     }
 
