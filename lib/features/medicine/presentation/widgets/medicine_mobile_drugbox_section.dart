@@ -3,15 +3,22 @@ part of 'medicine_mobile_dashboard_view.dart';
 class _DrugBoxSection extends StatelessWidget {
   const _DrugBoxSection({
     required this.workspace,
+    required this.nextDose,
+    required this.fallbackTime,
     required this.l10n,
     required this.typography,
     required this.surface,
+    required this.onMarkDose,
   });
 
   final MedicineWorkspace workspace;
+  final _NextDose? nextDose;
+  final String fallbackTime;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final void Function(String currentMedicineId, MedicineDoseAction action)?
+  onMarkDose;
 
   @override
   Widget build(BuildContext context) {
@@ -20,21 +27,25 @@ class _DrugBoxSection extends StatelessWidget {
     return MedicinePanel(
       key: const Key('medicine-hero'),
       color: Color.alphaBlend(
-        MedicinePalette.tealSoft.withValues(alpha: 0.16),
+        MedicinePalette.tealSoft.withValues(alpha: 0.08),
         surface.canvas,
       ),
-      borderColor: MedicinePalette.teal.withValues(alpha: 0.28),
+      borderColor: MedicinePalette.teal.withValues(alpha: 0.14),
       padding: const EdgeInsets.all(AppSpacingTokens.md),
+      shadow: const <BoxShadow>[],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MedicineSectionHeader(
             title: l10n.medicineDrugboxTitle,
             compact: true,
-            leading: const MedicineIconBadge(
+            leading: MedicineIconBadge(
               icon: Icons.medical_services_rounded,
-              color: AppColorTokens.onPrimary,
-              backgroundColor: MedicinePalette.teal,
+              color: MedicinePalette.teal,
+              backgroundColor: Color.alphaBlend(
+                MedicinePalette.tealSoft.withValues(alpha: 0.28),
+                surface.canvas,
+              ),
               size: AppSpacingTokens.x2l,
               iconSize: AppSpacingTokens.lg,
             ),
@@ -56,66 +67,305 @@ class _DrugBoxSection extends StatelessWidget {
           if (items.isEmpty)
             _DrugBoxEmpty(l10n: l10n, typography: typography, surface: surface)
           else
-            Column(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (var index = 0; index < items.length; index += 1) ...[
-                  _DrugBoxMedicationRow(
-                    item: items[index],
-                    l10n: l10n,
-                    typography: typography,
-                    surface: surface,
+                _DrugBoxCountSummary(
+                  count: workspace.plan.items.length,
+                  l10n: l10n,
+                  typography: typography,
+                  surface: surface,
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                SizedBox(
+                  height: AppSpacingTokens.x5l,
+                  child: VerticalDivider(
+                    width: 1,
+                    thickness: 1,
+                    color: surface.hairline,
                   ),
-                  if (index < items.length - 1)
-                    const SizedBox(height: AppSpacingTokens.sm),
-                ],
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                Expanded(
+                  child: Column(
+                    children: [
+                      for (var index = 0; index < items.length; index += 1) ...[
+                        _DrugBoxMedicationRow(
+                          item: items[index],
+                          l10n: l10n,
+                          typography: typography,
+                          surface: surface,
+                        ),
+                        if (index < items.length - 1)
+                          Divider(
+                            height: 1,
+                            thickness: 1,
+                            indent: AppSpacingTokens.x2l + AppSpacingTokens.sm,
+                            color: surface.hairline,
+                          ),
+                      ],
+                    ],
+                  ),
+                ),
               ],
             ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.sm),
+          Divider(height: 1, thickness: 1, color: surface.hairline),
+          const SizedBox(height: AppSpacingTokens.sm),
+          _DrugBoxReminderStrip(
+            key: const Key('medicine-next-reminder'),
+            workspace: workspace,
+            nextDose: nextDose,
+            fallbackTime: fallbackTime,
+            l10n: l10n,
+            typography: typography,
+            surface: surface,
+            onMarkDose: onMarkDose,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DrugBoxCountSummary extends StatelessWidget {
+  const _DrugBoxCountSummary({
+    required this.count,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final int count;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: AppSpacingTokens.x4l,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppSkeletonText(
+            text: l10n.medicineDrugboxTotal(count),
+            style: typography.displayLg.copyWith(
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            widthFactor: 0.72,
+          ),
+          const SizedBox(height: AppSpacingTokens.xxs),
+          Text(
+            l10n.medicineDrugboxTotalPrefix,
+            style: typography.bodySm.copyWith(
+              color: surface.body,
+              letterSpacing: 0,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DrugBoxReminderStrip extends StatelessWidget {
+  const _DrugBoxReminderStrip({
+    super.key,
+    required this.workspace,
+    required this.nextDose,
+    required this.fallbackTime,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+    required this.onMarkDose,
+  });
+
+  final MedicineWorkspace workspace;
+  final _NextDose? nextDose;
+  final String fallbackTime;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+  final void Function(String currentMedicineId, MedicineDoseAction action)?
+  onMarkDose;
+
+  @override
+  Widget build(BuildContext context) {
+    final dose = nextDose;
+    final item = dose?.item;
+    final time = dose == null
+        ? _cleanMetricTime(fallbackTime)
+        : medicineCopy(
+            l10n,
+            dose.slot?.timeKey ?? MedicineCopyKey.mockTime2000,
+          );
+    final refillItem = _refillCandidate(workspace.plan.items);
+    final currentMedicineId = item?.currentMedicineId;
+    final canMark = currentMedicineId != null && onMarkDose != null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: _DrugBoxMetricItem(
+                icon: Icons.schedule_rounded,
+                color: MedicinePalette.teal,
+                label: l10n.medicineNextDoseReminderTitle,
+                value: l10n.medicineNextDoseTodayTime(time),
+                detail: item == null
+                    ? l10n.medicineNoMedicineBody
+                    : _doseSummary(l10n, item),
+                typography: typography,
+                surface: surface,
+              ),
+            ),
+            _MetricDivider(surface: surface),
+            Expanded(
+              child: _DrugBoxMetricItem(
+                icon: Icons.check_circle_rounded,
+                color: MedicinePalette.teal,
+                label: l10n.medicineHeroMetricAdherenceLabel,
+                value: workspace.hero.metricAdherence,
+                detail: l10n.medicineDoseDueStatus,
+                typography: typography,
+                surface: surface,
+              ),
+            ),
+            _MetricDivider(surface: surface),
+            Expanded(
+              child: _DrugBoxMetricItem(
+                icon: Icons.inventory_2_outlined,
+                color: MedicinePalette.orangeDeep,
+                label: l10n.medicineAlertRefillTitle,
+                value: refillItem == null
+                    ? l10n.medicineExpiredReminderEnabled
+                    : _itemName(l10n, refillItem),
+                detail: _refillDetail(l10n, refillItem),
+                typography: typography,
+                surface: surface,
+              ),
+            ),
+          ],
+        ),
+        if (canMark) ...[
+          const SizedBox(height: AppSpacingTokens.sm),
           Row(
             children: [
-              Text(
-                l10n.medicineDrugboxTotalPrefix,
-                style: typography.bodySm.copyWith(
-                  color: surface.body,
-                  letterSpacing: 0,
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.xs),
-              Text(
-                l10n.medicineDrugboxTotal(workspace.plan.items.length),
-                style: typography.bodySmStrong.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
-                ),
-              ),
-              const Spacer(),
-              Icon(
-                Icons.check_circle_outline_rounded,
+              _DoseActionButton(
+                label: l10n.medicineDoseActionTaken,
+                icon: Icons.check_rounded,
                 color: MedicinePalette.teal,
-                size: AppSpacingTokens.md,
+                filled: true,
+                onTap: () =>
+                    onMarkDose!(currentMedicineId, MedicineDoseAction.taken),
               ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              _DoseActionButton(
+                label: l10n.medicineDoseActionSkipped,
+                icon: Icons.remove_done_rounded,
+                color: MedicinePalette.orangeDeep,
+                onTap: () =>
+                    onMarkDose!(currentMedicineId, MedicineDoseAction.skipped),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _DrugBoxMetricItem extends StatelessWidget {
+  const _DrugBoxMetricItem({
+    required this.icon,
+    required this.color,
+    required this.label,
+    required this.value,
+    required this.detail,
+    required this.typography,
+    required this.surface,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String label;
+  final String value;
+  final String detail;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color.withValues(alpha: 0.78), size: 16),
               const SizedBox(width: AppSpacingTokens.xxs),
-              Flexible(
+              Expanded(
                 child: Text(
-                  l10n.medicineExpiredReminderEnabled,
-                  style: typography.bodySm.copyWith(
+                  label,
+                  style: typography.caption.copyWith(
                     color: surface.body,
                     letterSpacing: 0,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
                 ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: surface.mute,
-                size: AppSpacingTokens.lg,
               ),
             ],
           ),
+          const SizedBox(height: AppSpacingTokens.xxs),
+          AppSkeletonText(
+            text: value,
+            style: typography.bodyMdStrong.copyWith(
+              color: color.withValues(alpha: 0.92),
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            widthFactor: 0.76,
+          ),
+          const SizedBox(height: AppSpacingTokens.xxs),
+          AppSkeletonText(
+            text: detail,
+            style: typography.caption.copyWith(
+              color: surface.body,
+              letterSpacing: 0,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            widthFactor: 0.88,
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _MetricDivider extends StatelessWidget {
+  const _MetricDivider({required this.surface});
+
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: AppSpacingTokens.x4l,
+      child: VerticalDivider(width: 1, thickness: 1, color: surface.hairline),
     );
   }
 }
@@ -133,16 +383,20 @@ class _DrugBoxEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MedicinePanel(
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      shadow: const <BoxShadow>[],
-      borderColor: surface.hairline,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
       child: Row(
         children: [
-          const MedicineIconBadge(
+          MedicineIconBadge(
             icon: Icons.medication_outlined,
             color: MedicinePalette.teal,
+            backgroundColor: Color.alphaBlend(
+              MedicinePalette.tealSoft.withValues(alpha: 0.28),
+              surface.canvas,
+            ),
             shape: BoxShape.circle,
+            size: AppSpacingTokens.x3l,
+            iconSize: AppSpacingTokens.lg,
           ),
           const SizedBox(width: AppSpacingTokens.md),
           Expanded(
@@ -194,25 +448,23 @@ class _DrugBoxMedicationRow extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () => AppToast.show(context, l10n.medicineOpenPlanItemToast),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: MedicinePanel(
+        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
+            horizontal: AppSpacingTokens.xs,
             vertical: AppSpacingTokens.sm,
           ),
-          shadow: const <BoxShadow>[],
-          borderColor: surface.hairline,
           child: Row(
             children: [
-              _MedicationAvatar(item: item, size: AppSpacingTokens.x4l),
-              const SizedBox(width: AppSpacingTokens.md),
+              _MedicationAvatar(item: item, size: AppSpacingTokens.x2l),
+              const SizedBox(width: AppSpacingTokens.sm),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppSkeletonText(
                       text: name,
-                      style: typography.displaySm.copyWith(
+                      style: typography.bodyMdStrong.copyWith(
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0,
                       ),
@@ -220,19 +472,22 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       widthFactor: 0.72,
                     ),
-                    const SizedBox(height: AppSpacingTokens.xs),
+                    const SizedBox(height: AppSpacingTokens.xxs),
                     Wrap(
                       spacing: AppSpacingTokens.xs,
                       runSpacing: AppSpacingTokens.xxs,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         AppSkeletonText(
-                          text: _compactRouteOrSchedule(schedule),
+                          text:
+                              '$dosage · ${_compactRouteOrSchedule(schedule)}',
                           style: typography.bodySm.copyWith(
                             color: surface.body,
                             letterSpacing: 0,
                           ),
-                          widthFactor: 0.58,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          widthFactor: 0.66,
                         ),
                         AppSkeletonSlot(
                           skeleton: const AppInlineSkeletonBlock(
@@ -250,35 +505,6 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AppSkeletonText(
-                    text: dosage,
-                    style: typography.displaySm.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.right,
-                    widthFactor: 0.66,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.xxs),
-                  AppSkeletonText(
-                    text: schedule,
-                    style: typography.bodySm.copyWith(
-                      color: surface.body,
-                      letterSpacing: 0,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.right,
-                    widthFactor: 0.84,
-                  ),
-                ],
-              ),
               const SizedBox(width: AppSpacingTokens.xs),
               Icon(
                 Icons.chevron_right_rounded,
@@ -291,4 +517,21 @@ class _DrugBoxMedicationRow extends StatelessWidget {
       ),
     );
   }
+}
+
+MedicinePlanItem? _refillCandidate(List<MedicinePlanItem> items) {
+  for (final item in items) {
+    if (item.stockWarningKey != null) return item;
+  }
+  if (items.isEmpty) return null;
+  return items.last;
+}
+
+String _refillDetail(AppLocalizations l10n, MedicinePlanItem? item) {
+  if (item == null) return l10n.medicineExpiredReminderEnabled;
+  final warningKey = item.stockWarningKey;
+  if (warningKey != null) return medicineCopy(l10n, warningKey);
+  final raw = item.rawStock?.trim();
+  if (raw != null && raw.isNotEmpty) return raw;
+  return medicineCopy(l10n, item.stockKey);
 }
