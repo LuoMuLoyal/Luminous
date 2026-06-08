@@ -1,6 +1,6 @@
 # Flutter i18n
 
-Last updated: 2026-06-07
+Last updated: 2026-06-08
 
 ## Files
 
@@ -21,7 +21,7 @@ Last updated: 2026-06-07
 - Auth empty-field toast prompts
 - Mine signed-out notice / guest state copy
 - Mine signed-in account detail labels and account management action
-- Record quick-create/detail form labels, detail page labels, and save/delete failure toast
+- Record quick-create/detail form labels, common type form labels for water/vital/symptom/note, detail page labels, and save/delete failure toast
 - Medicine manual dose-log actions, saved/failed toasts, taken/skipped/pending status labels, and mobile safety placeholder action toasts
 - Network `Accept-Language`
 - Flutter UI locale driven by persisted app locale preference

@@ -19,6 +19,7 @@ import 'package:luminous/features/record/domain/entities/daily_record_inputs.dar
         DailyRecordUpdateInput,
         dailyRecordNoChange;
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_image_attachment_field.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
@@ -70,7 +71,8 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
       setState(() {
         _kind = record.kind;
         _valueController.text = record.value ?? '';
-        _unitController.text = record.unit ?? '';
+        _unitController.text =
+            record.unit ?? _defaultUnitTextForKind(record.kind);
         _noteController.text = record.note ?? '';
         _titleController.text = record.title ?? '';
         _existingImageAttachment = record.attachments
@@ -146,58 +148,13 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              DropdownButtonFormField<DailyRecordKind>(
-                initialValue: _kind,
-                decoration: InputDecoration(
-                  labelText: l10n.recordCreateFieldKind,
-                ),
-                items: DailyRecordKind.values
-                    .map(
-                      (k) => DropdownMenuItem(
-                        value: k,
-                        child: Text(_kindLabel(l10n, k)),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (v) {
-                  if (v != null) setState(() => _kind = v);
-                },
-              ),
-              const SizedBox(height: 12),
-              if (_kind != DailyRecordKind.mood) ...[
-                TextField(
-                  controller: _valueController,
-                  decoration: InputDecoration(
-                    labelText: _valueLabel(l10n, _kind),
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
-              if (_kind == DailyRecordKind.vital ||
-                  _kind == DailyRecordKind.water) ...[
-                TextField(
-                  controller: _unitController,
-                  decoration: InputDecoration(
-                    labelText: l10n.recordCreateFieldUnit,
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
-              if (_kind != DailyRecordKind.water) ...[
-                TextField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    labelText: l10n.recordCreateFieldTitleOptional,
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
-              TextField(
-                controller: _noteController,
-                decoration: InputDecoration(
-                  labelText: l10n.recordCreateFieldNote,
-                ),
-                maxLines: 3,
+              DailyRecordFormFields(
+                kind: _kind,
+                onKindChanged: _onKindChanged,
+                valueController: _valueController,
+                unitController: _unitController,
+                titleController: _titleController,
+                noteController: _noteController,
               ),
               const SizedBox(height: 12),
               DailyRecordImageAttachmentField(
@@ -214,7 +171,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _saving ? null : _onSave,
-                child: Text(_saving ? '...' : l10n.mineEditSaveAction),
+                child: Text(l10n.mineEditSaveAction),
               ),
               const SizedBox(height: 12),
               OutlinedButton.icon(
@@ -226,7 +183,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.delete_outline_rounded, size: 18),
-                label: Text(_deleting ? '...' : l10n.recordDeleteAction),
+                label: Text(l10n.recordDeleteAction),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.error,
                 ),
@@ -238,42 +195,19 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
     );
   }
 
-  String _kindLabel(AppLocalizations l10n, DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.water => l10n.recordTypeWater,
-      DailyRecordKind.meal => l10n.recordTypeMeal,
-      DailyRecordKind.vital => l10n.recordTypeVitals,
-      DailyRecordKind.mood => l10n.recordTypeMood,
-      DailyRecordKind.symptom => l10n.recordTypeSymptom,
-      DailyRecordKind.activity => l10n.recordTypeActivity,
-      DailyRecordKind.note => l10n.recordCreateKindNote,
-    };
-  }
-
-  String _valueLabel(AppLocalizations l10n, DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.water => l10n.recordCreateValueWater,
-      DailyRecordKind.meal => l10n.recordCreateValueMeal,
-      DailyRecordKind.vital => l10n.recordCreateValueVital,
-      DailyRecordKind.mood => l10n.recordTypeMood,
-      DailyRecordKind.symptom => l10n.recordTypeSymptom,
-      DailyRecordKind.activity => l10n.recordTypeActivity,
-      DailyRecordKind.note => l10n.recordCreateFieldNote,
-    };
-  }
-
   Future<void> _onSave() async {
     setState(() => _saving = true);
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
       final attachmentPatch = await _buildAttachmentPatch();
+      final rules = dailyRecordFormRules(_kind);
       await repo.update(
         widget.recordId,
         DailyRecordUpdateInput(
           kind: _kind,
-          title: _optionalText(_titleController),
-          value: _optionalText(_valueController),
-          unit: _optionalText(_unitController),
+          title: rules.showTitle ? _optionalText(_titleController) : null,
+          value: rules.showValue ? _optionalText(_valueController) : null,
+          unit: rules.showUnit ? _unitTextForKind(_kind) : null,
           note: _optionalText(_noteController),
           attachments: attachmentPatch,
         ),
@@ -340,13 +274,41 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   }
 
   void _invalidateProviders() {
+    ref.invalidate(dailyRecordDetailProvider(widget.recordId));
     ref.invalidate(recordDashboardProvider);
     ref.invalidate(todayDashboardProvider);
+  }
+
+  void _onKindChanged(DailyRecordKind kind) {
+    setState(() {
+      final wasWater = _kind == DailyRecordKind.water;
+      _kind = kind;
+      if (kind != DailyRecordKind.water &&
+          wasWater &&
+          _unitController.text.trim() == dailyRecordWaterDefaultUnit) {
+        _unitController.clear();
+      }
+      if (kind == DailyRecordKind.water &&
+          _unitController.text.trim().isEmpty) {
+        _unitController.text = dailyRecordWaterDefaultUnit;
+      }
+    });
   }
 
   String? _optionalText(TextEditingController controller) {
     final value = controller.text.trim();
     return value.isEmpty ? null : value;
+  }
+
+  String _defaultUnitTextForKind(DailyRecordKind kind) {
+    return kind == DailyRecordKind.water ? dailyRecordWaterDefaultUnit : '';
+  }
+
+  String? _unitTextForKind(DailyRecordKind kind) {
+    final value = _unitController.text.trim();
+    if (value.isNotEmpty) return value;
+    if (kind == DailyRecordKind.water) return dailyRecordWaterDefaultUnit;
+    return null;
   }
 
   Future<void> _onPickImage() async {
