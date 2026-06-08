@@ -1565,7 +1565,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineHeroTitle.
   ///
   /// In zh, this message translates to:
-  /// **'先把今天的药、风险和补药节奏看清。'**
+  /// **'先把今天的药、提醒和风险看清。'**
   String get medicineHeroTitle;
 
   /// No description provided for @medicineHeroSubtitle.
@@ -1643,7 +1643,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineQuickActionSectionSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'先把药品带进来，再逐步补齐提醒、安全和补药闭环。'**
+  /// **'先把药品带进来，再逐步补齐提醒和安全检查。'**
   String get medicineQuickActionSectionSubtitle;
 
   /// No description provided for @medicineQuickActionCameraTitle.
@@ -1703,7 +1703,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineTodayPlanSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'Mock 数据先把节奏、库存和风险位置站稳。'**
+  /// **'先把今日提醒、打卡状态和风险位置站稳。'**
   String get medicineTodayPlanSubtitle;
 
   /// No description provided for @medicineTodayPlanInspectAction.
@@ -1802,12 +1802,6 @@ abstract class AppLocalizations {
   /// **'提醒未设置'**
   String get medicineScheduleNotSet;
 
-  /// No description provided for @medicineStockNotTracked.
-  ///
-  /// In zh, this message translates to:
-  /// **'库存未跟踪'**
-  String get medicineStockNotTracked;
-
   /// No description provided for @medicineNoPendingDose.
   ///
   /// In zh, this message translates to:
@@ -1819,12 +1813,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'暂无待服用提醒'**
   String get medicineNoPendingDoseDetail;
-
-  /// No description provided for @medicineMockStock7Days.
-  ///
-  /// In zh, this message translates to:
-  /// **'剩余 7 天'**
-  String get medicineMockStock7Days;
 
   /// No description provided for @medicineStatusStable.
   ///
@@ -1850,12 +1838,6 @@ abstract class AppLocalizations {
   /// **'每日 1 次'**
   String get medicineMockScheduleDailyOnce;
 
-  /// No description provided for @medicineMockStock15Days.
-  ///
-  /// In zh, this message translates to:
-  /// **'剩余 15 天'**
-  String get medicineMockStock15Days;
-
   /// No description provided for @medicineStatusNeedsCheckin.
   ///
   /// In zh, this message translates to:
@@ -1874,59 +1856,17 @@ abstract class AppLocalizations {
   /// **'20 mg'**
   String get medicineMockDoseOmeprazole;
 
-  /// No description provided for @medicineMockStock3Days.
-  ///
-  /// In zh, this message translates to:
-  /// **'剩余 3 天'**
-  String get medicineMockStock3Days;
-
-  /// No description provided for @medicineStatusNeedRefillSoon.
-  ///
-  /// In zh, this message translates to:
-  /// **'待关注'**
-  String get medicineStatusNeedRefillSoon;
-
-  /// No description provided for @medicineStockWarningLow.
-  ///
-  /// In zh, this message translates to:
-  /// **'库存不足，建议及时补充'**
-  String get medicineStockWarningLow;
-
   /// No description provided for @medicineSafetyPanelTitle.
   ///
   /// In zh, this message translates to:
-  /// **'安全与补药'**
+  /// **'用药安全'**
   String get medicineSafetyPanelTitle;
 
   /// No description provided for @medicineSafetyPanelSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'高风险提醒、临期库存和依从性风险会集中在这里。'**
+  /// **'高风险提醒和依从性风险会集中在这里。'**
   String get medicineSafetyPanelSubtitle;
-
-  /// No description provided for @medicineAlertRefillTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'需补药提醒'**
-  String get medicineAlertRefillTitle;
-
-  /// No description provided for @medicineAlertRefillBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'维生素 D 软胶囊剩余 3 天'**
-  String get medicineAlertRefillBody;
-
-  /// No description provided for @medicineAlertRefillDetail.
-  ///
-  /// In zh, this message translates to:
-  /// **'建议及时补货，避免中断'**
-  String get medicineAlertRefillDetail;
-
-  /// No description provided for @medicineAlertRefillAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'去补药'**
-  String get medicineAlertRefillAction;
 
   /// No description provided for @medicineAlertInteractionTitle.
   ///
@@ -2149,12 +2089,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'会打开图片导入与处方识别流程。'**
   String get medicineQuickActionPrescriptionToast;
-
-  /// No description provided for @medicineAlertRefillToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'会打开补药与库存详情。'**
-  String get medicineAlertRefillToast;
 
   /// No description provided for @medicineAlertInteractionToast.
   ///

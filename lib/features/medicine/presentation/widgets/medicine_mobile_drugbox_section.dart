@@ -202,13 +202,12 @@ class _DrugBoxReminderStrip extends StatelessWidget {
               : l10n.medicineScheduleNotSet)
         : slot == null
         ? l10n.medicineScheduleNotSet
-        : l10n.medicineNextDoseTodayTime(medicineCopy(l10n, slot.timeKey));
+        : l10n.medicineNextDoseTodayTime(_slotTimeLabel(l10n, slot));
     final detail = item == null
         ? (hasAnyMedicine
               ? l10n.medicineNoPendingDoseDetail
               : l10n.medicineNoMedicineBody)
         : _doseSummary(l10n, item);
-    final refillItem = _refillCandidate(workspace.plan.items);
     final currentMedicineId = item?.currentMedicineId;
     final canMark =
         currentMedicineId != null &&
@@ -240,20 +239,6 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 label: l10n.medicineHeroMetricAdherenceLabel,
                 value: workspace.hero.metricAdherence,
                 detail: l10n.medicineDoseDueStatus,
-                typography: typography,
-                surface: surface,
-              ),
-            ),
-            _MetricDivider(surface: surface),
-            Expanded(
-              child: _DrugBoxMetricItem(
-                icon: Icons.inventory_2_outlined,
-                color: MedicinePalette.orangeDeep,
-                label: l10n.medicineAlertRefillTitle,
-                value: refillItem == null
-                    ? l10n.medicineExpiredReminderEnabled
-                    : _itemName(l10n, refillItem),
-                detail: _refillDetail(l10n, refillItem),
                 typography: typography,
                 surface: surface,
               ),
@@ -521,24 +506,4 @@ class _DrugBoxMedicationRow extends StatelessWidget {
       ),
     );
   }
-}
-
-MedicinePlanItem? _refillCandidate(List<MedicinePlanItem> items) {
-  for (final item in items) {
-    if (item.stockWarningKey != null) return item;
-  }
-  if (items.isEmpty) return null;
-  return items.last;
-}
-
-String _refillDetail(AppLocalizations l10n, MedicinePlanItem? item) {
-  if (item == null) return l10n.medicineExpiredReminderEnabled;
-  final warningKey = item.stockWarningKey;
-  if (warningKey != null) return medicineCopy(l10n, warningKey);
-  final raw = item.rawStock;
-  if (raw != null) {
-    final trimmed = raw.trim();
-    return trimmed.isEmpty ? l10n.medicineStockNotTracked : trimmed;
-  }
-  return medicineCopy(l10n, item.stockKey);
 }

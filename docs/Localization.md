@@ -22,7 +22,7 @@ Last updated: 2026-06-08
 - Mine signed-out notice / guest state copy
 - Mine signed-in account detail labels and account management action
 - Record quick-create/detail form labels, common type form labels for water/vital/symptom/note, detail page labels, and save/delete failure toast
-- Medicine manual dose-log actions, saved/failed toasts, taken/skipped/pending status labels, missing dose/schedule/inventory placeholders, no-pending-dose labels, and mobile safety placeholder action toasts
+- Medicine manual dose-log actions, saved/failed toasts, taken/skipped/pending status labels, missing dose/schedule placeholders, no-pending-dose labels, and mobile safety placeholder action toasts. Inventory/refill copy has been removed from the active Medicine scope.
 - Network `Accept-Language`
 - Flutter UI locale driven by persisted app locale preference
 

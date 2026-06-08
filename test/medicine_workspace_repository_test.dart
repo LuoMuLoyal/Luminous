@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' show MedicineDoseLogsApi;
+import 'package:lucent_openapi/lucent_openapi.dart'
+    show MedicineDoseLogsApi, MedicineRemindersApi;
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/lucent_medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 
@@ -15,22 +17,25 @@ void main() {
       final repository = LucentMedicineWorkspaceRepository(
         healthRepo: _FakeHealthContextRepository(),
         doseLogDs: _FakeDoseLogDataSource(),
+        reminderDs: _FakeReminderDataSource([
+          _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
+        ]),
       );
 
       final workspace = await repository.fetchWorkspace();
 
       expect(workspace.hero.metricDosesToday, '1');
       expect(workspace.hero.metricAdherence, '0%');
-      expect(workspace.hero.metricNextDose, '20:00');
+      expect(workspace.hero.metricNextDose, '07:45');
       expect(workspace.plan.items, hasLength(1));
       expect(workspace.plan.items[0].rawName, 'Metformin XR');
       expect(workspace.plan.items[0].rawDosage, '500 mg');
       expect(workspace.plan.items[0].rawSchedule, 'Morning and evening');
-      expect(workspace.plan.items[0].rawStock, '');
       expect(workspace.plan.items[0].rawState, isNull);
       expect(workspace.plan.items[0].currentMedicineId, 'med-1');
       expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.pending);
       expect(workspace.plan.items[0].slots, hasLength(1));
+      expect(workspace.plan.items[0].slots.single.rawTime, '07:45');
       expect(
         workspace.plan.items[0].stateKey,
         MedicineCopyKey.doseStatusPending,
@@ -52,6 +57,9 @@ void main() {
             createdAt: '2026-06-04T08:00:00.000Z',
           ),
         ]),
+        reminderDs: _FakeReminderDataSource([
+          _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
+        ]),
       );
 
       final workspace = await repository.fetchWorkspace();
@@ -66,6 +74,26 @@ void main() {
       expect(
         workspace.plan.items[0].slots.single.status,
         MedicineDoseStatus.skipped,
+      );
+    },
+  );
+
+  test(
+    'Lucent medicine workspace leaves reminder slots empty when unset',
+    () async {
+      final repository = LucentMedicineWorkspaceRepository(
+        healthRepo: _FakeHealthContextRepository(),
+        doseLogDs: _FakeDoseLogDataSource(),
+        reminderDs: _FakeReminderDataSource(),
+      );
+
+      final workspace = await repository.fetchWorkspace();
+
+      expect(workspace.hero.metricNextDose, '--');
+      expect(workspace.plan.items.single.slots, isEmpty);
+      expect(
+        workspace.plan.items.single.todayStatus,
+        MedicineDoseStatus.pending,
       );
     },
   );
@@ -135,6 +163,36 @@ class _FakeDoseLogDataSource extends DoseLogRemoteDataSource {
 
   @override
   Future<List<DoseLogItem>> fetchForDate(String date) async => _items;
+}
+
+class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
+  _FakeReminderDataSource([this._items = const []])
+    : super(
+        api: MedicineRemindersApi(Dio(BaseOptions())),
+        dio: Dio(BaseOptions()),
+      );
+
+  final List<MedicineReminderItem> _items;
+
+  @override
+  Future<List<MedicineReminderItem>> fetchActive() async => _items;
+}
+
+MedicineReminderItem _reminder({
+  required String id,
+  required String currentMedicineId,
+  int scheduledHour = 7,
+  int scheduledMinute = 45,
+}) {
+  return MedicineReminderItem(
+    id: id,
+    currentMedicineId: currentMedicineId,
+    scheduledHour: scheduledHour,
+    scheduledMinute: scheduledMinute,
+    isActive: true,
+    createdAt: '2026-06-08T07:00:00.000Z',
+    updatedAt: '2026-06-08T07:00:00.000Z',
+  );
 }
 
 const _snapshot = HealthContextSnapshot(

@@ -4,11 +4,11 @@ Last updated: 2026-06-08
 
 ## Product Direction
 
-- Competition north star: Luminous is an AI health management and medication safety companion for college students and young adults in China.
-- Core loop: record -> understand -> remind -> self-intervene -> connect services.
-- Primary differentiator: Chinese medication safety as the trust base, connected with common young-adult scenarios such as symptoms, mood, sleep, diet, hydration, period, and campus service guidance.
-- Terminal strategy: mobile app is the MVP surface; web is optional for reports and competition display; desktop app is out of MVP scope.
-- Product north star reference: `docs/Product_North_Star.md`.
+- Competition vision: Luminous is a proactive daily health self-management assistant for college students, using medication safety as the trust entry point and daily records as context.
+- Core loop: record -> understand -> summarize -> proactively remind -> explain risk -> connect services -> report.
+- Primary differentiator: active AI summaries and reminders over passive search, with medication safety, symptoms, hydration, diet, sleep, and campus service guidance in the MVP scope.
+- Terminal strategy: mobile app is the MVP surface; web is for reports, export preview, printing, and competition display. Desktop, hardware, watch/speaker, and complex multi-endpoint expansion are out of MVP scope.
+- Product vision reference: `docs/Product_Vision.md`. `docs/Product_North_Star.md` is a legacy draft kept temporarily for historical reference.
 
 ## Runtime Split
 
@@ -23,7 +23,7 @@ Last updated: 2026-06-08
 - API base: `/api/v1`.
 - Envelope: `{ code, message, data }`.
 - Generated API contract: `Lucent/docs/openapi.json`.
-- Current OpenAPI export after Environment Snapshot: 36 paths / 100 schemas.
+- Current OpenAPI export after Medicine Reminders: 38 paths / 106 schemas.
 - Daily records support CRUD, detail by id, attachment metadata, and Tencent COS image upload signing.
 - Environment snapshot static reference API is implemented at `GET /api/v1/environment/snapshot`.
 - Object storage provider is intentionally only Tencent COS for now.
@@ -34,13 +34,13 @@ Last updated: 2026-06-08
 - Flutter five-tab shell: `today / record / medicine / report / mine`.
 - State/navigation: Riverpod + GoRouter.
 - Generated Lucent client: `packages/lucent_openapi`.
-- Current generated client includes `DailyRecordsApi.dailyRecordsControllerCreateImageUploadV1` and generated `EnvironmentApi`.
+- Current generated client includes `DailyRecordsApi.dailyRecordsControllerCreateImageUploadV1`, generated `EnvironmentApi`, and generated `MedicineRemindersApi`.
 - Real Lucent-backed flows: auth/account, health-context edits, medicine search/detail, current medicines, manual dose logs, daily-record timeline/detail/create/edit/delete, selected-date timeline reload, occurredAt-based timeline time, daily-record single-image attachment upload/display, Record mobile quick actions for Lucent-supported daily-record kinds, and first-pass type-specific daily-record create/edit fields for water, vital, symptom, and note.
 - Auth/session state is explicitly split into restoring, confirmed signed-out, and signed-in protected-data access. Protected providers do not call Lucent while auth is restoring or signed out; confirmed signed-out main tabs use local/mock static surfaces, while signed-in tabs and edit flows use protected repositories. Protected entry taps are intercepted on the current page with a modal `尚未登录 / 是否去登录` prompt; cancel stays on the current page, and login returns to that original page after success. Destination-page auth gates remain only as direct/deep-link fallback.
 - Mobile north-star UI is active for Today, Record, Medicine, Report, and Mine. These five main tabs share partial skeleton loading: stable page chrome plus local/mock/static sections render immediately, while backend-backed fields render shimmer slots through the shared skeleton primitives. Today now uses compact priority cards and a UI-only Today todo list for system-created medication/hydration tasks plus user-created mood/custom tasks; the previous Today trend-card section is no longer active, and Today medication counts use active current medicines plus today's dose logs. Record keeps real daily-record timeline/detail data and now focuses on record-page jobs: quick record, AI input placeholder, health record timeline, filters, calendar/today overview, quick operations, and a guide row. Record mobile logic v1 wires supported quick actions to `/record/create` with selected kind/date, date chips to selected-date state, and filter chips to dashboard filtering; unsupported domains such as medication, sleep, and women-health remain placeholders or separate-domain boundaries until matching APIs exist. The old mobile-only symptom tracking, mood trend, period/diet, and specialist pack sections were removed from Record; period/women-health entry is shown only when health context marks `sexAtBirth == female`, while signed-out, male, or unknown profiles use non-period record actions. Medicine now derives the drugbox from active Lucent current medicines, derives today's pending/taken/skipped state from dose logs, updates an existing same-day dose log before creating a new one, and refreshes Medicine plus Today after marking. Safety engine, scan/OCR, report, reference notice, and safety tips are still bounded mock/placeholder sections. Report uses a feature-local mock repository for weekly score, trends, findings, exports, privacy controls, and pattern analysis until Lucent exposes report/insight APIs. Mine reads real auth/account plus health-context profile/allergy/condition/current-medicine data and now keeps account, health archive, campus services, and privacy notice only; Settings owns privacy permissions, reminder preferences, data export, help, about, account, theme, language, and more-settings entries.
-- Medicine mobile UI now uses a lighter reference-aligned drugbox: the drugbox and next-dose reminder are merged into one section, alert/status colors are low-alpha, and safety-engine alerts plus medicine records avoid nested inner cards in favor of compact rows and dividers. Because Lucent does not yet expose medication schedule occurrences or inventory/refill fields, the client uses a clearly marked single daily derived slot plus localized `提醒未设置 / 库存未跟踪` placeholders and leaves code TODOs for the future schedule/inventory contracts.
+- Medicine mobile UI now uses a lighter reference-aligned drugbox: the drugbox and next-dose reminder are merged into one section, alert/status colors are low-alpha, and safety-engine alerts plus medicine records avoid nested inner cards in favor of compact rows and dividers. Lucent now exposes schedule-only medicine reminder CRUD at `/api/v1/me/medicine-reminders`; Medicine and Today read active reminders for next-dose times and show `提醒未设置` when a current medicine has no reminder. Medication inventory/refill tracking is intentionally removed from the current product scope.
 - Environment snapshot is backend-ready but frontend-deferred. Future frontend wiring should target contextual Today signals and/or Mine service-resource entries, not a standalone generic More tab.
-- Still mock/static or planned: formal medication schedule/reminder occurrence APIs, medication inventory/refill APIs, live reminders, Mine campus-service contracts, Settings privacy/reminder/export/help/about contracts, Report insights/export data, Medicine OCR/barcode scanning and richer safety-engine data, smart devices, family profiles, push notifications, richer record analytics, and other low-frequency utilities that do not yet have a north-star tab home.
+- Still mock/static or planned: reminder edit UI, on-device scheduled notification delivery from Lucent reminder schedules, Mine campus-service contracts, Settings privacy/reminder/export/help/about contracts, Report insights/export data, Medicine OCR/barcode scanning and richer safety-engine data, smart devices, family profiles, push notifications, richer record analytics, and other low-frequency utilities that do not yet have a north-star tab home.
 
 ## UI Status
 

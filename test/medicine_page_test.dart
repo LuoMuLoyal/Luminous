@@ -227,7 +227,6 @@ const _completedWorkspace = MedicineWorkspace(
             status: MedicineDoseStatus.skipped,
           ),
         ],
-        stockKey: MedicineCopyKey.mockStock7Days,
         stateKey: MedicineCopyKey.doseStatusSkipped,
         stateColor: AppColorTokens.warningDeep,
         todayStatus: MedicineDoseStatus.skipped,

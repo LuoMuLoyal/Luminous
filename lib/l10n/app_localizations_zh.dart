@@ -771,7 +771,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineHeroEyebrow => 'PERSONAL DRUGBOX';
 
   @override
-  String get medicineHeroTitle => '先把今天的药、风险和补药节奏看清。';
+  String get medicineHeroTitle => '先把今天的药、提醒和风险看清。';
 
   @override
   String get medicineHeroSubtitle => '拍照识别、条码扫描、手动搜索和用药安全会从这里进入，结果始终保持参考边界。';
@@ -811,7 +811,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineQuickActionSectionTitle => '识别与录入';
 
   @override
-  String get medicineQuickActionSectionSubtitle => '先把药品带进来，再逐步补齐提醒、安全和补药闭环。';
+  String get medicineQuickActionSectionSubtitle => '先把药品带进来，再逐步补齐提醒和安全检查。';
 
   @override
   String get medicineQuickActionCameraTitle => '拍照识别药品';
@@ -841,7 +841,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineTodayPlanTitle => '今日服用计划';
 
   @override
-  String get medicineTodayPlanSubtitle => 'Mock 数据先把节奏、库存和风险位置站稳。';
+  String get medicineTodayPlanSubtitle => '先把今日提醒、打卡状态和风险位置站稳。';
 
   @override
   String get medicineTodayPlanInspectAction => '查看全部';
@@ -892,16 +892,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineScheduleNotSet => '提醒未设置';
 
   @override
-  String get medicineStockNotTracked => '库存未跟踪';
-
-  @override
   String get medicineNoPendingDose => '今日用药已完成';
 
   @override
   String get medicineNoPendingDoseDetail => '暂无待服用提醒';
-
-  @override
-  String get medicineMockStock7Days => '剩余 7 天';
 
   @override
   String get medicineStatusStable => '稳定服用';
@@ -916,9 +910,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineMockScheduleDailyOnce => '每日 1 次';
 
   @override
-  String get medicineMockStock15Days => '剩余 15 天';
-
-  @override
   String get medicineStatusNeedsCheckin => '稳定服用';
 
   @override
@@ -928,31 +919,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineMockDoseOmeprazole => '20 mg';
 
   @override
-  String get medicineMockStock3Days => '剩余 3 天';
+  String get medicineSafetyPanelTitle => '用药安全';
 
   @override
-  String get medicineStatusNeedRefillSoon => '待关注';
-
-  @override
-  String get medicineStockWarningLow => '库存不足，建议及时补充';
-
-  @override
-  String get medicineSafetyPanelTitle => '安全与补药';
-
-  @override
-  String get medicineSafetyPanelSubtitle => '高风险提醒、临期库存和依从性风险会集中在这里。';
-
-  @override
-  String get medicineAlertRefillTitle => '需补药提醒';
-
-  @override
-  String get medicineAlertRefillBody => '维生素 D 软胶囊剩余 3 天';
-
-  @override
-  String get medicineAlertRefillDetail => '建议及时补货，避免中断';
-
-  @override
-  String get medicineAlertRefillAction => '去补药';
+  String get medicineSafetyPanelSubtitle => '高风险提醒和依从性风险会集中在这里。';
 
   @override
   String get medicineAlertInteractionTitle => '相互作用提醒';
@@ -1064,9 +1034,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineQuickActionPrescriptionToast => '会打开图片导入与处方识别流程。';
-
-  @override
-  String get medicineAlertRefillToast => '会打开补药与库存详情。';
 
   @override
   String get medicineAlertInteractionToast => '会打开相互作用详情与风险说明。';

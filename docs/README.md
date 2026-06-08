@@ -1,12 +1,13 @@
 # Luminous Docs
 
-Last updated: 2026-06-07
+Last updated: 2026-06-08
 
 ## Current Entry Points
 
 | Need | Read |
 | --- | --- |
-| Product north star / competition positioning | `Product_North_Star.md` |
+| Product vision / competition positioning | `Product_Vision.md` |
+| Legacy north star draft | `Product_North_Star.md` |
 | Current project state, UI status, and UI rules | `Current_State.md` |
 | Recent changes | `MigrationLog.md` index and `migration-log/YYYY-MM-DD.md` entries |
 | Next goals / planning | `Next_Plan.md` |
@@ -18,7 +19,7 @@ Last updated: 2026-06-07
 
 | Change | Update |
 | --- | --- |
-| product positioning / competition north star | `Product_North_Star.md` |
+| product positioning / competition vision | `Product_Vision.md` |
 | frontend code | today's `migration-log/YYYY-MM-DD.md` |
 | network / OpenAPI / auth client | `OpenApi_Client.md` |
 | visible text / l10n flow | `Localization.md` |

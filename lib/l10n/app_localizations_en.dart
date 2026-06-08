@@ -815,7 +815,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineHeroTitle =>
-      'See today\'s medicines, risks, and refill rhythm clearly first.';
+      'See today\'s medicines, reminders, and risks clearly first.';
 
   @override
   String get medicineHeroSubtitle =>
@@ -857,7 +857,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineQuickActionSectionSubtitle =>
-      'Bring medicines in first, then layer reminders, safety checks, and refill workflows on top.';
+      'Bring medicines in first, then layer reminders and safety checks on top.';
 
   @override
   String get medicineQuickActionCameraTitle => 'Recognize by camera';
@@ -892,7 +892,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineTodayPlanSubtitle =>
-      'Mock data is enough to lock the rhythm, stock position, and risk placement first.';
+      'Lock today\'s reminders, dose status, and risk placement first.';
 
   @override
   String get medicineTodayPlanInspectAction => 'View all';
@@ -943,16 +943,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineScheduleNotSet => 'Reminder not set';
 
   @override
-  String get medicineStockNotTracked => 'Stock not tracked';
-
-  @override
   String get medicineNoPendingDose => 'Today\'s medicines are done';
 
   @override
   String get medicineNoPendingDoseDetail => 'No pending dose reminders';
-
-  @override
-  String get medicineMockStock7Days => '7 days left';
 
   @override
   String get medicineStatusStable => 'Stable routine';
@@ -967,9 +961,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineMockScheduleDailyOnce => 'Once daily';
 
   @override
-  String get medicineMockStock15Days => '15 days left';
-
-  @override
   String get medicineStatusNeedsCheckin => 'Stable routine';
 
   @override
@@ -979,32 +970,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineMockDoseOmeprazole => '20 mg';
 
   @override
-  String get medicineMockStock3Days => '3 days left';
-
-  @override
-  String get medicineStatusNeedRefillSoon => 'Needs attention';
-
-  @override
-  String get medicineStockWarningLow => 'Stock is low. Refill soon.';
-
-  @override
-  String get medicineSafetyPanelTitle => 'Safety and refill';
+  String get medicineSafetyPanelTitle => 'Medication safety';
 
   @override
   String get medicineSafetyPanelSubtitle =>
-      'High-risk alerts, near-empty stock, and adherence risk collect here.';
-
-  @override
-  String get medicineAlertRefillTitle => 'Refill reminder';
-
-  @override
-  String get medicineAlertRefillBody => 'Vitamin D softgels have 3 days left';
-
-  @override
-  String get medicineAlertRefillDetail => 'Refill soon to avoid interruption';
-
-  @override
-  String get medicineAlertRefillAction => 'Refill now';
+      'High-risk alerts and adherence risk collect here.';
 
   @override
   String get medicineAlertInteractionTitle => 'Interaction warning';
@@ -1139,10 +1109,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get medicineQuickActionPrescriptionToast =>
       'This will open image import and prescription recognition.';
-
-  @override
-  String get medicineAlertRefillToast =>
-      'This will open refill and stock details.';
 
   @override
   String get medicineAlertInteractionToast =>

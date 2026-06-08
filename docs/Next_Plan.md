@@ -50,16 +50,16 @@ Observable result:
 
 ### Target 3: Medicine Schedule Contract And Local Reminders
 
-Status: Medicine closed-loop v1 completed on 2026-06-08 for active current medicines plus same-day manual dose logs. Formal schedule occurrences, reminder times, and inventory/refill tracking remain TODO because Lucent does not expose those contracts yet.
+Status: Medicine closed-loop v1 completed on 2026-06-08 for active current medicines plus same-day manual dose logs. Lucent now exposes schedule-only medicine reminders, and Luminous reads active reminders for Today and Medicine next-dose displays. Inventory/refill tracking is removed from scope for now.
 
 Goal: make Medicine's reminder source explicit before turning notification preferences into local scheduled reminders.
 
 Scope:
 
 - Keep active current-medicine filtering, same-day dose-log update/create behavior, Today pending counts, and completed-dose UI under regression.
-- Define the first formal medication schedule source in Lucent: occurrence date/time, timezone behavior, repeat rules, and whether the schedule belongs to current medicines or a separate reminder resource.
-- Define medication inventory/refill fields only if the product wants real stock tracking; until then, keep `提醒未设置` / `库存未跟踪` placeholders instead of mock stock.
-- Luminous schedules/cancels local notifications only after the schedule source is real and testable.
+- Keep Lucent medicine reminder CRUD schedule-only: current medicine link, local hour/minute, weekday repeat, active state, note, and soft delete.
+- Add Luminous reminder create/edit/delete UI when the product flow is ready.
+- Luminous schedules/cancels local notifications only after the reminder schedule source is wired into a tested local notification coordinator.
 - Keep FCM/APNs, backend delivery workers, push tokens, and delivery logs out of scope.
 - If schedule data needs to sync across devices, design Lucent reminder APIs before local implementation.
 
@@ -93,7 +93,7 @@ Observable result:
 ## Immediate Work Order
 
 1. Keep Record quick-action routing, filter chips, selected-date reload, common type form mapping, attachment handling, detail cache invalidation, and timeline time display under regression.
-2. Keep Medicine dose-log closed-loop behavior under regression while designing the formal schedule occurrence and inventory/refill contracts.
+2. Keep Medicine dose-log and schedule-reminder behavior under regression while adding reminder edit UI and local notification scheduling.
 3. Implement local notification scheduling only after the first reminder schedule source is explicit and backed by Lucent or a documented local-only model.
 4. Keep auth/account deferred TODOs explicit until product/security decisions are made.
 

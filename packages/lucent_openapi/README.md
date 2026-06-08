@@ -100,6 +100,10 @@ Class | Method | HTTP request | Description
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerDeleteV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerdeletev1) | **DELETE** /api/v1/me/medicine-dose-logs/{id} | Soft-delete a dose log
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerListV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerlistv1) | **GET** /api/v1/me/medicine-dose-logs | List dose logs for a date
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerUpdateV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerupdatev1) | **PATCH** /api/v1/me/medicine-dose-logs/{id} | Update a dose log
+[*MedicineRemindersApi*](doc/MedicineRemindersApi.md) | [**medicineRemindersControllerCreateV1**](doc/MedicineRemindersApi.md#medicinereminderscontrollercreatev1) | **POST** /api/v1/me/medicine-reminders | Create a medicine reminder schedule
+[*MedicineRemindersApi*](doc/MedicineRemindersApi.md) | [**medicineRemindersControllerDeleteV1**](doc/MedicineRemindersApi.md#medicinereminderscontrollerdeletev1) | **DELETE** /api/v1/me/medicine-reminders/{id} | Soft-delete a medicine reminder schedule
+[*MedicineRemindersApi*](doc/MedicineRemindersApi.md) | [**medicineRemindersControllerListV1**](doc/MedicineRemindersApi.md#medicinereminderscontrollerlistv1) | **GET** /api/v1/me/medicine-reminders | List medicine reminder schedules
+[*MedicineRemindersApi*](doc/MedicineRemindersApi.md) | [**medicineRemindersControllerUpdateV1**](doc/MedicineRemindersApi.md#medicinereminderscontrollerupdatev1) | **PATCH** /api/v1/me/medicine-reminders/{id} | Update a medicine reminder schedule
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/me/health-context/allergies | Create an allergy record
@@ -134,6 +138,7 @@ Class | Method | HTTP request | Description
  - [CreateDoseLogDto](doc/CreateDoseLogDto.md)
  - [CreateHealthContextAllergyDto](doc/CreateHealthContextAllergyDto.md)
  - [CreateHealthContextConditionDto](doc/CreateHealthContextConditionDto.md)
+ - [CreateMedicineReminderDto](doc/CreateMedicineReminderDto.md)
  - [DailyRecordAttachmentDto](doc/DailyRecordAttachmentDto.md)
  - [DailyRecordAttachmentInputDto](doc/DailyRecordAttachmentInputDto.md)
  - [DailyRecordAttachmentKind](doc/DailyRecordAttachmentKind.md)
@@ -171,6 +176,10 @@ Class | Method | HTTP request | Description
  - [MedicineDetailDataDtoDetail](doc/MedicineDetailDataDtoDetail.md)
  - [MedicineDetailResponseDto](doc/MedicineDetailResponseDto.md)
  - [MedicinePaginationDto](doc/MedicinePaginationDto.md)
+ - [MedicineReminderItemDto](doc/MedicineReminderItemDto.md)
+ - [MedicineReminderListDataDto](doc/MedicineReminderListDataDto.md)
+ - [MedicineReminderListResponseDto](doc/MedicineReminderListResponseDto.md)
+ - [MedicineReminderResponseDto](doc/MedicineReminderResponseDto.md)
  - [MedicineSearchItemDto](doc/MedicineSearchItemDto.md)
  - [MedicineSearchMetaDto](doc/MedicineSearchMetaDto.md)
  - [MedicineSearchResponseDto](doc/MedicineSearchResponseDto.md)
@@ -203,6 +212,7 @@ Class | Method | HTTP request | Description
  - [UpdateHealthContextAllergyDto](doc/UpdateHealthContextAllergyDto.md)
  - [UpdateHealthContextConditionDto](doc/UpdateHealthContextConditionDto.md)
  - [UpdateHealthContextProfileDto](doc/UpdateHealthContextProfileDto.md)
+ - [UpdateMedicineReminderDto](doc/UpdateMedicineReminderDto.md)
  - [UserAllergyItemDto](doc/UserAllergyItemDto.md)
  - [UserAllergyKind](doc/UserAllergyKind.md)
  - [UserAllergySeverity](doc/UserAllergySeverity.md)

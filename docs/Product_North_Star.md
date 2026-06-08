@@ -2,6 +2,9 @@
 
 Last updated: 2026-06-07
 
+> Status: legacy draft. The current competition-facing product vision has moved to `Product_Vision.md`.
+> Keep this file temporarily for historical reference; delete it after remaining links and concept references have been migrated.
+
 ## Positioning
 
 Luminous is an AI health management and medication-safety companion for college students and young adults in China.

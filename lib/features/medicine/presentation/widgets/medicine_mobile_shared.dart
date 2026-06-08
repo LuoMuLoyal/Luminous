@@ -182,6 +182,11 @@ _NextDose? _nextDoseFor(MedicineWorkspace workspace) {
       }
     }
   }
+  for (final item in workspace.plan.items) {
+    if (item.todayStatus == MedicineDoseStatus.pending) {
+      return _NextDose(item: item);
+    }
+  }
   return null;
 }
 
@@ -247,8 +252,8 @@ _RecordRow _rowFromItem(
     detail: detail,
     date: _recordDateLabel(l10n, index),
     time: slot == null
-        ? _fallbackRecordTime(index)
-        : medicineCopy(l10n, slot.timeKey),
+        ? l10n.medicineScheduleNotSet
+        : _slotTimeLabel(l10n, slot),
     statusLabel: statusLabel,
     statusColor: statusColor,
     statusIcon: statusIcon,
@@ -261,13 +266,12 @@ String _recordDateLabel(AppLocalizations l10n, int index) {
   return l10n.medicineRecordOlderDate;
 }
 
-String _fallbackRecordTime(int index) {
-  return switch (index) {
-    0 => '08:30',
-    1 => '09:15',
-    2 => '20:00',
-    _ => '09:20',
-  };
+String _slotTimeLabel(AppLocalizations l10n, MedicineDoseSlot slot) {
+  final raw = slot.rawTime?.trim();
+  if (raw != null && raw.isNotEmpty) return raw;
+  final key = slot.timeKey;
+  if (key != null) return medicineCopy(l10n, key);
+  return l10n.medicineScheduleNotSet;
 }
 
 String _itemName(AppLocalizations l10n, MedicinePlanItem item) {
@@ -316,7 +320,6 @@ String _compactRouteOrSchedule(String value) {
 
 String _alertActionResult(MedicineCopyKey key, AppLocalizations l10n) {
   return switch (key) {
-    MedicineCopyKey.alertRefillAction => l10n.medicineAlertRefillToast,
     MedicineCopyKey.alertInteractionAction =>
       l10n.medicineAlertInteractionToast,
     MedicineCopyKey.alertOtherAction => l10n.medicineAlertOtherToast,

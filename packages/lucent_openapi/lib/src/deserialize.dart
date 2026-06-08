@@ -14,6 +14,7 @@ import 'package:lucent_openapi/src/model/create_daily_record_image_upload_dto.da
 import 'package:lucent_openapi/src/model/create_dose_log_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_allergy_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_condition_dto.dart';
+import 'package:lucent_openapi/src/model/create_medicine_reminder_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_attachment_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_attachment_input_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_image_upload_dto.dart';
@@ -46,6 +47,10 @@ import 'package:lucent_openapi/src/model/medicine_detail_data_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_detail_data_dto_detail.dart';
 import 'package:lucent_openapi/src/model/medicine_detail_response_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_pagination_dto.dart';
+import 'package:lucent_openapi/src/model/medicine_reminder_item_dto.dart';
+import 'package:lucent_openapi/src/model/medicine_reminder_list_data_dto.dart';
+import 'package:lucent_openapi/src/model/medicine_reminder_list_response_dto.dart';
+import 'package:lucent_openapi/src/model/medicine_reminder_response_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_search_item_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_search_meta_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_search_response_dto.dart';
@@ -73,6 +78,7 @@ import 'package:lucent_openapi/src/model/update_dose_log_dto.dart';
 import 'package:lucent_openapi/src/model/update_health_context_allergy_dto.dart';
 import 'package:lucent_openapi/src/model/update_health_context_condition_dto.dart';
 import 'package:lucent_openapi/src/model/update_health_context_profile_dto.dart';
+import 'package:lucent_openapi/src/model/update_medicine_reminder_dto.dart';
 import 'package:lucent_openapi/src/model/user_allergy_item_dto.dart';
 import 'package:lucent_openapi/src/model/user_brief_dto.dart';
 import 'package:lucent_openapi/src/model/user_condition_item_dto.dart';
@@ -138,6 +144,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return CreateHealthContextAllergyDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CreateHealthContextConditionDto':
           return CreateHealthContextConditionDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'CreateMedicineReminderDto':
+          return CreateMedicineReminderDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordAttachmentDto':
           return DailyRecordAttachmentDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordAttachmentInputDto':
@@ -217,6 +225,14 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return MedicineDetailResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'MedicinePaginationDto':
           return MedicinePaginationDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MedicineReminderItemDto':
+          return MedicineReminderItemDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MedicineReminderListDataDto':
+          return MedicineReminderListDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MedicineReminderListResponseDto':
+          return MedicineReminderListResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'MedicineReminderResponseDto':
+          return MedicineReminderResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'MedicineSearchItemDto':
           return MedicineSearchItemDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'MedicineSearchMetaDto':
@@ -286,6 +302,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return UpdateHealthContextConditionDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UpdateHealthContextProfileDto':
           return UpdateHealthContextProfileDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'UpdateMedicineReminderDto':
+          return UpdateMedicineReminderDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UserAllergyItemDto':
           return UserAllergyItemDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UserAllergyKind':

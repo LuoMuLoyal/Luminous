@@ -4,6 +4,7 @@ import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/lucent_medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
@@ -75,7 +76,6 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
               status: MedicineDoseStatus.pending,
             ),
           ],
-          stockKey: MedicineCopyKey.mockStock7Days,
           stateKey: MedicineCopyKey.statusStable,
           stateColor: AppColorTokens.success,
         ),
@@ -91,7 +91,6 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
               status: MedicineDoseStatus.taken,
             ),
           ],
-          stockKey: MedicineCopyKey.mockStock15Days,
           stateKey: MedicineCopyKey.statusNeedsCheckin,
           stateColor: AppColorTokens.warningDeep,
         ),
@@ -107,10 +106,8 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
               status: MedicineDoseStatus.pending,
             ),
           ],
-          stockKey: MedicineCopyKey.mockStock3Days,
-          stateKey: MedicineCopyKey.statusNeedRefillSoon,
-          stateColor: AppColorTokens.error,
-          stockWarningKey: MedicineCopyKey.stockWarningLow,
+          stateKey: MedicineCopyKey.doseStatusPending,
+          stateColor: AppColorTokens.warningDeep,
         ),
       ],
     ),
@@ -169,12 +166,21 @@ final doseLogRemoteDataSourceProvider = Provider<DoseLogRemoteDataSource>((
   return DoseLogRemoteDataSource(api: api, dio: dio);
 });
 
+final medicineReminderRemoteDataSourceProvider =
+    Provider<MedicineReminderRemoteDataSource>((ref) {
+      final api = ref.watch(lucentMedicineRemindersApiProvider);
+      final dio = ref.watch(lucentDioClientProvider).dio;
+      return MedicineReminderRemoteDataSource(api: api, dio: dio);
+    });
+
 final medicineWorkspaceRepositoryProvider =
     Provider<MedicineWorkspaceRepository>((ref) {
       final healthRepo = ref.watch(healthContextRepositoryProvider);
       final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
+      final reminderDs = ref.watch(medicineReminderRemoteDataSourceProvider);
       return LucentMedicineWorkspaceRepository(
         healthRepo: healthRepo,
         doseLogDs: doseLogDs,
+        reminderDs: reminderDs,
       );
     });
