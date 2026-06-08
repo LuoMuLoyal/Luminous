@@ -81,6 +81,9 @@ MineProfileSnapshot _buildProfile(HealthContextSnapshot snapshot) {
   final hasWomenHealth =
       profile.pregnancyState?.isNotEmpty == true ||
       profile.lactationState?.isNotEmpty == true;
+  // Deferred by Product_Vision MVP: keep pregnancy/lactation status because it
+  // is useful for medication safety, but do not surface it as a standalone
+  // women-health or period-management module.
 
   return MineProfileSnapshot(
     age: summary.age,
@@ -92,7 +95,7 @@ MineProfileSnapshot _buildProfile(HealthContextSnapshot snapshot) {
     currentMedicineCount: summary.currentMedicineCount,
     basicInfoCompleted: hasBasicInfo,
     emergencyContactCompleted: false,
-    womenHealthCompleted: hasWomenHealth,
+    medicationSafetyStatusCompleted: hasWomenHealth,
   );
 }
 
@@ -171,15 +174,6 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
       route: '/mine/medicine/new',
-    ),
-    MineArchiveEntry(
-      icon: Icons.female_rounded,
-      accent: _pink,
-      titleKey: MineCopyKey.archiveWomenTitle,
-      subtitleKey: MineCopyKey.archiveWomenSubtitle,
-      statusKey: profile.womenHealthCompleted
-          ? MineCopyKey.archiveCompleted
-          : MineCopyKey.archiveNeedsFill,
     ),
   ];
 }

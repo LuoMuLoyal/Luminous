@@ -145,6 +145,18 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static List<MedicineQuickAction> _defaultQuickActions() => const [
     MedicineQuickAction(
+      icon: Icons.search_rounded,
+      titleKey: MedicineCopyKey.quickActionSearchTitle,
+      subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
+      accent: AppColorTokens.cyanDeep,
+    ),
+  ];
+
+  // Deferred by Product_Vision MVP: keep scan/OCR quick-action shapes because
+  // they are useful later, but do not surface them until the matching camera,
+  // recognition, and prescription contract/product job is ready.
+  static const deferredScanQuickActions = <MedicineQuickAction>[
+    MedicineQuickAction(
       icon: Icons.photo_camera_outlined,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,

@@ -25,7 +25,6 @@ import 'package:luminous/features/mine/data/repositories/mock_mine_repository.da
     show MockMineRepository;
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart'
     show mineRepositoryProvider;
-import 'package:luminous/features/more/data/repositories/mock_more_repository.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
@@ -104,7 +103,6 @@ Future<ProviderContainer> pumpOfflineApp(
         medicineWorkspaceRepository ?? const MockMedicineWorkspaceRepository(),
       ),
       mineRepositoryProvider.overrideWithValue(const MockMineRepository()),
-      moreRepositoryProvider.overrideWithValue(const MockMoreRepository()),
       medicineSearchRepositoryProvider.overrideWithValue(
         const MockMedicineSearchRepository(),
       ),
@@ -555,13 +553,11 @@ class E2eRecordRepository implements RecordRepository {
   @override
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
-    bool showWomenHealth = false,
     RecordEntryType? filterType,
   }) async {
     requestedDates.add(selectedDate);
     final mock = await const MockRecordRepository().fetchDashboard(
       selectedDate,
-      showWomenHealth: showWomenHealth,
       filterType: filterType,
     );
 
@@ -587,8 +583,6 @@ class E2eRecordRepository implements RecordRepository {
         ),
       ],
       trends: mock.trends,
-      healthBag: mock.healthBag,
-      showWomenHealth: showWomenHealth,
     );
   }
 }

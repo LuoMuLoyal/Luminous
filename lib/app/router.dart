@@ -14,7 +14,7 @@ import 'package:luminous/features/record/presentation/pages/record_detail.dart';
 import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/more_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
@@ -74,7 +74,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/settings/more',
-      builder: (context, state) => const MoreSettingsPage(),
+      builder: (context, state) => const AdvancedSettingsPage(),
     ),
     GoRoute(
       path: '/account/change-email',

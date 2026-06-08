@@ -18,7 +18,6 @@ class LucentRecordRepository implements RecordRepository {
   @override
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
-    bool showWomenHealth = false,
     RecordEntryType? filterType,
   }) async {
     final date = DateTime(
@@ -33,7 +32,8 @@ class LucentRecordRepository implements RecordRepository {
     final kind = selectedKind?.name;
 
     List<DailyRecordItem> records;
-    if (filterType != null && selectedKind == null) {
+    if (filterType != null &&
+        (selectedKind == null || !_isActiveRecordEntryType(filterType))) {
       records = [];
     } else {
       try {
@@ -42,7 +42,12 @@ class LucentRecordRepository implements RecordRepository {
           kind: kind,
           pageSize: 100,
         );
-        records = result.items;
+        records = result.items
+            .where((record) {
+              final type = recordEntryTypeForDailyRecordKind(record.kind);
+              return _isActiveRecordEntryType(type);
+            })
+            .toList(growable: false);
       } catch (_) {
         records = [];
       }
@@ -55,13 +60,11 @@ class LucentRecordRepository implements RecordRepository {
       selectedDay: date.day,
       weekDays: _staticWeekDays(date),
       monthDays: _staticMonthDays(date),
-      quickActions: _staticQuickActionsFor(showWomenHealth),
+      quickActions: _staticQuickActionsFor(),
       summary: _staticSummary,
-      filters: _staticFiltersFor(showWomenHealth, filterType),
+      filters: _staticFiltersFor(filterType),
       timeline: timeline.isNotEmpty ? timeline : _staticTimeline,
       trends: _staticTrends,
-      healthBag: _staticHealthBag,
-      showWomenHealth: showWomenHealth,
     );
   }
 
@@ -201,7 +204,7 @@ class LucentRecordRepository implements RecordRepository {
       type: RecordEntryType.symptom,
       icon: Icons.medical_services_outlined,
       titleKey: RecordCopyKey.typeSymptom,
-      subtitleKey: RecordCopyKey.typeWomenHealth,
+      subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColorTokens.warning,
       softColor: AppColorTokens.warningSoft,
     ),
@@ -209,15 +212,18 @@ class LucentRecordRepository implements RecordRepository {
       type: RecordEntryType.medication,
       icon: Icons.medication_rounded,
       titleKey: RecordCopyKey.typeMedication,
-      subtitleKey: RecordCopyKey.typeWomenHealth,
+      subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColorTokens.cyanDeep,
       softColor: AppColorTokens.cyanSoft,
     ),
+    // Deferred by Product_Vision MVP: keep the lightweight mood shape for
+    // future self-check-ins, but do not surface it as a formal mental-health
+    // module in the active Record quick actions.
     RecordQuickAction(
       type: RecordEntryType.mood,
       icon: Icons.sentiment_satisfied_rounded,
       titleKey: RecordCopyKey.typeMood,
-      subtitleKey: RecordCopyKey.typeWomenHealth,
+      subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColorTokens.violet,
       softColor: AppColorTokens.violetSoft,
     ),
@@ -225,7 +231,7 @@ class LucentRecordRepository implements RecordRepository {
       type: RecordEntryType.meal,
       icon: Icons.restaurant_rounded,
       titleKey: RecordCopyKey.typeMeal,
-      subtitleKey: RecordCopyKey.typeWomenHealth,
+      subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColorTokens.cyanDeep,
       softColor: AppColorTokens.cyanSoft,
     ),
@@ -233,7 +239,7 @@ class LucentRecordRepository implements RecordRepository {
       type: RecordEntryType.water,
       icon: Icons.water_drop_rounded,
       titleKey: RecordCopyKey.typeWater,
-      subtitleKey: RecordCopyKey.typeWomenHealth,
+      subtitleKey: RecordCopyKey.summaryCupsUnit,
       accent: AppColorTokens.link,
       softColor: AppColorTokens.linkSoft,
     ),
@@ -245,22 +251,9 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.error,
       softColor: AppColorTokens.errorSoft,
     ),
-    RecordQuickAction(
-      type: RecordEntryType.womenHealth,
-      icon: Icons.calendar_month_rounded,
-      titleKey: RecordCopyKey.typeWomenHealth,
-      subtitleKey: RecordCopyKey.typeWomenHealth,
-      accent: AppColorTokens.highlightMagenta,
-      softColor: AppColorTokens.errorSoft,
-    ),
-    RecordQuickAction(
-      type: RecordEntryType.activity,
-      icon: Icons.directions_run_rounded,
-      titleKey: RecordCopyKey.typeActivity,
-      subtitleKey: RecordCopyKey.summaryTimesUnit,
-      accent: AppColorTokens.gradientDevelopStart,
-      softColor: const Color(0xFFE8FFF2),
-    ),
+    // Deferred by Product_Vision MVP: keep the sleep entry shape because sleep
+    // is in the product vision, but do not surface it until the backend
+    // contract maps sleep records explicitly.
     RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: Icons.dark_mode_rounded,
@@ -271,10 +264,9 @@ class LucentRecordRepository implements RecordRepository {
     ),
   ];
 
-  static List<RecordQuickAction> _staticQuickActionsFor(bool showWomenHealth) {
-    if (showWomenHealth) return _staticQuickActions;
+  static List<RecordQuickAction> _staticQuickActionsFor() {
     return _staticQuickActions
-        .where((action) => action.type != RecordEntryType.womenHealth)
+        .where((action) => _isActiveRecordEntryType(action.type))
         .toList(growable: false);
   }
 
@@ -317,14 +309,6 @@ class LucentRecordRepository implements RecordRepository {
       selected: true,
     ),
     RecordFilter(
-      type: RecordEntryType.womenHealth,
-      titleKey: RecordCopyKey.typeWomenHealth,
-      icon: Icons.calendar_month_rounded,
-      accent: AppColorTokens.highlightMagenta,
-      selected: true,
-      locked: true,
-    ),
-    RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
       icon: Icons.favorite_rounded,
@@ -338,24 +322,12 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.violet,
       selected: true,
     ),
-    RecordFilter(
-      type: RecordEntryType.activity,
-      titleKey: RecordCopyKey.typeActivity,
-      icon: Icons.directions_run_rounded,
-      accent: AppColorTokens.gradientDevelopStart,
-      selected: true,
-    ),
   ];
 
-  static List<RecordFilter> _staticFiltersFor(
-    bool showWomenHealth,
-    RecordEntryType? filterType,
-  ) {
-    final filters = showWomenHealth
-        ? _staticFilters
-        : _staticFilters.where(
-            (filter) => filter.type != RecordEntryType.womenHealth,
-          );
+  static List<RecordFilter> _staticFiltersFor(RecordEntryType? filterType) {
+    final filters = _staticFilters.where(
+      (filter) => _isActiveRecordEntryType(filter.type),
+    );
 
     return filters
         .map(
@@ -384,10 +356,9 @@ class LucentRecordRepository implements RecordRepository {
     ),
   ];
 
-  static const _staticHealthBag = RecordHealthBag(
-    titleKey: RecordCopyKey.healthBagTitle,
-    bodyKey: RecordCopyKey.healthBagBody,
-    latestKey: RecordCopyKey.healthBagLatest,
-    nextKey: RecordCopyKey.healthBagNext,
-  );
+  static bool _isActiveRecordEntryType(RecordEntryType type) {
+    return type != RecordEntryType.activity &&
+        type != RecordEntryType.sleep &&
+        type != RecordEntryType.mood;
+  }
 }

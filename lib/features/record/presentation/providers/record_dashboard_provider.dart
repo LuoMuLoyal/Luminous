@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 
 class SelectedRecordDateNotifier extends Notifier<DateTime> {
   @override
@@ -47,19 +46,10 @@ final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) async {
     return pendingAuthSessionResolution<RecordDashboard>();
   }
 
-  var showWomenHealth = false;
-  try {
-    final healthContext = await ref.watch(healthContextSnapshotProvider.future);
-    showWomenHealth = healthContext.profile.sexAtBirth == 'female';
-  } catch (_) {
-    showWomenHealth = false;
-  }
-
   return ref
       .watch(recordRepositoryProvider)
       .fetchDashboard(
         selectedDate,
-        showWomenHealth: showWomenHealth,
         filterType: selectedFilter,
       )
       .timeout(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/data/repositories/lucent_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
@@ -12,53 +11,35 @@ class MockRecordRepository implements RecordRepository {
   @override
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
-    bool showWomenHealth = false,
     RecordEntryType? filterType,
   }) async {
-    return dashboardFor(
-      selectedDate,
-      showWomenHealth: showWomenHealth,
-      filterType: filterType,
-    );
+    return dashboardFor(selectedDate, filterType: filterType);
   }
 
   static RecordDashboard loadingDashboard(
     DateTime selectedDate, {
-    bool showWomenHealth = false,
     RecordEntryType? filterType,
   }) {
-    return dashboardFor(
-      selectedDate,
-      showWomenHealth: showWomenHealth,
-      filterType: filterType,
-    );
+    return dashboardFor(selectedDate, filterType: filterType);
   }
 
   static RecordDashboard dashboardFor(
     DateTime selectedDate, {
-    bool showWomenHealth = false,
     RecordEntryType? filterType,
   }) {
-    final filters = _filtersFor(showWomenHealth, filterType);
-    final timeline = _timelineFor(showWomenHealth, filterType);
+    final filters = _filtersFor(filterType);
+    final timeline = _timelineFor(filterType);
 
     return RecordDashboard(
       selectedDate: selectedDate,
       selectedDay: selectedDate.day,
       weekDays: _weekDaysFor(selectedDate),
       monthDays: _monthDays,
-      quickActions: _quickActionsFor(showWomenHealth),
+      quickActions: _quickActionsFor(),
       summary: const RecordDaySummary(items: _summaryItems),
       filters: filters,
       timeline: timeline,
       trends: _trends,
-      healthBag: const RecordHealthBag(
-        titleKey: RecordCopyKey.healthBagTitle,
-        bodyKey: RecordCopyKey.healthBagBody,
-        latestKey: RecordCopyKey.healthBagLatest,
-        nextKey: RecordCopyKey.healthBagNext,
-      ),
-      showWomenHealth: showWomenHealth,
     );
   }
 
@@ -72,12 +53,8 @@ class MockRecordRepository implements RecordRepository {
   static const _moodSoft = Color(0xFFF0ECFF);
   static const _symptom = Color(0xFFFF8A00);
   static const _symptomSoft = Color(0xFFFFF2E0);
-  static const _activity = Color(0xFF16A66A);
-  static const _activitySoft = Color(0xFFEAF9F1);
   static const _medication = Color(0xFFFF7A1A);
   static const _medicationSoft = Color(0xFFFFF0E6);
-  static const _women = Color(0xFFFF6F91);
-  static const _womenSoft = Color(0xFFFFEEF3);
   static const _sleep = Color(0xFF7B61FF);
   static const _sleepSoft = Color(0xFFF0ECFF);
 
@@ -91,7 +68,7 @@ class MockRecordRepository implements RecordRepository {
     const markerPattern = <List<Color>>[
       <Color>[_meal],
       <Color>[_meal],
-      <Color>[_activity],
+      <Color>[_symptom],
       <Color>[_meal, _water],
       <Color>[_mood],
       <Color>[_vitals],
@@ -142,7 +119,7 @@ class MockRecordRepository implements RecordRepository {
       day: 14,
       inMonth: true,
       selected: false,
-      markers: <Color>[_activity],
+      markers: <Color>[_symptom],
     ),
     RecordCalendarDay(
       day: 15,
@@ -179,7 +156,7 @@ class MockRecordRepository implements RecordRepository {
       day: 20,
       inMonth: true,
       selected: false,
-      markers: <Color>[_activity],
+      markers: <Color>[_medication],
     ),
     RecordCalendarDay(
       day: 21,
@@ -221,7 +198,7 @@ class MockRecordRepository implements RecordRepository {
       day: 27,
       inMonth: true,
       selected: false,
-      markers: <Color>[_activity],
+      markers: <Color>[_symptom],
     ),
     RecordCalendarDay(
       day: 28,
@@ -239,7 +216,7 @@ class MockRecordRepository implements RecordRepository {
       day: 30,
       inMonth: true,
       selected: false,
-      markers: <Color>[_activity],
+      markers: <Color>[_water],
     ),
     RecordCalendarDay(
       day: 31,
@@ -276,28 +253,12 @@ class MockRecordRepository implements RecordRepository {
       softColor: _waterSoft,
     ),
     RecordQuickAction(
-      type: RecordEntryType.mood,
-      icon: Icons.mood_rounded,
-      titleKey: RecordCopyKey.typeMood,
-      subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: _mood,
-      softColor: _moodSoft,
-    ),
-    RecordQuickAction(
       type: RecordEntryType.symptom,
       icon: Icons.sick_outlined,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: _symptom,
       softColor: _symptomSoft,
-    ),
-    RecordQuickAction(
-      type: RecordEntryType.activity,
-      icon: Icons.directions_run_rounded,
-      titleKey: RecordCopyKey.typeActivity,
-      subtitleKey: RecordCopyKey.summaryTimesUnit,
-      accent: _activity,
-      softColor: _activitySoft,
     ),
     RecordQuickAction(
       type: RecordEntryType.medication,
@@ -307,14 +268,20 @@ class MockRecordRepository implements RecordRepository {
       accent: _medication,
       softColor: _medicationSoft,
     ),
+    // Deferred by Product_Vision MVP: keep the lightweight mood entry shape
+    // because it may support future self-check-ins, but do not surface it as a
+    // formal mental-health module in the active Record quick actions.
     RecordQuickAction(
-      type: RecordEntryType.womenHealth,
-      icon: Icons.local_florist_rounded,
-      titleKey: RecordCopyKey.typeWomenHealth,
-      subtitleKey: RecordCopyKey.quickWomenSubtitle,
-      accent: _women,
-      softColor: _womenSoft,
+      type: RecordEntryType.mood,
+      icon: Icons.mood_rounded,
+      titleKey: RecordCopyKey.typeMood,
+      subtitleKey: RecordCopyKey.summaryRecorded,
+      accent: _mood,
+      softColor: _moodSoft,
     ),
+    // Deferred by Product_Vision MVP: keep the sleep entry shape because sleep
+    // is in the product vision, but do not surface it until the backend
+    // contract maps sleep records explicitly.
     RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: Icons.dark_mode_rounded,
@@ -325,10 +292,13 @@ class MockRecordRepository implements RecordRepository {
     ),
   ];
 
-  static List<RecordQuickAction> _quickActionsFor(bool showWomenHealth) {
-    if (showWomenHealth) return _quickActions;
+  static List<RecordQuickAction> _quickActionsFor() {
     return _quickActions
-        .where((action) => action.type != RecordEntryType.womenHealth)
+        .where(
+          (action) =>
+              action.type != RecordEntryType.mood &&
+              action.type != RecordEntryType.sleep,
+        )
         .toList(growable: false);
   }
 
@@ -360,24 +330,6 @@ class MockRecordRepository implements RecordRepository {
       accent: _vitals,
       softColor: _vitalsSoft,
     ),
-    RecordSummaryItem(
-      type: RecordEntryType.mood,
-      icon: Icons.mood_rounded,
-      titleKey: RecordCopyKey.summaryMoodTitle,
-      value: '',
-      detailKey: RecordCopyKey.summaryRecorded,
-      accent: _mood,
-      softColor: _moodSoft,
-    ),
-    RecordSummaryItem(
-      type: RecordEntryType.activity,
-      icon: Icons.directions_run_rounded,
-      titleKey: RecordCopyKey.summaryActivityTitle,
-      value: '40',
-      unitKey: RecordCopyKey.summaryTimesUnit,
-      accent: _activity,
-      softColor: _activitySoft,
-    ),
   ];
 
   static const _filters = <RecordFilter>[
@@ -403,24 +355,10 @@ class MockRecordRepository implements RecordRepository {
       selected: true,
     ),
     RecordFilter(
-      type: RecordEntryType.mood,
-      titleKey: RecordCopyKey.typeMood,
-      icon: Icons.mood_rounded,
-      accent: _mood,
-      selected: true,
-    ),
-    RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
       icon: Icons.sick_outlined,
       accent: _symptom,
-      selected: true,
-    ),
-    RecordFilter(
-      type: RecordEntryType.activity,
-      titleKey: RecordCopyKey.typeActivity,
-      icon: Icons.directions_run_rounded,
-      accent: _activity,
       selected: true,
     ),
     RecordFilter(
@@ -430,13 +368,14 @@ class MockRecordRepository implements RecordRepository {
       accent: _medication,
       selected: true,
     ),
+    // Deferred by Product_Vision MVP: keep mood and sleep filters available for
+    // future contracts, but filter them out of the active Record surface.
     RecordFilter(
-      type: RecordEntryType.womenHealth,
-      titleKey: RecordCopyKey.typeWomenHealth,
-      icon: Icons.local_florist_rounded,
-      accent: _women,
+      type: RecordEntryType.mood,
+      titleKey: RecordCopyKey.typeMood,
+      icon: Icons.mood_rounded,
+      accent: _mood,
       selected: true,
-      locked: true,
     ),
     RecordFilter(
       type: RecordEntryType.sleep,
@@ -447,15 +386,8 @@ class MockRecordRepository implements RecordRepository {
     ),
   ];
 
-  static List<RecordFilter> _filtersFor(
-    bool showWomenHealth,
-    RecordEntryType? filterType,
-  ) {
-    final filters = showWomenHealth
-        ? _filters
-        : _filters.where(
-            (filter) => filter.type != RecordEntryType.womenHealth,
-          );
+  static List<RecordFilter> _filtersFor(RecordEntryType? filterType) {
+    final filters = _filters.where(_isActiveRecordType);
 
     return filters
         .map(
@@ -471,13 +403,13 @@ class MockRecordRepository implements RecordRepository {
         .toList(growable: false);
   }
 
-  static List<RecordTimelineEntry> _timelineFor(
-    bool showWomenHealth,
-    RecordEntryType? filterType,
-  ) {
-    final timeline = showWomenHealth
-        ? _timeline
-        : _timeline.where((entry) => entry.type != RecordEntryType.womenHealth);
+  static List<RecordTimelineEntry> _timelineFor(RecordEntryType? filterType) {
+    if (filterType != null && !_isActiveRecordEntryType(filterType)) {
+      return const <RecordTimelineEntry>[];
+    }
+    final timeline = _timeline.where(
+      (entry) => _isActiveRecordEntryType(entry.type),
+    );
     if (filterType == null) {
       return timeline.toList(growable: false);
     }
@@ -510,16 +442,6 @@ class MockRecordRepository implements RecordRepository {
       trailingIcon: Icons.chevron_right_rounded,
     ),
     RecordTimelineEntry(
-      time: '10:30',
-      type: RecordEntryType.mood,
-      icon: Icons.mood_rounded,
-      accent: _mood,
-      softColor: _moodSoft,
-      titleKey: RecordCopyKey.timelineMoodCalm,
-      detailKey: RecordCopyKey.timelineMoodDetail,
-      trailingIcon: Icons.chevron_right_rounded,
-    ),
-    RecordTimelineEntry(
       time: '12:45',
       type: RecordEntryType.meal,
       icon: Icons.restaurant_menu_rounded,
@@ -543,14 +465,17 @@ class MockRecordRepository implements RecordRepository {
       badgeKey: RecordCopyKey.timelineManualBadge,
       trailingIcon: Icons.chevron_right_rounded,
     ),
+    // Deferred by Product_Vision MVP: keep lightweight mood timeline data
+    // because it is useful for future self-check-ins, but do not surface it in
+    // the active Record timeline until the product job is ready.
     RecordTimelineEntry(
-      time: '20:10',
-      type: RecordEntryType.womenHealth,
-      icon: Icons.local_florist_rounded,
-      accent: _women,
-      softColor: _womenSoft,
-      titleKey: RecordCopyKey.timelineWomenHealthRecord,
-      detailKey: RecordCopyKey.timelineWomenHealthDetail,
+      time: '10:30',
+      type: RecordEntryType.mood,
+      icon: Icons.mood_rounded,
+      accent: _mood,
+      softColor: _moodSoft,
+      titleKey: RecordCopyKey.timelineMoodCalm,
+      detailKey: RecordCopyKey.timelineMoodDetail,
       trailingIcon: Icons.chevron_right_rounded,
     ),
     RecordTimelineEntry(
@@ -562,16 +487,6 @@ class MockRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.timelineSleepRecord,
       detailKey: RecordCopyKey.timelineSleepDetail,
       badgeKey: RecordCopyKey.summaryNormal,
-      trailingIcon: Icons.chevron_right_rounded,
-    ),
-    RecordTimelineEntry(
-      time: '06:30',
-      type: RecordEntryType.activity,
-      icon: Icons.directions_run_rounded,
-      accent: _activity,
-      softColor: _activitySoft,
-      titleKey: RecordCopyKey.timelineActivityWalk,
-      detailKey: RecordCopyKey.timelineActivityDetail,
       trailingIcon: Icons.chevron_right_rounded,
     ),
     RecordTimelineEntry(
@@ -595,17 +510,6 @@ class MockRecordRepository implements RecordRepository {
       color: _meal,
       points: <double>[6.4, 7.9, 7.1, 8.6, 6.3, 8.1, 6.7],
       legendKey: RecordCopyKey.trendBloodSugarLegend,
-    ),
-    RecordTrend(
-      kind: RecordTrendKind.sleepMood,
-      titleKey: RecordCopyKey.trendSleepMoodTitle,
-      rangeKey: RecordCopyKey.range7Days,
-      color: _mood,
-      points: <double>[7.1, 8.4, 7.5, 8.5, 6.4, 7.7, 8.1],
-      secondaryColor: AppColorTokens.warning,
-      secondaryPoints: <double>[5.5, 6.3, 5.6, 6.2, 5.4, 5.7, 7.6],
-      legendKey: RecordCopyKey.trendSleepLegend,
-      secondaryLegendKey: RecordCopyKey.trendMoodLegend,
     ),
     RecordTrend(
       kind: RecordTrendKind.hydration,
@@ -653,6 +557,16 @@ class MockRecordRepository implements RecordRepository {
 
   static bool _isSameDay(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  static bool _isActiveRecordType(RecordFilter filter) {
+    return _isActiveRecordEntryType(filter.type);
+  }
+
+  static bool _isActiveRecordEntryType(RecordEntryType type) {
+    return type != RecordEntryType.activity &&
+        type != RecordEntryType.sleep &&
+        type != RecordEntryType.mood;
   }
 }
 

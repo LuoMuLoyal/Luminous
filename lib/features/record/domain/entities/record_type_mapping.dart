@@ -10,7 +10,6 @@ DailyRecordKind? dailyRecordKindForEntryType(RecordEntryType type) {
     RecordEntryType.symptom => DailyRecordKind.symptom,
     RecordEntryType.activity => DailyRecordKind.activity,
     RecordEntryType.medication ||
-    RecordEntryType.womenHealth ||
     RecordEntryType.sleep ||
     RecordEntryType.heartRate ||
     RecordEntryType.weight => null,

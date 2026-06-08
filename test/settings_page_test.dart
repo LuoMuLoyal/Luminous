@@ -37,25 +37,22 @@ void main() {
     expect(find.byKey(const Key('settings-group-preferences')), findsOneWidget);
     expect(find.byKey(const Key('settings-group-privacy')), findsOneWidget);
     expect(find.byKey(const Key('settings-group-reminders')), findsOneWidget);
-    expect(find.byKey(const Key('settings-group-more')), findsOneWidget);
+    expect(find.byKey(const Key('settings-group-advanced')), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
     expect(find.byType(BackButton), findsOneWidget);
     expect(find.text(l10n.mineSettingsAccountTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsThemeTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsLanguageTitle), findsOneWidget);
-    expect(find.text(l10n.minePrivacyMoodTitle), findsOneWidget);
-    expect(find.text(l10n.minePrivacyPeriodTitle), findsOneWidget);
     expect(find.text(l10n.minePrivacyReportTitle), findsOneWidget);
     expect(find.text(l10n.minePrivacyAiTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsNotificationsTitle), findsOneWidget);
     expect(find.text(l10n.mineReminderMedicineTitle), findsOneWidget);
     expect(find.text(l10n.mineReminderWaterTitle), findsOneWidget);
     expect(find.text(l10n.mineReminderSleepTitle), findsOneWidget);
-    expect(find.text(l10n.mineReminderPeriodTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingExportTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingHelpTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingAboutTitle), findsOneWidget);
-    expect(find.text(l10n.mineSettingsMoreTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingsAdvancedTitle), findsOneWidget);
     expect(find.text(l10n.authSignOut), findsOneWidget);
   });
 
@@ -314,7 +311,9 @@ void main() {
     expect(find.text('notifications-settings-page'), findsOneWidget);
   });
 
-  testWidgets('Settings more row routes to more settings page', (tester) async {
+  testWidgets('Settings advanced row routes to advanced settings page', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
 
     await _pumpSettingsPage(
@@ -329,7 +328,7 @@ void main() {
           GoRoute(
             path: '/settings/more',
             builder: (context, state) =>
-                const Scaffold(body: Text('more-settings-page')),
+                const Scaffold(body: Text('advanced-settings-page')),
           ),
         ],
       ),
@@ -337,13 +336,13 @@ void main() {
 
     await tester.pump();
     await tester.scrollUntilVisible(
-      find.byKey(const Key('settings-row-more')),
+      find.byKey(const Key('settings-row-advanced')),
       240,
     );
-    await tester.tap(find.byKey(const Key('settings-row-more')));
+    await tester.tap(find.byKey(const Key('settings-row-advanced')));
     await tester.pumpAndSettle();
 
-    expect(find.text('more-settings-page'), findsOneWidget);
+    expect(find.text('advanced-settings-page'), findsOneWidget);
   });
 
   testWidgets('Settings footer action logs out and routes to login page', (

@@ -27,8 +27,6 @@ String mineCopy(AppLocalizations l10n, MineCopyKey key) {
     MineCopyKey.archiveAllergySubtitle => l10n.mineArchiveAllergySubtitle,
     MineCopyKey.archiveMedicineTitle => l10n.mineArchiveMedicineTitle,
     MineCopyKey.archiveMedicineSubtitle => l10n.mineArchiveMedicineSubtitle,
-    MineCopyKey.archiveWomenTitle => l10n.mineArchiveWomenTitle,
-    MineCopyKey.archiveWomenSubtitle => l10n.mineArchiveWomenSubtitle,
     MineCopyKey.archiveEmergencyTitle => l10n.mineArchiveEmergencyTitle,
     MineCopyKey.archiveEmergencySubtitle => l10n.mineArchiveEmergencySubtitle,
     MineCopyKey.archiveCompleted => l10n.mineArchiveCompleted,

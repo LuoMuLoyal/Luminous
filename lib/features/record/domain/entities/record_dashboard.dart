@@ -11,8 +11,6 @@ class RecordDashboard {
     required this.filters,
     required this.timeline,
     required this.trends,
-    required this.healthBag,
-    this.showWomenHealth = false,
   });
 
   final DateTime selectedDate;
@@ -24,8 +22,6 @@ class RecordDashboard {
   final List<RecordFilter> filters;
   final List<RecordTimelineEntry> timeline;
   final List<RecordTrend> trends;
-  final RecordHealthBag healthBag;
-  final bool showWomenHealth;
 }
 
 class RecordWeekDay {
@@ -196,20 +192,6 @@ class RecordTrend {
   final RecordCopyKey? secondaryLegendKey;
 }
 
-class RecordHealthBag {
-  const RecordHealthBag({
-    required this.titleKey,
-    required this.bodyKey,
-    required this.latestKey,
-    required this.nextKey,
-  });
-
-  final RecordCopyKey titleKey;
-  final RecordCopyKey bodyKey;
-  final RecordCopyKey latestKey;
-  final RecordCopyKey nextKey;
-}
-
 enum RecordEntryType {
   meal,
   vitals,
@@ -218,13 +200,12 @@ enum RecordEntryType {
   symptom,
   activity,
   medication,
-  womenHealth,
   sleep,
   heartRate,
   weight,
 }
 
-enum RecordTrendKind { bloodSugar, sleepMood, hydration }
+enum RecordTrendKind { bloodSugar, hydration }
 
 enum RecordCopyKey {
   weekdaySun,
@@ -241,16 +222,13 @@ enum RecordCopyKey {
   typeSymptom,
   typeActivity,
   typeMedication,
-  typeWomenHealth,
   typeSleep,
   typeHeartRate,
   typeWeight,
-  quickWomenSubtitle,
   summaryMealTitle,
   summaryWaterTitle,
   summaryLatestVitalTitle,
   summaryMoodTitle,
-  summaryActivityTitle,
   summaryTimesUnit,
   summaryCupsUnit,
   summaryRecorded,
@@ -270,25 +248,14 @@ enum RecordCopyKey {
   timelineMoodDetail,
   timelineSymptomRecord,
   timelineSymptomDetail,
-  timelineWomenHealthRecord,
-  timelineWomenHealthDetail,
   timelineSleepRecord,
   timelineSleepDetail,
   timelineHeartRateDetail,
-  timelineActivityWalk,
-  timelineActivityDetail,
   timelineWeightDetail,
   trendBloodSugarTitle,
   trendBloodSugarLegend,
-  trendSleepMoodTitle,
-  trendSleepLegend,
-  trendMoodLegend,
   trendHydrationTitle,
   range7Days,
   range30Days,
-  healthBagTitle,
-  healthBagBody,
-  healthBagLatest,
-  healthBagNext,
   foodImagePlaceholder,
 }

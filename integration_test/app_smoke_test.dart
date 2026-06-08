@@ -28,8 +28,5 @@ void main() {
 
     await openTab(tester, '我的');
     expect(find.text('当前未登录'), findsOneWidget);
-
-    await openTab(tester, '更多');
-    expect(find.byKey(const Key('more-emergency-section')), findsOneWidget);
   });
 }

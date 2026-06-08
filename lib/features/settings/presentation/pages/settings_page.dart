@@ -105,34 +105,6 @@ class SettingsPage extends ConsumerWidget {
           child: Column(
             children: [
               SettingsListRow(
-                key: const Key('settings-row-privacy-mood'),
-                icon: Icons.health_and_safety_outlined,
-                title: l10n.minePrivacyMoodTitle,
-                subtitle: l10n.minePrivacyMoodSubtitle,
-                trailing: Text(
-                  l10n.minePrivacyOnlyMe,
-                  style: typography.bodySm.copyWith(color: surface.body),
-                  textAlign: TextAlign.right,
-                ),
-                onTap: () =>
-                    showSettingsToast(context, l10n.minePrivacyMoodTitle),
-                showDivider: true,
-              ),
-              SettingsListRow(
-                key: const Key('settings-row-privacy-period'),
-                icon: Icons.event_available_outlined,
-                title: l10n.minePrivacyPeriodTitle,
-                subtitle: l10n.minePrivacyPeriodSubtitle,
-                trailing: Text(
-                  l10n.minePrivacyOnlyMe,
-                  style: typography.bodySm.copyWith(color: surface.body),
-                  textAlign: TextAlign.right,
-                ),
-                onTap: () =>
-                    showSettingsToast(context, l10n.minePrivacyPeriodTitle),
-                showDivider: true,
-              ),
-              SettingsListRow(
                 key: const Key('settings-row-privacy-report'),
                 icon: Icons.ios_share_outlined,
                 title: l10n.minePrivacyReportTitle,
@@ -206,24 +178,13 @@ class SettingsPage extends ConsumerWidget {
                   style: typography.bodySm.copyWith(color: surface.body),
                 ),
                 onTap: () => context.push('/settings/notifications'),
-                showDivider: true,
-              ),
-              SettingsListRow(
-                key: const Key('settings-row-reminder-period'),
-                icon: Icons.event_outlined,
-                title: l10n.mineReminderPeriodTitle,
-                trailing: Text(
-                  l10n.mineReminderEnabled,
-                  style: typography.bodySm.copyWith(color: surface.body),
-                ),
-                onTap: () => context.push('/settings/notifications'),
               ),
             ],
           ),
         ),
         const SizedBox(height: AppSpacingTokens.md),
         SettingsSectionSurface(
-          key: const Key('settings-group-more'),
+          key: const Key('settings-group-advanced'),
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
@@ -262,9 +223,9 @@ class SettingsPage extends ConsumerWidget {
                 showDivider: true,
               ),
               SettingsActionRow(
-                key: const Key('settings-row-more'),
+                key: const Key('settings-row-advanced'),
                 icon: Icons.tune_rounded,
-                title: l10n.mineSettingsMoreTitle,
+                title: l10n.mineSettingsAdvancedTitle,
                 typography: typography,
                 surface: surface,
                 onTap: () => context.push('/settings/more'),

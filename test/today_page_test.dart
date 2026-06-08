@@ -57,7 +57,6 @@ void main() {
       'today-health-summary-card',
       'today-medication-card',
       'today-water-card',
-      'today-mood-card',
       'today-campus-card',
       'today-recommendation-card',
       'today-todo-card',
@@ -144,7 +143,6 @@ void main() {
         TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
       ],
-      period: const TodayPeriodSummary(day: 2),
       mealSuggestion: const TodayMealSuggestion(
         type: TodayMealSuggestionType.highProteinBalancedLunch,
       ),
@@ -208,7 +206,7 @@ void main() {
     await tester.scrollUntilVisible(todoCard, 240);
     await tester.pump(const Duration(milliseconds: 200));
     expect(todoCard, findsOneWidget);
-    expect(find.text(l10n.todayTodoMoodTitle), findsOneWidget);
+    expect(find.text(l10n.todayTodoCustomTitle), findsOneWidget);
   });
 
   testWidgets('Today page uses wide dashboard layout on desktop', (

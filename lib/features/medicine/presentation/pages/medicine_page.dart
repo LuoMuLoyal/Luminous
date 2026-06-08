@@ -285,23 +285,6 @@ class _MedicineMobileSearchBar extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                Tooltip(
-                  message: l10n.medicineScanAction,
-                  child: InkWell(
-                    onTap: () =>
-                        AppToast.show(context, l10n.medicineSearchScanHint),
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacingTokens.xxs),
-                      child: Icon(
-                        Icons.qr_code_scanner_rounded,
-                        color: surface.body,
-                        size: AppSpacingTokens.lg,
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

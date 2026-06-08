@@ -3,7 +3,7 @@ import 'e2e_test_helpers.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('settings more reset defaults restores app preferences', (
+  testWidgets('settings advanced reset defaults restores app preferences', (
     tester,
   ) async {
     await pumpOfflineApp(
@@ -50,9 +50,11 @@ void main() {
       isFalse,
     );
 
-    await tester.tap(find.byKey(const Key('settings-row-more')));
+    await tester.tap(find.byKey(const Key('settings-row-advanced')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('more-settings-row-reset-defaults')));
+    await tester.tap(
+      find.byKey(const Key('advanced-settings-row-reset-defaults')),
+    );
     await tester.pumpAndSettle();
 
     preferences = await SharedPreferences.getInstance();

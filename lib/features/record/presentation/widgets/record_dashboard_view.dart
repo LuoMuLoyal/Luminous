@@ -89,7 +89,6 @@ class _MobileRecordDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final quickActions = _mobileQuickActions(
       dashboard.quickActions,
-      showWomenHealth: dashboard.showWomenHealth,
     );
     final timeline = dashboard.timeline.take(7).toList(growable: false);
 
@@ -1302,22 +1301,13 @@ class _MobileRecordGuideRow extends StatelessWidget {
   }
 }
 
-List<RecordQuickAction> _mobileQuickActions(
-  List<RecordQuickAction> actions, {
-  required bool showWomenHealth,
-}) {
-  final conditionalType = showWomenHealth
-      ? RecordEntryType.womenHealth
-      : RecordEntryType.vitals;
+List<RecordQuickAction> _mobileQuickActions(List<RecordQuickAction> actions) {
   final preferredTypes = <RecordEntryType>[
     RecordEntryType.medication,
     RecordEntryType.symptom,
-    RecordEntryType.mood,
     RecordEntryType.water,
     RecordEntryType.meal,
-    conditionalType,
-    RecordEntryType.sleep,
-    RecordEntryType.activity,
+    RecordEntryType.vitals,
   ];
   final byType = {for (final action in actions) action.type: action};
   final ordered = <RecordQuickAction>[
@@ -1334,13 +1324,9 @@ List<RecordFilter> _mobileFilters(List<RecordFilter> filters) {
   const preferredTypes = <RecordEntryType>[
     RecordEntryType.medication,
     RecordEntryType.symptom,
-    RecordEntryType.mood,
     RecordEntryType.water,
     RecordEntryType.meal,
-    RecordEntryType.womenHealth,
     RecordEntryType.vitals,
-    RecordEntryType.sleep,
-    RecordEntryType.activity,
   ];
   final byType = {for (final filter in filters) filter.type: filter};
   final ordered = <RecordFilter>[
@@ -1354,9 +1340,6 @@ List<RecordFilter> _mobileFilters(List<RecordFilter> filters) {
 }
 
 String _mobileFilterLabel(AppLocalizations l10n, RecordFilter filter) {
-  if (filter.type == RecordEntryType.womenHealth) {
-    return l10n.recordPeriodTitle;
-  }
   return recordCopy(l10n, filter.titleKey);
 }
 
@@ -1373,9 +1356,6 @@ RecordCopyKey _weekdayKeyFromDate(DateTime date) {
 }
 
 String _quickRecordLabel(AppLocalizations l10n, RecordQuickAction action) {
-  if (action.type == RecordEntryType.womenHealth) {
-    return l10n.recordQuickPeriodAction;
-  }
   return l10n.recordQuickActionLabel(recordCopy(l10n, action.titleKey));
 }
 
@@ -1416,13 +1396,6 @@ class _DesktopRecordDashboard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.md),
               RecordFilterPanel(
                 filters: dashboard.filters,
-                l10n: l10n,
-                typography: typography,
-                surface: surface,
-              ),
-              const SizedBox(height: AppSpacingTokens.md),
-              RecordHealthBagPanel(
-                healthBag: dashboard.healthBag,
                 l10n: l10n,
                 typography: typography,
                 surface: surface,

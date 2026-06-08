@@ -31,7 +31,7 @@ class MineProfileSnapshot {
     required this.currentMedicineCount,
     required this.basicInfoCompleted,
     required this.emergencyContactCompleted,
-    required this.womenHealthCompleted,
+    required this.medicationSafetyStatusCompleted,
   });
 
   final int? age;
@@ -43,7 +43,7 @@ class MineProfileSnapshot {
   final int currentMedicineCount;
   final bool basicInfoCompleted;
   final bool emergencyContactCompleted;
-  final bool womenHealthCompleted;
+  final bool medicationSafetyStatusCompleted;
 }
 
 class MineAccount {
@@ -170,8 +170,6 @@ enum MineCopyKey {
   archiveAllergySubtitle,
   archiveMedicineTitle,
   archiveMedicineSubtitle,
-  archiveWomenTitle,
-  archiveWomenSubtitle,
   archiveEmergencyTitle,
   archiveEmergencySubtitle,
   archiveCompleted,

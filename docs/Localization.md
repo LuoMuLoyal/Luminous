@@ -10,7 +10,7 @@ Last updated: 2026-06-08
 
 ## Current Scope
 
-- App title, five-tab labels, Today mobile dashboard/priority/recommendation/todo/quick-record copy and preview medication names, Record mobile date/quick-action/AI-input/timeline/filter/calendar/today-overview/quick-operation/guide copy, Record dashboard, Medicine mobile drugbox/next-dose/safety-engine/quick-operation/record/tip copy, Report mobile score/metric/trend/finding/export/privacy/pattern copy, Mine mobile account/archive/campus/notice copy, Settings privacy/reminder/export/help/about copy, Medicine workspace/search empty states, and bounded placeholders
+- App title, five-tab labels, Product_Vision-scoped Today mobile dashboard/priority/recommendation/todo/quick-record copy and preview medication names, Record mobile date/quick-action/AI-input/timeline/filter/calendar/today-overview/quick-operation/guide copy, Record dashboard, Medicine mobile drugbox/next-dose/safety-engine/quick-operation/record/tip copy, Report mobile score/metric/trend/finding/export/privacy/pattern copy, Mine mobile account/archive/campus/notice copy, Settings privacy/reminder/export/help/about/Advanced settings copy, Medicine workspace/search empty states, and bounded placeholders
 - Login / Register / Forgot Password / Change Email / AuthShell
 - WeChat Web OAuth login action, callback input, and OAuth feedback toasts
 - Account Settings, account status, linked identity management labels, and WeChat identity binding feedback
@@ -23,6 +23,8 @@ Last updated: 2026-06-08
 - Mine signed-in account detail labels and account management action
 - Record quick-create/detail form labels, common type form labels for water/vital/symptom/note, detail page labels, and save/delete failure toast
 - Medicine manual dose-log actions, saved/failed toasts, taken/skipped/pending status labels, missing dose/schedule placeholders, no-pending-dose labels, and mobile safety placeholder action toasts. Inventory/refill copy has been removed from the active Medicine scope.
+- Old More tab l10n, women-health/period-management l10n, sport/specialist-pack Record l10n, Today mood/period active UI l10n, and Report counselor/period/cycle/mood-led l10n were removed on 2026-06-08 as part of Product_Vision convergence.
+- Deferred Medicine scan/OCR/photo/barcode/prescription strings may remain only where deferred code still references them for future contracts; they must not be used to re-surface active UI without a product decision.
 - Network `Accept-Language`
 - Flutter UI locale driven by persisted app locale preference
 
