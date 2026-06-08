@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_copy.dart';
@@ -73,7 +74,7 @@ class MineSignedOutNotice extends StatelessWidget {
       description: mineCopy(l10n, MineCopyKey.signedOutNoticeDescription),
       icon: Icons.lock_outline_rounded,
       actionLabel: l10n.authGoLogin,
-      onAction: () => context.go('/login'),
+      onAction: () => context.push(loginRouteForCurrentLocation(context)),
       tone: AppStateTone.warning,
       padding: const EdgeInsets.all(AppSpacingTokens.lg),
     );
@@ -105,9 +106,7 @@ class MineAccountHero extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         key: const Key('mine-account-manage-link'),
-        onTap: account.isAuthenticated
-            ? () => context.push('/account')
-            : () => context.go('/login'),
+        onTap: () => pushAuthRequiredRoute(context, '/account'),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: _MinePanel(
           padding: const EdgeInsets.all(AppSpacingTokens.lg),
@@ -529,7 +528,7 @@ class _ArchiveRow extends StatelessWidget {
           showMineToast(context, mineCopy(l10n, entry.titleKey));
           return;
         }
-        context.push(entry.route!);
+        pushAuthRequiredRoute(context, entry.route!);
       },
       surface: surface,
       child: Row(

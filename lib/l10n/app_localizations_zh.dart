@@ -2317,7 +2317,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authCheckingSession => '正在检查登录状态...';
 
   @override
-  String get authNotSignedIn => '尚未登录。';
+  String get authNotSignedIn => '尚未登录';
+
+  @override
+  String get authLoginRequiredPrompt => '是否去登录';
 
   @override
   String get authGoLogin => '去登录';

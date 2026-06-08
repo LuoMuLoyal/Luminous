@@ -2458,7 +2458,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authCheckingSession => 'Checking session...';
 
   @override
-  String get authNotSignedIn => 'Not signed in yet.';
+  String get authNotSignedIn => 'Not signed in yet';
+
+  @override
+  String get authLoginRequiredPrompt => 'Go to sign in';
 
   @override
   String get authGoLogin => 'Sign in';

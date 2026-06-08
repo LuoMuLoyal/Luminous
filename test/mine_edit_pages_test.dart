@@ -50,6 +50,34 @@ void main() {
     expect(payload, containsPair('onboardingCompleted', false));
   });
 
+  testWidgets('Profile edit shows login dialog when signed out', (
+    tester,
+  ) async {
+    final fakeRepo = _FakeHealthContextRepository();
+
+    await tester.pumpWidget(
+      _app(
+        fakeRepo,
+        const ProfileEditPage(),
+        authSessionNotifier: _SignedOutAuthSessionNotifier.new,
+      ),
+    );
+
+    await tester.tap(find.text('open-profile-edit'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProfileEditPage), findsOneWidget);
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    expect(find.text('尚未登录'), findsOneWidget);
+    expect(find.text('是否去登录'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
+    expect(find.text('编辑档案'), findsOneWidget);
+  });
+
   // ── Allergy ──
 
   testWidgets('Allergy create saves with label', (tester) async {
@@ -265,10 +293,13 @@ Widget _app(
   _FakeHealthContextRepository fakeRepo,
   Widget page, {
   HealthContextSnapshot snapshot = _snapshot,
+  AuthSessionNotifier Function()? authSessionNotifier,
 }) {
   return ProviderScope(
     overrides: [
-      authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+      authSessionProvider.overrideWith(
+        authSessionNotifier ?? _SignedInAuthSessionNotifier.new,
+      ),
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),
       healthContextRepositoryProvider.overrideWithValue(fakeRepo),
     ],
@@ -296,6 +327,11 @@ Widget _app(
             ),
           ),
           GoRoute(path: '/mine-edit', builder: (context, state) => page),
+          GoRoute(
+            path: '/login',
+            builder: (context, state) =>
+                const Scaffold(body: Text('login-page')),
+          ),
         ],
       ),
     ),
@@ -318,6 +354,13 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
       ),
     );
+  }
+}
+
+class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(isAuthenticated: false, isLoading: false);
   }
 }
 

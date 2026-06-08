@@ -325,11 +325,16 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // Verify signed-out page is rendered (not loading)
     expect(find.byType(RecordEditPage), findsOneWidget);
-    // The page should show login prompt when not authenticated
-    expect(find.text('尚未登录。'), findsOneWidget);
-    expect(find.widgetWithText(ElevatedButton, '去登录'), findsOneWidget);
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    expect(find.text('尚未登录'), findsOneWidget);
+    expect(find.text('是否去登录'), findsOneWidget);
+    expect(find.byKey(const Key('auth-required-login-action')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('auth-required-login-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('login-page:/record/test-id-1/edit'), findsOneWidget);
   });
 
   testWidgets('Record edit page signed-out does not call protected API', (
@@ -504,6 +509,49 @@ void main() {
       expect(dailyRepo.createInput?.occurredAt, '2026-06-06');
     },
   );
+
+  testWidgets('Record mobile quick action shows login dialog when signed out', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await _pumpRecordRouter(
+      tester,
+      authSessionNotifier: _SignedOutAuthSessionNotifier.new,
+      selectedDate: DateTime(2026, 6, 6),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-water')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RecordPage), findsOneWidget);
+    expect(find.byType(RecordCreatePage), findsNothing);
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    expect(find.text('尚未登录'), findsOneWidget);
+    expect(find.text('是否去登录'), findsOneWidget);
+    expect(find.text('login-page:/'), findsNothing);
+
+    await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
+    expect(find.byType(RecordPage), findsOneWidget);
+    expect(find.byType(RecordCreatePage), findsNothing);
+
+    await tester.tap(find.byKey(const Key('record-quick-water')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('auth-required-login-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('login-page:/'), findsOneWidget);
+    expect(find.byType(RecordCreatePage), findsNothing);
+  });
 
   testWidgets('Record create water defaults unit to ml', (tester) async {
     final dailyRepo = _FakeDailyRecordRepository();
@@ -741,6 +789,7 @@ Future<void> _pumpRecordRouter(
   HealthContextSnapshot? healthContextSnapshot,
   String initialLocation = '/',
   DateTime? selectedDate,
+  AuthSessionNotifier Function()? authSessionNotifier,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
@@ -751,7 +800,9 @@ Future<void> _pumpRecordRouter(
         recordRepositoryProvider.overrideWithValue(
           recordRepository ?? const MockRecordRepository(),
         ),
-        authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+        authSessionProvider.overrideWith(
+          authSessionNotifier ?? _SignedInAuthSessionNotifier.new,
+        ),
         healthContextSnapshotProvider.overrideWith(
           (ref) async => healthContextSnapshot ?? _healthSnapshot(),
         ),
@@ -854,7 +905,9 @@ GoRouter _buildRecordTestRouter(String initialLocation) {
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => const Scaffold(body: Text('login-page')),
+        builder: (context, state) => Scaffold(
+          body: Text("login-page:${state.uri.queryParameters['returnTo']}"),
+        ),
       ),
     ],
   );
@@ -880,7 +933,9 @@ GoRouter _buildEditTestRouter({
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => const Scaffold(body: Text('login-page')),
+        builder: (context, state) => Scaffold(
+          body: Text("login-page:${state.uri.queryParameters['returnTo']}"),
+        ),
       ),
     ],
   );

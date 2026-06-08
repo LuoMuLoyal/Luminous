@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_overview.dart';
@@ -450,7 +450,7 @@ class _MobileTimelineRow extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (entry.recordId != null) {
-            context.push('/record/${entry.recordId}');
+            pushAuthRequiredRoute(context, '/record/${entry.recordId}');
           } else {
             showRecordToast(context, label);
           }

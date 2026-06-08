@@ -4583,8 +4583,14 @@ abstract class AppLocalizations {
   /// No description provided for @authNotSignedIn.
   ///
   /// In zh, this message translates to:
-  /// **'尚未登录。'**
+  /// **'尚未登录'**
   String get authNotSignedIn;
+
+  /// No description provided for @authLoginRequiredPrompt.
+  ///
+  /// In zh, this message translates to:
+  /// **'是否去登录'**
+  String get authLoginRequiredPrompt;
 
   /// No description provided for @authGoLogin.
   ///

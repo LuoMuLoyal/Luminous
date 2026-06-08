@@ -273,6 +273,80 @@ void main() {
     expect(find.text(l10n.mineEditProfileTitle), findsOneWidget);
   });
 
+  testWidgets('Mine archive shows login dialog when signed out', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(() => _SignedOutAuthSessionNotifier()),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) async => throw Exception('should not fetch when signed out'),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: _routerApp([
+          GoRoute(path: '/', builder: (context, state) => const MinePage()),
+          GoRoute(
+            path: '/mine/profile/edit',
+            builder: (context, state) => const ProfileEditPage(),
+          ),
+          GoRoute(
+            path: '/login',
+            builder: (context, state) => Scaffold(
+              body: Text("login-page:${state.uri.queryParameters['returnTo']}"),
+            ),
+          ),
+        ]),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final basicInfo = find.text(l10n.mineArchiveBasicTitle);
+    await tester.scrollUntilVisible(
+      basicInfo,
+      240,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(basicInfo);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(MinePage), findsOneWidget);
+    expect(find.byType(ProfileEditPage), findsNothing);
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    expect(find.text('尚未登录'), findsOneWidget);
+    expect(find.text('是否去登录'), findsOneWidget);
+    expect(find.text('login-page:/'), findsNothing);
+
+    await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
+    expect(find.byType(MinePage), findsOneWidget);
+    expect(find.byType(ProfileEditPage), findsNothing);
+
+    await tester.tap(basicInfo);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('auth-required-login-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('login-page:/'), findsOneWidget);
+    expect(find.byType(ProfileEditPage), findsNothing);
+  });
+
   test('Mine dashboard uses auth and health-context data', () async {
     final container = ProviderContainer(
       overrides: [
