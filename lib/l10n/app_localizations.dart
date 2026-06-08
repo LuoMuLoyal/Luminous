@@ -1790,6 +1790,36 @@ abstract class AppLocalizations {
   /// **'用药打卡未保存'**
   String get medicineDoseActionFailedToast;
 
+  /// No description provided for @medicineDoseNotSet.
+  ///
+  /// In zh, this message translates to:
+  /// **'剂量未设置'**
+  String get medicineDoseNotSet;
+
+  /// No description provided for @medicineScheduleNotSet.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒未设置'**
+  String get medicineScheduleNotSet;
+
+  /// No description provided for @medicineStockNotTracked.
+  ///
+  /// In zh, this message translates to:
+  /// **'库存未跟踪'**
+  String get medicineStockNotTracked;
+
+  /// No description provided for @medicineNoPendingDose.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日用药已完成'**
+  String get medicineNoPendingDose;
+
+  /// No description provided for @medicineNoPendingDoseDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无待服用提醒'**
+  String get medicineNoPendingDoseDetail;
+
   /// No description provided for @medicineMockStock7Days.
   ///
   /// In zh, this message translates to:

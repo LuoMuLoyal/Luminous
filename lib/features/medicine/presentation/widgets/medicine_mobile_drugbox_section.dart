@@ -4,7 +4,6 @@ class _DrugBoxSection extends StatelessWidget {
   const _DrugBoxSection({
     required this.workspace,
     required this.nextDose,
-    required this.fallbackTime,
     required this.l10n,
     required this.typography,
     required this.surface,
@@ -13,7 +12,6 @@ class _DrugBoxSection extends StatelessWidget {
 
   final MedicineWorkspace workspace;
   final _NextDose? nextDose;
-  final String fallbackTime;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
@@ -116,7 +114,6 @@ class _DrugBoxSection extends StatelessWidget {
             key: const Key('medicine-next-reminder'),
             workspace: workspace,
             nextDose: nextDose,
-            fallbackTime: fallbackTime,
             l10n: l10n,
             typography: typography,
             surface: surface,
@@ -179,7 +176,6 @@ class _DrugBoxReminderStrip extends StatelessWidget {
     super.key,
     required this.workspace,
     required this.nextDose,
-    required this.fallbackTime,
     required this.l10n,
     required this.typography,
     required this.surface,
@@ -188,7 +184,6 @@ class _DrugBoxReminderStrip extends StatelessWidget {
 
   final MedicineWorkspace workspace;
   final _NextDose? nextDose;
-  final String fallbackTime;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
@@ -199,15 +194,26 @@ class _DrugBoxReminderStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     final dose = nextDose;
     final item = dose?.item;
-    final time = dose == null
-        ? _cleanMetricTime(fallbackTime)
-        : medicineCopy(
-            l10n,
-            dose.slot?.timeKey ?? MedicineCopyKey.mockTime2000,
-          );
+    final hasAnyMedicine = workspace.plan.items.isNotEmpty;
+    final slot = dose?.slot;
+    final value = item == null
+        ? (hasAnyMedicine
+              ? l10n.medicineNoPendingDose
+              : l10n.medicineScheduleNotSet)
+        : slot == null
+        ? l10n.medicineScheduleNotSet
+        : l10n.medicineNextDoseTodayTime(medicineCopy(l10n, slot.timeKey));
+    final detail = item == null
+        ? (hasAnyMedicine
+              ? l10n.medicineNoPendingDoseDetail
+              : l10n.medicineNoMedicineBody)
+        : _doseSummary(l10n, item);
     final refillItem = _refillCandidate(workspace.plan.items);
     final currentMedicineId = item?.currentMedicineId;
-    final canMark = currentMedicineId != null && onMarkDose != null;
+    final canMark =
+        currentMedicineId != null &&
+        onMarkDose != null &&
+        item?.todayStatus == MedicineDoseStatus.pending;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,10 +226,8 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 icon: Icons.schedule_rounded,
                 color: MedicinePalette.teal,
                 label: l10n.medicineNextDoseReminderTitle,
-                value: l10n.medicineNextDoseTodayTime(time),
-                detail: item == null
-                    ? l10n.medicineNoMedicineBody
-                    : _doseSummary(l10n, item),
+                value: value,
+                detail: detail,
                 typography: typography,
                 surface: surface,
               ),
@@ -531,7 +535,10 @@ String _refillDetail(AppLocalizations l10n, MedicinePlanItem? item) {
   if (item == null) return l10n.medicineExpiredReminderEnabled;
   final warningKey = item.stockWarningKey;
   if (warningKey != null) return medicineCopy(l10n, warningKey);
-  final raw = item.rawStock?.trim();
-  if (raw != null && raw.isNotEmpty) return raw;
+  final raw = item.rawStock;
+  if (raw != null) {
+    final trimmed = raw.trim();
+    return trimmed.isEmpty ? l10n.medicineStockNotTracked : trimmed;
+  }
   return medicineCopy(l10n, item.stockKey);
 }

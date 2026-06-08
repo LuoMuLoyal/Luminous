@@ -937,6 +937,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineDoseActionFailedToast => 'Dose log was not saved.';
 
   @override
+  String get medicineDoseNotSet => 'Dose not set';
+
+  @override
+  String get medicineScheduleNotSet => 'Reminder not set';
+
+  @override
+  String get medicineStockNotTracked => 'Stock not tracked';
+
+  @override
+  String get medicineNoPendingDose => 'Today\'s medicines are done';
+
+  @override
+  String get medicineNoPendingDoseDetail => 'No pending dose reminders';
+
+  @override
   String get medicineMockStock7Days => '7 days left';
 
   @override

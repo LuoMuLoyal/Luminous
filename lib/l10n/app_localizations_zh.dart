@@ -886,6 +886,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineDoseActionFailedToast => '用药打卡未保存';
 
   @override
+  String get medicineDoseNotSet => '剂量未设置';
+
+  @override
+  String get medicineScheduleNotSet => '提醒未设置';
+
+  @override
+  String get medicineStockNotTracked => '库存未跟踪';
+
+  @override
+  String get medicineNoPendingDose => '今日用药已完成';
+
+  @override
+  String get medicineNoPendingDoseDetail => '暂无待服用提醒';
+
+  @override
   String get medicineMockStock7Days => '剩余 7 天';
 
   @override

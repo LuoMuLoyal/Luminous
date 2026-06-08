@@ -40,7 +40,6 @@ class MedicineMobileDashboardView extends StatelessWidget {
         _DrugBoxSection(
           workspace: workspace,
           nextDose: nextDose,
-          fallbackTime: workspace.hero.metricNextDose,
           l10n: l10n,
           typography: typography,
           surface: surface,

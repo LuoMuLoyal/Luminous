@@ -19,20 +19,20 @@ void main() {
 
       final workspace = await repository.fetchWorkspace();
 
-      expect(workspace.hero.metricDosesToday, '2');
-      expect(workspace.plan.items, hasLength(2));
+      expect(workspace.hero.metricDosesToday, '1');
+      expect(workspace.hero.metricAdherence, '0%');
+      expect(workspace.hero.metricNextDose, '20:00');
+      expect(workspace.plan.items, hasLength(1));
       expect(workspace.plan.items[0].rawName, 'Metformin XR');
       expect(workspace.plan.items[0].rawDosage, '500 mg');
       expect(workspace.plan.items[0].rawSchedule, 'Morning and evening');
-      expect(workspace.plan.items[0].rawStock, 'oral');
+      expect(workspace.plan.items[0].rawStock, '');
       expect(workspace.plan.items[0].rawState, isNull);
       expect(workspace.plan.items[0].currentMedicineId, 'med-1');
+      expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.pending);
+      expect(workspace.plan.items[0].slots, hasLength(1));
       expect(
         workspace.plan.items[0].stateKey,
-        MedicineCopyKey.doseStatusPending,
-      );
-      expect(
-        workspace.plan.items[1].stateKey,
         MedicineCopyKey.doseStatusPending,
       );
     },
@@ -56,13 +56,16 @@ void main() {
 
       final workspace = await repository.fetchWorkspace();
 
+      expect(workspace.hero.metricAdherence, '100%');
+      expect(workspace.hero.metricNextDose, '--');
       expect(
         workspace.plan.items[0].stateKey,
         MedicineCopyKey.doseStatusSkipped,
       );
+      expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.skipped);
       expect(
-        workspace.plan.items[1].stateKey,
-        MedicineCopyKey.doseStatusPending,
+        workspace.plan.items[0].slots.single.status,
+        MedicineDoseStatus.skipped,
       );
     },
   );

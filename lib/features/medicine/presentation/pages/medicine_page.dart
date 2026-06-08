@@ -77,7 +77,7 @@ Future<void> _markDose(
   try {
     await ref
         .read(doseLogRemoteDataSourceProvider)
-        .create(currentMedicineId, action.name, dateStr);
+        .markForDate(currentMedicineId, action.name, dateStr);
     ref.invalidate(medicineWorkspaceProvider);
     ref.invalidate(todayDashboardProvider);
     if (context.mounted) {

@@ -20,7 +20,9 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {
     final snapshot = await healthRepo.fetchHealthContext();
-    final medicines = snapshot.currentMedicines;
+    final medicines = snapshot.currentMedicines
+        .where((medicine) => medicine.isCurrent)
+        .toList(growable: false);
 
     // Fetch today's dose logs
     final today = DateTime.now();
@@ -44,6 +46,11 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
     final planItems = medicines.map((m) {
       final doseStatus = doseStatusByMedicine[m.id];
+      final todayStatus = switch (doseStatus) {
+        DoseLogStatus.taken => MedicineDoseStatus.taken,
+        DoseLogStatus.skipped => MedicineDoseStatus.skipped,
+        _ => MedicineDoseStatus.pending,
+      };
       final stateKey = switch (doseStatus) {
         DoseLogStatus.taken => MedicineCopyKey.doseStatusTaken,
         DoseLogStatus.skipped => MedicineCopyKey.doseStatusSkipped,
@@ -62,26 +69,48 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         stockKey: MedicineCopyKey.mockStock7Days,
         stateKey: stateKey,
         stateColor: stateColor,
-        slots: const [],
+        // TODO(medicine-schedule): Replace this derived single daily slot with
+        // Lucent-backed reminder/schedule occurrences once that contract exists.
+        slots: [
+          MedicineDoseSlot(
+            timeKey: MedicineCopyKey.mockTime2000,
+            statusKey: stateKey,
+            status: todayStatus,
+          ),
+        ],
+        todayStatus: todayStatus,
         rawName: m.displayName,
         rawDosage: m.strengthText ?? '',
         rawSchedule: m.doseText ?? '',
-        rawStock: m.route ?? '',
+        // TODO(medicine-inventory): Current medicine records do not include
+        // inventory/refill fields yet. Keep this empty instead of showing mock
+        // stock as if it were real.
+        rawStock: '',
         currentMedicineId: m.id,
       );
     }).toList();
 
+    final pendingItems = planItems
+        .where((item) => item.todayStatus == MedicineDoseStatus.pending)
+        .toList(growable: false);
+    final completedCount = planItems.length - pendingItems.length;
+
     return MedicineWorkspace(
       hero: MedicineHero(
-        metricDosesToday: '${medicines.length}',
-        metricAdherence: '--',
-        metricNextDose: '--',
+        metricDosesToday: '${planItems.length}',
+        metricAdherence: _formatAdherence(completedCount, planItems.length),
+        metricNextDose: pendingItems.isEmpty ? '--' : '20:00',
       ),
       quickActions: _defaultQuickActions(),
       plan: MedicinePlanSurface(items: planItems),
       alerts: _defaultAlerts(),
       promisePoints: _defaultPromisePoints(),
     );
+  }
+
+  static String _formatAdherence(int completedCount, int totalCount) {
+    if (totalCount == 0) return '--';
+    return '${((completedCount / totalCount) * 100).round()}%';
   }
 
   static List<MedicineQuickAction> _defaultQuickActions() => const [
