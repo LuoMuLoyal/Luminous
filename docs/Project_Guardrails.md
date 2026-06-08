@@ -1,8 +1,14 @@
 # Lumos Project Guardrails
 
-Last updated: 2026-06-07
+Last updated: 2026-06-08
 
 This replaces the long historical error audit as the current quick-read checklist.
+
+## Documentation
+
+- Do not duplicate the same fact across docs. Product decisions go in `Product_Vision.md`; current facts in `Current_State.md`; next work in `Next_Plan.md`; history in `MigrationLog.md`.
+- Do not keep old execution plans in active docs after they are superseded. Move useful decisions into the owning doc and delete the plan.
+- Do not use migration logs as current source of truth; they are historical records only.
 
 ## Contracts
 

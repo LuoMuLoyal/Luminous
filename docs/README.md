@@ -2,37 +2,36 @@
 
 Last updated: 2026-06-08
 
-## Current Entry Points
+This directory keeps current product, frontend, and workflow documentation for the Luminous Flutter client. Historical execution plans are not active docs.
 
-| Need | Read |
-| --- | --- |
-| Product vision / competition positioning | `Product_Vision.md` |
-| Legacy north star draft | `Product_North_Star.md` |
-| Current project state, UI status, and UI rules | `Current_State.md` |
-| Recent changes | `MigrationLog.md` index and `migration-log/YYYY-MM-DD.md` entries |
-| Next goals / planning | `Next_Plan.md` |
-| Common mistakes to avoid | `Project_Guardrails.md` |
-| OpenAPI client workflow | `OpenApi_Client.md` |
-| Localization workflow | `Localization.md` |
+## Document Boundaries
+
+| Document | Responsibility | Do not put here |
+| --- | --- | --- |
+| `Product_Vision.md` | Product positioning, MVP scope, tab responsibilities, AI/safety boundaries | Current implementation status or task logs |
+| `Current_State.md` | What is implemented or intentionally deferred right now | Future plans, long rationale, or change history |
+| `Next_Plan.md` | The next implementation order and explicit non-start items | Completed work details or historical plans |
+| `MigrationLog.md` + `migration-log/YYYY-MM-DD.md` | Date-based change history only | Source-of-truth product rules |
+| `Project_Guardrails.md` | Reusable project-specific mistakes to avoid | One-off task notes |
+| `OpenApi_Client.md` | Flutter client regeneration workflow and current generated-client boundary | Endpoint prose or old regeneration history |
+| `Localization.md` | Flutter l10n workflow and locale ownership | Lists of every current string |
 
 ## Update Map
 
 | Change | Update |
 | --- | --- |
-| product positioning / competition vision | `Product_Vision.md` |
-| frontend code | today's `migration-log/YYYY-MM-DD.md` |
-| network / OpenAPI / auth client | `OpenApi_Client.md` |
-| visible text / l10n flow | `Localization.md` |
-| UI/page state or project state changed | `Current_State.md` |
-| next work changed | `Next_Plan.md` |
-| recurring mistake / guardrail changed | `Project_Guardrails.md` |
+| Product scope or positioning | `Product_Vision.md` |
+| Current UI/data/auth/runtime facts | `Current_State.md` |
+| Next implementation order | `Next_Plan.md` |
+| Visible text or l10n mechanics | `Localization.md` |
+| Lucent OpenAPI/client generation flow | `OpenApi_Client.md` |
+| Reusable guardrail | `Project_Guardrails.md` |
+| Any frontend-visible change | Today's `migration-log/YYYY-MM-DD.md` |
 
-## Archived Outside Git
+## Archive Policy
 
-Old long-form plans, old audits, reset notes, and early design references were moved to:
+Old plans, audits, and superseded design references should not stay in active docs. If they are needed for archaeology, use the workspace archive outside this repo:
 
 ```text
-D:\25080\Documents\VSCodeProject\Lumos\docs-archive\2026-06-06-doc-cleanup
+D:\25080\Documents\VSCodeProject\Lumos\docs-archive
 ```
-
-Do not re-add archived docs here unless they become operational again.

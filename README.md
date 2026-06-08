@@ -42,14 +42,15 @@ dart run tool/regenerate_lucent_openapi.dart
 
 Start with [docs/README.md](docs/README.md).
 
-Key shared docs live in `../Lucent/docs/public/`:
+Key shared backend contract docs live in `../Lucent/docs/public/`:
 
-- [ROADMAP](../Lucent/docs/public/ROADMAP.md)
 - [reminder-contract](../Lucent/docs/public/reminder-contract.md)
 - [environment-contract](../Lucent/docs/public/environment-contract.md)
+- [data-sources](../Lucent/docs/public/data-sources.md)
 
 Key frontend docs:
 
+- [docs/Product_Vision.md](docs/Product_Vision.md)
 - [docs/Current_State.md](docs/Current_State.md)
 - [docs/MigrationLog.md](docs/MigrationLog.md)
 - [docs/Next_Plan.md](docs/Next_Plan.md)
