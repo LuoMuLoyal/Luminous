@@ -8,9 +8,6 @@ class MineDashboard {
     required this.alerts,
     required this.archiveEntries,
     required this.campusServices,
-    required this.privacyEntries,
-    required this.reminders,
-    required this.settingEntries,
     required this.privacyNotice,
   });
 
@@ -20,9 +17,6 @@ class MineDashboard {
   final List<MineStatusCard> alerts;
   final List<MineArchiveEntry> archiveEntries;
   final List<MineActionEntry> campusServices;
-  final List<MinePrivacyEntry> privacyEntries;
-  final List<MineReminderEntry> reminders;
-  final List<MineSettingEntry> settingEntries;
   final MinePrivacyNotice privacyNotice;
 }
 
@@ -140,52 +134,6 @@ class MineActionEntry {
   final String? route;
 }
 
-class MinePrivacyEntry {
-  const MinePrivacyEntry({
-    required this.icon,
-    required this.accent,
-    required this.titleKey,
-    required this.subtitleKey,
-    required this.trailingKey,
-    this.toggleValue,
-  });
-
-  final IconData icon;
-  final Color accent;
-  final MineCopyKey titleKey;
-  final MineCopyKey subtitleKey;
-  final MineCopyKey trailingKey;
-  final bool? toggleValue;
-}
-
-class MineReminderEntry {
-  const MineReminderEntry({
-    required this.icon,
-    required this.accent,
-    required this.titleKey,
-    required this.statusKey,
-  });
-
-  final IconData icon;
-  final Color accent;
-  final MineCopyKey titleKey;
-  final MineCopyKey statusKey;
-}
-
-class MineSettingEntry {
-  const MineSettingEntry({
-    required this.icon,
-    required this.titleKey,
-    required this.valueKey,
-    this.route,
-  });
-
-  final IconData icon;
-  final MineCopyKey titleKey;
-  final MineCopyKey valueKey;
-  final String? route;
-}
-
 class MinePrivacyNotice {
   const MinePrivacyNotice({
     required this.icon,
@@ -236,29 +184,6 @@ enum MineCopyKey {
   campusPharmacySubtitle,
   campusEmergencyTitle,
   campusEmergencySubtitle,
-  privacyMoodTitle,
-  privacyMoodSubtitle,
-  privacyPeriodTitle,
-  privacyPeriodSubtitle,
-  privacyReportTitle,
-  privacyReportSubtitle,
-  privacyAiTitle,
-  privacyAiSubtitle,
-  privacyOnlyMe,
-  privacyShareAfterGrant,
-  reminderMedicineTitle,
-  reminderWaterTitle,
-  reminderSleepTitle,
-  reminderPeriodTitle,
-  reminderEnabled,
-  settingLanguageTitle,
-  settingLanguageValue,
-  settingExportTitle,
-  settingExportValue,
-  settingHelpTitle,
-  settingHelpValue,
-  settingAboutTitle,
-  settingAboutValue,
   privacyNoticeTitle,
   privacyNoticeAction,
 }

@@ -10,7 +10,7 @@ Last updated: 2026-06-08
 
 ## Current Scope
 
-- App title, five-tab labels, Today mobile dashboard/priority/recommendation/todo/quick-record copy and preview medication names, Record mobile date/quick-action/AI-input/timeline/filter/calendar/today-overview/quick-operation/guide copy, Record dashboard, Medicine mobile drugbox/next-dose/safety-engine/quick-operation/record/tip copy, Report mobile score/metric/trend/finding/export/privacy/pattern copy, Mine mobile account/archive/campus/privacy/reminder/settings/notice copy, Medicine workspace/search empty states, and bounded placeholders
+- App title, five-tab labels, Today mobile dashboard/priority/recommendation/todo/quick-record copy and preview medication names, Record mobile date/quick-action/AI-input/timeline/filter/calendar/today-overview/quick-operation/guide copy, Record dashboard, Medicine mobile drugbox/next-dose/safety-engine/quick-operation/record/tip copy, Report mobile score/metric/trend/finding/export/privacy/pattern copy, Mine mobile account/archive/campus/notice copy, Settings privacy/reminder/export/help/about copy, Medicine workspace/search empty states, and bounded placeholders
 - Login / Register / Forgot Password / Change Email / AuthShell
 - WeChat Web OAuth login action, callback input, and OAuth feedback toasts
 - Account Settings, account status, linked identity management labels, and WeChat identity binding feedback

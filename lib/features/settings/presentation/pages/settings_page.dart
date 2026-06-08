@@ -9,7 +9,6 @@ import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -42,14 +41,13 @@ class SettingsPage extends ConsumerWidget {
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
-        MineSectionSurface(
+        SettingsSectionSurface(
           key: const Key('settings-group-account'),
-          typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              MineSettingRow(
+              SettingsActionRow(
                 key: const Key('settings-row-account'),
                 icon: Icons.verified_user_outlined,
                 title: l10n.mineSettingsAccountTitle,
@@ -70,14 +68,13 @@ class SettingsPage extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        MineSectionSurface(
+        SettingsSectionSurface(
           key: const Key('settings-group-preferences'),
-          typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              MineSettingRow(
+              SettingsActionRow(
                 key: const Key('settings-row-theme'),
                 icon: Icons.dark_mode_outlined,
                 title: l10n.mineSettingsThemeTitle,
@@ -87,7 +84,7 @@ class SettingsPage extends ConsumerWidget {
                 onTap: () => context.push('/settings/theme'),
                 showDivider: true,
               ),
-              MineSettingRow(
+              SettingsActionRow(
                 key: const Key('settings-row-language'),
                 icon: Icons.language_outlined,
                 title: l10n.mineSettingsLanguageTitle,
@@ -95,28 +92,175 @@ class SettingsPage extends ConsumerWidget {
                 typography: typography,
                 surface: surface,
                 onTap: () => context.push('/settings/language'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        SettingsSectionSurface(
+          key: const Key('settings-group-privacy'),
+          surface: surface,
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              SettingsListRow(
+                key: const Key('settings-row-privacy-mood'),
+                icon: Icons.health_and_safety_outlined,
+                title: l10n.minePrivacyMoodTitle,
+                subtitle: l10n.minePrivacyMoodSubtitle,
+                trailing: Text(
+                  l10n.minePrivacyOnlyMe,
+                  style: typography.bodySm.copyWith(color: surface.body),
+                  textAlign: TextAlign.right,
+                ),
+                onTap: () =>
+                    showSettingsToast(context, l10n.minePrivacyMoodTitle),
                 showDivider: true,
               ),
-              MineSettingRow(
+              SettingsListRow(
+                key: const Key('settings-row-privacy-period'),
+                icon: Icons.event_available_outlined,
+                title: l10n.minePrivacyPeriodTitle,
+                subtitle: l10n.minePrivacyPeriodSubtitle,
+                trailing: Text(
+                  l10n.minePrivacyOnlyMe,
+                  style: typography.bodySm.copyWith(color: surface.body),
+                  textAlign: TextAlign.right,
+                ),
+                onTap: () =>
+                    showSettingsToast(context, l10n.minePrivacyPeriodTitle),
+                showDivider: true,
+              ),
+              SettingsListRow(
+                key: const Key('settings-row-privacy-report'),
+                icon: Icons.ios_share_outlined,
+                title: l10n.minePrivacyReportTitle,
+                subtitle: l10n.minePrivacyReportSubtitle,
+                trailing: Text(
+                  l10n.minePrivacyShareAfterGrant,
+                  style: typography.bodySm.copyWith(color: surface.body),
+                  textAlign: TextAlign.right,
+                ),
+                onTap: () =>
+                    showSettingsToast(context, l10n.minePrivacyReportTitle),
+                showDivider: true,
+              ),
+              SettingsListRow(
+                key: const Key('settings-row-privacy-ai'),
+                icon: Icons.auto_awesome_outlined,
+                title: l10n.minePrivacyAiTitle,
+                subtitle: l10n.minePrivacyAiSubtitle,
+                trailing: const IgnorePointer(
+                  child: Switch(value: true, onChanged: null),
+                ),
+                onTap: () =>
+                    showSettingsToast(context, l10n.minePrivacyAiTitle),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        SettingsSectionSurface(
+          key: const Key('settings-group-reminders'),
+          surface: surface,
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              SettingsListRow(
                 key: const Key('settings-row-notifications'),
                 icon: Icons.notifications_none_rounded,
                 title: l10n.mineSettingsNotificationsTitle,
-                typography: typography,
-                surface: surface,
+                showChevron: true,
+                onTap: () => context.push('/settings/notifications'),
+                showDivider: true,
+              ),
+              SettingsListRow(
+                key: const Key('settings-row-reminder-medicine'),
+                icon: Icons.medication_outlined,
+                title: l10n.mineReminderMedicineTitle,
+                trailing: Text(
+                  l10n.mineReminderEnabled,
+                  style: typography.bodySm.copyWith(color: surface.body),
+                ),
+                onTap: () => context.push('/settings/notifications'),
+                showDivider: true,
+              ),
+              SettingsListRow(
+                key: const Key('settings-row-reminder-water'),
+                icon: Icons.water_drop_outlined,
+                title: l10n.mineReminderWaterTitle,
+                trailing: Text(
+                  l10n.mineReminderEnabled,
+                  style: typography.bodySm.copyWith(color: surface.body),
+                ),
+                onTap: () => context.push('/settings/notifications'),
+                showDivider: true,
+              ),
+              SettingsListRow(
+                key: const Key('settings-row-reminder-sleep'),
+                icon: Icons.nightlight_outlined,
+                title: l10n.mineReminderSleepTitle,
+                trailing: Text(
+                  l10n.mineReminderEnabled,
+                  style: typography.bodySm.copyWith(color: surface.body),
+                ),
+                onTap: () => context.push('/settings/notifications'),
+                showDivider: true,
+              ),
+              SettingsListRow(
+                key: const Key('settings-row-reminder-period'),
+                icon: Icons.event_outlined,
+                title: l10n.mineReminderPeriodTitle,
+                trailing: Text(
+                  l10n.mineReminderEnabled,
+                  style: typography.bodySm.copyWith(color: surface.body),
+                ),
                 onTap: () => context.push('/settings/notifications'),
               ),
             ],
           ),
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        MineSectionSurface(
+        SettingsSectionSurface(
           key: const Key('settings-group-more'),
-          typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              MineSettingRow(
+              SettingsActionRow(
+                key: const Key('settings-row-export'),
+                icon: Icons.download_outlined,
+                title: l10n.mineSettingExportTitle,
+                value: l10n.mineSettingExportValue,
+                typography: typography,
+                surface: surface,
+                onTap: () =>
+                    showSettingsToast(context, l10n.mineSettingExportTitle),
+                showDivider: true,
+              ),
+              SettingsActionRow(
+                key: const Key('settings-row-help'),
+                icon: Icons.help_outline_rounded,
+                title: l10n.mineSettingHelpTitle,
+                value: l10n.mineSettingHelpValue,
+                typography: typography,
+                surface: surface,
+                onTap: () =>
+                    showSettingsToast(context, l10n.mineSettingHelpTitle),
+                showDivider: true,
+              ),
+              SettingsActionRow(
+                key: const Key('settings-row-about'),
+                icon: Icons.info_outline_rounded,
+                title: l10n.mineSettingAboutTitle,
+                value: l10n.mineSettingAboutValue,
+                typography: typography,
+                surface: surface,
+                onTap: () =>
+                    showSettingsToast(context, l10n.mineSettingAboutTitle),
+                showDivider: true,
+              ),
+              SettingsActionRow(
                 key: const Key('settings-row-more'),
                 icon: Icons.tune_rounded,
                 title: l10n.mineSettingsMoreTitle,

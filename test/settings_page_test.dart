@@ -15,6 +15,7 @@ void main() {
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await _pumpSettingsPage(
       tester,
@@ -34,15 +35,28 @@ void main() {
 
     expect(find.byKey(const Key('settings-group-account')), findsOneWidget);
     expect(find.byKey(const Key('settings-group-preferences')), findsOneWidget);
+    expect(find.byKey(const Key('settings-group-privacy')), findsOneWidget);
+    expect(find.byKey(const Key('settings-group-reminders')), findsOneWidget);
     expect(find.byKey(const Key('settings-group-more')), findsOneWidget);
-    expect(find.text('设置'), findsOneWidget);
+    expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
     expect(find.byType(BackButton), findsOneWidget);
-    expect(find.text('账号与安全'), findsOneWidget);
-    expect(find.text('主题模式'), findsOneWidget);
-    expect(find.text('语言'), findsOneWidget);
-    expect(find.text('通知设置'), findsOneWidget);
-    expect(find.text('更多设置'), findsOneWidget);
-    expect(find.text('退出登录'), findsOneWidget);
+    expect(find.text(l10n.mineSettingsAccountTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingsThemeTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingsLanguageTitle), findsOneWidget);
+    expect(find.text(l10n.minePrivacyMoodTitle), findsOneWidget);
+    expect(find.text(l10n.minePrivacyPeriodTitle), findsOneWidget);
+    expect(find.text(l10n.minePrivacyReportTitle), findsOneWidget);
+    expect(find.text(l10n.minePrivacyAiTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingsNotificationsTitle), findsOneWidget);
+    expect(find.text(l10n.mineReminderMedicineTitle), findsOneWidget);
+    expect(find.text(l10n.mineReminderWaterTitle), findsOneWidget);
+    expect(find.text(l10n.mineReminderSleepTitle), findsOneWidget);
+    expect(find.text(l10n.mineReminderPeriodTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingExportTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingHelpTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingAboutTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingsMoreTitle), findsOneWidget);
+    expect(find.text(l10n.authSignOut), findsOneWidget);
   });
 
   testWidgets('Settings back button routes to previous page', (tester) async {
@@ -235,12 +249,50 @@ void main() {
       );
 
       await tester.pump();
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('settings-row-notifications')),
+        240,
+      );
       await tester.tap(find.byKey(const Key('settings-row-notifications')));
       await tester.pumpAndSettle();
 
       expect(find.text('notifications-settings-page'), findsOneWidget);
     },
   );
+
+  testWidgets('Settings reminder rows route to notifications settings page', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await _pumpSettingsPage(
+      tester,
+      router: GoRouter(
+        initialLocation: '/settings',
+        routes: [
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) => const SettingsPage(),
+          ),
+          GoRoute(
+            path: '/settings/notifications',
+            builder: (context, state) =>
+                const Scaffold(body: Text('notifications-settings-page')),
+          ),
+        ],
+      ),
+    );
+
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-row-reminder-medicine')),
+      240,
+    );
+    await tester.tap(find.byKey(const Key('settings-row-reminder-medicine')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('notifications-settings-page'), findsOneWidget);
+  });
 
   testWidgets('Settings more row routes to more settings page', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
@@ -264,6 +316,10 @@ void main() {
     );
 
     await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-row-more')),
+      240,
+    );
     await tester.tap(find.byKey(const Key('settings-row-more')));
     await tester.pumpAndSettle();
 
@@ -316,6 +372,10 @@ void main() {
     );
 
     await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-footer-action')),
+      240,
+    );
     await tester.tap(find.byKey(const Key('settings-footer-action')));
     await tester.pumpAndSettle();
 
