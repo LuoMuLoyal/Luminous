@@ -35,7 +35,7 @@ class DailyRecordFormFields extends StatelessWidget {
           key: ValueKey('daily-record-kind-${kind.name}'),
           initialValue: kind,
           decoration: InputDecoration(labelText: l10n.recordCreateFieldKind),
-          items: DailyRecordKind.values
+          items: activeDailyRecordKinds
               .map(
                 (k) => DropdownMenuItem(
                   value: k,
@@ -162,3 +162,11 @@ String dailyRecordValueLabel(AppLocalizations l10n, DailyRecordKind kind) {
     DailyRecordKind.note => l10n.recordCreateFieldNote,
   };
 }
+
+const activeDailyRecordKinds = <DailyRecordKind>[
+  DailyRecordKind.water,
+  DailyRecordKind.meal,
+  DailyRecordKind.vital,
+  DailyRecordKind.symptom,
+  DailyRecordKind.note,
+];

@@ -187,9 +187,6 @@ class RecordPage extends ConsumerWidget {
 
   String _quickActionLabel(BuildContext context, RecordQuickAction action) {
     final l10n = AppLocalizations.of(context)!;
-    if (action.type == RecordEntryType.womenHealth) {
-      return l10n.recordQuickPeriodAction;
-    }
     return l10n.recordQuickActionLabel(recordCopy(l10n, action.titleKey));
   }
 

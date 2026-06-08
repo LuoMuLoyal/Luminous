@@ -27,9 +27,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabMine => 'Mine';
 
   @override
-  String get tabMore => 'More';
-
-  @override
   String get desktopSidebarSettings => 'Settings';
 
   @override
@@ -91,9 +88,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String recordQuickActionLabel(String type) {
     return 'Log $type';
   }
-
-  @override
-  String get recordQuickPeriodAction => 'Log period';
 
   @override
   String get recordAddAction => 'Record';
@@ -364,9 +358,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordTypeMedication => 'Medication';
 
   @override
-  String get recordTypeWomenHealth => 'Women\'s health';
-
-  @override
   String get recordTypeSleep => 'Sleep';
 
   @override
@@ -374,9 +365,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordTypeWeight => 'Weight';
-
-  @override
-  String get recordQuickWomenSubtitle => 'Off';
 
   @override
   String get recordSummaryMealTitle => 'Meal records';
@@ -389,9 +377,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordSummaryMoodTitle => 'Mood record';
-
-  @override
-  String get recordSummaryActivityTitle => 'Activity completion';
 
   @override
   String get recordSummaryTimesUnit => 'times';
@@ -454,12 +439,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordTimelineSymptomDetail => 'Headache · pain score 3/5';
 
   @override
-  String get recordTimelineWomenHealthRecord => 'Period record';
-
-  @override
-  String get recordTimelineWomenHealthDetail => 'Period day 2 · mild bloating';
-
-  @override
   String get recordTimelineSleepRecord => 'Sleep record';
 
   @override
@@ -468,12 +447,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordTimelineHeartRateDetail => '72 bpm · source: watch · normal';
-
-  @override
-  String get recordTimelineActivityWalk => 'Activity · Brisk walk';
-
-  @override
-  String get recordTimelineActivityDetail => '30 min · 2.6 km · 180 kcal';
 
   @override
   String get recordTimelineWeightDetail => 'Source: smart scale · BMI 22.5';
@@ -485,15 +458,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordTrendBloodSugarLegend => 'Post-meal glucose (mmol/L)';
 
   @override
-  String get recordTrendSleepMoodTitle => 'Mood-sleep';
-
-  @override
-  String get recordTrendSleepLegend => 'Sleep duration (hours)';
-
-  @override
-  String get recordTrendMoodLegend => 'Mood score';
-
-  @override
   String get recordTrendHydrationTitle => 'Water completion';
 
   @override
@@ -501,19 +465,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordRange30Days => 'Last 30 days';
-
-  @override
-  String get recordHealthBagTitle => 'Specialist health bag';
-
-  @override
-  String get recordHealthBagBody =>
-      'Review and manage dental, eye, hearing, and other specialist reports';
-
-  @override
-  String get recordHealthBagLatest => 'Last updated: 2025-05-10';
-
-  @override
-  String get recordHealthBagNext => 'Next review: 2025-06-15';
 
   @override
   String get recordFoodImagePlaceholder => 'Meal image placeholder';
@@ -569,25 +520,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordMoodStable => 'Stable';
 
   @override
-  String get recordCycleDietSectionTitle => 'Period and diet';
-
-  @override
-  String get recordPeriodTitle => 'Period';
-
-  @override
-  String recordPeriodDayValue(int day) {
-    return 'Day $day';
-  }
-
-  @override
-  String recordPeriodEndsIn(int days) {
-    return 'Expected to end in $days days';
-  }
-
-  @override
-  String get recordPeriodRecordAction => 'Log period';
-
-  @override
   String get recordDietTitle => 'Meal records';
 
   @override
@@ -607,13 +539,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordDietRecordAction => 'Log meal';
-
-  @override
-  String get recordSpecialistPackTitle => 'Specialist health pack';
-
-  @override
-  String get recordSpecialistPackSubtitle =>
-      'Track specialist health for a fuller record';
 
   @override
   String get recordDentalRecordTitle => 'Dental';
@@ -1047,15 +972,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineAlertDuplicateCheckStatus => 'Clear';
 
   @override
-  String get medicineAlertPeriodPregnancyTitle => 'Period / pregnancy note';
+  String get medicineAlertPeriodPregnancyTitle =>
+      'Pregnancy, lactation, and special groups';
 
   @override
   String get medicineAlertPeriodPregnancyBody =>
-      'Record status for more precise medication tips';
+      'Record pregnancy, lactation, or special-group status for more cautious medication tips';
 
   @override
   String get medicineAlertPeriodPregnancyDetail =>
-      'Follow clinical advice first in special states';
+      'Follow clinician or pharmacist guidance first for pregnancy, lactation, or special-group medication use';
 
   @override
   String get medicineAlertPeriodPregnancyStatus => 'Missing';
@@ -1132,7 +1058,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineAlertPeriodPregnancyToast =>
-      'This will open period, pregnancy, and lactation notes.';
+      'This will open pregnancy, lactation, and special-group medication notes.';
 
   @override
   String get medicineSearchPageTitle => 'Search medicine';
@@ -1381,12 +1307,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Active medicines and medication records';
 
   @override
-  String get mineArchiveWomenTitle => 'Women\'s health';
-
-  @override
-  String get mineArchiveWomenSubtitle => 'Cycle records and health management';
-
-  @override
   String get mineArchiveEmergencyTitle => 'Emergency contact';
 
   @override
@@ -1438,12 +1358,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minePrivacyMoodSubtitle => 'Mood check-ins, counseling records';
 
   @override
-  String get minePrivacyPeriodTitle => 'Cycle data';
-
-  @override
-  String get minePrivacyPeriodSubtitle => 'Predictions and symptom records';
-
-  @override
   String get minePrivacyReportTitle => 'Report sharing';
 
   @override
@@ -1472,9 +1386,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineReminderSleepTitle => 'Sleep';
-
-  @override
-  String get mineReminderPeriodTitle => 'Cycle';
 
   @override
   String get mineReminderEnabled => 'Enabled';
@@ -1597,19 +1508,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineProfileMedicinesSubtitle => '3 medicines';
-
-  @override
-  String get mineProfileWomenTitle => 'Women / pregnancy';
-
-  @override
-  String get mineProfileWomenSubtitle => 'Not filled';
-
-  @override
-  String get mineProfileSpecialistTitle => 'Specialist bag';
-
-  @override
-  String get mineProfileSpecialistSubtitle =>
-      'Dental, vision, hearing, and more';
 
   @override
   String get mineProfileLifestyleTitle => 'Lifestyle';
@@ -1790,9 +1688,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineSettingsNotificationsTitle => 'Notifications';
 
   @override
-  String get mineSettingsMoreTitle => 'More settings';
-
-  @override
   String get settingsLanguageSystemLabel => 'Follow system';
 
   @override
@@ -1849,21 +1744,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap to open the system permission dialog. Notifications need system approval before local reminders can appear.';
 
   @override
-  String get settingsMoreClearImageCache => 'Clear image cache';
-
-  @override
-  String get settingsMoreCacheCleared => 'Image cache cleared';
-
-  @override
-  String get settingsMoreResetDefaults => 'Reset defaults';
-
-  @override
-  String get settingsMoreDefaultsReset => 'Defaults restored';
-
-  @override
-  String get settingsMoreOpenSourceLicenses => 'Open source licenses';
-
-  @override
   String get mineErrorTitle => 'Mine did not load this time';
 
   @override
@@ -1874,248 +1754,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String mineActionToast(String action) {
     return '$action: this will open the related details or settings flow later.';
   }
-
-  @override
-  String get morePageDescription =>
-      'Utility tools, emergency help, device management, and lower-frequency features belong here.';
-
-  @override
-  String get moreSectionTitle => 'Utility hub';
-
-  @override
-  String get moreSectionSubtitle =>
-      'This tab will gather the lower-frequency but still important workflows.';
-
-  @override
-  String get moreHeaderNotifications => 'Notifications';
-
-  @override
-  String get moreHeaderSupport => 'Support';
-
-  @override
-  String get moreEmergencySectionTitle => 'Emergency help';
-
-  @override
-  String get moreFamilySectionTitle => 'Family health';
-
-  @override
-  String get moreAiSectionTitle => 'AI recognition toolbox';
-
-  @override
-  String get moreDeviceSectionTitle => 'Smart device management';
-
-  @override
-  String get moreKnowledgeSectionTitle => 'Knowledge and services';
-
-  @override
-  String get moreEnvironmentSectionTitle =>
-      'Environment and health reminder center';
-
-  @override
-  String get moreEnvironmentMoreAction => 'More';
-
-  @override
-  String get moreRecentSectionTitle => 'Recent activity';
-
-  @override
-  String get moreRecentViewAllAction => 'View all';
-
-  @override
-  String get moreQuickSectionTitle => 'Quick entries';
-
-  @override
-  String get moreCareNoteTitle => 'Care note';
-
-  @override
-  String get moreEmergencySosTitle => 'SOS emergency help';
-
-  @override
-  String get moreEmergencySosSubtitle =>
-      'One tap away. Reach emergency contacts quickly.';
-
-  @override
-  String get moreEmergencyMentalHotlineTitle => 'Mental health hotline';
-
-  @override
-  String get moreEmergencyMentalHotlineSubtitle =>
-      '24h emotional support and crisis intervention.';
-
-  @override
-  String get moreEmergencyLockscreenTitle => 'Lock-screen medical info';
-
-  @override
-  String get moreEmergencyLockscreenSubtitle =>
-      'Show your key medical info in emergencies.';
-
-  @override
-  String get moreFamilyProfilesTitle => 'Family profiles';
-
-  @override
-  String get moreFamilyProfilesSubtitle =>
-      'Manage health records for family members.';
-
-  @override
-  String get moreFamilyVaccinationTitle => 'Vaccination and checkup reminders';
-
-  @override
-  String get moreFamilyVaccinationSubtitle =>
-      'Track routine vaccines and checkups.';
-
-  @override
-  String get moreFamilyAlertTitle => 'Abnormal alerts';
-
-  @override
-  String get moreFamilyAlertSubtitle =>
-      'Notice unusual health signals in time.';
-
-  @override
-  String get moreAiSkinTitle => 'Skin / rash recognition';
-
-  @override
-  String get moreAiSkinSubtitle =>
-      'Take or upload photos for a first-pass reference.';
-
-  @override
-  String get moreAiMentalScaleTitle => 'Mental health scales';
-
-  @override
-  String get moreAiMentalScaleSubtitle =>
-      'Use short scales for reference results.';
-
-  @override
-  String get moreAiReportImportTitle => 'Report photo import';
-
-  @override
-  String get moreAiReportImportSubtitle =>
-      'Import lab sheets or reports for structured reading.';
-
-  @override
-  String get moreDeviceMineTitle => 'My devices';
-
-  @override
-  String get moreDeviceMineSubtitle => '2 connected devices managed here.';
-
-  @override
-  String get moreDeviceAddTitle => 'Add device';
-
-  @override
-  String get moreDeviceAddSubtitle =>
-      'Connect watch, cuff, or respiratory device.';
-
-  @override
-  String get moreDeviceSyncTitle => 'Sync status';
-
-  @override
-  String get moreDeviceSyncSubtitle => 'Last sync: just now.';
-
-  @override
-  String get moreKnowledgeSleepTitle => 'Sleep improvement';
-
-  @override
-  String get moreKnowledgeSleepSubtitle =>
-      'Sleep plans and practical suggestions.';
-
-  @override
-  String get moreKnowledgeMindfulnessTitle => 'Mindfulness courses';
-
-  @override
-  String get moreKnowledgeMindfulnessSubtitle =>
-      'Breathing, meditation, and relaxation sessions.';
-
-  @override
-  String get moreKnowledgeWomenTitle => 'Women\'s health channel';
-
-  @override
-  String get moreKnowledgeWomenSubtitle =>
-      'Menstruation, pregnancy, and menopause topics.';
-
-  @override
-  String get moreEnvironmentPollenTitle => 'Pollen';
-
-  @override
-  String get moreEnvironmentPollenValue => 'High';
-
-  @override
-  String get moreEnvironmentUvTitle => 'UV';
-
-  @override
-  String get moreEnvironmentUvValue => 'Medium';
-
-  @override
-  String get moreEnvironmentAirTitle => 'Air quality';
-
-  @override
-  String get moreEnvironmentAirValue => 'Good';
-
-  @override
-  String get moreEnvironmentAdviceTitle => 'Allergy protection advice';
-
-  @override
-  String get moreEnvironmentAdviceBody =>
-      'Based on your history, outdoor protection is recommended today.';
-
-  @override
-  String get moreEnvironmentAdviceAction => 'Review';
-
-  @override
-  String get moreRecentSkinTime => 'Today 10:21';
-
-  @override
-  String get moreRecentVaccinationTime => 'Yesterday 18:30';
-
-  @override
-  String get moreRecentDeviceTime => 'Yesterday 09:15';
-
-  @override
-  String get moreRecentHotlineTime => '05-12 21:40';
-
-  @override
-  String get moreQuickCalculatorTitle => 'Health calculator';
-
-  @override
-  String get moreQuickCalculatorSubtitle => 'BMI / BMR and more';
-
-  @override
-  String get moreQuickBarcodeTitle => 'Medicine barcode scan';
-
-  @override
-  String get moreQuickBarcodeSubtitle => 'Scan and identify medicine items';
-
-  @override
-  String get moreQuickConverterTitle => 'Unit converter';
-
-  @override
-  String get moreQuickConverterSubtitle => 'Weight / temperature and more';
-
-  @override
-  String get moreQuickExportTitle => 'Data export';
-
-  @override
-  String get moreQuickExportSubtitle => 'Export health data copies';
-
-  @override
-  String get moreCareNoteBody =>
-      'The content and suggestions in this app are for reference and do not replace diagnosis or treatment advice.';
-
-  @override
-  String get moreErrorTitle => 'More did not load this time';
-
-  @override
-  String get moreErrorDescription =>
-      'The mock structure is wired. Retry the fetch once.';
-
-  @override
-  String moreActionToast(String action) {
-    return '$action: this will open the related tool or detail flow later.';
-  }
-
-  @override
-  String morePlannedToast(Object action) {
-    return '$action — this feature is not yet available.';
-  }
-
-  @override
-  String get morePlannedBadge => 'Planned';
 
   @override
   String get todaySectionTitle => 'Today workspace';
@@ -2666,21 +2304,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayHydrationOverviewLabel => 'Water';
 
   @override
-  String get todayMoodOverviewLabel => 'Mood';
-
-  @override
   String get todayMedicationOverviewLabel => 'Medication';
-
-  @override
-  String get todayPeriodOverviewLabel => 'Period';
-
-  @override
-  String todayPeriodDayValue(int day) {
-    return 'Day $day';
-  }
-
-  @override
-  String get todayPeriodStatus => 'In period';
 
   @override
   String get todayStatusNeedsImprovement => 'Needs lift';
@@ -2690,9 +2314,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayMedicationPendingStatus => 'Pending';
-
-  @override
-  String get todayMoodStableValue => 'Stable';
 
   @override
   String get todayPrioritySectionTitle => 'Today\'s priorities';
@@ -2721,18 +2342,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayDrinkWaterAction => 'Drink water';
-
-  @override
-  String get todayMoodCheckinTitle => 'Mood check-in';
-
-  @override
-  String get todayMoodCheckinSubtitle => 'Track mood changes';
-
-  @override
-  String get todayMoodNoRecord => 'No record today';
-
-  @override
-  String get todayMoodCheckinAction => 'Check in';
 
   @override
   String get todayCampusGuideTitle => 'Campus care guide';
@@ -2815,12 +2424,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get todayTodoMoodTitle => 'Mood check-in';
-
-  @override
-  String get todayTodoMoodSubtitle => 'Log today\'s mood';
-
-  @override
   String get todayTodoCustomTitle => 'Custom todo';
 
   @override
@@ -2835,9 +2438,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayQuickSymptom => 'Log symptom';
-
-  @override
-  String get todayQuickMood => 'Log mood';
 
   @override
   String get todayQuickWater => 'Log water';
@@ -3023,12 +2623,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportMetricWaterTitle => 'Water';
 
   @override
-  String get reportMetricMoodTitle => 'Mood';
-
-  @override
-  String get reportMetricMoodStableValue => 'Stable';
-
-  @override
   String get reportUnitPercent => '%';
 
   @override
@@ -3056,9 +2650,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportDeltaWater => '0.2';
 
   @override
-  String get reportDeltaMood => '';
-
-  @override
   String get reportTrendSectionTitle => 'Health trends';
 
   @override
@@ -3066,9 +2657,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportTrendSleepLabel => 'Sleep (h)';
-
-  @override
-  String get reportTrendMoodLabel => 'Mood';
 
   @override
   String get reportTrendWaterLabel => 'Water (L)';
@@ -3093,13 +2681,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sleep duration dropped after afternoon coffee.';
 
   @override
-  String get reportFindingPeriodTitle => 'Pre-period mood swings';
-
-  @override
-  String get reportFindingPeriodBody =>
-      'Mood changes were clearer two days before the period.';
-
-  @override
   String get reportFindingMedicineTitle => 'Medication routine is steady';
 
   @override
@@ -3119,10 +2700,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportAiBulletSleep =>
       'Sleep quality was good overall, with slight weekend variation. A steady routine can help energy.';
-
-  @override
-  String get reportAiBulletMood =>
-      'Mood was mostly stable. Thursday was slightly lower; exercise or meditation may help relax.';
 
   @override
   String get reportAiBulletWater =>
@@ -3146,12 +2723,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportExportHospitalSubtitle => 'Export health summary';
 
   @override
-  String get reportExportCounselorTitle => 'For counselor';
-
-  @override
-  String get reportExportCounselorSubtitle => 'Export health summary';
-
-  @override
   String get reportExportMonthlyTitle => 'Monthly report';
 
   @override
@@ -3165,16 +2736,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportPatternSectionTitle => 'Health pattern analysis';
-
-  @override
-  String get reportPatternSleepMoodTitle => 'Sleep and mood';
-
-  @override
-  String get reportPatternSleepMoodStatus => 'Medium link';
-
-  @override
-  String get reportPatternSleepMoodBody =>
-      'A regular rhythm helps stabilize mood.';
 
   @override
   String get reportPatternDietWaterTitle => 'Diet and water';
@@ -3197,16 +2758,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Taking medicine on time helps maintain health status.';
 
   @override
-  String get reportPatternCycleTitle => 'Cycle and discomfort';
-
-  @override
-  String get reportPatternCycleStatus => 'Regular records';
-
-  @override
-  String get reportPatternCycleBody =>
-      'Continuous records help identify cycle changes.';
-
-  @override
   String get reportPrivacyTitle => 'Privacy and security';
 
   @override
@@ -3218,12 +2769,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportPrivacySettingsTitle => 'Privacy settings';
-
-  @override
-  String get reportPrivacyHideMood => 'Hide mood';
-
-  @override
-  String get reportPrivacyHidePeriod => 'Hide period';
 
   @override
   String get reportReferenceNotice =>
@@ -3240,4 +2785,36 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportErrorDescription =>
       'The mock data boundary is wired, so try fetching it again.';
+
+  @override
+  String get mineSettingsAdvancedTitle => 'Advanced settings';
+
+  @override
+  String get settingsAdvancedClearImageCache => 'Clear image cache';
+
+  @override
+  String get settingsAdvancedCacheCleared => 'Image cache cleared';
+
+  @override
+  String get settingsAdvancedResetDefaults => 'Reset defaults';
+
+  @override
+  String get settingsAdvancedDefaultsReset => 'Defaults restored';
+
+  @override
+  String get settingsAdvancedOpenSourceLicenses => 'Open source licenses';
+
+  @override
+  String get reportPatternSleepTitle => 'Sleep changes';
+
+  @override
+  String get reportPatternSleepStatus => 'Watch trend';
+
+  @override
+  String get reportPatternSleepBody =>
+      'Evening caffeine and schedule changes may affect sleep';
+
+  @override
+  String get reportPrivacyExportControls =>
+      'Choose visible content before export';
 }

@@ -12,6 +12,9 @@ enum MedicineSearchCategoryType {
   chronic,
 }
 
+// Deferred by Product_Vision MVP: keep photo/barcode action types because scan
+// and OCR are useful later, but do not surface them until the matching camera,
+// recognition, and product contract is ready.
 enum MedicineSearchActionType { photo, barcode, keyword, switchSource }
 
 class MedicineSearchDashboard {

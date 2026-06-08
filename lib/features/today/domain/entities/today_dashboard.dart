@@ -8,6 +8,9 @@ enum TodayDayMoment { morning, afternoon, evening }
 
 enum TodayMedicationKind { atorvastatin, vitaminBComplex }
 
+// Deferred by Product_Vision MVP: keep the lightweight mood vital type because
+// future self-check-ins may use it, but do not surface it as a formal
+// mental-health module in Today.
 enum TodayVitalType { heartRate, bloodPressure, sleep, mood }
 
 enum TodayMealSuggestionType { highProteinBalancedLunch }
@@ -24,7 +27,6 @@ class TodayDashboard {
     required this.water,
     required this.medication,
     required this.vitals,
-    required this.period,
     required this.mealSuggestion,
     required this.environment,
     required this.lumiSuggestion,
@@ -34,8 +36,11 @@ class TodayDashboard {
   final TodayWaterSummary water;
   final TodayMedicationSummary medication;
   final List<TodayVitalSummary> vitals;
-  final TodayPeriodSummary period;
   final TodayMealSuggestion mealSuggestion;
+
+  // Deferred by Product_Vision MVP: keep environment signals because Lucent has
+  // a useful reference-data contract, but do not surface it until a concrete
+  // Today or Mine product job is ready.
   final TodayEnvironmentSummary environment;
   final TodayLumiSuggestion lumiSuggestion;
 }
@@ -96,12 +101,6 @@ class TodayVitalSummary {
 
   final TodayVitalType type;
   final String valueLabel;
-}
-
-class TodayPeriodSummary {
-  const TodayPeriodSummary({required this.day});
-
-  final int day;
 }
 
 class TodayMealSuggestion {

@@ -97,12 +97,14 @@ class LucentTodayRepository implements TodayRepository {
         ),
         TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
+        // Deferred by Product_Vision MVP: keep lightweight mood data in the
+        // repository for future self-check-ins, but do not surface it as a
+        // formal mental-health module in Today.
         TodayVitalSummary(
           type: TodayVitalType.mood,
           valueLabel: recordLatest['mood'] ?? '--',
         ),
       ],
-      period: _staticPeriod,
       mealSuggestion: _staticMealSuggestion,
       environment: _staticEnvironment,
       lumiSuggestion: _staticLumiSuggestion,
@@ -113,8 +115,9 @@ class LucentTodayRepository implements TodayRepository {
     type: TodayMealSuggestionType.highProteinBalancedLunch,
   );
 
-  static const _staticPeriod = TodayPeriodSummary(day: 2);
-
+  // Deferred by Product_Vision MVP: keep environment signals because Lucent has
+  // a useful reference-data contract, but do not surface it until a concrete
+  // Today or Mine product job is ready.
   static const _staticEnvironment = TodayEnvironmentSummary(
     signals: <TodayEnvironmentSignal>[
       TodayEnvironmentSignal(

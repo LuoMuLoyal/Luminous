@@ -15,7 +15,7 @@ import 'package:luminous/features/settings/data/providers/notification_permissio
 import 'package:luminous/features/settings/data/providers/settings_profile_data_providers.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/more_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
@@ -181,7 +181,7 @@ void main() {
     expect(find.byIcon(Icons.chevron_right_rounded), findsOneWidget);
   });
 
-  testWidgets('More settings page is reachable and shows actions', (
+  testWidgets('Advanced settings page is reachable and shows actions', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{
@@ -190,9 +190,9 @@ void main() {
 
     await _pumpApp(tester);
 
-    await _tapSettingsRow(tester, 'settings-row-more');
+    await _tapSettingsRow(tester, 'settings-row-advanced');
 
-    expect(find.text('更多设置'), findsOneWidget);
+    expect(find.text('高级设置'), findsOneWidget);
     expect(find.text('清理图片缓存'), findsOneWidget);
     expect(find.text('恢复默认设置'), findsOneWidget);
     expect(find.text('开源许可'), findsOneWidget);
@@ -439,7 +439,7 @@ GoRouter _buildSettingsTestRouter() {
       ),
       GoRoute(
         path: '/settings/more',
-        builder: (context, state) => const MoreSettingsPage(),
+        builder: (context, state) => const AdvancedSettingsPage(),
       ),
     ],
   );

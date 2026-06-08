@@ -4,7 +4,7 @@ Last updated: 2026-06-08
 
 ## Current Goal
 
-Move from a stable five-tab baseline into real daily health loops without presenting mock features as real.
+Move from the Product_Vision-converged five-tab mobile UI into real daily health loops without presenting mock or deferred features as real.
 
 ## Short-Term Targets
 
@@ -31,7 +31,7 @@ Observable result:
 
 ### Target 2: Record Form Quality
 
-Status: first pass completed on 2026-06-08 for water, vital, symptom, and note.
+Status: first pass completed on 2026-06-08 for water, meal, vital, symptom, and note.
 
 Goal: make record create/edit feel complete without adding unsupported medical complexity.
 
@@ -39,7 +39,8 @@ Scope:
 
 - Keep the detail page showing complete fields: type, occurred time, value, unit, title, note, source, updated time, and image attachment where available.
 - Keep edit/delete entry points clear from the timeline/detail path.
-- Keep common type form rules under regression: water uses value/unit/note with default `ml`; vital uses title/value/unit/note; symptom uses title/value/note without unit; note uses title/note without value/unit.
+- Keep common type form rules under regression: water uses value/unit/note with default `ml`; meal uses title/value/note without unit; vital uses title/value/unit/note; symptom uses title/value/note without unit; note uses title/note without value/unit.
+- Keep mood and activity as backend enum compatibility only; do not surface them as MVP create choices until an explicit product/API decision exists.
 - Keep richer analytics, medical document import, and multi-image gallery out of scope.
 
 Why second: date navigation, attachments, and detail must stay stable before type-specific forms are worth polishing.
@@ -69,6 +70,38 @@ Observable result:
 
 - A signed-in user sees pending/taken/skipped medicine state from Lucent-backed dose logs without duplicate same-day records, and the next implementation step has a concrete schedule contract instead of frontend-only guesswork.
 
+### Product_Vision UI Boundary
+
+Status: completed on 2026-06-08 for mobile UI and l10n/test cleanup.
+
+Goal: keep logic-layer work aligned with the narrowed competition product vision.
+
+Active MVP tab boundaries:
+
+- Today: medication tasks, hydration tasks, custom Today todos, AI summary/advice placeholders, immediate risk/campus suggestions.
+- Record: symptoms, hydration, diet/meal, natural-language record placeholder, supported daily-record timeline/detail/create/edit.
+- Medicine: drugbox, reminders, dose check-in, safety explanations, pregnancy/lactation/special-group medication safety conditions.
+- Report: daily/weekly-style summaries, medication/sleep/water/diet/symptom trend placeholders, campus hospital/pharmacist export controls.
+- Mine/Settings: account, profile, allergies, current medicines, privacy, notifications, campus hospital/pharmacy/emergency/support resources, Advanced settings.
+
+Removed from active scope:
+
+- Old More tab and `features/more`.
+- Women-health and period management.
+- Sport recovery, specialist health packs, family profiles, smart devices, skin recognition, report photo import, desktop-first workflows.
+
+Deferred but intentionally kept in code with `Deferred by Product_Vision MVP` comments:
+
+- Sleep entry shapes until a sleep contract/UI job is ready.
+- Lightweight mood record shapes until a future self-check-in product job is ready.
+- Environment signals until a contextual Today/Mine job is ready.
+- Medicine scan/OCR/photo/barcode/prescription quick-action/search shapes until recognition contracts are ready.
+- Pregnancy/lactation/special-group medication safety conditions remain active inside Medicine safety boundaries, not as women-health or period modules.
+
+Observable result:
+
+- The mobile UI stays five-tab and Product_Vision-scoped while the next work implements logic instead of reviving broad-health mock modules.
+
 ### Deferred: Environment Snapshot / Contextual Surfaces
 
 Status: Lucent endpoint implemented on 2026-06-06; Luminous frontend wiring is intentionally deferred until core modules are steadier.
@@ -93,9 +126,10 @@ Observable result:
 ## Immediate Work Order
 
 1. Keep Record quick-action routing, filter chips, selected-date reload, common type form mapping, attachment handling, detail cache invalidation, and timeline time display under regression.
-2. Keep Medicine dose-log and schedule-reminder behavior under regression while adding reminder edit UI and local notification scheduling.
-3. Implement local notification scheduling only after the first reminder schedule source is explicit and backed by Lucent or a documented local-only model.
-4. Keep auth/account deferred TODOs explicit until product/security decisions are made.
+2. Implement Medicine reminder create/edit/delete UI on top of the existing Lucent schedule-only reminder contract.
+3. Keep Medicine dose-log and schedule-reminder behavior under regression while adding reminder edit UI and local notification scheduling.
+4. Implement local notification scheduling only after the first reminder schedule source is explicit and backed by Lucent or a documented local-only model.
+5. Keep auth/account deferred TODOs explicit until product/security decisions are made.
 
 ## Active Planning References
 
@@ -108,10 +142,14 @@ Observable result:
 ## Do Not Start Yet
 
 - Real push delivery through FCM/APNs.
-- OCR/barcode scanning.
+- OCR/barcode/photo/prescription recognition UI or contracts.
 - Family profiles.
 - Smart device registry.
 - Watch companion app.
+- Women-health or period management.
+- Sport recovery.
+- Specialist health packs.
+- Skin recognition or report photo import.
 - Paid or credentialed external services without explicit approval.
 - Environment frontend wiring until Record / Today / Medicine core flows are steadier and the target Today/Mine job is explicit.
 - Standalone More tab or generic utility hub.

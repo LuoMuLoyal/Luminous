@@ -71,7 +71,7 @@ void main() {
     expect(find.text(l10n.recordMoodTrendSectionTitle), findsNothing);
   });
 
-  testWidgets('Record page shows period quick action only for female profile', (
+  testWidgets('Record page keeps period quick action hidden in MVP', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -88,7 +88,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text(l10n.recordQuickPeriodAction), findsOneWidget);
+    expect(find.text('记经期'), findsNothing);
+    expect(
+      find.text(l10n.recordQuickActionLabel(l10n.recordTypeVitals)),
+      findsOneWidget,
+    );
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();
@@ -99,7 +103,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text(l10n.recordQuickPeriodAction), findsNothing);
+    expect(find.text('记经期'), findsNothing);
     expect(
       find.text(l10n.recordQuickActionLabel(l10n.recordTypeVitals)),
       findsOneWidget,
@@ -1100,14 +1104,12 @@ class _FakeRecordRepository implements RecordRepository {
   @override
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
-    bool showWomenHealth = false,
     RecordEntryType? filterType,
   }) async {
     requestedDates.add(selectedDate);
     requestedFilters.add(filterType);
     final mock = await const MockRecordRepository().fetchDashboard(
       selectedDate,
-      showWomenHealth: showWomenHealth,
       filterType: filterType,
     );
     final timeline = withRecordEntry
@@ -1135,8 +1137,6 @@ class _FakeRecordRepository implements RecordRepository {
       filters: mock.filters,
       timeline: timeline,
       trends: mock.trends,
-      healthBag: mock.healthBag,
-      showWomenHealth: showWomenHealth,
     );
   }
 }

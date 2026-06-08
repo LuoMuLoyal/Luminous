@@ -14,8 +14,8 @@ import 'package:luminous/features/settings/presentation/providers/settings_profi
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class MoreSettingsPage extends ConsumerWidget {
-  const MoreSettingsPage({super.key});
+class AdvancedSettingsPage extends ConsumerWidget {
+  const AdvancedSettingsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,7 +25,7 @@ class MoreSettingsPage extends ConsumerWidget {
     final typography = _typography(context);
 
     return PageScaffoldShell(
-      title: l10n.mineSettingsMoreTitle,
+      title: l10n.mineSettingsAdvancedTitle,
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
@@ -36,19 +36,22 @@ class MoreSettingsPage extends ConsumerWidget {
           child: Column(
             children: [
               SettingsListRow(
-                key: const Key('more-settings-row-clear-cache'),
-                title: l10n.settingsMoreClearImageCache,
+                key: const Key('advanced-settings-row-clear-cache'),
+                title: l10n.settingsAdvancedClearImageCache,
                 icon: Icons.image_outlined,
                 onTap: () async {
                   imageCache.clear();
                   imageCache.clearLiveImages();
-                  await AppToast.show(context, l10n.settingsMoreCacheCleared);
+                  await AppToast.show(
+                    context,
+                    l10n.settingsAdvancedCacheCleared,
+                  );
                 },
                 showDivider: true,
               ),
               SettingsListRow(
-                key: const Key('more-settings-row-reset-defaults'),
-                title: l10n.settingsMoreResetDefaults,
+                key: const Key('advanced-settings-row-reset-defaults'),
+                title: l10n.settingsAdvancedResetDefaults,
                 icon: Icons.refresh_rounded,
                 onTap: () async {
                   await ref
@@ -72,13 +75,16 @@ class MoreSettingsPage extends ConsumerWidget {
                   if (!context.mounted) {
                     return;
                   }
-                  await AppToast.show(context, l10n.settingsMoreDefaultsReset);
+                  await AppToast.show(
+                    context,
+                    l10n.settingsAdvancedDefaultsReset,
+                  );
                 },
                 showDivider: true,
               ),
               SettingsListRow(
-                key: const Key('more-settings-row-licenses'),
-                title: l10n.settingsMoreOpenSourceLicenses,
+                key: const Key('advanced-settings-row-licenses'),
+                title: l10n.settingsAdvancedOpenSourceLicenses,
                 icon: Icons.description_outlined,
                 showChevron: true,
                 onTap: () => showLicensePage(

@@ -134,12 +134,6 @@ abstract class AppLocalizations {
   /// **'我的'**
   String get tabMine;
 
-  /// No description provided for @tabMore.
-  ///
-  /// In zh, this message translates to:
-  /// **'更多'**
-  String get tabMore;
-
   /// No description provided for @desktopSidebarSettings.
   ///
   /// In zh, this message translates to:
@@ -235,12 +229,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'记{type}'**
   String recordQuickActionLabel(String type);
-
-  /// No description provided for @recordQuickPeriodAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'记经期'**
-  String get recordQuickPeriodAction;
 
   /// No description provided for @recordAddAction.
   ///
@@ -734,12 +722,6 @@ abstract class AppLocalizations {
   /// **'用药'**
   String get recordTypeMedication;
 
-  /// No description provided for @recordTypeWomenHealth.
-  ///
-  /// In zh, this message translates to:
-  /// **'女性健康'**
-  String get recordTypeWomenHealth;
-
   /// No description provided for @recordTypeSleep.
   ///
   /// In zh, this message translates to:
@@ -757,12 +739,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'体重'**
   String get recordTypeWeight;
-
-  /// No description provided for @recordQuickWomenSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'未开启'**
-  String get recordQuickWomenSubtitle;
 
   /// No description provided for @recordSummaryMealTitle.
   ///
@@ -787,12 +763,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'情绪记录'**
   String get recordSummaryMoodTitle;
-
-  /// No description provided for @recordSummaryActivityTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'运动完成度'**
-  String get recordSummaryActivityTitle;
 
   /// No description provided for @recordSummaryTimesUnit.
   ///
@@ -908,18 +878,6 @@ abstract class AppLocalizations {
   /// **'头痛 · 疼痛评分 3/5'**
   String get recordTimelineSymptomDetail;
 
-  /// No description provided for @recordTimelineWomenHealthRecord.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期记录'**
-  String get recordTimelineWomenHealthRecord;
-
-  /// No description provided for @recordTimelineWomenHealthDetail.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期第 2 天 · 轻微腹胀'**
-  String get recordTimelineWomenHealthDetail;
-
   /// No description provided for @recordTimelineSleepRecord.
   ///
   /// In zh, this message translates to:
@@ -937,18 +895,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'72 次/分 · 来源：手表 · 正常'**
   String get recordTimelineHeartRateDetail;
-
-  /// No description provided for @recordTimelineActivityWalk.
-  ///
-  /// In zh, this message translates to:
-  /// **'运动 · 快走'**
-  String get recordTimelineActivityWalk;
-
-  /// No description provided for @recordTimelineActivityDetail.
-  ///
-  /// In zh, this message translates to:
-  /// **'30 分钟 · 2.6 km · 180 kcal'**
-  String get recordTimelineActivityDetail;
 
   /// No description provided for @recordTimelineWeightDetail.
   ///
@@ -968,24 +914,6 @@ abstract class AppLocalizations {
   /// **'餐后血糖 (mmol/L)'**
   String get recordTrendBloodSugarLegend;
 
-  /// No description provided for @recordTrendSleepMoodTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'情绪-睡眠'**
-  String get recordTrendSleepMoodTitle;
-
-  /// No description provided for @recordTrendSleepLegend.
-  ///
-  /// In zh, this message translates to:
-  /// **'睡眠时长（小时）'**
-  String get recordTrendSleepLegend;
-
-  /// No description provided for @recordTrendMoodLegend.
-  ///
-  /// In zh, this message translates to:
-  /// **'情绪评分（分）'**
-  String get recordTrendMoodLegend;
-
   /// No description provided for @recordTrendHydrationTitle.
   ///
   /// In zh, this message translates to:
@@ -1003,30 +931,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'近 30 天'**
   String get recordRange30Days;
-
-  /// No description provided for @recordHealthBagTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'专科健康档案袋'**
-  String get recordHealthBagTitle;
-
-  /// No description provided for @recordHealthBagBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'查看与管理牙齿、眼科、听力等专科记录与报告'**
-  String get recordHealthBagBody;
-
-  /// No description provided for @recordHealthBagLatest.
-  ///
-  /// In zh, this message translates to:
-  /// **'最近更新：2025-05-10'**
-  String get recordHealthBagLatest;
-
-  /// No description provided for @recordHealthBagNext.
-  ///
-  /// In zh, this message translates to:
-  /// **'下次复查：2025-06-15'**
-  String get recordHealthBagNext;
 
   /// No description provided for @recordFoodImagePlaceholder.
   ///
@@ -1130,36 +1034,6 @@ abstract class AppLocalizations {
   /// **'平稳'**
   String get recordMoodStable;
 
-  /// No description provided for @recordCycleDietSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期与饮食'**
-  String get recordCycleDietSectionTitle;
-
-  /// No description provided for @recordPeriodTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期'**
-  String get recordPeriodTitle;
-
-  /// No description provided for @recordPeriodDayValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期第 {day} 天'**
-  String recordPeriodDayValue(int day);
-
-  /// No description provided for @recordPeriodEndsIn.
-  ///
-  /// In zh, this message translates to:
-  /// **'预计还有 {days} 天结束'**
-  String recordPeriodEndsIn(int days);
-
-  /// No description provided for @recordPeriodRecordAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'记录经期'**
-  String get recordPeriodRecordAction;
-
   /// No description provided for @recordDietTitle.
   ///
   /// In zh, this message translates to:
@@ -1183,18 +1057,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'记录饮食'**
   String get recordDietRecordAction;
-
-  /// No description provided for @recordSpecialistPackTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'专科健康包'**
-  String get recordSpecialistPackTitle;
-
-  /// No description provided for @recordSpecialistPackSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'关注专科健康，记录更全面'**
-  String get recordSpecialistPackSubtitle;
 
   /// No description provided for @recordDentalRecordTitle.
   ///
@@ -1991,19 +1853,19 @@ abstract class AppLocalizations {
   /// No description provided for @medicineAlertPeriodPregnancyTitle.
   ///
   /// In zh, this message translates to:
-  /// **'经期/孕哺提示'**
+  /// **'孕哺/特殊人群提示'**
   String get medicineAlertPeriodPregnancyTitle;
 
   /// No description provided for @medicineAlertPeriodPregnancyBody.
   ///
   /// In zh, this message translates to:
-  /// **'记录状态以获得更精准的用药提示'**
+  /// **'记录孕哺等状态以获得更谨慎的用药提示'**
   String get medicineAlertPeriodPregnancyBody;
 
   /// No description provided for @medicineAlertPeriodPregnancyDetail.
   ///
   /// In zh, this message translates to:
-  /// **'特殊状态请优先遵医嘱'**
+  /// **'孕期、哺乳期或特殊人群用药请优先遵医嘱'**
   String get medicineAlertPeriodPregnancyDetail;
 
   /// No description provided for @medicineAlertPeriodPregnancyStatus.
@@ -2123,7 +1985,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineAlertPeriodPregnancyToast.
   ///
   /// In zh, this message translates to:
-  /// **'会打开经期、孕期和哺乳期提示。'**
+  /// **'会打开孕哺和特殊人群用药提示。'**
   String get medicineAlertPeriodPregnancyToast;
 
   /// No description provided for @medicineSearchPageTitle.
@@ -2576,18 +2438,6 @@ abstract class AppLocalizations {
   /// **'正在使用的药品与用药记录'**
   String get mineArchiveMedicineSubtitle;
 
-  /// No description provided for @mineArchiveWomenTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'女性健康'**
-  String get mineArchiveWomenTitle;
-
-  /// No description provided for @mineArchiveWomenSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期记录与健康管理'**
-  String get mineArchiveWomenSubtitle;
-
   /// No description provided for @mineArchiveEmergencyTitle.
   ///
   /// In zh, this message translates to:
@@ -2690,18 +2540,6 @@ abstract class AppLocalizations {
   /// **'情绪打卡、咨询记录等'**
   String get minePrivacyMoodSubtitle;
 
-  /// No description provided for @minePrivacyPeriodTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期数据'**
-  String get minePrivacyPeriodTitle;
-
-  /// No description provided for @minePrivacyPeriodSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期预测、症状记录等'**
-  String get minePrivacyPeriodSubtitle;
-
   /// No description provided for @minePrivacyReportTitle.
   ///
   /// In zh, this message translates to:
@@ -2761,12 +2599,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'睡眠提醒'**
   String get mineReminderSleepTitle;
-
-  /// No description provided for @mineReminderPeriodTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期提醒'**
-  String get mineReminderPeriodTitle;
 
   /// No description provided for @mineReminderEnabled.
   ///
@@ -2989,30 +2821,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'3 种药品'**
   String get mineProfileMedicinesSubtitle;
-
-  /// No description provided for @mineProfileWomenTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'女性/孕哺状态'**
-  String get mineProfileWomenTitle;
-
-  /// No description provided for @mineProfileWomenSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'未填写'**
-  String get mineProfileWomenSubtitle;
-
-  /// No description provided for @mineProfileSpecialistTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'专科档案'**
-  String get mineProfileSpecialistTitle;
-
-  /// No description provided for @mineProfileSpecialistSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'口腔/视力/听力等'**
-  String get mineProfileSpecialistSubtitle;
 
   /// No description provided for @mineProfileLifestyleTitle.
   ///
@@ -3362,12 +3170,6 @@ abstract class AppLocalizations {
   /// **'通知设置'**
   String get mineSettingsNotificationsTitle;
 
-  /// No description provided for @mineSettingsMoreTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'更多设置'**
-  String get mineSettingsMoreTitle;
-
   /// No description provided for @settingsLanguageSystemLabel.
   ///
   /// In zh, this message translates to:
@@ -3470,36 +3272,6 @@ abstract class AppLocalizations {
   /// **'点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'**
   String get settingsNotificationsPermissionDisabledHint;
 
-  /// No description provided for @settingsMoreClearImageCache.
-  ///
-  /// In zh, this message translates to:
-  /// **'清理图片缓存'**
-  String get settingsMoreClearImageCache;
-
-  /// No description provided for @settingsMoreCacheCleared.
-  ///
-  /// In zh, this message translates to:
-  /// **'图片缓存已清理'**
-  String get settingsMoreCacheCleared;
-
-  /// No description provided for @settingsMoreResetDefaults.
-  ///
-  /// In zh, this message translates to:
-  /// **'恢复默认设置'**
-  String get settingsMoreResetDefaults;
-
-  /// No description provided for @settingsMoreDefaultsReset.
-  ///
-  /// In zh, this message translates to:
-  /// **'已恢复默认设置'**
-  String get settingsMoreDefaultsReset;
-
-  /// No description provided for @settingsMoreOpenSourceLicenses.
-  ///
-  /// In zh, this message translates to:
-  /// **'开源许可'**
-  String get settingsMoreOpenSourceLicenses;
-
   /// No description provided for @mineErrorTitle.
   ///
   /// In zh, this message translates to:
@@ -3517,444 +3289,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'{action}：后续会接入对应详情或设置流程。'**
   String mineActionToast(String action);
-
-  /// No description provided for @morePageDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'工具箱、紧急帮助、设备管理和低频但重要的能力归在这里。'**
-  String get morePageDescription;
-
-  /// No description provided for @moreSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'功能枢纽'**
-  String get moreSectionTitle;
-
-  /// No description provided for @moreSectionSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'这一栏会收纳低频但依然重要的工作流。'**
-  String get moreSectionSubtitle;
-
-  /// No description provided for @moreHeaderNotifications.
-  ///
-  /// In zh, this message translates to:
-  /// **'通知'**
-  String get moreHeaderNotifications;
-
-  /// No description provided for @moreHeaderSupport.
-  ///
-  /// In zh, this message translates to:
-  /// **'帮助'**
-  String get moreHeaderSupport;
-
-  /// No description provided for @moreEmergencySectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'紧急救助'**
-  String get moreEmergencySectionTitle;
-
-  /// No description provided for @moreFamilySectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'家庭健康'**
-  String get moreFamilySectionTitle;
-
-  /// No description provided for @moreAiSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'AI 识别工具箱'**
-  String get moreAiSectionTitle;
-
-  /// No description provided for @moreDeviceSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'智能设备管理'**
-  String get moreDeviceSectionTitle;
-
-  /// No description provided for @moreKnowledgeSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'知识与服务'**
-  String get moreKnowledgeSectionTitle;
-
-  /// No description provided for @moreEnvironmentSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'环境与健康提醒中心'**
-  String get moreEnvironmentSectionTitle;
-
-  /// No description provided for @moreEnvironmentMoreAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'更多'**
-  String get moreEnvironmentMoreAction;
-
-  /// No description provided for @moreRecentSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'最近使用'**
-  String get moreRecentSectionTitle;
-
-  /// No description provided for @moreRecentViewAllAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'查看全部'**
-  String get moreRecentViewAllAction;
-
-  /// No description provided for @moreQuickSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'快捷入口'**
-  String get moreQuickSectionTitle;
-
-  /// No description provided for @moreCareNoteTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'温馨提示'**
-  String get moreCareNoteTitle;
-
-  /// No description provided for @moreEmergencySosTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'SOS 紧急求助'**
-  String get moreEmergencySosTitle;
-
-  /// No description provided for @moreEmergencySosSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'一键呼救，快速联系紧急联系人'**
-  String get moreEmergencySosSubtitle;
-
-  /// No description provided for @moreEmergencyMentalHotlineTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'心理援助热线'**
-  String get moreEmergencyMentalHotlineTitle;
-
-  /// No description provided for @moreEmergencyMentalHotlineSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'24h 心理支持与危机干预'**
-  String get moreEmergencyMentalHotlineSubtitle;
-
-  /// No description provided for @moreEmergencyLockscreenTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'锁屏医疗信息'**
-  String get moreEmergencyLockscreenTitle;
-
-  /// No description provided for @moreEmergencyLockscreenSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'紧急情况下展示你的医疗信息'**
-  String get moreEmergencyLockscreenSubtitle;
-
-  /// No description provided for @moreFamilyProfilesTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'家人档案'**
-  String get moreFamilyProfilesTitle;
-
-  /// No description provided for @moreFamilyProfilesSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'管理家人健康档案'**
-  String get moreFamilyProfilesSubtitle;
-
-  /// No description provided for @moreFamilyVaccinationTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'接种与体检提醒'**
-  String get moreFamilyVaccinationTitle;
-
-  /// No description provided for @moreFamilyVaccinationSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'为家人设置接种 / 体检提醒'**
-  String get moreFamilyVaccinationSubtitle;
-
-  /// No description provided for @moreFamilyAlertTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'异常预警'**
-  String get moreFamilyAlertTitle;
-
-  /// No description provided for @moreFamilyAlertSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'家人健康异常及时提醒'**
-  String get moreFamilyAlertSubtitle;
-
-  /// No description provided for @moreAiSkinTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'皮肤 / 皮疹识别'**
-  String get moreAiSkinTitle;
-
-  /// No description provided for @moreAiSkinSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'拍照识别皮肤问题初步识别参考'**
-  String get moreAiSkinSubtitle;
-
-  /// No description provided for @moreAiMentalScaleTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'心理量表评估'**
-  String get moreAiMentalScaleTitle;
-
-  /// No description provided for @moreAiMentalScaleSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'多种量表自助评估结果仅供参考'**
-  String get moreAiMentalScaleSubtitle;
-
-  /// No description provided for @moreAiReportImportTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'报告拍照导入'**
-  String get moreAiReportImportTitle;
-
-  /// No description provided for @moreAiReportImportSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'拍照识别化验单 / 病历等报告'**
-  String get moreAiReportImportSubtitle;
-
-  /// No description provided for @moreDeviceMineTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'我的设备'**
-  String get moreDeviceMineTitle;
-
-  /// No description provided for @moreDeviceMineSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'管理已连接设备当前 2 台设备'**
-  String get moreDeviceMineSubtitle;
-
-  /// No description provided for @moreDeviceAddTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'添加设备'**
-  String get moreDeviceAddTitle;
-
-  /// No description provided for @moreDeviceAddSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'连接手表、血压计、体脂秤等设备'**
-  String get moreDeviceAddSubtitle;
-
-  /// No description provided for @moreDeviceSyncTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'同步状态'**
-  String get moreDeviceSyncTitle;
-
-  /// No description provided for @moreDeviceSyncSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'数据同步与历史同步：刚刚'**
-  String get moreDeviceSyncSubtitle;
-
-  /// No description provided for @moreKnowledgeSleepTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'睡眠改善'**
-  String get moreKnowledgeSleepTitle;
-
-  /// No description provided for @moreKnowledgeSleepSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'睡眠方案与个性化建议'**
-  String get moreKnowledgeSleepSubtitle;
-
-  /// No description provided for @moreKnowledgeMindfulnessTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'正念课程'**
-  String get moreKnowledgeMindfulnessTitle;
-
-  /// No description provided for @moreKnowledgeMindfulnessSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'冥想练习与放松训练'**
-  String get moreKnowledgeMindfulnessSubtitle;
-
-  /// No description provided for @moreKnowledgeWomenTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'女性健康专栏'**
-  String get moreKnowledgeWomenTitle;
-
-  /// No description provided for @moreKnowledgeWomenSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期管理 / 备孕 / 更年期'**
-  String get moreKnowledgeWomenSubtitle;
-
-  /// No description provided for @moreEnvironmentPollenTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'花粉'**
-  String get moreEnvironmentPollenTitle;
-
-  /// No description provided for @moreEnvironmentPollenValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'较高'**
-  String get moreEnvironmentPollenValue;
-
-  /// No description provided for @moreEnvironmentUvTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'紫外线'**
-  String get moreEnvironmentUvTitle;
-
-  /// No description provided for @moreEnvironmentUvValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'中等'**
-  String get moreEnvironmentUvValue;
-
-  /// No description provided for @moreEnvironmentAirTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'空气污染'**
-  String get moreEnvironmentAirTitle;
-
-  /// No description provided for @moreEnvironmentAirValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'良'**
-  String get moreEnvironmentAirValue;
-
-  /// No description provided for @moreEnvironmentAdviceTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'过敏防护建议'**
-  String get moreEnvironmentAdviceTitle;
-
-  /// No description provided for @moreEnvironmentAdviceBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'基于你的过敏史，今天建议加强外出防护。'**
-  String get moreEnvironmentAdviceBody;
-
-  /// No description provided for @moreEnvironmentAdviceAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'查看'**
-  String get moreEnvironmentAdviceAction;
-
-  /// No description provided for @moreRecentSkinTime.
-  ///
-  /// In zh, this message translates to:
-  /// **'今天 10:21'**
-  String get moreRecentSkinTime;
-
-  /// No description provided for @moreRecentVaccinationTime.
-  ///
-  /// In zh, this message translates to:
-  /// **'昨天 18:30'**
-  String get moreRecentVaccinationTime;
-
-  /// No description provided for @moreRecentDeviceTime.
-  ///
-  /// In zh, this message translates to:
-  /// **'昨天 09:15'**
-  String get moreRecentDeviceTime;
-
-  /// No description provided for @moreRecentHotlineTime.
-  ///
-  /// In zh, this message translates to:
-  /// **'05-12 21:40'**
-  String get moreRecentHotlineTime;
-
-  /// No description provided for @moreQuickCalculatorTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'健康计算器'**
-  String get moreQuickCalculatorTitle;
-
-  /// No description provided for @moreQuickCalculatorSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'BMI / BMR 等'**
-  String get moreQuickCalculatorSubtitle;
-
-  /// No description provided for @moreQuickBarcodeTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'药品条码识别'**
-  String get moreQuickBarcodeTitle;
-
-  /// No description provided for @moreQuickBarcodeSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'扫码识别药品'**
-  String get moreQuickBarcodeSubtitle;
-
-  /// No description provided for @moreQuickConverterTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'单位换算'**
-  String get moreQuickConverterTitle;
-
-  /// No description provided for @moreQuickConverterSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'体重 / 温度等'**
-  String get moreQuickConverterSubtitle;
-
-  /// No description provided for @moreQuickExportTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'数据导出'**
-  String get moreQuickExportTitle;
-
-  /// No description provided for @moreQuickExportSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'导出健康数据'**
-  String get moreQuickExportSubtitle;
-
-  /// No description provided for @moreCareNoteBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'本应用提供的内容仅供参考，不替代医生诊断与治疗建议。'**
-  String get moreCareNoteBody;
-
-  /// No description provided for @moreErrorTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'更多页面暂时没有加载出来'**
-  String get moreErrorTitle;
-
-  /// No description provided for @moreErrorDescription.
-  ///
-  /// In zh, this message translates to:
-  /// **'mock 结构已经接好，重新拉一次即可。'**
-  String get moreErrorDescription;
-
-  /// No description provided for @moreActionToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'{action}：后续会打开对应工具或详情流程。'**
-  String moreActionToast(String action);
-
-  /// No description provided for @morePlannedToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'{action} — 此功能尚未开放。'**
-  String morePlannedToast(Object action);
-
-  /// No description provided for @morePlannedBadge.
-  ///
-  /// In zh, this message translates to:
-  /// **'计划中'**
-  String get morePlannedBadge;
 
   /// No description provided for @todaySectionTitle.
   ///
@@ -4952,35 +4286,11 @@ abstract class AppLocalizations {
   /// **'饮水'**
   String get todayHydrationOverviewLabel;
 
-  /// No description provided for @todayMoodOverviewLabel.
-  ///
-  /// In zh, this message translates to:
-  /// **'情绪'**
-  String get todayMoodOverviewLabel;
-
   /// No description provided for @todayMedicationOverviewLabel.
   ///
   /// In zh, this message translates to:
   /// **'用药'**
   String get todayMedicationOverviewLabel;
-
-  /// No description provided for @todayPeriodOverviewLabel.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期'**
-  String get todayPeriodOverviewLabel;
-
-  /// No description provided for @todayPeriodDayValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'第 {day} 天'**
-  String todayPeriodDayValue(int day);
-
-  /// No description provided for @todayPeriodStatus.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期中'**
-  String get todayPeriodStatus;
 
   /// No description provided for @todayStatusNeedsImprovement.
   ///
@@ -4999,12 +4309,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'待服用'**
   String get todayMedicationPendingStatus;
-
-  /// No description provided for @todayMoodStableValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'平稳'**
-  String get todayMoodStableValue;
 
   /// No description provided for @todayPrioritySectionTitle.
   ///
@@ -5053,30 +4357,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'去喝水'**
   String get todayDrinkWaterAction;
-
-  /// No description provided for @todayMoodCheckinTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'情绪打卡'**
-  String get todayMoodCheckinTitle;
-
-  /// No description provided for @todayMoodCheckinSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'关注情绪变化'**
-  String get todayMoodCheckinSubtitle;
-
-  /// No description provided for @todayMoodNoRecord.
-  ///
-  /// In zh, this message translates to:
-  /// **'今日未记录'**
-  String get todayMoodNoRecord;
-
-  /// No description provided for @todayMoodCheckinAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'去打卡'**
-  String get todayMoodCheckinAction;
 
   /// No description provided for @todayCampusGuideTitle.
   ///
@@ -5222,18 +4502,6 @@ abstract class AppLocalizations {
   /// **'今日进度 {progress}%'**
   String todayTodoWaterSubtitle(int progress);
 
-  /// No description provided for @todayTodoMoodTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'情绪记录'**
-  String get todayTodoMoodTitle;
-
-  /// No description provided for @todayTodoMoodSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'记录今天的情绪状态'**
-  String get todayTodoMoodSubtitle;
-
   /// No description provided for @todayTodoCustomTitle.
   ///
   /// In zh, this message translates to:
@@ -5263,12 +4531,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'记症状'**
   String get todayQuickSymptom;
-
-  /// No description provided for @todayQuickMood.
-  ///
-  /// In zh, this message translates to:
-  /// **'记情绪'**
-  String get todayQuickMood;
 
   /// No description provided for @todayQuickWater.
   ///
@@ -5618,18 +4880,6 @@ abstract class AppLocalizations {
   /// **'饮水'**
   String get reportMetricWaterTitle;
 
-  /// No description provided for @reportMetricMoodTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'情绪'**
-  String get reportMetricMoodTitle;
-
-  /// No description provided for @reportMetricMoodStableValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'稳定'**
-  String get reportMetricMoodStableValue;
-
   /// No description provided for @reportUnitPercent.
   ///
   /// In zh, this message translates to:
@@ -5684,12 +4934,6 @@ abstract class AppLocalizations {
   /// **'0.2'**
   String get reportDeltaWater;
 
-  /// No description provided for @reportDeltaMood.
-  ///
-  /// In zh, this message translates to:
-  /// **''**
-  String get reportDeltaMood;
-
   /// No description provided for @reportTrendSectionTitle.
   ///
   /// In zh, this message translates to:
@@ -5707,12 +4951,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'睡眠(小时)'**
   String get reportTrendSleepLabel;
-
-  /// No description provided for @reportTrendMoodLabel.
-  ///
-  /// In zh, this message translates to:
-  /// **'情绪(分)'**
-  String get reportTrendMoodLabel;
 
   /// No description provided for @reportTrendWaterLabel.
   ///
@@ -5756,18 +4994,6 @@ abstract class AppLocalizations {
   /// **'下午摄入咖啡后睡眠时长下降'**
   String get reportFindingCoffeeBody;
 
-  /// No description provided for @reportFindingPeriodTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期前情绪波动'**
-  String get reportFindingPeriodTitle;
-
-  /// No description provided for @reportFindingPeriodBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期前 2 天情绪波动较为明显'**
-  String get reportFindingPeriodBody;
-
   /// No description provided for @reportFindingMedicineTitle.
   ///
   /// In zh, this message translates to:
@@ -5803,12 +5029,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'睡眠质量整体良好，周末略有波动，保持规律作息有助于提升精力。'**
   String get reportAiBulletSleep;
-
-  /// No description provided for @reportAiBulletMood.
-  ///
-  /// In zh, this message translates to:
-  /// **'情绪总体稳定，周四稍低，尝试运动或冥想有助于放松心情。'**
-  String get reportAiBulletMood;
 
   /// No description provided for @reportAiBulletWater.
   ///
@@ -5846,18 +5066,6 @@ abstract class AppLocalizations {
   /// **'导出健康摘要'**
   String get reportExportHospitalSubtitle;
 
-  /// No description provided for @reportExportCounselorTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'给咨询师'**
-  String get reportExportCounselorTitle;
-
-  /// No description provided for @reportExportCounselorSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'导出健康摘要'**
-  String get reportExportCounselorSubtitle;
-
   /// No description provided for @reportExportMonthlyTitle.
   ///
   /// In zh, this message translates to:
@@ -5887,24 +5095,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'健康模式分析'**
   String get reportPatternSectionTitle;
-
-  /// No description provided for @reportPatternSleepMoodTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'睡眠与情绪'**
-  String get reportPatternSleepMoodTitle;
-
-  /// No description provided for @reportPatternSleepMoodStatus.
-  ///
-  /// In zh, this message translates to:
-  /// **'关联度中等'**
-  String get reportPatternSleepMoodStatus;
-
-  /// No description provided for @reportPatternSleepMoodBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'保持规律有助于稳定情绪'**
-  String get reportPatternSleepMoodBody;
 
   /// No description provided for @reportPatternDietWaterTitle.
   ///
@@ -5942,24 +5132,6 @@ abstract class AppLocalizations {
   /// **'按时服药有助于维持健康状态'**
   String get reportPatternMedicationBody;
 
-  /// No description provided for @reportPatternCycleTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'经期与不适'**
-  String get reportPatternCycleTitle;
-
-  /// No description provided for @reportPatternCycleStatus.
-  ///
-  /// In zh, this message translates to:
-  /// **'规律记录'**
-  String get reportPatternCycleStatus;
-
-  /// No description provided for @reportPatternCycleBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'持续记录有助于识别周期变化'**
-  String get reportPatternCycleBody;
-
   /// No description provided for @reportPrivacyTitle.
   ///
   /// In zh, this message translates to:
@@ -5984,18 +5156,6 @@ abstract class AppLocalizations {
   /// **'隐私设置'**
   String get reportPrivacySettingsTitle;
 
-  /// No description provided for @reportPrivacyHideMood.
-  ///
-  /// In zh, this message translates to:
-  /// **'隐藏情绪'**
-  String get reportPrivacyHideMood;
-
-  /// No description provided for @reportPrivacyHidePeriod.
-  ///
-  /// In zh, this message translates to:
-  /// **'隐藏经期'**
-  String get reportPrivacyHidePeriod;
-
   /// No description provided for @reportReferenceNotice.
   ///
   /// In zh, this message translates to:
@@ -6019,6 +5179,66 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'Mock 数据边界已经接好，可以重新拉取一次。'**
   String get reportErrorDescription;
+
+  /// No description provided for @mineSettingsAdvancedTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'高级设置'**
+  String get mineSettingsAdvancedTitle;
+
+  /// No description provided for @settingsAdvancedClearImageCache.
+  ///
+  /// In zh, this message translates to:
+  /// **'清理图片缓存'**
+  String get settingsAdvancedClearImageCache;
+
+  /// No description provided for @settingsAdvancedCacheCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'图片缓存已清理'**
+  String get settingsAdvancedCacheCleared;
+
+  /// No description provided for @settingsAdvancedResetDefaults.
+  ///
+  /// In zh, this message translates to:
+  /// **'恢复默认设置'**
+  String get settingsAdvancedResetDefaults;
+
+  /// No description provided for @settingsAdvancedDefaultsReset.
+  ///
+  /// In zh, this message translates to:
+  /// **'已恢复默认设置'**
+  String get settingsAdvancedDefaultsReset;
+
+  /// No description provided for @settingsAdvancedOpenSourceLicenses.
+  ///
+  /// In zh, this message translates to:
+  /// **'开源许可'**
+  String get settingsAdvancedOpenSourceLicenses;
+
+  /// No description provided for @reportPatternSleepTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠变化'**
+  String get reportPatternSleepTitle;
+
+  /// No description provided for @reportPatternSleepStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'持续观察'**
+  String get reportPatternSleepStatus;
+
+  /// No description provided for @reportPatternSleepBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'晚间咖啡因和作息变化可能影响睡眠'**
+  String get reportPatternSleepBody;
+
+  /// No description provided for @reportPrivacyExportControls.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出前选择可见内容'**
+  String get reportPrivacyExportControls;
 }
 
 class _AppLocalizationsDelegate

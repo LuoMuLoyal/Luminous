@@ -178,13 +178,6 @@ class _QuickOperationSection extends StatelessWidget {
         onTap: () => context.push('/medicine/search'),
       ),
       _QuickOperation(
-        icon: Icons.qr_code_scanner_rounded,
-        color: MedicinePalette.blue,
-        title: l10n.medicineQuickScanTitle,
-        subtitle: l10n.medicineQuickScanSubtitle,
-        onTap: () => AppToast.show(context, l10n.medicineSearchScanHint),
-      ),
-      _QuickOperation(
         icon: Icons.fact_check_rounded,
         color: MedicinePalette.violet,
         title: l10n.medicineQuickRecordTitle,

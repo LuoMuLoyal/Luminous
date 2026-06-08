@@ -882,11 +882,6 @@ class _QuickRecordSection extends StatelessWidget {
         color: TodayPalette.teal,
       ),
       _QuickRecordItem(
-        icon: Icons.sentiment_satisfied_alt_rounded,
-        label: l10n.todayQuickMood,
-        color: TodayPalette.violet,
-      ),
-      _QuickRecordItem(
         icon: Icons.local_drink_rounded,
         label: l10n.todayQuickWater,
         color: TodayPalette.teal,
@@ -1067,11 +1062,6 @@ List<_OverviewItem> _overviewItems(
     TodayVitalType.sleep,
     fallback: l10n.todaySleepFallbackValue,
   );
-  final mood = _vitalValue(
-    dashboard.vitals,
-    TodayVitalType.mood,
-    fallback: l10n.todayMoodStableValue,
-  );
   final medicationDone = dashboard.medication.medicineCount == 0
       ? 0
       : dashboard.medication.medicineCount - dashboard.medication.pendingCount;
@@ -1098,13 +1088,6 @@ List<_OverviewItem> _overviewItems(
           : TodayPalette.amber,
     ),
     _OverviewItem(
-      icon: Icons.sentiment_satisfied_alt_rounded,
-      label: l10n.todayMoodOverviewLabel,
-      value: mood,
-      status: l10n.todayVitalStatusGood,
-      color: TodayPalette.violet,
-    ),
-    _OverviewItem(
       icon: Icons.medication_rounded,
       label: l10n.todayMedicationOverviewLabel,
       value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
@@ -1112,13 +1095,6 @@ List<_OverviewItem> _overviewItems(
           ? l10n.todayStatusCompleted
           : l10n.todayMedicationPendingStatus,
       color: TodayPalette.green,
-    ),
-    _OverviewItem(
-      icon: Icons.calendar_month_rounded,
-      label: l10n.todayPeriodOverviewLabel,
-      value: l10n.todayPeriodDayValue(dashboard.period.day),
-      status: l10n.todayPeriodStatus,
-      color: TodayPalette.pink,
     ),
   ];
 }
@@ -1155,19 +1131,6 @@ List<_PriorityItem> _priorityItems(
       detail: '${(waterProgress * 100).round()}%',
       action: l10n.todayDrinkWaterAction,
       progress: waterProgress,
-    ),
-    _PriorityItem(
-      key: const Key('today-mood-card'),
-      icon: Icons.sentiment_satisfied_alt_rounded,
-      color: TodayPalette.violet,
-      title: l10n.todayMoodCheckinTitle,
-      subtitle: l10n.todayMoodCheckinSubtitle,
-      detail: _vitalValue(
-        dashboard.vitals,
-        TodayVitalType.mood,
-        fallback: l10n.todayMoodNoRecord,
-      ),
-      action: l10n.todayMoodCheckinAction,
     ),
     _PriorityItem(
       key: const Key('today-campus-card'),
@@ -1224,7 +1187,6 @@ List<_TodoItem> _todoItems(AppLocalizations l10n, TodayDashboard dashboard) {
       dashboard.medication.nextMedicineName ??
       _medicationName(l10n, dashboard.medication.nextMedicine);
   final waterProgressPercent = (dashboard.water.progress * 100).round();
-  final moodCompleted = _hasVitalValue(dashboard.vitals, TodayVitalType.mood);
 
   return [
     _TodoItem(
@@ -1255,16 +1217,6 @@ List<_TodoItem> _todoItems(AppLocalizations l10n, TodayDashboard dashboard) {
       subtitleIsDynamic: true,
     ),
     _TodoItem(
-      title: l10n.todayTodoMoodTitle,
-      subtitle: l10n.todayTodoMoodSubtitle,
-      source: l10n.todayTodoSourceUser,
-      action: l10n.todayMoodCheckinAction,
-      color: TodayPalette.violet,
-      completed: moodCompleted,
-      statusIsDynamic: true,
-      subtitleIsDynamic: false,
-    ),
-    _TodoItem(
       title: l10n.todayTodoCustomTitle,
       subtitle: l10n.todayTodoCustomSubtitle,
       source: l10n.todayTodoSourceUser,
@@ -1275,16 +1227,6 @@ List<_TodoItem> _todoItems(AppLocalizations l10n, TodayDashboard dashboard) {
       subtitleIsDynamic: false,
     ),
   ];
-}
-
-bool _hasVitalValue(List<TodayVitalSummary> vitals, TodayVitalType type) {
-  for (final vital in vitals) {
-    if (vital.type == type) {
-      final value = vital.valueLabel.trim();
-      if (value.isNotEmpty && value != '--') return true;
-    }
-  }
-  return false;
 }
 
 String _vitalValue(

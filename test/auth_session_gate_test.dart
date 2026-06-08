@@ -170,13 +170,11 @@ class _CountingRecordRepository implements RecordRepository {
   @override
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
-    bool showWomenHealth = false,
     RecordEntryType? filterType,
   }) async {
     calls += 1;
     return const MockRecordRepository().fetchDashboard(
       selectedDate,
-      showWomenHealth: showWomenHealth,
       filterType: filterType,
     );
   }

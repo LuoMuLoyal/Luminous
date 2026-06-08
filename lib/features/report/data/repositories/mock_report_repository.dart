@@ -53,17 +53,6 @@ class MockReportRepository implements ReportRepository {
         direction: ReportMetricDirection.down,
         sparkline: <double>[43, 49, 42, 48, 41, 39],
       ),
-      ReportMetric(
-        icon: Icons.sentiment_satisfied_rounded,
-        color: AppColorTokens.violet,
-        titleKey: ReportCopyKey.metricMoodTitle,
-        value: '',
-        valueKey: ReportCopyKey.metricMoodStableValue,
-        statusKey: ReportCopyKey.statusGood,
-        deltaKey: ReportCopyKey.deltaMood,
-        direction: ReportMetricDirection.flat,
-        sparkline: <double>[54, 55, 61, 56, 60, 53],
-      ),
     ],
     trends: <ReportTrendSeries>[
       ReportTrendSeries(
@@ -71,12 +60,6 @@ class MockReportRepository implements ReportRepository {
         color: AppColorTokens.violet,
         values: <double>[5.2, 5.4, 6.0, 5.5, 6.0, 5.4, 7.2],
         currentValue: '7.2',
-      ),
-      ReportTrendSeries(
-        labelKey: ReportCopyKey.trendMoodLabel,
-        color: AppColorTokens.violetDeep,
-        values: <double>[6.2, 7.0, 7.8, 6.9, 7.5, 7.0, 7.8],
-        currentValue: '78',
       ),
       ReportTrendSeries(
         labelKey: ReportCopyKey.trendWaterLabel,
@@ -99,12 +82,6 @@ class MockReportRepository implements ReportRepository {
         bodyKey: ReportCopyKey.findingCoffeeBody,
       ),
       ReportFinding(
-        icon: Icons.calendar_month_rounded,
-        color: AppColorTokens.highlightMagenta,
-        titleKey: ReportCopyKey.findingPeriodTitle,
-        bodyKey: ReportCopyKey.findingPeriodBody,
-      ),
-      ReportFinding(
         icon: Icons.verified_rounded,
         color: AppColorTokens.cyanDeep,
         titleKey: ReportCopyKey.findingMedicineTitle,
@@ -115,10 +92,6 @@ class MockReportRepository implements ReportRepository {
       ReportAiBullet(
         color: AppColorTokens.link,
         bodyKey: ReportCopyKey.aiBulletSleep,
-      ),
-      ReportAiBullet(
-        color: AppColorTokens.violet,
-        bodyKey: ReportCopyKey.aiBulletMood,
       ),
       ReportAiBullet(
         color: AppColorTokens.cyanDeep,
@@ -141,12 +114,6 @@ class MockReportRepository implements ReportRepository {
         subtitleKey: ReportCopyKey.exportHospitalSubtitle,
       ),
       ReportExportAction(
-        icon: Icons.forum_rounded,
-        color: AppColorTokens.violet,
-        titleKey: ReportCopyKey.exportCounselorTitle,
-        subtitleKey: ReportCopyKey.exportCounselorSubtitle,
-      ),
-      ReportExportAction(
         icon: Icons.bar_chart_rounded,
         color: AppColorTokens.link,
         titleKey: ReportCopyKey.exportMonthlyTitle,
@@ -163,9 +130,9 @@ class MockReportRepository implements ReportRepository {
       ReportPatternCard(
         icon: Icons.nightlight_round,
         color: AppColorTokens.link,
-        titleKey: ReportCopyKey.patternSleepMoodTitle,
-        statusKey: ReportCopyKey.patternSleepMoodStatus,
-        bodyKey: ReportCopyKey.patternSleepMoodBody,
+        titleKey: ReportCopyKey.patternSleepTitle,
+        statusKey: ReportCopyKey.patternSleepStatus,
+        bodyKey: ReportCopyKey.patternSleepBody,
         sparkline: <double>[42, 36, 44, 40, 46, 43, 52],
       ),
       ReportPatternCard(
@@ -184,25 +151,12 @@ class MockReportRepository implements ReportRepository {
         bodyKey: ReportCopyKey.patternMedicationBody,
         sparkline: <double>[48, 50, 47, 52, 49, 51, 58],
       ),
-      ReportPatternCard(
-        icon: Icons.water_drop_rounded,
-        color: AppColorTokens.highlightMagenta,
-        titleKey: ReportCopyKey.patternCycleTitle,
-        statusKey: ReportCopyKey.patternCycleStatus,
-        bodyKey: ReportCopyKey.patternCycleBody,
-        sparkline: <double>[44, 40, 45, 41, 47, 43, 50],
-      ),
     ],
     privacyActions: <ReportPrivacyAction>[
       ReportPrivacyAction(
-        icon: Icons.sentiment_satisfied_rounded,
-        color: AppColorTokens.violet,
-        titleKey: ReportCopyKey.privacyHideMood,
-      ),
-      ReportPrivacyAction(
-        icon: Icons.water_drop_rounded,
-        color: AppColorTokens.highlightMagenta,
-        titleKey: ReportCopyKey.privacyHidePeriod,
+        icon: Icons.privacy_tip_outlined,
+        color: AppColorTokens.link,
+        titleKey: ReportCopyKey.privacyExportControls,
       ),
     ],
   );

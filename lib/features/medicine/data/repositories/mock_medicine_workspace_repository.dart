@@ -31,6 +31,30 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static const loadingWorkspace = previewWorkspace;
 
+  // Deferred by Product_Vision MVP: keep scan/OCR quick-action shapes because
+  // they are useful later, but do not surface them until the matching camera,
+  // recognition, and prescription contract/product job is ready.
+  static const deferredScanQuickActions = <MedicineQuickAction>[
+    MedicineQuickAction(
+      icon: Icons.photo_camera_outlined,
+      titleKey: MedicineCopyKey.quickActionCameraTitle,
+      subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
+      accent: AppColorTokens.gradientDevelopStart,
+    ),
+    MedicineQuickAction(
+      icon: Icons.qr_code_scanner_rounded,
+      titleKey: MedicineCopyKey.quickActionBarcodeTitle,
+      subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
+      accent: AppColorTokens.cyanDeep,
+    ),
+    MedicineQuickAction(
+      icon: Icons.receipt_long_outlined,
+      titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
+      subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
+      accent: AppColorTokens.warningDeep,
+    ),
+  ];
+
   static const previewWorkspace = MedicineWorkspace(
     hero: MedicineHero(
       metricDosesToday: '2',
@@ -39,22 +63,10 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     ),
     quickActions: <MedicineQuickAction>[
       MedicineQuickAction(
-        icon: Icons.photo_camera_outlined,
-        titleKey: MedicineCopyKey.quickActionCameraTitle,
-        subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-        accent: AppColorTokens.gradientDevelopStart,
-      ),
-      MedicineQuickAction(
-        icon: Icons.qr_code_scanner_rounded,
-        titleKey: MedicineCopyKey.quickActionBarcodeTitle,
-        subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
+        icon: Icons.search_rounded,
+        titleKey: MedicineCopyKey.quickActionSearchTitle,
+        subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
         accent: AppColorTokens.cyanDeep,
-      ),
-      MedicineQuickAction(
-        icon: Icons.receipt_long_outlined,
-        titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
-        subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
-        accent: AppColorTokens.warningDeep,
       ),
     ],
     plan: MedicinePlanSurface(

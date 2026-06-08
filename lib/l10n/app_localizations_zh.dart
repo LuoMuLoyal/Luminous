@@ -27,9 +27,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tabMine => '我的';
 
   @override
-  String get tabMore => '更多';
-
-  @override
   String get desktopSidebarSettings => '设置';
 
   @override
@@ -82,9 +79,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String recordQuickActionLabel(String type) {
     return '记$type';
   }
-
-  @override
-  String get recordQuickPeriodAction => '记经期';
 
   @override
   String get recordAddAction => '记录';
@@ -343,9 +337,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordTypeMedication => '用药';
 
   @override
-  String get recordTypeWomenHealth => '女性健康';
-
-  @override
   String get recordTypeSleep => '睡眠';
 
   @override
@@ -353,9 +344,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordTypeWeight => '体重';
-
-  @override
-  String get recordQuickWomenSubtitle => '未开启';
 
   @override
   String get recordSummaryMealTitle => '饮食记录';
@@ -368,9 +356,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordSummaryMoodTitle => '情绪记录';
-
-  @override
-  String get recordSummaryActivityTitle => '运动完成度';
 
   @override
   String get recordSummaryTimesUnit => '次';
@@ -431,12 +416,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordTimelineSymptomDetail => '头痛 · 疼痛评分 3/5';
 
   @override
-  String get recordTimelineWomenHealthRecord => '经期记录';
-
-  @override
-  String get recordTimelineWomenHealthDetail => '经期第 2 天 · 轻微腹胀';
-
-  @override
   String get recordTimelineSleepRecord => '睡眠记录';
 
   @override
@@ -444,12 +423,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordTimelineHeartRateDetail => '72 次/分 · 来源：手表 · 正常';
-
-  @override
-  String get recordTimelineActivityWalk => '运动 · 快走';
-
-  @override
-  String get recordTimelineActivityDetail => '30 分钟 · 2.6 km · 180 kcal';
 
   @override
   String get recordTimelineWeightDetail => '来源：体脂秤 · BMI 22.5';
@@ -461,15 +434,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordTrendBloodSugarLegend => '餐后血糖 (mmol/L)';
 
   @override
-  String get recordTrendSleepMoodTitle => '情绪-睡眠';
-
-  @override
-  String get recordTrendSleepLegend => '睡眠时长（小时）';
-
-  @override
-  String get recordTrendMoodLegend => '情绪评分（分）';
-
-  @override
   String get recordTrendHydrationTitle => '饮水完成率';
 
   @override
@@ -477,18 +441,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordRange30Days => '近 30 天';
-
-  @override
-  String get recordHealthBagTitle => '专科健康档案袋';
-
-  @override
-  String get recordHealthBagBody => '查看与管理牙齿、眼科、听力等专科记录与报告';
-
-  @override
-  String get recordHealthBagLatest => '最近更新：2025-05-10';
-
-  @override
-  String get recordHealthBagNext => '下次复查：2025-06-15';
 
   @override
   String get recordFoodImagePlaceholder => '餐图占位';
@@ -544,25 +496,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordMoodStable => '平稳';
 
   @override
-  String get recordCycleDietSectionTitle => '经期与饮食';
-
-  @override
-  String get recordPeriodTitle => '经期';
-
-  @override
-  String recordPeriodDayValue(int day) {
-    return '经期第 $day 天';
-  }
-
-  @override
-  String recordPeriodEndsIn(int days) {
-    return '预计还有 $days 天结束';
-  }
-
-  @override
-  String get recordPeriodRecordAction => '记录经期';
-
-  @override
   String get recordDietTitle => '饮食记录';
 
   @override
@@ -575,12 +508,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordDietRecordAction => '记录饮食';
-
-  @override
-  String get recordSpecialistPackTitle => '专科健康包';
-
-  @override
-  String get recordSpecialistPackSubtitle => '关注专科健康，记录更全面';
 
   @override
   String get recordDentalRecordTitle => '牙科记录';
@@ -985,13 +912,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineAlertDuplicateCheckStatus => '未发现';
 
   @override
-  String get medicineAlertPeriodPregnancyTitle => '经期/孕哺提示';
+  String get medicineAlertPeriodPregnancyTitle => '孕哺/特殊人群提示';
 
   @override
-  String get medicineAlertPeriodPregnancyBody => '记录状态以获得更精准的用药提示';
+  String get medicineAlertPeriodPregnancyBody => '记录孕哺等状态以获得更谨慎的用药提示';
 
   @override
-  String get medicineAlertPeriodPregnancyDetail => '特殊状态请优先遵医嘱';
+  String get medicineAlertPeriodPregnancyDetail => '孕期、哺乳期或特殊人群用药请优先遵医嘱';
 
   @override
   String get medicineAlertPeriodPregnancyStatus => '未记录';
@@ -1051,7 +978,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineAlertDuplicateCheckToast => '会打开重复用药检查结果。';
 
   @override
-  String get medicineAlertPeriodPregnancyToast => '会打开经期、孕期和哺乳期提示。';
+  String get medicineAlertPeriodPregnancyToast => '会打开孕哺和特殊人群用药提示。';
 
   @override
   String get medicineSearchPageTitle => '搜索药品';
@@ -1286,12 +1213,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineArchiveMedicineSubtitle => '正在使用的药品与用药记录';
 
   @override
-  String get mineArchiveWomenTitle => '女性健康';
-
-  @override
-  String get mineArchiveWomenSubtitle => '经期记录与健康管理';
-
-  @override
   String get mineArchiveEmergencyTitle => '紧急联系人';
 
   @override
@@ -1343,12 +1264,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get minePrivacyMoodSubtitle => '情绪打卡、咨询记录等';
 
   @override
-  String get minePrivacyPeriodTitle => '经期数据';
-
-  @override
-  String get minePrivacyPeriodSubtitle => '经期预测、症状记录等';
-
-  @override
   String get minePrivacyReportTitle => '报告分享';
 
   @override
@@ -1377,9 +1292,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineReminderSleepTitle => '睡眠提醒';
-
-  @override
-  String get mineReminderPeriodTitle => '经期提醒';
 
   @override
   String get mineReminderEnabled => '已开启';
@@ -1499,18 +1411,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineProfileMedicinesSubtitle => '3 种药品';
-
-  @override
-  String get mineProfileWomenTitle => '女性/孕哺状态';
-
-  @override
-  String get mineProfileWomenSubtitle => '未填写';
-
-  @override
-  String get mineProfileSpecialistTitle => '专科档案';
-
-  @override
-  String get mineProfileSpecialistSubtitle => '口腔/视力/听力等';
 
   @override
   String get mineProfileLifestyleTitle => '生活习惯';
@@ -1689,9 +1589,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineSettingsNotificationsTitle => '通知设置';
 
   @override
-  String get mineSettingsMoreTitle => '更多设置';
-
-  @override
   String get settingsLanguageSystemLabel => '跟随系统';
 
   @override
@@ -1745,21 +1642,6 @@ class AppLocalizationsZh extends AppLocalizations {
       '点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。';
 
   @override
-  String get settingsMoreClearImageCache => '清理图片缓存';
-
-  @override
-  String get settingsMoreCacheCleared => '图片缓存已清理';
-
-  @override
-  String get settingsMoreResetDefaults => '恢复默认设置';
-
-  @override
-  String get settingsMoreDefaultsReset => '已恢复默认设置';
-
-  @override
-  String get settingsMoreOpenSourceLicenses => '开源许可';
-
-  @override
   String get mineErrorTitle => '我的页面暂时没有加载出来';
 
   @override
@@ -1769,229 +1651,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String mineActionToast(String action) {
     return '$action：后续会接入对应详情或设置流程。';
   }
-
-  @override
-  String get morePageDescription => '工具箱、紧急帮助、设备管理和低频但重要的能力归在这里。';
-
-  @override
-  String get moreSectionTitle => '功能枢纽';
-
-  @override
-  String get moreSectionSubtitle => '这一栏会收纳低频但依然重要的工作流。';
-
-  @override
-  String get moreHeaderNotifications => '通知';
-
-  @override
-  String get moreHeaderSupport => '帮助';
-
-  @override
-  String get moreEmergencySectionTitle => '紧急救助';
-
-  @override
-  String get moreFamilySectionTitle => '家庭健康';
-
-  @override
-  String get moreAiSectionTitle => 'AI 识别工具箱';
-
-  @override
-  String get moreDeviceSectionTitle => '智能设备管理';
-
-  @override
-  String get moreKnowledgeSectionTitle => '知识与服务';
-
-  @override
-  String get moreEnvironmentSectionTitle => '环境与健康提醒中心';
-
-  @override
-  String get moreEnvironmentMoreAction => '更多';
-
-  @override
-  String get moreRecentSectionTitle => '最近使用';
-
-  @override
-  String get moreRecentViewAllAction => '查看全部';
-
-  @override
-  String get moreQuickSectionTitle => '快捷入口';
-
-  @override
-  String get moreCareNoteTitle => '温馨提示';
-
-  @override
-  String get moreEmergencySosTitle => 'SOS 紧急求助';
-
-  @override
-  String get moreEmergencySosSubtitle => '一键呼救，快速联系紧急联系人';
-
-  @override
-  String get moreEmergencyMentalHotlineTitle => '心理援助热线';
-
-  @override
-  String get moreEmergencyMentalHotlineSubtitle => '24h 心理支持与危机干预';
-
-  @override
-  String get moreEmergencyLockscreenTitle => '锁屏医疗信息';
-
-  @override
-  String get moreEmergencyLockscreenSubtitle => '紧急情况下展示你的医疗信息';
-
-  @override
-  String get moreFamilyProfilesTitle => '家人档案';
-
-  @override
-  String get moreFamilyProfilesSubtitle => '管理家人健康档案';
-
-  @override
-  String get moreFamilyVaccinationTitle => '接种与体检提醒';
-
-  @override
-  String get moreFamilyVaccinationSubtitle => '为家人设置接种 / 体检提醒';
-
-  @override
-  String get moreFamilyAlertTitle => '异常预警';
-
-  @override
-  String get moreFamilyAlertSubtitle => '家人健康异常及时提醒';
-
-  @override
-  String get moreAiSkinTitle => '皮肤 / 皮疹识别';
-
-  @override
-  String get moreAiSkinSubtitle => '拍照识别皮肤问题初步识别参考';
-
-  @override
-  String get moreAiMentalScaleTitle => '心理量表评估';
-
-  @override
-  String get moreAiMentalScaleSubtitle => '多种量表自助评估结果仅供参考';
-
-  @override
-  String get moreAiReportImportTitle => '报告拍照导入';
-
-  @override
-  String get moreAiReportImportSubtitle => '拍照识别化验单 / 病历等报告';
-
-  @override
-  String get moreDeviceMineTitle => '我的设备';
-
-  @override
-  String get moreDeviceMineSubtitle => '管理已连接设备当前 2 台设备';
-
-  @override
-  String get moreDeviceAddTitle => '添加设备';
-
-  @override
-  String get moreDeviceAddSubtitle => '连接手表、血压计、体脂秤等设备';
-
-  @override
-  String get moreDeviceSyncTitle => '同步状态';
-
-  @override
-  String get moreDeviceSyncSubtitle => '数据同步与历史同步：刚刚';
-
-  @override
-  String get moreKnowledgeSleepTitle => '睡眠改善';
-
-  @override
-  String get moreKnowledgeSleepSubtitle => '睡眠方案与个性化建议';
-
-  @override
-  String get moreKnowledgeMindfulnessTitle => '正念课程';
-
-  @override
-  String get moreKnowledgeMindfulnessSubtitle => '冥想练习与放松训练';
-
-  @override
-  String get moreKnowledgeWomenTitle => '女性健康专栏';
-
-  @override
-  String get moreKnowledgeWomenSubtitle => '经期管理 / 备孕 / 更年期';
-
-  @override
-  String get moreEnvironmentPollenTitle => '花粉';
-
-  @override
-  String get moreEnvironmentPollenValue => '较高';
-
-  @override
-  String get moreEnvironmentUvTitle => '紫外线';
-
-  @override
-  String get moreEnvironmentUvValue => '中等';
-
-  @override
-  String get moreEnvironmentAirTitle => '空气污染';
-
-  @override
-  String get moreEnvironmentAirValue => '良';
-
-  @override
-  String get moreEnvironmentAdviceTitle => '过敏防护建议';
-
-  @override
-  String get moreEnvironmentAdviceBody => '基于你的过敏史，今天建议加强外出防护。';
-
-  @override
-  String get moreEnvironmentAdviceAction => '查看';
-
-  @override
-  String get moreRecentSkinTime => '今天 10:21';
-
-  @override
-  String get moreRecentVaccinationTime => '昨天 18:30';
-
-  @override
-  String get moreRecentDeviceTime => '昨天 09:15';
-
-  @override
-  String get moreRecentHotlineTime => '05-12 21:40';
-
-  @override
-  String get moreQuickCalculatorTitle => '健康计算器';
-
-  @override
-  String get moreQuickCalculatorSubtitle => 'BMI / BMR 等';
-
-  @override
-  String get moreQuickBarcodeTitle => '药品条码识别';
-
-  @override
-  String get moreQuickBarcodeSubtitle => '扫码识别药品';
-
-  @override
-  String get moreQuickConverterTitle => '单位换算';
-
-  @override
-  String get moreQuickConverterSubtitle => '体重 / 温度等';
-
-  @override
-  String get moreQuickExportTitle => '数据导出';
-
-  @override
-  String get moreQuickExportSubtitle => '导出健康数据';
-
-  @override
-  String get moreCareNoteBody => '本应用提供的内容仅供参考，不替代医生诊断与治疗建议。';
-
-  @override
-  String get moreErrorTitle => '更多页面暂时没有加载出来';
-
-  @override
-  String get moreErrorDescription => 'mock 结构已经接好，重新拉一次即可。';
-
-  @override
-  String moreActionToast(String action) {
-    return '$action：后续会打开对应工具或详情流程。';
-  }
-
-  @override
-  String morePlannedToast(Object action) {
-    return '$action — 此功能尚未开放。';
-  }
-
-  @override
-  String get morePlannedBadge => '计划中';
 
   @override
   String get todaySectionTitle => '今日工作区';
@@ -2516,21 +2175,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayHydrationOverviewLabel => '饮水';
 
   @override
-  String get todayMoodOverviewLabel => '情绪';
-
-  @override
   String get todayMedicationOverviewLabel => '用药';
-
-  @override
-  String get todayPeriodOverviewLabel => '经期';
-
-  @override
-  String todayPeriodDayValue(int day) {
-    return '第 $day 天';
-  }
-
-  @override
-  String get todayPeriodStatus => '经期中';
 
   @override
   String get todayStatusNeedsImprovement => '待提升';
@@ -2540,9 +2185,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayMedicationPendingStatus => '待服用';
-
-  @override
-  String get todayMoodStableValue => '平稳';
 
   @override
   String get todayPrioritySectionTitle => '今日优先事项';
@@ -2571,18 +2213,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayDrinkWaterAction => '去喝水';
-
-  @override
-  String get todayMoodCheckinTitle => '情绪打卡';
-
-  @override
-  String get todayMoodCheckinSubtitle => '关注情绪变化';
-
-  @override
-  String get todayMoodNoRecord => '今日未记录';
-
-  @override
-  String get todayMoodCheckinAction => '去打卡';
 
   @override
   String get todayCampusGuideTitle => '校园就医指南';
@@ -2661,12 +2291,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get todayTodoMoodTitle => '情绪记录';
-
-  @override
-  String get todayTodoMoodSubtitle => '记录今天的情绪状态';
-
-  @override
   String get todayTodoCustomTitle => '自定义待办';
 
   @override
@@ -2680,9 +2304,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayQuickSymptom => '记症状';
-
-  @override
-  String get todayQuickMood => '记情绪';
 
   @override
   String get todayQuickWater => '记饮水';
@@ -2867,12 +2488,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportMetricWaterTitle => '饮水';
 
   @override
-  String get reportMetricMoodTitle => '情绪';
-
-  @override
-  String get reportMetricMoodStableValue => '稳定';
-
-  @override
   String get reportUnitPercent => '%';
 
   @override
@@ -2900,9 +2515,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportDeltaWater => '0.2';
 
   @override
-  String get reportDeltaMood => '';
-
-  @override
   String get reportTrendSectionTitle => '健康趋势';
 
   @override
@@ -2910,9 +2522,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reportTrendSleepLabel => '睡眠(小时)';
-
-  @override
-  String get reportTrendMoodLabel => '情绪(分)';
 
   @override
   String get reportTrendWaterLabel => '饮水(L)';
@@ -2936,12 +2545,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportFindingCoffeeBody => '下午摄入咖啡后睡眠时长下降';
 
   @override
-  String get reportFindingPeriodTitle => '经期前情绪波动';
-
-  @override
-  String get reportFindingPeriodBody => '经期前 2 天情绪波动较为明显';
-
-  @override
   String get reportFindingMedicineTitle => '按时用药稳定';
 
   @override
@@ -2958,9 +2561,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reportAiBulletSleep => '睡眠质量整体良好，周末略有波动，保持规律作息有助于提升精力。';
-
-  @override
-  String get reportAiBulletMood => '情绪总体稳定，周四稍低，尝试运动或冥想有助于放松心情。';
 
   @override
   String get reportAiBulletWater => '饮水达成率中等，部分天数偏低，记得随身带水，少量多次补水。';
@@ -2981,12 +2581,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportExportHospitalSubtitle => '导出健康摘要';
 
   @override
-  String get reportExportCounselorTitle => '给咨询师';
-
-  @override
-  String get reportExportCounselorSubtitle => '导出健康摘要';
-
-  @override
   String get reportExportMonthlyTitle => '月度报告';
 
   @override
@@ -3000,15 +2594,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reportPatternSectionTitle => '健康模式分析';
-
-  @override
-  String get reportPatternSleepMoodTitle => '睡眠与情绪';
-
-  @override
-  String get reportPatternSleepMoodStatus => '关联度中等';
-
-  @override
-  String get reportPatternSleepMoodBody => '保持规律有助于稳定情绪';
 
   @override
   String get reportPatternDietWaterTitle => '饮食与饮水';
@@ -3029,15 +2614,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportPatternMedicationBody => '按时服药有助于维持健康状态';
 
   @override
-  String get reportPatternCycleTitle => '经期与不适';
-
-  @override
-  String get reportPatternCycleStatus => '规律记录';
-
-  @override
-  String get reportPatternCycleBody => '持续记录有助于识别周期变化';
-
-  @override
   String get reportPrivacyTitle => '隐私与安全';
 
   @override
@@ -3048,12 +2624,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reportPrivacySettingsTitle => '隐私设置';
-
-  @override
-  String get reportPrivacyHideMood => '隐藏情绪';
-
-  @override
-  String get reportPrivacyHidePeriod => '隐藏经期';
 
   @override
   String get reportReferenceNotice => '本报告仅供参考，不构成诊断或治疗建议。';
@@ -3068,4 +2638,34 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reportErrorDescription => 'Mock 数据边界已经接好，可以重新拉取一次。';
+
+  @override
+  String get mineSettingsAdvancedTitle => '高级设置';
+
+  @override
+  String get settingsAdvancedClearImageCache => '清理图片缓存';
+
+  @override
+  String get settingsAdvancedCacheCleared => '图片缓存已清理';
+
+  @override
+  String get settingsAdvancedResetDefaults => '恢复默认设置';
+
+  @override
+  String get settingsAdvancedDefaultsReset => '已恢复默认设置';
+
+  @override
+  String get settingsAdvancedOpenSourceLicenses => '开源许可';
+
+  @override
+  String get reportPatternSleepTitle => '睡眠变化';
+
+  @override
+  String get reportPatternSleepStatus => '持续观察';
+
+  @override
+  String get reportPatternSleepBody => '晚间咖啡因和作息变化可能影响睡眠';
+
+  @override
+  String get reportPrivacyExportControls => '导出前选择可见内容';
 }

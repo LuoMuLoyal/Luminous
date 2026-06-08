@@ -23,12 +23,15 @@ class MockTodayRepository implements TodayRepository {
       TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
       TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
       TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
+      // Deferred by Product_Vision MVP: keep lightweight mood data for future
+      // self-check-ins, but do not surface it as a formal mental-health module.
       TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
     ],
-    period: TodayPeriodSummary(day: 2),
     mealSuggestion: TodayMealSuggestion(
       type: TodayMealSuggestionType.highProteinBalancedLunch,
     ),
+    // Deferred by Product_Vision MVP: keep environment signals because Lucent
+    // has a useful reference-data contract, but do not surface them yet.
     environment: TodayEnvironmentSummary(
       signals: <TodayEnvironmentSignal>[
         TodayEnvironmentSignal(
@@ -66,12 +69,15 @@ class MockTodayRepository implements TodayRepository {
         valueLabel: '118/76',
       ),
       TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '7.2'),
+      // Deferred by Product_Vision MVP: keep lightweight mood data for future
+      // self-check-ins, but do not surface it as a formal mental-health module.
       TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
     ],
-    period: TodayPeriodSummary(day: 2),
     mealSuggestion: TodayMealSuggestion(
       type: TodayMealSuggestionType.highProteinBalancedLunch,
     ),
+    // Deferred by Product_Vision MVP: keep environment signals because Lucent
+    // has a useful reference-data contract, but do not surface them yet.
     environment: TodayEnvironmentSummary(
       signals: <TodayEnvironmentSignal>[
         TodayEnvironmentSignal(
