@@ -5204,35 +5204,77 @@ abstract class AppLocalizations {
   /// **'去完成'**
   String get todayCompleteAction;
 
-  /// No description provided for @todayTrendSectionTitle.
+  /// No description provided for @todayTodoSectionTitle.
   ///
   /// In zh, this message translates to:
-  /// **'今日趋势'**
-  String get todayTrendSectionTitle;
+  /// **'今日待办'**
+  String get todayTodoSectionTitle;
 
-  /// No description provided for @todayTrendAnalysisAction.
+  /// No description provided for @todayTodoAddAction.
   ///
   /// In zh, this message translates to:
-  /// **'查看趋势分析'**
-  String get todayTrendAnalysisAction;
+  /// **'添加'**
+  String get todayTodoAddAction;
 
-  /// No description provided for @todayTrendSleepTitle.
+  /// No description provided for @todayTodoSourceSystem.
   ///
   /// In zh, this message translates to:
-  /// **'睡眠时长'**
-  String get todayTrendSleepTitle;
+  /// **'系统'**
+  String get todayTodoSourceSystem;
 
-  /// No description provided for @todayTrendWaterTitle.
+  /// No description provided for @todayTodoSourceUser.
   ///
   /// In zh, this message translates to:
-  /// **'饮水进度'**
-  String get todayTrendWaterTitle;
+  /// **'用户'**
+  String get todayTodoSourceUser;
 
-  /// No description provided for @todayTrendMoodTitle.
+  /// No description provided for @todayTodoMedicationTitle.
   ///
   /// In zh, this message translates to:
-  /// **'情绪状态'**
-  String get todayTrendMoodTitle;
+  /// **'服药提醒'**
+  String get todayTodoMedicationTitle;
+
+  /// No description provided for @todayTodoMedicationSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'下一次 {time} {medicineName}'**
+  String todayTodoMedicationSubtitle(String time, String medicineName);
+
+  /// No description provided for @todayTodoWaterTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'补充饮水'**
+  String get todayTodoWaterTitle;
+
+  /// No description provided for @todayTodoWaterSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日进度 {progress}%'**
+  String todayTodoWaterSubtitle(int progress);
+
+  /// No description provided for @todayTodoMoodTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪记录'**
+  String get todayTodoMoodTitle;
+
+  /// No description provided for @todayTodoMoodSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录今天的情绪状态'**
+  String get todayTodoMoodSubtitle;
+
+  /// No description provided for @todayTodoCustomTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义待办'**
+  String get todayTodoCustomTitle;
+
+  /// No description provided for @todayTodoCustomSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'可添加复诊、运动或休息提醒'**
+  String get todayTodoCustomSubtitle;
 
   /// No description provided for @todayQuickRecordSectionTitle.
   ///

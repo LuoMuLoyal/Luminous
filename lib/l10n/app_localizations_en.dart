@@ -2803,19 +2803,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayCompleteAction => 'Complete';
 
   @override
-  String get todayTrendSectionTitle => 'Today\'s trends';
+  String get todayTodoSectionTitle => 'Today\'s todos';
 
   @override
-  String get todayTrendAnalysisAction => 'View trend analysis';
+  String get todayTodoAddAction => 'Add';
 
   @override
-  String get todayTrendSleepTitle => 'Sleep duration';
+  String get todayTodoSourceSystem => 'System';
 
   @override
-  String get todayTrendWaterTitle => 'Water progress';
+  String get todayTodoSourceUser => 'User';
 
   @override
-  String get todayTrendMoodTitle => 'Mood state';
+  String get todayTodoMedicationTitle => 'Medication reminder';
+
+  @override
+  String todayTodoMedicationSubtitle(String time, String medicineName) {
+    return 'Next at $time $medicineName';
+  }
+
+  @override
+  String get todayTodoWaterTitle => 'Hydration';
+
+  @override
+  String todayTodoWaterSubtitle(int progress) {
+    return 'Today $progress%';
+  }
+
+  @override
+  String get todayTodoMoodTitle => 'Mood check-in';
+
+  @override
+  String get todayTodoMoodSubtitle => 'Log today\'s mood';
+
+  @override
+  String get todayTodoCustomTitle => 'Custom todo';
+
+  @override
+  String get todayTodoCustomSubtitle =>
+      'Add follow-up, activity, or rest reminders';
 
   @override
   String get todayQuickRecordSectionTitle => 'Quick record';

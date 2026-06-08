@@ -89,7 +89,7 @@ class _MobileTodayDashboard extends StatelessWidget {
       _HealthOverviewCard(dashboard: dashboard),
       _PrioritySection(dashboard: dashboard),
       _RecommendationSection(dashboard: dashboard),
-      _TrendSection(dashboard: dashboard),
+      _TodoSection(dashboard: dashboard),
       const _QuickRecordSection(),
     ];
 
@@ -141,7 +141,7 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 children: [
                   _PrioritySection(dashboard: dashboard),
                   const SizedBox(height: AppSpacingTokens.lg),
-                  _TrendSection(dashboard: dashboard),
+                  _TodoSection(dashboard: dashboard),
                 ],
               ),
             ),
@@ -402,7 +402,7 @@ class _PrioritySection extends StatelessWidget {
       onAction: () => AppToast.show(context, l10n.todayManageAction),
       child: _ResponsiveCardGrid(
         minTileWidth: AppSpacingTokens.x6l + AppSpacingTokens.xl,
-        spacing: AppSpacingTokens.md,
+        spacing: AppSpacingTokens.sm,
         children: [for (final item in items) _PriorityCard(item: item)],
       ),
     );
@@ -422,7 +422,7 @@ class _PriorityCard extends StatelessWidget {
 
     return TodayPanel(
       key: item.key,
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
+      padding: const EdgeInsets.all(AppSpacingTokens.sm),
       color: Color.alphaBlend(
         item.color.withValues(alpha: 0.035),
         surface.canvas,
@@ -434,15 +434,20 @@ class _PriorityCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TodayGlyphTile(icon: item.icon, color: item.color),
-              const SizedBox(width: AppSpacingTokens.md),
+              TodayGlyphTile(
+                icon: item.icon,
+                color: item.color,
+                size: AppSpacingTokens.x3l,
+                radius: AppRadiusTokens.md,
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       item.title,
-                      style: typography.displaySm.copyWith(
+                      style: typography.bodyMdStrong.copyWith(
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0,
                       ),
@@ -464,7 +469,7 @@ class _PriorityCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacingTokens.lg),
+          const SizedBox(height: AppSpacingTokens.sm),
           if (item.progress != null) ...[
             AppSkeletonSlot(
               skeleton: const Column(
@@ -489,16 +494,19 @@ class _PriorityCard extends StatelessWidget {
                   TodayLinearProgress(
                     progress: item.progress!,
                     color: item.color,
+                    height: 6,
                   ),
-                  const SizedBox(height: AppSpacingTokens.sm),
-                  Center(
-                    child: Text(
-                      item.detail,
-                      style: typography.displaySm.copyWith(
+                  const SizedBox(height: AppSpacingTokens.xs),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: AppSkeletonText(
+                      text: item.detail,
+                      style: typography.bodySmStrong.copyWith(
+                        color: surface.body,
                         fontWeight: FontWeight.w800,
-                        color: theme.colorScheme.onSurface,
                         letterSpacing: 0,
                       ),
+                      widthFactor: 0.42,
                     ),
                   ),
                 ],
@@ -515,29 +523,55 @@ class _PriorityCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               widthFactor: 0.74,
             ),
-          const SizedBox(height: AppSpacingTokens.lg),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () => AppToast.show(context, item.action),
-              style: FilledButton.styleFrom(
-                backgroundColor: item.color,
-                foregroundColor: AppColorTokens.onPrimary,
-                minimumSize: const Size.fromHeight(
-                  AppSpacingTokens.x2l + AppSpacingTokens.xxs,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-                ),
-                textStyle: typography.buttonLg.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0,
-                ),
-              ),
-              child: Text(item.action),
-            ),
+          const SizedBox(height: AppSpacingTokens.sm),
+          Align(
+            alignment: Alignment.centerRight,
+            child: _PriorityActionPill(item: item),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PriorityActionPill extends StatelessWidget {
+  const _PriorityActionPill({required this.item});
+
+  final _PriorityItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = AppTypographyTokens.mobile(
+      Theme.of(context).colorScheme.onSurface,
+    );
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => AppToast.show(context, item.action),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: item.color,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.sm,
+              vertical: AppSpacingTokens.xs,
+            ),
+            child: Text(
+              item.action,
+              style: typography.bodySmStrong.copyWith(
+                color: AppColorTokens.onPrimary,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -676,131 +710,156 @@ class _RecommendationRow extends StatelessWidget {
   }
 }
 
-class _TrendSection extends StatelessWidget {
-  const _TrendSection({required this.dashboard});
+class _TodoSection extends StatelessWidget {
+  const _TodoSection({required this.dashboard});
 
   final TodayDashboard dashboard;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final items = _trendItems(l10n, dashboard);
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final items = _todoItems(l10n, dashboard);
 
     return _TodaySection(
-      title: l10n.todayTrendSectionTitle,
-      actionLabel: l10n.todayTrendAnalysisAction,
-      onAction: () => AppToast.show(context, l10n.todayTrendAnalysisAction),
-      child: _ResponsiveCardGrid(
-        minTileWidth: AppSpacingTokens.x5l + AppSpacingTokens.sm,
-        spacing: AppSpacingTokens.sm,
-        children: [for (final item in items) _TrendCard(item: item)],
+      title: l10n.todayTodoSectionTitle,
+      actionLabel: l10n.todayTodoAddAction,
+      onAction: () => AppToast.show(context, l10n.todayTodoAddAction),
+      child: TodayPanel(
+        key: const Key('today-todo-card'),
+        padding: EdgeInsets.zero,
+        child: Column(
+          children: [
+            for (var index = 0; index < items.length; index += 1) ...[
+              _TodoRow(item: items[index]),
+              if (index < items.length - 1)
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  indent: AppSpacingTokens.x4l + AppSpacingTokens.xs,
+                  color: surface.hairline.withValues(alpha: 0.62),
+                ),
+            ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class _TrendCard extends StatelessWidget {
-  const _TrendCard({required this.item});
+class _TodoRow extends StatelessWidget {
+  const _TodoRow({required this.item});
 
-  final _TrendItem item;
+  final _TodoItem item;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-
-    return TodayPanel(
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            item.title,
-            style: typography.bodySmStrong.copyWith(
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-            ),
+    final statusIcon = DecoratedBox(
+      decoration: BoxDecoration(
+        color: item.completed
+            ? item.color.withValues(alpha: 0.12)
+            : surface.canvasSoft,
+        border: Border.all(color: item.color.withValues(alpha: 0.24)),
+        shape: BoxShape.circle,
+      ),
+      child: SizedBox.square(
+        dimension: AppSpacingTokens.x2l,
+        child: Center(
+          child: Icon(
+            item.completed
+                ? Icons.check_rounded
+                : Icons.radio_button_unchecked_rounded,
+            color: item.color,
+            size: AppSpacingTokens.lg,
           ),
-          const SizedBox(height: AppSpacingTokens.xs),
-          AppSkeletonText(
-            text: item.value,
-            style: typography.displaySm.copyWith(
-              color: item.color,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-            ),
-            widthFactor: 0.48,
-          ),
-          const SizedBox(height: AppSpacingTokens.xs),
-          AppSkeletonSlot(
-            skeleton: const AppInlineSkeletonBlock(
-              height: 42,
-              radius: AppRadiusTokens.md,
-            ),
-            child: TodayMiniTrendChart(points: item.points, color: item.color),
-          ),
-          const SizedBox(height: AppSpacingTokens.xxs),
-          _WeekLabels(color: item.color),
-        ],
+        ),
       ),
     );
-  }
-}
 
-class _WeekLabels extends StatelessWidget {
-  const _WeekLabels({required this.color});
-
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
-    final labels = [
-      l10n.recordWeekdayMon,
-      l10n.recordWeekdayTue,
-      l10n.recordWeekdayWed,
-      l10n.recordWeekdayThu,
-      l10n.recordWeekdayFri,
-      l10n.recordWeekdaySat,
-      l10n.recordWeekdaySun,
-    ];
-
-    return Row(
-      children: [
-        for (final label in labels)
-          Expanded(
-            child: Center(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: label == l10n.recordWeekdayThu
-                      ? color
-                      : Colors.transparent,
-                  shape: BoxShape.circle,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => AppToast.show(context, item.action),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
+          child: Row(
+            children: [
+              AppSkeletonSlot(
+                isLoading: item.statusIsDynamic ? null : false,
+                skeleton: const AppInlineSkeletonCircle(
+                  size: AppSpacingTokens.x2l,
                 ),
-                child: SizedBox.square(
-                  dimension: AppSpacingTokens.md + AppSpacingTokens.xxs,
-                  child: Center(
-                    child: Text(
-                      label.isEmpty ? '' : label.substring(0, 1),
-                      style: typography.caption.copyWith(
-                        color: label == l10n.recordWeekdayThu
-                            ? AppColorTokens.onPrimary
-                            : TodayPalette.mute,
-                        fontWeight: FontWeight.w700,
+                child: statusIcon,
+              ),
+              const SizedBox(width: AppSpacingTokens.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.title,
+                      style: typography.bodyMdStrong.copyWith(
+                        fontWeight: FontWeight.w800,
                         letterSpacing: 0,
                       ),
                       maxLines: 1,
-                      overflow: TextOverflow.clip,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(height: AppSpacingTokens.xxs),
+                    AppSkeletonText(
+                      text: item.subtitle,
+                      style: typography.bodySm.copyWith(
+                        color: surface.body,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      widthFactor: 0.84,
+                      isLoading: item.subtitleIsDynamic ? null : false,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: item.color.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                  border: Border.all(color: item.color.withValues(alpha: 0.12)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacingTokens.sm,
+                    vertical: AppSpacingTokens.xxs,
+                  ),
+                  child: Text(
+                    item.source,
+                    style: typography.caption.copyWith(
+                      color: item.color,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
-            ),
+              const SizedBox(width: AppSpacingTokens.xs),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: surface.mute,
+                size: AppSpacingTokens.lg,
+              ),
+            ],
           ),
-      ],
+        ),
+      ),
     );
   }
 }
@@ -1160,38 +1219,72 @@ List<_RecommendationItem> _recommendationItems(
   ];
 }
 
-List<_TrendItem> _trendItems(AppLocalizations l10n, TodayDashboard dashboard) {
-  final sleep = _vitalValue(
-    dashboard.vitals,
-    TodayVitalType.sleep,
-    fallback: l10n.todaySleepFallbackValue,
-  );
-  final mood = _vitalValue(
-    dashboard.vitals,
-    TodayVitalType.mood,
-    fallback: l10n.todayMoodStableValue,
-  );
+List<_TodoItem> _todoItems(AppLocalizations l10n, TodayDashboard dashboard) {
+  final nextMedicineName =
+      dashboard.medication.nextMedicineName ??
+      _medicationName(l10n, dashboard.medication.nextMedicine);
+  final waterProgressPercent = (dashboard.water.progress * 100).round();
+  final moodCompleted = _hasVitalValue(dashboard.vitals, TodayVitalType.mood);
 
   return [
-    _TrendItem(
-      title: l10n.todayTrendSleepTitle,
-      value: '$sleep ${l10n.todayVitalSleepUnit}',
+    _TodoItem(
+      title: l10n.todayTodoMedicationTitle,
+      subtitle: l10n.todayTodoMedicationSubtitle(
+        dashboard.medication.nextDoseTimeLabel,
+        nextMedicineName,
+      ),
+      source: l10n.todayTodoSourceSystem,
+      action: dashboard.medication.pendingCount == 0
+          ? l10n.todayStatusCompleted
+          : l10n.todayMedicationTakeAction,
       color: TodayPalette.blue,
-      points: const [6.8, 7.0, 7.2, 6.9, 7.1, 7.4, 7.8],
+      completed: dashboard.medication.pendingCount == 0,
+      statusIsDynamic: true,
+      subtitleIsDynamic: true,
     ),
-    _TrendItem(
-      title: l10n.todayTrendWaterTitle,
-      value: '${(dashboard.water.progress * 100).round()}%',
+    _TodoItem(
+      title: l10n.todayTodoWaterTitle,
+      subtitle: l10n.todayTodoWaterSubtitle(waterProgressPercent),
+      source: l10n.todayTodoSourceSystem,
+      action: dashboard.water.progress >= 1
+          ? l10n.todayStatusCompleted
+          : l10n.todayDrinkWaterAction,
       color: TodayPalette.teal,
-      points: const [62, 58, 54, 48, 57, 65, 74],
+      completed: dashboard.water.progress >= 1,
+      statusIsDynamic: true,
+      subtitleIsDynamic: true,
     ),
-    _TrendItem(
-      title: l10n.todayTrendMoodTitle,
-      value: mood,
+    _TodoItem(
+      title: l10n.todayTodoMoodTitle,
+      subtitle: l10n.todayTodoMoodSubtitle,
+      source: l10n.todayTodoSourceUser,
+      action: l10n.todayMoodCheckinAction,
       color: TodayPalette.violet,
-      points: const [3, 3.4, 3.9, 3.2, 2.6, 3.4, 4.0],
+      completed: moodCompleted,
+      statusIsDynamic: true,
+      subtitleIsDynamic: false,
+    ),
+    _TodoItem(
+      title: l10n.todayTodoCustomTitle,
+      subtitle: l10n.todayTodoCustomSubtitle,
+      source: l10n.todayTodoSourceUser,
+      action: l10n.todayTodoAddAction,
+      color: TodayPalette.amber,
+      completed: false,
+      statusIsDynamic: false,
+      subtitleIsDynamic: false,
     ),
   ];
+}
+
+bool _hasVitalValue(List<TodayVitalSummary> vitals, TodayVitalType type) {
+  for (final vital in vitals) {
+    if (vital.type == type) {
+      final value = vital.valueLabel.trim();
+      if (value.isNotEmpty && value != '--') return true;
+    }
+  }
+  return false;
 }
 
 String _vitalValue(
@@ -1280,18 +1373,26 @@ class _RecommendationItem {
   final String action;
 }
 
-class _TrendItem {
-  const _TrendItem({
+class _TodoItem {
+  const _TodoItem({
     required this.title,
-    required this.value,
+    required this.subtitle,
+    required this.source,
+    required this.action,
     required this.color,
-    required this.points,
+    required this.completed,
+    required this.statusIsDynamic,
+    required this.subtitleIsDynamic,
   });
 
   final String title;
-  final String value;
+  final String subtitle;
+  final String source;
+  final String action;
   final Color color;
-  final List<double> points;
+  final bool completed;
+  final bool statusIsDynamic;
+  final bool subtitleIsDynamic;
 }
 
 class _QuickRecordItem {

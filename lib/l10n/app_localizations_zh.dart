@@ -2648,19 +2648,44 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayCompleteAction => '去完成';
 
   @override
-  String get todayTrendSectionTitle => '今日趋势';
+  String get todayTodoSectionTitle => '今日待办';
 
   @override
-  String get todayTrendAnalysisAction => '查看趋势分析';
+  String get todayTodoAddAction => '添加';
 
   @override
-  String get todayTrendSleepTitle => '睡眠时长';
+  String get todayTodoSourceSystem => '系统';
 
   @override
-  String get todayTrendWaterTitle => '饮水进度';
+  String get todayTodoSourceUser => '用户';
 
   @override
-  String get todayTrendMoodTitle => '情绪状态';
+  String get todayTodoMedicationTitle => '服药提醒';
+
+  @override
+  String todayTodoMedicationSubtitle(String time, String medicineName) {
+    return '下一次 $time $medicineName';
+  }
+
+  @override
+  String get todayTodoWaterTitle => '补充饮水';
+
+  @override
+  String todayTodoWaterSubtitle(int progress) {
+    return '今日进度 $progress%';
+  }
+
+  @override
+  String get todayTodoMoodTitle => '情绪记录';
+
+  @override
+  String get todayTodoMoodSubtitle => '记录今天的情绪状态';
+
+  @override
+  String get todayTodoCustomTitle => '自定义待办';
+
+  @override
+  String get todayTodoCustomSubtitle => '可添加复诊、运动或休息提醒';
 
   @override
   String get todayQuickRecordSectionTitle => '快捷记录';

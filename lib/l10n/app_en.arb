@@ -1137,11 +1137,35 @@
   "todayRecommendationCoffeeBody": "Avoid it after 3 PM when possible to protect sleep quality",
   "todayLearnMoreAction": "Learn more",
   "todayCompleteAction": "Complete",
-  "todayTrendSectionTitle": "Today's trends",
-  "todayTrendAnalysisAction": "View trend analysis",
-  "todayTrendSleepTitle": "Sleep duration",
-  "todayTrendWaterTitle": "Water progress",
-  "todayTrendMoodTitle": "Mood state",
+  "todayTodoSectionTitle": "Today's todos",
+  "todayTodoAddAction": "Add",
+  "todayTodoSourceSystem": "System",
+  "todayTodoSourceUser": "User",
+  "todayTodoMedicationTitle": "Medication reminder",
+  "todayTodoMedicationSubtitle": "Next at {time} {medicineName}",
+  "@todayTodoMedicationSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "medicineName": {
+        "type": "String"
+      }
+    }
+  },
+  "todayTodoWaterTitle": "Hydration",
+  "todayTodoWaterSubtitle": "Today {progress}%",
+  "@todayTodoWaterSubtitle": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "todayTodoMoodTitle": "Mood check-in",
+  "todayTodoMoodSubtitle": "Log today's mood",
+  "todayTodoCustomTitle": "Custom todo",
+  "todayTodoCustomSubtitle": "Add follow-up, activity, or rest reminders",
   "todayQuickRecordSectionTitle": "Quick record",
   "todayQuickMedication": "Log medicine",
   "todayQuickSymptom": "Log symptom",

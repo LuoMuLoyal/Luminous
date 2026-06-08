@@ -1137,11 +1137,35 @@
   "todayRecommendationCoffeeBody": "下午 3 点后尽量避免，影响睡眠质量",
   "todayLearnMoreAction": "了解更多",
   "todayCompleteAction": "去完成",
-  "todayTrendSectionTitle": "今日趋势",
-  "todayTrendAnalysisAction": "查看趋势分析",
-  "todayTrendSleepTitle": "睡眠时长",
-  "todayTrendWaterTitle": "饮水进度",
-  "todayTrendMoodTitle": "情绪状态",
+  "todayTodoSectionTitle": "今日待办",
+  "todayTodoAddAction": "添加",
+  "todayTodoSourceSystem": "系统",
+  "todayTodoSourceUser": "用户",
+  "todayTodoMedicationTitle": "服药提醒",
+  "todayTodoMedicationSubtitle": "下一次 {time} {medicineName}",
+  "@todayTodoMedicationSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "medicineName": {
+        "type": "String"
+      }
+    }
+  },
+  "todayTodoWaterTitle": "补充饮水",
+  "todayTodoWaterSubtitle": "今日进度 {progress}%",
+  "@todayTodoWaterSubtitle": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "todayTodoMoodTitle": "情绪记录",
+  "todayTodoMoodSubtitle": "记录今天的情绪状态",
+  "todayTodoCustomTitle": "自定义待办",
+  "todayTodoCustomSubtitle": "可添加复诊、运动或休息提醒",
   "todayQuickRecordSectionTitle": "快捷记录",
   "todayQuickMedication": "记用药",
   "todayQuickSymptom": "记症状",
