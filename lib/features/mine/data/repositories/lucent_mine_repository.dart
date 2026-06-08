@@ -8,8 +8,9 @@ import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/mine_repository.dart';
 
 /// Lucent-backed [MineRepository] that keeps account and health-context fields
-/// real while campus service, privacy, and reminder modules stay bounded mock
-/// data until Lucent exposes dedicated contracts for them.
+/// real while campus service links stay bounded mock data until Lucent exposes
+/// dedicated contracts for them. Settings owns privacy, reminder, export, help,
+/// and about entries.
 class LucentMineRepository implements MineRepository {
   LucentMineRepository(this._ref);
 
@@ -62,9 +63,6 @@ MineDashboard buildDashboard({
     alerts: alerts,
     archiveEntries: archiveEntries,
     campusServices: _campusServices,
-    privacyEntries: _privacyEntries,
-    reminders: _reminders,
-    settingEntries: _settingEntries,
     privacyNotice: const MinePrivacyNotice(
       icon: Icons.shield_rounded,
       titleKey: MineCopyKey.privacyNoticeTitle,
@@ -210,89 +208,6 @@ const _campusServices = [
     accent: _red,
     titleKey: MineCopyKey.campusEmergencyTitle,
     subtitleKey: MineCopyKey.campusEmergencySubtitle,
-  ),
-];
-
-const _privacyEntries = [
-  MinePrivacyEntry(
-    icon: Icons.health_and_safety_rounded,
-    accent: _purple,
-    titleKey: MineCopyKey.privacyMoodTitle,
-    subtitleKey: MineCopyKey.privacyMoodSubtitle,
-    trailingKey: MineCopyKey.privacyOnlyMe,
-  ),
-  MinePrivacyEntry(
-    icon: Icons.event_available_rounded,
-    accent: _pink,
-    titleKey: MineCopyKey.privacyPeriodTitle,
-    subtitleKey: MineCopyKey.privacyPeriodSubtitle,
-    trailingKey: MineCopyKey.privacyOnlyMe,
-  ),
-  MinePrivacyEntry(
-    icon: Icons.share_rounded,
-    accent: _blue,
-    titleKey: MineCopyKey.privacyReportTitle,
-    subtitleKey: MineCopyKey.privacyReportSubtitle,
-    trailingKey: MineCopyKey.privacyShareAfterGrant,
-  ),
-  MinePrivacyEntry(
-    icon: Icons.auto_awesome_rounded,
-    accent: _green,
-    titleKey: MineCopyKey.privacyAiTitle,
-    subtitleKey: MineCopyKey.privacyAiSubtitle,
-    trailingKey: MineCopyKey.privacyOnlyMe,
-    toggleValue: true,
-  ),
-];
-
-const _reminders = [
-  MineReminderEntry(
-    icon: Icons.medication_rounded,
-    accent: _green,
-    titleKey: MineCopyKey.reminderMedicineTitle,
-    statusKey: MineCopyKey.reminderEnabled,
-  ),
-  MineReminderEntry(
-    icon: Icons.water_drop_rounded,
-    accent: _blue,
-    titleKey: MineCopyKey.reminderWaterTitle,
-    statusKey: MineCopyKey.reminderEnabled,
-  ),
-  MineReminderEntry(
-    icon: Icons.nightlight_round,
-    accent: _purple,
-    titleKey: MineCopyKey.reminderSleepTitle,
-    statusKey: MineCopyKey.reminderEnabled,
-  ),
-  MineReminderEntry(
-    icon: Icons.event_rounded,
-    accent: _pink,
-    titleKey: MineCopyKey.reminderPeriodTitle,
-    statusKey: MineCopyKey.reminderEnabled,
-  ),
-];
-
-const _settingEntries = [
-  MineSettingEntry(
-    icon: Icons.language_rounded,
-    titleKey: MineCopyKey.settingLanguageTitle,
-    valueKey: MineCopyKey.settingLanguageValue,
-    route: '/settings/language',
-  ),
-  MineSettingEntry(
-    icon: Icons.download_rounded,
-    titleKey: MineCopyKey.settingExportTitle,
-    valueKey: MineCopyKey.settingExportValue,
-  ),
-  MineSettingEntry(
-    icon: Icons.help_outline_rounded,
-    titleKey: MineCopyKey.settingHelpTitle,
-    valueKey: MineCopyKey.settingHelpValue,
-  ),
-  MineSettingEntry(
-    icon: Icons.info_outline_rounded,
-    titleKey: MineCopyKey.settingAboutTitle,
-    valueKey: MineCopyKey.settingAboutValue,
   ),
 ];
 

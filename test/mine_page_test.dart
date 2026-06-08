@@ -43,9 +43,6 @@ void main() {
       'mine-status-overview',
       'mine-archive-section',
       'mine-campus-section',
-      'mine-privacy-section',
-      'mine-reminder-section',
-      'mine-settings-section',
       'mine-privacy-notice',
     ];
 
@@ -57,9 +54,12 @@ void main() {
     }
 
     expect(find.text(l10n.mineCampusSectionTitle), findsOneWidget);
-    expect(find.text(l10n.minePrivacyPermissionTitle), findsOneWidget);
-    expect(find.text(l10n.mineReminderSectionTitle), findsOneWidget);
-    expect(find.text(l10n.mineAccountSettingsTitle), findsOneWidget);
+    expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
+    expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
+    expect(find.byKey(const Key('mine-settings-section')), findsNothing);
+    expect(find.text(l10n.minePrivacyPermissionTitle), findsNothing);
+    expect(find.text(l10n.mineReminderSectionTitle), findsNothing);
+    expect(find.text(l10n.mineAccountSettingsTitle), findsNothing);
   });
 
   testWidgets('Mine page renders signed-out static view without loading', (
@@ -129,14 +129,16 @@ void main() {
       final scrollable = find.byType(Scrollable).first;
       for (final finder in [
         find.text(l10n.mineCampusSectionTitle),
-        find.text(l10n.minePrivacyPermissionTitle),
-        find.text(l10n.mineReminderSectionTitle),
-        find.text(l10n.mineAccountSettingsTitle),
+        find.byKey(const Key('mine-privacy-notice')),
       ]) {
         await tester.scrollUntilVisible(finder, 260, scrollable: scrollable);
         await tester.pump();
         expect(finder, findsOneWidget);
       }
+
+      expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
+      expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
+      expect(find.byKey(const Key('mine-settings-section')), findsNothing);
     },
   );
 

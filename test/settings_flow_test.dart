@@ -44,8 +44,7 @@ void main() {
 
       expect(find.text('设置'), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('settings-row-language')));
-      await tester.pumpAndSettle();
+      await _tapSettingsRow(tester, 'settings-row-language');
 
       expect(find.text('English'), findsWidgets);
 
@@ -86,8 +85,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
+    await _tapSettingsRow(tester, 'settings-row-notifications');
 
     final medicationRow = find.byKey(const Key('notification-row-medication'));
     final switchFinder = find.descendant(
@@ -125,8 +123,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
+    await _tapSettingsRow(tester, 'settings-row-notifications');
 
     expect(
       _readSwitchValue(
@@ -156,8 +153,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
+    await _tapSettingsRow(tester, 'settings-row-notifications');
 
     expect(find.text('系统通知已开启'), findsOneWidget);
     expect(find.text('通知已授权。下方开关可控制各类通知的显示。'), findsOneWidget);
@@ -178,8 +174,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
+    await _tapSettingsRow(tester, 'settings-row-notifications');
 
     expect(find.text('系统通知未开启'), findsOneWidget);
     expect(find.text('点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'), findsOneWidget);
@@ -195,8 +190,7 @@ void main() {
 
     await _pumpApp(tester);
 
-    await tester.tap(find.byKey(const Key('settings-row-more')));
-    await tester.pumpAndSettle();
+    await _tapSettingsRow(tester, 'settings-row-more');
 
     expect(find.text('更多设置'), findsOneWidget);
     expect(find.text('清理图片缓存'), findsOneWidget);
@@ -218,8 +212,7 @@ void main() {
 
     await _pumpApp(tester);
 
-    await tester.tap(find.byKey(const Key('settings-row-theme')));
-    await tester.pumpAndSettle();
+    await _tapSettingsRow(tester, 'settings-row-theme');
 
     expect(find.text('主题模式'), findsOneWidget);
     expect(find.byKey(const Key('theme-row-dark')), findsOneWidget);
@@ -305,6 +298,14 @@ bool _readSwitchValue(WidgetTester tester, Finder finder) {
     return widget.value;
   }
   throw StateError('Unsupported switch widget: ${widget.runtimeType}');
+}
+
+Future<void> _tapSettingsRow(WidgetTester tester, String key) async {
+  final finder = find.byKey(Key(key));
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+  await tester.pumpAndSettle();
 }
 
 Map<String, Object> _snapshotPreferences(SharedPreferences preferences) {
