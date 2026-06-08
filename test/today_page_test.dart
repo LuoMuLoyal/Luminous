@@ -60,6 +60,7 @@ void main() {
       'today-mood-card',
       'today-campus-card',
       'today-recommendation-card',
+      'today-todo-card',
     ];
 
     for (final key in keys) {
@@ -111,6 +112,13 @@ void main() {
       expect(find.text(l10n.todayHealthSummaryCardTitle), findsOneWidget);
       expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
       expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+
+      final todoCard = find.byKey(const Key('today-todo-card'));
+      await tester.scrollUntilVisible(todoCard, 240);
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(todoCard, findsOneWidget);
+      expect(find.text(l10n.todayTodoSectionTitle), findsOneWidget);
+      expect(find.text(l10n.todayTodoCustomTitle), findsOneWidget);
     },
   );
 
@@ -195,7 +203,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     final l10n = AppLocalizations.of(tester.element(find.byType(TodayPage)))!;
     expect(find.text(l10n.todayRecommendationSectionTitle), findsOneWidget);
-    expect(find.text(l10n.todayMoodStableValue), findsWidgets);
+
+    final todoCard = find.byKey(const Key('today-todo-card'));
+    await tester.scrollUntilVisible(todoCard, 240);
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(todoCard, findsOneWidget);
+    expect(find.text(l10n.todayTodoMoodTitle), findsOneWidget);
   });
 
   testWidgets('Today page uses wide dashboard layout on desktop', (
