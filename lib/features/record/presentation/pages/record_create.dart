@@ -13,6 +13,7 @@ import 'package:luminous/features/record/data/providers/daily_record_providers.d
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_image_attachment_field.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
@@ -43,6 +44,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
   void initState() {
     super.initState();
     _kind = widget.initialKind ?? DailyRecordKind.water;
+    _applyKindDefaults(_kind);
   }
 
   @override
@@ -88,58 +90,13 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              DropdownButtonFormField<DailyRecordKind>(
-                initialValue: _kind,
-                decoration: InputDecoration(
-                  labelText: l10n.recordCreateFieldKind,
-                ),
-                items: DailyRecordKind.values
-                    .map(
-                      (k) => DropdownMenuItem(
-                        value: k,
-                        child: Text(_kindLabel(l10n, k)),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (v) {
-                  if (v != null) setState(() => _kind = v);
-                },
-              ),
-              const SizedBox(height: 12),
-              if (_kind != DailyRecordKind.mood) ...[
-                TextField(
-                  controller: _valueController,
-                  decoration: InputDecoration(
-                    labelText: _valueLabel(l10n, _kind),
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
-              if (_kind == DailyRecordKind.vital ||
-                  _kind == DailyRecordKind.water) ...[
-                TextField(
-                  controller: _unitController,
-                  decoration: InputDecoration(
-                    labelText: l10n.recordCreateFieldUnit,
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
-              if (_kind != DailyRecordKind.water) ...[
-                TextField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    labelText: l10n.recordCreateFieldTitleOptional,
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
-              TextField(
-                controller: _noteController,
-                decoration: InputDecoration(
-                  labelText: l10n.recordCreateFieldNote,
-                ),
-                maxLines: 3,
+              DailyRecordFormFields(
+                kind: _kind,
+                onKindChanged: _onKindChanged,
+                valueController: _valueController,
+                unitController: _unitController,
+                titleController: _titleController,
+                noteController: _noteController,
               ),
               const SizedBox(height: 12),
               DailyRecordImageAttachmentField(
@@ -163,43 +120,20 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     );
   }
 
-  String _kindLabel(AppLocalizations l10n, DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.water => l10n.recordTypeWater,
-      DailyRecordKind.meal => l10n.recordTypeMeal,
-      DailyRecordKind.vital => l10n.recordTypeVitals,
-      DailyRecordKind.mood => l10n.recordTypeMood,
-      DailyRecordKind.symptom => l10n.recordTypeSymptom,
-      DailyRecordKind.activity => l10n.recordTypeActivity,
-      DailyRecordKind.note => l10n.recordCreateKindNote,
-    };
-  }
-
-  String _valueLabel(AppLocalizations l10n, DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.water => l10n.recordCreateValueWater,
-      DailyRecordKind.meal => l10n.recordCreateValueMeal,
-      DailyRecordKind.vital => l10n.recordCreateValueVital,
-      DailyRecordKind.mood => l10n.recordTypeMood,
-      DailyRecordKind.symptom => l10n.recordTypeSymptom,
-      DailyRecordKind.activity => l10n.recordTypeActivity,
-      DailyRecordKind.note => l10n.recordCreateFieldNote,
-    };
-  }
-
   Future<void> _onSave(String dateStr) async {
     setState(() => _saving = true);
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
       final attachments = await _uploadSelectedImage();
+      final rules = dailyRecordFormRules(_kind);
       await repo.create(
         DailyRecordCreateInput(
           kind: _kind,
           occurredAt: dateStr,
-          title: _titleController.text.isEmpty ? null : _titleController.text,
-          value: _valueController.text.isEmpty ? null : _valueController.text,
-          unit: _unitController.text.isEmpty ? null : _unitController.text,
-          note: _noteController.text.isEmpty ? null : _noteController.text,
+          title: rules.showTitle ? _optionalText(_titleController) : null,
+          value: rules.showValue ? _optionalText(_valueController) : null,
+          unit: rules.showUnit ? _unitTextForKind(_kind) : null,
+          note: _optionalText(_noteController),
           attachments: attachments,
         ),
       );
@@ -222,6 +156,37 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     } finally {
       if (mounted) setState(() => _saving = false);
     }
+  }
+
+  void _onKindChanged(DailyRecordKind kind) {
+    setState(() {
+      final wasWater = _kind == DailyRecordKind.water;
+      _kind = kind;
+      if (kind != DailyRecordKind.water &&
+          wasWater &&
+          _unitController.text.trim() == dailyRecordWaterDefaultUnit) {
+        _unitController.clear();
+      }
+      _applyKindDefaults(kind);
+    });
+  }
+
+  void _applyKindDefaults(DailyRecordKind kind) {
+    if (kind == DailyRecordKind.water && _unitController.text.trim().isEmpty) {
+      _unitController.text = dailyRecordWaterDefaultUnit;
+    }
+  }
+
+  String? _optionalText(TextEditingController controller) {
+    final value = controller.text.trim();
+    return value.isEmpty ? null : value;
+  }
+
+  String? _unitTextForKind(DailyRecordKind kind) {
+    final value = _unitController.text.trim();
+    if (value.isNotEmpty) return value;
+    if (kind == DailyRecordKind.water) return dailyRecordWaterDefaultUnit;
+    return null;
   }
 
   Future<void> _onPickImage() async {

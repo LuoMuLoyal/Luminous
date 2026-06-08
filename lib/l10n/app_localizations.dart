@@ -287,7 +287,7 @@ abstract class AppLocalizations {
   /// No description provided for @recordCreateValueWater.
   ///
   /// In zh, this message translates to:
-  /// **'杯数'**
+  /// **'饮水量'**
   String get recordCreateValueWater;
 
   /// No description provided for @recordCreateValueMeal.
@@ -301,6 +301,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'数值（如 120/80）'**
   String get recordCreateValueVital;
+
+  /// No description provided for @recordCreateValueSymptom.
+  ///
+  /// In zh, this message translates to:
+  /// **'严重程度 / 感受'**
+  String get recordCreateValueSymptom;
 
   /// No description provided for @recordCreateFailedToast.
   ///

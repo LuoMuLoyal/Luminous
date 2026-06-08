@@ -505,6 +505,174 @@ void main() {
     },
   );
 
+  testWidgets('Record create water defaults unit to ml', (tester) async {
+    final dailyRepo = _FakeDailyRecordRepository();
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      initialLocation: '/record/create?kind=water&date=2026-06-06',
+    );
+    await tester.pumpAndSettle();
+
+    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    await tester.ensureVisible(saveButton);
+    await tester.pump();
+    await tester.tap(saveButton);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    final input = dailyRepo.createInput;
+    expect(input, isNotNull);
+    expect(input!.kind, DailyRecordKind.water);
+    expect(input.occurredAt, '2026-06-06');
+    expect(input.title, isNull);
+    expect(input.value, isNull);
+    expect(input.unit, 'ml');
+    expect(input.note, isNull);
+  });
+
+  testWidgets('Record create symptom sends title and value without unit', (
+    tester,
+  ) async {
+    final dailyRepo = _FakeDailyRecordRepository();
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      initialLocation: '/record/create?kind=symptom&date=2026-06-06',
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('daily-record-title-field')),
+      'Headache',
+    );
+    await tester.enterText(
+      find.byKey(const Key('daily-record-value-field')),
+      'Mild',
+    );
+    await tester.enterText(
+      find.byKey(const Key('daily-record-note-field')),
+      'After lunch',
+    );
+
+    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    await tester.ensureVisible(saveButton);
+    await tester.pump();
+    await tester.tap(saveButton);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    final input = dailyRepo.createInput;
+    expect(input, isNotNull);
+    expect(input!.kind, DailyRecordKind.symptom);
+    expect(input.title, 'Headache');
+    expect(input.value, 'Mild');
+    expect(input.unit, isNull);
+    expect(input.note, 'After lunch');
+  });
+
+  testWidgets('Record create note sends title and note without value or unit', (
+    tester,
+  ) async {
+    final dailyRepo = _FakeDailyRecordRepository();
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      initialLocation: '/record/create?kind=note&date=2026-06-06',
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('daily-record-title-field')),
+      'Quiet day',
+    );
+    await tester.enterText(
+      find.byKey(const Key('daily-record-note-field')),
+      'No special symptoms',
+    );
+
+    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    await tester.ensureVisible(saveButton);
+    await tester.pump();
+    await tester.tap(saveButton);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    final input = dailyRepo.createInput;
+    expect(input, isNotNull);
+    expect(input!.kind, DailyRecordKind.note);
+    expect(input.title, 'Quiet day');
+    expect(input.value, isNull);
+    expect(input.unit, isNull);
+    expect(input.note, 'No special symptoms');
+  });
+
+  testWidgets('Record edit water can clear value and note', (tester) async {
+    final repo = _FakeDailyRecordRepository(
+      itemKind: DailyRecordKind.water,
+      itemTitle: null,
+      itemValue: '500',
+      itemUnit: 'ml',
+      itemNote: 'Morning water',
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: _buildEditTestRouter(
+            initialLocation: '/record/test-id-1/edit',
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('daily-record-title-field')), findsNothing);
+    await tester.enterText(
+      find.byKey(const Key('daily-record-value-field')),
+      '',
+    );
+    await tester.enterText(
+      find.byKey(const Key('daily-record-note-field')),
+      '',
+    );
+
+    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    await tester.ensureVisible(saveButton);
+    await tester.pump();
+    await tester.tap(saveButton);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 3));
+
+    final input = repo.lastUpdateInput;
+    expect(input, isNotNull);
+    expect(input!.kind, DailyRecordKind.water);
+    expect(input.title, isNull);
+    expect(input.value, isNull);
+    expect(input.unit, 'ml');
+    expect(input.note, isNull);
+  });
+
   testWidgets('Record mobile filter chip reloads dashboard by type', (
     tester,
   ) async {
@@ -721,10 +889,20 @@ GoRouter _buildEditTestRouter({
 class _FakeDailyRecordRepository implements DailyRecordRepository {
   _FakeDailyRecordRepository({
     this.itemOccurredAt,
+    this.itemKind = DailyRecordKind.vital,
+    this.itemTitle = 'Blood pressure',
+    this.itemValue = '118/76',
+    this.itemUnit = 'mmHg',
+    this.itemNote = 'This is a note',
     this.withAttachment = false,
   });
 
   final String? itemOccurredAt;
+  final DailyRecordKind itemKind;
+  final String? itemTitle;
+  final String? itemValue;
+  final String? itemUnit;
+  final String? itemNote;
   final bool withAttachment;
   String? deleteCalledWith;
   String? updateCalledWith;
@@ -747,12 +925,12 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
       items: [
         DailyRecordItem(
           id: 'test-id-1',
-          kind: DailyRecordKind.vital,
+          kind: itemKind,
           occurredAt: itemOccurredAt ?? date,
-          title: 'Blood pressure',
-          value: '118/76',
-          unit: 'mmHg',
-          note: 'This is a note',
+          title: itemTitle,
+          value: itemValue,
+          unit: itemUnit,
+          note: itemNote,
           source: 'manual',
           createdAt: DateTime.now().toIso8601String(),
           updatedAt: DateTime.now().toIso8601String(),
@@ -767,12 +945,12 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     getCalledWith = id;
     return DailyRecordItem(
       id: id,
-      kind: DailyRecordKind.vital,
+      kind: itemKind,
       occurredAt: itemOccurredAt ?? '2026-05-20',
-      title: 'Blood pressure',
-      value: '118/76',
-      unit: 'mmHg',
-      note: 'This is a note',
+      title: itemTitle,
+      value: itemValue,
+      unit: itemUnit,
+      note: itemNote,
       source: 'manual',
       attachments: withAttachment
           ? [

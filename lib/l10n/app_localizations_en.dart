@@ -117,13 +117,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordCreateKindNote => 'Note';
 
   @override
-  String get recordCreateValueWater => 'Cups';
+  String get recordCreateValueWater => 'Water amount';
 
   @override
   String get recordCreateValueMeal => 'Name / description';
 
   @override
   String get recordCreateValueVital => 'Value (e.g. 120/80)';
+
+  @override
+  String get recordCreateValueSymptom => 'Severity / feeling';
 
   @override
   String get recordCreateFailedToast => 'Record was not saved.';

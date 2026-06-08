@@ -31,7 +31,7 @@ Observable result:
 
 ### Target 2: Record Form Quality
 
-Status: detail page implemented on 2026-06-06; form-by-kind refinement remains.
+Status: first pass completed on 2026-06-08 for water, vital, symptom, and note.
 
 Goal: make record create/edit feel complete without adding unsupported medical complexity.
 
@@ -39,7 +39,7 @@ Scope:
 
 - Keep the detail page showing complete fields: type, occurred time, value, unit, title, note, source, updated time, and image attachment where available.
 - Keep edit/delete entry points clear from the timeline/detail path.
-- Tighten the form for common types first: water, vital, symptom, and note.
+- Keep common type form rules under regression: water uses value/unit/note with default `ml`; vital uses title/value/unit/note; symptom uses title/value/note without unit; note uses title/note without value/unit.
 - Keep richer analytics, medical document import, and multi-image gallery out of scope.
 
 Why second: date navigation, attachments, and detail must stay stable before type-specific forms are worth polishing.
@@ -88,11 +88,10 @@ Observable result:
 
 ## Immediate Work Order
 
-1. Tighten Record forms by type for water, vital, symptom, and note.
-2. Keep Record quick-action routing, filter chips, selected-date reload, attachment handling, and timeline time display under regression while forms change.
-3. Keep daily-record detail UX under regression while forms change.
-4. Implement local notification scheduling after the first reminder schedule source is explicit.
-5. Keep auth/account deferred TODOs explicit until product/security decisions are made.
+1. Keep Record quick-action routing, filter chips, selected-date reload, common type form mapping, attachment handling, detail cache invalidation, and timeline time display under regression.
+2. Audit Medicine adherence and the first structured reminder schedule source before building scheduling.
+3. Implement local notification scheduling only after the first reminder schedule source is explicit.
+4. Keep auth/account deferred TODOs explicit until product/security decisions are made.
 
 ## Active Planning References
 

@@ -1,6 +1,6 @@
 # Lumos Current State
 
-Last updated: 2026-06-07
+Last updated: 2026-06-08
 
 ## Product Direction
 
@@ -35,7 +35,7 @@ Last updated: 2026-06-07
 - State/navigation: Riverpod + GoRouter.
 - Generated Lucent client: `packages/lucent_openapi`.
 - Current generated client includes `DailyRecordsApi.dailyRecordsControllerCreateImageUploadV1` and generated `EnvironmentApi`.
-- Real Lucent-backed flows: auth/account, health-context edits, medicine search/detail, current medicines, manual dose logs, daily-record timeline/detail/create/edit/delete, selected-date timeline reload, occurredAt-based timeline time, daily-record single-image attachment upload/display, and Record mobile quick actions for Lucent-supported daily-record kinds.
+- Real Lucent-backed flows: auth/account, health-context edits, medicine search/detail, current medicines, manual dose logs, daily-record timeline/detail/create/edit/delete, selected-date timeline reload, occurredAt-based timeline time, daily-record single-image attachment upload/display, Record mobile quick actions for Lucent-supported daily-record kinds, and first-pass type-specific daily-record create/edit fields for water, vital, symptom, and note.
 - Auth/session state is explicitly split into restoring, confirmed signed-out, and signed-in protected-data access. Protected providers do not call Lucent while auth is restoring or signed out; confirmed signed-out main tabs use local/mock static surfaces, while signed-in tabs and edit flows use protected repositories.
 - Mobile north-star UI is active for Today, Record, Medicine, Report, and Mine. These five main tabs share partial skeleton loading: stable page chrome plus local/mock/static sections render immediately, while backend-backed fields render shimmer slots through the shared skeleton primitives. Record keeps real daily-record timeline/detail data and now focuses on record-page jobs: quick record, AI input placeholder, health record timeline, filters, calendar/today overview, quick operations, and a guide row. Record mobile logic v1 wires supported quick actions to `/record/create` with selected kind/date, date chips to selected-date state, and filter chips to dashboard filtering; unsupported domains such as medication, sleep, and women-health remain placeholders or separate-domain boundaries until matching APIs exist. The old mobile-only symptom tracking, mood trend, period/diet, and specialist pack sections were removed from Record; period/women-health entry is shown only when health context marks `sexAtBirth == female`, while signed-out, male, or unknown profiles use non-period record actions. Medicine keeps real current-medicine and manual dose-log data where available while safety engine, scan/OCR, report, reference notice, and safety tips are bounded mock/placeholder sections. Report uses a feature-local mock repository for weekly score, trends, findings, exports, privacy controls, and pattern analysis until Lucent exposes report/insight APIs. Mine reads real auth/account plus health-context profile/allergy/condition/current-medicine data while campus services, privacy permissions, reminders, and secondary settings remain bounded mock entries.
 - Environment snapshot is backend-ready but frontend-deferred. Future frontend wiring should target contextual Today signals and/or Mine service-resource entries, not a standalone generic More tab.
@@ -62,8 +62,8 @@ Last updated: 2026-06-07
 
 ## UI Priorities
 
-1. Keep daily-record and manual dose-log flows under regression as they expand; current auth, ownership, selected-date reload, Record mobile quick-action create routing, filter chip reload, occurredAt timeline time, null clearing, skipped/taken status, and provider invalidation coverage exists.
-2. Expand Record forms before deferred environment/utility wiring; only add fields when Lucent contracts exist for the specific record type.
+1. Keep daily-record and manual dose-log flows under regression as they expand; current auth, ownership, selected-date reload, Record mobile quick-action create routing, filter chip reload, occurredAt timeline time, common type form mapping, null clearing, skipped/taken status, and provider invalidation coverage exists.
+2. Refine Record forms further only when Lucent contracts exist for the specific record type; the current supported first pass is water, vital, symptom, and note.
 3. Keep Today factual: daily-record and dose-log summaries may be real, but unsupported advice/static sections must stay clearly bounded and use placeholders instead of hand-drawn complex graphics.
 4. Connect Report mock repository to real report/insight/export data sources after Lucent contracts exist; keep complex charts as placeholders until the data contract and chart requirements are stable.
 5. Connect Mine campus service, privacy permission, reminder, and settings extras to real Lucent data sources after those contracts exist; keep bounded mock entries explicit until then.

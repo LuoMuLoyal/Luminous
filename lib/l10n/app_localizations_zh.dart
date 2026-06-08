@@ -108,13 +108,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordCreateKindNote => '备注';
 
   @override
-  String get recordCreateValueWater => '杯数';
+  String get recordCreateValueWater => '饮水量';
 
   @override
   String get recordCreateValueMeal => '名称 / 描述';
 
   @override
   String get recordCreateValueVital => '数值（如 120/80）';
+
+  @override
+  String get recordCreateValueSymptom => '严重程度 / 感受';
 
   @override
   String get recordCreateFailedToast => '记录未保存';
