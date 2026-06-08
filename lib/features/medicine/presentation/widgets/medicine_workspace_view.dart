@@ -408,12 +408,10 @@ class _MedicationPlanTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final warningKey = item.stockWarningKey;
     final nameText = item.rawName ?? medicineCopy(l10n, item.nameKey);
     final dosageText = item.rawDosage ?? medicineCopy(l10n, item.dosageKey);
     final scheduleText =
         item.rawSchedule ?? medicineCopy(l10n, item.scheduleKey);
-    final stockText = item.rawStock ?? medicineCopy(l10n, item.stockKey);
     final stateText = item.rawState ?? medicineCopy(l10n, item.stateKey);
     final currentMedicineId = item.currentMedicineId;
 
@@ -469,23 +467,6 @@ class _MedicationPlanTile extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacingTokens.md),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.inventory_2_outlined,
-                      size: 16,
-                      color: surface.body,
-                    ),
-                    const SizedBox(width: AppSpacingTokens.xs),
-                    Text(
-                      stockText,
-                      style: typography.bodySm.copyWith(color: surface.body),
-                    ),
-                    const Spacer(),
-                    Icon(Icons.chevron_right_rounded, color: surface.mute),
-                  ],
-                ),
-                const SizedBox(height: AppSpacingTokens.md),
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: surface.canvasSoft,
@@ -494,24 +475,24 @@ class _MedicationPlanTile extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      for (var index = 0; index < item.slots.length; index += 1)
-                        _DoseSlotRow(
-                          slot: item.slots[index],
-                          typography: typography,
-                          surface: surface,
-                          l10n: l10n,
-                          showDivider: index < item.slots.length - 1,
-                        ),
+                      if (item.slots.isEmpty)
+                        _DosePlaceholderRow(typography: typography, l10n: l10n)
+                      else
+                        for (
+                          var index = 0;
+                          index < item.slots.length;
+                          index += 1
+                        )
+                          _DoseSlotRow(
+                            slot: item.slots[index],
+                            typography: typography,
+                            surface: surface,
+                            l10n: l10n,
+                            showDivider: index < item.slots.length - 1,
+                          ),
                     ],
                   ),
                 ),
-                if (warningKey != null) ...[
-                  const SizedBox(height: AppSpacingTokens.sm),
-                  _StockWarning(
-                    label: medicineCopy(l10n, warningKey),
-                    typography: typography,
-                  ),
-                ],
                 if (currentMedicineId != null && onMarkDose != null) ...[
                   const SizedBox(height: AppSpacingTokens.sm),
                   Row(
@@ -620,7 +601,7 @@ class _DoseSlotRow extends StatelessWidget {
               SizedBox(
                 width: 56,
                 child: Text(
-                  medicineCopy(l10n, slot.timeKey),
+                  _slotTimeLabel(l10n, slot),
                   style: typography.bodySmStrong,
                 ),
               ),
@@ -648,45 +629,42 @@ class _DoseSlotRow extends StatelessWidget {
   }
 }
 
-class _StockWarning extends StatelessWidget {
-  const _StockWarning({required this.label, required this.typography});
+class _DosePlaceholderRow extends StatelessWidget {
+  const _DosePlaceholderRow({required this.typography, required this.l10n});
 
-  final String label;
   final AppTypographyScale typography;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: _MedicinePalette.orangeSoft,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(
-          color: _MedicinePalette.orange.withValues(alpha: 0.2),
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.md,
+        vertical: AppSpacingTokens.sm,
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
-        ),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.notifications_none_rounded,
-              color: _MedicinePalette.orange,
-              size: 18,
+      child: Row(
+        children: [
+          SizedBox(
+            width: 56,
+            child: Text(
+              l10n.medicineScheduleNotSet,
+              style: typography.bodySmStrong,
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(width: AppSpacingTokens.xs),
-            Expanded(
-              child: Text(
-                label,
-                style: typography.bodySm.copyWith(
-                  color: _MedicinePalette.orange,
-                ),
-              ),
+          ),
+          const Icon(
+            Icons.schedule_rounded,
+            color: _MedicinePalette.orange,
+            size: 20,
+          ),
+          const SizedBox(width: AppSpacingTokens.sm),
+          Expanded(
+            child: Text(
+              l10n.medicineRecordScheduledStatus,
+              style: typography.bodySm.copyWith(color: _MedicinePalette.orange),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -808,8 +786,7 @@ class _AlertTile extends StatelessWidget {
                 label: medicineCopy(l10n, alert.actionKey),
                 color: alert.color,
                 typography: typography,
-                emphasized:
-                    alert.actionKey == MedicineCopyKey.alertRefillAction,
+                emphasized: false,
                 onTap: () => _showPlannedAction(
                   context,
                   medicineCopy(l10n, alert.titleKey),
@@ -1089,9 +1066,15 @@ String _quickActionResult(MedicineCopyKey key, AppLocalizations l10n) {
   };
 }
 
+String _slotTimeLabel(AppLocalizations l10n, MedicineDoseSlot slot) {
+  final raw = slot.rawTime?.trim();
+  if (raw != null && raw.isNotEmpty) return raw;
+  final key = slot.timeKey;
+  return key == null ? l10n.medicineScheduleNotSet : medicineCopy(l10n, key);
+}
+
 String _alertActionResult(MedicineCopyKey key, AppLocalizations l10n) {
   return switch (key) {
-    MedicineCopyKey.alertRefillAction => l10n.medicineAlertRefillToast,
     MedicineCopyKey.alertInteractionAction =>
       l10n.medicineAlertInteractionToast,
     MedicineCopyKey.alertOtherAction => l10n.medicineAlertOtherToast,
@@ -1116,5 +1099,4 @@ abstract final class _MedicinePalette {
   static const Color greenSoft = AppColorTokens.cyanSoft;
   static const Color greenLine = AppColorTokens.cyanSoft;
   static const Color orange = AppColorTokens.warning;
-  static const Color orangeSoft = AppColorTokens.warningSoft;
 }

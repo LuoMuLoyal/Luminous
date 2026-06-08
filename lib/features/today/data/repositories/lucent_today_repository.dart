@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
@@ -59,6 +61,19 @@ class LucentTodayRepository implements TodayRepository {
     final pendingMedicines = medicines
         .where((m) => m.isCurrent && !completedMedicineIds.contains(m.id))
         .toList();
+    final nextReminder = await _nextReminderFor(
+      today,
+      pendingMedicines.map((medicine) => medicine.id).toSet(),
+    );
+    final nextReminderMedicineId = nextReminder?.currentMedicineId;
+    final nextMedicine = nextReminderMedicineId == null
+        ? null
+        : pendingMedicines
+              .where((medicine) => medicine.id == nextReminderMedicineId)
+              .firstOrNull;
+    final fallbackMedicine = pendingMedicines.isNotEmpty
+        ? pendingMedicines.first
+        : (medicines.isNotEmpty ? medicines.first : null);
 
     return TodayDashboard(
       user: TodayUserSnapshot(
@@ -70,11 +85,10 @@ class LucentTodayRepository implements TodayRepository {
       medication: TodayMedicationSummary(
         medicineCount: medicines.length,
         pendingCount: pendingMedicines.length,
-        nextDoseTimeLabel: '--',
+        nextDoseTimeLabel: nextReminder?.timeLabel ?? '--',
         nextMedicine: TodayMedicationKind.atorvastatin,
-        nextMedicineName: pendingMedicines.isNotEmpty
-            ? pendingMedicines.first.displayName
-            : (medicines.isNotEmpty ? medicines.first.displayName : null),
+        nextMedicineName:
+            nextMedicine?.displayName ?? fallbackMedicine?.displayName,
       ),
       vitals: [
         TodayVitalSummary(
@@ -117,6 +131,40 @@ class LucentTodayRepository implements TodayRepository {
   static const _staticLumiSuggestion = TodayLumiSuggestion(
     type: TodayLumiSuggestionType.pollenProtection,
   );
+
+  Future<MedicineReminderItem?> _nextReminderFor(
+    DateTime today,
+    Set<String> pendingMedicineIds,
+  ) async {
+    if (pendingMedicineIds.isEmpty) return null;
+    try {
+      final reminders = await ref
+          .read(medicineReminderRemoteDataSourceProvider)
+          .fetchActive();
+      final todayReminders =
+          reminders
+              .where((reminder) {
+                final medicineId = reminder.currentMedicineId;
+                return medicineId != null &&
+                    pendingMedicineIds.contains(medicineId) &&
+                    reminder.matchesDate(today);
+              })
+              .toList(growable: false)
+            ..sort(_compareReminderTime);
+      return todayReminders.firstOrNull;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static int _compareReminderTime(
+    MedicineReminderItem left,
+    MedicineReminderItem right,
+  ) {
+    final hour = left.scheduledHour.compareTo(right.scheduledHour);
+    if (hour != 0) return hour;
+    return left.scheduledMinute.compareTo(right.scheduledMinute);
+  }
 
   static String _formatTimeLabel(DateTime value) {
     final hour = value.hour.toString().padLeft(2, '0');

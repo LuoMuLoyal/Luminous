@@ -3,6 +3,7 @@ import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
     show DoseLogRemoteDataSource, DoseLogStatus;
+import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 
@@ -12,10 +13,12 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   LucentMedicineWorkspaceRepository({
     required this.healthRepo,
     required this.doseLogDs,
+    required this.reminderDs,
   });
 
   final HealthContextRepository healthRepo;
   final DoseLogRemoteDataSource doseLogDs;
+  final MedicineReminderRemoteDataSource reminderDs;
 
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {
@@ -24,7 +27,6 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         .where((medicine) => medicine.isCurrent)
         .toList(growable: false);
 
-    // Fetch today's dose logs
     final today = DateTime.now();
     final dateStr =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
@@ -41,6 +43,19 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
             log.status == DoseLogStatus.skipped) {
           doseStatusByMedicine[medicineId] = log.status;
         }
+      }
+    } catch (_) {}
+
+    final remindersByMedicine = <String, List<MedicineReminderItem>>{};
+    try {
+      final reminders = await reminderDs.fetchActive();
+      for (final reminder in reminders) {
+        final medicineId = reminder.currentMedicineId;
+        if (medicineId == null || !reminder.matchesDate(today)) continue;
+        remindersByMedicine.putIfAbsent(medicineId, () => []).add(reminder);
+      }
+      for (final reminders in remindersByMedicine.values) {
+        reminders.sort(_compareReminderTime);
       }
     } catch (_) {}
 
@@ -66,26 +81,21 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         nameKey: MedicineCopyKey.mockNameMetformin,
         dosageKey: MedicineCopyKey.mockDoseMetformin,
         scheduleKey: MedicineCopyKey.mockScheduleMorningEvening,
-        stockKey: MedicineCopyKey.mockStock7Days,
         stateKey: stateKey,
         stateColor: stateColor,
-        // TODO(medicine-schedule): Replace this derived single daily slot with
-        // Lucent-backed reminder/schedule occurrences once that contract exists.
-        slots: [
-          MedicineDoseSlot(
-            timeKey: MedicineCopyKey.mockTime2000,
-            statusKey: stateKey,
-            status: todayStatus,
-          ),
-        ],
+        slots: (remindersByMedicine[m.id] ?? const <MedicineReminderItem>[])
+            .map(
+              (reminder) => MedicineDoseSlot(
+                rawTime: reminder.timeLabel,
+                statusKey: stateKey,
+                status: todayStatus,
+              ),
+            )
+            .toList(growable: false),
         todayStatus: todayStatus,
         rawName: m.displayName,
         rawDosage: m.strengthText ?? '',
         rawSchedule: m.doseText ?? '',
-        // TODO(medicine-inventory): Current medicine records do not include
-        // inventory/refill fields yet. Keep this empty instead of showing mock
-        // stock as if it were real.
-        rawStock: '',
         currentMedicineId: m.id,
       );
     }).toList();
@@ -99,7 +109,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       hero: MedicineHero(
         metricDosesToday: '${planItems.length}',
         metricAdherence: _formatAdherence(completedCount, planItems.length),
-        metricNextDose: pendingItems.isEmpty ? '--' : '20:00',
+        metricNextDose: _nextPendingSlotTime(pendingItems) ?? '--',
       ),
       quickActions: _defaultQuickActions(),
       plan: MedicinePlanSurface(items: planItems),
@@ -111,6 +121,26 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   static String _formatAdherence(int completedCount, int totalCount) {
     if (totalCount == 0) return '--';
     return '${((completedCount / totalCount) * 100).round()}%';
+  }
+
+  static int _compareReminderTime(
+    MedicineReminderItem left,
+    MedicineReminderItem right,
+  ) {
+    final hour = left.scheduledHour.compareTo(right.scheduledHour);
+    if (hour != 0) return hour;
+    return left.scheduledMinute.compareTo(right.scheduledMinute);
+  }
+
+  static String? _nextPendingSlotTime(List<MedicinePlanItem> pendingItems) {
+    for (final item in pendingItems) {
+      for (final slot in item.slots) {
+        if (slot.status == MedicineDoseStatus.pending) {
+          return slot.rawTime;
+        }
+      }
+    }
+    return null;
   }
 
   static List<MedicineQuickAction> _defaultQuickActions() => const [

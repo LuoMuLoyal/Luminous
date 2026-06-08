@@ -55,15 +55,12 @@ class MedicinePlanItem {
     required this.dosageKey,
     required this.scheduleKey,
     required this.slots,
-    required this.stockKey,
     required this.stateKey,
     required this.stateColor,
-    this.stockWarningKey,
     this.todayStatus,
     this.rawName,
     this.rawDosage,
     this.rawSchedule,
-    this.rawStock,
     this.rawState,
     this.currentMedicineId,
   });
@@ -73,31 +70,30 @@ class MedicinePlanItem {
   final MedicineCopyKey dosageKey;
   final MedicineCopyKey scheduleKey;
   final List<MedicineDoseSlot> slots;
-  final MedicineCopyKey stockKey;
   final MedicineCopyKey stateKey;
   final Color stateColor;
-  final MedicineCopyKey? stockWarningKey;
   final MedicineDoseStatus? todayStatus;
 
   /// When non-null, the view should use these raw strings instead of
-  /// resolving [nameKey]/[dosageKey]/[scheduleKey]/[stockKey]/[stateKey]
-  /// through [medicineCopy].
+  /// resolving [nameKey]/[dosageKey]/[scheduleKey]/[stateKey] through
+  /// [medicineCopy].
   final String? rawName;
   final String? rawDosage;
   final String? rawSchedule;
-  final String? rawStock;
   final String? rawState;
   final String? currentMedicineId;
 }
 
 class MedicineDoseSlot {
   const MedicineDoseSlot({
-    required this.timeKey,
+    this.timeKey,
+    this.rawTime,
     required this.statusKey,
     required this.status,
-  });
+  }) : assert(timeKey != null || rawTime != null);
 
-  final MedicineCopyKey timeKey;
+  final MedicineCopyKey? timeKey;
+  final String? rawTime;
   final MedicineCopyKey statusKey;
   final MedicineDoseStatus status;
 }
@@ -148,22 +144,13 @@ enum MedicineCopyKey {
   doseStatusTaken,
   doseStatusSkipped,
   doseStatusPending,
-  mockStock7Days,
   statusStable,
   mockNameAtorvastatin,
   mockDoseAtorvastatin,
   mockScheduleDailyOnce,
-  mockStock15Days,
   statusNeedsCheckin,
   mockNameOmeprazole,
   mockDoseOmeprazole,
-  mockStock3Days,
-  statusNeedRefillSoon,
-  stockWarningLow,
-  alertRefillTitle,
-  alertRefillBody,
-  alertRefillDetail,
-  alertRefillAction,
   alertInteractionTitle,
   alertInteractionBody,
   alertInteractionDetail,
