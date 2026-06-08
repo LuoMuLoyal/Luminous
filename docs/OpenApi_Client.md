@@ -2,50 +2,50 @@
 
 Last updated: 2026-06-08
 
+This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
+
 ## Files
 
-- Generated package: `packages/lucent_openapi/`
-- Wrapper: `lib/core/network/lucent_dio_client.dart`
-- Export: `lib/core/network/lucent_api.dart`
+- Generated OpenAPI source from the `Luminous` repo root: `../Lucent/docs/openapi.json`
+- Generated Dart package: `packages/lucent_openapi/`
+- Network wrapper: `lib/core/network/lucent_dio_client.dart`
+- Public Flutter API exports: `lib/core/network/lucent_api.dart`
+- Regeneration wrapper: `tool/regenerate_lucent_openapi.dart`
 
-## Behavior
+## Current Generated Baseline
 
-- Generated from `../Lucent/docs/openapi.json` with `dart-dio`
-- Business code uses `LucentDioClient`, not generated internals
-- Token storage prefers secure storage, with platform fallback
-- `Accept-Language` is injected by the network layer
-- Authorization is injected when an access token exists; generated `secure` metadata is not trusted because the current generator emits empty lists
-- `401002` triggers refresh and retry
-- Dio errors are unwrapped through `LucentErrorMapper`
-- Medicines API is now generated into `packages/lucent_openapi`; call sites should use `LucentDioClient.medicinesHeaders(bypassCache: true)` when a one-off medicines refresh must bypass Lucent read cache.
-- Account profile/security calls use generated `AccountApi` through `LucentDioClient.accountApi`. Luminous uses `/account` for account data and actions; Lucent `/auth/me*` routes are removed. Health-context `/me/...` routes remain a separate health resource, not account compatibility endpoints.
-- `ChangeEmailDto` follows Lucent contract: `newEmail` + `code`
-- `RegisterDto` follows Lucent contract: `email` + `password` + register-scene `code`; successful registration returns a verified email.
-- `AuthUser` stores `emailVerifiedAt` and derives `emailVerified` locally. Account detail responses also map `hasPassword`, `lastLoginAt`, and linked OAuth identities into the auth session user. Linked identities carry Lucent identity IDs so account settings can call `DELETE /api/v1/account/identities/{identityId}` through `AccountApi`.
-- Re-generated on 2026-06-08 after Lucent added schedule-only medicine reminders. Lucent export currently reports **38 paths / 106 schemas**. The generated package now includes `MedicineRemindersApi`, `CreateMedicineReminderDto`, `UpdateMedicineReminderDto`, `MedicineReminderItemDto`, and reminder response/list DTOs.
-- Re-generated on 2026-06-06 after Lucent added `GET /api/v1/environment/snapshot`. The generated package now includes `EnvironmentApi`, `EnvironmentSnapshotDto`, and related indicator DTOs.
-- Re-generated on 2026-06-06 after Lucent added Tencent COS daily-record image upload signing. Lucent export currently reports **35 paths / 89 schemas**. The generated `DailyRecordsApi` now includes `dailyRecordsControllerCreateImageUploadV1`, `CreateDailyRecordImageUploadDto`, `DailyRecordImageUploadDto`, and `DailyRecordImageUploadResponseDto`.
-- Re-generated on 2026-06-06 after Lucent added daily-record attachment metadata and `GET /api/v1/me/daily-records/{id}`. Lucent export currently reports **34 paths / 86 schemas**. The generated `DailyRecordsApi` now includes `dailyRecordsControllerGetV1`, and daily-record create/update/item DTOs include attachment metadata types.
-- Re-generated on 2026-06-05 after Lucent added account identity unlinking. Lucent export currently reports **31 paths / 83 schemas**. The generated `AccountApi` now includes `accountControllerUnlinkIdentityV1`, and `AccountIdentityDto` includes `id`.
-- WeChat OAuth login uses generated `OAuthAuthorizeDto`, `OAuthAuthorizeDataDto`, `OAuthAuthorizeResponseDto`, `OAuthCallbackDto`, and `OAuthCodeCallbackDto` through `AuthRemoteDataSource`. Android/iOS uses `fluwx` to obtain a native SDK auth code, then calls Lucent's WeChat mobile callback endpoint. Desktop login passes a loopback `callbackUri` to Lucent so the browser callback can redirect back to the app and verifies the returned `state` before exchanging the code. Web login passes the current origin plus `/login/oauth/wechat`; Lucent accepts it only when that origin is trusted by backend CORS config. OAuth-only Lucent users may have `email: null`, so `AuthUser.email` is nullable and UI should fall back to nickname, ID, or signed-out copy where appropriate.
-- Re-generated on 2026-06-05 after Lucent removed legacy `/auth/me*` routes and kept account profile/security actions under `AccountApi`. Lucent export currently reports **30 paths / 83 schemas**. The generated package includes `AccountApi`, `AccountDto`, `AccountIdentityDto`, `AccountResponseDto`, `AccountEmailDataDto`, `AccountEmailResponseDto`, and `UpdateAccountDto`; stale `MeResponseDto` / `UpdateMeDto` artifacts were deleted.
-- Re-generated on 2026-06-05 after Lucent added the desktop WeChat Web OAuth callback URI contract. Lucent export currently reports **30 paths / 81 schemas**. The generated package now includes `OAuthAuthorizeDto`, `OAuthAuthorizeDataDto.callbackUri`, `OAuthAuthorizeResponseDto`, `OAuthCallbackDto`, and `OAuthCodeCallbackDto`.
-- Re-generated from Lucent `openapi.json` on 2026-06-02 after the auth alignment pass. No business-layer SDK surface changes were required in `lib/core/network/`; regeneration is now expected to go through the repo wrapper instead of manual package repair.
-- Re-generated again on 2026-06-02 after Lucent added `PATCH /api/v1/me/health-context/profile`; current app settings usage now consumes the supported `locale / timezone / unitSystem` preference write path, while theme mode and notification toggles remain local because Lucent does not expose write endpoints for them yet.
-- Re-generated on 2026-06-03 after Lucent added full health-context write APIs (profile expansion, allergy/condition/current-medicine CRUD). The `health_context` feature remote data source now exposes all write methods through the generated `UserHealthContextApi`, and the repository interface + Lucent-backed implementation cover the complete read/write surface. Settings profile sync continues to use the same `PATCH /me/health-context/profile` path unchanged.
-- Post-audit update on 2026-06-03: health-context domain and presentation code must not pass generated write DTOs directly. `lib/features/health_context/domain/entities/health_context_write_inputs.dart` owns the local write inputs/enums, and `HealthContextRemoteDataSource` serializes writes as raw Dio JSON maps so explicit `null` values still clear nullable Lucent fields. Generated DTOs remain acceptable in data-layer response mapping.
-- Re-generated on 2026-06-04 after Lucent restored the health-context write surface on `dev` and added typed medicine dose-log response schemas. Lucent export currently reports **27 paths / 76 schemas**. The generated package now includes `DoseLogItemDto`, `DoseLogListDataDto`, `DoseLogListResponseDto`, and `DoseLogResponseDto`.
-- Current stable regeneration entrypoint is `dart run tool/regenerate_lucent_openapi.dart`.
-- The OpenAPI generator version is already pinned in `openapitools.json`; the recurring breakage is downstream in the Dart package output:
-  - `openapi-generator-cli` rewrites `packages/lucent_openapi/pubspec.yaml` back to older constraints.
-  - `json_serializable 6.14.0` currently emits invalid nullable map entries in generated `packages/lucent_openapi/lib/src/model/*.g.dart` for this package shape (`'field': ?instance.field`).
-- `tool/regenerate_lucent_openapi.dart` is the supported fix path. It exports Lucent OpenAPI, regenerates the Dart client, restores the generated package constraints (`sdk 3.12`, `json_annotation 4.12.0`, `build_runner 2.15.0`, `json_serializable 6.14.0`), rebuilds serializers, patches the broken nullable map entries, formats the model files, analyzes the generated package, and refreshes root Flutter dependencies.
-- After regeneration, run whitespace checks excluding the generated package: `git -C Luminous diff --check -- . ':!packages/lucent_openapi/**'`. Do not manually normalize generated Markdown blank lines or trailing whitespace; generated diffs are accepted as generator output.
+- Last known Lucent export: 38 paths / 106 schemas.
+- Generated package includes auth/account, health context, daily records, medicine search/detail, current medicines, dose logs, environment snapshot, and schedule-only medicine reminders.
+
+## Usage Rules
+
+- Business and presentation code use `LucentDioClient` or feature repositories, not generated internals directly.
+- Generated DTOs stay in data-layer response mapping.
+- For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps instead of generated write DTOs.
+- `Accept-Language` is injected by the network layer.
+- Authorization is injected when an access token exists.
+- `401002` triggers refresh and retry.
+- Dio errors are unwrapped through `LucentErrorMapper`.
+- Use `LucentDioClient.medicinesHeaders(bypassCache: true)` for one-off medicine reads that must bypass Lucent read cache.
 
 ## Regenerate
+
+From `Luminous`:
 
 ```bash
 dart run tool/regenerate_lucent_openapi.dart
 ```
 
-Do not run ad-hoc `npx @openapitools/openapi-generator-cli generate` plus manual `build_runner` steps unless you are intentionally debugging the generator itself. The wrapper script is what keeps the generated package usable on the current Flutter/Dart toolchain.
+The wrapper exports Lucent OpenAPI, regenerates the Dart client, restores the generated package constraints, rebuilds serializers, patches known nullable-map generator output, formats generated model files, analyzes the generated package, and refreshes root Flutter dependencies.
+
+Do not run ad-hoc `npx @openapitools/openapi-generator-cli generate` or manual `build_runner` steps for normal work.
+
+After regeneration, run:
+
+```bash
+git -C Luminous diff --check -- . ':!packages/lucent_openapi/**'
+flutter analyze
+flutter test
+```
+
+Generated Markdown whitespace inside `packages/lucent_openapi/**` may remain generator output; do not normalize it just to make diffs prettier.

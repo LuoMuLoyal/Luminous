@@ -1,53 +1,62 @@
-# Flutter i18n
+# Flutter Localization
 
 Last updated: 2026-06-08
+
+This file records the localization workflow and ownership rules. It is not a catalog of every current string.
 
 ## Files
 
 - Config: `l10n.yaml`
 - ARB: `lib/l10n/app_zh.arb`, `lib/l10n/app_en.arb`
-- Generated: `lib/l10n/app_localizations*.dart`
+- Generated output: `lib/l10n/app_localizations*.dart`
 
-## Current Scope
+## Supported Locales
 
-- App title, five-tab labels, Product_Vision-scoped Today mobile dashboard/priority/recommendation/todo/quick-record copy and preview medication names, Record mobile date/quick-action/AI-input/timeline/filter/calendar/today-overview/quick-operation/guide copy, Record dashboard, Medicine mobile drugbox/next-dose/safety-engine/quick-operation/record/tip copy, Report mobile score/metric/trend/finding/export/privacy/pattern copy, Mine mobile account/archive/campus/notice copy, Settings privacy/reminder/export/help/about/Advanced settings copy, Medicine workspace/search empty states, and bounded placeholders
-- Login / Register / Forgot Password / Change Email / AuthShell
-- WeChat Web OAuth login action, callback input, and OAuth feedback toasts
-- Account Settings, account status, linked identity management labels, and WeChat identity binding feedback
-- Standalone Settings page
-- Settings child pages, persisted theme mode / palette selection, and persisted app locale selection
-- Signed-in settings locale sync to Lucent profile preferences
-- Settings notification permission status labels
-- Auth empty-field toast prompts and the shared auth-required dialog prompt
-- Mine signed-out notice / guest state copy
-- Mine signed-in account detail labels and account management action
-- Record quick-create/detail form labels, common type form labels for water/vital/symptom/note, detail page labels, and save/delete failure toast
-- Medicine manual dose-log actions, saved/failed toasts, taken/skipped/pending status labels, missing dose/schedule placeholders, no-pending-dose labels, and mobile safety placeholder action toasts. Inventory/refill copy has been removed from the active Medicine scope.
-- Old More tab l10n, women-health/period-management l10n, sport/specialist-pack Record l10n, Today mood/period active UI l10n, and Report counselor/period/cycle/mood-led l10n were removed on 2026-06-08 as part of Product_Vision convergence.
-- Deferred Medicine scan/OCR/photo/barcode/prescription strings may remain only where deferred code still references them for future contracts; they must not be used to re-surface active UI without a product decision.
-- Network `Accept-Language`
-- Flutter UI locale driven by persisted app locale preference
+- `system`
+- `zh-CN`
+- `en`
 
-## UI Copy Rules
+Persisted preference keys:
 
-- Normal app pages should keep only necessary titles, labels, values, statuses, and actions.
-- Avoid explanatory, narrative, onboarding, or marketing-style copy unless a task explicitly needs it.
+- Locale: `app.locale`
+- Theme mode: `theme.mode`
+- Theme palette: `theme.palette`
 
-## Add Text
+## Rules
 
-1. Add keys to both ARB files.
-2. Run `flutter gen-l10n`.
-3. Read via `AppLocalizations.of(context)`.
+- Do not hardcode user-visible text in pages or widgets.
+- Add visible text to both ARB files.
+- Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.
+- Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.
+- Remove l10n keys when the active UI that owns them is deleted.
+- Deferred strings may remain only when deferred code still references them and the code is annotated.
 
-## Locale Source
+## Add Or Change Text
 
-- Persisted locale preference key: `app.locale`
-- Persisted theme mode preference key: `theme.mode`
-- Persisted theme palette preference key: `theme.palette`
-- Supported in settings flow: `system`, `zh-CN`, `en`
+1. Edit both ARB files.
+2. Run:
+
+```bash
+flutter gen-l10n
+```
+
+3. Read strings through:
+
+```dart
+AppLocalizations.of(context)
+```
+
+4. Run at least:
+
+```bash
+flutter analyze
+flutter test
+```
+
+## Locale Ownership
+
 - `LuminousApp` reads `appLocaleControllerProvider` and passes the resolved locale into `MaterialApp.router.locale`.
 - Lucent network requests reuse the same preference for `Accept-Language`.
-- When signed in, settings preference sync currently writes the supported Lucent profile fields `locale / timezone / unitSystem`; language changes use that same path, and choosing `system` clears the backend locale preference.
-- After auth restore or sign-in, `LuminousApp` best-effort backfills the local app locale from Lucent `profile.locale` when the backend value maps cleanly to the supported `zh-CN / en / system` set.
-
-Do not hardcode user-visible text in pages.
+- Signed-in language changes currently sync to Lucent profile fields through `locale / timezone / unitSystem`.
+- Choosing `system` clears the backend locale preference.
+- After auth restore or sign-in, `LuminousApp` may backfill the local locale from Lucent `profile.locale` when the value maps to `zh-CN`, `en`, or `system`.
