@@ -391,7 +391,10 @@ class _MedicineRecordRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canMark = row.item.currentMedicineId != null && onMarkDose != null;
+    final canMark =
+        row.item.currentMedicineId != null &&
+        onMarkDose != null &&
+        row.item.todayStatus == MedicineDoseStatus.pending;
 
     return Padding(
       padding: const EdgeInsets.symmetric(

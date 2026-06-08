@@ -182,12 +182,7 @@ _NextDose? _nextDoseFor(MedicineWorkspace workspace) {
       }
     }
   }
-  if (workspace.plan.items.isEmpty) return null;
-  final item = workspace.plan.items.first;
-  return _NextDose(
-    item: item,
-    slot: item.slots.isEmpty ? null : item.slots.first,
-  );
+  return null;
 }
 
 List<_RecordRow> _recordRowsFor(
@@ -282,14 +277,20 @@ String _itemName(AppLocalizations l10n, MedicinePlanItem item) {
 }
 
 String _itemDosage(AppLocalizations l10n, MedicinePlanItem item) {
-  final raw = item.rawDosage?.trim();
-  if (raw != null && raw.isNotEmpty) return raw;
+  final raw = item.rawDosage;
+  if (raw != null) {
+    final trimmed = raw.trim();
+    return trimmed.isEmpty ? l10n.medicineDoseNotSet : trimmed;
+  }
   return medicineCopy(l10n, item.dosageKey);
 }
 
 String _itemSchedule(AppLocalizations l10n, MedicinePlanItem item) {
-  final raw = item.rawSchedule?.trim();
-  if (raw != null && raw.isNotEmpty) return raw;
+  final raw = item.rawSchedule;
+  if (raw != null) {
+    final trimmed = raw.trim();
+    return trimmed.isEmpty ? l10n.medicineScheduleNotSet : trimmed;
+  }
   return medicineCopy(l10n, item.scheduleKey);
 }
 
@@ -310,12 +311,6 @@ String _doseSummary(AppLocalizations l10n, MedicinePlanItem item) {
 String _compactRouteOrSchedule(String value) {
   final trimmed = value.trim();
   if (trimmed.isEmpty) return '--';
-  return trimmed;
-}
-
-String _cleanMetricTime(String value) {
-  final trimmed = value.trim();
-  if (trimmed.isEmpty || trimmed == '--') return '20:00';
   return trimmed;
 }
 

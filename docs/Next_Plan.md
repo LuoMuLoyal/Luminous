@@ -48,22 +48,26 @@ Observable result:
 
 - A user can create or edit common record types with fields that fit the selected type.
 
-### Target 3: Local Reminder Scheduling
+### Target 3: Medicine Schedule Contract And Local Reminders
 
-Goal: turn notification preferences into local scheduled reminders without push delivery.
+Status: Medicine closed-loop v1 completed on 2026-06-08 for active current medicines plus same-day manual dose logs. Formal schedule occurrences, reminder times, and inventory/refill tracking remain TODO because Lucent does not expose those contracts yet.
+
+Goal: make Medicine's reminder source explicit before turning notification preferences into local scheduled reminders.
 
 Scope:
 
-- Define the first local schedule source, likely current medicines plus user-selected times.
-- Luminous schedules/cancels local notifications when preferences or schedules change.
+- Keep active current-medicine filtering, same-day dose-log update/create behavior, Today pending counts, and completed-dose UI under regression.
+- Define the first formal medication schedule source in Lucent: occurrence date/time, timezone behavior, repeat rules, and whether the schedule belongs to current medicines or a separate reminder resource.
+- Define medication inventory/refill fields only if the product wants real stock tracking; until then, keep `提醒未设置` / `库存未跟踪` placeholders instead of mock stock.
+- Luminous schedules/cancels local notifications only after the schedule source is real and testable.
 - Keep FCM/APNs, backend delivery workers, push tokens, and delivery logs out of scope.
-- If schedule data needs to sync across devices, design Lucent reminder APIs before implementation.
+- If schedule data needs to sync across devices, design Lucent reminder APIs before local implementation.
 
 Why third: permission and preference UI already exists, but real scheduling needs a clear schedule source.
 
 Observable result:
 
-- A user can enable a local reminder and receive a device-local notification in a testable path.
+- A signed-in user sees pending/taken/skipped medicine state from Lucent-backed dose logs without duplicate same-day records, and the next implementation step has a concrete schedule contract instead of frontend-only guesswork.
 
 ### Deferred: Environment Snapshot / Contextual Surfaces
 
@@ -89,8 +93,8 @@ Observable result:
 ## Immediate Work Order
 
 1. Keep Record quick-action routing, filter chips, selected-date reload, common type form mapping, attachment handling, detail cache invalidation, and timeline time display under regression.
-2. Audit Medicine adherence and the first structured reminder schedule source before building scheduling.
-3. Implement local notification scheduling only after the first reminder schedule source is explicit.
+2. Keep Medicine dose-log closed-loop behavior under regression while designing the formal schedule occurrence and inventory/refill contracts.
+3. Implement local notification scheduling only after the first reminder schedule source is explicit and backed by Lucent or a documented local-only model.
 4. Keep auth/account deferred TODOs explicit until product/security decisions are made.
 
 ## Active Planning References

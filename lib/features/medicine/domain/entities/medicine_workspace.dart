@@ -59,6 +59,7 @@ class MedicinePlanItem {
     required this.stateKey,
     required this.stateColor,
     this.stockWarningKey,
+    this.todayStatus,
     this.rawName,
     this.rawDosage,
     this.rawSchedule,
@@ -76,6 +77,7 @@ class MedicinePlanItem {
   final MedicineCopyKey stateKey;
   final Color stateColor;
   final MedicineCopyKey? stockWarningKey;
+  final MedicineDoseStatus? todayStatus;
 
   /// When non-null, the view should use these raw strings instead of
   /// resolving [nameKey]/[dosageKey]/[scheduleKey]/[stockKey]/[stateKey]

@@ -16,7 +16,9 @@ class LucentTodayRepository implements TodayRepository {
   @override
   Future<TodayDashboard> fetchDashboard() async {
     final snapshot = await ref.read(healthContextSnapshotProvider.future);
-    final medicines = snapshot.currentMedicines;
+    final medicines = snapshot.currentMedicines
+        .where((medicine) => medicine.isCurrent)
+        .toList(growable: false);
 
     // Fetch daily record summary for today
     final today = DateTime.now();
@@ -66,7 +68,7 @@ class LucentTodayRepository implements TodayRepository {
       ),
       water: TodayWaterSummary(completedCount: waterCount, targetCount: 8),
       medication: TodayMedicationSummary(
-        medicineCount: snapshot.summary.currentMedicineCount,
+        medicineCount: medicines.length,
         pendingCount: pendingMedicines.length,
         nextDoseTimeLabel: '--',
         nextMedicine: TodayMedicationKind.atorvastatin,

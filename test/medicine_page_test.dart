@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
+import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -128,6 +130,51 @@ void main() {
       expect(quickOperationTitle, findsOneWidget);
     },
   );
+
+  testWidgets('Medicine completed doses hide today dose action buttons', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const _StaticMedicineWorkspaceRepository(_completedWorkspace),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const MedicinePage(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text(l10n.medicineNoPendingDose), findsOneWidget);
+    expect(find.text(l10n.medicineNoPendingDoseDetail), findsOneWidget);
+    expect(find.text(l10n.medicineDoseActionTaken), findsNothing);
+    expect(find.text(l10n.medicineDoseActionSkipped), findsNothing);
+    expect(find.text(l10n.medicineDoseStatusSkipped), findsAtLeastNWidgets(1));
+  });
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
@@ -148,3 +195,46 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
     );
   }
 }
+
+class _StaticMedicineWorkspaceRepository
+    implements MedicineWorkspaceRepository {
+  const _StaticMedicineWorkspaceRepository(this.workspace);
+
+  final MedicineWorkspace workspace;
+
+  @override
+  Future<MedicineWorkspace> fetchWorkspace() async => workspace;
+}
+
+const _completedWorkspace = MedicineWorkspace(
+  hero: MedicineHero(
+    metricDosesToday: '1/1',
+    metricAdherence: '100%',
+    metricNextDose: '--',
+  ),
+  quickActions: <MedicineQuickAction>[],
+  plan: MedicinePlanSurface(
+    items: <MedicinePlanItem>[
+      MedicinePlanItem(
+        color: AppColorTokens.cyanDeep,
+        nameKey: MedicineCopyKey.mockNameMetformin,
+        dosageKey: MedicineCopyKey.mockDoseMetformin,
+        scheduleKey: MedicineCopyKey.mockScheduleDailyOnce,
+        slots: <MedicineDoseSlot>[
+          MedicineDoseSlot(
+            timeKey: MedicineCopyKey.mockTime2000,
+            statusKey: MedicineCopyKey.doseStatusSkipped,
+            status: MedicineDoseStatus.skipped,
+          ),
+        ],
+        stockKey: MedicineCopyKey.mockStock7Days,
+        stateKey: MedicineCopyKey.doseStatusSkipped,
+        stateColor: AppColorTokens.warningDeep,
+        todayStatus: MedicineDoseStatus.skipped,
+        currentMedicineId: 'med-1',
+      ),
+    ],
+  ),
+  alerts: <MedicineAlert>[],
+  promisePoints: <MedicinePromisePoint>[],
+);
