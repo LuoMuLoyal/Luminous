@@ -30,6 +30,7 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 
 Keep these code paths hidden and annotated until the matching product/API job is ready:
 
+- After the five-tab UI stabilizes, run a focused truncation pass for English and Chinese button labels, pills, and compact rows across Today, Record, Medicine, Report, and Mine.
 - Sleep entry shapes.
 - Lightweight mood record shapes.
 - Environment signals for contextual Today/Mine use.

@@ -15,6 +15,8 @@ abstract final class ReportPalette {
   static const Color blueSoft = AppColorTokens.linkSoft;
   static const Color green = AppColorTokens.cyanDeep;
   static const Color greenSoft = AppColorTokens.cyanSoft;
+  static const Color previewScore = AppColorTokens.health;
+  static const Color previewScoreSoft = AppColorTokens.healthSoft;
   static const Color violet = AppColorTokens.violet;
   static const Color violetSoft = AppColorTokens.violetSoft;
   static const Color pink = AppColorTokens.highlightMagenta;

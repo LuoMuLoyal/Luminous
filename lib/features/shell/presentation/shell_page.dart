@@ -37,6 +37,8 @@ class ShellPage extends ConsumerWidget {
         ? AppTypographyTokens.mobile(scheme.onSurface)
         : AppTypographyTokens.desktop(scheme.onSurface);
     final isDesktop = width >= AppBreakpoints.desktop;
+    const selectedNavColor = AppColorTokens.health;
+    final unselectedNavColor = surface.body;
 
     final destinations = ShellTab.values
         .map(
@@ -100,17 +102,33 @@ class ShellPage extends ConsumerWidget {
           : IndexedStack(index: currentIndex, children: _pages),
       bottomNavigationBar: isDesktop
           ? null
-          : NavigationBar(
-              backgroundColor: surface.canvas.withValues(alpha: 0.96),
-              surfaceTintColor: Colors.transparent,
-              indicatorColor: surface.canvasSoft2,
-              height: width < 600 ? 70 : 76,
-              labelTextStyle: WidgetStatePropertyAll<TextStyle>(
-                typography.caption,
+          : NavigationBarTheme(
+              data: NavigationBarThemeData(
+                indicatorColor: AppColorTokens.healthSoft,
+                iconTheme: WidgetStateProperty.resolveWith((states) {
+                  final selected = states.contains(WidgetState.selected);
+                  return IconThemeData(
+                    color: selected ? selectedNavColor : unselectedNavColor,
+                    size: 24,
+                  );
+                }),
+                labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                  final selected = states.contains(WidgetState.selected);
+                  return typography.caption.copyWith(
+                    color: selected ? selectedNavColor : scheme.onSurface,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                    letterSpacing: 0,
+                  );
+                }),
               ),
-              selectedIndex: currentIndex,
-              onDestinationSelected: notifier.selectTab,
-              destinations: destinations,
+              child: NavigationBar(
+                backgroundColor: surface.canvas.withValues(alpha: 0.96),
+                surfaceTintColor: Colors.transparent,
+                height: width < 600 ? 70 : 76,
+                selectedIndex: currentIndex,
+                onDestinationSelected: notifier.selectTab,
+                destinations: destinations,
+              ),
             ),
     );
   }
