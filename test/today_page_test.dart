@@ -55,6 +55,7 @@ void main() {
     final scrollable = find.byType(Scrollable);
     final keys = <String>[
       'today-health-summary-card',
+      'today-ai-summary-card',
       'today-medication-card',
       'today-water-card',
       'today-recommendation-card',

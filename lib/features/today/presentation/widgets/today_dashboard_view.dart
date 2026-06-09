@@ -87,6 +87,7 @@ class _MobileTodayDashboard extends StatelessWidget {
         hasUnreadNotifications: dashboard.user.hasUnreadNotifications,
       ),
       _HealthOverviewCard(dashboard: dashboard),
+      _AiDailySummarySection(dashboard: dashboard),
       _PrioritySection(dashboard: dashboard),
       _RecommendationSection(dashboard: dashboard),
       _TodoSection(dashboard: dashboard),
@@ -130,6 +131,8 @@ class _DesktopTodayDashboard extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacingTokens.lg),
         _HealthOverviewCard(dashboard: dashboard),
+        const SizedBox(height: AppSpacingTokens.lg),
+        _AiDailySummarySection(dashboard: dashboard),
         const SizedBox(height: AppSpacingTokens.lg),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,11 +271,13 @@ class _HealthOverviewCard extends StatelessWidget {
     return TodayPanel(
       key: const Key('today-health-summary-card'),
       padding: const EdgeInsets.fromLTRB(
-        AppSpacingTokens.sm,
-        AppSpacingTokens.sm,
+        AppSpacingTokens.md,
         AppSpacingTokens.sm,
         AppSpacingTokens.md,
+        AppSpacingTokens.sm,
       ),
+      radius: AppRadiusTokens.lg,
+      shadow: const <BoxShadow>[],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -302,14 +307,12 @@ class _HealthOverviewCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacingTokens.sm),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               for (var index = 0; index < items.length; index += 1) ...[
                 Expanded(child: _OverviewMetric(item: items[index])),
                 if (index < items.length - 1)
-                  const _VerticalMetricDivider(
-                    height: AppSpacingTokens.x4l + AppSpacingTokens.xs,
-                  ),
+                  const _VerticalMetricDivider(height: AppSpacingTokens.x3l),
               ],
             ],
           ),
@@ -332,49 +335,179 @@ class _OverviewMetric extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(item.icon, color: item.color, size: AppSpacingTokens.md),
+          const SizedBox(width: AppSpacingTokens.xs),
+          Flexible(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.label,
+                  style: typography.caption.copyWith(
+                    color: Theme.of(context).extension<AppThemeSurface>()!.body,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: AppSpacingTokens.xxs),
+                AppSkeletonSlot(
+                  skeleton: const AppInlineSkeletonBlock(
+                    height: 18,
+                    width: 44,
+                    radius: AppRadiusTokens.sm,
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      item.value,
+                      style: typography.bodyMdStrong.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AiDailySummarySection extends StatelessWidget {
+  const _AiDailySummarySection({required this.dashboard});
+
+  final TodayDashboard dashboard;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final bullets = _aiSummaryBullets(l10n, dashboard);
+
+    return TodayPanel(
+      key: const Key('today-ai-summary-card'),
+      padding: EdgeInsets.zero,
+      radius: AppRadiusTokens.lg,
+      shadow: const <BoxShadow>[],
       child: Column(
         children: [
-          Icon(item.icon, color: item.color, size: AppSpacingTokens.lg),
-          const SizedBox(height: AppSpacingTokens.xs),
-          Text(
-            item.label,
-            style: typography.bodyMd.copyWith(
-              color: Theme.of(context).extension<AppThemeSurface>()!.body,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacingTokens.md,
+              AppSpacingTokens.sm,
+              AppSpacingTokens.md,
+              AppSpacingTokens.sm,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: AppSpacingTokens.xxs),
-          AppSkeletonSlot(
-            skeleton: const AppInlineSkeletonBlock(
-              height: 20,
-              width: 44,
-              radius: AppRadiusTokens.sm,
-            ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                item.value,
-                style: typography.bodyLg.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
+            child: Row(
+              children: [
+                TodayGlyphTile(
+                  icon: Icons.auto_awesome_rounded,
+                  color: TodayPalette.teal,
+                  size: AppSpacingTokens.x2l,
+                  radius: AppRadiusTokens.md,
+                  gradient: false,
                 ),
-                maxLines: 1,
-              ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.todayAiSummaryTitle,
+                        style: typography.bodyMdStrong.copyWith(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: AppSpacingTokens.xxs),
+                      Text(
+                        l10n.todayAiSummarySubtitle,
+                        style: typography.bodySm.copyWith(
+                          color: surface.body,
+                          letterSpacing: 0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                TextButton(
+                  onPressed: () =>
+                      AppToast.show(context, l10n.todayAiSummaryGenerateAction),
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacingTokens.sm,
+                    ),
+                  ),
+                  child: Text(l10n.todayAiSummaryGenerateAction),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.xxs),
-          AppSkeletonSlot(
-            skeleton: const AppInlineSkeletonBlock(
-              height: 20,
-              width: 48,
-              radius: AppRadiusTokens.pill,
-            ),
-            child: TodayStatusPill(
-              label: item.status,
-              color: item.statusColor ?? item.color,
+          Divider(height: 1, thickness: 1, color: surface.hairline),
+          for (var index = 0; index < bullets.length; index += 1) ...[
+            _AiSummaryRow(item: bullets[index]),
+            if (index < bullets.length - 1)
+              Divider(
+                height: 1,
+                thickness: 1,
+                indent: AppSpacingTokens.x4l + AppSpacingTokens.sm,
+                color: surface.hairline.withValues(alpha: 0.62),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AiSummaryRow extends StatelessWidget {
+  const _AiSummaryRow({required this.item});
+
+  final _AiSummaryItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.md,
+        vertical: AppSpacingTokens.sm,
+      ),
+      child: Row(
+        children: [
+          Icon(item.icon, color: item.color, size: AppSpacingTokens.lg),
+          const SizedBox(width: AppSpacingTokens.md),
+          Expanded(
+            child: Text(
+              item.text,
+              style: typography.bodySm.copyWith(
+                color: surface.body,
+                letterSpacing: 0,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -913,9 +1046,6 @@ List<_OverviewItem> _overviewItems(
       icon: Icons.medication_rounded,
       label: l10n.todayMedicationOverviewLabel,
       value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
-      status: dashboard.medication.pendingCount == 0
-          ? l10n.todayStatusCompleted
-          : l10n.todayMedicationPendingStatus,
       color: TodayPalette.green,
     ),
     _OverviewItem(
@@ -925,19 +1055,12 @@ List<_OverviewItem> _overviewItems(
         dashboard.water.completedCount,
         dashboard.water.targetCount,
       ),
-      status: dashboard.water.progress >= 0.75
-          ? l10n.todayVitalStatusGood
-          : l10n.todayStatusNeedsImprovement,
       color: TodayPalette.teal,
-      statusColor: dashboard.water.progress >= 0.75
-          ? TodayPalette.teal
-          : TodayPalette.amber,
     ),
     _OverviewItem(
       icon: Icons.bedtime_rounded,
       label: l10n.todayVitalSleepLabel,
       value: '$sleep ${l10n.todayVitalSleepUnit}',
-      status: l10n.todayVitalStatusGood,
       color: TodayPalette.blue,
     ),
   ];
@@ -1039,6 +1162,38 @@ List<_RecommendationItem> _recommendationItems(
   ];
 }
 
+List<_AiSummaryItem> _aiSummaryBullets(
+  AppLocalizations l10n,
+  TodayDashboard dashboard,
+) {
+  final waterRemaining = dashboard.water.remainingCount;
+  final hasMedicationRisk = dashboard.medication.pendingCount > 0;
+
+  return [
+    _AiSummaryItem(
+      icon: Icons.medication_liquid_outlined,
+      color: TodayPalette.blue,
+      text: hasMedicationRisk
+          ? l10n.todayAiSummaryMedicationPending(
+              dashboard.medication.pendingCount,
+            )
+          : l10n.todayAiSummaryMedicationDone,
+    ),
+    _AiSummaryItem(
+      icon: Icons.local_drink_outlined,
+      color: waterRemaining == 0 ? TodayPalette.teal : TodayPalette.amber,
+      text: waterRemaining == 0
+          ? l10n.todayAiSummaryWaterDone
+          : l10n.todayAiSummaryWaterRemaining(waterRemaining),
+    ),
+    _AiSummaryItem(
+      icon: Icons.bedtime_outlined,
+      color: TodayPalette.violet,
+      text: l10n.todayAiSummarySleepPlaceholder,
+    ),
+  ];
+}
+
 List<_TodoItem> _todoItems(AppLocalizations l10n, TodayDashboard dashboard) {
   final nextMedicineName =
       dashboard.medication.nextMedicineName ??
@@ -1121,17 +1276,13 @@ class _OverviewItem {
     required this.icon,
     required this.label,
     required this.value,
-    required this.status,
     required this.color,
-    this.statusColor,
   });
 
   final IconData icon;
   final String label;
   final String value;
-  final String status;
   final Color color;
-  final Color? statusColor;
 }
 
 class _PriorityItem {
@@ -1170,6 +1321,18 @@ class _RecommendationItem {
   final String title;
   final String subtitle;
   final String action;
+}
+
+class _AiSummaryItem {
+  const _AiSummaryItem({
+    required this.icon,
+    required this.color,
+    required this.text,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String text;
 }
 
 class _TodoItem {
