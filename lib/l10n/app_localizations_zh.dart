@@ -93,6 +93,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordCreateFieldUnit => '单位';
 
   @override
+  String get recordWaterUnitMl => 'ml';
+
+  @override
+  String get recordWaterUnitCup => '杯';
+
+  @override
+  String get recordWaterUnitTimes => '次';
+
+  @override
   String get recordCreateFieldTitleOptional => '标题（可选）';
 
   @override
@@ -178,9 +187,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordAllTypesAction => '全部类型';
-
-  @override
-  String get recordCalendarOverviewTitle => '日历概览';
 
   @override
   String get recordTodayOverviewTitle => '今日记录概览';
@@ -2209,9 +2215,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayWaterPriorityTitle => '饮水目标';
 
   @override
-  String get todayWaterGoalMl => '今日目标 2000 ml';
-
-  @override
   String get todayDrinkWaterAction => '去喝水';
 
   @override
@@ -2462,7 +2465,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportPeriodThisWeek => '本周';
 
   @override
-  String get reportShareTooltip => '分享报告';
+  String get reportGenerateAction => '生成报告';
+
+  @override
+  String get reportSyncAction => '同步';
 
   @override
   String get reportScoreTitle => '本周健康总结';

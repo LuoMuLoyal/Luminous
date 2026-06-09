@@ -271,10 +271,10 @@ class _HealthOverviewCard extends StatelessWidget {
     return TodayPanel(
       key: const Key('today-health-summary-card'),
       padding: const EdgeInsets.fromLTRB(
+        AppSpacingTokens.sm,
+        AppSpacingTokens.sm,
+        AppSpacingTokens.sm,
         AppSpacingTokens.md,
-        AppSpacingTokens.md,
-        AppSpacingTokens.md,
-        AppSpacingTokens.lg,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,7 +303,7 @@ class _HealthOverviewCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.sm),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -311,7 +311,7 @@ class _HealthOverviewCard extends StatelessWidget {
                 Expanded(child: _OverviewMetric(item: items[index])),
                 if (index < items.length - 1)
                   const _VerticalMetricDivider(
-                    height: AppSpacingTokens.x5l + AppSpacingTokens.md,
+                    height: AppSpacingTokens.x4l + AppSpacingTokens.xs,
                   ),
               ],
             ],
@@ -337,8 +337,8 @@ class _OverviewMetric extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
       child: Column(
         children: [
-          Icon(item.icon, color: item.color, size: AppSpacingTokens.xl),
-          const SizedBox(height: AppSpacingTokens.sm),
+          Icon(item.icon, color: item.color, size: AppSpacingTokens.lg),
+          const SizedBox(height: AppSpacingTokens.xs),
           Text(
             item.label,
             style: typography.bodyMd.copyWith(
@@ -349,10 +349,10 @@ class _OverviewMetric extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: AppSpacingTokens.xs),
+          const SizedBox(height: AppSpacingTokens.xxs),
           AppSkeletonSlot(
             skeleton: const AppInlineSkeletonBlock(
-              height: 22,
+              height: 20,
               width: 44,
               radius: AppRadiusTokens.sm,
             ),
@@ -368,10 +368,10 @@ class _OverviewMetric extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.xs),
+          const SizedBox(height: AppSpacingTokens.xxs),
           AppSkeletonSlot(
             skeleton: const AppInlineSkeletonBlock(
-              height: 22,
+              height: 20,
               width: 48,
               radius: AppRadiusTokens.pill,
             ),
@@ -395,22 +395,35 @@ class _PrioritySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final items = _priorityItems(l10n, dashboard);
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
     return _TodaySection(
       title: l10n.todayPrioritySectionTitle,
       actionLabel: l10n.todayManageAction,
       onAction: () => AppToast.show(context, l10n.todayManageAction),
-      child: _ResponsiveCardGrid(
-        minTileWidth: AppSpacingTokens.x6l + AppSpacingTokens.xl,
-        spacing: AppSpacingTokens.sm,
-        children: [for (final item in items) _PriorityCard(item: item)],
+      child: TodayPanel(
+        padding: EdgeInsets.zero,
+        child: Column(
+          children: [
+            for (var index = 0; index < items.length; index += 1) ...[
+              _PriorityRow(item: items[index]),
+              if (index < items.length - 1)
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  indent: AppSpacingTokens.x5l,
+                  color: surface.hairline.withValues(alpha: 0.62),
+                ),
+            ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class _PriorityCard extends StatelessWidget {
-  const _PriorityCard({required this.item});
+class _PriorityRow extends StatelessWidget {
+  const _PriorityRow({required this.item});
 
   final _PriorityItem item;
 
@@ -420,25 +433,25 @@ class _PriorityCard extends StatelessWidget {
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
-    return TodayPanel(
+    return Material(
       key: item.key,
-      padding: const EdgeInsets.all(AppSpacingTokens.sm),
-      color: Color.alphaBlend(
-        item.color.withValues(alpha: 0.035),
-        surface.canvas,
-      ),
-      borderColor: item.color.withValues(alpha: 0.18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => AppToast.show(context, item.action),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TodayGlyphTile(
                 icon: item.icon,
                 color: item.color,
-                size: AppSpacingTokens.x3l,
+                size: AppSpacingTokens.x2l,
                 radius: AppRadiusTokens.md,
+                gradient: false,
               ),
               const SizedBox(width: AppSpacingTokens.sm),
               Expanded(
@@ -464,71 +477,44 @@ class _PriorityCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    if (item.progress != null) ...[
+                      const SizedBox(height: AppSpacingTokens.xs),
+                      TodayLinearProgress(
+                        progress: item.progress!,
+                        color: item.color,
+                        height: 5,
+                      ),
+                    ],
                   ],
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          if (item.progress != null) ...[
-            AppSkeletonSlot(
-              skeleton: const Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppInlineSkeletonBlock(
-                    height: 8,
-                    radius: AppRadiusTokens.pill,
-                  ),
-                  SizedBox(height: AppSpacingTokens.sm),
-                  Center(
-                    child: AppInlineSkeletonBlock(
-                      height: 18,
-                      width: 42,
-                      radius: AppRadiusTokens.sm,
-                    ),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  TodayLinearProgress(
-                    progress: item.progress!,
-                    color: item.color,
-                    height: 6,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: AppSkeletonText(
+              const SizedBox(width: AppSpacingTokens.sm),
+              SizedBox(
+                width: 82,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    AppSkeletonText(
                       text: item.detail,
                       style: typography.bodySmStrong.copyWith(
                         color: surface.body,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0,
                       ),
-                      widthFactor: 0.42,
+                      textAlign: TextAlign.end,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      widthFactor: 0.76,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: AppSpacingTokens.xs),
+                    _PriorityActionPill(item: item),
+                  ],
+                ),
               ),
-            ),
-          ] else
-            AppSkeletonText(
-              text: item.detail,
-              style: typography.bodyMd.copyWith(
-                color: surface.body,
-                letterSpacing: 0,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              widthFactor: 0.74,
-            ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          Align(
-            alignment: Alignment.centerRight,
-            child: _PriorityActionPill(item: item),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -1106,41 +1092,71 @@ List<_PriorityItem> _priorityItems(
   final nextMedicineName =
       dashboard.medication.nextMedicineName ??
       _medicationName(l10n, dashboard.medication.nextMedicine);
-  final pending = dashboard.medication.pendingCount;
-  final waterProgress = dashboard.water.progress;
+  final sourceItems = dashboard.priorityItems.isEmpty
+      ? _fallbackPriorityItems(dashboard)
+      : dashboard.priorityItems;
 
   return [
-    _PriorityItem(
-      key: const Key('today-medication-card'),
-      icon: Icons.medication_rounded,
-      color: TodayPalette.blue,
-      title: l10n.todayMedicationCardTitle,
-      subtitle: l10n.todayMedicationPrioritySubtitle(pending),
-      detail: l10n.todayMedicationPriorityDetail(
-        dashboard.medication.nextDoseTimeLabel,
-        nextMedicineName,
-      ),
-      action: l10n.todayMedicationTakeAction,
+    for (final item in sourceItems)
+      switch (item.type) {
+        TodayPriorityItemType.medication => _PriorityItem(
+          key: const Key('today-medication-card'),
+          icon: Icons.medication_rounded,
+          color: TodayPalette.blue,
+          title: l10n.todayMedicationCardTitle,
+          subtitle: l10n.todayMedicationPrioritySubtitle(
+            item.count ?? dashboard.medication.pendingCount,
+          ),
+          detail: l10n.todayMedicationPriorityDetail(
+            item.timeLabel ?? dashboard.medication.nextDoseTimeLabel,
+            item.medicineName ?? nextMedicineName,
+          ),
+          action: l10n.todayMedicationTakeAction,
+        ),
+        TodayPriorityItemType.water => _PriorityItem(
+          key: const Key('today-water-card'),
+          icon: Icons.local_drink_rounded,
+          color: TodayPalette.teal,
+          title: l10n.todayWaterPriorityTitle,
+          subtitle: l10n.todayWaterGoalCount(
+            item.targetCount ?? dashboard.water.targetCount,
+          ),
+          detail: l10n.todayWaterCount(
+            item.count ?? dashboard.water.completedCount,
+          ),
+          action: l10n.todayDrinkWaterAction,
+          progress: item.progress ?? dashboard.water.progress,
+        ),
+        TodayPriorityItemType.campus => _PriorityItem(
+          key: const Key('today-campus-card'),
+          icon: Icons.local_hospital_rounded,
+          color: TodayPalette.blue,
+          title: l10n.todayCampusGuideTitle,
+          subtitle: l10n.todayCampusGuideSubtitle,
+          detail: l10n.todayCampusGuideDetail,
+          action: l10n.todayViewAction,
+        ),
+      },
+  ];
+}
+
+List<TodayPriorityItem> _fallbackPriorityItems(TodayDashboard dashboard) {
+  return [
+    TodayPriorityItem(
+      id: 'medication',
+      type: TodayPriorityItemType.medication,
+      count: dashboard.medication.pendingCount,
+      timeLabel: dashboard.medication.nextDoseTimeLabel,
+      medicineName: dashboard.medication.nextMedicineName,
     ),
-    _PriorityItem(
-      key: const Key('today-water-card'),
-      icon: Icons.local_drink_rounded,
-      color: TodayPalette.teal,
-      title: l10n.todayWaterPriorityTitle,
-      subtitle: l10n.todayWaterGoalMl,
-      detail: '${(waterProgress * 100).round()}%',
-      action: l10n.todayDrinkWaterAction,
-      progress: waterProgress,
+    TodayPriorityItem(
+      id: 'water',
+      type: TodayPriorityItemType.water,
+      count: dashboard.water.completedCount,
+      targetCount: dashboard.water.targetCount,
+      progress: dashboard.water.progress,
     ),
-    _PriorityItem(
-      key: const Key('today-campus-card'),
-      icon: Icons.local_hospital_rounded,
-      color: TodayPalette.blue,
-      title: l10n.todayCampusGuideTitle,
-      subtitle: l10n.todayCampusGuideSubtitle,
-      detail: l10n.todayCampusGuideDetail,
-      action: l10n.todayViewAction,
-    ),
+    const TodayPriorityItem(id: 'campus', type: TodayPriorityItemType.campus),
   ];
 }
 

@@ -102,6 +102,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordCreateFieldUnit => 'Unit';
 
   @override
+  String get recordWaterUnitMl => 'ml';
+
+  @override
+  String get recordWaterUnitCup => 'cup';
+
+  @override
+  String get recordWaterUnitTimes => 'times';
+
+  @override
   String get recordCreateFieldTitleOptional => 'Title (optional)';
 
   @override
@@ -189,9 +198,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordAllTypesAction => 'All types';
-
-  @override
-  String get recordCalendarOverviewTitle => 'Calendar overview';
 
   @override
   String get recordTodayOverviewTitle => 'Today overview';
@@ -2338,9 +2344,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayWaterPriorityTitle => 'Water goal';
 
   @override
-  String get todayWaterGoalMl => 'Today\'s goal 2000 ml';
-
-  @override
   String get todayDrinkWaterAction => 'Drink water';
 
   @override
@@ -2597,7 +2600,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportPeriodThisWeek => 'This week';
 
   @override
-  String get reportShareTooltip => 'Share report';
+  String get reportGenerateAction => 'Generate report';
+
+  @override
+  String get reportSyncAction => 'Sync';
 
   @override
   String get reportScoreTitle => 'This week\'s health summary';

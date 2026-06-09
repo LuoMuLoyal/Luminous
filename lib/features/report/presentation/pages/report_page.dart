@@ -16,12 +16,19 @@ class ReportPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardAsync = ref.watch(reportDashboardProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final notifier = ref.read(reportDashboardProvider.notifier);
 
     return dashboardAsync.when(
-      data: (dashboard) =>
-          _ReportMobileShell(child: ReportDashboardView(dashboard: dashboard)),
-      loading: () => const _ReportMobileShell(
-        child: ReportDashboardView(
+      data: (dashboard) => _ReportMobileShell(
+        onGenerate: notifier.sync,
+        onSync: notifier.sync,
+        child: ReportDashboardView(dashboard: dashboard),
+      ),
+      loading: () => _ReportMobileShell(
+        isSyncing: true,
+        onGenerate: notifier.sync,
+        onSync: notifier.sync,
+        child: const ReportDashboardView(
           dashboard: MockReportRepository.dashboard,
           isLoading: true,
         ),
@@ -38,7 +45,7 @@ class ReportPage extends ConsumerWidget {
               description: l10n.reportErrorDescription,
               icon: Icons.bar_chart_rounded,
               actionLabel: l10n.todayRetryAction,
-              onAction: () => ref.invalidate(reportDashboardProvider),
+              onAction: notifier.sync,
               tone: AppStateTone.warning,
             ),
           ),
@@ -49,9 +56,17 @@ class ReportPage extends ConsumerWidget {
 }
 
 class _ReportMobileShell extends StatelessWidget {
-  const _ReportMobileShell({required this.child});
+  const _ReportMobileShell({
+    required this.child,
+    required this.onGenerate,
+    required this.onSync,
+    this.isSyncing = false,
+  });
 
   final Widget child;
+  final VoidCallback onGenerate;
+  final VoidCallback onSync;
+  final bool isSyncing;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +85,11 @@ class _ReportMobileShell extends StatelessWidget {
             AppSpacingTokens.x5l,
           ),
           children: [
-            const ReportTopBar(),
+            ReportTopBar(
+              isSyncing: isSyncing,
+              onGenerate: onGenerate,
+              onSync: onSync,
+            ),
             const SizedBox(height: AppSpacingTokens.md),
             child,
           ],

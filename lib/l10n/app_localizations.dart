@@ -254,6 +254,24 @@ abstract class AppLocalizations {
   /// **'单位'**
   String get recordCreateFieldUnit;
 
+  /// No description provided for @recordWaterUnitMl.
+  ///
+  /// In zh, this message translates to:
+  /// **'ml'**
+  String get recordWaterUnitMl;
+
+  /// No description provided for @recordWaterUnitCup.
+  ///
+  /// In zh, this message translates to:
+  /// **'杯'**
+  String get recordWaterUnitCup;
+
+  /// No description provided for @recordWaterUnitTimes.
+  ///
+  /// In zh, this message translates to:
+  /// **'次'**
+  String get recordWaterUnitTimes;
+
   /// No description provided for @recordCreateFieldTitleOptional.
   ///
   /// In zh, this message translates to:
@@ -427,12 +445,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'全部类型'**
   String get recordAllTypesAction;
-
-  /// No description provided for @recordCalendarOverviewTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'日历概览'**
-  String get recordCalendarOverviewTitle;
 
   /// No description provided for @recordTodayOverviewTitle.
   ///
@@ -4346,12 +4358,6 @@ abstract class AppLocalizations {
   /// **'饮水目标'**
   String get todayWaterPriorityTitle;
 
-  /// No description provided for @todayWaterGoalMl.
-  ///
-  /// In zh, this message translates to:
-  /// **'今日目标 2000 ml'**
-  String get todayWaterGoalMl;
-
   /// No description provided for @todayDrinkWaterAction.
   ///
   /// In zh, this message translates to:
@@ -4832,11 +4838,17 @@ abstract class AppLocalizations {
   /// **'本周'**
   String get reportPeriodThisWeek;
 
-  /// No description provided for @reportShareTooltip.
+  /// No description provided for @reportGenerateAction.
   ///
   /// In zh, this message translates to:
-  /// **'分享报告'**
-  String get reportShareTooltip;
+  /// **'生成报告'**
+  String get reportGenerateAction;
+
+  /// No description provided for @reportSyncAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步'**
+  String get reportSyncAction;
 
   /// No description provided for @reportScoreTitle.
   ///

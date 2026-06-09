@@ -74,6 +74,8 @@ class LucentTodayRepository implements TodayRepository {
     final fallbackMedicine = pendingMedicines.isNotEmpty
         ? pendingMedicines.first
         : (medicines.isNotEmpty ? medicines.first : null);
+    final nextMedicineName =
+        nextMedicine?.displayName ?? fallbackMedicine?.displayName;
 
     return TodayDashboard(
       user: TodayUserSnapshot(
@@ -87,8 +89,7 @@ class LucentTodayRepository implements TodayRepository {
         pendingCount: pendingMedicines.length,
         nextDoseTimeLabel: nextReminder?.timeLabel ?? '--',
         nextMedicine: TodayMedicationKind.atorvastatin,
-        nextMedicineName:
-            nextMedicine?.displayName ?? fallbackMedicine?.displayName,
+        nextMedicineName: nextMedicineName,
       ),
       vitals: [
         TodayVitalSummary(
@@ -108,6 +109,29 @@ class LucentTodayRepository implements TodayRepository {
       mealSuggestion: _staticMealSuggestion,
       environment: _staticEnvironment,
       lumiSuggestion: _staticLumiSuggestion,
+      priorityItems: [
+        TodayPriorityItem(
+          id: 'medication',
+          type: TodayPriorityItemType.medication,
+          count: pendingMedicines.length,
+          timeLabel: nextReminder?.timeLabel ?? '--',
+          medicineName: nextMedicineName,
+        ),
+        TodayPriorityItem(
+          id: 'water',
+          type: TodayPriorityItemType.water,
+          count: waterCount,
+          targetCount: 8,
+          progress: TodayWaterSummary(
+            completedCount: waterCount,
+            targetCount: 8,
+          ).progress,
+        ),
+        const TodayPriorityItem(
+          id: 'campus',
+          type: TodayPriorityItemType.campus,
+        ),
+      ],
     );
   }
 

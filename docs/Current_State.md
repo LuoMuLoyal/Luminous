@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-06-08
+Last updated: 2026-06-09
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -34,14 +34,15 @@ This file records current implementation facts only. Product direction lives in 
 - Protected providers do not call Lucent while auth is restoring or confirmed signed out.
 - Protected entry taps show a modal login prompt on the current page; direct/deep-link protected pages keep destination guards as fallback.
 - Skeleton loading is section-scoped: stable chrome and local/mock/static sections render immediately, backend-backed fields shimmer locally.
+- Report opens on the current static snapshot and refreshes only when the user taps generate or sync.
 
 ## Active Mobile UI
 
-- Today: medication tasks, hydration tasks, UI-only custom todos, AI summary/advice placeholders, immediate risk/campus suggestions.
-- Record: symptoms, hydration, diet/meal, medication boundary entry, natural-language placeholder, selected-date timeline/detail/create/edit, filters, calendar/today overview, quick operations, guide row.
+- Today: compressed health overview, repository-provided priority list, medication tasks, hydration tasks with count targets, UI-only custom todos, AI summary/advice placeholders, immediate risk/campus suggestions.
+- Record: symptoms, hydration with selectable units, diet/meal, medication boundary entry, natural-language placeholder, selected-date timeline/detail/create/edit, top date bar, filters, full-width today overview, quick operations, guide row.
 - Medicine: active current-medicine drugbox, reminder-derived next dose, same-day taken/skipped dose logs, safety explanations, pregnancy/lactation/special-group medication safety conditions.
-- Report: mock daily/weekly summaries, medication/sleep/water/diet/symptom trend placeholders, campus hospital/pharmacist export controls.
-- Mine/Settings: account, health archive, allergies, current medicines, privacy, notifications, campus hospital/pharmacy/emergency/support resources, Advanced settings.
+- Report: static mock daily/weekly summaries until user-triggered generate/sync, medication/sleep/water/diet/symptom trend placeholders, campus hospital/pharmacist export controls.
+- Mine/Settings: account, health archive, allergies, current medicines, privacy, notifications, divider-based campus hospital/pharmacy/emergency/support resources, Advanced settings.
 
 ## Mock Or Deferred
 

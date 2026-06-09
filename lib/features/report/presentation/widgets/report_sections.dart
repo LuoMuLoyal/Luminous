@@ -8,7 +8,16 @@ import 'package:luminous/features/report/presentation/widgets/report_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportTopBar extends StatelessWidget {
-  const ReportTopBar({super.key});
+  const ReportTopBar({
+    super.key,
+    required this.onGenerate,
+    required this.onSync,
+    this.isSyncing = false,
+  });
+
+  final VoidCallback onGenerate;
+  final VoidCallback onSync;
+  final bool isSyncing;
 
   @override
   Widget build(BuildContext context) {
@@ -17,45 +26,70 @@ class ReportTopBar extends StatelessWidget {
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.tabReport,
-                style: typography.displayXl.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
-                ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.tabReport,
+                    style: typography.displayXl.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  Text(
+                    l10n.reportWeekDateRange,
+                    style: typography.bodyLg.copyWith(
+                      color: surface.body,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
-              Text(
-                l10n.reportWeekDateRange,
-                style: typography.bodyLg.copyWith(
-                  color: surface.body,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: AppSpacingTokens.md),
-        ReportPeriodPill(label: l10n.reportPeriodThisWeek),
-        const SizedBox(width: AppSpacingTokens.sm),
-        Tooltip(
-          message: l10n.reportShareTooltip,
-          child: IconButton(
-            onPressed: () => showReportToast(context, l10n.reportShareTooltip),
-            icon: const Icon(Icons.ios_share_rounded),
-            color: theme.colorScheme.onSurface,
-            visualDensity: VisualDensity.compact,
-            style: const ButtonStyle(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-          ),
+            const SizedBox(width: AppSpacingTokens.md),
+            ReportPeriodPill(label: l10n.reportPeriodThisWeek),
+          ],
+        ),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Row(
+          children: [
+            Expanded(
+              child: FilledButton.icon(
+                key: const Key('report-generate-action'),
+                onPressed: isSyncing ? null : onGenerate,
+                icon: const Icon(Icons.auto_awesome_rounded),
+                label: Text(
+                  l10n.reportGenerateAction,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            Tooltip(
+              message: l10n.reportSyncAction,
+              child: IconButton.outlined(
+                key: const Key('report-sync-action'),
+                onPressed: isSyncing ? null : onSync,
+                icon: Icon(
+                  isSyncing ? Icons.hourglass_top_rounded : Icons.sync_rounded,
+                ),
+                color: theme.colorScheme.onSurface,
+                visualDensity: VisualDensity.compact,
+                style: const ButtonStyle(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

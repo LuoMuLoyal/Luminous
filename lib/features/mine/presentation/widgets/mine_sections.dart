@@ -334,26 +334,12 @@ class MineCampusServiceSection extends StatelessWidget {
         const SizedBox(height: AppSpacingTokens.sm),
         _MinePanel(
           surface: surface,
-          padding: const EdgeInsets.all(AppSpacingTokens.md),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: dashboard.campusServices.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: AppSpacingTokens.sm,
-              mainAxisSpacing: AppSpacingTokens.sm,
-              mainAxisExtent: 124,
-            ),
-            itemBuilder: (context, index) {
-              final entry = dashboard.campusServices[index];
-              return _ServiceCard(
-                entry: entry,
-                l10n: l10n,
-                typography: typography,
-                surface: surface,
-              );
-            },
+          padding: EdgeInsets.zero,
+          child: _ServiceDividerGrid(
+            entries: dashboard.campusServices,
+            l10n: l10n,
+            typography: typography,
+            surface: surface,
           ),
         ),
       ],
@@ -604,8 +590,69 @@ class _ArchiveRow extends StatelessWidget {
   }
 }
 
-class _ServiceCard extends StatelessWidget {
-  const _ServiceCard({
+class _ServiceDividerGrid extends StatelessWidget {
+  const _ServiceDividerGrid({
+    required this.entries,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final List<MineActionEntry> entries;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <List<MineActionEntry>>[];
+    for (var index = 0; index < entries.length; index += 2) {
+      rows.add(entries.skip(index).take(2).toList(growable: false));
+    }
+
+    return Column(
+      children: [
+        for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) ...[
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  child: _ServiceTile(
+                    entry: rows[rowIndex][0],
+                    l10n: l10n,
+                    typography: typography,
+                    surface: surface,
+                  ),
+                ),
+                if (rows[rowIndex].length > 1) ...[
+                  VerticalDivider(
+                    width: 1,
+                    thickness: 1,
+                    color: surface.hairline,
+                  ),
+                  Expanded(
+                    child: _ServiceTile(
+                      entry: rows[rowIndex][1],
+                      l10n: l10n,
+                      typography: typography,
+                      surface: surface,
+                    ),
+                  ),
+                ] else
+                  const Expanded(child: SizedBox.shrink()),
+              ],
+            ),
+          ),
+          if (rowIndex < rows.length - 1)
+            Divider(height: 1, thickness: 1, color: surface.hairline),
+        ],
+      ],
+    );
+  }
+}
+
+class _ServiceTile extends StatelessWidget {
+  const _ServiceTile({
     required this.entry,
     required this.l10n,
     required this.typography,
@@ -623,51 +670,43 @@ class _ServiceCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () => showMineToast(context, mineCopy(l10n, entry.titleKey)),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Color.alphaBlend(
-              entry.accent.withValues(alpha: 0.04),
-              surface.canvas,
-            ),
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: entry.accent.withValues(alpha: 0.12)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.sm,
+            vertical: AppSpacingTokens.md,
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.sm),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _SoftIcon(
-                  icon: entry.icon,
-                  color: entry.accent,
-                  size: 42,
-                  iconSize: 22,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _SoftIcon(
+                icon: entry.icon,
+                color: entry.accent,
+                size: 42,
+                iconSize: 22,
+              ),
+              const SizedBox(height: AppSpacingTokens.sm),
+              Text(
+                mineCopy(l10n, entry.titleKey),
+                style: typography.bodySmStrong.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0,
                 ),
-                const SizedBox(height: AppSpacingTokens.sm),
-                Text(
-                  mineCopy(l10n, entry.titleKey),
-                  style: typography.bodySmStrong.copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacingTokens.xxs),
+              Text(
+                mineCopy(l10n, entry.subtitleKey),
+                style: typography.caption.copyWith(
+                  color: surface.body,
+                  letterSpacing: 0,
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
-                Text(
-                  mineCopy(l10n, entry.subtitleKey),
-                  style: typography.caption.copyWith(
-                    color: surface.body,
-                    letterSpacing: 0,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),
