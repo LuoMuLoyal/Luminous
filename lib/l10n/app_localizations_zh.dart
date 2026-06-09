@@ -514,10 +514,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineNoMedicineBody => '先添加药品后显示提醒';
 
   @override
-  String get medicineSafetyEngineTitle => '用药安全检查';
+  String get medicineSafetyEngineTitle => '安全检查预览';
 
   @override
-  String get medicineSafetyAllRecordsAction => '安全解释';
+  String get medicineSafetyAllRecordsAction => '来源说明';
 
   @override
   String get medicineQuickOperationTitle => '用药操作';
@@ -865,40 +865,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineAlertOtherAction => '查看详情';
 
   @override
-  String get medicineAlertAlcoholRiskTitle => '酒精风险';
+  String get medicineAlertAlcoholRiskTitle => '酒精提示';
 
   @override
-  String get medicineAlertAlcoholRiskBody => '饮酒可能增加胃肠不适';
+  String get medicineAlertAlcoholRiskBody => '待接入药品数据后给出来源建议';
 
   @override
-  String get medicineAlertAlcoholRiskDetail => '服药期间避免饮酒或先咨询医生';
+  String get medicineAlertAlcoholRiskDetail => '作为风险展示前需要说明书或规则来源支撑';
 
   @override
-  String get medicineAlertAlcoholRiskStatus => '中风险';
+  String get medicineAlertAlcoholRiskStatus => '预览';
 
   @override
-  String get medicineAlertCoffeeReminderTitle => '咖啡因提醒';
+  String get medicineAlertCoffeeReminderTitle => '咖啡因提示';
 
   @override
-  String get medicineAlertCoffeeReminderBody => '咖啡 / 能量饮料使用建议';
+  String get medicineAlertCoffeeReminderBody => '咖啡因建议需要来源核验';
 
   @override
   String get medicineAlertCoffeeReminderDetail => '部分药物可能受咖啡因影响';
 
   @override
-  String get medicineAlertCoffeeReminderStatus => '注意';
+  String get medicineAlertCoffeeReminderStatus => '待核验';
 
   @override
-  String get medicineAlertDuplicateCheckTitle => '重复用药检查';
+  String get medicineAlertDuplicateCheckTitle => '重复来源检查';
 
   @override
-  String get medicineAlertDuplicateCheckBody => '未检测到相同成分药品';
+  String get medicineAlertDuplicateCheckBody => '相同成分检查需要来源核验';
 
   @override
-  String get medicineAlertDuplicateCheckDetail => '添加新药后会再次检查';
+  String get medicineAlertDuplicateCheckDetail => '添加新药后会再次进行来源检查';
 
   @override
-  String get medicineAlertDuplicateCheckStatus => '未发现';
+  String get medicineAlertDuplicateCheckStatus => '预览';
 
   @override
   String get medicineAlertSpecialGroupSafetyTitle => '特殊人群用药提示';
@@ -959,13 +959,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineAlertOtherToast => '会打开其他安全提醒详情。';
 
   @override
-  String get medicineAlertAlcoholRiskToast => '会打开酒精风险说明。';
+  String get medicineAlertAlcoholRiskToast => '会打开酒精预览的来源说明。';
 
   @override
-  String get medicineAlertCoffeeReminderToast => '会打开咖啡因用药建议。';
+  String get medicineAlertCoffeeReminderToast => '会打开咖啡因预览的来源说明。';
 
   @override
-  String get medicineAlertDuplicateCheckToast => '会打开重复用药检查结果。';
+  String get medicineAlertDuplicateCheckToast => '会打开重复来源预览说明。';
 
   @override
   String get medicineAlertSpecialGroupSafetyToast => '会打开特殊人群用药安全提示。';
@@ -1176,13 +1176,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineAlertMedicineBadge => '按时服用';
 
   @override
-  String get mineAlertPrivacyTitle => '隐私状态';
+  String get mineAlertPrivacyTitle => '分享控制';
 
   @override
-  String get mineAlertPrivacySubtitle => '良好保护中';
+  String get mineAlertPrivacySubtitle => '分享前先预览确认';
 
   @override
-  String get mineAlertPrivacyBadge => '可放心使用';
+  String get mineAlertPrivacyBadge => '先确认';
 
   @override
   String get mineArchiveBasicTitle => '基础信息';
@@ -2045,7 +2045,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayAiSummaryWaterDone => '今日饮水次数已达标，继续保持少量多次';
 
   @override
-  String get todayAiSummarySleepPlaceholder => '睡眠总结等待记录接入，先保留为今日观察项';
+  String get todayAiSummarySleepPlaceholder => '记录睡眠后会纳入今日总结';
 
   @override
   String get todayRecommendationSectionTitle => '主动建议';
@@ -2262,7 +2262,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportPeriodThisWeek => '本周';
 
   @override
-  String get reportGenerateAction => '生成报告';
+  String get reportGenerateAction => '预览报告';
 
   @override
   String get reportSyncAction => '同步';
@@ -2271,21 +2271,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportSnapshotStatus => '当前显示上次报告快照';
 
   @override
-  String get reportSnapshotHint => '点击生成报告或同步后更新';
+  String get reportSnapshotHint => '点击预览或同步后更新';
 
   @override
-  String get reportScoreTitle => '本周健康总结';
+  String get reportScoreTitle => '报告预览评分';
 
   @override
   String reportScoreOutOf(int max) {
-    return '分 / $max';
+    return '预览 / $max';
   }
 
   @override
-  String get reportStatusOverallStable => '整体稳定';
+  String get reportStatusOverallStable => '演示快照';
 
   @override
-  String get reportScoreBody => '坚持良好习惯，继续保持';
+  String get reportScoreBody => '报告数据接入前仅作预览';
 
   @override
   String get reportMetricMedicationTitle => '用药完成率';

@@ -1083,7 +1083,7 @@ List<_PriorityItem> _priorityItems(
         TodayPriorityItemType.medication => _PriorityItem(
           key: const Key('today-medication-card'),
           icon: Icons.medication_rounded,
-          color: TodayPalette.blue,
+          color: TodayPalette.healthGreen,
           title: l10n.todayMedicationCardTitle,
           subtitle: l10n.todayMedicationPrioritySubtitle(
             item.count ?? dashboard.medication.pendingCount,
@@ -1172,7 +1172,7 @@ List<_AiSummaryItem> _aiSummaryBullets(
   return [
     _AiSummaryItem(
       icon: Icons.medication_liquid_outlined,
-      color: TodayPalette.blue,
+      color: TodayPalette.healthGreen,
       text: hasMedicationRisk
           ? l10n.todayAiSummaryMedicationPending(
               dashboard.medication.pendingCount,
@@ -1211,7 +1211,7 @@ List<_TodoItem> _todoItems(AppLocalizations l10n, TodayDashboard dashboard) {
       action: dashboard.medication.pendingCount == 0
           ? l10n.todayStatusCompleted
           : l10n.todayMedicationTakeAction,
-      color: TodayPalette.blue,
+      color: TodayPalette.healthGreen,
       completed: dashboard.medication.pendingCount == 0,
       statusIsDynamic: true,
       subtitleIsDynamic: true,

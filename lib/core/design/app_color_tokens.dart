@@ -14,6 +14,8 @@ abstract final class AppColorTokens {
   static const Color link = Color(0xFF0070F3);
   static const Color linkDeep = Color(0xFF0761D1);
   static const Color linkSoft = Color(0xFFD3E5FF);
+  static const Color health = Color(0xFF158765);
+  static const Color healthSoft = Color(0xFFE6F5EF);
   static const Color success = Color(0xFF0070F3);
   static const Color error = Color(0xFFEE0000);
   static const Color errorSoft = Color(0xFFF7D4D6);

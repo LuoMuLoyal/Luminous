@@ -67,6 +67,15 @@ class ReportTopBar extends StatelessWidget {
               child: FilledButton.icon(
                 key: const Key('report-generate-action'),
                 onPressed: isSyncing ? null : onGenerate,
+                style: FilledButton.styleFrom(
+                  backgroundColor: ReportPalette.previewScore,
+                  foregroundColor: AppColorTokens.onPrimary,
+                  disabledBackgroundColor: ReportPalette.previewScore
+                      .withValues(alpha: 0.38),
+                  disabledForegroundColor: AppColorTokens.onPrimary.withValues(
+                    alpha: 0.7,
+                  ),
+                ),
                 icon: const Icon(Icons.auto_awesome_rounded),
                 label: Text(
                   l10n.reportGenerateAction,
@@ -230,7 +239,7 @@ class ReportScoreHero extends StatelessWidget {
 
     return ReportPanel(
       padding: const EdgeInsets.all(AppSpacingTokens.lg),
-      borderColor: ReportPalette.violet.withValues(alpha: 0.26),
+      borderColor: ReportPalette.previewScore.withValues(alpha: 0.22),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -270,8 +279,8 @@ class ReportScoreHero extends StatelessWidget {
                       child: Text(
                         score.value.toString(),
                         style: typography.displayXl.copyWith(
-                          color: ReportPalette.violet,
-                          fontSize: 58,
+                          color: ReportPalette.previewScore,
+                          fontSize: 54,
                           height: 1,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0,
@@ -319,15 +328,15 @@ class ReportScoreHero extends StatelessWidget {
           const SizedBox(width: AppSpacingTokens.md),
           DecoratedBox(
             decoration: BoxDecoration(
-              color: ReportPalette.violet.withValues(alpha: 0.1),
+              color: ReportPalette.previewScoreSoft,
               shape: BoxShape.circle,
             ),
             child: const SizedBox.square(
               dimension: 112,
               child: Icon(
-                Icons.health_and_safety_rounded,
-                color: ReportPalette.violet,
-                size: 76,
+                Icons.fact_check_rounded,
+                color: ReportPalette.previewScore,
+                size: 68,
               ),
             ),
           ),

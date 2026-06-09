@@ -10,6 +10,7 @@ abstract final class TodayPalette {
   static const Color panelSoft = AppColorTokens.canvasSoft;
   static const Color line = AppColorTokens.hairline;
   static const Color lineStrong = AppColorTokens.hairlineStrong;
+  static const Color healthGreen = AppColorTokens.health;
   static const Color teal = AppColorTokens.cyanDeep;
   static const Color tealDeep = AppColorTokens.cyanDeep;
   static const Color tealSoft = AppColorTokens.cyanSoft;

@@ -546,10 +546,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineNoMedicineBody => 'Add medicine to show reminders';
 
   @override
-  String get medicineSafetyEngineTitle => 'Medication safety check';
+  String get medicineSafetyEngineTitle => 'Safety check preview';
 
   @override
-  String get medicineSafetyAllRecordsAction => 'Safety notes';
+  String get medicineSafetyAllRecordsAction => 'Source notes';
 
   @override
   String get medicineQuickOperationTitle => 'Medication actions';
@@ -917,46 +917,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineAlertOtherAction => 'Review details';
 
   @override
-  String get medicineAlertAlcoholRiskTitle => 'Alcohol risk';
+  String get medicineAlertAlcoholRiskTitle => 'Alcohol note';
 
   @override
   String get medicineAlertAlcoholRiskBody =>
-      'Alcohol may increase stomach discomfort';
+      'Guidance preview waits for medicine data';
 
   @override
   String get medicineAlertAlcoholRiskDetail =>
-      'Avoid alcohol while medicated or ask a clinician first';
+      'Show source-backed advice before treating this as a risk';
 
   @override
-  String get medicineAlertAlcoholRiskStatus => 'Medium';
+  String get medicineAlertAlcoholRiskStatus => 'Preview';
 
   @override
-  String get medicineAlertCoffeeReminderTitle => 'Caffeine reminder';
+  String get medicineAlertCoffeeReminderTitle => 'Caffeine note';
 
   @override
   String get medicineAlertCoffeeReminderBody =>
-      'Coffee / energy drink use guidance';
+      'Caffeine guidance needs source review';
 
   @override
   String get medicineAlertCoffeeReminderDetail =>
       'Some medicines can be affected by caffeine';
 
   @override
-  String get medicineAlertCoffeeReminderStatus => 'Notice';
+  String get medicineAlertCoffeeReminderStatus => 'Review';
 
   @override
-  String get medicineAlertDuplicateCheckTitle => 'Duplicate check';
+  String get medicineAlertDuplicateCheckTitle => 'Duplicate source check';
 
   @override
   String get medicineAlertDuplicateCheckBody =>
-      'No same-ingredient medicines detected';
+      'Same-ingredient checks need source review';
 
   @override
   String get medicineAlertDuplicateCheckDetail =>
-      'New medicines will trigger another check';
+      'New medicines will trigger another source check';
 
   @override
-  String get medicineAlertDuplicateCheckStatus => 'Clear';
+  String get medicineAlertDuplicateCheckStatus => 'Preview';
 
   @override
   String get medicineAlertSpecialGroupSafetyTitle =>
@@ -1033,15 +1033,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineAlertAlcoholRiskToast =>
-      'This will open alcohol risk guidance.';
+      'This will open source notes for the alcohol preview.';
 
   @override
   String get medicineAlertCoffeeReminderToast =>
-      'This will open caffeine guidance.';
+      'This will open source notes for the caffeine preview.';
 
   @override
   String get medicineAlertDuplicateCheckToast =>
-      'This will open duplicate medicine check results.';
+      'This will open duplicate-source preview notes.';
 
   @override
   String get medicineAlertSpecialGroupSafetyToast =>
@@ -1265,13 +1265,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineAlertMedicineBadge => 'On schedule';
 
   @override
-  String get mineAlertPrivacyTitle => 'Privacy status';
+  String get mineAlertPrivacyTitle => 'Sharing controls';
 
   @override
-  String get mineAlertPrivacySubtitle => 'Protected well';
+  String get mineAlertPrivacySubtitle => 'Preview before sharing';
 
   @override
-  String get mineAlertPrivacyBadge => 'Safe to use';
+  String get mineAlertPrivacyBadge => 'Confirm first';
 
   @override
   String get mineArchiveBasicTitle => 'Basic info';
@@ -2172,7 +2172,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayAiSummarySleepPlaceholder =>
-      'Sleep summary is waiting for record wiring and stays as today\'s observation';
+      'Record sleep to include it in today\'s summary';
 
   @override
   String get todayRecommendationSectionTitle => 'Proactive advice';
@@ -2395,7 +2395,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportPeriodThisWeek => 'This week';
 
   @override
-  String get reportGenerateAction => 'Generate report';
+  String get reportGenerateAction => 'Preview report';
 
   @override
   String get reportSyncAction => 'Sync';
@@ -2404,21 +2404,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportSnapshotStatus => 'Showing the last report snapshot';
 
   @override
-  String get reportSnapshotHint => 'Generate or sync to update';
+  String get reportSnapshotHint => 'Preview or sync to update';
 
   @override
-  String get reportScoreTitle => 'This week\'s health summary';
+  String get reportScoreTitle => 'Report preview score';
 
   @override
   String reportScoreOutOf(int max) {
-    return 'pts / $max';
+    return 'preview / $max';
   }
 
   @override
-  String get reportStatusOverallStable => 'Overall stable';
+  String get reportStatusOverallStable => 'Demo snapshot';
 
   @override
-  String get reportScoreBody => 'Keep the good habits going';
+  String get reportScoreBody => 'Preview only until report data is connected';
 
   @override
   String get reportMetricMedicationTitle => 'Medication';

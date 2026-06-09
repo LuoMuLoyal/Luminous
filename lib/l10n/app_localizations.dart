@@ -1073,13 +1073,13 @@ abstract class AppLocalizations {
   /// No description provided for @medicineSafetyEngineTitle.
   ///
   /// In zh, this message translates to:
-  /// **'用药安全检查'**
+  /// **'安全检查预览'**
   String get medicineSafetyEngineTitle;
 
   /// No description provided for @medicineSafetyAllRecordsAction.
   ///
   /// In zh, this message translates to:
-  /// **'安全解释'**
+  /// **'来源说明'**
   String get medicineSafetyAllRecordsAction;
 
   /// No description provided for @medicineQuickOperationTitle.
@@ -1775,37 +1775,37 @@ abstract class AppLocalizations {
   /// No description provided for @medicineAlertAlcoholRiskTitle.
   ///
   /// In zh, this message translates to:
-  /// **'酒精风险'**
+  /// **'酒精提示'**
   String get medicineAlertAlcoholRiskTitle;
 
   /// No description provided for @medicineAlertAlcoholRiskBody.
   ///
   /// In zh, this message translates to:
-  /// **'饮酒可能增加胃肠不适'**
+  /// **'待接入药品数据后给出来源建议'**
   String get medicineAlertAlcoholRiskBody;
 
   /// No description provided for @medicineAlertAlcoholRiskDetail.
   ///
   /// In zh, this message translates to:
-  /// **'服药期间避免饮酒或先咨询医生'**
+  /// **'作为风险展示前需要说明书或规则来源支撑'**
   String get medicineAlertAlcoholRiskDetail;
 
   /// No description provided for @medicineAlertAlcoholRiskStatus.
   ///
   /// In zh, this message translates to:
-  /// **'中风险'**
+  /// **'预览'**
   String get medicineAlertAlcoholRiskStatus;
 
   /// No description provided for @medicineAlertCoffeeReminderTitle.
   ///
   /// In zh, this message translates to:
-  /// **'咖啡因提醒'**
+  /// **'咖啡因提示'**
   String get medicineAlertCoffeeReminderTitle;
 
   /// No description provided for @medicineAlertCoffeeReminderBody.
   ///
   /// In zh, this message translates to:
-  /// **'咖啡 / 能量饮料使用建议'**
+  /// **'咖啡因建议需要来源核验'**
   String get medicineAlertCoffeeReminderBody;
 
   /// No description provided for @medicineAlertCoffeeReminderDetail.
@@ -1817,31 +1817,31 @@ abstract class AppLocalizations {
   /// No description provided for @medicineAlertCoffeeReminderStatus.
   ///
   /// In zh, this message translates to:
-  /// **'注意'**
+  /// **'待核验'**
   String get medicineAlertCoffeeReminderStatus;
 
   /// No description provided for @medicineAlertDuplicateCheckTitle.
   ///
   /// In zh, this message translates to:
-  /// **'重复用药检查'**
+  /// **'重复来源检查'**
   String get medicineAlertDuplicateCheckTitle;
 
   /// No description provided for @medicineAlertDuplicateCheckBody.
   ///
   /// In zh, this message translates to:
-  /// **'未检测到相同成分药品'**
+  /// **'相同成分检查需要来源核验'**
   String get medicineAlertDuplicateCheckBody;
 
   /// No description provided for @medicineAlertDuplicateCheckDetail.
   ///
   /// In zh, this message translates to:
-  /// **'添加新药后会再次检查'**
+  /// **'添加新药后会再次进行来源检查'**
   String get medicineAlertDuplicateCheckDetail;
 
   /// No description provided for @medicineAlertDuplicateCheckStatus.
   ///
   /// In zh, this message translates to:
-  /// **'未发现'**
+  /// **'预览'**
   String get medicineAlertDuplicateCheckStatus;
 
   /// No description provided for @medicineAlertSpecialGroupSafetyTitle.
@@ -1961,19 +1961,19 @@ abstract class AppLocalizations {
   /// No description provided for @medicineAlertAlcoholRiskToast.
   ///
   /// In zh, this message translates to:
-  /// **'会打开酒精风险说明。'**
+  /// **'会打开酒精预览的来源说明。'**
   String get medicineAlertAlcoholRiskToast;
 
   /// No description provided for @medicineAlertCoffeeReminderToast.
   ///
   /// In zh, this message translates to:
-  /// **'会打开咖啡因用药建议。'**
+  /// **'会打开咖啡因预览的来源说明。'**
   String get medicineAlertCoffeeReminderToast;
 
   /// No description provided for @medicineAlertDuplicateCheckToast.
   ///
   /// In zh, this message translates to:
-  /// **'会打开重复用药检查结果。'**
+  /// **'会打开重复来源预览说明。'**
   String get medicineAlertDuplicateCheckToast;
 
   /// No description provided for @medicineAlertSpecialGroupSafetyToast.
@@ -2381,19 +2381,19 @@ abstract class AppLocalizations {
   /// No description provided for @mineAlertPrivacyTitle.
   ///
   /// In zh, this message translates to:
-  /// **'隐私状态'**
+  /// **'分享控制'**
   String get mineAlertPrivacyTitle;
 
   /// No description provided for @mineAlertPrivacySubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'良好保护中'**
+  /// **'分享前先预览确认'**
   String get mineAlertPrivacySubtitle;
 
   /// No description provided for @mineAlertPrivacyBadge.
   ///
   /// In zh, this message translates to:
-  /// **'可放心使用'**
+  /// **'先确认'**
   String get mineAlertPrivacyBadge;
 
   /// No description provided for @mineArchiveBasicTitle.
@@ -4031,7 +4031,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayAiSummarySleepPlaceholder.
   ///
   /// In zh, this message translates to:
-  /// **'睡眠总结等待记录接入，先保留为今日观察项'**
+  /// **'记录睡眠后会纳入今日总结'**
   String get todayAiSummarySleepPlaceholder;
 
   /// No description provided for @todayRecommendationSectionTitle.
@@ -4445,7 +4445,7 @@ abstract class AppLocalizations {
   /// No description provided for @reportGenerateAction.
   ///
   /// In zh, this message translates to:
-  /// **'生成报告'**
+  /// **'预览报告'**
   String get reportGenerateAction;
 
   /// No description provided for @reportSyncAction.
@@ -4463,31 +4463,31 @@ abstract class AppLocalizations {
   /// No description provided for @reportSnapshotHint.
   ///
   /// In zh, this message translates to:
-  /// **'点击生成报告或同步后更新'**
+  /// **'点击预览或同步后更新'**
   String get reportSnapshotHint;
 
   /// No description provided for @reportScoreTitle.
   ///
   /// In zh, this message translates to:
-  /// **'本周健康总结'**
+  /// **'报告预览评分'**
   String get reportScoreTitle;
 
   /// No description provided for @reportScoreOutOf.
   ///
   /// In zh, this message translates to:
-  /// **'分 / {max}'**
+  /// **'预览 / {max}'**
   String reportScoreOutOf(int max);
 
   /// No description provided for @reportStatusOverallStable.
   ///
   /// In zh, this message translates to:
-  /// **'整体稳定'**
+  /// **'演示快照'**
   String get reportStatusOverallStable;
 
   /// No description provided for @reportScoreBody.
   ///
   /// In zh, this message translates to:
-  /// **'坚持良好习惯，继续保持'**
+  /// **'报告数据接入前仅作预览'**
   String get reportScoreBody;
 
   /// No description provided for @reportMetricMedicationTitle.
