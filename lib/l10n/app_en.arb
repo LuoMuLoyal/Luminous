@@ -834,6 +834,28 @@
   "todayMedicationTakeAction": "Take now",
   "todayWaterPriorityTitle": "Water goal",
   "todayDrinkWaterAction": "Drink water",
+  "todayAiSummaryTitle": "AI daily summary",
+  "todayAiSummarySubtitle": "Generated from today's records",
+  "todayAiSummaryGenerateAction": "Generate",
+  "todayAiSummaryMedicationPending": "{count} medication items still need confirmation. Do not adjust doses casually",
+  "@todayAiSummaryMedicationPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayAiSummaryMedicationDone": "Medication todos are handled today. Check risks when adding a new medicine",
+  "todayAiSummaryWaterRemaining": "{count} water check-ins left. Spread them across the day",
+  "@todayAiSummaryWaterRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayAiSummaryWaterDone": "Today's water check-ins are complete. Keep taking small amounts often",
+  "todayAiSummarySleepPlaceholder": "Sleep summary is waiting for record wiring and stays as today's observation",
   "todayRecommendationSectionTitle": "Proactive advice",
   "todayViewMoreAction": "View more",
   "todayRecommendationMedicineSafetyTitle": "Medication safety tips",

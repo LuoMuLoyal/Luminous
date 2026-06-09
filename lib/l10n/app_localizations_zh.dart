@@ -1906,6 +1906,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayDrinkWaterAction => '去喝水';
 
   @override
+  String get todayAiSummaryTitle => 'AI 日总结';
+
+  @override
+  String get todayAiSummarySubtitle => '基于今日记录生成';
+
+  @override
+  String get todayAiSummaryGenerateAction => '生成';
+
+  @override
+  String todayAiSummaryMedicationPending(int count) {
+    return '还有 $count 条用药需要确认，先不要自行调整剂量';
+  }
+
+  @override
+  String get todayAiSummaryMedicationDone => '今日用药待办已处理，新增药物后仍需检查风险';
+
+  @override
+  String todayAiSummaryWaterRemaining(int count) {
+    return '饮水还差 $count 次，可分几次补齐';
+  }
+
+  @override
+  String get todayAiSummaryWaterDone => '今日饮水次数已达标，继续保持少量多次';
+
+  @override
+  String get todayAiSummarySleepPlaceholder => '睡眠总结等待记录接入，先保留为今日观察项';
+
+  @override
   String get todayRecommendationSectionTitle => '主动建议';
 
   @override

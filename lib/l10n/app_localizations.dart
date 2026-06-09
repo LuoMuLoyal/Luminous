@@ -3758,6 +3758,54 @@ abstract class AppLocalizations {
   /// **'去喝水'**
   String get todayDrinkWaterAction;
 
+  /// No description provided for @todayAiSummaryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 日总结'**
+  String get todayAiSummaryTitle;
+
+  /// No description provided for @todayAiSummarySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'基于今日记录生成'**
+  String get todayAiSummarySubtitle;
+
+  /// No description provided for @todayAiSummaryGenerateAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'生成'**
+  String get todayAiSummaryGenerateAction;
+
+  /// No description provided for @todayAiSummaryMedicationPending.
+  ///
+  /// In zh, this message translates to:
+  /// **'还有 {count} 条用药需要确认，先不要自行调整剂量'**
+  String todayAiSummaryMedicationPending(int count);
+
+  /// No description provided for @todayAiSummaryMedicationDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日用药待办已处理，新增药物后仍需检查风险'**
+  String get todayAiSummaryMedicationDone;
+
+  /// No description provided for @todayAiSummaryWaterRemaining.
+  ///
+  /// In zh, this message translates to:
+  /// **'饮水还差 {count} 次，可分几次补齐'**
+  String todayAiSummaryWaterRemaining(int count);
+
+  /// No description provided for @todayAiSummaryWaterDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日饮水次数已达标，继续保持少量多次'**
+  String get todayAiSummaryWaterDone;
+
+  /// No description provided for @todayAiSummarySleepPlaceholder.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠总结等待记录接入，先保留为今日观察项'**
+  String get todayAiSummarySleepPlaceholder;
+
   /// No description provided for @todayRecommendationSectionTitle.
   ///
   /// In zh, this message translates to:

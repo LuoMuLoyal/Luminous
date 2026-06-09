@@ -2027,6 +2027,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayDrinkWaterAction => 'Drink water';
 
   @override
+  String get todayAiSummaryTitle => 'AI daily summary';
+
+  @override
+  String get todayAiSummarySubtitle => 'Generated from today\'s records';
+
+  @override
+  String get todayAiSummaryGenerateAction => 'Generate';
+
+  @override
+  String todayAiSummaryMedicationPending(int count) {
+    return '$count medication items still need confirmation. Do not adjust doses casually';
+  }
+
+  @override
+  String get todayAiSummaryMedicationDone =>
+      'Medication todos are handled today. Check risks when adding a new medicine';
+
+  @override
+  String todayAiSummaryWaterRemaining(int count) {
+    return '$count water check-ins left. Spread them across the day';
+  }
+
+  @override
+  String get todayAiSummaryWaterDone =>
+      'Today\'s water check-ins are complete. Keep taking small amounts often';
+
+  @override
+  String get todayAiSummarySleepPlaceholder =>
+      'Sleep summary is waiting for record wiring and stays as today\'s observation';
+
+  @override
   String get todayRecommendationSectionTitle => 'Proactive advice';
 
   @override
