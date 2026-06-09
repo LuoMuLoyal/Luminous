@@ -15,7 +15,7 @@ class _SafetyEngineSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final visibleAlerts = alerts.take(4).toList(growable: false);
+    final visibleAlerts = alerts.take(3).toList(growable: false);
 
     return Column(
       key: const Key('medicine-safety-panel'),
@@ -30,34 +30,27 @@ class _SafetyEngineSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        MedicinePanel(
-          padding: EdgeInsets.zero,
-          color: Color.alphaBlend(
-            MedicinePalette.orangeSoft.withValues(alpha: 0.08),
-            surface.canvas,
-          ),
-          borderColor: MedicinePalette.orange.withValues(alpha: 0.12),
-          shadow: const <BoxShadow>[],
-          child: Column(
-            children: [
-              for (var index = 0; index < visibleAlerts.length; index += 1) ...[
-                _SafetyAlertRow(
-                  alert: visibleAlerts[index],
-                  l10n: l10n,
-                  typography: typography,
-                  surface: surface,
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        Column(
+          children: [
+            for (var index = 0; index < visibleAlerts.length; index += 1) ...[
+              _SafetyAlertRow(
+                alert: visibleAlerts[index],
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              if (index < visibleAlerts.length - 1)
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  indent: AppSpacingTokens.x5l,
+                  color: surface.hairline,
                 ),
-                if (index < visibleAlerts.length - 1)
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent: AppSpacingTokens.x5l,
-                    color: surface.hairline,
-                  ),
-              ],
             ],
-          ),
+          ],
         ),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
       ],
     );
   }
@@ -185,46 +178,43 @@ class _QuickOperationSection extends StatelessWidget {
         onTap: () => AppToast.show(context, l10n.medicineQuickRecordToast),
       ),
       _QuickOperation(
-        icon: Icons.bar_chart_rounded,
-        color: MedicinePalette.teal,
-        title: l10n.medicineQuickReportTitle,
-        subtitle: l10n.medicineQuickReportSubtitle,
-        onTap: () => AppToast.show(context, l10n.medicineQuickReportToast),
+        icon: Icons.health_and_safety_rounded,
+        color: MedicinePalette.orangeDeep,
+        title: l10n.medicineQuickSafetyCheckTitle,
+        subtitle: l10n.medicineQuickSafetyCheckSubtitle,
+        onTap: () => AppToast.show(context, l10n.medicineQuickSafetyCheckToast),
       ),
     ];
 
-    return MedicinePanel(
+    return Column(
       key: const Key('medicine-quick-actions'),
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          MedicineSectionHeader(title: l10n.medicineQuickOperationTitle),
-          const SizedBox(height: AppSpacingTokens.md),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (var index = 0; index < operations.length; index += 1) ...[
-                Expanded(
-                  child: _QuickOperationTile(
-                    operation: operations[index],
-                    typography: typography,
-                    surface: surface,
-                  ),
-                ),
-                if (index < operations.length - 1)
-                  const SizedBox(width: AppSpacingTokens.sm),
-              ],
-            ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        MedicineSectionHeader(title: l10n.medicineQuickOperationTitle),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        for (var index = 0; index < operations.length; index += 1) ...[
+          _QuickOperationRow(
+            operation: operations[index],
+            typography: typography,
+            surface: surface,
           ),
+          if (index < operations.length - 1)
+            Divider(
+              height: 1,
+              thickness: 1,
+              indent: AppSpacingTokens.x4l,
+              color: surface.hairline,
+            ),
         ],
-      ),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+      ],
     );
   }
 }
 
-class _QuickOperationTile extends StatelessWidget {
-  const _QuickOperationTile({
+class _QuickOperationRow extends StatelessWidget {
+  const _QuickOperationRow({
     required this.operation,
     required this.typography,
     required this.surface,
@@ -240,40 +230,49 @@ class _QuickOperationTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: operation.onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
-          child: Column(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+          child: Row(
             children: [
               MedicineIconBadge(
                 icon: operation.icon,
-                color: AppColorTokens.onPrimary,
-                backgroundColor: operation.color,
+                color: operation.color,
+                backgroundColor: operation.color.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
-                size: AppSpacingTokens.x4l,
-                iconSize: AppSpacingTokens.xl,
+                size: AppSpacingTokens.x3l,
+                iconSize: AppSpacingTokens.lg,
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
-              Text(
-                operation.title,
-                style: typography.bodySmStrong.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
+              const SizedBox(width: AppSpacingTokens.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      operation.title,
+                      style: typography.bodyMdStrong.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.xxs),
+                    Text(
+                      operation.subtitle,
+                      style: typography.bodySm.copyWith(
+                        color: surface.body,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacingTokens.xxs),
-              Text(
-                operation.subtitle,
-                style: typography.caption.copyWith(
-                  color: surface.body,
-                  letterSpacing: 0,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
+              Icon(
+                Icons.chevron_right_rounded,
+                color: surface.mute,
+                size: AppSpacingTokens.lg,
               ),
             ],
           ),
@@ -619,7 +618,7 @@ class _SafetyTipsSection extends StatelessWidget {
         text: l10n.medicineSafetyTipTiming,
       ),
       _SafetyTip(
-        icon: Icons.inventory_2_outlined,
+        icon: Icons.thermostat_rounded,
         color: MedicinePalette.teal,
         text: l10n.medicineSafetyTipStorage,
       ),
@@ -646,27 +645,26 @@ class _SafetyTipsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        MedicinePanel(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              for (var index = 0; index < tips.length; index += 1) ...[
-                _SafetyTipRow(
-                  tip: tips[index],
-                  typography: typography,
-                  surface: surface,
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        Column(
+          children: [
+            for (var index = 0; index < tips.length; index += 1) ...[
+              _SafetyTipRow(
+                tip: tips[index],
+                typography: typography,
+                surface: surface,
+              ),
+              if (index < tips.length - 1)
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  indent: AppSpacingTokens.x4l,
+                  color: surface.hairline,
                 ),
-                if (index < tips.length - 1)
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent: AppSpacingTokens.x4l,
-                    color: surface.hairline,
-                  ),
-              ],
             ],
-          ),
+          ],
         ),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
       ],
     );
   }

@@ -546,13 +546,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineNoMedicineBody => 'Add medicine to show reminders';
 
   @override
-  String get medicineSafetyEngineTitle => 'Safety engine';
+  String get medicineSafetyEngineTitle => 'Medication safety check';
 
   @override
-  String get medicineSafetyAllRecordsAction => 'All records';
+  String get medicineSafetyAllRecordsAction => 'Safety notes';
 
   @override
-  String get medicineQuickOperationTitle => 'Quick actions';
+  String get medicineQuickOperationTitle => 'Medication actions';
 
   @override
   String get medicineQuickAddTitle => 'Add med';
@@ -567,17 +567,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineQuickRecordSubtitle => 'Track use';
 
   @override
-  String get medicineQuickReportTitle => 'Report';
+  String get medicineQuickSafetyCheckTitle => 'Risk check';
 
   @override
-  String get medicineQuickReportSubtitle => 'Overview';
+  String get medicineQuickSafetyCheckSubtitle =>
+      'Interactions and contraindications';
+
+  @override
+  String get medicineQuickSafetyCheckToast =>
+      'This will open interaction and contraindication checks.';
 
   @override
   String get medicineQuickRecordToast => 'This will open dose logging.';
-
-  @override
-  String get medicineQuickReportToast =>
-      'This will open medication report overview.';
 
   @override
   String get medicineRecordsTitle => 'Medication records';

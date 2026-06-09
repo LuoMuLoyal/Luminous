@@ -1073,19 +1073,19 @@ abstract class AppLocalizations {
   /// No description provided for @medicineSafetyEngineTitle.
   ///
   /// In zh, this message translates to:
-  /// **'安全引擎'**
+  /// **'用药安全检查'**
   String get medicineSafetyEngineTitle;
 
   /// No description provided for @medicineSafetyAllRecordsAction.
   ///
   /// In zh, this message translates to:
-  /// **'全部记录'**
+  /// **'安全解释'**
   String get medicineSafetyAllRecordsAction;
 
   /// No description provided for @medicineQuickOperationTitle.
   ///
   /// In zh, this message translates to:
-  /// **'快捷操作'**
+  /// **'用药操作'**
   String get medicineQuickOperationTitle;
 
   /// No description provided for @medicineQuickAddTitle.
@@ -1112,29 +1112,29 @@ abstract class AppLocalizations {
   /// **'记录用药情况'**
   String get medicineQuickRecordSubtitle;
 
-  /// No description provided for @medicineQuickReportTitle.
+  /// No description provided for @medicineQuickSafetyCheckTitle.
   ///
   /// In zh, this message translates to:
-  /// **'用药报告'**
-  String get medicineQuickReportTitle;
+  /// **'风险检查'**
+  String get medicineQuickSafetyCheckTitle;
 
-  /// No description provided for @medicineQuickReportSubtitle.
+  /// No description provided for @medicineQuickSafetyCheckSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'查看用药概览'**
-  String get medicineQuickReportSubtitle;
+  /// **'相互作用与禁忌'**
+  String get medicineQuickSafetyCheckSubtitle;
+
+  /// No description provided for @medicineQuickSafetyCheckToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'会打开相互作用和禁忌检查。'**
+  String get medicineQuickSafetyCheckToast;
 
   /// No description provided for @medicineQuickRecordToast.
   ///
   /// In zh, this message translates to:
   /// **'会打开服药记录入口。'**
   String get medicineQuickRecordToast;
-
-  /// No description provided for @medicineQuickReportToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'会打开用药报告概览。'**
-  String get medicineQuickReportToast;
 
   /// No description provided for @medicineRecordsTitle.
   ///

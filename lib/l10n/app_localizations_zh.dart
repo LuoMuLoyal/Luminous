@@ -514,13 +514,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineNoMedicineBody => '先添加药品后显示提醒';
 
   @override
-  String get medicineSafetyEngineTitle => '安全引擎';
+  String get medicineSafetyEngineTitle => '用药安全检查';
 
   @override
-  String get medicineSafetyAllRecordsAction => '全部记录';
+  String get medicineSafetyAllRecordsAction => '安全解释';
 
   @override
-  String get medicineQuickOperationTitle => '快捷操作';
+  String get medicineQuickOperationTitle => '用药操作';
 
   @override
   String get medicineQuickAddTitle => '添加药品';
@@ -535,16 +535,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineQuickRecordSubtitle => '记录用药情况';
 
   @override
-  String get medicineQuickReportTitle => '用药报告';
+  String get medicineQuickSafetyCheckTitle => '风险检查';
 
   @override
-  String get medicineQuickReportSubtitle => '查看用药概览';
+  String get medicineQuickSafetyCheckSubtitle => '相互作用与禁忌';
+
+  @override
+  String get medicineQuickSafetyCheckToast => '会打开相互作用和禁忌检查。';
 
   @override
   String get medicineQuickRecordToast => '会打开服药记录入口。';
-
-  @override
-  String get medicineQuickReportToast => '会打开用药报告概览。';
 
   @override
   String get medicineRecordsTitle => '用药记录';
