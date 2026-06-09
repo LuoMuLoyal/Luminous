@@ -95,13 +95,7 @@
       }
     }
   },
-  "recordQuickOperationTitle": "Quick actions",
   "recordVoiceInputTitle": "Voice input",
-  "recordVoiceInputSubtitle": "Speak and auto-log",
-  "recordPhotoRecordTitle": "Photo record",
-  "recordPhotoRecordSubtitle": "Recognize food/meds",
-  "recordTemplateRecordTitle": "Template",
-  "recordTemplateRecordSubtitle": "Symptom/meal/vital templates",
   "recordGuideHint": "Tip: steady records help you understand your health better",
   "recordGuideAction": "View record guide",
   "recordDetailTitle": "Record details",

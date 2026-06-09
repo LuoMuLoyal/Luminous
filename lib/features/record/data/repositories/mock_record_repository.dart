@@ -279,9 +279,6 @@ class MockRecordRepository implements RecordRepository {
       accent: _mood,
       softColor: _moodSoft,
     ),
-    // Deferred by Product_Vision MVP: keep the sleep entry shape because sleep
-    // is in the product vision, but do not surface it until the backend
-    // contract maps sleep records explicitly.
     RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: Icons.dark_mode_rounded,
@@ -297,7 +294,7 @@ class MockRecordRepository implements RecordRepository {
         .where(
           (action) =>
               action.type != RecordEntryType.mood &&
-              action.type != RecordEntryType.sleep,
+              action.type != RecordEntryType.vitals,
         )
         .toList(growable: false);
   }
@@ -368,8 +365,8 @@ class MockRecordRepository implements RecordRepository {
       accent: _medication,
       selected: true,
     ),
-    // Deferred by Product_Vision MVP: keep mood and sleep filters available for
-    // future contracts, but filter them out of the active Record surface.
+    // Deferred by Product_Vision MVP: keep mood filters available for future
+    // self-check-in contracts, but filter them out of the active Record surface.
     RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
@@ -564,9 +561,14 @@ class MockRecordRepository implements RecordRepository {
   }
 
   static bool _isActiveRecordEntryType(RecordEntryType type) {
-    return type != RecordEntryType.activity &&
-        type != RecordEntryType.sleep &&
-        type != RecordEntryType.mood;
+    return switch (type) {
+      RecordEntryType.symptom ||
+      RecordEntryType.water ||
+      RecordEntryType.meal ||
+      RecordEntryType.sleep ||
+      RecordEntryType.medication => true,
+      _ => false,
+    };
   }
 }
 

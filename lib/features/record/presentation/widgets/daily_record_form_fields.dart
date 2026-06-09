@@ -37,7 +37,7 @@ class DailyRecordFormFields extends StatelessWidget {
           key: ValueKey('daily-record-kind-${kind.name}'),
           initialValue: kind,
           decoration: InputDecoration(labelText: l10n.recordCreateFieldKind),
-          items: activeDailyRecordKinds
+          items: _visibleDailyRecordKinds(kind)
               .map(
                 (k) => DropdownMenuItem(
                   value: k,
@@ -196,10 +196,19 @@ String dailyRecordValueLabel(AppLocalizations l10n, DailyRecordKind kind) {
 const activeDailyRecordKinds = <DailyRecordKind>[
   DailyRecordKind.water,
   DailyRecordKind.meal,
-  DailyRecordKind.vital,
   DailyRecordKind.symptom,
   DailyRecordKind.note,
 ];
+
+List<DailyRecordKind> _visibleDailyRecordKinds(DailyRecordKind selectedKind) {
+  if (activeDailyRecordKinds.contains(selectedKind)) {
+    return activeDailyRecordKinds;
+  }
+
+  // Deferred by Product_Vision MVP: keep legacy/non-MVP record kinds editable
+  // when they already exist, but do not surface them as default create options.
+  return <DailyRecordKind>[...activeDailyRecordKinds, selectedKind];
+}
 
 String _normalizedWaterUnit(String value) {
   final normalized = value.trim();

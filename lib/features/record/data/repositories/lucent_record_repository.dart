@@ -251,9 +251,6 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.error,
       softColor: AppColorTokens.errorSoft,
     ),
-    // Deferred by Product_Vision MVP: keep the sleep entry shape because sleep
-    // is in the product vision, but do not surface it until the backend
-    // contract maps sleep records explicitly.
     RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: Icons.dark_mode_rounded,
@@ -357,8 +354,13 @@ class LucentRecordRepository implements RecordRepository {
   ];
 
   static bool _isActiveRecordEntryType(RecordEntryType type) {
-    return type != RecordEntryType.activity &&
-        type != RecordEntryType.sleep &&
-        type != RecordEntryType.mood;
+    return switch (type) {
+      RecordEntryType.symptom ||
+      RecordEntryType.water ||
+      RecordEntryType.meal ||
+      RecordEntryType.sleep ||
+      RecordEntryType.medication => true,
+      _ => false,
+    };
   }
 }
