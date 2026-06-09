@@ -329,8 +329,8 @@ String _alertActionResult(MedicineCopyKey key, AppLocalizations l10n) {
       l10n.medicineAlertCoffeeReminderToast,
     MedicineCopyKey.alertDuplicateCheckStatus =>
       l10n.medicineAlertDuplicateCheckToast,
-    MedicineCopyKey.alertPeriodPregnancyStatus =>
-      l10n.medicineAlertPeriodPregnancyToast,
+    MedicineCopyKey.alertSpecialGroupSafetyStatus =>
+      l10n.medicineAlertSpecialGroupSafetyToast,
     _ => l10n.medicineAlertOtherToast,
   };
 }

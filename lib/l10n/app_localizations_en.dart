@@ -933,19 +933,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineAlertDuplicateCheckStatus => 'Clear';
 
   @override
-  String get medicineAlertPeriodPregnancyTitle =>
-      'Pregnancy, lactation, and special groups';
+  String get medicineAlertSpecialGroupSafetyTitle =>
+      'Special-group medication safety';
 
   @override
-  String get medicineAlertPeriodPregnancyBody =>
-      'Record pregnancy, lactation, or special-group status for more cautious medication tips';
+  String get medicineAlertSpecialGroupSafetyBody =>
+      'Record special medication conditions for more cautious safety tips';
 
   @override
-  String get medicineAlertPeriodPregnancyDetail =>
-      'Follow clinician or pharmacist guidance first for pregnancy, lactation, or special-group medication use';
+  String get medicineAlertSpecialGroupSafetyDetail =>
+      'Follow clinician or pharmacist guidance first for pregnancy, lactation, pediatric, or other special-group medication use';
 
   @override
-  String get medicineAlertPeriodPregnancyStatus => 'Missing';
+  String get medicineAlertSpecialGroupSafetyStatus => 'Missing';
 
   @override
   String get medicinePromiseTitle => 'Safety boundary';
@@ -959,7 +959,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Results are reference-only and do not replace diagnosis or treatment.';
 
   @override
-  String get medicinePromisePointPregnancy =>
+  String get medicinePromisePointSpecialGroup =>
       'Pregnancy, lactation, pediatric, and psychiatric medicines get higher-priority alerts.';
 
   @override
@@ -1018,8 +1018,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'This will open duplicate medicine check results.';
 
   @override
-  String get medicineAlertPeriodPregnancyToast =>
-      'This will open pregnancy, lactation, and special-group medication notes.';
+  String get medicineAlertSpecialGroupSafetyToast =>
+      'This will open special-group medication safety notes.';
 
   @override
   String get medicineSearchPageTitle => 'Search medicine';
@@ -1122,7 +1122,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineSearchSafetyLead =>
-      'Your allergy, pregnancy status, or current medicines may affect use.';
+      'Your allergy, special medication conditions, or current medicines may affect use.';
 
   @override
   String get medicineSearchSafetyAction =>
@@ -1512,15 +1512,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get minePlanMoodDetail => 'Focus on emotional health';
-
-  @override
-  String get minePlanPregnancyTitle => 'Pre-pregnancy plan';
-
-  @override
-  String get minePlanPregnancyStatus => 'Not started';
-
-  @override
-  String get minePlanPregnancyDetail => 'Prepare with science';
 
   @override
   String get mineReportTitle => 'Health report';

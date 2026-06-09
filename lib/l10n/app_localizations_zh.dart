@@ -873,16 +873,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineAlertDuplicateCheckStatus => '未发现';
 
   @override
-  String get medicineAlertPeriodPregnancyTitle => '孕哺/特殊人群提示';
+  String get medicineAlertSpecialGroupSafetyTitle => '特殊人群用药提示';
 
   @override
-  String get medicineAlertPeriodPregnancyBody => '记录孕哺等状态以获得更谨慎的用药提示';
+  String get medicineAlertSpecialGroupSafetyBody => '记录特殊用药条件以获得更谨慎的安全提示';
 
   @override
-  String get medicineAlertPeriodPregnancyDetail => '孕期、哺乳期或特殊人群用药请优先遵医嘱';
+  String get medicineAlertSpecialGroupSafetyDetail =>
+      '孕期、哺乳期、儿童或其他特殊人群用药请优先遵医嘱';
 
   @override
-  String get medicineAlertPeriodPregnancyStatus => '未记录';
+  String get medicineAlertSpecialGroupSafetyStatus => '未记录';
 
   @override
   String get medicinePromiseTitle => '安全边界';
@@ -894,7 +895,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicinePromisePointBoundary => '结果仅供参考，不替代医生诊断与治疗。';
 
   @override
-  String get medicinePromisePointPregnancy => '孕期、哺乳期、儿童、精神类药物更高优先级警示。';
+  String get medicinePromisePointSpecialGroup => '孕期、哺乳期、儿童、精神类药物更高优先级警示。';
 
   @override
   String get medicinePromisePointPrivacy => '处方、拍照和敏感药物信息遵循最小暴露原则。';
@@ -939,7 +940,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineAlertDuplicateCheckToast => '会打开重复用药检查结果。';
 
   @override
-  String get medicineAlertPeriodPregnancyToast => '会打开孕哺和特殊人群用药提示。';
+  String get medicineAlertSpecialGroupSafetyToast => '会打开特殊人群用药安全提示。';
 
   @override
   String get medicineSearchPageTitle => '搜索药品';
@@ -1034,7 +1035,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineSearchPreviewTitle => '选中项预览';
 
   @override
-  String get medicineSearchSafetyLead => '你当前的过敏史 / 孕期状态 / 现用药可能影响此药使用';
+  String get medicineSearchSafetyLead => '你当前的过敏史 / 特殊用药条件 / 现用药可能影响此药使用';
 
   @override
   String get medicineSearchSafetyAction => '查看详情页获取完整信息';
@@ -1415,15 +1416,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get minePlanMoodDetail => '关注情绪健康';
-
-  @override
-  String get minePlanPregnancyTitle => '备孕计划';
-
-  @override
-  String get minePlanPregnancyStatus => '未开始';
-
-  @override
-  String get minePlanPregnancyDetail => '科学备孕';
 
   @override
   String get mineReportTitle => '健康报告';

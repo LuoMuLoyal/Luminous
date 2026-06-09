@@ -1784,29 +1784,29 @@ abstract class AppLocalizations {
   /// **'未发现'**
   String get medicineAlertDuplicateCheckStatus;
 
-  /// No description provided for @medicineAlertPeriodPregnancyTitle.
+  /// No description provided for @medicineAlertSpecialGroupSafetyTitle.
   ///
   /// In zh, this message translates to:
-  /// **'孕哺/特殊人群提示'**
-  String get medicineAlertPeriodPregnancyTitle;
+  /// **'特殊人群用药提示'**
+  String get medicineAlertSpecialGroupSafetyTitle;
 
-  /// No description provided for @medicineAlertPeriodPregnancyBody.
+  /// No description provided for @medicineAlertSpecialGroupSafetyBody.
   ///
   /// In zh, this message translates to:
-  /// **'记录孕哺等状态以获得更谨慎的用药提示'**
-  String get medicineAlertPeriodPregnancyBody;
+  /// **'记录特殊用药条件以获得更谨慎的安全提示'**
+  String get medicineAlertSpecialGroupSafetyBody;
 
-  /// No description provided for @medicineAlertPeriodPregnancyDetail.
+  /// No description provided for @medicineAlertSpecialGroupSafetyDetail.
   ///
   /// In zh, this message translates to:
-  /// **'孕期、哺乳期或特殊人群用药请优先遵医嘱'**
-  String get medicineAlertPeriodPregnancyDetail;
+  /// **'孕期、哺乳期、儿童或其他特殊人群用药请优先遵医嘱'**
+  String get medicineAlertSpecialGroupSafetyDetail;
 
-  /// No description provided for @medicineAlertPeriodPregnancyStatus.
+  /// No description provided for @medicineAlertSpecialGroupSafetyStatus.
   ///
   /// In zh, this message translates to:
   /// **'未记录'**
-  String get medicineAlertPeriodPregnancyStatus;
+  String get medicineAlertSpecialGroupSafetyStatus;
 
   /// No description provided for @medicinePromiseTitle.
   ///
@@ -1826,11 +1826,11 @@ abstract class AppLocalizations {
   /// **'结果仅供参考，不替代医生诊断与治疗。'**
   String get medicinePromisePointBoundary;
 
-  /// No description provided for @medicinePromisePointPregnancy.
+  /// No description provided for @medicinePromisePointSpecialGroup.
   ///
   /// In zh, this message translates to:
   /// **'孕期、哺乳期、儿童、精神类药物更高优先级警示。'**
-  String get medicinePromisePointPregnancy;
+  String get medicinePromisePointSpecialGroup;
 
   /// No description provided for @medicinePromisePointPrivacy.
   ///
@@ -1916,11 +1916,11 @@ abstract class AppLocalizations {
   /// **'会打开重复用药检查结果。'**
   String get medicineAlertDuplicateCheckToast;
 
-  /// No description provided for @medicineAlertPeriodPregnancyToast.
+  /// No description provided for @medicineAlertSpecialGroupSafetyToast.
   ///
   /// In zh, this message translates to:
-  /// **'会打开孕哺和特殊人群用药提示。'**
-  String get medicineAlertPeriodPregnancyToast;
+  /// **'会打开特殊人群用药安全提示。'**
+  String get medicineAlertSpecialGroupSafetyToast;
 
   /// No description provided for @medicineSearchPageTitle.
   ///
@@ -2105,7 +2105,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineSearchSafetyLead.
   ///
   /// In zh, this message translates to:
-  /// **'你当前的过敏史 / 孕期状态 / 现用药可能影响此药使用'**
+  /// **'你当前的过敏史 / 特殊用药条件 / 现用药可能影响此药使用'**
   String get medicineSearchSafetyLead;
 
   /// No description provided for @medicineSearchSafetyAction.
@@ -2845,24 +2845,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'关注情绪健康'**
   String get minePlanMoodDetail;
-
-  /// No description provided for @minePlanPregnancyTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'备孕计划'**
-  String get minePlanPregnancyTitle;
-
-  /// No description provided for @minePlanPregnancyStatus.
-  ///
-  /// In zh, this message translates to:
-  /// **'未开始'**
-  String get minePlanPregnancyStatus;
-
-  /// No description provided for @minePlanPregnancyDetail.
-  ///
-  /// In zh, this message translates to:
-  /// **'科学备孕'**
-  String get minePlanPregnancyDetail;
 
   /// No description provided for @mineReportTitle.
   ///
