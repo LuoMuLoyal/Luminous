@@ -30,6 +30,7 @@ Persisted preference keys:
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.
 - Remove l10n keys when the active UI that owns them is deleted.
 - Deferred strings may remain only when deferred code still references them and the code is annotated.
+- When an action moves to another tab, remove the old tab's action strings instead of keeping inactive labels.
 
 ## Add Or Change Text
 

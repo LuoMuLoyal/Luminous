@@ -1,12 +1,12 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-08
+Last updated: 2026-06-09
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
 ## Current Goal
 
-Move from the Product_Vision-converged mobile UI into real daily health loops without presenting mock or deferred features as real capability.
+Use the Product_Vision-converged five-tab mobile UI as the baseline, then move into real daily health loops without presenting mock or deferred features as real capability.
 
 ## Immediate Work Order
 
