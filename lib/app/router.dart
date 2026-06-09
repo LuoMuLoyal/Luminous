@@ -4,6 +4,7 @@ import 'package:luminous/features/auth/presentation/pages/change_email_page.dart
 import 'package:luminous/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/pages/register_page.dart';
+import 'package:luminous/features/medicine/presentation/pages/medicine_reminder_pages.dart';
 import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
@@ -83,6 +84,24 @@ final router = GoRouter(
     GoRoute(
       path: '/medicine/search',
       builder: (context, state) => const SearchPage(),
+    ),
+    GoRoute(
+      path: '/medicine/reminders/new',
+      builder: (context, state) => MedicineReminderEditPage(
+        initialMedicineId: state.uri.queryParameters['medicineId'],
+      ),
+    ),
+    GoRoute(
+      path: '/medicine/reminders/:medicineId',
+      builder: (context, state) => MedicineReminderDetailPage(
+        currentMedicineId: state.pathParameters['medicineId']!,
+      ),
+    ),
+    GoRoute(
+      path: '/medicine/reminders/:medicineId/edit',
+      builder: (context, state) => MedicineReminderEditPage(
+        currentMedicineId: state.pathParameters['medicineId'],
+      ),
     ),
     GoRoute(
       path: '/mine/profile/edit',

@@ -1430,6 +1430,234 @@ abstract class AppLocalizations {
   /// **'提醒未设置'**
   String get medicineScheduleNotSet;
 
+  /// No description provided for @medicineReminderNewTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'新建提醒'**
+  String get medicineReminderNewTitle;
+
+  /// No description provided for @medicineReminderEditTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑提醒'**
+  String get medicineReminderEditTitle;
+
+  /// No description provided for @medicineReminderDetailTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药提醒详情'**
+  String get medicineReminderDetailTitle;
+
+  /// No description provided for @medicineReminderNotFoundTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒暂时没有加载出来'**
+  String get medicineReminderNotFoundTitle;
+
+  /// No description provided for @medicineReminderQuickTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒设置'**
+  String get medicineReminderQuickTitle;
+
+  /// No description provided for @medicineReminderQuickSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理服药时间'**
+  String get medicineReminderQuickSubtitle;
+
+  /// No description provided for @medicineReminderEnabledStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'启用中'**
+  String get medicineReminderEnabledStatus;
+
+  /// No description provided for @medicineReminderDisabledStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'已关闭'**
+  String get medicineReminderDisabledStatus;
+
+  /// No description provided for @medicineReminderFrequencyLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'服用频次'**
+  String get medicineReminderFrequencyLabel;
+
+  /// No description provided for @medicineReminderFrequencyDaily.
+  ///
+  /// In zh, this message translates to:
+  /// **'每日'**
+  String get medicineReminderFrequencyDaily;
+
+  /// No description provided for @medicineReminderFrequencyWeekly.
+  ///
+  /// In zh, this message translates to:
+  /// **'每周'**
+  String get medicineReminderFrequencyWeekly;
+
+  /// No description provided for @medicineReminderFrequencyCustom.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义'**
+  String get medicineReminderFrequencyCustom;
+
+  /// No description provided for @medicineReminderTimesLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'服用时间'**
+  String get medicineReminderTimesLabel;
+
+  /// No description provided for @medicineReminderDoseLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'每次剂量'**
+  String get medicineReminderDoseLabel;
+
+  /// No description provided for @medicineReminderMethodLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒方式'**
+  String get medicineReminderMethodLabel;
+
+  /// No description provided for @medicineReminderNotificationOn.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒通知'**
+  String get medicineReminderNotificationOn;
+
+  /// No description provided for @medicineReminderNotificationOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒关闭'**
+  String get medicineReminderNotificationOff;
+
+  /// No description provided for @medicineReminderDeviceLocalHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅保存提醒计划，系统通知由本机设置控制'**
+  String get medicineReminderDeviceLocalHint;
+
+  /// No description provided for @medicineReminderNoteLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'备注'**
+  String get medicineReminderNoteLabel;
+
+  /// No description provided for @medicineReminderNoteOptionalLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'备注（可选）'**
+  String get medicineReminderNoteOptionalLabel;
+
+  /// No description provided for @medicineReminderNoteHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加备注，例如：饭后服用'**
+  String get medicineReminderNoteHint;
+
+  /// No description provided for @medicineReminderMedicineSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'药品信息'**
+  String get medicineReminderMedicineSectionTitle;
+
+  /// No description provided for @medicineReminderMedicineLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择药品'**
+  String get medicineReminderMedicineLabel;
+
+  /// No description provided for @medicineReminderSettingsSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒设置'**
+  String get medicineReminderSettingsSectionTitle;
+
+  /// No description provided for @medicineReminderAddTimeAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加时间'**
+  String get medicineReminderAddTimeAction;
+
+  /// No description provided for @medicineReminderTodayLogsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日用药打卡'**
+  String get medicineReminderTodayLogsTitle;
+
+  /// No description provided for @medicineReminderNoTodayLogs.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天还没有用药打卡'**
+  String get medicineReminderNoTodayLogs;
+
+  /// No description provided for @medicineReminderMissedStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'已错过'**
+  String get medicineReminderMissedStatus;
+
+  /// No description provided for @medicineReminderSavedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药提醒已保存'**
+  String get medicineReminderSavedToast;
+
+  /// No description provided for @medicineReminderDeletedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药提醒已删除'**
+  String get medicineReminderDeletedToast;
+
+  /// No description provided for @medicineReminderMedicineRequiredToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'请选择药品'**
+  String get medicineReminderMedicineRequiredToast;
+
+  /// No description provided for @medicineReminderTimeRequiredToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'请至少添加一个服用时间'**
+  String get medicineReminderTimeRequiredToast;
+
+  /// No description provided for @medicineReminderWeekdayRequiredToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'请选择提醒日期'**
+  String get medicineReminderWeekdayRequiredToast;
+
+  /// No description provided for @medicineReminderDeleteAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除此提醒'**
+  String get medicineReminderDeleteAction;
+
+  /// No description provided for @medicineReminderDeleteConfirmTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除这条提醒？'**
+  String get medicineReminderDeleteConfirmTitle;
+
+  /// No description provided for @medicineReminderDeleteConfirmBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除后将无法恢复，历史用药打卡仍会保留。'**
+  String get medicineReminderDeleteConfirmBody;
+
+  /// No description provided for @medicineReminderConfirmDeleteAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认删除'**
+  String get medicineReminderConfirmDeleteAction;
+
+  /// No description provided for @medicineReminderCancelAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消'**
+  String get medicineReminderCancelAction;
+
   /// No description provided for @medicineNoPendingDose.
   ///
   /// In zh, this message translates to:

@@ -694,6 +694,120 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineScheduleNotSet => '提醒未设置';
 
   @override
+  String get medicineReminderNewTitle => '新建提醒';
+
+  @override
+  String get medicineReminderEditTitle => '编辑提醒';
+
+  @override
+  String get medicineReminderDetailTitle => '用药提醒详情';
+
+  @override
+  String get medicineReminderNotFoundTitle => '提醒暂时没有加载出来';
+
+  @override
+  String get medicineReminderQuickTitle => '提醒设置';
+
+  @override
+  String get medicineReminderQuickSubtitle => '管理服药时间';
+
+  @override
+  String get medicineReminderEnabledStatus => '启用中';
+
+  @override
+  String get medicineReminderDisabledStatus => '已关闭';
+
+  @override
+  String get medicineReminderFrequencyLabel => '服用频次';
+
+  @override
+  String get medicineReminderFrequencyDaily => '每日';
+
+  @override
+  String get medicineReminderFrequencyWeekly => '每周';
+
+  @override
+  String get medicineReminderFrequencyCustom => '自定义';
+
+  @override
+  String get medicineReminderTimesLabel => '服用时间';
+
+  @override
+  String get medicineReminderDoseLabel => '每次剂量';
+
+  @override
+  String get medicineReminderMethodLabel => '提醒方式';
+
+  @override
+  String get medicineReminderNotificationOn => '提醒通知';
+
+  @override
+  String get medicineReminderNotificationOff => '提醒关闭';
+
+  @override
+  String get medicineReminderDeviceLocalHint => '仅保存提醒计划，系统通知由本机设置控制';
+
+  @override
+  String get medicineReminderNoteLabel => '备注';
+
+  @override
+  String get medicineReminderNoteOptionalLabel => '备注（可选）';
+
+  @override
+  String get medicineReminderNoteHint => '添加备注，例如：饭后服用';
+
+  @override
+  String get medicineReminderMedicineSectionTitle => '药品信息';
+
+  @override
+  String get medicineReminderMedicineLabel => '选择药品';
+
+  @override
+  String get medicineReminderSettingsSectionTitle => '提醒设置';
+
+  @override
+  String get medicineReminderAddTimeAction => '添加时间';
+
+  @override
+  String get medicineReminderTodayLogsTitle => '今日用药打卡';
+
+  @override
+  String get medicineReminderNoTodayLogs => '今天还没有用药打卡';
+
+  @override
+  String get medicineReminderMissedStatus => '已错过';
+
+  @override
+  String get medicineReminderSavedToast => '用药提醒已保存';
+
+  @override
+  String get medicineReminderDeletedToast => '用药提醒已删除';
+
+  @override
+  String get medicineReminderMedicineRequiredToast => '请选择药品';
+
+  @override
+  String get medicineReminderTimeRequiredToast => '请至少添加一个服用时间';
+
+  @override
+  String get medicineReminderWeekdayRequiredToast => '请选择提醒日期';
+
+  @override
+  String get medicineReminderDeleteAction => '删除此提醒';
+
+  @override
+  String get medicineReminderDeleteConfirmTitle => '删除这条提醒？';
+
+  @override
+  String get medicineReminderDeleteConfirmBody => '删除后将无法恢复，历史用药打卡仍会保留。';
+
+  @override
+  String get medicineReminderConfirmDeleteAction => '确认删除';
+
+  @override
+  String get medicineReminderCancelAction => '取消';
+
+  @override
   String get medicineNoPendingDose => '今日用药已完成';
 
   @override

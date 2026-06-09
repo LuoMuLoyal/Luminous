@@ -28,6 +28,9 @@ class MedicinePage extends ConsumerWidget {
           workspace: workspace,
           onMarkDose: (currentMedicineId, action) =>
               _markDose(context, ref, currentMedicineId, action),
+          onOpenReminder: (currentMedicineId) =>
+              _openReminder(context, ref, currentMedicineId),
+          onCreateReminder: () => _openReminder(context, ref, null),
         ),
       ),
       loading: () => const _MedicineMobileShell(
@@ -88,6 +91,33 @@ Future<void> _markDose(
       AppToast.show(context, l10n.medicineDoseActionFailedToast);
     }
   }
+}
+
+Future<void> _openReminder(
+  BuildContext context,
+  WidgetRef ref,
+  String? currentMedicineId,
+) async {
+  final session = ref.read(authSessionProvider);
+  if (!session.canAccessProtectedData) {
+    if (session.isLoading) {
+      return;
+    }
+    if (context.mounted) {
+      await showAuthRequiredDialog(
+        context,
+        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+      );
+    }
+    return;
+  }
+
+  if (!context.mounted) return;
+  if (currentMedicineId == null) {
+    context.push('/medicine/reminders/new');
+    return;
+  }
+  context.push('/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}');
 }
 
 class _MedicineMobileShell extends StatelessWidget {
@@ -215,7 +245,7 @@ class _MedicineNotificationButton extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () =>
-                AppToast.show(context, l10n.medicineNotificationsTooltip),
+                pushAuthRequiredRoute(context, '/medicine/reminders/new'),
             icon: const Icon(Icons.notifications_none_rounded),
             color: theme.colorScheme.onSurface,
             visualDensity: VisualDensity.compact,

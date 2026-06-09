@@ -739,6 +739,122 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineScheduleNotSet => 'Reminder not set';
 
   @override
+  String get medicineReminderNewTitle => 'New reminder';
+
+  @override
+  String get medicineReminderEditTitle => 'Edit reminder';
+
+  @override
+  String get medicineReminderDetailTitle => 'Medication reminder details';
+
+  @override
+  String get medicineReminderNotFoundTitle => 'Reminder did not load';
+
+  @override
+  String get medicineReminderQuickTitle => 'Reminder setup';
+
+  @override
+  String get medicineReminderQuickSubtitle => 'Manage dose times';
+
+  @override
+  String get medicineReminderEnabledStatus => 'On';
+
+  @override
+  String get medicineReminderDisabledStatus => 'Off';
+
+  @override
+  String get medicineReminderFrequencyLabel => 'Frequency';
+
+  @override
+  String get medicineReminderFrequencyDaily => 'Daily';
+
+  @override
+  String get medicineReminderFrequencyWeekly => 'Weekly';
+
+  @override
+  String get medicineReminderFrequencyCustom => 'Custom';
+
+  @override
+  String get medicineReminderTimesLabel => 'Dose times';
+
+  @override
+  String get medicineReminderDoseLabel => 'Dose';
+
+  @override
+  String get medicineReminderMethodLabel => 'Reminder method';
+
+  @override
+  String get medicineReminderNotificationOn => 'Reminder notification';
+
+  @override
+  String get medicineReminderNotificationOff => 'Reminder off';
+
+  @override
+  String get medicineReminderDeviceLocalHint =>
+      'Only the schedule is saved; system notifications are controlled on this device.';
+
+  @override
+  String get medicineReminderNoteLabel => 'Note';
+
+  @override
+  String get medicineReminderNoteOptionalLabel => 'Note (optional)';
+
+  @override
+  String get medicineReminderNoteHint => 'Add a note, e.g. after meals';
+
+  @override
+  String get medicineReminderMedicineSectionTitle => 'Medicine info';
+
+  @override
+  String get medicineReminderMedicineLabel => 'Choose medicine';
+
+  @override
+  String get medicineReminderSettingsSectionTitle => 'Reminder settings';
+
+  @override
+  String get medicineReminderAddTimeAction => 'Add time';
+
+  @override
+  String get medicineReminderTodayLogsTitle => 'Today\'s dose logs';
+
+  @override
+  String get medicineReminderNoTodayLogs => 'No dose logs yet today';
+
+  @override
+  String get medicineReminderMissedStatus => 'Missed';
+
+  @override
+  String get medicineReminderSavedToast => 'Medication reminder saved.';
+
+  @override
+  String get medicineReminderDeletedToast => 'Medication reminder deleted.';
+
+  @override
+  String get medicineReminderMedicineRequiredToast => 'Choose a medicine.';
+
+  @override
+  String get medicineReminderTimeRequiredToast => 'Add at least one dose time.';
+
+  @override
+  String get medicineReminderWeekdayRequiredToast => 'Choose reminder days.';
+
+  @override
+  String get medicineReminderDeleteAction => 'Delete this reminder';
+
+  @override
+  String get medicineReminderDeleteConfirmTitle => 'Delete this reminder?';
+
+  @override
+  String get medicineReminderDeleteConfirmBody =>
+      'This cannot be restored. Dose history will stay.';
+
+  @override
+  String get medicineReminderConfirmDeleteAction => 'Delete';
+
+  @override
+  String get medicineReminderCancelAction => 'Cancel';
+
+  @override
   String get medicineNoPendingDose => 'Today\'s medicines are done';
 
   @override
