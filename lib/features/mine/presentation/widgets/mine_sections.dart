@@ -333,7 +333,7 @@ class MineCampusServiceSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacingTokens.sm),
         Divider(height: 1, thickness: 1, color: surface.hairline),
-        _ServiceDividerGrid(
+        _ServiceDividerList(
           entries: dashboard.campusServices,
           l10n: l10n,
           typography: typography,
@@ -588,8 +588,8 @@ class _ArchiveRow extends StatelessWidget {
   }
 }
 
-class _ServiceDividerGrid extends StatelessWidget {
-  const _ServiceDividerGrid({
+class _ServiceDividerList extends StatelessWidget {
+  const _ServiceDividerList({
     required this.entries,
     required this.l10n,
     required this.typography,
@@ -603,54 +603,30 @@ class _ServiceDividerGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rows = <List<MineActionEntry>>[];
-    for (var index = 0; index < entries.length; index += 2) {
-      rows.add(entries.skip(index).take(2).toList(growable: false));
-    }
-
     return Column(
       children: [
-        for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) ...[
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _ServiceTile(
-                    entry: rows[rowIndex][0],
-                    l10n: l10n,
-                    typography: typography,
-                    surface: surface,
-                  ),
-                ),
-                if (rows[rowIndex].length > 1) ...[
-                  VerticalDivider(
-                    width: 1,
-                    thickness: 1,
-                    color: surface.hairline,
-                  ),
-                  Expanded(
-                    child: _ServiceTile(
-                      entry: rows[rowIndex][1],
-                      l10n: l10n,
-                      typography: typography,
-                      surface: surface,
-                    ),
-                  ),
-                ] else
-                  const Expanded(child: SizedBox.shrink()),
-              ],
-            ),
+        for (var index = 0; index < entries.length; index += 1) ...[
+          _ServiceRow(
+            entry: entries[index],
+            l10n: l10n,
+            typography: typography,
+            surface: surface,
           ),
-          if (rowIndex < rows.length - 1)
-            Divider(height: 1, thickness: 1, color: surface.hairline),
+          if (index < entries.length - 1)
+            Divider(
+              height: 1,
+              thickness: 1,
+              indent: AppSpacingTokens.x3l + AppSpacingTokens.sm,
+              color: surface.hairline,
+            ),
         ],
       ],
     );
   }
 }
 
-class _ServiceTile extends StatelessWidget {
-  const _ServiceTile({
+class _ServiceRow extends StatelessWidget {
+  const _ServiceRow({
     required this.entry,
     required this.l10n,
     required this.typography,
@@ -670,39 +646,48 @@ class _ServiceTile extends StatelessWidget {
         onTap: () => showMineToast(context, mineCopy(l10n, entry.titleKey)),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.sm,
+            horizontal: AppSpacingTokens.xs,
             vertical: AppSpacingTokens.md,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Row(
             children: [
               _SoftIcon(
                 icon: entry.icon,
                 color: entry.accent,
-                size: 42,
-                iconSize: 22,
+                size: AppSpacingTokens.x3l,
+                iconSize: AppSpacingTokens.lg,
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
-              Text(
-                mineCopy(l10n, entry.titleKey),
-                style: typography.bodySmStrong.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
+              const SizedBox(width: AppSpacingTokens.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      mineCopy(l10n, entry.titleKey),
+                      style: typography.bodyMdStrong.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.xxs),
+                    Text(
+                      mineCopy(l10n, entry.subtitleKey),
+                      style: typography.bodySm.copyWith(
+                        color: surface.body,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacingTokens.xxs),
-              Text(
-                mineCopy(l10n, entry.subtitleKey),
-                style: typography.caption.copyWith(
-                  color: surface.body,
-                  letterSpacing: 0,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
+              Icon(
+                Icons.chevron_right_rounded,
+                color: surface.body,
+                size: AppSpacingTokens.lg,
               ),
             ],
           ),

@@ -54,6 +54,7 @@ void main() {
     }
 
     expect(find.text(l10n.mineCampusSectionTitle), findsOneWidget);
+    expect(find.byType(IntrinsicHeight), findsNothing);
     expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
     expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
     expect(find.byKey(const Key('mine-settings-section')), findsNothing);
