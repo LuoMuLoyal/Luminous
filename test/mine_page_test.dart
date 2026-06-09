@@ -54,6 +54,7 @@ void main() {
     }
 
     expect(find.text(l10n.mineCampusSectionTitle), findsOneWidget);
+    expect(find.byKey(const Key('mine-campus-surface')), findsOneWidget);
     expect(find.byType(IntrinsicHeight), findsNothing);
     expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
     expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
@@ -96,6 +97,16 @@ void main() {
     expect(find.text(l10n.authGoLogin), findsOneWidget);
     expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
     expect(find.text(l10n.mineErrorTitle), findsNothing);
+
+    final basicSubtitle = find.text(l10n.mineArchiveBasicSubtitle);
+    await tester.scrollUntilVisible(
+      basicSubtitle,
+      260,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    expect(basicSubtitle, findsOneWidget);
+    expect(find.text(l10n.mineProfileMeta('--', '--')), findsNothing);
   });
 
   testWidgets(

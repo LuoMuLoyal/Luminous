@@ -25,6 +25,7 @@ import 'package:luminous/features/record/presentation/pages/record_detail.dart';
 import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/record_page.dart';
+import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -62,6 +63,26 @@ void main() {
     }
 
     expect(find.text(l10n.recordQuickSectionTitle), findsOneWidget);
+    for (final key in <String>[
+      'record-quick-actions',
+      'record-today-overview',
+      'record-timeline',
+    ]) {
+      expect(
+        find.descendant(
+          of: find.byKey(Key(key)),
+          matching: find.byType(RecordSectionSurface),
+        ),
+        findsOneWidget,
+      );
+    }
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('record-filter-chips')),
+        matching: find.byType(RecordSectionSurface),
+      ),
+      findsNothing,
+    );
     expect(find.textContaining(l10n.recordTimelineMealName), findsOneWidget);
     expect(find.byKey(const Key('record-calendar-overview')), findsNothing);
     expect(find.byKey(const Key('record-summary')), findsNothing);
