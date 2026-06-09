@@ -964,6 +964,8 @@
   "reportPeriodThisWeek": "This week",
   "reportGenerateAction": "Generate report",
   "reportSyncAction": "Sync",
+  "reportSnapshotStatus": "Showing the last report snapshot",
+  "reportSnapshotHint": "Generate or sync to update",
   "reportScoreTitle": "This week's health summary",
   "reportScoreOutOf": "pts / {max}",
   "@reportScoreOutOf": {

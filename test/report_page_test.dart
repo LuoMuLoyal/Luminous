@@ -45,6 +45,8 @@ void main() {
 
     expect(find.text(l10n.tabReport), findsOneWidget);
     expect(find.text(l10n.reportWeekDateRange), findsOneWidget);
+    expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
+    expect(find.text(l10n.reportSnapshotStatus), findsOneWidget);
     expect(find.byKey(const Key('report-generate-action')), findsOneWidget);
     expect(find.byKey(const Key('report-sync-action')), findsOneWidget);
     expect(find.text(l10n.reportScoreTitle), findsOneWidget);
@@ -74,63 +76,62 @@ void main() {
     expect(find.byKey(const Key('report-privacy-section')), findsNothing);
   });
 
-  testWidgets(
-    'Report sync keeps static sections visible with skeleton slots',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(390, 844);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      final repo = _PendingReportRepository();
+  testWidgets('Report sync keeps static sections visible with skeleton slots', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final repo = _PendingReportRepository();
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [reportRepositoryProvider.overrideWithValue(repo)],
-          child: MaterialApp(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const ReportPage(),
-          ),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [reportRepositoryProvider.overrideWithValue(repo)],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ReportPage(),
         ),
-      );
+      ),
+    );
 
-      await tester.pump();
+    await tester.pump();
 
-      expect(find.text(l10n.tabReport), findsOneWidget);
-      expect(find.text(l10n.reportScoreTitle), findsOneWidget);
-      expect(repo.fetchCalled, isFalse);
+    expect(find.text(l10n.tabReport), findsOneWidget);
+    expect(find.text(l10n.reportScoreTitle), findsOneWidget);
+    expect(repo.fetchCalled, isFalse);
 
-      await tester.tap(find.byKey(const Key('report-sync-action')));
-      await tester.pump();
+    await tester.tap(find.byKey(const Key('report-sync-action')));
+    await tester.pump();
 
-      expect(repo.fetchCalled, isTrue);
-      expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(repo.fetchCalled, isTrue);
+    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
 
-      final exportTitle = find.text(l10n.reportExportSectionTitle);
-      await tester.scrollUntilVisible(
-        exportTitle,
-        280,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await tester.pump();
-      expect(exportTitle, findsOneWidget);
+    final exportTitle = find.text(l10n.reportExportSectionTitle);
+    await tester.scrollUntilVisible(
+      exportTitle,
+      280,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+    expect(exportTitle, findsOneWidget);
 
-      repo.complete(MockReportRepository.dashboard);
-      await tester.pumpAndSettle();
-      expect(find.byType(AppInlineSkeletonBlock), findsNothing);
-    },
-  );
+    repo.complete(MockReportRepository.dashboard);
+    await tester.pumpAndSettle();
+    expect(find.byType(AppInlineSkeletonBlock), findsNothing);
+  });
 }
 
 class _PendingReportRepository implements ReportRepository {

@@ -2154,6 +2154,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportSyncAction => '同步';
 
   @override
+  String get reportSnapshotStatus => '当前显示上次报告快照';
+
+  @override
+  String get reportSnapshotHint => '点击生成报告或同步后更新';
+
+  @override
   String get reportScoreTitle => '本周健康总结';
 
   @override

@@ -4226,6 +4226,18 @@ abstract class AppLocalizations {
   /// **'同步'**
   String get reportSyncAction;
 
+  /// No description provided for @reportSnapshotStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前显示上次报告快照'**
+  String get reportSnapshotStatus;
+
+  /// No description provided for @reportSnapshotHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击生成报告或同步后更新'**
+  String get reportSnapshotHint;
+
   /// No description provided for @reportScoreTitle.
   ///
   /// In zh, this message translates to:

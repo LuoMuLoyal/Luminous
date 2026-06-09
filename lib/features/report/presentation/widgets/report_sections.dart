@@ -59,6 +59,8 @@ class ReportTopBar extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacingTokens.sm),
+        _ReportSnapshotStatus(typography: typography, surface: surface),
+        const SizedBox(height: AppSpacingTokens.sm),
         Row(
           children: [
             Expanded(
@@ -91,6 +93,69 @@ class ReportTopBar extends StatelessWidget {
             ),
           ],
         ),
+      ],
+    );
+  }
+}
+
+class _ReportSnapshotStatus extends StatelessWidget {
+  const _ReportSnapshotStatus({
+    required this.typography,
+    required this.surface,
+  });
+
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      key: const Key('report-snapshot-status'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.history_rounded,
+                color: ReportPalette.blue,
+                size: AppSpacingTokens.lg,
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.reportSnapshotStatus,
+                      style: typography.bodySmStrong.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.xxs),
+                    Text(
+                      l10n.reportSnapshotHint,
+                      style: typography.caption.copyWith(
+                        color: surface.body,
+                        letterSpacing: 0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
       ],
     );
   }
@@ -472,47 +537,46 @@ class ReportTrendSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ReportPanel(
-      padding: const EdgeInsets.all(AppSpacingTokens.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ReportSectionHeader(
-            title: l10n.reportTrendSectionTitle,
-            trailing: ReportPeriodPill(label: l10n.reportRangeLast7Days),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ReportSectionHeader(
+          title: l10n.reportTrendSectionTitle,
+          trailing: ReportPeriodPill(label: l10n.reportRangeLast7Days),
+        ),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        const SizedBox(height: AppSpacingTokens.md),
+        Wrap(
+          spacing: AppSpacingTokens.md,
+          runSpacing: AppSpacingTokens.xs,
+          children: [
+            for (final series in trends)
+              _LegendDot(
+                color: series.color,
+                label: reportCopy(l10n, series.labelKey),
+                typography: typography,
+                surface: surface,
+              ),
+          ],
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _TrendPlaceholder(
+          trends: trends,
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+        ),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Align(
+          alignment: Alignment.centerRight,
+          child: ReportTextAction(
+            label: l10n.reportViewDetailsAction,
+            color: ReportPalette.blue,
+            onTap: () => showReportToast(context, l10n.reportViewDetailsAction),
           ),
-          const SizedBox(height: AppSpacingTokens.md),
-          Wrap(
-            spacing: AppSpacingTokens.md,
-            runSpacing: AppSpacingTokens.xs,
-            children: [
-              for (final series in trends)
-                _LegendDot(
-                  color: series.color,
-                  label: reportCopy(l10n, series.labelKey),
-                  typography: typography,
-                  surface: surface,
-                ),
-            ],
-          ),
-          const SizedBox(height: AppSpacingTokens.lg),
-          _TrendPlaceholder(
-            trends: trends,
-            l10n: l10n,
-            typography: typography,
-            surface: surface,
-          ),
-          const SizedBox(height: AppSpacingTokens.md),
-          Center(
-            child: ReportTextAction(
-              label: l10n.reportViewDetailsAction,
-              color: ReportPalette.blue,
-              onTap: () =>
-                  showReportToast(context, l10n.reportViewDetailsAction),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -644,35 +708,34 @@ class ReportFindingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ReportPanel(
-      padding: const EdgeInsets.all(AppSpacingTokens.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ReportSectionHeader(title: l10n.reportFindingsSectionTitle),
-          const SizedBox(height: AppSpacingTokens.md),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                for (var index = 0; index < findings.length; index += 1) ...[
-                  SizedBox(
-                    width: 238,
-                    child: _FindingCard(
-                      finding: findings[index],
-                      l10n: l10n,
-                      typography: typography,
-                      surface: surface,
-                    ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ReportSectionHeader(title: l10n.reportFindingsSectionTitle),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        const SizedBox(height: AppSpacingTokens.md),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              for (var index = 0; index < findings.length; index += 1) ...[
+                SizedBox(
+                  width: 238,
+                  child: _FindingCard(
+                    finding: findings[index],
+                    l10n: l10n,
+                    typography: typography,
+                    surface: surface,
                   ),
-                  if (index != findings.length - 1)
-                    const SizedBox(width: AppSpacingTokens.sm),
-                ],
+                ),
+                if (index != findings.length - 1)
+                  const SizedBox(width: AppSpacingTokens.sm),
               ],
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -774,87 +837,93 @@ class ReportAiSummarySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ReportPanel(
-      padding: const EdgeInsets.all(AppSpacingTokens.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ReportIconBadge(
-                icon: Icons.auto_awesome_rounded,
-                color: ReportPalette.green,
-                size: AppSpacingTokens.x3l,
-                iconSize: AppSpacingTokens.lg,
-                shape: BoxShape.circle,
-              ),
-              const SizedBox(width: AppSpacingTokens.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.reportAiSummaryTitle,
-                      style: typography.bodyMdStrong.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacingTokens.xxs),
-                    Text(
-                      l10n.reportAiSummarySubtitle,
-                      style: typography.bodySm.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              OutlinedButton(
-                onPressed: () =>
-                    showReportToast(context, l10n.reportViewAdviceAction),
-                child: Text(l10n.reportViewAdviceAction),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacingTokens.lg),
-          for (final bullet in bullets)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
-              child: Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ReportIconBadge(
+              icon: Icons.auto_awesome_rounded,
+              color: ReportPalette.green,
+              size: AppSpacingTokens.x3l,
+              iconSize: AppSpacingTokens.lg,
+              shape: BoxShape.circle,
+            ),
+            const SizedBox(width: AppSpacingTokens.md),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacingTokens.xs),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: bullet.color,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const SizedBox.square(
-                        dimension: AppSpacingTokens.xs,
-                      ),
+                  Text(
+                    l10n.reportAiSummaryTitle,
+                    style: typography.bodyMdStrong.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
                     ),
                   ),
-                  const SizedBox(width: AppSpacingTokens.sm),
-                  Expanded(
-                    child: AppSkeletonText(
-                      text: reportCopy(l10n, bullet.bodyKey),
-                      style: typography.bodySm.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
-                      ),
-                      widthFactor: 0.9,
+                  const SizedBox(height: AppSpacingTokens.xxs),
+                  Text(
+                    l10n.reportAiSummarySubtitle,
+                    style: typography.bodySm.copyWith(
+                      color: surface.body,
+                      letterSpacing: 0,
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            OutlinedButton(
+              onPressed: () =>
+                  showReportToast(context, l10n.reportViewAdviceAction),
+              child: Text(l10n.reportViewAdviceAction),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        for (var index = 0; index < bullets.length; index += 1) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacingTokens.xs),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: bullets[index].color,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const SizedBox.square(
+                      dimension: AppSpacingTokens.xs,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                Expanded(
+                  child: AppSkeletonText(
+                    text: reportCopy(l10n, bullets[index].bodyKey),
+                    style: typography.bodySm.copyWith(
+                      color: surface.body,
+                      letterSpacing: 0,
+                    ),
+                    widthFactor: 0.9,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (index < bullets.length - 1)
+            Divider(
+              height: 1,
+              thickness: 1,
+              indent: AppSpacingTokens.lg,
+              color: surface.hairline,
+            ),
         ],
-      ),
+      ],
     );
   }
 }

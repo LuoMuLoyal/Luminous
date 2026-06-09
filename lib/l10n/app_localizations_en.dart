@@ -2284,6 +2284,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportSyncAction => 'Sync';
 
   @override
+  String get reportSnapshotStatus => 'Showing the last report snapshot';
+
+  @override
+  String get reportSnapshotHint => 'Generate or sync to update';
+
+  @override
   String get reportScoreTitle => 'This week\'s health summary';
 
   @override
