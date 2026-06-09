@@ -464,48 +464,6 @@ abstract class AppLocalizations {
   /// **'{count} 条'**
   String recordTodayOverviewEventCount(int count);
 
-  /// No description provided for @recordTodayOverviewWater.
-  ///
-  /// In zh, this message translates to:
-  /// **'饮水'**
-  String get recordTodayOverviewWater;
-
-  /// No description provided for @recordTodayOverviewWaterValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'{amount} 杯'**
-  String recordTodayOverviewWaterValue(String amount);
-
-  /// No description provided for @recordTodayOverviewSleep.
-  ///
-  /// In zh, this message translates to:
-  /// **'睡眠'**
-  String get recordTodayOverviewSleep;
-
-  /// No description provided for @recordTodayOverviewSleepValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'{hours} 小时'**
-  String recordTodayOverviewSleepValue(String hours);
-
-  /// No description provided for @recordTodayOverviewMoodAverage.
-  ///
-  /// In zh, this message translates to:
-  /// **'情绪平均'**
-  String get recordTodayOverviewMoodAverage;
-
-  /// No description provided for @recordTodayOverviewMoodValue.
-  ///
-  /// In zh, this message translates to:
-  /// **'{score} / 5'**
-  String recordTodayOverviewMoodValue(String score);
-
-  /// No description provided for @recordTodayOverviewReportAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'查看今日报告'**
-  String get recordTodayOverviewReportAction;
-
   /// No description provided for @recordQuickOperationTitle.
   ///
   /// In zh, this message translates to:

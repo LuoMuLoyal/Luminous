@@ -218,33 +218,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get recordTodayOverviewWater => 'Water';
-
-  @override
-  String recordTodayOverviewWaterValue(String amount) {
-    return '$amount cups';
-  }
-
-  @override
-  String get recordTodayOverviewSleep => 'Sleep';
-
-  @override
-  String recordTodayOverviewSleepValue(String hours) {
-    return '$hours h';
-  }
-
-  @override
-  String get recordTodayOverviewMoodAverage => 'Mood avg';
-
-  @override
-  String recordTodayOverviewMoodValue(String score) {
-    return '$score / 5';
-  }
-
-  @override
-  String get recordTodayOverviewReportAction => 'View today\'s report';
-
-  @override
   String get recordQuickOperationTitle => 'Quick actions';
 
   @override

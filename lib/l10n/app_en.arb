@@ -95,34 +95,6 @@
       }
     }
   },
-  "recordTodayOverviewWater": "Water",
-  "recordTodayOverviewWaterValue": "{amount} cups",
-  "@recordTodayOverviewWaterValue": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "recordTodayOverviewSleep": "Sleep",
-  "recordTodayOverviewSleepValue": "{hours} h",
-  "@recordTodayOverviewSleepValue": {
-    "placeholders": {
-      "hours": {
-        "type": "String"
-      }
-    }
-  },
-  "recordTodayOverviewMoodAverage": "Mood avg",
-  "recordTodayOverviewMoodValue": "{score} / 5",
-  "@recordTodayOverviewMoodValue": {
-    "placeholders": {
-      "score": {
-        "type": "String"
-      }
-    }
-  },
-  "recordTodayOverviewReportAction": "View today's report",
   "recordQuickOperationTitle": "Quick actions",
   "recordVoiceInputTitle": "Voice input",
   "recordVoiceInputSubtitle": "Speak and auto-log",

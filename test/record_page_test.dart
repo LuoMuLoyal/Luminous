@@ -68,6 +68,11 @@ void main() {
     expect(find.byKey(const Key('record-summary')), findsNothing);
     expect(find.byKey(const Key('record-trends')), findsNothing);
     expect(find.byKey(const Key('record-health-bag')), findsNothing);
+    expect(find.text(l10n.recordSummaryWaterTitle), findsOneWidget);
+    expect(find.text(l10n.recordSummaryLatestVitalTitle), findsOneWidget);
+    expect(find.text('情绪平均'), findsNothing);
+    expect(find.text('查看今日报告'), findsNothing);
+    expect(find.text('睡眠'), findsNothing);
     expect(find.text(l10n.recordMoodTrendSectionTitle), findsNothing);
   });
 

@@ -200,33 +200,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get recordTodayOverviewWater => '饮水';
-
-  @override
-  String recordTodayOverviewWaterValue(String amount) {
-    return '$amount 杯';
-  }
-
-  @override
-  String get recordTodayOverviewSleep => '睡眠';
-
-  @override
-  String recordTodayOverviewSleepValue(String hours) {
-    return '$hours 小时';
-  }
-
-  @override
-  String get recordTodayOverviewMoodAverage => '情绪平均';
-
-  @override
-  String recordTodayOverviewMoodValue(String score) {
-    return '$score / 5';
-  }
-
-  @override
-  String get recordTodayOverviewReportAction => '查看今日报告';
-
-  @override
   String get recordQuickOperationTitle => '快捷操作';
 
   @override
