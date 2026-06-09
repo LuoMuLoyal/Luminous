@@ -218,25 +218,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get recordQuickOperationTitle => 'Quick actions';
-
-  @override
   String get recordVoiceInputTitle => 'Voice input';
-
-  @override
-  String get recordVoiceInputSubtitle => 'Speak and auto-log';
-
-  @override
-  String get recordPhotoRecordTitle => 'Photo record';
-
-  @override
-  String get recordPhotoRecordSubtitle => 'Recognize food/meds';
-
-  @override
-  String get recordTemplateRecordTitle => 'Template';
-
-  @override
-  String get recordTemplateRecordSubtitle => 'Symptom/meal/vital templates';
 
   @override
   String get recordGuideHint =>

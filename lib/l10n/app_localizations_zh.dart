@@ -200,25 +200,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get recordQuickOperationTitle => '快捷操作';
-
-  @override
   String get recordVoiceInputTitle => '语音输入';
-
-  @override
-  String get recordVoiceInputSubtitle => '说一说，自动记录';
-
-  @override
-  String get recordPhotoRecordTitle => '拍照记录';
-
-  @override
-  String get recordPhotoRecordSubtitle => '拍照识别食物/药品';
-
-  @override
-  String get recordTemplateRecordTitle => '模板记录';
-
-  @override
-  String get recordTemplateRecordSubtitle => '症状/饮食/体征模板';
 
   @override
   String get recordGuideHint => '小贴士：坚持记录有助于更好地了解自己的健康状态';

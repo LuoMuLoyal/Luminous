@@ -51,7 +51,6 @@ void main() {
       'record-timeline',
       'record-filter-chips',
       'record-today-overview',
-      'record-quick-operations',
       'record-guide-row',
     ];
 
@@ -68,15 +67,21 @@ void main() {
     expect(find.byKey(const Key('record-summary')), findsNothing);
     expect(find.byKey(const Key('record-trends')), findsNothing);
     expect(find.byKey(const Key('record-health-bag')), findsNothing);
+    expect(find.byKey(const Key('record-quick-operations')), findsNothing);
+    expect(find.byKey(const Key('record-quick-sleep')), findsOneWidget);
+    expect(find.byKey(const Key('record-quick-vitals')), findsNothing);
     expect(find.text(l10n.recordSummaryWaterTitle), findsOneWidget);
-    expect(find.text(l10n.recordSummaryLatestVitalTitle), findsOneWidget);
+    expect(find.text(l10n.recordSummaryLatestVitalTitle), findsNothing);
     expect(find.text('情绪平均'), findsNothing);
     expect(find.text('查看今日报告'), findsNothing);
-    expect(find.text('睡眠'), findsNothing);
+    expect(
+      find.text(l10n.recordQuickActionLabel(l10n.recordTypeSleep)),
+      findsOneWidget,
+    );
     expect(find.text(l10n.recordMoodTrendSectionTitle), findsNothing);
   });
 
-  testWidgets('Record page keeps period quick action hidden in MVP', (
+  testWidgets('Record page keeps period and vitals quick actions hidden in MVP', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -96,6 +101,10 @@ void main() {
     expect(find.text('记经期'), findsNothing);
     expect(
       find.text(l10n.recordQuickActionLabel(l10n.recordTypeVitals)),
+      findsNothing,
+    );
+    expect(
+      find.text(l10n.recordQuickActionLabel(l10n.recordTypeSleep)),
       findsOneWidget,
     );
 
@@ -111,6 +120,10 @@ void main() {
     expect(find.text('记经期'), findsNothing);
     expect(
       find.text(l10n.recordQuickActionLabel(l10n.recordTypeVitals)),
+      findsNothing,
+    );
+    expect(
+      find.text(l10n.recordQuickActionLabel(l10n.recordTypeSleep)),
       findsOneWidget,
     );
   });
@@ -760,6 +773,10 @@ void main() {
     () async {
       final dailyRepo = _FakeDailyRecordRepository(
         itemOccurredAt: '2026-06-06T09:45:00',
+        itemKind: DailyRecordKind.symptom,
+        itemTitle: 'Headache',
+        itemValue: 'mild',
+        itemUnit: null,
       );
       final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 

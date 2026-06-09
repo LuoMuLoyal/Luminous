@@ -464,47 +464,11 @@ abstract class AppLocalizations {
   /// **'{count} 条'**
   String recordTodayOverviewEventCount(int count);
 
-  /// No description provided for @recordQuickOperationTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'快捷操作'**
-  String get recordQuickOperationTitle;
-
   /// No description provided for @recordVoiceInputTitle.
   ///
   /// In zh, this message translates to:
   /// **'语音输入'**
   String get recordVoiceInputTitle;
-
-  /// No description provided for @recordVoiceInputSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'说一说，自动记录'**
-  String get recordVoiceInputSubtitle;
-
-  /// No description provided for @recordPhotoRecordTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'拍照记录'**
-  String get recordPhotoRecordTitle;
-
-  /// No description provided for @recordPhotoRecordSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'拍照识别食物/药品'**
-  String get recordPhotoRecordSubtitle;
-
-  /// No description provided for @recordTemplateRecordTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'模板记录'**
-  String get recordTemplateRecordTitle;
-
-  /// No description provided for @recordTemplateRecordSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'症状/饮食/体征模板'**
-  String get recordTemplateRecordSubtitle;
 
   /// No description provided for @recordGuideHint.
   ///

@@ -95,13 +95,7 @@
       }
     }
   },
-  "recordQuickOperationTitle": "快捷操作",
   "recordVoiceInputTitle": "语音输入",
-  "recordVoiceInputSubtitle": "说一说，自动记录",
-  "recordPhotoRecordTitle": "拍照记录",
-  "recordPhotoRecordSubtitle": "拍照识别食物/药品",
-  "recordTemplateRecordTitle": "模板记录",
-  "recordTemplateRecordSubtitle": "症状/饮食/体征模板",
   "recordGuideHint": "小贴士：坚持记录有助于更好地了解自己的健康状态",
   "recordGuideAction": "查看记录指南",
   "recordDetailTitle": "记录详情",

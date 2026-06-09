@@ -101,6 +101,8 @@ class _MobileRecordDashboard extends StatelessWidget {
           onPickDate: onPickDate,
         ),
         const SizedBox(height: AppSpacingTokens.md),
+        _MobileAiInputBar(l10n: l10n, typography: typography, surface: surface),
+        const SizedBox(height: AppSpacingTokens.md),
         _MobileQuickRecordPanel(
           actions: quickActions,
           l10n: l10n,
@@ -108,14 +110,6 @@ class _MobileRecordDashboard extends StatelessWidget {
           surface: surface,
           onQuickAction: onQuickAction,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _MobileQuickOperationPanel(
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _MobileAiInputBar(l10n: l10n, typography: typography, surface: surface),
         const SizedBox(height: AppSpacingTokens.md),
         _MobileTimelinePanel(
           entries: timeline,
@@ -881,135 +875,6 @@ class _MobileOverviewItem {
   final String value;
 }
 
-class _MobileQuickOperationPanel extends StatelessWidget {
-  const _MobileQuickOperationPanel({
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
-
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-
-  @override
-  Widget build(BuildContext context) {
-    final items = [
-      (
-        icon: Icons.mic_rounded,
-        color: AppColorTokens.cyanDeep,
-        title: l10n.recordVoiceInputTitle,
-        subtitle: l10n.recordVoiceInputSubtitle,
-      ),
-      (
-        icon: Icons.photo_camera_rounded,
-        color: AppColorTokens.link,
-        title: l10n.recordPhotoRecordTitle,
-        subtitle: l10n.recordPhotoRecordSubtitle,
-      ),
-      (
-        icon: Icons.fact_check_outlined,
-        color: AppColorTokens.linkDeep,
-        title: l10n.recordTemplateRecordTitle,
-        subtitle: l10n.recordTemplateRecordSubtitle,
-      ),
-    ];
-
-    return Column(
-      key: const Key('record-quick-operations'),
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l10n.recordQuickOperationTitle, style: typography.displaySm),
-        const SizedBox(height: AppSpacingTokens.sm),
-        Row(
-          children: [
-            for (var index = 0; index < items.length; index += 1) ...[
-              Expanded(
-                child: _MobileQuickOperationCard(
-                  icon: items[index].icon,
-                  color: items[index].color,
-                  title: items[index].title,
-                  subtitle: items[index].subtitle,
-                  typography: typography,
-                  surface: surface,
-                ),
-              ),
-              if (index < items.length - 1)
-                const SizedBox(width: AppSpacingTokens.sm),
-            ],
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _MobileQuickOperationCard extends StatelessWidget {
-  const _MobileQuickOperationCard({
-    required this.icon,
-    required this.color,
-    required this.title,
-    required this.subtitle,
-    required this.typography,
-    required this.surface,
-  });
-
-  final IconData icon;
-  final Color color;
-  final String title;
-  final String subtitle;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => showRecordToast(context, title),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: DecoratedBox(
-          decoration: const BoxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.xs,
-              vertical: AppSpacingTokens.sm,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                RecordIconBadge(
-                  icon: icon,
-                  color: color,
-                  backgroundColor: color.withValues(alpha: 0.12),
-                  size: AppSpacingTokens.x2l,
-                  iconSize: AppSpacingTokens.lg,
-                ),
-                const SizedBox(height: AppSpacingTokens.xs),
-                Text(
-                  title,
-                  style: typography.bodySmStrong,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppSpacingTokens.xxs),
-                Text(
-                  subtitle,
-                  style: typography.caption.copyWith(color: surface.body),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _MobileRecordGuideRow extends StatelessWidget {
   const _MobileRecordGuideRow({
     required this.l10n,
@@ -1079,11 +944,11 @@ class _MobileRecordGuideRow extends StatelessWidget {
 
 List<RecordQuickAction> _mobileQuickActions(List<RecordQuickAction> actions) {
   final preferredTypes = <RecordEntryType>[
-    RecordEntryType.medication,
     RecordEntryType.symptom,
     RecordEntryType.water,
     RecordEntryType.meal,
-    RecordEntryType.vitals,
+    RecordEntryType.sleep,
+    RecordEntryType.medication,
   ];
   final byType = {for (final action in actions) action.type: action};
   final ordered = <RecordQuickAction>[
@@ -1093,16 +958,16 @@ List<RecordQuickAction> _mobileQuickActions(List<RecordQuickAction> actions) {
   for (final action in actions) {
     if (!ordered.contains(action)) ordered.add(action);
   }
-  return ordered.take(8).toList(growable: false);
+  return ordered.take(5).toList(growable: false);
 }
 
 List<RecordFilter> _mobileFilters(List<RecordFilter> filters) {
   const preferredTypes = <RecordEntryType>[
-    RecordEntryType.medication,
     RecordEntryType.symptom,
     RecordEntryType.water,
     RecordEntryType.meal,
-    RecordEntryType.vitals,
+    RecordEntryType.sleep,
+    RecordEntryType.medication,
   ];
   final byType = {for (final filter in filters) filter.type: filter};
   final ordered = <RecordFilter>[
@@ -1232,11 +1097,11 @@ bool _isActiveMobileOverviewType(RecordEntryType type) {
 }
 
 const _mobileOverviewTypeOrder = <RecordEntryType>[
-  RecordEntryType.medication,
   RecordEntryType.symptom,
   RecordEntryType.water,
   RecordEntryType.meal,
-  RecordEntryType.vitals,
+  RecordEntryType.sleep,
+  RecordEntryType.medication,
 ];
 
 String _mobileFilterLabel(AppLocalizations l10n, RecordFilter filter) {
