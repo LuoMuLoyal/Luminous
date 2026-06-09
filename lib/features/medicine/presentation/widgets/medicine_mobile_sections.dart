@@ -30,27 +30,31 @@ class _SafetyEngineSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        Divider(height: 1, thickness: 1, color: surface.hairline),
-        Column(
-          children: [
-            for (var index = 0; index < visibleAlerts.length; index += 1) ...[
-              _SafetyAlertRow(
-                alert: visibleAlerts[index],
-                l10n: l10n,
-                typography: typography,
-                surface: surface,
-              ),
-              if (index < visibleAlerts.length - 1)
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                  indent: AppSpacingTokens.x5l,
-                  color: surface.hairline,
+        MedicinePanel(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              for (var index = 0; index < visibleAlerts.length; index += 1) ...[
+                _SafetyAlertRow(
+                  alert: visibleAlerts[index],
+                  l10n: l10n,
+                  typography: typography,
+                  surface: surface,
                 ),
+                if (index < visibleAlerts.length - 1)
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent:
+                        AppSpacingTokens.md +
+                        AppSpacingTokens.x3l +
+                        AppSpacingTokens.sm,
+                    color: surface.hairline,
+                  ),
+              ],
             ],
-          ],
+          ),
         ),
-        Divider(height: 1, thickness: 1, color: surface.hairline),
       ],
     );
   }
@@ -192,22 +196,30 @@ class _QuickOperationSection extends StatelessWidget {
       children: [
         MedicineSectionHeader(title: l10n.medicineQuickOperationTitle),
         const SizedBox(height: AppSpacingTokens.sm),
-        Divider(height: 1, thickness: 1, color: surface.hairline),
-        for (var index = 0; index < operations.length; index += 1) ...[
-          _QuickOperationRow(
-            operation: operations[index],
-            typography: typography,
-            surface: surface,
+        MedicinePanel(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              for (var index = 0; index < operations.length; index += 1) ...[
+                _QuickOperationRow(
+                  operation: operations[index],
+                  typography: typography,
+                  surface: surface,
+                ),
+                if (index < operations.length - 1)
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent:
+                        AppSpacingTokens.md +
+                        AppSpacingTokens.x3l +
+                        AppSpacingTokens.sm,
+                    color: surface.hairline,
+                  ),
+              ],
+            ],
           ),
-          if (index < operations.length - 1)
-            Divider(
-              height: 1,
-              thickness: 1,
-              indent: AppSpacingTokens.x4l,
-              color: surface.hairline,
-            ),
-        ],
-        Divider(height: 1, thickness: 1, color: surface.hairline),
+        ),
       ],
     );
   }
@@ -231,7 +243,10 @@ class _QuickOperationRow extends StatelessWidget {
       child: InkWell(
         onTap: operation.onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
           child: Row(
             children: [
               MedicineIconBadge(
@@ -645,26 +660,30 @@ class _SafetyTipsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        Divider(height: 1, thickness: 1, color: surface.hairline),
-        Column(
-          children: [
-            for (var index = 0; index < tips.length; index += 1) ...[
-              _SafetyTipRow(
-                tip: tips[index],
-                typography: typography,
-                surface: surface,
-              ),
-              if (index < tips.length - 1)
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                  indent: AppSpacingTokens.x4l,
-                  color: surface.hairline,
+        MedicinePanel(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              for (var index = 0; index < tips.length; index += 1) ...[
+                _SafetyTipRow(
+                  tip: tips[index],
+                  typography: typography,
+                  surface: surface,
                 ),
+                if (index < tips.length - 1)
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent:
+                        AppSpacingTokens.md +
+                        AppSpacingTokens.x3l +
+                        AppSpacingTokens.md,
+                    color: surface.hairline,
+                  ),
+              ],
             ],
-          ],
+          ),
         ),
-        Divider(height: 1, thickness: 1, color: surface.hairline),
       ],
     );
   }

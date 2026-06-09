@@ -332,14 +332,17 @@ class MineCampusServiceSection extends StatelessWidget {
           typography: typography,
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        Divider(height: 1, thickness: 1, color: surface.hairline),
-        _ServiceDividerList(
-          entries: dashboard.campusServices,
-          l10n: l10n,
-          typography: typography,
+        _MinePanel(
+          key: const Key('mine-campus-surface'),
           surface: surface,
+          padding: EdgeInsets.zero,
+          child: _ServiceDividerList(
+            entries: dashboard.campusServices,
+            l10n: l10n,
+            typography: typography,
+            surface: surface,
+          ),
         ),
-        Divider(height: 1, thickness: 1, color: surface.hairline),
       ],
     );
   }
@@ -616,8 +619,12 @@ class _ServiceDividerList extends StatelessWidget {
             Divider(
               height: 1,
               thickness: 1,
-              indent: AppSpacingTokens.x3l + AppSpacingTokens.sm,
-              color: surface.hairline,
+              indent:
+                  AppSpacingTokens.md +
+                  AppSpacingTokens.x3l +
+                  AppSpacingTokens.sm,
+              endIndent: AppSpacingTokens.md,
+              color: surface.hairline.withValues(alpha: 0.62),
             ),
         ],
       ],
@@ -646,7 +653,7 @@ class _ServiceRow extends StatelessWidget {
         onTap: () => showMineToast(context, mineCopy(l10n, entry.titleKey)),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.xs,
+            horizontal: AppSpacingTokens.md,
             vertical: AppSpacingTokens.md,
           ),
           child: Row(
@@ -728,6 +735,7 @@ class _TapRow extends StatelessWidget {
 
 class _MinePanel extends StatelessWidget {
   const _MinePanel({
+    super.key,
     required this.child,
     required this.surface,
     this.padding = const EdgeInsets.all(AppSpacingTokens.lg),
@@ -956,14 +964,14 @@ class _TinyBadge extends StatelessWidget {
 }
 
 String _profileMeta(AppLocalizations l10n, MineProfileSnapshot profile) {
-  final age = profile.age == null
-      ? l10n.mineProfileUnknownValue
-      : l10n.mineProfileAgeYears(profile.age!);
-  final height = profile.heightCm == null
-      ? l10n.mineProfileUnknownValue
-      : l10n.mineProfileHeightCm(profile.heightCm!.round());
+  final parts = <String>[
+    if (profile.age != null) l10n.mineProfileAgeYears(profile.age!),
+    if (profile.heightCm != null)
+      l10n.mineProfileHeightCm(profile.heightCm!.round()),
+  ];
 
-  return l10n.mineProfileMeta(age, height);
+  if (parts.isEmpty) return l10n.mineArchiveBasicSubtitle;
+  return parts.join(' · ');
 }
 
 const _mineGreen = AppColorTokens.cyanDeep;

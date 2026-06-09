@@ -14,6 +14,7 @@ import 'package:luminous/features/medicine/domain/entities/medicine_workspace.da
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
+import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -81,6 +82,19 @@ void main() {
       }
     }
 
+    for (final key in <String>[
+      'medicine-safety-panel',
+      'medicine-quick-actions',
+      'medicine-safety-tips',
+    ]) {
+      expect(
+        find.descendant(
+          of: find.byKey(Key(key)),
+          matching: find.byType(MedicinePanel),
+        ),
+        findsOneWidget,
+      );
+    }
     expect(find.text(l10n.medicineSafetyTipsTitle), findsOneWidget);
   });
 
