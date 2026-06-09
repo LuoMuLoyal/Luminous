@@ -18,12 +18,16 @@ class MedicineMobileDashboardView extends StatelessWidget {
     super.key,
     required this.workspace,
     this.onMarkDose,
+    this.onOpenReminder,
+    this.onCreateReminder,
     this.isLoading = false,
   });
 
   final MedicineWorkspace workspace;
   final void Function(String currentMedicineId, MedicineDoseAction action)?
   onMarkDose;
+  final void Function(String currentMedicineId)? onOpenReminder;
+  final VoidCallback? onCreateReminder;
   final bool isLoading;
 
   @override
@@ -44,6 +48,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
           typography: typography,
           surface: surface,
           onMarkDose: onMarkDose,
+          onOpenReminder: onOpenReminder,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         _SafetyEngineSection(
@@ -57,6 +62,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
           l10n: l10n,
           typography: typography,
           surface: surface,
+          onCreateReminder: onCreateReminder,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         _MedicineRecordsSection(

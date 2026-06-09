@@ -8,6 +8,7 @@ class _DrugBoxSection extends StatelessWidget {
     required this.typography,
     required this.surface,
     required this.onMarkDose,
+    required this.onOpenReminder,
   });
 
   final MedicineWorkspace workspace;
@@ -17,6 +18,7 @@ class _DrugBoxSection extends StatelessWidget {
   final AppThemeSurface surface;
   final void Function(String currentMedicineId, MedicineDoseAction action)?
   onMarkDose;
+  final void Function(String currentMedicineId)? onOpenReminder;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +95,7 @@ class _DrugBoxSection extends StatelessWidget {
                           l10n: l10n,
                           typography: typography,
                           surface: surface,
+                          onOpenReminder: onOpenReminder,
                         ),
                         if (index < items.length - 1)
                           Divider(
@@ -419,12 +422,14 @@ class _DrugBoxMedicationRow extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    required this.onOpenReminder,
   });
 
   final MedicinePlanItem item;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final void Function(String currentMedicineId)? onOpenReminder;
 
   @override
   Widget build(BuildContext context) {
@@ -432,11 +437,18 @@ class _DrugBoxMedicationRow extends StatelessWidget {
     final dosage = _itemDosage(l10n, item);
     final schedule = _itemSchedule(l10n, item);
     final state = _itemState(l10n, item);
+    final currentMedicineId = item.currentMedicineId;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => AppToast.show(context, l10n.medicineOpenPlanItemToast),
+        onTap: () {
+          if (currentMedicineId == null || onOpenReminder == null) {
+            AppToast.show(context, l10n.medicineOpenPlanItemToast);
+            return;
+          }
+          onOpenReminder!(currentMedicineId);
+        },
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: Padding(
           padding: const EdgeInsets.symmetric(

@@ -158,11 +158,13 @@ class _QuickOperationSection extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    required this.onCreateReminder,
   });
 
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final VoidCallback? onCreateReminder;
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +182,15 @@ class _QuickOperationSection extends StatelessWidget {
         title: l10n.medicineQuickRecordTitle,
         subtitle: l10n.medicineQuickRecordSubtitle,
         onTap: () => AppToast.show(context, l10n.medicineQuickRecordToast),
+      ),
+      _QuickOperation(
+        icon: Icons.notifications_none_rounded,
+        color: MedicinePalette.blue,
+        title: l10n.medicineReminderQuickTitle,
+        subtitle: l10n.medicineReminderQuickSubtitle,
+        onTap:
+            onCreateReminder ??
+            () => AppToast.show(context, l10n.medicineNotificationsTooltip),
       ),
       _QuickOperation(
         icon: Icons.health_and_safety_rounded,
