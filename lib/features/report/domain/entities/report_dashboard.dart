@@ -9,7 +9,6 @@ class ReportDashboard {
     required this.aiBullets,
     required this.exportActions,
     required this.patterns,
-    required this.privacyActions,
   });
 
   final ReportHealthScore score;
@@ -19,7 +18,6 @@ class ReportDashboard {
   final List<ReportAiBullet> aiBullets;
   final List<ReportExportAction> exportActions;
   final List<ReportPatternCard> patterns;
-  final List<ReportPrivacyAction> privacyActions;
 }
 
 class ReportHealthScore {
@@ -131,18 +129,6 @@ class ReportPatternCard {
   final List<double> sparkline;
 }
 
-class ReportPrivacyAction {
-  const ReportPrivacyAction({
-    required this.icon,
-    required this.color,
-    required this.titleKey,
-  });
-
-  final IconData icon;
-  final Color color;
-  final ReportCopyKey titleKey;
-}
-
 enum ReportCopyKey {
   statusOverallStable,
   scoreBody,
@@ -184,5 +170,4 @@ enum ReportCopyKey {
   patternMedicationTitle,
   patternMedicationStatus,
   patternMedicationBody,
-  privacyExportControls,
 }

@@ -5054,30 +5054,6 @@ abstract class AppLocalizations {
   /// **'按时服药有助于维持健康状态'**
   String get reportPatternMedicationBody;
 
-  /// No description provided for @reportPrivacyTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'隐私与安全'**
-  String get reportPrivacyTitle;
-
-  /// No description provided for @reportPrivacyBody.
-  ///
-  /// In zh, this message translates to:
-  /// **'所有数据仅用于您的健康管理与分析，不会未经授权分享。'**
-  String get reportPrivacyBody;
-
-  /// No description provided for @reportLearnMoreAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'了解更多'**
-  String get reportLearnMoreAction;
-
-  /// No description provided for @reportPrivacySettingsTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'隐私设置'**
-  String get reportPrivacySettingsTitle;
-
   /// No description provided for @reportReferenceNotice.
   ///
   /// In zh, this message translates to:
@@ -5155,12 +5131,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'晚间咖啡因和作息变化可能影响睡眠'**
   String get reportPatternSleepBody;
-
-  /// No description provided for @reportPrivacyExportControls.
-  ///
-  /// In zh, this message translates to:
-  /// **'导出前选择可见内容'**
-  String get reportPrivacyExportControls;
 }
 
 class _AppLocalizationsDelegate

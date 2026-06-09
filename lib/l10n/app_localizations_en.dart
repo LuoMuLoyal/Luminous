@@ -2713,19 +2713,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Taking medicine on time helps maintain health status.';
 
   @override
-  String get reportPrivacyTitle => 'Privacy and security';
-
-  @override
-  String get reportPrivacyBody =>
-      'All data is used only for your health management and analysis, and is not shared without authorization.';
-
-  @override
-  String get reportLearnMoreAction => 'Learn more';
-
-  @override
-  String get reportPrivacySettingsTitle => 'Privacy settings';
-
-  @override
   String get reportReferenceNotice =>
       'This report is for reference only and is not diagnosis or treatment advice.';
 
@@ -2768,8 +2755,4 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportPatternSleepBody =>
       'Evening caffeine and schedule changes may affect sleep';
-
-  @override
-  String get reportPrivacyExportControls =>
-      'Choose visible content before export';
 }

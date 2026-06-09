@@ -2569,18 +2569,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportPatternMedicationBody => '按时服药有助于维持健康状态';
 
   @override
-  String get reportPrivacyTitle => '隐私与安全';
-
-  @override
-  String get reportPrivacyBody => '所有数据仅用于您的健康管理与分析，不会未经授权分享。';
-
-  @override
-  String get reportLearnMoreAction => '了解更多';
-
-  @override
-  String get reportPrivacySettingsTitle => '隐私设置';
-
-  @override
   String get reportReferenceNotice => '本报告仅供参考，不构成诊断或治疗建议。';
 
   @override
@@ -2620,7 +2608,4 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reportPatternSleepBody => '晚间咖啡因和作息变化可能影响睡眠';
-
-  @override
-  String get reportPrivacyExportControls => '导出前选择可见内容';
 }

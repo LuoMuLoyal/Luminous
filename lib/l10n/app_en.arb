@@ -1108,10 +1108,6 @@
   "reportPatternMedicationTitle": "Medication adherence",
   "reportPatternMedicationStatus": "Excellent",
   "reportPatternMedicationBody": "Taking medicine on time helps maintain health status.",
-  "reportPrivacyTitle": "Privacy and security",
-  "reportPrivacyBody": "All data is used only for your health management and analysis, and is not shared without authorization.",
-  "reportLearnMoreAction": "Learn more",
-  "reportPrivacySettingsTitle": "Privacy settings",
   "reportReferenceNotice": "This report is for reference only and is not diagnosis or treatment advice.",
   "reportActionToast": "{action}: this will open the related action later.",
   "@reportActionToast": {
@@ -1131,6 +1127,5 @@
   "settingsAdvancedOpenSourceLicenses": "Open source licenses",
   "reportPatternSleepTitle": "Sleep changes",
   "reportPatternSleepStatus": "Watch trend",
-  "reportPatternSleepBody": "Evening caffeine and schedule changes may affect sleep",
-  "reportPrivacyExportControls": "Choose visible content before export"
+  "reportPatternSleepBody": "Evening caffeine and schedule changes may affect sleep"
 }

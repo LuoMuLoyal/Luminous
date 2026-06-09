@@ -1108,10 +1108,6 @@
   "reportPatternMedicationTitle": "用药依从性",
   "reportPatternMedicationStatus": "表现优秀",
   "reportPatternMedicationBody": "按时服药有助于维持健康状态",
-  "reportPrivacyTitle": "隐私与安全",
-  "reportPrivacyBody": "所有数据仅用于您的健康管理与分析，不会未经授权分享。",
-  "reportLearnMoreAction": "了解更多",
-  "reportPrivacySettingsTitle": "隐私设置",
   "reportReferenceNotice": "本报告仅供参考，不构成诊断或治疗建议。",
   "reportActionToast": "{action}：后续会打开对应操作。",
   "@reportActionToast": {
@@ -1131,6 +1127,5 @@
   "settingsAdvancedOpenSourceLicenses": "开源许可",
   "reportPatternSleepTitle": "睡眠变化",
   "reportPatternSleepStatus": "持续观察",
-  "reportPatternSleepBody": "晚间咖啡因和作息变化可能影响睡眠",
-  "reportPrivacyExportControls": "导出前选择可见内容"
+  "reportPatternSleepBody": "晚间咖啡因和作息变化可能影响睡眠"
 }
