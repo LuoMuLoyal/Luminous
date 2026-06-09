@@ -964,6 +964,8 @@
   "reportPeriodThisWeek": "本周",
   "reportGenerateAction": "生成报告",
   "reportSyncAction": "同步",
+  "reportSnapshotStatus": "当前显示上次报告快照",
+  "reportSnapshotHint": "点击生成报告或同步后更新",
   "reportScoreTitle": "本周健康总结",
   "reportScoreOutOf": "分 / {max}",
   "@reportScoreOutOf": {
