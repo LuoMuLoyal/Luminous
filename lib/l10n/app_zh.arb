@@ -837,6 +837,17 @@
       }
     }
   },
+  "todayWaterOverviewCount": "{done}/{target} 次",
+  "@todayWaterOverviewCount": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
   "todayWaterRemainingCount": "还差 {count} 次",
   "@todayWaterRemainingCount": {
     "placeholders": {
@@ -871,7 +882,7 @@
   },
   "todayMedicationNameAtorvastatin": "阿托伐他汀",
   "todayMedicationNameVitaminBComplex": "维生素B族",
-  "todayHealthSummaryCardTitle": "健康状态总览",
+  "todayHealthSummaryCardTitle": "今日摘要",
   "todayVitalHeartRateLabel": "心率",
   "todayVitalHeartRateUnit": "次/分",
   "todayVitalBloodPressureLabel": "血压",
@@ -901,7 +912,7 @@
   "todayErrorTitle": "今日页暂时没有加载出来",
   "todayErrorDescription": "Mock provider 和页面结构已经接好，可以重新拉取一次看看。",
   "todayEmptyTitle": "你还没有任何记录",
-  "todayEmptyDescription": "先记录饮水、用药或体征，我们会为你提供个性化建议。",
+  "todayEmptyDescription": "先记录饮水、用药或睡眠，我们会为你提供个性化建议。",
   "todayEmptyAction": "去记录",
   "todayRetryAction": "重试",
   "todayUpdatedAt": "更新于 {time}",
@@ -941,7 +952,7 @@
   "todayMedicationTakeAction": "去服用",
   "todayWaterPriorityTitle": "饮水目标",
   "todayDrinkWaterAction": "去喝水",
-  "todayRecommendationSectionTitle": "为你推荐",
+  "todayRecommendationSectionTitle": "主动建议",
   "todayViewMoreAction": "查看更多",
   "todayRecommendationMedicineSafetyTitle": "用药安全小贴士",
   "todayRecommendationMedicineSafetyBody": "按时按量用药，勿随意增减或停药",
@@ -979,7 +990,7 @@
     }
   },
   "todayTodoCustomTitle": "自定义待办",
-  "todayTodoCustomSubtitle": "可添加复诊、运动或休息提醒",
+  "todayTodoCustomSubtitle": "可添加复诊、休息或自定义提醒",
   "placeholderSoon": "{label} · 即将上线",
   "@placeholderSoon": {
     "placeholders": {
