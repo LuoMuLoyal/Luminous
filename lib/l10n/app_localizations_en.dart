@@ -466,21 +466,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordViewTrendAction => 'View trend';
 
   @override
-  String get recordMoodTrendSectionTitle => 'Mood trend';
-
-  @override
-  String get recordMoodAverage => 'Average';
-
-  @override
-  String get recordMoodGood => 'Good';
-
-  @override
-  String get recordMoodPoor => 'Poor';
-
-  @override
-  String get recordMoodStable => 'Stable';
-
-  @override
   String get recordDietTitle => 'Meal records';
 
   @override
@@ -514,29 +499,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordZeroCountLabel => '0 records';
 
   @override
-  String get medicinePageDescription =>
-      'Photo recognition, barcode scan, manual search, dosing plans, and safety signals come together here as an API-ready medication workspace.';
-
-  @override
-  String get medicineSectionTitle => 'Medication workspace';
-
-  @override
-  String get medicineSectionSubtitle =>
-      'This section will host the rebuilt medication flow on top of Lucent.';
-
-  @override
-  String get medicineHeaderActionSearch => 'Search medicine';
-
-  @override
-  String get medicineHeaderActionAdd => 'Add medicine';
-
-  @override
-  String get medicineHeaderActionSearchCompact => 'Search';
-
-  @override
-  String get medicineHeaderActionAddCompact => 'Add';
-
-  @override
   String get medicineHeaderAddToast =>
       'This will open medicine addition and recognition.';
 
@@ -548,9 +510,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineHomeSearchHint => 'Search medicine or symptom';
-
-  @override
-  String get medicineScanAction => 'Scan';
 
   @override
   String get medicineManageMedicinesAction => 'Manage meds';
@@ -570,9 +529,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get medicineExpiredReminderEnabled => 'Expiry reminders on';
-
-  @override
   String get medicineNextDoseReminderTitle => 'Next dose reminder';
 
   @override
@@ -582,9 +538,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineDoseDueStatus => 'Due';
-
-  @override
-  String get medicineTakeNowAction => 'Take';
 
   @override
   String get medicineNoMedicineTitle => 'No medicines yet';
@@ -606,12 +559,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineQuickAddSubtitle => 'Manual add';
-
-  @override
-  String get medicineQuickScanTitle => 'Scan';
-
-  @override
-  String get medicineQuickScanSubtitle => 'Read info';
 
   @override
   String get medicineQuickRecordTitle => 'Log dose';
@@ -697,27 +644,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please check your network connection and try again.';
 
   @override
-  String get medicineHeroEyebrow => 'PERSONAL DRUGBOX';
-
-  @override
-  String get medicineHeroTitle =>
-      'See today\'s medicines, reminders, and risks clearly first.';
-
-  @override
-  String get medicineHeroSubtitle =>
-      'Photo recognition, barcode scan, manual search, and medication safety start here with a clear reference-only boundary.';
-
-  @override
-  String get medicineHeroMetricTodayCountValue => '2';
-
-  @override
   String get medicineHeroMetricTodayCountLabel => 'Doses today';
 
   @override
   String get medicineHeroMetricTodayCountUnit => ' meds';
-
-  @override
-  String get medicineHeroMetricAdherenceValue => '100%';
 
   @override
   String get medicineHeroMetricAdherenceLabel => 'On-time adherence';
@@ -726,24 +656,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineHeroMetricAdherenceUnit => '%';
 
   @override
-  String get medicineHeroMetricNextDoseValue => '20:00';
-
-  @override
-  String get medicineHeroMetricNextDoseLabel => 'Next reminder';
-
-  @override
-  String get medicineHeroBannerTitle => 'Safety boundary first';
-
-  @override
-  String get medicineHeroBannerBody =>
-      'Recognition results, interactions, and special-population alerts stay clearly marked as reference-only so AI output is not mistaken for diagnosis.';
-
-  @override
   String get medicineQuickActionSectionTitle => 'Recognition and intake';
-
-  @override
-  String get medicineQuickActionSectionSubtitle =>
-      'Bring medicines in first, then layer reminders and safety checks on top.';
 
   @override
   String get medicineQuickActionCameraTitle => 'Recognize by camera';
@@ -775,10 +688,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineTodayPlanTitle => 'Today\'s dosing plan';
-
-  @override
-  String get medicineTodayPlanSubtitle =>
-      'Lock today\'s reminders, dose status, and risk placement first.';
 
   @override
   String get medicineTodayPlanInspectAction => 'View all';
@@ -1289,10 +1198,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineCampusHospitalSubtitle => 'Book an appointment';
 
   @override
-  String get mineCampusCounselingTitle => 'Counseling';
+  String get mineCampusSupportTitle => 'Student support';
 
   @override
-  String get mineCampusCounselingSubtitle => 'Book counseling support';
+  String get mineCampusSupportSubtitle => 'Campus support resources';
 
   @override
   String get mineCampusPharmacyTitle => 'Campus pharmacy';
@@ -1307,28 +1216,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineCampusEmergencySubtitle => 'Hotlines and guides';
 
   @override
-  String get minePrivacyPermissionTitle => 'Privacy and permissions';
-
-  @override
-  String get minePrivacyProtectionAction => 'Privacy protection';
-
-  @override
-  String get minePrivacyMoodTitle => 'Mental records';
-
-  @override
-  String get minePrivacyMoodSubtitle => 'Mood check-ins, counseling records';
-
-  @override
   String get minePrivacyReportTitle => 'Report sharing';
 
   @override
   String get minePrivacyReportSubtitle => 'Health reports and trend analysis';
 
   @override
-  String get minePrivacyAiTitle => 'AI memory';
+  String get minePrivacyAiTitle => 'AI summaries and advice';
 
   @override
-  String get minePrivacyAiSubtitle => 'Personalized advice and memory';
+  String get minePrivacyAiSubtitle => 'Daily summaries, trend advice';
 
   @override
   String get minePrivacyOnlyMe => 'Only me';
@@ -1458,163 +1355,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineProfileMedicinesSubtitle => '3 medicines';
-
-  @override
-  String get mineProfileLifestyleTitle => 'Lifestyle';
-
-  @override
-  String get mineProfileLifestyleSubtitle => 'Diet, exercise, sleep';
-
-  @override
-  String get mineProfileFamilyTitle => 'Family history';
-
-  @override
-  String get mineProfileFamilySubtitle => 'Genetic and family conditions';
-
-  @override
-  String get minePlansTitle => 'Health plan center';
-
-  @override
-  String get minePlansViewAll => 'View all';
-
-  @override
-  String get minePlanBloodSugarTitle => 'Blood sugar plan';
-
-  @override
-  String get minePlanBloodSugarStatus => 'In progress';
-
-  @override
-  String get minePlanBloodSugarDetail => '12 days in';
-
-  @override
-  String get minePlanWeightTitle => 'Weight plan';
-
-  @override
-  String get minePlanWeightStatus => 'Not started';
-
-  @override
-  String get minePlanWeightDetail => 'Set goal';
-
-  @override
-  String get minePlanSleepTitle => 'Sleep plan';
-
-  @override
-  String get minePlanSleepStatus => 'In progress';
-
-  @override
-  String get minePlanSleepDetail => 'Improving sleep';
-
-  @override
-  String get minePlanMoodTitle => 'Mood stability plan';
-
-  @override
-  String get minePlanMoodStatus => 'Not started';
-
-  @override
-  String get minePlanMoodDetail => 'Focus on emotional health';
-
-  @override
-  String get mineReportTitle => 'Health report';
-
-  @override
-  String get mineReportBody =>
-      'Weekly/monthly reports, trend reviews, and health insights';
-
-  @override
-  String get mineReportMeta => 'Last generated: 2025-05-12';
-
-  @override
-  String get mineReportAction => 'View report';
-
-  @override
-  String get minePrivacyTitle => 'Privacy control';
-
-  @override
-  String get minePrivacyBody =>
-      'Data visibility, sharing grants, and cloud sync scope';
-
-  @override
-  String get minePrivacyMeta => '8 sensitive data groups protected';
-
-  @override
-  String get minePrivacyAction => 'Manage privacy';
-
-  @override
-  String get mineStatusPanelTitle => 'Profile status';
-
-  @override
-  String get mineStatusBasicTitle => 'Basic info';
-
-  @override
-  String get mineStatusBasicValue => '1/4 complete';
-
-  @override
-  String get mineStatusAllergiesTitle => 'Allergies';
-
-  @override
-  String get mineStatusAllergiesValue => '2 items';
-
-  @override
-  String get mineStatusConditionsTitle => 'Conditions';
-
-  @override
-  String get mineStatusConditionsValue => '1 item';
-
-  @override
-  String get mineStatusMedicinesTitle => 'Current meds';
-
-  @override
-  String get mineStatusMedicinesValue => '3 meds';
-
-  @override
-  String get mineStatusWomenTitle => 'Pregnancy/lactation';
-
-  @override
-  String get mineStatusWomenValue => 'Missing';
-
-  @override
-  String get mineOnboardingTitle => 'Onboarding progress';
-
-  @override
-  String get mineOnboardingBasicTitle => 'Basic info';
-
-  @override
-  String get mineOnboardingContextTitle => 'Health context';
-
-  @override
-  String get mineOnboardingMedicineTitle => 'Medication setup';
-
-  @override
-  String get mineOnboardingGoalTitle => 'Health goals';
-
-  @override
-  String get mineOnboardingPrivacyTitle => 'Privacy setup';
-
-  @override
-  String mineOnboardingProgress(int completed, int total) {
-    return '$completed/$total complete';
-  }
-
-  @override
-  String get mineQuickEntriesTitle => 'Quick entries';
-
-  @override
-  String get mineQuickExportTitle => 'Export health data';
-
-  @override
-  String get mineQuickExportSubtitle => 'Download a health data copy';
-
-  @override
-  String get mineQuickDoctorTitle => 'Share with doctor';
-
-  @override
-  String get mineQuickDoctorSubtitle => 'Grant access to health details';
-
-  @override
-  String get mineQuickEmergencyTitle => 'Emergency contact';
-
-  @override
-  String get mineQuickEmergencySubtitle => '1 contact configured';
 
   @override
   String get mineSettingsThemeTitle => 'Theme mode';

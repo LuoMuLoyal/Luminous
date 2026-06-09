@@ -78,7 +78,7 @@ void main() {
       find.text(l10n.recordQuickActionLabel(l10n.recordTypeSleep)),
       findsOneWidget,
     );
-    expect(find.text(l10n.recordMoodTrendSectionTitle), findsNothing);
+    expect(find.text('情绪趋势'), findsNothing);
   });
 
   testWidgets('Record page keeps period and vitals quick actions hidden in MVP', (

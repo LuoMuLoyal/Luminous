@@ -57,7 +57,7 @@ void main() {
     expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
     expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
     expect(find.byKey(const Key('mine-settings-section')), findsNothing);
-    expect(find.text(l10n.minePrivacyPermissionTitle), findsNothing);
+    expect(find.text(l10n.minePrivacyReportTitle), findsNothing);
     expect(find.text(l10n.mineReminderSectionTitle), findsNothing);
     expect(find.text(l10n.mineAccountSettingsTitle), findsNothing);
   });

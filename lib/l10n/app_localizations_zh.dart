@@ -442,21 +442,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordViewTrendAction => '查看趋势';
 
   @override
-  String get recordMoodTrendSectionTitle => '情绪趋势';
-
-  @override
-  String get recordMoodAverage => '一般';
-
-  @override
-  String get recordMoodGood => '良好';
-
-  @override
-  String get recordMoodPoor => '较差';
-
-  @override
-  String get recordMoodStable => '平稳';
-
-  @override
   String get recordDietTitle => '饮食记录';
 
   @override
@@ -483,28 +468,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordZeroCountLabel => '0 条记录';
 
   @override
-  String get medicinePageDescription =>
-      '拍照识别、条码扫描、手动搜索、服药计划和安全提醒先在这里合成一个可继续接后端的工作台。';
-
-  @override
-  String get medicineSectionTitle => '用药工作区';
-
-  @override
-  String get medicineSectionSubtitle => '这里会承接基于 Lucent 重建后的完整用药闭环。';
-
-  @override
-  String get medicineHeaderActionSearch => '搜索药品';
-
-  @override
-  String get medicineHeaderActionAdd => '添加药品';
-
-  @override
-  String get medicineHeaderActionSearchCompact => '搜索';
-
-  @override
-  String get medicineHeaderActionAddCompact => '添加';
-
-  @override
   String get medicineHeaderAddToast => '会打开添加药品与识别入口。';
 
   @override
@@ -515,9 +478,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineHomeSearchHint => '搜索药品或症状';
-
-  @override
-  String get medicineScanAction => '扫码识别';
 
   @override
   String get medicineManageMedicinesAction => '管理药品';
@@ -537,9 +497,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get medicineExpiredReminderEnabled => '过期提醒已开启';
-
-  @override
   String get medicineNextDoseReminderTitle => '下次服药提醒';
 
   @override
@@ -549,9 +506,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineDoseDueStatus => '待服用';
-
-  @override
-  String get medicineTakeNowAction => '去服药';
 
   @override
   String get medicineNoMedicineTitle => '暂无药品';
@@ -573,12 +527,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineQuickAddSubtitle => '手动添加';
-
-  @override
-  String get medicineQuickScanTitle => '扫码识别';
-
-  @override
-  String get medicineQuickScanSubtitle => '识别药品信息';
 
   @override
   String get medicineQuickRecordTitle => '记录服药';
@@ -656,25 +604,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineErrorDescription => '请检查网络连接后重试。';
 
   @override
-  String get medicineHeroEyebrow => 'PERSONAL DRUGBOX';
-
-  @override
-  String get medicineHeroTitle => '先把今天的药、提醒和风险看清。';
-
-  @override
-  String get medicineHeroSubtitle => '拍照识别、条码扫描、手动搜索和用药安全会从这里进入，结果始终保持参考边界。';
-
-  @override
-  String get medicineHeroMetricTodayCountValue => '2';
-
-  @override
   String get medicineHeroMetricTodayCountLabel => '今日需服用';
 
   @override
   String get medicineHeroMetricTodayCountUnit => '种';
-
-  @override
-  String get medicineHeroMetricAdherenceValue => '100%';
 
   @override
   String get medicineHeroMetricAdherenceLabel => '按时服用率';
@@ -683,23 +616,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineHeroMetricAdherenceUnit => '%';
 
   @override
-  String get medicineHeroMetricNextDoseValue => '20:00';
-
-  @override
-  String get medicineHeroMetricNextDoseLabel => '下一次提醒';
-
-  @override
-  String get medicineHeroBannerTitle => '安全底线先行';
-
-  @override
-  String get medicineHeroBannerBody =>
-      '识别结果、相互作用和特殊人群提醒都会明确标注“仅供参考”，避免把 AI 结果误当成诊断。';
-
-  @override
   String get medicineQuickActionSectionTitle => '识别与录入';
-
-  @override
-  String get medicineQuickActionSectionSubtitle => '先把药品带进来，再逐步补齐提醒和安全检查。';
 
   @override
   String get medicineQuickActionCameraTitle => '拍照识别药品';
@@ -727,9 +644,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineTodayPlanTitle => '今日服用计划';
-
-  @override
-  String get medicineTodayPlanSubtitle => '先把今日提醒、打卡状态和风险位置站稳。';
 
   @override
   String get medicineTodayPlanInspectAction => '查看全部';
@@ -1196,10 +1110,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineCampusHospitalSubtitle => '在线预约挂号';
 
   @override
-  String get mineCampusCounselingTitle => '心理咨询';
+  String get mineCampusSupportTitle => '学生支持';
 
   @override
-  String get mineCampusCounselingSubtitle => '预约心理服务';
+  String get mineCampusSupportSubtitle => '校内支持资源';
 
   @override
   String get mineCampusPharmacyTitle => '校园药房';
@@ -1214,28 +1128,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineCampusEmergencySubtitle => '紧急电话与指南';
 
   @override
-  String get minePrivacyPermissionTitle => '隐私与权限';
-
-  @override
-  String get minePrivacyProtectionAction => '隐私保护说明';
-
-  @override
-  String get minePrivacyMoodTitle => '心理记录';
-
-  @override
-  String get minePrivacyMoodSubtitle => '情绪打卡、咨询记录等';
-
-  @override
   String get minePrivacyReportTitle => '报告分享';
 
   @override
   String get minePrivacyReportSubtitle => '健康报告、趋势分析';
 
   @override
-  String get minePrivacyAiTitle => 'AI 记忆';
+  String get minePrivacyAiTitle => 'AI 总结与建议';
 
   @override
-  String get minePrivacyAiSubtitle => '个性化建议与记忆';
+  String get minePrivacyAiSubtitle => '每日总结、趋势建议';
 
   @override
   String get minePrivacyOnlyMe => '仅自己可见';
@@ -1362,161 +1264,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineProfileMedicinesSubtitle => '3 种药品';
-
-  @override
-  String get mineProfileLifestyleTitle => '生活习惯';
-
-  @override
-  String get mineProfileLifestyleSubtitle => '饮食/运动/睡眠';
-
-  @override
-  String get mineProfileFamilyTitle => '家族史';
-
-  @override
-  String get mineProfileFamilySubtitle => '遗传与家族病史';
-
-  @override
-  String get minePlansTitle => '健康计划中心';
-
-  @override
-  String get minePlansViewAll => '查看全部';
-
-  @override
-  String get minePlanBloodSugarTitle => '控糖计划';
-
-  @override
-  String get minePlanBloodSugarStatus => '进行中';
-
-  @override
-  String get minePlanBloodSugarDetail => '已坚持 12 天';
-
-  @override
-  String get minePlanWeightTitle => '减重计划';
-
-  @override
-  String get minePlanWeightStatus => '未开始';
-
-  @override
-  String get minePlanWeightDetail => '设置目标';
-
-  @override
-  String get minePlanSleepTitle => '助眠计划';
-
-  @override
-  String get minePlanSleepStatus => '进行中';
-
-  @override
-  String get minePlanSleepDetail => '睡眠改善中';
-
-  @override
-  String get minePlanMoodTitle => '情绪稳定计划';
-
-  @override
-  String get minePlanMoodStatus => '未开始';
-
-  @override
-  String get minePlanMoodDetail => '关注情绪健康';
-
-  @override
-  String get mineReportTitle => '健康报告';
-
-  @override
-  String get mineReportBody => '周/月报表、趋势回顾、健康洞察';
-
-  @override
-  String get mineReportMeta => '上次生成：2025-05-12';
-
-  @override
-  String get mineReportAction => '查看报告';
-
-  @override
-  String get minePrivacyTitle => '隐私控制';
-
-  @override
-  String get minePrivacyBody => '数据可见性、共享授权、云同步范围';
-
-  @override
-  String get minePrivacyMeta => '已保护 8 大类敏感数据';
-
-  @override
-  String get minePrivacyAction => '管理隐私';
-
-  @override
-  String get mineStatusPanelTitle => '档案状态';
-
-  @override
-  String get mineStatusBasicTitle => '基础资料';
-
-  @override
-  String get mineStatusBasicValue => '1/4 完成';
-
-  @override
-  String get mineStatusAllergiesTitle => '过敏史';
-
-  @override
-  String get mineStatusAllergiesValue => '2 项';
-
-  @override
-  String get mineStatusConditionsTitle => '慢病/条件';
-
-  @override
-  String get mineStatusConditionsValue => '1 项';
-
-  @override
-  String get mineStatusMedicinesTitle => '当前用药';
-
-  @override
-  String get mineStatusMedicinesValue => '3 种';
-
-  @override
-  String get mineStatusWomenTitle => '孕哺状态';
-
-  @override
-  String get mineStatusWomenValue => '未填写';
-
-  @override
-  String get mineOnboardingTitle => 'Onboarding 进度';
-
-  @override
-  String get mineOnboardingBasicTitle => '基础信息';
-
-  @override
-  String get mineOnboardingContextTitle => '健康上下文';
-
-  @override
-  String get mineOnboardingMedicineTitle => '用药设置';
-
-  @override
-  String get mineOnboardingGoalTitle => '健康目标';
-
-  @override
-  String get mineOnboardingPrivacyTitle => '隐私设置';
-
-  @override
-  String mineOnboardingProgress(int completed, int total) {
-    return '$completed/$total 完成';
-  }
-
-  @override
-  String get mineQuickEntriesTitle => '快捷入口';
-
-  @override
-  String get mineQuickExportTitle => '导出健康数据';
-
-  @override
-  String get mineQuickExportSubtitle => '下载健康数据副本';
-
-  @override
-  String get mineQuickDoctorTitle => '共享给医生';
-
-  @override
-  String get mineQuickDoctorSubtitle => '授权查看健康信息';
-
-  @override
-  String get mineQuickEmergencyTitle => '紧急联系人';
-
-  @override
-  String get mineQuickEmergencySubtitle => '已设置 1 位联系人';
 
   @override
   String get mineSettingsThemeTitle => '主题模式';
