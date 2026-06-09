@@ -38,10 +38,10 @@ This file records current implementation facts only. Product direction lives in 
 
 ## Active Mobile UI
 
-- Today: compressed health overview, repository-provided priority list, medication tasks, hydration tasks with count targets, UI-only custom todos, AI summary/advice placeholders, immediate risk/campus suggestions.
-- Record: symptoms, hydration with selectable units, diet/meal, medication boundary entry, natural-language placeholder, selected-date timeline/detail/create/edit, top date bar, filters, full-width today overview, quick operations, guide row.
+- Today: compressed health overview, repository-provided medication/hydration priority list, medication tasks, hydration tasks with count targets, UI-only custom todos, AI summary/advice placeholders, and immediate risk/proactive suggestions.
+- Record: symptoms, hydration with selectable units, diet/meal, medication boundary entry, natural-language placeholder, selected-date timeline/detail/create/edit, top date bar, filters, summary/timeline-driven today overview, divider-based quick record actions, quick operations, guide row.
 - Medicine: active current-medicine drugbox, reminder-derived next dose, same-day taken/skipped dose logs, safety explanations, pregnancy/lactation/special-group medication safety conditions.
-- Report: static mock daily/weekly summaries until user-triggered generate/sync, medication/sleep/water/diet/symptom trend placeholders, campus hospital/pharmacist export controls.
+- Report: static mock daily/weekly summaries until user-triggered generate/sync, medication/sleep/water/diet/symptom trend placeholders, campus hospital/pharmacist export controls, and reference notice. Privacy settings are owned by Mine/Settings.
 - Mine/Settings: account, health archive, allergies, current medicines, privacy, notifications, divider-based campus hospital/pharmacy/emergency/support resources, Advanced settings.
 
 ## Mock Or Deferred
