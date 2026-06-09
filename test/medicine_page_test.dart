@@ -75,6 +75,10 @@ void main() {
       await tester.scrollUntilVisible(finder, 240, scrollable: scrollable);
       await tester.pump(const Duration(milliseconds: 300));
       expect(finder, findsOneWidget);
+      if (key == 'medicine-quick-actions') {
+        expect(find.text(l10n.medicineQuickSafetyCheckTitle), findsOneWidget);
+        expect(find.text('用药报告'), findsNothing);
+      }
     }
 
     expect(find.text(l10n.medicineSafetyTipsTitle), findsOneWidget);
