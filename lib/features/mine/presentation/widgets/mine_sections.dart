@@ -332,16 +332,14 @@ class MineCampusServiceSection extends StatelessWidget {
           typography: typography,
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        _MinePanel(
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        _ServiceDividerGrid(
+          entries: dashboard.campusServices,
+          l10n: l10n,
+          typography: typography,
           surface: surface,
-          padding: EdgeInsets.zero,
-          child: _ServiceDividerGrid(
-            entries: dashboard.campusServices,
-            l10n: l10n,
-            typography: typography,
-            surface: surface,
-          ),
         ),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
       ],
     );
   }
