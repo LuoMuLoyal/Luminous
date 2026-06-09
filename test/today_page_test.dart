@@ -57,7 +57,6 @@ void main() {
       'today-health-summary-card',
       'today-medication-card',
       'today-water-card',
-      'today-campus-card',
       'today-recommendation-card',
       'today-todo-card',
     ];

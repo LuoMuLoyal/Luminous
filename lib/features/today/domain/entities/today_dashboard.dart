@@ -21,7 +21,7 @@ enum TodayEnvironmentLevel { low, medium, high }
 
 enum TodayLumiSuggestionType { pollenProtection }
 
-enum TodayPriorityItemType { medication, water, campus }
+enum TodayPriorityItemType { medication, water }
 
 class TodayDashboard {
   const TodayDashboard({

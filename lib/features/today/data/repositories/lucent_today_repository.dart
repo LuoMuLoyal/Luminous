@@ -127,10 +127,6 @@ class LucentTodayRepository implements TodayRepository {
             targetCount: 8,
           ).progress,
         ),
-        const TodayPriorityItem(
-          id: 'campus',
-          type: TodayPriorityItemType.campus,
-        ),
       ],
     );
   }

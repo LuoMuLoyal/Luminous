@@ -969,10 +969,6 @@
   "todayMedicationTakeAction": "Take now",
   "todayWaterPriorityTitle": "Water goal",
   "todayDrinkWaterAction": "Drink water",
-  "todayCampusGuideTitle": "Campus care guide",
-  "todayCampusGuideSubtitle": "Clinic and service guide",
-  "todayCampusGuideDetail": "Review the care flow quickly",
-  "todayViewAction": "View",
   "todayRecommendationSectionTitle": "Recommended for you",
   "todayViewMoreAction": "View more",
   "todayRecommendationMedicineSafetyTitle": "Medication safety tips",
@@ -1012,10 +1008,6 @@
   },
   "todayTodoCustomTitle": "Custom todo",
   "todayTodoCustomSubtitle": "Add follow-up, activity, or rest reminders",
-  "todayQuickRecordSectionTitle": "Quick record",
-  "todayQuickMedication": "Log medicine",
-  "todayQuickSymptom": "Log symptom",
-  "todayQuickWater": "Log water",
   "placeholderSoon": "{label} · Coming Soon",
   "@placeholderSoon": {
     "placeholders": {

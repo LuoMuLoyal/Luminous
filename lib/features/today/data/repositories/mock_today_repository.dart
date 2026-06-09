@@ -61,7 +61,6 @@ class MockTodayRepository implements TodayRepository {
         targetCount: 8,
         progress: 0,
       ),
-      TodayPriorityItem(id: 'campus', type: TodayPriorityItemType.campus),
     ],
   );
 
@@ -123,7 +122,6 @@ class MockTodayRepository implements TodayRepository {
         targetCount: 8,
         progress: 0.625,
       ),
-      TodayPriorityItem(id: 'campus', type: TodayPriorityItemType.campus),
     ],
   );
 
