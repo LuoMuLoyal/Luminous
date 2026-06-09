@@ -179,8 +179,8 @@ const _campusServices = [
   MineActionEntry(
     icon: Icons.favorite_rounded,
     accent: _purple,
-    titleKey: MineCopyKey.campusCounselingTitle,
-    subtitleKey: MineCopyKey.campusCounselingSubtitle,
+    titleKey: MineCopyKey.campusSupportTitle,
+    subtitleKey: MineCopyKey.campusSupportSubtitle,
   ),
   MineActionEntry(
     icon: Icons.medical_services_rounded,
