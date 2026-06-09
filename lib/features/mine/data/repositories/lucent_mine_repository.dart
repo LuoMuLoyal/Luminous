@@ -75,27 +75,18 @@ MineProfileSnapshot _buildProfile(HealthContextSnapshot snapshot) {
   final summary = snapshot.summary;
   final profile = snapshot.profile;
   final hasBasicInfo =
-      profile.birthDate?.isNotEmpty == true &&
-      profile.sexAtBirth?.isNotEmpty == true &&
-      profile.heightCm != null;
-  final hasWomenHealth =
-      profile.pregnancyState?.isNotEmpty == true ||
-      profile.lactationState?.isNotEmpty == true;
+      profile.birthDate?.isNotEmpty == true && profile.heightCm != null;
   // Deferred by Product_Vision MVP: keep pregnancy/lactation status because it
   // is useful for medication safety, but do not surface it as a standalone
   // women-health or period-management module.
 
   return MineProfileSnapshot(
     age: summary.age,
-    sexAtBirth: profile.sexAtBirth,
     heightCm: profile.heightCm,
-    weightKg: null,
     allergyCount: summary.activeAllergyCount,
     conditionCount: summary.conditionCount,
     currentMedicineCount: summary.currentMedicineCount,
     basicInfoCompleted: hasBasicInfo,
-    emergencyContactCompleted: false,
-    medicationSafetyStatusCompleted: hasWomenHealth,
   );
 }
 
@@ -106,7 +97,7 @@ MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
       (snapshot.summary.activeAllergyCount > 0 ? 1 : 0) +
       (snapshot.summary.currentMedicineCount > 0 ? 1 : 0) +
       (snapshot.profile.birthDate?.isNotEmpty == true ? 1 : 0) +
-      (snapshot.profile.sexAtBirth?.isNotEmpty == true ? 1 : 0);
+      (snapshot.profile.heightCm != null ? 1 : 0);
   final progress = (completed / total).clamp(0.0, 1.0);
 
   return MineCompletion(

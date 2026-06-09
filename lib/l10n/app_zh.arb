@@ -509,8 +509,6 @@
   "minePrivacyNoticeTitle": "敏感数据默认保护，可随时撤回授权",
   "minePrivacyNoticeAction": "查看隐私政策",
   "mineProfileUnknownValue": "--",
-  "mineProfileSexFemale": "女",
-  "mineProfileSexMale": "男",
   "mineProfileAgeYears": "{age}岁",
   "@mineProfileAgeYears": {
     "placeholders": {
@@ -527,27 +525,13 @@
       }
     }
   },
-  "mineProfileWeightKg": "{weight}kg",
-  "@mineProfileWeightKg": {
-    "placeholders": {
-      "weight": {
-        "type": "int"
-      }
-    }
-  },
-  "mineProfileMeta": "{age} · {sex} · {height} · {weight}",
+  "mineProfileMeta": "{age} · {height}",
   "@mineProfileMeta": {
     "placeholders": {
       "age": {
         "type": "String"
       },
-      "sex": {
-        "type": "String"
-      },
       "height": {
-        "type": "String"
-      },
-      "weight": {
         "type": "String"
       }
     }
@@ -559,7 +543,7 @@
   "mineSummaryAllergies": "过敏",
   "mineSummaryConditions": "慢病/条件",
   "mineSummaryMedicines": "当前用药",
-  "mineSummaryMissingInfo": "缺失信息：生日、性别、单位制、孕哺状态",
+  "mineSummaryMissingInfo": "缺失信息：生日、身高、单位制",
   "mineSummaryCompleteAction": "去完善",
   "mineProfileTitle": "健康档案",
   "mineProfileBasicInfoTitle": "基础资料",
@@ -1028,10 +1012,7 @@
   "mineEditSavedToast": "已保存",
   "mineEditDeletedToast": "已删除",
   "mineEditFieldBirthDate": "出生日期 (YYYY-MM-DD)",
-  "mineEditFieldSexAtBirth": "性别",
   "mineEditFieldHeightCm": "身高 (cm)",
-  "mineEditFieldPregnancyState": "怀孕状态",
-  "mineEditFieldLactationState": "哺乳状态",
   "mineEditFieldBloodType": "血型",
   "mineEditFieldLocale": "语言",
   "mineEditFieldTimezone": "时区",

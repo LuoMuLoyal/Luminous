@@ -23,27 +23,19 @@ class MineDashboard {
 class MineProfileSnapshot {
   const MineProfileSnapshot({
     required this.age,
-    required this.sexAtBirth,
     required this.heightCm,
-    required this.weightKg,
     required this.allergyCount,
     required this.conditionCount,
     required this.currentMedicineCount,
     required this.basicInfoCompleted,
-    required this.emergencyContactCompleted,
-    required this.medicationSafetyStatusCompleted,
   });
 
   final int? age;
-  final String? sexAtBirth;
   final double? heightCm;
-  final double? weightKg;
   final int allergyCount;
   final int conditionCount;
   final int currentMedicineCount;
   final bool basicInfoCompleted;
-  final bool emergencyContactCompleted;
-  final bool medicationSafetyStatusCompleted;
 }
 
 class MineAccount {
