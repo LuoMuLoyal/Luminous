@@ -90,7 +90,6 @@ class _MobileTodayDashboard extends StatelessWidget {
       _PrioritySection(dashboard: dashboard),
       _RecommendationSection(dashboard: dashboard),
       _TodoSection(dashboard: dashboard),
-      const _QuickRecordSection(),
     ];
 
     return ListView.separated(
@@ -151,8 +150,6 @@ class _DesktopTodayDashboard extends StatelessWidget {
               child: Column(
                 children: [
                   _RecommendationSection(dashboard: dashboard, compact: true),
-                  const SizedBox(height: AppSpacingTokens.lg),
-                  const _QuickRecordSection(),
                 ],
               ),
             ),
@@ -850,85 +847,6 @@ class _TodoRow extends StatelessWidget {
   }
 }
 
-class _QuickRecordSection extends StatelessWidget {
-  const _QuickRecordSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final items = [
-      _QuickRecordItem(
-        icon: Icons.medication_rounded,
-        label: l10n.todayQuickMedication,
-        color: TodayPalette.blue,
-      ),
-      _QuickRecordItem(
-        icon: Icons.fact_check_rounded,
-        label: l10n.todayQuickSymptom,
-        color: TodayPalette.teal,
-      ),
-      _QuickRecordItem(
-        icon: Icons.local_drink_rounded,
-        label: l10n.todayQuickWater,
-        color: TodayPalette.teal,
-      ),
-    ];
-
-    return _TodaySection(
-      title: l10n.todayQuickRecordSectionTitle,
-      child: _ResponsiveCardGrid(
-        minTileWidth: AppSpacingTokens.x4l + AppSpacingTokens.md,
-        spacing: AppSpacingTokens.sm,
-        children: [for (final item in items) _QuickRecordCard(item: item)],
-      ),
-    );
-  }
-}
-
-class _QuickRecordCard extends StatelessWidget {
-  const _QuickRecordCard({required this.item});
-
-  final _QuickRecordItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
-
-    return TodayPanel(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.sm,
-        vertical: AppSpacingTokens.md,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => AppToast.show(context, item.label),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(item.icon, color: item.color, size: AppSpacingTokens.xl),
-              const SizedBox(height: AppSpacingTokens.sm),
-              Text(
-                item.label,
-                style: typography.bodySmStrong.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _TodaySection extends StatelessWidget {
   const _TodaySection({
     required this.title,
@@ -956,69 +874,6 @@ class _TodaySection extends StatelessWidget {
         const SizedBox(height: AppSpacingTokens.sm),
         child,
       ],
-    );
-  }
-}
-
-class _ResponsiveCardGrid extends StatelessWidget {
-  const _ResponsiveCardGrid({
-    required this.children,
-    required this.minTileWidth,
-    required this.spacing,
-  });
-
-  final List<Widget> children;
-  final double minTileWidth;
-  final double spacing;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final columns = (constraints.maxWidth / minTileWidth)
-            .floor()
-            .clamp(1, children.length)
-            .toInt();
-        final rows = <Widget>[];
-
-        for (var index = 0; index < children.length; index += columns) {
-          final rowChildren = children.skip(index).take(columns).toList();
-          rows.add(
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (
-                  var childIndex = 0;
-                  childIndex < rowChildren.length;
-                  childIndex += 1
-                ) ...[
-                  Expanded(child: rowChildren[childIndex]),
-                  if (childIndex < rowChildren.length - 1)
-                    SizedBox(width: spacing),
-                ],
-                if (rowChildren.length < columns)
-                  for (
-                    var filler = rowChildren.length;
-                    filler < columns;
-                    filler += 1
-                  ) ...[
-                    SizedBox(width: spacing),
-                    const Expanded(child: SizedBox.shrink()),
-                  ],
-              ],
-            ),
-          );
-        }
-
-        return Column(
-          children: [
-            for (var index = 0; index < rows.length; index += 1) ...[
-              rows[index],
-              if (index < rows.length - 1) SizedBox(height: spacing),
-            ],
-          ],
-        );
-      },
     );
   }
 }
@@ -1127,15 +982,6 @@ List<_PriorityItem> _priorityItems(
           action: l10n.todayDrinkWaterAction,
           progress: item.progress ?? dashboard.water.progress,
         ),
-        TodayPriorityItemType.campus => _PriorityItem(
-          key: const Key('today-campus-card'),
-          icon: Icons.local_hospital_rounded,
-          color: TodayPalette.blue,
-          title: l10n.todayCampusGuideTitle,
-          subtitle: l10n.todayCampusGuideSubtitle,
-          detail: l10n.todayCampusGuideDetail,
-          action: l10n.todayViewAction,
-        ),
       },
   ];
 }
@@ -1156,7 +1002,6 @@ List<TodayPriorityItem> _fallbackPriorityItems(TodayDashboard dashboard) {
       targetCount: dashboard.water.targetCount,
       progress: dashboard.water.progress,
     ),
-    const TodayPriorityItem(id: 'campus', type: TodayPriorityItemType.campus),
   ];
 }
 
@@ -1351,16 +1196,4 @@ class _TodoItem {
   final bool completed;
   final bool statusIsDynamic;
   final bool subtitleIsDynamic;
-}
-
-class _QuickRecordItem {
-  const _QuickRecordItem({
-    required this.icon,
-    required this.label,
-    required this.color,
-  });
-
-  final IconData icon;
-  final String label;
-  final Color color;
 }

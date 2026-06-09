@@ -4364,30 +4364,6 @@ abstract class AppLocalizations {
   /// **'去喝水'**
   String get todayDrinkWaterAction;
 
-  /// No description provided for @todayCampusGuideTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'校园就医指南'**
-  String get todayCampusGuideTitle;
-
-  /// No description provided for @todayCampusGuideSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'校医院与服务指引'**
-  String get todayCampusGuideSubtitle;
-
-  /// No description provided for @todayCampusGuideDetail.
-  ///
-  /// In zh, this message translates to:
-  /// **'快速了解就医流程'**
-  String get todayCampusGuideDetail;
-
-  /// No description provided for @todayViewAction.
-  ///
-  /// In zh, this message translates to:
-  /// **'去查看'**
-  String get todayViewAction;
-
   /// No description provided for @todayRecommendationSectionTitle.
   ///
   /// In zh, this message translates to:
@@ -4519,30 +4495,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'可添加复诊、运动或休息提醒'**
   String get todayTodoCustomSubtitle;
-
-  /// No description provided for @todayQuickRecordSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'快捷记录'**
-  String get todayQuickRecordSectionTitle;
-
-  /// No description provided for @todayQuickMedication.
-  ///
-  /// In zh, this message translates to:
-  /// **'记用药'**
-  String get todayQuickMedication;
-
-  /// No description provided for @todayQuickSymptom.
-  ///
-  /// In zh, this message translates to:
-  /// **'记症状'**
-  String get todayQuickSymptom;
-
-  /// No description provided for @todayQuickWater.
-  ///
-  /// In zh, this message translates to:
-  /// **'记饮水'**
-  String get todayQuickWater;
 
   /// No description provided for @placeholderSoon.
   ///

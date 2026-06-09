@@ -2347,18 +2347,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayDrinkWaterAction => 'Drink water';
 
   @override
-  String get todayCampusGuideTitle => 'Campus care guide';
-
-  @override
-  String get todayCampusGuideSubtitle => 'Clinic and service guide';
-
-  @override
-  String get todayCampusGuideDetail => 'Review the care flow quickly';
-
-  @override
-  String get todayViewAction => 'View';
-
-  @override
   String get todayRecommendationSectionTitle => 'Recommended for you';
 
   @override
@@ -2432,18 +2420,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get todayTodoCustomSubtitle =>
       'Add follow-up, activity, or rest reminders';
-
-  @override
-  String get todayQuickRecordSectionTitle => 'Quick record';
-
-  @override
-  String get todayQuickMedication => 'Log medicine';
-
-  @override
-  String get todayQuickSymptom => 'Log symptom';
-
-  @override
-  String get todayQuickWater => 'Log water';
 
   @override
   String placeholderSoon(String label) {

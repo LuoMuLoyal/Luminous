@@ -2218,18 +2218,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayDrinkWaterAction => '去喝水';
 
   @override
-  String get todayCampusGuideTitle => '校园就医指南';
-
-  @override
-  String get todayCampusGuideSubtitle => '校医院与服务指引';
-
-  @override
-  String get todayCampusGuideDetail => '快速了解就医流程';
-
-  @override
-  String get todayViewAction => '去查看';
-
-  @override
   String get todayRecommendationSectionTitle => '为你推荐';
 
   @override
@@ -2298,18 +2286,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayTodoCustomSubtitle => '可添加复诊、运动或休息提醒';
-
-  @override
-  String get todayQuickRecordSectionTitle => '快捷记录';
-
-  @override
-  String get todayQuickMedication => '记用药';
-
-  @override
-  String get todayQuickSymptom => '记症状';
-
-  @override
-  String get todayQuickWater => '记饮水';
 
   @override
   String placeholderSoon(String label) {

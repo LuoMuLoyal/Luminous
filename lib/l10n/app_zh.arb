@@ -969,10 +969,6 @@
   "todayMedicationTakeAction": "去服用",
   "todayWaterPriorityTitle": "饮水目标",
   "todayDrinkWaterAction": "去喝水",
-  "todayCampusGuideTitle": "校园就医指南",
-  "todayCampusGuideSubtitle": "校医院与服务指引",
-  "todayCampusGuideDetail": "快速了解就医流程",
-  "todayViewAction": "去查看",
   "todayRecommendationSectionTitle": "为你推荐",
   "todayViewMoreAction": "查看更多",
   "todayRecommendationMedicineSafetyTitle": "用药安全小贴士",
@@ -1012,10 +1008,6 @@
   },
   "todayTodoCustomTitle": "自定义待办",
   "todayTodoCustomSubtitle": "可添加复诊、运动或休息提醒",
-  "todayQuickRecordSectionTitle": "快捷记录",
-  "todayQuickMedication": "记用药",
-  "todayQuickSymptom": "记症状",
-  "todayQuickWater": "记饮水",
   "placeholderSoon": "{label} · 即将上线",
   "@placeholderSoon": {
     "placeholders": {
