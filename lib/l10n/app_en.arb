@@ -509,8 +509,6 @@
   "minePrivacyNoticeTitle": "Sensitive data is protected by default, and grants can be revoked anytime",
   "minePrivacyNoticeAction": "View privacy policy",
   "mineProfileUnknownValue": "--",
-  "mineProfileSexFemale": "Female",
-  "mineProfileSexMale": "Male",
   "mineProfileAgeYears": "{age}y",
   "@mineProfileAgeYears": {
     "placeholders": {
@@ -527,27 +525,13 @@
       }
     }
   },
-  "mineProfileWeightKg": "{weight}kg",
-  "@mineProfileWeightKg": {
-    "placeholders": {
-      "weight": {
-        "type": "int"
-      }
-    }
-  },
-  "mineProfileMeta": "{age} · {sex} · {height} · {weight}",
+  "mineProfileMeta": "{age} · {height}",
   "@mineProfileMeta": {
     "placeholders": {
       "age": {
         "type": "String"
       },
-      "sex": {
-        "type": "String"
-      },
       "height": {
-        "type": "String"
-      },
-      "weight": {
         "type": "String"
       }
     }
@@ -559,7 +543,7 @@
   "mineSummaryAllergies": "Allergies",
   "mineSummaryConditions": "Conditions",
   "mineSummaryMedicines": "Current meds",
-  "mineSummaryMissingInfo": "Missing info: birth date, sex, unit system, pregnancy/lactation state",
+  "mineSummaryMissingInfo": "Missing info: birth date, height, unit system",
   "mineSummaryCompleteAction": "Complete",
   "mineProfileTitle": "Health profile",
   "mineProfileBasicInfoTitle": "Basic info",
@@ -1028,10 +1012,7 @@
   "mineEditSavedToast": "Saved",
   "mineEditDeletedToast": "Deleted",
   "mineEditFieldBirthDate": "Birth date (YYYY-MM-DD)",
-  "mineEditFieldSexAtBirth": "Sex at birth",
   "mineEditFieldHeightCm": "Height (cm)",
-  "mineEditFieldPregnancyState": "Pregnancy state",
-  "mineEditFieldLactationState": "Lactation state",
   "mineEditFieldBloodType": "Blood type",
   "mineEditFieldLocale": "Locale",
   "mineEditFieldTimezone": "Timezone",

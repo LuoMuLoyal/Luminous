@@ -1389,12 +1389,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineProfileUnknownValue => '--';
 
   @override
-  String get mineProfileSexFemale => 'Female';
-
-  @override
-  String get mineProfileSexMale => 'Male';
-
-  @override
   String mineProfileAgeYears(int age) {
     return '${age}y';
   }
@@ -1405,13 +1399,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String mineProfileWeightKg(int weight) {
-    return '${weight}kg';
-  }
-
-  @override
-  String mineProfileMeta(String age, String sex, String height, String weight) {
-    return '$age · $sex · $height · $weight';
+  String mineProfileMeta(String age, String height) {
+    return '$age · $height';
   }
 
   @override
@@ -1438,7 +1427,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineSummaryMissingInfo =>
-      'Missing info: birth date, sex, unit system, pregnancy/lactation state';
+      'Missing info: birth date, height, unit system';
 
   @override
   String get mineSummaryCompleteAction => 'Complete';
@@ -2455,16 +2444,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineEditFieldBirthDate => 'Birth date (YYYY-MM-DD)';
 
   @override
-  String get mineEditFieldSexAtBirth => 'Sex at birth';
-
-  @override
   String get mineEditFieldHeightCm => 'Height (cm)';
-
-  @override
-  String get mineEditFieldPregnancyState => 'Pregnancy state';
-
-  @override
-  String get mineEditFieldLactationState => 'Lactation state';
 
   @override
   String get mineEditFieldBloodType => 'Blood type';

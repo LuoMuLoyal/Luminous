@@ -42,7 +42,7 @@ This file records current implementation facts only. Product direction lives in 
 - Record: symptoms, hydration with selectable units, diet/meal, sleep UI placeholder, medication boundary entry, natural-language placeholder, selected-date timeline/detail/create/edit, top date bar, filters, summary/timeline-driven today overview, divider-based quick record actions, and guide row.
 - Medicine: active current-medicine drugbox, reminder-derived next dose, same-day taken/skipped dose logs, safety explanations, pregnancy/lactation/special-group medication safety conditions.
 - Report: static mock daily/weekly summaries until user-triggered generate/sync, medication/sleep/water/diet/symptom trend placeholders, campus hospital/pharmacist export controls, and reference notice. Privacy settings are owned by Mine/Settings.
-- Mine/Settings: account, health archive, allergies, current medicines, privacy, notifications, divider-based campus hospital/pharmacy/emergency/support resources, Advanced settings.
+- Mine/Settings: account, basic health archive, allergies, current medicines, privacy, notifications, divider-based campus hospital/pharmacy/emergency/support resources, Advanced settings. Mine profile editing currently surfaces birth date, height, blood type, unit system, and onboarding state only.
 
 ## Mock Or Deferred
 
@@ -55,6 +55,7 @@ This file records current implementation facts only. Product direction lives in 
 - Lightweight mood record wiring.
 - Environment contextual wiring for Today or Mine.
 - Medicine scan/OCR/photo/barcode/prescription recognition.
+- Pregnancy/lactation/special-group health-context fields remain available for medicine safety, but Mine does not surface them as standalone profile collection.
 
 Deferred code that remains useful should be marked with:
 

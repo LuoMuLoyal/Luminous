@@ -80,28 +80,20 @@ class MockMineRepository implements MineRepository {
 
   static const _guestProfile = MineProfileSnapshot(
     age: null,
-    sexAtBirth: null,
     heightCm: null,
-    weightKg: null,
     allergyCount: 0,
     conditionCount: 0,
     currentMedicineCount: 0,
     basicInfoCompleted: false,
-    emergencyContactCompleted: false,
-    medicationSafetyStatusCompleted: false,
   );
 
   static const _mockProfile = MineProfileSnapshot(
     age: 20,
-    sexAtBirth: 'female',
     heightCm: 165,
-    weightKg: 52,
     allergyCount: 2,
     conditionCount: 0,
     currentMedicineCount: 2,
     basicInfoCompleted: true,
-    emergencyContactCompleted: false,
-    medicationSafetyStatusCompleted: true,
   );
 
   static const _mockAlerts = [

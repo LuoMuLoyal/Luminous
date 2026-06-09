@@ -26,9 +26,6 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
   final _heightCmController = TextEditingController();
   final _bloodTypeController = TextEditingController();
 
-  HealthSexAtBirth? _sexAtBirth;
-  HealthPregnancyState? _pregnancyState;
-  HealthLactationState? _lactationState;
   HealthUnitSystem? _unitSystem;
   bool? _onboardingCompleted;
 
@@ -49,9 +46,9 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
     _birthDateController.text = profile.birthDate ?? '';
     _heightCmController.text = profile.heightCm?.toString() ?? '';
     _bloodTypeController.text = profile.bloodType ?? '';
-    _sexAtBirth = HealthSexAtBirth.fromValue(profile.sexAtBirth);
-    _pregnancyState = HealthPregnancyState.fromValue(profile.pregnancyState);
-    _lactationState = HealthLactationState.fromValue(profile.lactationState);
+    // Deferred by Product_Vision MVP: pregnancy, lactation, and other
+    // special-group fields remain in health context for medication safety, but
+    // Mine should not surface them as standalone profile collection yet.
     _unitSystem = HealthUnitSystem.fromValue(profile.unitSystem);
     _onboardingCompleted = profile.onboardingCompletedAt != null;
   }
@@ -121,31 +118,10 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
             decoration: InputDecoration(labelText: l10n.mineEditFieldBirthDate),
           ),
           const SizedBox(height: 12),
-          _enumDropdown<HealthSexAtBirth>(
-            label: l10n.mineEditFieldSexAtBirth,
-            value: _sexAtBirth,
-            values: HealthSexAtBirth.values,
-            onChanged: (v) => setState(() => _sexAtBirth = v),
-          ),
-          const SizedBox(height: 12),
           TextField(
             controller: _heightCmController,
             decoration: InputDecoration(labelText: l10n.mineEditFieldHeightCm),
             keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 12),
-          _enumDropdown<HealthPregnancyState>(
-            label: l10n.mineEditFieldPregnancyState,
-            value: _pregnancyState,
-            values: HealthPregnancyState.values,
-            onChanged: (v) => setState(() => _pregnancyState = v),
-          ),
-          const SizedBox(height: 12),
-          _enumDropdown<HealthLactationState>(
-            label: l10n.mineEditFieldLactationState,
-            value: _lactationState,
-            values: HealthLactationState.values,
-            onChanged: (v) => setState(() => _lactationState = v),
           ),
           const SizedBox(height: 12),
           TextField(
@@ -180,10 +156,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       birthDate: _birthDateController.text.isEmpty
           ? null
           : _birthDateController.text,
-      sexAtBirth: _sexAtBirth,
       heightCm: int.tryParse(_heightCmController.text),
-      pregnancyState: _pregnancyState,
-      lactationState: _lactationState,
       bloodType: _bloodTypeController.text.isEmpty
           ? null
           : _bloodTypeController.text,

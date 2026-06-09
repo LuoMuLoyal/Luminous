@@ -974,19 +974,11 @@ String _profileMeta(AppLocalizations l10n, MineProfileSnapshot profile) {
   final age = profile.age == null
       ? l10n.mineProfileUnknownValue
       : l10n.mineProfileAgeYears(profile.age!);
-  final sex = switch (profile.sexAtBirth) {
-    'female' => l10n.mineProfileSexFemale,
-    'male' => l10n.mineProfileSexMale,
-    _ => l10n.mineProfileUnknownValue,
-  };
   final height = profile.heightCm == null
       ? l10n.mineProfileUnknownValue
       : l10n.mineProfileHeightCm(profile.heightCm!.round());
-  final weight = profile.weightKg == null
-      ? l10n.mineProfileUnknownValue
-      : l10n.mineProfileWeightKg(profile.weightKg!.round());
 
-  return l10n.mineProfileMeta(age, sex, height, weight);
+  return l10n.mineProfileMeta(age, height);
 }
 
 const _mineGreen = AppColorTokens.cyanDeep;

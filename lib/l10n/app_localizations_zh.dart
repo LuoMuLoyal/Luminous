@@ -1294,12 +1294,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineProfileUnknownValue => '--';
 
   @override
-  String get mineProfileSexFemale => '女';
-
-  @override
-  String get mineProfileSexMale => '男';
-
-  @override
   String mineProfileAgeYears(int age) {
     return '$age岁';
   }
@@ -1310,13 +1304,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String mineProfileWeightKg(int weight) {
-    return '${weight}kg';
-  }
-
-  @override
-  String mineProfileMeta(String age, String sex, String height, String weight) {
-    return '$age · $sex · $height · $weight';
+  String mineProfileMeta(String age, String height) {
+    return '$age · $height';
   }
 
   @override
@@ -1341,7 +1330,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineSummaryMedicines => '当前用药';
 
   @override
-  String get mineSummaryMissingInfo => '缺失信息：生日、性别、单位制、孕哺状态';
+  String get mineSummaryMissingInfo => '缺失信息：生日、身高、单位制';
 
   @override
   String get mineSummaryCompleteAction => '去完善';
@@ -2320,16 +2309,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineEditFieldBirthDate => '出生日期 (YYYY-MM-DD)';
 
   @override
-  String get mineEditFieldSexAtBirth => '性别';
-
-  @override
   String get mineEditFieldHeightCm => '身高 (cm)';
-
-  @override
-  String get mineEditFieldPregnancyState => '怀孕状态';
-
-  @override
-  String get mineEditFieldLactationState => '哺乳状态';
 
   @override
   String get mineEditFieldBloodType => '血型';

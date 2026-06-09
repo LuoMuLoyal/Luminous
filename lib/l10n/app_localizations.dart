@@ -2612,18 +2612,6 @@ abstract class AppLocalizations {
   /// **'--'**
   String get mineProfileUnknownValue;
 
-  /// No description provided for @mineProfileSexFemale.
-  ///
-  /// In zh, this message translates to:
-  /// **'女'**
-  String get mineProfileSexFemale;
-
-  /// No description provided for @mineProfileSexMale.
-  ///
-  /// In zh, this message translates to:
-  /// **'男'**
-  String get mineProfileSexMale;
-
   /// No description provided for @mineProfileAgeYears.
   ///
   /// In zh, this message translates to:
@@ -2636,17 +2624,11 @@ abstract class AppLocalizations {
   /// **'{height}cm'**
   String mineProfileHeightCm(int height);
 
-  /// No description provided for @mineProfileWeightKg.
-  ///
-  /// In zh, this message translates to:
-  /// **'{weight}kg'**
-  String mineProfileWeightKg(int weight);
-
   /// No description provided for @mineProfileMeta.
   ///
   /// In zh, this message translates to:
-  /// **'{age} · {sex} · {height} · {weight}'**
-  String mineProfileMeta(String age, String sex, String height, String weight);
+  /// **'{age} · {height}'**
+  String mineProfileMeta(String age, String height);
 
   /// No description provided for @mineCompletionSubtitle.
   ///
@@ -2693,7 +2675,7 @@ abstract class AppLocalizations {
   /// No description provided for @mineSummaryMissingInfo.
   ///
   /// In zh, this message translates to:
-  /// **'缺失信息：生日、性别、单位制、孕哺状态'**
+  /// **'缺失信息：生日、身高、单位制'**
   String get mineSummaryMissingInfo;
 
   /// No description provided for @mineSummaryCompleteAction.
@@ -4556,29 +4538,11 @@ abstract class AppLocalizations {
   /// **'出生日期 (YYYY-MM-DD)'**
   String get mineEditFieldBirthDate;
 
-  /// No description provided for @mineEditFieldSexAtBirth.
-  ///
-  /// In zh, this message translates to:
-  /// **'性别'**
-  String get mineEditFieldSexAtBirth;
-
   /// No description provided for @mineEditFieldHeightCm.
   ///
   /// In zh, this message translates to:
   /// **'身高 (cm)'**
   String get mineEditFieldHeightCm;
-
-  /// No description provided for @mineEditFieldPregnancyState.
-  ///
-  /// In zh, this message translates to:
-  /// **'怀孕状态'**
-  String get mineEditFieldPregnancyState;
-
-  /// No description provided for @mineEditFieldLactationState.
-  ///
-  /// In zh, this message translates to:
-  /// **'哺乳状态'**
-  String get mineEditFieldLactationState;
 
   /// No description provided for @mineEditFieldBloodType.
   ///
