@@ -95,34 +95,6 @@
       }
     }
   },
-  "recordTodayOverviewWater": "饮水",
-  "recordTodayOverviewWaterValue": "{amount} 杯",
-  "@recordTodayOverviewWaterValue": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "recordTodayOverviewSleep": "睡眠",
-  "recordTodayOverviewSleepValue": "{hours} 小时",
-  "@recordTodayOverviewSleepValue": {
-    "placeholders": {
-      "hours": {
-        "type": "String"
-      }
-    }
-  },
-  "recordTodayOverviewMoodAverage": "情绪平均",
-  "recordTodayOverviewMoodValue": "{score} / 5",
-  "@recordTodayOverviewMoodValue": {
-    "placeholders": {
-      "score": {
-        "type": "String"
-      }
-    }
-  },
-  "recordTodayOverviewReportAction": "查看今日报告",
   "recordQuickOperationTitle": "快捷操作",
   "recordVoiceInputTitle": "语音输入",
   "recordVoiceInputSubtitle": "说一说，自动记录",
