@@ -21,6 +21,8 @@ enum TodayEnvironmentLevel { low, medium, high }
 
 enum TodayLumiSuggestionType { pollenProtection }
 
+enum TodayPriorityItemType { medication, water, campus }
+
 class TodayDashboard {
   const TodayDashboard({
     required this.user,
@@ -30,6 +32,7 @@ class TodayDashboard {
     required this.mealSuggestion,
     required this.environment,
     required this.lumiSuggestion,
+    required this.priorityItems,
   });
 
   final TodayUserSnapshot user;
@@ -43,6 +46,7 @@ class TodayDashboard {
   // Today or Mine product job is ready.
   final TodayEnvironmentSummary environment;
   final TodayLumiSuggestion lumiSuggestion;
+  final List<TodayPriorityItem> priorityItems;
 }
 
 class TodayUserSnapshot {
@@ -126,4 +130,24 @@ class TodayLumiSuggestion {
   const TodayLumiSuggestion({required this.type});
 
   final TodayLumiSuggestionType type;
+}
+
+class TodayPriorityItem {
+  const TodayPriorityItem({
+    required this.id,
+    required this.type,
+    this.count,
+    this.targetCount,
+    this.timeLabel,
+    this.medicineName,
+    this.progress,
+  });
+
+  final String id;
+  final TodayPriorityItemType type;
+  final int? count;
+  final int? targetCount;
+  final String? timeLabel;
+  final String? medicineName;
+  final double? progress;
 }

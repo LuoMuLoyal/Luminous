@@ -50,7 +50,6 @@ void main() {
       'record-ai-input',
       'record-timeline',
       'record-filter-chips',
-      'record-calendar-overview',
       'record-today-overview',
       'record-quick-operations',
       'record-guide-row',
@@ -65,6 +64,7 @@ void main() {
 
     expect(find.text(l10n.recordQuickSectionTitle), findsOneWidget);
     expect(find.textContaining(l10n.recordTimelineMealName), findsOneWidget);
+    expect(find.byKey(const Key('record-calendar-overview')), findsNothing);
     expect(find.byKey(const Key('record-summary')), findsNothing);
     expect(find.byKey(const Key('record-trends')), findsNothing);
     expect(find.byKey(const Key('record-health-bag')), findsNothing);

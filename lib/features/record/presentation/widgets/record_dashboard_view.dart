@@ -111,6 +111,12 @@ class _MobileRecordDashboard extends StatelessWidget {
           onQuickAction: onQuickAction,
         ),
         const SizedBox(height: AppSpacingTokens.md),
+        _MobileQuickOperationPanel(
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
         _MobileAiInputBar(l10n: l10n, typography: typography, surface: surface),
         const SizedBox(height: AppSpacingTokens.md),
         _MobileTimelinePanel(
@@ -131,13 +137,6 @@ class _MobileRecordDashboard extends StatelessWidget {
         const SizedBox(height: AppSpacingTokens.md),
         _MobileOverviewPanels(
           dashboard: dashboard,
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-          onDateSelected: onDateSelected,
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _MobileQuickOperationPanel(
           l10n: l10n,
           typography: typography,
           surface: surface,
@@ -388,24 +387,17 @@ class _MobileTimelinePanel extends StatelessWidget {
       typography: typography,
       surface: surface,
       padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: surface.canvas,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-          border: Border.all(color: surface.hairline),
-        ),
-        child: Column(
-          children: [
-            for (var index = 0; index < entries.length; index += 1)
-              _MobileTimelineRow(
-                entry: entries[index],
-                l10n: l10n,
-                typography: typography,
-                surface: surface,
-                isLast: index == entries.length - 1,
-              ),
-          ],
-        ),
+      child: Column(
+        children: [
+          for (var index = 0; index < entries.length; index += 1)
+            _MobileTimelineRow(
+              entry: entries[index],
+              l10n: l10n,
+              typography: typography,
+              surface: surface,
+              isLast: index == entries.length - 1,
+            ),
+        ],
       ),
     );
   }
@@ -769,193 +761,20 @@ class _MobileOverviewPanels extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
-    this.onDateSelected,
   });
 
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
-  final ValueChanged<DateTime>? onDateSelected;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 6,
-          child: _MobileCalendarOverviewPanel(
-            days: dashboard.weekDays,
-            l10n: l10n,
-            typography: typography,
-            surface: surface,
-            onDateSelected: onDateSelected,
-          ),
-        ),
-        const SizedBox(width: AppSpacingTokens.sm),
-        Expanded(
-          flex: 5,
-          child: _MobileTodayOverviewPanel(
-            eventCount: dashboard.timeline.length,
-            l10n: l10n,
-            typography: typography,
-            surface: surface,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _MobileCalendarOverviewPanel extends StatelessWidget {
-  const _MobileCalendarOverviewPanel({
-    required this.days,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-    this.onDateSelected,
-  });
-
-  final List<RecordWeekDay> days;
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-  final ValueChanged<DateTime>? onDateSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return RecordSectionSurface(
-      key: const Key('record-calendar-overview'),
-      title: l10n.recordCalendarOverviewTitle,
+    return _MobileTodayOverviewPanel(
+      eventCount: dashboard.timeline.length,
+      l10n: l10n,
       typography: typography,
       surface: surface,
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              for (final day in days)
-                Expanded(
-                  child: Text(
-                    recordCopy(l10n, day.weekdayKey),
-                    textAlign: TextAlign.center,
-                    style: typography.caption.copyWith(color: surface.body),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          Row(
-            children: [
-              for (final day in days)
-                Expanded(
-                  child: _MobileCalendarDay(
-                    day: day,
-                    l10n: l10n,
-                    typography: typography,
-                    surface: surface,
-                    onDateSelected: onDateSelected,
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MobileCalendarDay extends StatelessWidget {
-  const _MobileCalendarDay({
-    required this.day,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-    this.onDateSelected,
-  });
-
-  final RecordWeekDay day;
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-  final ValueChanged<DateTime>? onDateSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final foreground = day.selected
-        ? AppColorTokens.cyanDeep
-        : Theme.of(context).colorScheme.onSurface;
-    final markerColors = day.hasAlert
-        ? [...day.markers, AppColorTokens.highlightMagenta]
-        : day.markers;
-
-    return Material(
-      key: Key('record-weekday-${_formatDateKey(day.date)}'),
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onDateSelected == null
-            ? () => showRecordToast(
-                context,
-                '${l10n.recordOpenDateAction} ${day.day}',
-              )
-            : () => onDateSelected!(day.date),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xxs),
-          child: Column(
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: day.selected
-                      ? AppColorTokens.cyanDeep.withValues(alpha: 0.08)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
-                  border: day.selected
-                      ? Border.all(color: AppColorTokens.cyanDeep)
-                      : null,
-                ),
-                child: SizedBox(
-                  height: AppSpacingTokens.x3l,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${day.day}',
-                        style: typography.bodySmStrong.copyWith(
-                          color: foreground,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacingTokens.xxs),
-                      SizedBox(
-                        height: 6,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            for (final marker in markerColors.take(2))
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 1.2,
-                                ),
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: marker,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const SizedBox.square(dimension: 4),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
@@ -1191,14 +1010,12 @@ class _MobileQuickOperationCard extends StatelessWidget {
         onTap: () => showRecordToast(context, title),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: surface.hairline),
-            boxShadow: AppShadowTokens.level1,
-          ),
+          decoration: const BoxDecoration(),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.xs,
+              vertical: AppSpacingTokens.sm,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -1357,12 +1174,6 @@ RecordCopyKey _weekdayKeyFromDate(DateTime date) {
 
 String _quickRecordLabel(AppLocalizations l10n, RecordQuickAction action) {
   return l10n.recordQuickActionLabel(recordCopy(l10n, action.titleKey));
-}
-
-String _formatDateKey(DateTime date) {
-  return '${date.year.toString().padLeft(4, '0')}-'
-      '${date.month.toString().padLeft(2, '0')}-'
-      '${date.day.toString().padLeft(2, '0')}';
 }
 
 class _DesktopRecordDashboard extends StatelessWidget {

@@ -8,14 +8,22 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
   testWidgets('DailyRecordFormFields shows water fields', (tester) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
     await _pumpForm(tester, DailyRecordKind.water);
 
     expect(
       find.byType(DropdownButtonFormField<DailyRecordKind>),
       findsOneWidget,
     );
+    expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
     expect(find.byKey(const Key('daily-record-value-field')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-unit-field')), findsOneWidget);
+    expect(find.text(l10n.recordWaterUnitMl), findsOneWidget);
+    await tester.tap(find.byKey(const Key('daily-record-unit-field')));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.recordWaterUnitCup).last, findsOneWidget);
+    expect(find.text(l10n.recordWaterUnitTimes).last, findsOneWidget);
     expect(find.byKey(const Key('daily-record-title-field')), findsNothing);
     expect(find.byKey(const Key('daily-record-note-field')), findsOneWidget);
   });

@@ -4,6 +4,8 @@ import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 const dailyRecordWaterDefaultUnit = 'ml';
+const dailyRecordWaterCupUnit = 'cup';
+const dailyRecordWaterTimesUnit = 'times';
 
 class DailyRecordFormFields extends StatelessWidget {
   const DailyRecordFormFields({
@@ -59,11 +61,39 @@ class DailyRecordFormFields extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.sm),
         ],
         if (rules.showUnit) ...[
-          TextField(
-            key: const Key('daily-record-unit-field'),
-            controller: unitController,
-            decoration: InputDecoration(labelText: l10n.recordCreateFieldUnit),
-          ),
+          if (kind == DailyRecordKind.water)
+            DropdownButtonFormField<String>(
+              key: const Key('daily-record-unit-field'),
+              initialValue: _normalizedWaterUnit(unitController.text),
+              decoration: InputDecoration(
+                labelText: l10n.recordCreateFieldUnit,
+              ),
+              items: [
+                DropdownMenuItem(
+                  value: dailyRecordWaterDefaultUnit,
+                  child: Text(l10n.recordWaterUnitMl),
+                ),
+                DropdownMenuItem(
+                  value: dailyRecordWaterCupUnit,
+                  child: Text(l10n.recordWaterUnitCup),
+                ),
+                DropdownMenuItem(
+                  value: dailyRecordWaterTimesUnit,
+                  child: Text(l10n.recordWaterUnitTimes),
+                ),
+              ],
+              onChanged: (value) {
+                unitController.text = value ?? dailyRecordWaterDefaultUnit;
+              },
+            )
+          else
+            TextField(
+              key: const Key('daily-record-unit-field'),
+              controller: unitController,
+              decoration: InputDecoration(
+                labelText: l10n.recordCreateFieldUnit,
+              ),
+            ),
           const SizedBox(height: AppSpacingTokens.sm),
         ],
         if (rules.showTitle) ...[
@@ -170,3 +200,12 @@ const activeDailyRecordKinds = <DailyRecordKind>[
   DailyRecordKind.symptom,
   DailyRecordKind.note,
 ];
+
+String _normalizedWaterUnit(String value) {
+  final normalized = value.trim();
+  return switch (normalized) {
+    dailyRecordWaterCupUnit => dailyRecordWaterCupUnit,
+    dailyRecordWaterTimesUnit => dailyRecordWaterTimesUnit,
+    _ => dailyRecordWaterDefaultUnit,
+  };
+}
