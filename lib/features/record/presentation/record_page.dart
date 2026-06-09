@@ -38,19 +38,17 @@ class RecordPage extends ConsumerWidget {
       actions: isMobileLayout
           ? [
               RecordHeaderActionChip(
-                label: l10n.recordSearchAction,
-                icon: Icons.search_rounded,
+                label: isCompact
+                    ? l10n.recordAddCompactAction
+                    : l10n.recordAddAction,
+                icon: Icons.add_rounded,
+                emphasized: true,
                 typography: typography,
                 surface: surface,
-                onTap: () => showRecordToast(context, l10n.recordSearchAction),
-                iconOnly: true,
-              ),
-              RecordHeaderActionChip(
-                label: l10n.recordFilterAction,
-                icon: Icons.filter_alt_outlined,
-                typography: typography,
-                surface: surface,
-                onTap: () => showRecordToast(context, l10n.recordFilterAction),
+                onTap: () => pushAuthRequiredRoute(
+                  context,
+                  '/record/create?date=${_formatDate(selectedDate)}',
+                ),
                 iconOnly: true,
               ),
             ]

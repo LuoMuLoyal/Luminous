@@ -111,9 +111,8 @@ class _MobileRecordDashboard extends StatelessWidget {
           onQuickAction: onQuickAction,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _MobileTimelinePanel(
-          entries: timeline,
-          totalCount: dashboard.timeline.length,
+        _MobileOverviewPanels(
+          dashboard: dashboard,
           l10n: l10n,
           typography: typography,
           surface: surface,
@@ -127,8 +126,9 @@ class _MobileRecordDashboard extends StatelessWidget {
           onFilterSelected: onFilterSelected,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _MobileOverviewPanels(
-          dashboard: dashboard,
+        _MobileTimelinePanel(
+          entries: timeline,
+          totalCount: dashboard.timeline.length,
           l10n: l10n,
           typography: typography,
           surface: surface,
@@ -219,16 +219,6 @@ class _MobileRecordDateBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.sm),
-        RecordTextAction(
-          label: l10n.recordSwitchDateAction,
-          icon: Icons.calendar_today_outlined,
-          typography: typography,
-          surface: surface,
-          onTap:
-              onPickDate ??
-              () => showRecordToast(context, l10n.recordSwitchDateAction),
-        ),
       ],
     );
   }
@@ -256,53 +246,51 @@ class _MobileQuickRecordPanel extends StatelessWidget {
       rows.add(actions.skip(index).take(5).toList(growable: false));
     }
 
-    return RecordSectionSurface(
+    return Column(
       key: const Key('record-quick-actions'),
-      title: l10n.recordQuickSectionTitle,
-      typography: typography,
-      surface: surface,
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) ...[
-            IntrinsicHeight(
-              child: Row(
-                children: [
-                  for (
-                    var index = 0;
-                    index < rows[rowIndex].length;
-                    index += 1
-                  ) ...[
-                    Expanded(
-                      child: _MobileQuickRecordTile(
-                        action: rows[rowIndex][index],
-                        l10n: l10n,
-                        typography: typography,
-                        surface: surface,
-                        onQuickAction: onQuickAction,
-                      ),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.recordQuickSectionTitle, style: typography.displaySm),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) ...[
+          SizedBox(
+            height: 92,
+            child: Row(
+              children: [
+                for (
+                  var index = 0;
+                  index < rows[rowIndex].length;
+                  index += 1
+                ) ...[
+                  Expanded(
+                    child: _MobileQuickRecordTile(
+                      action: rows[rowIndex][index],
+                      l10n: l10n,
+                      typography: typography,
+                      surface: surface,
+                      onQuickAction: onQuickAction,
                     ),
-                    if (index < rows[rowIndex].length - 1)
-                      VerticalDivider(
-                        width: 1,
-                        thickness: 1,
-                        color: surface.hairline,
-                      ),
-                  ],
-                  for (
-                    var filler = rows[rowIndex].length;
-                    filler < 5;
-                    filler += 1
-                  )
-                    const Expanded(child: SizedBox.shrink()),
+                  ),
+                  if (index < rows[rowIndex].length - 1)
+                    VerticalDivider(
+                      width: 1,
+                      thickness: 1,
+                      color: surface.hairline,
+                    ),
                 ],
-              ),
+                for (
+                  var filler = rows[rowIndex].length;
+                  filler < 5;
+                  filler += 1
+                )
+                  const Expanded(child: SizedBox.shrink()),
+              ],
             ),
-            if (rowIndex < rows.length - 1)
-              Divider(height: 1, thickness: 1, color: surface.hairline),
-          ],
+          ),
+          Divider(height: 1, thickness: 1, color: surface.hairline),
         ],
-      ),
+      ],
     );
   }
 }
@@ -337,9 +325,10 @@ class _MobileQuickRecordTile extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacingTokens.xxs,
-            vertical: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.xs,
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               RecordIconBadge(
                 icon: action.icon,
@@ -348,7 +337,7 @@ class _MobileQuickRecordTile extends StatelessWidget {
                 size: AppSpacingTokens.x2l,
                 iconSize: AppSpacingTokens.lg,
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.xs),
               Text(
                 label,
                 style: typography.bodySmStrong.copyWith(
@@ -383,24 +372,27 @@ class _MobileTimelinePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    return Column(
       key: const Key('record-timeline'),
-      title: l10n.recordTodayEntriesTitle(totalCount),
-      typography: typography,
-      surface: surface,
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Column(
-        children: [
-          for (var index = 0; index < entries.length; index += 1)
-            _MobileTimelineRow(
-              entry: entries[index],
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-              isLast: index == entries.length - 1,
-            ),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.recordTodayEntriesTitle(totalCount),
+          style: typography.displaySm,
+        ),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        for (var index = 0; index < entries.length; index += 1) ...[
+          _MobileTimelineRow(
+            entry: entries[index],
+            l10n: l10n,
+            typography: typography,
+            surface: surface,
+            isLast: index == entries.length - 1,
+          ),
+          Divider(height: 1, thickness: 1, color: surface.hairline),
         ],
-      ),
+      ],
     );
   }
 }
@@ -582,8 +574,9 @@ class _MobileAiInputBar extends StatelessWidget {
           decoration: BoxDecoration(
             color: surface.canvas,
             borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: AppColorTokens.cyanDeep),
-            boxShadow: AppShadowTokens.level1,
+            border: Border.all(
+              color: AppColorTokens.cyanDeep.withValues(alpha: 0.32),
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -796,35 +789,56 @@ class _MobileTodayOverviewPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    final rows = <List<_MobileOverviewItem>>[];
+    for (var index = 0; index < items.length; index += 2) {
+      rows.add(items.skip(index).take(2).toList(growable: false));
+    }
+
+    return Column(
       key: const Key('record-today-overview'),
-      title: l10n.recordTodayOverviewTitle,
-      typography: typography,
-      surface: surface,
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Column(
-        children: [
-          for (var index = 0; index < items.length; index += 1) ...[
-            _MobileOverviewLine(
-              item: items[index],
-              typography: typography,
-              surface: surface,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.recordTodayOverviewTitle, style: typography.displaySm),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) ...[
+          SizedBox(
+            height: 72,
+            child: Row(
+              children: [
+                Expanded(
+                  child: _MobileOverviewTile(
+                    item: rows[rowIndex][0],
+                    typography: typography,
+                    surface: surface,
+                  ),
+                ),
+                if (rows[rowIndex].length > 1) ...[
+                  VerticalDivider(
+                    width: 1,
+                    thickness: 1,
+                    color: surface.hairline,
+                  ),
+                  Expanded(
+                    child: _MobileOverviewTile(
+                      item: rows[rowIndex][1],
+                      typography: typography,
+                      surface: surface,
+                    ),
+                  ),
+                ],
+              ],
             ),
-            if (index < items.length - 1)
-              Divider(
-                height: AppSpacingTokens.md,
-                thickness: 1,
-                color: surface.hairline,
-              ),
-          ],
+          ),
+          Divider(height: 1, thickness: 1, color: surface.hairline),
         ],
-      ),
+      ],
     );
   }
 }
 
-class _MobileOverviewLine extends StatelessWidget {
-  const _MobileOverviewLine({
+class _MobileOverviewTile extends StatelessWidget {
+  const _MobileOverviewTile({
     required this.item,
     required this.typography,
     required this.surface,
@@ -836,27 +850,40 @@ class _MobileOverviewLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(item.icon, color: item.color, size: AppSpacingTokens.md),
-        const SizedBox(width: AppSpacingTokens.xs),
-        Expanded(
-          child: Text(
-            item.label,
-            style: typography.caption.copyWith(color: surface.body),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.sm,
+        vertical: AppSpacingTokens.sm,
+      ),
+      child: Row(
+        children: [
+          Icon(item.icon, color: item.color, size: AppSpacingTokens.lg),
+          const SizedBox(width: AppSpacingTokens.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.label,
+                  style: typography.caption.copyWith(color: surface.body),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: AppSpacingTokens.xxs),
+                AppSkeletonText(
+                  text: item.value,
+                  style: typography.bodyMdStrong.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  widthFactor: 0.74,
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(width: AppSpacingTokens.xs),
-        AppSkeletonText(
-          text: item.value,
-          style: typography.bodySmStrong,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          width: 38,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -888,56 +915,54 @@ class _MobileRecordGuideRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return Column(
       key: const Key('record-guide-row'),
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => showRecordToast(context, l10n.recordGuideAction),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: surface.hairline),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.sm,
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.lightbulb_outline_rounded,
-                  color: AppColorTokens.warning,
-                  size: AppSpacingTokens.lg,
-                ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                Expanded(
-                  child: Text(
-                    l10n.recordGuideHint,
-                    style: typography.bodySm.copyWith(color: surface.body),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+      children: [
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => showRecordToast(context, l10n.recordGuideAction),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacingTokens.md,
+                vertical: AppSpacingTokens.sm,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.lightbulb_outline_rounded,
+                    color: AppColorTokens.warning,
+                    size: AppSpacingTokens.lg,
                   ),
-                ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                Text(
-                  l10n.recordGuideAction,
-                  style: typography.bodySmStrong.copyWith(
+                  const SizedBox(width: AppSpacingTokens.sm),
+                  Expanded(
+                    child: Text(
+                      l10n.recordGuideHint,
+                      style: typography.bodySm.copyWith(color: surface.body),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacingTokens.sm),
+                  Text(
+                    l10n.recordGuideAction,
+                    style: typography.bodySmStrong.copyWith(
+                      color: AppColorTokens.link,
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right_rounded,
                     color: AppColorTokens.link,
+                    size: AppSpacingTokens.lg,
                   ),
-                ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: AppColorTokens.link,
-                  size: AppSpacingTokens.lg,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+      ],
     );
   }
 }
