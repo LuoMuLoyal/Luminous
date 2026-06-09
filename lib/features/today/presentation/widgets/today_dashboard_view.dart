@@ -279,7 +279,7 @@ class _HealthOverviewCard extends StatelessWidget {
           TodaySectionHeader(
             title: l10n.todayHealthSummaryCardTitle,
             leading: const Icon(
-              Icons.health_and_safety_outlined,
+              Icons.check_circle_outline_rounded,
               color: TodayPalette.teal,
               size: AppSpacingTokens.lg,
             ),
@@ -910,16 +910,21 @@ List<_OverviewItem> _overviewItems(
 
   return [
     _OverviewItem(
-      icon: Icons.bedtime_rounded,
-      label: l10n.todayVitalSleepLabel,
-      value: '$sleep ${l10n.todayVitalSleepUnit}',
-      status: l10n.todayVitalStatusGood,
-      color: TodayPalette.blue,
+      icon: Icons.medication_rounded,
+      label: l10n.todayMedicationOverviewLabel,
+      value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
+      status: dashboard.medication.pendingCount == 0
+          ? l10n.todayStatusCompleted
+          : l10n.todayMedicationPendingStatus,
+      color: TodayPalette.green,
     ),
     _OverviewItem(
       icon: Icons.water_drop_rounded,
       label: l10n.todayHydrationOverviewLabel,
-      value: '${(dashboard.water.progress * 100).round()}%',
+      value: l10n.todayWaterOverviewCount(
+        dashboard.water.completedCount,
+        dashboard.water.targetCount,
+      ),
       status: dashboard.water.progress >= 0.75
           ? l10n.todayVitalStatusGood
           : l10n.todayStatusNeedsImprovement,
@@ -929,13 +934,11 @@ List<_OverviewItem> _overviewItems(
           : TodayPalette.amber,
     ),
     _OverviewItem(
-      icon: Icons.medication_rounded,
-      label: l10n.todayMedicationOverviewLabel,
-      value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
-      status: dashboard.medication.pendingCount == 0
-          ? l10n.todayStatusCompleted
-          : l10n.todayMedicationPendingStatus,
-      color: TodayPalette.green,
+      icon: Icons.bedtime_rounded,
+      label: l10n.todayVitalSleepLabel,
+      value: '$sleep ${l10n.todayVitalSleepUnit}',
+      status: l10n.todayVitalStatusGood,
+      color: TodayPalette.blue,
     ),
   ];
 }
@@ -1032,13 +1035,6 @@ List<_RecommendationItem> _recommendationItems(
       action: dashboard.water.progress >= 1
           ? l10n.todayStatusCompleted
           : l10n.todayCompleteAction,
-    ),
-    _RecommendationItem(
-      icon: Icons.coffee_rounded,
-      color: TodayPalette.blue,
-      title: l10n.todayRecommendationCoffeeTitle,
-      subtitle: l10n.todayRecommendationCoffeeBody,
-      action: l10n.todayLearnMoreAction,
     ),
   ];
 }

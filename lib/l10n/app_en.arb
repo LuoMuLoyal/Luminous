@@ -837,6 +837,17 @@
       }
     }
   },
+  "todayWaterOverviewCount": "{done}/{target} times",
+  "@todayWaterOverviewCount": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
   "todayWaterRemainingCount": "{count} more to go",
   "@todayWaterRemainingCount": {
     "placeholders": {
@@ -871,7 +882,7 @@
   },
   "todayMedicationNameAtorvastatin": "Atorvastatin",
   "todayMedicationNameVitaminBComplex": "Vitamin B complex",
-  "todayHealthSummaryCardTitle": "Health status overview",
+  "todayHealthSummaryCardTitle": "Today summary",
   "todayVitalHeartRateLabel": "Heart rate",
   "todayVitalHeartRateUnit": "bpm",
   "todayVitalBloodPressureLabel": "Blood pressure",
@@ -901,7 +912,7 @@
   "todayErrorTitle": "Today did not load this time",
   "todayErrorDescription": "The mock provider and page structure are wired up, so try fetching it again.",
   "todayEmptyTitle": "No records yet",
-  "todayEmptyDescription": "Log water, medication, or vitals first, then we can shape personalized suggestions.",
+  "todayEmptyDescription": "Log water, medication, or sleep first, then we can shape personalized suggestions.",
   "todayEmptyAction": "Start logging",
   "todayRetryAction": "Retry",
   "todayUpdatedAt": "Updated at {time}",
@@ -941,7 +952,7 @@
   "todayMedicationTakeAction": "Take now",
   "todayWaterPriorityTitle": "Water goal",
   "todayDrinkWaterAction": "Drink water",
-  "todayRecommendationSectionTitle": "Recommended for you",
+  "todayRecommendationSectionTitle": "Proactive advice",
   "todayViewMoreAction": "View more",
   "todayRecommendationMedicineSafetyTitle": "Medication safety tips",
   "todayRecommendationMedicineSafetyBody": "Take medicines on time and do not adjust doses casually",
@@ -979,7 +990,7 @@
     }
   },
   "todayTodoCustomTitle": "Custom todo",
-  "todayTodoCustomSubtitle": "Add follow-up, activity, or rest reminders",
+  "todayTodoCustomSubtitle": "Add follow-up, rest, or custom reminders",
   "placeholderSoon": "{label} · Coming Soon",
   "@placeholderSoon": {
     "placeholders": {

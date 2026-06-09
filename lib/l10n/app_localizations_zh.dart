@@ -2020,6 +2020,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String todayWaterOverviewCount(int done, int target) {
+    return '$done/$target 次';
+  }
+
+  @override
   String todayWaterRemainingCount(int count) {
     return '还差 $count 次';
   }
@@ -2047,7 +2052,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayMedicationNameVitaminBComplex => '维生素B族';
 
   @override
-  String get todayHealthSummaryCardTitle => '健康状态总览';
+  String get todayHealthSummaryCardTitle => '今日摘要';
 
   @override
   String get todayVitalHeartRateLabel => '心率';
@@ -2137,7 +2142,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayEmptyTitle => '你还没有任何记录';
 
   @override
-  String get todayEmptyDescription => '先记录饮水、用药或体征，我们会为你提供个性化建议。';
+  String get todayEmptyDescription => '先记录饮水、用药或睡眠，我们会为你提供个性化建议。';
 
   @override
   String get todayEmptyAction => '去记录';
@@ -2191,7 +2196,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayDrinkWaterAction => '去喝水';
 
   @override
-  String get todayRecommendationSectionTitle => '为你推荐';
+  String get todayRecommendationSectionTitle => '主动建议';
 
   @override
   String get todayViewMoreAction => '查看更多';
@@ -2258,7 +2263,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayTodoCustomTitle => '自定义待办';
 
   @override
-  String get todayTodoCustomSubtitle => '可添加复诊、运动或休息提醒';
+  String get todayTodoCustomSubtitle => '可添加复诊、休息或自定义提醒';
 
   @override
   String placeholderSoon(String label) {

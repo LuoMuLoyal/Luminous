@@ -4004,6 +4004,12 @@ abstract class AppLocalizations {
   /// **'目标 {count} 次'**
   String todayWaterGoalCount(int count);
 
+  /// No description provided for @todayWaterOverviewCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{done}/{target} 次'**
+  String todayWaterOverviewCount(int done, int target);
+
   /// No description provided for @todayWaterRemainingCount.
   ///
   /// In zh, this message translates to:
@@ -4049,7 +4055,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayHealthSummaryCardTitle.
   ///
   /// In zh, this message translates to:
-  /// **'健康状态总览'**
+  /// **'今日摘要'**
   String get todayHealthSummaryCardTitle;
 
   /// No description provided for @todayVitalHeartRateLabel.
@@ -4229,7 +4235,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayEmptyDescription.
   ///
   /// In zh, this message translates to:
-  /// **'先记录饮水、用药或体征，我们会为你提供个性化建议。'**
+  /// **'先记录饮水、用药或睡眠，我们会为你提供个性化建议。'**
   String get todayEmptyDescription;
 
   /// No description provided for @todayEmptyAction.
@@ -4325,7 +4331,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayRecommendationSectionTitle.
   ///
   /// In zh, this message translates to:
-  /// **'为你推荐'**
+  /// **'主动建议'**
   String get todayRecommendationSectionTitle;
 
   /// No description provided for @todayViewMoreAction.
@@ -4451,7 +4457,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayTodoCustomSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'可添加复诊、运动或休息提醒'**
+  /// **'可添加复诊、休息或自定义提醒'**
   String get todayTodoCustomSubtitle;
 
   /// No description provided for @placeholderSoon.

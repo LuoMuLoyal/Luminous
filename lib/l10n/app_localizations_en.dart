@@ -2144,6 +2144,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String todayWaterOverviewCount(int done, int target) {
+    return '$done/$target times';
+  }
+
+  @override
   String todayWaterRemainingCount(int count) {
     return '$count more to go';
   }
@@ -2171,7 +2176,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayMedicationNameVitaminBComplex => 'Vitamin B complex';
 
   @override
-  String get todayHealthSummaryCardTitle => 'Health status overview';
+  String get todayHealthSummaryCardTitle => 'Today summary';
 
   @override
   String get todayVitalHeartRateLabel => 'Heart rate';
@@ -2266,7 +2271,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayEmptyDescription =>
-      'Log water, medication, or vitals first, then we can shape personalized suggestions.';
+      'Log water, medication, or sleep first, then we can shape personalized suggestions.';
 
   @override
   String get todayEmptyAction => 'Start logging';
@@ -2320,7 +2325,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayDrinkWaterAction => 'Drink water';
 
   @override
-  String get todayRecommendationSectionTitle => 'Recommended for you';
+  String get todayRecommendationSectionTitle => 'Proactive advice';
 
   @override
   String get todayViewMoreAction => 'View more';
@@ -2392,7 +2397,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayTodoCustomSubtitle =>
-      'Add follow-up, activity, or rest reminders';
+      'Add follow-up, rest, or custom reminders';
 
   @override
   String placeholderSoon(String label) {
