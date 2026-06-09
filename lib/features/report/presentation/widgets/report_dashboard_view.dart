@@ -83,14 +83,6 @@ class ReportDashboardView extends StatelessWidget {
           surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        ReportPrivacySection(
-          key: const Key('report-privacy-section'),
-          actions: dashboard.privacyActions,
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
-        const SizedBox(height: AppSpacingTokens.sm),
         ReportReferenceNotice(
           key: const Key('report-reference-notice'),
           l10n: l10n,

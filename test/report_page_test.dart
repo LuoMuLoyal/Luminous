@@ -60,7 +60,6 @@ void main() {
       'report-ai-summary-section',
       'report-export-section',
       'report-patterns-section',
-      'report-privacy-section',
       'report-reference-notice',
     ];
 
@@ -72,6 +71,7 @@ void main() {
     }
 
     expect(find.text(l10n.reportReferenceNotice), findsOneWidget);
+    expect(find.byKey(const Key('report-privacy-section')), findsNothing);
   });
 
   testWidgets(

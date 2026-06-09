@@ -43,6 +43,5 @@ String reportCopy(AppLocalizations l10n, ReportCopyKey key) {
     ReportCopyKey.patternMedicationTitle => l10n.reportPatternMedicationTitle,
     ReportCopyKey.patternMedicationStatus => l10n.reportPatternMedicationStatus,
     ReportCopyKey.patternMedicationBody => l10n.reportPatternMedicationBody,
-    ReportCopyKey.privacyExportControls => l10n.reportPrivacyExportControls,
   };
 }

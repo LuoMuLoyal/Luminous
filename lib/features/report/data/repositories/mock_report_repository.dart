@@ -152,13 +152,6 @@ class MockReportRepository implements ReportRepository {
         sparkline: <double>[48, 50, 47, 52, 49, 51, 58],
       ),
     ],
-    privacyActions: <ReportPrivacyAction>[
-      ReportPrivacyAction(
-        icon: Icons.privacy_tip_outlined,
-        color: AppColorTokens.link,
-        titleKey: ReportCopyKey.privacyExportControls,
-      ),
-    ],
   );
 }
 
