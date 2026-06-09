@@ -68,16 +68,17 @@ String medicineCopy(AppLocalizations l10n, MedicineCopyKey key) {
       l10n.medicineAlertDuplicateCheckDetail,
     MedicineCopyKey.alertDuplicateCheckStatus =>
       l10n.medicineAlertDuplicateCheckStatus,
-    MedicineCopyKey.alertPeriodPregnancyTitle =>
-      l10n.medicineAlertPeriodPregnancyTitle,
-    MedicineCopyKey.alertPeriodPregnancyBody =>
-      l10n.medicineAlertPeriodPregnancyBody,
-    MedicineCopyKey.alertPeriodPregnancyDetail =>
-      l10n.medicineAlertPeriodPregnancyDetail,
-    MedicineCopyKey.alertPeriodPregnancyStatus =>
-      l10n.medicineAlertPeriodPregnancyStatus,
+    MedicineCopyKey.alertSpecialGroupSafetyTitle =>
+      l10n.medicineAlertSpecialGroupSafetyTitle,
+    MedicineCopyKey.alertSpecialGroupSafetyBody =>
+      l10n.medicineAlertSpecialGroupSafetyBody,
+    MedicineCopyKey.alertSpecialGroupSafetyDetail =>
+      l10n.medicineAlertSpecialGroupSafetyDetail,
+    MedicineCopyKey.alertSpecialGroupSafetyStatus =>
+      l10n.medicineAlertSpecialGroupSafetyStatus,
     MedicineCopyKey.promisePointBoundary => l10n.medicinePromisePointBoundary,
-    MedicineCopyKey.promisePointPregnancy => l10n.medicinePromisePointPregnancy,
+    MedicineCopyKey.promisePointSpecialGroup =>
+      l10n.medicinePromisePointSpecialGroup,
     MedicineCopyKey.promisePointPrivacy => l10n.medicinePromisePointPrivacy,
     MedicineCopyKey.promisePointDiagnosis => l10n.medicinePromisePointDiagnosis,
   };

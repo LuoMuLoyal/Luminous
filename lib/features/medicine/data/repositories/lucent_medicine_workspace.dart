@@ -206,10 +206,10 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     ),
     MedicineAlert(
       icon: Icons.water_drop_rounded,
-      titleKey: MedicineCopyKey.alertPeriodPregnancyTitle,
-      bodyKey: MedicineCopyKey.alertPeriodPregnancyBody,
-      detailKey: MedicineCopyKey.alertPeriodPregnancyDetail,
-      actionKey: MedicineCopyKey.alertPeriodPregnancyStatus,
+      titleKey: MedicineCopyKey.alertSpecialGroupSafetyTitle,
+      bodyKey: MedicineCopyKey.alertSpecialGroupSafetyBody,
+      detailKey: MedicineCopyKey.alertSpecialGroupSafetyDetail,
+      actionKey: MedicineCopyKey.alertSpecialGroupSafetyStatus,
       color: AppColorTokens.error,
       softColor: AppColorTokens.errorSoft,
     ),
@@ -217,7 +217,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static List<MedicinePromisePoint> _defaultPromisePoints() => const [
     MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointBoundary),
-    MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointPregnancy),
+    MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointSpecialGroup),
     MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointPrivacy),
     MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointDiagnosis),
   ];
