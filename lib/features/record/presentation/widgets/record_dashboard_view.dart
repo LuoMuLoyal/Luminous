@@ -312,42 +312,47 @@ class _MobileQuickRecordTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = _quickRecordLabel(l10n, action);
+    final actionLabel = _quickRecordLabel(l10n, action);
+    final displayLabel = recordCopy(l10n, action.titleKey);
 
     return Material(
       key: Key('record-quick-${action.type.name}'),
       color: Colors.transparent,
       child: InkWell(
         onTap: onQuickAction == null
-            ? () => showRecordToast(context, label)
+            ? () => showRecordToast(context, actionLabel)
             : () => onQuickAction!(action),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.xxs,
-            vertical: AppSpacingTokens.xs,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RecordIconBadge(
-                icon: action.icon,
-                color: action.accent,
-                backgroundColor: action.softColor,
-                size: AppSpacingTokens.x2l,
-                iconSize: AppSpacingTokens.lg,
-              ),
-              const SizedBox(height: AppSpacingTokens.xs),
-              Text(
-                label,
-                style: typography.bodySmStrong.copyWith(
-                  fontWeight: FontWeight.w700,
+        child: Semantics(
+          button: true,
+          label: actionLabel,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.xxs,
+              vertical: AppSpacingTokens.xxs,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RecordIconBadge(
+                  icon: action.icon,
+                  color: action.accent,
+                  backgroundColor: action.softColor,
+                  size: AppSpacingTokens.xl,
+                  iconSize: AppSpacingTokens.md,
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+                const SizedBox(height: AppSpacingTokens.xxs),
+                Text(
+                  displayLabel,
+                  style: typography.bodySmStrong.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ),
       ),

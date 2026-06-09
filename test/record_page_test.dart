@@ -75,58 +75,97 @@ void main() {
     expect(find.text('情绪平均'), findsNothing);
     expect(find.text('查看今日报告'), findsNothing);
     expect(
-      find.text(l10n.recordQuickActionLabel(l10n.recordTypeSleep)),
+      find.descendant(
+        of: find.byKey(const Key('record-quick-sleep')),
+        matching: find.text(l10n.recordTypeSleep),
+      ),
       findsOneWidget,
     );
     expect(find.text('情绪趋势'), findsNothing);
   });
 
-  testWidgets('Record page keeps period and vitals quick actions hidden in MVP', (
-    tester,
-  ) async {
+  testWidgets('Record mobile quick actions fit English labels', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
     addTearDown(() {
       tester.view.resetDevicePixelRatio();
       tester.view.resetPhysicalSize();
     });
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
 
-    await _pumpRecordPage(
-      tester,
-      healthContextSnapshot: _healthSnapshot(sexAtBirth: 'female'),
-    );
-    await tester.pumpAndSettle();
+    await _pumpRecordPage(tester, locale: const Locale('en'));
 
-    expect(find.text('记经期'), findsNothing);
-    expect(
-      find.text(l10n.recordQuickActionLabel(l10n.recordTypeVitals)),
-      findsNothing,
-    );
-    expect(
-      find.text(l10n.recordQuickActionLabel(l10n.recordTypeSleep)),
-      findsOneWidget,
-    );
-
-    await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
-    await _pumpRecordPage(
-      tester,
-      healthContextSnapshot: _healthSnapshot(sexAtBirth: 'male'),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('记经期'), findsNothing);
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('record-quick-medication')), findsOneWidget);
     expect(
-      find.text(l10n.recordQuickActionLabel(l10n.recordTypeVitals)),
-      findsNothing,
-    );
-    expect(
-      find.text(l10n.recordQuickActionLabel(l10n.recordTypeSleep)),
+      find.descendant(
+        of: find.byKey(const Key('record-quick-medication')),
+        matching: find.text(l10n.recordTypeMedication),
+      ),
       findsOneWidget,
+    );
+    expect(
+      find.text(l10n.recordQuickActionLabel(l10n.recordTypeMedication)),
+      findsNothing,
     );
   });
+
+  testWidgets(
+    'Record page keeps period and vitals quick actions hidden in MVP',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await _pumpRecordPage(
+        tester,
+        healthContextSnapshot: _healthSnapshot(sexAtBirth: 'female'),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('记经期'), findsNothing);
+      expect(
+        find.text(l10n.recordQuickActionLabel(l10n.recordTypeVitals)),
+        findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('record-quick-sleep')),
+          matching: find.text(l10n.recordTypeSleep),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+
+      await _pumpRecordPage(
+        tester,
+        healthContextSnapshot: _healthSnapshot(sexAtBirth: 'male'),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('记经期'), findsNothing);
+      expect(
+        find.text(l10n.recordQuickActionLabel(l10n.recordTypeVitals)),
+        findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('record-quick-sleep')),
+          matching: find.text(l10n.recordTypeSleep),
+        ),
+        findsOneWidget,
+      );
+    },
+  );
 
   testWidgets(
     'Record loading keeps static sections visible with skeleton slots',
@@ -860,6 +899,7 @@ Future<void> _pumpRecordPage(
   AuthSessionNotifier Function()? authSessionNotifier,
   HealthContextSnapshot? healthContextSnapshot,
   DateTime? selectedDate,
+  Locale locale = const Locale('zh'),
 }) async {
   final overrides = [
     recordRepositoryProvider.overrideWithValue(recordRepository),
@@ -881,7 +921,7 @@ Future<void> _pumpRecordPage(
       child: MaterialApp(
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
-        locale: const Locale('zh'),
+        locale: locale,
         localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
