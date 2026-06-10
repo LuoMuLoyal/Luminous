@@ -2,7 +2,7 @@
 
 Last updated: 2026-06-08
 
-This directory keeps current product, frontend, and workflow documentation for the Luminous Flutter client. Historical execution plans are not active docs.
+This directory keeps current product, frontend, and workflow documentation for the Luminous Flutter client. Historical execution plans are not active docs. If a complex task needs a live execution plan, put it under `../plans/` instead of `docs/`.
 
 ## Document Boundaries
 
@@ -35,3 +35,11 @@ Old plans, audits, and superseded design references should not stay in active do
 ```text
 D:\25080\Documents\VSCodeProject\Lumos\docs-archive
 ```
+
+Active repo-local plans, when needed, belong in:
+
+```text
+Luminous/plans/
+```
+
+After the task is complete, move stable facts into the owning docs and delete the plan file.
