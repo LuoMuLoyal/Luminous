@@ -23,8 +23,8 @@ This file records current implementation facts only. Product direction lives in 
 - API base: `/api/v1`.
 - Response envelope: `{ code, message, data }`.
 - Generated API contract: `Lucent/docs/openapi.json`.
-- Current generated client baseline after reminder date windows and delivery-log API: 39 paths / 109 schemas.
-- Implemented backend areas used by Luminous: auth/account, health context, medicine search/detail, current medicines, dose logs, medicine reminders, daily records with single-image attachment metadata, environment snapshot.
+- Current generated client baseline after mine/settings contracts: 44 paths / 118 schemas.
+- Implemented backend areas used by Luminous: auth/account, health context, medicine search/detail, current medicines, dose logs, medicine reminders, daily records with single-image attachment metadata, environment snapshot, user settings, support resources, app info, data export requests.
 
 ## Luminous Runtime Snapshot
 

@@ -10,16 +10,20 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 
 ## Completed
 
-- **Record form maintenance** (2026-06-10): aligned quick-action visibility with create capability, removed static mock timeline fallback from Lucent repository, promoted `note` to a first-class `RecordEntryType` with its own mapping/filter/timeline, locked down active create kinds (water, meal, symptom, note), and added regression tests. All 162 tests pass; `flutter analyze` clean.
+- **Record form maintenance** (2026-06-10): aligned quick-action visibility with create capability, removed static mock timeline fallback from Lucent repository, promoted `note` to a first-class `RecordEntryType` with its own mapping/filter/timeline, locked down active create kinds (water, meal, symptom, note), and added regression tests. All 165 tests pass; `flutter analyze` clean.
 
 ## Immediate Work Order
 
-1. **Report data contract**
+1. **Mine and Settings contracts**
+   - Active plan: `../plans/2026-06-10-mine-settings-contracts.md`.
+   - Wire campus services, privacy permissions, reminder preferences, data export, help, and about only after backend/source contracts exist.
+   - Keep account, health archive, notification permission, local reminder scheduling, theme, and language flows on their current proven paths unless the plan explicitly changes them.
+
+## Paused By User
+
+- **Report data contract**
    - Keep current Report visuals mock/static until Lucent exposes report/insight/export contracts.
    - Complex charts remain placeholders until the data shape is stable.
-
-2. **Mine and Settings contracts**
-   - Wire campus services, privacy permissions, reminder preferences, data export, help, and about only after backend/source contracts exist.
 
 ## Deferred But Useful
 
