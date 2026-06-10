@@ -106,6 +106,7 @@ Class | Method | HTTP request | Description
 [*MedicineRemindersApi*](doc/MedicineRemindersApi.md) | [**medicineRemindersControllerUpdateV1**](doc/MedicineRemindersApi.md#medicinereminderscontrollerupdatev1) | **PATCH** /api/v1/me/medicine-reminders/{id} | Update a medicine reminder schedule
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
+[*ReminderDeliveriesApi*](doc/ReminderDeliveriesApi.md) | [**reminderDeliveriesControllerListV1**](doc/ReminderDeliveriesApi.md#reminderdeliveriescontrollerlistv1) | **GET** /api/v1/me/reminder-deliveries | List reminder delivery audit logs
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/me/health-context/allergies | Create an allergy record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateConditionV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateconditionv1) | **POST** /api/v1/me/health-context/conditions | Create a condition record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateCurrentMedicineV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreatecurrentmedicinev1) | **POST** /api/v1/me/health-context/current-medicines | Add a current medicine record
@@ -197,6 +198,9 @@ Class | Method | HTTP request | Description
  - [RegisterDataDto](doc/RegisterDataDto.md)
  - [RegisterDto](doc/RegisterDto.md)
  - [RegisterResponseDto](doc/RegisterResponseDto.md)
+ - [ReminderDeliveryItemDto](doc/ReminderDeliveryItemDto.md)
+ - [ReminderDeliveryListDataDto](doc/ReminderDeliveryListDataDto.md)
+ - [ReminderDeliveryListResponseDto](doc/ReminderDeliveryListResponseDto.md)
  - [ResetPasswordDto](doc/ResetPasswordDto.md)
  - [SendVerificationCodeDto](doc/SendVerificationCodeDto.md)
  - [SendVerificationCodeResponseDto](doc/SendVerificationCodeResponseDto.md)

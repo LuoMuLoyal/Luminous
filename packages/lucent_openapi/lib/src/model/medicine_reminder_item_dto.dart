@@ -28,6 +28,10 @@ class MedicineReminderItemDto {
 
     this.daysOfWeek,
 
+    this.startDate,
+
+    this.endDate,
+
     required this.isActive,
 
     this.note,
@@ -61,6 +65,14 @@ class MedicineReminderItemDto {
   @JsonKey(name: r'daysOfWeek', required: false, includeIfNull: false)
   final List<num>? daysOfWeek;
 
+  /// Date in YYYY-MM-DD format when the reminder starts.
+  @JsonKey(name: r'startDate', required: false, includeIfNull: false)
+  final Object? startDate;
+
+  /// Date in YYYY-MM-DD format when the reminder ends.
+  @JsonKey(name: r'endDate', required: false, includeIfNull: false)
+  final Object? endDate;
+
   /// Whether this reminder is active.
   @JsonKey(name: r'isActive', required: true, includeIfNull: false)
   final bool isActive;
@@ -87,6 +99,8 @@ class MedicineReminderItemDto {
           other.scheduledHour == scheduledHour &&
           other.scheduledMinute == scheduledMinute &&
           other.daysOfWeek == daysOfWeek &&
+          other.startDate == startDate &&
+          other.endDate == endDate &&
           other.isActive == isActive &&
           other.note == note &&
           other.createdAt == createdAt &&
@@ -100,6 +114,8 @@ class MedicineReminderItemDto {
       scheduledHour.hashCode +
       scheduledMinute.hashCode +
       (daysOfWeek == null ? 0 : daysOfWeek.hashCode) +
+      (startDate == null ? 0 : startDate.hashCode) +
+      (endDate == null ? 0 : endDate.hashCode) +
       isActive.hashCode +
       note.hashCode +
       createdAt.hashCode +

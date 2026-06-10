@@ -736,6 +736,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineReminderDoseLabel => '每次剂量';
 
   @override
+  String get medicineReminderStartDateLabel => '开始日期';
+
+  @override
+  String get medicineReminderEndDateLabel => '结束日期';
+
+  @override
+  String get medicineReminderDateNotSet => '未设置';
+
+  @override
+  String get medicineReminderClearDateAction => '清除日期';
+
+  @override
   String get medicineReminderMethodLabel => '提醒方式';
 
   @override
@@ -746,6 +758,33 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineReminderDeviceLocalHint => '仅保存提醒计划，系统通知由本机设置控制';
+
+  @override
+  String get medicineReminderSmsLabel => '短信提醒';
+
+  @override
+  String get medicineReminderSmsOff => '短信未开通';
+
+  @override
+  String get medicineReminderSmsUnavailableHint => '短信通道暂未开通';
+
+  @override
+  String get medicineReminderUnavailableStatus => '未开通';
+
+  @override
+  String get medicineReminderSoundLabel => '声音提醒';
+
+  @override
+  String get medicineReminderSoundLocalHint => '本机提醒使用的声音偏好';
+
+  @override
+  String get medicineReminderSoundDefault => '默认铃声';
+
+  @override
+  String get medicineReminderSoundGentle => '轻柔铃声';
+
+  @override
+  String get medicineReminderSoundSilent => '静音';
 
   @override
   String get medicineReminderNoteLabel => '备注';
@@ -775,6 +814,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineReminderNoTodayLogs => '今天还没有用药打卡';
 
   @override
+  String get medicineReminderDeliveryLogsTitle => '提醒投递历史';
+
+  @override
+  String get medicineReminderNoDeliveryLogs => '暂无提醒投递记录';
+
+  @override
+  String get medicineReminderDeliveryChannelLocal => '本机通知';
+
+  @override
+  String get medicineReminderDeliveryChannelPush => '推送通知';
+
+  @override
+  String get medicineReminderDeliveryChannelEmail => '邮件';
+
+  @override
+  String get medicineReminderDeliveryChannelSms => '短信';
+
+  @override
+  String get medicineReminderDeliveryStatusScheduled => '待投递';
+
+  @override
+  String get medicineReminderDeliveryStatusDelivered => '已投递';
+
+  @override
+  String get medicineReminderDeliveryStatusFailed => '投递失败';
+
+  @override
   String get medicineReminderMissedStatus => '已错过';
 
   @override
@@ -791,6 +857,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineReminderWeekdayRequiredToast => '请选择提醒日期';
+
+  @override
+  String get medicineReminderDateRangeInvalidToast => '结束日期不能早于开始日期';
 
   @override
   String get medicineReminderDeleteAction => '删除此提醒';

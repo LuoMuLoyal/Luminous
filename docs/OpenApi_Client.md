@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-09
+Last updated: 2026-06-10
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 
@@ -14,15 +14,16 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 38 paths / 106 schemas.
-- Generated package includes auth/account, health context, daily records, medicine search/detail, current medicines, dose logs, environment snapshot, and schedule-only medicine reminders.
+- Last known Lucent export: 39 paths / 109 schemas.
+- Generated package includes auth/account, health context, daily records, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, and read-only reminder delivery history.
 
 ## Usage Rules
 
 - Business and presentation code use `LucentDioClient` or feature repositories, not generated internals directly.
 - Generated DTOs stay in data-layer response mapping.
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps instead of generated write DTOs.
-- Medicine reminder create/update writes use a local write input plus raw Dio JSON so `daysOfWeek: null` is sent for every-day schedules; generated reminder DTOs remain the read-side mapper.
+- Medicine reminder create/update writes use a local write input plus raw Dio JSON so `daysOfWeek: null`, `startDate`, and `endDate` are sent with the intended nullable behavior; generated reminder DTOs remain the read-side mapper.
+- Reminder delivery history is read through the feature data source and maps generated/raw response fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain code should still depend on the feature repository boundary.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.
 - `401002` triggers refresh and retry.

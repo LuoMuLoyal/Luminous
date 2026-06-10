@@ -18,6 +18,8 @@ UpdateMedicineReminderDto _$UpdateMedicineReminderDtoFromJson(
       'daysOfWeek',
       (v) => (v as List<dynamic>?)?.map((e) => e as num).toList(),
     ),
+    startDate: $checkedConvert('startDate', (v) => v),
+    endDate: $checkedConvert('endDate', (v) => v),
     isActive: $checkedConvert('isActive', (v) => v as bool?),
     note: $checkedConvert('note', (v) => v),
   );
@@ -34,6 +36,8 @@ Map<String, dynamic> _$UpdateMedicineReminderDtoToJson(
   if (instance.scheduledMinute != null)
     'scheduledMinute': instance.scheduledMinute,
   if (instance.daysOfWeek != null) 'daysOfWeek': instance.daysOfWeek,
+  if (instance.startDate != null) 'startDate': instance.startDate,
+  if (instance.endDate != null) 'endDate': instance.endDate,
   if (instance.isActive != null) 'isActive': instance.isActive,
   if (instance.note != null) 'note': instance.note,
 };

@@ -86,6 +86,10 @@ doc/RefreshResponseDto.md
 doc/RegisterDataDto.md
 doc/RegisterDto.md
 doc/RegisterResponseDto.md
+doc/ReminderDeliveriesApi.md
+doc/ReminderDeliveryItemDto.md
+doc/ReminderDeliveryListDataDto.md
+doc/ReminderDeliveryListResponseDto.md
 doc/ResetPasswordDto.md
 doc/SendVerificationCodeDto.md
 doc/SendVerificationCodeResponseDto.md
@@ -128,6 +132,7 @@ lib/src/api/environment_api.dart
 lib/src/api/medicine_dose_logs_api.dart
 lib/src/api/medicine_reminders_api.dart
 lib/src/api/medicines_api.dart
+lib/src/api/reminder_deliveries_api.dart
 lib/src/api/user_health_context_api.dart
 lib/src/auth/api_key_auth.dart
 lib/src/auth/auth.dart
@@ -211,6 +216,9 @@ lib/src/model/refresh_response_dto.dart
 lib/src/model/register_data_dto.dart
 lib/src/model/register_dto.dart
 lib/src/model/register_response_dto.dart
+lib/src/model/reminder_delivery_item_dto.dart
+lib/src/model/reminder_delivery_list_data_dto.dart
+lib/src/model/reminder_delivery_list_response_dto.dart
 lib/src/model/reset_password_dto.dart
 lib/src/model/send_verification_code_dto.dart
 lib/src/model/send_verification_code_response_dto.dart
@@ -243,3 +251,7 @@ lib/src/model/verify_email_data_dto.dart
 lib/src/model/verify_email_dto.dart
 lib/src/model/verify_email_response_dto.dart
 pubspec.yaml
+test/reminder_deliveries_api_test.dart
+test/reminder_delivery_item_dto_test.dart
+test/reminder_delivery_list_data_dto_test.dart
+test/reminder_delivery_list_response_dto_test.dart

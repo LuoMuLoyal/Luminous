@@ -1514,6 +1514,30 @@ abstract class AppLocalizations {
   /// **'每次剂量'**
   String get medicineReminderDoseLabel;
 
+  /// No description provided for @medicineReminderStartDateLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始日期'**
+  String get medicineReminderStartDateLabel;
+
+  /// No description provided for @medicineReminderEndDateLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'结束日期'**
+  String get medicineReminderEndDateLabel;
+
+  /// No description provided for @medicineReminderDateNotSet.
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置'**
+  String get medicineReminderDateNotSet;
+
+  /// No description provided for @medicineReminderClearDateAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除日期'**
+  String get medicineReminderClearDateAction;
+
   /// No description provided for @medicineReminderMethodLabel.
   ///
   /// In zh, this message translates to:
@@ -1537,6 +1561,60 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'仅保存提醒计划，系统通知由本机设置控制'**
   String get medicineReminderDeviceLocalHint;
+
+  /// No description provided for @medicineReminderSmsLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'短信提醒'**
+  String get medicineReminderSmsLabel;
+
+  /// No description provided for @medicineReminderSmsOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'短信未开通'**
+  String get medicineReminderSmsOff;
+
+  /// No description provided for @medicineReminderSmsUnavailableHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'短信通道暂未开通'**
+  String get medicineReminderSmsUnavailableHint;
+
+  /// No description provided for @medicineReminderUnavailableStatus.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开通'**
+  String get medicineReminderUnavailableStatus;
+
+  /// No description provided for @medicineReminderSoundLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'声音提醒'**
+  String get medicineReminderSoundLabel;
+
+  /// No description provided for @medicineReminderSoundLocalHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'本机提醒使用的声音偏好'**
+  String get medicineReminderSoundLocalHint;
+
+  /// No description provided for @medicineReminderSoundDefault.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认铃声'**
+  String get medicineReminderSoundDefault;
+
+  /// No description provided for @medicineReminderSoundGentle.
+  ///
+  /// In zh, this message translates to:
+  /// **'轻柔铃声'**
+  String get medicineReminderSoundGentle;
+
+  /// No description provided for @medicineReminderSoundSilent.
+  ///
+  /// In zh, this message translates to:
+  /// **'静音'**
+  String get medicineReminderSoundSilent;
 
   /// No description provided for @medicineReminderNoteLabel.
   ///
@@ -1592,6 +1670,60 @@ abstract class AppLocalizations {
   /// **'今天还没有用药打卡'**
   String get medicineReminderNoTodayLogs;
 
+  /// No description provided for @medicineReminderDeliveryLogsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒投递历史'**
+  String get medicineReminderDeliveryLogsTitle;
+
+  /// No description provided for @medicineReminderNoDeliveryLogs.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无提醒投递记录'**
+  String get medicineReminderNoDeliveryLogs;
+
+  /// No description provided for @medicineReminderDeliveryChannelLocal.
+  ///
+  /// In zh, this message translates to:
+  /// **'本机通知'**
+  String get medicineReminderDeliveryChannelLocal;
+
+  /// No description provided for @medicineReminderDeliveryChannelPush.
+  ///
+  /// In zh, this message translates to:
+  /// **'推送通知'**
+  String get medicineReminderDeliveryChannelPush;
+
+  /// No description provided for @medicineReminderDeliveryChannelEmail.
+  ///
+  /// In zh, this message translates to:
+  /// **'邮件'**
+  String get medicineReminderDeliveryChannelEmail;
+
+  /// No description provided for @medicineReminderDeliveryChannelSms.
+  ///
+  /// In zh, this message translates to:
+  /// **'短信'**
+  String get medicineReminderDeliveryChannelSms;
+
+  /// No description provided for @medicineReminderDeliveryStatusScheduled.
+  ///
+  /// In zh, this message translates to:
+  /// **'待投递'**
+  String get medicineReminderDeliveryStatusScheduled;
+
+  /// No description provided for @medicineReminderDeliveryStatusDelivered.
+  ///
+  /// In zh, this message translates to:
+  /// **'已投递'**
+  String get medicineReminderDeliveryStatusDelivered;
+
+  /// No description provided for @medicineReminderDeliveryStatusFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'投递失败'**
+  String get medicineReminderDeliveryStatusFailed;
+
   /// No description provided for @medicineReminderMissedStatus.
   ///
   /// In zh, this message translates to:
@@ -1627,6 +1759,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'请选择提醒日期'**
   String get medicineReminderWeekdayRequiredToast;
+
+  /// No description provided for @medicineReminderDateRangeInvalidToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'结束日期不能早于开始日期'**
+  String get medicineReminderDateRangeInvalidToast;
 
   /// No description provided for @medicineReminderDeleteAction.
   ///

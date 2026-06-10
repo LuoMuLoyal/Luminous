@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-06-09
+Last updated: 2026-06-10
 
 This file records the localization workflow and ownership rules. It is not a catalog of every current string.
 
@@ -26,6 +26,7 @@ Persisted preference keys:
 
 - Do not hardcode user-visible text in pages or widgets.
 - Add visible text to both ARB files.
+- Reminder UI strings for date windows, local sound preference, SMS unavailable state, and delivery history are owned by the Medicine feature ARB entries.
 - Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.
 - Remove l10n keys when the active UI that owns them is deleted.

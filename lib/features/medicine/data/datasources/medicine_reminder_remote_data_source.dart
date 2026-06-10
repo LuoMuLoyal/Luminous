@@ -8,6 +8,8 @@ class MedicineReminderWriteInput {
     required this.scheduledHour,
     required this.scheduledMinute,
     this.daysOfWeek,
+    this.startDate,
+    this.endDate,
     this.isActive = true,
     this.note,
   });
@@ -17,6 +19,8 @@ class MedicineReminderWriteInput {
   final int scheduledHour;
   final int scheduledMinute;
   final List<int>? daysOfWeek;
+  final String? startDate;
+  final String? endDate;
   final bool isActive;
   final String? note;
 
@@ -27,6 +31,8 @@ class MedicineReminderWriteInput {
       'scheduledHour': scheduledHour,
       'scheduledMinute': scheduledMinute,
       'daysOfWeek': daysOfWeek,
+      'startDate': startDate,
+      'endDate': endDate,
       'isActive': isActive,
       'note': note,
     };
@@ -41,6 +47,8 @@ class MedicineReminderItem {
     required this.scheduledHour,
     required this.scheduledMinute,
     this.daysOfWeek,
+    this.startDate,
+    this.endDate,
     required this.isActive,
     this.note,
     required this.createdAt,
@@ -53,6 +61,8 @@ class MedicineReminderItem {
   final int scheduledHour;
   final int scheduledMinute;
   final List<int>? daysOfWeek;
+  final String? startDate;
+  final String? endDate;
   final bool isActive;
   final String? note;
   final String createdAt;
@@ -65,11 +75,41 @@ class MedicineReminderItem {
   }
 
   bool matchesDate(DateTime date) {
+    final currentDate = _dateOnly(date);
+    final start = _parseDateOnly(startDate);
+    if (start != null && currentDate.isBefore(start)) return false;
+    final end = _parseDateOnly(endDate);
+    if (end != null && currentDate.isAfter(end)) return false;
+
     final days = daysOfWeek;
     if (days == null) return true;
     final weekday = date.weekday % 7;
     return days.contains(weekday);
   }
+}
+
+class ReminderDeliveryItem {
+  const ReminderDeliveryItem({
+    required this.id,
+    this.reminderId,
+    this.deviceId,
+    required this.channel,
+    required this.status,
+    required this.scheduledFor,
+    this.deliveredAt,
+    this.errorMessage,
+    required this.createdAt,
+  });
+
+  final String id;
+  final String? reminderId;
+  final String? deviceId;
+  final String channel;
+  final String status;
+  final String scheduledFor;
+  final String? deliveredAt;
+  final String? errorMessage;
+  final String createdAt;
 }
 
 class MedicineReminderRemoteDataSource {
@@ -83,11 +123,29 @@ class MedicineReminderRemoteDataSource {
   Future<List<MedicineReminderItem>> fetchAll() => _fetch(activeOnly: false);
 
   Future<List<MedicineReminderItem>> _fetch({required bool activeOnly}) async {
-    final response = await api.medicineRemindersControllerListV1(
-      activeOnly: activeOnly ? 'true' : null,
+    final response = await dio.request<Object>(
+      '/api/v1/me/medicine-reminders',
+      queryParameters: <String, Object?>{if (activeOnly) 'activeOnly': 'true'},
+      options: Options(method: 'GET'),
     );
-    return response.data?.data.items.map(_fromDto).toList(growable: false) ??
-        const <MedicineReminderItem>[];
+    return _responseItems(response.data).map(_fromJson).toList(growable: false);
+  }
+
+  Future<List<ReminderDeliveryItem>> fetchDeliveries({
+    String? date,
+    int limit = 20,
+  }) async {
+    final response = await dio.request<Object>(
+      '/api/v1/me/reminder-deliveries',
+      queryParameters: <String, Object?>{
+        if (date != null) 'date': date,
+        'limit': limit,
+      },
+      options: Options(method: 'GET'),
+    );
+    return _responseItems(
+      response.data,
+    ).map(_deliveryFromJson).toList(growable: false);
   }
 
   Future<MedicineReminderItem> create(MedicineReminderWriteInput input) async {
@@ -118,23 +176,6 @@ class MedicineReminderRemoteDataSource {
     );
   }
 
-  MedicineReminderItem _fromDto(MedicineReminderItemDto dto) {
-    return MedicineReminderItem(
-      id: dto.id,
-      currentMedicineId: _optionalString(dto.currentMedicineId),
-      label: _optionalString(dto.label),
-      scheduledHour: dto.scheduledHour.toInt(),
-      scheduledMinute: dto.scheduledMinute.toInt(),
-      daysOfWeek: dto.daysOfWeek
-          ?.map((day) => day.toInt())
-          .toList(growable: false),
-      isActive: dto.isActive,
-      note: _optionalString(dto.note),
-      createdAt: dto.createdAt,
-      updatedAt: dto.updatedAt,
-    );
-  }
-
   MedicineReminderItem _fromJson(Map<String, dynamic> json) {
     return MedicineReminderItem(
       id: json['id'] as String,
@@ -145,11 +186,44 @@ class MedicineReminderRemoteDataSource {
       daysOfWeek: (json['daysOfWeek'] as List?)
           ?.map((day) => (day as num).toInt())
           .toList(growable: false),
+      startDate: _optionalString(json['startDate']),
+      endDate: _optionalString(json['endDate']),
       isActive: json['isActive'] as bool,
       note: _optionalString(json['note']),
       createdAt: json['createdAt'] as String,
       updatedAt: json['updatedAt'] as String,
     );
+  }
+
+  ReminderDeliveryItem _deliveryFromJson(Map<String, dynamic> json) {
+    return ReminderDeliveryItem(
+      id: json['id'] as String,
+      reminderId: _optionalString(json['reminderId']),
+      deviceId: _optionalString(json['deviceId']),
+      channel: json['channel'] as String,
+      status: json['status'] as String,
+      scheduledFor: json['scheduledFor'] as String,
+      deliveredAt: _optionalString(json['deliveredAt']),
+      errorMessage: _optionalString(json['errorMessage']),
+      createdAt: json['createdAt'] as String,
+    );
+  }
+
+  List<Map<String, dynamic>> _responseItems(Object? value) {
+    final data = _responseData(value);
+    final items = data['items'];
+    if (items is List) {
+      return items
+          .map((item) {
+            if (item is Map<String, dynamic>) return item;
+            if (item is Map) {
+              return item.map((key, val) => MapEntry('$key', val));
+            }
+            throw StateError('Unexpected medicine reminder item body.');
+          })
+          .toList(growable: false);
+    }
+    throw StateError('Unexpected medicine reminder list body.');
   }
 
   Map<String, dynamic> _responseData(Object? value) {
@@ -170,4 +244,15 @@ class MedicineReminderRemoteDataSource {
     final text = value?.toString().trim();
     return text == null || text.isEmpty ? null : text;
   }
+}
+
+DateTime _dateOnly(DateTime value) {
+  return DateTime(value.year, value.month, value.day);
+}
+
+DateTime? _parseDateOnly(String? value) {
+  if (value == null || value.isEmpty) return null;
+  final parsed = DateTime.tryParse(value);
+  if (parsed == null) return null;
+  return _dateOnly(parsed);
 }

@@ -1,6 +1,6 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-09
+Last updated: 2026-06-10
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
@@ -12,8 +12,8 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 
 1. **Local notification scheduling**
    - Schedule/cancel local notifications only after reminder schedule data is wired through a tested coordinator.
-   - Keep Lucent schedule-only reminder create/edit/delete UI, active current-medicine filtering, same-day dose-log update/create behavior, Today pending counts, and completed-dose UI under regression.
-   - Keep FCM/APNs, push tokens, backend delivery workers, and delivery logs out of scope.
+   - Keep Lucent schedule-only reminder create/edit/delete UI, start/end date filtering, local sound preference, SMS unavailable state, read-only delivery-history display, active current-medicine filtering, same-day dose-log update/create behavior, Today pending counts, and completed-dose UI under regression.
+   - Keep FCM/APNs, push tokens, backend delivery workers, and worker-populated delivery history out of scope.
 
 2. **Record form maintenance**
    - Keep selected-date reload, filter mapping, quick-action routing, attachment handling, detail cache invalidation, and timeline time display under regression.
@@ -48,6 +48,8 @@ Pregnancy/lactation/special-group medication safety remains active only inside M
 - Skin recognition or report photo import.
 - OCR/barcode/photo/prescription recognition UI or contracts.
 - Real push delivery through FCM/APNs.
+- Real SMS delivery.
+- Backend reminder delivery workers.
 - Paid or credentialed external services without explicit approval.
 - Environment frontend wiring until the target Today/Mine job is explicit.
 

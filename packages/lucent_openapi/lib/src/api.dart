@@ -15,6 +15,7 @@ import 'package:lucent_openapi/src/api/environment_api.dart';
 import 'package:lucent_openapi/src/api/medicine_dose_logs_api.dart';
 import 'package:lucent_openapi/src/api/medicine_reminders_api.dart';
 import 'package:lucent_openapi/src/api/medicines_api.dart';
+import 'package:lucent_openapi/src/api/reminder_deliveries_api.dart';
 import 'package:lucent_openapi/src/api/user_health_context_api.dart';
 
 class LucentOpenapi {
@@ -154,6 +155,12 @@ class LucentOpenapi {
   /// by doing that all interceptors will not be executed
   MedicinesApi getMedicinesApi() {
     return MedicinesApi(dio);
+  }
+
+  /// Get ReminderDeliveriesApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  ReminderDeliveriesApi getReminderDeliveriesApi() {
+    return ReminderDeliveriesApi(dio);
   }
 
   /// Get UserHealthContextApi instance, base route and serializer can be overridden by a given but be careful,

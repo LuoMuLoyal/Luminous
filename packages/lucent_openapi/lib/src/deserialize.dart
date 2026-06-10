@@ -65,6 +65,9 @@ import 'package:lucent_openapi/src/model/refresh_response_dto.dart';
 import 'package:lucent_openapi/src/model/register_data_dto.dart';
 import 'package:lucent_openapi/src/model/register_dto.dart';
 import 'package:lucent_openapi/src/model/register_response_dto.dart';
+import 'package:lucent_openapi/src/model/reminder_delivery_item_dto.dart';
+import 'package:lucent_openapi/src/model/reminder_delivery_list_data_dto.dart';
+import 'package:lucent_openapi/src/model/reminder_delivery_list_response_dto.dart';
 import 'package:lucent_openapi/src/model/reset_password_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_response_dto.dart';
@@ -270,6 +273,12 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return RegisterDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'RegisterResponseDto':
           return RegisterResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReminderDeliveryItemDto':
+          return ReminderDeliveryItemDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReminderDeliveryListDataDto':
+          return ReminderDeliveryListDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReminderDeliveryListResponseDto':
+          return ReminderDeliveryListResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ResetPasswordDto':
           return ResetPasswordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'SendVerificationCodeDto':

@@ -781,6 +781,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineReminderDoseLabel => 'Dose';
 
   @override
+  String get medicineReminderStartDateLabel => 'Start date';
+
+  @override
+  String get medicineReminderEndDateLabel => 'End date';
+
+  @override
+  String get medicineReminderDateNotSet => 'Not set';
+
+  @override
+  String get medicineReminderClearDateAction => 'Clear date';
+
+  @override
   String get medicineReminderMethodLabel => 'Reminder method';
 
   @override
@@ -792,6 +804,35 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get medicineReminderDeviceLocalHint =>
       'Only the schedule is saved; system notifications are controlled on this device.';
+
+  @override
+  String get medicineReminderSmsLabel => 'SMS reminder';
+
+  @override
+  String get medicineReminderSmsOff => 'SMS unavailable';
+
+  @override
+  String get medicineReminderSmsUnavailableHint =>
+      'SMS delivery is not open yet.';
+
+  @override
+  String get medicineReminderUnavailableStatus => 'Unavailable';
+
+  @override
+  String get medicineReminderSoundLabel => 'Sound reminder';
+
+  @override
+  String get medicineReminderSoundLocalHint =>
+      'Sound preference used for local reminders.';
+
+  @override
+  String get medicineReminderSoundDefault => 'Default tone';
+
+  @override
+  String get medicineReminderSoundGentle => 'Gentle tone';
+
+  @override
+  String get medicineReminderSoundSilent => 'Silent';
 
   @override
   String get medicineReminderNoteLabel => 'Note';
@@ -821,6 +862,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineReminderNoTodayLogs => 'No dose logs yet today';
 
   @override
+  String get medicineReminderDeliveryLogsTitle => 'Reminder delivery history';
+
+  @override
+  String get medicineReminderNoDeliveryLogs =>
+      'No reminder delivery records yet';
+
+  @override
+  String get medicineReminderDeliveryChannelLocal => 'Local notification';
+
+  @override
+  String get medicineReminderDeliveryChannelPush => 'Push notification';
+
+  @override
+  String get medicineReminderDeliveryChannelEmail => 'Email';
+
+  @override
+  String get medicineReminderDeliveryChannelSms => 'SMS';
+
+  @override
+  String get medicineReminderDeliveryStatusScheduled => 'Pending';
+
+  @override
+  String get medicineReminderDeliveryStatusDelivered => 'Delivered';
+
+  @override
+  String get medicineReminderDeliveryStatusFailed => 'Failed';
+
+  @override
   String get medicineReminderMissedStatus => 'Missed';
 
   @override
@@ -837,6 +906,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineReminderWeekdayRequiredToast => 'Choose reminder days.';
+
+  @override
+  String get medicineReminderDateRangeInvalidToast =>
+      'End date cannot be before start date.';
 
   @override
   String get medicineReminderDeleteAction => 'Delete this reminder';

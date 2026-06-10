@@ -1,6 +1,6 @@
 # Luminous Migration Log
 
-Last updated: 2026-06-09
+Last updated: 2026-06-10
 
 Records changes after the full reset only. Detailed entries are split by date under `docs/migration-log/`.
 
@@ -19,6 +19,7 @@ D:\25080\Documents\VSCodeProject\Lumos\docs-archive\2026-06-06-doc-cleanup
 
 ## Entries
 
+- [2026-06-10](migration-log/2026-06-10.md)
 - [2026-06-09](migration-log/2026-06-09.md)
 - [2026-06-08](migration-log/2026-06-08.md)
 - [2026-06-07](migration-log/2026-06-07.md)

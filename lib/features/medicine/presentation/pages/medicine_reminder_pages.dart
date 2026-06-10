@@ -103,6 +103,8 @@ class _MedicineReminderEditPageState
 
   _ReminderFrequency _frequency = _ReminderFrequency.daily;
   String? _selectedMedicineId;
+  DateTime? _startDate;
+  DateTime? _endDate;
   bool _isActive = true;
   bool _prefilled = false;
 
@@ -119,6 +121,9 @@ class _MedicineReminderEditPageState
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
     final formState = ref.watch(medicineReminderFormProvider);
+    final soundPreference =
+        ref.watch(medicineReminderSoundProvider).asData?.value ??
+        MedicineReminderSoundPreference.defaultTone;
 
     ref.listen<MedicineReminderFormState>(medicineReminderFormProvider, (
       previous,
@@ -208,7 +213,10 @@ class _MedicineReminderEditPageState
                 frequency: _frequency,
                 selectedWeekdays: _selectedWeekdays,
                 times: _times,
+                startDate: _startDate,
+                endDate: _endDate,
                 isActive: _isActive,
+                soundPreference: soundPreference,
                 noteController: _noteController,
                 isSaving: formState.isSaving,
                 isEdit: _isEdit,
@@ -247,7 +255,15 @@ class _MedicineReminderEditPageState
                     _times.removeAt(index);
                   }
                 }),
+                onStartDateTap: _pickStartDate,
+                onEndDateTap: _pickEndDate,
+                onClearEndDate: _endDate == null
+                    ? null
+                    : () => setState(() => _endDate = null),
                 onActiveChanged: (value) => setState(() => _isActive = value),
+                onSoundChanged: (value) => ref
+                    .read(medicineReminderSoundProvider.notifier)
+                    .setSound(value),
                 onSave: () => _onSave(snapshotData, reminderItems),
                 onDelete: _isEdit ? () => _confirmDelete(reminderItems) : null,
               );
@@ -288,6 +304,8 @@ class _MedicineReminderEditPageState
   void _applyReminderState(List<MedicineReminderItem> existing) {
     if (existing.isNotEmpty) {
       _isActive = existing.any((item) => item.isActive);
+      _startDate = _parseDateOnly(existing.first.startDate);
+      _endDate = _parseDateOnly(existing.first.endDate);
       _noteController.text = existing.first.note ?? '';
       _times
         ..clear()
@@ -313,6 +331,8 @@ class _MedicineReminderEditPageState
       }
     } else {
       _isActive = true;
+      _startDate = _dateOnly(DateTime.now());
+      _endDate = null;
       _frequency = _ReminderFrequency.daily;
       _selectedWeekdays.clear();
       _times
@@ -322,6 +342,37 @@ class _MedicineReminderEditPageState
           MedicineReminderTimeInput(hour: 20, minute: 0),
         ]);
     }
+  }
+
+  Future<void> _pickStartDate() async {
+    final now = _dateOnly(DateTime.now());
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _startDate ?? now,
+      firstDate: DateTime(now.year - 5),
+      lastDate: DateTime(now.year + 10, 12, 31),
+    );
+    if (picked == null) return;
+    final next = _dateOnly(picked);
+    setState(() {
+      _startDate = next;
+      if (_endDate != null && _endDate!.isBefore(next)) {
+        _endDate = null;
+      }
+    });
+  }
+
+  Future<void> _pickEndDate() async {
+    final now = _dateOnly(DateTime.now());
+    final firstDate = _startDate ?? DateTime(now.year - 5);
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _endDate ?? _startDate ?? now,
+      firstDate: firstDate,
+      lastDate: DateTime(now.year + 10, 12, 31),
+    );
+    if (picked == null) return;
+    setState(() => _endDate = _dateOnly(picked));
   }
 
   Future<void> _addTime() async {
@@ -374,6 +425,12 @@ class _MedicineReminderEditPageState
       AppToast.show(context, l10n.medicineReminderWeekdayRequiredToast);
       return;
     }
+    if (_startDate != null &&
+        _endDate != null &&
+        _endDate!.isBefore(_startDate!)) {
+      AppToast.show(context, l10n.medicineReminderDateRangeInvalidToast);
+      return;
+    }
 
     ref
         .read(medicineReminderFormProvider.notifier)
@@ -384,6 +441,8 @@ class _MedicineReminderEditPageState
             label: medicine.displayName,
             times: _times,
             daysOfWeek: daysOfWeek,
+            startDate: _formatDateInput(_startDate),
+            endDate: _formatDateInput(_endDate),
             isActive: _isActive,
             note: _trimmedOrNull(_noteController.text),
           ),
@@ -417,6 +476,15 @@ class _ReminderDetailBody extends ConsumerWidget {
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
     final reminders = [...data.reminders]..sort(_compareReminderTime);
     final isActive = reminders.any((item) => item.isActive);
+    final firstReminder = reminders.firstOrNull;
+    final soundPreference =
+        ref.watch(medicineReminderSoundProvider).asData?.value ??
+        MedicineReminderSoundPreference.defaultTone;
+    final methodValue =
+        '${isActive ? l10n.medicineReminderNotificationOn : l10n.medicineReminderNotificationOff} · ${l10n.medicineReminderSmsOff} · ${_soundPreferenceLabel(l10n, soundPreference)}';
+    final hasNote = data.reminders.any(
+      (item) => (item.note ?? '').trim().isNotEmpty,
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md),
@@ -509,20 +577,33 @@ class _ReminderDetailBody extends ConsumerWidget {
                   showDivider: true,
                 ),
                 _ReminderInfoRow(
-                  icon: Icons.notifications_none_rounded,
-                  label: l10n.medicineReminderMethodLabel,
-                  value: isActive
-                      ? l10n.medicineReminderNotificationOn
-                      : l10n.medicineReminderNotificationOff,
+                  icon: Icons.calendar_today_rounded,
+                  label: l10n.medicineReminderStartDateLabel,
+                  value:
+                      firstReminder?.startDate ??
+                      l10n.medicineReminderDateNotSet,
                   typography: typography,
                   surface: surface,
-                  showDivider: data.reminders.any(
-                    (item) => (item.note ?? '').trim().isNotEmpty,
-                  ),
+                  showDivider: true,
                 ),
-                if (data.reminders.any(
-                  (item) => (item.note ?? '').trim().isNotEmpty,
-                ))
+                _ReminderInfoRow(
+                  icon: Icons.event_busy_rounded,
+                  label: l10n.medicineReminderEndDateLabel,
+                  value:
+                      firstReminder?.endDate ?? l10n.medicineReminderDateNotSet,
+                  typography: typography,
+                  surface: surface,
+                  showDivider: true,
+                ),
+                _ReminderInfoRow(
+                  icon: Icons.notifications_none_rounded,
+                  label: l10n.medicineReminderMethodLabel,
+                  value: methodValue,
+                  typography: typography,
+                  surface: surface,
+                  showDivider: hasNote,
+                ),
+                if (hasNote)
                   _ReminderInfoRow(
                     icon: Icons.notes_rounded,
                     label: l10n.medicineReminderNoteLabel,
@@ -540,6 +621,12 @@ class _ReminderDetailBody extends ConsumerWidget {
           const SizedBox(height: AppSpacingTokens.md),
           _ReminderTodayLogPanel(
             logs: data.todayLogs,
+            typography: typography,
+            surface: surface,
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          _ReminderDeliveryLogPanel(
+            logs: data.deliveryLogs,
             typography: typography,
             surface: surface,
           ),
@@ -590,7 +677,10 @@ class _ReminderFormBody extends StatelessWidget {
     required this.frequency,
     required this.selectedWeekdays,
     required this.times,
+    required this.startDate,
+    required this.endDate,
     required this.isActive,
+    required this.soundPreference,
     required this.noteController,
     required this.isSaving,
     required this.isEdit,
@@ -599,7 +689,11 @@ class _ReminderFormBody extends StatelessWidget {
     required this.onWeekdayToggled,
     required this.onAddTime,
     required this.onRemoveTime,
+    required this.onStartDateTap,
+    required this.onEndDateTap,
+    required this.onClearEndDate,
     required this.onActiveChanged,
+    required this.onSoundChanged,
     required this.onSave,
     required this.onDelete,
   });
@@ -610,7 +704,10 @@ class _ReminderFormBody extends StatelessWidget {
   final _ReminderFrequency frequency;
   final Set<int> selectedWeekdays;
   final List<MedicineReminderTimeInput> times;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final bool isActive;
+  final MedicineReminderSoundPreference soundPreference;
   final TextEditingController noteController;
   final bool isSaving;
   final bool isEdit;
@@ -619,7 +716,11 @@ class _ReminderFormBody extends StatelessWidget {
   final ValueChanged<int> onWeekdayToggled;
   final VoidCallback onAddTime;
   final ValueChanged<int> onRemoveTime;
+  final VoidCallback onStartDateTap;
+  final VoidCallback onEndDateTap;
+  final VoidCallback? onClearEndDate;
   final ValueChanged<bool> onActiveChanged;
+  final ValueChanged<MedicineReminderSoundPreference> onSoundChanged;
   final VoidCallback onSave;
   final VoidCallback? onDelete;
 
@@ -760,11 +861,69 @@ class _ReminderFormBody extends StatelessWidget {
                   ),
                 ),
                 Divider(height: 1, thickness: 1, color: surface.hairline),
+                _ValueActionRow(
+                  icon: Icons.calendar_today_rounded,
+                  title: l10n.medicineReminderStartDateLabel,
+                  value: _dateLabel(l10n, startDate),
+                  onTap: onStartDateTap,
+                  typography: typography,
+                  surface: surface,
+                ),
+                Divider(height: 1, thickness: 1, color: surface.hairline),
+                _ValueActionRow(
+                  icon: Icons.event_busy_rounded,
+                  title: l10n.medicineReminderEndDateLabel,
+                  value: _dateLabel(l10n, endDate),
+                  onTap: onEndDateTap,
+                  onClear: onClearEndDate,
+                  typography: typography,
+                  surface: surface,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          MedicinePanel(
+            padding: EdgeInsets.zero,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacingTokens.md,
+                    AppSpacingTokens.md,
+                    AppSpacingTokens.md,
+                    AppSpacingTokens.xs,
+                  ),
+                  child: Text(
+                    l10n.medicineReminderMethodLabel,
+                    style: typography.bodyMdStrong.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                ),
                 _SwitchRow(
                   title: l10n.medicineReminderNotificationOn,
                   subtitle: l10n.medicineReminderDeviceLocalHint,
                   value: isActive,
                   onChanged: onActiveChanged,
+                  typography: typography,
+                  surface: surface,
+                ),
+                Divider(height: 1, thickness: 1, color: surface.hairline),
+                _UnavailableMethodRow(
+                  icon: Icons.sms_outlined,
+                  title: l10n.medicineReminderSmsLabel,
+                  subtitle: l10n.medicineReminderSmsUnavailableHint,
+                  status: l10n.medicineReminderUnavailableStatus,
+                  typography: typography,
+                  surface: surface,
+                ),
+                Divider(height: 1, thickness: 1, color: surface.hairline),
+                _SoundPreferenceRow(
+                  value: soundPreference,
+                  onChanged: onSoundChanged,
                   typography: typography,
                   surface: surface,
                 ),
@@ -893,6 +1052,210 @@ class _ReminderInfoRow extends StatelessWidget {
   }
 }
 
+class _ValueActionRow extends StatelessWidget {
+  const _ValueActionRow({
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.onTap,
+    required this.typography,
+    required this.surface,
+    this.onClear,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+  final VoidCallback onTap;
+  final VoidCallback? onClear;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
+          child: Row(
+            children: [
+              Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
+              const SizedBox(width: AppSpacingTokens.md),
+              Expanded(
+                child: Text(
+                  title,
+                  style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+                ),
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              Flexible(
+                child: Text(
+                  value,
+                  textAlign: TextAlign.right,
+                  style: typography.bodySm.copyWith(
+                    color: surface.body,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ),
+              if (onClear != null) ...[
+                const SizedBox(width: AppSpacingTokens.xs),
+                IconButton(
+                  tooltip: AppLocalizations.of(
+                    context,
+                  )!.medicineReminderClearDateAction,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onClear,
+                  icon: const Icon(Icons.close_rounded, size: 18),
+                ),
+              ] else ...[
+                const SizedBox(width: AppSpacingTokens.xs),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: surface.mute,
+                  size: AppSpacingTokens.lg,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UnavailableMethodRow extends StatelessWidget {
+  const _UnavailableMethodRow({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.status,
+    required this.typography,
+    required this.surface,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String status;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.md,
+        vertical: AppSpacingTokens.sm,
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
+          const SizedBox(width: AppSpacingTokens.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+                ),
+                const SizedBox(height: AppSpacingTokens.xxs),
+                Text(
+                  subtitle,
+                  style: typography.bodySm.copyWith(
+                    color: surface.mute,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacingTokens.sm),
+          MedicineStatusPill(label: status, color: surface.mute),
+        ],
+      ),
+    );
+  }
+}
+
+class _SoundPreferenceRow extends StatelessWidget {
+  const _SoundPreferenceRow({
+    required this.value,
+    required this.onChanged,
+    required this.typography,
+    required this.surface,
+  });
+
+  final MedicineReminderSoundPreference value;
+  final ValueChanged<MedicineReminderSoundPreference> onChanged;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.md,
+        vertical: AppSpacingTokens.sm,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.volume_up_outlined,
+            color: surface.body,
+            size: AppSpacingTokens.lg,
+          ),
+          const SizedBox(width: AppSpacingTokens.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.medicineReminderSoundLabel,
+                  style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+                ),
+                const SizedBox(height: AppSpacingTokens.xxs),
+                Text(
+                  l10n.medicineReminderSoundLocalHint,
+                  style: typography.bodySm.copyWith(
+                    color: surface.mute,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacingTokens.sm),
+          DropdownButtonHideUnderline(
+            child: DropdownButton<MedicineReminderSoundPreference>(
+              value: value,
+              onChanged: (next) {
+                if (next != null) onChanged(next);
+              },
+              items: MedicineReminderSoundPreference.values
+                  .map(
+                    (item) => DropdownMenuItem(
+                      value: item,
+                      child: Text(_soundPreferenceLabel(l10n, item)),
+                    ),
+                  )
+                  .toList(growable: false),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ReminderTodayLogPanel extends StatelessWidget {
   const _ReminderTodayLogPanel({
     required this.logs,
@@ -961,6 +1324,146 @@ class _ReminderTodayLogPanel extends StatelessWidget {
                       ),
                   ],
                 ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ReminderDeliveryLogPanel extends StatelessWidget {
+  const _ReminderDeliveryLogPanel({
+    required this.logs,
+    required this.typography,
+    required this.surface,
+  });
+
+  final List<ReminderDeliveryItem> logs;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final visibleLogs = logs.take(5).toList(growable: false);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: AppSpacingTokens.xs),
+          child: Text(
+            l10n.medicineReminderDeliveryLogsTitle,
+            style: typography.bodyMdStrong.copyWith(
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0,
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacingTokens.sm),
+        MedicinePanel(
+          padding: EdgeInsets.zero,
+          child: visibleLogs.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(AppSpacingTokens.md),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.receipt_long_outlined,
+                        color: surface.mute,
+                        size: AppSpacingTokens.lg,
+                      ),
+                      const SizedBox(width: AppSpacingTokens.sm),
+                      Expanded(
+                        child: Text(
+                          l10n.medicineReminderNoDeliveryLogs,
+                          style: typography.bodySm.copyWith(
+                            color: surface.body,
+                            letterSpacing: 0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    for (var index = 0; index < visibleLogs.length; index += 1)
+                      _DeliveryLogRow(
+                        log: visibleLogs[index],
+                        isLast: index == visibleLogs.length - 1,
+                        typography: typography,
+                        surface: surface,
+                      ),
+                  ],
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DeliveryLogRow extends StatelessWidget {
+  const _DeliveryLogRow({
+    required this.log,
+    required this.isLast,
+    required this.typography,
+    required this.surface,
+  });
+
+  final ReminderDeliveryItem log;
+  final bool isLast;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final color = _deliveryStatusColor(log.status, surface);
+    final row = Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.md,
+        vertical: AppSpacingTokens.sm,
+      ),
+      child: Row(
+        children: [
+          Icon(_deliveryStatusIcon(log.status), color: color, size: 18),
+          const SizedBox(width: AppSpacingTokens.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _dateTimeShortLabel(l10n, log.scheduledFor),
+                  style: typography.bodySmStrong.copyWith(letterSpacing: 0),
+                ),
+                const SizedBox(height: AppSpacingTokens.xxs),
+                Text(
+                  _deliveryChannelLabel(l10n, log.channel),
+                  style: typography.caption.copyWith(
+                    color: surface.mute,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacingTokens.sm),
+          MedicineStatusPill(
+            label: _deliveryStatusLabel(l10n, log.status),
+            color: color,
+          ),
+        ],
+      ),
+    );
+    if (isLast) return row;
+    return Column(
+      children: [
+        row,
+        Divider(
+          height: 1,
+          thickness: 1,
+          indent: AppSpacingTokens.md + AppSpacingTokens.lg,
+          color: surface.hairline,
         ),
       ],
     );
@@ -1430,10 +1933,94 @@ String _weekdayLabel(AppLocalizations l10n, int day) {
   };
 }
 
+String _dateLabel(AppLocalizations l10n, DateTime? value) {
+  if (value == null) return l10n.medicineReminderDateNotSet;
+  return _formatDateInput(value);
+}
+
+String _soundPreferenceLabel(
+  AppLocalizations l10n,
+  MedicineReminderSoundPreference value,
+) {
+  return switch (value) {
+    MedicineReminderSoundPreference.defaultTone =>
+      l10n.medicineReminderSoundDefault,
+    MedicineReminderSoundPreference.gentle => l10n.medicineReminderSoundGentle,
+    MedicineReminderSoundPreference.silent => l10n.medicineReminderSoundSilent,
+  };
+}
+
+String _deliveryChannelLabel(AppLocalizations l10n, String value) {
+  return switch (value) {
+    'local' => l10n.medicineReminderDeliveryChannelLocal,
+    'push' => l10n.medicineReminderDeliveryChannelPush,
+    'email' => l10n.medicineReminderDeliveryChannelEmail,
+    'sms' => l10n.medicineReminderDeliveryChannelSms,
+    _ => value,
+  };
+}
+
+String _deliveryStatusLabel(AppLocalizations l10n, String value) {
+  return switch (value) {
+    'scheduled' => l10n.medicineReminderDeliveryStatusScheduled,
+    'delivered' => l10n.medicineReminderDeliveryStatusDelivered,
+    'failed' => l10n.medicineReminderDeliveryStatusFailed,
+    _ => value,
+  };
+}
+
+IconData _deliveryStatusIcon(String value) {
+  return switch (value) {
+    'delivered' => Icons.check_circle_outline_rounded,
+    'failed' => Icons.error_outline_rounded,
+    _ => Icons.schedule_rounded,
+  };
+}
+
+Color _deliveryStatusColor(String value, AppThemeSurface surface) {
+  return switch (value) {
+    'delivered' => MedicinePalette.teal,
+    'failed' => MedicinePalette.red,
+    'scheduled' => MedicinePalette.orangeDeep,
+    _ => surface.mute,
+  };
+}
+
+String _dateTimeShortLabel(AppLocalizations l10n, String value) {
+  final parsed = DateTime.tryParse(value);
+  if (parsed == null) return value;
+  final now = DateTime.now();
+  final date = _dateOnly(parsed);
+  final today = _dateOnly(now);
+  final datePrefix = date == today
+      ? l10n.recordTodayAction
+      : _formatDateInput(parsed);
+  return '$datePrefix ${_dateTimeTimeLabel(value)}';
+}
+
 String _dateTimeTimeLabel(String value) {
   final parsed = DateTime.tryParse(value);
   if (parsed == null) return value;
   return '${parsed.hour.toString().padLeft(2, '0')}:${parsed.minute.toString().padLeft(2, '0')}';
+}
+
+DateTime _dateOnly(DateTime value) {
+  return DateTime(value.year, value.month, value.day);
+}
+
+DateTime? _parseDateOnly(String? value) {
+  if (value == null || value.isEmpty) return null;
+  final parsed = DateTime.tryParse(value);
+  if (parsed == null) return null;
+  return _dateOnly(parsed);
+}
+
+String _formatDateInput(DateTime? value) {
+  if (value == null) return '';
+  final year = value.year.toString().padLeft(4, '0');
+  final month = value.month.toString().padLeft(2, '0');
+  final day = value.day.toString().padLeft(2, '0');
+  return '$year-$month-$day';
 }
 
 String? _trimmedOrNull(String value) {
