@@ -6,10 +6,13 @@ import 'package:luminous/features/health_context/data/providers/health_context_d
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+export 'package:luminous/features/medicine/domain/entities/medicine_reminder_sound_preference.dart';
 
 class MedicineReminderDetailData {
   const MedicineReminderDetailData({
@@ -23,23 +26,6 @@ class MedicineReminderDetailData {
   final List<MedicineReminderItem> reminders;
   final List<DoseLogItem> todayLogs;
   final List<ReminderDeliveryItem> deliveryLogs;
-}
-
-enum MedicineReminderSoundPreference {
-  defaultTone('default'),
-  gentle('gentle'),
-  silent('silent');
-
-  const MedicineReminderSoundPreference(this.storageValue);
-
-  final String storageValue;
-
-  static MedicineReminderSoundPreference fromStorage(String? value) {
-    return MedicineReminderSoundPreference.values.firstWhere(
-      (item) => item.storageValue == value,
-      orElse: () => MedicineReminderSoundPreference.defaultTone,
-    );
-  }
 }
 
 class MedicineReminderSoundController

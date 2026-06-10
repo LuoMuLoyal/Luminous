@@ -10,6 +10,7 @@ import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LuminousApp extends ConsumerStatefulWidget {
@@ -58,6 +59,10 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       ref.invalidate(healthContextSnapshotProvider);
       unawaited(_restoreLocaleFromProfile());
     });
+    ref.listen<AsyncValue<void>>(
+      medicineReminderNotificationSyncProvider,
+      (_, _) {},
+    );
 
     final themeMode = ref
         .watch(appThemeControllerProvider)

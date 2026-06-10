@@ -1616,6 +1616,30 @@ abstract class AppLocalizations {
   /// **'静音'**
   String get medicineReminderSoundSilent;
 
+  /// No description provided for @medicineReminderNotificationDefaultTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药提醒'**
+  String get medicineReminderNotificationDefaultTitle;
+
+  /// No description provided for @medicineReminderNotificationDefaultBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'该按时吃药了。'**
+  String get medicineReminderNotificationDefaultBody;
+
+  /// No description provided for @medicineReminderNotificationChannelName.
+  ///
+  /// In zh, this message translates to:
+  /// **'用药提醒'**
+  String get medicineReminderNotificationChannelName;
+
+  /// No description provided for @medicineReminderNotificationChannelDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'按用药计划在本机发送的提醒。'**
+  String get medicineReminderNotificationChannelDescription;
+
   /// No description provided for @medicineReminderNoteLabel.
   ///
   /// In zh, this message translates to:

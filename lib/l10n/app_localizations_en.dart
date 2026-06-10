@@ -835,6 +835,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineReminderSoundSilent => 'Silent';
 
   @override
+  String get medicineReminderNotificationDefaultTitle => 'Medication reminder';
+
+  @override
+  String get medicineReminderNotificationDefaultBody =>
+      'It\'s time to take your medicine.';
+
+  @override
+  String get medicineReminderNotificationChannelName => 'Medication reminders';
+
+  @override
+  String get medicineReminderNotificationChannelDescription =>
+      'On-device reminders for your medication schedule.';
+
+  @override
   String get medicineReminderNoteLabel => 'Note';
 
   @override

@@ -787,6 +787,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineReminderSoundSilent => '静音';
 
   @override
+  String get medicineReminderNotificationDefaultTitle => '用药提醒';
+
+  @override
+  String get medicineReminderNotificationDefaultBody => '该按时吃药了。';
+
+  @override
+  String get medicineReminderNotificationChannelName => '用药提醒';
+
+  @override
+  String get medicineReminderNotificationChannelDescription => '按用药计划在本机发送的提醒。';
+
+  @override
   String get medicineReminderNoteLabel => '备注';
 
   @override

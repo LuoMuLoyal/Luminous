@@ -10,20 +10,15 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 
 ## Immediate Work Order
 
-1. **Local notification scheduling**
-   - Schedule/cancel local notifications only after reminder schedule data is wired through a tested coordinator.
-   - Keep Lucent schedule-only reminder create/edit/delete UI, start/end date filtering, local sound preference, SMS unavailable state, read-only delivery-history display, active current-medicine filtering, same-day dose-log update/create behavior, Today pending counts, and completed-dose UI under regression.
-   - Keep FCM/APNs, push tokens, backend delivery workers, and worker-populated delivery history out of scope.
-
-2. **Record form maintenance**
+1. **Record form maintenance**
    - Keep selected-date reload, filter mapping, quick-action routing, attachment handling, detail cache invalidation, and timeline time display under regression.
    - Refine type-specific forms only when the Lucent contract exists for that record type.
 
-3. **Report data contract**
+2. **Report data contract**
    - Keep current Report visuals mock/static until Lucent exposes report/insight/export contracts.
    - Complex charts remain placeholders until the data shape is stable.
 
-4. **Mine and Settings contracts**
+3. **Mine and Settings contracts**
    - Wire campus services, privacy permissions, reminder preferences, data export, help, and about only after backend/source contracts exist.
 
 ## Deferred But Useful

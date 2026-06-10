@@ -108,8 +108,8 @@ class NotificationSettingsController
     state = AsyncData(next);
     final preferences = await SharedPreferences.getInstance();
     await update(preferences);
-    // TODO(notifications): reschedule on-device local notifications here after
-    // medicine reminder schedules exist; preferences alone do not trigger alerts.
+    // medicineReminderNotificationSyncProvider watches this controller and
+    // handles reminder rescheduling after the schedule data layer is available.
   }
 }
 
