@@ -18,18 +18,46 @@ import 'package:luminous/features/medicine/presentation/pages/medicine_reminder_
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   testWidgets('Medicine reminder detail renders schedule and dose logs', (
     tester,
   ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
     await tester.pumpWidget(
       _testApp(
         child: const MedicineReminderDetailPage(currentMedicineId: 'med-1'),
-        reminderDataSource: _FakeReminderDataSource([
-          _reminder(id: 'reminder-1', hour: 8, minute: 0),
-          _reminder(id: 'reminder-2', hour: 20, minute: 0),
-        ]),
+        reminderDataSource: _FakeReminderDataSource(
+          [
+            _reminder(
+              id: 'reminder-1',
+              hour: 8,
+              minute: 0,
+              startDate: '2026-06-10',
+            ),
+            _reminder(
+              id: 'reminder-2',
+              hour: 20,
+              minute: 0,
+              startDate: '2026-06-10',
+            ),
+          ],
+          deliveries: const [
+            ReminderDeliveryItem(
+              id: 'delivery-1',
+              reminderId: 'reminder-1',
+              deviceId: 'device-1',
+              channel: 'local',
+              status: 'delivered',
+              scheduledFor: '2026-06-10T08:00:00.000Z',
+              deliveredAt: '2026-06-10T08:00:03.000Z',
+              errorMessage: null,
+              createdAt: '2026-06-10T07:55:00.000Z',
+            ),
+          ],
+        ),
         doseLogDataSource: _FakeDoseLogDataSource([
           const DoseLogItem(
             id: 'dose-1',
@@ -47,8 +75,14 @@ void main() {
     expect(find.text('用药提醒详情'), findsOneWidget);
     expect(find.text('阿托伐他汀钙片'), findsOneWidget);
     expect(find.text('08:00 · 20:00'), findsOneWidget);
+    expect(find.text('开始日期'), findsOneWidget);
+    expect(find.text('2026-06-10'), findsOneWidget);
+    expect(find.textContaining('短信未开通'), findsOneWidget);
+    expect(find.textContaining('默认铃声'), findsOneWidget);
     expect(find.text('今日用药打卡'), findsOneWidget);
     expect(find.text('已服用'), findsOneWidget);
+    expect(find.text('提醒投递历史'), findsOneWidget);
+    expect(find.text('已投递'), findsOneWidget);
   });
 
   test(
@@ -80,6 +114,8 @@ void main() {
                 MedicineReminderTimeInput(hour: 21, minute: 15),
               ],
               daysOfWeek: null,
+              startDate: '2026-06-10',
+              endDate: null,
               isActive: true,
               note: '饭后服用',
             ),
@@ -92,6 +128,8 @@ void main() {
       expect(dataSource.updatedInputs.first.scheduledHour, 7);
       expect(dataSource.updatedInputs.first.scheduledMinute, 30);
       expect(dataSource.updatedInputs.first.daysOfWeek, isNull);
+      expect(dataSource.updatedInputs.first.startDate, '2026-06-10');
+      expect(dataSource.updatedInputs.first.endDate, isNull);
       expect(dataSource.createdInputs.single.scheduledHour, 21);
       expect(dataSource.createdInputs.single.scheduledMinute, 15);
     },
@@ -146,13 +184,14 @@ Widget _testApp({
 }
 
 class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
-  _FakeReminderDataSource(this.items)
+  _FakeReminderDataSource(this.items, {this.deliveries = const []})
     : super(
         api: MedicineRemindersApi(Dio(BaseOptions())),
         dio: Dio(BaseOptions()),
       );
 
   final List<MedicineReminderItem> items;
+  final List<ReminderDeliveryItem> deliveries;
   final createdInputs = <MedicineReminderWriteInput>[];
   final updatedIds = <String>[];
   final updatedInputs = <MedicineReminderWriteInput>[];
@@ -165,6 +204,14 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
   Future<List<MedicineReminderItem>> fetchAll() async => items;
 
   @override
+  Future<List<ReminderDeliveryItem>> fetchDeliveries({
+    String? date,
+    int limit = 20,
+  }) async {
+    return deliveries;
+  }
+
+  @override
   Future<MedicineReminderItem> create(MedicineReminderWriteInput input) async {
     createdInputs.add(input);
     return _reminder(
@@ -172,6 +219,8 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
       hour: input.scheduledHour,
       minute: input.scheduledMinute,
       daysOfWeek: input.daysOfWeek,
+      startDate: input.startDate,
+      endDate: input.endDate,
       note: input.note,
     );
   }
@@ -188,6 +237,8 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
       hour: input.scheduledHour,
       minute: input.scheduledMinute,
       daysOfWeek: input.daysOfWeek,
+      startDate: input.startDate,
+      endDate: input.endDate,
       note: input.note,
       isActive: input.isActive,
     );
@@ -238,6 +289,8 @@ MedicineReminderItem _reminder({
   List<int>? daysOfWeek,
   String? note,
   bool isActive = true,
+  String? startDate,
+  String? endDate,
 }) {
   return MedicineReminderItem(
     id: id,
@@ -246,6 +299,8 @@ MedicineReminderItem _reminder({
     scheduledHour: hour,
     scheduledMinute: minute,
     daysOfWeek: daysOfWeek,
+    startDate: startDate,
+    endDate: endDate,
     isActive: isActive,
     note: note,
     createdAt: '2026-06-08T07:00:00.000Z',

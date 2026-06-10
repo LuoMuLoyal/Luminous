@@ -9,17 +9,56 @@ import 'package:luminous/features/medicine/data/datasources/medicine_reminder_re
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MedicineReminderDetailData {
   const MedicineReminderDetailData({
     required this.medicine,
     required this.reminders,
     required this.todayLogs,
+    required this.deliveryLogs,
   });
 
   final CurrentMedicineItem medicine;
   final List<MedicineReminderItem> reminders;
   final List<DoseLogItem> todayLogs;
+  final List<ReminderDeliveryItem> deliveryLogs;
+}
+
+enum MedicineReminderSoundPreference {
+  defaultTone('default'),
+  gentle('gentle'),
+  silent('silent');
+
+  const MedicineReminderSoundPreference(this.storageValue);
+
+  final String storageValue;
+
+  static MedicineReminderSoundPreference fromStorage(String? value) {
+    return MedicineReminderSoundPreference.values.firstWhere(
+      (item) => item.storageValue == value,
+      orElse: () => MedicineReminderSoundPreference.defaultTone,
+    );
+  }
+}
+
+class MedicineReminderSoundController
+    extends AsyncNotifier<MedicineReminderSoundPreference> {
+  static const _storageKey = 'medicine.reminder.sound';
+
+  @override
+  Future<MedicineReminderSoundPreference> build() async {
+    final preferences = await SharedPreferences.getInstance();
+    return MedicineReminderSoundPreference.fromStorage(
+      preferences.getString(_storageKey),
+    );
+  }
+
+  Future<void> setSound(MedicineReminderSoundPreference preference) async {
+    state = AsyncData(preference);
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setString(_storageKey, preference.storageValue);
+  }
 }
 
 class MedicineReminderTimeInput {
@@ -45,6 +84,8 @@ class MedicineReminderGroupWriteInput {
     required this.label,
     required this.times,
     required this.daysOfWeek,
+    required this.startDate,
+    required this.endDate,
     required this.isActive,
     required this.note,
   });
@@ -53,6 +94,8 @@ class MedicineReminderGroupWriteInput {
   final String? label;
   final List<MedicineReminderTimeInput> times;
   final List<int>? daysOfWeek;
+  final String? startDate;
+  final String? endDate;
   final bool isActive;
   final String? note;
 }
@@ -99,6 +142,21 @@ final medicineTodayDoseLogsProvider = FutureProvider<List<DoseLogItem>>((ref) {
   return ref.watch(doseLogRemoteDataSourceProvider).fetchForDate(date);
 });
 
+final medicineReminderDeliveryLogProvider =
+    FutureProvider<List<ReminderDeliveryItem>>((ref) {
+      final session = ref.watch(authSessionProvider);
+      if (session.isLoading) {
+        return pendingAuthSessionResolution();
+      }
+      if (!session.canAccessProtectedData) {
+        throw const AuthRequiredException();
+      }
+
+      return ref
+          .watch(medicineReminderRemoteDataSourceProvider)
+          .fetchDeliveries(limit: 20);
+    });
+
 final medicineReminderDetailProvider =
     FutureProvider.family<MedicineReminderDetailData, String>((
       ref,
@@ -114,6 +172,9 @@ final medicineReminderDetailProvider =
 
       final reminders = await ref.watch(medicineReminderListProvider.future);
       final todayLogs = await ref.watch(medicineTodayDoseLogsProvider.future);
+      final deliveryLogs = await ref.watch(
+        medicineReminderDeliveryLogProvider.future,
+      );
       final medicineReminders =
           reminders
               .where((item) => item.currentMedicineId == currentMedicineId)
@@ -122,13 +183,27 @@ final medicineReminderDetailProvider =
       final medicineLogs = todayLogs
           .where((item) => item.currentMedicineId == currentMedicineId)
           .toList(growable: false);
+      final reminderIds = medicineReminders.map((item) => item.id).toSet();
+      final medicineDeliveryLogs = deliveryLogs
+          .where((item) {
+            final reminderId = item.reminderId;
+            return reminderId != null && reminderIds.contains(reminderId);
+          })
+          .toList(growable: false);
 
       return MedicineReminderDetailData(
         medicine: medicine,
         reminders: medicineReminders,
         todayLogs: medicineLogs,
+        deliveryLogs: medicineDeliveryLogs,
       );
     });
+
+final medicineReminderSoundProvider =
+    AsyncNotifierProvider<
+      MedicineReminderSoundController,
+      MedicineReminderSoundPreference
+    >(MedicineReminderSoundController.new);
 
 class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
   @override
@@ -158,6 +233,8 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
           scheduledHour: time.hour,
           scheduledMinute: time.minute,
           daysOfWeek: input.daysOfWeek,
+          startDate: input.startDate,
+          endDate: input.endDate,
           isActive: input.isActive,
           note: input.note,
         );
@@ -201,6 +278,7 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
   void _invalidateReminderSurfaces() {
     ref.invalidate(medicineReminderListProvider);
     ref.invalidate(medicineTodayDoseLogsProvider);
+    ref.invalidate(medicineReminderDeliveryLogProvider);
     ref.invalidate(medicineWorkspaceProvider);
     ref.invalidate(todayDashboardProvider);
   }
