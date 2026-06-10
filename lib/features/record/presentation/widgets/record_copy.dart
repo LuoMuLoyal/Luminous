@@ -20,6 +20,7 @@ String recordCopy(AppLocalizations l10n, RecordCopyKey key) {
     RecordCopyKey.typeSleep => l10n.recordTypeSleep,
     RecordCopyKey.typeHeartRate => l10n.recordTypeHeartRate,
     RecordCopyKey.typeWeight => l10n.recordTypeWeight,
+    RecordCopyKey.typeNote => l10n.recordCreateKindNote,
     RecordCopyKey.summaryMealTitle => l10n.recordSummaryMealTitle,
     RecordCopyKey.summaryWaterTitle => l10n.recordSummaryWaterTitle,
     RecordCopyKey.summaryLatestVitalTitle => l10n.recordSummaryLatestVitalTitle,

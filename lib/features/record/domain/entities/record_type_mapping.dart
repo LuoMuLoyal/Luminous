@@ -9,6 +9,7 @@ DailyRecordKind? dailyRecordKindForEntryType(RecordEntryType type) {
     RecordEntryType.mood => DailyRecordKind.mood,
     RecordEntryType.symptom => DailyRecordKind.symptom,
     RecordEntryType.activity => DailyRecordKind.activity,
+    RecordEntryType.note => DailyRecordKind.note,
     RecordEntryType.medication ||
     RecordEntryType.sleep ||
     RecordEntryType.heartRate ||
@@ -24,7 +25,7 @@ RecordEntryType recordEntryTypeForDailyRecordKind(DailyRecordKind kind) {
     DailyRecordKind.mood => RecordEntryType.mood,
     DailyRecordKind.symptom => RecordEntryType.symptom,
     DailyRecordKind.activity => RecordEntryType.activity,
-    DailyRecordKind.note => RecordEntryType.medication,
+    DailyRecordKind.note => RecordEntryType.note,
   };
 }
 

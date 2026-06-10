@@ -528,6 +528,69 @@ void main() {
     expect(repo.deleteCalledWith, 'test-id-1');
   });
 
+  testWidgets('Record mobile sleep quick action shows toast instead of create', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await _pumpRecordRouter(
+      tester,
+      selectedDate: DateTime(2026, 6, 6),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-sleep')));
+    await tester.pump();
+
+    // Sleep is not a create-capable kind; must stay on the record page.
+    expect(find.byType(RecordCreatePage), findsNothing);
+    expect(find.byType(RecordPage), findsOneWidget);
+
+    // Let the toast timer complete to avoid pending-timer assertion.
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('Record mobile note quick action opens create page with kind', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final dailyRepo = _FakeDailyRecordRepository();
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      selectedDate: DateTime(2026, 6, 6),
+    );
+    await tester.pumpAndSettle();
+
+    // Verify the note quick action exists in the tree.
+    final noteAction = find.byKey(const Key('record-quick-note'));
+    expect(noteAction, findsOneWidget);
+
+    // Ensure it's visible and tap it.
+    await tester.ensureVisible(noteAction);
+    await tester.pump();
+    await tester.tap(noteAction);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RecordCreatePage), findsOneWidget);
+    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
+      find.byType(DropdownButtonFormField<DailyRecordKind>),
+    );
+    expect(dropdown.initialValue, DailyRecordKind.note);
+  });
+
   testWidgets('Record page previous day action reloads selected date', (
     tester,
   ) async {
@@ -848,6 +911,100 @@ void main() {
     },
   );
 
+  test(
+    'recordEntryTypeForDailyRecordKind maps note to note type',
+    () {
+      expect(
+        recordEntryTypeForDailyRecordKind(DailyRecordKind.note),
+        RecordEntryType.note,
+      );
+    },
+  );
+
+  test(
+    'dailyRecordKindForEntryType maps note type to note kind',
+    () {
+      expect(
+        dailyRecordKindForEntryType(RecordEntryType.note),
+        DailyRecordKind.note,
+      );
+    },
+  );
+
+  test(
+    'Lucent record repository does not fall back to mock timeline for empty filter results',
+    () async {
+      final dailyRepo = _FakeDailyRecordRepository(fetchThrows: true);
+      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+
+      final dashboard = await repo.fetchDashboard(
+        DateTime(2026, 6, 6),
+        filterType: RecordEntryType.note,
+      );
+
+      // Fetch failed, so no real records; timeline must be empty, not mock.
+      expect(dashboard.timeline, isEmpty);
+    },
+  );
+
+  test(
+    'Lucent timeline note without title leaves rawTitle null for localized fallback',
+    () async {
+      final dailyRepo = _FakeDailyRecordRepository(
+        itemOccurredAt: '2026-06-06T14:00:00',
+        itemKind: DailyRecordKind.note,
+        itemTitle: null,
+        itemValue: null,
+        itemUnit: null,
+        itemNote: 'Slept well tonight',
+      );
+      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+
+      expect(dashboard.timeline.single.rawTitle, isNull);
+      expect(dashboard.timeline.single.titleKey, RecordCopyKey.typeNote);
+    },
+  );
+
+  test(
+    'Lucent timeline note with title uses it as rawTitle',
+    () async {
+      final dailyRepo = _FakeDailyRecordRepository(
+        itemOccurredAt: '2026-06-06T14:00:00',
+        itemKind: DailyRecordKind.note,
+        itemTitle: 'Evening reflection',
+        itemValue: null,
+        itemUnit: null,
+        itemNote: 'Felt good today',
+      );
+      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+
+      expect(dashboard.timeline.single.rawTitle, 'Evening reflection');
+      expect(dashboard.timeline.single.titleKey, RecordCopyKey.typeNote);
+    },
+  );
+
+  test(
+    'Lucent timeline uses type-dependent titleKey instead of hardcoded typeMood',
+    () async {
+      final dailyRepo = _FakeDailyRecordRepository(
+        itemOccurredAt: '2026-06-06T08:00:00',
+        itemKind: DailyRecordKind.water,
+        itemTitle: null,
+        itemValue: '500',
+        itemUnit: 'ml',
+      );
+      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+
+      expect(dashboard.timeline.single.titleKey, RecordCopyKey.typeWater);
+    },
+  );
+
   testWidgets('Record page uses desktop side rails', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(1440, 1000);
@@ -1037,6 +1194,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     this.itemUnit = 'mmHg',
     this.itemNote = 'This is a note',
     this.withAttachment = false,
+    this.fetchThrows = false,
   });
 
   final String? itemOccurredAt;
@@ -1046,6 +1204,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   final String? itemUnit;
   final String? itemNote;
   final bool withAttachment;
+  final bool fetchThrows;
   String? deleteCalledWith;
   String? updateCalledWith;
   String? getCalledWith;
@@ -1063,6 +1222,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   }) async {
     fetchRecordsCalled = true;
     fetchDate = date;
+    if (fetchThrows) throw Exception('fetch error');
     return DailyRecordListData(
       items: [
         DailyRecordItem(
