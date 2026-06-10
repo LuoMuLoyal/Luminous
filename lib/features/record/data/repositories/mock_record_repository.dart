@@ -287,6 +287,14 @@ class MockRecordRepository implements RecordRepository {
       accent: _sleep,
       softColor: _sleepSoft,
     ),
+    RecordQuickAction(
+      type: RecordEntryType.note,
+      icon: Icons.notes_rounded,
+      titleKey: RecordCopyKey.typeNote,
+      subtitleKey: RecordCopyKey.summaryRecorded,
+      accent: _medication,
+      softColor: _medicationSoft,
+    ),
   ];
 
   static List<RecordQuickAction> _quickActionsFor() {
@@ -379,6 +387,13 @@ class MockRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeSleep,
       icon: Icons.dark_mode_rounded,
       accent: _sleep,
+      selected: true,
+    ),
+    RecordFilter(
+      type: RecordEntryType.note,
+      titleKey: RecordCopyKey.typeNote,
+      icon: Icons.notes_rounded,
+      accent: _medication,
       selected: true,
     ),
   ];
@@ -487,6 +502,15 @@ class MockRecordRepository implements RecordRepository {
       trailingIcon: Icons.chevron_right_rounded,
     ),
     RecordTimelineEntry(
+      time: '16:00',
+      type: RecordEntryType.note,
+      icon: Icons.notes_rounded,
+      accent: _medication,
+      softColor: _medicationSoft,
+      titleKey: RecordCopyKey.typeNote,
+      trailingIcon: Icons.chevron_right_rounded,
+    ),
+    RecordTimelineEntry(
       time: '06:10',
       type: RecordEntryType.weight,
       icon: Icons.water_drop_outlined,
@@ -566,7 +590,8 @@ class MockRecordRepository implements RecordRepository {
       RecordEntryType.water ||
       RecordEntryType.meal ||
       RecordEntryType.sleep ||
-      RecordEntryType.medication => true,
+      RecordEntryType.medication ||
+      RecordEntryType.note => true,
       _ => false,
     };
   }

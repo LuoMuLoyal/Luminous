@@ -203,6 +203,7 @@ enum RecordEntryType {
   sleep,
   heartRate,
   weight,
+  note,
 }
 
 enum RecordTrendKind { bloodSugar, hydration }
@@ -225,6 +226,7 @@ enum RecordCopyKey {
   typeSleep,
   typeHeartRate,
   typeWeight,
+  typeNote,
   summaryMealTitle,
   summaryWaterTitle,
   summaryLatestVitalTitle,

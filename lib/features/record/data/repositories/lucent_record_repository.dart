@@ -63,7 +63,7 @@ class LucentRecordRepository implements RecordRepository {
       quickActions: _staticQuickActionsFor(),
       summary: _staticSummary,
       filters: _staticFiltersFor(filterType),
-      timeline: timeline.isNotEmpty ? timeline : _staticTimeline,
+      timeline: timeline,
       trends: _staticTrends,
     );
   }
@@ -110,14 +110,36 @@ class LucentRecordRepository implements RecordRepository {
       ),
     };
 
+    final titleKey = switch (kind) {
+      DailyRecordKind.water => RecordCopyKey.typeWater,
+      DailyRecordKind.meal => RecordCopyKey.typeMeal,
+      DailyRecordKind.vital => RecordCopyKey.typeVitals,
+      DailyRecordKind.mood => RecordCopyKey.typeMood,
+      DailyRecordKind.symptom => RecordCopyKey.typeSymptom,
+      DailyRecordKind.activity => RecordCopyKey.typeActivity,
+      DailyRecordKind.note => RecordCopyKey.typeNote,
+    };
+
+    // For notes without a real title, leave rawTitle null so the timeline
+    // resolves through the localized titleKey (or uses note content as a
+    // short preview). Other kinds keep the existing "kind value" fallback.
+    final String? rawTitle;
+    if (record.title != null) {
+      rawTitle = record.title;
+    } else if (kind == DailyRecordKind.note) {
+      rawTitle = null;
+    } else {
+      rawTitle = '${kind.name} ${record.value ?? ''}'.trim();
+    }
+
     return RecordTimelineEntry(
       time: timeStr,
       type: recordEntryTypeForDailyRecordKind(kind),
       icon: icon,
       accent: accent,
       softColor: soft,
-      titleKey: RecordCopyKey.typeMood,
-      rawTitle: record.title ?? '${kind.name} ${record.value ?? ''}'.trim(),
+      titleKey: titleKey,
+      rawTitle: rawTitle,
       value: record.value != null
           ? '${record.value}${record.unit != null ? ' ${record.unit}' : ''}'
           : record.note,
@@ -259,6 +281,14 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.violet,
       softColor: AppColorTokens.violetSoft,
     ),
+    RecordQuickAction(
+      type: RecordEntryType.note,
+      icon: Icons.notes_rounded,
+      titleKey: RecordCopyKey.typeNote,
+      subtitleKey: RecordCopyKey.summaryRecorded,
+      accent: AppColorTokens.link,
+      softColor: AppColorTokens.linkSoft,
+    ),
   ];
 
   static List<RecordQuickAction> _staticQuickActionsFor() {
@@ -319,6 +349,13 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.violet,
       selected: true,
     ),
+    RecordFilter(
+      type: RecordEntryType.note,
+      titleKey: RecordCopyKey.typeNote,
+      icon: Icons.notes_rounded,
+      accent: AppColorTokens.link,
+      selected: true,
+    ),
   ];
 
   static List<RecordFilter> _staticFiltersFor(RecordEntryType? filterType) {
@@ -340,8 +377,6 @@ class LucentRecordRepository implements RecordRepository {
         .toList(growable: false);
   }
 
-  static const _staticTimeline = <RecordTimelineEntry>[];
-
   static const _staticTrends = <RecordTrend>[
     RecordTrend(
       kind: RecordTrendKind.bloodSugar,
@@ -359,7 +394,8 @@ class LucentRecordRepository implements RecordRepository {
       RecordEntryType.water ||
       RecordEntryType.meal ||
       RecordEntryType.sleep ||
-      RecordEntryType.medication => true,
+      RecordEntryType.medication ||
+      RecordEntryType.note => true,
       _ => false,
     };
   }

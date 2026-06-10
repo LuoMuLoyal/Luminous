@@ -8,17 +8,17 @@ This file records the next implementation order only. Completed work belongs in 
 
 Use the Product_Vision-converged five-tab mobile UI as the baseline, then move into real daily health loops without presenting mock or deferred features as real capability.
 
+## Completed
+
+- **Record form maintenance** (2026-06-10): aligned quick-action visibility with create capability, removed static mock timeline fallback from Lucent repository, promoted `note` to a first-class `RecordEntryType` with its own mapping/filter/timeline, locked down active create kinds (water, meal, symptom, note), and added regression tests. All 162 tests pass; `flutter analyze` clean.
+
 ## Immediate Work Order
 
-1. **Record form maintenance**
-   - Keep selected-date reload, filter mapping, quick-action routing, attachment handling, detail cache invalidation, and timeline time display under regression.
-   - Refine type-specific forms only when the Lucent contract exists for that record type.
-
-2. **Report data contract**
+1. **Report data contract**
    - Keep current Report visuals mock/static until Lucent exposes report/insight/export contracts.
    - Complex charts remain placeholders until the data shape is stable.
 
-3. **Mine and Settings contracts**
+2. **Mine and Settings contracts**
    - Wire campus services, privacy permissions, reminder preferences, data export, help, and about only after backend/source contracts exist.
 
 ## Deferred But Useful

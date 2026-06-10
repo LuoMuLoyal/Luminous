@@ -1062,6 +1062,7 @@ List<RecordQuickAction> _mobileQuickActions(List<RecordQuickAction> actions) {
     RecordEntryType.meal,
     RecordEntryType.sleep,
     RecordEntryType.medication,
+    RecordEntryType.note,
   ];
   final byType = {for (final action in actions) action.type: action};
   final ordered = <RecordQuickAction>[
@@ -1071,7 +1072,7 @@ List<RecordQuickAction> _mobileQuickActions(List<RecordQuickAction> actions) {
   for (final action in actions) {
     if (!ordered.contains(action)) ordered.add(action);
   }
-  return ordered.take(5).toList(growable: false);
+  return ordered.toList(growable: false);
 }
 
 List<RecordFilter> _mobileFilters(List<RecordFilter> filters) {
@@ -1081,6 +1082,7 @@ List<RecordFilter> _mobileFilters(List<RecordFilter> filters) {
     RecordEntryType.meal,
     RecordEntryType.sleep,
     RecordEntryType.medication,
+    RecordEntryType.note,
   ];
   final byType = {for (final filter in filters) filter.type: filter};
   final ordered = <RecordFilter>[
@@ -1172,6 +1174,7 @@ String _overviewFallbackLabel(AppLocalizations l10n, RecordEntryType type) {
     RecordEntryType.sleep => l10n.recordTypeSleep,
     RecordEntryType.heartRate => l10n.recordTypeHeartRate,
     RecordEntryType.weight => l10n.recordTypeWeight,
+    RecordEntryType.note => l10n.recordCreateKindNote,
   };
 }
 
@@ -1187,6 +1190,7 @@ IconData _overviewFallbackIcon(RecordEntryType type) {
     RecordEntryType.sleep => Icons.dark_mode_rounded,
     RecordEntryType.heartRate => Icons.monitor_heart_outlined,
     RecordEntryType.weight => Icons.monitor_weight_outlined,
+    RecordEntryType.note => Icons.notes_rounded,
   };
 }
 
@@ -1202,6 +1206,7 @@ Color _overviewFallbackColor(RecordEntryType type) {
     RecordEntryType.sleep => AppColorTokens.violet,
     RecordEntryType.heartRate => AppColorTokens.error,
     RecordEntryType.weight => AppColorTokens.linkDeep,
+    RecordEntryType.note => AppColorTokens.link,
   };
 }
 
@@ -1215,6 +1220,7 @@ const _mobileOverviewTypeOrder = <RecordEntryType>[
   RecordEntryType.meal,
   RecordEntryType.sleep,
   RecordEntryType.medication,
+  RecordEntryType.note,
 ];
 
 String _mobileFilterLabel(AppLocalizations l10n, RecordFilter filter) {
