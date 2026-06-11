@@ -116,6 +116,8 @@ class MineActionEntry {
     required this.accent,
     required this.titleKey,
     required this.subtitleKey,
+    this.rawTitle,
+    this.rawSubtitle,
     this.route,
   });
 
@@ -123,6 +125,12 @@ class MineActionEntry {
   final Color accent;
   final MineCopyKey titleKey;
   final MineCopyKey subtitleKey;
+
+  /// Server-provided display title; takes precedence over [titleKey] when set.
+  final String? rawTitle;
+
+  /// Server-provided display subtitle; takes precedence over [subtitleKey].
+  final String? rawSubtitle;
   final String? route;
 }
 

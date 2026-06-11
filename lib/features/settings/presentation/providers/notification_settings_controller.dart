@@ -8,24 +8,32 @@ class NotificationSettingsState {
     this.medicationReminders = true,
     this.healthAlerts = true,
     this.weeklySummary = false,
+    this.waterReminders = true,
+    this.sleepReminders = true,
     this.permissionState = NotificationPermissionState.unsupported,
   });
 
   final bool medicationReminders;
   final bool healthAlerts;
   final bool weeklySummary;
+  final bool waterReminders;
+  final bool sleepReminders;
   final NotificationPermissionState permissionState;
 
   NotificationSettingsState copyWith({
     bool? medicationReminders,
     bool? healthAlerts,
     bool? weeklySummary,
+    bool? waterReminders,
+    bool? sleepReminders,
     NotificationPermissionState? permissionState,
   }) {
     return NotificationSettingsState(
       medicationReminders: medicationReminders ?? this.medicationReminders,
       healthAlerts: healthAlerts ?? this.healthAlerts,
       weeklySummary: weeklySummary ?? this.weeklySummary,
+      waterReminders: waterReminders ?? this.waterReminders,
+      sleepReminders: sleepReminders ?? this.sleepReminders,
       permissionState: permissionState ?? this.permissionState,
     );
   }
@@ -36,6 +44,8 @@ class NotificationSettingsController
   static const _medicationKey = 'settings.notifications.medicationReminders';
   static const _healthAlertsKey = 'settings.notifications.healthAlerts';
   static const _weeklySummaryKey = 'settings.notifications.weeklySummary';
+  static const _waterRemindersKey = 'settings.notifications.waterReminders';
+  static const _sleepRemindersKey = 'settings.notifications.sleepReminders';
 
   @override
   Future<NotificationSettingsState> build() async {
@@ -47,6 +57,8 @@ class NotificationSettingsController
       medicationReminders: preferences.getBool(_medicationKey) ?? true,
       healthAlerts: preferences.getBool(_healthAlertsKey) ?? true,
       weeklySummary: preferences.getBool(_weeklySummaryKey) ?? false,
+      waterReminders: preferences.getBool(_waterRemindersKey) ?? true,
+      sleepReminders: preferences.getBool(_sleepRemindersKey) ?? true,
       permissionState: permissionState,
     );
   }
@@ -86,6 +98,24 @@ class NotificationSettingsController
     );
   }
 
+  Future<void> setWaterReminders(bool enabled) async {
+    final next = (state.asData?.value ?? const NotificationSettingsState())
+        .copyWith(waterReminders: enabled);
+    await _save(
+      next,
+      update: (preferences) => preferences.setBool(_waterRemindersKey, enabled),
+    );
+  }
+
+  Future<void> setSleepReminders(bool enabled) async {
+    final next = (state.asData?.value ?? const NotificationSettingsState())
+        .copyWith(sleepReminders: enabled);
+    await _save(
+      next,
+      update: (preferences) => preferences.setBool(_sleepRemindersKey, enabled),
+    );
+  }
+
   Future<void> reset() async {
     await _save(
       NotificationSettingsState(
@@ -97,6 +127,8 @@ class NotificationSettingsController
         await preferences.remove(_medicationKey);
         await preferences.remove(_healthAlertsKey);
         await preferences.remove(_weeklySummaryKey);
+        await preferences.remove(_waterRemindersKey);
+        await preferences.remove(_sleepRemindersKey);
       },
     );
   }

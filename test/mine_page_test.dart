@@ -15,6 +15,7 @@ import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/mine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
+import 'package:luminous/features/settings/data/providers/support_resources_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -368,6 +369,7 @@ void main() {
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(_mockSnapshot),
         ),
+        supportResourcesProvider('campus').overrideWith((ref) async => const []),
       ],
     );
     addTearDown(container.dispose);

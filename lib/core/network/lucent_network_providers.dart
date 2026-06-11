@@ -59,3 +59,15 @@ final lucentMedicineRemindersApiProvider = Provider<MedicineRemindersApi>((
 ) {
   return ref.watch(lucentDioClientProvider).medicineRemindersApi;
 });
+
+final lucentSupportResourcesApiProvider = Provider<SupportResourcesApi>((ref) {
+  return ref.watch(lucentDioClientProvider).supportResourcesApi;
+});
+
+final lucentUserSettingsApiProvider = Provider<UserSettingsApi>((ref) {
+  return ref.watch(lucentDioClientProvider).userSettingsApi;
+});
+
+final lucentDataExportApiProvider = Provider<DataExportApi>((ref) {
+  return ref.watch(lucentDioClientProvider).dataExportApi;
+});
