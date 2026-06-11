@@ -15,8 +15,14 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 
 ## Immediate Work Order
 
-1. **Daily loop contract selection**
-   - Pick the next real loop to wire after Mine/Settings: sleep, lightweight mood, or environment contextual cards.
+1. **Full-stack mobile E2E lane**
+   - Active plan: `../plans/2026-06-11-fullstack-e2e-lane.md`.
+   - Keep the current fake/offline `integration_test` suite, but add one real Flutter-to-Lucent lane before expanding more feature breadth.
+   - Phase 1 and 2 are done: Android-emulator-first, explicit `LUCENT_BASE_URL`, password login, and Lucent-owned test-only record-lane preparation support are fixed.
+   - Next is Phase 3: add real-app Flutter integration bootstrapping that calls the Lucent preparation route, loads explicit test credentials, and keeps fake/offline helpers separate from full-stack helpers.
+
+2. **Daily loop contract selection**
+   - After the first real E2E lane is stable, pick the next real loop to wire after Mine/Settings: sleep, lightweight mood, or environment contextual cards.
    - Keep Report contracts paused until user direction changes.
    - Prefer a narrow contract plus UI path with observable test coverage before expanding another module.
 
