@@ -10,22 +10,16 @@ void main() {
     final container = await pumpOfflineApp(
       tester,
       authRemoteDataSource: remote,
-      medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 
-    await openTab(tester, '用药');
-
-    final medicine = find.text('E2E medicine');
-    await tester.scrollUntilVisible(medicine, 240);
-    await tester.tap(find.text('已服用'));
-    await tester.pumpAndSettle();
+    await openLoginFromSignedOutMine(tester);
 
     expect(find.text('邮箱'), findsOneWidget);
 
     await tester.enterText(find.byType(EditableText).at(0), 'e2e@example.com');
     await tester.enterText(find.byType(EditableText).at(1), 'Password123');
     await tester.tap(find.widgetWithText(FilledButton, '登录'));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(remote.loginEmail, 'e2e@example.com');
     expect(remote.loginPassword, 'Password123');
@@ -44,7 +38,7 @@ void main() {
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 
-    await openLoginFromMedicineDose(tester);
+    await openLoginFromSignedOutMine(tester);
 
     final registerLink = find.text('立即注册');
     await tester.scrollUntilVisible(
@@ -53,7 +47,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(registerLink);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('创建账号'), findsAtLeastNWidgets(1));
 
@@ -63,7 +57,7 @@ void main() {
     await tester.enterText(inputs.at(2), 'Password123');
     await tester.enterText(inputs.at(3), 'Register E2E');
     await tester.tap(find.widgetWithText(FilledButton, '创建账号'));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(remote.registerEmail, 'register-e2e@example.com');
     expect(remote.registerCode, '123456');
@@ -86,7 +80,7 @@ void main() {
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 
-    await openLoginFromMedicineDose(tester);
+    await openLoginFromSignedOutMine(tester);
 
     final registerLink = find.text('立即注册');
     await tester.scrollUntilVisible(
@@ -95,7 +89,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(registerLink);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final inputs = find.byType(EditableText);
     await tester.enterText(inputs.at(0), 'register-code-e2e@example.com');
@@ -116,7 +110,7 @@ void main() {
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 
-    await openLoginFromMedicineDose(tester);
+    await openLoginFromSignedOutMine(tester);
 
     final forgotLink = find.text('忘记密码？');
     await tester.scrollUntilVisible(
@@ -125,7 +119,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(forgotLink);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('重置密码'), findsAtLeastNWidgets(1));
 
@@ -135,7 +129,7 @@ void main() {
     await tester.enterText(inputs.at(2), 'Password123');
     await tester.enterText(inputs.at(3), 'Password123');
     await tester.tap(find.widgetWithText(FilledButton, '重置密码'));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(remote.resetPasswordEmail, 'reset-e2e@example.com');
     expect(remote.resetPasswordCode, '654321');
@@ -152,7 +146,7 @@ void main() {
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 
-    await openLoginFromMedicineDose(tester);
+    await openLoginFromSignedOutMine(tester);
 
     final forgotLink = find.text('忘记密码？');
     await tester.scrollUntilVisible(
@@ -161,7 +155,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(forgotLink);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final inputs = find.byType(EditableText);
     await tester.enterText(inputs.at(0), 'reset-code-e2e@example.com');

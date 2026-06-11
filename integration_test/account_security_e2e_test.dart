@@ -15,7 +15,7 @@ void main() {
 
     await openTab(tester, '我的');
     await tester.tap(find.byKey(const Key('mine-account-manage-link')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('账号与安全'), findsAtLeastNWidgets(1));
     expect(find.text('资料信息'), findsOneWidget);
@@ -29,7 +29,7 @@ void main() {
     final saveButton = find.widgetWithText(FilledButton, '保存资料');
     await tester.ensureVisible(saveButton);
     await tester.tap(saveButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(remote.updateProfileNickname, 'E2E Nick');
     expect(remote.updateProfileAvatar, 'https://example.com/e2e-avatar.png');
@@ -40,10 +40,12 @@ void main() {
     );
 
     await tester.drag(find.byType(Scrollable).first, const Offset(0, 900));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('mine-profile-grid')), findsOneWidget);
+    await settleE2e(tester);
+    final archiveSection = find.byKey(const Key('mine-archive-section'));
+    await pumpUntilFound(tester, archiveSection);
+    expect(archiveSection, findsOneWidget);
   });
 
   testWidgets('account change email flow updates global session', (
@@ -58,7 +60,7 @@ void main() {
 
     await openTab(tester, '我的');
     await tester.tap(find.byKey(const Key('mine-account-manage-link')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final changeEmailButton = find.widgetWithText(FilledButton, '更换邮箱');
     await tester.scrollUntilVisible(
@@ -67,7 +69,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(changeEmailButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('更换邮箱'), findsOneWidget);
 
@@ -77,7 +79,7 @@ void main() {
     );
     await tester.enterText(find.byType(EditableText).at(1), '246810');
     await tester.tap(find.widgetWithText(FilledButton, '更新邮箱'));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(remote.changeEmailNewEmail, 'next-e2e@example.com');
     expect(remote.changeEmailCode, '246810');
@@ -87,7 +89,7 @@ void main() {
     );
 
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     expect(find.text('账号与安全'), findsAtLeastNWidgets(1));
   });
 
@@ -103,7 +105,7 @@ void main() {
 
     await openTab(tester, '我的');
     await tester.tap(find.byKey(const Key('mine-account-manage-link')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final changeEmailButton = find.widgetWithText(FilledButton, '更换邮箱');
     await tester.scrollUntilVisible(
@@ -112,7 +114,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(changeEmailButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     await tester.enterText(
       find.byType(EditableText).at(0),
@@ -137,7 +139,7 @@ void main() {
 
     await openTab(tester, '我的');
     await tester.tap(find.byKey(const Key('mine-account-manage-link')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final oldPasswordField = find.byType(EditableText).at(3);
     await tester.scrollUntilVisible(
@@ -151,7 +153,7 @@ void main() {
     final changePasswordButton = find.widgetWithText(FilledButton, '更新密码');
     await tester.ensureVisible(changePasswordButton);
     await tester.tap(changePasswordButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(remote.changePasswordOldPassword, 'old-password-e2e');
     expect(remote.changePasswordNewPassword, 'new-password-e2e');
@@ -172,7 +174,7 @@ void main() {
 
     await openTab(tester, '我的');
     await tester.tap(find.byKey(const Key('mine-account-manage-link')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final deletePasswordField = find.byType(EditableText).at(5);
     await tester.scrollUntilVisible(
@@ -185,7 +187,7 @@ void main() {
     final deleteButton = find.widgetWithText(FilledButton, '注销账号');
     await tester.ensureVisible(deleteButton);
     await tester.tap(deleteButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(remote.deleteAccountPassword, 'delete-password-e2e');
     expect(container.read(authSessionProvider).isAuthenticated, isFalse);
@@ -203,7 +205,7 @@ void main() {
 
     await openTab(tester, '我的');
     await tester.tap(find.byKey(const Key('mine-account-manage-link')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final unlinkButton = find.widgetWithText(TextButton, '解绑');
     await tester.scrollUntilVisible(
@@ -212,14 +214,14 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(unlinkButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final confirmButton = find.descendant(
       of: find.byType(AlertDialog),
       matching: find.widgetWithText(FilledButton, '解绑'),
     );
     await tester.tap(confirmButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(remote.unlinkIdentityId, 'e2e-identity-1');
     expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);

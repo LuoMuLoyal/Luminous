@@ -17,23 +17,27 @@ void main() {
     await openTab(tester, '记录');
 
     await tester.tap(find.byIcon(Icons.add_rounded).last);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('类型'), findsOneWidget);
     expect(find.text('饮水'), findsOneWidget);
 
-    final fields = find.byType(TextField);
-    await tester.enterText(fields.at(0), '6');
-    await tester.enterText(fields.at(1), 'cups');
-    await tester.enterText(fields.at(2), 'E2E hydration note');
+    await tester.enterText(
+      find.byKey(const Key('daily-record-value-field')),
+      '6',
+    );
+    await tester.enterText(
+      find.byKey(const Key('daily-record-note-field')),
+      'E2E hydration note',
+    );
     await tester.tap(find.widgetWithText(ElevatedButton, '保存'));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final input = dailyRecordRepository.createInput;
     expect(input, isNotNull);
     expect(input!.kind, DailyRecordKind.water);
     expect(input.value, '6');
-    expect(input.unit, 'cups');
+    expect(input.unit, 'ml');
     expect(input.note, 'E2E hydration note');
     expect(input.attachments, isEmpty);
     expect(find.byKey(const Key('record-timeline')), findsOneWidget);
@@ -56,7 +60,7 @@ void main() {
     final entry = find.text('E2E blood pressure');
     await tester.scrollUntilVisible(entry, 240);
     await tester.tap(entry);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final deleteButton = find.widgetWithText(OutlinedButton, '删除');
     await tester.scrollUntilVisible(
@@ -65,14 +69,14 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(deleteButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final confirmButton = find.descendant(
       of: find.byType(AlertDialog),
       matching: find.widgetWithText(FilledButton, '删除'),
     );
     await tester.tap(confirmButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(dailyRecordRepository.deleteCalledWith, 'e2e-record-1');
     expect(find.byKey(const Key('record-timeline')), findsOneWidget);
@@ -93,10 +97,10 @@ void main() {
     final entry = find.text('E2E blood pressure');
     await tester.scrollUntilVisible(entry, 240);
     await tester.tap(entry);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     await tester.tap(find.byTooltip('编辑'));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final fields = find.byType(TextField);
     await tester.enterText(fields.at(0), '122/78');
@@ -105,7 +109,7 @@ void main() {
     await tester.enterText(fields.at(3), 'E2E edited note');
 
     await tester.tap(find.widgetWithText(ElevatedButton, '保存'));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final input = dailyRecordRepository.updateInput;
     expect(dailyRecordRepository.updateCalledWith, 'e2e-record-1');

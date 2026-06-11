@@ -4,8 +4,8 @@ import 'package:luminous/core/network/lucent_network_providers.dart';
 
 /// Remote-backed controller for the authenticated user's privacy/AI settings.
 ///
-/// Reads from `GET /api/v1/me/settings` and patches individual toggles via
-/// `PATCH /api/v1/me/settings`. Optimistically updates local state on success;
+/// Reads from `GET /api/v1/user/settings` and patches individual toggles via
+/// `PATCH /api/v1/user/settings`. Optimistically updates local state on success;
 /// surfaces errors through [AsyncError] so the UI can show rollback toasts.
 class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
   @override

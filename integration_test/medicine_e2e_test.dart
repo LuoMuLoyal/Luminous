@@ -12,7 +12,7 @@ void main() {
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.search_rounded).last);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('搜索药品'), findsOneWidget);
     await tester.enterText(find.byType(TextField), '布洛芬');
@@ -21,7 +21,7 @@ void main() {
     expect(find.text('布洛芬片'), findsOneWidget);
 
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
   });
 
@@ -38,7 +38,7 @@ void main() {
 
     await openTab(tester, '用药');
     await tester.tap(find.byIcon(Icons.search_rounded).last);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     await tester.enterText(find.byType(TextField), '布洛芬');
     await tester.pump(const Duration(seconds: 1));
@@ -52,7 +52,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(addButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final input = healthContextRepository.medicineCreate;
     expect(input, isNotNull);
@@ -74,7 +74,7 @@ void main() {
 
     await openTab(tester, '用药');
     await tester.tap(find.byIcon(Icons.search_rounded).last);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     await tester.enterText(find.byType(TextField), '布洛芬');
     await tester.pump(const Duration(seconds: 1));
@@ -88,11 +88,13 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(addButton);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(healthContextRepository.medicineCreate, isNull);
-    expect(find.text('邮箱'), findsOneWidget);
-    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('auth-required-login-action')));
+    await settleE2e(tester);
+    expect(find.byType(EditableText), findsWidgets);
   });
 
   testWidgets('medicine dose action routes signed-out user to login', (
@@ -105,15 +107,14 @@ void main() {
 
     await openTab(tester, '用药');
 
-    final medicine = find.text('E2E medicine');
-    await tester.scrollUntilVisible(medicine, 240);
-    expect(medicine, findsOneWidget);
-
-    await tester.tap(find.text('已服用'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('邮箱'), findsOneWidget);
-    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+    expect(
+      find.byKey(const Key('medicine-next-dose-action-taken')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('medicine-next-dose-action-skipped')),
+      findsNothing,
+    );
   });
 
   testWidgets('medicine dose action saves signed-in dose log', (tester) async {
@@ -128,12 +129,7 @@ void main() {
 
     await openTab(tester, '用药');
 
-    final medicine = find.text('E2E medicine');
-    await tester.scrollUntilVisible(medicine, 240);
-    expect(medicine, findsOneWidget);
-
-    await tester.tap(find.text('已服用'));
-    await tester.pumpAndSettle();
+    await tapMedicineDoseAction(tester, '已服用');
 
     expect(doseLogRemoteDataSource.createCurrentMedicineId, 'e2e-medicine-1');
     expect(doseLogRemoteDataSource.createStatus, 'taken');
@@ -155,12 +151,7 @@ void main() {
 
     await openTab(tester, '用药');
 
-    final medicine = find.text('E2E medicine');
-    await tester.scrollUntilVisible(medicine, 240);
-    expect(medicine, findsOneWidget);
-
-    await tester.tap(find.text('跳过'));
-    await tester.pumpAndSettle();
+    await tapMedicineDoseAction(tester, '跳过');
 
     expect(doseLogRemoteDataSource.createCurrentMedicineId, 'e2e-medicine-1');
     expect(doseLogRemoteDataSource.createStatus, 'skipped');

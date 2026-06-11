@@ -124,7 +124,7 @@ class MedicineReminderRemoteDataSource {
 
   Future<List<MedicineReminderItem>> _fetch({required bool activeOnly}) async {
     final response = await dio.request<Object>(
-      '/api/v1/me/medicine-reminders',
+      '/api/v1/user/medicine-reminders',
       queryParameters: <String, Object?>{if (activeOnly) 'activeOnly': 'true'},
       options: Options(method: 'GET'),
     );
@@ -136,7 +136,7 @@ class MedicineReminderRemoteDataSource {
     int limit = 20,
   }) async {
     final response = await dio.request<Object>(
-      '/api/v1/me/reminder-deliveries',
+      '/api/v1/user/reminder-deliveries',
       queryParameters: <String, Object?>{
         if (date != null) 'date': date,
         'limit': limit,
@@ -150,7 +150,7 @@ class MedicineReminderRemoteDataSource {
 
   Future<MedicineReminderItem> create(MedicineReminderWriteInput input) async {
     final response = await dio.request<Object>(
-      '/api/v1/me/medicine-reminders',
+      '/api/v1/user/medicine-reminders',
       data: input.toJson(),
       options: Options(method: 'POST', contentType: Headers.jsonContentType),
     );
@@ -162,7 +162,7 @@ class MedicineReminderRemoteDataSource {
     MedicineReminderWriteInput input,
   ) async {
     final response = await dio.request<Object>(
-      '/api/v1/me/medicine-reminders/$id',
+      '/api/v1/user/medicine-reminders/$id',
       data: input.toJson(),
       options: Options(method: 'PATCH', contentType: Headers.jsonContentType),
     );
@@ -171,7 +171,7 @@ class MedicineReminderRemoteDataSource {
 
   Future<void> delete(String id) async {
     await dio.request<Object>(
-      '/api/v1/me/medicine-reminders/$id',
+      '/api/v1/user/medicine-reminders/$id',
       options: Options(method: 'DELETE'),
     );
   }

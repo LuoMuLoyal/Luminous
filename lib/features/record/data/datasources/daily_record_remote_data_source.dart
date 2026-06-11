@@ -106,7 +106,7 @@ class DailyRecordRemoteDataSource {
           .toList();
     }
 
-    final response = await _write('POST', '/api/v1/me/daily-records', payload);
+    final response = await _write('POST', '/api/v1/user/daily-records', payload);
     return _toItem(response);
   }
 
@@ -142,14 +142,14 @@ class DailyRecordRemoteDataSource {
 
     final response = await _write(
       'PATCH',
-      '/api/v1/me/daily-records/$id',
+      '/api/v1/user/daily-records/$id',
       payload,
     );
     return _toItem(response);
   }
 
   Future<void> delete(String id) async {
-    await _write('DELETE', '/api/v1/me/daily-records/$id', null);
+    await _write('DELETE', '/api/v1/user/daily-records/$id', null);
   }
 
   Future<lucent.DailyRecordItemDto> _write(

@@ -98,6 +98,7 @@ class _MobileRecordDashboard extends StatelessWidget {
           l10n: l10n,
           typography: typography,
           surface: surface,
+          onDateSelected: onDateSelected,
           onPickDate: onPickDate,
         ),
         const SizedBox(height: AppSpacingTokens.md),
@@ -150,6 +151,7 @@ class _MobileRecordDateBar extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onDateSelected,
     this.onPickDate,
   });
 
@@ -157,6 +159,7 @@ class _MobileRecordDateBar extends StatelessWidget {
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<DateTime>? onDateSelected;
   final VoidCallback? onPickDate;
 
   @override
@@ -169,6 +172,17 @@ class _MobileRecordDateBar extends StatelessWidget {
 
     return Row(
       children: [
+        _MobileDateStepButton(
+          key: const Key('record-date-previous-action'),
+          icon: Icons.chevron_left_rounded,
+          surface: surface,
+          onTap: onDateSelected == null
+              ? null
+              : () => onDateSelected!(
+                  dashboard.selectedDate.subtract(const Duration(days: 1)),
+                ),
+        ),
+        const SizedBox(width: AppSpacingTokens.xs),
         Expanded(
           child: Material(
             color: Colors.transparent,
@@ -219,7 +233,53 @@ class _MobileRecordDateBar extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(width: AppSpacingTokens.xs),
+        _MobileDateStepButton(
+          key: const Key('record-date-next-action'),
+          icon: Icons.chevron_right_rounded,
+          surface: surface,
+          onTap: onDateSelected == null
+              ? null
+              : () => onDateSelected!(
+                  dashboard.selectedDate.add(const Duration(days: 1)),
+                ),
+        ),
       ],
+    );
+  }
+}
+
+class _MobileDateStepButton extends StatelessWidget {
+  const _MobileDateStepButton({
+    super.key,
+    required this.icon,
+    required this.surface,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final AppThemeSurface surface;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: surface.canvas,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+            border: Border.all(color: surface.hairline),
+          ),
+          child: SizedBox.square(
+            dimension: 44,
+            child: Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
+          ),
+        ),
+      ),
     );
   }
 }

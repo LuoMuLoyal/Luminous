@@ -74,6 +74,7 @@ class MineSignedOutNotice extends StatelessWidget {
       description: mineCopy(l10n, MineCopyKey.signedOutNoticeDescription),
       icon: Icons.lock_outline_rounded,
       actionLabel: l10n.authGoLogin,
+      actionKey: const Key('mine-signed-out-login-action'),
       onAction: () => context.push(loginRouteForCurrentLocation(context)),
       tone: AppStateTone.warning,
       padding: const EdgeInsets.all(AppSpacingTokens.lg),

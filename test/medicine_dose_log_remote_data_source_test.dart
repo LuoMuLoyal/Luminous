@@ -39,13 +39,13 @@ void main() {
 
       final listRequest = adapter.requestAt(
         'GET',
-        '/api/v1/me/medicine-dose-logs',
+        '/api/v1/user/medicine-dose-logs',
       );
       expect(listRequest.queryParameters, containsPair('date', '2026-06-08'));
 
       final updateRequest = adapter.requestAt(
         'PATCH',
-        '/api/v1/me/medicine-dose-logs/dose-1',
+        '/api/v1/user/medicine-dose-logs/dose-1',
       );
       expect(updateRequest.jsonBody, containsPair('status', 'skipped'));
       expect(
@@ -75,7 +75,7 @@ void main() {
 
         final createRequest = adapter.requestAt(
           'POST',
-          '/api/v1/me/medicine-dose-logs',
+          '/api/v1/user/medicine-dose-logs',
         );
         expect(createRequest.jsonBody, {
           'currentMedicineId': 'med-1',

@@ -54,6 +54,7 @@ class RecordPage extends ConsumerWidget {
             ]
           : [
               RecordHeaderActionChip(
+                key: const Key('record-date-today-action'),
                 label: l10n.recordTodayAction,
                 icon: Icons.today_outlined,
                 typography: typography,
@@ -62,6 +63,7 @@ class RecordPage extends ConsumerWidget {
                 iconOnly: isCompact,
               ),
               RecordHeaderActionChip(
+                key: const Key('record-date-previous-action'),
                 label: l10n.recordPreviousDayAction,
                 icon: Icons.chevron_left_rounded,
                 typography: typography,
@@ -73,6 +75,7 @@ class RecordPage extends ConsumerWidget {
                 iconOnly: true,
               ),
               RecordHeaderActionChip(
+                key: const Key('record-date-next-action'),
                 label: l10n.recordNextDayAction,
                 icon: Icons.chevron_right_rounded,
                 typography: typography,

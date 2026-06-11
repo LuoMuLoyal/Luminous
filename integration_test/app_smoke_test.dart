@@ -8,23 +8,24 @@ void main() {
   ) async {
     await pumpOfflineApp(tester);
 
-    expect(find.text('今日'), findsOneWidget);
-    expect(find.text('今日喝水'), findsOneWidget);
+    expect(find.text('今日'), findsAtLeastNWidgets(1));
+    expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
 
     await openTab(tester, '记录');
     expect(find.text('快速记录'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.add_rounded).last);
-    await tester.pumpAndSettle();
-    expect(find.text('尚未登录。'), findsOneWidget);
-    expect(find.widgetWithText(ElevatedButton, '去登录'), findsOneWidget);
+    await settleE2e(tester);
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    expect(find.byKey(const Key('auth-required-login-action')), findsOneWidget);
 
-    await tester.tap(find.byType(BackButton));
-    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
+    await settleE2e(tester);
     expect(find.text('快速记录'), findsOneWidget);
 
     await openTab(tester, '用药');
-    expect(find.text('今日服用计划'), findsOneWidget);
+    await pumpUntilFound(tester, find.byKey(const Key('medicine-today-plan')));
+    expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
 
     await openTab(tester, '我的');
     expect(find.text('当前未登录'), findsOneWidget);

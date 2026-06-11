@@ -253,6 +253,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
           Row(
             children: [
               _DoseActionButton(
+                key: const Key('medicine-next-dose-action-taken'),
                 label: l10n.medicineDoseActionTaken,
                 icon: Icons.check_rounded,
                 color: MedicinePalette.teal,
@@ -262,6 +263,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacingTokens.sm),
               _DoseActionButton(
+                key: const Key('medicine-next-dose-action-skipped'),
                 label: l10n.medicineDoseActionSkipped,
                 icon: Icons.remove_done_rounded,
                 color: MedicinePalette.orangeDeep,

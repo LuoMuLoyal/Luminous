@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-10
+Last updated: 2026-06-11
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 
@@ -14,8 +14,9 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 39 paths / 109 schemas.
-- Generated package includes auth/account, health context, daily records, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, and read-only reminder delivery history.
+- Last known Lucent export: 44 paths / 123 schemas.
+- Generated package includes auth/account, user-scoped health context, daily records, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, public support resources/app info, and data export request status.
+- Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay under `/api/v1/account/*`.
 
 ## Usage Rules
 
@@ -38,7 +39,7 @@ From `Luminous`:
 dart run tool/regenerate_lucent_openapi.dart
 ```
 
-The wrapper exports Lucent OpenAPI, regenerates the Dart client, restores the generated package constraints, rebuilds serializers, patches known nullable-map generator output, formats generated model files, analyzes the generated package, and refreshes root Flutter dependencies.
+The wrapper exports Lucent OpenAPI, regenerates the Dart client, restores the generated package constraints, rebuilds serializers, patches known nullable-map generator output, formats generated model files, fixes generated API Dart lines that would fail `git diff --check`, analyzes the generated package, and refreshes root Flutter dependencies.
 
 Do not run ad-hoc `npx @openapitools/openapi-generator-cli generate` or manual `build_runner` steps for normal work.
 
@@ -50,4 +51,4 @@ flutter analyze
 flutter test
 ```
 
-Generated Markdown whitespace inside `packages/lucent_openapi/**` may remain generator output; do not normalize it just to make diffs prettier.
+If generated API Dart whitespace issues recur, fix the wrapper normalization instead of hand-editing generated output file by file.

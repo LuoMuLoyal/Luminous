@@ -4,8 +4,8 @@ import 'package:luminous/core/network/lucent_network_providers.dart';
 
 /// Controller for the data-export feature.
 ///
-/// - [fetchLatest] reads `GET /api/v1/me/data-export-requests/latest`.
-/// - [requestExport] posts `POST /api/v1/me/data-export-requests` and
+/// - [fetchLatest] reads `GET /api/v1/user/data-export-requests/latest`.
+/// - [requestExport] posts `POST /api/v1/user/data-export-requests` and
 ///   updates the cached latest state.
 class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
   @override
