@@ -36,6 +36,7 @@ This file records current implementation facts only. Product direction lives in 
   - auth sign-in smoke
   - Record create/detail/edit/delete CRUD lane
 - The real full-stack helper uses explicit Dart defines, Lucent test-state preparation, stable shell/login/action keys, and an in-memory session store so old secure-storage sessions do not leak into the lane.
+- Full-stack mobile E2E is intentionally local/manual right now. It is not part of the current GitHub Actions pipeline because the lane still depends on a separate Lucent test runtime, Docker-backed test Postgres, and Android emulator orchestration across two repositories.
 - Protected providers do not call Lucent while auth is restoring or confirmed signed out.
 - Protected entry taps show a modal login prompt on the current page; direct/deep-link protected pages keep destination guards as fallback.
 - Skeleton loading is section-scoped: stable chrome and local/mock/static sections render immediately, backend-backed fields shimmer locally.
