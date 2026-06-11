@@ -2543,4 +2543,19 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reportPatternSleepBody => '晚间咖啡因和作息变化可能影响睡眠';
+
+  @override
+  String get mineReminderDisabled => '已关闭';
+
+  @override
+  String get mineExportStatusPending => '处理中';
+
+  @override
+  String get mineExportStatusCompleted => '已完成';
+
+  @override
+  String get mineExportStatusFailed => '失败';
+
+  @override
+  String get mineExportRequested => '导出请求已提交';
 }

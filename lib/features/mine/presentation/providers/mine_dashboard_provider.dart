@@ -19,11 +19,5 @@ final mineDashboardProvider = FutureProvider<MineDashboard>((ref) {
     return pendingAuthSessionResolution();
   }
 
-  return ref
-      .watch(mineRepositoryProvider)
-      .fetchDashboard()
-      .timeout(
-        const Duration(seconds: 5),
-        onTimeout: () => throw TimeoutException('mine_dashboard_timeout'),
-      );
+  return ref.watch(mineRepositoryProvider).fetchDashboard();
 });

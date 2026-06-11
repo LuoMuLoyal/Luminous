@@ -131,6 +131,10 @@ class LucentDioClient {
       _openapi.getMedicineDoseLogsApi();
   MedicineRemindersApi get medicineRemindersApi =>
       _openapi.getMedicineRemindersApi();
+  SupportResourcesApi get supportResourcesApi =>
+      _openapi.getSupportResourcesApi();
+  UserSettingsApi get userSettingsApi => _openapi.getUserSettingsApi();
+  DataExportApi get dataExportApi => _openapi.getDataExportApi();
 
   Map<String, String> medicinesHeaders({bool bypassCache = false}) {
     if (!bypassCache) {

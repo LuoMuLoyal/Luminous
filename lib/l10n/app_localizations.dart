@@ -4999,6 +4999,36 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'晚间咖啡因和作息变化可能影响睡眠'**
   String get reportPatternSleepBody;
+
+  /// No description provided for @mineReminderDisabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'已关闭'**
+  String get mineReminderDisabled;
+
+  /// No description provided for @mineExportStatusPending.
+  ///
+  /// In zh, this message translates to:
+  /// **'处理中'**
+  String get mineExportStatusPending;
+
+  /// No description provided for @mineExportStatusCompleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已完成'**
+  String get mineExportStatusCompleted;
+
+  /// No description provided for @mineExportStatusFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'失败'**
+  String get mineExportStatusFailed;
+
+  /// No description provided for @mineExportRequested.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出请求已提交'**
+  String get mineExportRequested;
 }
 
 class _AppLocalizationsDelegate

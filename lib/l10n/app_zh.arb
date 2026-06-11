@@ -1106,5 +1106,10 @@
   "settingsAdvancedOpenSourceLicenses": "开源许可",
   "reportPatternSleepTitle": "睡眠变化",
   "reportPatternSleepStatus": "持续观察",
-  "reportPatternSleepBody": "晚间咖啡因和作息变化可能影响睡眠"
+  "reportPatternSleepBody": "晚间咖啡因和作息变化可能影响睡眠",
+  "mineReminderDisabled": "已关闭",
+  "mineExportStatusPending": "处理中",
+  "mineExportStatusCompleted": "已完成",
+  "mineExportStatusFailed": "失败",
+  "mineExportRequested": "导出请求已提交"
 }

@@ -2694,4 +2694,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportPatternSleepBody =>
       'Evening caffeine and schedule changes may affect sleep';
+
+  @override
+  String get mineReminderDisabled => 'Disabled';
+
+  @override
+  String get mineExportStatusPending => 'Processing';
+
+  @override
+  String get mineExportStatusCompleted => 'Completed';
+
+  @override
+  String get mineExportStatusFailed => 'Failed';
+
+  @override
+  String get mineExportRequested => 'Export request submitted';
 }

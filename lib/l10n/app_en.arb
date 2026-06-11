@@ -1106,5 +1106,10 @@
   "settingsAdvancedOpenSourceLicenses": "Open source licenses",
   "reportPatternSleepTitle": "Sleep changes",
   "reportPatternSleepStatus": "Watch trend",
-  "reportPatternSleepBody": "Evening caffeine and schedule changes may affect sleep"
+  "reportPatternSleepBody": "Evening caffeine and schedule changes may affect sleep",
+  "mineReminderDisabled": "Disabled",
+  "mineExportStatusPending": "Processing",
+  "mineExportStatusCompleted": "Completed",
+  "mineExportStatusFailed": "Failed",
+  "mineExportRequested": "Export request submitted"
 }

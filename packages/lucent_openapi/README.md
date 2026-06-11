@@ -95,6 +95,8 @@ Class | Method | HTTP request | Description
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerListV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerlistv1) | **GET** /api/v1/me/daily-records | List daily records for a given date
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerSummaryV1**](doc/DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/me/daily-records/summary | Get daily record summary (counts by kind)
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerUpdateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerupdatev1) | **PATCH** /api/v1/me/daily-records/{id} | Update a daily record
+[*DataExportApi*](doc/DataExportApi.md) | [**dataExportControllerCreateRequestV1**](doc/DataExportApi.md#dataexportcontrollercreaterequestv1) | **POST** /api/v1/me/data-export-requests | Create a new data export request
+[*DataExportApi*](doc/DataExportApi.md) | [**dataExportControllerGetLatestRequestV1**](doc/DataExportApi.md#dataexportcontrollergetlatestrequestv1) | **GET** /api/v1/me/data-export-requests/latest | Get the latest data export request
 [*EnvironmentApi*](doc/EnvironmentApi.md) | [**environmentControllerGetSnapshotV1**](doc/EnvironmentApi.md#environmentcontrollergetsnapshotv1) | **GET** /api/v1/environment/snapshot | Get static environment snapshot reference data
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerCreateV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollercreatev1) | **POST** /api/v1/me/medicine-dose-logs | Create a dose log
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerDeleteV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerdeletev1) | **DELETE** /api/v1/me/medicine-dose-logs/{id} | Soft-delete a dose log
@@ -107,6 +109,8 @@ Class | Method | HTTP request | Description
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
 [*ReminderDeliveriesApi*](doc/ReminderDeliveriesApi.md) | [**reminderDeliveriesControllerListV1**](doc/ReminderDeliveriesApi.md#reminderdeliveriescontrollerlistv1) | **GET** /api/v1/me/reminder-deliveries | List reminder delivery audit logs
+[*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetAppInfoV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetappinfov1) | **GET** /api/v1/public/app-info | Get application metadata
+[*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetResourcesV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetresourcesv1) | **GET** /api/v1/public/support-resources | Get static support resource entries
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/me/health-context/allergies | Create an allergy record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateConditionV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateconditionv1) | **POST** /api/v1/me/health-context/conditions | Create a condition record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateCurrentMedicineV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreatecurrentmedicinev1) | **POST** /api/v1/me/health-context/current-medicines | Add a current medicine record
@@ -118,6 +122,8 @@ Class | Method | HTTP request | Description
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerUpdateConditionV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerupdateconditionv1) | **PATCH** /api/v1/me/health-context/conditions/{id} | Update a condition record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerUpdateCurrentMedicineV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerupdatecurrentmedicinev1) | **PATCH** /api/v1/me/health-context/current-medicines/{id} | Update a current medicine record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerUpdateMeHealthContextProfileV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollerupdatemehealthcontextprofilev1) | **PATCH** /api/v1/me/health-context/profile | Update the current user health-context profile
+[*UserSettingsApi*](doc/UserSettingsApi.md) | [**userSettingsControllerGetSettingsV1**](doc/UserSettingsApi.md#usersettingscontrollergetsettingsv1) | **GET** /api/v1/me/settings | Get authenticated user settings
+[*UserSettingsApi*](doc/UserSettingsApi.md) | [**userSettingsControllerUpdateSettingsV1**](doc/UserSettingsApi.md#usersettingscontrollerupdatesettingsv1) | **PATCH** /api/v1/me/settings | Update authenticated user settings
 
 
 ## Documentation For Models
@@ -129,6 +135,8 @@ Class | Method | HTTP request | Description
  - [AccountResponseDto](doc/AccountResponseDto.md)
  - [AirQualityIndicatorDto](doc/AirQualityIndicatorDto.md)
  - [AirQualityLevel](doc/AirQualityLevel.md)
+ - [AppInfoDataDto](doc/AppInfoDataDto.md)
+ - [AppInfoResponseDto](doc/AppInfoResponseDto.md)
  - [ChangeEmailDto](doc/ChangeEmailDto.md)
  - [ChangePasswordDto](doc/ChangePasswordDto.md)
  - [CnMedicineDetailDto](doc/CnMedicineDetailDto.md)
@@ -153,6 +161,10 @@ Class | Method | HTTP request | Description
  - [DailyRecordSummaryDataDto](doc/DailyRecordSummaryDataDto.md)
  - [DailyRecordSummaryDto](doc/DailyRecordSummaryDto.md)
  - [DailyRecordSummaryResponseDto](doc/DailyRecordSummaryResponseDto.md)
+ - [DataExportLatestResponseDto](doc/DataExportLatestResponseDto.md)
+ - [DataExportRequestDataDto](doc/DataExportRequestDataDto.md)
+ - [DataExportRequestResponseDto](doc/DataExportRequestResponseDto.md)
+ - [DataExportStatus](doc/DataExportStatus.md)
  - [DeleteAccountDto](doc/DeleteAccountDto.md)
  - [DoseLogItemDto](doc/DoseLogItemDto.md)
  - [DoseLogListDataDto](doc/DoseLogListDataDto.md)
@@ -206,6 +218,11 @@ Class | Method | HTTP request | Description
  - [SendVerificationCodeResponseDto](doc/SendVerificationCodeResponseDto.md)
  - [SexAtBirth](doc/SexAtBirth.md)
  - [SuccessResponseDto](doc/SuccessResponseDto.md)
+ - [SupportResourceActionType](doc/SupportResourceActionType.md)
+ - [SupportResourceDto](doc/SupportResourceDto.md)
+ - [SupportResourceListDataDto](doc/SupportResourceListDataDto.md)
+ - [SupportResourceListResponseDto](doc/SupportResourceListResponseDto.md)
+ - [SupportResourceScope](doc/SupportResourceScope.md)
  - [TemperatureIndicatorDto](doc/TemperatureIndicatorDto.md)
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
@@ -217,6 +234,7 @@ Class | Method | HTTP request | Description
  - [UpdateHealthContextConditionDto](doc/UpdateHealthContextConditionDto.md)
  - [UpdateHealthContextProfileDto](doc/UpdateHealthContextProfileDto.md)
  - [UpdateMedicineReminderDto](doc/UpdateMedicineReminderDto.md)
+ - [UpdateUserSettingsDto](doc/UpdateUserSettingsDto.md)
  - [UserAllergyItemDto](doc/UserAllergyItemDto.md)
  - [UserAllergyKind](doc/UserAllergyKind.md)
  - [UserAllergySeverity](doc/UserAllergySeverity.md)
@@ -227,6 +245,8 @@ Class | Method | HTTP request | Description
  - [UserFullDto](doc/UserFullDto.md)
  - [UserHealthProfileDto](doc/UserHealthProfileDto.md)
  - [UserHealthSummaryDto](doc/UserHealthSummaryDto.md)
+ - [UserSettingsDataDto](doc/UserSettingsDataDto.md)
+ - [UserSettingsResponseDto](doc/UserSettingsResponseDto.md)
  - [UvIndicatorDto](doc/UvIndicatorDto.md)
  - [UvLevel](doc/UvLevel.md)
  - [VerifyEmailDataDto](doc/VerifyEmailDataDto.md)

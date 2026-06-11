@@ -11,12 +11,15 @@ import 'package:lucent_openapi/src/api/account_api.dart';
 import 'package:lucent_openapi/src/api/app_api.dart';
 import 'package:lucent_openapi/src/api/auth_api.dart';
 import 'package:lucent_openapi/src/api/daily_records_api.dart';
+import 'package:lucent_openapi/src/api/data_export_api.dart';
 import 'package:lucent_openapi/src/api/environment_api.dart';
 import 'package:lucent_openapi/src/api/medicine_dose_logs_api.dart';
 import 'package:lucent_openapi/src/api/medicine_reminders_api.dart';
 import 'package:lucent_openapi/src/api/medicines_api.dart';
 import 'package:lucent_openapi/src/api/reminder_deliveries_api.dart';
+import 'package:lucent_openapi/src/api/support_resources_api.dart';
 import 'package:lucent_openapi/src/api/user_health_context_api.dart';
+import 'package:lucent_openapi/src/api/user_settings_api.dart';
 
 class LucentOpenapi {
   static const String basePath = r'http://localhost';
@@ -133,6 +136,12 @@ class LucentOpenapi {
     return DailyRecordsApi(dio);
   }
 
+  /// Get DataExportApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  DataExportApi getDataExportApi() {
+    return DataExportApi(dio);
+  }
+
   /// Get EnvironmentApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   EnvironmentApi getEnvironmentApi() {
@@ -163,9 +172,21 @@ class LucentOpenapi {
     return ReminderDeliveriesApi(dio);
   }
 
+  /// Get SupportResourcesApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  SupportResourcesApi getSupportResourcesApi() {
+    return SupportResourcesApi(dio);
+  }
+
   /// Get UserHealthContextApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   UserHealthContextApi getUserHealthContextApi() {
     return UserHealthContextApi(dio);
+  }
+
+  /// Get UserSettingsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  UserSettingsApi getUserSettingsApi() {
+    return UserSettingsApi(dio);
   }
 }

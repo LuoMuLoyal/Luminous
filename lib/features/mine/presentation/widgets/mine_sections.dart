@@ -670,7 +670,7 @@ class _ServiceRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      mineCopy(l10n, entry.titleKey),
+                      entry.rawTitle ?? mineCopy(l10n, entry.titleKey),
                       style: typography.bodyMdStrong.copyWith(
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0,
@@ -680,7 +680,7 @@ class _ServiceRow extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacingTokens.xxs),
                     Text(
-                      mineCopy(l10n, entry.subtitleKey),
+                      entry.rawSubtitle ?? mineCopy(l10n, entry.subtitleKey),
                       style: typography.bodySm.copyWith(
                         color: surface.body,
                         letterSpacing: 0,
