@@ -15,20 +15,42 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 
 ## Immediate Work Order
 
-1. **Full-stack mobile E2E execution strategy**
-   - Active plan: `../plans/2026-06-11-fullstack-e2e-lane.md`.
-   - Phase 1 through 4 are done: Android-emulator-first wiring, Lucent-owned preparation support, full-stack auth smoke, and the first real Record CRUD lane are all verified locally on `emulator-5554`.
-   - Next is Phase 5: decide and document how this lane should run outside ad-hoc local reruns.
-   - Required decision output:
-     - keep it local/manual for now, or
-     - add a gated local-emulator CI job, or
-     - prepare a later Firebase Test Lab / broader device strategy
-   - The decision must include the exact owner command and when the team is expected to run it.
+1. **Today AI analysis**
+   - Active plan: `../plans/2026-06-11-today-ai-analysis.md`.
+   - Next implementation target is no longer sleep. It is the first real AI-backed Today flow: manual `生成今日分析`.
+   - Decision:
+     - use LangChain runtime pieces in Lucent
+     - do not add LangGraph yet
+     - do not start with scheduled proactive AI notifications
+   - Phase 1 output should be:
+     - one authenticated Lucent Today AI endpoint
+     - one structured response schema
+     - one Luminous Today card wired to real generation instead of static placeholder bullets
+   - Sleep remains deferred as a later input source and candidate-record path, not the current first implementation slice.
 
-2. **Daily loop contract selection**
-   - After the Phase 5 execution decision is recorded, pick the next real loop to wire after Mine/Settings: sleep, lightweight mood, or environment contextual cards.
-   - Keep Report contracts paused until user direction changes.
-   - Prefer a narrow contract plus UI path with observable test coverage before expanding another module.
+2. **Local full-stack lane usage rule**
+   - Keep the current Record lane out of GitHub Actions for now.
+   - Owner command for manual verification:
+     - backend shell:
+       `cd Lucent`
+       `pnpm dev:stack:up`
+       `pnpm db:migrate:test`
+       `pnpm start:test:dev`
+     - frontend shell:
+       `cd Luminous`
+       `flutter test integration_test/fullstack_record_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
+   - Expected run timing:
+     - before merging any change that touches auth/session restore
+     - before merging any Lucent or Luminous change that touches `/api/v1/user/daily-records*`
+     - before merging changes to the full-stack E2E helper or generated auth/record client surface
+     - before cutting a mobile test build that claims Record CRUD is stable
+
+3. **AI follow-up order after Today**
+   - After Today AI analysis is stable, continue in this order:
+     - weekly/monthly AI summary
+     - natural language to candidate records
+     - screenshot to candidate structured input
+   - Do not jump to scheduled proactive AI pushes before the manual Today path is stable and bounded.
 
 ## Paused By User
 
