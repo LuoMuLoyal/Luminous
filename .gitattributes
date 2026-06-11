@@ -15,6 +15,10 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 
+# Generated OpenAPI client may contain trailing spaces in comments/docs.
+# Ignore those whitespace-only warnings in git diff --check for this path.
+packages/lucent_openapi/** whitespace=-blank-at-eol,-blank-at-eof
+
 *.png binary
 *.jpg binary
 *.jpeg binary
