@@ -45,7 +45,7 @@ This replaces the long historical error audit as the current quick-read checklis
 - Lucent deploy currently uses app image `latest`; there is no automatic image rollback.
 - Do not edit generated Prisma client manually.
 - Do not manually normalize generated OpenAPI client Markdown just to make diffs pretty.
-- Do not manually patch generated `packages/lucent_openapi` formatting problems without first checking whether `tool/regenerate_lucent_openapi.dart` should normalize them for repeatability.
+- Generated OpenAPI client whitespace warnings are handled via `.gitattributes`; do not add repo-specific cleanup steps just to strip generated trailing spaces.
 
 ## Verification
 

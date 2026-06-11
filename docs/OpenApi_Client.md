@@ -39,16 +39,16 @@ From `Luminous`:
 dart run tool/regenerate_lucent_openapi.dart
 ```
 
-The wrapper exports Lucent OpenAPI, regenerates the Dart client, restores the generated package constraints, rebuilds serializers, patches known nullable-map generator output, formats generated model files, fixes generated API Dart lines that would fail `git diff --check`, analyzes the generated package, and refreshes root Flutter dependencies.
+The wrapper exports Lucent OpenAPI, regenerates the Dart client, restores the generated package constraints, rebuilds serializers, patches known nullable-map generator output, formats generated model files, analyzes the generated package, and refreshes root Flutter dependencies.
 
 Do not run ad-hoc `npx @openapitools/openapi-generator-cli generate` or manual `build_runner` steps for normal work.
 
 After regeneration, run:
 
 ```bash
-git -C Luminous diff --check -- . ':!packages/lucent_openapi/**'
+git -C Luminous diff --check
 flutter analyze
 flutter test
 ```
 
-If generated API Dart whitespace issues recur, fix the wrapper normalization instead of hand-editing generated output file by file.
+Generated OpenAPI client paths are covered by `.gitattributes` whitespace rules, so `git diff --check` will not block on generated trailing spaces there.

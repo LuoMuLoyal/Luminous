@@ -120,16 +120,6 @@ Future<void> main() async {
       stepName: 'Format generated model files',
     );
 
-    final strippedFiles = _stripGeneratedApiDiffCheckWhitespace(
-      generatedPackageRoot,
-      luminousRoot: luminousRoot,
-    );
-    stdout.writeln(
-      strippedFiles == 0
-          ? 'No generated API diff-check whitespace was found.'
-          : 'Removed diff-check whitespace from $strippedFiles generated API files.',
-    );
-
     await _runCommand(
       'dart',
       ['analyze', '--no-fatal-warnings'],
@@ -219,100 +209,6 @@ String _replaceYamlLine(String input, RegExp pattern, String replacement) {
     final indentation = match.group(1) ?? '';
     return '$indentation$replacement';
   });
-}
-
-int _stripGeneratedApiDiffCheckWhitespace(
-  Directory generatedPackageRoot, {
-  required Directory luminousRoot,
-}) {
-  final relativeApiPath = [
-    'packages',
-    'lucent_openapi',
-    'lib',
-    'src',
-    'api',
-  ].join('/');
-  final result = Process.runSync(
-    'git',
-    ['diff', '--check', '--', relativeApiPath],
-    workingDirectory: luminousRoot.path,
-    runInShell: true,
-  );
-  final output = '${result.stdout}\n${result.stderr}';
-  final findings = _parseDiffCheckTrailingWhitespace(output);
-  if (findings.isEmpty) {
-    return 0;
-  }
-
-  final findingsByPath = <String, Set<int>>{};
-  for (final finding in findings) {
-    findingsByPath
-        .putIfAbsent(finding.path.replaceAll('/', Platform.pathSeparator), () {
-          return <int>{};
-        })
-        .add(finding.lineNumber);
-  }
-
-  var updatedFiles = 0;
-  for (final entry in findingsByPath.entries) {
-    final file = File(
-      '${luminousRoot.path}${Platform.pathSeparator}${entry.key}',
-    );
-    if (!file.path.startsWith(generatedPackageRoot.path) ||
-        !file.existsSync()) {
-      continue;
-    }
-
-    final original = file.readAsStringSync();
-    final newline = original.contains('\r\n') ? '\r\n' : '\n';
-    final lines = original.split(RegExp(r'\r?\n'));
-    var changed = false;
-    for (final lineNumber in entry.value) {
-      final index = lineNumber - 1;
-      if (index < 0 || index >= lines.length) {
-        continue;
-      }
-
-      final stripped = lines[index].replaceFirst(RegExp(r'[ \t]+$'), '');
-      if (stripped == lines[index]) {
-        continue;
-      }
-
-      lines[index] = stripped;
-      changed = true;
-    }
-
-    if (!changed) {
-      continue;
-    }
-
-    file.writeAsStringSync(lines.join(newline));
-    updatedFiles += 1;
-  }
-
-  return updatedFiles;
-}
-
-List<_DiffCheckFinding> _parseDiffCheckTrailingWhitespace(String output) {
-  final pattern = RegExp(r'^(.+):(\d+): trailing whitespace\.$');
-  return output
-      .split(RegExp(r'\r?\n'))
-      .map(pattern.firstMatch)
-      .whereType<RegExpMatch>()
-      .map((match) {
-        return _DiffCheckFinding(
-          path: match.group(1)!,
-          lineNumber: int.parse(match.group(2)!),
-        );
-      })
-      .toList(growable: false);
-}
-
-class _DiffCheckFinding {
-  const _DiffCheckFinding({required this.path, required this.lineNumber});
-
-  final String path;
-  final int lineNumber;
 }
 
 int _patchBrokenNullableMapEntries(Directory generatedPackageRoot) {

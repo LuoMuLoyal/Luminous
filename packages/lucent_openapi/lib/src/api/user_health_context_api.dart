@@ -526,7 +526,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>> userHealthContextControllerGetUserHealthContextV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerGetUserHealthContextV1({ 
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -876,7 +876,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>> userHealthContextControllerUpdateUserHealthContextProfileV1({
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerUpdateUserHealthContextProfileV1({ 
     required UpdateHealthContextProfileDto updateHealthContextProfileDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
