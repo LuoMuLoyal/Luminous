@@ -40,7 +40,7 @@ void main() {
 
         final request = adapter.requestAt(
           'GET',
-          '/api/v1/me/medicine-reminders',
+          '/api/v1/user/medicine-reminders',
         );
         expect(request.queryParameters, containsPair('activeOnly', 'true'));
         expect(reminders, hasLength(1));
@@ -89,7 +89,7 @@ void main() {
 
       final reminders = await dataSource.fetchAll();
 
-      final request = adapter.requestAt('GET', '/api/v1/me/medicine-reminders');
+      final request = adapter.requestAt('GET', '/api/v1/user/medicine-reminders');
       expect(request.queryParameters, isNot(contains('activeOnly')));
       expect(reminders.single.id, 'reminder-3');
     });
@@ -110,7 +110,7 @@ void main() {
 
       final request = adapter.requestAt(
         'POST',
-        '/api/v1/me/medicine-reminders',
+        '/api/v1/user/medicine-reminders',
       );
       expect(request.body, containsPair('currentMedicineId', 'med-1'));
       expect(request.body, containsPair('label', 'Morning'));
@@ -144,7 +144,7 @@ void main() {
 
       final request = adapter.requestAt(
         'PATCH',
-        '/api/v1/me/medicine-reminders/reminder-1',
+        '/api/v1/user/medicine-reminders/reminder-1',
       );
       expect(request.body, containsPair('currentMedicineId', 'med-1'));
       expect(request.body, containsPair('scheduledHour', 20));
@@ -174,7 +174,7 @@ void main() {
 
       final request = adapter.requestAt(
         'GET',
-        '/api/v1/me/reminder-deliveries',
+        '/api/v1/user/reminder-deliveries',
       );
       expect(request.queryParameters, containsPair('date', '2026-06-10'));
       expect(request.queryParameters, containsPair('limit', 5));
@@ -191,7 +191,7 @@ void main() {
 
       final request = adapter.requestAt(
         'DELETE',
-        '/api/v1/me/medicine-reminders/reminder-1',
+        '/api/v1/user/medicine-reminders/reminder-1',
       );
       expect(request.body, isNull);
     });
@@ -258,7 +258,7 @@ class _FakeReminderAdapter implements HttpClientAdapter {
       );
     }
 
-    if (options.path == '/api/v1/me/reminder-deliveries') {
+    if (options.path == '/api/v1/user/reminder-deliveries') {
       return ResponseBody.fromString(
         jsonEncode(<String, Object?>{
           'code': 0,

@@ -39,7 +39,7 @@ class UserSettingsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/settings';
+    final _path = r'/api/v1/user/settings';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -111,7 +111,7 @@ _responseData = rawData == null ? null : deserialize<UserSettingsResponseDto, Us
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/settings';
+    final _path = r'/api/v1/user/settings';
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{

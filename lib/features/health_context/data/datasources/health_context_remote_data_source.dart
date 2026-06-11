@@ -13,113 +13,113 @@ class HealthContextRemoteDataSource {
   final UserHealthContextApi _api;
   final Dio _dio;
 
-  /// Calls GET /api/v1/me/health-context and returns the parsed DTO.
+  /// Calls GET /api/v1/user/health-context and returns the parsed DTO.
   Future<HealthContextDataDto> fetchHealthContext() async {
-    final response = await _api.userHealthContextControllerGetMeHealthContextV1();
+    final response = await _api.userHealthContextControllerGetUserHealthContextV1();
     return response.data!.data;
   }
 
-  /// Calls PATCH /api/v1/me/health-context/profile and returns the parsed DTO.
+  /// Calls PATCH /api/v1/user/health-context/profile and returns the parsed DTO.
   Future<HealthContextDataDto> updateProfile(
     HealthProfileUpdateInput input,
   ) {
     return _write(
       method: 'PATCH',
-      path: '/api/v1/me/health-context/profile',
+      path: '/api/v1/user/health-context/profile',
       payload: healthProfileUpdatePayload(input),
     );
   }
 
-  /// Calls POST /api/v1/me/health-context/allergies and returns the parsed DTO.
+  /// Calls POST /api/v1/user/health-context/allergies and returns the parsed DTO.
   Future<HealthContextDataDto> createAllergy(
     HealthAllergyWriteInput input,
   ) {
     return _write(
       method: 'POST',
-      path: '/api/v1/me/health-context/allergies',
+      path: '/api/v1/user/health-context/allergies',
       payload: healthAllergyCreatePayload(input),
     );
   }
 
-  /// Calls PATCH /api/v1/me/health-context/allergies/:id and returns the parsed DTO.
+  /// Calls PATCH /api/v1/user/health-context/allergies/:id and returns the parsed DTO.
   Future<HealthContextDataDto> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
   ) {
     return _write(
       method: 'PATCH',
-      path: '/api/v1/me/health-context/allergies/$id',
+      path: '/api/v1/user/health-context/allergies/$id',
       payload: healthAllergyUpdatePayload(input),
     );
   }
 
-  /// Calls DELETE /api/v1/me/health-context/allergies/:id and returns the parsed DTO.
+  /// Calls DELETE /api/v1/user/health-context/allergies/:id and returns the parsed DTO.
   Future<HealthContextDataDto> deleteAllergy(String id) {
     return _write(
       method: 'DELETE',
-      path: '/api/v1/me/health-context/allergies/$id',
+      path: '/api/v1/user/health-context/allergies/$id',
     );
   }
 
-  /// Calls POST /api/v1/me/health-context/conditions and returns the parsed DTO.
+  /// Calls POST /api/v1/user/health-context/conditions and returns the parsed DTO.
   Future<HealthContextDataDto> createCondition(
     HealthConditionWriteInput input,
   ) {
     return _write(
       method: 'POST',
-      path: '/api/v1/me/health-context/conditions',
+      path: '/api/v1/user/health-context/conditions',
       payload: healthConditionCreatePayload(input),
     );
   }
 
-  /// Calls PATCH /api/v1/me/health-context/conditions/:id and returns the parsed DTO.
+  /// Calls PATCH /api/v1/user/health-context/conditions/:id and returns the parsed DTO.
   Future<HealthContextDataDto> updateCondition(
     String id,
     HealthConditionUpdateInput input,
   ) {
     return _write(
       method: 'PATCH',
-      path: '/api/v1/me/health-context/conditions/$id',
+      path: '/api/v1/user/health-context/conditions/$id',
       payload: healthConditionUpdatePayload(input),
     );
   }
 
-  /// Calls DELETE /api/v1/me/health-context/conditions/:id and returns the parsed DTO.
+  /// Calls DELETE /api/v1/user/health-context/conditions/:id and returns the parsed DTO.
   Future<HealthContextDataDto> deleteCondition(String id) {
     return _write(
       method: 'DELETE',
-      path: '/api/v1/me/health-context/conditions/$id',
+      path: '/api/v1/user/health-context/conditions/$id',
     );
   }
 
-  /// Calls POST /api/v1/me/health-context/current-medicines and returns the parsed DTO.
+  /// Calls POST /api/v1/user/health-context/current-medicines and returns the parsed DTO.
   Future<HealthContextDataDto> createCurrentMedicine(
     CurrentMedicineWriteInput input,
   ) {
     return _write(
       method: 'POST',
-      path: '/api/v1/me/health-context/current-medicines',
+      path: '/api/v1/user/health-context/current-medicines',
       payload: currentMedicineCreatePayload(input),
     );
   }
 
-  /// Calls PATCH /api/v1/me/health-context/current-medicines/:id and returns the parsed DTO.
+  /// Calls PATCH /api/v1/user/health-context/current-medicines/:id and returns the parsed DTO.
   Future<HealthContextDataDto> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
   ) {
     return _write(
       method: 'PATCH',
-      path: '/api/v1/me/health-context/current-medicines/$id',
+      path: '/api/v1/user/health-context/current-medicines/$id',
       payload: currentMedicineUpdatePayload(input),
     );
   }
 
-  /// Calls DELETE /api/v1/me/health-context/current-medicines/:id and returns the parsed DTO.
+  /// Calls DELETE /api/v1/user/health-context/current-medicines/:id and returns the parsed DTO.
   Future<HealthContextDataDto> deleteCurrentMedicine(String id) {
     return _write(
       method: 'DELETE',
-      path: '/api/v1/me/health-context/current-medicines/$id',
+      path: '/api/v1/user/health-context/current-medicines/$id',
     );
   }
 

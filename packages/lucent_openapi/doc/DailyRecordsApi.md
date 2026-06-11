@@ -9,13 +9,13 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**dailyRecordsControllerCreateImageUploadV1**](DailyRecordsApi.md#dailyrecordscontrollercreateimageuploadv1) | **POST** /api/v1/me/daily-records/attachments/images/presign-upload | Create a Tencent COS signed URL for daily record image upload
-[**dailyRecordsControllerCreateV1**](DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/me/daily-records | Create a daily record
-[**dailyRecordsControllerDeleteV1**](DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/me/daily-records/{id} | Soft-delete a daily record
-[**dailyRecordsControllerGetV1**](DailyRecordsApi.md#dailyrecordscontrollergetv1) | **GET** /api/v1/me/daily-records/{id} | Get a daily record by id
-[**dailyRecordsControllerListV1**](DailyRecordsApi.md#dailyrecordscontrollerlistv1) | **GET** /api/v1/me/daily-records | List daily records for a given date
-[**dailyRecordsControllerSummaryV1**](DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/me/daily-records/summary | Get daily record summary (counts by kind)
-[**dailyRecordsControllerUpdateV1**](DailyRecordsApi.md#dailyrecordscontrollerupdatev1) | **PATCH** /api/v1/me/daily-records/{id} | Update a daily record
+[**dailyRecordsControllerCreateImageUploadV1**](DailyRecordsApi.md#dailyrecordscontrollercreateimageuploadv1) | **POST** /api/v1/user/daily-records/attachments/images/presign-upload | Create a Tencent COS signed URL for daily record image upload
+[**dailyRecordsControllerCreateV1**](DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/user/daily-records | Create a daily record
+[**dailyRecordsControllerDeleteV1**](DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/user/daily-records/{id} | Soft-delete a daily record
+[**dailyRecordsControllerGetV1**](DailyRecordsApi.md#dailyrecordscontrollergetv1) | **GET** /api/v1/user/daily-records/{id} | Get a daily record by id
+[**dailyRecordsControllerListV1**](DailyRecordsApi.md#dailyrecordscontrollerlistv1) | **GET** /api/v1/user/daily-records | List daily records for a given date
+[**dailyRecordsControllerSummaryV1**](DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/user/daily-records/summary | Get daily record summary (counts by kind)
+[**dailyRecordsControllerUpdateV1**](DailyRecordsApi.md#dailyrecordscontrollerupdatev1) | **PATCH** /api/v1/user/daily-records/{id} | Update a daily record
 
 
 # **dailyRecordsControllerCreateImageUploadV1**

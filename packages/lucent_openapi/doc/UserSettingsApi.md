@@ -9,8 +9,8 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**userSettingsControllerGetSettingsV1**](UserSettingsApi.md#usersettingscontrollergetsettingsv1) | **GET** /api/v1/me/settings | Get authenticated user settings
-[**userSettingsControllerUpdateSettingsV1**](UserSettingsApi.md#usersettingscontrollerupdatesettingsv1) | **PATCH** /api/v1/me/settings | Update authenticated user settings
+[**userSettingsControllerGetSettingsV1**](UserSettingsApi.md#usersettingscontrollergetsettingsv1) | **GET** /api/v1/user/settings | Get authenticated user settings
+[**userSettingsControllerUpdateSettingsV1**](UserSettingsApi.md#usersettingscontrollerupdatesettingsv1) | **PATCH** /api/v1/user/settings | Update authenticated user settings
 
 
 # **userSettingsControllerGetSettingsV1**

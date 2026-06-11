@@ -9,10 +9,10 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**medicineDoseLogsControllerCreateV1**](MedicineDoseLogsApi.md#medicinedoselogscontrollercreatev1) | **POST** /api/v1/me/medicine-dose-logs | Create a dose log
-[**medicineDoseLogsControllerDeleteV1**](MedicineDoseLogsApi.md#medicinedoselogscontrollerdeletev1) | **DELETE** /api/v1/me/medicine-dose-logs/{id} | Soft-delete a dose log
-[**medicineDoseLogsControllerListV1**](MedicineDoseLogsApi.md#medicinedoselogscontrollerlistv1) | **GET** /api/v1/me/medicine-dose-logs | List dose logs for a date
-[**medicineDoseLogsControllerUpdateV1**](MedicineDoseLogsApi.md#medicinedoselogscontrollerupdatev1) | **PATCH** /api/v1/me/medicine-dose-logs/{id} | Update a dose log
+[**medicineDoseLogsControllerCreateV1**](MedicineDoseLogsApi.md#medicinedoselogscontrollercreatev1) | **POST** /api/v1/user/medicine-dose-logs | Create a dose log
+[**medicineDoseLogsControllerDeleteV1**](MedicineDoseLogsApi.md#medicinedoselogscontrollerdeletev1) | **DELETE** /api/v1/user/medicine-dose-logs/{id} | Soft-delete a dose log
+[**medicineDoseLogsControllerListV1**](MedicineDoseLogsApi.md#medicinedoselogscontrollerlistv1) | **GET** /api/v1/user/medicine-dose-logs | List dose logs for a date
+[**medicineDoseLogsControllerUpdateV1**](MedicineDoseLogsApi.md#medicinedoselogscontrollerupdatev1) | **PATCH** /api/v1/user/medicine-dose-logs/{id} | Update a dose log
 
 
 # **medicineDoseLogsControllerCreateV1**

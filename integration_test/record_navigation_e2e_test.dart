@@ -20,7 +20,7 @@ void main() {
     final entry = find.text('E2E blood pressure');
     await tester.scrollUntilVisible(entry, 240);
     await tester.tap(entry);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(dailyRecordRepository.getCalledWith, 'e2e-record-1');
     expect(find.text('记录详情'), findsOneWidget);
@@ -29,18 +29,18 @@ void main() {
     expect(find.text('E2E detail note'), findsOneWidget);
 
     await tester.tap(find.byTooltip('编辑'));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(dailyRecordRepository.getCalledWith, 'e2e-record-1');
     expect(find.text('编辑'), findsOneWidget);
     expect(find.text('备注'), findsWidgets);
 
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     expect(find.text('记录详情'), findsOneWidget);
 
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     expect(find.byKey(const Key('record-timeline')), findsOneWidget);
   });
 
@@ -60,8 +60,8 @@ void main() {
     expect(recordRepository.requestedDates, isNotEmpty);
     final initialDate = recordRepository.requestedDates.last;
 
-    await tester.tap(find.byTooltip('上一天'));
-    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('record-date-previous-action')));
+    await settleE2e(tester);
 
     expect(
       recordRepository.requestedDates,
@@ -70,37 +70,35 @@ void main() {
     expect(find.byKey(const Key('record-timeline')), findsOneWidget);
   });
 
-  testWidgets('record next day and today actions reload selected timeline', (
-    tester,
-  ) async {
-    final recordRepository = E2eRecordRepository();
+  testWidgets(
+    'record next day and previous day actions reload selected timeline',
+    (tester) async {
+      final recordRepository = E2eRecordRepository();
 
-    await pumpOfflineApp(
-      tester,
-      authSessionOverride: SignedInAuthSessionNotifier.new,
-      recordRepository: recordRepository,
-    );
+      await pumpOfflineApp(
+        tester,
+        authSessionOverride: SignedInAuthSessionNotifier.new,
+        recordRepository: recordRepository,
+      );
 
-    await openTab(tester, '记录');
+      await openTab(tester, '记录');
 
-    expect(recordRepository.requestedDates, isNotEmpty);
-    final initialDate = recordRepository.requestedDates.last;
+      expect(recordRepository.requestedDates, isNotEmpty);
+      final initialDate = recordRepository.requestedDates.last;
 
-    await tester.tap(find.byTooltip('下一天'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('record-date-next-action')));
+      await settleE2e(tester);
 
-    expect(
-      recordRepository.requestedDates,
-      contains(initialDate.add(const Duration(days: 1))),
-    );
+      expect(
+        recordRepository.requestedDates,
+        contains(initialDate.add(const Duration(days: 1))),
+      );
 
-    await tester.tap(find.byTooltip('上一天'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('record-date-previous-action')));
+      await settleE2e(tester);
 
-    await tester.tap(find.byTooltip('今天'));
-    await tester.pumpAndSettle();
-
-    expect(recordRepository.requestedDates.last, initialDate);
-    expect(find.byKey(const Key('record-timeline')), findsOneWidget);
-  });
+      expect(recordRepository.requestedDates.last, initialDate);
+      expect(find.byKey(const Key('record-timeline')), findsOneWidget);
+    },
+  );
 }

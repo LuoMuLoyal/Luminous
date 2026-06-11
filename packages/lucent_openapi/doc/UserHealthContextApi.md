@@ -9,17 +9,17 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**userHealthContextControllerCreateAllergyV1**](UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/me/health-context/allergies | Create an allergy record
-[**userHealthContextControllerCreateConditionV1**](UserHealthContextApi.md#userhealthcontextcontrollercreateconditionv1) | **POST** /api/v1/me/health-context/conditions | Create a condition record
-[**userHealthContextControllerCreateCurrentMedicineV1**](UserHealthContextApi.md#userhealthcontextcontrollercreatecurrentmedicinev1) | **POST** /api/v1/me/health-context/current-medicines | Add a current medicine record
-[**userHealthContextControllerDeleteAllergyV1**](UserHealthContextApi.md#userhealthcontextcontrollerdeleteallergyv1) | **DELETE** /api/v1/me/health-context/allergies/{id} | Deactivate an allergy record (soft delete)
-[**userHealthContextControllerDeleteConditionV1**](UserHealthContextApi.md#userhealthcontextcontrollerdeleteconditionv1) | **DELETE** /api/v1/me/health-context/conditions/{id} | Resolve a condition record (soft delete)
-[**userHealthContextControllerDeleteCurrentMedicineV1**](UserHealthContextApi.md#userhealthcontextcontrollerdeletecurrentmedicinev1) | **DELETE** /api/v1/me/health-context/current-medicines/{id} | Deactivate a current medicine record (soft delete)
-[**userHealthContextControllerGetMeHealthContextV1**](UserHealthContextApi.md#userhealthcontextcontrollergetmehealthcontextv1) | **GET** /api/v1/me/health-context | Get the current user health context aggregate
-[**userHealthContextControllerUpdateAllergyV1**](UserHealthContextApi.md#userhealthcontextcontrollerupdateallergyv1) | **PATCH** /api/v1/me/health-context/allergies/{id} | Update an allergy record
-[**userHealthContextControllerUpdateConditionV1**](UserHealthContextApi.md#userhealthcontextcontrollerupdateconditionv1) | **PATCH** /api/v1/me/health-context/conditions/{id} | Update a condition record
-[**userHealthContextControllerUpdateCurrentMedicineV1**](UserHealthContextApi.md#userhealthcontextcontrollerupdatecurrentmedicinev1) | **PATCH** /api/v1/me/health-context/current-medicines/{id} | Update a current medicine record
-[**userHealthContextControllerUpdateMeHealthContextProfileV1**](UserHealthContextApi.md#userhealthcontextcontrollerupdatemehealthcontextprofilev1) | **PATCH** /api/v1/me/health-context/profile | Update the current user health-context profile
+[**userHealthContextControllerCreateAllergyV1**](UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/user/health-context/allergies | Create an allergy record
+[**userHealthContextControllerCreateConditionV1**](UserHealthContextApi.md#userhealthcontextcontrollercreateconditionv1) | **POST** /api/v1/user/health-context/conditions | Create a condition record
+[**userHealthContextControllerCreateCurrentMedicineV1**](UserHealthContextApi.md#userhealthcontextcontrollercreatecurrentmedicinev1) | **POST** /api/v1/user/health-context/current-medicines | Add a current medicine record
+[**userHealthContextControllerDeleteAllergyV1**](UserHealthContextApi.md#userhealthcontextcontrollerdeleteallergyv1) | **DELETE** /api/v1/user/health-context/allergies/{id} | Deactivate an allergy record (soft delete)
+[**userHealthContextControllerDeleteConditionV1**](UserHealthContextApi.md#userhealthcontextcontrollerdeleteconditionv1) | **DELETE** /api/v1/user/health-context/conditions/{id} | Resolve a condition record (soft delete)
+[**userHealthContextControllerDeleteCurrentMedicineV1**](UserHealthContextApi.md#userhealthcontextcontrollerdeletecurrentmedicinev1) | **DELETE** /api/v1/user/health-context/current-medicines/{id} | Deactivate a current medicine record (soft delete)
+[**userHealthContextControllerGetUserHealthContextV1**](UserHealthContextApi.md#userhealthcontextcontrollergetuserhealthcontextv1) | **GET** /api/v1/user/health-context | Get the current user health context aggregate
+[**userHealthContextControllerUpdateAllergyV1**](UserHealthContextApi.md#userhealthcontextcontrollerupdateallergyv1) | **PATCH** /api/v1/user/health-context/allergies/{id} | Update an allergy record
+[**userHealthContextControllerUpdateConditionV1**](UserHealthContextApi.md#userhealthcontextcontrollerupdateconditionv1) | **PATCH** /api/v1/user/health-context/conditions/{id} | Update a condition record
+[**userHealthContextControllerUpdateCurrentMedicineV1**](UserHealthContextApi.md#userhealthcontextcontrollerupdatecurrentmedicinev1) | **PATCH** /api/v1/user/health-context/current-medicines/{id} | Update a current medicine record
+[**userHealthContextControllerUpdateUserHealthContextProfileV1**](UserHealthContextApi.md#userhealthcontextcontrollerupdateuserhealthcontextprofilev1) | **PATCH** /api/v1/user/health-context/profile | Update the current user health-context profile
 
 
 # **userHealthContextControllerCreateAllergyV1**
@@ -268,8 +268,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **userHealthContextControllerGetMeHealthContextV1**
-> HealthContextResponseDto userHealthContextControllerGetMeHealthContextV1()
+# **userHealthContextControllerGetUserHealthContextV1**
+> HealthContextResponseDto userHealthContextControllerGetUserHealthContextV1()
 
 Get the current user health context aggregate
 
@@ -280,10 +280,10 @@ import 'package:lucent_openapi/api.dart';
 final api = LucentOpenapi().getUserHealthContextApi();
 
 try {
-    final response = api.userHealthContextControllerGetMeHealthContextV1();
+    final response = api.userHealthContextControllerGetUserHealthContextV1();
     print(response);
 } on DioException catch (e) {
-    print('Exception when calling UserHealthContextApi->userHealthContextControllerGetMeHealthContextV1: $e\n');
+    print('Exception when calling UserHealthContextApi->userHealthContextControllerGetUserHealthContextV1: $e\n');
 }
 ```
 
@@ -434,8 +434,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **userHealthContextControllerUpdateMeHealthContextProfileV1**
-> HealthContextResponseDto userHealthContextControllerUpdateMeHealthContextProfileV1(updateHealthContextProfileDto)
+# **userHealthContextControllerUpdateUserHealthContextProfileV1**
+> HealthContextResponseDto userHealthContextControllerUpdateUserHealthContextProfileV1(updateHealthContextProfileDto)
 
 Update the current user health-context profile
 
@@ -447,10 +447,10 @@ final api = LucentOpenapi().getUserHealthContextApi();
 final UpdateHealthContextProfileDto updateHealthContextProfileDto = ; // UpdateHealthContextProfileDto | 
 
 try {
-    final response = api.userHealthContextControllerUpdateMeHealthContextProfileV1(updateHealthContextProfileDto);
+    final response = api.userHealthContextControllerUpdateUserHealthContextProfileV1(updateHealthContextProfileDto);
     print(response);
 } on DioException catch (e) {
-    print('Exception when calling UserHealthContextApi->userHealthContextControllerUpdateMeHealthContextProfileV1: $e\n');
+    print('Exception when calling UserHealthContextApi->userHealthContextControllerUpdateUserHealthContextProfileV1: $e\n');
 }
 ```
 

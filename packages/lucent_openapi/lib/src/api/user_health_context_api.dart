@@ -47,7 +47,7 @@ class UserHealthContextApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/allergies';
+    final _path = r'/api/v1/user/health-context/allergies';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -138,7 +138,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/conditions';
+    final _path = r'/api/v1/user/health-context/conditions';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -229,7 +229,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/current-medicines';
+    final _path = r'/api/v1/user/health-context/current-medicines';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -320,7 +320,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/allergies/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/health-context/allergies/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -392,7 +392,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/conditions/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/health-context/conditions/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -464,7 +464,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/current-medicines/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/health-context/current-medicines/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -526,7 +526,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>> userHealthContextControllerGetMeHealthContextV1({ 
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerGetUserHealthContextV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -534,7 +534,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context';
+    final _path = r'/api/v1/user/health-context';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -608,7 +608,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/allergies/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/health-context/allergies/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{
@@ -701,7 +701,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/conditions/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/health-context/conditions/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{
@@ -794,7 +794,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/current-medicines/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/health-context/current-medicines/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{
@@ -876,7 +876,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
   ///
   /// Returns a [Future] containing a [Response] with a [HealthContextResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<HealthContextResponseDto>> userHealthContextControllerUpdateMeHealthContextProfileV1({ 
+  Future<Response<HealthContextResponseDto>> userHealthContextControllerUpdateUserHealthContextProfileV1({
     required UpdateHealthContextProfileDto updateHealthContextProfileDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -885,7 +885,7 @@ _responseData = rawData == null ? null : deserialize<HealthContextResponseDto, H
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/health-context/profile';
+    final _path = r'/api/v1/user/health-context/profile';
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{

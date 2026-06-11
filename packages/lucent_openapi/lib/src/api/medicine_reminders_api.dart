@@ -43,7 +43,7 @@ class MedicineRemindersApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-reminders';
+    final _path = r'/api/v1/user/medicine-reminders';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -134,7 +134,7 @@ _responseData = rawData == null ? null : deserialize<MedicineReminderResponseDto
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-reminders/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/medicine-reminders/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -181,7 +181,7 @@ _responseData = rawData == null ? null : deserialize<MedicineReminderResponseDto
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-reminders';
+    final _path = r'/api/v1/user/medicine-reminders';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -260,7 +260,7 @@ _responseData = rawData == null ? null : deserialize<MedicineReminderListRespons
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-reminders/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/medicine-reminders/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{

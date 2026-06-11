@@ -46,7 +46,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/daily-records/attachments/images/presign-upload';
+    final _path = r'/api/v1/user/daily-records/attachments/images/presign-upload';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -137,7 +137,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordImageUploadRespo
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/daily-records';
+    final _path = r'/api/v1/user/daily-records';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -228,7 +228,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/daily-records/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/daily-records/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -275,7 +275,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/daily-records/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/daily-records/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -353,7 +353,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/daily-records';
+    final _path = r'/api/v1/user/daily-records';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -433,7 +433,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordListResponseDto,
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/daily-records/summary';
+    final _path = r'/api/v1/user/daily-records/summary';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -512,7 +512,7 @@ _responseData = rawData == null ? null : deserialize<DailyRecordSummaryResponseD
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/daily-records/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/daily-records/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{

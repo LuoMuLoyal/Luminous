@@ -28,6 +28,7 @@ class _MedicationAvatar extends StatelessWidget {
 
 class _DoseActionButton extends StatelessWidget {
   const _DoseActionButton({
+    super.key,
     required this.label,
     required this.icon,
     required this.color,
@@ -69,11 +70,15 @@ class _DoseActionButton extends StatelessWidget {
               children: [
                 Icon(icon, color: foreground, size: AppSpacingTokens.md),
                 const SizedBox(width: AppSpacingTokens.xxs),
-                Text(
-                  label,
-                  style: typography.bodySmStrong.copyWith(
-                    color: foreground,
-                    letterSpacing: 0,
+                Flexible(
+                  child: Text(
+                    label,
+                    style: typography.bodySmStrong.copyWith(
+                      color: foreground,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

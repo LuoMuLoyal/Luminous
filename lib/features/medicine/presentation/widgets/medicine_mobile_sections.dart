@@ -514,24 +514,30 @@ class _MedicineRecordRow extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.sm),
                   Row(
                     children: [
-                      _DoseActionButton(
-                        label: l10n.medicineDoseActionTaken,
-                        icon: Icons.check_rounded,
-                        color: MedicinePalette.teal,
-                        filled: true,
-                        onTap: () => onMarkDose!(
-                          row.item.currentMedicineId!,
-                          MedicineDoseAction.taken,
+                      Expanded(
+                        child: _DoseActionButton(
+                          key: const Key('medicine-record-dose-action-taken'),
+                          label: l10n.medicineDoseActionTaken,
+                          icon: Icons.check_rounded,
+                          color: MedicinePalette.teal,
+                          filled: true,
+                          onTap: () => onMarkDose!(
+                            row.item.currentMedicineId!,
+                            MedicineDoseAction.taken,
+                          ),
                         ),
                       ),
                       const SizedBox(width: AppSpacingTokens.sm),
-                      _DoseActionButton(
-                        label: l10n.medicineDoseActionSkipped,
-                        icon: Icons.remove_done_rounded,
-                        color: MedicinePalette.orangeDeep,
-                        onTap: () => onMarkDose!(
-                          row.item.currentMedicineId!,
-                          MedicineDoseAction.skipped,
+                      Expanded(
+                        child: _DoseActionButton(
+                          key: const Key('medicine-record-dose-action-skipped'),
+                          label: l10n.medicineDoseActionSkipped,
+                          icon: Icons.remove_done_rounded,
+                          color: MedicinePalette.orangeDeep,
+                          onTap: () => onMarkDose!(
+                            row.item.currentMedicineId!,
+                            MedicineDoseAction.skipped,
+                          ),
                         ),
                       ),
                     ],

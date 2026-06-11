@@ -43,6 +43,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 export 'package:flutter/material.dart';
 export 'package:flutter_test/flutter_test.dart';
 export 'package:integration_test/integration_test.dart';
+export 'package:luminous/app/router.dart' show router;
 export 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart'
     show AuthVerificationScene;
 export 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart'
@@ -114,8 +115,36 @@ Future<ProviderContainer> pumpOfflineApp(
     UncontrolledProviderScope(container: container, child: const LuminousApp()),
   );
 
-  await tester.pumpAndSettle();
+  await settleE2e(tester);
   return container;
+}
+
+Future<void> settleE2e(
+  WidgetTester tester, {
+  Duration duration = const Duration(milliseconds: 100),
+  int frames = 6,
+}) async {
+  for (var i = 0; i < frames; i += 1) {
+    await tester.pump(duration);
+  }
+}
+
+Future<void> pumpUntilFound(
+  WidgetTester tester,
+  Finder finder, {
+  Duration timeout = const Duration(seconds: 5),
+  Duration step = const Duration(milliseconds: 100),
+}) async {
+  final endTime = tester.binding.clock.fromNowBy(timeout);
+
+  do {
+    await tester.pump(step);
+    if (tester.any(finder)) {
+      return;
+    }
+  } while (tester.binding.clock.now().isBefore(endTime));
+
+  fail('Timed out waiting for $finder');
 }
 
 Future<void> openTab(WidgetTester tester, String label) async {
@@ -124,26 +153,49 @@ Future<void> openTab(WidgetTester tester, String label) async {
     matching: find.text(label),
   );
   await tester.tap(tab);
-  await tester.pumpAndSettle();
+  await settleE2e(tester);
 }
 
 Future<void> openSettings(WidgetTester tester) async {
   await openTab(tester, '我的');
   await tester.tap(find.byKey(const Key('mine-settings-action')));
-  await tester.pumpAndSettle();
+  await settleE2e(tester);
   expect(find.text('设置'), findsOneWidget);
 }
 
-Future<void> openLoginFromMedicineDose(WidgetTester tester) async {
-  await openTab(tester, '用药');
+Future<void> tapSettingsFooterAction(WidgetTester tester) async {
+  await tapVisible(tester, find.byKey(const Key('settings-footer-action')));
+}
 
-  final medicine = find.text('E2E medicine');
-  await tester.scrollUntilVisible(medicine, 240);
-  await tester.tap(find.text('已服用'));
-  await tester.pumpAndSettle();
+Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+  await pumpUntilFound(tester, finder);
+  await tester.ensureVisible(finder);
+  await settleE2e(tester);
+  await tester.tap(finder);
+  await settleE2e(tester);
+}
+
+Future<void> openLoginFromSignedOutMine(WidgetTester tester) async {
+  await openTab(tester, '我的');
+
+  final loginAction = find.byKey(const Key('mine-signed-out-login-action'));
+  await tapVisible(tester, loginAction);
 
   expect(find.text('邮箱'), findsOneWidget);
   expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+}
+
+Future<void> tapMedicineDoseAction(WidgetTester tester, String label) async {
+  final actionKey = switch (label) {
+    '跳过' || 'Skipped' => 'medicine-next-dose-action-skipped',
+    _ => 'medicine-next-dose-action-taken',
+  };
+  final action = find.byKey(Key(actionKey));
+  await pumpUntilFound(tester, action);
+  await tester.ensureVisible(action);
+  await settleE2e(tester);
+  await tester.tap(action);
+  await settleE2e(tester);
 }
 
 String todayDateString() {
@@ -161,20 +213,20 @@ bool readSwitchValue(WidgetTester tester, Finder finder) {
 
 Future<void> openMineProfileEntry(WidgetTester tester, String label) async {
   await openTab(tester, '我的');
-  final profileGrid = find.byKey(const Key('mine-profile-grid'));
-  expect(profileGrid, findsOneWidget);
+  final archiveSection = find.byKey(const Key('mine-archive-section'));
+  await pumpUntilFound(tester, archiveSection);
+  expect(archiveSection, findsOneWidget);
 
-  final entry = find.descendant(of: profileGrid, matching: find.text(label));
-  await tester.scrollUntilVisible(
-    entry,
-    240,
-    scrollable: find.byType(Scrollable).first,
-  );
-  await tester.tap(entry);
-  await tester.pumpAndSettle();
+  final entry = find.descendant(of: archiveSection, matching: find.text(label));
+  await tapVisible(tester, entry);
 }
 
 class _NoopRestoreAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState();
+  }
+
   @override
   Future<void> restore() async {}
 }
@@ -690,6 +742,7 @@ class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
             rawDosage: '1 tablet',
             rawSchedule: 'morning',
             rawState: 'pending',
+            todayStatus: MedicineDoseStatus.pending,
             currentMedicineId: 'e2e-medicine-1',
           ),
         ],
@@ -710,6 +763,15 @@ class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {
   String? createCurrentMedicineId;
   String? createStatus;
   String? createDate;
+
+  @override
+  Future<DoseLogItem> markForDate(
+    String currentMedicineId,
+    String status,
+    String date,
+  ) async {
+    return create(currentMedicineId, status, date);
+  }
 
   @override
   Future<DoseLogItem> create(

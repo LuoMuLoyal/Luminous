@@ -10,31 +10,34 @@ void main() {
 
     await openTab(tester, '我的');
     await tester.tap(find.byKey(const Key('mine-settings-action')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.byKey(const Key('settings-row-theme')), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('settings-row-theme')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('主题模式'), findsOneWidget);
     expect(find.byType(BackButton), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('theme-row-dark')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final preferences = await SharedPreferences.getInstance();
     expect(preferences.getString('theme.mode'), 'dark');
 
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.byKey(const Key('settings-row-theme')), findsOneWidget);
     expect(find.text('深色 · 默认'), findsOneWidget);
 
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
+    await pumpUntilFound(tester, find.byType(NavigationBar));
+    await openTab(tester, '我的');
+    await pumpUntilFound(tester, find.text('当前未登录'));
     expect(find.text('当前未登录'), findsOneWidget);
   });
 
@@ -46,19 +49,19 @@ void main() {
     await openSettings(tester);
 
     await tester.tap(find.byKey(const Key('settings-row-language')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('语言'), findsOneWidget);
     expect(find.byKey(const Key('language-row-en')), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('language-row-en')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final preferences = await SharedPreferences.getInstance();
     expect(preferences.getString('app.locale'), 'en');
 
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('Settings'), findsOneWidget);
   });
@@ -70,8 +73,7 @@ void main() {
 
     await openSettings(tester);
 
-    await tester.tap(find.byKey(const Key('settings-footer-action')));
-    await tester.pumpAndSettle();
+    await tapSettingsFooterAction(tester);
 
     expect(find.text('邮箱'), findsOneWidget);
     expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
@@ -89,8 +91,7 @@ void main() {
 
     await openSettings(tester);
 
-    await tester.tap(find.byKey(const Key('settings-footer-action')));
-    await tester.pumpAndSettle();
+    await tapSettingsFooterAction(tester);
 
     expect(remote.logoutCalled, isTrue);
     expect(container.read(authSessionProvider).isAuthenticated, isFalse);
@@ -111,7 +112,7 @@ void main() {
     await openSettings(tester);
 
     await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('通知设置'), findsOneWidget);
     expect(find.text('系统通知已开启'), findsOneWidget);
@@ -120,7 +121,7 @@ void main() {
     final before = readSwitchValue(tester, switchIn(medicationRow));
 
     await tester.tap(medicationRow);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     final after = readSwitchValue(tester, switchIn(medicationRow));
     expect(after, isNot(before));
@@ -132,7 +133,7 @@ void main() {
     );
 
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('设置'), findsOneWidget);
   });
@@ -152,14 +153,14 @@ void main() {
     await openSettings(tester);
 
     await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(find.text('通知设置'), findsOneWidget);
     expect(find.text('系统通知未开启'), findsOneWidget);
     expect(permissionService.requestCount, 0);
 
     await tester.tap(find.byKey(const Key('notification-row-permission')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     expect(permissionService.requestCount, 1);
     expect(find.text('系统通知未开启'), findsOneWidget);

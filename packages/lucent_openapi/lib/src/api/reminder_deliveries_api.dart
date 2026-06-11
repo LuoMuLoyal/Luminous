@@ -42,7 +42,7 @@ class ReminderDeliveriesApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/reminder-deliveries';
+    final _path = r'/api/v1/user/reminder-deliveries';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{

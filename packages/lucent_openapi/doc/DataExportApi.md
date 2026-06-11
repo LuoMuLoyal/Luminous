@@ -9,8 +9,8 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**dataExportControllerCreateRequestV1**](DataExportApi.md#dataexportcontrollercreaterequestv1) | **POST** /api/v1/me/data-export-requests | Create a new data export request
-[**dataExportControllerGetLatestRequestV1**](DataExportApi.md#dataexportcontrollergetlatestrequestv1) | **GET** /api/v1/me/data-export-requests/latest | Get the latest data export request
+[**dataExportControllerCreateRequestV1**](DataExportApi.md#dataexportcontrollercreaterequestv1) | **POST** /api/v1/user/data-export-requests | Create a new data export request
+[**dataExportControllerGetLatestRequestV1**](DataExportApi.md#dataexportcontrollergetlatestrequestv1) | **GET** /api/v1/user/data-export-requests/latest | Get the latest data export request
 
 
 # **dataExportControllerCreateRequestV1**

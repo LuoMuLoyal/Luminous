@@ -1,6 +1,6 @@
 # Lumos Project Guardrails
 
-Last updated: 2026-06-09
+Last updated: 2026-06-11
 
 This replaces the long historical error audit as the current quick-read checklist.
 
@@ -45,10 +45,12 @@ This replaces the long historical error audit as the current quick-read checklis
 - Lucent deploy currently uses app image `latest`; there is no automatic image rollback.
 - Do not edit generated Prisma client manually.
 - Do not manually normalize generated OpenAPI client Markdown just to make diffs pretty.
-- After OpenAPI regeneration, run whitespace checks excluding generated output where documented.
+- Do not manually patch generated `packages/lucent_openapi` formatting problems without first checking whether `tool/regenerate_lucent_openapi.dart` should normalize them for repeatability.
 
 ## Verification
 
 - Backend focused change: `pnpm lint:check`, `pnpm build`, relevant tests, `pnpm export:openapi` if API changed.
 - Frontend focused change: `flutter analyze`, relevant tests or `flutter test`.
 - Cross-contract change: run both backend OpenAPI export and Luminous client regeneration.
+- Run emulator integration tests sequentially per device. Do not run multiple `flutter test integration_test/... -d emulator-5554` commands concurrently against the same emulator; they can race app install / VM service attachment and fail with device-level errors.
+- Long-running emulator tests need an explicit timeout and investigation path. If a single scenario stalls for minutes, inspect the test wait condition and device logs instead of repeatedly waiting for the same timeout.

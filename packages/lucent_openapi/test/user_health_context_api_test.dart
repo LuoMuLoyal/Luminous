@@ -9,8 +9,8 @@ void main() {
   group(UserHealthContextApi, () {
     // Get the current user health context aggregate
     //
-    //Future<HealthContextResponseDto> userHealthContextControllerGetMeHealthContextV1() async
-    test('test userHealthContextControllerGetMeHealthContextV1', () async {
+    //Future<HealthContextResponseDto> userHealthContextControllerGetUserHealthContextV1() async
+    test('test userHealthContextControllerGetUserHealthContextV1', () async {
       // TODO
     });
 

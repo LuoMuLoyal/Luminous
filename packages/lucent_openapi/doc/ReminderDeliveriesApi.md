@@ -9,7 +9,7 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**reminderDeliveriesControllerListV1**](ReminderDeliveriesApi.md#reminderdeliveriescontrollerlistv1) | **GET** /api/v1/me/reminder-deliveries | List reminder delivery audit logs
+[**reminderDeliveriesControllerListV1**](ReminderDeliveriesApi.md#reminderdeliveriescontrollerlistv1) | **GET** /api/v1/user/reminder-deliveries | List reminder delivery audit logs
 
 
 # **reminderDeliveriesControllerListV1**

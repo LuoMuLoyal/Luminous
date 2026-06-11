@@ -16,30 +16,30 @@ void main() {
     await openSettings(tester);
 
     await tester.tap(find.byKey(const Key('settings-row-theme')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     await tester.tap(find.byKey(const Key('theme-row-dark')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     await tester.tap(find.byKey(const Key('theme-palette-row-blue-pink')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     await tester.tap(find.byKey(const Key('settings-row-language')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     await tester.tap(find.byKey(const Key('language-row-en')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     final medicationRow = find.byKey(const Key('notification-row-medication'));
     expect(readSwitchValue(tester, switchIn(medicationRow)), isTrue);
     await tester.tap(medicationRow);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     expect(readSwitchValue(tester, switchIn(medicationRow)), isFalse);
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     var preferences = await SharedPreferences.getInstance();
     expect(preferences.getString('theme.mode'), 'dark');
@@ -50,12 +50,11 @@ void main() {
       isFalse,
     );
 
-    await tester.tap(find.byKey(const Key('settings-row-advanced')));
-    await tester.pumpAndSettle();
+    await tapVisible(tester, find.byKey(const Key('settings-row-advanced')));
     await tester.tap(
       find.byKey(const Key('advanced-settings-row-reset-defaults')),
     );
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
 
     preferences = await SharedPreferences.getInstance();
     expect(preferences.getString('theme.mode'), 'system');
@@ -67,9 +66,9 @@ void main() {
     );
 
     await tester.tap(find.byType(BackButton).first);
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
+    await settleE2e(tester);
     expect(
       readSwitchValue(
         tester,

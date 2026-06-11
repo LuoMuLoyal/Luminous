@@ -25,7 +25,7 @@ class SettingsProfileRemoteDataSource {
     }
 
     final response = await dio.patch<Object>(
-      '/api/v1/me/health-context/profile',
+      '/api/v1/user/health-context/profile',
       data: payload,
       options: Options(contentType: Headers.jsonContentType),
     );

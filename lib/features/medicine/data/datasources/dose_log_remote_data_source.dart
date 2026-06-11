@@ -29,7 +29,7 @@ class DoseLogRemoteDataSource {
 
   Future<List<DoseLogItem>> fetchForDate(String date) async {
     final response = await dio.get<Object>(
-      '/api/v1/me/medicine-dose-logs',
+      '/api/v1/user/medicine-dose-logs',
       queryParameters: {'date': date},
     );
     final body = _coerce(response.data);
@@ -60,7 +60,7 @@ class DoseLogRemoteDataSource {
       'scheduledFor': date,
     };
     final response = await dio.request<Object>(
-      '/api/v1/me/medicine-dose-logs',
+      '/api/v1/user/medicine-dose-logs',
       data: payload,
       options: Options(method: 'POST', contentType: Headers.jsonContentType),
     );
@@ -79,7 +79,7 @@ class DoseLogRemoteDataSource {
 
   Future<DoseLogItem> update(String doseLogId, String status) async {
     final response = await dio.request<Object>(
-      '/api/v1/me/medicine-dose-logs/$doseLogId',
+      '/api/v1/user/medicine-dose-logs/$doseLogId',
       data: <String, dynamic>{'status': status},
       options: Options(method: 'PATCH', contentType: Headers.jsonContentType),
     );

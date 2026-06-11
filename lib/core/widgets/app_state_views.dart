@@ -13,6 +13,7 @@ class AppStateMessageView extends StatelessWidget {
     required this.icon,
     this.actionLabel,
     this.onAction,
+    this.actionKey,
     this.tone = AppStateTone.neutral,
     this.padding = const EdgeInsets.all(AppSpacingTokens.lg),
   });
@@ -22,6 +23,7 @@ class AppStateMessageView extends StatelessWidget {
   final IconData icon;
   final String? actionLabel;
   final VoidCallback? onAction;
+  final Key? actionKey;
   final AppStateTone tone;
   final EdgeInsetsGeometry padding;
 
@@ -71,6 +73,7 @@ class AppStateMessageView extends StatelessWidget {
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: AppSpacingTokens.lg),
               OutlinedButton(
+                key: actionKey,
                 onPressed: onAction,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: accent,

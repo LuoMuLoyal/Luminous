@@ -43,7 +43,7 @@ class MedicineDoseLogsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-dose-logs';
+    final _path = r'/api/v1/user/medicine-dose-logs';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -134,7 +134,7 @@ _responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLog
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/medicine-dose-logs/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -181,7 +181,7 @@ _responseData = rawData == null ? null : deserialize<DoseLogResponseDto, DoseLog
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-dose-logs';
+    final _path = r'/api/v1/user/medicine-dose-logs';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -260,7 +260,7 @@ _responseData = rawData == null ? null : deserialize<DoseLogListResponseDto, Dos
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/medicine-dose-logs/{id}'.replaceAll('{' r'id' '}', id.toString());
+    final _path = r'/api/v1/user/medicine-dose-logs/{id}'.replaceAll('{' r'id' '}', id.toString());
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{

@@ -43,7 +43,7 @@ void main() {
         ),
       );
 
-      final request = adapter.requestAt('POST', '/api/v1/me/daily-records');
+      final request = adapter.requestAt('POST', '/api/v1/user/daily-records');
       expect(request.jsonBody['kind'], 'meal');
       expect(request.jsonBody['title'], 'Breakfast');
       final attachments = request.jsonBody['attachments'] as List<Object?>;
@@ -64,7 +64,7 @@ void main() {
 
       final request = adapter.requestAt(
         'PATCH',
-        '/api/v1/me/daily-records/record-1',
+        '/api/v1/user/daily-records/record-1',
       );
       expect(request.jsonBody, containsPair('title', 'Updated'));
       expect(request.jsonBody.containsKey('attachments'), isFalse);
@@ -80,7 +80,7 @@ void main() {
 
       final request = adapter.requestAt(
         'PATCH',
-        '/api/v1/me/daily-records/record-1',
+        '/api/v1/user/daily-records/record-1',
       );
       expect(request.jsonBody['attachments'], isEmpty);
     });
@@ -101,7 +101,7 @@ void main() {
 
       final request = adapter.requestAt(
         'PATCH',
-        '/api/v1/me/daily-records/record-1',
+        '/api/v1/user/daily-records/record-1',
       );
       final attachments = request.jsonBody['attachments'] as List<Object?>;
       expect(attachments, hasLength(1));
@@ -124,7 +124,7 @@ void main() {
 
       final presign = adapter.requestAt(
         'POST',
-        '/api/v1/me/daily-records/attachments/images/presign-upload',
+        '/api/v1/user/daily-records/attachments/images/presign-upload',
       );
       expect(presign.jsonBody, {
         'contentType': 'image/jpeg',

@@ -39,7 +39,7 @@ class DataExportApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/data-export-requests';
+    final _path = r'/api/v1/user/data-export-requests';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -109,7 +109,7 @@ _responseData = rawData == null ? null : deserialize<DataExportRequestResponseDt
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/me/data-export-requests/latest';
+    final _path = r'/api/v1/user/data-export-requests/latest';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{

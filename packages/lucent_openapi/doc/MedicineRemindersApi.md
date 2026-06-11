@@ -9,10 +9,10 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**medicineRemindersControllerCreateV1**](MedicineRemindersApi.md#medicinereminderscontrollercreatev1) | **POST** /api/v1/me/medicine-reminders | Create a medicine reminder schedule
-[**medicineRemindersControllerDeleteV1**](MedicineRemindersApi.md#medicinereminderscontrollerdeletev1) | **DELETE** /api/v1/me/medicine-reminders/{id} | Soft-delete a medicine reminder schedule
-[**medicineRemindersControllerListV1**](MedicineRemindersApi.md#medicinereminderscontrollerlistv1) | **GET** /api/v1/me/medicine-reminders | List medicine reminder schedules
-[**medicineRemindersControllerUpdateV1**](MedicineRemindersApi.md#medicinereminderscontrollerupdatev1) | **PATCH** /api/v1/me/medicine-reminders/{id} | Update a medicine reminder schedule
+[**medicineRemindersControllerCreateV1**](MedicineRemindersApi.md#medicinereminderscontrollercreatev1) | **POST** /api/v1/user/medicine-reminders | Create a medicine reminder schedule
+[**medicineRemindersControllerDeleteV1**](MedicineRemindersApi.md#medicinereminderscontrollerdeletev1) | **DELETE** /api/v1/user/medicine-reminders/{id} | Soft-delete a medicine reminder schedule
+[**medicineRemindersControllerListV1**](MedicineRemindersApi.md#medicinereminderscontrollerlistv1) | **GET** /api/v1/user/medicine-reminders | List medicine reminder schedules
+[**medicineRemindersControllerUpdateV1**](MedicineRemindersApi.md#medicinereminderscontrollerupdatev1) | **PATCH** /api/v1/user/medicine-reminders/{id} | Update a medicine reminder schedule
 
 
 # **medicineRemindersControllerCreateV1**
