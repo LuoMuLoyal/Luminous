@@ -245,6 +245,45 @@ Exit criteria:
 
 - one integration test can launch the real app, talk to Lucent, and authenticate successfully
 
+### Phase 3 Status
+
+Status: completed on 2026-06-11
+
+#### Phase 3 Conclusions
+
+1. Full-stack helper boundary
+   - Luminous now keeps fake/offline helpers and full-stack helpers separate.
+   - Offline scenario tests continue to use `pumpOfflineApp(...)`.
+   - Full-stack startup now uses a dedicated helper path that:
+     - reads explicit Dart defines
+     - calls Lucent prepare support before app boot
+     - overrides session storage with an in-memory test store
+     - launches the real app against the real backend
+
+2. Explicit runtime config
+   - The full-stack helper now expects:
+     - `--dart-define=LUCENT_BASE_URL=...`
+     - `--dart-define=E2E_TEST_EMAIL=...`
+     - `--dart-define=E2E_TEST_PASSWORD=...`
+   - It rejects `localhost` / `127.0.0.1` so Android emulator runs fail fast instead of silently pointing at the wrong host.
+
+3. Auth flow stability
+   - Login page now has stable keys for the real full-stack login path.
+   - Full-stack boot uses a memory-backed session store, so auth state is not inherited from previous manual runs or secure-storage leftovers.
+
+4. Verification result
+   - A real-device integration smoke test now proves:
+     - Lucent test runtime can be prepared
+     - Luminous can launch against it
+     - UI password login succeeds
+     - authenticated session state updates in-app
+   - Verified command:
+     - `flutter test integration_test/fullstack_auth_smoke_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
+
+#### Phase 3 Output
+
+Phase 4 should now build the first real Record CRUD lane on top of the new full-stack boot helper.
+
 ### Phase 4 - First Real Record Lane
 
 Implement the first full-stack test file for the Record slice.
@@ -260,6 +299,47 @@ Minimum assertions:
 Exit criteria:
 
 - a single command can run the lane on emulator and pass from a clean state
+
+### Phase 4 Status
+
+Status: completed on 2026-06-11
+
+#### Phase 4 Conclusions
+
+1. First real Record CRUD lane
+   - Luminous now has `integration_test/fullstack_record_lane_test.dart`.
+   - The lane covers:
+     - prepare test state
+     - sign in with real Lucent credentials
+     - open Record for one fixed target date
+     - create one note record
+     - verify timeline/detail persistence
+     - edit the note
+     - delete the same note
+     - reopen Record and verify the backend-backed item is gone
+
+2. Full-stack UI stability fixes
+   - Bottom-tab navigation for integration tests no longer depends on localized visible text.
+   - Shell tabs now expose stable test keys, and the full-stack helper opens Record through keys instead of assuming Chinese labels.
+   - Record delete confirmations now expose a stable confirm-action key, so emulator locale drift does not break the lane.
+
+3. Real-backend contract bug found and fixed
+   - The lane exposed a real client/backend mismatch in daily-record deletion:
+     - Lucent `DELETE /api/v1/user/daily-records/:id` returns `successEnvelope(null)`
+     - Luminous delete path was incorrectly reusing the response parser that expects a `DailyRecordItemDto`
+   - Luminous now validates the delete success envelope directly instead of trying to parse a record body.
+   - Without the real lane, this bug would not have been caught by the existing fake/offline tests.
+
+4. Verification result
+   - Verified on `emulator-5554` against Lucent test runtime with:
+     - `flutter test integration_test/fullstack_record_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
+   - Additional regression verification passed for:
+     - `flutter test integration_test/fullstack_auth_smoke_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
+     - `flutter test integration_test/record_mutation_e2e_test.dart -d emulator-5554`
+
+#### Phase 4 Output
+
+Phase 5 should now decide whether the first real lane remains local/manual for now or becomes part of a repeatable CI/device workflow.
 
 ### Phase 5 - CI/Execution Strategy
 

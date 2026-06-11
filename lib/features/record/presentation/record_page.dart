@@ -38,6 +38,7 @@ class RecordPage extends ConsumerWidget {
       actions: isMobileLayout
           ? [
               RecordHeaderActionChip(
+                key: const Key('record-add-action'),
                 label: isCompact
                     ? l10n.recordAddCompactAction
                     : l10n.recordAddAction,
@@ -95,6 +96,7 @@ class RecordPage extends ConsumerWidget {
                 iconOnly: true,
               ),
               RecordHeaderActionChip(
+                key: const Key('record-add-action'),
                 label: isCompact
                     ? l10n.recordAddCompactAction
                     : l10n.recordAddAction,

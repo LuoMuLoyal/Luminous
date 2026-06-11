@@ -37,6 +37,7 @@ import 'package:luminous/features/search/data/repositories/lucent_repository.dar
 import 'package:luminous/features/search/data/repositories/mock/mock_repository.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
+import 'package:luminous/features/shell/presentation/shell_tab.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -148,6 +149,12 @@ Future<void> pumpUntilFound(
 }
 
 Future<void> openTab(WidgetTester tester, String label) async {
+  final shellTab = _shellTabForLabel(label);
+  if (shellTab != null) {
+    await openShellTab(tester, shellTab);
+    return;
+  }
+
   final tab = find.descendant(
     of: find.byType(NavigationBar),
     matching: find.text(label),
@@ -156,8 +163,21 @@ Future<void> openTab(WidgetTester tester, String label) async {
   await settleE2e(tester);
 }
 
+Future<void> openShellTab(
+  WidgetTester tester,
+  ShellTab tab, {
+  Duration timeout = const Duration(seconds: 5),
+}) async {
+  final tabFinder = find.byKey(tab.testKey());
+  await pumpUntilFound(tester, tabFinder, timeout: timeout);
+  await tester.ensureVisible(tabFinder);
+  await settleE2e(tester);
+  await tester.tap(tabFinder);
+  await settleE2e(tester);
+}
+
 Future<void> openSettings(WidgetTester tester) async {
-  await openTab(tester, '我的');
+  await openShellTab(tester, ShellTab.mine);
   await tester.tap(find.byKey(const Key('mine-settings-action')));
   await settleE2e(tester);
   expect(find.text('设置'), findsOneWidget);
@@ -176,7 +196,7 @@ Future<void> tapVisible(WidgetTester tester, Finder finder) async {
 }
 
 Future<void> openLoginFromSignedOutMine(WidgetTester tester) async {
-  await openTab(tester, '我的');
+  await openShellTab(tester, ShellTab.mine);
 
   final loginAction = find.byKey(const Key('mine-signed-out-login-action'));
   await tapVisible(tester, loginAction);
@@ -212,13 +232,24 @@ bool readSwitchValue(WidgetTester tester, Finder finder) {
 }
 
 Future<void> openMineProfileEntry(WidgetTester tester, String label) async {
-  await openTab(tester, '我的');
+  await openShellTab(tester, ShellTab.mine);
   final archiveSection = find.byKey(const Key('mine-archive-section'));
   await pumpUntilFound(tester, archiveSection);
   expect(archiveSection, findsOneWidget);
 
   final entry = find.descendant(of: archiveSection, matching: find.text(label));
   await tapVisible(tester, entry);
+}
+
+ShellTab? _shellTabForLabel(String label) {
+  return switch (label.trim().toLowerCase()) {
+    'today' || '今天' => ShellTab.today,
+    'record' || '记录' => ShellTab.record,
+    'medicine' || '用药' => ShellTab.medicine,
+    'report' || '报告' => ShellTab.report,
+    'mine' || '我的' || 'account' => ShellTab.mine,
+    _ => null,
+  };
 }
 
 class _NoopRestoreAuthSessionNotifier extends AuthSessionNotifier {

@@ -172,11 +172,13 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
+                key: const Key('record-edit-save-action'),
                 onPressed: _saving ? null : _onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
               const SizedBox(height: 12),
               OutlinedButton.icon(
+                key: const Key('record-edit-delete-action'),
                 onPressed: _deleting || _saving ? null : _onDelete,
                 icon: _deleting
                     ? const SizedBox(
@@ -248,6 +250,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
             child: Text(l10n.authCancelAction),
           ),
           FilledButton(
+            key: const Key('record-delete-confirm-action'),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: Text(l10n.recordDeleteAction),
           ),

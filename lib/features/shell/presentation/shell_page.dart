@@ -43,6 +43,7 @@ class ShellPage extends ConsumerWidget {
     final destinations = ShellTab.values
         .map(
           (tab) => NavigationDestination(
+            key: tab.testKey(),
             icon: Icon(tab.icon),
             selectedIcon: Icon(tab.activeIcon),
             label: tab.label(l10n),

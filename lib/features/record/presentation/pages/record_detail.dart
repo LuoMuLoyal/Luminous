@@ -176,6 +176,7 @@ class _RecordDetailBody extends ConsumerWidget {
         ],
         const SizedBox(height: AppSpacingTokens.md),
         FilledButton.icon(
+          key: const Key('record-detail-edit-action'),
           onPressed: () =>
               pushAuthRequiredRoute(context, '/record/${record.id}/edit'),
           icon: const Icon(Icons.edit_outlined, size: 18),
@@ -183,6 +184,7 @@ class _RecordDetailBody extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacingTokens.sm),
         OutlinedButton.icon(
+          key: const Key('record-detail-delete-action'),
           onPressed: () => _deleteRecord(context, ref, record.id),
           icon: const Icon(Icons.delete_outline_rounded, size: 18),
           label: Text(l10n.recordDeleteAction),
@@ -211,6 +213,7 @@ class _RecordDetailBody extends ConsumerWidget {
             child: Text(l10n.authCancelAction),
           ),
           FilledButton(
+            key: const Key('record-delete-confirm-action'),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: Text(l10n.recordDeleteAction),
           ),
