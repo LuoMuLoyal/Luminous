@@ -32,6 +32,10 @@ This file records current implementation facts only. Product direction lives in 
 - Stack: Flutter + Riverpod + GoRouter.
 - Generated Lucent client: `packages/lucent_openapi`.
 - Auth/session state is split into restoring, confirmed signed-out, and signed-in.
+- Integration coverage now includes two real Android-emulator full-stack lanes against Lucent test runtime:
+  - auth sign-in smoke
+  - Record create/detail/edit/delete CRUD lane
+- The real full-stack helper uses explicit Dart defines, Lucent test-state preparation, stable shell/login/action keys, and an in-memory session store so old secure-storage sessions do not leak into the lane.
 - Protected providers do not call Lucent while auth is restoring or confirmed signed out.
 - Protected entry taps show a modal login prompt on the current page; direct/deep-link protected pages keep destination guards as fallback.
 - Skeleton loading is section-scoped: stable chrome and local/mock/static sections render immediately, backend-backed fields shimmer locally.

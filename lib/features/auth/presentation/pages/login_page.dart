@@ -106,6 +106,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ),
           const SizedBox(height: AppSpacingTokens.lg),
           AuthTextField(
+            key: const Key('auth-login-email-field'),
             controller: _emailController,
             label: l10n?.authEmailLabel ?? 'Email',
             hint: l10n?.authEmailHint ?? 'name@example.com',
@@ -137,7 +138,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     obscureText: true,
                   )
                 : AuthCodeFieldRow(
-                    key: const ValueKey('code-login-field'),
+                    key: const ValueKey('auth-login-code-field'),
                     controller: _codeController,
                     label: l10n?.authCodeLabel ?? 'Verification code',
                     buttonLabel: l10n?.authSendCode ?? 'Send code',
@@ -162,6 +163,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ],
           const SizedBox(height: AppSpacingTokens.xl),
           AuthPrimaryButton(
+            key: const Key('auth-login-submit-action'),
             label: l10n?.authSignIn ?? 'Sign in',
             isLoading: state.isSubmitting,
             onPressed: () async {

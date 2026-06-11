@@ -112,6 +112,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
+                key: const Key('record-create-save-action'),
                 onPressed: _saving ? null : () => _onSave(dateStr),
                 child: Text(l10n.mineEditSaveAction),
               ),

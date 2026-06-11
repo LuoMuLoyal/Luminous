@@ -106,7 +106,11 @@ class DailyRecordRemoteDataSource {
           .toList();
     }
 
-    final response = await _write('POST', '/api/v1/user/daily-records', payload);
+    final response = await _write(
+      'POST',
+      '/api/v1/user/daily-records',
+      payload,
+    );
     return _toItem(response);
   }
 
@@ -149,7 +153,21 @@ class DailyRecordRemoteDataSource {
   }
 
   Future<void> delete(String id) async {
-    await _write('DELETE', '/api/v1/user/daily-records/$id', null);
+    final response = await dio.request<Object>(
+      '/api/v1/user/daily-records/$id',
+      options: Options(method: 'DELETE', contentType: Headers.jsonContentType),
+    );
+
+    final body = _coerceToMap(response.data);
+    final code = body?['code'];
+    if (body == null || code != 0) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        error: 'Daily record delete failed.',
+      );
+    }
   }
 
   Future<lucent.DailyRecordItemDto> _write(

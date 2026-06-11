@@ -13,6 +13,8 @@ enum ShellTab {
   final IconData icon;
   final IconData activeIcon;
 
+  ValueKey<String> testKey() => ValueKey<String>('shell-tab-$name');
+
   String label(AppLocalizations? l10n) {
     return switch (this) {
       ShellTab.today => l10n?.tabToday ?? 'Today',
