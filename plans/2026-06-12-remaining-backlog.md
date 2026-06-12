@@ -13,9 +13,8 @@
 这轮只覆盖当前已确认仍然真实存在的 backlog：
 
 1. Report weekly AI summary 空响应错误路径硬化
-2. 假药名 / mock placeholder 文案清理
-3. Lucent 配置与测试支持硬化
-4. AI 进入下一阶段前的边界确认
+2. Lucent 配置与测试支持硬化
+3. AI 进入下一阶段前的边界确认
 
 不在这轮里处理：
 
@@ -78,9 +77,9 @@
 - Settings sleep reminder row 现在显示 local-only 标签，而不是 enabled/disabled 状态。
 - 已通过受影响 widget/page tests 和 `flutter analyze` 验证。
 
-### 3. Placeholder Copy Cleanup
+### 3. Placeholder Copy Cleanup (completed)
 
-目标：去掉仍然会误导用户的假药名和 mock 文案。
+结果：已去掉仍然会误导用户的假药名和 mock 文案。
 
 涉及区域：
 
@@ -91,21 +90,9 @@
 具体动作：
 
 - 搜索并清理假药名，如 `Metformin XR`、`Atorvastatin calcium`、`Omeprazole capsules`
-- 优先改成：
-  - 通用占位标签
-  - 空状态文案
-  - 或完全去掉不必要示例
+- 优先改成通用占位标签、空状态文案或删除不必要示例
 - 避免把 mock 字样重新暴露给正常用户路径
-
-验证：
-
-- `rg -n "Metformin|Atorvastatin|Omeprazole|mock data" Luminous/lib Luminous/test`
-- 受影响测试
-- `flutter analyze`
-
-预期结果：
-
-- 用户可见界面不再混入假数据感很强的示例药名/占位词
+- 已通过 `rg`、受影响测试和 `flutter analyze` 验证
 
 ### 4. Lucent Config Hardening
 
@@ -165,9 +152,8 @@
 ## Recommended Order
 
 1. Report AI summary stability
-2. Placeholder copy cleanup
-3. Lucent config hardening
-4. AI boundary confirmation
+2. Lucent config hardening
+3. AI boundary confirmation
 
 ## Observable Done State
 

@@ -28,7 +28,7 @@ void main() {
       expect(workspace.hero.metricAdherence, '0%');
       expect(workspace.hero.metricNextDose, '07:45');
       expect(workspace.plan.items, hasLength(1));
-      expect(workspace.plan.items[0].rawName, 'Metformin XR');
+      expect(workspace.plan.items[0].rawName, 'Example medicine A');
       expect(workspace.plan.items[0].rawDosage, '500 mg');
       expect(workspace.plan.items[0].rawSchedule, 'Morning and evening');
       expect(workspace.plan.items[0].rawState, isNull);
@@ -224,7 +224,7 @@ const _snapshot = HealthContextSnapshot(
       id: 'med-1',
       source: 'manual',
       sourceRefId: null,
-      displayName: 'Metformin XR',
+      displayName: 'Example medicine A',
       strengthText: '500 mg',
       doseText: 'Morning and evening',
       route: 'oral',

@@ -62,7 +62,7 @@ void main() {
       expect(dashboard.medication.medicineCount, 2);
       expect(dashboard.medication.pendingCount, 1);
       expect(dashboard.medication.nextDoseTimeLabel, '12:30');
-      expect(dashboard.medication.nextMedicineName, 'Atorvastatin');
+      expect(dashboard.medication.nextMedicineName, 'Example medicine B');
     },
   );
 
@@ -91,7 +91,7 @@ void main() {
 
       expect(dashboard.medication.pendingCount, 2);
       expect(dashboard.medication.nextDoseTimeLabel, '--');
-      expect(dashboard.medication.nextMedicineName, 'Metformin XR');
+      expect(dashboard.medication.nextMedicineName, 'Example medicine A');
     },
   );
 }
@@ -222,7 +222,7 @@ const _snapshot = HealthContextSnapshot(
       id: 'med-1',
       source: 'manual',
       sourceRefId: null,
-      displayName: 'Metformin XR',
+      displayName: 'Example medicine A',
       strengthText: '500 mg',
       doseText: 'Morning and evening',
       route: 'oral',
@@ -237,7 +237,7 @@ const _snapshot = HealthContextSnapshot(
       id: 'med-2',
       source: 'manual',
       sourceRefId: null,
-      displayName: 'Atorvastatin',
+      displayName: 'Example medicine B',
       strengthText: '20 mg',
       doseText: 'Daily',
       route: 'oral',
