@@ -322,7 +322,7 @@ class _ReminderSettingsSection extends ConsumerWidget {
             icon: Icons.nightlight_outlined,
             title: l10n.mineReminderSleepTitle,
             trailing: Text(
-              statusLabel(settings.sleepReminders),
+              l10n.mineReminderLocalOnly,
               style: typography.bodySm.copyWith(color: surface.body),
             ),
             onTap: () => context.push('/settings/notifications'),

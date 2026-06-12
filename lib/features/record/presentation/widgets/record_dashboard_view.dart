@@ -433,6 +433,7 @@ class _MobileQuickRecordTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final actionLabel = _quickRecordLabel(l10n, action);
     final displayLabel = recordCopy(l10n, action.titleKey);
+    final isLocked = action.locked;
 
     return Material(
       key: Key('record-quick-${action.type.name}'),
@@ -444,33 +445,50 @@ class _MobileQuickRecordTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: Semantics(
           button: true,
-          label: actionLabel,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.xxs,
-              vertical: AppSpacingTokens.xxs,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RecordIconBadge(
-                  icon: action.icon,
-                  color: action.accent,
-                  backgroundColor: action.softColor,
-                  size: AppSpacingTokens.xl,
-                  iconSize: AppSpacingTokens.md,
-                ),
-                const SizedBox(height: AppSpacingTokens.xxs),
-                Text(
-                  displayLabel,
-                  style: typography.bodySmStrong.copyWith(
-                    fontWeight: FontWeight.w700,
+          label: isLocked
+              ? '$actionLabel ${l10n.recordNotEnabledLabel}'
+              : actionLabel,
+          child: Opacity(
+            opacity: isLocked ? 0.76 : 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacingTokens.xxs,
+                vertical: AppSpacingTokens.xxs,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RecordIconBadge(
+                    icon: action.icon,
+                    color: action.accent,
+                    backgroundColor: action.softColor,
+                    size: AppSpacingTokens.xl,
+                    iconSize: AppSpacingTokens.md,
                   ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+                  const SizedBox(height: AppSpacingTokens.xxs),
+                  Text(
+                    displayLabel,
+                    style: typography.bodySmStrong.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (isLocked) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.recordNotEnabledLabel,
+                      style: typography.caption.copyWith(
+                        color: surface.mute,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
+              ),
             ),
           ),
         ),
@@ -808,6 +826,7 @@ class _MobileFilterChipsPanel extends StatelessWidget {
               label: l10n.recordFilterAllAction,
               color: AppColorTokens.cyanDeep,
               selected: allSelected,
+              locked: false,
               typography: typography,
               surface: surface,
               onTap: onFilterSelected == null
@@ -820,9 +839,10 @@ class _MobileFilterChipsPanel extends StatelessWidget {
                 label: _mobileFilterLabel(l10n, filter),
                 color: filter.accent,
                 selected: filter.selected,
+                locked: filter.locked,
                 typography: typography,
                 surface: surface,
-                onTap: onFilterSelected == null
+                onTap: filter.locked || onFilterSelected == null
                     ? () => showRecordToast(
                         context,
                         _mobileFilterLabel(l10n, filter),
@@ -842,6 +862,7 @@ class _MobileFilterChip extends StatelessWidget {
     required this.label,
     required this.color,
     required this.selected,
+    required this.locked,
     required this.typography,
     required this.surface,
     required this.onTap,
@@ -851,6 +872,7 @@ class _MobileFilterChip extends StatelessWidget {
   final String label;
   final Color color;
   final bool selected;
+  final bool locked;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final VoidCallback onTap;
@@ -876,9 +898,35 @@ class _MobileFilterChip extends StatelessWidget {
               horizontal: AppSpacingTokens.md,
               vertical: AppSpacingTokens.xs,
             ),
-            child: Text(
-              label,
-              style: typography.bodySmStrong.copyWith(color: foreground),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: typography.bodySmStrong.copyWith(color: foreground),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (locked) ...[
+                  const SizedBox(width: AppSpacingTokens.xs),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: surface.canvasSoft2,
+                      borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacingTokens.xs,
+                        vertical: 2,
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.recordNotEnabledLabel,
+                        style: typography.caption.copyWith(color: surface.body),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
         ),

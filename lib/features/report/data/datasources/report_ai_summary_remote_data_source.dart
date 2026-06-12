@@ -11,6 +11,15 @@ class ReportAiSummaryRemoteDataSource {
     final response = await api.reportsControllerGenerateWeeklySummaryV1(
       generateReportWeeklySummaryDto: lucent.GenerateReportWeeklySummaryDto(),
     );
-    return response.data!.data;
+    final data = response.data?.data;
+    if (data == null) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        error: 'Lucent report AI summary response is empty.',
+      );
+    }
+    return data;
   }
 }

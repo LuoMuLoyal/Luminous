@@ -2732,6 +2732,12 @@ abstract class AppLocalizations {
   /// **'睡眠提醒'**
   String get mineReminderSleepTitle;
 
+  /// No description provided for @mineReminderLocalOnly.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅本地'**
+  String get mineReminderLocalOnly;
+
   /// No description provided for @mineReminderEnabled.
   ///
   /// In zh, this message translates to:
@@ -3911,7 +3917,7 @@ abstract class AppLocalizations {
   /// No description provided for @todaySleepFallbackValue.
   ///
   /// In zh, this message translates to:
-  /// **'7.2'**
+  /// **'--'**
   String get todaySleepFallbackValue;
 
   /// No description provided for @todayVitalStatusNormal.

@@ -1450,6 +1450,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineReminderSleepTitle => 'Sleep';
 
   @override
+  String get mineReminderLocalOnly => 'Local only';
+
+  @override
   String get mineReminderEnabled => 'Enabled';
 
   @override
@@ -2100,7 +2103,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayVitalSleepUnit => 'h';
 
   @override
-  String get todaySleepFallbackValue => '7.2';
+  String get todaySleepFallbackValue => '--';
 
   @override
   String get todayVitalStatusNormal => 'Normal';

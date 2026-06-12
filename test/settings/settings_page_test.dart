@@ -49,6 +49,7 @@ void main() {
     expect(find.text(l10n.mineReminderMedicineTitle), findsOneWidget);
     expect(find.text(l10n.mineReminderWaterTitle), findsOneWidget);
     expect(find.text(l10n.mineReminderSleepTitle), findsOneWidget);
+    expect(find.text(l10n.mineReminderLocalOnly), findsOneWidget);
     expect(find.text(l10n.mineSettingExportTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingHelpTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingAboutTitle), findsOneWidget);

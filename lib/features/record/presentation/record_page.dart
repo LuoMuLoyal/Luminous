@@ -154,6 +154,11 @@ class RecordPage extends ConsumerWidget {
     WidgetRef ref,
     RecordQuickAction action,
   ) {
+    if (action.locked) {
+      showRecordToast(context, _quickActionLabel(context, action));
+      return;
+    }
+
     final kind = dailyRecordKindForEntryType(action.type);
     if (kind == null) {
       showRecordToast(context, _quickActionLabel(context, action));

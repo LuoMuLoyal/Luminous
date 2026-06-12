@@ -1353,6 +1353,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineReminderSleepTitle => '睡眠提醒';
 
   @override
+  String get mineReminderLocalOnly => '仅本地';
+
+  @override
   String get mineReminderEnabled => '已开启';
 
   @override
@@ -1975,7 +1978,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayVitalSleepUnit => '小时';
 
   @override
-  String get todaySleepFallbackValue => '7.2';
+  String get todaySleepFallbackValue => '--';
 
   @override
   String get todayVitalStatusNormal => '正常';
