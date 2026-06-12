@@ -253,7 +253,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordErrorTitle => '记录页暂时没有加载出来';
 
   @override
-  String get recordErrorDescription => 'Mock 数据边界已经接好，可以重新拉取一次。';
+  String get recordErrorDescription => '数据边界已经接好，可以重新拉取一次。';
 
   @override
   String get recordWeekdaySun => '日';
@@ -649,7 +649,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineTodayPlanInspectAction => '查看全部';
 
   @override
-  String get medicineMockNameMetformin => '二甲双胍缓释片';
+  String get medicineMockNameMetformin => '示例药品 A';
 
   @override
   String get medicineMockDoseMetformin => '0.5 g';
@@ -898,7 +898,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineStatusStable => '稳定服用';
 
   @override
-  String get medicineMockNameAtorvastatin => '阿托伐他汀钙片';
+  String get medicineMockNameAtorvastatin => '示例药品 B';
 
   @override
   String get medicineMockDoseAtorvastatin => '20 mg';
@@ -910,7 +910,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineStatusNeedsCheckin => '稳定服用';
 
   @override
-  String get medicineMockNameOmeprazole => '奥美拉唑肠溶胶囊';
+  String get medicineMockNameOmeprazole => '示例药品 C';
 
   @override
   String get medicineMockDoseOmeprazole => '20 mg';
@@ -1532,7 +1532,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineErrorTitle => '我的页面暂时没有加载出来';
 
   @override
-  String get mineErrorDescription => '结构已经接好，重新拉一次 mock 数据即可。';
+  String get mineErrorDescription => '结构已经接好，可以重新拉取一次数据。';
 
   @override
   String mineActionToast(String action) {
@@ -2044,7 +2044,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayErrorTitle => '今日页暂时没有加载出来';
 
   @override
-  String get todayErrorDescription => 'Mock provider 和页面结构已经接好，可以重新拉取一次看看。';
+  String get todayErrorDescription => '页面结构已经接好，可以重新拉取一次看看。';
 
   @override
   String get todayEmptyTitle => '你还没有任何记录';

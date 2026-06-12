@@ -274,7 +274,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordErrorDescription =>
-      'The mock data boundary is wired, so try fetching it again.';
+      'The data boundary is wired, so try fetching it again.';
 
   @override
   String get recordWeekdaySun => 'Sun';
@@ -694,7 +694,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineTodayPlanInspectAction => 'View all';
 
   @override
-  String get medicineMockNameMetformin => 'Metformin XR';
+  String get medicineMockNameMetformin => 'Example medicine A';
 
   @override
   String get medicineMockDoseMetformin => '0.5 g';
@@ -951,7 +951,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineStatusStable => 'Stable routine';
 
   @override
-  String get medicineMockNameAtorvastatin => 'Atorvastatin calcium';
+  String get medicineMockNameAtorvastatin => 'Example medicine B';
 
   @override
   String get medicineMockDoseAtorvastatin => '20 mg';
@@ -963,7 +963,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineStatusNeedsCheckin => 'Stable routine';
 
   @override
-  String get medicineMockNameOmeprazole => 'Omeprazole capsules';
+  String get medicineMockNameOmeprazole => 'Example medicine C';
 
   @override
   String get medicineMockDoseOmeprazole => '20 mg';
@@ -1636,7 +1636,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineErrorDescription =>
-      'The structure is wired. Retry the mock fetch once.';
+      'The structure is wired. Try fetching the data again.';
 
   @override
   String mineActionToast(String action) {
@@ -2173,7 +2173,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayErrorDescription =>
-      'The mock provider and page structure are wired up, so try fetching it again.';
+      'The provider and page structure are wired up, so try fetching it again.';
 
   @override
   String get todayEmptyTitle => 'No records yet';

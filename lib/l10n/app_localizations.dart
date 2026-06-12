@@ -569,7 +569,7 @@ abstract class AppLocalizations {
   /// No description provided for @recordErrorDescription.
   ///
   /// In zh, this message translates to:
-  /// **'Mock 数据边界已经接好，可以重新拉取一次。'**
+  /// **'数据边界已经接好，可以重新拉取一次。'**
   String get recordErrorDescription;
 
   /// No description provided for @recordWeekdaySun.
@@ -1343,7 +1343,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineMockNameMetformin.
   ///
   /// In zh, this message translates to:
-  /// **'二甲双胍缓释片'**
+  /// **'示例药品 A'**
   String get medicineMockNameMetformin;
 
   /// No description provided for @medicineMockDoseMetformin.
@@ -1841,7 +1841,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineMockNameAtorvastatin.
   ///
   /// In zh, this message translates to:
-  /// **'阿托伐他汀钙片'**
+  /// **'示例药品 B'**
   String get medicineMockNameAtorvastatin;
 
   /// No description provided for @medicineMockDoseAtorvastatin.
@@ -1865,7 +1865,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineMockNameOmeprazole.
   ///
   /// In zh, this message translates to:
-  /// **'奥美拉唑肠溶胶囊'**
+  /// **'示例药品 C'**
   String get medicineMockNameOmeprazole;
 
   /// No description provided for @medicineMockDoseOmeprazole.
@@ -3077,7 +3077,7 @@ abstract class AppLocalizations {
   /// No description provided for @mineErrorDescription.
   ///
   /// In zh, this message translates to:
-  /// **'结构已经接好，重新拉一次 mock 数据即可。'**
+  /// **'结构已经接好，可以重新拉取一次数据。'**
   String get mineErrorDescription;
 
   /// No description provided for @mineActionToast.
@@ -4049,7 +4049,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayErrorDescription.
   ///
   /// In zh, this message translates to:
-  /// **'Mock provider 和页面结构已经接好，可以重新拉取一次看看。'**
+  /// **'页面结构已经接好，可以重新拉取一次看看。'**
   String get todayErrorDescription;
 
   /// No description provided for @todayEmptyTitle.
