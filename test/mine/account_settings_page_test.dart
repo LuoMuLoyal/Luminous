@@ -11,7 +11,7 @@ import 'package:luminous/features/auth/presentation/pages/account_settings_page.
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-import 'auth_test_helpers.dart';
+import '../auth/auth_test_helpers.dart';
 
 void main() {
   testWidgets('Account settings page renders auth account sections', (

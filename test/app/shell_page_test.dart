@@ -14,7 +14,7 @@ import 'package:luminous/features/shell/presentation/shell_page.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-import 'auth_test_helpers.dart';
+import '../auth/auth_test_helpers.dart';
 
 void main() {
   testWidgets('Shell page uses five desktop tabs plus settings/help actions', (

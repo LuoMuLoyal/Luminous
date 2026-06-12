@@ -35,6 +35,7 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
      - frontend shell:
        `cd Luminous`
        `flutter test integration_test/fullstack_record_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
+   - Because `integration_test/` now lives in nested feature folders, always run those tests with an explicit file path and explicit device id. Plain `flutter test integration_test` is ambiguous when desktop/web targets are also available.
    - Expected run timing:
      - before merging any change that touches auth/session restore
      - before merging any Lucent or Luminous change that touches `/api/v1/user/daily-records*`
