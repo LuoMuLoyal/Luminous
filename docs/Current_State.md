@@ -32,9 +32,10 @@ This file records current implementation facts only. Product direction lives in 
 - Stack: Flutter + Riverpod + GoRouter.
 - Generated Lucent client: `packages/lucent_openapi`.
 - Auth/session state is split into restoring, confirmed signed-out, and signed-in.
-- Integration coverage now includes two real Android-emulator full-stack lanes against Lucent test runtime:
+- Integration coverage now includes three real Android-emulator full-stack lanes against Lucent test runtime:
   - auth sign-in smoke
   - Record create/detail/edit/delete CRUD lane
+  - Today + Report protected-dashboard lane with Report sync verification
 - Frontend tests are now grouped by feature under nested `test/` and `integration_test/` directories instead of one flat root.
 - The real full-stack helper uses explicit Dart defines, Lucent test-state preparation, stable shell/login/action keys, and an in-memory session store so old secure-storage sessions do not leak into the lane.
 - Full-stack mobile E2E is intentionally local/manual right now. It is not part of the current GitHub Actions pipeline because the lane still depends on a separate Lucent test runtime, Docker-backed test Postgres, and Android emulator orchestration across two repositories.

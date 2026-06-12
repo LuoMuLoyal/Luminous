@@ -366,7 +366,7 @@ class ReportMetricsGrid extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: AppSpacingTokens.sm,
         mainAxisSpacing: AppSpacingTokens.sm,
-        mainAxisExtent: 174,
+        mainAxisExtent: 180,
       ),
       itemBuilder: (context, index) {
         return _MetricCard(
@@ -1068,7 +1068,7 @@ class ReportPatternsSection extends StatelessWidget {
             crossAxisCount: 2,
             crossAxisSpacing: AppSpacingTokens.sm,
             mainAxisSpacing: AppSpacingTokens.sm,
-            mainAxisExtent: 174,
+            mainAxisExtent: 180,
           ),
           itemBuilder: (context, index) {
             return _PatternCard(
