@@ -12,17 +12,17 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 
 - **Record form maintenance** (2026-06-10): aligned quick-action visibility with create capability, removed static mock timeline fallback from Lucent repository, promoted `note` to a first-class `RecordEntryType` with its own mapping/filter/timeline, locked down active create kinds (water, meal, symptom, note), and added regression tests. All 165 tests pass; `flutter analyze` clean.
 - **Mine and Settings contracts** (2026-06-11): Lucent now exposes user settings, support resources/app info, and data export request status; Luminous wires Mine campus resources and Settings privacy/export/help/about/reminder summaries to real contracts or local state. User-scoped business APIs now live under `/api/v1/user/*`; the old `me` namespace has been removed.
+- **Report Phase 2 closeout** (2026-06-12): Lucent now exposes `/api/v1/user/reports/dashboard`; Luminous uses the real report contract, keeps explicit sleep `insufficient_data`, aligns signed-out behavior with other protected tabs, adds mobile pull-to-refresh, and trims generated OpenAPI doc/test noise from the regeneration workflow.
+- **Today AI analysis** (2026-06-12): Lucent now exposes `POST /api/v1/user/today-analysis/generate`; Luminous replaces the static Today AI placeholder with a manual authenticated generate flow, respects the existing AI-summary setting, and covers the card with split page/widget/provider tests. Lucent fallback/prompt copy now follows request language for `zh-CN` and `en`.
 
 ## Immediate Work Order
 
-1. **Report Phase 2 stabilization**
-   - Active plan: `../plans/2026-06-12-report-contracts.md`.
-   - Phase 1 contract wiring is in place on both Lucent and Luminous, the frontend hardcoded report chrome cleanup is done, and repository-level DTO-to-domain regression coverage is now in place for sleep `insufficient_data`, AI summary mode, and export action mapping.
-   - Next focus:
-   - Current decision:
-     - Report signed-out state now aligns with the protected-tab placeholder pattern used by `Today / Record / Mine`, so this no longer needs a separate decision pass
-     - generated OpenAPI Markdown docs and generated package stub tests should be disabled/cleaned by the wrapper instead of being hand-maintained
-   - Sleep remains deferred as a later contract slice, but Report must keep explicit missing-data handling instead of faking values.
+1. **AI architecture follow-up**
+   - Decide the backend execution boundary for the next AI slice:
+     - keep bounded linear flows for manual Today / weekly / monthly summaries
+     - or introduce a tool-capable orchestrator only for workflows that truly need branching, retrieval, or multi-step tool use
+   - Do not refactor the shipped Today manual path into a generic agent runtime unless the next slice actually needs tool selection or multi-step control flow.
+   - Before broader AI work, remove remaining hardcoded backend AI copy outside Today and define one shared locale-aware prompt/copy pattern.
 
 2. **Local full-stack lane usage rule**
    - Keep the current Record lane out of GitHub Actions for now.
@@ -41,9 +41,25 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
      - before merging changes to the full-stack E2E helper or generated auth/record client surface
      - before cutting a mobile test build that claims Record CRUD is stable
 
-3. **AI follow-up order after Report**
-   - After Report contracts are stable, continue in this order:
-     - Today AI analysis
+3. **Review-confirmed backlog / TODO**
+   - Scope alignment around sleep remains unfinished:
+     - Today still shows a placeholder sleep vital row.
+     - Record still exposes sleep in placeholder-only quick-action/filter paths.
+     - Settings still stores a local sleep reminder preference even though no real sleep contract exists.
+   - Frontend coverage gaps still worth filling:
+     - `UserSettingsController` toggle flows
+     - `DataExportController` request/refresh flow
+     - `ReportRemoteDataSource` request path
+     - health-context write HTTP-layer tests beyond payload serialization
+   - Placeholder copy cleanup is still pending:
+     - user-visible `mock data` error text in ARB
+     - fake medicine-name placeholder strings such as `Metformin XR` / `Atorvastatin calcium` / `Omeprazole capsules`
+   - Lucent hardening still remains:
+     - remove code-level fallback JWT/admin secrets and move dev defaults to env templates only
+     - align `testing-support` password hashing with the shared `ARGON2_OPTIONS`
+
+4. **AI follow-up order after Today**
+   - Continue in this order after the manual Today path is stable:
      - weekly/monthly AI summary
      - natural language to candidate records
      - screenshot to candidate structured input

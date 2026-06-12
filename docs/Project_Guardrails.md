@@ -37,6 +37,8 @@ This replaces the long historical error audit as the current quick-read checklis
 - Do not add visible text without ARB/l10n.
 - Do not let signed-out pages repeatedly call protected APIs; show stable signed-out state or route to login.
 - Do not present mock/static/unsupported features as real capability.
+- Do not leave user-visible copy that literally says `mock data` once a real or deferred boundary has been defined; use neutral placeholder wording instead.
+- Do not let deferred capability drift into ambiguous half-active UI. If a future feature must stay visible before its contract exists, keep it clearly placeholder-only and keep docs in sync with that choice.
 - For mobile UI refinement, "avoid nested boxes" means keep the necessary outer section panel and replace only inner cards with rows, dividers, pills, or controls. Do not flatten an entire section into loose dividers when the outer panel provides visual grouping.
 - The mobile MVP bottom navigation is frozen as `today / record / medicine / report / mine`. Do not add or revive a generic More tab; route low-frequency utilities through Mine, contextual Today actions, or defer them.
 
