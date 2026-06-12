@@ -109,6 +109,7 @@ Class | Method | HTTP request | Description
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
 [*ReminderDeliveriesApi*](doc/ReminderDeliveriesApi.md) | [**reminderDeliveriesControllerListV1**](doc/ReminderDeliveriesApi.md#reminderdeliveriescontrollerlistv1) | **GET** /api/v1/user/reminder-deliveries | List reminder delivery audit logs
+[*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGetDashboardV1**](doc/ReportsApi.md#reportscontrollergetdashboardv1) | **GET** /api/v1/user/reports/dashboard | Get authenticated user report dashboard
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetAppInfoV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetappinfov1) | **GET** /api/v1/public/app-info | Get application metadata
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetResourcesV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetresourcesv1) | **GET** /api/v1/public/support-resources | Get static support resource entries
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/user/health-context/allergies | Create an allergy record
@@ -213,6 +214,13 @@ Class | Method | HTTP request | Description
  - [ReminderDeliveryItemDto](doc/ReminderDeliveryItemDto.md)
  - [ReminderDeliveryListDataDto](doc/ReminderDeliveryListDataDto.md)
  - [ReminderDeliveryListResponseDto](doc/ReminderDeliveryListResponseDto.md)
+ - [ReportDashboardDataDto](doc/ReportDashboardDataDto.md)
+ - [ReportDashboardResponseDto](doc/ReportDashboardResponseDto.md)
+ - [ReportDashboardScoreDto](doc/ReportDashboardScoreDto.md)
+ - [ReportFindingDto](doc/ReportFindingDto.md)
+ - [ReportMetricDto](doc/ReportMetricDto.md)
+ - [ReportPatternDto](doc/ReportPatternDto.md)
+ - [ReportTrendDto](doc/ReportTrendDto.md)
  - [ResetPasswordDto](doc/ResetPasswordDto.md)
  - [SendVerificationCodeDto](doc/SendVerificationCodeDto.md)
  - [SendVerificationCodeResponseDto](doc/SendVerificationCodeResponseDto.md)

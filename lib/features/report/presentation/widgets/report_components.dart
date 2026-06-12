@@ -210,15 +210,17 @@ class ReportTextAction extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                label,
-                style: typography.bodySmStrong.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
+              Flexible(
+                child: Text(
+                  label,
+                  style: typography.bodySmStrong.copyWith(
+                    color: foreground,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
               if (icon != null) ...[
                 const SizedBox(width: AppSpacingTokens.xxs),

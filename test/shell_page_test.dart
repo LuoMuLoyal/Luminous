@@ -8,6 +8,7 @@ import 'package:luminous/features/health_context/data/providers/health_context_d
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
+import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
 import 'package:luminous/features/settings/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
@@ -70,6 +71,9 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
+          reportRepositoryProvider.overrideWithValue(
+            const MockReportRepository(),
+          ),
           supportResourcesProvider('campus').overrideWith((ref) async => const []),
         ],
         child: MaterialApp(
@@ -102,12 +106,11 @@ void main() {
 
     await tester.tap(find.text(l10n.tabReport).first);
     await tester.pumpAndSettle();
-    expect(find.text(l10n.tabReport), findsAtLeastNWidgets(2));
-    expect(find.text(l10n.reportScoreTitle), findsOneWidget);
+    expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
+    expect(find.byKey(const Key('report-generate-action')), findsOneWidget);
 
     await tester.tap(find.text(l10n.tabMine).first);
     await tester.pumpAndSettle();
-    expect(find.text(l10n.tabMine), findsAtLeastNWidgets(2));
     expect(find.text('Lumi'), findsOneWidget);
     expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
   });

@@ -73,6 +73,13 @@ import 'package:lucent_openapi/src/model/register_response_dto.dart';
 import 'package:lucent_openapi/src/model/reminder_delivery_item_dto.dart';
 import 'package:lucent_openapi/src/model/reminder_delivery_list_data_dto.dart';
 import 'package:lucent_openapi/src/model/reminder_delivery_list_response_dto.dart';
+import 'package:lucent_openapi/src/model/report_dashboard_data_dto.dart';
+import 'package:lucent_openapi/src/model/report_dashboard_response_dto.dart';
+import 'package:lucent_openapi/src/model/report_dashboard_score_dto.dart';
+import 'package:lucent_openapi/src/model/report_finding_dto.dart';
+import 'package:lucent_openapi/src/model/report_metric_dto.dart';
+import 'package:lucent_openapi/src/model/report_pattern_dto.dart';
+import 'package:lucent_openapi/src/model/report_trend_dto.dart';
 import 'package:lucent_openapi/src/model/reset_password_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_response_dto.dart';
@@ -303,6 +310,20 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return ReminderDeliveryListDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ReminderDeliveryListResponseDto':
           return ReminderDeliveryListResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportDashboardDataDto':
+          return ReportDashboardDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportDashboardResponseDto':
+          return ReportDashboardResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportDashboardScoreDto':
+          return ReportDashboardScoreDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportFindingDto':
+          return ReportFindingDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportMetricDto':
+          return ReportMetricDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportPatternDto':
+          return ReportPatternDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportTrendDto':
+          return ReportTrendDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ResetPasswordDto':
           return ResetPasswordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'SendVerificationCodeDto':

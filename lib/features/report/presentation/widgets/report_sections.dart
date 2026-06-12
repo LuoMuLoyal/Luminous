@@ -4,7 +4,6 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_components.dart';
-import 'package:luminous/features/report/presentation/widgets/report_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportTopBar extends StatelessWidget {
@@ -297,12 +296,12 @@ class ReportScoreHero extends StatelessWidget {
                     AppSkeletonSlot(
                       skeleton: const AppInlineSkeletonBlock(
                         height: 22,
-                        width: 56,
+                        width: 64,
                         radius: AppRadiusTokens.sm,
                       ),
                       child: ReportPill(
-                        label: reportCopy(l10n, score.statusKey),
-                        color: ReportPalette.green,
+                        label: _statusLabel(l10n, score.status),
+                        color: _statusColor(score.status),
                       ),
                     ),
                   ],
@@ -315,11 +314,8 @@ class ReportScoreHero extends StatelessWidget {
                     radius: AppRadiusTokens.sm,
                   ),
                   child: ReportTextAction(
-                    label: reportCopy(l10n, score.bodyKey),
-                    onTap: () => showReportToast(
-                      context,
-                      reportCopy(l10n, score.bodyKey),
-                    ),
+                    label: score.summary,
+                    onTap: () => showReportToast(context, score.summary),
                   ),
                 ),
               ],
@@ -399,6 +395,7 @@ class _MetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final title = _metricTitle(l10n, metric.kind);
     final directionIcon = switch (metric.direction) {
       ReportMetricDirection.up => Icons.arrow_upward_rounded,
       ReportMetricDirection.down => Icons.arrow_downward_rounded,
@@ -408,15 +405,11 @@ class _MetricCard extends StatelessWidget {
       ReportMetricDirection.down => Theme.of(context).colorScheme.error,
       _ => ReportPalette.green,
     };
-    final value = metric.valueKey == null
-        ? metric.value
-        : reportCopy(l10n, metric.valueKey!);
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () =>
-            showReportToast(context, reportCopy(l10n, metric.titleKey)),
+        onTap: () => showReportToast(context, title),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: ReportPanel(
           padding: const EdgeInsets.all(AppSpacingTokens.md),
@@ -435,7 +428,7 @@ class _MetricCard extends StatelessWidget {
                   const SizedBox(width: AppSpacingTokens.xs),
                   Expanded(
                     child: Text(
-                      reportCopy(l10n, metric.titleKey),
+                      title,
                       style: typography.bodyMdStrong.copyWith(
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0,
@@ -452,7 +445,7 @@ class _MetricCard extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.end,
                 children: [
                   AppSkeletonText(
-                    text: value,
+                    text: metric.value,
                     style: typography.displayLg.copyWith(
                       color: metric.color,
                       fontWeight: FontWeight.w800,
@@ -460,13 +453,13 @@ class _MetricCard extends StatelessWidget {
                     ),
                     width: 48,
                   ),
-                  if (metric.unitKey != null)
+                  if (metric.unit.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(
                         bottom: AppSpacingTokens.xxs,
                       ),
                       child: Text(
-                        reportCopy(l10n, metric.unitKey!),
+                        metric.unit,
                         style: typography.bodySm.copyWith(
                           color: surface.body,
                           letterSpacing: 0,
@@ -481,15 +474,12 @@ class _MetricCard extends StatelessWidget {
                   AppSkeletonSlot(
                     skeleton: const AppInlineSkeletonBlock(
                       height: 22,
-                      width: 46,
+                      width: 54,
                       radius: AppRadiusTokens.sm,
                     ),
                     child: ReportPill(
-                      label: reportCopy(l10n, metric.statusKey),
-                      color:
-                          metric.statusKey == ReportCopyKey.statusNeedsImprove
-                          ? ReportPalette.orange
-                          : ReportPalette.green,
+                      label: _statusLabel(l10n, metric.status),
+                      color: _statusColor(metric.status),
                       backgroundAlpha: 0.1,
                     ),
                   ),
@@ -498,7 +488,7 @@ class _MetricCard extends StatelessWidget {
                   const SizedBox(width: AppSpacingTokens.xxs),
                   Expanded(
                     child: AppSkeletonText(
-                      text: reportCopy(l10n, metric.deltaKey),
+                      text: metric.delta,
                       style: typography.caption.copyWith(
                         color: surface.body,
                         letterSpacing: 0,
@@ -563,7 +553,7 @@ class ReportTrendSection extends StatelessWidget {
             for (final series in trends)
               _LegendDot(
                 color: series.color,
-                label: reportCopy(l10n, series.labelKey),
+                label: _metricTitle(l10n, series.kind),
                 typography: typography,
                 surface: surface,
               ),
@@ -733,7 +723,6 @@ class ReportFindingsSection extends StatelessWidget {
                   width: 238,
                   child: _FindingCard(
                     finding: findings[index],
-                    l10n: l10n,
                     typography: typography,
                     surface: surface,
                   ),
@@ -752,24 +741,20 @@ class ReportFindingsSection extends StatelessWidget {
 class _FindingCard extends StatelessWidget {
   const _FindingCard({
     required this.finding,
-    required this.l10n,
     required this.typography,
     required this.surface,
   });
 
   final ReportFinding finding;
-  final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    final title = reportCopy(l10n, finding.titleKey);
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showReportToast(context, title),
+        onTap: () => showReportToast(context, finding.title),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -803,7 +788,7 @@ class _FindingCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacingTokens.md),
                 AppSkeletonText(
-                  text: title,
+                  text: finding.title,
                   style: typography.bodyMdStrong.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0,
@@ -812,7 +797,7 @@ class _FindingCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacingTokens.sm),
                 AppSkeletonText(
-                  text: reportCopy(l10n, finding.bodyKey),
+                  text: finding.body,
                   style: typography.bodySm.copyWith(
                     color: surface.body,
                     letterSpacing: 0,
@@ -833,19 +818,22 @@ class _FindingCard extends StatelessWidget {
 class ReportAiSummarySection extends StatelessWidget {
   const ReportAiSummarySection({
     super.key,
-    required this.bullets,
+    required this.summary,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
 
-  final List<ReportAiBullet> bullets;
+  final ReportSummary summary;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final subtitle = _summarySubtitle(l10n, summary.mode);
+    final actionLabel = _summaryActionLabel(l10n, summary.mode);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -873,7 +861,7 @@ class ReportAiSummarySection extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacingTokens.xxs),
                   Text(
-                    l10n.reportAiSummarySubtitle,
+                    subtitle,
                     style: typography.bodySm.copyWith(
                       color: surface.body,
                       letterSpacing: 0,
@@ -882,17 +870,18 @@ class ReportAiSummarySection extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
-            OutlinedButton(
-              onPressed: () =>
-                  showReportToast(context, l10n.reportViewAdviceAction),
-              child: Text(l10n.reportViewAdviceAction),
-            ),
+            if (actionLabel != null) ...[
+              const SizedBox(width: AppSpacingTokens.sm),
+              OutlinedButton(
+                onPressed: () => showReportToast(context, actionLabel),
+                child: Text(actionLabel),
+              ),
+            ],
           ],
         ),
         const SizedBox(height: AppSpacingTokens.md),
         Divider(height: 1, thickness: 1, color: surface.hairline),
-        for (var index = 0; index < bullets.length; index += 1) ...[
+        for (var index = 0; index < summary.bullets.length; index += 1) ...[
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
             child: Row(
@@ -902,7 +891,7 @@ class ReportAiSummarySection extends StatelessWidget {
                   padding: const EdgeInsets.only(top: AppSpacingTokens.xs),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: bullets[index].color,
+                      color: summary.bullets[index].color,
                       shape: BoxShape.circle,
                     ),
                     child: const SizedBox.square(
@@ -913,7 +902,7 @@ class ReportAiSummarySection extends StatelessWidget {
                 const SizedBox(width: AppSpacingTokens.sm),
                 Expanded(
                   child: AppSkeletonText(
-                    text: reportCopy(l10n, bullets[index].bodyKey),
+                    text: summary.bullets[index].body,
                     style: typography.bodySm.copyWith(
                       color: surface.body,
                       letterSpacing: 0,
@@ -924,7 +913,7 @@ class ReportAiSummarySection extends StatelessWidget {
               ],
             ),
           ),
-          if (index < bullets.length - 1)
+          if (index < summary.bullets.length - 1)
             Divider(
               height: 1,
               thickness: 1,
@@ -997,7 +986,8 @@ class _ExportCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = reportCopy(l10n, action.titleKey);
+    final title = _exportTitle(l10n, action.kind);
+    final subtitle = _exportSubtitle(l10n, action.kind);
 
     return Material(
       color: Colors.transparent,
@@ -1025,7 +1015,7 @@ class _ExportCard extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacingTokens.xxs),
                     Text(
-                      reportCopy(l10n, action.subtitleKey),
+                      subtitle,
                       style: typography.caption.copyWith(
                         color: surface.body,
                         letterSpacing: 0,
@@ -1109,12 +1099,10 @@ class _PatternCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = reportCopy(l10n, pattern.titleKey);
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showReportToast(context, title),
+        onTap: () => showReportToast(context, pattern.title),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: ReportPanel(
           child: Column(
@@ -1132,7 +1120,7 @@ class _PatternCard extends StatelessWidget {
                   const SizedBox(width: AppSpacingTokens.xs),
                   Expanded(
                     child: Text(
-                      title,
+                      pattern.title,
                       style: typography.bodySmStrong.copyWith(
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0,
@@ -1145,7 +1133,7 @@ class _PatternCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacingTokens.md),
               AppSkeletonText(
-                text: reportCopy(l10n, pattern.statusKey),
+                text: _statusLabel(l10n, pattern.status),
                 style: typography.bodyMdStrong.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0,
@@ -1156,7 +1144,7 @@ class _PatternCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacingTokens.xxs),
               AppSkeletonText(
-                text: reportCopy(l10n, pattern.bodyKey),
+                text: pattern.body,
                 style: typography.bodySm.copyWith(
                   color: surface.body,
                   letterSpacing: 0,
@@ -1279,4 +1267,65 @@ class _LegendDot extends StatelessWidget {
       ],
     );
   }
+}
+
+String _metricTitle(AppLocalizations l10n, ReportDataKind kind) {
+  return switch (kind) {
+    ReportDataKind.medication => l10n.reportMetricMedicationTitle,
+    ReportDataKind.sleep => l10n.reportMetricSleepTitle,
+    ReportDataKind.water => l10n.reportMetricWaterTitle,
+    ReportDataKind.general => l10n.reportScoreTitle,
+  };
+}
+
+String _summarySubtitle(AppLocalizations l10n, ReportSummaryMode mode) {
+  return switch (mode) {
+    ReportSummaryMode.ai => l10n.reportAiSummarySubtitle,
+    ReportSummaryMode.current => l10n.reportSnapshotHint,
+    ReportSummaryMode.loading => l10n.reportSnapshotStatus,
+  };
+}
+
+String? _summaryActionLabel(AppLocalizations l10n, ReportSummaryMode mode) {
+  return switch (mode) {
+    ReportSummaryMode.ai => l10n.reportViewAdviceAction,
+    ReportSummaryMode.current => null,
+    ReportSummaryMode.loading => null,
+  };
+}
+
+String _exportTitle(AppLocalizations l10n, ReportExportKind kind) {
+  return switch (kind) {
+    ReportExportKind.hospital => l10n.reportExportHospitalTitle,
+    ReportExportKind.monthly => l10n.reportExportMonthlyTitle,
+    ReportExportKind.print => l10n.reportExportPrintTitle,
+  };
+}
+
+String _exportSubtitle(AppLocalizations l10n, ReportExportKind kind) {
+  return switch (kind) {
+    ReportExportKind.hospital => l10n.reportExportHospitalSubtitle,
+    ReportExportKind.monthly => l10n.reportExportMonthlySubtitle,
+    ReportExportKind.print => l10n.reportExportPrintSubtitle,
+  };
+}
+
+String _statusLabel(AppLocalizations l10n, ReportStatus status) {
+  return switch (status) {
+    ReportStatus.good => l10n.reportStatusGood,
+    ReportStatus.stable => l10n.reportStatusStable,
+    ReportStatus.needsAttention => l10n.reportStatusNeedsImprove,
+    ReportStatus.insufficientData => l10n.medicineReminderUnavailableStatus,
+    ReportStatus.unknown => l10n.reportStatusStable,
+  };
+}
+
+Color _statusColor(ReportStatus status) {
+  return switch (status) {
+    ReportStatus.good => ReportPalette.green,
+    ReportStatus.stable => ReportPalette.previewScore,
+    ReportStatus.needsAttention => ReportPalette.orange,
+    ReportStatus.insufficientData => ReportPalette.blue,
+    ReportStatus.unknown => ReportPalette.blue,
+  };
 }

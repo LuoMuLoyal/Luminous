@@ -61,7 +61,7 @@ class ReportDashboardView extends StatelessWidget {
         const SizedBox(height: AppSpacingTokens.md),
         ReportAiSummarySection(
           key: const Key('report-ai-summary-section'),
-          bullets: dashboard.aiBullets,
+          summary: dashboard.summary,
           l10n: l10n,
           typography: typography,
           surface: surface,
