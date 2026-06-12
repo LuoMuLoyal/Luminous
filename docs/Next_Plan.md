@@ -1,6 +1,6 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-11
+Last updated: 2026-06-12
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
@@ -15,18 +15,14 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 
 ## Immediate Work Order
 
-1. **Today AI analysis**
-   - Active plan: `../plans/2026-06-11-today-ai-analysis.md`.
-   - Next implementation target is no longer sleep. It is the first real AI-backed Today flow: manual `生成今日分析`.
-   - Decision:
-     - use LangChain runtime pieces in Lucent
-     - do not add LangGraph yet
-     - do not start with scheduled proactive AI notifications
-   - Phase 1 output should be:
-     - one authenticated Lucent Today AI endpoint
-     - one structured response schema
-     - one Luminous Today card wired to real generation instead of static placeholder bullets
-   - Sleep remains deferred as a later input source and candidate-record path, not the current first implementation slice.
+1. **Report Phase 2 stabilization**
+   - Active plan: `../plans/2026-06-12-report-contracts.md`.
+   - Phase 1 contract wiring is in place on both Lucent and Luminous, and the frontend hardcoded report chrome cleanup is done.
+   - Next focus:
+     - add repository-level tests for DTO-to-domain mapping, especially sleep `insufficient_data`
+     - decide whether report signed-out state should stay as a full-page gate or align with the protected-tab placeholder pattern used elsewhere
+     - trim low-value generated OpenAPI doc/test noise only if it can be done without breaking the local path-package workflow
+   - Sleep remains deferred as a later contract slice, but Report must keep explicit missing-data handling instead of faking values.
 
 2. **Local full-stack lane usage rule**
    - Keep the current Record lane out of GitHub Actions for now.
@@ -45,18 +41,13 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
      - before merging changes to the full-stack E2E helper or generated auth/record client surface
      - before cutting a mobile test build that claims Record CRUD is stable
 
-3. **AI follow-up order after Today**
-   - After Today AI analysis is stable, continue in this order:
+3. **AI follow-up order after Report**
+   - After Report contracts are stable, continue in this order:
+     - Today AI analysis
      - weekly/monthly AI summary
      - natural language to candidate records
      - screenshot to candidate structured input
-   - Do not jump to scheduled proactive AI pushes before the manual Today path is stable and bounded.
-
-## Paused By User
-
-- **Report data contract**
-   - Keep current Report visuals mock/static until Lucent exposes report/insight/export contracts.
-   - Complex charts remain placeholders until the data shape is stable.
+   - Do not jump to scheduled proactive AI pushes before the manual Today path and report aggregate layer are stable and bounded.
 
 ## Deferred But Useful
 

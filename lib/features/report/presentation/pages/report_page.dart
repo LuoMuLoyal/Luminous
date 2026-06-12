@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
@@ -12,29 +15,52 @@ import 'package:luminous/l10n/app_localizations.dart';
 class ReportPage extends ConsumerWidget {
   const ReportPage({super.key});
 
+  Future<void> _refreshDashboard(WidgetRef ref) async {
+    ref.invalidate(reportDashboardProvider);
+    await ref.read(reportDashboardProvider.future);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(authSessionProvider);
     final dashboardAsync = ref.watch(reportDashboardProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final notifier = ref.read(reportDashboardProvider.notifier);
 
     return dashboardAsync.when(
       data: (dashboard) => _ReportMobileShell(
-        onGenerate: notifier.sync,
-        onSync: notifier.sync,
+        onGenerate: () => ref.invalidate(reportDashboardProvider),
+        onSync: () => ref.invalidate(reportDashboardProvider),
+        onRefresh: () => _refreshDashboard(ref),
         child: ReportDashboardView(dashboard: dashboard),
       ),
       loading: () => _ReportMobileShell(
-        isSyncing: true,
-        onGenerate: notifier.sync,
-        onSync: notifier.sync,
+        isSyncing: session.canAccessProtectedData,
+        onGenerate: () => ref.invalidate(reportDashboardProvider),
+        onSync: () => ref.invalidate(reportDashboardProvider),
+        onRefresh: () => _refreshDashboard(ref),
         child: const ReportDashboardView(
-          dashboard: MockReportRepository.dashboard,
+          dashboard: MockReportRepository.previewDashboard,
           isLoading: true,
         ),
       ),
-      error: (_, __) {
+      error: (error, _) {
         final l10n = AppLocalizations.of(context)!;
+        if (error is AuthRequiredException) {
+          return DecoratedBox(
+            decoration: BoxDecoration(color: surface.canvasSoft),
+            child: SafeArea(
+              bottom: false,
+              child: AppStateErrorView(
+                title: l10n.authNotSignedIn,
+                description: l10n.authLoginRequiredPrompt,
+                icon: Icons.lock_outline_rounded,
+                actionLabel: l10n.authGoLogin,
+                onAction: () => context.push(loginRouteForCurrentLocation(context)),
+                tone: AppStateTone.warning,
+              ),
+            ),
+          );
+        }
 
         return DecoratedBox(
           decoration: BoxDecoration(color: surface.canvasSoft),
@@ -45,7 +71,7 @@ class ReportPage extends ConsumerWidget {
               description: l10n.reportErrorDescription,
               icon: Icons.bar_chart_rounded,
               actionLabel: l10n.todayRetryAction,
-              onAction: notifier.sync,
+              onAction: () => ref.invalidate(reportDashboardProvider),
               tone: AppStateTone.warning,
             ),
           ),
@@ -60,12 +86,14 @@ class _ReportMobileShell extends StatelessWidget {
     required this.child,
     required this.onGenerate,
     required this.onSync,
+    required this.onRefresh,
     this.isSyncing = false,
   });
 
   final Widget child;
   final VoidCallback onGenerate;
   final VoidCallback onSync;
+  final Future<void> Function() onRefresh;
   final bool isSyncing;
 
   @override
@@ -76,23 +104,27 @@ class _ReportMobileShell extends StatelessWidget {
       decoration: BoxDecoration(color: surface.canvasSoft),
       child: SafeArea(
         bottom: false,
-        child: ListView(
-          key: const PageStorageKey<String>('report-mobile-scroll'),
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacingTokens.md,
-            AppSpacingTokens.md,
-            AppSpacingTokens.md,
-            AppSpacingTokens.x5l,
-          ),
-          children: [
-            ReportTopBar(
-              isSyncing: isSyncing,
-              onGenerate: onGenerate,
-              onSync: onSync,
+        child: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: ListView(
+            key: const PageStorageKey<String>('report-mobile-scroll'),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacingTokens.md,
+              AppSpacingTokens.md,
+              AppSpacingTokens.md,
+              AppSpacingTokens.x5l,
             ),
-            const SizedBox(height: AppSpacingTokens.md),
-            child,
-          ],
+            children: [
+              ReportTopBar(
+                isSyncing: isSyncing,
+                onGenerate: onGenerate,
+                onSync: onSync,
+              ),
+              const SizedBox(height: AppSpacingTokens.md),
+              child,
+            ],
+          ),
         ),
       ),
     );

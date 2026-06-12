@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-06-11
+Last updated: 2026-06-12
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -23,7 +23,7 @@ This file records current implementation facts only. Product direction lives in 
 - API base: `/api/v1`.
 - Response envelope: `{ code, message, data }`.
 - Generated API contract: `Lucent/docs/openapi.json`.
-- Current generated client baseline after mine/settings contracts and `/user` namespace migration: 44 paths / 123 schemas.
+- Current generated client baseline after report dashboard contracts: 45 paths / 130 schemas.
 - Implemented backend areas used by Luminous: auth/account, user-scoped health context, medicine search/detail, current medicines, dose logs, medicine reminders, daily records with single-image attachment metadata, environment snapshot, user settings, support resources, app info, and data export requests.
 - User-scoped business data is served under `/api/v1/user/*`; account profile/security actions remain under `/api/v1/account/*`.
 
@@ -40,19 +40,19 @@ This file records current implementation facts only. Product direction lives in 
 - Protected providers do not call Lucent while auth is restoring or confirmed signed out.
 - Protected entry taps show a modal login prompt on the current page; direct/deep-link protected pages keep destination guards as fallback.
 - Skeleton loading is section-scoped: stable chrome and local/mock/static sections render immediately, backend-backed fields shimmer locally.
-- Report opens on the current static snapshot and refreshes only when the user taps preview or sync.
+- Report now fetches the Lucent report dashboard on page entry for signed-in users, keeps section-level shimmer loading, shows explicit signed-out gating, and still keeps export actions as frontend-only placeholders until export contracts exist.
 
 ## Active Mobile UI
 
 - Today: compressed health overview, repository-provided medication/hydration priority list, medication tasks, hydration tasks with count targets, UI-only custom todos, AI summary/advice placeholders, and immediate risk/proactive suggestions.
 - Record: symptoms, hydration with selectable units, diet/meal, note as a first-class type (own quick action, filter, and timeline entry), sleep/medication as non-create quick actions with toast fallback, natural-language placeholder, selected-date timeline/detail/create/edit, top date bar, filters, summary/timeline-driven today overview, and panel-backed quick record/timeline sections whose inner rows use dividers instead of nested cards. Active create kinds are water, meal, symptom, and note. Lucent-backed filter results no longer fall back to a static mock timeline.
 - Medicine: active current-medicine drugbox, reminder-derived next dose, Lucent schedule-only reminder detail/create/edit/delete UI with optional start/end date window, local sound preference, on-device local notification scheduling synced from reminder schedules, SMS unavailable state, read-only reminder delivery history display, panel-backed medication actions, same-day taken/skipped dose logs, risk-check entry, source-review safety previews, and pregnancy/lactation/special-group medication safety conditions. Medicine no longer surfaces a local medication-report shortcut.
-- Report: static mock daily/weekly summaries until user-triggered preview/sync, medication/sleep/water/diet/symptom trend placeholders, campus hospital/pharmacist export controls, and reference notice. Privacy settings are owned by Mine/Settings.
+- Report: Lucent-backed last-7-days dashboard with real medication/water aggregates, explicit insufficient-data handling for unsupported sleep data, contract-driven findings/patterns/summary text, l10n-owned chrome for metric/summary/export labels, mobile pull-to-refresh plus explicit sync action, frontend-only export placeholders, and reference notice. Privacy settings are owned by Mine/Settings.
 - Mine/Settings: account, basic health archive, allergies, current medicines, contract-backed support resources, server-backed privacy/AI settings, notification summaries from local settings state, data export request status, help/about metadata, and Advanced settings. Settings privacy copy is scoped to report sharing and AI summaries/advice rather than broad AI memory. Mine profile editing currently surfaces birth date, height, blood type, unit system, and onboarding state only.
 
 ## Mock Or Deferred
 
-- Report insights/export data.
+- Report export data/files.
 - Worker-populated reminder delivery history; the UI can read audit rows, but no local/push/SMS worker writes them yet.
 - Sleep contract and persistence wiring.
 - Lightweight mood record wiring.

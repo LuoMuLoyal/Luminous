@@ -71,3 +71,7 @@ final lucentUserSettingsApiProvider = Provider<UserSettingsApi>((ref) {
 final lucentDataExportApiProvider = Provider<DataExportApi>((ref) {
   return ref.watch(lucentDioClientProvider).dataExportApi;
 });
+
+final lucentReportsApiProvider = Provider<ReportsApi>((ref) {
+  return ref.watch(lucentDioClientProvider).reportsApi;
+});
