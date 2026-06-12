@@ -66,6 +66,7 @@ class RecordQuickAction {
     required this.subtitleKey,
     required this.accent,
     required this.softColor,
+    this.locked = false,
   });
 
   final RecordEntryType type;
@@ -74,6 +75,7 @@ class RecordQuickAction {
   final RecordCopyKey subtitleKey;
   final Color accent;
   final Color softColor;
+  final bool locked;
 }
 
 class RecordDaySummary {

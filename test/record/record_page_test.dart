@@ -102,6 +102,13 @@ void main() {
       ),
       findsOneWidget,
     );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('record-quick-sleep')),
+        matching: find.text(l10n.recordNotEnabledLabel),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('情绪趋势'), findsNothing);
   });
 
@@ -163,6 +170,13 @@ void main() {
         ),
         findsOneWidget,
       );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('record-quick-sleep')),
+          matching: find.text(l10n.recordNotEnabledLabel),
+        ),
+        findsOneWidget,
+      );
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
@@ -182,6 +196,13 @@ void main() {
         find.descendant(
           of: find.byKey(const Key('record-quick-sleep')),
           matching: find.text(l10n.recordTypeSleep),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('record-quick-sleep')),
+          matching: find.text(l10n.recordNotEnabledLabel),
         ),
         findsOneWidget,
       );

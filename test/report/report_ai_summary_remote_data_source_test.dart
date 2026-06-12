@@ -47,9 +47,16 @@ void main() {
   test('generate throws on empty response', () async {
     adapter.emptyResponse = true;
 
-    // The data source uses response.data!.data — empty response causes a
-    // null-check error rather than DioException.
-    expect(() => dataSource.generate(), throwsA(isA<TypeError>()));
+    expect(
+      () => dataSource.generate(),
+      throwsA(
+        isA<DioException>().having(
+          (error) => error.type,
+          'type',
+          DioExceptionType.badResponse,
+        ),
+      ),
+    );
   });
 }
 

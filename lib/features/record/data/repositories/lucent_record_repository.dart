@@ -280,6 +280,7 @@ class LucentRecordRepository implements RecordRepository {
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColorTokens.violet,
       softColor: AppColorTokens.violetSoft,
+      locked: true,
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
@@ -348,6 +349,7 @@ class LucentRecordRepository implements RecordRepository {
       icon: Icons.dark_mode_rounded,
       accent: AppColorTokens.violet,
       selected: true,
+      locked: true,
     ),
     RecordFilter(
       type: RecordEntryType.note,

@@ -18,14 +18,21 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 
 ## Immediate Work Order
 
-1. **AI architecture follow-up**
+1. **Current backlog closeout**
+   - Active execution plan:
+     - `Luminous/plans/2026-06-12-remaining-backlog.md`
+   - Close the still-real backlog before starting the next AI slice:
+     - remove fake medicine-name / mock placeholder copy from user-visible paths
+     - harden Lucent fallback secrets and align `testing-support` argon2 options
+
+2. **AI architecture follow-up**
    - Decide the backend execution boundary for the next AI slice:
      - keep bounded linear flows for manual Today / weekly / monthly summaries
      - or introduce a tool-capable orchestrator only for workflows that truly need branching, retrieval, or multi-step tool use
    - Do not refactor the shipped Today + weekly manual paths into a generic agent runtime unless the next slice actually needs tool selection or multi-step control flow.
    - Before broader AI work, remove remaining hardcoded backend AI copy outside Today and define one shared locale-aware prompt/copy pattern.
 
-2. **Local full-stack lane usage rule**
+3. **Local full-stack lane usage rule**
    - Keep the current Record lane out of GitHub Actions for now.
    - Owner command for manual verification:
      - backend shell:
@@ -46,22 +53,14 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
      - before merging changes to the full-stack E2E helper or generated auth/record client surface
      - before cutting a mobile test build that claims Record CRUD is stable
 
-3. **Review-confirmed backlog / TODO**
-   - Scope alignment around sleep remains unfinished:
-     - Today still shows a placeholder sleep vital row.
-     - Record still exposes sleep in placeholder-only quick-action/filter paths.
-     - Settings still stores a local sleep reminder preference even though no real sleep contract exists.
-   - Frontend coverage gaps still worth filling:
-     - `UserSettingsController` toggle flows
-     - `DataExportController` request/refresh flow
-     - health-context write HTTP-layer tests beyond payload serialization
+4. **Review-confirmed backlog / TODO**
    - Placeholder copy cleanup is still pending:
      - fake medicine-name placeholder strings such as `Metformin XR` / `Atorvastatin calcium` / `Omeprazole capsules`
    - Lucent hardening still remains:
      - remove code-level fallback JWT/admin secrets and move dev defaults to env templates only
      - align `testing-support` password hashing with the shared `ARGON2_OPTIONS`
 
-4. **AI follow-up order after Today**
+5. **AI follow-up order after Today**
    - Continue in this order after the manual Today + weekly report paths are stable:
      - monthly AI summary
      - natural language to candidate records
