@@ -100,15 +100,6 @@ class MockReportRepository implements ReportRepository {
         body: 'The latest contract-backed report is loading.',
       ),
     ],
-    summary: ReportSummary(
-      mode: ReportSummaryMode.loading,
-      bullets: <ReportSummaryBullet>[
-        ReportSummaryBullet(
-          color: AppColorTokens.health,
-          body: 'The latest report data is loading.',
-        ),
-      ],
-    ),
     exportActions: <ReportExportAction>[
       ReportExportAction(
         kind: ReportExportKind.hospital,
@@ -214,15 +205,6 @@ class MockReportRepository implements ReportRepository {
         body: '报告会基于你的真实记录生成最近 7 天的聚合结果。',
       ),
     ],
-    summary: ReportSummary(
-      mode: ReportSummaryMode.current,
-      bullets: <ReportSummaryBullet>[
-        ReportSummaryBullet(
-          color: AppColorTokens.warning,
-          body: '登录后才会请求 Lucent 报告合同，不会在未登录状态下拉取受保护数据。',
-        ),
-      ],
-    ),
     exportActions: <ReportExportAction>[
       ReportExportAction(
         kind: ReportExportKind.hospital,

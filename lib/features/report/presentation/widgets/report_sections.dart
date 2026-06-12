@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -11,11 +15,13 @@ class ReportTopBar extends StatelessWidget {
     super.key,
     required this.onGenerate,
     required this.onSync,
+    this.isGenerating = false,
     this.isSyncing = false,
   });
 
   final VoidCallback onGenerate;
   final VoidCallback onSync;
+  final bool isGenerating;
   final bool isSyncing;
 
   @override
@@ -65,7 +71,7 @@ class ReportTopBar extends StatelessWidget {
             Expanded(
               child: FilledButton.icon(
                 key: const Key('report-generate-action'),
-                onPressed: isSyncing ? null : onGenerate,
+                onPressed: isGenerating ? null : onGenerate,
                 style: FilledButton.styleFrom(
                   backgroundColor: ReportPalette.previewScore,
                   foregroundColor: AppColorTokens.onPrimary,
@@ -75,7 +81,11 @@ class ReportTopBar extends StatelessWidget {
                     alpha: 0.7,
                   ),
                 ),
-                icon: const Icon(Icons.auto_awesome_rounded),
+                icon: Icon(
+                  isGenerating
+                      ? Icons.hourglass_top_rounded
+                      : Icons.auto_awesome_rounded,
+                ),
                 label: Text(
                   l10n.reportGenerateAction,
                   maxLines: 1,
@@ -818,21 +828,35 @@ class _FindingCard extends StatelessWidget {
 class ReportAiSummarySection extends StatelessWidget {
   const ReportAiSummarySection({
     super.key,
-    required this.summary,
+    required this.dashboard,
+    required this.authSession,
+    required this.settingsAsync,
+    required this.aiState,
+    this.onGenerate,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
 
-  final ReportSummary summary;
+  final ReportDashboard dashboard;
+  final AuthSessionState authSession;
+  final AsyncValue<UserSettingsDataDto>? settingsAsync;
+  final ReportAiSummaryCardState aiState;
+  final Future<void> Function()? onGenerate;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    final subtitle = _summarySubtitle(l10n, summary.mode);
-    final actionLabel = _summaryActionLabel(l10n, summary.mode);
+    final content = _buildReportAiSummaryContent(
+      l10n: l10n,
+      dashboard: dashboard,
+      authSession: authSession,
+      settingsAsync: settingsAsync,
+      aiState: aiState,
+    );
+    final actionLabel = aiState.summary?.actionLabel;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -861,7 +885,7 @@ class ReportAiSummarySection extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacingTokens.xxs),
                   Text(
-                    subtitle,
+                    content.subtitle,
                     style: typography.bodySm.copyWith(
                       color: surface.body,
                       letterSpacing: 0,
@@ -881,7 +905,21 @@ class ReportAiSummarySection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacingTokens.md),
         Divider(height: 1, thickness: 1, color: surface.hairline),
-        for (var index = 0; index < summary.bullets.length; index += 1) ...[
+        if (content.summaryText != null) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
+            child: AppSkeletonText(
+              text: content.summaryText!,
+              style: typography.bodyMdStrong.copyWith(
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0,
+              ),
+              widthFactor: 0.94,
+            ),
+          ),
+          Divider(height: 1, thickness: 1, color: surface.hairline),
+        ],
+        for (var index = 0; index < content.bullets.length; index += 1) ...[
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
             child: Row(
@@ -891,7 +929,7 @@ class ReportAiSummarySection extends StatelessWidget {
                   padding: const EdgeInsets.only(top: AppSpacingTokens.xs),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: summary.bullets[index].color,
+                      color: content.bullets[index].color,
                       shape: BoxShape.circle,
                     ),
                     child: const SizedBox.square(
@@ -902,7 +940,7 @@ class ReportAiSummarySection extends StatelessWidget {
                 const SizedBox(width: AppSpacingTokens.sm),
                 Expanded(
                   child: AppSkeletonText(
-                    text: summary.bullets[index].body,
+                    text: content.bullets[index].text,
                     style: typography.bodySm.copyWith(
                       color: surface.body,
                       letterSpacing: 0,
@@ -913,13 +951,49 @@ class ReportAiSummarySection extends StatelessWidget {
               ],
             ),
           ),
-          if (index < summary.bullets.length - 1)
+          if (index < content.bullets.length - 1)
             Divider(
               height: 1,
               thickness: 1,
               indent: AppSpacingTokens.lg,
               color: surface.hairline,
             ),
+        ],
+        if (content.footer != null) ...[
+          const SizedBox(height: AppSpacingTokens.sm),
+          Divider(height: 1, thickness: 1, color: surface.hairline),
+          const SizedBox(height: AppSpacingTokens.sm),
+          Text(
+            content.footer!,
+            style: typography.caption.copyWith(
+              color: surface.body,
+              letterSpacing: 0,
+            ),
+          ),
+        ],
+        if (content.showGenerateButton) ...[
+          const SizedBox(height: AppSpacingTokens.md),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FilledButton.icon(
+              key: const Key('report-ai-summary-generate-action'),
+              onPressed: aiState.isLoading || onGenerate == null
+                  ? null
+                  : () {
+                      onGenerate!();
+                    },
+              icon: Icon(
+                aiState.isLoading
+                    ? Icons.hourglass_top_rounded
+                    : Icons.auto_awesome_rounded,
+              ),
+              label: Text(
+                aiState.isLoading
+                    ? l10n.reportAiSummaryGeneratingHint
+                    : l10n.reportGenerateAction,
+              ),
+            ),
+          ),
         ],
       ],
     );
@@ -1278,22 +1352,6 @@ String _metricTitle(AppLocalizations l10n, ReportDataKind kind) {
   };
 }
 
-String _summarySubtitle(AppLocalizations l10n, ReportSummaryMode mode) {
-  return switch (mode) {
-    ReportSummaryMode.ai => l10n.reportAiSummarySubtitle,
-    ReportSummaryMode.current => l10n.reportSnapshotHint,
-    ReportSummaryMode.loading => l10n.reportSnapshotStatus,
-  };
-}
-
-String? _summaryActionLabel(AppLocalizations l10n, ReportSummaryMode mode) {
-  return switch (mode) {
-    ReportSummaryMode.ai => l10n.reportViewAdviceAction,
-    ReportSummaryMode.current => null,
-    ReportSummaryMode.loading => null,
-  };
-}
-
 String _exportTitle(AppLocalizations l10n, ReportExportKind kind) {
   return switch (kind) {
     ReportExportKind.hospital => l10n.reportExportHospitalTitle,
@@ -1328,4 +1386,135 @@ Color _statusColor(ReportStatus status) {
     ReportStatus.insufficientData => ReportPalette.blue,
     ReportStatus.unknown => ReportPalette.blue,
   };
+}
+
+_ReportAiSummaryContent _buildReportAiSummaryContent({
+  required AppLocalizations l10n,
+  required ReportDashboard dashboard,
+  required AuthSessionState authSession,
+  required AsyncValue<UserSettingsDataDto>? settingsAsync,
+  required ReportAiSummaryCardState aiState,
+}) {
+  if (!authSession.canAccessProtectedData) {
+    return _ReportAiSummaryContent(
+      subtitle: l10n.reportSnapshotHint,
+      bullets: [
+        _ReportAiSummaryItem(
+          color: ReportPalette.orange,
+          text: l10n.authLoginRequiredPrompt,
+        ),
+      ],
+      footer: l10n.authNotSignedIn,
+    );
+  }
+
+  final settings = settingsAsync?.asData?.value;
+  if (settings?.aiSummariesEnabled == false || aiState.isDisabled) {
+    return _ReportAiSummaryContent(
+      subtitle: l10n.reportSnapshotHint,
+      bullets: [
+        _ReportAiSummaryItem(
+          color: ReportPalette.blue,
+          text: l10n.reportAiSummaryDisabledHint,
+        ),
+      ],
+      footer: l10n.reportAiSummaryDisabledHint,
+    );
+  }
+
+  final summary = aiState.summary;
+  if (summary != null) {
+    return _ReportAiSummaryContent(
+      subtitle: l10n.reportAiSummarySubtitle,
+      summaryText: summary.summary,
+      bullets: summary.bullets
+          .map(
+            (bullet) => _ReportAiSummaryItem(
+              color: bullet.color,
+              text: bullet.text,
+            ),
+          )
+          .toList(growable: false),
+      footer: summary.confidenceNote,
+    );
+  }
+
+  if (aiState.status == ReportAiSummaryCardStatus.error) {
+    return _ReportAiSummaryContent(
+      subtitle: l10n.reportAiSummarySubtitle,
+      bullets: [
+        _ReportAiSummaryItem(
+          color: ReportPalette.orange,
+          text: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
+        ),
+        ..._reportAiSummaryFallbackBullets(dashboard),
+      ],
+      footer: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
+      showGenerateButton: dashboard.aiSummaryEnabled,
+    );
+  }
+
+  if (aiState.status == ReportAiSummaryCardStatus.loading) {
+    return _ReportAiSummaryContent(
+      subtitle: l10n.reportAiSummarySubtitle,
+      bullets: [
+        _ReportAiSummaryItem(
+          color: ReportPalette.green,
+          text: l10n.reportAiSummaryGeneratingHint,
+        ),
+        ..._reportAiSummaryFallbackBullets(dashboard),
+      ],
+      footer: l10n.reportAiSummaryGeneratingHint,
+    );
+  }
+
+  return _ReportAiSummaryContent(
+    subtitle: l10n.reportSnapshotHint,
+    bullets: _reportAiSummaryFallbackBullets(dashboard),
+    footer: l10n.reportAiSummaryDefaultHint,
+    showGenerateButton: dashboard.aiSummaryEnabled,
+  );
+}
+
+List<_ReportAiSummaryItem> _reportAiSummaryFallbackBullets(
+  ReportDashboard dashboard,
+) {
+  return [
+    _ReportAiSummaryItem(
+      color: _statusColor(dashboard.score.status),
+      text: dashboard.score.summary,
+    ),
+    ...dashboard.findings.take(3).map(
+      (finding) => _ReportAiSummaryItem(
+        color: finding.color,
+        text: '${finding.title}: ${finding.body}',
+      ),
+    ),
+  ];
+}
+
+class _ReportAiSummaryContent {
+  const _ReportAiSummaryContent({
+    required this.subtitle,
+    required this.bullets,
+    this.summaryText,
+    this.footer,
+    this.showGenerateButton = false,
+  });
+
+  final String subtitle;
+  final List<_ReportAiSummaryItem> bullets;
+  final String? summaryText;
+  final String? footer;
+  final bool showGenerateButton;
+}
+
+class _ReportAiSummaryItem {
+  const _ReportAiSummaryItem({
+    required this.color,
+    required this.text,
+  });
+
+  final Color color;
+  final String text;
 }

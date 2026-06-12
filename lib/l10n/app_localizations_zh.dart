@@ -2364,7 +2364,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportPeriodThisWeek => '本周';
 
   @override
-  String get reportGenerateAction => '预览报告';
+  String get reportGenerateAction => '生成总结';
 
   @override
   String get reportSyncAction => '同步';
@@ -2373,7 +2373,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportSnapshotStatus => '当前显示上次报告快照';
 
   @override
-  String get reportSnapshotHint => '点击预览或同步后更新';
+  String get reportSnapshotHint => '点击生成或同步后更新';
 
   @override
   String get reportScoreTitle => '报告预览评分';
@@ -2468,6 +2468,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportAiSummarySubtitle => '基于本周记录的智能分析';
 
   @override
+  String get reportAiSummaryDefaultHint => '还没有生成本周 AI 总结，当前先显示最近一次报告快照。';
+
+  @override
+  String get reportAiSummaryGeneratingHint => '正在生成本周 AI 总结';
+
+  @override
+  String get reportAiSummaryErrorHint => '本周 AI 总结生成失败，当前先保留报告快照。';
+
+  @override
+  String get reportAiSummaryDisabledHint => '你已在设置中关闭 AI 总结，当前只显示报告快照。';
+
+  @override
   String get reportViewAdviceAction => '查看建议';
 
   @override
@@ -2536,7 +2548,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportErrorTitle => '报告页暂时没有加载出来';
 
   @override
-  String get reportErrorDescription => 'Mock 数据边界已经接好，可以重新拉取一次。';
+  String get reportErrorDescription => '报告数据这次没有拉取成功，可以重新同步一次。';
 
   @override
   String get mineSettingsAdvancedTitle => '高级设置';

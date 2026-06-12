@@ -14,6 +14,7 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
 - **Mine and Settings contracts** (2026-06-11): Lucent now exposes user settings, support resources/app info, and data export request status; Luminous wires Mine campus resources and Settings privacy/export/help/about/reminder summaries to real contracts or local state. User-scoped business APIs now live under `/api/v1/user/*`; the old `me` namespace has been removed.
 - **Report Phase 2 closeout** (2026-06-12): Lucent now exposes `/api/v1/user/reports/dashboard`; Luminous uses the real report contract, keeps explicit sleep `insufficient_data`, aligns signed-out behavior with other protected tabs, adds mobile pull-to-refresh, and trims generated OpenAPI doc/test noise from the regeneration workflow.
 - **Today AI analysis** (2026-06-12): Lucent now exposes `POST /api/v1/user/today-analysis/generate`; Luminous replaces the static Today AI placeholder with a manual authenticated generate flow, respects the existing AI-summary setting, and covers the card with split page/widget/provider tests. Lucent fallback/prompt copy now follows request language for `zh-CN` and `en`.
+- **Report weekly AI summary** (2026-06-12): Lucent now exposes `POST /api/v1/user/reports/weekly-summary/generate`; Luminous separates weekly AI summary state from the dashboard contract, wires the top-bar generate action to the real endpoint, keeps signed-out/disabled/loading/success/error local to the summary section, and regenerates the Lucent OpenAPI client.
 
 ## Immediate Work Order
 
@@ -21,7 +22,7 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
    - Decide the backend execution boundary for the next AI slice:
      - keep bounded linear flows for manual Today / weekly / monthly summaries
      - or introduce a tool-capable orchestrator only for workflows that truly need branching, retrieval, or multi-step tool use
-   - Do not refactor the shipped Today manual path into a generic agent runtime unless the next slice actually needs tool selection or multi-step control flow.
+   - Do not refactor the shipped Today + weekly manual paths into a generic agent runtime unless the next slice actually needs tool selection or multi-step control flow.
    - Before broader AI work, remove remaining hardcoded backend AI copy outside Today and define one shared locale-aware prompt/copy pattern.
 
 2. **Local full-stack lane usage rule**
@@ -53,18 +54,16 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
    - Frontend coverage gaps still worth filling:
      - `UserSettingsController` toggle flows
      - `DataExportController` request/refresh flow
-     - `ReportRemoteDataSource` request path
      - health-context write HTTP-layer tests beyond payload serialization
    - Placeholder copy cleanup is still pending:
-     - user-visible `mock data` error text in ARB
      - fake medicine-name placeholder strings such as `Metformin XR` / `Atorvastatin calcium` / `Omeprazole capsules`
    - Lucent hardening still remains:
      - remove code-level fallback JWT/admin secrets and move dev defaults to env templates only
      - align `testing-support` password hashing with the shared `ARGON2_OPTIONS`
 
 4. **AI follow-up order after Today**
-   - Continue in this order after the manual Today path is stable:
-     - weekly/monthly AI summary
+   - Continue in this order after the manual Today + weekly report paths are stable:
+     - monthly AI summary
      - natural language to candidate records
      - screenshot to candidate structured input
    - Do not jump to scheduled proactive AI pushes before the manual Today path and report aggregate layer are stable and bounded.

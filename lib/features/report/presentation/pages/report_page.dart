@@ -6,6 +6,7 @@ import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
+import 'package:luminous/features/report/presentation/providers/report_ai_summary_provider.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
@@ -23,13 +24,18 @@ class ReportPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
     final dashboardAsync = ref.watch(reportDashboardProvider);
+    final aiSummaryState = ref.watch(reportAiSummaryControllerProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
     return dashboardAsync.when(
       data: (dashboard) => _ReportMobileShell(
-        onGenerate: () => ref.invalidate(reportDashboardProvider),
+        onGenerate: () {
+          ref.read(reportAiSummaryControllerProvider.notifier).generate();
+        },
         onSync: () => ref.invalidate(reportDashboardProvider),
         onRefresh: () => _refreshDashboard(ref),
+        isGenerating: aiSummaryState.isLoading,
+        isSyncing: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -37,17 +43,26 @@ class ReportPage extends ConsumerWidget {
               _ReportSignedOutNotice(),
               const SizedBox(height: AppSpacingTokens.md),
             ],
-            ReportDashboardView(dashboard: dashboard),
+            ReportDashboardView(
+              dashboard: dashboard,
+              authSession: session,
+              aiSummaryState: aiSummaryState,
+              onGenerateAiSummary: () async {
+                await ref.read(reportAiSummaryControllerProvider.notifier).generate();
+              },
+            ),
           ],
         ),
       ),
       loading: () => _ReportMobileShell(
+        isGenerating: aiSummaryState.isLoading,
         isSyncing: session.canAccessProtectedData,
         onGenerate: () => ref.invalidate(reportDashboardProvider),
         onSync: () => ref.invalidate(reportDashboardProvider),
         onRefresh: () => _refreshDashboard(ref),
-        child: const ReportDashboardView(
+        child: ReportDashboardView(
           dashboard: MockReportRepository.previewDashboard,
+          authSession: session,
           isLoading: true,
         ),
       ),
@@ -97,6 +112,7 @@ class _ReportMobileShell extends StatelessWidget {
     required this.onGenerate,
     required this.onSync,
     required this.onRefresh,
+    this.isGenerating = false,
     this.isSyncing = false,
   });
 
@@ -104,6 +120,7 @@ class _ReportMobileShell extends StatelessWidget {
   final VoidCallback onGenerate;
   final VoidCallback onSync;
   final Future<void> Function() onRefresh;
+  final bool isGenerating;
   final bool isSyncing;
 
   @override
@@ -127,6 +144,7 @@ class _ReportMobileShell extends StatelessWidget {
             ),
             children: [
               ReportTopBar(
+                isGenerating: isGenerating,
                 isSyncing: isSyncing,
                 onGenerate: onGenerate,
                 onSync: onSync,

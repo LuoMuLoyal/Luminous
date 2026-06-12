@@ -4649,7 +4649,7 @@ abstract class AppLocalizations {
   /// No description provided for @reportGenerateAction.
   ///
   /// In zh, this message translates to:
-  /// **'预览报告'**
+  /// **'生成总结'**
   String get reportGenerateAction;
 
   /// No description provided for @reportSyncAction.
@@ -4667,7 +4667,7 @@ abstract class AppLocalizations {
   /// No description provided for @reportSnapshotHint.
   ///
   /// In zh, this message translates to:
-  /// **'点击预览或同步后更新'**
+  /// **'点击生成或同步后更新'**
   String get reportSnapshotHint;
 
   /// No description provided for @reportScoreTitle.
@@ -4850,6 +4850,30 @@ abstract class AppLocalizations {
   /// **'基于本周记录的智能分析'**
   String get reportAiSummarySubtitle;
 
+  /// No description provided for @reportAiSummaryDefaultHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有生成本周 AI 总结，当前先显示最近一次报告快照。'**
+  String get reportAiSummaryDefaultHint;
+
+  /// No description provided for @reportAiSummaryGeneratingHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在生成本周 AI 总结'**
+  String get reportAiSummaryGeneratingHint;
+
+  /// No description provided for @reportAiSummaryErrorHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'本周 AI 总结生成失败，当前先保留报告快照。'**
+  String get reportAiSummaryErrorHint;
+
+  /// No description provided for @reportAiSummaryDisabledHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'你已在设置中关闭 AI 总结，当前只显示报告快照。'**
+  String get reportAiSummaryDisabledHint;
+
   /// No description provided for @reportViewAdviceAction.
   ///
   /// In zh, this message translates to:
@@ -4985,7 +5009,7 @@ abstract class AppLocalizations {
   /// No description provided for @reportErrorDescription.
   ///
   /// In zh, this message translates to:
-  /// **'Mock 数据边界已经接好，可以重新拉取一次。'**
+  /// **'报告数据这次没有拉取成功，可以重新同步一次。'**
   String get reportErrorDescription;
 
   /// No description provided for @mineSettingsAdvancedTitle.

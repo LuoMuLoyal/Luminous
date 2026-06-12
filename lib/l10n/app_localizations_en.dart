@@ -2508,7 +2508,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportPeriodThisWeek => 'This week';
 
   @override
-  String get reportGenerateAction => 'Preview report';
+  String get reportGenerateAction => 'Generate summary';
 
   @override
   String get reportSyncAction => 'Sync';
@@ -2517,7 +2517,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportSnapshotStatus => 'Showing the last report snapshot';
 
   @override
-  String get reportSnapshotHint => 'Preview or sync to update';
+  String get reportSnapshotHint => 'Generate or sync to update';
 
   @override
   String get reportScoreTitle => 'Report preview score';
@@ -2615,6 +2615,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Smart analysis based on this week\'s records';
 
   @override
+  String get reportAiSummaryDefaultHint =>
+      'This week\'s AI summary has not been generated yet, so the latest report snapshot is shown for now.';
+
+  @override
+  String get reportAiSummaryGeneratingHint =>
+      'Generating this week\'s AI summary';
+
+  @override
+  String get reportAiSummaryErrorHint =>
+      'This week\'s AI summary could not be generated, so the report snapshot is kept for now.';
+
+  @override
+  String get reportAiSummaryDisabledHint =>
+      'AI summaries are disabled in settings, so only the report snapshot is shown.';
+
+  @override
   String get reportViewAdviceAction => 'View advice';
 
   @override
@@ -2691,7 +2707,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportErrorDescription =>
-      'The mock data boundary is wired, so try fetching it again.';
+      'Report data did not load this time. Try syncing again.';
 
   @override
   String get mineSettingsAdvancedTitle => 'Advanced settings';
