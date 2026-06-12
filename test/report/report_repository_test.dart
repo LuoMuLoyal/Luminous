@@ -62,10 +62,7 @@ void main() {
       expect(dashboard.trends.single.currentValue, '--');
       expect(dashboard.findings.single.kind, ReportInsightKind.sleep);
       expect(dashboard.patterns.single.status, ReportStatus.insufficientData);
-      expect(dashboard.summary.mode, ReportSummaryMode.current);
-      expect(dashboard.summary.bullets, hasLength(2));
-      expect(dashboard.summary.bullets.first.body, '本周整体稳定，睡眠暂缺真实数据。');
-      expect(dashboard.summary.bullets[1].body, '睡眠数据不足: 最近 7 天还没有睡眠记录。');
+      expect(dashboard.aiSummaryEnabled, isFalse);
     },
   );
 
@@ -119,10 +116,6 @@ void main() {
       final dashboard = await repository.fetchDashboard();
 
       expect(dashboard.aiSummaryEnabled, isTrue);
-      expect(dashboard.summary.mode, ReportSummaryMode.ai);
-      expect(dashboard.summary.bullets, hasLength(4));
-      expect(dashboard.summary.bullets[1].body, '发现1: 正文1');
-      expect(dashboard.summary.bullets[3].body, '发现3: 正文3');
       expect(
         dashboard.exportActions.map((action) => action.kind).toList(),
         const [

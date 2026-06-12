@@ -1,28 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class ReportDashboardView extends StatelessWidget {
+class ReportDashboardView extends ConsumerWidget {
   const ReportDashboardView({
     super.key,
     required this.dashboard,
+    required this.authSession,
     this.isLoading = false,
+    this.aiSummaryState = const ReportAiSummaryCardState.idle(),
+    this.onGenerateAiSummary,
   });
 
   final ReportDashboard dashboard;
+  final AuthSessionState authSession;
   final bool isLoading;
+  final ReportAiSummaryCardState aiSummaryState;
+  final Future<void> Function()? onGenerateAiSummary;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final settingsAsync = ref.watch(userSettingsControllerProvider);
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +72,11 @@ class ReportDashboardView extends StatelessWidget {
         const SizedBox(height: AppSpacingTokens.md),
         ReportAiSummarySection(
           key: const Key('report-ai-summary-section'),
-          summary: dashboard.summary,
+          dashboard: dashboard,
+          authSession: authSession,
+          settingsAsync: settingsAsync,
+          aiState: aiSummaryState,
+          onGenerate: onGenerateAiSummary,
           l10n: l10n,
           typography: typography,
           surface: surface,

@@ -21,11 +21,6 @@ class LucentReportRepository implements ReportRepository {
       metrics: dto.metrics.map(_mapMetric).toList(growable: false),
       trends: dto.trends.map(_mapTrend).toList(growable: false),
       findings: findings,
-      summary: _buildSummary(
-        score: score,
-        findings: findings,
-        aiSummaryEnabled: dto.aiSummaryEnabled,
-      ),
       exportActions: _exportActions,
       patterns: dto.patterns.map(_mapPattern).toList(growable: false),
       aiSummaryEnabled: dto.aiSummaryEnabled,
@@ -90,31 +85,6 @@ class LucentReportRepository implements ReportRepository {
       sparkline: dto.sparkline.map((value) => value.toDouble()).toList(),
     );
   }
-
-  ReportSummary _buildSummary({
-    required ReportHealthScore score,
-    required List<ReportFinding> findings,
-    required bool aiSummaryEnabled,
-  }) {
-    final bullets = <ReportSummaryBullet>[
-      ReportSummaryBullet(
-        color: _statusColor(score.status),
-        body: score.summary,
-      ),
-      ...findings.take(3).map(
-        (finding) => ReportSummaryBullet(
-          color: finding.color,
-          body: '${finding.title}: ${finding.body}',
-        ),
-      ),
-    ];
-
-    return ReportSummary(
-      mode: aiSummaryEnabled ? ReportSummaryMode.ai : ReportSummaryMode.current,
-      bullets: bullets,
-    );
-  }
-
   ReportStatus _mapStatus(String value) {
     return switch (value) {
       'good' => ReportStatus.good,
@@ -184,16 +154,6 @@ class LucentReportRepository implements ReportRepository {
       ReportInsightKind.hydration => AppColorTokens.link,
       ReportInsightKind.sleep => AppColorTokens.violet,
       ReportInsightKind.general => AppColorTokens.warning,
-    };
-  }
-
-  Color _statusColor(ReportStatus status) {
-    return switch (status) {
-      ReportStatus.good => AppColorTokens.cyanDeep,
-      ReportStatus.stable => AppColorTokens.health,
-      ReportStatus.needsAttention => AppColorTokens.warning,
-      ReportStatus.insufficientData => AppColorTokens.mute,
-      ReportStatus.unknown => AppColorTokens.link,
     };
   }
 }

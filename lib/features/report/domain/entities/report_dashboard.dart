@@ -6,7 +6,6 @@ class ReportDashboard {
     required this.metrics,
     required this.trends,
     required this.findings,
-    required this.summary,
     required this.exportActions,
     required this.patterns,
     required this.aiSummaryEnabled,
@@ -16,7 +15,6 @@ class ReportDashboard {
   final List<ReportMetric> metrics;
   final List<ReportTrendSeries> trends;
   final List<ReportFinding> findings;
-  final ReportSummary summary;
   final List<ReportExportAction> exportActions;
   final List<ReportPatternCard> patterns;
   final bool aiSummaryEnabled;
@@ -94,23 +92,6 @@ class ReportFinding {
   final String body;
 }
 
-class ReportSummary {
-  const ReportSummary({
-    required this.mode,
-    required this.bullets,
-  });
-
-  final ReportSummaryMode mode;
-  final List<ReportSummaryBullet> bullets;
-}
-
-class ReportSummaryBullet {
-  const ReportSummaryBullet({required this.color, required this.body});
-
-  final Color color;
-  final String body;
-}
-
 class ReportExportAction {
   const ReportExportAction({
     required this.kind,
@@ -148,7 +129,5 @@ enum ReportStatus { good, stable, needsAttention, insufficientData, unknown }
 enum ReportDataKind { medication, water, sleep, general }
 
 enum ReportInsightKind { medication, hydration, sleep, general }
-
-enum ReportSummaryMode { ai, current, loading }
 
 enum ReportExportKind { hospital, monthly, print }

@@ -26,6 +26,7 @@ Persisted preference keys:
 
 - Do not hardcode user-visible text in pages or widgets.
 - Add visible text to both ARB files.
+- Report AI summary state copy such as generate/loading/error/disabled hints is owned by the Report ARB entries, not by repository/domain fallback strings.
 - Reminder UI strings for date windows, local sound preference, SMS unavailable state, delivery history, and on-device notification title/body/channel labels are owned by the Medicine feature ARB entries.
 - Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.

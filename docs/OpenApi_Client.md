@@ -14,8 +14,8 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 44 paths / 123 schemas.
-- Generated package includes auth/account, user-scoped health context, daily records, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, public support resources/app info, and data export request status.
+- Last known Lucent export: 47 paths / 138 schemas.
+- Generated package includes auth/account, user-scoped health context, daily records, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, report dashboard, manual weekly report AI summary, public support resources/app info, and data export request status.
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay under `/api/v1/account/*`.
 
 ## Usage Rules

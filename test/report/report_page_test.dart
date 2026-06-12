@@ -12,7 +12,9 @@ import 'package:luminous/features/report/data/repositories/mock_report_repositor
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report_repository.dart';
 import 'package:luminous/features/report/presentation/pages/report_page.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import '../today/today_test_helpers.dart';
 
 void main() {
   testWidgets('Report page renders contract-backed sections for signed-in user', (
@@ -32,6 +34,9 @@ void main() {
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           reportRepositoryProvider.overrideWithValue(
             const MockReportRepository(),
+          ),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
           ),
         ],
         child: MaterialApp(
@@ -105,6 +110,9 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           reportRepositoryProvider.overrideWithValue(repo),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -147,6 +155,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
+          userSettingsControllerProvider.overrideWith(
+            DisabledUserSettingsController.new,
+          ),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -166,10 +177,28 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text(l10n.authNotSignedIn), findsOneWidget);
-    expect(find.text(l10n.authLoginRequiredPrompt), findsOneWidget);
-    expect(find.text(l10n.authGoLogin), findsOneWidget);
     expect(find.byKey(const Key('report-signed-out-notice')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('report-signed-out-notice')),
+        matching: find.text(l10n.authNotSignedIn),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('report-signed-out-notice')),
+        matching: find.text(l10n.authLoginRequiredPrompt),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('report-signed-out-notice')),
+        matching: find.text(l10n.authGoLogin),
+      ),
+      findsOneWidget,
+    );
     expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
     expect(find.text(l10n.reportScoreTitle), findsOneWidget);
     expect(find.byType(AppStateErrorView), findsNothing);
@@ -189,6 +218,9 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           reportRepositoryProvider.overrideWithValue(repo),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
