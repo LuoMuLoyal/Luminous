@@ -1,6 +1,6 @@
 # Goal
 
-把当前仍然值得补的前端测试缺口收敛成一轮可独立执行的小计划，交给其他模型处理，不打断主线业务推进。
+把当前仍然值得补的前端测试缺口收敛成一轮可独立执行的小计划，不打断主线业务推进。
 
 ## Scope
 
@@ -70,7 +70,7 @@
      - `test/report/report_ai_summary_provider_test.dart`
      - `test/report/report_ai_summary_widget_test.dart`
 
-4. **Verification**
+5. **Verification**
    - run only the touched test files while iterating
    - finish with:
      - `flutter test`
