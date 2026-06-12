@@ -41,6 +41,7 @@ import 'package:lucent_openapi/src/model/environment_snapshot_dto.dart';
 import 'package:lucent_openapi/src/model/environment_snapshot_response_dto.dart';
 import 'package:lucent_openapi/src/model/forgot_password_dto.dart';
 import 'package:lucent_openapi/src/model/forgot_password_response_dto.dart';
+import 'package:lucent_openapi/src/model/generate_today_analysis_dto.dart';
 import 'package:lucent_openapi/src/model/health_context_data_dto.dart';
 import 'package:lucent_openapi/src/model/health_context_response_dto.dart';
 import 'package:lucent_openapi/src/model/humidity_indicator_dto.dart';
@@ -88,6 +89,9 @@ import 'package:lucent_openapi/src/model/support_resource_dto.dart';
 import 'package:lucent_openapi/src/model/support_resource_list_data_dto.dart';
 import 'package:lucent_openapi/src/model/support_resource_list_response_dto.dart';
 import 'package:lucent_openapi/src/model/temperature_indicator_dto.dart';
+import 'package:lucent_openapi/src/model/today_analysis_bullet_dto.dart';
+import 'package:lucent_openapi/src/model/today_analysis_data_dto.dart';
+import 'package:lucent_openapi/src/model/today_analysis_response_dto.dart';
 import 'package:lucent_openapi/src/model/tokens_dto.dart';
 import 'package:lucent_openapi/src/model/update_account_dto.dart';
 import 'package:lucent_openapi/src/model/update_current_medicine_dto.dart';
@@ -234,6 +238,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return ForgotPasswordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ForgotPasswordResponseDto':
           return ForgotPasswordResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'GenerateTodayAnalysisDto':
+          return GenerateTodayAnalysisDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'HealthContextDataDto':
           return HealthContextDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'HealthContextResponseDto':
@@ -349,6 +355,12 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           
         case 'TemperatureIndicatorDto':
           return TemperatureIndicatorDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'TodayAnalysisBulletDto':
+          return TodayAnalysisBulletDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'TodayAnalysisDataDto':
+          return TodayAnalysisDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'TodayAnalysisResponseDto':
+          return TodayAnalysisResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'TokensDto':
           return TokensDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UnitSystem':

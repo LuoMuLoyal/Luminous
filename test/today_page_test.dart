@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/theme/app_theme.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/domain/repositories/today_repository.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import 'today_test_helpers.dart';
 
 void main() {
   testWidgets('Today page renders key mobile dashboard sections', (
@@ -29,7 +29,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
@@ -167,9 +167,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
-            _StaticTodayRepository(emptyDashboard),
+            StaticTodayRepository(emptyDashboard),
           ),
         ],
         child: MaterialApp(
@@ -191,10 +191,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    // Should render without crashing - water card and medication card present.
     expect(find.byKey(const Key('today-water-card')), findsOneWidget);
     expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
-    // Unsupported sections should still render with locale-aware mock copy.
+
     final recommendationCard = find.byKey(
       const Key('today-recommendation-card'),
     );
@@ -223,7 +222,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
@@ -255,34 +254,4 @@ void main() {
     expect(find.byKey(const Key('today-water-card')), findsOneWidget);
     expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
   });
-}
-
-class _StaticTodayRepository implements TodayRepository {
-  const _StaticTodayRepository(this.dashboard);
-
-  final TodayDashboard dashboard;
-
-  @override
-  Future<TodayDashboard> fetchDashboard() async {
-    return dashboard;
-  }
-}
-
-class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
-  @override
-  AuthSessionState build() {
-    return AuthSessionState(
-      isAuthenticated: true,
-      isLoading: false,
-      user: AuthUser(
-        id: 'user-1',
-        email: 'user@example.com',
-        nickname: 'Lumi',
-        avatar: null,
-        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
-        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
-        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
-      ),
-    );
-  }
 }

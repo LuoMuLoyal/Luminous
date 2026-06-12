@@ -112,6 +112,7 @@ Class | Method | HTTP request | Description
 [*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGetDashboardV1**](doc/ReportsApi.md#reportscontrollergetdashboardv1) | **GET** /api/v1/user/reports/dashboard | Get authenticated user report dashboard
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetAppInfoV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetappinfov1) | **GET** /api/v1/public/app-info | Get application metadata
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetResourcesV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetresourcesv1) | **GET** /api/v1/public/support-resources | Get static support resource entries
+[*TodayAnalysisApi*](doc/TodayAnalysisApi.md) | [**todayAnalysisControllerGenerateV1**](doc/TodayAnalysisApi.md#todayanalysiscontrollergeneratev1) | **POST** /api/v1/user/today-analysis/generate | Generate authenticated user today AI analysis
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/user/health-context/allergies | Create an allergy record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateConditionV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateconditionv1) | **POST** /api/v1/user/health-context/conditions | Create a condition record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateCurrentMedicineV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreatecurrentmedicinev1) | **POST** /api/v1/user/health-context/current-medicines | Add a current medicine record
@@ -178,6 +179,7 @@ Class | Method | HTTP request | Description
  - [EnvironmentSnapshotResponseDto](doc/EnvironmentSnapshotResponseDto.md)
  - [ForgotPasswordDto](doc/ForgotPasswordDto.md)
  - [ForgotPasswordResponseDto](doc/ForgotPasswordResponseDto.md)
+ - [GenerateTodayAnalysisDto](doc/GenerateTodayAnalysisDto.md)
  - [HealthContextDataDto](doc/HealthContextDataDto.md)
  - [HealthContextResponseDto](doc/HealthContextResponseDto.md)
  - [HumidityIndicatorDto](doc/HumidityIndicatorDto.md)
@@ -232,6 +234,9 @@ Class | Method | HTTP request | Description
  - [SupportResourceListResponseDto](doc/SupportResourceListResponseDto.md)
  - [SupportResourceScope](doc/SupportResourceScope.md)
  - [TemperatureIndicatorDto](doc/TemperatureIndicatorDto.md)
+ - [TodayAnalysisBulletDto](doc/TodayAnalysisBulletDto.md)
+ - [TodayAnalysisDataDto](doc/TodayAnalysisDataDto.md)
+ - [TodayAnalysisResponseDto](doc/TodayAnalysisResponseDto.md)
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
  - [UpdateAccountDto](doc/UpdateAccountDto.md)

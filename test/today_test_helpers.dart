@@ -1,0 +1,84 @@
+import 'dart:async';
+
+import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/features/auth/domain/entities/auth_session.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/today/data/repositories/lucent_today_ai_repository.dart';
+import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/today/domain/repositories/today_repository.dart';
+
+class StaticTodayRepository implements TodayRepository {
+  const StaticTodayRepository(this.dashboard);
+
+  final TodayDashboard dashboard;
+
+  @override
+  Future<TodayDashboard> fetchDashboard() async {
+    return dashboard;
+  }
+}
+
+class SignedInAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return AuthSessionState(
+      isAuthenticated: true,
+      isLoading: false,
+      user: AuthUser(
+        id: 'user-1',
+        email: 'user@example.com',
+        nickname: 'Lumi',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+      ),
+    );
+  }
+}
+
+class SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(isAuthenticated: false, isLoading: false);
+  }
+}
+
+class EnabledUserSettingsController extends UserSettingsController {
+  @override
+  Future<UserSettingsDataDto> build() async {
+    return userSettings(aiSummariesEnabled: true);
+  }
+}
+
+class DisabledUserSettingsController extends UserSettingsController {
+  @override
+  Future<UserSettingsDataDto> build() async {
+    return userSettings(aiSummariesEnabled: false);
+  }
+}
+
+class FakeTodayAiRepository implements TodayAiRepository {
+  final Completer<TodayAiAnalysis> _completer = Completer<TodayAiAnalysis>();
+
+  @override
+  Future<TodayAiAnalysis> generate({String? date}) {
+    return _completer.future;
+  }
+
+  void complete(TodayAiAnalysis analysis) {
+    _completer.complete(analysis);
+  }
+}
+
+UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
+  return UserSettingsDataDto(
+    aiSummariesEnabled: aiSummariesEnabled,
+    dataSharingConsent: false,
+    updatedAt: '2026-06-12T00:00:00.000Z',
+  );
+}
+
+final DateTime generatedAt = DateTime.utc(2026, 6, 12, 10, 23, 45);

@@ -902,6 +902,13 @@
   "todayAiSummaryTitle": "AI daily summary",
   "todayAiSummarySubtitle": "Generated from today's records",
   "todayAiSummaryGenerateAction": "Generate",
+  "todayAiSummaryGeneratingAction": "Generating",
+  "todayAiSummaryOpenSettingsAction": "Settings",
+  "todayAiSummaryDefaultHint": "Generate a low-risk summary from today's real records.",
+  "todayAiSummaryGeneratingHint": "We are organizing today's records now. Please wait a moment.",
+  "todayAiSummaryErrorHint": "This generation did not complete. Try again.",
+  "todayAiSummaryDisabledHint": "AI summaries are turned off in settings. Enable them before generating.",
+  "todayAiSummarySignedOutHint": "Sign in to generate an AI summary from today's records.",
   "todayAiSummaryMedicationPending": "{count} medication items still need confirmation. Do not adjust doses casually",
   "@todayAiSummaryMedicationPending": {
     "placeholders": {

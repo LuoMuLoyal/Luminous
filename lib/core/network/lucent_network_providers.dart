@@ -75,3 +75,7 @@ final lucentDataExportApiProvider = Provider<DataExportApi>((ref) {
 final lucentReportsApiProvider = Provider<ReportsApi>((ref) {
   return ref.watch(lucentDioClientProvider).reportsApi;
 });
+
+final lucentTodayAnalysisApiProvider = Provider<TodayAnalysisApi>((ref) {
+  return ref.watch(lucentDioClientProvider).todayAnalysisApi;
+});

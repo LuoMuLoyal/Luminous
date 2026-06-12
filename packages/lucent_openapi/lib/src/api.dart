@@ -19,6 +19,7 @@ import 'package:lucent_openapi/src/api/medicines_api.dart';
 import 'package:lucent_openapi/src/api/reminder_deliveries_api.dart';
 import 'package:lucent_openapi/src/api/reports_api.dart';
 import 'package:lucent_openapi/src/api/support_resources_api.dart';
+import 'package:lucent_openapi/src/api/today_analysis_api.dart';
 import 'package:lucent_openapi/src/api/user_health_context_api.dart';
 import 'package:lucent_openapi/src/api/user_settings_api.dart';
 
@@ -183,6 +184,12 @@ class LucentOpenapi {
   /// by doing that all interceptors will not be executed
   SupportResourcesApi getSupportResourcesApi() {
     return SupportResourcesApi(dio);
+  }
+
+  /// Get TodayAnalysisApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  TodayAnalysisApi getTodayAnalysisApi() {
+    return TodayAnalysisApi(dio);
   }
 
   /// Get UserHealthContextApi instance, base route and serializer can be overridden by a given but be careful,

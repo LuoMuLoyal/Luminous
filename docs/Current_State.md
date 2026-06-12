@@ -44,7 +44,7 @@ This file records current implementation facts only. Product direction lives in 
 
 ## Active Mobile UI
 
-- Today: compressed health overview, repository-provided medication/hydration priority list, medication tasks, hydration tasks with count targets, UI-only custom todos, AI summary/advice placeholders, and immediate risk/proactive suggestions.
+- Today: compressed health overview, repository-provided medication/hydration priority list, medication tasks, hydration tasks with count targets, UI-only custom todos, manual Lucent-backed Today AI analysis generation with signed-out/disabled/loading/success/error card states, immediate risk/proactive suggestions, and a placeholder-only sleep vital row until a real sleep contract exists.
 - Record: symptoms, hydration with selectable units, diet/meal, note as a first-class type (own quick action, filter, and timeline entry), sleep/medication as non-create quick actions with toast fallback, natural-language placeholder, selected-date timeline/detail/create/edit, top date bar, filters, summary/timeline-driven today overview, and panel-backed quick record/timeline sections whose inner rows use dividers instead of nested cards. Active create kinds are water, meal, symptom, and note. Lucent-backed filter results no longer fall back to a static mock timeline.
 - Medicine: active current-medicine drugbox, reminder-derived next dose, Lucent schedule-only reminder detail/create/edit/delete UI with optional start/end date window, local sound preference, on-device local notification scheduling synced from reminder schedules, SMS unavailable state, read-only reminder delivery history display, panel-backed medication actions, same-day taken/skipped dose logs, risk-check entry, source-review safety previews, and pregnancy/lactation/special-group medication safety conditions. Medicine no longer surfaces a local medication-report shortcut.
 - Report: Lucent-backed last-7-days dashboard with real medication/water aggregates, explicit insufficient-data handling for unsupported sleep data, contract-driven findings/patterns/summary text, l10n-owned chrome for metric/summary/export labels, mobile pull-to-refresh plus explicit sync action, signed-out in-tab placeholder plus login notice instead of a full-page error gate, frontend-only export placeholders, and reference notice. Privacy settings are owned by Mine/Settings.
@@ -54,7 +54,7 @@ This file records current implementation facts only. Product direction lives in 
 
 - Report export data/files.
 - Worker-populated reminder delivery history; the UI can read audit rows, but no local/push/SMS worker writes them yet.
-- Sleep contract and persistence wiring.
+- Sleep contract and persistence wiring; Today sleep vital, Record sleep placeholder entry points, and the local-only Settings sleep reminder toggle are not authoritative product capability yet.
 - Lightweight mood record wiring.
 - Environment contextual wiring for Today or Mine.
 - Medicine scan/OCR/photo/barcode/prescription recognition.

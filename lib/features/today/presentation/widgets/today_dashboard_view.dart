@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/today_ai_analysis_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -383,18 +391,37 @@ class _OverviewMetric extends StatelessWidget {
   }
 }
 
-class _AiDailySummarySection extends StatelessWidget {
+class _AiDailySummarySection extends ConsumerWidget {
   const _AiDailySummarySection({required this.dashboard});
 
   final TodayDashboard dashboard;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-    final bullets = _aiSummaryBullets(l10n, dashboard);
+    final authSession = ref.watch(authSessionProvider);
+    final settingsAsync = authSession.canAccessProtectedData
+        ? ref.watch(userSettingsControllerProvider)
+        : null;
+    final aiState = ref.watch(todayAiAnalysisControllerProvider);
+    final content = _buildAiCardContent(
+      l10n: l10n,
+      dashboard: dashboard,
+      authSession: authSession,
+      settingsAsync: settingsAsync,
+      aiState: aiState,
+    );
+    final isSettingsDisabled =
+        settingsAsync?.asData?.value.aiSummariesEnabled == false ||
+        aiState.isDisabled;
+    final actionLabel = aiState.isLoading
+        ? l10n.todayAiSummaryGeneratingAction
+        : isSettingsDisabled
+        ? l10n.todayAiSummaryOpenSettingsAction
+        : l10n.todayAiSummaryGenerateAction;
 
     return TodayPanel(
       key: const Key('today-ai-summary-card'),
@@ -448,8 +475,34 @@ class _AiDailySummarySection extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacingTokens.sm),
                 TextButton(
-                  onPressed: () =>
-                      AppToast.show(context, l10n.todayAiSummaryGenerateAction),
+                  onPressed: aiState.isLoading
+                      ? null
+                      : () async {
+                          if (!authSession.canAccessProtectedData) {
+                            await pushAuthRequiredRoute(context, '/today');
+                            return;
+                          }
+
+                          final settings = settingsAsync?.asData?.value;
+                          if (settings?.aiSummariesEnabled == false) {
+                            context.push('/settings');
+                            return;
+                          }
+
+                          final result = await ref
+                              .read(todayAiAnalysisControllerProvider.notifier)
+                              .generate();
+                          if (!context.mounted) {
+                            return;
+                          }
+                          if (result.status == TodayAiAnalysisCardStatus.error &&
+                              (result.errorMessage?.isNotEmpty ?? false)) {
+                            await AppToast.show(
+                              context,
+                              result.errorMessage!,
+                            );
+                          }
+                        },
                   style: TextButton.styleFrom(
                     visualDensity: VisualDensity.compact,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -457,15 +510,34 @@ class _AiDailySummarySection extends StatelessWidget {
                       horizontal: AppSpacingTokens.sm,
                     ),
                   ),
-                  child: Text(l10n.todayAiSummaryGenerateAction),
+                  child: Text(actionLabel),
                 ),
               ],
             ),
           ),
           Divider(height: 1, thickness: 1, color: surface.hairline),
-          for (var index = 0; index < bullets.length; index += 1) ...[
-            _AiSummaryRow(item: bullets[index]),
-            if (index < bullets.length - 1)
+          if (content.summary != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacingTokens.md,
+                AppSpacingTokens.sm,
+                AppSpacingTokens.md,
+                AppSpacingTokens.xs,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  content.summary!,
+                  style: typography.bodyMdStrong.copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ),
+            ),
+          for (var index = 0; index < content.bullets.length; index += 1) ...[
+            _AiSummaryRow(item: content.bullets[index]),
+            if (index < content.bullets.length - 1)
               Divider(
                 height: 1,
                 thickness: 1,
@@ -473,6 +545,25 @@ class _AiDailySummarySection extends StatelessWidget {
                 color: surface.hairline.withValues(alpha: 0.62),
               ),
           ],
+          if (content.footer != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacingTokens.md,
+                AppSpacingTokens.xs,
+                AppSpacingTokens.md,
+                AppSpacingTokens.sm,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  content.footer!,
+                  style: typography.caption.copyWith(
+                    color: surface.mute,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -1194,6 +1285,101 @@ List<_AiSummaryItem> _aiSummaryBullets(
   ];
 }
 
+_AiSummaryCardContent _buildAiCardContent({
+  required AppLocalizations l10n,
+  required TodayDashboard dashboard,
+  required AuthSessionState authSession,
+  required AsyncValue<UserSettingsDataDto>? settingsAsync,
+  required TodayAiAnalysisCardState aiState,
+}) {
+  if (!authSession.canAccessProtectedData) {
+    return _AiSummaryCardContent(
+      bullets: [
+        _AiSummaryItem(
+          icon: Icons.lock_outline_rounded,
+          color: TodayPalette.amber,
+          text: l10n.todayAiSummarySignedOutHint,
+        ),
+      ],
+      footer: l10n.todayAiSummarySignedOutHint,
+    );
+  }
+
+  final settings = settingsAsync?.asData?.value;
+  if (settings?.aiSummariesEnabled == false || aiState.isDisabled) {
+    return _AiSummaryCardContent(
+      bullets: [
+        _AiSummaryItem(
+          icon: Icons.settings_outlined,
+          color: TodayPalette.blue,
+          text: l10n.todayAiSummaryDisabledHint,
+        ),
+      ],
+      footer: l10n.todayAiSummaryDisabledHint,
+    );
+  }
+
+  final analysis = aiState.analysis;
+  if (analysis != null) {
+    return _AiSummaryCardContent(
+      summary: analysis.summary,
+      bullets: analysis.bullets.map(_mapAiBullet).toList(growable: false),
+      footer: analysis.confidenceNote,
+    );
+  }
+
+  if (aiState.status == TodayAiAnalysisCardStatus.error) {
+    return _AiSummaryCardContent(
+      bullets: [
+        _AiSummaryItem(
+          icon: Icons.error_outline_rounded,
+          color: TodayPalette.amber,
+          text: l10n.todayAiSummaryErrorHint,
+        ),
+        ..._aiSummaryBullets(l10n, dashboard),
+      ],
+      footer: aiState.errorMessage ?? l10n.todayAiSummaryErrorHint,
+    );
+  }
+
+  if (aiState.status == TodayAiAnalysisCardStatus.loading) {
+    return _AiSummaryCardContent(
+      bullets: [
+        _AiSummaryItem(
+          icon: Icons.hourglass_top_rounded,
+          color: TodayPalette.teal,
+          text: l10n.todayAiSummaryGeneratingHint,
+        ),
+        ..._aiSummaryBullets(l10n, dashboard),
+      ],
+      footer: l10n.todayAiSummaryGeneratingHint,
+    );
+  }
+
+  return _AiSummaryCardContent(
+    bullets: _aiSummaryBullets(l10n, dashboard),
+    footer: l10n.todayAiSummaryDefaultHint,
+  );
+}
+
+_AiSummaryItem _mapAiBullet(TodayAiAnalysisBullet bullet) {
+  final icon = switch (bullet.kind) {
+    TodayAiAnalysisBulletKind.medication => Icons.medication_liquid_outlined,
+    TodayAiAnalysisBulletKind.hydration => Icons.local_drink_outlined,
+    TodayAiAnalysisBulletKind.sleep => Icons.bedtime_outlined,
+    TodayAiAnalysisBulletKind.general => Icons.lightbulb_outline_rounded,
+  };
+
+  final color = switch (bullet.kind) {
+    TodayAiAnalysisBulletKind.medication => TodayPalette.healthGreen,
+    TodayAiAnalysisBulletKind.hydration => TodayPalette.teal,
+    TodayAiAnalysisBulletKind.sleep => TodayPalette.violet,
+    TodayAiAnalysisBulletKind.general => TodayPalette.blue,
+  };
+
+  return _AiSummaryItem(icon: icon, color: color, text: bullet.text);
+}
+
 List<_TodoItem> _todoItems(AppLocalizations l10n, TodayDashboard dashboard) {
   final nextMedicineName =
       dashboard.medication.nextMedicineName ??
@@ -1333,6 +1519,18 @@ class _AiSummaryItem {
   final IconData icon;
   final Color color;
   final String text;
+}
+
+class _AiSummaryCardContent {
+  const _AiSummaryCardContent({
+    required this.bullets,
+    this.summary,
+    this.footer,
+  });
+
+  final String? summary;
+  final List<_AiSummaryItem> bullets;
+  final String? footer;
 }
 
 class _TodoItem {

@@ -902,6 +902,13 @@
   "todayAiSummaryTitle": "AI 日总结",
   "todayAiSummarySubtitle": "基于今日记录生成",
   "todayAiSummaryGenerateAction": "生成",
+  "todayAiSummaryGeneratingAction": "生成中",
+  "todayAiSummaryOpenSettingsAction": "设置",
+  "todayAiSummaryDefaultHint": "点击生成后，会基于今日真实记录产出低风险总结。",
+  "todayAiSummaryGeneratingHint": "正在整理今天的记录，请稍等一下。",
+  "todayAiSummaryErrorHint": "这次生成没有成功，可以再试一次。",
+  "todayAiSummaryDisabledHint": "AI 总结已在设置中关闭，开启后才会生成。",
+  "todayAiSummarySignedOutHint": "登录后才会基于你的今日记录生成 AI 总结。",
   "todayAiSummaryMedicationPending": "还有 {count} 条用药需要确认，先不要自行调整剂量",
   "@todayAiSummaryMedicationPending": {
     "placeholders": {

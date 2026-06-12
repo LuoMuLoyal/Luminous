@@ -2110,6 +2110,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayAiSummaryGenerateAction => '生成';
 
   @override
+  String get todayAiSummaryGeneratingAction => '生成中';
+
+  @override
+  String get todayAiSummaryOpenSettingsAction => '设置';
+
+  @override
+  String get todayAiSummaryDefaultHint => '点击生成后，会基于今日真实记录产出低风险总结。';
+
+  @override
+  String get todayAiSummaryGeneratingHint => '正在整理今天的记录，请稍等一下。';
+
+  @override
+  String get todayAiSummaryErrorHint => '这次生成没有成功，可以再试一次。';
+
+  @override
+  String get todayAiSummaryDisabledHint => 'AI 总结已在设置中关闭，开启后才会生成。';
+
+  @override
+  String get todayAiSummarySignedOutHint => '登录后才会基于你的今日记录生成 AI 总结。';
+
+  @override
   String todayAiSummaryMedicationPending(int count) {
     return '还有 $count 条用药需要确认，先不要自行调整剂量';
   }

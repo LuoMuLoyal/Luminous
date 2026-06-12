@@ -4166,6 +4166,48 @@ abstract class AppLocalizations {
   /// **'生成'**
   String get todayAiSummaryGenerateAction;
 
+  /// No description provided for @todayAiSummaryGeneratingAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'生成中'**
+  String get todayAiSummaryGeneratingAction;
+
+  /// No description provided for @todayAiSummaryOpenSettingsAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置'**
+  String get todayAiSummaryOpenSettingsAction;
+
+  /// No description provided for @todayAiSummaryDefaultHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击生成后，会基于今日真实记录产出低风险总结。'**
+  String get todayAiSummaryDefaultHint;
+
+  /// No description provided for @todayAiSummaryGeneratingHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在整理今天的记录，请稍等一下。'**
+  String get todayAiSummaryGeneratingHint;
+
+  /// No description provided for @todayAiSummaryErrorHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'这次生成没有成功，可以再试一次。'**
+  String get todayAiSummaryErrorHint;
+
+  /// No description provided for @todayAiSummaryDisabledHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 总结已在设置中关闭，开启后才会生成。'**
+  String get todayAiSummaryDisabledHint;
+
+  /// No description provided for @todayAiSummarySignedOutHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录后才会基于你的今日记录生成 AI 总结。'**
+  String get todayAiSummarySignedOutHint;
+
   /// No description provided for @todayAiSummaryMedicationPending.
   ///
   /// In zh, this message translates to:

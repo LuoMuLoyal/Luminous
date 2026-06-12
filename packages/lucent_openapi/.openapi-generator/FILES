@@ -16,6 +16,7 @@ lib/src/api/medicines_api.dart
 lib/src/api/reminder_deliveries_api.dart
 lib/src/api/reports_api.dart
 lib/src/api/support_resources_api.dart
+lib/src/api/today_analysis_api.dart
 lib/src/api/user_health_context_api.dart
 lib/src/api/user_settings_api.dart
 lib/src/auth/api_key_auth.dart
@@ -73,6 +74,7 @@ lib/src/model/environment_snapshot_dto.dart
 lib/src/model/environment_snapshot_response_dto.dart
 lib/src/model/forgot_password_dto.dart
 lib/src/model/forgot_password_response_dto.dart
+lib/src/model/generate_today_analysis_dto.dart
 lib/src/model/health_context_data_dto.dart
 lib/src/model/health_context_response_dto.dart
 lib/src/model/humidity_indicator_dto.dart
@@ -127,6 +129,9 @@ lib/src/model/support_resource_list_data_dto.dart
 lib/src/model/support_resource_list_response_dto.dart
 lib/src/model/support_resource_scope.dart
 lib/src/model/temperature_indicator_dto.dart
+lib/src/model/today_analysis_bullet_dto.dart
+lib/src/model/today_analysis_data_dto.dart
+lib/src/model/today_analysis_response_dto.dart
 lib/src/model/tokens_dto.dart
 lib/src/model/unit_system.dart
 lib/src/model/update_account_dto.dart

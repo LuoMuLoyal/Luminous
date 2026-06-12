@@ -2240,6 +2240,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayAiSummaryGenerateAction => 'Generate';
 
   @override
+  String get todayAiSummaryGeneratingAction => 'Generating';
+
+  @override
+  String get todayAiSummaryOpenSettingsAction => 'Settings';
+
+  @override
+  String get todayAiSummaryDefaultHint =>
+      'Generate a low-risk summary from today\'s real records.';
+
+  @override
+  String get todayAiSummaryGeneratingHint =>
+      'We are organizing today\'s records now. Please wait a moment.';
+
+  @override
+  String get todayAiSummaryErrorHint =>
+      'This generation did not complete. Try again.';
+
+  @override
+  String get todayAiSummaryDisabledHint =>
+      'AI summaries are turned off in settings. Enable them before generating.';
+
+  @override
+  String get todayAiSummarySignedOutHint =>
+      'Sign in to generate an AI summary from today\'s records.';
+
+  @override
   String todayAiSummaryMedicationPending(int count) {
     return '$count medication items still need confirmation. Do not adjust doses casually';
   }
