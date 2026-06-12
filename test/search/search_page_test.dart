@@ -18,7 +18,7 @@ import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/features/search/domain/repositories/search_repository.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-import 'auth_test_helpers.dart';
+import '../auth/auth_test_helpers.dart';
 
 void main() {
   testWidgets('Medicine search page renders search interface', (tester) async {

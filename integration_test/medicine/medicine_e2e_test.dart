@@ -1,4 +1,4 @@
-import 'e2e_test_helpers.dart';
+import '../support/e2e_test_helpers.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
