@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-11
+Last updated: 2026-06-12
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 
@@ -39,7 +39,7 @@ From `Luminous`:
 dart run tool/regenerate_lucent_openapi.dart
 ```
 
-The wrapper exports Lucent OpenAPI, regenerates the Dart client, restores the generated package constraints, rebuilds serializers, patches known nullable-map generator output, formats generated model files, analyzes the generated package, and refreshes root Flutter dependencies.
+The wrapper exports Lucent OpenAPI, regenerates the Dart client, disables generated Markdown doc stubs and generated package test stubs, restores the generated package constraints, rebuilds serializers, patches known nullable-map generator output, formats generated model files, analyzes the generated package, and refreshes root Flutter dependencies.
 
 Do not run ad-hoc `npx @openapitools/openapi-generator-cli generate` or manual `build_runner` steps for normal work.
 
@@ -52,3 +52,9 @@ flutter test
 ```
 
 Generated OpenAPI client paths are covered by `.gitattributes` whitespace rules, so `git diff --check` will not block on generated trailing spaces there.
+
+## Noise Boundary
+
+- `packages/lucent_openapi/` stays committed because it is a local path dependency used by the app.
+- Generated Dart client code under `lib/` stays tracked.
+- Generated Markdown docs under `packages/lucent_openapi/doc/` and generated package stub tests under `packages/lucent_openapi/test/` are now intentionally disabled and cleaned by the wrapper because they add large diff noise without participating in app runtime or verification.

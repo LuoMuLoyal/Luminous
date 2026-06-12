@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -31,7 +30,16 @@ class ReportPage extends ConsumerWidget {
         onGenerate: () => ref.invalidate(reportDashboardProvider),
         onSync: () => ref.invalidate(reportDashboardProvider),
         onRefresh: () => _refreshDashboard(ref),
-        child: ReportDashboardView(dashboard: dashboard),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (session.isConfirmedSignedOut) ...[
+              _ReportSignedOutNotice(),
+              const SizedBox(height: AppSpacingTokens.md),
+            ],
+            ReportDashboardView(dashboard: dashboard),
+          ],
+        ),
       ),
       loading: () => _ReportMobileShell(
         isSyncing: session.canAccessProtectedData,
@@ -45,23 +53,6 @@ class ReportPage extends ConsumerWidget {
       ),
       error: (error, _) {
         final l10n = AppLocalizations.of(context)!;
-        if (error is AuthRequiredException) {
-          return DecoratedBox(
-            decoration: BoxDecoration(color: surface.canvasSoft),
-            child: SafeArea(
-              bottom: false,
-              child: AppStateErrorView(
-                title: l10n.authNotSignedIn,
-                description: l10n.authLoginRequiredPrompt,
-                icon: Icons.lock_outline_rounded,
-                actionLabel: l10n.authGoLogin,
-                onAction: () => context.push(loginRouteForCurrentLocation(context)),
-                tone: AppStateTone.warning,
-              ),
-            ),
-          );
-        }
-
         return DecoratedBox(
           decoration: BoxDecoration(color: surface.canvasSoft),
           child: SafeArea(
@@ -77,6 +68,25 @@ class ReportPage extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _ReportSignedOutNotice extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return AppStateMessageView(
+      key: const Key('report-signed-out-notice'),
+      title: l10n.authNotSignedIn,
+      description: l10n.authLoginRequiredPrompt,
+      icon: Icons.lock_outline_rounded,
+      actionLabel: l10n.authGoLogin,
+      actionKey: const Key('report-signed-out-login-action'),
+      onAction: () => pushAuthRequiredRoute(context, '/report'),
+      tone: AppStateTone.warning,
+      padding: const EdgeInsets.all(AppSpacingTokens.lg),
     );
   }
 }

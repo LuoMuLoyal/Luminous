@@ -132,7 +132,9 @@ void main() {
     expect(find.byType(AppInlineSkeletonBlock), findsNothing);
   });
 
-  testWidgets('Report page asks signed-out user to login', (tester) async {
+  testWidgets('Report page renders signed-out placeholder with login notice', (
+    tester,
+  ) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
     addTearDown(() {
@@ -167,6 +169,10 @@ void main() {
     expect(find.text(l10n.authNotSignedIn), findsOneWidget);
     expect(find.text(l10n.authLoginRequiredPrompt), findsOneWidget);
     expect(find.text(l10n.authGoLogin), findsOneWidget);
+    expect(find.byKey(const Key('report-signed-out-notice')), findsOneWidget);
+    expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
+    expect(find.text(l10n.reportScoreTitle), findsOneWidget);
+    expect(find.byType(AppStateErrorView), findsNothing);
   });
 
   testWidgets('Report page supports pull-to-refresh on mobile', (tester) async {
