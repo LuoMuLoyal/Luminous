@@ -10,6 +10,12 @@ const _openApiGeneratorAdditionalProperties =
     'useEnumExtension=true,'
     'enumUnknownDefaultCase=true';
 
+const _openApiGeneratorGlobalProperties =
+    'apiDocs=false,'
+    'modelDocs=false,'
+    'apiTests=false,'
+    'modelTests=false';
+
 Future<void> main() async {
   final scriptFile = File.fromUri(Platform.script);
   final luminousRoot = scriptFile.parent.parent;
@@ -56,10 +62,20 @@ Future<void> main() async {
             '${Platform.pathSeparator}openapi.json',
         '-o',
         generatedPackageRoot.path,
+        '--global-property=$_openApiGeneratorGlobalProperties',
         '--additional-properties=$_openApiGeneratorAdditionalProperties',
       ],
       workingDirectory: luminousRoot.path,
       stepName: 'Generate lucent_openapi package',
+    );
+
+    final deletedNoiseArtifacts = _deleteGeneratedNoiseArtifacts(
+      generatedPackageRoot,
+    );
+    stdout.writeln(
+      deletedNoiseArtifacts == 0
+          ? 'No generated doc/test noise artifacts needed cleanup.'
+          : 'Removed $deletedNoiseArtifacts generated doc/test noise artifacts.',
     );
 
     final pubspecFile = File(
@@ -302,6 +318,40 @@ Directory _generatedModelDirectory(Directory generatedPackageRoot) {
     '${generatedPackageRoot.path}${Platform.pathSeparator}lib'
     '${Platform.pathSeparator}src${Platform.pathSeparator}model',
   );
+}
+
+int _deleteGeneratedNoiseArtifacts(Directory generatedPackageRoot) {
+  var deletedArtifacts = 0;
+
+  for (final relativePath in ['doc', 'test']) {
+    final directory = Directory(
+      '${generatedPackageRoot.path}${Platform.pathSeparator}$relativePath',
+    );
+    if (!directory.existsSync()) {
+      continue;
+    }
+
+    directory.deleteSync(recursive: true);
+    deletedArtifacts += 1;
+  }
+
+  final filesManifest = File(
+    '${generatedPackageRoot.path}${Platform.pathSeparator}.openapi-generator'
+    '${Platform.pathSeparator}FILES',
+  );
+  if (filesManifest.existsSync()) {
+    final original = filesManifest.readAsLinesSync();
+    final filtered = original
+        .where((line) => !(line.startsWith('doc/') || line.startsWith('test/')))
+        .toList(growable: false);
+    if (filtered.length != original.length) {
+      filesManifest.writeAsStringSync(
+        '${filtered.join(Platform.lineTerminator)}${Platform.lineTerminator}',
+      );
+    }
+  }
+
+  return deletedArtifacts;
 }
 
 final _brokenNullableMapEntryPattern = RegExp(

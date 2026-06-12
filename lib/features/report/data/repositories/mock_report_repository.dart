@@ -139,4 +139,118 @@ class MockReportRepository implements ReportRepository {
     ],
     aiSummaryEnabled: false,
   );
+
+  static const signedOutDashboard = ReportDashboard(
+    score: ReportHealthScore(
+      value: 0,
+      maxValue: 100,
+      status: ReportStatus.insufficientData,
+      summary: '登录后可查看最近 7 天的真实报告聚合。',
+    ),
+    metrics: <ReportMetric>[
+      ReportMetric(
+        kind: ReportDataKind.medication,
+        icon: Icons.medication_rounded,
+        color: AppColorTokens.cyanDeep,
+        value: '--',
+        unit: '%',
+        status: ReportStatus.insufficientData,
+        delta: '--',
+        direction: ReportMetricDirection.flat,
+        sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
+      ),
+      ReportMetric(
+        kind: ReportDataKind.sleep,
+        icon: Icons.nightlight_round,
+        color: AppColorTokens.violet,
+        value: '--',
+        unit: 'h',
+        status: ReportStatus.insufficientData,
+        delta: '--',
+        direction: ReportMetricDirection.flat,
+        sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
+      ),
+      ReportMetric(
+        kind: ReportDataKind.water,
+        icon: Icons.water_drop_rounded,
+        color: AppColorTokens.link,
+        value: '--',
+        unit: 'L',
+        status: ReportStatus.insufficientData,
+        delta: '--',
+        direction: ReportMetricDirection.flat,
+        sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
+      ),
+    ],
+    trends: <ReportTrendSeries>[
+      ReportTrendSeries(
+        kind: ReportDataKind.sleep,
+        color: AppColorTokens.violet,
+        unit: 'h',
+        values: <double>[0, 0, 0, 0, 0, 0, 0],
+        currentValue: '--',
+      ),
+      ReportTrendSeries(
+        kind: ReportDataKind.water,
+        color: AppColorTokens.link,
+        unit: 'L',
+        values: <double>[0, 0, 0, 0, 0, 0, 0],
+        currentValue: '--',
+      ),
+      ReportTrendSeries(
+        kind: ReportDataKind.medication,
+        color: AppColorTokens.cyanDeep,
+        unit: '%',
+        values: <double>[0, 0, 0, 0, 0, 0, 0],
+        currentValue: '--',
+      ),
+    ],
+    findings: <ReportFinding>[
+      ReportFinding(
+        kind: ReportInsightKind.general,
+        icon: Icons.lock_outline_rounded,
+        color: AppColorTokens.warning,
+        title: '登录后解锁报告',
+        body: '报告会基于你的真实记录生成最近 7 天的聚合结果。',
+      ),
+    ],
+    summary: ReportSummary(
+      mode: ReportSummaryMode.current,
+      bullets: <ReportSummaryBullet>[
+        ReportSummaryBullet(
+          color: AppColorTokens.warning,
+          body: '登录后才会请求 Lucent 报告合同，不会在未登录状态下拉取受保护数据。',
+        ),
+      ],
+    ),
+    exportActions: <ReportExportAction>[
+      ReportExportAction(
+        kind: ReportExportKind.hospital,
+        icon: Icons.local_hospital_rounded,
+        color: AppColorTokens.link,
+      ),
+      ReportExportAction(
+        kind: ReportExportKind.monthly,
+        icon: Icons.bar_chart_rounded,
+        color: AppColorTokens.link,
+      ),
+      ReportExportAction(
+        kind: ReportExportKind.print,
+        icon: Icons.print_rounded,
+        color: AppColorTokens.warning,
+      ),
+    ],
+    patterns: <ReportPatternCard>[
+      ReportPatternCard(
+        kind: ReportInsightKind.general,
+        icon: Icons.lock_outline_rounded,
+        color: AppColorTokens.warning,
+        title: '等待登录',
+        status: ReportStatus.insufficientData,
+        body: '登录后显示真实模式卡片。',
+        sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
+      ),
+    ],
+    aiSummaryEnabled: false,
+  );
 }

@@ -19,8 +19,9 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
    - Active plan: `../plans/2026-06-12-report-contracts.md`.
    - Phase 1 contract wiring is in place on both Lucent and Luminous, the frontend hardcoded report chrome cleanup is done, and repository-level DTO-to-domain regression coverage is now in place for sleep `insufficient_data`, AI summary mode, and export action mapping.
    - Next focus:
-     - decide whether report signed-out state should stay as a full-page gate or align with the protected-tab placeholder pattern used elsewhere
-     - trim low-value generated OpenAPI doc/test noise only if it can be done without breaking the local path-package workflow
+   - Current decision:
+     - Report signed-out state now aligns with the protected-tab placeholder pattern used by `Today / Record / Mine`, so this no longer needs a separate decision pass
+     - generated OpenAPI Markdown docs and generated package stub tests should be disabled/cleaned by the wrapper instead of being hand-maintained
    - Sleep remains deferred as a later contract slice, but Report must keep explicit missing-data handling instead of faking values.
 
 2. **Local full-stack lane usage rule**

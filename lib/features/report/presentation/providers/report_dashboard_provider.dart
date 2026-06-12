@@ -9,11 +9,14 @@ const _reportDashboardTimeout = Duration(seconds: 5);
 
 final reportDashboardProvider = FutureProvider<ReportDashboard>((ref) {
   final session = ref.watch(authSessionProvider);
+  if (session.isConfirmedSignedOut) {
+    return Future.value(MockReportRepository.signedOutDashboard);
+  }
   if (session.isLoading) {
-    return pendingAuthSessionResolution();
+    return pendingAuthSessionResolution<ReportDashboard>();
   }
   if (!session.canAccessProtectedData) {
-    throw const AuthRequiredException();
+    return pendingAuthSessionResolution<ReportDashboard>();
   }
 
   return ref
