@@ -906,6 +906,44 @@ void main() {
   );
 
   test(
+    'Lucent record repository shows sleep duration from payload when value is null',
+    () async {
+      final dailyRepo = _FakeDailyRecordRepository(
+        itemKind: DailyRecordKind.sleep,
+        itemTitle: null,
+        itemValue: null,
+        itemUnit: null,
+        itemNote: null,
+        itemPayload: {'durationMinutes': 480},
+      );
+      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+
+      expect(dashboard.timeline.single.value, '8h');
+    },
+  );
+
+  test(
+    'Lucent record repository shows sleep duration with minutes from payload',
+    () async {
+      final dailyRepo = _FakeDailyRecordRepository(
+        itemKind: DailyRecordKind.sleep,
+        itemTitle: null,
+        itemValue: null,
+        itemUnit: null,
+        itemNote: null,
+        itemPayload: {'durationMinutes': 450},
+      );
+      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+
+      expect(dashboard.timeline.single.value, '7h 30m');
+    },
+  );
+
+  test(
     'recordEntryTypeForDailyRecordKind maps note to note type',
     () {
       expect(
@@ -1187,6 +1225,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     this.itemValue = '118/76',
     this.itemUnit = 'mmHg',
     this.itemNote = 'This is a note',
+    this.itemPayload,
     this.withAttachment = false,
     this.fetchThrows = false,
   });
@@ -1197,6 +1236,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   final String? itemValue;
   final String? itemUnit;
   final String? itemNote;
+  final Map<String, dynamic>? itemPayload;
   final bool withAttachment;
   final bool fetchThrows;
   String? deleteCalledWith;
@@ -1227,6 +1267,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
           value: itemValue,
           unit: itemUnit,
           note: itemNote,
+          payload: itemPayload,
           source: 'manual',
           createdAt: DateTime.now().toIso8601String(),
           updatedAt: DateTime.now().toIso8601String(),
@@ -1247,6 +1288,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
       value: itemValue,
       unit: itemUnit,
       note: itemNote,
+      payload: itemPayload,
       source: 'manual',
       attachments: withAttachment
           ? [

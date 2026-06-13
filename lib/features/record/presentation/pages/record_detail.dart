@@ -13,6 +13,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
@@ -124,30 +125,31 @@ class _RecordDetailBody extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: AppSpacingTokens.lg),
-              _DetailRows(
-                rows: [
-                  _DetailRowData(
-                    l10n.recordCreateFieldKind,
-                    _kindLabel(l10n, record.kind),
+                  _DetailRows(
+                    rows: [
+                      _DetailRowData(
+                        l10n.recordCreateFieldKind,
+                        _kindLabel(l10n, record.kind),
+                      ),
+                      if (_nonEmpty(record.value) != null)
+                        _DetailRowData(
+                          l10n.recordDetailValueLabel,
+                          _valueWithUnit(record.value!, record.unit),
+                        ),
+                      if (_nonEmpty(record.note) != null)
+                        _DetailRowData(l10n.recordCreateFieldNote, record.note!),
+                      if (_nonEmpty(record.source) != null)
+                        _DetailRowData(
+                          l10n.recordDetailSourceLabel,
+                          record.source!,
+                        ),
+                      _DetailRowData(
+                        l10n.recordDetailUpdatedAtLabel,
+                        _formatDateTime(record.updatedAt),
+                      ),
+                    ],
                   ),
-                  if (_nonEmpty(record.value) != null)
-                    _DetailRowData(
-                      l10n.recordDetailValueLabel,
-                      _valueWithUnit(record.value!, record.unit),
-                    ),
-                  if (_nonEmpty(record.note) != null)
-                    _DetailRowData(l10n.recordCreateFieldNote, record.note!),
-                  if (_nonEmpty(record.source) != null)
-                    _DetailRowData(
-                      l10n.recordDetailSourceLabel,
-                      record.source!,
-                    ),
-                  _DetailRowData(
-                    l10n.recordDetailUpdatedAtLabel,
-                    _formatDateTime(record.updatedAt),
-                  ),
-                ],
-              ),
+                  ..._buildSleepDetails(l10n, record.payload),
             ],
           ),
         ),
@@ -195,6 +197,75 @@ class _RecordDetailBody extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  List<Widget> _buildSleepDetails(
+    AppLocalizations l10n,
+    Map<String, dynamic>? payload,
+  ) {
+    if (payload == null || record.kind != DailyRecordKind.sleep) {
+      return const [];
+    }
+
+    final rows = <_DetailRowData>[];
+
+    final startAt = payload['startAt'] as String?;
+    final endAt = payload['endAt'] as String?;
+    if (startAt != null && endAt != null) {
+      final startDt = DateTime.tryParse(startAt);
+      final endDt = DateTime.tryParse(endAt);
+      if (startDt != null && endDt != null) {
+        final range = formatSleepTimeRange(
+          TimeOfDay.fromDateTime(startDt.toLocal()),
+          TimeOfDay.fromDateTime(endDt.toLocal()),
+        );
+        if (range != null) {
+          rows.add(_DetailRowData(l10n.recordSleepTimeRangeLabel, range));
+        }
+      }
+    }
+
+    final durationMinutes = payload['durationMinutes'];
+    if (durationMinutes is num && durationMinutes > 0) {
+      final h = durationMinutes ~/ 60;
+      final m = durationMinutes.round() % 60;
+      final text = m == 0
+          ? '$h${l10n.todayVitalSleepUnit}'
+          : '$h${l10n.todayVitalSleepUnit} $m${l10n.recordSleepMinutesUnit}';
+      rows.add(_DetailRowData(l10n.recordSleepDurationLabel, text));
+    }
+
+    final quality = payload['quality'] as String?;
+    if (quality != null) {
+      final qualityLabel = _sleepQualityLabel(l10n, quality);
+      rows.add(_DetailRowData(l10n.recordSleepQualityLabel, qualityLabel));
+    }
+
+    final deep = payload['deepMinutes'];
+    if (deep is num && deep > 0) {
+      rows.add(
+        _DetailRowData(l10n.recordSleepDeepMinutesLabel, '${deep.round()}'),
+      );
+    }
+    final light = payload['lightMinutes'];
+    if (light is num && light > 0) {
+      rows.add(
+        _DetailRowData(l10n.recordSleepLightMinutesLabel, '${light.round()}'),
+      );
+    }
+    final rem = payload['remMinutes'];
+    if (rem is num && rem > 0) {
+      rows.add(
+        _DetailRowData(l10n.recordSleepRemMinutesLabel, '${rem.round()}'),
+      );
+    }
+
+    if (rows.isEmpty) return const [];
+
+    return [
+      const SizedBox(height: AppSpacingTokens.lg),
+      _DetailRows(rows: rows),
+    ];
   }
 
   Future<void> _deleteRecord(
@@ -485,6 +556,16 @@ String? _nonEmpty(String? value) {
   final trimmed = value?.trim();
   if (trimmed == null || trimmed.isEmpty) return null;
   return trimmed;
+}
+
+String _sleepQualityLabel(AppLocalizations l10n, String quality) {
+  return switch (quality) {
+    'poor' => l10n.recordSleepQualityPoor,
+    'fair' => l10n.recordSleepQualityFair,
+    'good' => l10n.recordSleepQualityGood,
+    'excellent' => l10n.recordSleepQualityExcellent,
+    _ => quality,
+  };
 }
 
 String _formatDateTime(String value) {

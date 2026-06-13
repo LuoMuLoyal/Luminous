@@ -148,7 +148,7 @@ class LucentRecordRepository implements RecordRepository {
       rawTitle: rawTitle,
       value: record.value != null
           ? '${record.value}${record.unit != null ? ' ${record.unit}' : ''}'
-          : record.note,
+          : _sleepPayloadValue(kind, record.payload) ?? record.note,
       detailKey: record.note != null && record.value != null ? null : null,
       imageUrl: record.attachments
           .where(
@@ -159,6 +159,23 @@ class LucentRecordRepository implements RecordRepository {
           .firstOrNull,
       recordId: record.id,
     );
+  }
+
+  /// Returns a compact sleep-duration display string (e.g. "7h 30m")
+  /// extracted from the sleep payload, or null when the record is not a
+  /// sleep record or has no usable duration data.
+  static String? _sleepPayloadValue(
+    DailyRecordKind kind,
+    Map<String, dynamic>? payload,
+  ) {
+    if (kind != DailyRecordKind.sleep || payload == null) return null;
+    final minutes = payload['durationMinutes'];
+    if (minutes is! num || minutes <= 0) return null;
+    final h = minutes ~/ 60;
+    final m = minutes.round() % 60;
+    if (h == 0) return '${m}m';
+    if (m == 0) return '${h}h';
+    return '${h}h ${m}m';
   }
 
   // --- static mock (backend does not yet provide) ---
