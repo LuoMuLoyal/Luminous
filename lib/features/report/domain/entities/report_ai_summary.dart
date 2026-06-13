@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+enum ReportAiSummaryRange {
+  last7Days('last_7_days'),
+  last30Days('last_30_days');
+
+  const ReportAiSummaryRange(this.apiValue);
+
+  final String apiValue;
+}
+
 class ReportAiSummary {
   const ReportAiSummary({
     required this.range,
@@ -12,7 +21,7 @@ class ReportAiSummary {
     required this.confidenceNote,
   });
 
-  final String range;
+  final ReportAiSummaryRange range;
   final String startDate;
   final String endDate;
   final DateTime generatedAt;

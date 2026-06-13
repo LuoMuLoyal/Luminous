@@ -24,13 +24,24 @@ class ReportPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
     final dashboardAsync = ref.watch(reportDashboardProvider);
-    final aiSummaryState = ref.watch(reportAiSummaryControllerProvider);
+    final selectedAiSummaryRange = ref.watch(
+      reportAiSummarySelectedRangeProvider,
+    );
+    final aiSummaryState = ref.watch(
+      reportAiSummaryControllerProvider(selectedAiSummaryRange),
+    );
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
     return dashboardAsync.when(
       data: (dashboard) => _ReportMobileShell(
         onGenerate: () {
-          ref.read(reportAiSummaryControllerProvider.notifier).generate();
+          ref
+              .read(
+                reportAiSummaryControllerProvider(
+                  selectedAiSummaryRange,
+                ).notifier,
+              )
+              .generate();
         },
         onSync: () => ref.invalidate(reportDashboardProvider),
         onRefresh: () => _refreshDashboard(ref),
@@ -47,8 +58,20 @@ class ReportPage extends ConsumerWidget {
               dashboard: dashboard,
               authSession: session,
               aiSummaryState: aiSummaryState,
+              aiSummaryRange: selectedAiSummaryRange,
+              onAiSummaryRangeChanged: (range) {
+                ref
+                    .read(reportAiSummarySelectedRangeProvider.notifier)
+                    .setRange(range);
+              },
               onGenerateAiSummary: () async {
-                await ref.read(reportAiSummaryControllerProvider.notifier).generate();
+                await ref
+                    .read(
+                      reportAiSummaryControllerProvider(
+                        selectedAiSummaryRange,
+                      ).notifier,
+                    )
+                    .generate();
               },
             ),
           ],
@@ -64,6 +87,7 @@ class ReportPage extends ConsumerWidget {
           dashboard: MockReportRepository.previewDashboard,
           authSession: session,
           isLoading: true,
+          aiSummaryRange: selectedAiSummaryRange,
         ),
       ),
       error: (error, _) {

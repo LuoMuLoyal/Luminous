@@ -21,7 +21,9 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final state = container.read(reportAiSummaryControllerProvider);
+      final state = container.read(
+        reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+      );
       expect(state.status, ReportAiSummaryCardStatus.idle);
       expect(state.summary, isNull);
     });
@@ -40,7 +42,9 @@ void main() {
       // Wait for settings to load.
       await container.read(userSettingsControllerProvider.future);
 
-      final state = container.read(reportAiSummaryControllerProvider);
+      final state = container.read(
+        reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+      );
       expect(state.status, ReportAiSummaryCardStatus.disabled);
     });
 
@@ -57,7 +61,9 @@ void main() {
 
       await container.read(userSettingsControllerProvider.future);
 
-      final state = container.read(reportAiSummaryControllerProvider);
+      final state = container.read(
+        reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+      );
       expect(state.status, ReportAiSummaryCardStatus.idle);
     });
   });
@@ -72,12 +78,18 @@ void main() {
       addTearDown(container.dispose);
 
       final result = await container
-          .read(reportAiSummaryControllerProvider.notifier)
+          .read(
+            reportAiSummaryControllerProvider(
+              ReportAiSummaryRange.last7Days,
+            ).notifier,
+          )
           .generate();
 
       expect(result.status, ReportAiSummaryCardStatus.idle);
       expect(
-        container.read(reportAiSummaryControllerProvider).status,
+        container
+            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .status,
         ReportAiSummaryCardStatus.idle,
       );
     });
@@ -96,19 +108,25 @@ void main() {
       await container.read(userSettingsControllerProvider.future);
 
       final result = await container
-          .read(reportAiSummaryControllerProvider.notifier)
+          .read(
+            reportAiSummaryControllerProvider(
+              ReportAiSummaryRange.last7Days,
+            ).notifier,
+          )
           .generate();
 
       expect(result.status, ReportAiSummaryCardStatus.disabled);
       expect(
-        container.read(reportAiSummaryControllerProvider).isDisabled,
+        container
+            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .isDisabled,
         isTrue,
       );
     });
 
     test('loading → success path', () async {
       final fakeRepo = _FakeReportAiSummaryRepository(
-        response: _testSummary(range: 'last_7_days'),
+        response: _testSummary(range: ReportAiSummaryRange.last7Days),
       );
 
       final container = ProviderContainer(
@@ -126,12 +144,20 @@ void main() {
 
       // Listen to capture loading state.
       final states = <ReportAiSummaryCardState>[];
-      container.listen(reportAiSummaryControllerProvider, (prev, next) {
-        states.add(next);
-      }, fireImmediately: true);
+      container.listen(
+        reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+        (prev, next) {
+          states.add(next);
+        },
+        fireImmediately: true,
+      );
 
       final result = await container
-          .read(reportAiSummaryControllerProvider.notifier)
+          .read(
+            reportAiSummaryControllerProvider(
+              ReportAiSummaryRange.last7Days,
+            ).notifier,
+          )
           .generate();
 
       expect(result.status, ReportAiSummaryCardStatus.success);
@@ -144,7 +170,9 @@ void main() {
       );
       // Final state is success.
       expect(
-        container.read(reportAiSummaryControllerProvider).status,
+        container
+            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .status,
         ReportAiSummaryCardStatus.success,
       );
     });
@@ -153,7 +181,7 @@ void main() {
       final fakeRepo = _FakeReportAiSummaryRepository(
         error: DioException(
           requestOptions: RequestOptions(
-            path: '/api/v1/user/reports/weekly-summary/generate',
+            path: '/api/v1/user/reports/summary/generate',
           ),
           type: DioExceptionType.badResponse,
           error: const LucentApiException(
@@ -178,12 +206,18 @@ void main() {
       await container.read(userSettingsControllerProvider.future);
 
       final result = await container
-          .read(reportAiSummaryControllerProvider.notifier)
+          .read(
+            reportAiSummaryControllerProvider(
+              ReportAiSummaryRange.last7Days,
+            ).notifier,
+          )
           .generate();
 
       expect(result.status, ReportAiSummaryCardStatus.disabled);
       expect(
-        container.read(reportAiSummaryControllerProvider).status,
+        container
+            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .status,
         ReportAiSummaryCardStatus.disabled,
       );
     });
@@ -194,7 +228,7 @@ void main() {
         final fakeRepo = _FakeReportAiSummaryRepository(
           error: DioException(
             requestOptions: RequestOptions(
-              path: '/api/v1/user/reports/weekly-summary/generate',
+              path: '/api/v1/user/reports/summary/generate',
             ),
             type: DioExceptionType.connectionTimeout,
           ),
@@ -214,7 +248,11 @@ void main() {
         await container.read(userSettingsControllerProvider.future);
 
         final result = await container
-            .read(reportAiSummaryControllerProvider.notifier)
+            .read(
+              reportAiSummaryControllerProvider(
+                ReportAiSummaryRange.last7Days,
+              ).notifier,
+            )
             .generate();
 
         expect(result.status, ReportAiSummaryCardStatus.error);
@@ -226,7 +264,7 @@ void main() {
 
     test('backend failure retains previous summary on retry', () async {
       final successRepo = _FakeReportAiSummaryRepository(
-        response: _testSummary(range: 'last_7_days'),
+        response: _testSummary(range: ReportAiSummaryRange.last7Days),
       );
 
       final container = ProviderContainer(
@@ -244,36 +282,52 @@ void main() {
 
       // First call succeeds.
       await container
-          .read(reportAiSummaryControllerProvider.notifier)
+          .read(
+            reportAiSummaryControllerProvider(
+              ReportAiSummaryRange.last7Days,
+            ).notifier,
+          )
           .generate();
 
       expect(
-        container.read(reportAiSummaryControllerProvider).status,
+        container
+            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .status,
         ReportAiSummaryCardStatus.success,
       );
       expect(
-        container.read(reportAiSummaryControllerProvider).summary?.summary,
+        container
+            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .summary
+            ?.summary,
         '测试周总结',
       );
 
       // Swap to a failing repo.
       successRepo.error = DioException(
         requestOptions: RequestOptions(
-          path: '/api/v1/user/reports/weekly-summary/generate',
+          path: '/api/v1/user/reports/summary/generate',
         ),
         type: DioExceptionType.connectionTimeout,
       );
       successRepo.response = null;
 
       final result = await container
-          .read(reportAiSummaryControllerProvider.notifier)
+          .read(
+            reportAiSummaryControllerProvider(
+              ReportAiSummaryRange.last7Days,
+            ).notifier,
+          )
           .generate();
 
       expect(result.status, ReportAiSummaryCardStatus.error);
       // Previous summary should be retained.
       expect(result.summary?.summary, '测试周总结');
       expect(
-        container.read(reportAiSummaryControllerProvider).summary?.summary,
+        container
+            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .summary
+            ?.summary,
         '测试周总结',
       );
     });
@@ -284,7 +338,7 @@ void main() {
 // Helpers
 // ---------------------------------------------------------------------------
 
-ReportAiSummary _testSummary({required String range}) {
+ReportAiSummary _testSummary({required ReportAiSummaryRange range}) {
   return ReportAiSummary(
     range: range,
     startDate: '2026-06-06',
@@ -315,7 +369,7 @@ class _FakeReportAiSummaryRepository implements ReportAiSummaryRepository {
   Object? error;
 
   @override
-  Future<ReportAiSummary> generate() async {
+  Future<ReportAiSummary> generate(ReportAiSummaryRange range) async {
     if (error != null) {
       // ignore: only_throw_errors
       throw error!;

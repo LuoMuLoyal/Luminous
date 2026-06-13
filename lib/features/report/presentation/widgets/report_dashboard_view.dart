@@ -18,6 +18,8 @@ class ReportDashboardView extends ConsumerWidget {
     required this.authSession,
     this.isLoading = false,
     this.aiSummaryState = const ReportAiSummaryCardState.idle(),
+    this.aiSummaryRange = ReportAiSummaryRange.last7Days,
+    this.onAiSummaryRangeChanged,
     this.onGenerateAiSummary,
   });
 
@@ -25,6 +27,8 @@ class ReportDashboardView extends ConsumerWidget {
   final AuthSessionState authSession;
   final bool isLoading;
   final ReportAiSummaryCardState aiSummaryState;
+  final ReportAiSummaryRange aiSummaryRange;
+  final ValueChanged<ReportAiSummaryRange>? onAiSummaryRangeChanged;
   final Future<void> Function()? onGenerateAiSummary;
 
   @override
@@ -76,6 +80,8 @@ class ReportDashboardView extends ConsumerWidget {
           authSession: authSession,
           settingsAsync: settingsAsync,
           aiState: aiSummaryState,
+          selectedRange: aiSummaryRange,
+          onRangeChanged: onAiSummaryRangeChanged,
           onGenerate: onGenerateAiSummary,
           l10n: l10n,
           typography: typography,

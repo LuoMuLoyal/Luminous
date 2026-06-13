@@ -8,31 +8,19 @@ This file records the next implementation order only. Completed work belongs in 
 
 Use the Product_Vision-converged five-tab mobile UI as the baseline, then move into real daily health loops without presenting mock or deferred features as real capability.
 
-## Completed
-
-- **Record form maintenance** (2026-06-10): aligned quick-action visibility with create capability, removed static mock timeline fallback from Lucent repository, promoted `note` to a first-class `RecordEntryType` with its own mapping/filter/timeline, locked down active create kinds (water, meal, symptom, note), and added regression tests. All 165 tests pass; `flutter analyze` clean.
-- **Mine and Settings contracts** (2026-06-11): Lucent now exposes user settings, support resources/app info, and data export request status; Luminous wires Mine campus resources and Settings privacy/export/help/about/reminder summaries to real contracts or local state. User-scoped business APIs now live under `/api/v1/user/*`; the old `me` namespace has been removed.
-- **Report Phase 2 closeout** (2026-06-12): Lucent now exposes `/api/v1/user/reports/dashboard`; Luminous uses the real report contract, keeps explicit sleep `insufficient_data`, aligns signed-out behavior with other protected tabs, adds mobile pull-to-refresh, and trims generated OpenAPI doc/test noise from the regeneration workflow.
-- **Today AI analysis** (2026-06-12): Lucent now exposes `POST /api/v1/user/today-analysis/generate`; Luminous replaces the static Today AI placeholder with a manual authenticated generate flow, respects the existing AI-summary setting, and covers the card with split page/widget/provider tests. Lucent fallback/prompt copy now follows request language for `zh-CN` and `en`.
-- **Report weekly AI summary** (2026-06-12): Lucent now exposes `POST /api/v1/user/reports/weekly-summary/generate`; Luminous separates weekly AI summary state from the dashboard contract, wires the top-bar generate action to the real endpoint, keeps signed-out/disabled/loading/success/error local to the summary section, and regenerates the Lucent OpenAPI client.
-
 ## Immediate Work Order
 
-1. **Current backlog closeout**
-   - Active execution plan:
-     - `Luminous/plans/2026-06-12-remaining-backlog.md`
-   - Close the still-real backlog before starting the next AI slice:
-     - remove fake medicine-name / mock placeholder copy from user-visible paths
-     - harden Lucent fallback secrets and align `testing-support` argon2 options
+1. **AI boundary confirmation before next slice**
+   - Execution plan reference:
+     - `Luminous/plans/2026-06-12-remaining-backlog.md` (WS5)
+   - Core boundary decisions already recorded in both repos:
+     - keep bounded linear flows for manual Today / weekly / monthly summaries as default
+     - introduce tool-capable orchestrator only when branching / retrieval / multi-step tool use becomes real
+     - do not refactor shipped Today + weekly manual paths into agent runtime
+   - Remaining gaps before starting the next AI slice:
+     - define one shared locale-aware prompt/copy helper in Lucent as the entry point for future weekly summary, monthly summary, candidate-record NLP, and screenshot-analysis modules
 
-2. **AI architecture follow-up**
-   - Decide the backend execution boundary for the next AI slice:
-     - keep bounded linear flows for manual Today / weekly / monthly summaries
-     - or introduce a tool-capable orchestrator only for workflows that truly need branching, retrieval, or multi-step tool use
-   - Do not refactor the shipped Today + weekly manual paths into a generic agent runtime unless the next slice actually needs tool selection or multi-step control flow.
-   - Before broader AI work, remove remaining hardcoded backend AI copy outside Today and define one shared locale-aware prompt/copy pattern.
-
-3. **Local full-stack lane usage rule**
+2. **Local full-stack lane usage rule**
    - Keep the current Record lane out of GitHub Actions for now.
    - Owner command for manual verification:
      - backend shell:
@@ -53,14 +41,7 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
      - before merging changes to the full-stack E2E helper or generated auth/record client surface
      - before cutting a mobile test build that claims Record CRUD is stable
 
-4. **Review-confirmed backlog / TODO**
-   - Placeholder copy cleanup is still pending:
-     - fake medicine-name placeholder strings such as `Metformin XR` / `Atorvastatin calcium` / `Omeprazole capsules`
-   - Lucent hardening still remains:
-     - remove code-level fallback JWT/admin secrets and move dev defaults to env templates only
-     - align `testing-support` password hashing with the shared `ARGON2_OPTIONS`
-
-5. **AI follow-up order after Today**
+3. **AI follow-up order after Today**
    - Continue in this order after the manual Today + weekly report paths are stable:
      - monthly AI summary
      - natural language to candidate records

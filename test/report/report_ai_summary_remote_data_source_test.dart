@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/features/report/data/datasources/report_ai_summary_remote_data_source.dart';
+import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 
 void main() {
   late _FakeReportsAdapter adapter;
@@ -20,17 +21,17 @@ void main() {
     );
   });
 
-  test('generate sends POST to weekly-summary/generate endpoint', () async {
-    final result = await dataSource.generate();
+  test('generate sends POST to summary/generate endpoint', () async {
+    final result = await dataSource.generate(ReportAiSummaryRange.last30Days);
 
     final req = adapter.lastRequest!;
     expect(req.method, 'POST');
-    expect(req.path, '/api/v1/user/reports/weekly-summary/generate');
+    expect(req.path, '/api/v1/user/reports/summary/generate');
 
-    // Request body should be a valid GenerateReportWeeklySummaryDto JSON.
+    // Request body should be a valid GenerateReportSummaryDto JSON.
     final body = req.jsonBody;
     expect(body, isA<Map<String, dynamic>>());
-    // range is optional, may or may not be present.
+    expect(body['range'], 'last_30_days');
 
     // Response should deserialize correctly.
     expect(result.summary, '本周用药记录整体稳定。');
@@ -41,14 +42,17 @@ void main() {
   test('generate propagates DioException on network failure', () async {
     adapter.failNext = true;
 
-    expect(() => dataSource.generate(), throwsA(isA<DioException>()));
+    expect(
+      () => dataSource.generate(ReportAiSummaryRange.last7Days),
+      throwsA(isA<DioException>()),
+    );
   });
 
   test('generate throws on empty response', () async {
     adapter.emptyResponse = true;
 
     expect(
-      () => dataSource.generate(),
+      () => dataSource.generate(ReportAiSummaryRange.last7Days),
       throwsA(
         isA<DioException>().having(
           (error) => error.type,
@@ -103,8 +107,8 @@ class _FakeReportsAdapter implements HttpClientAdapter {
       'code': 0,
       'message': 'ok',
       'data': <String, Object?>{
-        'range': 'last_7_days',
-        'startDate': '2026-06-06',
+        'range': 'last_30_days',
+        'startDate': '2026-05-14',
         'endDate': '2026-06-12',
         'generatedAt': '2026-06-12T10:00:00.000Z',
         'summary': '本周用药记录整体稳定。',

@@ -7,6 +7,10 @@ import 'package:luminous/features/report/domain/entities/report_ai_summary.dart'
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 
 class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
+  ReportAiSummaryController(this.range);
+
+  final ReportAiSummaryRange range;
+
   @override
   ReportAiSummaryCardState build() {
     final session = ref.watch(authSessionProvider);
@@ -40,7 +44,9 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
     );
 
     try {
-      final summary = await ref.read(reportAiSummaryRepositoryProvider).generate();
+      final summary = await ref
+          .read(reportAiSummaryRepositoryProvider)
+          .generate(range);
       state = ReportAiSummaryCardState.success(summary);
       return state;
     } catch (error) {
@@ -59,7 +65,23 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
   }
 }
 
-final reportAiSummaryControllerProvider =
-    NotifierProvider<ReportAiSummaryController, ReportAiSummaryCardState>(
-      ReportAiSummaryController.new,
-    );
+final reportAiSummaryControllerProvider = NotifierProvider.family<
+  ReportAiSummaryController,
+  ReportAiSummaryCardState,
+  ReportAiSummaryRange
+>((range) => ReportAiSummaryController(range));
+
+class ReportAiSummarySelectedRangeNotifier
+    extends Notifier<ReportAiSummaryRange> {
+  @override
+  ReportAiSummaryRange build() => ReportAiSummaryRange.last7Days;
+
+  void setRange(ReportAiSummaryRange range) {
+    state = range;
+  }
+}
+
+final reportAiSummarySelectedRangeProvider = NotifierProvider<
+  ReportAiSummarySelectedRangeNotifier,
+  ReportAiSummaryRange
+>(ReportAiSummarySelectedRangeNotifier.new);
