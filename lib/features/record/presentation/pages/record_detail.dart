@@ -13,6 +13,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -227,6 +228,7 @@ class _RecordDetailBody extends ConsumerWidget {
       ref.invalidate(dailyRecordDetailProvider(recordId));
       ref.invalidate(recordDashboardProvider);
       ref.invalidate(todayDashboardProvider);
+      ref.invalidate(reportDashboardProvider);
       if (!context.mounted) return;
       await AppToast.show(context, l10n.mineEditDeletedToast);
       if (context.mounted) context.pop();
