@@ -16,6 +16,7 @@ import 'package:luminous/features/record/domain/entities/daily_record_inputs.dar
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_image_attachment_field.dart';
+import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -124,6 +125,14 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
   }
 
   Future<void> _onSave(String dateStr) async {
+    if (_kind == DailyRecordKind.sleep && !_isValidSleepValue()) {
+      AppToast.show(
+        context,
+        AppLocalizations.of(context)!.recordSleepInvalidValueToast,
+      );
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
@@ -134,14 +143,16 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
           kind: _kind,
           occurredAt: dateStr,
           title: rules.showTitle ? _optionalText(_titleController) : null,
-          value: rules.showValue ? _optionalText(_valueController) : null,
+          value: rules.showValue ? _normalizedValueForKind(_kind) : null,
           unit: rules.showUnit ? _unitTextForKind(_kind) : null,
           note: _optionalText(_noteController),
+          payload: _buildSleepPayload(_kind, _valueController.text),
           attachments: attachments,
         ),
       );
       ref.invalidate(recordDashboardProvider);
       ref.invalidate(todayDashboardProvider);
+      ref.invalidate(reportDashboardProvider);
       if (mounted) {
         AppToast.show(
           context,
@@ -185,11 +196,48 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     return value.isEmpty ? null : value;
   }
 
+  String? _normalizedValueForKind(DailyRecordKind kind) {
+    final raw = _optionalText(_valueController);
+    if (raw == null) return null;
+    if (kind != DailyRecordKind.sleep) return raw;
+    final hours = _parseSleepHours(raw);
+    return hours == null ? raw : hours.toString();
+  }
+
   String? _unitTextForKind(DailyRecordKind kind) {
     final value = _unitController.text.trim();
     if (value.isNotEmpty) return value;
     if (kind == DailyRecordKind.water) return dailyRecordWaterDefaultUnit;
+    if (kind == DailyRecordKind.sleep) return 'h';
     return null;
+  }
+
+  double? _parseSleepHours(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty) return null;
+    final cleaned = trimmed.endsWith('h') || trimmed.endsWith('H')
+        ? trimmed.substring(0, trimmed.length - 1).trim()
+        : trimmed;
+    return double.tryParse(cleaned);
+  }
+
+  Map<String, dynamic>? _buildSleepPayload(
+    DailyRecordKind kind,
+    String rawValue,
+  ) {
+    if (kind != DailyRecordKind.sleep) return null;
+    final hours = _parseSleepHours(rawValue);
+    if (hours == null || hours <= 0) return null;
+    final minutes = (hours * 60).round();
+    return <String, dynamic>{
+      'durationMinutes': minutes,
+    };
+  }
+
+  bool _isValidSleepValue() {
+    if (_kind != DailyRecordKind.sleep) return true;
+    final hours = _parseSleepHours(_valueController.text);
+    return hours != null && hours > 0;
   }
 
   Future<void> _onPickImage() async {

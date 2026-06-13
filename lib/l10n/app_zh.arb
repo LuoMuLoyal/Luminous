@@ -64,6 +64,7 @@
   "recordCreateValueVital": "数值（如 120/80）",
   "recordCreateValueSymptom": "严重程度 / 感受",
   "recordCreateValueSleep": "时长（如 8h）",
+  "recordSleepInvalidValueToast": "请输入有效的睡眠时长（如 7.5）",
   "recordCreateFailedToast": "记录未保存",
   "recordImageSectionTitle": "图片附件",
   "recordImageEmptyLabel": "未添加图片",

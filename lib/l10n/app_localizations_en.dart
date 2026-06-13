@@ -135,6 +135,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordCreateValueSleep => 'Duration (e.g. 8h)';
 
   @override
+  String get recordSleepInvalidValueToast =>
+      'Please enter a valid sleep duration (e.g. 7.5).';
+
+  @override
   String get recordCreateFailedToast => 'Record was not saved.';
 
   @override

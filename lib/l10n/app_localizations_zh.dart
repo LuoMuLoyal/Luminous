@@ -126,6 +126,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordCreateValueSleep => '时长（如 8h）';
 
   @override
+  String get recordSleepInvalidValueToast => '请输入有效的睡眠时长（如 7.5）';
+
+  @override
   String get recordCreateFailedToast => '记录未保存';
 
   @override

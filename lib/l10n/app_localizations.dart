@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'时长（如 8h）'**
   String get recordCreateValueSleep;
 
+  /// No description provided for @recordSleepInvalidValueToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入有效的睡眠时长（如 7.5）'**
+  String get recordSleepInvalidValueToast;
+
   /// No description provided for @recordCreateFailedToast.
   ///
   /// In zh, this message translates to:
