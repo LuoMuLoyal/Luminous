@@ -166,6 +166,11 @@ DailyRecordFormRules dailyRecordFormRules(DailyRecordKind kind) {
       showValue: true,
       showUnit: false,
     ),
+    DailyRecordKind.sleep => const DailyRecordFormRules(
+      showTitle: false,
+      showValue: true,
+      showUnit: true,
+    ),
   };
 }
 
@@ -178,6 +183,7 @@ String dailyRecordKindLabel(AppLocalizations l10n, DailyRecordKind kind) {
     DailyRecordKind.symptom => l10n.recordTypeSymptom,
     DailyRecordKind.activity => l10n.recordTypeActivity,
     DailyRecordKind.note => l10n.recordCreateKindNote,
+    DailyRecordKind.sleep => l10n.recordTypeSleep,
   };
 }
 
@@ -190,6 +196,7 @@ String dailyRecordValueLabel(AppLocalizations l10n, DailyRecordKind kind) {
     DailyRecordKind.symptom => l10n.recordCreateValueSymptom,
     DailyRecordKind.activity => l10n.recordTypeActivity,
     DailyRecordKind.note => l10n.recordCreateFieldNote,
+    DailyRecordKind.sleep => l10n.recordCreateValueSleep,
   };
 }
 
@@ -198,6 +205,7 @@ const activeDailyRecordKinds = <DailyRecordKind>[
   DailyRecordKind.meal,
   DailyRecordKind.symptom,
   DailyRecordKind.note,
+  DailyRecordKind.sleep,
 ];
 
 List<DailyRecordKind> _visibleDailyRecordKinds(DailyRecordKind selectedKind) {

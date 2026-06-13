@@ -1,24 +1,26 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-12
+Last updated: 2026-06-13
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
 ## Current Goal
 
-Use the Product_Vision-converged five-tab mobile UI as the baseline, then move into real daily health loops without presenting mock or deferred features as real capability.
+Sleep contract + persistence MVP is complete. Next: resume AI work after sleep slice verification.
 
 ## Immediate Work Order
 
-1. **AI boundary confirmation before next slice**
+1. **Sleep contract + persistence MVP** ✅ DONE
    - Execution plan reference:
-     - `Luminous/plans/2026-06-12-remaining-backlog.md` (WS5)
-   - Core boundary decisions already recorded in both repos:
-     - keep bounded linear flows for manual Today / weekly / monthly summaries as default
-     - introduce tool-capable orchestrator only when branching / retrieval / multi-step tool use becomes real
-     - do not refactor shipped Today + weekly manual paths into agent runtime
-   - Remaining gaps before starting the next AI slice:
-     - define one shared locale-aware prompt/copy helper in Lucent as the entry point for future weekly summary, monthly summary, candidate-record NLP, and screenshot-analysis modules
+     - `Luminous/plans/2026-06-13-sleep-contract-slice.md`
+   - Completed:
+     - Lucent `DailyRecordKind.sleep` enum + payload field on DTOs
+     - Lucent today-analysis reads real sleep data from payload
+     - Lucent reports compute real sleep metrics from persisted data
+     - Luminous Record create/detail/edit/timeline/filter wiring for sleep
+     - Luminous Today sleep summary reads real duration from payload
+     - Luminous Report sleep trend uses real backend data
+     - Sleep payload supports: startAt, endAt, durationMinutes, quality, deepMinutes, lightMinutes, remMinutes
 
 2. **Local full-stack lane usage rule**
    - Keep the current Record lane out of GitHub Actions for now.
@@ -31,8 +33,8 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
      - frontend shell:
        `cd Luminous`
        `flutter test integration_test/record/fullstack_record_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
-      - frontend shell:
-        `flutter test integration_test/app/fullstack_today_report_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
+     - frontend shell:
+       `flutter test integration_test/app/fullstack_today_report_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
    - Because `integration_test/` now lives in nested feature folders, always run those tests with an explicit file path and explicit device id. Plain `flutter test integration_test` is ambiguous when desktop/web targets are also available.
    - Expected run timing:
      - before merging any change that touches auth/session restore
@@ -41,22 +43,23 @@ Use the Product_Vision-converged five-tab mobile UI as the baseline, then move i
      - before merging changes to the full-stack E2E helper or generated auth/record client surface
      - before cutting a mobile test build that claims Record CRUD is stable
 
-3. **AI follow-up order after Today**
-   - Continue in this order after the manual Today + weekly report paths are stable:
+3. **AI follow-up order after sleep**
+   - Sleep contract is now verified. AI work can resume.
+   - Continue in this order:
      - monthly AI summary
      - natural language to candidate records
      - screenshot to candidate structured input
-   - Do not jump to scheduled proactive AI pushes before the manual Today path and report aggregate layer are stable and bounded.
+   - Do not jump to scheduled proactive AI pushes before the manual Today path, report aggregate layer, and sleep contract are all stable and bounded.
 
 ## Deferred But Useful
 
 Keep these code paths hidden and annotated until the matching product/API job is ready:
 
 - After the five-tab UI stabilizes, run a focused truncation pass for English and Chinese button labels, pills, and compact rows across Today, Record, Medicine, Report, and Mine.
-- Sleep entry shapes.
 - Lightweight mood record shapes.
 - Environment signals for contextual Today/Mine use.
 - Medicine scan/OCR/photo/barcode/prescription action shapes.
+- Local-only sleep reminder preferences beyond simple placeholder labeling.
 
 Pregnancy/lactation/special-group medication safety remains active only inside Medicine safety boundaries.
 
@@ -77,6 +80,6 @@ Pregnancy/lactation/special-group medication safety remains active only inside M
 
 ## Contract References
 
-- Workspace path `Lucent/docs/public/reminder-contract.md`: reminder boundary.
-- Workspace path `Lucent/docs/public/environment-contract.md`: environment snapshot boundary.
-- Workspace path `Lucent/docs/public/data-sources.md`: medicine data-source/import strategy.
+- `Lucent/docs/public/reminder-contract.md`: reminder boundary.
+- `Lucent/docs/public/environment-contract.md`: environment snapshot boundary.
+- `Lucent/docs/public/data-sources.md`: medicine data-source/import strategy.

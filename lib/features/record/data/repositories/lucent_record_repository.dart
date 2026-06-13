@@ -108,6 +108,11 @@ class LucentRecordRepository implements RecordRepository {
         AppColorTokens.link,
         AppColorTokens.linkSoft,
       ),
+      DailyRecordKind.sleep => (
+        Icons.dark_mode_rounded,
+        AppColorTokens.violet,
+        AppColorTokens.violetSoft,
+      ),
     };
 
     final titleKey = switch (kind) {
@@ -118,6 +123,7 @@ class LucentRecordRepository implements RecordRepository {
       DailyRecordKind.symptom => RecordCopyKey.typeSymptom,
       DailyRecordKind.activity => RecordCopyKey.typeActivity,
       DailyRecordKind.note => RecordCopyKey.typeNote,
+      DailyRecordKind.sleep => RecordCopyKey.typeSleep,
     };
 
     // For notes without a real title, leave rawTitle null so the timeline
@@ -280,7 +286,6 @@ class LucentRecordRepository implements RecordRepository {
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColorTokens.violet,
       softColor: AppColorTokens.violetSoft,
-      locked: true,
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
@@ -349,7 +354,6 @@ class LucentRecordRepository implements RecordRepository {
       icon: Icons.dark_mode_rounded,
       accent: AppColorTokens.violet,
       selected: true,
-      locked: true,
     ),
     RecordFilter(
       type: RecordEntryType.note,

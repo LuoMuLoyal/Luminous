@@ -102,13 +102,6 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('record-quick-sleep')),
-        matching: find.text(l10n.recordNotEnabledLabel),
-      ),
-      findsOneWidget,
-    );
     expect(find.text('情绪趋势'), findsNothing);
   });
 
@@ -170,13 +163,6 @@ void main() {
         ),
         findsOneWidget,
       );
-      expect(
-        find.descendant(
-          of: find.byKey(const Key('record-quick-sleep')),
-          matching: find.text(l10n.recordNotEnabledLabel),
-        ),
-        findsOneWidget,
-      );
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
@@ -196,13 +182,6 @@ void main() {
         find.descendant(
           of: find.byKey(const Key('record-quick-sleep')),
           matching: find.text(l10n.recordTypeSleep),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(
-          of: find.byKey(const Key('record-quick-sleep')),
-          matching: find.text(l10n.recordNotEnabledLabel),
         ),
         findsOneWidget,
       );
@@ -549,7 +528,7 @@ void main() {
     expect(repo.deleteCalledWith, 'test-id-1');
   });
 
-  testWidgets('Record mobile sleep quick action shows toast instead of create', (
+  testWidgets('Record mobile sleep quick action opens create page with kind', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -566,15 +545,9 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('record-quick-sleep')));
-    await tester.pump();
-
-    // Sleep is not a create-capable kind; must stay on the record page.
-    expect(find.byType(RecordCreatePage), findsNothing);
-    expect(find.byType(RecordPage), findsOneWidget);
-
-    // Let the toast timer complete to avoid pending-timer assertion.
-    await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
+
+    expect(find.byType(RecordCreatePage), findsOneWidget);
   });
 
   testWidgets('Record mobile note quick action opens create page with kind', (

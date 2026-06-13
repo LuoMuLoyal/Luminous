@@ -63,6 +63,7 @@
   "recordCreateValueMeal": "Name / description",
   "recordCreateValueVital": "Value (e.g. 120/80)",
   "recordCreateValueSymptom": "Severity / feeling",
+  "recordCreateValueSleep": "Duration (e.g. 8h)",
   "recordCreateFailedToast": "Record was not saved.",
   "recordImageSectionTitle": "Image attachment",
   "recordImageEmptyLabel": "No image attached",
