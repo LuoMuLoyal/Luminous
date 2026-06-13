@@ -32,7 +32,11 @@ Sleep structured field delivery is complete. Keep AI work deferred for now and s
      - offline/full-stack sleep integration lanes now drive keyed pickers directly without extra `dart-define` setup
 
 3. **Local full-stack lane usage rule**
-   - Keep the current Record lane out of GitHub Actions for now.
+   - Keep the current emulator + Lucent full-stack gate out of GitHub Actions for now.
+   - Repo-safe daily entry:
+     - `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
+   - Full-stack gate entry:
+     - `powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1`
    - Owner command for manual verification:
      - backend shell:
        `cd Lucent`
@@ -46,6 +50,7 @@ Sleep structured field delivery is complete. Keep AI work deferred for now and s
        `flutter test integration_test/record/fullstack_sleep_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
      - frontend shell:
        `flutter test integration_test/app/fullstack_today_report_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
+   - `tool/run_fullstack_checks.ps1` is the preferred local entry because it starts Lucent test runtime and runs the four emulator lanes sequentially with one shared define set.
    - Because `integration_test/` now lives in nested feature folders, always run those tests with an explicit file path and explicit device id. Plain `flutter test integration_test` is ambiguous when desktop/web targets are also available.
    - Expected run timing:
      - before merging any change that touches auth/session restore

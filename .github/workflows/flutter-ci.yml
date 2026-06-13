@@ -30,14 +30,6 @@ jobs:
           flutter-version: 3.44.0
           cache: true
 
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Generate localizations
-        run: flutter gen-l10n
-
-      - name: Analyze
-        run: flutter analyze
-
-      - name: Test
-        run: flutter test
+      - name: Run repo-safe daily checks
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1

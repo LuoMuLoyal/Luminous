@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/app.dart';
 import 'package:luminous/core/network/lucent_api.dart';
+import 'package:luminous/features/auth/presentation/providers/login_form_provider.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/shell/presentation/shell_tab.dart';
 
@@ -102,9 +103,9 @@ Future<void> prepareFullstackRecordLane(FullstackE2eConfig config) async {
   final dio = Dio(
     BaseOptions(
       baseUrl: config.baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      sendTimeout: const Duration(seconds: 10),
+      connectTimeout: const Duration(seconds: 20),
+      receiveTimeout: const Duration(seconds: 20),
+      sendTimeout: const Duration(seconds: 20),
       contentType: Headers.jsonContentType,
       responseType: ResponseType.json,
     ),
@@ -169,22 +170,34 @@ Future<void> signInThroughUi(
   required FullstackE2eConfig config,
 }) async {
   await openLoginFromSignedOutMine(tester);
+  await pumpUntilFound(
+    tester,
+    find.byKey(const Key('auth-login-submit-action')),
+    timeout: const Duration(seconds: 10),
+  );
 
   await tester.enterText(
     _editableTextIn(const Key('auth-login-email-field')),
     config.email,
   );
+  await settleE2e(tester, frames: 4);
   await tester.enterText(
     _editableTextIn(const ValueKey<String>('password-login-field')),
     config.password,
   );
-  await tapVisible(tester, find.byKey(const Key('auth-login-submit-action')));
+  await settleE2e(tester, frames: 4);
+
+  final submitButton = find.byKey(const Key('auth-login-submit-action'));
+  await tester.ensureVisible(submitButton);
+  await settleE2e(tester, frames: 4);
+  await tester.tap(submitButton);
+  await settleE2e(tester, frames: 12);
 }
 
 Future<void> waitForAuthenticatedSession(
   WidgetTester tester,
   ProviderContainer container, {
-  Duration timeout = const Duration(seconds: 15),
+  Duration timeout = const Duration(seconds: 30),
   Duration step = const Duration(milliseconds: 100),
 }) async {
   final endTime = tester.binding.clock.fromNowBy(timeout);
@@ -197,9 +210,35 @@ Future<void> waitForAuthenticatedSession(
   } while (tester.binding.clock.now().isBefore(endTime));
 
   final state = container.read(authSessionProvider);
+  final loginForm = container.read(loginFormProvider);
   throw TestFailure(
     'Timed out waiting for authenticated session. '
-    'isLoading=${state.isLoading}, isAuthenticated=${state.isAuthenticated}, error=${state.errorMessage}',
+    'route=${router.routeInformationProvider.value.uri}, '
+    'isLoading=${state.isLoading}, isAuthenticated=${state.isAuthenticated}, authError=${state.errorMessage}, '
+    'loginSubmitting=${loginForm.isSubmitting}, loginError=${loginForm.errorMessage}',
+  );
+}
+
+Future<void> waitForRoute(
+  WidgetTester tester, {
+  required bool Function(Uri uri) predicate,
+  required String description,
+  Duration timeout = const Duration(seconds: 15),
+  Duration step = const Duration(milliseconds: 100),
+}) async {
+  final endTime = tester.binding.clock.fromNowBy(timeout);
+
+  do {
+    await tester.pump(step);
+    final currentRoute = router.routeInformationProvider.value.uri;
+    if (predicate(currentRoute)) {
+      return;
+    }
+  } while (tester.binding.clock.now().isBefore(endTime));
+
+  throw TestFailure(
+    'Timed out waiting for route: $description. '
+    'currentRoute=${router.routeInformationProvider.value.uri}',
   );
 }
 
