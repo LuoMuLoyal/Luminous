@@ -8,7 +8,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets(
-    'full-stack sleep lane: create sleep → Today shows value → Report shows trend',
+    'full-stack sleep lane: create sleep via structured fields',
     (tester) async {
       // Force the time picker into input mode so we can interact with
       // TextFields instead of the clock dial in integration tests.
@@ -21,52 +21,54 @@ void main() {
       await prepareFullstackRecordLane(config);
       final container = await pumpFullstackApp(tester, config: config);
 
-      // Sign in.
       await signInThroughUi(tester, config: config);
       await waitForAuthenticatedSession(tester, container);
       expect(container.read(authSessionProvider).isAuthenticated, isTrue);
 
-      // Navigate to Record tab and select the target date.
+      // ── Record tab: create a sleep record ──────────────────────────
+
       await openRecordTabForDate(tester, container, targetDate: targetDate);
 
-      // Tap the sleep quick action.
       final sleepAction = find.byKey(const Key('record-quick-sleep'));
       await tester.scrollUntilVisible(sleepAction, 240);
       await tester.tap(sleepAction);
       await settleE2e(tester);
 
-      // Verify the sleep form is visible.
       expect(find.byKey(const Key('sleep-quality-field')), findsOneWidget);
 
-      // Pick bedtime 23:00 — tap the keyed InkWell, then confirm in dialog.
+      // Bedtime: accept default 23:00.
       await tester.tap(find.byKey(const Key('sleep-bedtime-picker')));
       await settleE2e(tester);
-      // Default initialTime is 23:00, so just confirm.
       await _confirmTimePicker(tester);
 
-      // Pick wake time 07:00 — distinct from bedtime so duration is valid.
+      // Wake time: enter 07:00.
       await tester.tap(find.byKey(const Key('sleep-waketime-picker')));
       await settleE2e(tester);
       await _enterTimeAndConfirm(tester, hour: '7', minute: '0');
 
-      // Save the sleep record.
-      await tester.tap(
-        find.byKey(const Key('record-create-save-action')),
-      );
+      // Quality: select "good".
+      await tester.tap(find.byKey(const Key('sleep-quality-field')));
+      await settleE2e(tester);
+      final goodOption = find.text('良好').evaluate().isNotEmpty
+          ? find.text('良好')
+          : find.text('Good');
+      await tester.tap(goodOption.last);
       await settleE2e(tester);
 
-      // Wait for return to the record timeline.
-      await pumpUntilFound(
-        tester,
-        find.byKey(const Key('record-timeline')),
-        timeout: const Duration(seconds: 10),
-      );
+      // Save.
+      await tester.tap(find.byKey(const Key('record-create-save-action')));
+      await settleE2e(tester);
 
-      // The sleep record should appear in the timeline.
-      // Navigate back to the same date to refresh.
+      await waitForRoute(
+        tester,
+        predicate: (uri) => uri.path == '/',
+        description: 'return to shell after saving sleep record',
+        timeout: const Duration(seconds: 15),
+      );
       await openRecordTabForDate(tester, container, targetDate: targetDate);
 
-      // Open Today tab and verify sleep vital card is present.
+      // ── Today tab: health summary renders ──────────────────────────
+
       await openShellTab(
         tester,
         ShellTab.today,
@@ -77,16 +79,13 @@ void main() {
         find.byKey(const Key('today-health-summary-card')),
         timeout: const Duration(seconds: 15),
       );
+      expect(
+        find.byKey(const Key('today-health-summary-card')),
+        findsOneWidget,
+      );
 
-      // Check the Today vitals area contains a sleep value (e.g. "Xh" or "X.Xh").
-      // The sleep vital card should be present.
-      final sleepVital = find.byKey(const Key('today-vital-sleep'));
-      if (tester.any(sleepVital)) {
-        // Sleep vital card exists — the Today page shows sleep data.
-        expect(sleepVital, findsOneWidget);
-      }
+      // ── Report tab: trend section renders ──────────────────────────
 
-      // Open Report tab and check sleep trend section.
       await openShellTab(
         tester,
         ShellTab.report,
@@ -111,15 +110,14 @@ void main() {
   );
 }
 
-/// Confirms the time picker dialog without changing values.
+// ── Time picker helpers ──────────────────────────────────────────────────
+
 Future<void> _confirmTimePicker(WidgetTester tester) async {
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
   await _tapOk(tester);
   await settleE2e(tester);
 }
 
-/// Enters the given hour/minute strings into the input-mode time picker
-/// TextFields, then taps the confirm button.
 Future<void> _enterTimeAndConfirm(
   WidgetTester tester, {
   required String hour,
@@ -127,8 +125,6 @@ Future<void> _enterTimeAndConfirm(
 }) async {
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-  // The input-mode picker has two TextFields (hour, minute).
-  // Scope to the dialog to avoid matching form fields behind it.
   final dialogFields = find.descendant(
     of: find.byType(Dialog),
     matching: find.byType(TextField),
@@ -152,7 +148,6 @@ Future<void> _enterTimeAndConfirm(
 }
 
 Future<void> _tapOk(WidgetTester tester) async {
-  // The confirm button label varies by locale.
   final okZh = find.widgetWithText(TextButton, '确定');
   final okEn = find.widgetWithText(TextButton, 'OK');
   await tester.pumpAndSettle(const Duration(milliseconds: 500));

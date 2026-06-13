@@ -43,7 +43,7 @@ class CreateDailyRecordDto {
   )
   final DailyRecordKind kind;
 
-  /// Date in YYYY-MM-DD format.
+  /// Date in YYYY-MM-DD format. For sleep records this is the wake date (the morning the user wakes up from that sleep).
   @JsonKey(name: r'occurredAt', required: true, includeIfNull: false)
   final String occurredAt;
 
@@ -63,7 +63,7 @@ class CreateDailyRecordDto {
   @JsonKey(name: r'note', required: false, includeIfNull: false)
   final String? note;
 
-  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality? }.
+  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality?, deepMinutes?, lightMinutes?, remMinutes? }. endAt is an ISO 8601 timestamp whose date component matches occurredAt (wake date). startAt is the bedtime ISO 8601 timestamp and may fall on the day before occurredAt for cross-midnight sleep.
   @JsonKey(name: r'payload', required: false, includeIfNull: false)
   final Object? payload;
 

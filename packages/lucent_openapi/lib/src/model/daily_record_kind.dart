@@ -20,6 +20,8 @@ enum DailyRecordKind {
   activity(r'activity'),
   @JsonValue(r'note')
   note(r'note'),
+  @JsonValue(r'sleep')
+  sleep(r'sleep'),
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

@@ -79,7 +79,7 @@ class DailyRecordItemDto {
   @JsonKey(name: r'source', required: false, includeIfNull: false)
   final Object? source_;
 
-  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality? }.
+  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality?, deepMinutes?, lightMinutes?, remMinutes? }.
   @JsonKey(name: r'payload', required: false, includeIfNull: false)
   final Object? payload;
 

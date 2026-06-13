@@ -37,6 +37,9 @@ This file records current implementation facts only. Product direction lives in 
   - Record create/detail/edit/delete CRUD lane
   - Record sleep structured-entry lane
   - Today + Report protected-dashboard lane with Report sync verification
+- Repo-local validation entrypoints are now split into:
+  - `tool/run_daily_checks.ps1` for repo-safe checks (`flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`)
+  - `tool/run_fullstack_checks.ps1` for Android emulator + Lucent test-runtime lanes
 - Frontend tests are now grouped by feature under nested `test/` and `integration_test/` directories instead of one flat root.
 - The real full-stack helper uses explicit Dart defines, Lucent test-state preparation, stable shell/login/action keys, and an in-memory session store so old secure-storage sessions do not leak into the lane.
 - Full-stack mobile E2E is intentionally local/manual right now. It is not part of the current GitHub Actions pipeline because the lane still depends on a separate Lucent test runtime, Docker-backed test Postgres, and Android emulator orchestration across two repositories.

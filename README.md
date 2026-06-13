@@ -29,6 +29,8 @@ flutter analyze
 flutter test
 flutter test integration_test
 dart run tool/regenerate_lucent_openapi.dart
+powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1
+powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1
 ```
 
 ## CI
@@ -37,6 +39,12 @@ dart run tool/regenerate_lucent_openapi.dart
 - Current CI scope: `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`
 - Current CI is validation-only. It does not build or publish Android, iOS, desktop, or web artifacts.
 - Device/emulator E2E is split by module and scenario under `integration_test/`; run all with `flutter test integration_test` or one scenario with `flutter test integration_test/settings_preferences_e2e_test.dart`.
+- Local daily validation entry:
+  `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
+- Local full-stack gate entry:
+  `powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1`
+- `tool/run_fullstack_checks.ps1` starts Lucent test runtime through `../Lucent/scripts/dev/start-test-runtime.ps1`, checks `GET http://127.0.0.1:3000/api/v1/health`, then runs the four Android-emulator lanes sequentially.
+- Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a separate Lucent test runtime, test database state, and Android emulator orchestration across two repositories.
 
 ## Docs
 

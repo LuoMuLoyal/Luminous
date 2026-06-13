@@ -32,6 +32,10 @@ import 'package:luminous/features/record/domain/entities/daily_record_inputs.dar
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
+import 'package:luminous/features/report/data/repositories/mock_report_repository.dart'
+    show reportRepositoryProvider;
+import 'package:luminous/features/report/domain/repositories/report_repository.dart'
+    show ReportRepository;
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart'
     show medicineSearchRepositoryProvider;
 import 'package:luminous/features/search/data/repositories/mock/mock_repository.dart';
@@ -54,6 +58,8 @@ export 'package:luminous/features/record/domain/entities/daily_record_inputs.dar
     show dailyRecordNoChange;
 export 'package:luminous/features/record/domain/entities/daily_record.dart'
     show DailyRecordKind;
+export 'package:luminous/features/report/data/repositories/mock_report_repository.dart'
+    show MockReportRepository, reportRepositoryProvider;
 export 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 
@@ -65,6 +71,7 @@ Future<ProviderContainer> pumpOfflineApp(
   NotificationPermissionService? notificationPermissionService,
   DailyRecordRepository? dailyRecordRepository,
   RecordRepository? recordRepository,
+  ReportRepository? reportRepository,
   MedicineWorkspaceRepository? medicineWorkspaceRepository,
   DoseLogRemoteDataSource? doseLogRemoteDataSource,
 }) async {
@@ -98,6 +105,8 @@ Future<ProviderContainer> pumpOfflineApp(
           doseLogRemoteDataSource,
         ),
       todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
+      if (reportRepository != null)
+        reportRepositoryProvider.overrideWithValue(reportRepository),
       recordRepositoryProvider.overrideWithValue(
         recordRepository ?? const MockRecordRepository(),
       ),

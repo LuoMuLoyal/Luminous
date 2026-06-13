@@ -48,11 +48,13 @@ This replaces the long historical error audit as the current quick-read checklis
 - Do not edit generated Prisma client manually.
 - Do not manually normalize generated OpenAPI client Markdown just to make diffs pretty.
 - Generated OpenAPI client whitespace warnings are handled via `.gitattributes`; do not add repo-specific cleanup steps just to strip generated trailing spaces.
+- Do not describe the Android emulator + Lucent test-runtime lane as already covered by GitHub Actions. The current CI boundary is repo-safe Flutter checks only; full-stack E2E remains a local/manual gate through `tool/run_fullstack_checks.ps1`.
 
 ## Verification
 
 - Backend focused change: `pnpm lint:check`, `pnpm build`, relevant tests, `pnpm export:openapi` if API changed.
 - Frontend focused change: `flutter analyze`, relevant tests or `flutter test`.
 - Cross-contract change: run both backend OpenAPI export and Luminous client regeneration.
+- Prefer `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1` for repo-safe frontend verification and `powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1` for the local emulator gate instead of retyping long command chains.
 - Run emulator integration tests sequentially per device. Do not run multiple `flutter test integration_test/... -d emulator-5554` commands concurrently against the same emulator; they can race app install / VM service attachment and fail with device-level errors.
 - Long-running emulator tests need an explicit timeout and investigation path. If a single scenario stalls for minutes, inspect the test wait condition and device logs instead of repeatedly waiting for the same timeout.

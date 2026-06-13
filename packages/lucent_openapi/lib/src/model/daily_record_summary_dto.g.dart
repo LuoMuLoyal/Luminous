@@ -46,5 +46,6 @@ const _$DailyRecordKindEnumMap = {
   DailyRecordKind.symptom: 'symptom',
   DailyRecordKind.activity: 'activity',
   DailyRecordKind.note: 'note',
+  DailyRecordKind.sleep: 'sleep',
   DailyRecordKind.unknownDefaultOpenApi: 'unknown_default_open_api',
 };
