@@ -30,6 +30,8 @@ class CreateDailyRecordDto {
 
     this.note,
 
+    this.payload,
+
     this.attachments,
   });
 
@@ -61,6 +63,10 @@ class CreateDailyRecordDto {
   @JsonKey(name: r'note', required: false, includeIfNull: false)
   final String? note;
 
+  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality? }.
+  @JsonKey(name: r'payload', required: false, includeIfNull: false)
+  final Object? payload;
+
   /// Attachment metadata. File upload itself is handled separately.
   @JsonKey(name: r'attachments', required: false, includeIfNull: false)
   final List<DailyRecordAttachmentInputDto>? attachments;
@@ -75,6 +81,7 @@ class CreateDailyRecordDto {
           other.value == value &&
           other.unit == unit &&
           other.note == note &&
+          other.payload == payload &&
           other.attachments == attachments;
 
   @override
@@ -85,6 +92,7 @@ class CreateDailyRecordDto {
       value.hashCode +
       unit.hashCode +
       note.hashCode +
+      payload.hashCode +
       attachments.hashCode;
 
   factory CreateDailyRecordDto.fromJson(Map<String, dynamic> json) =>

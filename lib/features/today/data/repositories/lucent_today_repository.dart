@@ -29,6 +29,7 @@ class LucentTodayRepository implements TodayRepository {
 
     Map<String, num> recordCounts = {};
     Map<String, String?> recordLatest = {};
+    Map<String, dynamic>? sleepPayload;
     try {
       final summary = await ref
           .read(dailyRecordRepositoryProvider)
@@ -36,6 +37,9 @@ class LucentTodayRepository implements TodayRepository {
       for (final s in summary.summaries) {
         recordCounts[s.kind.name] = s.count;
         recordLatest[s.kind.name] = s.latest?.value;
+        if (s.kind.name == 'sleep') {
+          sleepPayload = s.latest?.payload;
+        }
       }
     } catch (_) {
       // Fall back to static mock if records aren't available
@@ -97,7 +101,10 @@ class LucentTodayRepository implements TodayRepository {
           valueLabel: recordLatest['vital'] ?? '--',
         ),
         TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
-        TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
+        TodayVitalSummary(
+          type: TodayVitalType.sleep,
+          valueLabel: _formatSleepLabel(sleepPayload),
+        ),
         // Deferred by Product_Vision MVP: keep lightweight mood data in the
         // repository for future self-check-ins, but do not surface it as a
         // formal mental-health module in Today.
@@ -187,6 +194,14 @@ class LucentTodayRepository implements TodayRepository {
     final hour = left.scheduledHour.compareTo(right.scheduledHour);
     if (hour != 0) return hour;
     return left.scheduledMinute.compareTo(right.scheduledMinute);
+  }
+
+  static String _formatSleepLabel(Map<String, dynamic>? payload) {
+    if (payload == null) return '--';
+    final durationMinutes = payload['durationMinutes'];
+    if (durationMinutes is! num || durationMinutes <= 0) return '--';
+    final hours = (durationMinutes / 60).toStringAsFixed(1);
+    return '${hours}h';
   }
 
   static String _formatTimeLabel(DateTime value) {

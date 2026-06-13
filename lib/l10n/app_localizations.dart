@@ -314,6 +314,12 @@ abstract class AppLocalizations {
   /// **'严重程度 / 感受'**
   String get recordCreateValueSymptom;
 
+  /// No description provided for @recordCreateValueSleep.
+  ///
+  /// In zh, this message translates to:
+  /// **'时长（如 8h）'**
+  String get recordCreateValueSleep;
+
   /// No description provided for @recordCreateFailedToast.
   ///
   /// In zh, this message translates to:

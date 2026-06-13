@@ -34,6 +34,8 @@ class DailyRecordItemDto {
 
     this.source_,
 
+    this.payload,
+
     required this.attachments,
 
     required this.createdAt,
@@ -77,6 +79,10 @@ class DailyRecordItemDto {
   @JsonKey(name: r'source', required: false, includeIfNull: false)
   final Object? source_;
 
+  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality? }.
+  @JsonKey(name: r'payload', required: false, includeIfNull: false)
+  final Object? payload;
+
   @JsonKey(name: r'attachments', required: true, includeIfNull: false)
   final List<DailyRecordAttachmentDto> attachments;
 
@@ -100,6 +106,7 @@ class DailyRecordItemDto {
           other.unit == unit &&
           other.note == note &&
           other.source_ == source_ &&
+          other.payload == payload &&
           other.attachments == attachments &&
           other.createdAt == createdAt &&
           other.updatedAt == updatedAt;
@@ -114,6 +121,7 @@ class DailyRecordItemDto {
       unit.hashCode +
       note.hashCode +
       source_.hashCode +
+      payload.hashCode +
       attachments.hashCode +
       createdAt.hashCode +
       updatedAt.hashCode;

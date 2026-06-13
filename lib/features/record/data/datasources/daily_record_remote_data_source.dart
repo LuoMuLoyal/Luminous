@@ -100,6 +100,7 @@ class DailyRecordRemoteDataSource {
     _putIfNotNull(payload, 'value', input.value);
     _putIfNotNull(payload, 'unit', input.unit);
     _putIfNotNull(payload, 'note', input.note);
+    _putIfNotNull(payload, 'payload', input.payload);
     if (input.attachments.isNotEmpty) {
       payload['attachments'] = input.attachments
           .map(_attachmentToJson)
@@ -135,6 +136,12 @@ class DailyRecordRemoteDataSource {
     _putIfChanged<String?>(payload, 'value', input.value, (v) => v as String?);
     _putIfChanged<String?>(payload, 'unit', input.unit, (v) => v as String?);
     _putIfChanged<String?>(payload, 'note', input.note, (v) => v as String?);
+    _putIfChanged<Map<String, dynamic>?>(
+      payload,
+      'payload',
+      input.payload,
+      (v) => v as Map<String, dynamic>?,
+    );
     _putIfChanged<List<Map<String, dynamic>>>(
       payload,
       'attachments',
@@ -204,6 +211,7 @@ class DailyRecordRemoteDataSource {
       unit: item.unit as String?,
       note: item.note as String?,
       source: item.source_ as String?,
+      payload: _parsePayload(item.payload),
       attachments: item.attachments.map(_toAttachment).toList(),
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
@@ -268,6 +276,12 @@ class DailyRecordRemoteDataSource {
     _putIfNotNull(payload, 'height', input.height);
     _putIfNotNull(payload, 'publicUrl', input.publicUrl);
     return payload;
+  }
+
+  Map<String, dynamic>? _parsePayload(Object? value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) return value.map((k, v) => MapEntry(k.toString(), v));
+    return null;
   }
 
   Map<String, dynamic>? _coerceToMap(Object? value) {

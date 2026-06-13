@@ -365,6 +365,11 @@ class _KindIcon extends StatelessWidget {
         const Color(0xFF428BFF),
         const Color(0xFFE8F2FF),
       ),
+      DailyRecordKind.sleep => (
+        Icons.dark_mode_rounded,
+        const Color(0xFF7D67E8),
+        const Color(0xFFF0ECFF),
+      ),
     };
 
     return DecoratedBox(
@@ -464,6 +469,7 @@ String _kindLabel(AppLocalizations l10n, DailyRecordKind kind) {
     DailyRecordKind.symptom => l10n.recordTypeSymptom,
     DailyRecordKind.activity => l10n.recordTypeActivity,
     DailyRecordKind.note => l10n.recordCreateKindNote,
+    DailyRecordKind.sleep => l10n.recordTypeSleep,
   };
 }
 

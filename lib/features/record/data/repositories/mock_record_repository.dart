@@ -286,7 +286,6 @@ class MockRecordRepository implements RecordRepository {
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: _sleep,
       softColor: _sleepSoft,
-      locked: true,
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
@@ -389,7 +388,6 @@ class MockRecordRepository implements RecordRepository {
       icon: Icons.dark_mode_rounded,
       accent: _sleep,
       selected: true,
-      locked: true,
     ),
     RecordFilter(
       type: RecordEntryType.note,

@@ -11,6 +11,7 @@ class DailyRecordCreateInput {
     this.value,
     this.unit,
     this.note,
+    this.payload,
     this.attachments = const <DailyRecordAttachmentInput>[],
   });
 
@@ -20,6 +21,7 @@ class DailyRecordCreateInput {
   final String? value;
   final String? unit;
   final String? note;
+  final Map<String, dynamic>? payload;
   final List<DailyRecordAttachmentInput> attachments;
 }
 
@@ -31,6 +33,7 @@ class DailyRecordUpdateInput {
     this.value = dailyRecordNoChange,
     this.unit = dailyRecordNoChange,
     this.note = dailyRecordNoChange,
+    this.payload = dailyRecordNoChange,
     this.attachments = dailyRecordNoChange,
   });
 
@@ -40,6 +43,7 @@ class DailyRecordUpdateInput {
   final Object? value;
   final Object? unit;
   final Object? note;
+  final Object? payload;
 
   /// Attachment PATCH semantics:
   /// - [dailyRecordNoChange]: omit field and keep existing attachments.

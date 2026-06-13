@@ -123,6 +123,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordCreateValueSymptom => '严重程度 / 感受';
 
   @override
+  String get recordCreateValueSleep => '时长（如 8h）';
+
+  @override
   String get recordCreateFailedToast => '记录未保存';
 
   @override

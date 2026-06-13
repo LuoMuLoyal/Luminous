@@ -1,5 +1,5 @@
 /// Domain-safe enum for daily record kinds (mirrors Lucent DailyRecordKind).
-enum DailyRecordKind { water, meal, vital, mood, symptom, activity, note }
+enum DailyRecordKind { water, meal, vital, mood, symptom, activity, note, sleep }
 
 class DailyRecordItem {
   const DailyRecordItem({
@@ -11,6 +11,7 @@ class DailyRecordItem {
     this.unit,
     this.note,
     this.source,
+    this.payload,
     this.attachments = const <DailyRecordAttachment>[],
     required this.createdAt,
     required this.updatedAt,
@@ -24,6 +25,7 @@ class DailyRecordItem {
   final String? unit;
   final String? note;
   final String? source;
+  final Map<String, dynamic>? payload;
   final List<DailyRecordAttachment> attachments;
   final String createdAt;
   final String updatedAt;

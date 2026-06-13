@@ -30,6 +30,8 @@ class UpdateDailyRecordDto {
 
     this.note,
 
+    this.payload,
+
     this.attachments,
   });
 
@@ -61,6 +63,10 @@ class UpdateDailyRecordDto {
   @JsonKey(name: r'note', required: false, includeIfNull: false)
   final Object? note;
 
+  /// Structured payload for kind-specific data. Use null to clear.
+  @JsonKey(name: r'payload', required: false, includeIfNull: false)
+  final Object? payload;
+
   /// Replacement attachment metadata list. Omit to keep existing attachments; send [] to clear.
   @JsonKey(name: r'attachments', required: false, includeIfNull: false)
   final List<DailyRecordAttachmentInputDto>? attachments;
@@ -75,6 +81,7 @@ class UpdateDailyRecordDto {
           other.value == value &&
           other.unit == unit &&
           other.note == note &&
+          other.payload == payload &&
           other.attachments == attachments;
 
   @override
@@ -85,6 +92,7 @@ class UpdateDailyRecordDto {
       (value == null ? 0 : value.hashCode) +
       (unit == null ? 0 : unit.hashCode) +
       (note == null ? 0 : note.hashCode) +
+      (payload == null ? 0 : payload.hashCode) +
       attachments.hashCode;
 
   factory UpdateDailyRecordDto.fromJson(Map<String, dynamic> json) =>

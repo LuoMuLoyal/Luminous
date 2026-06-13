@@ -24,6 +24,7 @@ CreateDailyRecordDto _$CreateDailyRecordDtoFromJson(
     value: $checkedConvert('value', (v) => v as String?),
     unit: $checkedConvert('unit', (v) => v as String?),
     note: $checkedConvert('note', (v) => v as String?),
+    payload: $checkedConvert('payload', (v) => v),
     attachments: $checkedConvert(
       'attachments',
       (v) => (v as List<dynamic>?)
@@ -47,6 +48,7 @@ Map<String, dynamic> _$CreateDailyRecordDtoToJson(
   if (instance.value != null) 'value': instance.value,
   if (instance.unit != null) 'unit': instance.unit,
   if (instance.note != null) 'note': instance.note,
+  if (instance.payload != null) 'payload': instance.payload,
   if (instance.attachments?.map((e) => e.toJson()).toList() != null)
     'attachments': instance.attachments?.map((e) => e.toJson()).toList(),
 };

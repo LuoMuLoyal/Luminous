@@ -35,6 +35,7 @@ DailyRecordItemDto _$DailyRecordItemDtoFromJson(Map<String, dynamic> json) =>
         unit: $checkedConvert('unit', (v) => v),
         note: $checkedConvert('note', (v) => v),
         source_: $checkedConvert('source', (v) => v),
+        payload: $checkedConvert('payload', (v) => v),
         attachments: $checkedConvert(
           'attachments',
           (v) => (v as List<dynamic>)
@@ -61,6 +62,7 @@ Map<String, dynamic> _$DailyRecordItemDtoToJson(DailyRecordItemDto instance) =>
       if (instance.unit != null) 'unit': instance.unit,
       if (instance.note != null) 'note': instance.note,
       if (instance.source_ != null) 'source': instance.source_,
+      if (instance.payload != null) 'payload': instance.payload,
       'attachments': instance.attachments.map((e) => e.toJson()).toList(),
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,

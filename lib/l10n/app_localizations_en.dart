@@ -132,6 +132,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordCreateValueSymptom => 'Severity / feeling';
 
   @override
+  String get recordCreateValueSleep => 'Duration (e.g. 8h)';
+
+  @override
   String get recordCreateFailedToast => 'Record was not saved.';
 
   @override
