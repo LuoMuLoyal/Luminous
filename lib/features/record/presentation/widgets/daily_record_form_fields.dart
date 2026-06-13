@@ -168,8 +168,8 @@ DailyRecordFormRules dailyRecordFormRules(DailyRecordKind kind) {
     ),
     DailyRecordKind.sleep => const DailyRecordFormRules(
       showTitle: false,
-      showValue: true,
-      showUnit: true,
+      showValue: false,
+      showUnit: false,
     ),
   };
 }

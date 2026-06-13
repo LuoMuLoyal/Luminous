@@ -22,6 +22,7 @@ import 'package:luminous/features/record/domain/entities/daily_record_inputs.dar
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_image_attachment_field.dart';
+import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
@@ -51,6 +52,14 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   DailyRecordAttachment? _existingImageAttachment;
   _PendingDailyRecordImage? _selectedImage;
   bool _attachmentsChanged = false;
+  DateTime? _recordOccurredAt;
+
+  TimeOfDay? _sleepBedtime;
+  TimeOfDay? _sleepWakeTime;
+  String? _sleepQuality;
+  int? _sleepDeepMinutes;
+  int? _sleepLightMinutes;
+  int? _sleepRemMinutes;
 
   @override
   void dispose() {
@@ -85,6 +94,8 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
             .firstOrNull;
         _selectedImage = null;
         _attachmentsChanged = false;
+        _loadSleepPayload(record.payload);
+        _recordOccurredAt = DateTime.tryParse(record.occurredAt);
         _loaded = true;
         _loadingRecord = false;
       });
@@ -159,6 +170,27 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
                 titleController: _titleController,
                 noteController: _noteController,
               ),
+              if (_kind == DailyRecordKind.sleep) ...[
+                const SizedBox(height: AppSpacingTokens.sm),
+                SleepStructuredFields(
+                  l10n: l10n,
+                  bedtime: _sleepBedtime,
+                  wakeTime: _sleepWakeTime,
+                  quality: _sleepQuality,
+                  deepMinutes: _sleepDeepMinutes,
+                  lightMinutes: _sleepLightMinutes,
+                  remMinutes: _sleepRemMinutes,
+                  onBedtimeChanged: (v) => setState(() => _sleepBedtime = v),
+                  onWakeTimeChanged: (v) => setState(() => _sleepWakeTime = v),
+                  onQualityChanged: (v) => setState(() => _sleepQuality = v),
+                  onDeepMinutesChanged: (v) =>
+                      setState(() => _sleepDeepMinutes = v),
+                  onLightMinutesChanged: (v) =>
+                      setState(() => _sleepLightMinutes = v),
+                  onRemMinutesChanged: (v) =>
+                      setState(() => _sleepRemMinutes = v),
+                ),
+              ],
               const SizedBox(height: 12),
               DailyRecordImageAttachmentField(
                 l10n: l10n,
@@ -222,7 +254,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
           value: rules.showValue ? _normalizedValueForKind(_kind) : null,
           unit: rules.showUnit ? _unitTextForKind(_kind) : null,
           note: _optionalText(_noteController),
-          payload: _buildSleepPayload(_kind, _valueController.text),
+          payload: _buildSleepPayload(_kind),
           attachments: attachmentPatch,
         ),
       );
@@ -308,6 +340,14 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
           _unitController.text.trim().isEmpty) {
         _unitController.text = dailyRecordWaterDefaultUnit;
       }
+      if (kind != DailyRecordKind.sleep) {
+        _sleepBedtime = null;
+        _sleepWakeTime = null;
+        _sleepQuality = null;
+        _sleepDeepMinutes = null;
+        _sleepLightMinutes = null;
+        _sleepRemMinutes = null;
+      }
     });
   }
 
@@ -317,16 +357,12 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   }
 
   String? _normalizedValueForKind(DailyRecordKind kind) {
-    final raw = _optionalText(_valueController);
-    if (raw == null) return null;
-    if (kind != DailyRecordKind.sleep) return raw;
-    final hours = _parseSleepHours(raw);
-    return hours == null ? raw : hours.toString();
+    if (kind == DailyRecordKind.sleep) return null;
+    return _optionalText(_valueController);
   }
 
   String _defaultUnitTextForKind(DailyRecordKind kind) {
     if (kind == DailyRecordKind.water) return dailyRecordWaterDefaultUnit;
-    if (kind == DailyRecordKind.sleep) return 'h';
     return '';
   }
 
@@ -334,36 +370,83 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
     final value = _unitController.text.trim();
     if (value.isNotEmpty) return value;
     if (kind == DailyRecordKind.water) return dailyRecordWaterDefaultUnit;
-    if (kind == DailyRecordKind.sleep) return 'h';
     return null;
   }
 
-  double? _parseSleepHours(String raw) {
-    final trimmed = raw.trim();
-    if (trimmed.isEmpty) return null;
-    final cleaned = trimmed.endsWith('h') || trimmed.endsWith('H')
-        ? trimmed.substring(0, trimmed.length - 1).trim()
-        : trimmed;
-    return double.tryParse(cleaned);
-  }
-
-  Map<String, dynamic>? _buildSleepPayload(
-    DailyRecordKind kind,
-    String rawValue,
-  ) {
+  Map<String, dynamic>? _buildSleepPayload(DailyRecordKind kind) {
     if (kind != DailyRecordKind.sleep) return null;
-    final hours = _parseSleepHours(rawValue);
-    if (hours == null || hours <= 0) return null;
-    final minutes = (hours * 60).round();
-    return <String, dynamic>{
+    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
+    if (minutes == null || minutes <= 0) return null;
+    final payload = <String, dynamic>{
       'durationMinutes': minutes,
     };
+    if (_sleepBedtime != null && _sleepWakeTime != null) {
+      // Sleep date convention: occurredAt is the wake date.
+      // endAt falls on the wake date; startAt is the evening before
+      // (or the same day for short naps that don't cross midnight).
+      final occurredAt = _recordOccurredAt ?? DateTime.now();
+      final wake = DateTime(
+        occurredAt.year,
+        occurredAt.month,
+        occurredAt.day,
+        _sleepWakeTime!.hour,
+        _sleepWakeTime!.minute,
+      );
+      var bed = DateTime(
+        occurredAt.year,
+        occurredAt.month,
+        occurredAt.day,
+        _sleepBedtime!.hour,
+        _sleepBedtime!.minute,
+      );
+      if (!bed.isBefore(wake)) bed = bed.subtract(const Duration(days: 1));
+      payload['startAt'] = bed.toUtc().toIso8601String();
+      payload['endAt'] = wake.toUtc().toIso8601String();
+    }
+    if (_sleepQuality != null) payload['quality'] = _sleepQuality;
+    if (_sleepDeepMinutes != null && _sleepDeepMinutes! > 0) {
+      payload['deepMinutes'] = _sleepDeepMinutes;
+    }
+    if (_sleepLightMinutes != null && _sleepLightMinutes! > 0) {
+      payload['lightMinutes'] = _sleepLightMinutes;
+    }
+    if (_sleepRemMinutes != null && _sleepRemMinutes! > 0) {
+      payload['remMinutes'] = _sleepRemMinutes;
+    }
+    return payload;
   }
 
   bool _isValidSleepValue() {
     if (_kind != DailyRecordKind.sleep) return true;
-    final hours = _parseSleepHours(_valueController.text);
-    return hours != null && hours > 0;
+    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
+    return minutes != null && minutes > 0;
+  }
+
+  void _loadSleepPayload(Map<String, dynamic>? payload) {
+    if (payload == null) return;
+    final startAt = payload['startAt'] as String?;
+    if (startAt != null) {
+      final dt = DateTime.tryParse(startAt);
+      if (dt != null) {
+        final local = dt.toLocal();
+        _sleepBedtime = TimeOfDay(hour: local.hour, minute: local.minute);
+      }
+    }
+    final endAt = payload['endAt'] as String?;
+    if (endAt != null) {
+      final dt = DateTime.tryParse(endAt);
+      if (dt != null) {
+        final local = dt.toLocal();
+        _sleepWakeTime = TimeOfDay(hour: local.hour, minute: local.minute);
+      }
+    }
+    _sleepQuality = payload['quality'] as String?;
+    final deep = payload['deepMinutes'];
+    if (deep is num && deep > 0) _sleepDeepMinutes = deep.round();
+    final light = payload['lightMinutes'];
+    if (light is num && light > 0) _sleepLightMinutes = light.round();
+    final rem = payload['remMinutes'];
+    if (rem is num && rem > 0) _sleepRemMinutes = rem.round();
   }
 
   Future<void> _onPickImage() async {

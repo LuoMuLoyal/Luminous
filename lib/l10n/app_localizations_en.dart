@@ -139,6 +139,51 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please enter a valid sleep duration (e.g. 7.5).';
 
   @override
+  String get recordSleepBedtimeLabel => 'Bedtime';
+
+  @override
+  String get recordSleepWakeTimeLabel => 'Wake time';
+
+  @override
+  String get recordSleepQualityLabel => 'Sleep quality';
+
+  @override
+  String get recordSleepQualityPoor => 'Poor';
+
+  @override
+  String get recordSleepQualityFair => 'Fair';
+
+  @override
+  String get recordSleepQualityGood => 'Good';
+
+  @override
+  String get recordSleepQualityExcellent => 'Excellent';
+
+  @override
+  String get recordSleepDeepMinutesLabel => 'Deep sleep (min)';
+
+  @override
+  String get recordSleepLightMinutesLabel => 'Light sleep (min)';
+
+  @override
+  String get recordSleepRemMinutesLabel => 'REM sleep (min)';
+
+  @override
+  String get recordSleepDetailsSectionTitle => 'Sleep details';
+
+  @override
+  String get recordSleepDurationLabel => 'Duration';
+
+  @override
+  String get recordSleepTimeRangeLabel => 'Time range';
+
+  @override
+  String get recordSleepNotSet => 'Not set';
+
+  @override
+  String get recordSleepMinutesUnit => 'min';
+
+  @override
   String get recordCreateFailedToast => 'Record was not saved.';
 
   @override

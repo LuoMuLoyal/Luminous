@@ -326,6 +326,96 @@ abstract class AppLocalizations {
   /// **'请输入有效的睡眠时长（如 7.5）'**
   String get recordSleepInvalidValueToast;
 
+  /// No description provided for @recordSleepBedtimeLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'就寝时间'**
+  String get recordSleepBedtimeLabel;
+
+  /// No description provided for @recordSleepWakeTimeLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'起床时间'**
+  String get recordSleepWakeTimeLabel;
+
+  /// No description provided for @recordSleepQualityLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠质量'**
+  String get recordSleepQualityLabel;
+
+  /// No description provided for @recordSleepQualityPoor.
+  ///
+  /// In zh, this message translates to:
+  /// **'较差'**
+  String get recordSleepQualityPoor;
+
+  /// No description provided for @recordSleepQualityFair.
+  ///
+  /// In zh, this message translates to:
+  /// **'一般'**
+  String get recordSleepQualityFair;
+
+  /// No description provided for @recordSleepQualityGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'良好'**
+  String get recordSleepQualityGood;
+
+  /// No description provided for @recordSleepQualityExcellent.
+  ///
+  /// In zh, this message translates to:
+  /// **'优秀'**
+  String get recordSleepQualityExcellent;
+
+  /// No description provided for @recordSleepDeepMinutesLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'深度睡眠（分钟）'**
+  String get recordSleepDeepMinutesLabel;
+
+  /// No description provided for @recordSleepLightMinutesLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'浅度睡眠（分钟）'**
+  String get recordSleepLightMinutesLabel;
+
+  /// No description provided for @recordSleepRemMinutesLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'REM 睡眠（分钟）'**
+  String get recordSleepRemMinutesLabel;
+
+  /// No description provided for @recordSleepDetailsSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠详情'**
+  String get recordSleepDetailsSectionTitle;
+
+  /// No description provided for @recordSleepDurationLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'时长'**
+  String get recordSleepDurationLabel;
+
+  /// No description provided for @recordSleepTimeRangeLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'时间段'**
+  String get recordSleepTimeRangeLabel;
+
+  /// No description provided for @recordSleepNotSet.
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置'**
+  String get recordSleepNotSet;
+
+  /// No description provided for @recordSleepMinutesUnit.
+  ///
+  /// In zh, this message translates to:
+  /// **'分钟'**
+  String get recordSleepMinutesUnit;
+
   /// No description provided for @recordCreateFailedToast.
   ///
   /// In zh, this message translates to:

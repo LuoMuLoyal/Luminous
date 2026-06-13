@@ -129,6 +129,51 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordSleepInvalidValueToast => '请输入有效的睡眠时长（如 7.5）';
 
   @override
+  String get recordSleepBedtimeLabel => '就寝时间';
+
+  @override
+  String get recordSleepWakeTimeLabel => '起床时间';
+
+  @override
+  String get recordSleepQualityLabel => '睡眠质量';
+
+  @override
+  String get recordSleepQualityPoor => '较差';
+
+  @override
+  String get recordSleepQualityFair => '一般';
+
+  @override
+  String get recordSleepQualityGood => '良好';
+
+  @override
+  String get recordSleepQualityExcellent => '优秀';
+
+  @override
+  String get recordSleepDeepMinutesLabel => '深度睡眠（分钟）';
+
+  @override
+  String get recordSleepLightMinutesLabel => '浅度睡眠（分钟）';
+
+  @override
+  String get recordSleepRemMinutesLabel => 'REM 睡眠（分钟）';
+
+  @override
+  String get recordSleepDetailsSectionTitle => '睡眠详情';
+
+  @override
+  String get recordSleepDurationLabel => '时长';
+
+  @override
+  String get recordSleepTimeRangeLabel => '时间段';
+
+  @override
+  String get recordSleepNotSet => '未设置';
+
+  @override
+  String get recordSleepMinutesUnit => '分钟';
+
+  @override
   String get recordCreateFailedToast => '记录未保存';
 
   @override
