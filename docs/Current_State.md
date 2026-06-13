@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-06-12
+Last updated: 2026-06-13
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -23,7 +23,7 @@ This file records current implementation facts only. Product direction lives in 
 - API base: `/api/v1`.
 - Response envelope: `{ code, message, data }`.
 - Generated API contract: `Lucent/docs/openapi.json`.
-- Current generated client baseline after report dashboard + weekly AI summary contracts: 47 paths / 138 schemas.
+- Current generated client baseline after report dashboard + range-based AI summary contracts: 47 paths / 138 schemas.
 - Implemented backend areas used by Luminous: auth/account, user-scoped health context, medicine search/detail, current medicines, dose logs, medicine reminders, daily records with single-image attachment metadata, environment snapshot, user settings, support resources, app info, and data export requests.
 - User-scoped business data is served under `/api/v1/user/*`; account profile/security actions remain under `/api/v1/account/*`.
 
@@ -49,7 +49,7 @@ This file records current implementation facts only. Product direction lives in 
 - Today: compressed health overview, repository-provided medication/hydration priority list, medication tasks, hydration tasks with count targets, UI-only custom todos, manual Lucent-backed Today AI analysis generation with signed-out/disabled/loading/success/error card states, immediate risk/proactive suggestions, a placeholder-only sleep vital row that now falls back to neutral `--` instead of a fake numeric value, and neutral error copy instead of `mock` phrasing.
 - Record: symptoms, hydration with selectable units, diet/meal, note as a first-class type (own quick action, filter, and timeline entry), sleep/medication as non-create quick actions with locked placeholder badges and toast fallback, natural-language placeholder, selected-date timeline/detail/create/edit, top date bar, filters, summary/timeline-driven today overview, and panel-backed quick record/timeline sections whose inner rows use dividers instead of nested cards. Active create kinds are water, meal, symptom, and note. Lucent-backed filter results no longer fall back to a static mock timeline, and record error copy now uses neutral boundary wording instead of `mock data`.
 - Medicine: active current-medicine drugbox, reminder-derived next dose, Lucent schedule-only reminder detail/create/edit/delete UI with optional start/end date window, local sound preference, on-device local notification scheduling synced from reminder schedules, SMS unavailable state, read-only reminder delivery history display, panel-backed medication actions, same-day taken/skipped dose logs, risk-check entry, source-review safety previews, and pregnancy/lactation/special-group medication safety conditions. Medicine no longer surfaces a local medication-report shortcut, and preview medicine names now use neutral example labels instead of real drug names.
-- Report: Lucent-backed last-7-days dashboard with real medication/water aggregates, explicit insufficient-data handling for unsupported sleep data, contract-driven findings/patterns text, manual weekly AI summary generation through `/api/v1/user/reports/weekly-summary/generate`, local signed-out/disabled/loading/success/error AI-summary states, mobile pull-to-refresh plus explicit sync action, signed-out in-tab placeholder plus login notice instead of a full-page error gate, frontend-only export placeholders, and reference notice. Privacy settings are owned by Mine/Settings.
+- Report: Lucent-backed last-7-days dashboard with real medication/water aggregates, explicit insufficient-data handling for unsupported sleep data, contract-driven findings/patterns text, manual AI summary generation through `/api/v1/user/reports/summary/generate`, local signed-out/disabled/loading/success/error AI-summary states, in-card `近 7 天 / 近 30 天` AI summary switching with per-range cached state, mobile pull-to-refresh plus explicit sync action, signed-out in-tab placeholder plus login notice instead of a full-page error gate, frontend-only export placeholders, and reference notice. Privacy settings are owned by Mine/Settings.
 - Mine/Settings: account, basic health archive, allergies, current medicines, contract-backed support resources, server-backed privacy/AI settings, notification summaries from local settings state, data export request status, help/about metadata, and Advanced settings. Settings privacy copy is scoped to report sharing and AI summaries/advice rather than broad AI memory, the sleep reminder row now shows a local-only placeholder label instead of an enabled/disabled state, and Mine uses neutral error copy instead of `mock` wording. Mine profile editing currently surfaces birth date, height, blood type, unit system, and onboarding state only.
 
 ## Mock Or Deferred

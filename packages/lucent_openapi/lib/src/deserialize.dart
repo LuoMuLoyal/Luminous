@@ -41,7 +41,7 @@ import 'package:lucent_openapi/src/model/environment_snapshot_dto.dart';
 import 'package:lucent_openapi/src/model/environment_snapshot_response_dto.dart';
 import 'package:lucent_openapi/src/model/forgot_password_dto.dart';
 import 'package:lucent_openapi/src/model/forgot_password_response_dto.dart';
-import 'package:lucent_openapi/src/model/generate_report_weekly_summary_dto.dart';
+import 'package:lucent_openapi/src/model/generate_report_summary_dto.dart';
 import 'package:lucent_openapi/src/model/generate_today_analysis_dto.dart';
 import 'package:lucent_openapi/src/model/health_context_data_dto.dart';
 import 'package:lucent_openapi/src/model/health_context_response_dto.dart';
@@ -81,10 +81,10 @@ import 'package:lucent_openapi/src/model/report_dashboard_score_dto.dart';
 import 'package:lucent_openapi/src/model/report_finding_dto.dart';
 import 'package:lucent_openapi/src/model/report_metric_dto.dart';
 import 'package:lucent_openapi/src/model/report_pattern_dto.dart';
+import 'package:lucent_openapi/src/model/report_summary_bullet_dto.dart';
+import 'package:lucent_openapi/src/model/report_summary_data_dto.dart';
+import 'package:lucent_openapi/src/model/report_summary_response_dto.dart';
 import 'package:lucent_openapi/src/model/report_trend_dto.dart';
-import 'package:lucent_openapi/src/model/report_weekly_summary_bullet_dto.dart';
-import 'package:lucent_openapi/src/model/report_weekly_summary_data_dto.dart';
-import 'package:lucent_openapi/src/model/report_weekly_summary_response_dto.dart';
 import 'package:lucent_openapi/src/model/reset_password_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_response_dto.dart';
@@ -242,8 +242,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return ForgotPasswordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ForgotPasswordResponseDto':
           return ForgotPasswordResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'GenerateReportWeeklySummaryDto':
-          return GenerateReportWeeklySummaryDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'GenerateReportSummaryDto':
+          return GenerateReportSummaryDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'GenerateTodayAnalysisDto':
           return GenerateTodayAnalysisDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'HealthContextDataDto':
@@ -334,14 +334,14 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return ReportMetricDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ReportPatternDto':
           return ReportPatternDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportSummaryBulletDto':
+          return ReportSummaryBulletDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportSummaryDataDto':
+          return ReportSummaryDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportSummaryResponseDto':
+          return ReportSummaryResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ReportTrendDto':
           return ReportTrendDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'ReportWeeklySummaryBulletDto':
-          return ReportWeeklySummaryBulletDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'ReportWeeklySummaryDataDto':
-          return ReportWeeklySummaryDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'ReportWeeklySummaryResponseDto':
-          return ReportWeeklySummaryResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ResetPasswordDto':
           return ResetPasswordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'SendVerificationCodeDto':

@@ -2579,6 +2579,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportRangeLast7Days => 'Last 7 days';
 
   @override
+  String get reportRangeLast30Days => 'Last 30 days';
+
+  @override
   String get reportTrendSleepLabel => 'Sleep (h)';
 
   @override
@@ -2618,12 +2621,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Smart analysis based on this week\'s records';
 
   @override
+  String get reportAiSummarySubtitleLast30Days =>
+      'Smart analysis based on the last 30 days of records';
+
+  @override
   String get reportAiSummaryDefaultHint =>
       'This week\'s AI summary has not been generated yet, so the latest report snapshot is shown for now.';
 
   @override
   String get reportAiSummaryGeneratingHint =>
       'Generating this week\'s AI summary';
+
+  @override
+  String get reportAiSummaryGeneratingHintLast30Days =>
+      'Generating the last 30 days AI summary';
 
   @override
   String get reportAiSummaryErrorHint =>

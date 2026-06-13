@@ -7,7 +7,7 @@ import 'package:luminous/features/report/data/datasources/report_ai_summary_remo
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 
 abstract interface class ReportAiSummaryRepository {
-  Future<ReportAiSummary> generate();
+  Future<ReportAiSummary> generate(ReportAiSummaryRange range);
 }
 
 final reportAiSummaryRemoteDataSourceProvider =
@@ -30,10 +30,10 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
   final ReportAiSummaryRemoteDataSource dataSource;
 
   @override
-  Future<ReportAiSummary> generate() async {
-    final dto = await dataSource.generate();
+  Future<ReportAiSummary> generate(ReportAiSummaryRange range) async {
+    final dto = await dataSource.generate(range);
     return ReportAiSummary(
-      range: dto.range.value,
+      range: _mapRange(dto.range),
       startDate: dto.startDate,
       endDate: dto.endDate,
       generatedAt: DateTime.parse(dto.generatedAt),
@@ -44,7 +44,15 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
     );
   }
 
-  ReportAiSummaryBullet _mapBullet(lucent.ReportWeeklySummaryBulletDto dto) {
+  ReportAiSummaryRange _mapRange(lucent.ReportSummaryDataDtoRangeEnum range) {
+    return switch (range) {
+      lucent.ReportSummaryDataDtoRangeEnum.last30Days =>
+        ReportAiSummaryRange.last30Days,
+      _ => ReportAiSummaryRange.last7Days,
+    };
+  }
+
+  ReportAiSummaryBullet _mapBullet(lucent.ReportSummaryBulletDto dto) {
     final kind = switch (dto.kind.value) {
       'medication' => ReportAiSummaryBulletKind.medication,
       'hydration' => ReportAiSummaryBulletKind.hydration,

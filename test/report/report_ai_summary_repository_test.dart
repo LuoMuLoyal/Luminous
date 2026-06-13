@@ -6,26 +6,26 @@ import 'package:luminous/features/report/data/repositories/lucent_report_ai_summ
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 
 void main() {
-  test('Lucent report ai summary repository maps weekly summary dto', () async {
+  test('Lucent report ai summary repository maps summary dto', () async {
     final repository = LucentReportAiSummaryRepository(
       dataSource: _FakeReportAiSummaryRemoteDataSource(
-        lucent.ReportWeeklySummaryDataDto(
-          range: lucent.ReportWeeklySummaryDataDtoRangeEnum.last7Days,
+        lucent.ReportSummaryDataDto(
+          range: lucent.ReportSummaryDataDtoRangeEnum.last30Days,
           startDate: '2026-06-06',
           endDate: '2026-06-12',
           generatedAt: '2026-06-12T10:00:00.000Z',
           summary: '本周用药记录整体稳定，饮水仍有少数低点。',
           bullets: [
-            lucent.ReportWeeklySummaryBulletDto(
-              kind: lucent.ReportWeeklySummaryBulletDtoKindEnum.medication,
+            lucent.ReportSummaryBulletDto(
+              kind: lucent.ReportSummaryBulletDtoKindEnum.medication,
               text: '本周大多数天都有用药记录。',
             ),
-            lucent.ReportWeeklySummaryBulletDto(
-              kind: lucent.ReportWeeklySummaryBulletDtoKindEnum.hydration,
+            lucent.ReportSummaryBulletDto(
+              kind: lucent.ReportSummaryBulletDtoKindEnum.hydration,
               text: '饮水均值接近目标线。',
             ),
-            lucent.ReportWeeklySummaryBulletDto(
-              kind: lucent.ReportWeeklySummaryBulletDtoKindEnum.sleep,
+            lucent.ReportSummaryBulletDto(
+              kind: lucent.ReportSummaryBulletDtoKindEnum.sleep,
               text: '睡眠数据仍待补充。',
             ),
           ],
@@ -35,9 +35,9 @@ void main() {
       ),
     );
 
-    final summary = await repository.generate();
+    final summary = await repository.generate(ReportAiSummaryRange.last30Days);
 
-    expect(summary.range, 'last_7_days');
+    expect(summary.range, ReportAiSummaryRange.last30Days);
     expect(summary.generatedAt, DateTime.parse('2026-06-12T10:00:00.000Z'));
     expect(summary.bullets, hasLength(3));
     expect(summary.bullets.first.kind, ReportAiSummaryBulletKind.medication);
@@ -54,8 +54,10 @@ class _FakeReportAiSummaryRemoteDataSource extends ReportAiSummaryRemoteDataSour
         dio: Dio(BaseOptions()),
       );
 
-  final lucent.ReportWeeklySummaryDataDto _dto;
+  final lucent.ReportSummaryDataDto _dto;
 
   @override
-  Future<lucent.ReportWeeklySummaryDataDto> generate() async => _dto;
+  Future<lucent.ReportSummaryDataDto> generate(
+    ReportAiSummaryRange range,
+  ) async => _dto;
 }

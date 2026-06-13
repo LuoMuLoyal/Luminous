@@ -109,7 +109,7 @@ Class | Method | HTTP request | Description
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
 [*ReminderDeliveriesApi*](doc/ReminderDeliveriesApi.md) | [**reminderDeliveriesControllerListV1**](doc/ReminderDeliveriesApi.md#reminderdeliveriescontrollerlistv1) | **GET** /api/v1/user/reminder-deliveries | List reminder delivery audit logs
-[*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGenerateWeeklySummaryV1**](doc/ReportsApi.md#reportscontrollergenerateweeklysummaryv1) | **POST** /api/v1/user/reports/weekly-summary/generate | Generate authenticated user weekly AI summary for report
+[*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGenerateSummaryV1**](doc/ReportsApi.md#reportscontrollergeneratesummaryv1) | **POST** /api/v1/user/reports/summary/generate | Generate authenticated user AI summary for report
 [*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGetDashboardV1**](doc/ReportsApi.md#reportscontrollergetdashboardv1) | **GET** /api/v1/user/reports/dashboard | Get authenticated user report dashboard
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetAppInfoV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetappinfov1) | **GET** /api/v1/public/app-info | Get application metadata
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetResourcesV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetresourcesv1) | **GET** /api/v1/public/support-resources | Get static support resource entries
@@ -180,7 +180,7 @@ Class | Method | HTTP request | Description
  - [EnvironmentSnapshotResponseDto](doc/EnvironmentSnapshotResponseDto.md)
  - [ForgotPasswordDto](doc/ForgotPasswordDto.md)
  - [ForgotPasswordResponseDto](doc/ForgotPasswordResponseDto.md)
- - [GenerateReportWeeklySummaryDto](doc/GenerateReportWeeklySummaryDto.md)
+ - [GenerateReportSummaryDto](doc/GenerateReportSummaryDto.md)
  - [GenerateTodayAnalysisDto](doc/GenerateTodayAnalysisDto.md)
  - [HealthContextDataDto](doc/HealthContextDataDto.md)
  - [HealthContextResponseDto](doc/HealthContextResponseDto.md)
@@ -224,10 +224,10 @@ Class | Method | HTTP request | Description
  - [ReportFindingDto](doc/ReportFindingDto.md)
  - [ReportMetricDto](doc/ReportMetricDto.md)
  - [ReportPatternDto](doc/ReportPatternDto.md)
+ - [ReportSummaryBulletDto](doc/ReportSummaryBulletDto.md)
+ - [ReportSummaryDataDto](doc/ReportSummaryDataDto.md)
+ - [ReportSummaryResponseDto](doc/ReportSummaryResponseDto.md)
  - [ReportTrendDto](doc/ReportTrendDto.md)
- - [ReportWeeklySummaryBulletDto](doc/ReportWeeklySummaryBulletDto.md)
- - [ReportWeeklySummaryDataDto](doc/ReportWeeklySummaryDataDto.md)
- - [ReportWeeklySummaryResponseDto](doc/ReportWeeklySummaryResponseDto.md)
  - [ResetPasswordDto](doc/ResetPasswordDto.md)
  - [SendVerificationCodeDto](doc/SendVerificationCodeDto.md)
  - [SendVerificationCodeResponseDto](doc/SendVerificationCodeResponseDto.md)

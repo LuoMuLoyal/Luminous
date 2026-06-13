@@ -86,6 +86,7 @@ Map<String, dynamic> _$ReportDashboardDataDtoToJson(
 
 const _$ReportDashboardDataDtoRangeEnumEnumMap = {
   ReportDashboardDataDtoRangeEnum.last7Days: 'last_7_days',
+  ReportDashboardDataDtoRangeEnum.last30Days: 'last_30_days',
   ReportDashboardDataDtoRangeEnum.unknownDefaultOpenApi:
       'unknown_default_open_api',
 };

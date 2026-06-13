@@ -832,6 +832,8 @@ class ReportAiSummarySection extends StatelessWidget {
     required this.authSession,
     required this.settingsAsync,
     required this.aiState,
+    required this.selectedRange,
+    this.onRangeChanged,
     this.onGenerate,
     required this.l10n,
     required this.typography,
@@ -842,6 +844,8 @@ class ReportAiSummarySection extends StatelessWidget {
   final AuthSessionState authSession;
   final AsyncValue<UserSettingsDataDto>? settingsAsync;
   final ReportAiSummaryCardState aiState;
+  final ReportAiSummaryRange selectedRange;
+  final ValueChanged<ReportAiSummaryRange>? onRangeChanged;
   final Future<void> Function()? onGenerate;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
@@ -855,6 +859,7 @@ class ReportAiSummarySection extends StatelessWidget {
       authSession: authSession,
       settingsAsync: settingsAsync,
       aiState: aiState,
+      selectedRange: selectedRange,
     );
     final actionLabel = aiState.summary?.actionLabel;
 
@@ -893,6 +898,28 @@ class ReportAiSummarySection extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            SegmentedButton<ReportAiSummaryRange>(
+              key: const Key('report-ai-summary-range-toggle'),
+              segments: [
+                ButtonSegment(
+                  value: ReportAiSummaryRange.last7Days,
+                  label: Text(l10n.reportRangeLast7Days),
+                ),
+                ButtonSegment(
+                  value: ReportAiSummaryRange.last30Days,
+                  label: Text(l10n.reportRangeLast30Days),
+                ),
+              ],
+              selected: {selectedRange},
+              onSelectionChanged: onRangeChanged == null
+                  ? null
+                  : (selection) {
+                      if (selection.isNotEmpty) {
+                        onRangeChanged!(selection.first);
+                      }
+                    },
             ),
             if (actionLabel != null) ...[
               const SizedBox(width: AppSpacingTokens.sm),
@@ -989,7 +1016,7 @@ class ReportAiSummarySection extends StatelessWidget {
               ),
               label: Text(
                 aiState.isLoading
-                    ? l10n.reportAiSummaryGeneratingHint
+                    ? _reportAiSummaryGeneratingLabel(l10n, selectedRange)
                     : l10n.reportGenerateAction,
               ),
             ),
@@ -1394,6 +1421,7 @@ _ReportAiSummaryContent _buildReportAiSummaryContent({
   required AuthSessionState authSession,
   required AsyncValue<UserSettingsDataDto>? settingsAsync,
   required ReportAiSummaryCardState aiState,
+  required ReportAiSummaryRange selectedRange,
 }) {
   if (!authSession.canAccessProtectedData) {
     return _ReportAiSummaryContent(
@@ -1425,7 +1453,7 @@ _ReportAiSummaryContent _buildReportAiSummaryContent({
   final summary = aiState.summary;
   if (summary != null) {
     return _ReportAiSummaryContent(
-      subtitle: l10n.reportAiSummarySubtitle,
+      subtitle: _reportAiSummarySubtitle(l10n, selectedRange),
       summaryText: summary.summary,
       bullets: summary.bullets
           .map(
@@ -1441,7 +1469,7 @@ _ReportAiSummaryContent _buildReportAiSummaryContent({
 
   if (aiState.status == ReportAiSummaryCardStatus.error) {
     return _ReportAiSummaryContent(
-      subtitle: l10n.reportAiSummarySubtitle,
+      subtitle: _reportAiSummarySubtitle(l10n, selectedRange),
       bullets: [
         _ReportAiSummaryItem(
           color: ReportPalette.orange,
@@ -1456,15 +1484,15 @@ _ReportAiSummaryContent _buildReportAiSummaryContent({
 
   if (aiState.status == ReportAiSummaryCardStatus.loading) {
     return _ReportAiSummaryContent(
-      subtitle: l10n.reportAiSummarySubtitle,
+      subtitle: _reportAiSummarySubtitle(l10n, selectedRange),
       bullets: [
         _ReportAiSummaryItem(
           color: ReportPalette.green,
-          text: l10n.reportAiSummaryGeneratingHint,
+          text: _reportAiSummaryGeneratingLabel(l10n, selectedRange),
         ),
         ..._reportAiSummaryFallbackBullets(dashboard),
       ],
-      footer: l10n.reportAiSummaryGeneratingHint,
+      footer: _reportAiSummaryGeneratingLabel(l10n, selectedRange),
     );
   }
 
@@ -1517,4 +1545,25 @@ class _ReportAiSummaryItem {
 
   final Color color;
   final String text;
+}
+
+String _reportAiSummarySubtitle(
+  AppLocalizations l10n,
+  ReportAiSummaryRange range,
+) {
+  return switch (range) {
+    ReportAiSummaryRange.last30Days => l10n.reportAiSummarySubtitleLast30Days,
+    ReportAiSummaryRange.last7Days => l10n.reportAiSummarySubtitle,
+  };
+}
+
+String _reportAiSummaryGeneratingLabel(
+  AppLocalizations l10n,
+  ReportAiSummaryRange range,
+) {
+  return switch (range) {
+    ReportAiSummaryRange.last30Days =>
+      l10n.reportAiSummaryGeneratingHintLast30Days,
+    ReportAiSummaryRange.last7Days => l10n.reportAiSummaryGeneratingHint,
+  };
 }

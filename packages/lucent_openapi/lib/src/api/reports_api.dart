@@ -9,9 +9,9 @@ import 'dart:convert';
 import 'package:lucent_openapi/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_openapi/src/model/generate_report_weekly_summary_dto.dart';
+import 'package:lucent_openapi/src/model/generate_report_summary_dto.dart';
 import 'package:lucent_openapi/src/model/report_dashboard_response_dto.dart';
-import 'package:lucent_openapi/src/model/report_weekly_summary_response_dto.dart';
+import 'package:lucent_openapi/src/model/report_summary_response_dto.dart';
 
 class ReportsApi {
 
@@ -19,11 +19,11 @@ class ReportsApi {
 
   const ReportsApi(this._dio);
 
-  /// Generate authenticated user weekly AI summary for report
+  /// Generate authenticated user AI summary for report
   /// 
   ///
   /// Parameters:
-  /// * [generateReportWeeklySummaryDto] 
+  /// * [generateReportSummaryDto] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -31,10 +31,10 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [ReportWeeklySummaryResponseDto] as data
+  /// Returns a [Future] containing a [Response] with a [ReportSummaryResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ReportWeeklySummaryResponseDto>> reportsControllerGenerateWeeklySummaryV1({ 
-    required GenerateReportWeeklySummaryDto generateReportWeeklySummaryDto,
+  Future<Response<ReportSummaryResponseDto>> reportsControllerGenerateSummaryV1({ 
+    required GenerateReportSummaryDto generateReportSummaryDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -42,7 +42,7 @@ class ReportsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/reports/weekly-summary/generate';
+    final _path = r'/api/v1/user/reports/summary/generate';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -59,7 +59,7 @@ class ReportsApi {
     dynamic _bodyData;
 
     try {
-      _bodyData = jsonEncode(generateReportWeeklySummaryDto);
+      _bodyData = jsonEncode(generateReportSummaryDto);
 
     } catch(error, stackTrace) {
       throw DioException(
@@ -82,11 +82,11 @@ class ReportsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    ReportWeeklySummaryResponseDto? _responseData;
+    ReportSummaryResponseDto? _responseData;
 
     try {
 final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<ReportWeeklySummaryResponseDto, ReportWeeklySummaryResponseDto>(rawData, 'ReportWeeklySummaryResponseDto', growable: true);
+_responseData = rawData == null ? null : deserialize<ReportSummaryResponseDto, ReportSummaryResponseDto>(rawData, 'ReportSummaryResponseDto', growable: true);
 
     } catch (error, stackTrace) {
       throw DioException(
@@ -98,7 +98,7 @@ _responseData = rawData == null ? null : deserialize<ReportWeeklySummaryResponse
       );
     }
 
-    return Response<ReportWeeklySummaryResponseDto>(
+    return Response<ReportSummaryResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

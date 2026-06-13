@@ -4784,6 +4784,12 @@ abstract class AppLocalizations {
   /// **'近 7 天'**
   String get reportRangeLast7Days;
 
+  /// No description provided for @reportRangeLast30Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 30 天'**
+  String get reportRangeLast30Days;
+
   /// No description provided for @reportTrendSleepLabel.
   ///
   /// In zh, this message translates to:
@@ -4856,6 +4862,12 @@ abstract class AppLocalizations {
   /// **'基于本周记录的智能分析'**
   String get reportAiSummarySubtitle;
 
+  /// No description provided for @reportAiSummarySubtitleLast30Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'基于近 30 天记录的智能分析'**
+  String get reportAiSummarySubtitleLast30Days;
+
   /// No description provided for @reportAiSummaryDefaultHint.
   ///
   /// In zh, this message translates to:
@@ -4867,6 +4879,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'正在生成本周 AI 总结'**
   String get reportAiSummaryGeneratingHint;
+
+  /// No description provided for @reportAiSummaryGeneratingHintLast30Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在生成近 30 天 AI 总结'**
+  String get reportAiSummaryGeneratingHintLast30Days;
 
   /// No description provided for @reportAiSummaryErrorHint.
   ///

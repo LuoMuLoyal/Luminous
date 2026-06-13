@@ -74,7 +74,7 @@ lib/src/model/environment_snapshot_dto.dart
 lib/src/model/environment_snapshot_response_dto.dart
 lib/src/model/forgot_password_dto.dart
 lib/src/model/forgot_password_response_dto.dart
-lib/src/model/generate_report_weekly_summary_dto.dart
+lib/src/model/generate_report_summary_dto.dart
 lib/src/model/generate_today_analysis_dto.dart
 lib/src/model/health_context_data_dto.dart
 lib/src/model/health_context_response_dto.dart
@@ -118,10 +118,10 @@ lib/src/model/report_dashboard_score_dto.dart
 lib/src/model/report_finding_dto.dart
 lib/src/model/report_metric_dto.dart
 lib/src/model/report_pattern_dto.dart
+lib/src/model/report_summary_bullet_dto.dart
+lib/src/model/report_summary_data_dto.dart
+lib/src/model/report_summary_response_dto.dart
 lib/src/model/report_trend_dto.dart
-lib/src/model/report_weekly_summary_bullet_dto.dart
-lib/src/model/report_weekly_summary_data_dto.dart
-lib/src/model/report_weekly_summary_response_dto.dart
 lib/src/model/reset_password_dto.dart
 lib/src/model/send_verification_code_dto.dart
 lib/src/model/send_verification_code_response_dto.dart
