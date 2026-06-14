@@ -1,5 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
+import 'package:luminous/core/network/lucent_api_exception.dart';
+import 'package:luminous/core/network/lucent_sse.dart';
+
+sealed class TodayAiRemoteEvent {
+  const TodayAiRemoteEvent();
+}
+
+class TodayAiRemoteSummaryEvent extends TodayAiRemoteEvent {
+  const TodayAiRemoteSummaryEvent(this.summary);
+
+  final String summary;
+}
+
+class TodayAiRemoteResultEvent extends TodayAiRemoteEvent {
+  const TodayAiRemoteResultEvent(this.dto);
+
+  final lucent.TodayAnalysisDataDto dto;
+}
 
 class TodayAiRemoteDataSource {
   TodayAiRemoteDataSource({required this.api, required this.dio});
@@ -12,5 +30,60 @@ class TodayAiRemoteDataSource {
       generateTodayAnalysisDto: lucent.GenerateTodayAnalysisDto(date: date),
     );
     return response.data!.data;
+  }
+
+  Stream<TodayAiRemoteEvent> generateStream({String? date}) async* {
+    final sse = LucentSseClient(dio: dio);
+
+    await for (final event in sse.postJson(
+      '/api/v1/user/today-analysis/generate/stream',
+      body: <String, Object?>{
+        if (date != null) 'date': date,
+      },
+    )) {
+      switch (event.event) {
+        case 'summary':
+          final data = event.data;
+          if (data is Map<String, Object?>) {
+            final summary = data['summary'];
+            if (summary is String && summary.trim().isNotEmpty) {
+              yield TodayAiRemoteSummaryEvent(summary);
+            }
+          }
+        case 'result':
+          final json = _requireMap(event.data);
+          yield TodayAiRemoteResultEvent(
+            lucent.TodayAnalysisDataDto.fromJson(json),
+          );
+        case 'error':
+          throw _mapStreamError(event.data);
+        case 'done':
+          return;
+        default:
+          break;
+      }
+    }
+  }
+
+  Map<String, dynamic> _requireMap(Object? data) {
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    if (data is Map) {
+      return data.map(
+        (key, value) => MapEntry(key.toString(), value),
+      );
+    }
+    throw const LucentApiException(message: 'Lucent SSE payload is invalid.');
+  }
+
+  LucentApiException _mapStreamError(Object? data) {
+    final json = _requireMap(data);
+    return LucentApiException(
+      message: json['message']?.toString() ?? 'Request failed.',
+      code: json['code'] is int ? json['code'] as int : null,
+      statusCode: json['statusCode'] is int ? json['statusCode'] as int : null,
+      data: json,
+    );
   }
 }

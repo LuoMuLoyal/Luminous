@@ -101,6 +101,67 @@ void main() {
     );
   });
 
+  test('Today AI provider exposes streaming summary before final result', () async {
+    final repository = _StreamingTodayAiRepository(
+      [
+        const TodayAiGenerationSummaryEvent(
+          'Hydration summary is still streaming.',
+        ),
+        TodayAiGenerationResultEvent(
+          TodayAiAnalysis(
+            date: '2026-06-12',
+            generatedAt: generatedAt,
+            summary: 'Hydration summary is complete.',
+            bullets: const [
+              TodayAiAnalysisBullet(
+                kind: TodayAiAnalysisBulletKind.hydration,
+                text: 'One more glass of water is still recommended.',
+              ),
+            ],
+            actionLabel: 'Review today',
+            confidenceNote: 'Generated from today records only.',
+          ),
+        ),
+      ],
+    );
+
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+        userSettingsControllerProvider.overrideWith(
+          EnabledUserSettingsController.new,
+        ),
+        todayAiRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await container.read(userSettingsControllerProvider.future);
+
+    final states = <TodayAiAnalysisCardState>[];
+    container.listen(
+      todayAiAnalysisControllerProvider,
+      (previous, next) {
+        states.add(next);
+      },
+      fireImmediately: true,
+    );
+
+    final result = await container
+        .read(todayAiAnalysisControllerProvider.notifier)
+        .generate();
+
+    expect(result.status, TodayAiAnalysisCardStatus.success);
+    expect(
+      states.any(
+        (state) =>
+            state.status == TodayAiAnalysisCardStatus.loading &&
+            state.streamingSummary == 'Hydration summary is still streaming.',
+      ),
+      isTrue,
+    );
+  });
+
   test('Today AI provider maps forbidden error to disabled state', () async {
     final repository = _ThrowingTodayAiRepository(
       const LucentApiException(
@@ -165,6 +226,11 @@ class _ImmediateTodayAiRepository implements TodayAiRepository {
   Future<TodayAiAnalysis> generate({String? date}) async {
     return analysis;
   }
+
+  @override
+  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
+    yield TodayAiGenerationResultEvent(analysis);
+  }
 }
 
 class _ThrowingTodayAiRepository implements TodayAiRepository {
@@ -175,5 +241,33 @@ class _ThrowingTodayAiRepository implements TodayAiRepository {
   @override
   Future<TodayAiAnalysis> generate({String? date}) {
     return Future<TodayAiAnalysis>.error(error);
+  }
+
+  @override
+  Stream<TodayAiGenerationEvent> generateStream({String? date}) {
+    return Stream<TodayAiGenerationEvent>.error(error);
+  }
+}
+
+class _StreamingTodayAiRepository implements TodayAiRepository {
+  const _StreamingTodayAiRepository(this.events);
+
+  final List<TodayAiGenerationEvent> events;
+
+  @override
+  Future<TodayAiAnalysis> generate({String? date}) async {
+    await for (final event in generateStream(date: date)) {
+      if (event is TodayAiGenerationResultEvent) {
+        return event.analysis;
+      }
+    }
+    throw StateError('Today AI stream ended without a final result.');
+  }
+
+  @override
+  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
+    for (final event in events) {
+      yield event;
+    }
   }
 }

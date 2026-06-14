@@ -8,8 +8,8 @@ import 'package:lucent_openapi/src/auth/basic_auth.dart';
 import 'package:lucent_openapi/src/auth/bearer_auth.dart';
 import 'package:lucent_openapi/src/auth/oauth.dart';
 import 'package:lucent_openapi/src/api/account_api.dart';
-import 'package:lucent_openapi/src/api/app_api.dart';
 import 'package:lucent_openapi/src/api/auth_api.dart';
+import 'package:lucent_openapi/src/api/app_api.dart';
 import 'package:lucent_openapi/src/api/daily_records_api.dart';
 import 'package:lucent_openapi/src/api/data_export_api.dart';
 import 'package:lucent_openapi/src/api/environment_api.dart';
@@ -117,14 +117,14 @@ class LucentOpenapi {
 
   /// Get AccountApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
-  AppApi getAppApi() {
-    return AppApi(dio);
-  }
-
-  /// Get AccountApi instance, base route and serializer can be overridden by a given but be careful,
-  /// by doing that all interceptors will not be executed
   AccountApi getAccountApi() {
     return AccountApi(dio);
+  }
+
+  /// Get AppApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AppApi getAppApi() {
+    return AppApi(dio);
   }
 
   /// Get AuthApi instance, base route and serializer can be overridden by a given but be careful,

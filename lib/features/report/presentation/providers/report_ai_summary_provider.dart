@@ -44,11 +44,22 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
     );
 
     try {
-      final summary = await ref
+      await for (final event in ref
           .read(reportAiSummaryRepositoryProvider)
-          .generate(range);
-      state = ReportAiSummaryCardState.success(summary);
-      return state;
+          .generateStream(range)) {
+        switch (event) {
+          case ReportAiGenerationSummaryEvent():
+            state = ReportAiSummaryCardState.loading(
+              previousSummary: previousSummary,
+              streamingSummary: event.summary,
+            );
+          case ReportAiGenerationResultEvent():
+            state = ReportAiSummaryCardState.success(event.summary);
+            return state;
+        }
+      }
+
+      throw StateError('Report AI stream ended without a final result.');
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
       if (apiError.code == LucentResultCode.forbidden) {

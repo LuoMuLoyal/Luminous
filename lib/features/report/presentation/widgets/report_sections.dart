@@ -896,38 +896,43 @@ class ReportAiSummarySection extends StatelessWidget {
                       letterSpacing: 0,
                     ),
                   ),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  Wrap(
+                    spacing: AppSpacingTokens.sm,
+                    runSpacing: AppSpacingTokens.sm,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      SegmentedButton<ReportAiSummaryRange>(
+                        key: const Key('report-ai-summary-range-toggle'),
+                        segments: [
+                          ButtonSegment(
+                            value: ReportAiSummaryRange.last7Days,
+                            label: Text(l10n.reportRangeLast7Days),
+                          ),
+                          ButtonSegment(
+                            value: ReportAiSummaryRange.last30Days,
+                            label: Text(l10n.reportRangeLast30Days),
+                          ),
+                        ],
+                        selected: {selectedRange},
+                        onSelectionChanged: onRangeChanged == null
+                            ? null
+                            : (selection) {
+                                if (selection.isNotEmpty) {
+                                  onRangeChanged!(selection.first);
+                                }
+                              },
+                      ),
+                      if (actionLabel != null)
+                        OutlinedButton(
+                          onPressed: () => showReportToast(context, actionLabel),
+                          child: Text(actionLabel),
+                        ),
+                    ],
+                  ),
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
-            SegmentedButton<ReportAiSummaryRange>(
-              key: const Key('report-ai-summary-range-toggle'),
-              segments: [
-                ButtonSegment(
-                  value: ReportAiSummaryRange.last7Days,
-                  label: Text(l10n.reportRangeLast7Days),
-                ),
-                ButtonSegment(
-                  value: ReportAiSummaryRange.last30Days,
-                  label: Text(l10n.reportRangeLast30Days),
-                ),
-              ],
-              selected: {selectedRange},
-              onSelectionChanged: onRangeChanged == null
-                  ? null
-                  : (selection) {
-                      if (selection.isNotEmpty) {
-                        onRangeChanged!(selection.first);
-                      }
-                    },
-            ),
-            if (actionLabel != null) ...[
-              const SizedBox(width: AppSpacingTokens.sm),
-              OutlinedButton(
-                onPressed: () => showReportToast(context, actionLabel),
-                child: Text(actionLabel),
-              ),
-            ],
           ],
         ),
         const SizedBox(height: AppSpacingTokens.md),
@@ -1485,6 +1490,7 @@ _ReportAiSummaryContent _buildReportAiSummaryContent({
   if (aiState.status == ReportAiSummaryCardStatus.loading) {
     return _ReportAiSummaryContent(
       subtitle: _reportAiSummarySubtitle(l10n, selectedRange),
+      summaryText: aiState.streamingSummary,
       bullets: [
         _ReportAiSummaryItem(
           color: ReportPalette.green,

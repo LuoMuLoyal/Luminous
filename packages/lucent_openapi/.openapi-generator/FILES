@@ -134,6 +134,7 @@ lib/src/model/report_pattern_dto.dart
 lib/src/model/report_summary_bullet_dto.dart
 lib/src/model/report_summary_data_dto.dart
 lib/src/model/report_summary_response_dto.dart
+lib/src/model/report_summary_stream_result_dto.dart
 lib/src/model/report_trend_dto.dart
 lib/src/model/reset_password_dto.dart
 lib/src/model/send_verification_code_dto.dart
@@ -149,6 +150,7 @@ lib/src/model/temperature_indicator_dto.dart
 lib/src/model/today_analysis_bullet_dto.dart
 lib/src/model/today_analysis_data_dto.dart
 lib/src/model/today_analysis_response_dto.dart
+lib/src/model/today_analysis_stream_result_dto.dart
 lib/src/model/tokens_dto.dart
 lib/src/model/unit_system.dart
 lib/src/model/update_account_dto.dart

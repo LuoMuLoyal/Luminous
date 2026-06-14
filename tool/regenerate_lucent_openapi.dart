@@ -136,6 +136,15 @@ Future<void> main() async {
       stepName: 'Format generated model files',
     );
 
+    final patchedApiExports = _patchMissingGeneratedApiExports(
+      generatedPackageRoot,
+    );
+    stdout.writeln(
+      patchedApiExports == 0
+          ? 'No generated API export/getter patches were needed.'
+          : 'Patched $patchedApiExports generated API export/getter gaps.',
+    );
+
     await _runCommand(
       'dart',
       ['analyze', '--no-fatal-warnings'],
@@ -352,6 +361,98 @@ int _deleteGeneratedNoiseArtifacts(Directory generatedPackageRoot) {
   }
 
   return deletedArtifacts;
+}
+
+int _patchMissingGeneratedApiExports(Directory generatedPackageRoot) {
+  var patchedFiles = 0;
+
+  final publicExportFile = File(
+    '${generatedPackageRoot.path}${Platform.pathSeparator}lib'
+    '${Platform.pathSeparator}lucent_openapi.dart',
+  );
+  if (_ensureLineAfter(
+    publicExportFile,
+    "export 'package:lucent_openapi/src/api/auth_api.dart';",
+    "export 'package:lucent_openapi/src/api/app_api.dart';",
+  )) {
+    patchedFiles += 1;
+  }
+
+  final apiRootFile = File(
+    '${generatedPackageRoot.path}${Platform.pathSeparator}lib'
+    '${Platform.pathSeparator}src${Platform.pathSeparator}api.dart',
+  );
+  if (_ensureLineAfter(
+    apiRootFile,
+    "import 'package:lucent_openapi/src/api/auth_api.dart';",
+    "import 'package:lucent_openapi/src/api/app_api.dart';",
+  )) {
+    patchedFiles += 1;
+  }
+
+  if (_ensureGetterInApiRoot(apiRootFile)) {
+    patchedFiles += 1;
+  }
+
+  return patchedFiles;
+}
+
+bool _ensureLineAfter(File file, String anchor, String lineToInsert) {
+  if (!file.existsSync()) {
+    return false;
+  }
+
+  final original = file.readAsStringSync();
+  if (original.contains(lineToInsert)) {
+    return false;
+  }
+
+  final newline = original.contains('\r\n') ? '\r\n' : '\n';
+  final anchorWithNewline = '$anchor$newline';
+  final updated = original.replaceFirst(
+    anchorWithNewline,
+    '$anchor$newline$lineToInsert$newline',
+  );
+
+  if (updated == original) {
+    return false;
+  }
+
+  file.writeAsStringSync(updated);
+  return true;
+}
+
+bool _ensureGetterInApiRoot(File apiRootFile) {
+  if (!apiRootFile.existsSync()) {
+    return false;
+  }
+
+  final original = apiRootFile.readAsStringSync();
+  if (original.contains('AppApi getAppApi()')) {
+    return false;
+  }
+
+  const anchor = '''  /// Get AuthApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AuthApi getAuthApi() {
+    return AuthApi(dio);
+  }
+''';
+  const insertion = '''  /// Get AppApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AppApi getAppApi() {
+    return AppApi(dio);
+  }
+
+''';
+
+  if (!original.contains(anchor)) {
+    return false;
+  }
+
+  final updated = original.replaceFirst(anchor, '$insertion$anchor');
+  apiRootFile.writeAsStringSync(updated);
+  return true;
 }
 
 final _brokenNullableMapEntryPattern = RegExp(

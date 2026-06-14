@@ -113,10 +113,12 @@ Class | Method | HTTP request | Description
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
 [*ReminderDeliveriesApi*](doc/ReminderDeliveriesApi.md) | [**reminderDeliveriesControllerListV1**](doc/ReminderDeliveriesApi.md#reminderdeliveriescontrollerlistv1) | **GET** /api/v1/user/reminder-deliveries | List reminder delivery audit logs
+[*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGenerateSummaryStreamV1**](doc/ReportsApi.md#reportscontrollergeneratesummarystreamv1) | **POST** /api/v1/user/reports/summary/generate/stream | Stream authenticated user AI summary generation for report
 [*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGenerateSummaryV1**](doc/ReportsApi.md#reportscontrollergeneratesummaryv1) | **POST** /api/v1/user/reports/summary/generate | Generate authenticated user AI summary for report
 [*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGetDashboardV1**](doc/ReportsApi.md#reportscontrollergetdashboardv1) | **GET** /api/v1/user/reports/dashboard | Get authenticated user report dashboard
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetAppInfoV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetappinfov1) | **GET** /api/v1/public/app-info | Get application metadata
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetResourcesV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetresourcesv1) | **GET** /api/v1/public/support-resources | Get static support resource entries
+[*TodayAnalysisApi*](doc/TodayAnalysisApi.md) | [**todayAnalysisControllerGenerateStreamV1**](doc/TodayAnalysisApi.md#todayanalysiscontrollergeneratestreamv1) | **POST** /api/v1/user/today-analysis/generate/stream | Stream authenticated user today AI analysis generation
 [*TodayAnalysisApi*](doc/TodayAnalysisApi.md) | [**todayAnalysisControllerGenerateV1**](doc/TodayAnalysisApi.md#todayanalysiscontrollergeneratev1) | **POST** /api/v1/user/today-analysis/generate | Generate authenticated user today AI analysis
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/user/health-context/allergies | Create an allergy record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateConditionV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateconditionv1) | **POST** /api/v1/user/health-context/conditions | Create a condition record
@@ -244,6 +246,7 @@ Class | Method | HTTP request | Description
  - [ReportSummaryBulletDto](doc/ReportSummaryBulletDto.md)
  - [ReportSummaryDataDto](doc/ReportSummaryDataDto.md)
  - [ReportSummaryResponseDto](doc/ReportSummaryResponseDto.md)
+ - [ReportSummaryStreamResultDto](doc/ReportSummaryStreamResultDto.md)
  - [ReportTrendDto](doc/ReportTrendDto.md)
  - [ResetPasswordDto](doc/ResetPasswordDto.md)
  - [SendVerificationCodeDto](doc/SendVerificationCodeDto.md)
@@ -259,6 +262,7 @@ Class | Method | HTTP request | Description
  - [TodayAnalysisBulletDto](doc/TodayAnalysisBulletDto.md)
  - [TodayAnalysisDataDto](doc/TodayAnalysisDataDto.md)
  - [TodayAnalysisResponseDto](doc/TodayAnalysisResponseDto.md)
+ - [TodayAnalysisStreamResultDto](doc/TodayAnalysisStreamResultDto.md)
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
  - [UpdateAccountDto](doc/UpdateAccountDto.md)

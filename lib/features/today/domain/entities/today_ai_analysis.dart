@@ -34,6 +34,7 @@ class TodayAiAnalysisCardState {
   const TodayAiAnalysisCardState({
     required this.status,
     this.analysis,
+    this.streamingSummary,
     this.errorMessage,
   });
 
@@ -42,9 +43,11 @@ class TodayAiAnalysisCardState {
 
   const TodayAiAnalysisCardState.loading({
     TodayAiAnalysis? previousAnalysis,
+    String? streamingSummary,
   }) : this(
          status: TodayAiAnalysisCardStatus.loading,
          analysis: previousAnalysis,
+         streamingSummary: streamingSummary,
        );
 
   const TodayAiAnalysisCardState.success(TodayAiAnalysis analysis)
@@ -67,6 +70,7 @@ class TodayAiAnalysisCardState {
 
   final TodayAiAnalysisCardStatus status;
   final TodayAiAnalysis? analysis;
+  final String? streamingSummary;
   final String? errorMessage;
 
   bool get isLoading => status == TodayAiAnalysisCardStatus.loading;

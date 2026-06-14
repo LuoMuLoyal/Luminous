@@ -93,6 +93,7 @@ import 'package:lucent_openapi/src/model/report_pattern_dto.dart';
 import 'package:lucent_openapi/src/model/report_summary_bullet_dto.dart';
 import 'package:lucent_openapi/src/model/report_summary_data_dto.dart';
 import 'package:lucent_openapi/src/model/report_summary_response_dto.dart';
+import 'package:lucent_openapi/src/model/report_summary_stream_result_dto.dart';
 import 'package:lucent_openapi/src/model/report_trend_dto.dart';
 import 'package:lucent_openapi/src/model/reset_password_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
@@ -105,6 +106,7 @@ import 'package:lucent_openapi/src/model/temperature_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/today_analysis_bullet_dto.dart';
 import 'package:lucent_openapi/src/model/today_analysis_data_dto.dart';
 import 'package:lucent_openapi/src/model/today_analysis_response_dto.dart';
+import 'package:lucent_openapi/src/model/today_analysis_stream_result_dto.dart';
 import 'package:lucent_openapi/src/model/tokens_dto.dart';
 import 'package:lucent_openapi/src/model/update_account_dto.dart';
 import 'package:lucent_openapi/src/model/update_current_medicine_dto.dart';
@@ -379,6 +381,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return ReportSummaryDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ReportSummaryResponseDto':
           return ReportSummaryResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'ReportSummaryStreamResultDto':
+          return ReportSummaryStreamResultDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ReportTrendDto':
           return ReportTrendDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ResetPasswordDto':
@@ -412,6 +416,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return TodayAnalysisDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'TodayAnalysisResponseDto':
           return TodayAnalysisResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'TodayAnalysisStreamResultDto':
+          return TodayAnalysisStreamResultDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'TokensDto':
           return TokensDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UnitSystem':

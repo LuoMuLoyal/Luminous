@@ -6,8 +6,25 @@ import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/features/report/data/datasources/report_ai_summary_remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 
+sealed class ReportAiGenerationEvent {
+  const ReportAiGenerationEvent();
+}
+
+class ReportAiGenerationSummaryEvent extends ReportAiGenerationEvent {
+  const ReportAiGenerationSummaryEvent(this.summary);
+
+  final String summary;
+}
+
+class ReportAiGenerationResultEvent extends ReportAiGenerationEvent {
+  const ReportAiGenerationResultEvent(this.summary);
+
+  final ReportAiSummary summary;
+}
+
 abstract interface class ReportAiSummaryRepository {
   Future<ReportAiSummary> generate(ReportAiSummaryRange range);
+  Stream<ReportAiGenerationEvent> generateStream(ReportAiSummaryRange range);
 }
 
 final reportAiSummaryRemoteDataSourceProvider =
@@ -31,7 +48,29 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
 
   @override
   Future<ReportAiSummary> generate(ReportAiSummaryRange range) async {
-    final dto = await dataSource.generate(range);
+    await for (final event in generateStream(range)) {
+      if (event is ReportAiGenerationResultEvent) {
+        return event.summary;
+      }
+    }
+    throw StateError('Report AI stream ended without a final result.');
+  }
+
+  @override
+  Stream<ReportAiGenerationEvent> generateStream(
+    ReportAiSummaryRange range,
+  ) async* {
+    await for (final event in dataSource.generateStream(range)) {
+      switch (event) {
+        case ReportAiRemoteSummaryEvent():
+          yield ReportAiGenerationSummaryEvent(event.summary);
+        case ReportAiRemoteResultEvent():
+          yield ReportAiGenerationResultEvent(_mapSummary(event.dto));
+      }
+    }
+  }
+
+  ReportAiSummary _mapSummary(lucent.ReportSummaryDataDto dto) {
     return ReportAiSummary(
       range: _mapRange(dto.range),
       startDate: dto.startDate,
