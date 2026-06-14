@@ -15,8 +15,8 @@ This file records work that is still missing or intentionally gated. Current fac
   Needed outcome: connect at least one real export request/start flow, or narrow the product promise/documentation so “export” is not presented as an active MVP action.
 
 - Campus service entries are fetched from contract-backed support resources, but they are not actionable in the app yet.
-  Current state: Mine renders real campus/support/pharmacy/emergency rows from `GET /api/v1/public/support-resources?scope=campus`, but tapping those rows still shows toast-only placeholder behavior.
-  Needed outcome: open supported external/internal actions when the resource includes a usable action target, and keep only unsupported resource types as non-actionable.
+  Current state: Mine renders real campus/support/pharmacy/emergency rows from `GET /api/v1/public/support-resources?scope=campus`, and rows without a server target are visible but disabled instead of pretending to open anything.
+  Needed outcome: open supported external/internal actions when the resource includes a usable action target.
 
 - NLP partial-save recovery is still toast-led.
   Current state: failed candidate rows stay in place with item-level error text, which is enough for now, but there is no stronger retry/review affordance yet.

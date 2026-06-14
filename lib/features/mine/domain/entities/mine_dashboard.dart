@@ -118,7 +118,8 @@ class MineActionEntry {
     required this.subtitleKey,
     this.rawTitle,
     this.rawSubtitle,
-    this.route,
+    this.actionType,
+    this.actionTarget,
   });
 
   final IconData icon;
@@ -131,8 +132,11 @@ class MineActionEntry {
 
   /// Server-provided display subtitle; takes precedence over [subtitleKey].
   final String? rawSubtitle;
-  final String? route;
+  final MineActionTargetType? actionType;
+  final String? actionTarget;
 }
+
+enum MineActionTargetType { internal, url, phone }
 
 class MinePrivacyNotice {
   const MinePrivacyNotice({

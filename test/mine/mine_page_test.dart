@@ -11,6 +11,7 @@ import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/mine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
@@ -388,6 +389,53 @@ void main() {
       dashboard.account.lastLoginAt,
       DateTime.parse('2026-01-02T08:30:00Z'),
     );
+  });
+
+  testWidgets('Mine campus services stay visible but inactive without targets', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _EmailSignedInAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(_mockSnapshot),
+          ),
+          supportResourcesProvider('campus').overrideWith((ref) async => [
+            SupportResourceDto(
+              id: 'campus-hospital',
+              scope: SupportResourceScope.campus,
+              title: 'Campus Hospital',
+              titleKey: null,
+              subtitle: 'On-campus medical services',
+              subtitleKey: null,
+              icon: 'local_hospital',
+              actionUrl: null,
+              actionType: null,
+              available: false,
+            ),
+          ]),
+        ],
+        child: _materialApp(const MinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text(l10n.mineCampusSectionTitle), findsOneWidget);
+    expect(find.text('Campus Hospital'), findsOneWidget);
+
+    final campusRow = find.ancestor(
+      of: find.text('Campus Hospital'),
+      matching: find.byType(InkWell),
+    );
+    expect(campusRow, findsOneWidget);
+    expect(tester.widget<InkWell>(campusRow).onTap, isNull);
   });
 }
 
