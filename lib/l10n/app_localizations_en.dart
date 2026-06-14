@@ -263,7 +263,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordNlpSaveAllAction => 'Save all';
 
   @override
+  String recordNlpSaveSelectedAction(int count) {
+    return 'Save selected ($count)';
+  }
+
+  @override
   String get recordNlpSavingAction => 'Saving';
+
+  @override
+  String recordNlpSelectedCountHint(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items selected and ready to edit',
+      one: '1 item selected and ready to edit',
+      zero: 'No items selected yet',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get recordNlpInputRequiredToast => 'Enter a short record note first.';
@@ -277,6 +294,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'There are no candidate records to save.';
 
   @override
+  String get recordNlpNoCandidatesSelectedToast =>
+      'Select at least one candidate record first.';
+
+  @override
   String recordNlpSavedToast(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -286,6 +307,16 @@ class AppLocalizationsEn extends AppLocalizations {
       zero: 'Saved 0 records',
     );
     return '$_temp0';
+  }
+
+  @override
+  String recordNlpPartialSavedToast(int savedCount, int failedCount) {
+    return 'Saved $savedCount record(s), and $failedCount failed.';
+  }
+
+  @override
+  String recordNlpCandidateSaveFailedHint(String message) {
+    return 'Last save failed for this item: $message';
   }
 
   @override

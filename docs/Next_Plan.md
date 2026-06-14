@@ -63,11 +63,11 @@ Natural-language record intake phase 1 is now active on mobile Record. Next focu
    - Phase 1 now exists on mobile Record:
      - FAB + AI input bar open one shared bottom sheet
      - text note -> Lucent candidate records
-     - user can remove candidates
-     - save-all writes confirmed records through existing daily-record create flow
+     - user can edit/select/remove candidates
+     - save-selected writes confirmed records through existing daily-record create flow
    - Next tightening order:
-     - candidate editing instead of delete-only review
-     - explicit per-kind formatting polish for meal / symptom / sleep candidate cards
+     - richer per-kind editing polish for meal / symptom / sleep candidate cards
+     - explicit partial-failure surface beyond toast-only feedback
      - lightweight widget/integration coverage for the new sheet flow
      - only after that, reconsider voice-to-text as a text-prefill path
    - Do not expand this into broad “AI everywhere” work before the candidate-review lane is stable.

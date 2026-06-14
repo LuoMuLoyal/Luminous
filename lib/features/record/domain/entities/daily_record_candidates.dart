@@ -48,4 +48,38 @@ class DailyRecordCandidateItem {
   final String? note;
   final Map<String, dynamic>? payload;
   final String rationale;
+
+  DailyRecordCandidateItem copyWith({
+    DailyRecordKind? kind,
+    String? occurredAt,
+    Object? title = _dailyRecordCandidateNoChange,
+    Object? value = _dailyRecordCandidateNoChange,
+    Object? unit = _dailyRecordCandidateNoChange,
+    Object? note = _dailyRecordCandidateNoChange,
+    Object? payload = _dailyRecordCandidateNoChange,
+    String? rationale,
+  }) {
+    return DailyRecordCandidateItem(
+      kind: kind ?? this.kind,
+      occurredAt: occurredAt ?? this.occurredAt,
+      title: identical(title, _dailyRecordCandidateNoChange)
+          ? this.title
+          : title as String?,
+      value: identical(value, _dailyRecordCandidateNoChange)
+          ? this.value
+          : value as String?,
+      unit: identical(unit, _dailyRecordCandidateNoChange)
+          ? this.unit
+          : unit as String?,
+      note: identical(note, _dailyRecordCandidateNoChange)
+          ? this.note
+          : note as String?,
+      payload: identical(payload, _dailyRecordCandidateNoChange)
+          ? this.payload
+          : payload as Map<String, dynamic>?,
+      rationale: rationale ?? this.rationale,
+    );
+  }
 }
+
+const _dailyRecordCandidateNoChange = Object();

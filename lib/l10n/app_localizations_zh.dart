@@ -242,7 +242,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordNlpSaveAllAction => '保存全部';
 
   @override
+  String recordNlpSaveSelectedAction(int count) {
+    return '保存选中项（$count）';
+  }
+
+  @override
   String get recordNlpSavingAction => '保存中';
+
+  @override
+  String recordNlpSelectedCountHint(int count) {
+    return '已选中 $count 条，可先改再存。';
+  }
 
   @override
   String get recordNlpInputRequiredToast => '先输入一段记录描述。';
@@ -254,8 +264,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordNlpNoCandidatesToSaveToast => '没有可保存的候选记录。';
 
   @override
+  String get recordNlpNoCandidatesSelectedToast => '先选中至少一条候选记录。';
+
+  @override
   String recordNlpSavedToast(int count) {
     return '已保存 $count 条记录';
+  }
+
+  @override
+  String recordNlpPartialSavedToast(int savedCount, int failedCount) {
+    return '已保存 $savedCount 条，另有 $failedCount 条保存失败。';
+  }
+
+  @override
+  String recordNlpCandidateSaveFailedHint(String message) {
+    return '这条上次保存失败：$message';
   }
 
   @override

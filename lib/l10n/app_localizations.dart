@@ -548,11 +548,23 @@ abstract class AppLocalizations {
   /// **'保存全部'**
   String get recordNlpSaveAllAction;
 
+  /// No description provided for @recordNlpSaveSelectedAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存选中项（{count}）'**
+  String recordNlpSaveSelectedAction(int count);
+
   /// No description provided for @recordNlpSavingAction.
   ///
   /// In zh, this message translates to:
   /// **'保存中'**
   String get recordNlpSavingAction;
+
+  /// No description provided for @recordNlpSelectedCountHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'已选中 {count} 条，可先改再存。'**
+  String recordNlpSelectedCountHint(int count);
 
   /// No description provided for @recordNlpInputRequiredToast.
   ///
@@ -572,11 +584,29 @@ abstract class AppLocalizations {
   /// **'没有可保存的候选记录。'**
   String get recordNlpNoCandidatesToSaveToast;
 
+  /// No description provided for @recordNlpNoCandidatesSelectedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'先选中至少一条候选记录。'**
+  String get recordNlpNoCandidatesSelectedToast;
+
   /// No description provided for @recordNlpSavedToast.
   ///
   /// In zh, this message translates to:
   /// **'已保存 {count} 条记录'**
   String recordNlpSavedToast(int count);
+
+  /// No description provided for @recordNlpPartialSavedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存 {savedCount} 条，另有 {failedCount} 条保存失败。'**
+  String recordNlpPartialSavedToast(int savedCount, int failedCount);
+
+  /// No description provided for @recordNlpCandidateSaveFailedHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'这条上次保存失败：{message}'**
+  String recordNlpCandidateSaveFailedHint(String message);
 
   /// No description provided for @recordSummarySectionTitle.
   ///
