@@ -245,6 +245,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordNlpResetAction => 'Clear';
 
   @override
+  String get recordNlpMealTitleOptional => 'Meal label / title (optional)';
+
+  @override
+  String get recordNlpSymptomTitleLabel => 'Symptom name';
+
+  @override
+  String get recordNlpNoteBodyLabel => 'Content';
+
+  @override
+  String get recordNlpDetailsLabel => 'Details';
+
+  @override
   String recordNlpCandidatesTitle(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

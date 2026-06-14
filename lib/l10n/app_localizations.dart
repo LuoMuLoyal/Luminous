@@ -530,6 +530,30 @@ abstract class AppLocalizations {
   /// **'清空'**
   String get recordNlpResetAction;
 
+  /// No description provided for @recordNlpMealTitleOptional.
+  ///
+  /// In zh, this message translates to:
+  /// **'餐次 / 标题（可选）'**
+  String get recordNlpMealTitleOptional;
+
+  /// No description provided for @recordNlpSymptomTitleLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'症状名称'**
+  String get recordNlpSymptomTitleLabel;
+
+  /// No description provided for @recordNlpNoteBodyLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'内容'**
+  String get recordNlpNoteBodyLabel;
+
+  /// No description provided for @recordNlpDetailsLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'补充说明'**
+  String get recordNlpDetailsLabel;
+
   /// No description provided for @recordNlpCandidatesTitle.
   ///
   /// In zh, this message translates to:

@@ -239,6 +239,80 @@ void main() {
   );
 
   testWidgets(
+    'Record natural-language water candidate uses unit dropdown and saves selected unit',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final repo = _FakeDailyRecordRepository(
+        generatedCandidates: const DailyRecordCandidateResult(
+          locale: 'zh-CN',
+          generatedAt: '2026-06-14T00:00:00.000Z',
+          confirmationHint: '确认后再保存。',
+          items: [
+            DailyRecordCandidateItem(
+              kind: DailyRecordKind.water,
+              occurredAt: '2026-06-14',
+              value: '2',
+              unit: 'cup',
+              rationale: '识别到饮水记录。',
+            ),
+          ],
+        ),
+      );
+
+      await _pumpRecordPage(
+        tester,
+        dailyRecordRepository: repo,
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('record-ai-input')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('record-nlp-input-field')),
+        '今天喝了两杯水',
+      );
+      await tester.tap(find.byKey(const Key('record-nlp-generate-action')));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('record-nlp-candidate-unit-0-cup')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byKey(const Key('record-nlp-candidate-unit-0-cup')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('次').last);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('record-nlp-candidate-unit-0-times')),
+        findsOneWidget,
+      );
+
+      final saveSelectedAction = find.byKey(
+        const Key('record-nlp-save-selected-action'),
+      );
+      await tester.ensureVisible(saveSelectedAction);
+      await tester.pump();
+      await tester.tap(saveSelectedAction);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 3));
+
+      expect(repo.createdInputs, hasLength(1));
+      expect(repo.createdInputs.single.kind, DailyRecordKind.water);
+      expect(repo.createdInputs.single.value, '2');
+      expect(repo.createdInputs.single.unit, 'times');
+    },
+  );
+
+  testWidgets(
     'Record page keeps period and vitals quick actions hidden in MVP',
     (tester) async {
       tester.view.devicePixelRatio = 1;

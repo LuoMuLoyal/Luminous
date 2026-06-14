@@ -6,32 +6,19 @@ This file records the next implementation order only. Completed work belongs in 
 
 ## Current Goal
 
-Natural-language record intake phase 1 is now active on mobile Record. Next focus should stay on making that lane more usable instead of jumping straight to broader AI surfaces.
+Natural-language record intake phase 1 is now usable enough for MVP continuation. Next focus should move back to missing core product features instead of spending another round on local polish.
 
 ## Immediate Work Order
 
-1. **Sleep contract + persistence MVP** ✅ DONE
-   - Execution plan reference:
-     - `Luminous/plans/2026-06-13-sleep-contract-slice.md`
-   - Completed:
-     - Lucent `DailyRecordKind.sleep` enum + payload field on DTOs
-     - Lucent today-analysis reads real sleep data from payload
-     - Lucent reports compute real sleep metrics from persisted data
-     - Luminous Record create/detail/edit/timeline/filter wiring for sleep
-     - Luminous Today sleep summary reads real duration from payload
-     - Luminous Report sleep trend uses real backend data
-     - Sleep payload supports: startAt, endAt, durationMinutes, quality, deepMinutes, lightMinutes, remMinutes
+1. **Close the biggest remaining fake surfaces**
+   - Priority order:
+     - wire Mine campus/support resource taps to real actions when `actionUrl` is usable
+     - wire at least one Report export action to the existing Lucent data-export request flow
+     - decide whether the Medicine risk-check entry can be connected to a real source-backed flow now; if not, narrow the visible promise so it stops reading like an implemented feature
+   - Success signal:
+     - at least one previously toast-only MVP-facing entry becomes real, or the UI/doc promise is explicitly narrowed
 
-2. **Sleep structured fields — frontend delivery** ✅ DONE
-   - Completed:
-     - Removed the old sleep value/unit form path and replaced it with bedtime, wake time, quality, and stage-duration inputs
-     - `record_create.dart` and `record_edit.dart` now write/read the full structured payload
-     - `record_detail.dart` now renders time range, duration, quality, and sleep-stage rows
-     - sleep timeline rows now derive a compact duration label from payload even when `value/unit` are intentionally null
-     - identical bedtime and wake time are rejected instead of being interpreted as a 24-hour sleep
-     - offline/full-stack sleep integration lanes now drive keyed pickers directly without extra `dart-define` setup
-
-3. **Local full-stack lane usage rule**
+2. **Local full-stack lane usage rule**
    - Keep the current emulator + Lucent full-stack gate out of GitHub Actions for now.
    - Repo-safe daily entry:
      - `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
@@ -59,18 +46,19 @@ Natural-language record intake phase 1 is now active on mobile Record. Next focu
      - before merging changes to the full-stack E2E helper or generated auth/record client surface
      - before cutting a mobile test build that claims Record CRUD is stable
 
-4. **Natural-language record intake follow-up**
+3. **Natural-language record intake follow-up**
    - Phase 1 now exists on mobile Record:
      - FAB + AI input bar open one shared bottom sheet
      - text note -> Lucent candidate records
      - user can edit/select/remove candidates
      - save-selected writes confirmed records through existing daily-record create flow
-   - Next tightening order:
-     - richer per-kind editing polish for meal / symptom / sleep candidate cards
+   - Current stopping point:
+     - per-kind edit polish is in place for water / meal / symptom / note / sleep
+     - sheet has focused widget coverage for editable/selective save plus water unit switching
+   - Remaining follow-up only when it blocks MVP usage:
      - explicit partial-failure surface beyond toast-only feedback
-     - lightweight widget/integration coverage for the new sheet flow
-     - only after that, reconsider voice-to-text as a text-prefill path
-   - Do not expand this into broad “AI everywhere” work before the candidate-review lane is stable.
+     - one real integration lane for NLP review/save if this flow starts regressing
+   - Do not expand this into broad “AI everywhere” work before missing non-AI MVP capability gaps are closed.
 
 ## Deferred But Useful
 

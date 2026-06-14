@@ -231,6 +231,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordNlpResetAction => '清空';
 
   @override
+  String get recordNlpMealTitleOptional => '餐次 / 标题（可选）';
+
+  @override
+  String get recordNlpSymptomTitleLabel => '症状名称';
+
+  @override
+  String get recordNlpNoteBodyLabel => '内容';
+
+  @override
+  String get recordNlpDetailsLabel => '补充说明';
+
+  @override
   String recordNlpCandidatesTitle(int count) {
     return '候选记录 · $count 条';
   }

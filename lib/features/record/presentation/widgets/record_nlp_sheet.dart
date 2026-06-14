@@ -5,6 +5,7 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
+import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -384,6 +385,28 @@ class _CandidateTile extends StatelessWidget {
   ) {
     final title = item.title?.trim();
     if (title != null && title.isNotEmpty) return title;
+    final value = item.value?.trim();
+    final note = item.note?.trim();
+
+    switch (item.kind) {
+      case DailyRecordKind.water:
+        if (value != null && value.isNotEmpty) {
+          return '$value ${_waterUnitLabel(l10n, item.unit)}';
+        }
+      case DailyRecordKind.meal:
+      case DailyRecordKind.symptom:
+        if (value != null && value.isNotEmpty) return value;
+      case DailyRecordKind.note:
+        final preview = _previewText(note);
+        if (preview != null) return preview;
+      case DailyRecordKind.sleep:
+        final summary = _sleepSummary(l10n, item.payload);
+        if (summary != null) return summary;
+      case DailyRecordKind.vital:
+      case DailyRecordKind.mood:
+      case DailyRecordKind.activity:
+        break;
+    }
     return _kindLabel(l10n, item.kind);
   }
 
@@ -396,6 +419,37 @@ class _CandidateTile extends StatelessWidget {
       DailyRecordKind.sleep => l10n.recordTypeSleep,
       _ => kind.name,
     };
+  }
+
+  String _waterUnitLabel(AppLocalizations l10n, String? unit) {
+    return switch (_normalizedWaterUnit(unit)) {
+      dailyRecordWaterCupUnit => l10n.recordWaterUnitCup,
+      dailyRecordWaterTimesUnit => l10n.recordWaterUnitTimes,
+      _ => l10n.recordWaterUnitMl,
+    };
+  }
+
+  String? _sleepSummary(
+    AppLocalizations l10n,
+    Map<String, dynamic>? payload,
+  ) {
+    final duration = payload?['durationMinutes'];
+    if (duration is! num || duration <= 0) return null;
+    final minutes = duration.round();
+    final hoursPart = minutes ~/ 60;
+    final minutePart = minutes % 60;
+    if (minutePart == 0) {
+      return '${l10n.recordSleepDurationLabel} $hoursPart${l10n.todayVitalSleepUnit}';
+    }
+    return '${l10n.recordSleepDurationLabel} $hoursPart${l10n.todayVitalSleepUnit} $minutePart${l10n.recordSleepMinutesUnit}';
+  }
+
+  String? _previewText(String? value) {
+    if (value == null || value.isEmpty) return null;
+    final singleLine = value.replaceAll('\n', ' ').trim();
+    if (singleLine.isEmpty) return null;
+    if (singleLine.length <= 24) return singleLine;
+    return '${singleLine.substring(0, 24)}...';
   }
 }
 
@@ -419,7 +473,6 @@ class _CandidateEditor extends StatefulWidget {
 class _CandidateEditorState extends State<_CandidateEditor> {
   late final TextEditingController _titleController;
   late final TextEditingController _valueController;
-  late final TextEditingController _unitController;
   late final TextEditingController _noteController;
 
   @override
@@ -427,7 +480,6 @@ class _CandidateEditorState extends State<_CandidateEditor> {
     super.initState();
     _titleController = TextEditingController(text: widget.item.title ?? '');
     _valueController = TextEditingController(text: widget.item.value ?? '');
-    _unitController = TextEditingController(text: widget.item.unit ?? '');
     _noteController = TextEditingController(text: widget.item.note ?? '');
   }
 
@@ -440,9 +492,6 @@ class _CandidateEditorState extends State<_CandidateEditor> {
     if (oldWidget.item.value != widget.item.value) {
       _valueController.text = widget.item.value ?? '';
     }
-    if (oldWidget.item.unit != widget.item.unit) {
-      _unitController.text = widget.item.unit ?? '';
-    }
     if (oldWidget.item.note != widget.item.note) {
       _noteController.text = widget.item.note ?? '';
     }
@@ -452,7 +501,6 @@ class _CandidateEditorState extends State<_CandidateEditor> {
   void dispose() {
     _titleController.dispose();
     _valueController.dispose();
-    _unitController.dispose();
     _noteController.dispose();
     super.dispose();
   }
@@ -471,7 +519,7 @@ class _CandidateEditorState extends State<_CandidateEditor> {
             controller: _titleController,
             enabled: widget.enabled,
             decoration: InputDecoration(
-              labelText: l10n.recordCreateFieldTitleOptional,
+              labelText: _titleLabel(l10n, kind),
             ),
             onChanged: (value) => _emit(title: value),
           ),
@@ -486,6 +534,7 @@ class _CandidateEditorState extends State<_CandidateEditor> {
                     key: Key('record-nlp-candidate-value-${widget.index}'),
                     controller: _valueController,
                     enabled: widget.enabled,
+                    keyboardType: _valueKeyboardType(kind),
                     decoration: InputDecoration(
                       labelText: _valueLabel(l10n, kind),
                     ),
@@ -496,13 +545,10 @@ class _CandidateEditorState extends State<_CandidateEditor> {
                 const SizedBox(width: AppSpacingTokens.sm),
               if (_shouldShowUnit(kind))
                 Expanded(
-                  child: TextField(
-                    key: Key('record-nlp-candidate-unit-${widget.index}'),
-                    controller: _unitController,
+                  child: _WaterUnitField(
+                    index: widget.index,
                     enabled: widget.enabled,
-                    decoration: InputDecoration(
-                      labelText: l10n.recordCreateFieldUnit,
-                    ),
+                    value: widget.item.unit,
                     onChanged: (value) => _emit(unit: value),
                   ),
                 ),
@@ -523,8 +569,9 @@ class _CandidateEditorState extends State<_CandidateEditor> {
           key: Key('record-nlp-candidate-note-${widget.index}'),
           controller: _noteController,
           enabled: widget.enabled,
-          maxLines: 2,
-          decoration: InputDecoration(labelText: l10n.recordCreateFieldNote),
+          minLines: _noteMinLines(kind),
+          maxLines: _noteMaxLines(kind),
+          decoration: InputDecoration(labelText: _noteLabel(l10n, kind)),
           onChanged: (value) => _emit(note: value),
         ),
       ],
@@ -564,6 +611,44 @@ class _CandidateEditorState extends State<_CandidateEditor> {
     };
   }
 
+  String _titleLabel(AppLocalizations l10n, DailyRecordKind kind) {
+    return switch (kind) {
+      DailyRecordKind.meal => l10n.recordNlpMealTitleOptional,
+      DailyRecordKind.symptom => l10n.recordNlpSymptomTitleLabel,
+      _ => l10n.recordCreateFieldTitleOptional,
+    };
+  }
+
+  String _noteLabel(AppLocalizations l10n, DailyRecordKind kind) {
+    return switch (kind) {
+      DailyRecordKind.note => l10n.recordNlpNoteBodyLabel,
+      _ => l10n.recordNlpDetailsLabel,
+    };
+  }
+
+  TextInputType? _valueKeyboardType(DailyRecordKind kind) {
+    return switch (kind) {
+      DailyRecordKind.water => const TextInputType.numberWithOptions(
+        decimal: true,
+      ),
+      _ => null,
+    };
+  }
+
+  int _noteMinLines(DailyRecordKind kind) {
+    return switch (kind) {
+      DailyRecordKind.note => 3,
+      _ => 2,
+    };
+  }
+
+  int _noteMaxLines(DailyRecordKind kind) {
+    return switch (kind) {
+      DailyRecordKind.note => 5,
+      _ => 3,
+    };
+  }
+
   void _emit({
     String? title,
     String? value,
@@ -578,6 +663,49 @@ class _CandidateEditorState extends State<_CandidateEditor> {
         note: note ?? widget.item.note,
         lastErrorMessage: null,
       ),
+    );
+  }
+}
+
+class _WaterUnitField extends StatelessWidget {
+  const _WaterUnitField({
+    required this.index,
+    required this.enabled,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final int index;
+  final bool enabled;
+  final String? value;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final normalizedUnit = _normalizedWaterUnit(value);
+
+    return DropdownButtonFormField<String>(
+      key: Key('record-nlp-candidate-unit-$index-$normalizedUnit'),
+      initialValue: normalizedUnit,
+      decoration: InputDecoration(labelText: l10n.recordCreateFieldUnit),
+      items: [
+        DropdownMenuItem(
+          value: dailyRecordWaterDefaultUnit,
+          child: Text(l10n.recordWaterUnitMl),
+        ),
+        DropdownMenuItem(
+          value: dailyRecordWaterCupUnit,
+          child: Text(l10n.recordWaterUnitCup),
+        ),
+        DropdownMenuItem(
+          value: dailyRecordWaterTimesUnit,
+          child: Text(l10n.recordWaterUnitTimes),
+        ),
+      ],
+      onChanged: enabled
+          ? (nextValue) => onChanged(nextValue ?? dailyRecordWaterDefaultUnit)
+          : null,
     );
   }
 }
@@ -666,4 +794,13 @@ class _SleepCandidateFields extends StatelessWidget {
     }
     return '';
   }
+}
+
+String _normalizedWaterUnit(String? value) {
+  final normalized = value?.trim();
+  return switch (normalized) {
+    dailyRecordWaterCupUnit => dailyRecordWaterCupUnit,
+    dailyRecordWaterTimesUnit => dailyRecordWaterTimesUnit,
+    _ => dailyRecordWaterDefaultUnit,
+  };
 }

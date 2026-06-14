@@ -99,6 +99,10 @@
   "recordNlpGenerateAction": "解析候选",
   "recordNlpGeneratingAction": "解析中",
   "recordNlpResetAction": "清空",
+  "recordNlpMealTitleOptional": "餐次 / 标题（可选）",
+  "recordNlpSymptomTitleLabel": "症状名称",
+  "recordNlpNoteBodyLabel": "内容",
+  "recordNlpDetailsLabel": "补充说明",
   "recordNlpCandidatesTitle": "候选记录 · {count} 条",
   "@recordNlpCandidatesTitle": {
     "placeholders": {
