@@ -9,6 +9,8 @@ import 'package:luminous/features/health_context/data/providers/health_context_d
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/medicine_risk_check_repository.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
@@ -89,6 +91,9 @@ void main() {
       overrides: [
         authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         healthContextRepositoryProvider.overrideWithValue(fakeRepo),
+        medicineRiskCheckRepositoryProvider.overrideWithValue(
+          const _FakeMedicineRiskCheckRepository(_clearRiskCheckResult),
+        ),
         medicineWorkspaceProvider.overrideWith((ref) async {
           workspaceBuildCount += 1;
           return _workspace;
@@ -171,6 +176,9 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
           healthContextRepositoryProvider.overrideWithValue(fakeHealthRepo),
+          medicineRiskCheckRepositoryProvider.overrideWithValue(
+            const _FakeMedicineRiskCheckRepository(_clearRiskCheckResult),
+          ),
         ],
       );
 
@@ -196,6 +204,83 @@ void main() {
       expect(input.displayName, 'Ibuprofen');
     },
   );
+
+  testWidgets('add to current medicines shows precheck sheet before save', (
+    tester,
+  ) async {
+    final fakeRepo = _FakeHealthContextRepository();
+
+    await _pumpSearchApp(
+      tester,
+      overrides: [
+        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+        healthContextRepositoryProvider.overrideWithValue(fakeRepo),
+        medicineRiskCheckRepositoryProvider.overrideWithValue(
+          _FakeMedicineRiskCheckRepository(
+            const MedicineRiskCheckResult(
+              currentMedicineCount: 1,
+              checkedMedicineCount: 1,
+              findings: [
+                MedicineRiskFinding(
+                  type: MedicineRiskFindingType.interaction,
+                  severity: MedicineRiskSeverity.high,
+                  context: MedicineRiskFindingContext.none,
+                  primaryMedicineName: '布洛芬片',
+                  secondaryMedicineName: '正在服用药物',
+                ),
+              ],
+              coverageIssues: [],
+            ),
+          ),
+        ),
+      ],
+    );
+
+    await _searchForIbuprofen(tester);
+    await tester.tap(find.text('加入药箱').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('添加前风险检查'), findsOneWidget);
+    expect(fakeRepo.createdCurrentMedicine, isNull);
+
+    await tester.tap(find.byKey(const Key('medicine-search-precheck-confirm')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(fakeRepo.createdCurrentMedicine, isNotNull);
+  });
+
+  testWidgets('add to current medicines skips precheck sheet when clear', (
+    tester,
+  ) async {
+    final fakeRepo = _FakeHealthContextRepository();
+
+    await _pumpSearchApp(
+      tester,
+      overrides: [
+        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+        healthContextRepositoryProvider.overrideWithValue(fakeRepo),
+        medicineRiskCheckRepositoryProvider.overrideWithValue(
+          _FakeMedicineRiskCheckRepository(
+            const MedicineRiskCheckResult(
+              currentMedicineCount: 1,
+              checkedMedicineCount: 1,
+              findings: [],
+              coverageIssues: [],
+            ),
+          ),
+        ),
+      ],
+    );
+
+    await _searchForIbuprofen(tester);
+    await tester.tap(find.text('加入药箱').first);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(find.text('添加前风险检查'), findsNothing);
+    expect(fakeRepo.createdCurrentMedicine, isNotNull);
+  });
 }
 
 Future<void> _pumpSearchApp(
@@ -442,6 +527,27 @@ class _ErrorSearchRepository implements MedicineSearchRepository {
     MedicineSearchSource source,
   ) async => throw Exception('Detail failed');
 }
+
+class _FakeMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
+  const _FakeMedicineRiskCheckRepository(this.result);
+
+  final MedicineRiskCheckResult result;
+
+  @override
+  Future<MedicineRiskCheckResult> fetchForSnapshot(
+    HealthContextSnapshot snapshot,
+  ) async => result;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+const _clearRiskCheckResult = MedicineRiskCheckResult(
+  currentMedicineCount: 1,
+  checkedMedicineCount: 1,
+  findings: [],
+  coverageIssues: [],
+);
 
 const _workspace = MedicineWorkspace(
   hero: MedicineHero(

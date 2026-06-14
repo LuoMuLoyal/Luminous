@@ -6,7 +6,7 @@ This file records the next implementation order only. Completed work belongs in 
 
 ## Current Goal
 
-Today/Report AI summary streaming is now in place for MVP, and the Medicine risk-check main entry is no longer toast-only. Next focus should stay on the remaining fake or still-too-narrow MVP surfaces instead of drifting back into AI polish.
+Today/Report AI summary streaming is in place for MVP, and Medicine now covers both the main risk-check page and add-before-save precheck. Next focus should stay on the remaining fake or still-too-narrow MVP surfaces instead of drifting back into AI polish.
 
 ## Immediate Work Order
 
@@ -14,7 +14,7 @@ Today/Report AI summary streaming is now in place for MVP, and the Medicine risk
    - Priority order:
      - wire Mine campus/support resource taps to real actions when `actionUrl` is usable
      - wire at least one Report export action to the existing Lucent data-export request flow
-     - extend Medicine risk check from “current medicines + existing detail only” into the next real boundary you actually want, such as add-before-save precheck or broader rule coverage
+     - extend Medicine safety beyond the current “existing detail only” boundary, such as broader reviewed rule coverage, ingredient normalization, or better duplicate detection
    - Success signal:
      - at least one remaining toast-only MVP-facing entry becomes real, or the Medicine safety boundary is expanded without reintroducing fake confidence
 
