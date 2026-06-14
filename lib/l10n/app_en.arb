@@ -109,15 +109,51 @@
   },
   "recordNlpRemoveAction": "Remove",
   "recordNlpSaveAllAction": "Save all",
+  "recordNlpSaveSelectedAction": "Save selected ({count})",
+  "@recordNlpSaveSelectedAction": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordNlpSavingAction": "Saving",
+  "recordNlpSelectedCountHint": "{count, plural, =0{No items selected yet} =1{1 item selected and ready to edit} other{{count} items selected and ready to edit}}",
+  "@recordNlpSelectedCountHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordNlpInputRequiredToast": "Enter a short record note first.",
   "recordNlpEmptyCandidatesToast": "No candidate records were parsed this time.",
   "recordNlpNoCandidatesToSaveToast": "There are no candidate records to save.",
+  "recordNlpNoCandidatesSelectedToast": "Select at least one candidate record first.",
   "recordNlpSavedToast": "{count, plural, =0{Saved 0 records} =1{Saved 1 record} other{Saved {count} records}}",
   "@recordNlpSavedToast": {
     "placeholders": {
       "count": {
         "type": "int"
+      }
+    }
+  },
+  "recordNlpPartialSavedToast": "Saved {savedCount} record(s), and {failedCount} failed.",
+  "@recordNlpPartialSavedToast": {
+    "placeholders": {
+      "savedCount": {
+        "type": "int"
+      },
+      "failedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpCandidateSaveFailedHint": "Last save failed for this item: {message}",
+  "@recordNlpCandidateSaveFailedHint": {
+    "placeholders": {
+      "message": {
+        "type": "String"
       }
     }
   },

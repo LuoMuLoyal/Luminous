@@ -158,6 +158,87 @@ void main() {
   });
 
   testWidgets(
+    'Record natural-language sheet edits candidates and saves selected only',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final repo = _FakeDailyRecordRepository(
+        generatedCandidates: DailyRecordCandidateResult(
+          locale: 'zh-CN',
+          generatedAt: '2026-06-14T00:00:00.000Z',
+          confirmationHint: '确认后再保存。',
+          items: const [
+            DailyRecordCandidateItem(
+              kind: DailyRecordKind.meal,
+              occurredAt: '2026-06-14',
+              title: '午饭',
+              value: '米饭',
+              note: '食堂',
+              rationale: '识别到饮食记录。',
+            ),
+            DailyRecordCandidateItem(
+              kind: DailyRecordKind.note,
+              occurredAt: '2026-06-14',
+              title: '状态',
+              note: '有点困',
+              rationale: '识别到备注。',
+            ),
+          ],
+        ),
+      );
+
+      await _pumpRecordPage(
+        tester,
+        dailyRecordRepository: repo,
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('record-ai-input')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('record-nlp-input-field')),
+        '午饭吃了米饭，下午有点困',
+      );
+      await tester.tap(find.byKey(const Key('record-nlp-generate-action')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('record-nlp-candidate-title-0')), findsOneWidget);
+      expect(find.byKey(const Key('record-nlp-candidate-select-1')), findsOneWidget);
+
+      await tester.enterText(
+        find.byKey(const Key('record-nlp-candidate-title-0')),
+        '午饭修正',
+      );
+      await tester.enterText(
+        find.byKey(const Key('record-nlp-candidate-note-0')),
+        '自己改过',
+      );
+      await tester.tap(find.byKey(const Key('record-nlp-candidate-select-1')));
+      await tester.pumpAndSettle();
+
+      final saveSelectedAction = find.byKey(
+        const Key('record-nlp-save-selected-action'),
+      );
+      await tester.ensureVisible(saveSelectedAction);
+      await tester.pump();
+      await tester.tap(saveSelectedAction);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 3));
+
+      expect(repo.createdInputs, hasLength(1));
+      expect(repo.createdInputs.single.kind, DailyRecordKind.meal);
+      expect(repo.createdInputs.single.title, '午饭修正');
+      expect(repo.createdInputs.single.note, '自己改过');
+    },
+  );
+
+  testWidgets(
     'Record page keeps period and vitals quick actions hidden in MVP',
     (tester) async {
       tester.view.devicePixelRatio = 1;
@@ -1255,6 +1336,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     this.itemPayload,
     this.withAttachment = false,
     this.fetchThrows = false,
+    this.generatedCandidates,
   });
 
   final String? itemOccurredAt;
@@ -1266,12 +1348,14 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   final Map<String, dynamic>? itemPayload;
   final bool withAttachment;
   final bool fetchThrows;
+  final DailyRecordCandidateResult? generatedCandidates;
   String? deleteCalledWith;
   String? updateCalledWith;
   String? getCalledWith;
   String? fetchDate;
   DailyRecordUpdateInput? lastUpdateInput;
   DailyRecordCreateInput? createInput;
+  final List<DailyRecordCreateInput> createdInputs = <DailyRecordCreateInput>[];
   bool fetchRecordsCalled = false;
 
   @override
@@ -1309,12 +1393,13 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     required String text,
     required String occurredAt,
   }) async {
-    return const DailyRecordCandidateResult(
-      locale: 'zh-CN',
-      generatedAt: '2026-06-14T00:00:00.000Z',
-      confirmationHint: '确认后再保存。',
-      items: <DailyRecordCandidateItem>[],
-    );
+    return generatedCandidates ??
+        const DailyRecordCandidateResult(
+          locale: 'zh-CN',
+          generatedAt: '2026-06-14T00:00:00.000Z',
+          confirmationHint: '确认后再保存。',
+          items: <DailyRecordCandidateItem>[],
+        );
   }
 
   @override
@@ -1372,8 +1457,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   @override
   Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
     createInput = input;
+    createdInputs.add(input);
+    final createIndex = createdInputs.length - 1;
     return DailyRecordItem(
-      id: 'created-id-1',
+      id: 'created-id-${createIndex + 1}',
       kind: input.kind,
       occurredAt: input.occurredAt,
       title: input.title,

@@ -109,15 +109,51 @@
   },
   "recordNlpRemoveAction": "移除",
   "recordNlpSaveAllAction": "保存全部",
+  "recordNlpSaveSelectedAction": "保存选中项（{count}）",
+  "@recordNlpSaveSelectedAction": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordNlpSavingAction": "保存中",
+  "recordNlpSelectedCountHint": "已选中 {count} 条，可先改再存。",
+  "@recordNlpSelectedCountHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordNlpInputRequiredToast": "先输入一段记录描述。",
   "recordNlpEmptyCandidatesToast": "这次没有解析出可保存的候选记录。",
   "recordNlpNoCandidatesToSaveToast": "没有可保存的候选记录。",
+  "recordNlpNoCandidatesSelectedToast": "先选中至少一条候选记录。",
   "recordNlpSavedToast": "已保存 {count} 条记录",
   "@recordNlpSavedToast": {
     "placeholders": {
       "count": {
         "type": "int"
+      }
+    }
+  },
+  "recordNlpPartialSavedToast": "已保存 {savedCount} 条，另有 {failedCount} 条保存失败。",
+  "@recordNlpPartialSavedToast": {
+    "placeholders": {
+      "savedCount": {
+        "type": "int"
+      },
+      "failedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpCandidateSaveFailedHint": "这条上次保存失败：{message}",
+  "@recordNlpCandidateSaveFailedHint": {
+    "placeholders": {
+      "message": {
+        "type": "String"
       }
     }
   },
