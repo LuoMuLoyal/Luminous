@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
@@ -648,10 +649,11 @@ class _ServiceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canOpen = entry.actionType != null && entry.actionTarget != null;
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showMineToast(context, mineCopy(l10n, entry.titleKey)),
+        onTap: canOpen ? () => _openAction(context) : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacingTokens.md,
@@ -694,7 +696,7 @@ class _ServiceRow extends StatelessWidget {
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                color: surface.body,
+                color: canOpen ? surface.body : surface.mute,
                 size: AppSpacingTokens.lg,
               ),
             ],
@@ -702,6 +704,28 @@ class _ServiceRow extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _openAction(BuildContext context) async {
+    final target = entry.actionTarget;
+    if (target == null || entry.actionType == null) {
+      return;
+    }
+
+    switch (entry.actionType!) {
+      case MineActionTargetType.internal:
+        pushAuthRequiredRoute(context, target);
+        return;
+      case MineActionTargetType.url:
+      case MineActionTargetType.phone:
+        final uri = Uri.tryParse(target);
+        if (uri == null) {
+          showMineToast(context, mineCopy(l10n, entry.titleKey));
+          return;
+        }
+        await const ExternalUrlLauncher().open(uri);
+        return;
+    }
   }
 }
 

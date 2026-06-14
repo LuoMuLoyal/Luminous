@@ -35,10 +35,7 @@ class LucentMineRepository implements MineRepository {
     try {
       final resources =
           await _ref.watch(supportResourcesProvider('campus').future);
-      return resources
-          .where((r) => r.available)
-          .map(_mapSupportResource)
-          .toList();
+      return resources.map(_mapSupportResource).toList();
     } catch (_) {
       return _fallbackCampusServices;
     }
@@ -46,6 +43,7 @@ class LucentMineRepository implements MineRepository {
 
   MineActionEntry _mapSupportResource(SupportResourceDto resource) {
     final (titleKey, subtitleKey) = _parseCopyKey(resource.icon);
+    final actionType = _parseActionType(resource.actionType);
     return MineActionEntry(
       icon: _parseIcon(resource.icon),
       accent: _parseColor(resource.icon),
@@ -53,10 +51,19 @@ class LucentMineRepository implements MineRepository {
       subtitleKey: subtitleKey,
       rawTitle: resource.title,
       rawSubtitle: resource.subtitle,
-      route: resource.actionType == SupportResourceActionType.internal
-          ? resource.actionUrl
-          : null,
+      actionType: actionType,
+      actionTarget: resource.actionUrl,
     );
+  }
+
+  MineActionTargetType? _parseActionType(SupportResourceActionType? value) {
+    return switch (value) {
+      SupportResourceActionType.internal => MineActionTargetType.internal,
+      SupportResourceActionType.url => MineActionTargetType.url,
+      SupportResourceActionType.phone => MineActionTargetType.phone,
+      SupportResourceActionType.unknownDefaultOpenApi => null,
+      null => null,
+    };
   }
 
   (MineCopyKey, MineCopyKey) _parseCopyKey(String? name) {
