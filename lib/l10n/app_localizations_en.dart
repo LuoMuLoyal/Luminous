@@ -222,6 +222,73 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordAiBadge => 'AI';
 
   @override
+  String get recordNlpFabAction => 'Natural language';
+
+  @override
+  String get recordNlpSheetTitle => 'Natural-language input';
+
+  @override
+  String get recordNlpSheetSubtitle =>
+      'Parse into candidate records first, then save after confirmation.';
+
+  @override
+  String get recordNlpInputHint =>
+      'For example: I drank two cups of water this morning, felt bloated at noon, and slept 6 hours last night.';
+
+  @override
+  String get recordNlpGenerateAction => 'Parse candidates';
+
+  @override
+  String get recordNlpGeneratingAction => 'Parsing';
+
+  @override
+  String get recordNlpResetAction => 'Clear';
+
+  @override
+  String recordNlpCandidatesTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Candidate records · $count',
+      one: 'Candidate record · 1',
+      zero: 'Candidate records · 0',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recordNlpRemoveAction => 'Remove';
+
+  @override
+  String get recordNlpSaveAllAction => 'Save all';
+
+  @override
+  String get recordNlpSavingAction => 'Saving';
+
+  @override
+  String get recordNlpInputRequiredToast => 'Enter a short record note first.';
+
+  @override
+  String get recordNlpEmptyCandidatesToast =>
+      'No candidate records were parsed this time.';
+
+  @override
+  String get recordNlpNoCandidatesToSaveToast =>
+      'There are no candidate records to save.';
+
+  @override
+  String recordNlpSavedToast(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Saved $count records',
+      one: 'Saved 1 record',
+      zero: 'Saved 0 records',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get recordSummarySectionTitle => 'Day summary';
 
   @override

@@ -92,6 +92,35 @@
   "recordQuickSectionTitle": "Quick record",
   "recordAiInputHint": "My stomach feels a bit bloated after eating...",
   "recordAiBadge": "AI",
+  "recordNlpFabAction": "Natural language",
+  "recordNlpSheetTitle": "Natural-language input",
+  "recordNlpSheetSubtitle": "Parse into candidate records first, then save after confirmation.",
+  "recordNlpInputHint": "For example: I drank two cups of water this morning, felt bloated at noon, and slept 6 hours last night.",
+  "recordNlpGenerateAction": "Parse candidates",
+  "recordNlpGeneratingAction": "Parsing",
+  "recordNlpResetAction": "Clear",
+  "recordNlpCandidatesTitle": "{count, plural, =0{Candidate records · 0} =1{Candidate record · 1} other{Candidate records · {count}}}",
+  "@recordNlpCandidatesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpRemoveAction": "Remove",
+  "recordNlpSaveAllAction": "Save all",
+  "recordNlpSavingAction": "Saving",
+  "recordNlpInputRequiredToast": "Enter a short record note first.",
+  "recordNlpEmptyCandidatesToast": "No candidate records were parsed this time.",
+  "recordNlpNoCandidatesToSaveToast": "There are no candidate records to save.",
+  "recordNlpSavedToast": "{count, plural, =0{Saved 0 records} =1{Saved 1 record} other{Saved {count} records}}",
+  "@recordNlpSavedToast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordSummarySectionTitle": "Day summary",
   "recordSummaryDateLabel": "May 15, 2025 (Thu)",
   "recordTimelineSectionTitle": "Timeline",

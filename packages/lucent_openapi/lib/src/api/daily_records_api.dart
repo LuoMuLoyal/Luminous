@@ -11,10 +11,12 @@ import 'package:dio/dio.dart';
 
 import 'package:lucent_openapi/src/model/create_daily_record_dto.dart';
 import 'package:lucent_openapi/src/model/create_daily_record_image_upload_dto.dart';
+import 'package:lucent_openapi/src/model/daily_record_candidate_response_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_image_upload_response_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_list_response_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_response_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_summary_response_dto.dart';
+import 'package:lucent_openapi/src/model/generate_daily_record_candidates_dto.dart';
 import 'package:lucent_openapi/src/model/update_daily_record_dto.dart';
 
 class DailyRecordsApi {
@@ -250,6 +252,97 @@ _responseData = rawData == null ? null : deserialize<DailyRecordResponseDto, Dai
     );
 
     return _response;
+  }
+
+  /// Generate AI candidate daily records from a natural-language note
+  /// 
+  ///
+  /// Parameters:
+  /// * [generateDailyRecordCandidatesDto] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [DailyRecordCandidateResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<DailyRecordCandidateResponseDto>> dailyRecordsControllerGenerateCandidatesV1({ 
+    required GenerateDailyRecordCandidatesDto generateDailyRecordCandidatesDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/daily-records/candidate-records/generate';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(generateDailyRecordCandidatesDto);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    DailyRecordCandidateResponseDto? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<DailyRecordCandidateResponseDto, DailyRecordCandidateResponseDto>(rawData, 'DailyRecordCandidateResponseDto', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<DailyRecordCandidateResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Get a daily record by id

@@ -1,4 +1,5 @@
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 
 abstract class DailyRecordRepository {
@@ -13,6 +14,10 @@ abstract class DailyRecordRepository {
   Future<DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
   );
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  });
   Future<DailyRecordItem> create(DailyRecordCreateInput input);
   Future<DailyRecordItem> update(String id, DailyRecordUpdateInput input);
   Future<void> delete(String id);

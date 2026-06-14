@@ -488,6 +488,96 @@ abstract class AppLocalizations {
   /// **'AI'**
   String get recordAiBadge;
 
+  /// No description provided for @recordNlpFabAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'自然语言'**
+  String get recordNlpFabAction;
+
+  /// No description provided for @recordNlpSheetTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'自然语言录入'**
+  String get recordNlpSheetTitle;
+
+  /// No description provided for @recordNlpSheetSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'先解析成候选记录，确认后再保存。'**
+  String get recordNlpSheetSubtitle;
+
+  /// No description provided for @recordNlpInputHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'比如：今天早上喝了两杯水，中午胃有点胀，昨晚睡了 6 小时。'**
+  String get recordNlpInputHint;
+
+  /// No description provided for @recordNlpGenerateAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'解析候选'**
+  String get recordNlpGenerateAction;
+
+  /// No description provided for @recordNlpGeneratingAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'解析中'**
+  String get recordNlpGeneratingAction;
+
+  /// No description provided for @recordNlpResetAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空'**
+  String get recordNlpResetAction;
+
+  /// No description provided for @recordNlpCandidatesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'候选记录 · {count} 条'**
+  String recordNlpCandidatesTitle(int count);
+
+  /// No description provided for @recordNlpRemoveAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除'**
+  String get recordNlpRemoveAction;
+
+  /// No description provided for @recordNlpSaveAllAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存全部'**
+  String get recordNlpSaveAllAction;
+
+  /// No description provided for @recordNlpSavingAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存中'**
+  String get recordNlpSavingAction;
+
+  /// No description provided for @recordNlpInputRequiredToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'先输入一段记录描述。'**
+  String get recordNlpInputRequiredToast;
+
+  /// No description provided for @recordNlpEmptyCandidatesToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'这次没有解析出可保存的候选记录。'**
+  String get recordNlpEmptyCandidatesToast;
+
+  /// No description provided for @recordNlpNoCandidatesToSaveToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有可保存的候选记录。'**
+  String get recordNlpNoCandidatesToSaveToast;
+
+  /// No description provided for @recordNlpSavedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存 {count} 条记录'**
+  String recordNlpSavedToast(int count);
+
   /// No description provided for @recordSummarySectionTitle.
   ///
   /// In zh, this message translates to:

@@ -13,6 +13,7 @@ import 'package:lucent_openapi/src/api/auth_api.dart';
 import 'package:lucent_openapi/src/api/daily_records_api.dart';
 import 'package:lucent_openapi/src/api/data_export_api.dart';
 import 'package:lucent_openapi/src/api/environment_api.dart';
+import 'package:lucent_openapi/src/api/health_api.dart';
 import 'package:lucent_openapi/src/api/medicine_dose_logs_api.dart';
 import 'package:lucent_openapi/src/api/medicine_reminders_api.dart';
 import 'package:lucent_openapi/src/api/medicines_api.dart';
@@ -116,14 +117,14 @@ class LucentOpenapi {
 
   /// Get AccountApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
-  AccountApi getAccountApi() {
-    return AccountApi(dio);
-  }
-
-  /// Get AppApi instance, base route and serializer can be overridden by a given but be careful,
-  /// by doing that all interceptors will not be executed
   AppApi getAppApi() {
     return AppApi(dio);
+  }
+
+  /// Get AccountApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AccountApi getAccountApi() {
+    return AccountApi(dio);
   }
 
   /// Get AuthApi instance, base route and serializer can be overridden by a given but be careful,
@@ -148,6 +149,12 @@ class LucentOpenapi {
   /// by doing that all interceptors will not be executed
   EnvironmentApi getEnvironmentApi() {
     return EnvironmentApi(dio);
+  }
+
+  /// Get HealthApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  HealthApi getHealthApi() {
+    return HealthApi(dio);
   }
 
   /// Get MedicineDoseLogsApi instance, base route and serializer can be overridden by a given but be careful,

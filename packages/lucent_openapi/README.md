@@ -75,7 +75,6 @@ Class | Method | HTTP request | Description
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerLinkWechatWebIdentityV1**](doc/AccountApi.md#accountcontrollerlinkwechatwebidentityv1) | **POST** /api/v1/account/identities/wechat-web/callback | Link WeChat web identity to authenticated account
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerUnlinkIdentityV1**](doc/AccountApi.md#accountcontrollerunlinkidentityv1) | **DELETE** /api/v1/account/identities/{identityId} | Unlink authenticated account OAuth identity
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerUpdateAccountV1**](doc/AccountApi.md#accountcontrollerupdateaccountv1) | **PATCH** /api/v1/account | Update authenticated account profile
-[*AppApi*](doc/AppApi.md) | [**appControllerGetHealthV1**](doc/AppApi.md#appcontrollergethealthv1) | **GET** /api/v1/health | 
 [*AuthApi*](doc/AuthApi.md) | [**authControllerCreateWechatWebAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
 [*AuthApi*](doc/AuthApi.md) | [**authControllerForgotPasswordV1**](doc/AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginV1**](doc/AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
@@ -91,6 +90,7 @@ Class | Method | HTTP request | Description
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateImageUploadV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreateimageuploadv1) | **POST** /api/v1/user/daily-records/attachments/images/presign-upload | Create a Tencent COS signed URL for daily record image upload
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/user/daily-records | Create a daily record
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerDeleteV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/user/daily-records/{id} | Soft-delete a daily record
+[*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerGenerateCandidatesV1**](doc/DailyRecordsApi.md#dailyrecordscontrollergeneratecandidatesv1) | **POST** /api/v1/user/daily-records/candidate-records/generate | Generate AI candidate daily records from a natural-language note
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerGetV1**](doc/DailyRecordsApi.md#dailyrecordscontrollergetv1) | **GET** /api/v1/user/daily-records/{id} | Get a daily record by id
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerListV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerlistv1) | **GET** /api/v1/user/daily-records | List daily records for a given date
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerSummaryV1**](doc/DailyRecordsApi.md#dailyrecordscontrollersummaryv1) | **GET** /api/v1/user/daily-records/summary | Get daily record summary (counts by kind)
@@ -98,6 +98,10 @@ Class | Method | HTTP request | Description
 [*DataExportApi*](doc/DataExportApi.md) | [**dataExportControllerCreateRequestV1**](doc/DataExportApi.md#dataexportcontrollercreaterequestv1) | **POST** /api/v1/user/data-export-requests | Create a new data export request
 [*DataExportApi*](doc/DataExportApi.md) | [**dataExportControllerGetLatestRequestV1**](doc/DataExportApi.md#dataexportcontrollergetlatestrequestv1) | **GET** /api/v1/user/data-export-requests/latest | Get the latest data export request
 [*EnvironmentApi*](doc/EnvironmentApi.md) | [**environmentControllerGetSnapshotV1**](doc/EnvironmentApi.md#environmentcontrollergetsnapshotv1) | **GET** /api/v1/environment/snapshot | Get static environment snapshot reference data
+[*HealthApi*](doc/HealthApi.md) | [**appControllerGetDeepHealthV1**](doc/HealthApi.md#appcontrollergetdeephealthv1) | **GET** /api/v1/health/deep | Detailed health probe with per-component diagnostics
+[*HealthApi*](doc/HealthApi.md) | [**appControllerGetHealthV1**](doc/HealthApi.md#appcontrollergethealthv1) | **GET** /api/v1/health | Readiness probe alias used by existing scripts
+[*HealthApi*](doc/HealthApi.md) | [**appControllerGetLiveHealthV1**](doc/HealthApi.md#appcontrollergetlivehealthv1) | **GET** /api/v1/health/live | Liveness probe for process health
+[*HealthApi*](doc/HealthApi.md) | [**appControllerGetReadyHealthV1**](doc/HealthApi.md#appcontrollergetreadyhealthv1) | **GET** /api/v1/health/ready | Readiness probe for critical runtime dependencies
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerCreateV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollercreatev1) | **POST** /api/v1/user/medicine-dose-logs | Create a dose log
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerDeleteV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerdeletev1) | **DELETE** /api/v1/user/medicine-dose-logs/{id} | Soft-delete a dose log
 [*MedicineDoseLogsApi*](doc/MedicineDoseLogsApi.md) | [**medicineDoseLogsControllerListV1**](doc/MedicineDoseLogsApi.md#medicinedoselogscontrollerlistv1) | **GET** /api/v1/user/medicine-dose-logs | List dose logs for a date
@@ -154,6 +158,10 @@ Class | Method | HTTP request | Description
  - [DailyRecordAttachmentDto](doc/DailyRecordAttachmentDto.md)
  - [DailyRecordAttachmentInputDto](doc/DailyRecordAttachmentInputDto.md)
  - [DailyRecordAttachmentKind](doc/DailyRecordAttachmentKind.md)
+ - [DailyRecordCandidateDataDto](doc/DailyRecordCandidateDataDto.md)
+ - [DailyRecordCandidateItemDto](doc/DailyRecordCandidateItemDto.md)
+ - [DailyRecordCandidateKind](doc/DailyRecordCandidateKind.md)
+ - [DailyRecordCandidateResponseDto](doc/DailyRecordCandidateResponseDto.md)
  - [DailyRecordImageUploadDto](doc/DailyRecordImageUploadDto.md)
  - [DailyRecordImageUploadResponseDto](doc/DailyRecordImageUploadResponseDto.md)
  - [DailyRecordItemDto](doc/DailyRecordItemDto.md)
@@ -180,10 +188,19 @@ Class | Method | HTTP request | Description
  - [EnvironmentSnapshotResponseDto](doc/EnvironmentSnapshotResponseDto.md)
  - [ForgotPasswordDto](doc/ForgotPasswordDto.md)
  - [ForgotPasswordResponseDto](doc/ForgotPasswordResponseDto.md)
+ - [GenerateDailyRecordCandidatesDto](doc/GenerateDailyRecordCandidatesDto.md)
  - [GenerateReportSummaryDto](doc/GenerateReportSummaryDto.md)
  - [GenerateTodayAnalysisDto](doc/GenerateTodayAnalysisDto.md)
+ - [HealthAppInfoDto](doc/HealthAppInfoDto.md)
+ - [HealthComponentDto](doc/HealthComponentDto.md)
+ - [HealthComponentStatus](doc/HealthComponentStatus.md)
  - [HealthContextDataDto](doc/HealthContextDataDto.md)
  - [HealthContextResponseDto](doc/HealthContextResponseDto.md)
+ - [HealthOverallStatus](doc/HealthOverallStatus.md)
+ - [HealthProbeDto](doc/HealthProbeDto.md)
+ - [HealthProbeType](doc/HealthProbeType.md)
+ - [HealthResponseDto](doc/HealthResponseDto.md)
+ - [HealthSummaryDto](doc/HealthSummaryDto.md)
  - [HumidityIndicatorDto](doc/HumidityIndicatorDto.md)
  - [LactationState](doc/LactationState.md)
  - [LoginDataDto](doc/LoginDataDto.md)

@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
+import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
+import 'package:luminous/features/record/presentation/widgets/record_nlp_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordPage extends ConsumerWidget {
@@ -26,6 +30,7 @@ class RecordPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
+    final session = ref.watch(authSessionProvider);
     final width = MediaQuery.sizeOf(context).width;
     final isCompact = width < AppBreakpoints.mobile;
     final isMobileLayout = width < AppBreakpoints.desktop;
@@ -35,6 +40,14 @@ class RecordPage extends ConsumerWidget {
 
     return PageScaffoldShell(
       title: l10n.tabRecord,
+      floatingActionButton: isMobileLayout
+          ? FloatingActionButton.extended(
+              key: const Key('record-nlp-fab'),
+              onPressed: () => _openNlpSheet(context, ref, session, selectedDate),
+              icon: const Icon(Icons.auto_awesome_rounded),
+              label: Text(l10n.recordNlpFabAction),
+            )
+          : null,
       actions: isMobileLayout
           ? [
               RecordHeaderActionChip(
@@ -119,6 +132,7 @@ class RecordPage extends ConsumerWidget {
             onDateSelected: (date) => _setSelectedDate(ref, date),
             onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
             onQuickAction: (action) => _handleQuickAction(context, ref, action),
+            onAiInputTap: () => _openNlpSheet(context, ref, session, selectedDate),
           ),
           loading: () => RecordDashboardView(
             dashboard: MockRecordRepository.loadingDashboard(
@@ -131,6 +145,7 @@ class RecordPage extends ConsumerWidget {
             onDateSelected: (date) => _setSelectedDate(ref, date),
             onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
             onQuickAction: (action) => _handleQuickAction(context, ref, action),
+            onAiInputTap: () => _openNlpSheet(context, ref, session, selectedDate),
           ),
           error: (_, __) => AppStateErrorView(
             title: l10n.recordErrorTitle,
@@ -202,5 +217,32 @@ class RecordPage extends ConsumerWidget {
     return '${value.year.toString().padLeft(4, '0')}-'
         '${value.month.toString().padLeft(2, '0')}-'
         '${value.day.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> _openNlpSheet(
+    BuildContext context,
+    WidgetRef ref,
+    AuthSessionState session,
+    DateTime selectedDate,
+  ) async {
+    if (!session.canAccessProtectedData) {
+      if (session.isLoading) {
+        return;
+      }
+      await showAuthRequiredDialog(
+        context,
+        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+      );
+      return;
+    }
+
+    ref.read(recordNlpControllerProvider.notifier).reset();
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => RecordNlpSheet(
+        occurredAt: _formatDate(selectedDate),
+      ),
+    );
   }
 }

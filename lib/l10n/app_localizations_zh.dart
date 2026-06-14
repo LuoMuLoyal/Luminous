@@ -210,6 +210,55 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordAiBadge => 'AI';
 
   @override
+  String get recordNlpFabAction => '自然语言';
+
+  @override
+  String get recordNlpSheetTitle => '自然语言录入';
+
+  @override
+  String get recordNlpSheetSubtitle => '先解析成候选记录，确认后再保存。';
+
+  @override
+  String get recordNlpInputHint => '比如：今天早上喝了两杯水，中午胃有点胀，昨晚睡了 6 小时。';
+
+  @override
+  String get recordNlpGenerateAction => '解析候选';
+
+  @override
+  String get recordNlpGeneratingAction => '解析中';
+
+  @override
+  String get recordNlpResetAction => '清空';
+
+  @override
+  String recordNlpCandidatesTitle(int count) {
+    return '候选记录 · $count 条';
+  }
+
+  @override
+  String get recordNlpRemoveAction => '移除';
+
+  @override
+  String get recordNlpSaveAllAction => '保存全部';
+
+  @override
+  String get recordNlpSavingAction => '保存中';
+
+  @override
+  String get recordNlpInputRequiredToast => '先输入一段记录描述。';
+
+  @override
+  String get recordNlpEmptyCandidatesToast => '这次没有解析出可保存的候选记录。';
+
+  @override
+  String get recordNlpNoCandidatesToSaveToast => '没有可保存的候选记录。';
+
+  @override
+  String recordNlpSavedToast(int count) {
+    return '已保存 $count 条记录';
+  }
+
+  @override
   String get recordSummarySectionTitle => '当天摘要';
 
   @override

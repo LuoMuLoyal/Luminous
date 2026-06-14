@@ -19,6 +19,9 @@ import 'package:lucent_openapi/src/model/create_health_context_condition_dto.dar
 import 'package:lucent_openapi/src/model/create_medicine_reminder_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_attachment_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_attachment_input_dto.dart';
+import 'package:lucent_openapi/src/model/daily_record_candidate_data_dto.dart';
+import 'package:lucent_openapi/src/model/daily_record_candidate_item_dto.dart';
+import 'package:lucent_openapi/src/model/daily_record_candidate_response_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_image_upload_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_image_upload_response_dto.dart';
 import 'package:lucent_openapi/src/model/daily_record_item_dto.dart';
@@ -41,10 +44,16 @@ import 'package:lucent_openapi/src/model/environment_snapshot_dto.dart';
 import 'package:lucent_openapi/src/model/environment_snapshot_response_dto.dart';
 import 'package:lucent_openapi/src/model/forgot_password_dto.dart';
 import 'package:lucent_openapi/src/model/forgot_password_response_dto.dart';
+import 'package:lucent_openapi/src/model/generate_daily_record_candidates_dto.dart';
 import 'package:lucent_openapi/src/model/generate_report_summary_dto.dart';
 import 'package:lucent_openapi/src/model/generate_today_analysis_dto.dart';
+import 'package:lucent_openapi/src/model/health_app_info_dto.dart';
+import 'package:lucent_openapi/src/model/health_component_dto.dart';
 import 'package:lucent_openapi/src/model/health_context_data_dto.dart';
 import 'package:lucent_openapi/src/model/health_context_response_dto.dart';
+import 'package:lucent_openapi/src/model/health_probe_dto.dart';
+import 'package:lucent_openapi/src/model/health_response_dto.dart';
+import 'package:lucent_openapi/src/model/health_summary_dto.dart';
 import 'package:lucent_openapi/src/model/humidity_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/login_data_dto.dart';
 import 'package:lucent_openapi/src/model/login_dto.dart';
@@ -186,6 +195,15 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
         case 'DailyRecordAttachmentKind':
           
           
+        case 'DailyRecordCandidateDataDto':
+          return DailyRecordCandidateDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DailyRecordCandidateItemDto':
+          return DailyRecordCandidateItemDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DailyRecordCandidateKind':
+          
+          
+        case 'DailyRecordCandidateResponseDto':
+          return DailyRecordCandidateResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordImageUploadDto':
           return DailyRecordImageUploadDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordImageUploadResponseDto':
@@ -242,14 +260,35 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return ForgotPasswordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ForgotPasswordResponseDto':
           return ForgotPasswordResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'GenerateDailyRecordCandidatesDto':
+          return GenerateDailyRecordCandidatesDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'GenerateReportSummaryDto':
           return GenerateReportSummaryDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'GenerateTodayAnalysisDto':
           return GenerateTodayAnalysisDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'HealthAppInfoDto':
+          return HealthAppInfoDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'HealthComponentDto':
+          return HealthComponentDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'HealthComponentStatus':
+          
+          
         case 'HealthContextDataDto':
           return HealthContextDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'HealthContextResponseDto':
           return HealthContextResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'HealthOverallStatus':
+          
+          
+        case 'HealthProbeDto':
+          return HealthProbeDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'HealthProbeType':
+          
+          
+        case 'HealthResponseDto':
+          return HealthResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'HealthSummaryDto':
+          return HealthSummaryDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'HumidityIndicatorDto':
           return HumidityIndicatorDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'LactationState':
