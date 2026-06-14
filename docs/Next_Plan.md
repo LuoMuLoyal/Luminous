@@ -6,7 +6,7 @@ This file records the next implementation order only. Completed work belongs in 
 
 ## Current Goal
 
-Natural-language record intake phase 1 is now usable enough for MVP continuation. Next focus should move back to missing core product features instead of spending another round on local polish.
+Today/Report AI summary streaming is now in place for MVP and the Android emulator lane has verified both generate flows end-to-end. Next focus should move back to the remaining fake core-product surfaces instead of spending another round on AI polish.
 
 ## Immediate Work Order
 
@@ -46,18 +46,12 @@ Natural-language record intake phase 1 is now usable enough for MVP continuation
      - before merging changes to the full-stack E2E helper or generated auth/record client surface
      - before cutting a mobile test build that claims Record CRUD is stable
 
-3. **Natural-language record intake follow-up**
-   - Phase 1 now exists on mobile Record:
-     - FAB + AI input bar open one shared bottom sheet
-     - text note -> Lucent candidate records
-     - user can edit/select/remove candidates
-     - save-selected writes confirmed records through existing daily-record create flow
-   - Current stopping point:
-     - per-kind edit polish is in place for water / meal / symptom / note / sleep
-     - sheet has focused widget coverage for editable/selective save plus water unit switching
-   - Remaining follow-up only when it blocks MVP usage:
-     - explicit partial-failure surface beyond toast-only feedback
-     - one real integration lane for NLP review/save if this flow starts regressing
+3. **Keep AI work in maintenance mode**
+   - Today and Report AI cards now stream partial summary text and finish with the same structured payload as the one-shot flow.
+   - Only revisit this slice when:
+     - stream stability regresses
+     - safety policy misses a case
+     - UX breaks on slow networks or cancelled requests
    - Do not expand this into broad “AI everywhere” work before missing non-AI MVP capability gaps are closed.
 
 ## Deferred But Useful

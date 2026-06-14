@@ -177,6 +177,57 @@ void main() {
       );
     });
 
+    test('loading state carries streaming summary before final result', () async {
+      final fakeRepo = _FakeReportAiSummaryRepository(
+        streamEvents: [
+          const ReportAiGenerationSummaryEvent('近 7 天总结正在生成中。'),
+          ReportAiGenerationResultEvent(
+            _testSummary(range: ReportAiSummaryRange.last7Days),
+          ),
+        ],
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          reportAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(userSettingsControllerProvider.future);
+
+      final states = <ReportAiSummaryCardState>[];
+      container.listen(
+        reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+        (prev, next) {
+          states.add(next);
+        },
+        fireImmediately: true,
+      );
+
+      final result = await container
+          .read(
+            reportAiSummaryControllerProvider(
+              ReportAiSummaryRange.last7Days,
+            ).notifier,
+          )
+          .generate();
+
+      expect(result.status, ReportAiSummaryCardStatus.success);
+      expect(
+        states.any(
+          (state) =>
+              state.status == ReportAiSummaryCardStatus.loading &&
+              state.streamingSummary == '近 7 天总结正在生成中。',
+        ),
+        isTrue,
+      );
+    });
+
     test('backend 403 → disabled state', () async {
       final fakeRepo = _FakeReportAiSummaryRepository(
         error: DioException(
@@ -363,10 +414,11 @@ ReportAiSummary _testSummary({required ReportAiSummaryRange range}) {
 // ---------------------------------------------------------------------------
 
 class _FakeReportAiSummaryRepository implements ReportAiSummaryRepository {
-  _FakeReportAiSummaryRepository({this.response, this.error});
+  _FakeReportAiSummaryRepository({this.response, this.error, this.streamEvents});
 
   ReportAiSummary? response;
   Object? error;
+  List<ReportAiGenerationEvent>? streamEvents;
 
   @override
   Future<ReportAiSummary> generate(ReportAiSummaryRange range) async {
@@ -375,5 +427,22 @@ class _FakeReportAiSummaryRepository implements ReportAiSummaryRepository {
       throw error!;
     }
     return response!;
+  }
+
+  @override
+  Stream<ReportAiGenerationEvent> generateStream(
+    ReportAiSummaryRange range,
+  ) async* {
+    if (error != null) {
+      // ignore: only_throw_errors
+      throw error!;
+    }
+    if (streamEvents != null) {
+      for (final event in streamEvents!) {
+        yield event;
+      }
+      return;
+    }
+    yield ReportAiGenerationResultEvent(response!);
   }
 }

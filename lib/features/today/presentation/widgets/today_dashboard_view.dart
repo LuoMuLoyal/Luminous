@@ -1344,6 +1344,7 @@ _AiSummaryCardContent _buildAiCardContent({
 
   if (aiState.status == TodayAiAnalysisCardStatus.loading) {
     return _AiSummaryCardContent(
+      summary: aiState.streamingSummary,
       bullets: [
         _AiSummaryItem(
           icon: Icons.hourglass_top_rounded,

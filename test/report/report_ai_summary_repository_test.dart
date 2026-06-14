@@ -60,4 +60,11 @@ class _FakeReportAiSummaryRemoteDataSource extends ReportAiSummaryRemoteDataSour
   Future<lucent.ReportSummaryDataDto> generate(
     ReportAiSummaryRange range,
   ) async => _dto;
+
+  @override
+  Stream<ReportAiRemoteEvent> generateStream(
+    ReportAiSummaryRange range,
+  ) async* {
+    yield ReportAiRemoteResultEvent(_dto);
+  }
 }

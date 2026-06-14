@@ -40,9 +40,22 @@ class TodayAiAnalysisController extends Notifier<TodayAiAnalysisCardState> {
     state = TodayAiAnalysisCardState.loading(previousAnalysis: previousAnalysis);
 
     try {
-      final analysis = await ref.read(todayAiRepositoryProvider).generate();
-      state = TodayAiAnalysisCardState.success(analysis);
-      return state;
+      await for (final event in ref
+          .read(todayAiRepositoryProvider)
+          .generateStream()) {
+        switch (event) {
+          case TodayAiGenerationSummaryEvent():
+            state = TodayAiAnalysisCardState.loading(
+              previousAnalysis: previousAnalysis,
+              streamingSummary: event.summary,
+            );
+          case TodayAiGenerationResultEvent():
+            state = TodayAiAnalysisCardState.success(event.analysis);
+            return state;
+        }
+      }
+
+      throw StateError('Today AI stream ended without a final result.');
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
       if (apiError.code == LucentResultCode.forbidden) {

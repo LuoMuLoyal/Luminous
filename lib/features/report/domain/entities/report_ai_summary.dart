@@ -53,6 +53,7 @@ class ReportAiSummaryCardState {
   const ReportAiSummaryCardState({
     required this.status,
     this.summary,
+    this.streamingSummary,
     this.errorMessage,
   });
 
@@ -61,9 +62,11 @@ class ReportAiSummaryCardState {
 
   const ReportAiSummaryCardState.loading({
     ReportAiSummary? previousSummary,
+    String? streamingSummary,
   }) : this(
          status: ReportAiSummaryCardStatus.loading,
          summary: previousSummary,
+         streamingSummary: streamingSummary,
        );
 
   const ReportAiSummaryCardState.success(ReportAiSummary summary)
@@ -86,6 +89,7 @@ class ReportAiSummaryCardState {
 
   final ReportAiSummaryCardStatus status;
   final ReportAiSummary? summary;
+  final String? streamingSummary;
   final String? errorMessage;
 
   bool get isLoading => status == ReportAiSummaryCardStatus.loading;

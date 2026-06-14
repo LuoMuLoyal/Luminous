@@ -68,6 +68,12 @@ class FakeTodayAiRepository implements TodayAiRepository {
     return _completer.future;
   }
 
+  @override
+  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
+    final analysis = await _completer.future;
+    yield TodayAiGenerationResultEvent(analysis);
+  }
+
   void complete(TodayAiAnalysis analysis) {
     _completer.complete(analysis);
   }
