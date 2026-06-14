@@ -153,6 +153,24 @@
       }
     }
   },
+  "recordNlpRetryFailedAction": "Retry failed",
+  "recordNlpFailedCandidatesHint": "{count, plural, =0{No failed candidates remain} =1{1 candidate failed to save last time. Review it and retry only the failed item.} other{{count} candidates failed to save last time. Review them and retry only the failed items.}}",
+  "@recordNlpFailedCandidatesHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpRetrySavedToast": "{count, plural, =0{No failed records were retried} =1{Retried and saved 1 failed record} other{Retried and saved {count} failed records}}",
+  "@recordNlpRetrySavedToast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpNoFailedCandidatesToast": "There are no failed items to retry right now.",
   "recordNlpCandidateSaveFailedHint": "Last save failed for this item: {message}",
   "@recordNlpCandidateSaveFailedHint": {
     "placeholders": {

@@ -105,36 +105,53 @@ class RecordNlpController extends Notifier<RecordNlpState> {
   }
 
   Future<RecordNlpSaveOutcome> saveSelected() async {
+    return _saveCandidates(
+      (candidate) => candidate.selected,
+    );
+  }
+
+  Future<RecordNlpSaveOutcome> retryFailed() async {
+    return _saveCandidates(
+      (candidate) => candidate.hasFailedSave,
+    );
+  }
+
+  Future<RecordNlpSaveOutcome> _saveCandidates(
+    bool Function(RecordNlpCandidateDraft candidate) shouldSave,
+  ) async {
     final session = ref.read(authSessionProvider);
     if (!session.canAccessProtectedData) {
       return const RecordNlpSaveOutcome.authRequired();
     }
 
-    final selectedItems = state.selectedCandidates;
-    if (selectedItems.isEmpty) {
+    final currentCandidates = state.candidates;
+    final targetIndexes = <int>[
+      for (var index = 0; index < currentCandidates.length; index += 1)
+        if (shouldSave(currentCandidates[index])) index,
+    ];
+    if (targetIndexes.isEmpty) {
       return const RecordNlpSaveOutcome.empty();
     }
 
     final repo = ref.read(dailyRecordRepositoryProvider);
+    final targetIndexSet = targetIndexes.toSet();
     state = state.copyWith(status: RecordNlpStatus.saving, errorMessage: null);
 
-    final failedItems = <RecordNlpCandidateDraft>[];
+    final failedItemsByIndex = <int, RecordNlpCandidateDraft>{};
     var savedCount = 0;
     String? lastErrorMessage;
 
-    for (var index = 0; index < selectedItems.length; index += 1) {
-      final item = selectedItems[index];
+    for (final index in targetIndexes) {
+      final item = currentCandidates[index];
       try {
         await repo.create(item.toCreateInput());
         savedCount += 1;
       } catch (error) {
         final apiError = LucentErrorMapper.fromObject(error);
         lastErrorMessage = apiError.message;
-        failedItems.add(
-          item.copyWith(
-            selected: true,
-            lastErrorMessage: apiError.message,
-          ),
+        failedItemsByIndex[index] = item.copyWith(
+          selected: true,
+          lastErrorMessage: apiError.message,
         );
       }
     }
@@ -145,10 +162,15 @@ class RecordNlpController extends Notifier<RecordNlpState> {
       ref.invalidate(reportDashboardProvider);
     }
 
-    final unselectedItems = state.candidates
-        .where((candidate) => !candidate.selected)
-        .map((candidate) => candidate.copyWith(lastErrorMessage: null))
-        .toList(growable: false);
+    final failedItems = [
+      for (final index in targetIndexes)
+        if (failedItemsByIndex.containsKey(index)) failedItemsByIndex[index]!,
+    ];
+    final unselectedItems = <RecordNlpCandidateDraft>[
+      for (var index = 0; index < currentCandidates.length; index += 1)
+        if (!targetIndexSet.contains(index))
+          currentCandidates[index].copyWith(lastErrorMessage: null),
+    ];
     final remainingItems = [...failedItems, ...unselectedItems];
 
     if (failedItems.isEmpty) {
@@ -166,7 +188,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     state = state.copyWith(
       status: RecordNlpStatus.reviewing,
       candidates: remainingItems,
-      errorMessage: lastErrorMessage,
+      errorMessage: null,
     );
     return RecordNlpSaveOutcome.partial(
       savedCount: savedCount,
@@ -215,7 +237,12 @@ class RecordNlpState {
   List<RecordNlpCandidateDraft> get selectedCandidates => candidates
       .where((candidate) => candidate.selected)
       .toList(growable: false);
+  List<RecordNlpCandidateDraft> get failedCandidates => candidates
+      .where((candidate) => candidate.hasFailedSave)
+      .toList(growable: false);
   int get selectedCount => selectedCandidates.length;
+  int get failedCount => failedCandidates.length;
+  bool get hasFailedCandidates => failedCount > 0;
 
   RecordNlpState copyWith({
     RecordNlpStatus? status,
@@ -296,6 +323,8 @@ class RecordNlpCandidateDraft {
   final String rationale;
   final bool selected;
   final String? lastErrorMessage;
+
+  bool get hasFailedSave => lastErrorMessage?.trim().isNotEmpty ?? false;
 
   RecordNlpCandidateDraft copyWith({
     DailyRecordKind? kind,

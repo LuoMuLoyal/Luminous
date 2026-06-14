@@ -238,11 +238,14 @@ class MedicineRiskChecker {
     MedicineRiskMedicineDetail current,
     MedicineRiskMedicineDetail other,
   ) {
-    final currentIngredients = current.normalizedIngredients;
-    final otherIngredients = other.normalizedIngredients;
-    if (currentIngredients == null ||
-        otherIngredients == null ||
-        currentIngredients != otherIngredients) {
+    final currentTokens = current.normalizedIngredientTokens;
+    final otherTokens = other.normalizedIngredientTokens;
+    if (currentTokens.isEmpty || otherTokens.isEmpty) {
+      return null;
+    }
+
+    final sharedTokens = currentTokens.intersection(otherTokens);
+    if (sharedTokens.isEmpty) {
       return null;
     }
 
@@ -252,7 +255,7 @@ class MedicineRiskChecker {
       context: MedicineRiskFindingContext.none,
       primaryMedicineName: current.displayName,
       secondaryMedicineName: other.displayName,
-      evidence: _asNonEmptyString(current.detail.detail.ingredients),
+      evidence: _duplicateIngredientEvidence(sharedTokens),
     );
   }
 
@@ -300,12 +303,11 @@ class MedicineRiskMedicineDetail {
       ? item.displayName
       : detail.name;
 
-  String? get normalizedIngredients {
-    if (item.source != 'cn') return null;
+  Set<String> get normalizedIngredientTokens {
+    if (item.source != 'cn') return const {};
     final ingredients = _asNonEmptyString(detail.detail.ingredients);
-    if (ingredients == null) return null;
-    final normalized = _normalizeToken(ingredients);
-    return normalized.isEmpty ? null : normalized;
+    if (ingredients == null) return const {};
+    return _extractIngredientTokens(ingredients);
   }
 
   Set<String> get drugbankInteractionTargets {
@@ -319,6 +321,48 @@ class MedicineRiskMedicineDetail {
         .where((value) => value.isNotEmpty)
         .toSet();
   }
+}
+
+String _duplicateIngredientEvidence(Set<String> sharedTokens) {
+  final values = sharedTokens.toList()..sort();
+  return values.join(' / ');
+}
+
+Set<String> _extractIngredientTokens(String value) {
+  final normalized = value
+      .replaceAll('（', '(')
+      .replaceAll('）', ')')
+      .replaceAll('；', ';')
+      .replaceAll('，', ',')
+      .replaceAll('、', ',')
+      .replaceAll('+', ',')
+      .replaceAll(' and ', ',')
+      .replaceAll(' AND ', ',');
+  final parts = normalized.split(
+    RegExp(r'[;,/\n\r\+\|]'),
+  );
+
+  return parts
+      .map(_cleanIngredientToken)
+      .whereType<String>()
+      .toSet();
+}
+
+String? _cleanIngredientToken(String raw) {
+  final withoutParens = raw.replaceAll(RegExp(r'\([^)]*\)'), ' ');
+  final withoutStrength = withoutParens.replaceAll(
+    RegExp(r'\b\d+(\.\d+)?\s*(mg|g|ml|mcg|iu|%|片|粒|袋|支|丸)\b', caseSensitive: false),
+    ' ',
+  );
+  final normalized = _normalizeToken(
+    withoutStrength
+        .replaceAll(RegExp(r'[·\.\-]'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim(),
+  );
+  if (normalized.isEmpty) return null;
+  if (normalized.length <= 1) return null;
+  return normalized;
 }
 
 String? _asNonEmptyString(Object? value) {

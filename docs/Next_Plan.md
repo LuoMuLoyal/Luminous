@@ -12,9 +12,8 @@ Today/Report AI summary streaming is in place for MVP, and Medicine now covers b
 
 1. **Close the biggest remaining fake surfaces**
    - Priority order:
-     - wire Mine campus/support resource taps to real actions when `actionUrl` is usable
      - wire at least one Report export action to the existing Lucent data-export request flow
-     - extend Medicine safety beyond the current “existing detail only” boundary, such as broader reviewed rule coverage, ingredient normalization, or better duplicate detection
+     - extend Medicine safety beyond the current “existing detail only” boundary, such as broader reviewed rule coverage, cross-source normalization, or interaction expansion
    - Success signal:
      - at least one remaining toast-only MVP-facing entry becomes real, or the Medicine safety boundary is expanded without reintroducing fake confidence
 
@@ -53,6 +52,11 @@ Today/Report AI summary streaming is in place for MVP, and Medicine now covers b
      - safety policy misses a case
      - UX breaks on slow networks or cancelled requests
    - Do not expand this into broad “AI everywhere” work before missing non-AI MVP capability gaps are closed.
+
+4. **Keep NLP intake and Mine support in polish-only mode**
+   - Mine campus/support rows already open contract-backed actions when Lucent provides a usable target; rows without target remain visible but disabled.
+   - Record NLP candidate save now has explicit failed-item retry inside the sheet.
+   - Revisit these two slices only if MVP testing shows users still get stuck, for example around per-item retry, clearer failure causes, or support-resource action-type expansion.
 
 ## Deferred But Useful
 

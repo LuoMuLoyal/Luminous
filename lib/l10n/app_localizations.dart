@@ -626,6 +626,30 @@ abstract class AppLocalizations {
   /// **'已保存 {savedCount} 条，另有 {failedCount} 条保存失败。'**
   String recordNlpPartialSavedToast(int savedCount, int failedCount);
 
+  /// No description provided for @recordNlpRetryFailedAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'重试失败项'**
+  String get recordNlpRetryFailedAction;
+
+  /// No description provided for @recordNlpFailedCandidatesHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'还有 {count} 条候选记录上次保存失败，可修正后仅重试失败项。'**
+  String recordNlpFailedCandidatesHint(int count);
+
+  /// No description provided for @recordNlpRetrySavedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'已重试并保存 {count} 条失败记录'**
+  String recordNlpRetrySavedToast(int count);
+
+  /// No description provided for @recordNlpNoFailedCandidatesToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前没有失败项可重试。'**
+  String get recordNlpNoFailedCandidatesToast;
+
   /// No description provided for @recordNlpCandidateSaveFailedHint.
   ///
   /// In zh, this message translates to:

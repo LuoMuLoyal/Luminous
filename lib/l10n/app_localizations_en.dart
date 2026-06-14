@@ -327,6 +327,39 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get recordNlpRetryFailedAction => 'Retry failed';
+
+  @override
+  String recordNlpFailedCandidatesHint(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count candidates failed to save last time. Review them and retry only the failed items.',
+      one:
+          '1 candidate failed to save last time. Review it and retry only the failed item.',
+      zero: 'No failed candidates remain',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recordNlpRetrySavedToast(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Retried and saved $count failed records',
+      one: 'Retried and saved 1 failed record',
+      zero: 'No failed records were retried',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recordNlpNoFailedCandidatesToast =>
+      'There are no failed items to retry right now.';
+
+  @override
   String recordNlpCandidateSaveFailedHint(String message) {
     return 'Last save failed for this item: $message';
   }

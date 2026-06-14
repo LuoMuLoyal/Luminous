@@ -140,6 +140,14 @@ class _RecordNlpSheetState extends ConsumerState<RecordNlpSheet> {
                       .read(recordNlpControllerProvider.notifier)
                       .removeCandidateAt(index),
                 ),
+                if (state.hasFailedCandidates) ...[
+                  const SizedBox(height: AppSpacingTokens.md),
+                  _FailedRetryPanel(
+                    failedCount: state.failedCount,
+                    enabled: !state.isSaving,
+                    onRetry: _handleRetryFailed,
+                  ),
+                ],
                 const SizedBox(height: AppSpacingTokens.md),
                 SizedBox(
                   width: double.infinity,
@@ -216,6 +224,95 @@ class _RecordNlpSheetState extends ConsumerState<RecordNlpSheet> {
           outcome.message ?? l10n.recordCreateFailedToast,
         );
     }
+  }
+
+  Future<void> _handleRetryFailed() async {
+    final l10n = AppLocalizations.of(context)!;
+    final outcome = await ref
+        .read(recordNlpControllerProvider.notifier)
+        .retryFailed();
+    if (!mounted) return;
+
+    switch (outcome.kind) {
+      case RecordNlpSaveOutcomeKind.saved:
+        await AppToast.show(
+          context,
+          l10n.recordNlpRetrySavedToast(outcome.savedCount ?? 0),
+        );
+        if (mounted &&
+            ref.read(recordNlpControllerProvider).candidates.isEmpty) {
+          Navigator.of(context).pop();
+        }
+      case RecordNlpSaveOutcomeKind.partial:
+        await AppToast.show(
+          context,
+          l10n.recordNlpPartialSavedToast(
+            outcome.savedCount ?? 0,
+            outcome.failedCount ?? 0,
+          ),
+        );
+      case RecordNlpSaveOutcomeKind.empty:
+        await AppToast.show(context, l10n.recordNlpNoFailedCandidatesToast);
+      case RecordNlpSaveOutcomeKind.authRequired:
+        await AppToast.show(context, l10n.authLoginRequiredPrompt);
+      case RecordNlpSaveOutcomeKind.error:
+        await AppToast.show(
+          context,
+          outcome.message ?? l10n.recordCreateFailedToast,
+        );
+    }
+  }
+}
+
+class _FailedRetryPanel extends StatelessWidget {
+  const _FailedRetryPanel({
+    required this.failedCount,
+    required this.enabled,
+    required this.onRetry,
+  });
+
+  final int failedCount;
+  final bool enabled;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvasSoft,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: surface.warning.withValues(alpha: 0.45)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        child: Row(
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              color: surface.warning,
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            Expanded(
+              child: Text(
+                l10n.recordNlpFailedCandidatesHint(failedCount),
+                style: typography.bodySm.copyWith(color: surface.body),
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            OutlinedButton(
+              key: const Key('record-nlp-retry-failed-action'),
+              onPressed: enabled ? onRetry : null,
+              child: Text(l10n.recordNlpRetryFailedAction),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -661,7 +758,6 @@ class _CandidateEditorState extends State<_CandidateEditor> {
         value: value ?? widget.item.value,
         unit: unit ?? widget.item.unit,
         note: note ?? widget.item.note,
-        lastErrorMessage: null,
       ),
     );
   }
@@ -749,7 +845,6 @@ class _SleepCandidateFields extends StatelessWidget {
             onChanged(
               item.copyWith(
                 payload: nextPayload,
-                lastErrorMessage: null,
               ),
             );
           },
@@ -778,7 +873,6 @@ class _SleepCandidateFields extends StatelessWidget {
                   onChanged(
                     item.copyWith(
                       payload: nextPayload,
-                      lastErrorMessage: null,
                     ),
                   );
                 }

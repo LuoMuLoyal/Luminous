@@ -289,6 +289,22 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get recordNlpRetryFailedAction => '重试失败项';
+
+  @override
+  String recordNlpFailedCandidatesHint(int count) {
+    return '还有 $count 条候选记录上次保存失败，可修正后仅重试失败项。';
+  }
+
+  @override
+  String recordNlpRetrySavedToast(int count) {
+    return '已重试并保存 $count 条失败记录';
+  }
+
+  @override
+  String get recordNlpNoFailedCandidatesToast => '当前没有失败项可重试。';
+
+  @override
   String recordNlpCandidateSaveFailedHint(String message) {
     return '这条上次保存失败：$message';
   }
