@@ -6,9 +6,9 @@ This file records work that is still missing or intentionally gated. Current fac
 
 ## MVP Gaps To Close
 
-- Real add-before-save medicine safety check flow is not delivered yet.
-  Current state: Medicine now has a real current-medicine risk-check page plus workspace safety cards derived from the same source-backed result, but the check still starts only after a medicine is already in the current-medicine list and only covers items with existing detail data.
-  Needed outcome: adding or reviewing a medicine should surface source-backed checks before save when possible, broaden rule coverage deliberately, and still state uncertainty clearly when detail is missing.
+- Medicine safety coverage is still intentionally narrow.
+  Current state: Medicine now has a real current-medicine risk-check page, workspace safety cards from the same source-backed result, and add-before-save precheck in search, but the check still depends on existing detail coverage and does not yet solve cross-source normalization, duplicate ingredients, or broader reviewed rule coverage.
+  Needed outcome: broaden safety coverage deliberately without pretending certainty where source detail is missing.
 
 - Report export is still placeholder-only.
   Current state: Report cards for clinic/monthly/print still call local toast behavior even though Lucent already has data-export request endpoints and Mine/Settings can show export request status.

@@ -1442,6 +1442,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineSearchAddToast => '会加入药箱并进入用药提醒设置。';
 
   @override
+  String get medicineSearchPrecheckTitle => '添加前风险检查';
+
+  @override
+  String get medicineSearchPrecheckDescription => '发现风险提示或资料不足，确认后仍可继续加入药箱。';
+
+  @override
+  String get medicineSearchPrecheckConfirmAction => '仍然加入';
+
+  @override
+  String get medicineSearchPrecheckFailedToast => '风险检查失败';
+
+  @override
   String get medicineSearchOpenDetailToast => '会打开药品详情页。';
 
   @override

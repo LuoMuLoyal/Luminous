@@ -1567,6 +1567,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'This will add the medicine and open reminder setup.';
 
   @override
+  String get medicineSearchPrecheckTitle => 'Pre-add risk check';
+
+  @override
+  String get medicineSearchPrecheckDescription =>
+      'Risk findings or missing coverage were found. You can still continue and add the medicine.';
+
+  @override
+  String get medicineSearchPrecheckConfirmAction => 'Add anyway';
+
+  @override
+  String get medicineSearchPrecheckFailedToast => 'Risk check failed';
+
+  @override
   String get medicineSearchOpenDetailToast =>
       'This will open medicine details.';
 

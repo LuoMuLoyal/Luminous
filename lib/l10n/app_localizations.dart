@@ -2834,6 +2834,30 @@ abstract class AppLocalizations {
   /// **'会加入药箱并进入用药提醒设置。'**
   String get medicineSearchAddToast;
 
+  /// No description provided for @medicineSearchPrecheckTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加前风险检查'**
+  String get medicineSearchPrecheckTitle;
+
+  /// No description provided for @medicineSearchPrecheckDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'发现风险提示或资料不足，确认后仍可继续加入药箱。'**
+  String get medicineSearchPrecheckDescription;
+
+  /// No description provided for @medicineSearchPrecheckConfirmAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'仍然加入'**
+  String get medicineSearchPrecheckConfirmAction;
+
+  /// No description provided for @medicineSearchPrecheckFailedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'风险检查失败'**
+  String get medicineSearchPrecheckFailedToast;
+
   /// No description provided for @medicineSearchOpenDetailToast.
   ///
   /// In zh, this message translates to:
