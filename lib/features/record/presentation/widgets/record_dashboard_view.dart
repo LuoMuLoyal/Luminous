@@ -19,6 +19,7 @@ class RecordDashboardView extends StatelessWidget {
     required this.dashboard,
     this.isLoading = false,
     this.onQuickAction,
+    this.onAiInputTap,
     this.onFilterSelected,
     this.onDateSelected,
     this.onPickDate,
@@ -27,6 +28,7 @@ class RecordDashboardView extends StatelessWidget {
   final RecordDashboard dashboard;
   final bool isLoading;
   final ValueChanged<RecordQuickAction>? onQuickAction;
+  final VoidCallback? onAiInputTap;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
   final VoidCallback? onPickDate;
@@ -55,6 +57,7 @@ class RecordDashboardView extends StatelessWidget {
             typography: typography,
             surface: surface,
             onQuickAction: onQuickAction,
+            onAiInputTap: onAiInputTap,
             onFilterSelected: onFilterSelected,
             onDateSelected: onDateSelected,
             onPickDate: onPickDate,
@@ -71,6 +74,7 @@ class _MobileRecordDashboard extends StatelessWidget {
     required this.typography,
     required this.surface,
     this.onQuickAction,
+    this.onAiInputTap,
     this.onFilterSelected,
     this.onDateSelected,
     this.onPickDate,
@@ -81,6 +85,7 @@ class _MobileRecordDashboard extends StatelessWidget {
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final ValueChanged<RecordQuickAction>? onQuickAction;
+  final VoidCallback? onAiInputTap;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
   final VoidCallback? onPickDate;
@@ -102,7 +107,12 @@ class _MobileRecordDashboard extends StatelessWidget {
           onPickDate: onPickDate,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _MobileAiInputBar(l10n: l10n, typography: typography, surface: surface),
+        _MobileAiInputBar(
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+          onTap: onAiInputTap,
+        ),
         const SizedBox(height: AppSpacingTokens.md),
         _MobileQuickRecordPanel(
           actions: quickActions,
@@ -711,11 +721,13 @@ class _MobileAiInputBar extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onTap,
   });
 
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -723,7 +735,7 @@ class _MobileAiInputBar extends StatelessWidget {
       key: const Key('record-ai-input'),
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showRecordToast(context, l10n.recordAiInputHint),
+        onTap: onTap ?? () => showRecordToast(context, l10n.recordAiInputHint),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 
 class DailyRecordRemoteDataSource {
@@ -88,6 +89,25 @@ class DailyRecordRemoteDataSource {
       contentType: input.contentType,
       sizeBytes: input.sizeBytes,
       publicUrl: _asStringOrNull(upload.publicUrl),
+    );
+  }
+
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  }) async {
+    final response = await api.dailyRecordsControllerGenerateCandidatesV1(
+      generateDailyRecordCandidatesDto: lucent.GenerateDailyRecordCandidatesDto(
+        text: text,
+        occurredAt: occurredAt,
+      ),
+    );
+    final dto = response.data!.data;
+    return DailyRecordCandidateResult(
+      locale: dto.locale,
+      generatedAt: dto.generatedAt,
+      confirmationHint: dto.confirmationHint,
+      items: dto.items.map(_toCandidateItem).toList(growable: false),
     );
   }
 
@@ -232,6 +252,21 @@ class DailyRecordRemoteDataSource {
       height: _asIntOrNull(item.height),
       publicUrl: _asStringOrNull(item.publicUrl),
       createdAt: item.createdAt,
+    );
+  }
+
+  DailyRecordCandidateItem _toCandidateItem(
+    lucent.DailyRecordCandidateItemDto item,
+  ) {
+    return DailyRecordCandidateItem(
+      kind: _parseKind(item.kind.value),
+      occurredAt: item.occurredAt,
+      title: _asStringOrNull(item.title),
+      value: _asStringOrNull(item.value),
+      unit: _asStringOrNull(item.unit),
+      note: _asStringOrNull(item.note),
+      payload: _parsePayload(item.payload),
+      rationale: item.rationale,
     );
   }
 

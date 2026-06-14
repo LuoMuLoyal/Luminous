@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-13
+Last updated: 2026-06-14
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 
@@ -14,8 +14,8 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 47 paths / 138 schemas.
-- Generated package includes auth/account, user-scoped health context, daily records, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, report dashboard, manual range-based report AI summary (`last_7_days` / `last_30_days`), public support resources/app info, and data export request status.
+- Last known Lucent export: 51 paths / 151 schemas.
+- Generated package includes auth/account, user-scoped health context, daily records, AI daily-record candidate parsing, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, report dashboard, manual range-based report AI summary (`last_7_days` / `last_30_days`), public support resources/app info, and data export request status.
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay under `/api/v1/account/*`.
 
 ## Usage Rules
@@ -58,3 +58,4 @@ Generated OpenAPI client paths are covered by `.gitattributes` whitespace rules,
 - `packages/lucent_openapi/` stays committed because it is a local path dependency used by the app.
 - Generated Dart client code under `lib/` stays tracked.
 - Generated Markdown docs under `packages/lucent_openapi/doc/` and generated package stub tests under `packages/lucent_openapi/test/` are now intentionally disabled and cleaned by the wrapper because they add large diff noise without participating in app runtime or verification.
+- If the generator drops a previously-used top-level export or `LucentOpenapi` getter while the underlying `src/api/*.dart` file still exists, patch the generated package in-repo and keep the wrapper workflow unchanged; do not work around it by rewriting feature code to ad-hoc imports.

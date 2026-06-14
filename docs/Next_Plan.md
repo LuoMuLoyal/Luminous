@@ -1,12 +1,12 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-13
+Last updated: 2026-06-14
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
 ## Current Goal
 
-Sleep structured field delivery is complete. Keep AI work deferred for now and spend the next slot on non-AI cleanup, verification, or product-surface work.
+Natural-language record intake phase 1 is now active on mobile Record. Next focus should stay on making that lane more usable instead of jumping straight to broader AI surfaces.
 
 ## Immediate Work Order
 
@@ -59,14 +59,18 @@ Sleep structured field delivery is complete. Keep AI work deferred for now and s
      - before merging changes to the full-stack E2E helper or generated auth/record client surface
      - before cutting a mobile test build that claims Record CRUD is stable
 
-4. **AI follow-up order — STILL DEFERRED**
-   - Sleep structured fields are verified locally.
-   - Resume AI only when we explicitly switch back to AI work.
-   - Continue in this order:
-     - monthly AI summary
-     - natural language to candidate records
-     - screenshot to candidate structured input
-   - Do not jump to scheduled proactive AI pushes before the manual Today path, report aggregate layer, and sleep contract are all stable and bounded.
+4. **Natural-language record intake follow-up**
+   - Phase 1 now exists on mobile Record:
+     - FAB + AI input bar open one shared bottom sheet
+     - text note -> Lucent candidate records
+     - user can remove candidates
+     - save-all writes confirmed records through existing daily-record create flow
+   - Next tightening order:
+     - candidate editing instead of delete-only review
+     - explicit per-kind formatting polish for meal / symptom / sleep candidate cards
+     - lightweight widget/integration coverage for the new sheet flow
+     - only after that, reconsider voice-to-text as a text-prefill path
+   - Do not expand this into broad “AI everywhere” work before the candidate-review lane is stable.
 
 ## Deferred But Useful
 

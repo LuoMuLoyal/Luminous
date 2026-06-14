@@ -1,5 +1,6 @@
 import 'package:luminous/features/record/data/datasources/daily_record_remote_data_source.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 
@@ -38,6 +39,14 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
     DailyRecordImageUploadInput input,
   ) {
     return dataSource.uploadImage(input);
+  }
+
+  @override
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  }) {
+    return dataSource.generateCandidates(text: text, occurredAt: occurredAt);
   }
 
   @override

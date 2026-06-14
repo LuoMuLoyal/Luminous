@@ -10,6 +10,7 @@ import 'package:luminous/features/medicine/data/datasources/medicine_reminder_re
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
@@ -124,6 +125,19 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     DailyRecordImageUploadInput input,
   ) async {
     throw UnimplementedError();
+  }
+
+  @override
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  }) async {
+    return const DailyRecordCandidateResult(
+      locale: 'zh-CN',
+      generatedAt: '2026-06-14T00:00:00.000Z',
+      confirmationHint: '确认后再保存。',
+      items: <DailyRecordCandidateItem>[],
+    );
   }
 
   @override

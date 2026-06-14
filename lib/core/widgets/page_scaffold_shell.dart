@@ -14,6 +14,7 @@ class PageScaffoldShell extends StatelessWidget {
     this.centerTitle = false,
     required this.children,
     this.scrollable = true,
+    this.floatingActionButton,
   });
 
   final String title;
@@ -23,6 +24,7 @@ class PageScaffoldShell extends StatelessWidget {
   final bool centerTitle;
   final List<Widget> children;
   final bool scrollable;
+  final Widget? floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +64,24 @@ class PageScaffoldShell extends StatelessWidget {
       ),
     );
 
+    final pageContent = SafeArea(
+      child: scrollable ? SingleChildScrollView(child: content) : content,
+    );
+
     return Material(
       color: surface.canvasSoft,
-      child: SafeArea(
-        child: scrollable ? SingleChildScrollView(child: content) : content,
-      ),
+      child: floatingActionButton == null
+          ? pageContent
+          : Stack(
+              children: [
+                Positioned.fill(child: pageContent),
+                Positioned(
+                  right: AppSpacingTokens.lg,
+                  bottom: AppSpacingTokens.lg,
+                  child: floatingActionButton!,
+                ),
+              ],
+            ),
     );
   }
 }

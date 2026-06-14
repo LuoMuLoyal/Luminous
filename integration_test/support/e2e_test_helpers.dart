@@ -28,6 +28,7 @@ import 'package:luminous/features/mine/presentation/providers/mine_dashboard_pro
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
@@ -717,6 +718,19 @@ class E2eDailyRecordRepository implements DailyRecordRepository {
       contentType: input.contentType,
       sizeBytes: input.sizeBytes,
       publicUrl: 'https://cdn.example.com/e2e.jpg',
+    );
+  }
+
+  @override
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  }) async {
+    return const DailyRecordCandidateResult(
+      locale: 'zh-CN',
+      generatedAt: '2026-06-14T00:00:00.000Z',
+      confirmationHint: '确认后再保存。',
+      items: <DailyRecordCandidateItem>[],
     );
   }
 

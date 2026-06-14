@@ -15,6 +15,7 @@ import 'package:luminous/features/record/data/providers/daily_record_providers.d
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/data/repositories/lucent_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
@@ -132,6 +133,28 @@ void main() {
       find.text(l10n.recordQuickActionLabel(l10n.recordTypeMedication)),
       findsNothing,
     );
+  });
+
+  testWidgets('Record page opens natural-language sheet on mobile', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await _pumpRecordPage(
+      tester,
+      dailyRecordRepository: _FakeDailyRecordRepository(),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-ai-input')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('record-nlp-input-field')), findsOneWidget);
+    expect(find.byKey(const Key('record-nlp-generate-action')), findsOneWidget);
   });
 
   testWidgets(
@@ -1106,6 +1129,7 @@ Future<void> _pumpRecordRouter(
 Future<void> _pumpRecordPage(
   WidgetTester tester, {
   RecordRepository recordRepository = const MockRecordRepository(),
+  DailyRecordRepository? dailyRecordRepository,
   AuthSessionNotifier Function()? authSessionNotifier,
   HealthContextSnapshot? healthContextSnapshot,
   DateTime? selectedDate,
@@ -1113,6 +1137,9 @@ Future<void> _pumpRecordPage(
 }) async {
   final overrides = [
     recordRepositoryProvider.overrideWithValue(recordRepository),
+    dailyRecordRepositoryProvider.overrideWithValue(
+      dailyRecordRepository ?? _FakeDailyRecordRepository(),
+    ),
     authSessionProvider.overrideWith(
       authSessionNotifier ?? _SignedInAuthSessionNotifier.new,
     ),
@@ -1274,6 +1301,19 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
         ),
       ],
       total: 1,
+    );
+  }
+
+  @override
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  }) async {
+    return const DailyRecordCandidateResult(
+      locale: 'zh-CN',
+      generatedAt: '2026-06-14T00:00:00.000Z',
+      confirmationHint: '确认后再保存。',
+      items: <DailyRecordCandidateItem>[],
     );
   }
 
@@ -1466,6 +1506,7 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
       ),
     );
   }
+
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
