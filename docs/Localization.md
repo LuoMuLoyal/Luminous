@@ -27,7 +27,7 @@ Persisted preference keys:
 - Do not hardcode user-visible text in pages or widgets.
 - Add visible text to both ARB files.
 - Report AI summary state copy such as generate/loading/error/disabled hints is owned by the Report ARB entries, not by repository/domain fallback strings.
-- Record natural-language intake strings such as bottom-sheet title, parse/save actions, candidate counts, selection hints, partial-save toasts, and candidate failure hints are owned by the Record ARB entries.
+- Record natural-language intake strings such as bottom-sheet title, parse/save actions, candidate counts, selection hints, partial-save toasts, candidate failure hints, and per-kind candidate editor labels are owned by the Record ARB entries.
 - Reminder UI strings for date windows, local sound preference, SMS unavailable state, delivery history, and on-device notification title/body/channel labels are owned by the Medicine feature ARB entries.
 - Sleep structured-record strings such as bedtime/wake-time labels, duration, quality, and sleep-stage labels are owned by the Record feature ARB entries.
 - Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.

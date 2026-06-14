@@ -99,6 +99,10 @@
   "recordNlpGenerateAction": "Parse candidates",
   "recordNlpGeneratingAction": "Parsing",
   "recordNlpResetAction": "Clear",
+  "recordNlpMealTitleOptional": "Meal label / title (optional)",
+  "recordNlpSymptomTitleLabel": "Symptom name",
+  "recordNlpNoteBodyLabel": "Content",
+  "recordNlpDetailsLabel": "Details",
   "recordNlpCandidatesTitle": "{count, plural, =0{Candidate records · 0} =1{Candidate record · 1} other{Candidate records · {count}}}",
   "@recordNlpCandidatesTitle": {
     "placeholders": {
