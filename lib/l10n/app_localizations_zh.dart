@@ -679,6 +679,175 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineQuickSafetyCheckToast => '会打开相互作用和禁忌检查。';
 
   @override
+  String get medicineRiskCheckPageTitle => '风险检查';
+
+  @override
+  String get medicineRiskCheckSummaryTitle => '检查概览';
+
+  @override
+  String get medicineRiskCheckCurrentMedicinesLabel => '当前用药';
+
+  @override
+  String get medicineRiskCheckCheckedMedicinesLabel => '已检查';
+
+  @override
+  String get medicineRiskCheckFindingsLabel => '风险提示';
+
+  @override
+  String get medicineRiskCheckCoverageLabel => '覆盖不足';
+
+  @override
+  String get medicineRiskCheckFindingsTitle => '风险提示';
+
+  @override
+  String get medicineRiskCheckCoverageTitle => '未覆盖药品';
+
+  @override
+  String get medicineRiskCheckNoFindingsTitle => '暂未发现明确风险提示';
+
+  @override
+  String get medicineRiskCheckNoFindingsBody =>
+      '当前已检查药物里没有发现明确风险提示，但仍需结合医生建议与说明书确认。';
+
+  @override
+  String get medicineRiskCheckViewAction => '查看';
+
+  @override
+  String get medicineRiskCheckAllClearAlertTitle => '风险检查已完成';
+
+  @override
+  String get medicineRiskCheckAllClearAlertBody => '当前已检查药物里没有发现明确风险提示';
+
+  @override
+  String get medicineRiskCheckAllClearAlertDetail =>
+      '这不等于适合自行用药，仍需结合医生建议与说明书确认。';
+
+  @override
+  String get medicineRiskCheckCoverageAlertTitle => '风险检查覆盖不足';
+
+  @override
+  String medicineRiskCheckCoverageAlertBody(int count) {
+    return '还有 $count 种药品缺少可检查资料';
+  }
+
+  @override
+  String medicineRiskCheckCoverageAlertDetail(String names) {
+    return '$names 暂时缺少可检查资料。';
+  }
+
+  @override
+  String medicineRiskCheckCoverageAlertDetailWithMore(String names) {
+    return '$names 等药品暂时缺少可检查资料。';
+  }
+
+  @override
+  String get medicineRiskCheckFindingTitleInteraction => '发现药物相互作用';
+
+  @override
+  String get medicineRiskCheckFindingTitleDuplicate => '发现重复成分';
+
+  @override
+  String get medicineRiskCheckFindingTitleAllergy => '发现过敏相关提示';
+
+  @override
+  String get medicineRiskCheckFindingTitleSpecialGroup => '发现特殊人群用药提示';
+
+  @override
+  String get medicineRiskCheckFindingTitleFoodInteraction => '发现饮食相互作用提示';
+
+  @override
+  String medicineRiskCheckFindingBodyInteraction(
+    String primary,
+    String secondary,
+  ) {
+    return '$primary 与 $secondary 可能存在相互作用';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyInteractionSingle(String primary) {
+    return '$primary 存在相互作用提示';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyDuplicate(
+    String primary,
+    String secondary,
+  ) {
+    return '$primary 与 $secondary 可能重复用药';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyDuplicateSingle(String primary) {
+    return '$primary 可能存在重复成分';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyAllergy(String primary, String related) {
+    return '$primary 资料中出现过敏相关词：$related';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyAllergyGeneric(String primary) {
+    return '$primary 存在过敏相关提示';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodySpecialGroup(String primary) {
+    return '$primary 需要结合特殊人群信息重点确认';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyFoodInteraction(String primary) {
+    return '$primary 存在饮食相关注意事项';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyGeneric(String primary) {
+    return '$primary 存在需要确认的风险信息';
+  }
+
+  @override
+  String get medicineRiskCheckFindingEvidenceFallback =>
+      '详情来自药品资料，请在风险检查页进一步确认。';
+
+  @override
+  String get medicineRiskCheckCoverageReasonManualEntry => '手动录入，暂无标准药品资料';
+
+  @override
+  String get medicineRiskCheckCoverageReasonMissingSourceRef =>
+      '缺少来源编号，无法拉取药品详情';
+
+  @override
+  String get medicineRiskCheckCoverageReasonDetailUnavailable => '药品详情暂时不可用';
+
+  @override
+  String get medicineRiskCheckSeverityHigh => '高风险';
+
+  @override
+  String get medicineRiskCheckSeverityMedium => '需确认';
+
+  @override
+  String get medicineRiskCheckSeverityInfo => '提示';
+
+  @override
+  String get medicineRiskCheckContextPregnancy => '孕期';
+
+  @override
+  String get medicineRiskCheckContextLactation => '哺乳期';
+
+  @override
+  String get medicineRiskCheckContextPediatric => '儿童';
+
+  @override
+  String get medicineRiskCheckContextGeriatric => '老年人';
+
+  @override
+  String get medicineRiskCheckContextAlcohol => '酒精';
+
+  @override
+  String get medicineRiskCheckContextCaffeine => '咖啡因';
+
+  @override
   String get medicineQuickRecordToast => '会打开服药记录入口。';
 
   @override

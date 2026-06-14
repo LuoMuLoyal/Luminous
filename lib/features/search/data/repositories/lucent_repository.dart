@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/lucent_api.dart';
+import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/features/search/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/search/data/mappers/search_mapper.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
@@ -67,9 +68,8 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
 /// Provider for LucentMedicineSearchRepository.
 final lucentMedicineSearchRepositoryProvider =
     Provider<LucentMedicineSearchRepository>((ref) {
-  final api = ref.watch(lucentMedicinesApiProvider);
   return LucentMedicineSearchRepository(
-    dataSource: MedicineSearchRemoteDataSource(api: api),
+    dataSource: ref.watch(medicineSearchRemoteDataSourceProvider),
     mapper: MedicineSearchMapper(),
   );
 });
@@ -79,3 +79,9 @@ final medicineSearchRepositoryProvider =
     Provider<MedicineSearchRepository>((ref) {
   return ref.watch(lucentMedicineSearchRepositoryProvider);
 });
+
+final medicineSearchRemoteDataSourceProvider =
+    Provider<MedicineSearchRemoteDataSource>((ref) {
+      final api = ref.watch(lucentMedicinesApiProvider);
+      return MedicineSearchRemoteDataSource(api: api);
+    });

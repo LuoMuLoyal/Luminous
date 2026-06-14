@@ -740,6 +740,184 @@ class AppLocalizationsEn extends AppLocalizations {
       'This will open interaction and contraindication checks.';
 
   @override
+  String get medicineRiskCheckPageTitle => 'Risk check';
+
+  @override
+  String get medicineRiskCheckSummaryTitle => 'Check summary';
+
+  @override
+  String get medicineRiskCheckCurrentMedicinesLabel => 'Current meds';
+
+  @override
+  String get medicineRiskCheckCheckedMedicinesLabel => 'Checked';
+
+  @override
+  String get medicineRiskCheckFindingsLabel => 'Findings';
+
+  @override
+  String get medicineRiskCheckCoverageLabel => 'Coverage gaps';
+
+  @override
+  String get medicineRiskCheckFindingsTitle => 'Risk findings';
+
+  @override
+  String get medicineRiskCheckCoverageTitle => 'Unchecked medicines';
+
+  @override
+  String get medicineRiskCheckNoFindingsTitle => 'No explicit risk finding yet';
+
+  @override
+  String get medicineRiskCheckNoFindingsBody =>
+      'No explicit risk finding was found for the medicines we could check, but you should still confirm with clinical advice and official instructions.';
+
+  @override
+  String get medicineRiskCheckViewAction => 'View';
+
+  @override
+  String get medicineRiskCheckAllClearAlertTitle => 'Risk check completed';
+
+  @override
+  String get medicineRiskCheckAllClearAlertBody =>
+      'No explicit risk finding was found for the medicines we could check';
+
+  @override
+  String get medicineRiskCheckAllClearAlertDetail =>
+      'This does not mean self-medication is safe. Confirm with clinical advice and official instructions.';
+
+  @override
+  String get medicineRiskCheckCoverageAlertTitle =>
+      'Risk check coverage incomplete';
+
+  @override
+  String medicineRiskCheckCoverageAlertBody(int count) {
+    return '$count medicines still lack checkable detail';
+  }
+
+  @override
+  String medicineRiskCheckCoverageAlertDetail(String names) {
+    return '$names currently lack checkable detail.';
+  }
+
+  @override
+  String medicineRiskCheckCoverageAlertDetailWithMore(String names) {
+    return '$names and others currently lack checkable detail.';
+  }
+
+  @override
+  String get medicineRiskCheckFindingTitleInteraction =>
+      'Potential drug interaction found';
+
+  @override
+  String get medicineRiskCheckFindingTitleDuplicate =>
+      'Potential duplicate ingredient found';
+
+  @override
+  String get medicineRiskCheckFindingTitleAllergy =>
+      'Allergy-related note found';
+
+  @override
+  String get medicineRiskCheckFindingTitleSpecialGroup =>
+      'Special-group medication note found';
+
+  @override
+  String get medicineRiskCheckFindingTitleFoodInteraction =>
+      'Food interaction note found';
+
+  @override
+  String medicineRiskCheckFindingBodyInteraction(
+    String primary,
+    String secondary,
+  ) {
+    return '$primary and $secondary may interact';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyInteractionSingle(String primary) {
+    return '$primary has an interaction note';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyDuplicate(
+    String primary,
+    String secondary,
+  ) {
+    return '$primary and $secondary may duplicate therapy';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyDuplicateSingle(String primary) {
+    return '$primary may have a duplicate ingredient';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyAllergy(String primary, String related) {
+    return '$primary references allergy-related term: $related';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyAllergyGeneric(String primary) {
+    return '$primary has an allergy-related note';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodySpecialGroup(String primary) {
+    return '$primary should be checked against special-group context';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyFoodInteraction(String primary) {
+    return '$primary has a food-related caution';
+  }
+
+  @override
+  String medicineRiskCheckFindingBodyGeneric(String primary) {
+    return '$primary has risk information that still needs confirmation';
+  }
+
+  @override
+  String get medicineRiskCheckFindingEvidenceFallback =>
+      'The note comes from medicine detail data. Open the risk-check page for a closer review.';
+
+  @override
+  String get medicineRiskCheckCoverageReasonManualEntry =>
+      'Manual entry without standard medicine detail';
+
+  @override
+  String get medicineRiskCheckCoverageReasonMissingSourceRef =>
+      'Missing source reference, so detail cannot be fetched';
+
+  @override
+  String get medicineRiskCheckCoverageReasonDetailUnavailable =>
+      'Medicine detail is currently unavailable';
+
+  @override
+  String get medicineRiskCheckSeverityHigh => 'High risk';
+
+  @override
+  String get medicineRiskCheckSeverityMedium => 'Needs review';
+
+  @override
+  String get medicineRiskCheckSeverityInfo => 'Note';
+
+  @override
+  String get medicineRiskCheckContextPregnancy => 'Pregnancy';
+
+  @override
+  String get medicineRiskCheckContextLactation => 'Lactation';
+
+  @override
+  String get medicineRiskCheckContextPediatric => 'Pediatric';
+
+  @override
+  String get medicineRiskCheckContextGeriatric => 'Geriatric';
+
+  @override
+  String get medicineRiskCheckContextAlcohol => 'Alcohol';
+
+  @override
+  String get medicineRiskCheckContextCaffeine => 'Caffeine';
+
+  @override
   String get medicineQuickRecordToast => 'This will open dose logging.';
 
   @override

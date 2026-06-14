@@ -4,6 +4,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
@@ -37,6 +38,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
     final nextDose = _nextDoseFor(workspace);
+    final alerts = medicineAlertsFromRiskCheck(l10n, workspace.riskCheckResult);
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +54,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacingTokens.md),
         _SafetyEngineSection(
-          alerts: workspace.alerts.take(4).toList(growable: false),
+          alerts: alerts.take(4).toList(growable: false),
           l10n: l10n,
           typography: typography,
           surface: surface,

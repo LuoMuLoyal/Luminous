@@ -4,6 +4,7 @@ import 'package:luminous/features/health_context/domain/repositories/health_cont
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
     show DoseLogRemoteDataSource, DoseLogStatus;
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/repositories/medicine_risk_check_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 
@@ -14,15 +15,18 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     required this.healthRepo,
     required this.doseLogDs,
     required this.reminderDs,
+    required this.riskCheckRepository,
   });
 
   final HealthContextRepository healthRepo;
   final DoseLogRemoteDataSource doseLogDs;
   final MedicineReminderRemoteDataSource reminderDs;
+  final MedicineRiskCheckRepository riskCheckRepository;
 
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {
     final snapshot = await healthRepo.fetchHealthContext();
+    final riskCheckResult = await riskCheckRepository.fetchForSnapshot(snapshot);
     final medicines = snapshot.currentMedicines
         .where((medicine) => medicine.isCurrent)
         .toList(growable: false);
@@ -113,8 +117,9 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       ),
       quickActions: _defaultQuickActions(),
       plan: MedicinePlanSurface(items: planItems),
-      alerts: _defaultAlerts(),
+      alerts: const [],
       promisePoints: _defaultPromisePoints(),
+      riskCheckResult: riskCheckResult,
     );
   }
 
@@ -173,45 +178,6 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
       accent: AppColorTokens.warningDeep,
-    ),
-  ];
-
-  static List<MedicineAlert> _defaultAlerts() => const [
-    MedicineAlert(
-      icon: Icons.wine_bar_rounded,
-      titleKey: MedicineCopyKey.alertAlcoholRiskTitle,
-      bodyKey: MedicineCopyKey.alertAlcoholRiskBody,
-      detailKey: MedicineCopyKey.alertAlcoholRiskDetail,
-      actionKey: MedicineCopyKey.alertAlcoholRiskStatus,
-      color: AppColorTokens.warningDeep,
-      softColor: AppColorTokens.warningSoft,
-    ),
-    MedicineAlert(
-      icon: Icons.coffee_rounded,
-      titleKey: MedicineCopyKey.alertCoffeeReminderTitle,
-      bodyKey: MedicineCopyKey.alertCoffeeReminderBody,
-      detailKey: MedicineCopyKey.alertCoffeeReminderDetail,
-      actionKey: MedicineCopyKey.alertCoffeeReminderStatus,
-      color: AppColorTokens.warningDeep,
-      softColor: AppColorTokens.warningSoft,
-    ),
-    MedicineAlert(
-      icon: Icons.content_copy_rounded,
-      titleKey: MedicineCopyKey.alertDuplicateCheckTitle,
-      bodyKey: MedicineCopyKey.alertDuplicateCheckBody,
-      detailKey: MedicineCopyKey.alertDuplicateCheckDetail,
-      actionKey: MedicineCopyKey.alertDuplicateCheckStatus,
-      color: AppColorTokens.cyanDeep,
-      softColor: AppColorTokens.cyanSoft,
-    ),
-    MedicineAlert(
-      icon: Icons.water_drop_rounded,
-      titleKey: MedicineCopyKey.alertSpecialGroupSafetyTitle,
-      bodyKey: MedicineCopyKey.alertSpecialGroupSafetyBody,
-      detailKey: MedicineCopyKey.alertSpecialGroupSafetyDetail,
-      actionKey: MedicineCopyKey.alertSpecialGroupSafetyStatus,
-      color: AppColorTokens.error,
-      softColor: AppColorTokens.errorSoft,
     ),
   ];
 

@@ -322,20 +322,3 @@ String _compactRouteOrSchedule(String value) {
   if (trimmed.isEmpty) return '--';
   return trimmed;
 }
-
-String _alertActionResult(MedicineCopyKey key, AppLocalizations l10n) {
-  return switch (key) {
-    MedicineCopyKey.alertInteractionAction =>
-      l10n.medicineAlertInteractionToast,
-    MedicineCopyKey.alertOtherAction => l10n.medicineAlertOtherToast,
-    MedicineCopyKey.alertAlcoholRiskStatus =>
-      l10n.medicineAlertAlcoholRiskToast,
-    MedicineCopyKey.alertCoffeeReminderStatus =>
-      l10n.medicineAlertCoffeeReminderToast,
-    MedicineCopyKey.alertDuplicateCheckStatus =>
-      l10n.medicineAlertDuplicateCheckToast,
-    MedicineCopyKey.alertSpecialGroupSafetyStatus =>
-      l10n.medicineAlertSpecialGroupSafetyToast,
-    _ => l10n.medicineAlertOtherToast,
-  };
-}

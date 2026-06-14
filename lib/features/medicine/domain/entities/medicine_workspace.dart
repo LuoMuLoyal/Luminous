@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 
 class MedicineWorkspace {
   const MedicineWorkspace({
@@ -7,6 +8,7 @@ class MedicineWorkspace {
     required this.plan,
     required this.alerts,
     required this.promisePoints,
+    this.riskCheckResult,
   });
 
   final MedicineHero hero;
@@ -14,6 +16,7 @@ class MedicineWorkspace {
   final MedicinePlanSurface plan;
   final List<MedicineAlert> alerts;
   final List<MedicinePromisePoint> promisePoints;
+  final MedicineRiskCheckResult? riskCheckResult;
 }
 
 class MedicineHero {
@@ -103,21 +106,29 @@ enum MedicineDoseStatus { taken, skipped, pending }
 class MedicineAlert {
   const MedicineAlert({
     required this.icon,
-    required this.titleKey,
-    required this.bodyKey,
-    required this.detailKey,
-    required this.actionKey,
+    this.titleKey,
+    this.bodyKey,
+    this.detailKey,
+    this.actionKey,
     required this.color,
     required this.softColor,
+    this.rawTitle,
+    this.rawBody,
+    this.rawDetail,
+    this.rawAction,
   });
 
   final IconData icon;
-  final MedicineCopyKey titleKey;
-  final MedicineCopyKey bodyKey;
-  final MedicineCopyKey detailKey;
-  final MedicineCopyKey actionKey;
+  final MedicineCopyKey? titleKey;
+  final MedicineCopyKey? bodyKey;
+  final MedicineCopyKey? detailKey;
+  final MedicineCopyKey? actionKey;
   final Color color;
   final Color softColor;
+  final String? rawTitle;
+  final String? rawBody;
+  final String? rawDetail;
+  final String? rawAction;
 }
 
 class MedicinePromisePoint {

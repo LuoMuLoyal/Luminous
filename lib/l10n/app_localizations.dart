@@ -1376,6 +1376,282 @@ abstract class AppLocalizations {
   /// **'会打开相互作用和禁忌检查。'**
   String get medicineQuickSafetyCheckToast;
 
+  /// No description provided for @medicineRiskCheckPageTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'风险检查'**
+  String get medicineRiskCheckPageTitle;
+
+  /// No description provided for @medicineRiskCheckSummaryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'检查概览'**
+  String get medicineRiskCheckSummaryTitle;
+
+  /// No description provided for @medicineRiskCheckCurrentMedicinesLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前用药'**
+  String get medicineRiskCheckCurrentMedicinesLabel;
+
+  /// No description provided for @medicineRiskCheckCheckedMedicinesLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'已检查'**
+  String get medicineRiskCheckCheckedMedicinesLabel;
+
+  /// No description provided for @medicineRiskCheckFindingsLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'风险提示'**
+  String get medicineRiskCheckFindingsLabel;
+
+  /// No description provided for @medicineRiskCheckCoverageLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'覆盖不足'**
+  String get medicineRiskCheckCoverageLabel;
+
+  /// No description provided for @medicineRiskCheckFindingsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'风险提示'**
+  String get medicineRiskCheckFindingsTitle;
+
+  /// No description provided for @medicineRiskCheckCoverageTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'未覆盖药品'**
+  String get medicineRiskCheckCoverageTitle;
+
+  /// No description provided for @medicineRiskCheckNoFindingsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂未发现明确风险提示'**
+  String get medicineRiskCheckNoFindingsTitle;
+
+  /// No description provided for @medicineRiskCheckNoFindingsBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前已检查药物里没有发现明确风险提示，但仍需结合医生建议与说明书确认。'**
+  String get medicineRiskCheckNoFindingsBody;
+
+  /// No description provided for @medicineRiskCheckViewAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看'**
+  String get medicineRiskCheckViewAction;
+
+  /// No description provided for @medicineRiskCheckAllClearAlertTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'风险检查已完成'**
+  String get medicineRiskCheckAllClearAlertTitle;
+
+  /// No description provided for @medicineRiskCheckAllClearAlertBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前已检查药物里没有发现明确风险提示'**
+  String get medicineRiskCheckAllClearAlertBody;
+
+  /// No description provided for @medicineRiskCheckAllClearAlertDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'这不等于适合自行用药，仍需结合医生建议与说明书确认。'**
+  String get medicineRiskCheckAllClearAlertDetail;
+
+  /// No description provided for @medicineRiskCheckCoverageAlertTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'风险检查覆盖不足'**
+  String get medicineRiskCheckCoverageAlertTitle;
+
+  /// No description provided for @medicineRiskCheckCoverageAlertBody.
+  ///
+  /// In zh, this message translates to:
+  /// **'还有 {count} 种药品缺少可检查资料'**
+  String medicineRiskCheckCoverageAlertBody(int count);
+
+  /// No description provided for @medicineRiskCheckCoverageAlertDetail.
+  ///
+  /// In zh, this message translates to:
+  /// **'{names} 暂时缺少可检查资料。'**
+  String medicineRiskCheckCoverageAlertDetail(String names);
+
+  /// No description provided for @medicineRiskCheckCoverageAlertDetailWithMore.
+  ///
+  /// In zh, this message translates to:
+  /// **'{names} 等药品暂时缺少可检查资料。'**
+  String medicineRiskCheckCoverageAlertDetailWithMore(String names);
+
+  /// No description provided for @medicineRiskCheckFindingTitleInteraction.
+  ///
+  /// In zh, this message translates to:
+  /// **'发现药物相互作用'**
+  String get medicineRiskCheckFindingTitleInteraction;
+
+  /// No description provided for @medicineRiskCheckFindingTitleDuplicate.
+  ///
+  /// In zh, this message translates to:
+  /// **'发现重复成分'**
+  String get medicineRiskCheckFindingTitleDuplicate;
+
+  /// No description provided for @medicineRiskCheckFindingTitleAllergy.
+  ///
+  /// In zh, this message translates to:
+  /// **'发现过敏相关提示'**
+  String get medicineRiskCheckFindingTitleAllergy;
+
+  /// No description provided for @medicineRiskCheckFindingTitleSpecialGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'发现特殊人群用药提示'**
+  String get medicineRiskCheckFindingTitleSpecialGroup;
+
+  /// No description provided for @medicineRiskCheckFindingTitleFoodInteraction.
+  ///
+  /// In zh, this message translates to:
+  /// **'发现饮食相互作用提示'**
+  String get medicineRiskCheckFindingTitleFoodInteraction;
+
+  /// No description provided for @medicineRiskCheckFindingBodyInteraction.
+  ///
+  /// In zh, this message translates to:
+  /// **'{primary} 与 {secondary} 可能存在相互作用'**
+  String medicineRiskCheckFindingBodyInteraction(
+    String primary,
+    String secondary,
+  );
+
+  /// No description provided for @medicineRiskCheckFindingBodyInteractionSingle.
+  ///
+  /// In zh, this message translates to:
+  /// **'{primary} 存在相互作用提示'**
+  String medicineRiskCheckFindingBodyInteractionSingle(String primary);
+
+  /// No description provided for @medicineRiskCheckFindingBodyDuplicate.
+  ///
+  /// In zh, this message translates to:
+  /// **'{primary} 与 {secondary} 可能重复用药'**
+  String medicineRiskCheckFindingBodyDuplicate(
+    String primary,
+    String secondary,
+  );
+
+  /// No description provided for @medicineRiskCheckFindingBodyDuplicateSingle.
+  ///
+  /// In zh, this message translates to:
+  /// **'{primary} 可能存在重复成分'**
+  String medicineRiskCheckFindingBodyDuplicateSingle(String primary);
+
+  /// No description provided for @medicineRiskCheckFindingBodyAllergy.
+  ///
+  /// In zh, this message translates to:
+  /// **'{primary} 资料中出现过敏相关词：{related}'**
+  String medicineRiskCheckFindingBodyAllergy(String primary, String related);
+
+  /// No description provided for @medicineRiskCheckFindingBodyAllergyGeneric.
+  ///
+  /// In zh, this message translates to:
+  /// **'{primary} 存在过敏相关提示'**
+  String medicineRiskCheckFindingBodyAllergyGeneric(String primary);
+
+  /// No description provided for @medicineRiskCheckFindingBodySpecialGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'{primary} 需要结合特殊人群信息重点确认'**
+  String medicineRiskCheckFindingBodySpecialGroup(String primary);
+
+  /// No description provided for @medicineRiskCheckFindingBodyFoodInteraction.
+  ///
+  /// In zh, this message translates to:
+  /// **'{primary} 存在饮食相关注意事项'**
+  String medicineRiskCheckFindingBodyFoodInteraction(String primary);
+
+  /// No description provided for @medicineRiskCheckFindingBodyGeneric.
+  ///
+  /// In zh, this message translates to:
+  /// **'{primary} 存在需要确认的风险信息'**
+  String medicineRiskCheckFindingBodyGeneric(String primary);
+
+  /// No description provided for @medicineRiskCheckFindingEvidenceFallback.
+  ///
+  /// In zh, this message translates to:
+  /// **'详情来自药品资料，请在风险检查页进一步确认。'**
+  String get medicineRiskCheckFindingEvidenceFallback;
+
+  /// No description provided for @medicineRiskCheckCoverageReasonManualEntry.
+  ///
+  /// In zh, this message translates to:
+  /// **'手动录入，暂无标准药品资料'**
+  String get medicineRiskCheckCoverageReasonManualEntry;
+
+  /// No description provided for @medicineRiskCheckCoverageReasonMissingSourceRef.
+  ///
+  /// In zh, this message translates to:
+  /// **'缺少来源编号，无法拉取药品详情'**
+  String get medicineRiskCheckCoverageReasonMissingSourceRef;
+
+  /// No description provided for @medicineRiskCheckCoverageReasonDetailUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'药品详情暂时不可用'**
+  String get medicineRiskCheckCoverageReasonDetailUnavailable;
+
+  /// No description provided for @medicineRiskCheckSeverityHigh.
+  ///
+  /// In zh, this message translates to:
+  /// **'高风险'**
+  String get medicineRiskCheckSeverityHigh;
+
+  /// No description provided for @medicineRiskCheckSeverityMedium.
+  ///
+  /// In zh, this message translates to:
+  /// **'需确认'**
+  String get medicineRiskCheckSeverityMedium;
+
+  /// No description provided for @medicineRiskCheckSeverityInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'提示'**
+  String get medicineRiskCheckSeverityInfo;
+
+  /// No description provided for @medicineRiskCheckContextPregnancy.
+  ///
+  /// In zh, this message translates to:
+  /// **'孕期'**
+  String get medicineRiskCheckContextPregnancy;
+
+  /// No description provided for @medicineRiskCheckContextLactation.
+  ///
+  /// In zh, this message translates to:
+  /// **'哺乳期'**
+  String get medicineRiskCheckContextLactation;
+
+  /// No description provided for @medicineRiskCheckContextPediatric.
+  ///
+  /// In zh, this message translates to:
+  /// **'儿童'**
+  String get medicineRiskCheckContextPediatric;
+
+  /// No description provided for @medicineRiskCheckContextGeriatric.
+  ///
+  /// In zh, this message translates to:
+  /// **'老年人'**
+  String get medicineRiskCheckContextGeriatric;
+
+  /// No description provided for @medicineRiskCheckContextAlcohol.
+  ///
+  /// In zh, this message translates to:
+  /// **'酒精'**
+  String get medicineRiskCheckContextAlcohol;
+
+  /// No description provided for @medicineRiskCheckContextCaffeine.
+  ///
+  /// In zh, this message translates to:
+  /// **'咖啡因'**
+  String get medicineRiskCheckContextCaffeine;
+
   /// No description provided for @medicineQuickRecordToast.
   ///
   /// In zh, this message translates to:
