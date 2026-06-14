@@ -153,6 +153,24 @@
       }
     }
   },
+  "recordNlpRetryFailedAction": "重试失败项",
+  "recordNlpFailedCandidatesHint": "还有 {count} 条候选记录上次保存失败，可修正后仅重试失败项。",
+  "@recordNlpFailedCandidatesHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpRetrySavedToast": "已重试并保存 {count} 条失败记录",
+  "@recordNlpRetrySavedToast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpNoFailedCandidatesToast": "当前没有失败项可重试。",
   "recordNlpCandidateSaveFailedHint": "这条上次保存失败：{message}",
   "@recordNlpCandidateSaveFailedHint": {
     "placeholders": {

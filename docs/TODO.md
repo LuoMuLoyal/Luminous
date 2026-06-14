@@ -7,20 +7,16 @@ This file records work that is still missing or intentionally gated. Current fac
 ## MVP Gaps To Close
 
 - Medicine safety coverage is still intentionally narrow.
-  Current state: Medicine now has a real current-medicine risk-check page, workspace safety cards from the same source-backed result, and add-before-save precheck in search, but the check still depends on existing detail coverage and does not yet solve cross-source normalization, duplicate ingredients, or broader reviewed rule coverage.
+  Current state: Medicine now has a real current-medicine risk-check page, workspace safety cards from the same source-backed result, add-before-save precheck in search, and basic duplicate-ingredient detection for reviewed `cn` detail strings after simple ingredient splitting. It still does not solve cross-source normalization or broader reviewed rule coverage.
   Needed outcome: broaden safety coverage deliberately without pretending certainty where source detail is missing.
 
 - Report export is still placeholder-only.
   Current state: Report cards for clinic/monthly/print still call local toast behavior even though Lucent already has data-export request endpoints and Mine/Settings can show export request status.
   Needed outcome: connect at least one real export request/start flow, or narrow the product promise/documentation so “export” is not presented as an active MVP action.
 
-- Campus service entries are fetched from contract-backed support resources, but they are not actionable in the app yet.
-  Current state: Mine renders real campus/support/pharmacy/emergency rows from `GET /api/v1/public/support-resources?scope=campus`, and rows without a server target are visible but disabled instead of pretending to open anything.
-  Needed outcome: open supported external/internal actions when the resource includes a usable action target.
-
 - NLP partial-save recovery is still toast-led.
-  Current state: failed candidate rows stay in place with item-level error text, which is enough for now, but there is no stronger retry/review affordance yet.
-  Needed outcome: only revisit this if the flow starts regressing or blocks usability during MVP testing.
+  Current state: failed candidate rows now stay in place with item-level error text plus an explicit “retry failed items” entry in the sheet.
+  Needed outcome: only revisit this if the flow still regresses during MVP testing, for example if failed rows need stronger draft recovery or per-item save controls.
 
 ## MVP Gated But Not Blocking Right Now
 
@@ -29,7 +25,7 @@ This file records work that is still missing or intentionally gated. Current fac
 - Environment-driven Today or Mine suggestions.
 - Real barcode / OCR / photo / prescription recognition flow.
 - Voice or screenshot-based natural-language record intake.
-- Cross-source medicine normalization, duplicate ingredient detection, and unreviewed interaction expansion.
+- Cross-source medicine normalization and unreviewed interaction expansion.
 - Fixed red-flag rule library plus audited safety copy for urgent offline-care escalation.
 - Privacy-preserving clinic summary / doctor-facing summary generation and preview flow.
 

@@ -61,6 +61,58 @@ void main() {
     expect(state.candidates.single.selected, isTrue);
     expect(state.candidates.single.lastErrorMessage, 'Create failed.');
   });
+
+  test('RecordNlpController retryFailed only retries failed items', () async {
+    final repo = _ControllerFakeDailyRecordRepository(
+      generatedCandidates: DailyRecordCandidateResult(
+        locale: 'zh-CN',
+        generatedAt: '2026-06-14T00:00:00.000Z',
+        confirmationHint: '确认后再保存。',
+        items: const [
+          DailyRecordCandidateItem(
+            kind: DailyRecordKind.water,
+            occurredAt: '2026-06-14',
+            value: '500',
+            unit: 'ml',
+            rationale: '识别到饮水。',
+          ),
+          DailyRecordCandidateItem(
+            kind: DailyRecordKind.note,
+            occurredAt: '2026-06-14',
+            title: '午后状态',
+            note: '有点累',
+            rationale: '识别到备注。',
+          ),
+        ],
+      ),
+      failCreateAtIndexes: {1},
+    );
+
+    final container = ProviderContainer(
+      overrides: [
+        dailyRecordRepositoryProvider.overrideWithValue(repo),
+        authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final controller = container.read(recordNlpControllerProvider.notifier);
+
+    controller.updateDraft('喝了水，下午有点累');
+    await controller.generate(occurredAt: '2026-06-14');
+    await controller.saveSelected();
+
+    repo.failCreateAtIndexes.clear();
+
+    final retryOutcome = await controller.retryFailed();
+    final state = container.read(recordNlpControllerProvider);
+
+    expect(retryOutcome.kind, RecordNlpSaveOutcomeKind.saved);
+    expect(retryOutcome.savedCount, 1);
+    expect(repo.createdInputs, hasLength(3));
+    expect(repo.createdInputs.last.kind, DailyRecordKind.note);
+    expect(state.candidates, isEmpty);
+  });
 }
 
 class _ControllerFakeDailyRecordRepository implements DailyRecordRepository {

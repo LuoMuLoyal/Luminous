@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -309,6 +310,84 @@ void main() {
       expect(repo.createdInputs.single.kind, DailyRecordKind.water);
       expect(repo.createdInputs.single.value, '2');
       expect(repo.createdInputs.single.unit, 'times');
+    },
+  );
+
+  testWidgets(
+    'Record natural-language sheet shows retry action and retries only failed candidates',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final repo = _FakeDailyRecordRepository(
+        generatedCandidates: const DailyRecordCandidateResult(
+          locale: 'zh-CN',
+          generatedAt: '2026-06-14T00:00:00.000Z',
+          confirmationHint: '确认后再保存。',
+          items: [
+            DailyRecordCandidateItem(
+              kind: DailyRecordKind.water,
+              occurredAt: '2026-06-14',
+              value: '500',
+              unit: 'ml',
+              rationale: '识别到饮水记录。',
+            ),
+            DailyRecordCandidateItem(
+              kind: DailyRecordKind.note,
+              occurredAt: '2026-06-14',
+              title: '午后状态',
+              note: '有点累',
+              rationale: '识别到备注。',
+            ),
+          ],
+        ),
+        failCreateAtIndexes: {1},
+      );
+
+      await _pumpRecordPage(
+        tester,
+        dailyRecordRepository: repo,
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('record-ai-input')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('record-nlp-input-field')),
+        '喝了水，下午有点累',
+      );
+      await tester.tap(find.byKey(const Key('record-nlp-generate-action')));
+      await tester.pumpAndSettle();
+
+      final saveSelectedAction = find.byKey(
+        const Key('record-nlp-save-selected-action'),
+      );
+      await tester.ensureVisible(saveSelectedAction);
+      await tester.pump();
+      await tester.tap(saveSelectedAction);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 3));
+
+      expect(
+        find.byKey(const Key('record-nlp-retry-failed-action')),
+        findsOneWidget,
+      );
+      expect(repo.createdInputs, hasLength(2));
+
+      repo.failCreateAtIndexes.clear();
+
+      await tester.tap(find.byKey(const Key('record-nlp-retry-failed-action')));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 3));
+
+      expect(repo.createdInputs, hasLength(3));
+      expect(repo.createdInputs.last.kind, DailyRecordKind.note);
+      expect(find.byKey(const Key('record-nlp-input-field')), findsNothing);
     },
   );
 
@@ -1411,6 +1490,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     this.withAttachment = false,
     this.fetchThrows = false,
     this.generatedCandidates,
+    this.failCreateAtIndexes = const <int>{},
   });
 
   final String? itemOccurredAt;
@@ -1423,6 +1503,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   final bool withAttachment;
   final bool fetchThrows;
   final DailyRecordCandidateResult? generatedCandidates;
+  final Set<int> failCreateAtIndexes;
   String? deleteCalledWith;
   String? updateCalledWith;
   String? getCalledWith;
@@ -1533,6 +1614,9 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     createInput = input;
     createdInputs.add(input);
     final createIndex = createdInputs.length - 1;
+    if (failCreateAtIndexes.contains(createIndex)) {
+      throw const LucentApiException(message: 'Create failed.');
+    }
     return DailyRecordItem(
       id: 'created-id-${createIndex + 1}',
       kind: input.kind,

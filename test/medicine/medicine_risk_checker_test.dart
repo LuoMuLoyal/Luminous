@@ -127,7 +127,7 @@ void main() {
     );
   });
 
-  test('medicine risk checker detects duplicate ingredient and food note', () {
+  test('medicine risk checker detects duplicate ingredient after cn token split', () {
     const snapshot = HealthContextSnapshot(
       summary: HealthSummary(
         age: 30,
@@ -195,7 +195,7 @@ void main() {
           detail: _detail(
             id: 'cn-1',
             name: '药品甲',
-            ingredients: '布洛芬',
+            ingredients: '布洛芬；对乙酰氨基酚',
             foodInteractions: const ['Avoid alcohol while taking this medicine'],
           ),
         ),
@@ -204,19 +204,16 @@ void main() {
           detail: _detail(
             id: 'cn-2',
             name: '药品乙',
-            ingredients: '布洛芬',
+            ingredients: '对乙酰氨基酚 500mg / 片',
           ),
         ),
       ],
     );
 
-    expect(
-      result.findings.any(
-        (finding) =>
-            finding.type == MedicineRiskFindingType.duplicateIngredient,
-      ),
-      isTrue,
+    final duplicateFinding = result.findings.firstWhere(
+      (finding) => finding.type == MedicineRiskFindingType.duplicateIngredient,
     );
+    expect(duplicateFinding.evidence, '对乙酰氨基酚');
     expect(
       result.findings.any(
         (finding) =>
