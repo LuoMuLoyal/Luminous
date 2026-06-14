@@ -6,6 +6,7 @@ import 'package:luminous/features/health_context/data/providers/health_context_d
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/lucent_medicine_workspace.dart';
+import 'package:luminous/features/medicine/data/repositories/medicine_risk_check_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 
@@ -190,9 +191,11 @@ final medicineWorkspaceRepositoryProvider =
       final healthRepo = ref.watch(healthContextRepositoryProvider);
       final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
       final reminderDs = ref.watch(medicineReminderRemoteDataSourceProvider);
+      final riskCheckRepository = ref.watch(medicineRiskCheckRepositoryProvider);
       return LucentMedicineWorkspaceRepository(
         healthRepo: healthRepo,
         doseLogDs: doseLogDs,
         reminderDs: reminderDs,
+        riskCheckRepository: riskCheckRepository,
       );
     });

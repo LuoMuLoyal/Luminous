@@ -4,6 +4,7 @@ import 'package:luminous/features/auth/presentation/pages/change_email_page.dart
 import 'package:luminous/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/pages/register_page.dart';
+import 'package:luminous/features/medicine/presentation/pages/medicine_risk_check_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_reminder_pages.dart';
 import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
@@ -84,6 +85,10 @@ final router = GoRouter(
     GoRoute(
       path: '/medicine/search',
       builder: (context, state) => const SearchPage(),
+    ),
+    GoRoute(
+      path: '/medicine/risk-check',
+      builder: (context, state) => const MedicineRiskCheckPage(),
     ),
     GoRoute(
       path: '/medicine/reminders/new',

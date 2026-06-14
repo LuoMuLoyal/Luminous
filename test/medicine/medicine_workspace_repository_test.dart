@@ -8,6 +8,8 @@ import 'package:luminous/features/health_context/domain/repositories/health_cont
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/lucent_medicine_workspace.dart';
+import 'package:luminous/features/medicine/data/repositories/medicine_risk_check_repository.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 
 void main() {
@@ -20,6 +22,7 @@ void main() {
         reminderDs: _FakeReminderDataSource([
           _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
         ]),
+        riskCheckRepository: _FakeRiskCheckRepository(),
       );
 
       final workspace = await repository.fetchWorkspace();
@@ -60,6 +63,7 @@ void main() {
         reminderDs: _FakeReminderDataSource([
           _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
         ]),
+        riskCheckRepository: _FakeRiskCheckRepository(),
       );
 
       final workspace = await repository.fetchWorkspace();
@@ -85,6 +89,7 @@ void main() {
         healthRepo: _FakeHealthContextRepository(),
         doseLogDs: _FakeDoseLogDataSource(),
         reminderDs: _FakeReminderDataSource(),
+        riskCheckRepository: _FakeRiskCheckRepository(),
       );
 
       final workspace = await repository.fetchWorkspace();
@@ -176,6 +181,25 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
 
   @override
   Future<List<MedicineReminderItem>> fetchActive() async => _items;
+}
+
+class _FakeRiskCheckRepository implements MedicineRiskCheckRepository {
+  @override
+  Future<MedicineRiskCheckResult> fetchForSnapshot(
+    HealthContextSnapshot snapshot,
+  ) async {
+    return MedicineRiskCheckResult(
+      currentMedicineCount: snapshot.currentMedicines
+          .where((item) => item.isCurrent)
+          .length,
+      checkedMedicineCount: 0,
+      findings: const [],
+      coverageIssues: const [],
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 MedicineReminderItem _reminder({

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -33,6 +34,7 @@ class MedicineWorkspaceView extends StatelessWidget {
         ? AppTypographyTokens.mobile(scheme.onSurface)
         : AppTypographyTokens.desktop(scheme.onSurface);
     final isDesktop = width >= AppBreakpoints.desktop;
+    final alerts = medicineAlertsFromRiskCheck(l10n, workspace.riskCheckResult);
 
     if (!isDesktop) {
       return MedicineMobileDashboardView(
@@ -77,6 +79,7 @@ class MedicineWorkspaceView extends StatelessWidget {
     final safetyColumn = _SafetyPanel(
       key: const Key('medicine-safety-panel'),
       workspace: workspace,
+      alerts: alerts,
       typography: typography,
       surface: surface,
       l10n: l10n,
@@ -674,12 +677,14 @@ class _SafetyPanel extends StatelessWidget {
   const _SafetyPanel({
     super.key,
     required this.workspace,
+    required this.alerts,
     required this.typography,
     required this.surface,
     required this.l10n,
   });
 
   final MedicineWorkspace workspace;
+  final List<MedicineAlert> alerts;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final AppLocalizations l10n;
@@ -694,15 +699,15 @@ class _SafetyPanel extends StatelessWidget {
           surface: surface,
           child: Column(
             children: [
-              for (var index = 0; index < workspace.alerts.length; index += 1)
+              for (var index = 0; index < alerts.length; index += 1)
                 Padding(
                   padding: EdgeInsets.only(
-                    bottom: index == workspace.alerts.length - 1
+                    bottom: index == alerts.length - 1
                         ? 0
                         : AppSpacingTokens.md,
                   ),
                   child: _AlertTile(
-                    alert: workspace.alerts[index],
+                    alert: alerts[index],
                     typography: typography,
                     surface: surface,
                     l10n: l10n,
@@ -763,7 +768,7 @@ class _AlertTile extends StatelessWidget {
                 const SizedBox(width: AppSpacingTokens.sm),
                 Expanded(
                   child: Text(
-                    medicineCopy(l10n, alert.titleKey),
+                    medicineAlertTitle(l10n, alert),
                     style: typography.bodySmStrong.copyWith(color: alert.color),
                   ),
                 ),
@@ -771,27 +776,23 @@ class _AlertTile extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacingTokens.sm),
             Text(
-              medicineCopy(l10n, alert.bodyKey),
+              medicineAlertBody(l10n, alert),
               style: typography.bodyMdStrong,
             ),
             const SizedBox(height: AppSpacingTokens.xs),
             Text(
-              medicineCopy(l10n, alert.detailKey),
+              medicineAlertDetail(l10n, alert),
               style: typography.bodySm.copyWith(color: surface.body),
             ),
             const SizedBox(height: AppSpacingTokens.md),
             Align(
               alignment: Alignment.centerLeft,
               child: _AlertActionButton(
-                label: medicineCopy(l10n, alert.actionKey),
+                label: medicineAlertAction(l10n, alert),
                 color: alert.color,
                 typography: typography,
                 emphasized: false,
-                onTap: () => _showPlannedAction(
-                  context,
-                  medicineCopy(l10n, alert.titleKey),
-                  _alertActionResult(alert.actionKey, l10n),
-                ),
+                onTap: () => context.push('/medicine/risk-check'),
               ),
             ),
           ],
@@ -1071,23 +1072,6 @@ String _slotTimeLabel(AppLocalizations l10n, MedicineDoseSlot slot) {
   if (raw != null && raw.isNotEmpty) return raw;
   final key = slot.timeKey;
   return key == null ? l10n.medicineScheduleNotSet : medicineCopy(l10n, key);
-}
-
-String _alertActionResult(MedicineCopyKey key, AppLocalizations l10n) {
-  return switch (key) {
-    MedicineCopyKey.alertInteractionAction =>
-      l10n.medicineAlertInteractionToast,
-    MedicineCopyKey.alertOtherAction => l10n.medicineAlertOtherToast,
-    MedicineCopyKey.alertAlcoholRiskStatus =>
-      l10n.medicineAlertAlcoholRiskToast,
-    MedicineCopyKey.alertCoffeeReminderStatus =>
-      l10n.medicineAlertCoffeeReminderToast,
-    MedicineCopyKey.alertDuplicateCheckStatus =>
-      l10n.medicineAlertDuplicateCheckToast,
-    MedicineCopyKey.alertSpecialGroupSafetyStatus =>
-      l10n.medicineAlertSpecialGroupSafetyToast,
-    _ => l10n.todayRetryAction,
-  };
 }
 
 void _showPlannedAction(BuildContext context, String title, String message) {

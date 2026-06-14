@@ -327,6 +327,144 @@
   "medicineQuickSafetyCheckTitle": "Risk check",
   "medicineQuickSafetyCheckSubtitle": "Interactions and contraindications",
   "medicineQuickSafetyCheckToast": "This will open interaction and contraindication checks.",
+  "medicineRiskCheckPageTitle": "Risk check",
+  "medicineRiskCheckSummaryTitle": "Check summary",
+  "medicineRiskCheckCurrentMedicinesLabel": "Current meds",
+  "medicineRiskCheckCheckedMedicinesLabel": "Checked",
+  "medicineRiskCheckFindingsLabel": "Findings",
+  "medicineRiskCheckCoverageLabel": "Coverage gaps",
+  "medicineRiskCheckFindingsTitle": "Risk findings",
+  "medicineRiskCheckCoverageTitle": "Unchecked medicines",
+  "medicineRiskCheckNoFindingsTitle": "No explicit risk finding yet",
+  "medicineRiskCheckNoFindingsBody": "No explicit risk finding was found for the medicines we could check, but you should still confirm with clinical advice and official instructions.",
+  "medicineRiskCheckViewAction": "View",
+  "medicineRiskCheckAllClearAlertTitle": "Risk check completed",
+  "medicineRiskCheckAllClearAlertBody": "No explicit risk finding was found for the medicines we could check",
+  "medicineRiskCheckAllClearAlertDetail": "This does not mean self-medication is safe. Confirm with clinical advice and official instructions.",
+  "medicineRiskCheckCoverageAlertTitle": "Risk check coverage incomplete",
+  "medicineRiskCheckCoverageAlertBody": "{count} medicines still lack checkable detail",
+  "@medicineRiskCheckCoverageAlertBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineRiskCheckCoverageAlertDetail": "{names} currently lack checkable detail.",
+  "@medicineRiskCheckCoverageAlertDetail": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckCoverageAlertDetailWithMore": "{names} and others currently lack checkable detail.",
+  "@medicineRiskCheckCoverageAlertDetailWithMore": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingTitleInteraction": "Potential drug interaction found",
+  "medicineRiskCheckFindingTitleDuplicate": "Potential duplicate ingredient found",
+  "medicineRiskCheckFindingTitleAllergy": "Allergy-related note found",
+  "medicineRiskCheckFindingTitleSpecialGroup": "Special-group medication note found",
+  "medicineRiskCheckFindingTitleFoodInteraction": "Food interaction note found",
+  "medicineRiskCheckFindingBodyInteraction": "{primary} and {secondary} may interact",
+  "@medicineRiskCheckFindingBodyInteraction": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "secondary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyInteractionSingle": "{primary} has an interaction note",
+  "@medicineRiskCheckFindingBodyInteractionSingle": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyDuplicate": "{primary} and {secondary} may duplicate therapy",
+  "@medicineRiskCheckFindingBodyDuplicate": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "secondary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyDuplicateSingle": "{primary} may have a duplicate ingredient",
+  "@medicineRiskCheckFindingBodyDuplicateSingle": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyAllergy": "{primary} references allergy-related term: {related}",
+  "@medicineRiskCheckFindingBodyAllergy": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "related": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyAllergyGeneric": "{primary} has an allergy-related note",
+  "@medicineRiskCheckFindingBodyAllergyGeneric": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodySpecialGroup": "{primary} should be checked against special-group context",
+  "@medicineRiskCheckFindingBodySpecialGroup": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyFoodInteraction": "{primary} has a food-related caution",
+  "@medicineRiskCheckFindingBodyFoodInteraction": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyGeneric": "{primary} has risk information that still needs confirmation",
+  "@medicineRiskCheckFindingBodyGeneric": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingEvidenceFallback": "The note comes from medicine detail data. Open the risk-check page for a closer review.",
+  "medicineRiskCheckCoverageReasonManualEntry": "Manual entry without standard medicine detail",
+  "medicineRiskCheckCoverageReasonMissingSourceRef": "Missing source reference, so detail cannot be fetched",
+  "medicineRiskCheckCoverageReasonDetailUnavailable": "Medicine detail is currently unavailable",
+  "medicineRiskCheckSeverityHigh": "High risk",
+  "medicineRiskCheckSeverityMedium": "Needs review",
+  "medicineRiskCheckSeverityInfo": "Note",
+  "medicineRiskCheckContextPregnancy": "Pregnancy",
+  "medicineRiskCheckContextLactation": "Lactation",
+  "medicineRiskCheckContextPediatric": "Pediatric",
+  "medicineRiskCheckContextGeriatric": "Geriatric",
+  "medicineRiskCheckContextAlcohol": "Alcohol",
+  "medicineRiskCheckContextCaffeine": "Caffeine",
   "medicineQuickRecordToast": "This will open dose logging.",
   "medicineRecordsTitle": "Medication records",
   "medicineAllMedicinesFilter": "All meds",

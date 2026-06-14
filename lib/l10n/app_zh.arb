@@ -327,6 +327,144 @@
   "medicineQuickSafetyCheckTitle": "风险检查",
   "medicineQuickSafetyCheckSubtitle": "相互作用与禁忌",
   "medicineQuickSafetyCheckToast": "会打开相互作用和禁忌检查。",
+  "medicineRiskCheckPageTitle": "风险检查",
+  "medicineRiskCheckSummaryTitle": "检查概览",
+  "medicineRiskCheckCurrentMedicinesLabel": "当前用药",
+  "medicineRiskCheckCheckedMedicinesLabel": "已检查",
+  "medicineRiskCheckFindingsLabel": "风险提示",
+  "medicineRiskCheckCoverageLabel": "覆盖不足",
+  "medicineRiskCheckFindingsTitle": "风险提示",
+  "medicineRiskCheckCoverageTitle": "未覆盖药品",
+  "medicineRiskCheckNoFindingsTitle": "暂未发现明确风险提示",
+  "medicineRiskCheckNoFindingsBody": "当前已检查药物里没有发现明确风险提示，但仍需结合医生建议与说明书确认。",
+  "medicineRiskCheckViewAction": "查看",
+  "medicineRiskCheckAllClearAlertTitle": "风险检查已完成",
+  "medicineRiskCheckAllClearAlertBody": "当前已检查药物里没有发现明确风险提示",
+  "medicineRiskCheckAllClearAlertDetail": "这不等于适合自行用药，仍需结合医生建议与说明书确认。",
+  "medicineRiskCheckCoverageAlertTitle": "风险检查覆盖不足",
+  "medicineRiskCheckCoverageAlertBody": "还有 {count} 种药品缺少可检查资料",
+  "@medicineRiskCheckCoverageAlertBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineRiskCheckCoverageAlertDetail": "{names} 暂时缺少可检查资料。",
+  "@medicineRiskCheckCoverageAlertDetail": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckCoverageAlertDetailWithMore": "{names} 等药品暂时缺少可检查资料。",
+  "@medicineRiskCheckCoverageAlertDetailWithMore": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingTitleInteraction": "发现药物相互作用",
+  "medicineRiskCheckFindingTitleDuplicate": "发现重复成分",
+  "medicineRiskCheckFindingTitleAllergy": "发现过敏相关提示",
+  "medicineRiskCheckFindingTitleSpecialGroup": "发现特殊人群用药提示",
+  "medicineRiskCheckFindingTitleFoodInteraction": "发现饮食相互作用提示",
+  "medicineRiskCheckFindingBodyInteraction": "{primary} 与 {secondary} 可能存在相互作用",
+  "@medicineRiskCheckFindingBodyInteraction": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "secondary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyInteractionSingle": "{primary} 存在相互作用提示",
+  "@medicineRiskCheckFindingBodyInteractionSingle": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyDuplicate": "{primary} 与 {secondary} 可能重复用药",
+  "@medicineRiskCheckFindingBodyDuplicate": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "secondary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyDuplicateSingle": "{primary} 可能存在重复成分",
+  "@medicineRiskCheckFindingBodyDuplicateSingle": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyAllergy": "{primary} 资料中出现过敏相关词：{related}",
+  "@medicineRiskCheckFindingBodyAllergy": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "related": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyAllergyGeneric": "{primary} 存在过敏相关提示",
+  "@medicineRiskCheckFindingBodyAllergyGeneric": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodySpecialGroup": "{primary} 需要结合特殊人群信息重点确认",
+  "@medicineRiskCheckFindingBodySpecialGroup": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyFoodInteraction": "{primary} 存在饮食相关注意事项",
+  "@medicineRiskCheckFindingBodyFoodInteraction": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyGeneric": "{primary} 存在需要确认的风险信息",
+  "@medicineRiskCheckFindingBodyGeneric": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingEvidenceFallback": "详情来自药品资料，请在风险检查页进一步确认。",
+  "medicineRiskCheckCoverageReasonManualEntry": "手动录入，暂无标准药品资料",
+  "medicineRiskCheckCoverageReasonMissingSourceRef": "缺少来源编号，无法拉取药品详情",
+  "medicineRiskCheckCoverageReasonDetailUnavailable": "药品详情暂时不可用",
+  "medicineRiskCheckSeverityHigh": "高风险",
+  "medicineRiskCheckSeverityMedium": "需确认",
+  "medicineRiskCheckSeverityInfo": "提示",
+  "medicineRiskCheckContextPregnancy": "孕期",
+  "medicineRiskCheckContextLactation": "哺乳期",
+  "medicineRiskCheckContextPediatric": "儿童",
+  "medicineRiskCheckContextGeriatric": "老年人",
+  "medicineRiskCheckContextAlcohol": "酒精",
+  "medicineRiskCheckContextCaffeine": "咖啡因",
   "medicineQuickRecordToast": "会打开服药记录入口。",
   "medicineRecordsTitle": "用药记录",
   "medicineAllMedicinesFilter": "全部药品",

@@ -6,9 +6,9 @@ This file records work that is still missing or intentionally gated. Current fac
 
 ## MVP Gaps To Close
 
-- Real new-medicine safety check flow is not delivered yet.
-  Current state: Medicine has reminder CRUD, dose logs, special-group safety context, and safety-themed cards, but the prominent risk-check entry still resolves to toast-only placeholder behavior and the workspace alerts are still local default cards instead of user-specific rule results.
-  Needed outcome: adding or reviewing a medicine should surface source-backed checks against current medicines, allergies, and explicit known rules, with clear uncertainty when data is insufficient.
+- Real add-before-save medicine safety check flow is not delivered yet.
+  Current state: Medicine now has a real current-medicine risk-check page plus workspace safety cards derived from the same source-backed result, but the check still starts only after a medicine is already in the current-medicine list and only covers items with existing detail data.
+  Needed outcome: adding or reviewing a medicine should surface source-backed checks before save when possible, broaden rule coverage deliberately, and still state uncertainty clearly when detail is missing.
 
 - Report export is still placeholder-only.
   Current state: Report cards for clinic/monthly/print still call local toast behavior even though Lucent already has data-export request endpoints and Mine/Settings can show export request status.

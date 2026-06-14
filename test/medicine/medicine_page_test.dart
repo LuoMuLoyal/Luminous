@@ -4,15 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
+import 'package:luminous/features/medicine/presentation/pages/medicine_risk_check_page.dart';
+import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -193,6 +197,133 @@ void main() {
     expect(find.text(l10n.medicineDoseActionSkipped), findsNothing);
     expect(find.text(l10n.medicineDoseStatusSkipped), findsAtLeastNWidgets(1));
   });
+
+  testWidgets('Medicine risk-check quick action navigates when signed in', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+          medicineRiskCheckProvider.overrideWith((ref) async => _riskResult),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const MedicinePage()),
+              GoRoute(
+                path: '/medicine/risk-check',
+                builder: (context, state) => const MedicineRiskCheckPage(),
+              ),
+              GoRoute(
+                path: '/login',
+                builder: (context, state) => const Scaffold(body: Text('login')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final riskTitle = find.text('风险检查').first;
+    await tester.ensureVisible(riskTitle);
+    await tester.pumpAndSettle();
+    final riskRow = find.ancestor(
+      of: riskTitle,
+      matching: find.byType(InkWell),
+    ).first;
+    await tester.tap(riskRow);
+    await tester.pumpAndSettle();
+
+    expect(find.text('检查概览'), findsOneWidget);
+  });
+
+  testWidgets('Medicine risk-check quick action prompts login when signed out', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const MedicinePage()),
+              GoRoute(
+                path: '/medicine/risk-check',
+                builder: (context, state) => const MedicineRiskCheckPage(),
+              ),
+              GoRoute(
+                path: '/login',
+                builder: (context, state) => const Scaffold(body: Text('login')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final riskTitle = find.text('风险检查').first;
+    await tester.ensureVisible(riskTitle);
+    await tester.pumpAndSettle();
+    final riskRow = find.ancestor(
+      of: riskTitle,
+      matching: find.byType(InkWell),
+    ).first;
+    await tester.tap(riskRow);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+  });
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
@@ -222,6 +353,13 @@ class _StaticMedicineWorkspaceRepository
 
   @override
   Future<MedicineWorkspace> fetchWorkspace() async => workspace;
+}
+
+class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(isAuthenticated: false, isLoading: false);
+  }
 }
 
 const _completedWorkspace = MedicineWorkspace(
@@ -254,4 +392,24 @@ const _completedWorkspace = MedicineWorkspace(
   ),
   alerts: <MedicineAlert>[],
   promisePoints: <MedicinePromisePoint>[],
+);
+
+const _riskResult = MedicineRiskCheckResult(
+  currentMedicineCount: 2,
+  checkedMedicineCount: 1,
+  findings: [
+    MedicineRiskFinding(
+      type: MedicineRiskFindingType.foodInteraction,
+      severity: MedicineRiskSeverity.medium,
+      context: MedicineRiskFindingContext.alcohol,
+      primaryMedicineName: '布洛芬',
+      evidence: 'Avoid alcohol while taking this medicine.',
+    ),
+  ],
+  coverageIssues: [
+    MedicineRiskCoverageIssue(
+      medicineName: '手动录入药品',
+      reason: MedicineRiskCoverageReason.manualEntry,
+    ),
+  ],
 );

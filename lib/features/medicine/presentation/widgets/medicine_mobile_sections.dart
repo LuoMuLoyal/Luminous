@@ -25,8 +25,7 @@ class _SafetyEngineSection extends StatelessWidget {
           title: l10n.medicineSafetyEngineTitle,
           trailing: MedicineTextAction(
             label: l10n.medicineSafetyAllRecordsAction,
-            onTap: () =>
-                AppToast.show(context, l10n.medicineSafetyAllRecordsAction),
+            onTap: () => context.push('/medicine/risk-check'),
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
@@ -78,8 +77,7 @@ class _SafetyAlertRow extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () =>
-            AppToast.show(context, _alertActionResult(alert.actionKey, l10n)),
+        onTap: () => context.push('/medicine/risk-check'),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -105,7 +103,7 @@ class _SafetyAlertRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppSkeletonText(
-                      text: medicineCopy(l10n, alert.titleKey),
+                      text: medicineAlertTitle(l10n, alert),
                       style: typography.bodyMdStrong.copyWith(
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0,
@@ -116,7 +114,7 @@ class _SafetyAlertRow extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacingTokens.xxs),
                     AppSkeletonText(
-                      text: medicineCopy(l10n, alert.bodyKey),
+                      text: medicineAlertBody(l10n, alert),
                       style: typography.bodySm.copyWith(
                         color: surface.body,
                         letterSpacing: 0,
@@ -136,7 +134,7 @@ class _SafetyAlertRow extends StatelessWidget {
                   radius: AppRadiusTokens.pill,
                 ),
                 child: MedicineStatusPill(
-                  label: medicineCopy(l10n, alert.actionKey),
+                  label: medicineAlertAction(l10n, alert),
                   color: alert.color,
                 ),
               ),
@@ -197,7 +195,7 @@ class _QuickOperationSection extends StatelessWidget {
         color: MedicinePalette.orangeDeep,
         title: l10n.medicineQuickSafetyCheckTitle,
         subtitle: l10n.medicineQuickSafetyCheckSubtitle,
-        onTap: () => AppToast.show(context, l10n.medicineQuickSafetyCheckToast),
+        onTap: () => pushAuthRequiredRoute(context, '/medicine/risk-check'),
       ),
     ];
 
