@@ -287,6 +287,58 @@ void main() {
     );
   });
 
+  test('pediatric without warning emits info-level boundary finding', () {
+    final snapshot = _basicSnapshot(age: 10, medicineCount: 1);
+    final checker = const MedicineRiskChecker();
+    final result = checker.evaluate(
+      snapshot: snapshot,
+      medicines: [
+        MedicineRiskMedicineDetail(
+          item: snapshot.currentMedicines[0],
+          detail: _detail(
+            id: 'cn-1',
+            name: '药品',
+          ),
+        ),
+      ],
+    );
+
+    final pediatricFindings = result.findings.where(
+      (f) =>
+          f.type == MedicineRiskFindingType.specialGroup &&
+          f.context == MedicineRiskFindingContext.pediatric,
+    );
+    expect(pediatricFindings, hasLength(1));
+    expect(pediatricFindings.first.severity, MedicineRiskSeverity.info);
+    expect(pediatricFindings.first.evidence, isNull);
+  });
+
+  test('geriatric without warning emits info-level boundary finding', () {
+    final snapshot = _basicSnapshot(age: 72, medicineCount: 1);
+    final checker = const MedicineRiskChecker();
+    final result = checker.evaluate(
+      snapshot: snapshot,
+      medicines: [
+        MedicineRiskMedicineDetail(
+          item: snapshot.currentMedicines[0],
+          detail: _detail(
+            id: 'cn-1',
+            name: '药品',
+          ),
+        ),
+      ],
+    );
+
+    final geriatricFindings = result.findings.where(
+      (f) =>
+          f.type == MedicineRiskFindingType.specialGroup &&
+          f.context == MedicineRiskFindingContext.geriatric,
+    );
+    expect(geriatricFindings, hasLength(1));
+    expect(geriatricFindings.first.severity, MedicineRiskSeverity.info);
+    expect(geriatricFindings.first.evidence, isNull);
+  });
+
   test('pregnancy without warning emits info-level coverage finding', () {
     final snapshot = _basicSnapshot(age: 28, medicineCount: 1).copyWith(
       profile: _basicSnapshot(age: 28, medicineCount: 1).profile.copyWith(
@@ -387,6 +439,56 @@ void main() {
       result.findings.any((f) => f.type == MedicineRiskFindingType.allergy),
       isTrue,
     );
+  });
+
+  test('coverage summary stays explicit when no medicine detail could be checked', () {
+    final snapshot = HealthContextSnapshot(
+      summary: HealthSummary(
+        age: 30,
+        onboardingCompleted: true,
+        activeAllergyCount: 0,
+        conditionCount: 0,
+        currentMedicineCount: 2,
+        missingCoreProfileFields: [],
+      ),
+      profile: HealthProfile(
+        birthDate: null,
+        sexAtBirth: null,
+        heightCm: null,
+        pregnancyState: 'not_pregnant',
+        lactationState: 'no',
+        bloodType: null,
+        locale: null,
+        timezone: null,
+        unitSystem: null,
+        onboardingCompletedAt: null,
+        extras: {},
+      ),
+      allergies: const [],
+      conditions: const [],
+      currentMedicines: [
+        _currentMed(
+          id: 'med-1',
+          source: 'manual',
+          sourceRefId: null,
+          displayName: '自备药',
+        ),
+        _currentMed(
+          id: 'med-2',
+          source: 'cn',
+          sourceRefId: 'cn-2',
+          displayName: '处方药',
+        ),
+      ],
+    );
+
+    final checker = const MedicineRiskChecker();
+    final result = checker.evaluate(snapshot: snapshot, medicines: const []);
+
+    expect(result.checkedMedicineCount, 0);
+    expect(result.coverageIssues, hasLength(2));
+    expect(result.coverageSummary, contains('手动录入'));
+    expect(result.coverageSummary, contains('药品详情不可用'));
   });
 }
 

@@ -6,12 +6,14 @@ This file records work that is still missing or intentionally gated. Current fac
 
 ## MVP Gaps To Close
 
-- Medicine safety coverage is still intentionally narrow.
-  Current state: Medicine now has a real current-medicine risk-check page, workspace safety cards from the same source-backed result, add-before-save precheck in search, explicit coverage-gap summaries for unchecked manual or source-missing items, bounded allergy matching, age-gated special-group warnings, and reviewed duplicate-ingredient checks for `cn` detail strings plus DrugBank synonym overlap. It still does not solve cross-source normalization or broader reviewed rule coverage.
-  Needed outcome: broaden safety coverage deliberately without pretending certainty where source detail is missing.
+- No blocker is currently left on the frozen mobile MVP promise.
+  Current state: The mobile MVP path is now defined as `record -> summarize -> bounded medicine safety check -> export`, with explicit uncertainty for unchecked medicines and no claim of broad cross-source normalization or unreviewed interaction expansion.
+  Remaining rule expansion or normalization work belongs to post-MVP hardening, not to MVP completion.
 
 ## MVP Gated But Not Blocking Right Now
 
+- Additional reviewed medicine rule expansion beyond the frozen current boundary.
+- Cross-source medicine normalization and unreviewed interaction expansion.
 - Fixed red-flag rules, audited offline-care escalation copy, and campus/help resource completeness.
 - Agent-assisted support discovery or map-backed nearby-care lookup.
 - Real report export files, print output, and share links.
@@ -19,7 +21,6 @@ This file records work that is still missing or intentionally gated. Current fac
 - Environment-driven Today or Mine suggestions.
 - Real barcode / OCR / photo / prescription recognition flow.
 - Voice or screenshot-based natural-language record intake.
-- Cross-source medicine normalization and unreviewed interaction expansion.
 - Privacy-preserving clinic summary / doctor-facing summary generation and preview flow.
 - Real authenticated Web report preview beyond the competition/marketing homepage.
 

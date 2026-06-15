@@ -121,6 +121,11 @@ class MedicineRiskChecker {
           evidence: pediatricText,
         ),
       );
+    } else if (pediatricText == null && isPediatric) {
+      findings.add(_noSpecialGroupWarningFinding(
+        medicine.displayName,
+        MedicineRiskFindingContext.pediatric,
+      ));
     }
 
     final isGeriatric = age != null && age > _geriatricAgeThreshold;
@@ -135,6 +140,11 @@ class MedicineRiskChecker {
           evidence: geriatricText,
         ),
       );
+    } else if (geriatricText == null && isGeriatric) {
+      findings.add(_noSpecialGroupWarningFinding(
+        medicine.displayName,
+        MedicineRiskFindingContext.geriatric,
+      ));
     }
 
     return findings;
@@ -439,9 +449,6 @@ String _buildCoverageSummary({
   required List<MedicineRiskMedicineDetail> medicines,
 }) {
   if (currentMedicineCount == 0) {
-    return '';
-  }
-  if (checkedMedicineCount == 0) {
     return '';
   }
   if (coverageIssues.isEmpty) {
