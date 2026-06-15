@@ -28,20 +28,31 @@
 
 ## Status Snapshot
 
-- Slice 1 已完成：
+- Slice 1 (Export/Reminder) ✅ 已完成：
   - 导出承诺已经收窄到真实可用的 `hospital + pdf + last_7_days`
-  - `monthly` / `print` 保持可见但不再冒充真流程
   - reminder 的本地能力边界已经比之前清楚，不再把 worker / push / SMS 说成已交付 MVP
-- Slice 2 已部分落地：
-  - risk-check page 和 add-before-save precheck 现在都会明确显示 coverage gap summary
-  - 已审校规则边界扩到 bounded allergy、年龄分组 special-group、缺失说明的低置信提示、以及 `cn` / DrugBank 的受限 duplicate 检查
+  - SMS 显式标注"未开通"
+- Slice 2 (Medicine Safety) ✅ 已完成 (2026-06-15)：
+  - 过敏匹配：从子串 → 成分 token 精确匹配 + 8 组中英双向映射
+  - 特殊人群：年龄门控（儿科 <18 / 老年 >65），无警告时标记覆盖边界
+  - 跨源重复：DrugBank 药品通过 `synonyms` 参与重复检测
+  - 三展示面统一：`coverageSummary` 字段在风险页/工作区卡片/预检弹层一致展示
+- Slice 3 (Red-Flag Rules) ⏸️ deferred：
+  - 校园资源入口骨架已就位但全部 `available: false`
+  - 红旗规则表、审校安全文案、命中检测链路均未实现
+  - 当前 decision：标注 TODO，等 Slice 1 和 2 硬化充分后再排期
+- Slice 4 (Monthly/Print Export) ✅ 已完成：
+  - `monthly + pdf + last_30_days` 已接通真实 Lucent 导出请求
+  - `print + pdf + last_7_days` 已接通真实 Lucent 导出请求
+  - PDF 导出补了基础自动分页，避免月报内容直接写出单页底部
 - 当前默认下一步：
-  - 继续做 Slice 3 的 minimum red-flag rules
-  - 只在测试或演示发现明显缺口时，再回头补剩余的 Slice 2 硬化
+  - 如果演示/测试发现 Slice 2 缺口：优先回补
+  - 否则待后续排期窗口再进入 Slice 3
 
 ## What Is Already Good Enough
 
 - Auth、五 tab 主骨架、Record 主录入闭环、Today/Report AI 流式总结、Mine 基础设置、一个真实的 `hospital + pdf + last_7_days` 导出链路已经在位。
+- Auth、五 tab 主骨架、Record 主录入闭环、Today/Report AI 流式总结、Mine 基础设置、三条真实 PDF 导出链路（`hospital` / `monthly` / `print`）已经在位。
 - Lucent + Luminous 已经有四条真实 Android 模拟器全链路 lane，可以守住 auth / record / sleep / today-report 的主线稳定性。
 - 现在不需要再做一轮大重构，也不需要把系统重新讲成“从零到一”。
 
@@ -59,14 +70,12 @@
 
 - Reminder 相关页面、文案、状态里，把本地提醒 / worker history / push / SMS 的边界写清楚。
 - Report export 继续只承诺 `hospital + pdf + last_7_days`。
-- `monthly` / `print` 保持可见但不冒充真流程。
 - 文档、UI、合同说法一致。
 
 不做：
 
 - reminder worker
 - push / SMS 真链路
-- `monthly` / `print` 新导出文件
 
 成功信号：
 

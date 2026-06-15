@@ -2,6 +2,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 
+class DataExportRequestInFlightState {
+  const DataExportRequestInFlightState({
+    required this.inFlight,
+    this.input,
+  });
+
+  final bool inFlight;
+  final DataExportRequestInput? input;
+
+  bool matches(DataExportRequestInput candidate) {
+    return inFlight && input == candidate;
+  }
+}
+
 class DataExportRequestInput {
   const DataExportRequestInput({
     this.kind = CreateDataExportRequestDtoKindEnum.hospital,
@@ -12,6 +26,18 @@ class DataExportRequestInput {
   final CreateDataExportRequestDtoKindEnum kind;
   final CreateDataExportRequestDtoFormatEnum format;
   final CreateDataExportRequestDtoRangeEnum range;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is DataExportRequestInput &&
+            kind == other.kind &&
+            format == other.format &&
+            range == other.range;
+  }
+
+  @override
+  int get hashCode => Object.hash(kind, format, range);
 
   CreateDataExportRequestDto toDto() {
     return CreateDataExportRequestDto(kind: kind, format: format, range: range);
@@ -61,6 +87,18 @@ class DataExportRequestInput {
 
 const reportHospitalPdfLast7DaysExportRequest = DataExportRequestInput();
 
+const reportMonthlyPdfExportRequest = DataExportRequestInput(
+  kind: CreateDataExportRequestDtoKindEnum.monthly,
+  format: CreateDataExportRequestDtoFormatEnum.pdf,
+  range: CreateDataExportRequestDtoRangeEnum.last30Days,
+);
+
+const reportPrintPdfExportRequest = DataExportRequestInput(
+  kind: CreateDataExportRequestDtoKindEnum.print,
+  format: CreateDataExportRequestDtoFormatEnum.pdf,
+  range: CreateDataExportRequestDtoRangeEnum.last7Days,
+);
+
 /// Controller for the data-export feature.
 ///
 /// - [fetchLatest] reads `GET /api/v1/user/data-export-requests/latest`.
@@ -76,11 +114,12 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
     DataExportRequestInput input = reportHospitalPdfLast7DaysExportRequest,
   ]) async {
     final requestInFlight = ref.read(dataExportRequestInFlightProvider);
-    if (requestInFlight) {
+    if (requestInFlight.inFlight) {
       return state.asData?.value;
     }
 
-    ref.read(dataExportRequestInFlightProvider.notifier).state = true;
+    ref.read(dataExportRequestInFlightProvider.notifier).state =
+        DataExportRequestInFlightState(inFlight: true, input: input);
     final api = ref.read(lucentDataExportApiProvider);
     try {
       final response = await api.dataExportControllerCreateRequestV1(
@@ -90,7 +129,8 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
       state = AsyncData(data);
       return data;
     } finally {
-      ref.read(dataExportRequestInFlightProvider.notifier).state = false;
+      ref.read(dataExportRequestInFlightProvider.notifier).state =
+          const DataExportRequestInFlightState(inFlight: false);
     }
   }
 
@@ -112,12 +152,17 @@ final dataExportControllerProvider =
       DataExportController.new,
     );
 
-class DataExportRequestInFlightNotifier extends Notifier<bool> {
+class DataExportRequestInFlightNotifier
+    extends Notifier<DataExportRequestInFlightState> {
   @override
-  bool build() => false;
+  DataExportRequestInFlightState build() =>
+      const DataExportRequestInFlightState(inFlight: false);
 }
 
 final dataExportRequestInFlightProvider =
-    NotifierProvider<DataExportRequestInFlightNotifier, bool>(
+    NotifierProvider<
+      DataExportRequestInFlightNotifier,
+      DataExportRequestInFlightState
+    >(
       DataExportRequestInFlightNotifier.new,
     );
