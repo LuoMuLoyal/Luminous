@@ -10,12 +10,10 @@ This file records work that is still missing or intentionally gated. Current fac
   Current state: Medicine now has a real current-medicine risk-check page, workspace safety cards from the same source-backed result, add-before-save precheck in search, explicit coverage-gap summaries for unchecked manual or source-missing items, bounded allergy matching, age-gated special-group warnings, and reviewed duplicate-ingredient checks for `cn` detail strings plus DrugBank synonym overlap. It still does not solve cross-source normalization or broader reviewed rule coverage.
   Needed outcome: broaden safety coverage deliberately without pretending certainty where source detail is missing.
 
-- Fixed red-flag rules plus audited offline-care escalation copy are still missing.
-  Current state: product vision already depends on bounded “seek offline help” prompts, but there is no finished MVP rule library + reviewed copy slice yet.
-  Needed outcome: rule-based high-risk prompts and campus clinic / pharmacist / emergency resource guidance become real without turning AI into a medical triage engine.
-
 ## MVP Gated But Not Blocking Right Now
 
+- Fixed red-flag rules, audited offline-care escalation copy, and campus/help resource completeness.
+- Agent-assisted support discovery or map-backed nearby-care lookup.
 - Real report export files, print output, and share links.
 - Worker-written reminder delivery history for local/push/SMS channels.
 - Environment-driven Today or Mine suggestions.

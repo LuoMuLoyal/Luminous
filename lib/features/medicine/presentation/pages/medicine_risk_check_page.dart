@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -10,7 +11,9 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
+import 'package:luminous/features/settings/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskCheckPage extends ConsumerWidget {
@@ -38,13 +41,23 @@ class MedicineRiskCheckPage extends ConsumerWidget {
     }
 
     final resultAsync = ref.watch(medicineRiskCheckProvider);
+    final redFlagAlertsAsync = ref.watch(redFlagAlertsProvider);
+    final campusResourcesAsync = ref.watch(supportResourcesProvider('campus'));
     return PageScaffoldShell(
       title: l10n.medicineRiskCheckPageTitle,
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
         resultAsync.when(
-          data: (result) => _MedicineRiskCheckBody(result: result),
+          data: (result) {
+            final alerts = redFlagAlertsAsync.asData?.value ?? const [];
+            final resources = campusResourcesAsync.asData?.value ?? const [];
+            return _MedicineRiskCheckBody(
+              result: result,
+              redFlagAlerts: alerts,
+              campusResources: resources,
+            );
+          },
           loading: () => const _MedicineRiskCheckLoading(),
           error: (_, __) => AppStateErrorView(
             title: l10n.medicineErrorTitle,
@@ -61,9 +74,15 @@ class MedicineRiskCheckPage extends ConsumerWidget {
 }
 
 class _MedicineRiskCheckBody extends StatelessWidget {
-  const _MedicineRiskCheckBody({required this.result});
+  const _MedicineRiskCheckBody({
+    required this.result,
+    this.redFlagAlerts = const [],
+    this.campusResources = const [],
+  });
 
   final MedicineRiskCheckResult result;
+  final List<RedFlagAlert> redFlagAlerts;
+  final List<SupportResourceDto> campusResources;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +96,16 @@ class _MedicineRiskCheckBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (redFlagAlerts.isNotEmpty) ...[
+            _RedFlagBanner(
+              alerts: redFlagAlerts,
+              campusResources: campusResources,
+              l10n: l10n,
+              typography: typography,
+              surface: surface,
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+          ],
           PageSectionCard(
             title: l10n.medicineRiskCheckSummaryTitle,
             child: Wrap(
@@ -408,6 +437,156 @@ class _TagPill extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _RedFlagBanner extends StatelessWidget {
+  const _RedFlagBanner({
+    required this.alerts,
+    required this.campusResources,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final List<RedFlagAlert> alerts;
+  final List<SupportResourceDto> campusResources;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacingTokens.md),
+      decoration: BoxDecoration(
+        color: AppColorTokens.error.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        border: Border.all(color: AppColorTokens.error.withValues(alpha: 0.22)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.warning_amber_rounded, color: AppColorTokens.error, size: 20),
+              const SizedBox(width: AppSpacingTokens.sm),
+              Text(
+                redFlagBannerTitle(l10n),
+                style: typography.bodyMdStrong.copyWith(
+                  color: AppColorTokens.error,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacingTokens.sm),
+          for (var i = 0; i < alerts.length; i += 1) ...[
+            if (i > 0) const SizedBox(height: AppSpacingTokens.sm),
+            _RedFlagAlertRow(
+              alert: alerts[i],
+              campusResources: campusResources,
+              l10n: l10n,
+              typography: typography,
+              surface: surface,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _RedFlagAlertRow extends StatelessWidget {
+  const _RedFlagAlertRow({
+    required this.alert,
+    required this.campusResources,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final RedFlagAlert alert;
+  final List<SupportResourceDto> campusResources;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  SupportResourceDto? get _matchedResource {
+    final id = alert.resourceId;
+    if (id == null) return null;
+    return campusResources.where((r) => r.id == id).firstOrNull;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final resource = _matchedResource;
+    final hasRealAction = resource != null &&
+        resource.actionUrl != null &&
+        resource.actionUrl!.isNotEmpty &&
+        resource.actionType != null;
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacingTokens.sm),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface.withValues(alpha: 0.64),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  redFlagAlertCopy(l10n, alert),
+                  style: typography.bodySm.copyWith(color: surface.body),
+                ),
+              ],
+            ),
+          ),
+          if (alert.resourceId != null) ...[
+            const SizedBox(width: AppSpacingTokens.sm),
+            TextButton.icon(
+              onPressed: hasRealAction
+                  ? () => _openResource(context, alert.resourceId!)
+                  : null,
+              icon: Icon(
+                Icons.open_in_new_rounded,
+                size: 16,
+                color: hasRealAction ? AppColorTokens.error : surface.mute,
+              ),
+              label: Text(
+                redFlagResourceLabel(l10n, alert.resourceId!),
+                style: typography.caption.copyWith(
+                  color: hasRealAction ? AppColorTokens.error : surface.mute,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.sm),
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openResource(BuildContext context, String resourceId) async {
+    final resource = campusResources.where((r) => r.id == resourceId).firstOrNull;
+    if (resource == null || resource.actionUrl == null || resource.actionType == null) return;
+
+    final target = resource.actionUrl!;
+    if (target.isEmpty) return;
+
+    final uri = Uri.tryParse(target);
+    if (uri == null) return;
+
+    await const ExternalUrlLauncher().open(uri);
   }
 }
 

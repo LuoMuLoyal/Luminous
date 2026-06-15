@@ -5719,6 +5719,54 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'导出请求已提交'**
   String get mineExportRequested;
+
+  /// No description provided for @medicineRiskCheckRedFlagBannerTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'红旗警告'**
+  String get medicineRiskCheckRedFlagBannerTitle;
+
+  /// No description provided for @medicineRiskCheckRedFlagSevereAllergy.
+  ///
+  /// In zh, this message translates to:
+  /// **'严重过敏风险：{drug} 含有 {allergen}，请勿使用并立即咨询医生。'**
+  String medicineRiskCheckRedFlagSevereAllergy(Object drug, Object allergen);
+
+  /// No description provided for @medicineRiskCheckRedFlagSevereAllergyGeneric.
+  ///
+  /// In zh, this message translates to:
+  /// **'严重过敏风险：{drug} 与已知过敏原匹配，请勿使用并立即咨询医生。'**
+  String medicineRiskCheckRedFlagSevereAllergyGeneric(Object drug);
+
+  /// No description provided for @medicineRiskCheckRedFlagPregnancyContraindication.
+  ///
+  /// In zh, this message translates to:
+  /// **'孕期/哺乳期用药警告：{drug} 标注为禁忌，请务必咨询医生后再使用。'**
+  String medicineRiskCheckRedFlagPregnancyContraindication(Object drug);
+
+  /// No description provided for @medicineRiskCheckRedFlagInformationGap.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法确认 {drug} 的安全性，建议线下核对药品说明书或咨询药师。'**
+  String medicineRiskCheckRedFlagInformationGap(Object drug);
+
+  /// No description provided for @medicineRiskCheckRedFlagResourceEmergency.
+  ///
+  /// In zh, this message translates to:
+  /// **'急救资源'**
+  String get medicineRiskCheckRedFlagResourceEmergency;
+
+  /// No description provided for @medicineRiskCheckRedFlagResourceHospital.
+  ///
+  /// In zh, this message translates to:
+  /// **'校医院'**
+  String get medicineRiskCheckRedFlagResourceHospital;
+
+  /// No description provided for @medicineRiskCheckRedFlagResourcePharmacy.
+  ///
+  /// In zh, this message translates to:
+  /// **'校园药房'**
+  String get medicineRiskCheckRedFlagResourcePharmacy;
 }
 
 class _AppLocalizationsDelegate

@@ -6,7 +6,7 @@ This file records the next implementation order only. Completed work belongs in 
 
 ## Current Goal
 
-Today/Report AI summary streaming is in place for MVP, export and reminder scope have now been narrowed to match the real shipped boundary, and Medicine already shares a more explicit risk-check boundary across the main page and add-before-save precheck. The next focus should move from scope closure to the remaining safety-hardening work that still blocks a more trustworthy MVP story.
+Today/Report AI summary streaming is in place for MVP, export and reminder scope have now been narrowed to match the real shipped boundary, and Medicine already shares a more explicit risk-check boundary across the main page and add-before-save precheck. Campus/help resource completeness and offline-care discovery are no longer on the MVP critical path. The next focus should move from feature expansion to MVP closeout: remaining Medicine safety hardening, deterministic validation, and demo readiness.
 
 ## Immediate Work Order
 
@@ -18,13 +18,13 @@ Today/Report AI summary streaming is in place for MVP, export and reminder scope
    - Success signal:
      - the product can demonstrate stable “new medicine -> reviewed warning or explicit unknown” paths without hand-waving around the coverage boundary
 
-2. **Add the minimum red-flag and offline-care escalation slice**
+2. **Run MVP closeout validation and freeze the promise**
    - Priority order:
-     - fixed red-flag rules only
-     - audited safety copy
-     - clear campus clinic / pharmacist / emergency resource entry
+     - keep campus/help resource completeness, map discovery, and agent-assisted support lookup out of the current MVP promise
+     - run repo-safe daily checks plus the local full-stack gate against the frozen MVP path
+     - turn any remaining half-real UI states into explicit boundary wording instead of relying on oral explanation
    - Success signal:
-     - high-risk patterns trigger a bounded rule-based prompt and a real next-step resource, not a freeform AI medical guess
+     - the mobile MVP can be demoed end to end without relying on post-MVP support-discovery work or ad-hoc caveats
 
 3. **Local full-stack lane usage rule**
    - Keep the current emulator + Lucent full-stack gate out of GitHub Actions for now.
@@ -64,6 +64,7 @@ Today/Report AI summary streaming is in place for MVP, export and reminder scope
 
 5. **Keep NLP intake and Mine support in polish-only mode**
    - Mine campus/support rows already open contract-backed actions when Lucent provides a usable target; rows without target remain visible but disabled.
+   - Do not pull campus/help resource completeness or dynamic nearby-care discovery back into MVP unless the product promise changes.
    - Record NLP candidate save already has explicit failed-item retry inside the sheet.
    - Revisit these two slices only if MVP testing shows users still get stuck, for example around clearer failure causes or support-resource action-type expansion.
 
@@ -77,6 +78,7 @@ Today/Report AI summary streaming is in place for MVP, export and reminder scope
 Keep these code paths hidden and annotated until the matching product/API job is ready:
 
 - After the five-tab UI stabilizes, run a focused truncation pass for English and Chinese button labels, pills, and compact rows across Today, Record, Medicine, Report, and Mine.
+- Agent-assisted support discovery and map-backed nearby-care lookup.
 - Lightweight mood record shapes.
 - Environment signals for contextual Today/Mine use.
 - Medicine scan/OCR/photo/barcode/prescription action shapes.

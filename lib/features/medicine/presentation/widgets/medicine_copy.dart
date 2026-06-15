@@ -136,10 +136,6 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
       ),
   ];
 
-  if (alerts.isNotEmpty) {
-    return alerts;
-  }
-
   if (result.coverageIssues.isNotEmpty) {
     final names = result.coverageIssues
         .take(3)
@@ -154,19 +150,40 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
     final summaryLine = result.coverageSummary.isNotEmpty
         ? result.coverageSummary
         : null;
+    final coverageAlert = MedicineAlert(
+      icon: Icons.info_outline_rounded,
+      color: AppColorTokens.warningDeep,
+      softColor: AppColorTokens.warningSoft,
+      rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
+      rawBody: l10n.medicineRiskCheckCoverageAlertBody(
+        result.coverageIssues.length,
+      ),
+      rawDetail: detail,
+      rawAction: l10n.medicineRiskCheckViewAction,
+    );
+
+    if (alerts.isNotEmpty) {
+      return [
+        ...alerts.take(3),
+        coverageAlert,
+      ];
+    }
+
     return [
       MedicineAlert(
-        icon: Icons.info_outline_rounded,
-        color: AppColorTokens.warningDeep,
-        softColor: AppColorTokens.warningSoft,
-        rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
-        rawBody: l10n.medicineRiskCheckCoverageAlertBody(
-          result.coverageIssues.length,
-        ),
-        rawDetail: summaryLine != null ? detail : detail,
-        rawAction: l10n.medicineRiskCheckViewAction,
+        icon: coverageAlert.icon,
+        color: coverageAlert.color,
+        softColor: coverageAlert.softColor,
+        rawTitle: coverageAlert.rawTitle,
+        rawBody: coverageAlert.rawBody,
+        rawDetail: coverageAlert.rawDetail,
+        rawAction: coverageAlert.rawAction,
       ),
     ];
+  }
+
+  if (alerts.isNotEmpty) {
+    return alerts;
   }
 
   return [
@@ -301,5 +318,33 @@ String medicineRiskCoverageReasonLabel(
       l10n.medicineRiskCheckCoverageReasonMissingSourceRef,
     MedicineRiskCoverageReason.detailUnavailable =>
       l10n.medicineRiskCheckCoverageReasonDetailUnavailable,
+  };
+}
+
+String redFlagBannerTitle(AppLocalizations l10n) {
+  return l10n.medicineRiskCheckRedFlagBannerTitle;
+}
+
+String redFlagAlertCopy(AppLocalizations l10n, RedFlagAlert alert) {
+  final drug = alert.primaryMedicineName;
+  final allergen = alert.relatedLabel?.trim();
+  return switch (alert.rule) {
+    RedFlagRule.severeAllergy =>
+      allergen != null && allergen.isNotEmpty
+      ? l10n.medicineRiskCheckRedFlagSevereAllergy(drug, allergen)
+      : l10n.medicineRiskCheckRedFlagSevereAllergyGeneric(drug),
+    RedFlagRule.pregnancyContraindication =>
+      l10n.medicineRiskCheckRedFlagPregnancyContraindication(drug),
+    RedFlagRule.informationGap =>
+      l10n.medicineRiskCheckRedFlagInformationGap(drug),
+  };
+}
+
+String redFlagResourceLabel(AppLocalizations l10n, String resourceId) {
+  return switch (resourceId) {
+    'campus-emergency' => l10n.medicineRiskCheckRedFlagResourceEmergency,
+    'campus-hospital' => l10n.medicineRiskCheckRedFlagResourceHospital,
+    'campus-pharmacy' => l10n.medicineRiskCheckRedFlagResourcePharmacy,
+    _ => l10n.medicineRiskCheckRedFlagResourceHospital,
   };
 }

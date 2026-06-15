@@ -2950,4 +2950,36 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineExportRequested => '导出请求已提交';
+
+  @override
+  String get medicineRiskCheckRedFlagBannerTitle => '红旗警告';
+
+  @override
+  String medicineRiskCheckRedFlagSevereAllergy(Object drug, Object allergen) {
+    return '严重过敏风险：$drug 含有 $allergen，请勿使用并立即咨询医生。';
+  }
+
+  @override
+  String medicineRiskCheckRedFlagSevereAllergyGeneric(Object drug) {
+    return '严重过敏风险：$drug 与已知过敏原匹配，请勿使用并立即咨询医生。';
+  }
+
+  @override
+  String medicineRiskCheckRedFlagPregnancyContraindication(Object drug) {
+    return '孕期/哺乳期用药警告：$drug 标注为禁忌，请务必咨询医生后再使用。';
+  }
+
+  @override
+  String medicineRiskCheckRedFlagInformationGap(Object drug) {
+    return '无法确认 $drug 的安全性，建议线下核对药品说明书或咨询药师。';
+  }
+
+  @override
+  String get medicineRiskCheckRedFlagResourceEmergency => '急救资源';
+
+  @override
+  String get medicineRiskCheckRedFlagResourceHospital => '校医院';
+
+  @override
+  String get medicineRiskCheckRedFlagResourcePharmacy => '校园药房';
 }

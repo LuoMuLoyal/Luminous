@@ -31,7 +31,15 @@ flutter test integration_test
 dart run tool/regenerate_lucent_openapi.dart
 powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1
 powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1
+dart run melos run daily
+dart run melos run fullstack
+dart run melos run fullstack-today-report
 ```
+
+If you want shorter full-stack commands, copy `.env.fullstack-e2e.example` to
+`.env.fullstack-e2e` and run the Melos entries above. `tool/run_fullstack_checks.ps1`
+also auto-detects `.env.fullstack-e2e` when present and otherwise falls back to
+its built-in default test account values.
 
 ## CI
 
@@ -43,7 +51,12 @@ powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1
   `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
 - Local full-stack gate entry:
   `powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1`
+- Short script-style entries:
+  `dart run melos run daily`
+  `dart run melos run fullstack`
+  `dart run melos run fullstack-today-report`
 - `tool/run_fullstack_checks.ps1` starts Lucent test runtime through `../Lucent/scripts/dev/start-test-runtime.ps1`, checks `GET http://127.0.0.1:3000/api/v1/health`, then runs the four Android-emulator lanes sequentially.
+- `tool/run_fullstack_checks.ps1` now prefers `.env.fullstack-e2e` via `--dart-define-from-file` when that file exists.
 - Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a separate Lucent test runtime, test database state, and Android emulator orchestration across two repositories.
 
 ## Docs

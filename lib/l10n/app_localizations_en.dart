@@ -3170,4 +3170,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineExportRequested => 'Export request submitted';
+
+  @override
+  String get medicineRiskCheckRedFlagBannerTitle => 'Red Flag Warning';
+
+  @override
+  String medicineRiskCheckRedFlagSevereAllergy(Object drug, Object allergen) {
+    return 'Severe allergy risk: $drug contains $allergen. Do not use and consult a doctor immediately.';
+  }
+
+  @override
+  String medicineRiskCheckRedFlagSevereAllergyGeneric(Object drug) {
+    return 'Severe allergy risk: $drug matches a known allergen. Do not use and consult a doctor immediately.';
+  }
+
+  @override
+  String medicineRiskCheckRedFlagPregnancyContraindication(Object drug) {
+    return 'Pregnancy/lactation warning: $drug is listed as contraindicated. Consult a doctor before use.';
+  }
+
+  @override
+  String medicineRiskCheckRedFlagInformationGap(Object drug) {
+    return 'Unable to confirm safety of $drug. Check the drug label or consult a pharmacist.';
+  }
+
+  @override
+  String get medicineRiskCheckRedFlagResourceEmergency => 'Emergency';
+
+  @override
+  String get medicineRiskCheckRedFlagResourceHospital => 'Campus clinic';
+
+  @override
+  String get medicineRiskCheckRedFlagResourcePharmacy => 'Campus pharmacy';
 }
