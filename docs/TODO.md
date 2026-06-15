@@ -1,6 +1,6 @@
 # Luminous TODO
 
-Last updated: 2026-06-14
+Last updated: 2026-06-15
 
 This file records work that is still missing or intentionally gated. Current facts belong in `Current_State.md`; implementation order belongs in `Next_Plan.md`.
 
@@ -10,9 +10,9 @@ This file records work that is still missing or intentionally gated. Current fac
   Current state: Medicine now has a real current-medicine risk-check page, workspace safety cards from the same source-backed result, add-before-save precheck in search, and basic duplicate-ingredient detection for reviewed `cn` detail strings after simple ingredient splitting. It still does not solve cross-source normalization or broader reviewed rule coverage.
   Needed outcome: broaden safety coverage deliberately without pretending certainty where source detail is missing.
 
-- Report export is still placeholder-only.
-  Current state: Report cards for clinic/monthly/print still call local toast behavior even though Lucent already has data-export request endpoints and Mine/Settings can show export request status.
-  Needed outcome: connect at least one real export request/start flow, or narrow the product promise/documentation so “export” is not presented as an active MVP action.
+- Report export is still only partially real.
+  Current state: `给校医院` now uses the real Lucent export request flow for `hospital + pdf + last_7_days`. `月度报告` and `打印预览` remain visible but inactive until Lucent has distinct payloads/files for them.
+  Needed outcome: either add real monthly/print export contracts, or keep the current narrowed export promise explicit in product copy and docs.
 
 - NLP partial-save recovery is still toast-led.
   Current state: failed candidate rows now stay in place with item-level error text plus an explicit “retry failed items” entry in the sheet.
