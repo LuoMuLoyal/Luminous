@@ -1105,7 +1105,8 @@ class _ExportCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = _exportTitle(l10n, action.kind);
     final subtitle = _exportSubtitle(l10n, action.kind);
-    final enabled = onTap != null;
+    final enabled =
+        onTap != null && action.kind == ReportExportKind.hospital;
     final showProgress =
         requestInFlight && action.kind == ReportExportKind.hospital;
 
