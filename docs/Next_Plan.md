@@ -1,21 +1,21 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-14
+Last updated: 2026-06-15
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
 ## Current Goal
 
-Today/Report AI summary streaming is in place for MVP, and Medicine now covers both the main risk-check page and add-before-save precheck. Next focus should stay on the remaining fake or still-too-narrow MVP surfaces instead of drifting back into AI polish.
+Today/Report AI summary streaming is in place for MVP, Medicine now covers both the main risk-check page and add-before-save precheck, and Report now has one real export action. Next focus should stay on the remaining narrow or still-placeholder MVP surfaces instead of drifting back into AI polish.
 
 ## Immediate Work Order
 
 1. **Close the biggest remaining fake surfaces**
    - Priority order:
-     - wire at least one Report export action to the existing Lucent data-export request flow
+     - wire the remaining Report export actions (`monthly`, `print`) only after Lucent has real contracts/files for them
      - extend Medicine safety beyond the current “existing detail only” boundary, such as broader reviewed rule coverage, cross-source normalization, or interaction expansion
    - Success signal:
-     - at least one remaining toast-only MVP-facing entry becomes real, or the Medicine safety boundary is expanded without reintroducing fake confidence
+     - either another remaining toast-only MVP-facing entry becomes real, or the Medicine safety boundary is expanded without reintroducing fake confidence
 
 2. **Local full-stack lane usage rule**
    - Keep the current emulator + Lucent full-stack gate out of GitHub Actions for now.

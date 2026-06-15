@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:dio/dio.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/network/lucent_network_providers.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
@@ -17,82 +21,83 @@ import 'package:luminous/l10n/app_localizations.dart';
 import '../today/today_test_helpers.dart';
 
 void main() {
-  testWidgets('Report page renders contract-backed sections for signed-in user', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+  testWidgets(
+    'Report page renders contract-backed sections for signed-in user',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          reportRepositoryProvider.overrideWithValue(
-            const MockReportRepository(),
-          ),
-          userSettingsControllerProvider.overrideWith(
-            EnabledUserSettingsController.new,
-          ),
-        ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            reportRepositoryProvider.overrideWithValue(
+              const MockReportRepository(),
+            ),
+            userSettingsControllerProvider.overrideWith(
+              EnabledUserSettingsController.new,
+            ),
           ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ReportPage(),
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            locale: const Locale('zh'),
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const ReportPage(),
+          ),
         ),
-      ),
-    );
+      );
 
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.text(l10n.tabReport), findsOneWidget);
-    expect(find.text(l10n.reportWeekDateRange), findsOneWidget);
-    expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('report-snapshot-status')),
-        matching: find.text(l10n.reportSnapshotStatus),
-      ),
-      findsOneWidget,
-    );
-    expect(find.byKey(const Key('report-generate-action')), findsOneWidget);
-    expect(find.byKey(const Key('report-sync-action')), findsOneWidget);
-    expect(find.text(l10n.reportScoreTitle), findsOneWidget);
+      expect(find.text(l10n.tabReport), findsOneWidget);
+      expect(find.text(l10n.reportWeekDateRange), findsOneWidget);
+      expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('report-snapshot-status')),
+          matching: find.text(l10n.reportSnapshotStatus),
+        ),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('report-generate-action')), findsOneWidget);
+      expect(find.byKey(const Key('report-sync-action')), findsOneWidget);
+      expect(find.text(l10n.reportScoreTitle), findsOneWidget);
 
-    final scrollable = find.byType(Scrollable).first;
-    final keys = <String>[
-      'report-score-hero',
-      'report-metrics-grid',
-      'report-trend-section',
-      'report-findings-section',
-      'report-ai-summary-section',
-      'report-export-section',
-      'report-patterns-section',
-      'report-reference-notice',
-    ];
+      final scrollable = find.byType(Scrollable).first;
+      final keys = <String>[
+        'report-score-hero',
+        'report-metrics-grid',
+        'report-trend-section',
+        'report-findings-section',
+        'report-ai-summary-section',
+        'report-export-section',
+        'report-patterns-section',
+        'report-reference-notice',
+      ];
 
-    for (final key in keys) {
-      final finder = find.byKey(Key(key));
-      await tester.scrollUntilVisible(finder, 260, scrollable: scrollable);
-      await tester.pump(const Duration(milliseconds: 250));
-      expect(finder, findsOneWidget);
-    }
+      for (final key in keys) {
+        final finder = find.byKey(Key(key));
+        await tester.scrollUntilVisible(finder, 260, scrollable: scrollable);
+        await tester.pump(const Duration(milliseconds: 250));
+        expect(finder, findsOneWidget);
+      }
 
-    expect(find.text(l10n.reportReferenceNotice), findsOneWidget);
-  });
+      expect(find.text(l10n.reportReferenceNotice), findsOneWidget);
+    },
+  );
 
   testWidgets('Report sync shows skeleton while fetching latest dashboard', (
     tester,
@@ -251,6 +256,67 @@ void main() {
     expect(repo.fetchCount, 2);
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
+
+  testWidgets('Report hospital export opens the latest download url', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final exportApi = _FakeReportDataExportApi();
+    final launcher = _FakeExternalUrlLauncher();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          reportRepositoryProvider.overrideWithValue(
+            const MockReportRepository(),
+          ),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          lucentDataExportApiProvider.overrideWithValue(exportApi),
+          externalUrlLauncherProvider.overrideWithValue(launcher),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ReportPage(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final scrollable = find.byType(Scrollable).first;
+    final exportSection = find.byKey(const Key('report-export-section'));
+    await tester.scrollUntilVisible(exportSection, 260, scrollable: scrollable);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('给校医院'));
+    await tester.pumpAndSettle();
+
+    expect(exportApi.createCallCount, 1);
+    expect(exportApi.getLatestCallCount, 2);
+    expect(
+      launcher.openedUri?.toString(),
+      'https://example.com/export-ready.pdf',
+    );
+    await tester.pump(const Duration(seconds: 2));
+  });
 }
 
 class _PendingReportRepository implements ReportRepository {
@@ -273,7 +339,8 @@ class _RefreshableReportRepository implements ReportRepository {
 
   int fetchCount = 0;
   final List<Completer<ReportDashboard>> _pending = [
-    Completer<ReportDashboard>()..complete(MockReportRepository.previewDashboard),
+    Completer<ReportDashboard>()
+      ..complete(MockReportRepository.previewDashboard),
   ];
 
   @override
@@ -318,5 +385,93 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   @override
   AuthSessionState build() {
     return const AuthSessionState(isAuthenticated: false, isLoading: false);
+  }
+}
+
+class _FakeExternalUrlLauncher extends ExternalUrlLauncher {
+  Uri? openedUri;
+
+  @override
+  Future<bool> open(Uri uri) async {
+    openedUri = uri;
+    return true;
+  }
+}
+
+class _FakeReportDataExportApi extends DataExportApi {
+  _FakeReportDataExportApi() : super(Dio());
+
+  int createCallCount = 0;
+  int getLatestCallCount = 0;
+
+  @override
+  Future<Response<DataExportRequestResponseDto>>
+  dataExportControllerCreateRequestV1({
+    required CreateDataExportRequestDto createDataExportRequestDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    createCallCount += 1;
+    return Response<DataExportRequestResponseDto>(
+      data: DataExportRequestResponseDto(
+        code: 0,
+        message: 'ok',
+        data: DataExportRequestDataDto(
+          id: 'req-report',
+          kind: DataExportKind.hospital,
+          format: DataExportFormat.pdf,
+          range: DataExportRange.last7Days,
+          status: DataExportStatus.completed,
+          requestedAt: '2026-06-15T08:00:00.000Z',
+          completedAt: '2026-06-15T08:01:00.000Z',
+          downloadUrl: null,
+          fileName: 'report.pdf',
+          fileSizeBytes: 1024,
+          errorMessage: null,
+        ),
+      ),
+      requestOptions: RequestOptions(path: '/api/v1/user/data-export-requests'),
+      statusCode: 200,
+    );
+  }
+
+  @override
+  Future<Response<DataExportLatestResponseDto>>
+  dataExportControllerGetLatestRequestV1({
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    getLatestCallCount += 1;
+    return Response<DataExportLatestResponseDto>(
+      data: DataExportLatestResponseDto(
+        code: 0,
+        message: 'ok',
+        data: DataExportRequestDataDto(
+          id: 'req-report',
+          kind: DataExportKind.hospital,
+          format: DataExportFormat.pdf,
+          range: DataExportRange.last7Days,
+          status: DataExportStatus.completed,
+          requestedAt: '2026-06-15T08:00:00.000Z',
+          completedAt: '2026-06-15T08:01:00.000Z',
+          downloadUrl: 'https://example.com/export-ready.pdf',
+          fileName: 'report.pdf',
+          fileSizeBytes: 1024,
+          errorMessage: null,
+        ),
+      ),
+      requestOptions: RequestOptions(
+        path: '/api/v1/user/data-export-requests/latest',
+      ),
+      statusCode: 200,
+    );
   }
 }

@@ -21,6 +21,8 @@ class ReportDashboardView extends ConsumerWidget {
     this.aiSummaryRange = ReportAiSummaryRange.last7Days,
     this.onAiSummaryRangeChanged,
     this.onGenerateAiSummary,
+    this.onExportActionTap,
+    this.exportRequestInFlight = false,
   });
 
   final ReportDashboard dashboard;
@@ -30,6 +32,8 @@ class ReportDashboardView extends ConsumerWidget {
   final ReportAiSummaryRange aiSummaryRange;
   final ValueChanged<ReportAiSummaryRange>? onAiSummaryRangeChanged;
   final Future<void> Function()? onGenerateAiSummary;
+  final Future<void> Function(ReportExportKind kind)? onExportActionTap;
+  final bool exportRequestInFlight;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,6 +95,8 @@ class ReportDashboardView extends ConsumerWidget {
         ReportExportSection(
           key: const Key('report-export-section'),
           actions: dashboard.exportActions,
+          requestInFlight: exportRequestInFlight,
+          onActionTap: onExportActionTap,
           l10n: l10n,
           typography: typography,
           surface: surface,
