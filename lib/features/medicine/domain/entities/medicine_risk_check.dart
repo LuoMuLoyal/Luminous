@@ -30,6 +30,7 @@ class MedicineRiskCheckResult {
     required this.checkedMedicineCount,
     required this.findings,
     required this.coverageIssues,
+    this.coverageSummary = '',
   });
 
   final int currentMedicineCount;
@@ -37,11 +38,17 @@ class MedicineRiskCheckResult {
   final List<MedicineRiskFinding> findings;
   final List<MedicineRiskCoverageIssue> coverageIssues;
 
+  /// Human-readable summary of coverage gaps (e.g. "2 种手动录入药品无法自动检查").
+  /// Empty when all medicines are fully covered.
+  final String coverageSummary;
+
   int get findingCount => findings.length;
 
   int get coverageCount => coverageIssues.length;
 
   bool get hasFindings => findings.isNotEmpty;
+
+  bool get hasCoverageGaps => coverageIssues.isNotEmpty;
 }
 
 class MedicineRiskFinding {

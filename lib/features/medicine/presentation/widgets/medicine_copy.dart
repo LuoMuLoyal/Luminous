@@ -151,16 +151,19 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
         : result.coverageIssues.length > names.length
         ? l10n.medicineRiskCheckCoverageAlertDetailWithMore(names.join('、'))
         : l10n.medicineRiskCheckCoverageAlertDetail(names.join('、'));
+    final summaryLine = result.coverageSummary.isNotEmpty
+        ? result.coverageSummary
+        : null;
     return [
       MedicineAlert(
         icon: Icons.info_outline_rounded,
         color: AppColorTokens.warningDeep,
         softColor: AppColorTokens.warningSoft,
-        rawTitle: l10n.medicineRiskCheckCoverageAlertTitle,
+        rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
         rawBody: l10n.medicineRiskCheckCoverageAlertBody(
           result.coverageIssues.length,
         ),
-        rawDetail: detail,
+        rawDetail: summaryLine != null ? detail : detail,
         rawAction: l10n.medicineRiskCheckViewAction,
       ),
     ];
