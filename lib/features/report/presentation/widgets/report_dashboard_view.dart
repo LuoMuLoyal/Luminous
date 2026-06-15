@@ -8,6 +8,7 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
+import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -22,7 +23,9 @@ class ReportDashboardView extends ConsumerWidget {
     this.onAiSummaryRangeChanged,
     this.onGenerateAiSummary,
     this.onExportActionTap,
-    this.exportRequestInFlight = false,
+    this.exportRequestInFlight = const DataExportRequestInFlightState(
+      inFlight: false,
+    ),
   });
 
   final ReportDashboard dashboard;
@@ -33,7 +36,7 @@ class ReportDashboardView extends ConsumerWidget {
   final ValueChanged<ReportAiSummaryRange>? onAiSummaryRangeChanged;
   final Future<void> Function()? onGenerateAiSummary;
   final Future<void> Function(ReportExportKind kind)? onExportActionTap;
-  final bool exportRequestInFlight;
+  final DataExportRequestInFlightState exportRequestInFlight;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

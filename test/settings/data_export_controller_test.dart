@@ -108,6 +108,10 @@ void main() {
         fakeApi.lastCreateRequest?.range,
         CreateDataExportRequestDtoRangeEnum.last7Days,
       );
+      expect(
+        container.read(dataExportRequestInFlightProvider).inFlight,
+        isFalse,
+      );
     });
 
     test('sends custom request parameters when provided', () async {
@@ -137,6 +141,35 @@ void main() {
         fakeApi.lastCreateRequest?.range,
         CreateDataExportRequestDtoRangeEnum.last30Days,
       );
+    });
+
+    test('tracks which export input is in flight', () async {
+      container = buildContainer();
+
+      await container.read(dataExportControllerProvider.future);
+
+      final delayedApi = _FakeDataExportApi(
+        createDelay: const Duration(milliseconds: 50),
+      );
+      container.dispose();
+      container = buildContainer(api: delayedApi);
+      await container.read(dataExportControllerProvider.future);
+
+      final future = container
+          .read(dataExportControllerProvider.notifier)
+          .requestExport(
+            reportMonthlyPdfExportRequest,
+          );
+
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+
+      final inFlight = container.read(dataExportRequestInFlightProvider);
+      expect(inFlight.inFlight, isTrue);
+      expect(inFlight.input, reportMonthlyPdfExportRequest);
+
+      await future;
+
+      expect(container.read(dataExportRequestInFlightProvider).inFlight, isFalse);
     });
 
     test('propagates DioException when POST fails', () async {
@@ -364,6 +397,7 @@ class _FakeDataExportApi extends DataExportApi {
   _FakeDataExportApi({
     this.latestReturnsNullData = false,
     this.getLatestException,
+    this.createDelay = Duration.zero,
   }) : super(Dio());
 
   // GET latest state.
@@ -379,6 +413,7 @@ class _FakeDataExportApi extends DataExportApi {
   bool createReturnsNull = false;
   DioException? createException;
   CreateDataExportRequestDto? lastCreateRequest;
+  Duration createDelay;
 
   @override
   Future<Response<DataExportLatestResponseDto>>
@@ -434,6 +469,9 @@ class _FakeDataExportApi extends DataExportApi {
     lastCreateRequest = createDataExportRequestDto;
     if (createException != null) {
       throw createException!;
+    }
+    if (createDelay > Duration.zero) {
+      await Future<void>.delayed(createDelay);
     }
     return Response<DataExportRequestResponseDto>(
       data: createReturnsNull ? null : createResponse,

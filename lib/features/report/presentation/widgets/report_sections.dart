@@ -8,7 +8,16 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_components.dart';
+import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+DataExportRequestInput reportExportInputForKind(ReportExportKind kind) {
+  return switch (kind) {
+    ReportExportKind.monthly => reportMonthlyPdfExportRequest,
+    ReportExportKind.print => reportPrintPdfExportRequest,
+    ReportExportKind.hospital => reportHospitalPdfLast7DaysExportRequest,
+  };
+}
 
 class ReportTopBar extends StatelessWidget {
   const ReportTopBar({
@@ -1045,7 +1054,7 @@ class ReportExportSection extends StatelessWidget {
   });
 
   final List<ReportExportAction> actions;
-  final bool requestInFlight;
+  final DataExportRequestInFlightState requestInFlight;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
@@ -1095,7 +1104,7 @@ class _ExportCard extends StatelessWidget {
   });
 
   final ReportExportAction action;
-  final bool requestInFlight;
+  final DataExportRequestInFlightState requestInFlight;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
@@ -1105,15 +1114,15 @@ class _ExportCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = _exportTitle(l10n, action.kind);
     final subtitle = _exportSubtitle(l10n, action.kind);
-    final enabled =
-        onTap != null && action.kind == ReportExportKind.hospital;
-    final showProgress =
-        requestInFlight && action.kind == ReportExportKind.hospital;
+    final enabled = onTap != null;
+    final showProgress = requestInFlight.matches(
+      reportExportInputForKind(action.kind),
+    );
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: !enabled || requestInFlight
+        onTap: !enabled || requestInFlight.inFlight
             ? null
             : () async {
                 await onTap!(action.kind);

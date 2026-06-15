@@ -384,7 +384,7 @@ class _AdvancedSettingsSection extends ConsumerWidget {
                 pushAuthRequiredRoute(context, '/settings');
                 return;
               }
-              if (exportRequestInFlight) {
+              if (exportRequestInFlight.inFlight) {
                 return;
               }
               try {

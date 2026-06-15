@@ -18,6 +18,10 @@ import 'package:luminous/features/report/presentation/widgets/report_sections.da
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+DataExportRequestInput _exportInputForKind(ReportExportKind kind) {
+  return reportExportInputForKind(kind);
+}
+
 class ReportPage extends ConsumerWidget {
   const ReportPage({super.key});
 
@@ -38,17 +42,12 @@ class ReportPage extends ConsumerWidget {
       return;
     }
 
-    if (kind != ReportExportKind.hospital) {
-      await AppToast.show(context, l10n.reportExportUnavailableToast);
-      return;
-    }
-
     final controller = ref.read(dataExportControllerProvider.notifier);
     final launcher = ref.read(externalUrlLauncherProvider);
 
     try {
       final request = await controller.requestExport(
-        reportHospitalPdfLast7DaysExportRequest,
+        _exportInputForKind(kind),
       );
       if (!context.mounted) {
         return;
