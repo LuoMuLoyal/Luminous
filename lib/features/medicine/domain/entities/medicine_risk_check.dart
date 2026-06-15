@@ -80,3 +80,25 @@ class MedicineRiskCoverageIssue {
   final String medicineName;
   final MedicineRiskCoverageReason reason;
 }
+
+enum RedFlagRule {
+  severeAllergy,
+  pregnancyContraindication,
+  informationGap,
+}
+
+class RedFlagAlert {
+  const RedFlagAlert({
+    required this.rule,
+    required this.primaryMedicineName,
+    this.relatedLabel,
+    this.resourceId,
+  });
+
+  final RedFlagRule rule;
+  final String primaryMedicineName;
+  final String? relatedLabel;
+
+  /// Matches a support-resource id (e.g. 'campus-emergency', 'campus-hospital').
+  final String? resourceId;
+}

@@ -3,7 +3,8 @@ param(
   [string]$BaseUrl = 'http://10.0.2.2:3000',
   [string]$Email = 'fullstack-record-lane@example.com',
   [string]$Password = 'RecordLane123',
-  [string]$RecordDate = '2026-06-12'
+  [string]$RecordDate = '2026-06-12',
+  [string]$DefineFile = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -14,6 +15,15 @@ $lucentRoot = Join-Path $workspaceRoot 'Lucent'
 $startRuntimeScript = Join-Path $lucentRoot 'scripts\dev\start-test-runtime.ps1'
 $healthUrl = 'http://127.0.0.1:3000/api/v1/health'
 $healthTimeoutSeconds = 30
+$defaultDefineFile = Join-Path $repoRoot '.env.fullstack-e2e'
+$activeDefineFile = if ($DefineFile.Trim()) {
+  $resolved = Resolve-Path $DefineFile -ErrorAction Stop
+  $resolved.Path
+} elseif (Test-Path $defaultDefineFile) {
+  $defaultDefineFile
+} else {
+  ''
+}
 
 Push-Location $repoRoot
 try {
@@ -39,13 +49,19 @@ try {
     throw "Lucent test runtime health check did not reach 200 within ${healthTimeoutSeconds}s."
   }
 
-  $commonArgs = @(
-    "-d", $DeviceId,
-    "--dart-define=LUCENT_BASE_URL=$BaseUrl",
-    "--dart-define=E2E_TEST_EMAIL=$Email",
-    "--dart-define=E2E_TEST_PASSWORD=$Password",
-    "--dart-define=E2E_RECORD_DATE=$RecordDate"
-  )
+  $commonArgs = @("-d", $DeviceId)
+
+  if ($activeDefineFile) {
+    Write-Host "==> Use dart defines from $activeDefineFile"
+    $commonArgs += "--dart-define-from-file=$activeDefineFile"
+  } else {
+    $commonArgs += @(
+      "--dart-define=LUCENT_BASE_URL=$BaseUrl",
+      "--dart-define=E2E_TEST_EMAIL=$Email",
+      "--dart-define=E2E_TEST_PASSWORD=$Password",
+      "--dart-define=E2E_RECORD_DATE=$RecordDate"
+    )
+  }
 
   $tests = @(
     'integration_test/auth/fullstack_auth_smoke_test.dart',

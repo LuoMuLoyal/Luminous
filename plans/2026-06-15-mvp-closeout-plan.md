@@ -38,16 +38,16 @@
   - 跨源重复：DrugBank 药品通过 `synonyms` 参与重复检测
   - 三展示面统一：`coverageSummary` 字段在风险页/工作区卡片/预检弹层一致展示
 - Slice 3 (Red-Flag Rules) ⏸️ deferred：
-  - 校园资源入口骨架已就位但全部 `available: false`
-  - 红旗规则表、审校安全文案、命中检测链路均未实现
-  - 当前 decision：标注 TODO，等 Slice 1 和 2 硬化充分后再排期
+  - 当前 decision：移出 MVP 关键路径
+  - 后续若重启这条线，优先走 agent + 地图/附近资源发现，而不是把“学校官网完整度”当成前置条件
+  - 现阶段只要求现有支持资源入口不冒充真能力
 - Slice 4 (Monthly/Print Export) ✅ 已完成：
   - `monthly + pdf + last_30_days` 已接通真实 Lucent 导出请求
   - `print + pdf + last_7_days` 已接通真实 Lucent 导出请求
   - PDF 导出补了基础自动分页，避免月报内容直接写出单页底部
 - 当前默认下一步：
   - 如果演示/测试发现 Slice 2 缺口：优先回补
-  - 否则待后续排期窗口再进入 Slice 3
+  - 否则进入 MVP 收口验证：日常检查、全链路 lane、演示脚本和边界文案统一
 
 ## What Is Already Good Enough
 
@@ -184,8 +184,8 @@
 
 1. Slice 1: Reminder And Export Scope Closure
 2. Slice 2: Medicine Safety Rule Unification
-3. Slice 3: Minimum Red-Flag Rules
-4. Slice 4 only if still needed
+3. MVP closeout validation and demo hardening
+4. Slice 3 only after MVP if support-discovery work is restarted
 5. Slice 5 only if MVP promise changes
 
 ## What Should Stay In Maintenance Mode
@@ -200,7 +200,6 @@
 ## Observable Done State
 
 - 用药安全不再只是窄覆盖演示，而是一个可解释、边界清楚的 MVP 入口。
-- 红旗规则和线下资源连接有最小真闭环。
 - Report/Reminder 剩余入口不再制造错误承诺。
 - `Next_Plan.md`、`TODO.md`、当前 UI 和 Lucent 合同对 MVP 说法一致。
 

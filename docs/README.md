@@ -1,6 +1,6 @@
 # Luminous Docs
 
-Last updated: 2026-06-14
+Last updated: 2026-06-15
 
 This directory keeps current product, frontend, and workflow documentation for the Luminous Flutter client. Historical execution plans are not active docs. If a complex task needs a live execution plan, put it under `../plans/` instead of `docs/`.
 
@@ -16,6 +16,7 @@ This directory keeps current product, frontend, and workflow documentation for t
 | `Project_Guardrails.md` | Reusable project-specific mistakes to avoid | One-off task notes |
 | `OpenApi_Client.md` | Flutter client regeneration workflow and current generated-client boundary | Endpoint prose or old regeneration history |
 | `Localization.md` | Flutter l10n workflow and locale ownership | Lists of every current string |
+| `MVP_Demo_Script.md` | Short operator script for demo/defense of the current real MVP path | Source-of-truth scope, current-state facts, or backlog |
 
 ## Update Map
 
@@ -28,15 +29,12 @@ This directory keeps current product, frontend, and workflow documentation for t
 | Visible text or l10n mechanics | `Localization.md` |
 | Lucent OpenAPI/client generation flow | `OpenApi_Client.md` |
 | Reusable guardrail | `Project_Guardrails.md` |
+| Demo/defense operator walkthrough | `MVP_Demo_Script.md` |
 | Any frontend-visible change | Today's `migration-log/YYYY-MM-DD.md` |
 
 ## Archive Policy
 
-Old plans, audits, and superseded design references should not stay in active docs. If they are needed for archaeology, use the workspace archive outside this repo:
-
-```text
-D:\25080\Documents\VSCodeProject\Lumos\docs-archive
-```
+Old plans, audits, and superseded design references should not stay in active docs. If they are needed for archaeology, use the workspace archive outside this repo, such as the sibling `docs-archive/` directory at the workspace level:
 
 Active repo-local plans, when needed, belong in:
 

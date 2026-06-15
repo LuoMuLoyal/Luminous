@@ -1377,5 +1377,34 @@
   "mineExportStatusPending": "处理中",
   "mineExportStatusCompleted": "已完成",
   "mineExportStatusFailed": "失败",
-  "mineExportRequested": "导出请求已提交"
+  "mineExportRequested": "导出请求已提交",
+  "medicineRiskCheckRedFlagBannerTitle": "红旗警告",
+  "medicineRiskCheckRedFlagSevereAllergy": "严重过敏风险：{drug} 含有 {allergen}，请勿使用并立即咨询医生。",
+  "@medicineRiskCheckRedFlagSevereAllergy": {
+    "placeholders": {
+      "drug": {},
+      "allergen": {}
+    }
+  },
+  "medicineRiskCheckRedFlagSevereAllergyGeneric": "严重过敏风险：{drug} 与已知过敏原匹配，请勿使用并立即咨询医生。",
+  "@medicineRiskCheckRedFlagSevereAllergyGeneric": {
+    "placeholders": {
+      "drug": {}
+    }
+  },
+  "medicineRiskCheckRedFlagPregnancyContraindication": "孕期/哺乳期用药警告：{drug} 标注为禁忌，请务必咨询医生后再使用。",
+  "@medicineRiskCheckRedFlagPregnancyContraindication": {
+    "placeholders": {
+      "drug": {}
+    }
+  },
+  "medicineRiskCheckRedFlagInformationGap": "无法确认 {drug} 的安全性，建议线下核对药品说明书或咨询药师。",
+  "@medicineRiskCheckRedFlagInformationGap": {
+    "placeholders": {
+      "drug": {}
+    }
+  },
+  "medicineRiskCheckRedFlagResourceEmergency": "急救资源",
+  "medicineRiskCheckRedFlagResourceHospital": "校医院",
+  "medicineRiskCheckRedFlagResourcePharmacy": "校园药房"
 }

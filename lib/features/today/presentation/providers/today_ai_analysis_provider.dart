@@ -9,6 +9,8 @@ import 'package:luminous/features/today/data/repositories/lucent_today_ai_reposi
 import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
 
 class TodayAiAnalysisController extends Notifier<TodayAiAnalysisCardState> {
+  static const String _defaultStreamingSummary = 'AI 正在整理今天的记录摘要...';
+
   @override
   TodayAiAnalysisCardState build() {
     final session = ref.watch(authSessionProvider);
@@ -37,7 +39,10 @@ class TodayAiAnalysisController extends Notifier<TodayAiAnalysisCardState> {
     }
 
     final previousAnalysis = state.analysis;
-    state = TodayAiAnalysisCardState.loading(previousAnalysis: previousAnalysis);
+    state = TodayAiAnalysisCardState.loading(
+      previousAnalysis: previousAnalysis,
+      streamingSummary: _defaultStreamingSummary,
+    );
 
     try {
       await for (final event in ref

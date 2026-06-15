@@ -1377,5 +1377,34 @@
   "mineExportStatusPending": "Processing",
   "mineExportStatusCompleted": "Completed",
   "mineExportStatusFailed": "Failed",
-  "mineExportRequested": "Export request submitted"
+  "mineExportRequested": "Export request submitted",
+  "medicineRiskCheckRedFlagBannerTitle": "Red Flag Warning",
+  "medicineRiskCheckRedFlagSevereAllergy": "Severe allergy risk: {drug} contains {allergen}. Do not use and consult a doctor immediately.",
+  "@medicineRiskCheckRedFlagSevereAllergy": {
+    "placeholders": {
+      "drug": {},
+      "allergen": {}
+    }
+  },
+  "medicineRiskCheckRedFlagSevereAllergyGeneric": "Severe allergy risk: {drug} matches a known allergen. Do not use and consult a doctor immediately.",
+  "@medicineRiskCheckRedFlagSevereAllergyGeneric": {
+    "placeholders": {
+      "drug": {}
+    }
+  },
+  "medicineRiskCheckRedFlagPregnancyContraindication": "Pregnancy/lactation warning: {drug} is listed as contraindicated. Consult a doctor before use.",
+  "@medicineRiskCheckRedFlagPregnancyContraindication": {
+    "placeholders": {
+      "drug": {}
+    }
+  },
+  "medicineRiskCheckRedFlagInformationGap": "Unable to confirm safety of {drug}. Check the drug label or consult a pharmacist.",
+  "@medicineRiskCheckRedFlagInformationGap": {
+    "placeholders": {
+      "drug": {}
+    }
+  },
+  "medicineRiskCheckRedFlagResourceEmergency": "Emergency",
+  "medicineRiskCheckRedFlagResourceHospital": "Campus clinic",
+  "medicineRiskCheckRedFlagResourcePharmacy": "Campus pharmacy"
 }

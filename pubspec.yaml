@@ -75,6 +75,7 @@ dev_dependencies:
   build_runner: ^2.15.0
   json_serializable: ^6.9.5
   freezed: ^3.2.5
+  melos: ^7.8.1
 
 flutter_launcher_icons:
   android: true
@@ -103,3 +104,28 @@ flutter:
   generate: true
   assets:
     - assets/
+
+melos:
+  useRootAsPackage: true
+  scripts:
+    pub-get:
+      description: Install Flutter dependencies
+      run: flutter pub get
+    daily:
+      description: Run local daily validation
+      run: powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1
+    fullstack:
+      description: Run the Android emulator full-stack validation gate
+      run: powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1
+    fullstack-auth:
+      description: Run the full-stack auth smoke lane
+      run: flutter test integration_test/auth/fullstack_auth_smoke_test.dart -d emulator-5554 --dart-define-from-file=.env.fullstack-e2e
+    fullstack-record:
+      description: Run the full-stack record CRUD lane
+      run: flutter test integration_test/record/fullstack_record_lane_test.dart -d emulator-5554 --dart-define-from-file=.env.fullstack-e2e
+    fullstack-sleep:
+      description: Run the full-stack sleep structured-entry lane
+      run: flutter test integration_test/record/fullstack_sleep_lane_test.dart -d emulator-5554 --dart-define-from-file=.env.fullstack-e2e
+    fullstack-today-report:
+      description: Run the full-stack today/report AI lane
+      run: flutter test integration_test/app/fullstack_today_report_lane_test.dart -d emulator-5554 --dart-define-from-file=.env.fullstack-e2e
