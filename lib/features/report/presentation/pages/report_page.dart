@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/network/lucent_error_mapper.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
+import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/providers/report_ai_summary_provider.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
+import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportPage extends ConsumerWidget {
@@ -18,6 +24,105 @@ class ReportPage extends ConsumerWidget {
   Future<void> _refreshDashboard(WidgetRef ref) async {
     ref.invalidate(reportDashboardProvider);
     await ref.read(reportDashboardProvider.future);
+  }
+
+  Future<void> _handleExportAction(
+    BuildContext context,
+    WidgetRef ref,
+    ReportExportKind kind,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final session = ref.read(authSessionProvider);
+    if (!session.canAccessProtectedData) {
+      pushAuthRequiredRoute(context, '/report');
+      return;
+    }
+
+    if (kind != ReportExportKind.hospital) {
+      await AppToast.show(context, l10n.reportExportUnavailableToast);
+      return;
+    }
+
+    final controller = ref.read(dataExportControllerProvider.notifier);
+    final launcher = ref.read(externalUrlLauncherProvider);
+
+    try {
+      final request = await controller.requestExport(
+        reportHospitalPdfLast7DaysExportRequest,
+      );
+      if (!context.mounted) {
+        return;
+      }
+      await _handleExportResult(
+        context: context,
+        ref: ref,
+        launcher: launcher,
+        request: request,
+      );
+    } catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+      final message = LucentErrorMapper.fromObject(error).message;
+      await AppToast.show(context, '${l10n.reportExportFailedToast}: $message');
+    }
+  }
+
+  Future<void> _handleExportResult({
+    required BuildContext context,
+    required WidgetRef ref,
+    required ExternalUrlLauncher launcher,
+    required DataExportRequestDataDto? request,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (request == null) {
+      await AppToast.show(context, l10n.reportExportFailedToast);
+      return;
+    }
+
+    switch (request.status) {
+      case DataExportStatus.completed:
+        final latest = await ref
+            .read(dataExportControllerProvider.notifier)
+            .refresh();
+        if (!context.mounted) {
+          return;
+        }
+        final completedRequest = latest ?? request;
+        final downloadUrl = completedRequest.downloadUrl;
+        if (downloadUrl == null || downloadUrl.isEmpty) {
+          await AppToast.show(context, l10n.reportExportLinkMissingToast);
+          return;
+        }
+
+        final opened = await launcher.open(Uri.parse(downloadUrl));
+        if (!context.mounted) {
+          return;
+        }
+        await AppToast.show(
+          context,
+          opened
+              ? l10n.reportExportReadyToast
+              : l10n.reportExportOpenFailedToast,
+        );
+        return;
+      case DataExportStatus.requested:
+      case DataExportStatus.processing:
+        await AppToast.show(context, l10n.mineExportRequested);
+        return;
+      case DataExportStatus.failed:
+      case DataExportStatus.unavailable:
+        await AppToast.show(
+          context,
+          request.errorMessage?.isNotEmpty == true
+              ? request.errorMessage!
+              : l10n.reportExportFailedToast,
+        );
+        return;
+      case DataExportStatus.unknownDefaultOpenApi:
+        await AppToast.show(context, l10n.reportExportFailedToast);
+        return;
+    }
   }
 
   @override
@@ -30,6 +135,7 @@ class ReportPage extends ConsumerWidget {
     final aiSummaryState = ref.watch(
       reportAiSummaryControllerProvider(selectedAiSummaryRange),
     );
+    final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
     return dashboardAsync.when(
@@ -59,6 +165,7 @@ class ReportPage extends ConsumerWidget {
               authSession: session,
               aiSummaryState: aiSummaryState,
               aiSummaryRange: selectedAiSummaryRange,
+              exportRequestInFlight: exportRequestInFlight,
               onAiSummaryRangeChanged: (range) {
                 ref
                     .read(reportAiSummarySelectedRangeProvider.notifier)
@@ -73,6 +180,8 @@ class ReportPage extends ConsumerWidget {
                     )
                     .generate();
               },
+              onExportActionTap: (kind) =>
+                  _handleExportAction(context, ref, kind),
             ),
           ],
         ),
@@ -88,6 +197,7 @@ class ReportPage extends ConsumerWidget {
           authSession: session,
           isLoading: true,
           aiSummaryRange: selectedAiSummaryRange,
+          exportRequestInFlight: exportRequestInFlight,
         ),
       ),
       error: (error, _) {

@@ -13,6 +13,7 @@ import 'package:lucent_openapi/src/model/cooldown_message_dto.dart';
 import 'package:lucent_openapi/src/model/create_current_medicine_dto.dart';
 import 'package:lucent_openapi/src/model/create_daily_record_dto.dart';
 import 'package:lucent_openapi/src/model/create_daily_record_image_upload_dto.dart';
+import 'package:lucent_openapi/src/model/create_data_export_request_dto.dart';
 import 'package:lucent_openapi/src/model/create_dose_log_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_allergy_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_condition_dto.dart';
@@ -182,6 +183,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return CreateDailyRecordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CreateDailyRecordImageUploadDto':
           return CreateDailyRecordImageUploadDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'CreateDataExportRequestDto':
+          return CreateDataExportRequestDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CreateDoseLogDto':
           return CreateDoseLogDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'CreateHealthContextAllergyDto':
@@ -227,8 +230,17 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return DailyRecordSummaryDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DailyRecordSummaryResponseDto':
           return DailyRecordSummaryResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DataExportFormat':
+          
+          
+        case 'DataExportKind':
+          
+          
         case 'DataExportLatestResponseDto':
           return DataExportLatestResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'DataExportRange':
+          
+          
         case 'DataExportRequestDataDto':
           return DataExportRequestDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'DataExportRequestResponseDto':

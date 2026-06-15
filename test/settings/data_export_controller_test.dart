@@ -96,6 +96,47 @@ void main() {
       expect(state!.id, 'req-2');
       expect(state.status, DataExportStatus.requested);
       expect(fakeApi.createCallCount, 1);
+      expect(
+        fakeApi.lastCreateRequest?.kind,
+        CreateDataExportRequestDtoKindEnum.hospital,
+      );
+      expect(
+        fakeApi.lastCreateRequest?.format,
+        CreateDataExportRequestDtoFormatEnum.pdf,
+      );
+      expect(
+        fakeApi.lastCreateRequest?.range,
+        CreateDataExportRequestDtoRangeEnum.last7Days,
+      );
+    });
+
+    test('sends custom request parameters when provided', () async {
+      container = buildContainer();
+
+      await container.read(dataExportControllerProvider.future);
+
+      await container
+          .read(dataExportControllerProvider.notifier)
+          .requestExport(
+            const DataExportRequestInput(
+              kind: CreateDataExportRequestDtoKindEnum.monthly,
+              format: CreateDataExportRequestDtoFormatEnum.pdf,
+              range: CreateDataExportRequestDtoRangeEnum.last30Days,
+            ),
+          );
+
+      expect(
+        fakeApi.lastCreateRequest?.kind,
+        CreateDataExportRequestDtoKindEnum.monthly,
+      );
+      expect(
+        fakeApi.lastCreateRequest?.format,
+        CreateDataExportRequestDtoFormatEnum.pdf,
+      );
+      expect(
+        fakeApi.lastCreateRequest?.range,
+        CreateDataExportRequestDtoRangeEnum.last30Days,
+      );
     });
 
     test('propagates DioException when POST fails', () async {
@@ -278,6 +319,9 @@ DataExportRequestDataDto _buildRequestData({
 }) {
   return DataExportRequestDataDto(
     id: id,
+    kind: DataExportKind.hospital,
+    format: DataExportFormat.pdf,
+    range: DataExportRange.last7Days,
     status: status,
     requestedAt: '2026-06-12T00:00:00.000Z',
     completedAt: status == DataExportStatus.completed
@@ -334,6 +378,7 @@ class _FakeDataExportApi extends DataExportApi {
   DataExportRequestResponseDto createResponse = _buildCreateResponse();
   bool createReturnsNull = false;
   DioException? createException;
+  CreateDataExportRequestDto? lastCreateRequest;
 
   @override
   Future<Response<DataExportLatestResponseDto>>
@@ -377,6 +422,7 @@ class _FakeDataExportApi extends DataExportApi {
   @override
   Future<Response<DataExportRequestResponseDto>>
   dataExportControllerCreateRequestV1({
+    required CreateDataExportRequestDto createDataExportRequestDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -385,6 +431,7 @@ class _FakeDataExportApi extends DataExportApi {
     ProgressCallback? onReceiveProgress,
   }) async {
     createCallCount++;
+    lastCreateRequest = createDataExportRequestDto;
     if (createException != null) {
       throw createException!;
     }

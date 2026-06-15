@@ -3071,6 +3071,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportExportPrintSubtitle => 'Paper preview';
 
   @override
+  String get reportExportUnavailableToast =>
+      'This export entry is not wired yet.';
+
+  @override
+  String get reportExportReadyToast =>
+      'The export file is ready and opening now.';
+
+  @override
+  String get reportExportFailedToast => 'Export failed.';
+
+  @override
+  String get reportExportLinkMissingToast =>
+      'The export finished, but the download link is unavailable right now.';
+
+  @override
+  String get reportExportOpenFailedToast =>
+      'The export finished, but the download link could not be opened.';
+
+  @override
   String get reportPatternSectionTitle => 'Health pattern analysis';
 
   @override

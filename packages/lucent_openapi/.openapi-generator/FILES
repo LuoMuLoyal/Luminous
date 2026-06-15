@@ -41,6 +41,7 @@ lib/src/model/cooldown_message_dto.dart
 lib/src/model/create_current_medicine_dto.dart
 lib/src/model/create_daily_record_dto.dart
 lib/src/model/create_daily_record_image_upload_dto.dart
+lib/src/model/create_data_export_request_dto.dart
 lib/src/model/create_dose_log_dto.dart
 lib/src/model/create_health_context_allergy_dto.dart
 lib/src/model/create_health_context_condition_dto.dart
@@ -62,7 +63,10 @@ lib/src/model/daily_record_response_dto.dart
 lib/src/model/daily_record_summary_data_dto.dart
 lib/src/model/daily_record_summary_dto.dart
 lib/src/model/daily_record_summary_response_dto.dart
+lib/src/model/data_export_format.dart
+lib/src/model/data_export_kind.dart
 lib/src/model/data_export_latest_response_dto.dart
+lib/src/model/data_export_range.dart
 lib/src/model/data_export_request_data_dto.dart
 lib/src/model/data_export_request_response_dto.dart
 lib/src/model/data_export_status.dart

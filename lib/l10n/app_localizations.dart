@@ -5540,6 +5540,36 @@ abstract class AppLocalizations {
   /// **'纸质版预览'**
   String get reportExportPrintSubtitle;
 
+  /// No description provided for @reportExportUnavailableToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'这个导出入口还没接通。'**
+  String get reportExportUnavailableToast;
+
+  /// No description provided for @reportExportReadyToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出文件已准备好，正在打开。'**
+  String get reportExportReadyToast;
+
+  /// No description provided for @reportExportFailedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出失败。'**
+  String get reportExportFailedToast;
+
+  /// No description provided for @reportExportLinkMissingToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出已完成，但下载链接暂时不可用。'**
+  String get reportExportLinkMissingToast;
+
+  /// No description provided for @reportExportOpenFailedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出已完成，但无法打开下载链接。'**
+  String get reportExportOpenFailedToast;
+
   /// No description provided for @reportPatternSectionTitle.
   ///
   /// In zh, this message translates to:

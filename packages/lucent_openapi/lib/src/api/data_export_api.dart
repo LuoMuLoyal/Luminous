@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:lucent_openapi/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
+import 'package:lucent_openapi/src/model/create_data_export_request_dto.dart';
 import 'package:lucent_openapi/src/model/data_export_latest_response_dto.dart';
 import 'package:lucent_openapi/src/model/data_export_request_response_dto.dart';
 
@@ -22,6 +23,7 @@ class DataExportApi {
   /// 
   ///
   /// Parameters:
+  /// * [createDataExportRequestDto] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -32,6 +34,7 @@ class DataExportApi {
   /// Returns a [Future] containing a [Response] with a [DataExportRequestResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<DataExportRequestResponseDto>> dataExportControllerCreateRequestV1({ 
+    required CreateDataExportRequestDto createDataExportRequestDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -49,11 +52,30 @@ class DataExportApi {
         'secure': <Map<String, String>>[],
         ...?extra,
       },
+      contentType: 'application/json',
       validateStatus: validateStatus,
     );
 
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(createDataExportRequestDto);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
     final _response = await _dio.request<Object>(
       _path,
+      data: _bodyData,
       options: _options,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,

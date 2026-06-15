@@ -2860,6 +2860,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportExportPrintSubtitle => '纸质版预览';
 
   @override
+  String get reportExportUnavailableToast => '这个导出入口还没接通。';
+
+  @override
+  String get reportExportReadyToast => '导出文件已准备好，正在打开。';
+
+  @override
+  String get reportExportFailedToast => '导出失败。';
+
+  @override
+  String get reportExportLinkMissingToast => '导出已完成，但下载链接暂时不可用。';
+
+  @override
+  String get reportExportOpenFailedToast => '导出已完成，但无法打开下载链接。';
+
+  @override
   String get reportPatternSectionTitle => '健康模式分析';
 
   @override

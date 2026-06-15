@@ -7,6 +7,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
+import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
@@ -201,8 +202,9 @@ class _PrivacySettingsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final settingsAsync =
-        signedIn ? ref.watch(userSettingsControllerProvider) : null;
+    final settingsAsync = signedIn
+        ? ref.watch(userSettingsControllerProvider)
+        : null;
     final settings = settingsAsync?.asData?.value;
 
     return SettingsSectionSurface(
@@ -276,8 +278,8 @@ class _ReminderSettingsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final settingsAsync = ref.watch(notificationSettingsControllerProvider);
-    final settings = settingsAsync.asData?.value ??
-        const NotificationSettingsState();
+    final settings =
+        settingsAsync.asData?.value ?? const NotificationSettingsState();
 
     String statusLabel(bool enabled) =>
         enabled ? l10n.mineReminderEnabled : l10n.mineReminderDisabled;
@@ -348,15 +350,17 @@ class _AdvancedSettingsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final exportAsync =
-        signedIn ? ref.watch(dataExportControllerProvider) : null;
+    final exportAsync = signedIn
+        ? ref.watch(dataExportControllerProvider)
+        : null;
+    final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
     final export = exportAsync?.asData?.value;
 
     String exportValue() {
       if (export == null) return l10n.mineSettingExportValue;
       return switch (export.status) {
-        DataExportStatus.requested || DataExportStatus.processing =>
-          l10n.mineExportStatusPending,
+        DataExportStatus.requested ||
+        DataExportStatus.processing => l10n.mineExportStatusPending,
         DataExportStatus.completed => l10n.mineExportStatusCompleted,
         DataExportStatus.failed => l10n.mineExportStatusFailed,
         _ => l10n.mineSettingExportValue,
@@ -380,11 +384,50 @@ class _AdvancedSettingsSection extends ConsumerWidget {
                 pushAuthRequiredRoute(context, '/settings');
                 return;
               }
-              await ref
-                  .read(dataExportControllerProvider.notifier)
-                  .requestExport();
-              if (!context.mounted) return;
-              await AppToast.show(context, l10n.mineExportRequested);
+              if (exportRequestInFlight) {
+                return;
+              }
+              try {
+                final request = await ref
+                    .read(dataExportControllerProvider.notifier)
+                    .requestExport();
+                if (!context.mounted) {
+                  return;
+                }
+
+                switch (request?.status) {
+                  case DataExportStatus.completed:
+                    await AppToast.show(
+                      context,
+                      l10n.mineExportStatusCompleted,
+                    );
+                    return;
+                  case DataExportStatus.failed:
+                  case DataExportStatus.unavailable:
+                    await AppToast.show(
+                      context,
+                      request?.errorMessage?.isNotEmpty == true
+                          ? request!.errorMessage!
+                          : l10n.mineExportStatusFailed,
+                    );
+                    return;
+                  case DataExportStatus.requested:
+                  case DataExportStatus.processing:
+                  case DataExportStatus.unknownDefaultOpenApi:
+                  case null:
+                    await AppToast.show(context, l10n.mineExportRequested);
+                    return;
+                }
+              } catch (error) {
+                if (!context.mounted) {
+                  return;
+                }
+                final message = LucentErrorMapper.fromObject(error).message;
+                await AppToast.show(
+                  context,
+                  '${l10n.mineExportStatusFailed}: $message',
+                );
+              }
             },
             showDivider: true,
           ),

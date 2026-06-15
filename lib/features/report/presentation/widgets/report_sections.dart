@@ -925,7 +925,8 @@ class ReportAiSummarySection extends StatelessWidget {
                       ),
                       if (actionLabel != null)
                         OutlinedButton(
-                          onPressed: () => showReportToast(context, actionLabel),
+                          onPressed: () =>
+                              showReportToast(context, actionLabel),
                           child: Text(actionLabel),
                         ),
                     ],
@@ -1036,15 +1037,19 @@ class ReportExportSection extends StatelessWidget {
   const ReportExportSection({
     super.key,
     required this.actions,
+    required this.requestInFlight,
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onActionTap,
   });
 
   final List<ReportExportAction> actions;
+  final bool requestInFlight;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final Future<void> Function(ReportExportKind kind)? onActionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -1066,6 +1071,8 @@ class ReportExportSection extends StatelessWidget {
           itemBuilder: (context, index) {
             return _ExportCard(
               action: actions[index],
+              requestInFlight: requestInFlight,
+              onTap: onActionTap,
               l10n: l10n,
               typography: typography,
               surface: surface,
@@ -1080,25 +1087,36 @@ class ReportExportSection extends StatelessWidget {
 class _ExportCard extends StatelessWidget {
   const _ExportCard({
     required this.action,
+    required this.requestInFlight,
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onTap,
   });
 
   final ReportExportAction action;
+  final bool requestInFlight;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final Future<void> Function(ReportExportKind kind)? onTap;
 
   @override
   Widget build(BuildContext context) {
     final title = _exportTitle(l10n, action.kind);
     final subtitle = _exportSubtitle(l10n, action.kind);
+    final enabled = onTap != null;
+    final showProgress =
+        requestInFlight && action.kind == ReportExportKind.hospital;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showReportToast(context, title),
+        onTap: !enabled || requestInFlight
+            ? null
+            : () async {
+                await onTap!(action.kind);
+              },
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: ReportPanel(
           child: Row(
@@ -1133,7 +1151,11 @@ class _ExportCard extends StatelessWidget {
                 ),
               ),
               Icon(
-                Icons.chevron_right_rounded,
+                showProgress
+                    ? Icons.hourglass_top_rounded
+                    : enabled
+                    ? Icons.chevron_right_rounded
+                    : Icons.lock_outline_rounded,
                 color: surface.body,
                 size: AppSpacingTokens.lg,
               ),
@@ -1462,10 +1484,8 @@ _ReportAiSummaryContent _buildReportAiSummaryContent({
       summaryText: summary.summary,
       bullets: summary.bullets
           .map(
-            (bullet) => _ReportAiSummaryItem(
-              color: bullet.color,
-              text: bullet.text,
-            ),
+            (bullet) =>
+                _ReportAiSummaryItem(color: bullet.color, text: bullet.text),
           )
           .toList(growable: false),
       footer: summary.confidenceNote,
@@ -1518,12 +1538,14 @@ List<_ReportAiSummaryItem> _reportAiSummaryFallbackBullets(
       color: _statusColor(dashboard.score.status),
       text: dashboard.score.summary,
     ),
-    ...dashboard.findings.take(3).map(
-      (finding) => _ReportAiSummaryItem(
-        color: finding.color,
-        text: '${finding.title}: ${finding.body}',
-      ),
-    ),
+    ...dashboard.findings
+        .take(3)
+        .map(
+          (finding) => _ReportAiSummaryItem(
+            color: finding.color,
+            text: '${finding.title}: ${finding.body}',
+          ),
+        ),
   ];
 }
 
@@ -1544,10 +1566,7 @@ class _ReportAiSummaryContent {
 }
 
 class _ReportAiSummaryItem {
-  const _ReportAiSummaryItem({
-    required this.color,
-    required this.text,
-  });
+  const _ReportAiSummaryItem({required this.color, required this.text});
 
   final Color color;
   final String text;

@@ -88,6 +88,26 @@ Future<void> main() async {
           : 'Generated pubspec already matched pinned constraints.',
     );
 
+    final patchedEnumDefaults = _patchBrokenEnumDefaultValues(
+      generatedPackageRoot,
+    );
+    stdout.writeln(
+      patchedEnumDefaults == 0
+          ? 'No generated enum-default patches were needed.'
+          : 'Patched broken generated enum defaults in $patchedEnumDefaults files.',
+    );
+    final remainingBrokenEnumDefaults = _countBrokenEnumDefaultValues(
+      generatedPackageRoot,
+    );
+    if (remainingBrokenEnumDefaults != 0) {
+      throw ProcessException(
+        'patch-generated-enum-defaults',
+        const [],
+        'Found $remainingBrokenEnumDefaults broken enum defaults after patching.',
+        1,
+      );
+    }
+
     await _runCommand(
       'dart',
       ['pub', 'get'],
@@ -109,6 +129,15 @@ Future<void> main() async {
       ['run', 'build_runner', 'build'],
       workingDirectory: generatedPackageRoot.path,
       stepName: 'Build generated serializers',
+    );
+
+    final patchedGeneratedEnumDefaults = _patchBrokenEnumDefaultValues(
+      generatedPackageRoot,
+    );
+    stdout.writeln(
+      patchedGeneratedEnumDefaults == 0
+          ? 'No post-build enum-default patches were needed.'
+          : 'Patched broken generated enum defaults in $patchedGeneratedEnumDefaults files after build_runner.',
     );
 
     final patchedFiles = _patchBrokenNullableMapEntries(generatedPackageRoot);
@@ -280,6 +309,50 @@ int _patchBrokenNullableMapEntries(Directory generatedPackageRoot) {
   return patchedFiles;
 }
 
+int _patchBrokenEnumDefaultValues(Directory generatedPackageRoot) {
+  final modelDirectory = _generatedModelDirectory(generatedPackageRoot);
+  if (!modelDirectory.existsSync()) {
+    return 0;
+  }
+
+  var patchedFiles = 0;
+  for (final entity in modelDirectory.listSync(recursive: true)) {
+    if (entity is! File ||
+        !(entity.path.endsWith('.dart') || entity.path.endsWith('.g.dart'))) {
+      continue;
+    }
+
+    final original = entity.readAsStringSync();
+    final updated = original.replaceAllMapped(_brokenEnumDefaultValuePattern, (
+      match,
+    ) {
+      final prefix = match.group(1)!;
+      final enumType = match.group(2)!;
+      final enumValue = match.group(3)!;
+      return '$prefix$enumType.${_enumValueToIdentifier(enumValue)},';
+    });
+    final updatedWithDecodeDefaults = updated.replaceAllMapped(
+      _brokenEnumDecodeDefaultValuePattern,
+      (match) {
+        final blockPrefix = match.group(1)!;
+        final enumType = match.group(2)!;
+        final indent = match.group(3)!;
+        final enumValue = match.group(4)!;
+        return '$blockPrefix$indent$enumType.${_enumValueToIdentifier(enumValue)}';
+      },
+    );
+
+    if (updatedWithDecodeDefaults == original) {
+      continue;
+    }
+
+    entity.writeAsStringSync(updatedWithDecodeDefaults);
+    patchedFiles += 1;
+  }
+
+  return patchedFiles;
+}
+
 int _deleteGeneratedModelSerializers(Directory generatedPackageRoot) {
   final modelDirectory = _generatedModelDirectory(generatedPackageRoot);
   if (!modelDirectory.existsSync()) {
@@ -317,6 +390,28 @@ int _countBrokenNullableMapEntries(Directory generatedPackageRoot) {
         brokenEntries += 1;
       }
     }
+  }
+
+  return brokenEntries;
+}
+
+int _countBrokenEnumDefaultValues(Directory generatedPackageRoot) {
+  final modelDirectory = _generatedModelDirectory(generatedPackageRoot);
+  if (!modelDirectory.existsSync()) {
+    return 0;
+  }
+
+  var brokenEntries = 0;
+  for (final entity in modelDirectory.listSync(recursive: true)) {
+    if (entity is! File ||
+        !(entity.path.endsWith('.dart') || entity.path.endsWith('.g.dart'))) {
+      continue;
+    }
+
+    final content = entity.readAsStringSync();
+    brokenEntries +=
+        _brokenEnumDefaultValuePattern.allMatches(content).length +
+        _brokenEnumDecodeDefaultValuePattern.allMatches(content).length;
   }
 
   return brokenEntries;
@@ -432,13 +527,15 @@ bool _ensureGetterInApiRoot(File apiRootFile) {
     return false;
   }
 
-  const anchor = '''  /// Get AuthApi instance, base route and serializer can be overridden by a given but be careful,
+  const anchor =
+      '''  /// Get AuthApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   AuthApi getAuthApi() {
     return AuthApi(dio);
   }
 ''';
-  const insertion = '''  /// Get AppApi instance, base route and serializer can be overridden by a given but be careful,
+  const insertion =
+      '''  /// Get AppApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   AppApi getAppApi() {
     return AppApi(dio);
@@ -458,3 +555,30 @@ bool _ensureGetterInApiRoot(File apiRootFile) {
 final _brokenNullableMapEntryPattern = RegExp(
   r"^(\s*)('(?:[^'\\]|\\.)*'):\s\?(.+),\s*$",
 );
+
+final _brokenEnumDefaultValuePattern = RegExp(
+  r"^(\s*this\.\w+\s*=\s*)const\s+([A-Za-z0-9_]+)\._\('([^']+)'\),\s*$",
+  multiLine: true,
+);
+
+final _brokenEnumDecodeDefaultValuePattern = RegExp(
+  r"(^\s*unknownValue:\s*\r?\n\s*([A-Za-z0-9_]+)\.unknownDefaultOpenApi,\r?\n\s*\)\s*\?\?\r?\n)(\s*)'([^']+)'",
+  multiLine: true,
+);
+
+String _enumValueToIdentifier(String value) {
+  final parts = value.split('_').where((part) => part.isNotEmpty).toList();
+  if (parts.isEmpty) {
+    return value;
+  }
+
+  final first = parts.first.toLowerCase();
+  final rest = parts
+      .skip(1)
+      .map(
+        (part) =>
+            '${part.substring(0, 1).toUpperCase()}${part.substring(1).toLowerCase()}',
+      )
+      .join();
+  return '$first$rest';
+}
