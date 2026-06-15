@@ -12,16 +12,14 @@ class MedicineRiskChecker {
     final currentMedicines = snapshot.currentMedicines
         .where((item) => item.isCurrent)
         .toList(growable: false);
-    final normalizedAllergies = snapshot.allergies
+    final activeAllergies = snapshot.allergies
         .where((item) => item.isActive)
-        .map((item) => _normalizeToken(item.label))
-        .where((item) => item.isNotEmpty)
-        .toSet();
+        .toList(growable: false);
     final findings = <MedicineRiskFinding>[];
 
     for (final medicine in medicines) {
       findings.addAll(_specialGroupFindings(snapshot, medicine));
-      findings.addAll(_allergyFindings(normalizedAllergies, medicine));
+      findings.addAll(_allergyFindings(activeAllergies, medicine));
       findings.addAll(_foodInteractionFindings(medicine));
     }
 
@@ -40,16 +38,27 @@ class MedicineRiskChecker {
       }
     }
 
+    final coverageIssues = currentMedicines
+        .where((item) => !medicines.any((detail) => detail.item.id == item.id))
+        .map(_coverageIssueFor)
+        .toList(growable: false);
+
     return MedicineRiskCheckResult(
       currentMedicineCount: currentMedicines.length,
       checkedMedicineCount: medicines.length,
       findings: findings,
-      coverageIssues: currentMedicines
-          .where((item) => !medicines.any((detail) => detail.item.id == item.id))
-          .map(_coverageIssueFor)
-          .toList(growable: false),
+      coverageIssues: coverageIssues,
+      coverageSummary: _buildCoverageSummary(
+        currentMedicineCount: currentMedicines.length,
+        checkedMedicineCount: medicines.length,
+        coverageIssues: coverageIssues,
+        medicines: medicines,
+      ),
     );
   }
+
+  static final _pediatricAgeThreshold = 18;
+  static final _geriatricAgeThreshold = 65;
 
   List<MedicineRiskFinding> _specialGroupFindings(
     HealthContextSnapshot snapshot,
@@ -57,43 +66,56 @@ class MedicineRiskChecker {
   ) {
     final findings = <MedicineRiskFinding>[];
     final detail = medicine.detail.detail;
+    final age = snapshot.summary.age;
+
     final pregnancyText = _asNonEmptyString(detail.pregnancyLactation);
-    if (pregnancyText != null) {
-      final pregnancyState = snapshot.profile.pregnancyState;
-      if (pregnancyState == 'pregnant' ||
-          pregnancyState == 'trying' ||
-          pregnancyState == 'postpartum') {
-        findings.add(
-          MedicineRiskFinding(
-            type: MedicineRiskFindingType.specialGroup,
-            severity: MedicineRiskSeverity.high,
-            context: MedicineRiskFindingContext.pregnancy,
-            primaryMedicineName: medicine.displayName,
-            evidence: pregnancyText,
-          ),
-        );
-      }
-
-      final lactationState = snapshot.profile.lactationState;
-      if (lactationState == 'yes') {
-        findings.add(
-          MedicineRiskFinding(
-            type: MedicineRiskFindingType.specialGroup,
-            severity: MedicineRiskSeverity.high,
-            context: MedicineRiskFindingContext.lactation,
-            primaryMedicineName: medicine.displayName,
-            evidence: pregnancyText,
-          ),
-        );
-      }
-    }
-
-    final pediatricText = _asNonEmptyString(detail.pediatricUse);
-    if (pediatricText != null) {
+    final pregnancyState = snapshot.profile.pregnancyState;
+    final hasPregnancyRisk = pregnancyState == 'pregnant' ||
+        pregnancyState == 'trying' ||
+        pregnancyState == 'postpartum';
+    if (pregnancyText != null && hasPregnancyRisk) {
       findings.add(
         MedicineRiskFinding(
           type: MedicineRiskFindingType.specialGroup,
-          severity: MedicineRiskSeverity.info,
+          severity: MedicineRiskSeverity.high,
+          context: MedicineRiskFindingContext.pregnancy,
+          primaryMedicineName: medicine.displayName,
+          evidence: pregnancyText,
+        ),
+      );
+    } else if (pregnancyText == null && hasPregnancyRisk) {
+      findings.add(_noSpecialGroupWarningFinding(
+        medicine.displayName,
+        MedicineRiskFindingContext.pregnancy,
+      ));
+    }
+
+    final lactationState = snapshot.profile.lactationState;
+    final hasLactationRisk = lactationState == 'yes';
+    if (pregnancyText != null && hasLactationRisk) {
+      findings.add(
+        MedicineRiskFinding(
+          type: MedicineRiskFindingType.specialGroup,
+          severity: MedicineRiskSeverity.high,
+          context: MedicineRiskFindingContext.lactation,
+          primaryMedicineName: medicine.displayName,
+          evidence: pregnancyText,
+        ),
+      );
+    } else if (pregnancyText == null && hasLactationRisk) {
+      findings.add(_noSpecialGroupWarningFinding(
+        medicine.displayName,
+        MedicineRiskFindingContext.lactation,
+      ));
+    }
+
+    final isPediatric = age != null && age < _pediatricAgeThreshold;
+    final pediatricText = _asNonEmptyString(detail.pediatricUse);
+    if (pediatricText != null && isPediatric) {
+      findings.add(
+        MedicineRiskFinding(
+          type: MedicineRiskFindingType.specialGroup,
+          severity: MedicineRiskSeverity.medium,
           context: MedicineRiskFindingContext.pediatric,
           primaryMedicineName: medicine.displayName,
           evidence: pediatricText,
@@ -101,12 +123,13 @@ class MedicineRiskChecker {
       );
     }
 
+    final isGeriatric = age != null && age > _geriatricAgeThreshold;
     final geriatricText = _asNonEmptyString(detail.geriatricUse);
-    if (geriatricText != null) {
+    if (geriatricText != null && isGeriatric) {
       findings.add(
         MedicineRiskFinding(
           type: MedicineRiskFindingType.specialGroup,
-          severity: MedicineRiskSeverity.info,
+          severity: MedicineRiskSeverity.medium,
           context: MedicineRiskFindingContext.geriatric,
           primaryMedicineName: medicine.displayName,
           evidence: geriatricText,
@@ -117,32 +140,71 @@ class MedicineRiskChecker {
     return findings;
   }
 
+  MedicineRiskFinding _noSpecialGroupWarningFinding(
+    String medicineName,
+    MedicineRiskFindingContext context,
+  ) {
+    return MedicineRiskFinding(
+      type: MedicineRiskFindingType.specialGroup,
+      severity: MedicineRiskSeverity.info,
+      context: context,
+      primaryMedicineName: medicineName,
+      evidence: null,
+    );
+  }
+
+  static final _allergyCrossLanguageMap = <String, Set<String>>{
+    'penicillin': {'青霉素', 'penicillin', '盘尼西林'},
+    'aspirin': {'阿司匹林', 'aspirin', '乙酰水杨酸', 'acetylsalicylicacid'},
+    'cephalosporin': {'头孢', 'cephalosporin', '先锋霉素'},
+    'sulfa': {'磺胺', 'sulfa', 'sulfonamide'},
+    'ibuprofen': {'布洛芬', 'ibuprofen'},
+    'acetaminophen': {'对乙酰氨基酚', 'acetaminophen', 'paracetamol', '扑热息痛'},
+    'metformin': {'二甲双胍', 'metformin'},
+    'amoxicillin': {'阿莫西林', 'amoxicillin'},
+  };
+
   List<MedicineRiskFinding> _allergyFindings(
-    Set<String> normalizedAllergies,
+    List<AllergyItem> activeAllergies,
     MedicineRiskMedicineDetail medicine,
   ) {
-    if (normalizedAllergies.isEmpty) return const [];
+    if (activeAllergies.isEmpty) return const [];
 
+    final ingredientTokens = medicine.allSourceIngredientTokens;
     final detail = medicine.detail.detail;
     final haystacks = <String>[
       medicine.displayName,
       _asNonEmptyString(detail.ingredients) ?? '',
       _asNonEmptyString(detail.contraindications) ?? '',
       _asNonEmptyString(detail.precautions) ?? '',
+      ...medicine.drugbankSynonymTokens,
     ];
     final normalizedHaystack = _normalizeToken(haystacks.join(' '));
 
     final findings = <MedicineRiskFinding>[];
-    for (final allergy in normalizedAllergies) {
-      if (allergy.isEmpty) continue;
-      if (!normalizedHaystack.contains(allergy)) continue;
+    for (final allergyItem in activeAllergies) {
+      final rawLabel = allergyItem.label.trim();
+      if (rawLabel.isEmpty) continue;
+      final allergyToken = _normalizeToken(rawLabel);
+      if (allergyToken.isEmpty) continue;
+
+      final matchTokens = _expandAllergyTokens(allergyToken);
+      final matchedViaToken = ingredientTokens
+          .intersection(matchTokens)
+          .isNotEmpty;
+      final matchedViaHaystack = matchTokens.any(
+        (token) => normalizedHaystack.contains(token),
+      );
+
+      if (!matchedViaToken && !matchedViaHaystack) continue;
+
       findings.add(
         MedicineRiskFinding(
           type: MedicineRiskFindingType.allergy,
           severity: MedicineRiskSeverity.high,
           context: MedicineRiskFindingContext.none,
           primaryMedicineName: medicine.displayName,
-          relatedLabel: allergy,
+          relatedLabel: rawLabel,
           evidence: _firstNonEmpty(
             _asNonEmptyString(detail.contraindications),
             _asNonEmptyString(detail.ingredients),
@@ -153,6 +215,20 @@ class MedicineRiskChecker {
     }
 
     return findings;
+  }
+
+  /// Expand an allergy token into all known variants via the cross-language map.
+  Set<String> _expandAllergyTokens(String normalizedAllergy) {
+    final result = <String>{normalizedAllergy};
+    for (final entry in _allergyCrossLanguageMap.entries) {
+      final hasMatch = entry.value.any(
+        (variant) => _normalizeToken(variant) == normalizedAllergy,
+      );
+      if (hasMatch) {
+        result.addAll(entry.value.map(_normalizeToken));
+      }
+    }
+    return result;
   }
 
   List<MedicineRiskFinding> _foodInteractionFindings(
@@ -303,11 +379,39 @@ class MedicineRiskMedicineDetail {
       ? item.displayName
       : detail.name;
 
+  /// Ingredient tokens extracted from the medicine detail, regardless of source.
+  /// CN: parsed from the `ingredients` string (Chinese semicolon-separated).
+  /// DrugBank: derived from `synonyms` (normalized lowercase).
   Set<String> get normalizedIngredientTokens {
-    if (item.source != 'cn') return const {};
-    final ingredients = _asNonEmptyString(detail.detail.ingredients);
-    if (ingredients == null) return const {};
-    return _extractIngredientTokens(ingredients);
+    if (item.source == 'cn') {
+      final ingredients = _asNonEmptyString(detail.detail.ingredients);
+      if (ingredients == null) return const {};
+      return _extractIngredientTokens(ingredients);
+    }
+    if (item.source == 'drugbank') {
+      return drugbankSynonymTokens;
+    }
+    return const {};
+  }
+
+  /// Ingredient tokens from all available sources, useful for allergy matching.
+  Set<String> get allSourceIngredientTokens {
+    final tokens = <String>{};
+    tokens.addAll(normalizedIngredientTokens);
+    tokens.add(_normalizeToken(displayName));
+    return tokens;
+  }
+
+  /// Normalized synonym tokens for DrugBank medicines.
+  Set<String> get drugbankSynonymTokens {
+    if (item.source != 'drugbank') return const {};
+    final names = detail.name.trim();
+    final result = <String>{if (names.isNotEmpty) _normalizeToken(names)};
+    for (final synonym in detail.detail.synonyms) {
+      final token = _normalizeToken(synonym);
+      if (token.isNotEmpty) result.add(token);
+    }
+    return result;
   }
 
   Set<String> get drugbankInteractionTargets {
@@ -326,6 +430,36 @@ class MedicineRiskMedicineDetail {
 String _duplicateIngredientEvidence(Set<String> sharedTokens) {
   final values = sharedTokens.toList()..sort();
   return values.join(' / ');
+}
+
+String _buildCoverageSummary({
+  required int currentMedicineCount,
+  required int checkedMedicineCount,
+  required List<MedicineRiskCoverageIssue> coverageIssues,
+  required List<MedicineRiskMedicineDetail> medicines,
+}) {
+  if (currentMedicineCount == 0) {
+    return '';
+  }
+  if (checkedMedicineCount == 0) {
+    return '';
+  }
+  if (coverageIssues.isEmpty) {
+    return '';
+  }
+  final manualCount = coverageIssues
+      .where((issue) => issue.reason == MedicineRiskCoverageReason.manualEntry)
+      .length;
+  final unavailableCount = coverageIssues.length - manualCount;
+
+  final parts = <String>[];
+  if (manualCount > 0) {
+    parts.add('$manualCount 种手动录入药品无法自动检查');
+  }
+  if (unavailableCount > 0) {
+    parts.add('$unavailableCount 种药品详情不可用');
+  }
+  return parts.join('；');
 }
 
 Set<String> _extractIngredientTokens(String value) {

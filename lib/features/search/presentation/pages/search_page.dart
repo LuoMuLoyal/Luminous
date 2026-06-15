@@ -181,6 +181,36 @@ Future<bool?> showMedicineAddPrecheckSheet(
                     letterSpacing: 0,
                   ),
                 ),
+                if (result.coverageSummary.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacingTokens.md),
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacingTokens.sm),
+                    decoration: BoxDecoration(
+                      color: AppColorTokens.warningSoft.withValues(alpha: 0.42),
+                      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          color: AppColorTokens.warningDeep,
+                          size: 18,
+                        ),
+                        const SizedBox(width: AppSpacingTokens.sm),
+                        Expanded(
+                          child: Text(
+                            result.coverageSummary,
+                            style: typography.bodySm.copyWith(
+                              color: surface.body,
+                              letterSpacing: 0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 if (result.findings.isNotEmpty) ...[
                   const SizedBox(height: AppSpacingTokens.lg),
                   Text(

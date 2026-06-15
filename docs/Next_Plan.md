@@ -6,18 +6,27 @@ This file records the next implementation order only. Completed work belongs in 
 
 ## Current Goal
 
-Today/Report AI summary streaming is in place for MVP, Medicine now covers both the main risk-check page and add-before-save precheck, and Report now has one real export action. Next focus should stay on the remaining narrow or still-placeholder MVP surfaces instead of drifting back into AI polish.
+Today/Report AI summary streaming is in place for MVP, export and reminder scope have now been narrowed to match the real shipped boundary, and Medicine already shares a more explicit risk-check boundary across the main page and add-before-save precheck. The next focus should move from scope closure to the remaining safety-hardening work that still blocks a more trustworthy MVP story.
 
 ## Immediate Work Order
 
-1. **Close the biggest remaining fake surfaces**
+1. **Finish the next Medicine safety-hardening pass**
    - Priority order:
-     - wire the remaining Report export actions (`monthly`, `print`) only after Lucent has real contracts/files for them
-     - extend Medicine safety beyond the current “existing detail only” boundary, such as broader reviewed rule coverage, cross-source normalization, or interaction expansion
+     - keep the current shared coverage-summary / unknown-state behavior stable across all Medicine safety entry points
+     - decide whether any remaining near-term hardening is still needed before red-flag work, such as a small reviewed interaction expansion or tighter cross-source duplicate handling
+     - keep uncertainty explicit instead of adding fake confidence
    - Success signal:
-     - either another remaining toast-only MVP-facing entry becomes real, or the Medicine safety boundary is expanded without reintroducing fake confidence
+     - the product can demonstrate stable “new medicine -> reviewed warning or explicit unknown” paths without hand-waving around the coverage boundary
 
-2. **Local full-stack lane usage rule**
+2. **Add the minimum red-flag and offline-care escalation slice**
+   - Priority order:
+     - fixed red-flag rules only
+     - audited safety copy
+     - clear campus clinic / pharmacist / emergency resource entry
+   - Success signal:
+     - high-risk patterns trigger a bounded rule-based prompt and a real next-step resource, not a freeform AI medical guess
+
+3. **Local full-stack lane usage rule**
    - Keep the current emulator + Lucent full-stack gate out of GitHub Actions for now.
    - Repo-safe daily entry:
      - `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
@@ -45,7 +54,7 @@ Today/Report AI summary streaming is in place for MVP, Medicine now covers both 
      - before merging changes to the full-stack E2E helper or generated auth/record client surface
      - before cutting a mobile test build that claims Record CRUD is stable
 
-3. **Keep AI work in maintenance mode**
+4. **Keep AI work in maintenance mode**
    - Today and Report AI cards now stream partial summary text and finish with the same structured payload as the one-shot flow.
    - Only revisit this slice when:
      - stream stability regresses
@@ -53,10 +62,15 @@ Today/Report AI summary streaming is in place for MVP, Medicine now covers both 
      - UX breaks on slow networks or cancelled requests
    - Do not expand this into broad “AI everywhere” work before missing non-AI MVP capability gaps are closed.
 
-4. **Keep NLP intake and Mine support in polish-only mode**
+5. **Keep NLP intake and Mine support in polish-only mode**
    - Mine campus/support rows already open contract-backed actions when Lucent provides a usable target; rows without target remain visible but disabled.
-   - Record NLP candidate save now has explicit failed-item retry inside the sheet.
-   - Revisit these two slices only if MVP testing shows users still get stuck, for example around per-item retry, clearer failure causes, or support-resource action-type expansion.
+   - Record NLP candidate save already has explicit failed-item retry inside the sheet.
+   - Revisit these two slices only if MVP testing shows users still get stuck, for example around clearer failure causes or support-resource action-type expansion.
+
+6. **Do not turn Web into a stealth MVP requirement unless we mean it**
+   - `Luminous-site` is currently a competition/marketing homepage, not a signed-in report preview surface.
+   - If MVP stays mobile-first for delivery and demo, keep Web scoped to presentation.
+   - If real authenticated Web report preview becomes an MVP promise, treat it as a separate planned slice instead of a side quest.
 
 ## Deferred But Useful
 
@@ -67,8 +81,15 @@ Keep these code paths hidden and annotated until the matching product/API job is
 - Environment signals for contextual Today/Mine use.
 - Medicine scan/OCR/photo/barcode/prescription action shapes.
 - Local-only sleep reminder preferences beyond simple placeholder labeling.
+- Real authenticated Web report preview beyond the competition site.
 
 Pregnancy/lactation/special-group medication safety remains active only inside Medicine safety boundaries.
+
+## Recently Closed
+
+- Export promise is intentionally narrowed to the real `hospital + pdf + last_7_days` flow.
+- `monthly` / `print` stay visible but inactive instead of pretending to be shipped.
+- Reminder UI now treats local scheduling as the real MVP path and stops reading worker history / push / SMS as if they already exist.
 
 ## Do Not Start Yet
 

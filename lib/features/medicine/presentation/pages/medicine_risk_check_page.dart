@@ -102,6 +102,33 @@ class _MedicineRiskCheckBody extends StatelessWidget {
               ],
             ),
           ),
+          if (result.coverageSummary.isNotEmpty) ...[
+            const SizedBox(height: AppSpacingTokens.md),
+            Container(
+              padding: const EdgeInsets.all(AppSpacingTokens.md),
+              decoration: BoxDecoration(
+                color: AppColorTokens.warningSoft.withValues(alpha: 0.42),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.info_outline_rounded,
+                    color: AppColorTokens.warningDeep,
+                    size: AppSpacingTokens.lg,
+                  ),
+                  const SizedBox(width: AppSpacingTokens.sm),
+                  Expanded(
+                    child: Text(
+                      result.coverageSummary,
+                      style: typography.bodySm.copyWith(color: surface.body),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: AppSpacingTokens.md),
           if (result.findings.isEmpty)
             AppStateMessageView(
