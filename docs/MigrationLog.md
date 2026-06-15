@@ -4,11 +4,7 @@ Last updated: 2026-06-14
 
 Records changes after the full reset only. Detailed entries are split by date under `docs/migration-log/`.
 
-Pre-reset history and inactive long-form docs were moved outside git to:
-
-```text
-D:\25080\Documents\VSCodeProject\Lumos\docs-archive\2026-06-06-doc-cleanup
-```
+Pre-reset history and inactive long-form docs were moved outside git to the workspace-level archive, under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## How To Update
 
