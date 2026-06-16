@@ -19,6 +19,8 @@ jobs:
     timeout-minutes: 25
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      PUB_HOSTED_URL: https://pub.dev
+      FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,4 +34,4 @@ jobs:
 
       - name: Run repo-safe daily checks
         shell: pwsh
-        run: powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1
+        run: ./tool/run_daily_checks.ps1
