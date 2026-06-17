@@ -75,6 +75,8 @@ Key frontend docs:
 - [docs/Current_State.md](docs/Current_State.md)
 - [docs/MigrationLog.md](docs/MigrationLog.md)
 - [docs/Next_Plan.md](docs/Next_Plan.md)
+- [docs/MVP_Demo_Baseline.md](docs/MVP_Demo_Baseline.md)
+- [docs/MVP_Demo_Script.md](docs/MVP_Demo_Script.md)
 - [docs/Project_Guardrails.md](docs/Project_Guardrails.md)
 - [docs/OpenApi_Client.md](docs/OpenApi_Client.md)
 - [docs/Localization.md](docs/Localization.md)
