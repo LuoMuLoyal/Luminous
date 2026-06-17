@@ -41,6 +41,8 @@ This replaces the long historical error audit as the current quick-read checklis
 - Do not let deferred capability drift into ambiguous half-active UI. If a future feature must stay visible before its contract exists, keep it clearly placeholder-only and keep docs in sync with that choice.
 - For mobile UI refinement, "avoid nested boxes" means keep the necessary outer section panel and replace only inner cards with rows, dividers, pills, or controls. Do not flatten an entire section into loose dividers when the outer panel provides visual grouping.
 - The mobile MVP bottom navigation is frozen as `today / record / medicine / report / mine`. Do not add or revive a generic More tab; route low-frequency utilities through Mine, contextual Today actions, or defer them.
+- Do not hide shared business data under one page feature just because it was first used there. If the same provider/service is consumed by Mine, Medicine, and Settings, move it to a neutral feature boundary such as `features/support/` instead of leaving it nested under `settings`.
+- Keep design-system primitives in `lib/core/design/`. Do not split responsive breakpoints or theme seed colors into parallel `core/constants` files when they are part of the same UI token system.
 
 ## CI/CD And Generated Files
 

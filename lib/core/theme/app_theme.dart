@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/constants/app_colors.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';

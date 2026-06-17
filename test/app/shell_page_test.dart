@@ -9,7 +9,7 @@ import 'package:luminous/features/health_context/domain/entities/health_context_
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
-import 'package:luminous/features/settings/data/providers/support_resources_providers.dart';
+import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/l10n/app_localizations.dart';
