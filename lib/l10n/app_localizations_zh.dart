@@ -2860,7 +2860,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportExportPrintSubtitle => '纸质版预览';
 
   @override
-  String get reportExportUnavailableToast => '这个导出入口还没接通。';
+  String get reportExportRequestedToast => '导出请求已提交。';
+
+  @override
+  String get reportExportProcessingToast => '导出正在处理中。';
+
+  @override
+  String get reportExportUnavailableToast => '当前环境暂时无法生成这个导出文件。';
 
   @override
   String get reportExportReadyToast => '导出文件已准备好，正在打开。';
@@ -2940,6 +2946,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineReminderDisabled => '已关闭';
 
   @override
+  String get mineExportStatusRequested => '已提交';
+
+  @override
   String get mineExportStatusPending => '处理中';
 
   @override
@@ -2947,6 +2956,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get mineExportStatusFailed => '失败';
+
+  @override
+  String get mineExportStatusLinkMissing => '链接待刷新';
+
+  @override
+  String get mineExportStatusUnavailable => '暂不可用';
 
   @override
   String get mineExportRequested => '导出请求已提交';

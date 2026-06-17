@@ -3071,8 +3071,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportExportPrintSubtitle => 'Paper preview';
 
   @override
+  String get reportExportRequestedToast => 'Export request submitted.';
+
+  @override
+  String get reportExportProcessingToast => 'Export is still processing.';
+
+  @override
   String get reportExportUnavailableToast =>
-      'This export entry is not wired yet.';
+      'This export is temporarily unavailable in the current environment.';
 
   @override
   String get reportExportReadyToast =>
@@ -3160,6 +3166,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineReminderDisabled => 'Disabled';
 
   @override
+  String get mineExportStatusRequested => 'Requested';
+
+  @override
   String get mineExportStatusPending => 'Processing';
 
   @override
@@ -3167,6 +3176,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mineExportStatusFailed => 'Failed';
+
+  @override
+  String get mineExportStatusLinkMissing => 'Link refresh needed';
+
+  @override
+  String get mineExportStatusUnavailable => 'Unavailable';
 
   @override
   String get mineExportRequested => 'Export request submitted';

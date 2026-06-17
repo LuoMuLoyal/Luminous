@@ -5540,10 +5540,22 @@ abstract class AppLocalizations {
   /// **'纸质版预览'**
   String get reportExportPrintSubtitle;
 
+  /// No description provided for @reportExportRequestedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出请求已提交。'**
+  String get reportExportRequestedToast;
+
+  /// No description provided for @reportExportProcessingToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出正在处理中。'**
+  String get reportExportProcessingToast;
+
   /// No description provided for @reportExportUnavailableToast.
   ///
   /// In zh, this message translates to:
-  /// **'这个导出入口还没接通。'**
+  /// **'当前环境暂时无法生成这个导出文件。'**
   String get reportExportUnavailableToast;
 
   /// No description provided for @reportExportReadyToast.
@@ -5696,6 +5708,12 @@ abstract class AppLocalizations {
   /// **'已关闭'**
   String get mineReminderDisabled;
 
+  /// No description provided for @mineExportStatusRequested.
+  ///
+  /// In zh, this message translates to:
+  /// **'已提交'**
+  String get mineExportStatusRequested;
+
   /// No description provided for @mineExportStatusPending.
   ///
   /// In zh, this message translates to:
@@ -5713,6 +5731,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'失败'**
   String get mineExportStatusFailed;
+
+  /// No description provided for @mineExportStatusLinkMissing.
+  ///
+  /// In zh, this message translates to:
+  /// **'链接待刷新'**
+  String get mineExportStatusLinkMissing;
+
+  /// No description provided for @mineExportStatusUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂不可用'**
+  String get mineExportStatusUnavailable;
 
   /// No description provided for @mineExportRequested.
   ///

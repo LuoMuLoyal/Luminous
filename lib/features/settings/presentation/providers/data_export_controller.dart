@@ -85,6 +85,34 @@ class DataExportRequestInput {
   }
 }
 
+enum DataExportUiStatus {
+  idle,
+  requested,
+  processing,
+  completed,
+  completedLinkMissing,
+  failed,
+  unavailable,
+}
+
+DataExportUiStatus dataExportUiStatusForRequest(DataExportRequestDataDto? request) {
+  if (request == null) {
+    return DataExportUiStatus.idle;
+  }
+
+  return switch (request.status) {
+    DataExportStatus.requested => DataExportUiStatus.requested,
+    DataExportStatus.processing => DataExportUiStatus.processing,
+    DataExportStatus.completed =>
+      request.downloadUrl == null || request.downloadUrl!.isEmpty
+          ? DataExportUiStatus.completedLinkMissing
+          : DataExportUiStatus.completed,
+    DataExportStatus.failed => DataExportUiStatus.failed,
+    DataExportStatus.unavailable => DataExportUiStatus.unavailable,
+    DataExportStatus.unknownDefaultOpenApi => DataExportUiStatus.failed,
+  };
+}
+
 const reportHospitalPdfLast7DaysExportRequest = DataExportRequestInput();
 
 const reportMonthlyPdfExportRequest = DataExportRequestInput(

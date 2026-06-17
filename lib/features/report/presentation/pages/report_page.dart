@@ -74,13 +74,12 @@ class ReportPage extends ConsumerWidget {
     required DataExportRequestDataDto? request,
   }) async {
     final l10n = AppLocalizations.of(context)!;
-    if (request == null) {
-      await AppToast.show(context, l10n.reportExportFailedToast);
-      return;
-    }
-
-    switch (request.status) {
-      case DataExportStatus.completed:
+    switch (dataExportUiStatusForRequest(request)) {
+      case DataExportUiStatus.idle:
+        await AppToast.show(context, l10n.reportExportFailedToast);
+        return;
+      case DataExportUiStatus.completed:
+      case DataExportUiStatus.completedLinkMissing:
         final latest = await ref
             .read(dataExportControllerProvider.notifier)
             .refresh();
@@ -88,6 +87,10 @@ class ReportPage extends ConsumerWidget {
           return;
         }
         final completedRequest = latest ?? request;
+        if (completedRequest == null) {
+          await AppToast.show(context, l10n.reportExportFailedToast);
+          return;
+        }
         final downloadUrl = completedRequest.downloadUrl;
         if (downloadUrl == null || downloadUrl.isEmpty) {
           await AppToast.show(context, l10n.reportExportLinkMissingToast);
@@ -105,21 +108,23 @@ class ReportPage extends ConsumerWidget {
               : l10n.reportExportOpenFailedToast,
         );
         return;
-      case DataExportStatus.requested:
-      case DataExportStatus.processing:
-        await AppToast.show(context, l10n.mineExportRequested);
+      case DataExportUiStatus.requested:
+        await AppToast.show(context, l10n.reportExportRequestedToast);
         return;
-      case DataExportStatus.failed:
-      case DataExportStatus.unavailable:
+      case DataExportUiStatus.processing:
+        await AppToast.show(context, l10n.reportExportProcessingToast);
+        return;
+      case DataExportUiStatus.failed:
+      case DataExportUiStatus.unavailable:
         await AppToast.show(
           context,
-          request.errorMessage?.isNotEmpty == true
-              ? request.errorMessage!
+          request?.errorMessage?.isNotEmpty == true
+              ? request!.errorMessage!
+              : dataExportUiStatusForRequest(request) ==
+                    DataExportUiStatus.unavailable
+              ? l10n.reportExportUnavailableToast
               : l10n.reportExportFailedToast,
         );
-        return;
-      case DataExportStatus.unknownDefaultOpenApi:
-        await AppToast.show(context, l10n.reportExportFailedToast);
         return;
     }
   }
@@ -134,6 +139,7 @@ class ReportPage extends ConsumerWidget {
     final aiSummaryState = ref.watch(
       reportAiSummaryControllerProvider(selectedAiSummaryRange),
     );
+    final latestExportRequest = ref.watch(dataExportControllerProvider).asData?.value;
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
@@ -164,6 +170,7 @@ class ReportPage extends ConsumerWidget {
               authSession: session,
               aiSummaryState: aiSummaryState,
               aiSummaryRange: selectedAiSummaryRange,
+              latestExportRequest: latestExportRequest,
               exportRequestInFlight: exportRequestInFlight,
               onAiSummaryRangeChanged: (range) {
                 ref
@@ -196,6 +203,7 @@ class ReportPage extends ConsumerWidget {
           authSession: session,
           isLoading: true,
           aiSummaryRange: selectedAiSummaryRange,
+          latestExportRequest: latestExportRequest,
           exportRequestInFlight: exportRequestInFlight,
         ),
       ),
