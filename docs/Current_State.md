@@ -60,6 +60,7 @@ This file records current implementation facts only. Product direction lives in 
 
 ## Mock Or Deferred
 
+- AI chat / agent conversation UI is not implemented yet. Current AI is still limited to Today summary, Report summary, and record candidate parsing.
 - Additional report export kinds beyond the current `hospital` / `monthly` / `print` PDF set.
 - Export lifecycle polish is still intentionally lightweight: there is no in-page request history list, no explicit retry queue, and no share-link workflow beyond opening the latest signed download URL.
 - Worker-populated reminder delivery history; the UI can read audit rows, but no local/push/SMS worker writes them yet.

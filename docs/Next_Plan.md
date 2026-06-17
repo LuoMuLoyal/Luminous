@@ -1,76 +1,77 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-16
+Last updated: 2026-06-17
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
 ## Current Goal
 
-The mobile MVP is now closed enough to stop treating “MVP completion” itself as the task. The next phase should do two things in order:
+The next active slice is now **AI Chat Phase 1**.
 
-1. turn the shipped MVP into a stable, repeatable, production-demoable baseline
-2. productize the weakest still-rough real slice before opening any broader post-MVP work
+This is not a broad “AI everywhere” expansion and it is not a RAG-first job.
+The target is a lightweight, controllable chat surface that can answer through
+explicit server-side tools and only user-authorized health context.
 
-The current real path remains:
+The current product baseline still remains:
 
 ```text
 record -> summarize -> bounded medicine safety check -> export
 ```
 
+The next slice sits on top of that baseline, not instead of it.
+
 ## Immediate Work Order
 
-1. **Freeze the deployed MVP into a clean demo baseline**
+1. **Build the backend-first AI chat foundation**
    - Priority order:
-     - write and follow one production smoke checklist after each deploy
-     - prepare one stable demo account / demo data reset routine
-     - turn any remaining half-real UI wording into explicit boundary wording instead of relying on oral explanation
-     - keep campus discovery, map lookup, and agent-assisted support search outside the MVP promise
-   - Success signal:
-     - someone else can deploy and demo the full mobile path without ad-hoc debugging
-
-2. **Productize report/export, because it is already the weakest “real but still rough” slice**
-   - Priority order:
-     - keep `hospital` / `monthly` / `print` as the current real PDF set, and stop revisiting that decision unless the backend contract changes
-     - tighten export lifecycle wording: requesting, processing, completed, failed, expired-download-link
-     - align Report and Mine so they expose the same export-status model instead of one side feeling more “real” than the other
-     - improve PDF polish only where it changes user trust: pagination, header/footer consistency, and doctor-facing readability
-     - keep privacy, sharing, and hospital-summary boundaries explicit instead of implying a full collaboration workflow
-   - Success signal:
-     - export feels like a finished user feature, not a technical proof that PDF generation works
-
-3. **Pick one next real slice after export, not three**
-   - Recommended choice:
-     - stronger medicine safety depth
-   - Why this is the best next slice:
-     - it matches the product’s trust anchor
-     - it improves real user value more than cosmetic Web expansion
-     - it is easier to defend in competition/demo than “more AI”
-   - Concrete scope if chosen:
-     - reviewed ingredient normalization groundwork for CN + DrugBank overlap
-     - broader duplicate-ingredient coverage
-     - carefully reviewed interaction-rule expansion
-     - better unknown / unsupported-state wording when confidence is limited
+     - add a dedicated Lucent `ai-chat` module
+     - keep the orchestrator as a restricted LangGraph tool graph
+     - define the first tool inventory explicitly in code
+     - expand user settings so chat-context permissions are real before exposing a public chat flow
    - Explicit non-scope:
-     - speculative AI risk judgment
-     - broad unreviewed interaction expansion
-     - map/agent support discovery
+     - pgvector
+     - leaflet RAG
+     - broad memory
+     - uncontrolled agent behavior
    - Success signal:
-     - medicine safety meaningfully covers more common real cases without weakening the current safety boundary
+     - Lucent has a real AI chat module and a bounded orchestration foundation instead of vague future notes
 
-4. **Keep Web as a deliberate decision, not a stealth requirement**
+2. **Ship a simple mobile chat surface, not a framework-driven one**
+   - Priority order:
+     - add one lightweight entry point and one simple chat page
+     - support streaming assistant output with markdown
+     - keep retry/error/loading states visible and testable
+     - keep permission messaging explicit when health context is not allowed
+   - Current package direction:
+     - do not make `flutter_ai_toolkit` the foundation
+     - prefer a self-owned page plus a dedicated markdown streaming renderer
+     - only re-evaluate `flutter_ai_chat_ui` after the backend contract is stable
+   - Success signal:
+     - the mobile chat can stream, render, and fail clearly without the client losing control of product rules
+
+3. **Add RAG later as one extra tool, not as the starting architecture**
+   - Keep this bounded to:
+     - medicine leaflet dataset ingestion strategy
+     - retrieval-only augmentation over approved medicine knowledge
+     - server-side tool integration after the base chat loop is already stable
+   - Explicit non-scope:
+     - replacing the reviewed medicine safety rule engine
+     - pretending retrieval equals safe risk judgment
+   - Success signal:
+     - RAG improves explanation depth without becoming the first dependency of the whole chat feature
+
+4. **Make medicine safety depth the next trust slice after AI chat foundation**
+   - Keep the recommendation unchanged:
+     - stronger medicine safety depth is still the best trust-building slice after the chat foundation is in place
+   - Success signal:
+     - chat expands product usefulness while medicine safety remains the core trust anchor
+
+5. **Keep Web as a deliberate decision, not a stealth requirement**
    - `Luminous-site` is still a competition/marketing surface, not a signed-in product shell
    - Do not quietly turn it into product work while saying the next slice is something else
    - If authenticated Web report preview becomes the chosen next slice later, open a dedicated plan for it and treat it as a separate product surface
    - Success signal:
      - Web is either clearly presentation-only, or clearly a planned product slice, never an accidental in-between
-
-5. **Keep AI in maintenance mode**
-   - Today and Report AI streaming already exists and is good enough for the current MVP path
-   - Only revisit AI when one of these is true:
-     - streaming stability regresses
-     - cancellation / retry UX is visibly bad
-     - safety wording misses a real edge case
-   - Do not expand into “AI everywhere” before report/export and medicine-trust work are cleaner
 
 6. **Keep the local validation discipline as a gate, not a suggestion**
    - Repo-safe daily entry:
@@ -90,10 +91,11 @@ record -> summarize -> bounded medicine safety check -> export
 
 If the team wants the shortest path with the highest payoff, use this order:
 
-1. production smoke checklist + demo/reset discipline
-2. export/report productization
-3. medicine safety depth
-4. only then re-open the Web question
+1. backend AI chat foundation
+2. mobile chat surface with streaming markdown
+3. only then RAG as an extra tool if still needed
+4. medicine safety depth
+5. only then re-open the Web question
 
 ## Deferred But Useful
 
@@ -106,6 +108,8 @@ Keep these code paths hidden and annotated until the matching product/API job is
 - medicine scan/OCR/photo/barcode/prescription action shapes
 - local-only sleep reminder preferences beyond simple placeholder labeling
 - real authenticated Web report preview beyond the competition site
+
+Leaflet RAG is useful, but only after the bounded chat contract and permissions are stable.
 
 Pregnancy/lactation/special-group medication safety remains active only inside Medicine safety boundaries.
 

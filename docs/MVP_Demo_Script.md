@@ -1,8 +1,10 @@
 # Luminous MVP Demo Script
 
-Last updated: 2026-06-15
+Last updated: 2026-06-17
 
 This file is a short operator script for demo and defense use only. It does not define product scope; use `Product_Vision.md`, `Current_State.md`, and `Next_Plan.md` for source-of-truth product rules.
+
+For pre-demo deploy/runtime checks and demo-account baseline, use `MVP_Demo_Baseline.md` first.
 
 ## Demo Goal
 
