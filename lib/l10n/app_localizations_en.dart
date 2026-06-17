@@ -3041,6 +3041,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportMetricWaterTitle => 'Water';
 
   @override
+  String get reportMetricOverallTitle => 'Overall status';
+
+  @override
+  String get reportMetricOverallDelta => 'Combined last 7 days';
+
+  @override
   String get reportUnitPercent => '%';
 
   @override
@@ -3242,6 +3248,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportErrorDescription =>
       'Report data did not load this time. Try syncing again.';
+
+  @override
+  String get reportSignedOutInlineHint =>
+      'Sign in to view your real weekly report, AI summary, and exports.';
 
   @override
   String get mineSettingsAdvancedTitle => 'Advanced settings';

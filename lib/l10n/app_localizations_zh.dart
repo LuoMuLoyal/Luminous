@@ -2830,6 +2830,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportMetricWaterTitle => '饮水';
 
   @override
+  String get reportMetricOverallTitle => '总体状态';
+
+  @override
+  String get reportMetricOverallDelta => '综合最近 7 天';
+
+  @override
   String get reportUnitPercent => '%';
 
   @override
@@ -3010,6 +3016,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reportErrorDescription => '报告数据这次没有拉取成功，可以重新同步一次。';
+
+  @override
+  String get reportSignedOutInlineHint => '登录后查看你的真实周报、AI 总结和导出结果。';
 
   @override
   String get mineSettingsAdvancedTitle => '高级设置';

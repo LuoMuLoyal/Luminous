@@ -42,6 +42,7 @@ The next slice sits on top of that baseline, not instead of it.
      - keep streaming assistant output with markdown
      - keep retry/error/loading states visible and testable
      - expand permission messaging and settings polish around health context
+     - reserve a later hook for system health data bridging through Apple Health / Health Connect only after the permission model and local product value are stable
    - Current package direction:
      - do not make `flutter_ai_toolkit` the foundation
      - prefer a self-owned page plus a dedicated markdown streaming renderer
@@ -108,6 +109,7 @@ Keep these code paths hidden and annotated until the matching product/API job is
 - medicine scan/OCR/photo/barcode/prescription action shapes
 - local-only sleep reminder preferences beyond simple placeholder labeling
 - real authenticated Web report preview beyond the competition site
+- system health app bridging through Apple Health / Health Connect after AI permission boundaries, local data ownership, and product value are clearer
 
 Leaflet RAG is useful, but only after the bounded chat contract and permissions are stable.
 

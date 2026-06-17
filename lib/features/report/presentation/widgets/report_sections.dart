@@ -72,9 +72,9 @@ class ReportTopBar extends StatelessWidget {
             ReportPeriodPill(label: l10n.reportPeriodThisWeek),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.xs),
         _ReportSnapshotStatus(typography: typography, surface: surface),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.xs),
         Row(
           children: [
             Expanded(
@@ -364,12 +364,14 @@ class ReportScoreHero extends StatelessWidget {
 class ReportMetricsGrid extends StatelessWidget {
   const ReportMetricsGrid({
     super.key,
+    required this.dashboard,
     required this.metrics,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
 
+  final ReportDashboard dashboard;
   final List<ReportMetric> metrics;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
@@ -377,19 +379,20 @@ class ReportMetricsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayMetrics = _buildDisplayMetrics();
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: metrics.length,
+      itemCount: displayMetrics.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: AppSpacingTokens.sm,
         mainAxisSpacing: AppSpacingTokens.sm,
-        mainAxisExtent: 180,
+        mainAxisExtent: 166,
       ),
       itemBuilder: (context, index) {
         return _MetricCard(
-          metric: metrics[index],
+          metric: displayMetrics[index],
           l10n: l10n,
           typography: typography,
           surface: surface,
@@ -397,6 +400,72 @@ class ReportMetricsGrid extends StatelessWidget {
       },
     );
   }
+
+  List<ReportMetric> _buildDisplayMetrics() {
+    final normalized = List<ReportMetric>.of(metrics);
+    final hasGeneral = normalized.any((metric) => metric.kind == ReportDataKind.general);
+    if (!hasGeneral) {
+      normalized.add(
+        ReportMetric(
+          kind: ReportDataKind.general,
+          icon: Icons.monitor_heart_rounded,
+          color: ReportPalette.previewScore,
+          value: _deriveOverallValue(),
+          unit: _deriveOverallUnit(),
+          status: dashboard.score.status,
+          delta: _deriveOverallDelta(),
+          direction: ReportMetricDirection.flat,
+          sparkline: _deriveOverallSparkline(),
+        ),
+      );
+    }
+    return normalized;
+  }
+
+  String _deriveOverallValue() {
+    if (_allMetricValuesUnavailable && dashboard.score.value == 0) {
+      return '--';
+    }
+    return dashboard.score.value.toString();
+  }
+
+  String _deriveOverallUnit() {
+    if (_allMetricValuesUnavailable && dashboard.score.value == 0) {
+      return '';
+    }
+    return '/${dashboard.score.maxValue}';
+  }
+
+  String _deriveOverallDelta() {
+    return _allMetricValuesUnavailable ? '--' : l10n.reportMetricOverallDelta;
+  }
+
+  List<double> _deriveOverallSparkline() {
+    if (metrics.isEmpty) {
+      return const <double>[0, 0, 0, 0, 0, 0, 0];
+    }
+    final longest = metrics
+        .map((metric) => metric.sparkline.length)
+        .fold<int>(0, (max, length) => length > max ? length : max);
+    if (longest == 0) {
+      return const <double>[0, 0, 0, 0, 0, 0, 0];
+    }
+
+    return List<double>.generate(longest, (index) {
+      var sum = 0.0;
+      var count = 0;
+      for (final metric in metrics) {
+        if (index < metric.sparkline.length) {
+          sum += metric.sparkline[index];
+          count += 1;
+        }
+      }
+      return count == 0 ? 0 : sum / count;
+    }, growable: false);
+  }
+
+  bool get _allMetricValuesUnavailable =>
+      metrics.isNotEmpty && metrics.every((metric) => metric.value == '--');
 }
 
 class _MetricCard extends StatelessWidget {
@@ -487,7 +556,7 @@ class _MetricCard extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.xxs),
               Row(
                 children: [
                   AppSkeletonSlot(
@@ -522,13 +591,13 @@ class _MetricCard extends StatelessWidget {
               const Spacer(),
               AppSkeletonSlot(
                 skeleton: const AppInlineSkeletonBlock(
-                  height: 26,
+                  height: 22,
                   radius: AppRadiusTokens.sm,
                 ),
                 child: ReportMetricTrack(
                   values: metric.sparkline,
                   color: metric.color,
-                  height: 26,
+                  height: 22,
                 ),
               ),
             ],
@@ -1437,7 +1506,7 @@ String _metricTitle(AppLocalizations l10n, ReportDataKind kind) {
     ReportDataKind.medication => l10n.reportMetricMedicationTitle,
     ReportDataKind.sleep => l10n.reportMetricSleepTitle,
     ReportDataKind.water => l10n.reportMetricWaterTitle,
-    ReportDataKind.general => l10n.reportScoreTitle,
+    ReportDataKind.general => l10n.reportMetricOverallTitle,
   };
 }
 

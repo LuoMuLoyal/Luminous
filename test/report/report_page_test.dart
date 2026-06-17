@@ -193,7 +193,7 @@ void main() {
     expect(
       find.descendant(
         of: find.byKey(const Key('report-signed-out-notice')),
-        matching: find.text(l10n.authLoginRequiredPrompt),
+        matching: find.text(l10n.reportSignedOutInlineHint),
       ),
       findsOneWidget,
     );

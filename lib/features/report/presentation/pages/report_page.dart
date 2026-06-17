@@ -232,17 +232,63 @@ class _ReportSignedOutNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
-    return AppStateMessageView(
+    return Container(
       key: const Key('report-signed-out-notice'),
-      title: l10n.authNotSignedIn,
-      description: l10n.authLoginRequiredPrompt,
-      icon: Icons.lock_outline_rounded,
-      actionLabel: l10n.authGoLogin,
-      actionKey: const Key('report-signed-out-login-action'),
-      onAction: () => pushAuthRequiredRoute(context, '/report'),
-      tone: AppStateTone.warning,
-      padding: const EdgeInsets.all(AppSpacingTokens.lg),
+      decoration: BoxDecoration(
+        color: surface.canvas,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: surface.hairline),
+      ),
+      padding: const EdgeInsets.all(AppSpacingTokens.md),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+            ),
+            child: Icon(
+              Icons.lock_outline_rounded,
+              color: theme.colorScheme.onSecondaryContainer,
+            ),
+          ),
+          const SizedBox(width: AppSpacingTokens.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.authNotSignedIn,
+                  style: typography.bodyMdStrong.copyWith(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0,
+                  ),
+                ),
+                const SizedBox(height: AppSpacingTokens.xxs),
+                Text(
+                  l10n.reportSignedOutInlineHint,
+                  style: typography.bodySm.copyWith(
+                    color: surface.body,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacingTokens.sm),
+          OutlinedButton(
+            key: const Key('report-signed-out-login-action'),
+            onPressed: () => pushAuthRequiredRoute(context, '/report'),
+            child: Text(l10n.authGoLogin),
+          ),
+        ],
+      ),
     );
   }
 }

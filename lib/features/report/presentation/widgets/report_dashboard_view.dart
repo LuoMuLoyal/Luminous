@@ -62,6 +62,7 @@ class ReportDashboardView extends ConsumerWidget {
         const SizedBox(height: AppSpacingTokens.md),
         ReportMetricsGrid(
           key: const Key('report-metrics-grid'),
+          dashboard: dashboard,
           metrics: dashboard.metrics,
           l10n: l10n,
           typography: typography,

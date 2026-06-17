@@ -5480,6 +5480,18 @@ abstract class AppLocalizations {
   /// **'饮水'**
   String get reportMetricWaterTitle;
 
+  /// No description provided for @reportMetricOverallTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'总体状态'**
+  String get reportMetricOverallTitle;
+
+  /// No description provided for @reportMetricOverallDelta.
+  ///
+  /// In zh, this message translates to:
+  /// **'综合最近 7 天'**
+  String get reportMetricOverallDelta;
+
   /// No description provided for @reportUnitPercent.
   ///
   /// In zh, this message translates to:
@@ -5839,6 +5851,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'报告数据这次没有拉取成功，可以重新同步一次。'**
   String get reportErrorDescription;
+
+  /// No description provided for @reportSignedOutInlineHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录后查看你的真实周报、AI 总结和导出结果。'**
+  String get reportSignedOutInlineHint;
 
   /// No description provided for @mineSettingsAdvancedTitle.
   ///
