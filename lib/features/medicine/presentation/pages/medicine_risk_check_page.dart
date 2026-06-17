@@ -11,7 +11,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
-import 'package:luminous/features/settings/data/providers/support_resources_providers.dart';
+import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/l10n/app_localizations.dart';

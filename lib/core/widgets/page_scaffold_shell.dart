@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/constants/app_breakpoints.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/responsive_content_frame.dart';

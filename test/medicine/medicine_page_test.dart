@@ -21,7 +21,7 @@ import 'package:luminous/features/medicine/presentation/providers/medicine_risk_
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
-import 'package:luminous/features/settings/data/providers/support_resources_providers.dart';
+import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
