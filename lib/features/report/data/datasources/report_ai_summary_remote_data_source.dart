@@ -45,7 +45,7 @@ class ReportAiSummaryRemoteDataSource {
         requestOptions: response.requestOptions,
         response: response,
         type: DioExceptionType.badResponse,
-        error: 'Lucent report AI summary response is empty.',
+        error: '报告 AI 摘要响应为空，请稍后再试。',
       );
     }
     return data;
@@ -106,7 +106,7 @@ class ReportAiSummaryRemoteDataSource {
   LucentApiException _mapStreamError(Object? data) {
     final json = _requireMap(data);
     return LucentApiException(
-      message: json['message']?.toString() ?? 'Request failed.',
+      message: json['message']?.toString() ?? '请求失败，请稍后再试。',
       code: json['code'] is int ? json['code'] as int : null,
       statusCode: json['statusCode'] is int ? json['statusCode'] as int : null,
       data: json,

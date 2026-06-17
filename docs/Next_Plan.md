@@ -36,18 +36,18 @@ The next slice sits on top of that baseline, not instead of it.
    - Success signal:
      - Lucent has a real AI chat module and a bounded orchestration foundation instead of vague future notes
 
-2. **Ship a simple mobile chat surface, not a framework-driven one**
+2. **Continue the simple mobile chat surface after Phase 1**
    - Priority order:
-     - add one lightweight entry point and one simple chat page
-     - support streaming assistant output with markdown
+     - refine the current lightweight entry point and chat page
+     - keep streaming assistant output with markdown
      - keep retry/error/loading states visible and testable
-     - keep permission messaging explicit when health context is not allowed
+     - expand permission messaging and settings polish around health context
    - Current package direction:
      - do not make `flutter_ai_toolkit` the foundation
      - prefer a self-owned page plus a dedicated markdown streaming renderer
      - only re-evaluate `flutter_ai_chat_ui` after the backend contract is stable
    - Success signal:
-     - the mobile chat can stream, render, and fail clearly without the client losing control of product rules
+     - the mobile chat can stream, render, fail clearly, and remain product-rule-controlled without depending on a framework UI shell
 
 3. **Add RAG later as one extra tool, not as the starting architecture**
    - Keep this bounded to:

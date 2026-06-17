@@ -1667,6 +1667,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get minePrivacyAiSubtitle => '每日总结、趋势建议';
 
   @override
+  String get aiChatEntryTitle => 'AI 对话';
+
+  @override
+  String get aiChatEntrySubtitle => '流式问答与受控健康上下文';
+
+  @override
   String get minePrivacyOnlyMe => '仅自己可见';
 
   @override
@@ -2389,6 +2395,96 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayRetryAction => '重试';
+
+  @override
+  String get aiChatPageTitle => 'AI 对话';
+
+  @override
+  String get aiChatSignedOutDescription => '登录后才可以使用 AI 对话，并由你决定是否开放健康上下文。';
+
+  @override
+  String get aiChatLoadErrorTitle => 'AI 对话暂时没有加载出来';
+
+  @override
+  String get aiChatLoadErrorFallback => '能力信息这次没有取到，可以重新拉取一次。';
+
+  @override
+  String get aiChatSettingsEnableTitle => '启用 AI 对话';
+
+  @override
+  String get aiChatSettingsEnableSubtitle => '关闭后不会发送新的对话请求';
+
+  @override
+  String get aiChatContextHealthProfile => '健康档案';
+
+  @override
+  String get aiChatContextDailyRecords => '最近记录';
+
+  @override
+  String get aiChatContextSleepRecords => '睡眠数据';
+
+  @override
+  String get aiChatContextCurrentMedicines => '当前用药';
+
+  @override
+  String get aiChatStatusSectionTitle => '当前状态';
+
+  @override
+  String get aiChatStatusReady => '后端能力已就绪，可以开始对话。';
+
+  @override
+  String get aiChatStatusDisabled => '你已关闭 AI 对话，当前不会发送聊天请求。';
+
+  @override
+  String get aiChatStatusModelMissing => '服务端还没有可用的聊天模型配置。';
+
+  @override
+  String get aiChatStatusNotReady => '交互式对话链路还没有完全就绪。';
+
+  @override
+  String get aiChatStatusToolsLabel => '工具';
+
+  @override
+  String get aiChatStatusContextLabel => '上下文';
+
+  @override
+  String get aiChatStatusStreamingLabel => '流式输出';
+
+  @override
+  String get aiChatStatusRagLabel => 'RAG';
+
+  @override
+  String get aiChatConversationDisabledTitle => '当前还不能开始对话';
+
+  @override
+  String get aiChatConversationDisabledByUser => '你已关闭 AI 对话，重新开启后才能发送消息。';
+
+  @override
+  String get aiChatConversationModelMissing => '服务端还没有可用模型，暂时无法生成回复。';
+
+  @override
+  String get aiChatConversationNotReady => '交互式对话链路还没准备好，先保持当前设置即可。';
+
+  @override
+  String get aiChatConversationEmptyTitle => '开始第一条消息';
+
+  @override
+  String get aiChatConversationEmptyDescription => '可以直接问最近睡眠、最近记录或当前用药相关的问题。';
+
+  @override
+  String get aiChatSendErrorTitle => '这次回复没有完成';
+
+  @override
+  String get aiChatInputHint => '比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。';
+
+  @override
+  String get aiChatSendAction => '发送';
+
+  @override
+  String get aiChatSendingAction => '发送中';
+
+  @override
+  String get aiChatStreamingLabel => '正在生成';
 
   @override
   String todayUpdatedAt(String time) {

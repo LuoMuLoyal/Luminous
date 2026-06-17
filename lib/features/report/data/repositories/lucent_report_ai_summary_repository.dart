@@ -53,7 +53,7 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
         return event.summary;
       }
     }
-    throw StateError('Report AI stream ended without a final result.');
+    throw StateError('报告 AI 流式响应已结束，但没有返回最终结果。');
   }
 
   @override

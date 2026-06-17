@@ -60,7 +60,7 @@ class TodayAiAnalysisController extends Notifier<TodayAiAnalysisCardState> {
         }
       }
 
-      throw StateError('Today AI stream ended without a final result.');
+      throw StateError('今日 AI 流式响应已结束，但没有返回最终结果。');
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
       if (apiError.code == LucentResultCode.forbidden) {

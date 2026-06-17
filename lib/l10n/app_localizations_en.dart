@@ -1818,6 +1818,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minePrivacyAiSubtitle => 'Daily summaries, trend advice';
 
   @override
+  String get aiChatEntryTitle => 'AI chat';
+
+  @override
+  String get aiChatEntrySubtitle =>
+      'Streaming replies with controlled health context';
+
+  @override
   String get minePrivacyOnlyMe => 'Only me';
 
   @override
@@ -2573,6 +2580,108 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayRetryAction => 'Retry';
+
+  @override
+  String get aiChatPageTitle => 'AI chat';
+
+  @override
+  String get aiChatSignedOutDescription =>
+      'Sign in to use AI chat and decide whether your health context may be used.';
+
+  @override
+  String get aiChatLoadErrorTitle => 'AI chat did not load this time';
+
+  @override
+  String get aiChatLoadErrorFallback =>
+      'Capabilities were not loaded this time. Try fetching them again.';
+
+  @override
+  String get aiChatSettingsEnableTitle => 'Enable AI chat';
+
+  @override
+  String get aiChatSettingsEnableSubtitle =>
+      'When disabled, no new chat requests will be sent';
+
+  @override
+  String get aiChatContextHealthProfile => 'Health profile';
+
+  @override
+  String get aiChatContextDailyRecords => 'Recent records';
+
+  @override
+  String get aiChatContextSleepRecords => 'Sleep data';
+
+  @override
+  String get aiChatContextCurrentMedicines => 'Current medicines';
+
+  @override
+  String get aiChatStatusSectionTitle => 'Current status';
+
+  @override
+  String get aiChatStatusReady =>
+      'Backend capabilities are ready and chat can start.';
+
+  @override
+  String get aiChatStatusDisabled =>
+      'AI chat is turned off, so no chat request will be sent.';
+
+  @override
+  String get aiChatStatusModelMissing =>
+      'The backend does not have a usable chat model configured yet.';
+
+  @override
+  String get aiChatStatusNotReady =>
+      'The interactive chat route is not fully ready yet.';
+
+  @override
+  String get aiChatStatusToolsLabel => 'Tools';
+
+  @override
+  String get aiChatStatusContextLabel => 'Context';
+
+  @override
+  String get aiChatStatusStreamingLabel => 'Streaming';
+
+  @override
+  String get aiChatStatusRagLabel => 'RAG';
+
+  @override
+  String get aiChatConversationDisabledTitle => 'Chat cannot start yet';
+
+  @override
+  String get aiChatConversationDisabledByUser =>
+      'AI chat is turned off. Enable it again before sending messages.';
+
+  @override
+  String get aiChatConversationModelMissing =>
+      'The backend does not have a usable model yet, so replies cannot be generated.';
+
+  @override
+  String get aiChatConversationNotReady =>
+      'The interactive chat route is not ready yet. Keep the current settings for now.';
+
+  @override
+  String get aiChatConversationEmptyTitle => 'Start the first message';
+
+  @override
+  String get aiChatConversationEmptyDescription =>
+      'You can ask about recent sleep, recent records, or current medicines directly.';
+
+  @override
+  String get aiChatSendErrorTitle => 'This reply did not complete';
+
+  @override
+  String get aiChatInputHint =>
+      'For example: Based on my recent sleep and medicines, what should I pay attention to?';
+
+  @override
+  String get aiChatSendAction => 'Send';
+
+  @override
+  String get aiChatSendingAction => 'Sending';
+
+  @override
+  String get aiChatStreamingLabel => 'Generating';
 
   @override
   String todayUpdatedAt(String time) {

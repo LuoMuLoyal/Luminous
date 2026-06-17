@@ -3266,6 +3266,18 @@ abstract class AppLocalizations {
   /// **'每日总结、趋势建议'**
   String get minePrivacyAiSubtitle;
 
+  /// No description provided for @aiChatEntryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 对话'**
+  String get aiChatEntryTitle;
+
+  /// No description provided for @aiChatEntrySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'流式问答与受控健康上下文'**
+  String get aiChatEntrySubtitle;
+
   /// No description provided for @minePrivacyOnlyMe.
   ///
   /// In zh, this message translates to:
@@ -4645,6 +4657,186 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'重试'**
   String get todayRetryAction;
+
+  /// No description provided for @aiChatPageTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 对话'**
+  String get aiChatPageTitle;
+
+  /// No description provided for @aiChatSignedOutDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录后才可以使用 AI 对话，并由你决定是否开放健康上下文。'**
+  String get aiChatSignedOutDescription;
+
+  /// No description provided for @aiChatLoadErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 对话暂时没有加载出来'**
+  String get aiChatLoadErrorTitle;
+
+  /// No description provided for @aiChatLoadErrorFallback.
+  ///
+  /// In zh, this message translates to:
+  /// **'能力信息这次没有取到，可以重新拉取一次。'**
+  String get aiChatLoadErrorFallback;
+
+  /// No description provided for @aiChatSettingsEnableTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'启用 AI 对话'**
+  String get aiChatSettingsEnableTitle;
+
+  /// No description provided for @aiChatSettingsEnableSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后不会发送新的对话请求'**
+  String get aiChatSettingsEnableSubtitle;
+
+  /// No description provided for @aiChatContextHealthProfile.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康档案'**
+  String get aiChatContextHealthProfile;
+
+  /// No description provided for @aiChatContextDailyRecords.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近记录'**
+  String get aiChatContextDailyRecords;
+
+  /// No description provided for @aiChatContextSleepRecords.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠数据'**
+  String get aiChatContextSleepRecords;
+
+  /// No description provided for @aiChatContextCurrentMedicines.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前用药'**
+  String get aiChatContextCurrentMedicines;
+
+  /// No description provided for @aiChatStatusSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前状态'**
+  String get aiChatStatusSectionTitle;
+
+  /// No description provided for @aiChatStatusReady.
+  ///
+  /// In zh, this message translates to:
+  /// **'后端能力已就绪，可以开始对话。'**
+  String get aiChatStatusReady;
+
+  /// No description provided for @aiChatStatusDisabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'你已关闭 AI 对话，当前不会发送聊天请求。'**
+  String get aiChatStatusDisabled;
+
+  /// No description provided for @aiChatStatusModelMissing.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务端还没有可用的聊天模型配置。'**
+  String get aiChatStatusModelMissing;
+
+  /// No description provided for @aiChatStatusNotReady.
+  ///
+  /// In zh, this message translates to:
+  /// **'交互式对话链路还没有完全就绪。'**
+  String get aiChatStatusNotReady;
+
+  /// No description provided for @aiChatStatusToolsLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'工具'**
+  String get aiChatStatusToolsLabel;
+
+  /// No description provided for @aiChatStatusContextLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'上下文'**
+  String get aiChatStatusContextLabel;
+
+  /// No description provided for @aiChatStatusStreamingLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'流式输出'**
+  String get aiChatStatusStreamingLabel;
+
+  /// No description provided for @aiChatStatusRagLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'RAG'**
+  String get aiChatStatusRagLabel;
+
+  /// No description provided for @aiChatConversationDisabledTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前还不能开始对话'**
+  String get aiChatConversationDisabledTitle;
+
+  /// No description provided for @aiChatConversationDisabledByUser.
+  ///
+  /// In zh, this message translates to:
+  /// **'你已关闭 AI 对话，重新开启后才能发送消息。'**
+  String get aiChatConversationDisabledByUser;
+
+  /// No description provided for @aiChatConversationModelMissing.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务端还没有可用模型，暂时无法生成回复。'**
+  String get aiChatConversationModelMissing;
+
+  /// No description provided for @aiChatConversationNotReady.
+  ///
+  /// In zh, this message translates to:
+  /// **'交互式对话链路还没准备好，先保持当前设置即可。'**
+  String get aiChatConversationNotReady;
+
+  /// No description provided for @aiChatConversationEmptyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始第一条消息'**
+  String get aiChatConversationEmptyTitle;
+
+  /// No description provided for @aiChatConversationEmptyDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'可以直接问最近睡眠、最近记录或当前用药相关的问题。'**
+  String get aiChatConversationEmptyDescription;
+
+  /// No description provided for @aiChatSendErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'这次回复没有完成'**
+  String get aiChatSendErrorTitle;
+
+  /// No description provided for @aiChatInputHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。'**
+  String get aiChatInputHint;
+
+  /// No description provided for @aiChatSendAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送'**
+  String get aiChatSendAction;
+
+  /// No description provided for @aiChatSendingAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送中'**
+  String get aiChatSendingAction;
+
+  /// No description provided for @aiChatStreamingLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在生成'**
+  String get aiChatStreamingLabel;
 
   /// No description provided for @todayUpdatedAt.
   ///
