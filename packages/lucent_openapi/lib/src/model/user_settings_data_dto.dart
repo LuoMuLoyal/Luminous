@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_openapi/src/model/ai_chat_context_settings_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_settings_data_dto.g.dart';
@@ -20,6 +21,10 @@ class UserSettingsDataDto {
 
     required this.dataSharingConsent,
 
+    required this.aiChatEnabled,
+
+    required this.aiChatContext,
+
     required this.updatedAt,
   });
 
@@ -31,6 +36,14 @@ class UserSettingsDataDto {
   @JsonKey(name: r'dataSharingConsent', required: true, includeIfNull: false)
   final bool dataSharingConsent;
 
+  /// Allow the authenticated user to use the AI chat feature.
+  @JsonKey(name: r'aiChatEnabled', required: true, includeIfNull: false)
+  final bool aiChatEnabled;
+
+  /// Fine-grained AI chat context permissions.
+  @JsonKey(name: r'aiChatContext', required: true, includeIfNull: false)
+  final AiChatContextSettingsDto aiChatContext;
+
   /// ISO-8601 timestamp of last update.
   @JsonKey(name: r'updatedAt', required: true, includeIfNull: true)
   final String? updatedAt;
@@ -41,12 +54,16 @@ class UserSettingsDataDto {
       other is UserSettingsDataDto &&
           other.aiSummariesEnabled == aiSummariesEnabled &&
           other.dataSharingConsent == dataSharingConsent &&
+          other.aiChatEnabled == aiChatEnabled &&
+          other.aiChatContext == aiChatContext &&
           other.updatedAt == updatedAt;
 
   @override
   int get hashCode =>
       aiSummariesEnabled.hashCode +
       dataSharingConsent.hashCode +
+      aiChatEnabled.hashCode +
+      aiChatContext.hashCode +
       (updatedAt == null ? 0 : updatedAt.hashCode);
 
   factory UserSettingsDataDto.fromJson(Map<String, dynamic> json) =>

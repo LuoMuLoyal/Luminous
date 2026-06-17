@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_openapi/src/model/update_ai_chat_context_settings_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'update_user_settings_dto.g.dart';
@@ -15,7 +16,15 @@ part 'update_user_settings_dto.g.dart';
 )
 class UpdateUserSettingsDto {
   /// Returns a new [UpdateUserSettingsDto] instance.
-  UpdateUserSettingsDto({this.aiSummariesEnabled, this.dataSharingConsent});
+  UpdateUserSettingsDto({
+    this.aiSummariesEnabled,
+
+    this.dataSharingConsent,
+
+    this.aiChatEnabled,
+
+    this.aiChatContext,
+  });
 
   /// Allow AI-generated summaries and advice.
   @JsonKey(name: r'aiSummariesEnabled', required: false, includeIfNull: false)
@@ -25,15 +34,29 @@ class UpdateUserSettingsDto {
   @JsonKey(name: r'dataSharingConsent', required: false, includeIfNull: false)
   final bool? dataSharingConsent;
 
+  /// Allow the authenticated user to use the AI chat feature.
+  @JsonKey(name: r'aiChatEnabled', required: false, includeIfNull: false)
+  final bool? aiChatEnabled;
+
+  /// Fine-grained permissions for what AI chat may read.
+  @JsonKey(name: r'aiChatContext', required: false, includeIfNull: false)
+  final UpdateAiChatContextSettingsDto? aiChatContext;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is UpdateUserSettingsDto &&
           other.aiSummariesEnabled == aiSummariesEnabled &&
-          other.dataSharingConsent == dataSharingConsent;
+          other.dataSharingConsent == dataSharingConsent &&
+          other.aiChatEnabled == aiChatEnabled &&
+          other.aiChatContext == aiChatContext;
 
   @override
-  int get hashCode => aiSummariesEnabled.hashCode + dataSharingConsent.hashCode;
+  int get hashCode =>
+      aiSummariesEnabled.hashCode +
+      dataSharingConsent.hashCode +
+      aiChatEnabled.hashCode +
+      aiChatContext.hashCode;
 
   factory UpdateUserSettingsDto.fromJson(Map<String, dynamic> json) =>
       _$UpdateUserSettingsDtoFromJson(json);

@@ -327,6 +327,13 @@ UserSettingsResponseDto _buildResponse({
     data: UserSettingsDataDto(
       aiSummariesEnabled: aiSummariesEnabled,
       dataSharingConsent: dataSharingConsent,
+      aiChatEnabled: true,
+      aiChatContext: AiChatContextSettingsDto(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
+      ),
       updatedAt: '2026-06-12T00:00:00.000Z',
     ),
   );
@@ -349,6 +356,13 @@ class _FakeUserSettingsApi extends UserSettingsApi {
     data: UserSettingsDataDto(
       aiSummariesEnabled: false,
       dataSharingConsent: true,
+      aiChatEnabled: true,
+      aiChatContext: AiChatContextSettingsDto(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
+      ),
       updatedAt: '2026-06-12T00:00:00.000Z',
     ),
   );

@@ -48,14 +48,13 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import 'package:lucent_openapi/lucent_openapi.dart';
 
 
-final api = LucentOpenapi().getAccountApi();
-final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto | 
+final api = LucentOpenapi().getAIChatApi();
 
 try {
-    final response = await api.accountControllerChangeEmailV1(changeEmailDto);
+    final response = await api.aiChatControllerGetCapabilitiesV1();
     print(response);
 } on DioException catch (e) {
-    print("Exception when calling AccountApi->accountControllerChangeEmailV1: $e\n");
+    print("Exception when calling AIChatApi->aiChatControllerGetCapabilitiesV1: $e\n");
 }
 
 ```
@@ -66,6 +65,8 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerGetCapabilitiesV1**](doc/AIChatApi.md#aichatcontrollergetcapabilitiesv1) | **GET** /api/v1/user/ai-chat/capabilities | Get authenticated user AI chat capabilities and permissions
+[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerStreamMessagesV1**](doc/AIChatApi.md#aichatcontrollerstreammessagesv1) | **POST** /api/v1/user/ai-chat/messages/stream | Stream authenticated user AI chat assistant response
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerChangeEmailV1**](doc/AccountApi.md#accountcontrollerchangeemailv1) | **POST** /api/v1/account/email | Change authenticated account email
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerChangePasswordV1**](doc/AccountApi.md#accountcontrollerchangepasswordv1) | **POST** /api/v1/account/password | Change authenticated account password
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1**](doc/AccountApi.md#accountcontrollercreatewechatwebidentitylinkauthorizeurlv1) | **POST** /api/v1/account/identities/wechat-web/authorize | Create WeChat web OAuth authorize URL for linking
@@ -142,6 +143,12 @@ Class | Method | HTTP request | Description
  - [AccountEmailResponseDto](doc/AccountEmailResponseDto.md)
  - [AccountIdentityDto](doc/AccountIdentityDto.md)
  - [AccountResponseDto](doc/AccountResponseDto.md)
+ - [AiChatCapabilitiesDataDto](doc/AiChatCapabilitiesDataDto.md)
+ - [AiChatCapabilitiesResponseDto](doc/AiChatCapabilitiesResponseDto.md)
+ - [AiChatContextSettingsDto](doc/AiChatContextSettingsDto.md)
+ - [AiChatInputMessageDto](doc/AiChatInputMessageDto.md)
+ - [AiChatStreamResultDto](doc/AiChatStreamResultDto.md)
+ - [AiChatToolCapabilityDto](doc/AiChatToolCapabilityDto.md)
  - [AirQualityIndicatorDto](doc/AirQualityIndicatorDto.md)
  - [AirQualityLevel](doc/AirQualityLevel.md)
  - [AppInfoDataDto](doc/AppInfoDataDto.md)
@@ -256,6 +263,7 @@ Class | Method | HTTP request | Description
  - [SendVerificationCodeDto](doc/SendVerificationCodeDto.md)
  - [SendVerificationCodeResponseDto](doc/SendVerificationCodeResponseDto.md)
  - [SexAtBirth](doc/SexAtBirth.md)
+ - [StreamAiChatMessagesDto](doc/StreamAiChatMessagesDto.md)
  - [SuccessResponseDto](doc/SuccessResponseDto.md)
  - [SupportResourceActionType](doc/SupportResourceActionType.md)
  - [SupportResourceDto](doc/SupportResourceDto.md)
@@ -270,6 +278,7 @@ Class | Method | HTTP request | Description
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
  - [UpdateAccountDto](doc/UpdateAccountDto.md)
+ - [UpdateAiChatContextSettingsDto](doc/UpdateAiChatContextSettingsDto.md)
  - [UpdateCurrentMedicineDto](doc/UpdateCurrentMedicineDto.md)
  - [UpdateDailyRecordDto](doc/UpdateDailyRecordDto.md)
  - [UpdateDoseLogDto](doc/UpdateDoseLogDto.md)

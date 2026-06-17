@@ -83,6 +83,13 @@ UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
   return UserSettingsDataDto(
     aiSummariesEnabled: aiSummariesEnabled,
     dataSharingConsent: false,
+    aiChatEnabled: true,
+    aiChatContext: AiChatContextSettingsDto(
+      healthProfile: true,
+      dailyRecords: true,
+      sleepRecords: true,
+      currentMedicines: true,
+    ),
     updatedAt: '2026-06-12T00:00:00.000Z',
   );
 }

@@ -7,6 +7,7 @@ import 'package:lucent_openapi/src/auth/api_key_auth.dart';
 import 'package:lucent_openapi/src/auth/basic_auth.dart';
 import 'package:lucent_openapi/src/auth/bearer_auth.dart';
 import 'package:lucent_openapi/src/auth/oauth.dart';
+import 'package:lucent_openapi/src/api/ai_chat_api.dart';
 import 'package:lucent_openapi/src/api/account_api.dart';
 import 'package:lucent_openapi/src/api/auth_api.dart';
 import 'package:lucent_openapi/src/api/app_api.dart';
@@ -113,6 +114,12 @@ class LucentOpenapi {
     if (this.dio.interceptors.any((i) => i is ApiKeyAuthInterceptor)) {
       (this.dio.interceptors.firstWhere((element) => element is ApiKeyAuthInterceptor) as ApiKeyAuthInterceptor).apiKeys.remove(name);
     }
+  }
+
+  /// Get AIChatApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AIChatApi getAIChatApi() {
+    return AIChatApi(dio);
   }
 
   /// Get AccountApi instance, base route and serializer can be overridden by a given but be careful,
