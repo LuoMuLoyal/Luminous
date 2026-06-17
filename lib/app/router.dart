@@ -4,6 +4,7 @@ import 'package:luminous/features/auth/presentation/pages/change_email_page.dart
 import 'package:luminous/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/pages/register_page.dart';
+import 'package:luminous/features/ai_chat/presentation/pages/ai_chat_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_risk_check_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_reminder_pages.dart';
 import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
@@ -61,6 +62,10 @@ final router = GoRouter(
     GoRoute(
       path: '/settings',
       builder: (context, state) => const SettingsPage(),
+    ),
+    GoRoute(
+      path: '/settings/ai-chat',
+      builder: (context, state) => const AiChatPage(),
     ),
     GoRoute(
       path: '/settings/language',

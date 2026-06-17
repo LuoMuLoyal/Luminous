@@ -79,3 +79,7 @@ final lucentReportsApiProvider = Provider<ReportsApi>((ref) {
 final lucentTodayAnalysisApiProvider = Provider<TodayAnalysisApi>((ref) {
   return ref.watch(lucentDioClientProvider).todayAnalysisApi;
 });
+
+final lucentAiChatApiProvider = Provider<AIChatApi>((ref) {
+  return ref.watch(lucentDioClientProvider).aiChatApi;
+});

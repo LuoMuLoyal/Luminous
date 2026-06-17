@@ -24,6 +24,16 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
     await _patch(UpdateUserSettingsDto(aiSummariesEnabled: enabled));
   }
 
+  Future<void> setAiChatEnabled(bool enabled) async {
+    await _patch(UpdateUserSettingsDto(aiChatEnabled: enabled));
+  }
+
+  Future<void> setAiChatContext(
+    UpdateAiChatContextSettingsDto contextSettings,
+  ) async {
+    await _patch(UpdateUserSettingsDto(aiChatContext: contextSettings));
+  }
+
   Future<void> setDataSharingConsent(bool consent) async {
     await _patch(UpdateUserSettingsDto(dataSharingConsent: consent));
   }

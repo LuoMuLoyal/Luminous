@@ -25,7 +25,7 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps instead of generated write DTOs.
 - Medicine reminder create/update writes use a local write input plus raw Dio JSON so `daysOfWeek: null`, `startDate`, and `endDate` are sent with the intended nullable behavior; generated reminder DTOs remain the read-side mapper.
 - Reminder delivery history is read through the feature data source and maps generated/raw response fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain code should still depend on the feature repository boundary.
-- Today AI analysis and Report AI summary streaming use manual Dio + SSE parsing in `lib/core/network/lucent_sse.dart`, not generated OpenAPI transport methods. Generated DTOs still remain the contract source for the final structured payload shape.
+- Today AI analysis, Report AI summary, and AI chat streaming all use manual Dio + SSE parsing in `lib/core/network/lucent_sse.dart`, not generated OpenAPI transport methods. Generated DTOs still remain the contract source for capability/result payload shapes.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.
 - `401002` triggers refresh and retry.

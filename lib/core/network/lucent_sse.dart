@@ -41,7 +41,7 @@ class LucentSseClient {
 
     final responseBody = response.data;
     if (responseBody == null) {
-      throw const LucentApiException(message: 'Lucent SSE response is empty.');
+      throw const LucentApiException(message: '流式响应为空，请稍后再试。');
     }
 
     yield* _decode(responseBody.stream);

@@ -50,7 +50,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
         return event.analysis;
       }
     }
-    throw StateError('Today AI stream ended without a final result.');
+    throw StateError('今日 AI 流式响应已结束，但没有返回最终结果。');
   }
 
   @override

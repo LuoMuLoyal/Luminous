@@ -256,6 +256,21 @@ class _PrivacySettingsSection extends ConsumerWidget {
                   .read(userSettingsControllerProvider.notifier)
                   .setAiSummariesEnabled(value);
             },
+            showDivider: true,
+          ),
+          SettingsListRow(
+            key: const Key('settings-row-privacy-ai-chat'),
+            icon: Icons.chat_bubble_outline_rounded,
+            title: l10n.aiChatEntryTitle,
+            subtitle: l10n.aiChatEntrySubtitle,
+            showChevron: true,
+            onTap: () {
+              if (!signedIn) {
+                pushAuthRequiredRoute(context, '/settings/ai-chat');
+                return;
+              }
+              context.push('/settings/ai-chat');
+            },
           ),
         ],
       ),

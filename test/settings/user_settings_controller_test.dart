@@ -220,6 +220,75 @@ void main() {
     });
   });
 
+  group('ai chat settings', () {
+    test('setAiChatEnabled patches settings and updates state on success', () async {
+      container = buildContainer();
+
+      await container.read(userSettingsControllerProvider.future);
+
+      fakeApi.patchResponse = _buildResponse(
+        aiSummariesEnabled: false,
+        dataSharingConsent: true,
+        aiChatEnabled: false,
+        aiChatContext: AiChatContextSettingsDto(
+          healthProfile: true,
+          dailyRecords: true,
+          sleepRecords: true,
+          currentMedicines: true,
+        ),
+      );
+
+      await container
+          .read(userSettingsControllerProvider.notifier)
+          .setAiChatEnabled(false);
+
+      final state = container.read(userSettingsControllerProvider);
+      expect(state.value?.aiChatEnabled, isFalse);
+      expect(fakeApi.lastPatchDto?.aiChatEnabled, isFalse);
+      expect(fakeApi.lastPatchDto?.aiChatContext, isNull);
+    });
+
+    test('setAiChatContext patches context fields and updates state on success', () async {
+      container = buildContainer();
+
+      await container.read(userSettingsControllerProvider.future);
+
+      final nextContext = UpdateAiChatContextSettingsDto(
+        healthProfile: false,
+        dailyRecords: true,
+        sleepRecords: false,
+        currentMedicines: true,
+      );
+
+      fakeApi.patchResponse = _buildResponse(
+        aiSummariesEnabled: false,
+        dataSharingConsent: true,
+        aiChatEnabled: true,
+        aiChatContext: AiChatContextSettingsDto(
+          healthProfile: false,
+          dailyRecords: true,
+          sleepRecords: false,
+          currentMedicines: true,
+        ),
+      );
+
+      await container
+          .read(userSettingsControllerProvider.notifier)
+          .setAiChatContext(nextContext);
+
+      final state = container.read(userSettingsControllerProvider);
+      expect(state.value?.aiChatContext.healthProfile, isFalse);
+      expect(state.value?.aiChatContext.dailyRecords, isTrue);
+      expect(state.value?.aiChatContext.sleepRecords, isFalse);
+      expect(state.value?.aiChatContext.currentMedicines, isTrue);
+      expect(fakeApi.lastPatchDto?.aiChatEnabled, isNull);
+      expect(fakeApi.lastPatchDto?.aiChatContext?.healthProfile, isFalse);
+      expect(fakeApi.lastPatchDto?.aiChatContext?.dailyRecords, isTrue);
+      expect(fakeApi.lastPatchDto?.aiChatContext?.sleepRecords, isFalse);
+      expect(fakeApi.lastPatchDto?.aiChatContext?.currentMedicines, isTrue);
+    });
+  });
+
   group('toggle independence', () {
     test('AI summaries toggle does not affect data sharing consent', () async {
       container = buildContainer();
@@ -320,6 +389,8 @@ void main() {
 UserSettingsResponseDto _buildResponse({
   bool aiSummariesEnabled = false,
   bool dataSharingConsent = false,
+  bool aiChatEnabled = true,
+  AiChatContextSettingsDto? aiChatContext,
 }) {
   return UserSettingsResponseDto(
     code: 0,
@@ -327,13 +398,15 @@ UserSettingsResponseDto _buildResponse({
     data: UserSettingsDataDto(
       aiSummariesEnabled: aiSummariesEnabled,
       dataSharingConsent: dataSharingConsent,
-      aiChatEnabled: true,
-      aiChatContext: AiChatContextSettingsDto(
-        healthProfile: true,
-        dailyRecords: true,
-        sleepRecords: true,
-        currentMedicines: true,
-      ),
+      aiChatEnabled: aiChatEnabled,
+      aiChatContext:
+          aiChatContext ??
+          AiChatContextSettingsDto(
+            healthProfile: true,
+            dailyRecords: true,
+            sleepRecords: true,
+            currentMedicines: true,
+          ),
       updatedAt: '2026-06-12T00:00:00.000Z',
     ),
   );
