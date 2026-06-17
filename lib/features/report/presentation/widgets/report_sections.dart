@@ -1046,6 +1046,7 @@ class ReportExportSection extends StatelessWidget {
   const ReportExportSection({
     super.key,
     required this.actions,
+    required this.latestRequest,
     required this.requestInFlight,
     required this.l10n,
     required this.typography,
@@ -1054,6 +1055,7 @@ class ReportExportSection extends StatelessWidget {
   });
 
   final List<ReportExportAction> actions;
+  final DataExportRequestDataDto? latestRequest;
   final DataExportRequestInFlightState requestInFlight;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
@@ -1080,6 +1082,7 @@ class ReportExportSection extends StatelessWidget {
           itemBuilder: (context, index) {
             return _ExportCard(
               action: actions[index],
+              latestRequest: latestRequest,
               requestInFlight: requestInFlight,
               onTap: onActionTap,
               l10n: l10n,
@@ -1096,6 +1099,7 @@ class ReportExportSection extends StatelessWidget {
 class _ExportCard extends StatelessWidget {
   const _ExportCard({
     required this.action,
+    required this.latestRequest,
     required this.requestInFlight,
     required this.l10n,
     required this.typography,
@@ -1104,6 +1108,7 @@ class _ExportCard extends StatelessWidget {
   });
 
   final ReportExportAction action;
+  final DataExportRequestDataDto? latestRequest;
   final DataExportRequestInFlightState requestInFlight;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
@@ -1113,7 +1118,7 @@ class _ExportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = _exportTitle(l10n, action.kind);
-    final subtitle = _exportSubtitle(l10n, action.kind);
+    final subtitle = _exportCardSubtitle(l10n, action.kind, latestRequest);
     final enabled = onTap != null;
     final showProgress = requestInFlight.matches(
       reportExportInputForKind(action.kind),
@@ -1175,6 +1180,26 @@ class _ExportCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _exportCardSubtitle(
+  AppLocalizations l10n,
+  ReportExportKind kind,
+  DataExportRequestDataDto? latestRequest,
+) {
+  final input = reportExportInputForKind(kind);
+  if (input.matches(latestRequest)) {
+    return switch (dataExportUiStatusForRequest(latestRequest)) {
+      DataExportUiStatus.idle => _exportSubtitle(l10n, kind),
+      DataExportUiStatus.requested => l10n.mineExportStatusRequested,
+      DataExportUiStatus.processing => l10n.mineExportStatusPending,
+      DataExportUiStatus.completed => l10n.mineExportStatusCompleted,
+      DataExportUiStatus.completedLinkMissing => l10n.mineExportStatusLinkMissing,
+      DataExportUiStatus.failed => l10n.mineExportStatusFailed,
+      DataExportUiStatus.unavailable => l10n.mineExportStatusUnavailable,
+    };
+  }
+  return _exportSubtitle(l10n, kind);
 }
 
 class ReportPatternsSection extends StatelessWidget {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/constants/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -357,13 +356,14 @@ class _AdvancedSettingsSection extends ConsumerWidget {
     final export = exportAsync?.asData?.value;
 
     String exportValue() {
-      if (export == null) return l10n.mineSettingExportValue;
-      return switch (export.status) {
-        DataExportStatus.requested ||
-        DataExportStatus.processing => l10n.mineExportStatusPending,
-        DataExportStatus.completed => l10n.mineExportStatusCompleted,
-        DataExportStatus.failed => l10n.mineExportStatusFailed,
-        _ => l10n.mineSettingExportValue,
+      return switch (dataExportUiStatusForRequest(export)) {
+        DataExportUiStatus.idle => l10n.mineSettingExportValue,
+        DataExportUiStatus.requested => l10n.mineExportStatusRequested,
+        DataExportUiStatus.processing => l10n.mineExportStatusPending,
+        DataExportUiStatus.completed => l10n.mineExportStatusCompleted,
+        DataExportUiStatus.completedLinkMissing => l10n.mineExportStatusLinkMissing,
+        DataExportUiStatus.failed => l10n.mineExportStatusFailed,
+        DataExportUiStatus.unavailable => l10n.mineExportStatusUnavailable,
       };
     }
 
@@ -395,27 +395,39 @@ class _AdvancedSettingsSection extends ConsumerWidget {
                   return;
                 }
 
-                switch (request?.status) {
-                  case DataExportStatus.completed:
+                switch (dataExportUiStatusForRequest(request)) {
+                  case DataExportUiStatus.completed:
                     await AppToast.show(
                       context,
                       l10n.mineExportStatusCompleted,
                     );
                     return;
-                  case DataExportStatus.failed:
-                  case DataExportStatus.unavailable:
+                  case DataExportUiStatus.completedLinkMissing:
+                    await AppToast.show(
+                      context,
+                      l10n.reportExportLinkMissingToast,
+                    );
+                    return;
+                  case DataExportUiStatus.failed:
+                  case DataExportUiStatus.unavailable:
                     await AppToast.show(
                       context,
                       request?.errorMessage?.isNotEmpty == true
                           ? request!.errorMessage!
+                          : dataExportUiStatusForRequest(request) ==
+                                DataExportUiStatus.unavailable
+                          ? l10n.mineExportStatusUnavailable
                           : l10n.mineExportStatusFailed,
                     );
                     return;
-                  case DataExportStatus.requested:
-                  case DataExportStatus.processing:
-                  case DataExportStatus.unknownDefaultOpenApi:
-                  case null:
+                  case DataExportUiStatus.requested:
                     await AppToast.show(context, l10n.mineExportRequested);
+                    return;
+                  case DataExportUiStatus.processing:
+                    await AppToast.show(context, l10n.mineExportStatusPending);
+                    return;
+                  case DataExportUiStatus.idle:
+                    await AppToast.show(context, l10n.mineExportStatusFailed);
                     return;
                 }
               } catch (error) {

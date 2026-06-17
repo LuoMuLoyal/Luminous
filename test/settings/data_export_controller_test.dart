@@ -340,6 +340,26 @@ void main() {
       },
     );
   });
+
+  group('dataExportUiStatusForRequest', () {
+    test('maps completed request without download url to completedLinkMissing', () {
+      final request = DataExportRequestDataDto(
+        id: 'req-link-missing',
+        kind: DataExportKind.hospital,
+        format: DataExportFormat.pdf,
+        range: DataExportRange.last7Days,
+        status: DataExportStatus.completed,
+        requestedAt: '2026-06-12T00:00:00.000Z',
+        completedAt: '2026-06-12T00:01:00.000Z',
+        downloadUrl: '',
+      );
+
+      expect(
+        dataExportUiStatusForRequest(request),
+        DataExportUiStatus.completedLinkMissing,
+      );
+    });
+  });
 }
 
 // ---------------------------------------------------------------------------

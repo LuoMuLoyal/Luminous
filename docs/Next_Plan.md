@@ -1,125 +1,132 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-15
+Last updated: 2026-06-16
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
 ## Current Goal
 
-The frozen mobile MVP path is now real: `record -> summarize -> bounded medicine safety check -> export`. The next phase should stop treating every remaining idea as an MVP task and instead split work into three tracks: stable demo/validation discipline, report/export productization, and explicit post-MVP surface decisions like Web or broader medicine coverage.
+The mobile MVP is now closed enough to stop treating “MVP completion” itself as the task. The next phase should do two things in order:
+
+1. turn the shipped MVP into a stable, repeatable, production-demoable baseline
+2. productize the weakest still-rough real slice before opening any broader post-MVP work
+
+The current real path remains:
+
+```text
+record -> summarize -> bounded medicine safety check -> export
+```
 
 ## Immediate Work Order
 
-1. **Solidify the MVP handoff and demo discipline**
+1. **Freeze the deployed MVP into a clean demo baseline**
    - Priority order:
-     - keep campus/help resource completeness, map discovery, and agent-assisted support lookup out of the frozen MVP promise
-     - keep repo-safe daily checks plus the local full-stack gate as the standard pre-demo and pre-merge routine for the frozen path
-     - turn any remaining half-real UI states into explicit boundary wording instead of relying on oral explanation
+     - write and follow one production smoke checklist after each deploy
+     - prepare one stable demo account / demo data reset routine
+     - turn any remaining half-real UI wording into explicit boundary wording instead of relying on oral explanation
+     - keep campus discovery, map lookup, and agent-assisted support search outside the MVP promise
    - Success signal:
-     - the mobile MVP can be demoed end to end by someone other than the implementer without ad-hoc caveats
+     - someone else can deploy and demo the full mobile path without ad-hoc debugging
 
-2. **Productize report/export beyond the current MVP floor**
+2. **Productize report/export, because it is already the weakest “real but still rough” slice**
    - Priority order:
-     - decide whether `monthly` / `print` stay as request-based export actions only or need true downloadable file lifecycle, preview state, and share semantics
-     - if PDF is kept as the main artifact, tighten pagination, header/footer consistency, and export status wording
-     - keep privacy, share, and doctor-facing summary boundaries explicit instead of implying a full collaboration workflow
+     - keep `hospital` / `monthly` / `print` as the current real PDF set, and stop revisiting that decision unless the backend contract changes
+     - tighten export lifecycle wording: requesting, processing, completed, failed, expired-download-link
+     - align Report and Mine so they expose the same export-status model instead of one side feeling more “real” than the other
+     - improve PDF polish only where it changes user trust: pagination, header/footer consistency, and doctor-facing readability
+     - keep privacy, sharing, and hospital-summary boundaries explicit instead of implying a full collaboration workflow
    - Success signal:
-     - report/export moves from “MVP proof it works” to a stable user-facing feature boundary with clear file behavior
+     - export feels like a finished user feature, not a technical proof that PDF generation works
 
-3. **Decide the next real surface, don’t drift into side quests**
-   - Priority order:
-     - choose whether the next meaningful surface is authenticated Web report preview, stronger medicine knowledge depth, or support/discovery capability
-     - if Web becomes real, treat it as its own slice instead of letting `Luminous-site` drift from marketing page to accidental product shell
-     - if medicine depth becomes next, keep it to reviewed rule expansion or normalization groundwork, not broad speculative AI
+3. **Pick one next real slice after export, not three**
+   - Recommended choice:
+     - stronger medicine safety depth
+   - Why this is the best next slice:
+     - it matches the product’s trust anchor
+     - it improves real user value more than cosmetic Web expansion
+     - it is easier to defend in competition/demo than “more AI”
+   - Concrete scope if chosen:
+     - reviewed ingredient normalization groundwork for CN + DrugBank overlap
+     - broader duplicate-ingredient coverage
+     - carefully reviewed interaction-rule expansion
+     - better unknown / unsupported-state wording when confidence is limited
+   - Explicit non-scope:
+     - speculative AI risk judgment
+     - broad unreviewed interaction expansion
+     - map/agent support discovery
    - Success signal:
-     - the next milestone is one explicit product slice, not a grab bag of polish and experiments
+     - medicine safety meaningfully covers more common real cases without weakening the current safety boundary
 
-4. **Local full-stack lane usage rule**
-   - Keep the current emulator + Lucent full-stack gate out of GitHub Actions for now.
+4. **Keep Web as a deliberate decision, not a stealth requirement**
+   - `Luminous-site` is still a competition/marketing surface, not a signed-in product shell
+   - Do not quietly turn it into product work while saying the next slice is something else
+   - If authenticated Web report preview becomes the chosen next slice later, open a dedicated plan for it and treat it as a separate product surface
+   - Success signal:
+     - Web is either clearly presentation-only, or clearly a planned product slice, never an accidental in-between
+
+5. **Keep AI in maintenance mode**
+   - Today and Report AI streaming already exists and is good enough for the current MVP path
+   - Only revisit AI when one of these is true:
+     - streaming stability regresses
+     - cancellation / retry UX is visibly bad
+     - safety wording misses a real edge case
+   - Do not expand into “AI everywhere” before report/export and medicine-trust work are cleaner
+
+6. **Keep the local validation discipline as a gate, not a suggestion**
    - Repo-safe daily entry:
      - `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
    - Full-stack gate entry:
      - `powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1`
-   - Owner command for manual verification:
-     - backend shell:
-       `cd Lucent`
-       `pnpm dev:stack:up`
-       `pnpm db:migrate:test`
-       `pnpm start:test:dev`
-     - frontend shell:
-       `cd Luminous`
-       `flutter test integration_test/record/fullstack_record_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
-     - frontend shell:
-       `flutter test integration_test/record/fullstack_sleep_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
-     - frontend shell:
-       `flutter test integration_test/app/fullstack_today_report_lane_test.dart -d emulator-5554 --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 --dart-define=E2E_TEST_EMAIL=fullstack-record-lane@example.com --dart-define=E2E_TEST_PASSWORD=RecordLane123 --dart-define=E2E_RECORD_DATE=2026-06-12`
-   - `tool/run_fullstack_checks.ps1` is the preferred local entry because it starts Lucent test runtime and runs the four emulator lanes sequentially with one shared define set.
-   - Because `integration_test/` now lives in nested feature folders, always run those tests with an explicit file path and explicit device id. Plain `flutter test integration_test` is ambiguous when desktop/web targets are also available.
-   - Expected run timing:
-     - before merging any change that touches auth/session restore
-     - before merging any Lucent or Luminous change that touches Today or Report protected root-tab loading
-     - before merging any Lucent or Luminous change that touches `/api/v1/user/daily-records*`
-     - before merging changes to the full-stack E2E helper or generated auth/record client surface
-     - before cutting a mobile test build that claims Record CRUD is stable
+   - Use the full-stack gate before merging changes that touch:
+     - auth/session restore
+     - Today/Report protected loading
+     - `/api/v1/user/daily-records*`
+     - generated auth/record client surface
+     - E2E helper scripts
+   - Success signal:
+     - “looks fine locally” stops being the reason something breaks after deploy
 
-5. **Keep AI work in maintenance mode**
-   - Today and Report AI cards now stream partial summary text and finish with the same structured payload as the one-shot flow.
-   - Only revisit this slice when:
-     - stream stability regresses
-     - safety policy misses a case
-     - UX breaks on slow networks or cancelled requests
-   - Do not expand this into broad “AI everywhere” work before missing non-AI MVP capability gaps are closed.
+## Recommended Sequence
 
-6. **Keep NLP intake and Mine support in polish-only mode**
-   - Mine campus/support rows already open contract-backed actions when Lucent provides a usable target; rows without target remain visible but disabled.
-   - Do not pull campus/help resource completeness or dynamic nearby-care discovery back into MVP unless the product promise changes.
-   - Record NLP candidate save already has explicit failed-item retry inside the sheet.
-   - Revisit these two slices only if MVP testing shows users still get stuck, for example around clearer failure causes or support-resource action-type expansion.
+If the team wants the shortest path with the highest payoff, use this order:
 
-7. **Do not turn Web into a stealth product requirement unless we mean it**
-   - `Luminous-site` is currently a competition/marketing homepage, not a signed-in report preview surface.
-   - If Web stays presentation-only, protect that boundary and do not smuggle product work into it.
-   - If real authenticated Web report preview is chosen as the next slice, open a dedicated plan for it.
+1. production smoke checklist + demo/reset discipline
+2. export/report productization
+3. medicine safety depth
+4. only then re-open the Web question
 
 ## Deferred But Useful
 
 Keep these code paths hidden and annotated until the matching product/API job is ready:
 
-- After the five-tab UI stabilizes, run a focused truncation pass for English and Chinese button labels, pills, and compact rows across Today, Record, Medicine, Report, and Mine.
-- Agent-assisted support discovery and map-backed nearby-care lookup.
-- Lightweight mood record shapes.
-- Environment signals for contextual Today/Mine use.
-- Medicine scan/OCR/photo/barcode/prescription action shapes.
-- Local-only sleep reminder preferences beyond simple placeholder labeling.
-- Real authenticated Web report preview beyond the competition site.
+- focused truncation/polish pass for compact CN/EN labels across the five tabs
+- agent-assisted support discovery and map-backed nearby-care lookup
+- lightweight mood record shapes
+- environment signals for contextual Today/Mine use
+- medicine scan/OCR/photo/barcode/prescription action shapes
+- local-only sleep reminder preferences beyond simple placeholder labeling
+- real authenticated Web report preview beyond the competition site
 
 Pregnancy/lactation/special-group medication safety remains active only inside Medicine safety boundaries.
 
-## Recently Closed
-
-- Export promise is intentionally narrowed to the real `hospital + pdf + last_7_days` flow.
-- `monthly` / `print` stay visible but inactive instead of pretending to be shipped.
-- Reminder UI now treats local scheduling as the real MVP path and stops reading worker history / push / SMS as if they already exist.
-- Medicine safety now keeps the same explicit reviewed boundary across risk-check page, workspace cards, and add-before-save precheck, including visible unknown-state handling for pregnancy, lactation, pediatric, geriatric, and fully unchecked medicines.
-- The mobile MVP promise is now frozen around the current real path instead of leaving medicine safety as an open completion blocker.
-
 ## Do Not Start Yet
 
-- Standalone More tab or generic utility hub.
-- Women-health or period management.
-- Sport recovery.
-- Specialist health packs.
-- Smart devices or family profiles.
-- Skin recognition or report photo import.
-- OCR/barcode/photo/prescription recognition UI or contracts.
-- Real push delivery through FCM/APNs.
-- Real SMS delivery.
-- Backend reminder delivery workers.
-- Paid or credentialed external services without explicit approval.
-- Environment frontend wiring until the target Today/Mine job is explicit.
+- standalone More tab or generic utility hub
+- women-health or period management
+- sport recovery
+- specialist health packs
+- smart devices or family profiles
+- skin recognition or report photo import
+- OCR/barcode/photo/prescription recognition UI or contracts
+- real push delivery through FCM/APNs
+- real SMS delivery
+- backend reminder delivery workers
+- paid or credentialed external services without explicit approval
+- environment frontend wiring until the target Today/Mine job is explicit
 
 ## Contract References
 
-- `Lucent/docs/public/reminder-contract.md`: reminder boundary.
-- `Lucent/docs/public/environment-contract.md`: environment snapshot boundary.
-- `Lucent/docs/public/data-sources.md`: medicine data-source/import strategy.
+- `Lucent/docs/public/reminder-contract.md`: reminder boundary
+- `Lucent/docs/public/environment-contract.md`: environment snapshot boundary
+- `Lucent/docs/public/data-sources.md`: medicine data-source/import strategy
+- `Lucent/docs/public/mine-settings-contract.md`: export/status/support-resource boundary

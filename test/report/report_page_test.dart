@@ -317,6 +317,69 @@ void main() {
     );
     await tester.pump(const Duration(seconds: 2));
   });
+
+  testWidgets('Report export card shows latest export status for matching kind', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final exportApi = _FakeReportDataExportApi()
+      ..latestResponse = DataExportLatestResponseDto(
+        code: 0,
+        message: 'ok',
+        data: DataExportRequestDataDto(
+          id: 'req-monthly',
+          kind: DataExportKind.monthly,
+          format: DataExportFormat.pdf,
+          range: DataExportRange.last30Days,
+          status: DataExportStatus.processing,
+          requestedAt: '2026-06-12T00:00:00.000Z',
+        ),
+      );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          reportRepositoryProvider.overrideWithValue(
+            const MockReportRepository(),
+          ),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          lucentDataExportApiProvider.overrideWithValue(exportApi),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ReportPage(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final scrollable = find.byType(Scrollable).first;
+    final exportSection = find.byKey(const Key('report-export-section'));
+    await tester.scrollUntilVisible(exportSection, 260, scrollable: scrollable);
+    await tester.pumpAndSettle();
+
+    expect(find.text('处理中'), findsWidgets);
+  });
 }
 
 class _PendingReportRepository implements ReportRepository {
@@ -403,6 +466,7 @@ class _FakeReportDataExportApi extends DataExportApi {
 
   int createCallCount = 0;
   int getLatestCallCount = 0;
+  DataExportLatestResponseDto? latestResponse;
 
   @override
   Future<Response<DataExportRequestResponseDto>>
@@ -451,23 +515,24 @@ class _FakeReportDataExportApi extends DataExportApi {
   }) async {
     getLatestCallCount += 1;
     return Response<DataExportLatestResponseDto>(
-      data: DataExportLatestResponseDto(
-        code: 0,
-        message: 'ok',
-        data: DataExportRequestDataDto(
-          id: 'req-report',
-          kind: DataExportKind.hospital,
-          format: DataExportFormat.pdf,
-          range: DataExportRange.last7Days,
-          status: DataExportStatus.completed,
-          requestedAt: '2026-06-15T08:00:00.000Z',
-          completedAt: '2026-06-15T08:01:00.000Z',
-          downloadUrl: 'https://example.com/export-ready.pdf',
-          fileName: 'report.pdf',
-          fileSizeBytes: 1024,
-          errorMessage: null,
-        ),
-      ),
+      data: latestResponse ??
+          DataExportLatestResponseDto(
+            code: 0,
+            message: 'ok',
+            data: DataExportRequestDataDto(
+              id: 'req-report',
+              kind: DataExportKind.hospital,
+              format: DataExportFormat.pdf,
+              range: DataExportRange.last7Days,
+              status: DataExportStatus.completed,
+              requestedAt: '2026-06-15T08:00:00.000Z',
+              completedAt: '2026-06-15T08:01:00.000Z',
+              downloadUrl: 'https://example.com/export-ready.pdf',
+              fileName: 'report.pdf',
+              fileSizeBytes: 1024,
+              errorMessage: null,
+            ),
+          ),
       requestOptions: RequestOptions(
         path: '/api/v1/user/data-export-requests/latest',
       ),

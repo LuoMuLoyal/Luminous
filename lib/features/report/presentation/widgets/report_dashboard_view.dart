@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -23,6 +24,7 @@ class ReportDashboardView extends ConsumerWidget {
     this.onAiSummaryRangeChanged,
     this.onGenerateAiSummary,
     this.onExportActionTap,
+    this.latestExportRequest,
     this.exportRequestInFlight = const DataExportRequestInFlightState(
       inFlight: false,
     ),
@@ -36,6 +38,7 @@ class ReportDashboardView extends ConsumerWidget {
   final ValueChanged<ReportAiSummaryRange>? onAiSummaryRangeChanged;
   final Future<void> Function()? onGenerateAiSummary;
   final Future<void> Function(ReportExportKind kind)? onExportActionTap;
+  final DataExportRequestDataDto? latestExportRequest;
   final DataExportRequestInFlightState exportRequestInFlight;
 
   @override
@@ -98,6 +101,7 @@ class ReportDashboardView extends ConsumerWidget {
         ReportExportSection(
           key: const Key('report-export-section'),
           actions: dashboard.exportActions,
+          latestRequest: latestExportRequest,
           requestInFlight: exportRequestInFlight,
           onActionTap: onExportActionTap,
           l10n: l10n,

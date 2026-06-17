@@ -8,7 +8,7 @@ This file records work that is still missing or intentionally gated. Current fac
 
 - No blocker is currently left on the frozen mobile MVP promise.
   Current state: The mobile MVP path is now defined as `record -> summarize -> bounded medicine safety check -> export`, with explicit uncertainty for unchecked medicines and no claim of broad cross-source normalization or unreviewed interaction expansion.
-  Remaining rule expansion or normalization work belongs to post-MVP hardening, not to MVP completion.
+  Remaining work below belongs to post-MVP productization or hardening, not to MVP completion.
 
 ## MVP Gated But Not Blocking Right Now
 
@@ -16,7 +16,7 @@ This file records work that is still missing or intentionally gated. Current fac
 - Cross-source medicine normalization and unreviewed interaction expansion.
 - Fixed red-flag rules, audited offline-care escalation copy, and campus/help resource completeness.
 - Agent-assisted support discovery or map-backed nearby-care lookup.
-- Real report export files, print output, and share links.
+- Richer export lifecycle UX beyond the current real PDF flow, including explicit retry/history UI, expired-link recovery wording refinement, and share-link workflow.
 - Worker-written reminder delivery history for local/push/SMS channels.
 - Environment-driven Today or Mine suggestions.
 - Real barcode / OCR / photo / prescription recognition flow.

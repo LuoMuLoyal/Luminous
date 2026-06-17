@@ -3,10 +3,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
+import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -346,6 +348,63 @@ void main() {
     expect(find.text('advanced-settings-page'), findsOneWidget);
   });
 
+  testWidgets('Settings export row shows unavailable status from latest export', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    final exportRequest = DataExportRequestDataDto(
+      id: 'req-unavailable',
+      kind: DataExportKind.hospital,
+      format: DataExportFormat.pdf,
+      range: DataExportRange.last7Days,
+      status: DataExportStatus.unavailable,
+      requestedAt: '2026-06-12T00:00:00.000Z',
+      errorMessage: 'COS unavailable',
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
+          dataExportControllerProvider.overrideWith(
+            () => _StaticDataExportController(exportRequest),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/settings',
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsPage(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-row-export')),
+      240,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('暂不可用'), findsOneWidget);
+  });
+
   testWidgets('Settings footer action logs out and routes to login page', (
     tester,
   ) async {
@@ -472,4 +531,13 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   AuthSessionState build() {
     return const AuthSessionState(isAuthenticated: false, isLoading: false);
   }
+}
+
+class _StaticDataExportController extends DataExportController {
+  _StaticDataExportController(this._value);
+
+  final DataExportRequestDataDto? _value;
+
+  @override
+  Future<DataExportRequestDataDto?> build() async => _value;
 }
