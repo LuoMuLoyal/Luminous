@@ -15,21 +15,20 @@ class AiChatRemoteChunkEvent extends AiChatRemoteEvent {
 
 class AiChatRemoteResultEvent extends AiChatRemoteEvent {
   const AiChatRemoteResultEvent({
+    required this.conversationId,
     required this.content,
     required this.usedTools,
     required this.generatedAt,
   });
 
+  final String conversationId;
   final String content;
   final List<String> usedTools;
   final DateTime generatedAt;
 }
 
 class AiChatRemoteDataSource {
-  AiChatRemoteDataSource({
-    required this.api,
-    required this.dio,
-  });
+  AiChatRemoteDataSource({required this.api, required this.dio});
 
   final lucent.AIChatApi api;
   final Dio dio;
@@ -38,11 +37,19 @@ class AiChatRemoteDataSource {
     final response = await api.aiChatControllerGetCapabilitiesV1();
     final data = response.data?.data;
     if (data == null) {
-      throw const LucentApiException(
-        message: 'AI 对话能力响应为空，请稍后再试。',
-      );
+      throw const LucentApiException(message: 'AI 对话能力响应为空，请稍后再试。');
     }
     return data;
+  }
+
+  Future<lucent.AiChatConversationDataDto?> getLatestConversation() async {
+    final response = await api.aiChatControllerGetLatestConversationV1();
+    return response.data?.data;
+  }
+
+  Future<bool> clearLatestConversation() async {
+    final response = await api.aiChatControllerClearLatestConversationV1();
+    return response.data?.data?.cleared ?? false;
   }
 
   Stream<AiChatRemoteEvent> streamMessages({
@@ -68,6 +75,7 @@ class AiChatRemoteDataSource {
           final usedTools = _readStringList(data['usedTools']);
           final generatedAtText = data['generatedAt']?.toString();
           yield AiChatRemoteResultEvent(
+            conversationId: data['conversationId']?.toString() ?? '',
             content: data['content']?.toString() ?? '',
             usedTools: usedTools,
             generatedAt:

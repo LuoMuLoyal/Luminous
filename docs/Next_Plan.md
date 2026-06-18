@@ -1,6 +1,6 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-17
+Last updated: 2026-06-18
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
@@ -39,8 +39,9 @@ The next slice sits on top of that baseline, not instead of it.
 2. **Continue the simple mobile chat surface after Phase 1**
    - Priority order:
      - refine the current lightweight entry point and chat page
+     - extend from single latest-conversation persistence to multi-conversation management only if the product flow really needs it
      - keep streaming assistant output with markdown
-     - keep retry/error/loading states visible and testable
+     - keep retry/error/loading/history-restore states visible and testable
      - expand permission messaging and settings polish around health context
      - reserve a later hook for system health data bridging through Apple Health / Health Connect only after the permission model and local product value are stable
    - Current package direction:
@@ -48,7 +49,7 @@ The next slice sits on top of that baseline, not instead of it.
      - prefer a self-owned page plus a dedicated markdown streaming renderer
      - only re-evaluate `flutter_ai_chat_ui` after the backend contract is stable
    - Success signal:
-     - the mobile chat can stream, render, fail clearly, and remain product-rule-controlled without depending on a framework UI shell
+     - the mobile chat can restore the latest persisted session, stream, render, fail clearly, and remain product-rule-controlled without depending on a framework UI shell
 
 3. **Add RAG later as one extra tool, not as the starting architecture**
    - Keep this bounded to:

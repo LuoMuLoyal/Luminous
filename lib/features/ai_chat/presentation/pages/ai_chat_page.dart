@@ -60,15 +60,14 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
         : null;
     final settings = settingsAsync?.asData?.value;
     final capabilities = chatState.capabilities;
-    final effectiveContext =
-        settings == null && capabilities != null
-            ? UpdateAiChatContextSettingsDto(
-                healthProfile: capabilities.aiChatContext.healthProfile,
-                dailyRecords: capabilities.aiChatContext.dailyRecords,
-                sleepRecords: capabilities.aiChatContext.sleepRecords,
-                currentMedicines: capabilities.aiChatContext.currentMedicines,
-              )
-            : null;
+    final effectiveContext = settings == null && capabilities != null
+        ? UpdateAiChatContextSettingsDto(
+            healthProfile: capabilities.aiChatContext.healthProfile,
+            dailyRecords: capabilities.aiChatContext.dailyRecords,
+            sleepRecords: capabilities.aiChatContext.sleepRecords,
+            currentMedicines: capabilities.aiChatContext.currentMedicines,
+          )
+        : null;
 
     return Material(
       color: surface.canvasSoft,
@@ -97,12 +96,15 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
               description: l10n.aiChatSignedOutDescription,
               icon: Icons.lock_outline_rounded,
               actionLabel: l10n.authGoLogin,
-              onAction: () =>
-                  context.go(loginRouteForReturnTo('/assistant')),
+              onAction: () => context.go(loginRouteForReturnTo('/assistant')),
             ),
           ] else if (chatState.isLoadingCapabilities &&
+              chatState.isLoadingConversation &&
               capabilities == null &&
               chatState.capabilityError == null) ...[
+            const _AiChatLoadingView(),
+          ] else if (chatState.isLoadingConversation &&
+              !chatState.hasConversation) ...[
             const _AiChatLoadingView(),
           ] else if (capabilities == null) ...[
             _AssistantStateCard(
@@ -112,14 +114,28 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
               icon: Icons.cloud_off_rounded,
               tone: AppStateTone.warning,
               actionLabel: l10n.todayRetryAction,
-              onAction: () =>
-                  ref.read(aiChatControllerProvider.notifier).loadCapabilities(),
+              onAction: () => ref
+                  .read(aiChatControllerProvider.notifier)
+                  .loadCapabilities(),
             ),
           ] else ...[
             _AssistantHero(
               capabilities: capabilities,
               statusSummary: _statusSummaryText(l10n, capabilities),
             ),
+            if (chatState.conversationError != null) ...[
+              const SizedBox(height: AppSpacingTokens.md),
+              AppStateMessageView(
+                title: l10n.aiChatLoadErrorTitle,
+                description: chatState.conversationError!,
+                icon: Icons.history_toggle_off_rounded,
+                tone: AppStateTone.warning,
+                actionLabel: l10n.todayRetryAction,
+                onAction: () => ref
+                    .read(aiChatControllerProvider.notifier)
+                    .loadLatestConversation(),
+              ),
+            ],
             const SizedBox(height: AppSpacingTokens.md),
             SizedBox(
               height: width < AppBreakpoints.mobile ? 460 : 520,
@@ -131,8 +147,8 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
                 onSend: _handleSend,
                 onRetry: chatState.lastFailedInput != null
                     ? () => ref
-                        .read(aiChatControllerProvider.notifier)
-                        .retryLastMessage()
+                          .read(aiChatControllerProvider.notifier)
+                          .retryLastMessage()
                     : null,
               ),
             ),
@@ -145,13 +161,13 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
               capabilities: capabilities,
               onToggleEnabled: (nextValue) =>
                   _toggleAiChatEnabled(context, nextValue),
-              onToggleContext: ({
-                bool? healthProfile,
-                bool? dailyRecords,
-                bool? sleepRecords,
-                bool? currentMedicines,
-              }) =>
-                  _toggleContextSetting(
+              onToggleContext:
+                  ({
+                    bool? healthProfile,
+                    bool? dailyRecords,
+                    bool? sleepRecords,
+                    bool? currentMedicines,
+                  }) => _toggleContextSetting(
                     context,
                     settings: settings,
                     fallbackContext: effectiveContext,
@@ -167,7 +183,10 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
     );
   }
 
-  Future<void> _toggleAiChatEnabled(BuildContext context, bool nextValue) async {
+  Future<void> _toggleAiChatEnabled(
+    BuildContext context,
+    bool nextValue,
+  ) async {
     try {
       await ref
           .read(userSettingsControllerProvider.notifier)
@@ -177,10 +196,7 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
       if (!context.mounted) {
         return;
       }
-      await AppToast.show(
-        context,
-        LucentErrorMapper.fromObject(error).message,
-      );
+      await AppToast.show(context, LucentErrorMapper.fromObject(error).message);
     }
   }
 
@@ -200,15 +216,17 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
       }
 
       try {
-        await ref.read(userSettingsControllerProvider.notifier).setAiChatContext(
-          UpdateAiChatContextSettingsDto(
-            healthProfile: healthProfile ?? fallbackContext.healthProfile,
-            dailyRecords: dailyRecords ?? fallbackContext.dailyRecords,
-            sleepRecords: sleepRecords ?? fallbackContext.sleepRecords,
-            currentMedicines:
-                currentMedicines ?? fallbackContext.currentMedicines,
-          ),
-        );
+        await ref
+            .read(userSettingsControllerProvider.notifier)
+            .setAiChatContext(
+              UpdateAiChatContextSettingsDto(
+                healthProfile: healthProfile ?? fallbackContext.healthProfile,
+                dailyRecords: dailyRecords ?? fallbackContext.dailyRecords,
+                sleepRecords: sleepRecords ?? fallbackContext.sleepRecords,
+                currentMedicines:
+                    currentMedicines ?? fallbackContext.currentMedicines,
+              ),
+            );
         await ref.read(aiChatControllerProvider.notifier).loadCapabilities();
       } catch (error) {
         if (!context.mounted) {
@@ -223,23 +241,22 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
     }
 
     try {
-      await ref.read(userSettingsControllerProvider.notifier).setAiChatContext(
-        UpdateAiChatContextSettingsDto(
-          healthProfile: healthProfile ?? current.healthProfile,
-          dailyRecords: dailyRecords ?? current.dailyRecords,
-          sleepRecords: sleepRecords ?? current.sleepRecords,
-          currentMedicines: currentMedicines ?? current.currentMedicines,
-        ),
-      );
+      await ref
+          .read(userSettingsControllerProvider.notifier)
+          .setAiChatContext(
+            UpdateAiChatContextSettingsDto(
+              healthProfile: healthProfile ?? current.healthProfile,
+              dailyRecords: dailyRecords ?? current.dailyRecords,
+              sleepRecords: sleepRecords ?? current.sleepRecords,
+              currentMedicines: currentMedicines ?? current.currentMedicines,
+            ),
+          );
       await ref.read(aiChatControllerProvider.notifier).loadCapabilities();
     } catch (error) {
       if (!context.mounted) {
         return;
       }
-      await AppToast.show(
-        context,
-        LucentErrorMapper.fromObject(error).message,
-      );
+      await AppToast.show(context, LucentErrorMapper.fromObject(error).message);
     }
   }
 
@@ -383,16 +400,11 @@ class _AssistantHero extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.aiChatPageTitle,
-              style: _typography(context).displayMd,
-            ),
+            Text(l10n.aiChatPageTitle, style: _typography(context).displayMd),
             const SizedBox(height: AppSpacingTokens.xs),
             Text(
               statusSummary,
-              style: _typography(
-                context,
-              ).bodyMd.copyWith(color: surface.body),
+              style: _typography(context).bodyMd.copyWith(color: surface.body),
             ),
             const SizedBox(height: AppSpacingTokens.md),
             Wrap(
@@ -512,7 +524,8 @@ class _AssistantControlsPanel extends StatelessWidget {
     bool? dailyRecords,
     bool? sleepRecords,
     bool? currentMedicines,
-  }) onToggleContext;
+  })
+  onToggleContext;
 
   @override
   Widget build(BuildContext context) {
@@ -523,10 +536,7 @@ class _AssistantControlsPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.aiChatStatusSectionTitle,
-            style: typography.bodyMdStrong,
-          ),
+          Text(l10n.aiChatStatusSectionTitle, style: typography.bodyMdStrong),
           const SizedBox(height: AppSpacingTokens.sm),
           Text(
             l10n.aiChatEntrySubtitle,
@@ -544,8 +554,9 @@ class _AssistantControlsPanel extends StatelessWidget {
                 onChanged: (_) {},
               ),
             ),
-            onTap: () =>
-                onToggleEnabled(!(settings?.aiChatEnabled ?? capabilities.aiChatEnabled)),
+            onTap: () => onToggleEnabled(
+              !(settings?.aiChatEnabled ?? capabilities.aiChatEnabled),
+            ),
             showDivider: true,
           ),
           SettingsListRow(
@@ -554,14 +565,16 @@ class _AssistantControlsPanel extends StatelessWidget {
             icon: Icons.badge_outlined,
             trailing: IgnorePointer(
               child: Switch(
-                value: settings?.aiChatContext.healthProfile ??
+                value:
+                    settings?.aiChatContext.healthProfile ??
                     capabilities.aiChatContext.healthProfile,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleContext(
-              healthProfile: !(settings?.aiChatContext.healthProfile ??
-                  capabilities.aiChatContext.healthProfile),
+              healthProfile:
+                  !(settings?.aiChatContext.healthProfile ??
+                      capabilities.aiChatContext.healthProfile),
             ),
             showDivider: true,
           ),
@@ -571,14 +584,16 @@ class _AssistantControlsPanel extends StatelessWidget {
             icon: Icons.event_note_outlined,
             trailing: IgnorePointer(
               child: Switch(
-                value: settings?.aiChatContext.dailyRecords ??
+                value:
+                    settings?.aiChatContext.dailyRecords ??
                     capabilities.aiChatContext.dailyRecords,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleContext(
-              dailyRecords: !(settings?.aiChatContext.dailyRecords ??
-                  capabilities.aiChatContext.dailyRecords),
+              dailyRecords:
+                  !(settings?.aiChatContext.dailyRecords ??
+                      capabilities.aiChatContext.dailyRecords),
             ),
             showDivider: true,
           ),
@@ -588,14 +603,16 @@ class _AssistantControlsPanel extends StatelessWidget {
             icon: Icons.bedtime_outlined,
             trailing: IgnorePointer(
               child: Switch(
-                value: settings?.aiChatContext.sleepRecords ??
+                value:
+                    settings?.aiChatContext.sleepRecords ??
                     capabilities.aiChatContext.sleepRecords,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleContext(
-              sleepRecords: !(settings?.aiChatContext.sleepRecords ??
-                  capabilities.aiChatContext.sleepRecords),
+              sleepRecords:
+                  !(settings?.aiChatContext.sleepRecords ??
+                      capabilities.aiChatContext.sleepRecords),
             ),
             showDivider: true,
           ),
@@ -605,14 +622,16 @@ class _AssistantControlsPanel extends StatelessWidget {
             icon: Icons.medication_outlined,
             trailing: IgnorePointer(
               child: Switch(
-                value: settings?.aiChatContext.currentMedicines ??
+                value:
+                    settings?.aiChatContext.currentMedicines ??
                     capabilities.aiChatContext.currentMedicines,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleContext(
-              currentMedicines: !(settings?.aiChatContext.currentMedicines ??
-                  capabilities.aiChatContext.currentMedicines),
+              currentMedicines:
+                  !(settings?.aiChatContext.currentMedicines ??
+                      capabilities.aiChatContext.currentMedicines),
             ),
           ),
         ],
@@ -636,7 +655,9 @@ class _ConversationView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    if (!capabilities.canSendMessages) {
+    if (!capabilities.canSendMessages &&
+        state.messages.isEmpty &&
+        state.streamingDraft.isEmpty) {
       return AppStateMessageView(
         title: l10n.aiChatConversationDisabledTitle,
         description: _disabledDescription(l10n, capabilities),
@@ -703,10 +724,10 @@ class _ConversationItem {
   const _ConversationItem._({this.message, this.streamingDraft});
 
   const _ConversationItem.message(AiChatMessage message)
-      : this._(message: message);
+    : this._(message: message);
 
   const _ConversationItem.streaming(String draft)
-      : this._(streamingDraft: draft);
+    : this._(streamingDraft: draft);
 
   final AiChatMessage? message;
   final String? streamingDraft;
@@ -918,8 +939,7 @@ String _sendErrorDescription(
   String fallback,
 ) {
   return switch (errorType) {
-    AiChatSendErrorType.streamInterrupted =>
-      l10n.aiChatErrorStreamInterrupted,
+    AiChatSendErrorType.streamInterrupted => l10n.aiChatErrorStreamInterrupted,
     AiChatSendErrorType.emptyResult => l10n.aiChatErrorEmptyResult,
     AiChatSendErrorType.server => l10n.aiChatErrorServer,
     AiChatSendErrorType.unknown || null => fallback,

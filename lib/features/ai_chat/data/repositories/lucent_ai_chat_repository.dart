@@ -15,13 +15,21 @@ class AiChatGenerationChunkEvent extends AiChatGenerationEvent {
 }
 
 class AiChatGenerationResultEvent extends AiChatGenerationEvent {
-  const AiChatGenerationResultEvent(this.message);
+  const AiChatGenerationResultEvent({
+    required this.conversationId,
+    required this.message,
+  });
 
+  final String conversationId;
   final AiChatMessage message;
 }
 
 abstract interface class AiChatRepository {
   Future<AiChatCapabilities> getCapabilities();
+
+  Future<AiChatConversation?> getLatestConversation();
+
+  Future<bool> clearLatestConversation();
 
   Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages);
 }
@@ -49,6 +57,20 @@ class LucentAiChatRepository implements AiChatRepository {
   }
 
   @override
+  Future<AiChatConversation?> getLatestConversation() async {
+    final dto = await dataSource.getLatestConversation();
+    if (dto == null) {
+      return null;
+    }
+    return _mapConversation(dto);
+  }
+
+  @override
+  Future<bool> clearLatestConversation() {
+    return dataSource.clearLatestConversation();
+  }
+
+  @override
   Stream<AiChatGenerationEvent> streamMessages(
     List<AiChatMessage> messages,
   ) async* {
@@ -56,7 +78,8 @@ class LucentAiChatRepository implements AiChatRepository {
         .map(
           (message) => lucent.AiChatInputMessageDto(
             role: switch (message.role) {
-              AiChatMessageRole.user => lucent.AiChatInputMessageDtoRoleEnum.user,
+              AiChatMessageRole.user =>
+                lucent.AiChatInputMessageDtoRoleEnum.user,
               AiChatMessageRole.assistant =>
                 lucent.AiChatInputMessageDtoRoleEnum.assistant,
             },
@@ -65,13 +88,16 @@ class LucentAiChatRepository implements AiChatRepository {
         )
         .toList(growable: false);
 
-    await for (final event in dataSource.streamMessages(messages: requestMessages)) {
+    await for (final event in dataSource.streamMessages(
+      messages: requestMessages,
+    )) {
       switch (event) {
         case AiChatRemoteChunkEvent():
           yield AiChatGenerationChunkEvent(event.content);
         case AiChatRemoteResultEvent():
           yield AiChatGenerationResultEvent(
-            AiChatMessage(
+            conversationId: event.conversationId,
+            message: AiChatMessage(
               role: AiChatMessageRole.assistant,
               content: event.content,
               usedTools: event.usedTools,
@@ -113,5 +139,44 @@ class LucentAiChatRepository implements AiChatRepository {
           .toList(growable: false),
       updatedAt: DateTime.tryParse(dto.updatedAt ?? ''),
     );
+  }
+
+  AiChatConversation _mapConversation(lucent.AiChatConversationDataDto dto) {
+    return AiChatConversation(
+      id: dto.id,
+      title: dto.title?.toString(),
+      status: dto.status.value,
+      messages: dto.messages
+          .map(_mapConversationMessage)
+          .toList(growable: false),
+      lastMessageAt: _parseDateTime(dto.lastMessageAt),
+      createdAt: _parseDateTime(dto.createdAt) ?? DateTime.now(),
+      updatedAt: _parseDateTime(dto.updatedAt) ?? DateTime.now(),
+    );
+  }
+
+  AiChatMessage _mapConversationMessage(
+    lucent.AiChatConversationMessageDto dto,
+  ) {
+    return AiChatMessage(
+      role: switch (dto.role) {
+        lucent.AiChatConversationMessageDtoRoleEnum.user =>
+          AiChatMessageRole.user,
+        lucent.AiChatConversationMessageDtoRoleEnum.assistant =>
+          AiChatMessageRole.assistant,
+        lucent.AiChatConversationMessageDtoRoleEnum.unknownDefaultOpenApi =>
+          AiChatMessageRole.assistant,
+      },
+      content: dto.content,
+      createdAt: _parseDateTime(dto.createdAt) ?? DateTime.now(),
+      usedTools: dto.usedTools,
+    );
+  }
+
+  DateTime? _parseDateTime(Object? raw) {
+    if (raw == null) {
+      return null;
+    }
+    return DateTime.tryParse(raw.toString());
   }
 }
