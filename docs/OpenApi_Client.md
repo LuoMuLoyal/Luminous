@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-17
+Last updated: 2026-06-18
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 
@@ -14,8 +14,8 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 54 paths / 162 schemas.
-- Generated package includes auth/account, user-scoped health context, daily records, AI daily-record candidate parsing, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, AI chat capability discovery, report dashboard, Today AI analysis, range-based report AI summary (`last_7_days` / `last_30_days`), public support resources/app info, data export request status plus explicit create-request DTOs/enums, and the new Today/Report AI stream response DTOs.
+- Last known Lucent export: 57 paths / 168 schemas.
+- Generated package includes auth/account, user-scoped health context, daily records, AI daily-record candidate parsing, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, AI chat capability discovery plus latest-conversation restore/archive DTOs, report dashboard, Today AI analysis, range-based report AI summary (`last_7_days` / `last_30_days`), public support resources/app info, data export request status plus explicit create-request DTOs/enums, and the new Today/Report AI stream response DTOs.
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay under `/api/v1/account/*`.
 
 ## Usage Rules
@@ -25,7 +25,7 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps instead of generated write DTOs.
 - Medicine reminder create/update writes use a local write input plus raw Dio JSON so `daysOfWeek: null`, `startDate`, and `endDate` are sent with the intended nullable behavior; generated reminder DTOs remain the read-side mapper.
 - Reminder delivery history is read through the feature data source and maps generated/raw response fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain code should still depend on the feature repository boundary.
-- Today AI analysis, Report AI summary, and AI chat streaming all use manual Dio + SSE parsing in `lib/core/network/lucent_sse.dart`, not generated OpenAPI transport methods. Generated DTOs still remain the contract source for capability/result payload shapes.
+- Today AI analysis, Report AI summary, and AI chat streaming all use manual Dio + SSE parsing in `lib/core/network/lucent_sse.dart`, not generated OpenAPI transport methods. AI chat capability/latest/clear reads still use the generated REST methods, and generated DTOs remain the contract source for capability/result payload shapes.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.
 - `401002` triggers refresh and retry.

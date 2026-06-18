@@ -12,23 +12,29 @@ enum AiChatSendErrorType { server, streamInterrupted, emptyResult, unknown }
 class AiChatState {
   const AiChatState({
     this.isLoadingCapabilities = false,
+    this.isLoadingConversation = false,
     this.isSending = false,
     this.capabilities,
     this.capabilityError,
+    this.conversationError,
     this.sendError,
     this.sendErrorType,
     this.lastFailedInput,
+    this.conversationId,
     this.messages = const <AiChatMessage>[],
     this.streamingDraft = '',
   });
 
   final bool isLoadingCapabilities;
+  final bool isLoadingConversation;
   final bool isSending;
   final AiChatCapabilities? capabilities;
   final String? capabilityError;
+  final String? conversationError;
   final String? sendError;
   final AiChatSendErrorType? sendErrorType;
   final String? lastFailedInput;
+  final String? conversationId;
   final List<AiChatMessage> messages;
   final String streamingDraft;
 
@@ -36,18 +42,23 @@ class AiChatState {
 
   AiChatState copyWith({
     bool? isLoadingCapabilities,
+    bool? isLoadingConversation,
     bool? isSending,
     Object? capabilities = _sentinel,
     Object? capabilityError = _sentinel,
+    Object? conversationError = _sentinel,
     Object? sendError = _sentinel,
     Object? sendErrorType = _sentinel,
     Object? lastFailedInput = _sentinel,
+    Object? conversationId = _sentinel,
     List<AiChatMessage>? messages,
     String? streamingDraft,
   }) {
     return AiChatState(
       isLoadingCapabilities:
           isLoadingCapabilities ?? this.isLoadingCapabilities,
+      isLoadingConversation:
+          isLoadingConversation ?? this.isLoadingConversation,
       isSending: isSending ?? this.isSending,
       capabilities: identical(capabilities, _sentinel)
           ? this.capabilities
@@ -55,6 +66,9 @@ class AiChatState {
       capabilityError: identical(capabilityError, _sentinel)
           ? this.capabilityError
           : capabilityError as String?,
+      conversationError: identical(conversationError, _sentinel)
+          ? this.conversationError
+          : conversationError as String?,
       sendError: identical(sendError, _sentinel)
           ? this.sendError
           : sendError as String?,
@@ -64,6 +78,9 @@ class AiChatState {
       lastFailedInput: identical(lastFailedInput, _sentinel)
           ? this.lastFailedInput
           : lastFailedInput as String?,
+      conversationId: identical(conversationId, _sentinel)
+          ? this.conversationId
+          : conversationId as String?,
       messages: messages ?? this.messages,
       streamingDraft: streamingDraft ?? this.streamingDraft,
     );
@@ -80,8 +97,15 @@ class AiChatController extends Notifier<AiChatState> {
       return const AiChatState();
     }
 
-    Future<void>.microtask(loadCapabilities);
-    return const AiChatState(isLoadingCapabilities: true);
+    Future<void>.microtask(_bootstrap);
+    return const AiChatState(
+      isLoadingCapabilities: true,
+      isLoadingConversation: true,
+    );
+  }
+
+  Future<void> _bootstrap() async {
+    await Future.wait<void>([loadCapabilities(), loadLatestConversation()]);
   }
 
   Future<void> loadCapabilities() async {
@@ -91,17 +115,20 @@ class AiChatController extends Notifier<AiChatState> {
         isLoadingCapabilities: false,
         capabilities: null,
         capabilityError: null,
+        conversationId: null,
+        messages: const <AiChatMessage>[],
+        streamingDraft: '',
+        conversationError: null,
       );
       return;
     }
 
-    state = state.copyWith(
-      isLoadingCapabilities: true,
-      capabilityError: null,
-    );
+    state = state.copyWith(isLoadingCapabilities: true, capabilityError: null);
 
     try {
-      final capabilities = await ref.read(aiChatRepositoryProvider).getCapabilities();
+      final capabilities = await ref
+          .read(aiChatRepositoryProvider)
+          .getCapabilities();
       state = state.copyWith(
         isLoadingCapabilities: false,
         capabilities: capabilities,
@@ -116,9 +143,56 @@ class AiChatController extends Notifier<AiChatState> {
     }
   }
 
+  Future<void> loadLatestConversation() async {
+    final session = ref.read(authSessionProvider);
+    if (!session.canAccessProtectedData) {
+      state = state.copyWith(
+        isLoadingConversation: false,
+        conversationId: null,
+        messages: const <AiChatMessage>[],
+        streamingDraft: '',
+        conversationError: null,
+      );
+      return;
+    }
+
+    state = state.copyWith(
+      isLoadingConversation: true,
+      conversationError: null,
+    );
+
+    try {
+      final conversation = await ref
+          .read(aiChatRepositoryProvider)
+          .getLatestConversation();
+      state = state.copyWith(
+        isLoadingConversation: false,
+        conversationId: conversation?.id,
+        messages: conversation?.messages ?? const <AiChatMessage>[],
+        streamingDraft: '',
+        conversationError: null,
+        sendError: null,
+        sendErrorType: null,
+        lastFailedInput: null,
+      );
+    } catch (error) {
+      final message = LucentErrorMapper.fromObject(error).message;
+      state = state.copyWith(
+        isLoadingConversation: false,
+        conversationError: message,
+      );
+    }
+  }
+
   Future<void> sendMessage(String input) async {
-    final trimmed = input.trim();
-    if (trimmed.isEmpty || state.isSending) {
+    await _sendMessageInternal(input.trim(), appendUserMessage: true);
+  }
+
+  Future<void> _sendMessageInternal(
+    String trimmed, {
+    required bool appendUserMessage,
+  }) async {
+    if (trimmed.isEmpty || state.isSending || state.isLoadingConversation) {
       return;
     }
 
@@ -127,14 +201,16 @@ class AiChatController extends Notifier<AiChatState> {
       return;
     }
 
-    final nextMessages = <AiChatMessage>[
-      ...state.messages,
-      AiChatMessage(
-        role: AiChatMessageRole.user,
-        content: trimmed,
-        createdAt: DateTime.now(),
-      ),
-    ];
+    final nextMessages = appendUserMessage
+        ? <AiChatMessage>[
+            ...state.messages,
+            AiChatMessage(
+              role: AiChatMessageRole.user,
+              content: trimmed,
+              createdAt: DateTime.now(),
+            ),
+          ]
+        : List<AiChatMessage>.of(state.messages);
 
     state = state.copyWith(
       messages: nextMessages,
@@ -146,9 +222,8 @@ class AiChatController extends Notifier<AiChatState> {
     );
 
     try {
-      await for (final event in ref
-          .read(aiChatRepositoryProvider)
-          .streamMessages(nextMessages)) {
+      await for (final event
+          in ref.read(aiChatRepositoryProvider).streamMessages(nextMessages)) {
         switch (event) {
           case AiChatGenerationChunkEvent():
             state = state.copyWith(
@@ -158,10 +233,10 @@ class AiChatController extends Notifier<AiChatState> {
             state = state.copyWith(
               isSending: false,
               streamingDraft: '',
-              messages: <AiChatMessage>[
-                ...state.messages,
-                event.message,
-              ],
+              conversationId: event.conversationId.isEmpty
+                  ? state.conversationId
+                  : event.conversationId,
+              messages: <AiChatMessage>[...state.messages, event.message],
             );
             return;
         }
@@ -205,17 +280,42 @@ class AiChatController extends Notifier<AiChatState> {
     if (input == null || input.isEmpty) {
       return;
     }
-    await sendMessage(input);
+    await _sendMessageInternal(
+      input,
+      appendUserMessage: !_hasPendingUserMessage(input),
+    );
   }
 
-  void clearConversation() {
+  Future<void> clearConversation() async {
+    if (state.isSending || state.isLoadingConversation) {
+      return;
+    }
+
+    try {
+      await ref.read(aiChatRepositoryProvider).clearLatestConversation();
+    } catch (error) {
+      final message = LucentErrorMapper.fromObject(error).message;
+      state = state.copyWith(conversationError: message);
+      return;
+    }
+
     state = state.copyWith(
+      conversationId: null,
       messages: const <AiChatMessage>[],
       streamingDraft: '',
+      conversationError: null,
       sendError: null,
       sendErrorType: null,
       lastFailedInput: null,
     );
+  }
+
+  bool _hasPendingUserMessage(String input) {
+    if (state.messages.isEmpty) {
+      return false;
+    }
+    final last = state.messages.last;
+    return last.role == AiChatMessageRole.user && last.content == input;
   }
 }
 

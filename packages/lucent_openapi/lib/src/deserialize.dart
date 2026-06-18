@@ -6,6 +6,11 @@ import 'package:lucent_openapi/src/model/account_response_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_capabilities_data_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_capabilities_response_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_context_settings_dto.dart';
+import 'package:lucent_openapi/src/model/ai_chat_controller_clear_latest_conversation_v1200_response.dart';
+import 'package:lucent_openapi/src/model/ai_chat_controller_clear_latest_conversation_v1200_response_data.dart';
+import 'package:lucent_openapi/src/model/ai_chat_conversation_data_dto.dart';
+import 'package:lucent_openapi/src/model/ai_chat_conversation_message_dto.dart';
+import 'package:lucent_openapi/src/model/ai_chat_conversation_response_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_input_message_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_stream_result_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_tool_capability_dto.dart';
@@ -174,6 +179,16 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return AiChatCapabilitiesResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AiChatContextSettingsDto':
           return AiChatContextSettingsDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AiChatControllerClearLatestConversationV1200Response':
+          return AiChatControllerClearLatestConversationV1200Response.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AiChatControllerClearLatestConversationV1200ResponseData':
+          return AiChatControllerClearLatestConversationV1200ResponseData.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AiChatConversationDataDto':
+          return AiChatConversationDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AiChatConversationMessageDto':
+          return AiChatConversationMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AiChatConversationResponseDto':
+          return AiChatConversationResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AiChatInputMessageDto':
           return AiChatInputMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AiChatStreamResultDto':
