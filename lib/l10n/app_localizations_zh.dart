@@ -2539,6 +2539,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiChatToolRecordsByRange => '区间记录';
 
   @override
+  String get aiChatToolTodaySummaryByDate => '指定日期总结';
+
+  @override
+  String get aiChatToolReportSummaryByRange => '指定报告总结';
+
+  @override
   String get aiChatToolRecentTodaySummaries => '今日历史总结';
 
   @override

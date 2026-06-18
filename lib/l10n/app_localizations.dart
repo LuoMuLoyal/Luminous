@@ -4940,6 +4940,18 @@ abstract class AppLocalizations {
   /// **'区间记录'**
   String get aiChatToolRecordsByRange;
 
+  /// No description provided for @aiChatToolTodaySummaryByDate.
+  ///
+  /// In zh, this message translates to:
+  /// **'指定日期总结'**
+  String get aiChatToolTodaySummaryByDate;
+
+  /// No description provided for @aiChatToolReportSummaryByRange.
+  ///
+  /// In zh, this message translates to:
+  /// **'指定报告总结'**
+  String get aiChatToolReportSummaryByRange;
+
   /// No description provided for @aiChatToolRecentTodaySummaries.
   ///
   /// In zh, this message translates to:

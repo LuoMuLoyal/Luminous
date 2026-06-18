@@ -114,6 +114,14 @@ enum AiChatToolCapabilityDtoNameEnum {
   getRecordsByRange(r'get_records_by_range'),
 
   /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_today_summary_by_date')
+  getTodaySummaryByDate(r'get_today_summary_by_date'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_report_summary_by_range')
+  getReportSummaryByRange(r'get_report_summary_by_range'),
+
+  /// Stable tool identifier exposed to the client.
   @JsonValue(r'get_recent_today_summaries')
   getRecentTodaySummaries(r'get_recent_today_summaries'),
 

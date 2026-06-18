@@ -1158,6 +1158,8 @@
   "aiChatToolTodayRecords": "今日记录",
   "aiChatToolRecordsByDate": "按日记录",
   "aiChatToolRecordsByRange": "区间记录",
+  "aiChatToolTodaySummaryByDate": "指定日期总结",
+  "aiChatToolReportSummaryByRange": "指定报告总结",
   "aiChatToolRecentTodaySummaries": "今日历史总结",
   "aiChatToolRecentReportSummaries": "报告历史总结",
   "aiChatToolUserProfile": "用户档案",

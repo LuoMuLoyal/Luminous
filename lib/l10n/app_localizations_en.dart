@@ -2740,6 +2740,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiChatToolRecordsByRange => 'Records by range';
 
   @override
+  String get aiChatToolTodaySummaryByDate => 'Today summary by date';
+
+  @override
+  String get aiChatToolReportSummaryByRange => 'Report summary by range';
+
+  @override
   String get aiChatToolRecentTodaySummaries => 'Past Today summaries';
 
   @override

@@ -66,6 +66,10 @@ const _$AiChatToolCapabilityDtoNameEnumEnumMap = {
   AiChatToolCapabilityDtoNameEnum.getTodayRecords: 'get_today_records',
   AiChatToolCapabilityDtoNameEnum.getRecordsByDate: 'get_records_by_date',
   AiChatToolCapabilityDtoNameEnum.getRecordsByRange: 'get_records_by_range',
+  AiChatToolCapabilityDtoNameEnum.getTodaySummaryByDate:
+      'get_today_summary_by_date',
+  AiChatToolCapabilityDtoNameEnum.getReportSummaryByRange:
+      'get_report_summary_by_range',
   AiChatToolCapabilityDtoNameEnum.getRecentTodaySummaries:
       'get_recent_today_summaries',
   AiChatToolCapabilityDtoNameEnum.getRecentReportSummaries:
