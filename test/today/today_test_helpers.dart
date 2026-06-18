@@ -84,6 +84,7 @@ UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
     aiSummariesEnabled: aiSummariesEnabled,
     dataSharingConsent: false,
     aiChatEnabled: true,
+    aiChatMemoryEnabled: false,
     aiChatContext: AiChatContextSettingsDto(
       healthProfile: true,
       dailyRecords: true,

@@ -186,6 +186,8 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
               capabilities: capabilities,
               onToggleEnabled: (nextValue) =>
                   _toggleAiChatEnabled(context, nextValue),
+              onToggleMemoryEnabled: (nextValue) =>
+                  _toggleAiChatMemoryEnabled(context, nextValue),
               onToggleContext:
                   ({
                     bool? healthProfile,
@@ -276,6 +278,23 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
               currentMedicines: currentMedicines ?? current.currentMedicines,
             ),
           );
+      await ref.read(aiChatControllerProvider.notifier).loadCapabilities();
+    } catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+      await AppToast.show(context, LucentErrorMapper.fromObject(error).message);
+    }
+  }
+
+  Future<void> _toggleAiChatMemoryEnabled(
+    BuildContext context,
+    bool nextValue,
+  ) async {
+    try {
+      await ref
+          .read(userSettingsControllerProvider.notifier)
+          .setAiChatMemoryEnabled(nextValue);
       await ref.read(aiChatControllerProvider.notifier).loadCapabilities();
     } catch (error) {
       if (!context.mounted) {
@@ -589,6 +608,7 @@ class _AssistantControlsPanel extends StatelessWidget {
     required this.fallbackContext,
     required this.capabilities,
     required this.onToggleEnabled,
+    required this.onToggleMemoryEnabled,
     required this.onToggleContext,
   });
 
@@ -598,6 +618,7 @@ class _AssistantControlsPanel extends StatelessWidget {
   final UpdateAiChatContextSettingsDto? fallbackContext;
   final AiChatCapabilities capabilities;
   final ValueChanged<bool> onToggleEnabled;
+  final ValueChanged<bool> onToggleMemoryEnabled;
   final Future<void> Function({
     bool? healthProfile,
     bool? dailyRecords,
@@ -635,6 +656,25 @@ class _AssistantControlsPanel extends StatelessWidget {
             ),
             onTap: () => onToggleEnabled(
               !(settings?.aiChatEnabled ?? capabilities.aiChatEnabled),
+            ),
+            showDivider: true,
+          ),
+          SettingsListRow(
+            key: const Key('ai-chat-row-memory-enabled'),
+            title: l10n.aiChatSettingsMemoryTitle,
+            subtitle: l10n.aiChatSettingsMemorySubtitle,
+            icon: Icons.psychology_alt_outlined,
+            trailing: IgnorePointer(
+              child: Switch(
+                value:
+                    settings?.aiChatMemoryEnabled ??
+                    capabilities.aiChatMemoryEnabled,
+                onChanged: (_) {},
+              ),
+            ),
+            onTap: () => onToggleMemoryEnabled(
+              !(settings?.aiChatMemoryEnabled ??
+                  capabilities.aiChatMemoryEnabled),
             ),
             showDivider: true,
           ),
@@ -1144,10 +1184,15 @@ class _RecentConversationSheet extends StatelessWidget {
 String _localizeToolName(String toolId, BuildContext context) {
   final l10n = AppLocalizations.of(context)!;
   return switch (toolId) {
-    'health_context_snapshot' => l10n.aiChatToolHealthContext,
-    'recent_daily_records' => l10n.aiChatToolRecentDailyRecords,
-    'recent_sleep_summary' => l10n.aiChatToolRecentSleepSummary,
-    'current_medicines' => l10n.aiChatToolCurrentMedicines,
+    'get_today_records' => l10n.aiChatToolTodayRecords,
+    'get_records_by_date' => l10n.aiChatToolRecordsByDate,
+    'get_records_by_range' => l10n.aiChatToolRecordsByRange,
+    'get_recent_today_summaries' => l10n.aiChatToolRecentTodaySummaries,
+    'get_recent_report_summaries' => l10n.aiChatToolRecentReportSummaries,
+    'get_user_profile' => l10n.aiChatToolUserProfile,
+    'get_user_settings' => l10n.aiChatToolUserSettings,
+    'get_current_medicines' => l10n.aiChatToolCurrentMedicines,
+    'get_sleep_summary_by_range' => l10n.aiChatToolSleepByRange,
     _ => toolId,
   };
 }

@@ -360,6 +360,7 @@ class _FakeAiChatRepository implements AiChatRepository {
   static const _capabilities = AiChatCapabilities(
     phase: 'phase_1',
     aiChatEnabled: true,
+    aiChatMemoryEnabled: false,
     aiChatContext: AiChatContextPermissions(
       healthProfile: true,
       dailyRecords: true,
@@ -446,6 +447,7 @@ class _ReadyUserSettingsController extends UserSettingsController {
       aiSummariesEnabled: false,
       dataSharingConsent: false,
       aiChatEnabled: true,
+      aiChatMemoryEnabled: false,
       aiChatContext: AiChatContextSettingsDto(
         healthProfile: true,
         dailyRecords: true,
@@ -514,7 +516,7 @@ class _SuccessWithToolsAiChatRepository implements AiChatRepository {
         message: AiChatMessage(
           role: AiChatMessageRole.assistant,
           content: '你最近的睡眠质量不错，建议保持规律作息。',
-          usedTools: const <String>['recent_sleep_summary'],
+          usedTools: const <String>['get_sleep_summary_by_range'],
           createdAt: DateTime.now(),
         ),
       ),
@@ -543,6 +545,7 @@ class _DisabledAiChatRepository implements AiChatRepository {
     return const AiChatCapabilities(
       phase: 'phase_1',
       aiChatEnabled: false,
+      aiChatMemoryEnabled: false,
       aiChatContext: AiChatContextPermissions(
         healthProfile: true,
         dailyRecords: true,
@@ -626,7 +629,7 @@ class _RestoredConversationAiChatRepository implements AiChatRepository {
           role: AiChatMessageRole.assistant,
           content: '我看到你最近有睡眠记录，可以先从作息规律开始看。',
           createdAt: DateTime.parse('2026-06-18T01:01:00Z'),
-          usedTools: const <String>['recent_sleep_summary'],
+          usedTools: const <String>['get_sleep_summary_by_range'],
         ),
       ],
       lastMessageAt: DateTime.parse('2026-06-18T01:01:00Z'),

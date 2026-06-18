@@ -19,6 +19,10 @@ UpdateUserSettingsDto _$UpdateUserSettingsDtoFromJson(
       (v) => v as bool?,
     ),
     aiChatEnabled: $checkedConvert('aiChatEnabled', (v) => v as bool?),
+    aiChatMemoryEnabled: $checkedConvert(
+      'aiChatMemoryEnabled',
+      (v) => v as bool?,
+    ),
     aiChatContext: $checkedConvert(
       'aiChatContext',
       (v) => v == null
@@ -37,6 +41,8 @@ Map<String, dynamic> _$UpdateUserSettingsDtoToJson(
   if (instance.dataSharingConsent != null)
     'dataSharingConsent': instance.dataSharingConsent,
   if (instance.aiChatEnabled != null) 'aiChatEnabled': instance.aiChatEnabled,
+  if (instance.aiChatMemoryEnabled != null)
+    'aiChatMemoryEnabled': instance.aiChatMemoryEnabled,
   if (instance.aiChatContext?.toJson() != null)
     'aiChatContext': instance.aiChatContext?.toJson(),
 };

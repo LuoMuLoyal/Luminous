@@ -2415,6 +2415,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiChatSettingsEnableSubtitle => '关闭后不会发送新的对话请求';
 
   @override
+  String get aiChatSettingsMemoryTitle => '启用持久化记忆';
+
+  @override
+  String get aiChatSettingsMemorySubtitle => '新对话开始时，可选择让助手参考之前的对话历史';
+
+  @override
   String get aiChatContextHealthProfile => '健康档案';
 
   @override
@@ -2524,16 +2530,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiChatErrorServer => '服务端出现问题，请稍后再试。';
 
   @override
-  String get aiChatToolHealthContext => '健康档案';
+  String get aiChatToolTodayRecords => '今日记录';
 
   @override
-  String get aiChatToolRecentDailyRecords => '近期记录';
+  String get aiChatToolRecordsByDate => '按日记录';
 
   @override
-  String get aiChatToolRecentSleepSummary => '睡眠概况';
+  String get aiChatToolRecordsByRange => '区间记录';
+
+  @override
+  String get aiChatToolRecentTodaySummaries => '今日历史总结';
+
+  @override
+  String get aiChatToolRecentReportSummaries => '报告历史总结';
+
+  @override
+  String get aiChatToolUserProfile => '用户档案';
+
+  @override
+  String get aiChatToolUserSettings => '用户设置';
 
   @override
   String get aiChatToolCurrentMedicines => '当前用药';
+
+  @override
+  String get aiChatToolSleepByRange => '睡眠概况';
 
   @override
   String get aiChatUsedToolsLabel => '参考来源';

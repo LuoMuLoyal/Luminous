@@ -128,6 +128,7 @@ class LucentAiChatRepository implements AiChatRepository {
     return AiChatCapabilities(
       phase: dto.phase,
       aiChatEnabled: dto.aiChatEnabled,
+      aiChatMemoryEnabled: dto.aiChatMemoryEnabled,
       aiChatContext: AiChatContextPermissions(
         healthProfile: dto.aiChatContext.healthProfile,
         dailyRecords: dto.aiChatContext.dailyRecords,

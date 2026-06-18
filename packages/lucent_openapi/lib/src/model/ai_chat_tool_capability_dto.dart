@@ -102,20 +102,40 @@ class AiChatToolCapabilityDto {
 /// Stable tool identifier exposed to the client.
 enum AiChatToolCapabilityDtoNameEnum {
   /// Stable tool identifier exposed to the client.
-  @JsonValue(r'health_context_snapshot')
-  healthContextSnapshot(r'health_context_snapshot'),
+  @JsonValue(r'get_today_records')
+  getTodayRecords(r'get_today_records'),
 
   /// Stable tool identifier exposed to the client.
-  @JsonValue(r'recent_daily_records')
-  recentDailyRecords(r'recent_daily_records'),
+  @JsonValue(r'get_records_by_date')
+  getRecordsByDate(r'get_records_by_date'),
 
   /// Stable tool identifier exposed to the client.
-  @JsonValue(r'recent_sleep_summary')
-  recentSleepSummary(r'recent_sleep_summary'),
+  @JsonValue(r'get_records_by_range')
+  getRecordsByRange(r'get_records_by_range'),
 
   /// Stable tool identifier exposed to the client.
-  @JsonValue(r'current_medicines')
-  currentMedicines(r'current_medicines'),
+  @JsonValue(r'get_recent_today_summaries')
+  getRecentTodaySummaries(r'get_recent_today_summaries'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_recent_report_summaries')
+  getRecentReportSummaries(r'get_recent_report_summaries'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_user_profile')
+  getUserProfile(r'get_user_profile'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_user_settings')
+  getUserSettings(r'get_user_settings'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_current_medicines')
+  getCurrentMedicines(r'get_current_medicines'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_sleep_summary_by_range')
+  getSleepSummaryByRange(r'get_sleep_summary_by_range'),
 
   /// Stable tool identifier exposed to the client.
   @JsonValue(r'unknown_default_open_api')

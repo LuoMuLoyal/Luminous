@@ -4694,6 +4694,18 @@ abstract class AppLocalizations {
   /// **'关闭后不会发送新的对话请求'**
   String get aiChatSettingsEnableSubtitle;
 
+  /// No description provided for @aiChatSettingsMemoryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'启用持久化记忆'**
+  String get aiChatSettingsMemoryTitle;
+
+  /// No description provided for @aiChatSettingsMemorySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'新对话开始时，可选择让助手参考之前的对话历史'**
+  String get aiChatSettingsMemorySubtitle;
+
   /// No description provided for @aiChatContextHealthProfile.
   ///
   /// In zh, this message translates to:
@@ -4910,29 +4922,59 @@ abstract class AppLocalizations {
   /// **'服务端出现问题，请稍后再试。'**
   String get aiChatErrorServer;
 
-  /// No description provided for @aiChatToolHealthContext.
+  /// No description provided for @aiChatToolTodayRecords.
   ///
   /// In zh, this message translates to:
-  /// **'健康档案'**
-  String get aiChatToolHealthContext;
+  /// **'今日记录'**
+  String get aiChatToolTodayRecords;
 
-  /// No description provided for @aiChatToolRecentDailyRecords.
+  /// No description provided for @aiChatToolRecordsByDate.
   ///
   /// In zh, this message translates to:
-  /// **'近期记录'**
-  String get aiChatToolRecentDailyRecords;
+  /// **'按日记录'**
+  String get aiChatToolRecordsByDate;
 
-  /// No description provided for @aiChatToolRecentSleepSummary.
+  /// No description provided for @aiChatToolRecordsByRange.
   ///
   /// In zh, this message translates to:
-  /// **'睡眠概况'**
-  String get aiChatToolRecentSleepSummary;
+  /// **'区间记录'**
+  String get aiChatToolRecordsByRange;
+
+  /// No description provided for @aiChatToolRecentTodaySummaries.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日历史总结'**
+  String get aiChatToolRecentTodaySummaries;
+
+  /// No description provided for @aiChatToolRecentReportSummaries.
+  ///
+  /// In zh, this message translates to:
+  /// **'报告历史总结'**
+  String get aiChatToolRecentReportSummaries;
+
+  /// No description provided for @aiChatToolUserProfile.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户档案'**
+  String get aiChatToolUserProfile;
+
+  /// No description provided for @aiChatToolUserSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户设置'**
+  String get aiChatToolUserSettings;
 
   /// No description provided for @aiChatToolCurrentMedicines.
   ///
   /// In zh, this message translates to:
   /// **'当前用药'**
   String get aiChatToolCurrentMedicines;
+
+  /// No description provided for @aiChatToolSleepByRange.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠概况'**
+  String get aiChatToolSleepByRange;
 
   /// No description provided for @aiChatUsedToolsLabel.
   ///

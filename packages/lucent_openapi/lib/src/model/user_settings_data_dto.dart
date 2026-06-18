@@ -23,6 +23,8 @@ class UserSettingsDataDto {
 
     required this.aiChatEnabled,
 
+    required this.aiChatMemoryEnabled,
+
     required this.aiChatContext,
 
     required this.updatedAt,
@@ -40,6 +42,10 @@ class UserSettingsDataDto {
   @JsonKey(name: r'aiChatEnabled', required: true, includeIfNull: false)
   final bool aiChatEnabled;
 
+  /// Allow AI chat to reuse persisted assistant history as cross-conversation memory.
+  @JsonKey(name: r'aiChatMemoryEnabled', required: true, includeIfNull: false)
+  final bool aiChatMemoryEnabled;
+
   /// Fine-grained AI chat context permissions.
   @JsonKey(name: r'aiChatContext', required: true, includeIfNull: false)
   final AiChatContextSettingsDto aiChatContext;
@@ -55,6 +61,7 @@ class UserSettingsDataDto {
           other.aiSummariesEnabled == aiSummariesEnabled &&
           other.dataSharingConsent == dataSharingConsent &&
           other.aiChatEnabled == aiChatEnabled &&
+          other.aiChatMemoryEnabled == aiChatMemoryEnabled &&
           other.aiChatContext == aiChatContext &&
           other.updatedAt == updatedAt;
 
@@ -63,6 +70,7 @@ class UserSettingsDataDto {
       aiSummariesEnabled.hashCode +
       dataSharingConsent.hashCode +
       aiChatEnabled.hashCode +
+      aiChatMemoryEnabled.hashCode +
       aiChatContext.hashCode +
       (updatedAt == null ? 0 : updatedAt.hashCode);
 

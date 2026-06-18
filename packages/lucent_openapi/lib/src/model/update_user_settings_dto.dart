@@ -23,6 +23,8 @@ class UpdateUserSettingsDto {
 
     this.aiChatEnabled,
 
+    this.aiChatMemoryEnabled,
+
     this.aiChatContext,
   });
 
@@ -38,6 +40,10 @@ class UpdateUserSettingsDto {
   @JsonKey(name: r'aiChatEnabled', required: false, includeIfNull: false)
   final bool? aiChatEnabled;
 
+  /// Allow AI chat to reuse persisted assistant history as cross-conversation memory.
+  @JsonKey(name: r'aiChatMemoryEnabled', required: false, includeIfNull: false)
+  final bool? aiChatMemoryEnabled;
+
   /// Fine-grained permissions for what AI chat may read.
   @JsonKey(name: r'aiChatContext', required: false, includeIfNull: false)
   final UpdateAiChatContextSettingsDto? aiChatContext;
@@ -49,6 +55,7 @@ class UpdateUserSettingsDto {
           other.aiSummariesEnabled == aiSummariesEnabled &&
           other.dataSharingConsent == dataSharingConsent &&
           other.aiChatEnabled == aiChatEnabled &&
+          other.aiChatMemoryEnabled == aiChatMemoryEnabled &&
           other.aiChatContext == aiChatContext;
 
   @override
@@ -56,6 +63,7 @@ class UpdateUserSettingsDto {
       aiSummariesEnabled.hashCode +
       dataSharingConsent.hashCode +
       aiChatEnabled.hashCode +
+      aiChatMemoryEnabled.hashCode +
       aiChatContext.hashCode;
 
   factory UpdateUserSettingsDto.fromJson(Map<String, dynamic> json) =>

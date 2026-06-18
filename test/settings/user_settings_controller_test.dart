@@ -248,6 +248,33 @@ void main() {
       expect(fakeApi.lastPatchDto?.aiChatContext, isNull);
     });
 
+    test('setAiChatMemoryEnabled patches settings and updates state on success', () async {
+      container = buildContainer();
+
+      await container.read(userSettingsControllerProvider.future);
+
+      fakeApi.patchResponse = _buildResponse(
+        aiSummariesEnabled: false,
+        dataSharingConsent: true,
+        aiChatEnabled: true,
+        aiChatMemoryEnabled: true,
+        aiChatContext: AiChatContextSettingsDto(
+          healthProfile: true,
+          dailyRecords: true,
+          sleepRecords: true,
+          currentMedicines: true,
+        ),
+      );
+
+      await container
+          .read(userSettingsControllerProvider.notifier)
+          .setAiChatMemoryEnabled(true);
+
+      final state = container.read(userSettingsControllerProvider);
+      expect(state.value?.aiChatMemoryEnabled, isTrue);
+      expect(fakeApi.lastPatchDto?.aiChatMemoryEnabled, isTrue);
+    });
+
     test('setAiChatContext patches context fields and updates state on success', () async {
       container = buildContainer();
 
@@ -390,6 +417,7 @@ UserSettingsResponseDto _buildResponse({
   bool aiSummariesEnabled = false,
   bool dataSharingConsent = false,
   bool aiChatEnabled = true,
+  bool aiChatMemoryEnabled = false,
   AiChatContextSettingsDto? aiChatContext,
 }) {
   return UserSettingsResponseDto(
@@ -399,6 +427,7 @@ UserSettingsResponseDto _buildResponse({
       aiSummariesEnabled: aiSummariesEnabled,
       dataSharingConsent: dataSharingConsent,
       aiChatEnabled: aiChatEnabled,
+      aiChatMemoryEnabled: aiChatMemoryEnabled,
       aiChatContext:
           aiChatContext ??
           AiChatContextSettingsDto(
@@ -430,6 +459,7 @@ class _FakeUserSettingsApi extends UserSettingsApi {
       aiSummariesEnabled: false,
       dataSharingConsent: true,
       aiChatEnabled: true,
+      aiChatMemoryEnabled: false,
       aiChatContext: AiChatContextSettingsDto(
         healthProfile: true,
         dailyRecords: true,

@@ -63,11 +63,18 @@ Map<String, dynamic> _$AiChatToolCapabilityDtoToJson(
 };
 
 const _$AiChatToolCapabilityDtoNameEnumEnumMap = {
-  AiChatToolCapabilityDtoNameEnum.healthContextSnapshot:
-      'health_context_snapshot',
-  AiChatToolCapabilityDtoNameEnum.recentDailyRecords: 'recent_daily_records',
-  AiChatToolCapabilityDtoNameEnum.recentSleepSummary: 'recent_sleep_summary',
-  AiChatToolCapabilityDtoNameEnum.currentMedicines: 'current_medicines',
+  AiChatToolCapabilityDtoNameEnum.getTodayRecords: 'get_today_records',
+  AiChatToolCapabilityDtoNameEnum.getRecordsByDate: 'get_records_by_date',
+  AiChatToolCapabilityDtoNameEnum.getRecordsByRange: 'get_records_by_range',
+  AiChatToolCapabilityDtoNameEnum.getRecentTodaySummaries:
+      'get_recent_today_summaries',
+  AiChatToolCapabilityDtoNameEnum.getRecentReportSummaries:
+      'get_recent_report_summaries',
+  AiChatToolCapabilityDtoNameEnum.getUserProfile: 'get_user_profile',
+  AiChatToolCapabilityDtoNameEnum.getUserSettings: 'get_user_settings',
+  AiChatToolCapabilityDtoNameEnum.getCurrentMedicines: 'get_current_medicines',
+  AiChatToolCapabilityDtoNameEnum.getSleepSummaryByRange:
+      'get_sleep_summary_by_range',
   AiChatToolCapabilityDtoNameEnum.unknownDefaultOpenApi:
       'unknown_default_open_api',
 };

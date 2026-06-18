@@ -14,6 +14,7 @@ AiChatCapabilitiesDataDto _$AiChatCapabilitiesDataDtoFromJson(
     requiredKeys: const [
       'phase',
       'aiChatEnabled',
+      'aiChatMemoryEnabled',
       'aiChatContext',
       'chatModelConfigured',
       'interactiveChatReady',
@@ -29,6 +30,10 @@ AiChatCapabilitiesDataDto _$AiChatCapabilitiesDataDtoFromJson(
   final val = AiChatCapabilitiesDataDto(
     phase: $checkedConvert('phase', (v) => v as String),
     aiChatEnabled: $checkedConvert('aiChatEnabled', (v) => v as bool),
+    aiChatMemoryEnabled: $checkedConvert(
+      'aiChatMemoryEnabled',
+      (v) => v as bool,
+    ),
     aiChatContext: $checkedConvert(
       'aiChatContext',
       (v) => AiChatContextSettingsDto.fromJson(v as Map<String, dynamic>),
@@ -70,6 +75,7 @@ Map<String, dynamic> _$AiChatCapabilitiesDataDtoToJson(
 ) => <String, dynamic>{
   'phase': instance.phase,
   'aiChatEnabled': instance.aiChatEnabled,
+  'aiChatMemoryEnabled': instance.aiChatMemoryEnabled,
   'aiChatContext': instance.aiChatContext.toJson(),
   'chatModelConfigured': instance.chatModelConfigured,
   'interactiveChatReady': instance.interactiveChatReady,

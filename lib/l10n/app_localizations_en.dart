@@ -2603,6 +2603,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'When disabled, no new chat requests will be sent';
 
   @override
+  String get aiChatSettingsMemoryTitle => 'Enable persistent memory';
+
+  @override
+  String get aiChatSettingsMemorySubtitle =>
+      'When a new chat starts, the assistant may reference earlier conversations';
+
+  @override
   String get aiChatContextHealthProfile => 'Health profile';
 
   @override
@@ -2724,16 +2731,31 @@ class AppLocalizationsEn extends AppLocalizations {
       'The server encountered an issue. Please try again later.';
 
   @override
-  String get aiChatToolHealthContext => 'Health profile';
+  String get aiChatToolTodayRecords => 'Today records';
 
   @override
-  String get aiChatToolRecentDailyRecords => 'Recent records';
+  String get aiChatToolRecordsByDate => 'Records by date';
 
   @override
-  String get aiChatToolRecentSleepSummary => 'Sleep summary';
+  String get aiChatToolRecordsByRange => 'Records by range';
+
+  @override
+  String get aiChatToolRecentTodaySummaries => 'Past Today summaries';
+
+  @override
+  String get aiChatToolRecentReportSummaries => 'Past Report summaries';
+
+  @override
+  String get aiChatToolUserProfile => 'User profile';
+
+  @override
+  String get aiChatToolUserSettings => 'User settings';
 
   @override
   String get aiChatToolCurrentMedicines => 'Current medicines';
+
+  @override
+  String get aiChatToolSleepByRange => 'Sleep summary';
 
   @override
   String get aiChatUsedToolsLabel => 'Sources used';

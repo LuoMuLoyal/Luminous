@@ -22,6 +22,8 @@ class AiChatCapabilitiesDataDto {
 
     required this.aiChatEnabled,
 
+    required this.aiChatMemoryEnabled,
+
     required this.aiChatContext,
 
     required this.chatModelConfigured,
@@ -50,6 +52,10 @@ class AiChatCapabilitiesDataDto {
   /// Whether the user has left AI chat enabled in settings.
   @JsonKey(name: r'aiChatEnabled', required: true, includeIfNull: false)
   final bool aiChatEnabled;
+
+  /// Whether cross-conversation assistant memory reuse is enabled for this user.
+  @JsonKey(name: r'aiChatMemoryEnabled', required: true, includeIfNull: false)
+  final bool aiChatMemoryEnabled;
 
   /// Fine-grained AI chat context permissions from user settings.
   @JsonKey(name: r'aiChatContext', required: true, includeIfNull: false)
@@ -101,6 +107,7 @@ class AiChatCapabilitiesDataDto {
       other is AiChatCapabilitiesDataDto &&
           other.phase == phase &&
           other.aiChatEnabled == aiChatEnabled &&
+          other.aiChatMemoryEnabled == aiChatMemoryEnabled &&
           other.aiChatContext == aiChatContext &&
           other.chatModelConfigured == chatModelConfigured &&
           other.interactiveChatReady == interactiveChatReady &&
@@ -116,6 +123,7 @@ class AiChatCapabilitiesDataDto {
   int get hashCode =>
       phase.hashCode +
       aiChatEnabled.hashCode +
+      aiChatMemoryEnabled.hashCode +
       aiChatContext.hashCode +
       chatModelConfigured.hashCode +
       interactiveChatReady.hashCode +
