@@ -28,6 +28,10 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
     await _patch(UpdateUserSettingsDto(aiChatEnabled: enabled));
   }
 
+  Future<void> setAiChatMemoryEnabled(bool enabled) async {
+    await _patch(UpdateUserSettingsDto(aiChatMemoryEnabled: enabled));
+  }
+
   Future<void> setAiChatContext(
     UpdateAiChatContextSettingsDto contextSettings,
   ) async {

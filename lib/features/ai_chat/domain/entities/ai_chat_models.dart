@@ -46,6 +46,7 @@ class AiChatCapabilities {
   const AiChatCapabilities({
     required this.phase,
     required this.aiChatEnabled,
+    required this.aiChatMemoryEnabled,
     required this.aiChatContext,
     required this.chatModelConfigured,
     required this.interactiveChatReady,
@@ -60,6 +61,7 @@ class AiChatCapabilities {
 
   final String phase;
   final bool aiChatEnabled;
+  final bool aiChatMemoryEnabled;
   final AiChatContextPermissions aiChatContext;
   final bool chatModelConfigured;
   final bool interactiveChatReady;
