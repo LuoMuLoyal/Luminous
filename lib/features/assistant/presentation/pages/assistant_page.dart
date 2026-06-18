@@ -11,29 +11,29 @@ import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/ai_chat/domain/entities/ai_chat_models.dart';
-import 'package:luminous/features/ai_chat/presentation/providers/ai_chat_controller.dart';
+import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
+import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class AiChatPage extends ConsumerStatefulWidget {
-  const AiChatPage({super.key});
+class AssistantPage extends ConsumerStatefulWidget {
+  const AssistantPage({super.key});
 
   @override
-  ConsumerState<AiChatPage> createState() => _AiChatPageState();
+  ConsumerState<AssistantPage> createState() => _AssistantPageState();
 }
 
-class _AiChatPageState extends ConsumerState<AiChatPage> {
+class _AssistantPageState extends ConsumerState<AssistantPage> {
   final TextEditingController _inputController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    ref.listenManual<AiChatState>(aiChatControllerProvider, (_, __) {
+    ref.listenManual<AssistantState>(assistantControllerProvider, (_, __) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     });
   }
@@ -55,31 +55,31 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
         ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
         : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
     final session = ref.watch(authSessionProvider);
-    final chatState = ref.watch(aiChatControllerProvider);
+    final chatState = ref.watch(assistantControllerProvider);
     final settingsAsync = session.canAccessProtectedData
         ? ref.watch(userSettingsControllerProvider)
         : null;
     final settings = settingsAsync?.asData?.value;
     final capabilities = chatState.capabilities;
     final effectiveContext = settings == null && capabilities != null
-        ? UpdateAiChatContextSettingsDto(
-            healthProfile: capabilities.aiChatContext.healthProfile,
-            dailyRecords: capabilities.aiChatContext.dailyRecords,
-            sleepRecords: capabilities.aiChatContext.sleepRecords,
-            currentMedicines: capabilities.aiChatContext.currentMedicines,
+        ? UpdateAssistantContextSettingsDto(
+            healthProfile: capabilities.assistantContext.healthProfile,
+            dailyRecords: capabilities.assistantContext.dailyRecords,
+            sleepRecords: capabilities.assistantContext.sleepRecords,
+            currentMedicines: capabilities.assistantContext.currentMedicines,
           )
         : null;
 
     return Material(
       color: surface.canvasSoft,
       child: PageScaffoldShell(
-        title: l10n.aiChatPageTitle,
+        title: l10n.assistantPageTitle,
         centerTitle: true,
         leading: SettingsBackButton(onTap: () => context.pop()),
         actions: [
           IconButton(
-            key: const Key('ai-chat-recent-conversations-action'),
-            tooltip: l10n.aiChatRecentConversationsAction,
+            key: const Key('assistant-recent-conversations-action'),
+            tooltip: l10n.assistantRecentConversationsAction,
             onPressed:
                 !session.canAccessProtectedData ||
                     chatState.isLoadingRecentConversations ||
@@ -89,8 +89,8 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
             icon: const Icon(Icons.history_rounded),
           ),
           IconButton(
-            key: const Key('ai-chat-new-conversation-action'),
-            tooltip: l10n.aiChatNewConversationAction,
+            key: const Key('assistant-new-conversation-action'),
+            tooltip: l10n.assistantNewConversationAction,
             onPressed:
                 !session.canAccessProtectedData ||
                     chatState.isLoadingConversation ||
@@ -103,11 +103,11 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
         ],
         children: [
           if (session.isRestoring) ...[
-            const _AiChatLoadingView(),
+            const _AssistantLoadingView(),
           ] else if (!session.canAccessProtectedData) ...[
             _AssistantStateCard(
               title: l10n.authNotSignedIn,
-              description: l10n.aiChatSignedOutDescription,
+              description: l10n.assistantSignedOutDescription,
               icon: Icons.lock_outline_rounded,
               actionLabel: l10n.authGoLogin,
               onAction: () => context.go(loginRouteForReturnTo('/assistant')),
@@ -116,20 +116,20 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
               chatState.isLoadingConversation &&
               capabilities == null &&
               chatState.capabilityError == null) ...[
-            const _AiChatLoadingView(),
+            const _AssistantLoadingView(),
           ] else if (chatState.isLoadingConversation &&
               !chatState.hasConversation) ...[
-            const _AiChatLoadingView(),
+            const _AssistantLoadingView(),
           ] else if (capabilities == null) ...[
             _AssistantStateCard(
-              title: l10n.aiChatLoadErrorTitle,
+              title: l10n.assistantLoadErrorTitle,
               description:
-                  chatState.capabilityError ?? l10n.aiChatLoadErrorFallback,
+                  chatState.capabilityError ?? l10n.assistantLoadErrorFallback,
               icon: Icons.cloud_off_rounded,
               tone: AppStateTone.warning,
               actionLabel: l10n.todayRetryAction,
               onAction: () => ref
-                  .read(aiChatControllerProvider.notifier)
+                  .read(assistantControllerProvider.notifier)
                   .loadCapabilities(),
             ),
           ] else ...[
@@ -140,13 +140,13 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
             if (chatState.conversationError != null) ...[
               const SizedBox(height: AppSpacingTokens.md),
               AppStateMessageView(
-                title: l10n.aiChatLoadErrorTitle,
+                title: l10n.assistantLoadErrorTitle,
                 description: chatState.conversationError!,
                 icon: Icons.history_toggle_off_rounded,
                 tone: AppStateTone.warning,
                 actionLabel: l10n.todayRetryAction,
                 onAction: () => ref
-                    .read(aiChatControllerProvider.notifier)
+                    .read(assistantControllerProvider.notifier)
                     .loadLatestConversation(),
               ),
             ],
@@ -161,7 +161,7 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
                 onSend: _handleSend,
                 onRetry: chatState.lastFailedInput != null
                     ? () => ref
-                          .read(aiChatControllerProvider.notifier)
+                          .read(assistantControllerProvider.notifier)
                           .retryLastMessage()
                     : null,
                 onConfirmProposal:
@@ -173,7 +173,7 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
                         ),
                 onDismissProposal: ({required messageId, required proposalId}) {
                   ref
-                      .read(aiChatControllerProvider.notifier)
+                      .read(assistantControllerProvider.notifier)
                       .dismissProposedAction(
                         messageId: messageId,
                         proposalId: proposalId,
@@ -184,13 +184,13 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
             if (chatState.recentConversationError != null) ...[
               const SizedBox(height: AppSpacingTokens.md),
               AppStateMessageView(
-                title: l10n.aiChatRecentConversationsTitle,
+                title: l10n.assistantRecentConversationsTitle,
                 description: chatState.recentConversationError!,
                 icon: Icons.history_toggle_off_rounded,
                 tone: AppStateTone.warning,
                 actionLabel: l10n.todayRetryAction,
                 onAction: () => ref
-                    .read(aiChatControllerProvider.notifier)
+                    .read(assistantControllerProvider.notifier)
                     .loadRecentConversations(),
               ),
             ],
@@ -202,9 +202,9 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
               fallbackContext: effectiveContext,
               capabilities: capabilities,
               onToggleEnabled: (nextValue) =>
-                  _toggleAiChatEnabled(context, nextValue),
+                  _toggleAssistantEnabled(context, nextValue),
               onToggleMemoryEnabled: (nextValue) =>
-                  _toggleAiChatMemoryEnabled(context, nextValue),
+                  _toggleAssistantMemoryEnabled(context, nextValue),
               onToggleContext:
                   ({
                     bool? healthProfile,
@@ -227,15 +227,15 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
     );
   }
 
-  Future<void> _toggleAiChatEnabled(
+  Future<void> _toggleAssistantEnabled(
     BuildContext context,
     bool nextValue,
   ) async {
     try {
       await ref
           .read(userSettingsControllerProvider.notifier)
-          .setAiChatEnabled(nextValue);
-      await ref.read(aiChatControllerProvider.notifier).loadCapabilities();
+          .setAssistantEnabled(nextValue);
+      await ref.read(assistantControllerProvider.notifier).loadCapabilities();
     } catch (error) {
       if (!context.mounted) {
         return;
@@ -247,13 +247,13 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
   Future<void> _toggleContextSetting(
     BuildContext context, {
     required UserSettingsDataDto? settings,
-    required UpdateAiChatContextSettingsDto? fallbackContext,
+    required UpdateAssistantContextSettingsDto? fallbackContext,
     bool? healthProfile,
     bool? dailyRecords,
     bool? sleepRecords,
     bool? currentMedicines,
   }) async {
-    final current = settings?.aiChatContext;
+    final current = settings?.assistantContext;
     if (current == null) {
       if (fallbackContext == null) {
         return;
@@ -262,8 +262,8 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
       try {
         await ref
             .read(userSettingsControllerProvider.notifier)
-            .setAiChatContext(
-              UpdateAiChatContextSettingsDto(
+            .setAssistantContext(
+              UpdateAssistantContextSettingsDto(
                 healthProfile: healthProfile ?? fallbackContext.healthProfile,
                 dailyRecords: dailyRecords ?? fallbackContext.dailyRecords,
                 sleepRecords: sleepRecords ?? fallbackContext.sleepRecords,
@@ -271,7 +271,7 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
                     currentMedicines ?? fallbackContext.currentMedicines,
               ),
             );
-        await ref.read(aiChatControllerProvider.notifier).loadCapabilities();
+        await ref.read(assistantControllerProvider.notifier).loadCapabilities();
       } catch (error) {
         if (!context.mounted) {
           return;
@@ -287,15 +287,15 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
     try {
       await ref
           .read(userSettingsControllerProvider.notifier)
-          .setAiChatContext(
-            UpdateAiChatContextSettingsDto(
+          .setAssistantContext(
+            UpdateAssistantContextSettingsDto(
               healthProfile: healthProfile ?? current.healthProfile,
               dailyRecords: dailyRecords ?? current.dailyRecords,
               sleepRecords: sleepRecords ?? current.sleepRecords,
               currentMedicines: currentMedicines ?? current.currentMedicines,
             ),
           );
-      await ref.read(aiChatControllerProvider.notifier).loadCapabilities();
+      await ref.read(assistantControllerProvider.notifier).loadCapabilities();
     } catch (error) {
       if (!context.mounted) {
         return;
@@ -304,15 +304,15 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
     }
   }
 
-  Future<void> _toggleAiChatMemoryEnabled(
+  Future<void> _toggleAssistantMemoryEnabled(
     BuildContext context,
     bool nextValue,
   ) async {
     try {
       await ref
           .read(userSettingsControllerProvider.notifier)
-          .setAiChatMemoryEnabled(nextValue);
-      await ref.read(aiChatControllerProvider.notifier).loadCapabilities();
+          .setAssistantMemoryEnabled(nextValue);
+      await ref.read(assistantControllerProvider.notifier).loadCapabilities();
     } catch (error) {
       if (!context.mounted) {
         return;
@@ -327,12 +327,12 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
       return;
     }
     _inputController.clear();
-    await ref.read(aiChatControllerProvider.notifier).sendMessage(input);
+    await ref.read(assistantControllerProvider.notifier).sendMessage(input);
   }
 
   Future<void> _handleStartNewConversation() async {
     _inputController.clear();
-    await ref.read(aiChatControllerProvider.notifier).clearConversation();
+    await ref.read(assistantControllerProvider.notifier).clearConversation();
   }
 
   Future<void> _handleConfirmProposal(
@@ -343,12 +343,12 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
     final l10n = AppLocalizations.of(context)!;
     try {
       await ref
-          .read(aiChatControllerProvider.notifier)
+          .read(assistantControllerProvider.notifier)
           .confirmProposedAction(messageId: messageId, proposalId: proposalId);
       if (!context.mounted) {
         return;
       }
-      await AppToast.show(context, l10n.aiChatProposalConfirmedToast);
+      await AppToast.show(context, l10n.assistantProposalConfirmedToast);
     } catch (error) {
       if (!context.mounted) {
         return;
@@ -368,20 +368,20 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
             padding: const EdgeInsets.all(AppSpacingTokens.lg),
             child: Consumer(
               builder: (context, ref, _) {
-                final latestState = ref.watch(aiChatControllerProvider);
+                final latestState = ref.watch(assistantControllerProvider);
                 return _RecentConversationSheet(
                   state: latestState,
-                  title: l10n.aiChatRecentConversationsTitle,
-                  emptyTitle: l10n.aiChatRecentConversationsEmptyTitle,
+                  title: l10n.assistantRecentConversationsTitle,
+                  emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
                   emptyDescription:
-                      l10n.aiChatRecentConversationsEmptyDescription,
+                      l10n.assistantRecentConversationsEmptyDescription,
                   onRetry: () => ref
-                      .read(aiChatControllerProvider.notifier)
+                      .read(assistantControllerProvider.notifier)
                       .loadRecentConversations(),
                   onSelect: (conversationId) async {
                     Navigator.of(sheetContext).pop();
                     await ref
-                        .read(aiChatControllerProvider.notifier)
+                        .read(assistantControllerProvider.notifier)
                         .openConversation(conversationId);
                   },
                 );
@@ -406,23 +406,23 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
 
   String _statusSummaryText(
     AppLocalizations l10n,
-    AiChatCapabilities capabilities,
+    AssistantCapabilities capabilities,
   ) {
-    if (!capabilities.aiChatEnabled) {
-      return l10n.aiChatStatusDisabled;
+    if (!capabilities.assistantEnabled) {
+      return l10n.assistantStatusDisabled;
     }
     if (!capabilities.chatModelConfigured) {
-      return l10n.aiChatStatusModelMissing;
+      return l10n.assistantStatusModelMissing;
     }
     if (!capabilities.interactiveChatReady) {
-      return l10n.aiChatStatusNotReady;
+      return l10n.assistantStatusNotReady;
     }
-    return l10n.aiChatStatusReady;
+    return l10n.assistantStatusReady;
   }
 }
 
-class _AiChatLoadingView extends StatelessWidget {
-  const _AiChatLoadingView();
+class _AssistantLoadingView extends StatelessWidget {
+  const _AssistantLoadingView();
 
   @override
   Widget build(BuildContext context) {
@@ -497,7 +497,7 @@ class _AssistantHero extends StatelessWidget {
     required this.statusSummary,
   });
 
-  final AiChatCapabilities capabilities;
+  final AssistantCapabilities capabilities;
   final String statusSummary;
 
   @override
@@ -524,7 +524,7 @@ class _AssistantHero extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.aiChatPageTitle, style: _typography(context).displayMd),
+            Text(l10n.assistantPageTitle, style: _typography(context).displayMd),
             const SizedBox(height: AppSpacingTokens.xs),
             Text(
               statusSummary,
@@ -537,20 +537,20 @@ class _AssistantHero extends StatelessWidget {
               children: [
                 _StatusChip(
                   label:
-                      '${l10n.aiChatStatusToolsLabel} ${capabilities.enabledToolCount}/${capabilities.tools.length}',
+                      '${l10n.assistantStatusToolsLabel} ${capabilities.enabledToolCount}/${capabilities.tools.length}',
                   enabled: capabilities.enabledToolCount > 0,
                 ),
                 _StatusChip(
                   label:
-                      '${l10n.aiChatStatusContextLabel} ${capabilities.aiChatContext.enabledCount}/4',
-                  enabled: capabilities.aiChatContext.enabledCount > 0,
+                      '${l10n.assistantStatusContextLabel} ${capabilities.assistantContext.enabledCount}/4',
+                  enabled: capabilities.assistantContext.enabledCount > 0,
                 ),
                 _StatusChip(
-                  label: l10n.aiChatStatusStreamingLabel,
+                  label: l10n.assistantStatusStreamingLabel,
                   enabled: capabilities.streamingSupported,
                 ),
                 _StatusChip(
-                  label: l10n.aiChatStatusRagLabel,
+                  label: l10n.assistantStatusRagLabel,
                   enabled: capabilities.ragEnabled,
                 ),
               ],
@@ -574,8 +574,8 @@ class _ConversationSurface extends StatelessWidget {
     required this.onDismissProposal,
   });
 
-  final AiChatState state;
-  final AiChatCapabilities capabilities;
+  final AssistantState state;
+  final AssistantCapabilities capabilities;
   final ScrollController scrollController;
   final TextEditingController controller;
   final Future<void> Function() onSend;
@@ -602,7 +602,7 @@ class _ConversationSurface extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
               child: Text(
-                l10n.aiChatOpeningConversationLabel,
+                l10n.assistantOpeningConversationLabel,
                 style: _typography(
                   context,
                 ).bodySm.copyWith(color: surface.mute),
@@ -621,7 +621,7 @@ class _ConversationSurface extends StatelessWidget {
           if (state.sendError != null) ...[
             const SizedBox(height: AppSpacingTokens.md),
             AppStateMessageView(
-              title: l10n.aiChatSendErrorTitle,
+              title: l10n.assistantSendErrorTitle,
               description: _sendErrorDescription(
                 l10n,
                 state.sendErrorType,
@@ -629,9 +629,9 @@ class _ConversationSurface extends StatelessWidget {
               ),
               icon: _sendErrorIcon(state.sendErrorType),
               tone: AppStateTone.warning,
-              actionLabel: onRetry != null ? l10n.aiChatRetryAction : null,
+              actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
               onAction: onRetry,
-              actionKey: const Key('ai-chat-retry-action'),
+              actionKey: const Key('assistant-retry-action'),
               padding: const EdgeInsets.all(AppSpacingTokens.md),
             ),
           ],
@@ -663,8 +663,8 @@ class _AssistantControlsPanel extends StatelessWidget {
   final AppThemeSurface surface;
   final AppTypographyScale typography;
   final UserSettingsDataDto? settings;
-  final UpdateAiChatContextSettingsDto? fallbackContext;
-  final AiChatCapabilities capabilities;
+  final UpdateAssistantContextSettingsDto? fallbackContext;
+  final AssistantCapabilities capabilities;
   final ValueChanged<bool> onToggleEnabled;
   final ValueChanged<bool> onToggleMemoryEnabled;
   final Future<void> Function({
@@ -684,121 +684,121 @@ class _AssistantControlsPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l10n.aiChatStatusSectionTitle, style: typography.bodyMdStrong),
+          Text(l10n.assistantStatusSectionTitle, style: typography.bodyMdStrong),
           const SizedBox(height: AppSpacingTokens.sm),
           Text(
-            l10n.aiChatEntrySubtitle,
+            l10n.assistantEntrySubtitle,
             style: typography.bodySm.copyWith(color: surface.body),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           SettingsListRow(
-            key: const Key('ai-chat-row-enabled'),
-            title: l10n.aiChatSettingsEnableTitle,
-            subtitle: l10n.aiChatSettingsEnableSubtitle,
+            key: const Key('assistant-row-enabled'),
+            title: l10n.assistantSettingsEnableTitle,
+            subtitle: l10n.assistantSettingsEnableSubtitle,
             icon: Icons.auto_awesome_outlined,
             trailing: IgnorePointer(
               child: Switch(
-                value: settings?.aiChatEnabled ?? capabilities.aiChatEnabled,
+                value: settings?.assistantEnabled ?? capabilities.assistantEnabled,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleEnabled(
-              !(settings?.aiChatEnabled ?? capabilities.aiChatEnabled),
+              !(settings?.assistantEnabled ?? capabilities.assistantEnabled),
             ),
             showDivider: true,
           ),
           SettingsListRow(
-            key: const Key('ai-chat-row-memory-enabled'),
-            title: l10n.aiChatSettingsMemoryTitle,
-            subtitle: l10n.aiChatSettingsMemorySubtitle,
+            key: const Key('assistant-row-memory-enabled'),
+            title: l10n.assistantSettingsMemoryTitle,
+            subtitle: l10n.assistantSettingsMemorySubtitle,
             icon: Icons.psychology_alt_outlined,
             trailing: IgnorePointer(
               child: Switch(
                 value:
-                    settings?.aiChatMemoryEnabled ??
-                    capabilities.aiChatMemoryEnabled,
+                    settings?.assistantMemoryEnabled ??
+                    capabilities.assistantMemoryEnabled,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleMemoryEnabled(
-              !(settings?.aiChatMemoryEnabled ??
-                  capabilities.aiChatMemoryEnabled),
+              !(settings?.assistantMemoryEnabled ??
+                  capabilities.assistantMemoryEnabled),
             ),
             showDivider: true,
           ),
           SettingsListRow(
-            key: const Key('ai-chat-row-context-health-profile'),
-            title: l10n.aiChatContextHealthProfile,
+            key: const Key('assistant-row-context-health-profile'),
+            title: l10n.assistantContextHealthProfile,
             icon: Icons.badge_outlined,
             trailing: IgnorePointer(
               child: Switch(
                 value:
-                    settings?.aiChatContext.healthProfile ??
-                    capabilities.aiChatContext.healthProfile,
+                    settings?.assistantContext.healthProfile ??
+                    capabilities.assistantContext.healthProfile,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleContext(
               healthProfile:
-                  !(settings?.aiChatContext.healthProfile ??
-                      capabilities.aiChatContext.healthProfile),
+                  !(settings?.assistantContext.healthProfile ??
+                      capabilities.assistantContext.healthProfile),
             ),
             showDivider: true,
           ),
           SettingsListRow(
-            key: const Key('ai-chat-row-context-daily-records'),
-            title: l10n.aiChatContextDailyRecords,
+            key: const Key('assistant-row-context-daily-records'),
+            title: l10n.assistantContextDailyRecords,
             icon: Icons.event_note_outlined,
             trailing: IgnorePointer(
               child: Switch(
                 value:
-                    settings?.aiChatContext.dailyRecords ??
-                    capabilities.aiChatContext.dailyRecords,
+                    settings?.assistantContext.dailyRecords ??
+                    capabilities.assistantContext.dailyRecords,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleContext(
               dailyRecords:
-                  !(settings?.aiChatContext.dailyRecords ??
-                      capabilities.aiChatContext.dailyRecords),
+                  !(settings?.assistantContext.dailyRecords ??
+                      capabilities.assistantContext.dailyRecords),
             ),
             showDivider: true,
           ),
           SettingsListRow(
-            key: const Key('ai-chat-row-context-sleep-records'),
-            title: l10n.aiChatContextSleepRecords,
+            key: const Key('assistant-row-context-sleep-records'),
+            title: l10n.assistantContextSleepRecords,
             icon: Icons.bedtime_outlined,
             trailing: IgnorePointer(
               child: Switch(
                 value:
-                    settings?.aiChatContext.sleepRecords ??
-                    capabilities.aiChatContext.sleepRecords,
+                    settings?.assistantContext.sleepRecords ??
+                    capabilities.assistantContext.sleepRecords,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleContext(
               sleepRecords:
-                  !(settings?.aiChatContext.sleepRecords ??
-                      capabilities.aiChatContext.sleepRecords),
+                  !(settings?.assistantContext.sleepRecords ??
+                      capabilities.assistantContext.sleepRecords),
             ),
             showDivider: true,
           ),
           SettingsListRow(
-            key: const Key('ai-chat-row-context-current-medicines'),
-            title: l10n.aiChatContextCurrentMedicines,
+            key: const Key('assistant-row-context-current-medicines'),
+            title: l10n.assistantContextCurrentMedicines,
             icon: Icons.medication_outlined,
             trailing: IgnorePointer(
               child: Switch(
                 value:
-                    settings?.aiChatContext.currentMedicines ??
-                    capabilities.aiChatContext.currentMedicines,
+                    settings?.assistantContext.currentMedicines ??
+                    capabilities.assistantContext.currentMedicines,
                 onChanged: (_) {},
               ),
             ),
             onTap: () => onToggleContext(
               currentMedicines:
-                  !(settings?.aiChatContext.currentMedicines ??
-                      capabilities.aiChatContext.currentMedicines),
+                  !(settings?.assistantContext.currentMedicines ??
+                      capabilities.assistantContext.currentMedicines),
             ),
           ),
         ],
@@ -816,8 +816,8 @@ class _ConversationView extends StatelessWidget {
     required this.onDismissProposal,
   });
 
-  final AiChatState state;
-  final AiChatCapabilities capabilities;
+  final AssistantState state;
+  final AssistantCapabilities capabilities;
   final ScrollController scrollController;
   final Future<void> Function({
     required String messageId,
@@ -835,7 +835,7 @@ class _ConversationView extends StatelessWidget {
         state.messages.isEmpty &&
         state.streamingDraft.isEmpty) {
       return AppStateMessageView(
-        title: l10n.aiChatConversationDisabledTitle,
+        title: l10n.assistantConversationDisabledTitle,
         description: _disabledDescription(l10n, capabilities),
         icon: Icons.pause_circle_outline_rounded,
         tone: AppStateTone.warning,
@@ -844,8 +844,8 @@ class _ConversationView extends StatelessWidget {
 
     if (state.messages.isEmpty && state.streamingDraft.isEmpty) {
       return AppStateMessageView(
-        title: l10n.aiChatConversationEmptyTitle,
-        description: l10n.aiChatConversationEmptyDescription,
+        title: l10n.assistantConversationEmptyTitle,
+        description: l10n.assistantConversationEmptyDescription,
         icon: Icons.chat_bubble_outline_rounded,
       );
     }
@@ -857,14 +857,14 @@ class _ConversationView extends StatelessWidget {
     ];
 
     return ListView.separated(
-      key: const Key('ai-chat-message-list'),
+      key: const Key('assistant-message-list'),
       controller: scrollController,
       itemBuilder: (context, index) {
         final item = items[index];
         if (item.streamingDraft != null) {
           return _MessageBubble(
             messageId: 'streaming-draft',
-            role: AiChatMessageRole.assistant,
+            role: AssistantMessageRole.assistant,
             content: item.streamingDraft!,
             isStreaming: true,
             usedTools: const <String>[],
@@ -889,28 +889,28 @@ class _ConversationView extends StatelessWidget {
 
   String _disabledDescription(
     AppLocalizations l10n,
-    AiChatCapabilities capabilities,
+    AssistantCapabilities capabilities,
   ) {
-    if (!capabilities.aiChatEnabled) {
-      return l10n.aiChatConversationDisabledByUserHint;
+    if (!capabilities.assistantEnabled) {
+      return l10n.assistantConversationDisabledByUserHint;
     }
     if (!capabilities.chatModelConfigured) {
-      return l10n.aiChatConversationModelMissing;
+      return l10n.assistantConversationModelMissing;
     }
-    return l10n.aiChatConversationNotReady;
+    return l10n.assistantConversationNotReady;
   }
 }
 
 class _ConversationItem {
   const _ConversationItem._({this.message, this.streamingDraft});
 
-  const _ConversationItem.message(AiChatMessage message)
+  const _ConversationItem.message(AssistantMessage message)
     : this._(message: message);
 
   const _ConversationItem.streaming(String draft)
     : this._(streamingDraft: draft);
 
-  final AiChatMessage? message;
+  final AssistantMessage? message;
   final String? streamingDraft;
 }
 
@@ -920,17 +920,17 @@ class _MessageBubble extends StatelessWidget {
     required this.role,
     required this.content,
     required this.usedTools,
-    this.proposedActions = const <AiChatProposedAction>[],
+    this.proposedActions = const <AssistantProposedAction>[],
     this.isStreaming = false,
     this.onConfirmProposal,
     this.onDismissProposal,
   });
 
   final String messageId;
-  final AiChatMessageRole role;
+  final AssistantMessageRole role;
   final String content;
   final List<String> usedTools;
-  final List<AiChatProposedAction> proposedActions;
+  final List<AssistantProposedAction> proposedActions;
   final bool isStreaming;
   final Future<void> Function({
     required String messageId,
@@ -944,7 +944,7 @@ class _MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
-    final isUser = role == AiChatMessageRole.user;
+    final isUser = role == AssistantMessageRole.user;
     final align = isUser ? Alignment.centerRight : Alignment.centerLeft;
     final background = isUser
         ? theme.colorScheme.primary.withValues(alpha: 0.14)
@@ -981,7 +981,7 @@ class _MessageBubble extends StatelessWidget {
                 if (isStreaming) ...[
                   const SizedBox(height: AppSpacingTokens.sm),
                   Text(
-                    AppLocalizations.of(context)!.aiChatStreamingLabel,
+                    AppLocalizations.of(context)!.assistantStreamingLabel,
                     style: _typography(
                       context,
                     ).bodySm.copyWith(color: surface.mute),
@@ -1035,7 +1035,7 @@ class _ProposalCard extends StatelessWidget {
   });
 
   final String messageId;
-  final AiChatProposedAction proposal;
+  final AssistantProposedAction proposal;
   final Future<void> Function({
     required String messageId,
     required String proposalId,
@@ -1118,10 +1118,10 @@ class _ProposalCard extends StatelessWidget {
             Row(
               children: [
                 FilledButton(
-                  key: Key('ai-chat-proposal-confirm-${proposal.id}'),
+                  key: Key('assistant-proposal-confirm-${proposal.id}'),
                   onPressed:
                       proposal.executionState ==
-                              AiChatProposalExecutionState.executing ||
+                              AssistantProposalExecutionState.executing ||
                           onConfirmProposal == null
                       ? null
                       : () => onConfirmProposal!(
@@ -1132,16 +1132,16 @@ class _ProposalCard extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacingTokens.sm),
                 TextButton(
-                  key: Key('ai-chat-proposal-dismiss-${proposal.id}'),
+                  key: Key('assistant-proposal-dismiss-${proposal.id}'),
                   onPressed:
                       proposal.executionState ==
-                          AiChatProposalExecutionState.executing
+                          AssistantProposalExecutionState.executing
                       ? null
                       : () => onDismissProposal?.call(
                           messageId: messageId,
                           proposalId: proposal.id,
                         ),
-                  child: Text(l10n.aiChatProposalDismissAction),
+                  child: Text(l10n.assistantProposalDismissAction),
                 ),
               ],
             ),
@@ -1176,12 +1176,12 @@ class _InputComposer extends StatelessWidget {
       children: [
         Expanded(
           child: TextField(
-            key: const Key('ai-chat-input'),
+            key: const Key('assistant-input'),
             controller: controller,
             minLines: 2,
             maxLines: 6,
             decoration: InputDecoration(
-              hintText: l10n.aiChatInputHint,
+              hintText: l10n.assistantInputHint,
               filled: true,
               fillColor: surface.canvasSoft,
               border: OutlineInputBorder(
@@ -1192,10 +1192,10 @@ class _InputComposer extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacingTokens.sm),
         FilledButton(
-          key: const Key('ai-chat-send-action'),
+          key: const Key('assistant-send-action'),
           onPressed: canSend ? onSend : null,
           child: Text(
-            isSending ? l10n.aiChatSendingAction : l10n.aiChatSendAction,
+            isSending ? l10n.assistantSendingAction : l10n.assistantSendAction,
           ),
         ),
       ],
@@ -1271,7 +1271,7 @@ class _RecentConversationSheet extends StatelessWidget {
     required this.onSelect,
   });
 
-  final AiChatState state;
+  final AssistantState state;
   final String title;
   final String emptyTitle;
   final String emptyDescription;
@@ -1322,7 +1322,7 @@ class _RecentConversationSheet extends StatelessWidget {
                 }
 
                 return ListView.separated(
-                  key: const Key('ai-chat-recent-conversation-list'),
+                  key: const Key('assistant-recent-conversation-list'),
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     final item = items[index];
@@ -1330,7 +1330,7 @@ class _RecentConversationSheet extends StatelessWidget {
                     return Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        key: Key('ai-chat-recent-conversation-${item.id}'),
+                        key: Key('assistant-recent-conversation-${item.id}'),
                         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
                         onTap: state.isOpeningConversation
                             ? null
@@ -1376,7 +1376,7 @@ class _RecentConversationSheet extends StatelessWidget {
                                       Text(
                                         AppLocalizations.of(
                                           context,
-                                        )!.aiChatRecentConversationCurrentLabel,
+                                        )!.assistantRecentConversationCurrentLabel,
                                         style: _typography(context).bodySm
                                             .copyWith(
                                               color: theme.colorScheme.primary,
@@ -1406,96 +1406,96 @@ class _RecentConversationSheet extends StatelessWidget {
 String _localizeToolName(String toolId, BuildContext context) {
   final l10n = AppLocalizations.of(context)!;
   return switch (toolId) {
-    'get_today_records' => l10n.aiChatToolTodayRecords,
-    'get_records_by_date' => l10n.aiChatToolRecordsByDate,
-    'get_records_by_range' => l10n.aiChatToolRecordsByRange,
-    'get_today_summary_by_date' => l10n.aiChatToolTodaySummaryByDate,
-    'get_report_summary_by_range' => l10n.aiChatToolReportSummaryByRange,
-    'get_recent_today_summaries' => l10n.aiChatToolRecentTodaySummaries,
-    'get_recent_report_summaries' => l10n.aiChatToolRecentReportSummaries,
-    'get_user_profile' => l10n.aiChatToolUserProfile,
-    'get_user_settings' => l10n.aiChatToolUserSettings,
-    'get_current_medicines' => l10n.aiChatToolCurrentMedicines,
-    'get_sleep_summary_by_range' => l10n.aiChatToolSleepByRange,
-    'propose_create_daily_record' => l10n.aiChatToolProposeCreateRecord,
-    'propose_update_daily_record' => l10n.aiChatToolProposeUpdateRecord,
-    'propose_delete_daily_record' => l10n.aiChatToolProposeDeleteRecord,
-    'propose_update_user_settings' => l10n.aiChatToolProposeUpdateSettings,
+    'get_today_records' => l10n.assistantToolTodayRecords,
+    'get_records_by_date' => l10n.assistantToolRecordsByDate,
+    'get_records_by_range' => l10n.assistantToolRecordsByRange,
+    'get_today_summary_by_date' => l10n.assistantToolTodaySummaryByDate,
+    'get_report_summary_by_range' => l10n.assistantToolReportSummaryByRange,
+    'get_recent_today_summaries' => l10n.assistantToolRecentTodaySummaries,
+    'get_recent_report_summaries' => l10n.assistantToolRecentReportSummaries,
+    'get_user_profile' => l10n.assistantToolUserProfile,
+    'get_user_settings' => l10n.assistantToolUserSettings,
+    'get_current_medicines' => l10n.assistantToolCurrentMedicines,
+    'get_sleep_summary_by_range' => l10n.assistantToolSleepByRange,
+    'propose_create_daily_record' => l10n.assistantToolProposeCreateRecord,
+    'propose_update_daily_record' => l10n.assistantToolProposeUpdateRecord,
+    'propose_delete_daily_record' => l10n.assistantToolProposeDeleteRecord,
+    'propose_update_user_settings' => l10n.assistantToolProposeUpdateSettings,
     _ => toolId,
   };
 }
 
-String _messageIdFor(AiChatMessage message) {
+String _messageIdFor(AssistantMessage message) {
   return '${message.role.name}-${message.createdAt.toIso8601String()}-${message.content.hashCode}';
 }
 
-IconData _proposalIcon(AiChatProposedActionType type) {
+IconData _proposalIcon(AssistantProposedActionType type) {
   return switch (type) {
-    AiChatProposedActionType.createDailyRecord => Icons.add_task_rounded,
-    AiChatProposedActionType.updateDailyRecord => Icons.edit_note_rounded,
-    AiChatProposedActionType.deleteDailyRecord => Icons.delete_outline_rounded,
-    AiChatProposedActionType.updateUserSettings => Icons.tune_rounded,
+    AssistantProposedActionType.createDailyRecord => Icons.add_task_rounded,
+    AssistantProposedActionType.updateDailyRecord => Icons.edit_note_rounded,
+    AssistantProposedActionType.deleteDailyRecord => Icons.delete_outline_rounded,
+    AssistantProposedActionType.updateUserSettings => Icons.tune_rounded,
   };
 }
 
 String _proposalConfirmLabel(
   AppLocalizations l10n,
-  AiChatProposedActionType type,
+  AssistantProposedActionType type,
 ) {
   return switch (type) {
-    AiChatProposedActionType.createDailyRecord =>
-      l10n.aiChatProposalConfirmCreateAction,
-    AiChatProposedActionType.updateDailyRecord =>
-      l10n.aiChatProposalConfirmUpdateAction,
-    AiChatProposedActionType.deleteDailyRecord =>
-      l10n.aiChatProposalConfirmDeleteAction,
-    AiChatProposedActionType.updateUserSettings =>
-      l10n.aiChatProposalConfirmSettingsAction,
+    AssistantProposedActionType.createDailyRecord =>
+      l10n.assistantProposalConfirmCreateAction,
+    AssistantProposedActionType.updateDailyRecord =>
+      l10n.assistantProposalConfirmUpdateAction,
+    AssistantProposedActionType.deleteDailyRecord =>
+      l10n.assistantProposalConfirmDeleteAction,
+    AssistantProposedActionType.updateUserSettings =>
+      l10n.assistantProposalConfirmSettingsAction,
   };
 }
 
 String _proposalStateText(
   AppLocalizations l10n,
-  AiChatProposedAction proposal,
+  AssistantProposedAction proposal,
 ) {
   return switch (proposal.executionState) {
-    AiChatProposalExecutionState.pending => l10n.aiChatProposalPendingState,
-    AiChatProposalExecutionState.executing => l10n.aiChatProposalExecutingState,
-    AiChatProposalExecutionState.confirmed => l10n.aiChatProposalConfirmedState,
-    AiChatProposalExecutionState.dismissed => l10n.aiChatProposalDismissedState,
-    AiChatProposalExecutionState.failed => l10n.aiChatProposalFailedState,
+    AssistantProposalExecutionState.pending => l10n.assistantProposalPendingState,
+    AssistantProposalExecutionState.executing => l10n.assistantProposalExecutingState,
+    AssistantProposalExecutionState.confirmed => l10n.assistantProposalConfirmedState,
+    AssistantProposalExecutionState.dismissed => l10n.assistantProposalDismissedState,
+    AssistantProposalExecutionState.failed => l10n.assistantProposalFailedState,
   };
 }
 
-Color _proposalStateColor(ThemeData theme, AiChatProposedAction proposal) {
+Color _proposalStateColor(ThemeData theme, AssistantProposedAction proposal) {
   return switch (proposal.executionState) {
-    AiChatProposalExecutionState.pending => theme.colorScheme.primary,
-    AiChatProposalExecutionState.executing => theme.colorScheme.primary,
-    AiChatProposalExecutionState.confirmed => const Color(0xFF159B55),
-    AiChatProposalExecutionState.dismissed => theme.colorScheme.outline,
-    AiChatProposalExecutionState.failed => theme.colorScheme.error,
+    AssistantProposalExecutionState.pending => theme.colorScheme.primary,
+    AssistantProposalExecutionState.executing => theme.colorScheme.primary,
+    AssistantProposalExecutionState.confirmed => const Color(0xFF159B55),
+    AssistantProposalExecutionState.dismissed => theme.colorScheme.outline,
+    AssistantProposalExecutionState.failed => theme.colorScheme.error,
   };
 }
 
 String _sendErrorDescription(
   AppLocalizations l10n,
-  AiChatSendErrorType? errorType,
+  AssistantSendErrorType? errorType,
   String fallback,
 ) {
   return switch (errorType) {
-    AiChatSendErrorType.streamInterrupted => l10n.aiChatErrorStreamInterrupted,
-    AiChatSendErrorType.emptyResult => l10n.aiChatErrorEmptyResult,
-    AiChatSendErrorType.server => l10n.aiChatErrorServer,
-    AiChatSendErrorType.unknown || null => fallback,
+    AssistantSendErrorType.streamInterrupted => l10n.assistantErrorStreamInterrupted,
+    AssistantSendErrorType.emptyResult => l10n.assistantErrorEmptyResult,
+    AssistantSendErrorType.server => l10n.assistantErrorServer,
+    AssistantSendErrorType.unknown || null => fallback,
   };
 }
 
-IconData _sendErrorIcon(AiChatSendErrorType? errorType) {
+IconData _sendErrorIcon(AssistantSendErrorType? errorType) {
   return switch (errorType) {
-    AiChatSendErrorType.streamInterrupted => Icons.wifi_off_rounded,
-    AiChatSendErrorType.emptyResult => Icons.hourglass_empty_rounded,
-    AiChatSendErrorType.server => Icons.cloud_off_rounded,
-    AiChatSendErrorType.unknown || null => Icons.error_outline_rounded,
+    AssistantSendErrorType.streamInterrupted => Icons.wifi_off_rounded,
+    AssistantSendErrorType.emptyResult => Icons.hourglass_empty_rounded,
+    AssistantSendErrorType.server => Icons.cloud_off_rounded,
+    AssistantSendErrorType.unknown || null => Icons.error_outline_rounded,
   };
 }
 
@@ -1509,18 +1509,18 @@ AppTypographyScale _typography(BuildContext context) {
 
 String _conversationTitle(
   BuildContext context,
-  AiChatConversationSummary summary,
+  AssistantConversationSummary summary,
 ) {
   final title = summary.title?.trim();
   if (title != null && title.isNotEmpty) {
     return title;
   }
-  return AppLocalizations.of(context)!.aiChatUntitledConversation;
+  return AppLocalizations.of(context)!.assistantUntitledConversation;
 }
 
 String _conversationTimestampLabel(
   BuildContext context,
-  AiChatConversationSummary summary,
+  AssistantConversationSummary summary,
 ) {
   final locale = Localizations.localeOf(context).toString();
   final value = summary.lastMessageAt ?? summary.updatedAt;

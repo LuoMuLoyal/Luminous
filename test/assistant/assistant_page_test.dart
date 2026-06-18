@@ -7,15 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart'
     show
-        AiChatContextSettingsDto,
-        UpdateAiChatContextSettingsDto,
+        AssistantContextSettingsDto,
+        UpdateAssistantContextSettingsDto,
         UpdateUserSettingsDto,
         UserSettingsDataDto;
 import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/core/theme/app_theme.dart';
-import 'package:luminous/features/ai_chat/data/repositories/lucent_ai_chat_repository.dart';
-import 'package:luminous/features/ai_chat/domain/entities/ai_chat_models.dart';
-import 'package:luminous/features/ai_chat/presentation/pages/ai_chat_page.dart';
+import 'package:luminous/features/assistant/data/repositories/lucent_assistant_repository.dart';
+import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
+import 'package:luminous/features/assistant/presentation/pages/assistant_page.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
@@ -56,7 +56,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/assistant',
-                builder: (context, state) => const AiChatPage(),
+                builder: (context, state) => const AssistantPage(),
               ),
               GoRoute(
                 path: '/login',
@@ -73,14 +73,14 @@ void main() {
 
     expect(find.text('尚未登录'), findsOneWidget);
     expect(find.text('登录后才可以使用 AI 对话，并由你决定是否开放健康上下文。'), findsOneWidget);
-    expect(find.byKey(const Key('ai-chat-input')), findsNothing);
+    expect(find.byKey(const Key('assistant-input')), findsNothing);
   });
 
   testWidgets(
     'AI chat context toggle still works when settings are not loaded yet',
     (tester) async {
       SharedPreferences.setMockInitialValues(const <String, Object>{});
-      final repository = _FakeAiChatRepository();
+      final repository = _FakeAssistantRepository();
       final settingsController = _PendingUserSettingsController();
 
       await tester.pumpWidget(
@@ -89,7 +89,7 @@ void main() {
             authSessionProvider.overrideWith(
               () => _SignedInAuthSessionNotifier(),
             ),
-            aiChatRepositoryProvider.overrideWithValue(repository),
+            assistantRepositoryProvider.overrideWithValue(repository),
             userSettingsControllerProvider.overrideWith(
               () => settingsController,
             ),
@@ -110,7 +110,7 @@ void main() {
               routes: [
                 GoRoute(
                   path: '/assistant',
-                  builder: (context, state) => const AiChatPage(),
+                  builder: (context, state) => const AssistantPage(),
                 ),
                 GoRoute(
                   path: '/login',
@@ -126,18 +126,18 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.byKey(const Key('ai-chat-row-context-health-profile')),
+        find.byKey(const Key('assistant-row-context-health-profile')),
         findsOneWidget,
       );
 
       final pageScrollable = find.byType(Scrollable).first;
       await tester.scrollUntilVisible(
-        find.byKey(const Key('ai-chat-row-context-health-profile')),
+        find.byKey(const Key('assistant-row-context-health-profile')),
         240,
         scrollable: pageScrollable,
       );
       await tester.tap(
-        find.byKey(const Key('ai-chat-row-context-health-profile')),
+        find.byKey(const Key('assistant-row-context-health-profile')),
       );
       await tester.pumpAndSettle();
 
@@ -155,21 +155,21 @@ void main() {
     tester.view.physicalSize = const Size(1200, 1600);
     tester.view.devicePixelRatio = 1.0;
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final repository = _ErrorStreamAiChatRepository();
+    final repository = _ErrorStreamAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
 
     // Type and send a message
-    final input = find.byKey(const Key('ai-chat-input'));
+    final input = find.byKey(const Key('assistant-input'));
     expect(input, findsOneWidget);
     await tester.enterText(input, '帮我看看最近的睡眠');
-    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.tap(find.byKey(const Key('assistant-send-action')));
     await tester.pumpAndSettle();
 
     // Error message and retry button should be visible
     expect(find.text('这次回复没有完成'), findsOneWidget);
-    expect(find.byKey(const Key('ai-chat-retry-action')), findsOneWidget);
+    expect(find.byKey(const Key('assistant-retry-action')), findsOneWidget);
     // Server error icon
     expect(find.byIcon(Icons.cloud_off_rounded), findsOneWidget);
   });
@@ -180,15 +180,15 @@ void main() {
     tester.view.physicalSize = const Size(1200, 1600);
     tester.view.devicePixelRatio = 1.0;
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final repository = _SuccessWithToolsAiChatRepository();
+    final repository = _SuccessWithToolsAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
 
     // Type and send a message
-    final input = find.byKey(const Key('ai-chat-input'));
+    final input = find.byKey(const Key('assistant-input'));
     await tester.enterText(input, '帮我看看最近的睡眠');
-    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.tap(find.byKey(const Key('assistant-send-action')));
     await tester.pumpAndSettle();
 
     // Localized tool chip should be visible
@@ -199,12 +199,12 @@ void main() {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
 
     await tester.pumpWidget(
-      _buildTestApp(repository: _ProposalAiChatRepository()),
+      _buildTestApp(repository: _ProposalAssistantRepository()),
     );
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('ai-chat-input')), '帮我记一杯水');
-    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我记一杯水');
+    await tester.tap(find.byKey(const Key('assistant-send-action')));
     await tester.pumpAndSettle();
 
     expect(find.text('保存这条记录'), findsOneWidget);
@@ -219,18 +219,18 @@ void main() {
 
     await tester.pumpWidget(
       _buildTestApp(
-        repository: _ProposalAiChatRepository(),
+        repository: _ProposalAssistantRepository(),
         dailyRecordRepository: dailyRecordRepository,
       ),
     );
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('ai-chat-input')), '帮我记一杯水');
-    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我记一杯水');
+    await tester.tap(find.byKey(const Key('assistant-send-action')));
     await tester.pumpAndSettle();
 
     await tester.tap(
-      find.byKey(const Key('ai-chat-proposal-confirm-proposal-create-1')),
+      find.byKey(const Key('assistant-proposal-confirm-proposal-create-1')),
     );
     await tester.pumpAndSettle();
 
@@ -252,24 +252,24 @@ void main() {
 
     await tester.pumpWidget(
       _buildTestApp(
-        repository: _SettingsProposalAiChatRepository(),
+        repository: _SettingsProposalAssistantRepository(),
         settingsController: settingsController,
       ),
     );
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('ai-chat-input')), '关闭记忆');
-    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.enterText(find.byKey(const Key('assistant-input')), '关闭记忆');
+    await tester.tap(find.byKey(const Key('assistant-send-action')));
     await tester.pumpAndSettle();
 
     await tester.tap(
-      find.byKey(const Key('ai-chat-proposal-confirm-proposal-settings-1')),
+      find.byKey(const Key('assistant-proposal-confirm-proposal-settings-1')),
     );
     await tester.pumpAndSettle();
 
     expect(settingsController.lastPatchedSettings, isNotNull);
     expect(
-      settingsController.lastPatchedSettings?.aiChatMemoryEnabled,
+      settingsController.lastPatchedSettings?.assistantMemoryEnabled,
       isFalse,
     );
     expect(find.text('已确认'), findsOneWidget);
@@ -280,18 +280,18 @@ void main() {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
 
     await tester.pumpWidget(
-      _buildTestApp(repository: _ProposalAiChatRepository()),
+      _buildTestApp(repository: _ProposalAssistantRepository()),
     );
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('ai-chat-input')), '帮我记一杯水');
-    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我记一杯水');
+    await tester.tap(find.byKey(const Key('assistant-send-action')));
     await tester.pumpAndSettle();
 
     expect(find.text('保存这条记录'), findsOneWidget);
 
     await tester.tap(
-      find.byKey(const Key('ai-chat-proposal-dismiss-proposal-create-1')),
+      find.byKey(const Key('assistant-proposal-dismiss-proposal-create-1')),
     );
     await tester.pumpAndSettle();
 
@@ -300,13 +300,13 @@ void main() {
 
   testWidgets('disabled AI chat shows hint about toggle above', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final repository = _DisabledAiChatRepository();
+    final repository = _DisabledAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
 
     expect(
-      find.byKey(const Key('ai-chat-new-conversation-action')),
+      find.byKey(const Key('assistant-new-conversation-action')),
       findsOneWidget,
     );
 
@@ -316,7 +316,7 @@ void main() {
 
   testWidgets('disabled AI chat still shows restored history', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final repository = _DisabledWithHistoryAiChatRepository();
+    final repository = _DisabledWithHistoryAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
@@ -330,7 +330,7 @@ void main() {
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final repository = _RestoredConversationAiChatRepository();
+    final repository = _RestoredConversationAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
@@ -343,22 +343,22 @@ void main() {
     'new conversation action archives latest conversation through repository',
     (tester) async {
       SharedPreferences.setMockInitialValues(const <String, Object>{});
-      final repository = _RestoredConversationAiChatRepository();
+      final repository = _RestoredConversationAssistantRepository();
 
       await tester.pumpWidget(_buildTestApp(repository: repository));
       await tester.pumpAndSettle();
 
       expect(
-        find.byKey(const Key('ai-chat-new-conversation-action')),
+        find.byKey(const Key('assistant-new-conversation-action')),
         findsOneWidget,
       );
 
       await tester.enterText(
-        find.byKey(const Key('ai-chat-input')),
+        find.byKey(const Key('assistant-input')),
         '这条输入会被清空',
       );
       await tester.tap(
-        find.byKey(const Key('ai-chat-new-conversation-action')),
+        find.byKey(const Key('assistant-new-conversation-action')),
       );
       await tester.pumpAndSettle();
 
@@ -373,19 +373,19 @@ void main() {
     tester.view.physicalSize = const Size(1200, 1600);
     tester.view.devicePixelRatio = 1.0;
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final repository = _RetryAwareAiChatRepository();
+    final repository = _RetryAwareAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('ai-chat-input')), '帮我看看最近睡眠');
-    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我看看最近睡眠');
+    await tester.tap(find.byKey(const Key('assistant-send-action')));
     await tester.pumpAndSettle();
 
     expect(find.text('这次回复没有完成'), findsOneWidget);
     expect(find.text('帮我看看最近睡眠'), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('ai-chat-retry-action')));
+    await tester.tap(find.byKey(const Key('assistant-retry-action')));
     await tester.pumpAndSettle();
 
     expect(repository.recordedMessageCounts, <int>[1, 1]);
@@ -397,18 +397,18 @@ void main() {
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final repository = _RecentConversationsAiChatRepository();
+    final repository = _RecentConversationsAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
 
     expect(
-      find.byKey(const Key('ai-chat-recent-conversations-action')),
+      find.byKey(const Key('assistant-recent-conversations-action')),
       findsOneWidget,
     );
 
     await tester.tap(
-      find.byKey(const Key('ai-chat-recent-conversations-action')),
+      find.byKey(const Key('assistant-recent-conversations-action')),
     );
     await tester.pumpAndSettle();
 
@@ -418,7 +418,7 @@ void main() {
 
     await tester.tap(
       find.byKey(
-        const Key('ai-chat-recent-conversation-conversation-headache'),
+        const Key('assistant-recent-conversation-conversation-headache'),
       ),
     );
     await tester.pumpAndSettle();
@@ -456,7 +456,7 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
 }
 
 class _PendingUserSettingsController extends UserSettingsController {
-  UpdateAiChatContextSettingsDto? lastContextUpdate;
+  UpdateAssistantContextSettingsDto? lastContextUpdate;
 
   @override
   Future<UserSettingsDataDto> build() {
@@ -464,19 +464,19 @@ class _PendingUserSettingsController extends UserSettingsController {
   }
 
   @override
-  Future<void> setAiChatContext(
-    UpdateAiChatContextSettingsDto contextSettings,
+  Future<void> setAssistantContext(
+    UpdateAssistantContextSettingsDto contextSettings,
   ) async {
     lastContextUpdate = contextSettings;
   }
 }
 
-class _FakeAiChatRepository implements AiChatRepository {
-  static const _capabilities = AiChatCapabilities(
+class _FakeAssistantRepository implements AssistantRepository {
+  static const _capabilities = AssistantCapabilities(
     phase: 'phase_1',
-    aiChatEnabled: true,
-    aiChatMemoryEnabled: false,
-    aiChatContext: AiChatContextPermissions(
+    assistantEnabled: true,
+    assistantMemoryEnabled: false,
+    assistantContext: AssistantContextAccess(
       healthProfile: true,
       dailyRecords: true,
       sleepRecords: true,
@@ -489,19 +489,19 @@ class _FakeAiChatRepository implements AiChatRepository {
     streamingTransport: 'sse',
     markdownRenderingRecommended: true,
     ragEnabled: false,
-    tools: <AiChatToolCapability>[],
+    tools: <AssistantToolCapability>[],
     updatedAt: null,
   );
 
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
-      const <AiChatConversationSummary>[];
+  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
+      const <AssistantConversationSummary>[];
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async => null;
+  Future<AssistantConversation?> getLatestConversation() async => null;
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) {
+  Future<AssistantConversation> openConversation(String conversationId) {
     throw UnimplementedError();
   }
 
@@ -509,23 +509,23 @@ class _FakeAiChatRepository implements AiChatRepository {
   Future<bool> clearLatestConversation() async => false;
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async => _capabilities;
+  Future<AssistantCapabilities> getCapabilities() async => _capabilities;
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
-    return const Stream<AiChatGenerationEvent>.empty();
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+    return const Stream<AssistantGenerationEvent>.empty();
   }
 }
 
 Widget _buildTestApp({
-  required AiChatRepository repository,
+  required AssistantRepository repository,
   DailyRecordRepository? dailyRecordRepository,
   UserSettingsController? settingsController,
 }) {
   return ProviderScope(
     overrides: [
       authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
-      aiChatRepositoryProvider.overrideWithValue(repository),
+      assistantRepositoryProvider.overrideWithValue(repository),
       dailyRecordRepositoryProvider.overrideWithValue(
         dailyRecordRepository ?? _FakeDailyRecordRepository(),
       ),
@@ -549,7 +549,7 @@ Widget _buildTestApp({
         routes: [
           GoRoute(
             path: '/assistant',
-            builder: (context, state) => const AiChatPage(),
+            builder: (context, state) => const AssistantPage(),
           ),
           GoRoute(
             path: '/login',
@@ -568,9 +568,9 @@ class _ReadyUserSettingsController extends UserSettingsController {
     return UserSettingsDataDto(
       aiSummariesEnabled: false,
       dataSharingConsent: false,
-      aiChatEnabled: true,
-      aiChatMemoryEnabled: false,
-      aiChatContext: AiChatContextSettingsDto(
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      assistantContext: AssistantContextSettingsDto(
         healthProfile: true,
         dailyRecords: true,
         sleepRecords: true,
@@ -590,16 +590,16 @@ class _TrackingUserSettingsController extends _ReadyUserSettingsController {
   }
 }
 
-class _ErrorStreamAiChatRepository implements AiChatRepository {
+class _ErrorStreamAssistantRepository implements AssistantRepository {
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
-      const <AiChatConversationSummary>[];
+  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
+      const <AssistantConversationSummary>[];
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async => null;
+  Future<AssistantConversation?> getLatestConversation() async => null;
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) {
+  Future<AssistantConversation> openConversation(String conversationId) {
     throw UnimplementedError();
   }
 
@@ -607,27 +607,27 @@ class _ErrorStreamAiChatRepository implements AiChatRepository {
   Future<bool> clearLatestConversation() async => false;
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async =>
-      _FakeAiChatRepository._capabilities;
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
-    return Stream<AiChatGenerationEvent>.error(
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+    return Stream<AssistantGenerationEvent>.error(
       const LucentApiException(message: '服务端出现问题', statusCode: 503),
     );
   }
 }
 
-class _SuccessWithToolsAiChatRepository implements AiChatRepository {
+class _SuccessWithToolsAssistantRepository implements AssistantRepository {
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
-      const <AiChatConversationSummary>[];
+  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
+      const <AssistantConversationSummary>[];
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async => null;
+  Future<AssistantConversation?> getLatestConversation() async => null;
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) {
+  Future<AssistantConversation> openConversation(String conversationId) {
     throw UnimplementedError();
   }
 
@@ -635,17 +635,17 @@ class _SuccessWithToolsAiChatRepository implements AiChatRepository {
   Future<bool> clearLatestConversation() async => false;
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async =>
-      _FakeAiChatRepository._capabilities;
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
-    return Stream<AiChatGenerationEvent>.fromIterable([
-      const AiChatGenerationChunkEvent('根据你的睡眠数据…'),
-      AiChatGenerationResultEvent(
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+    return Stream<AssistantGenerationEvent>.fromIterable([
+      const AssistantGenerationChunkEvent('根据你的睡眠数据…'),
+      AssistantGenerationResultEvent(
         conversationId: 'conversation-1',
-        message: AiChatMessage(
-          role: AiChatMessageRole.assistant,
+        message: AssistantMessage(
+          role: AssistantMessageRole.assistant,
           content: '你最近的睡眠质量不错，建议保持规律作息。',
           usedTools: const <String>['get_sleep_summary_by_range'],
           createdAt: DateTime.now(),
@@ -655,16 +655,16 @@ class _SuccessWithToolsAiChatRepository implements AiChatRepository {
   }
 }
 
-class _ProposalAiChatRepository implements AiChatRepository {
+class _ProposalAssistantRepository implements AssistantRepository {
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
-      const <AiChatConversationSummary>[];
+  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
+      const <AssistantConversationSummary>[];
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async => null;
+  Future<AssistantConversation?> getLatestConversation() async => null;
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) {
+  Future<AssistantConversation> openConversation(String conversationId) {
     throw UnimplementedError();
   }
 
@@ -672,31 +672,31 @@ class _ProposalAiChatRepository implements AiChatRepository {
   Future<bool> clearLatestConversation() async => false;
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async =>
-      _FakeAiChatRepository._capabilities;
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
-    return Stream<AiChatGenerationEvent>.fromIterable([
-      AiChatGenerationResultEvent(
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+    return Stream<AssistantGenerationEvent>.fromIterable([
+      AssistantGenerationResultEvent(
         conversationId: 'conversation-proposal',
-        message: AiChatMessage(
-          role: AiChatMessageRole.assistant,
+        message: AssistantMessage(
+          role: AssistantMessageRole.assistant,
           content: '我已经整理成一条可确认的记录建议。',
           createdAt: DateTime.parse('2026-06-18T03:00:00Z'),
-          proposedActions: const <AiChatProposedAction>[
-            AiChatProposedAction(
+          proposedActions: const <AssistantProposedAction>[
+            AssistantProposedAction(
               id: 'proposal-create-1',
-              type: AiChatProposedActionType.createDailyRecord,
+              type: AssistantProposedActionType.createDailyRecord,
               title: '保存这条记录',
               summary: '准备保存一条 2026-06-18 的 water 记录。',
               reason: 'Detected water intake.',
-              previewFields: <AiChatProposalPreviewField>[
-                AiChatProposalPreviewField(label: '类型', value: 'water'),
+              previewFields: <AssistantProposalPreviewField>[
+                AssistantProposalPreviewField(label: '类型', value: 'water'),
               ],
               payloadVersion: 1,
-              payload: AiChatCreateDailyRecordProposalPayload(
-                draft: AiChatCreateDailyRecordDraft(
+              payload: AssistantCreateDailyRecordProposalPayload(
+                draft: AssistantCreateDailyRecordDraft(
                   kind: 'water',
                   occurredAt: '2026-06-18',
                   title: null,
@@ -714,16 +714,16 @@ class _ProposalAiChatRepository implements AiChatRepository {
   }
 }
 
-class _SettingsProposalAiChatRepository implements AiChatRepository {
+class _SettingsProposalAssistantRepository implements AssistantRepository {
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
-      const <AiChatConversationSummary>[];
+  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
+      const <AssistantConversationSummary>[];
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async => null;
+  Future<AssistantConversation?> getLatestConversation() async => null;
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) {
+  Future<AssistantConversation> openConversation(String conversationId) {
     throw UnimplementedError();
   }
 
@@ -731,32 +731,32 @@ class _SettingsProposalAiChatRepository implements AiChatRepository {
   Future<bool> clearLatestConversation() async => false;
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async =>
-      _FakeAiChatRepository._capabilities;
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
-    return Stream<AiChatGenerationEvent>.fromIterable([
-      AiChatGenerationResultEvent(
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+    return Stream<AssistantGenerationEvent>.fromIterable([
+      AssistantGenerationResultEvent(
         conversationId: 'conversation-settings-proposal',
-        message: AiChatMessage(
-          role: AiChatMessageRole.assistant,
+        message: AssistantMessage(
+          role: AssistantMessageRole.assistant,
           content: '我整理出了一组设置变更。',
           createdAt: DateTime.parse('2026-06-18T03:30:00Z'),
-          proposedActions: const <AiChatProposedAction>[
-            AiChatProposedAction(
+          proposedActions: const <AssistantProposedAction>[
+            AssistantProposedAction(
               id: 'proposal-settings-1',
-              type: AiChatProposedActionType.updateUserSettings,
+              type: AssistantProposedActionType.updateUserSettings,
               title: '更新助手相关设置',
               summary: '我整理出了一组设置变更，确认后才会真正写入。',
               reason: null,
-              previewFields: <AiChatProposalPreviewField>[
-                AiChatProposalPreviewField(label: '持久化记忆', value: '关闭'),
+              previewFields: <AssistantProposalPreviewField>[
+                AssistantProposalPreviewField(label: '持久化记忆', value: '关闭'),
               ],
               payloadVersion: 1,
-              payload: AiChatUpdateUserSettingsProposalPayload(
-                draft: AiChatUpdateUserSettingsDraft(
-                  aiChatMemoryEnabled: false,
+              payload: AssistantUpdateUserSettingsProposalPayload(
+                draft: AssistantUpdateUserSettingsDraft(
+                  assistantMemoryEnabled: false,
                 ),
               ),
             ),
@@ -767,16 +767,16 @@ class _SettingsProposalAiChatRepository implements AiChatRepository {
   }
 }
 
-class _DisabledAiChatRepository implements AiChatRepository {
+class _DisabledAssistantRepository implements AssistantRepository {
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
-      const <AiChatConversationSummary>[];
+  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
+      const <AssistantConversationSummary>[];
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async => null;
+  Future<AssistantConversation?> getLatestConversation() async => null;
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) {
+  Future<AssistantConversation> openConversation(String conversationId) {
     throw UnimplementedError();
   }
 
@@ -784,12 +784,12 @@ class _DisabledAiChatRepository implements AiChatRepository {
   Future<bool> clearLatestConversation() async => false;
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async {
-    return const AiChatCapabilities(
+  Future<AssistantCapabilities> getCapabilities() async {
+    return const AssistantCapabilities(
       phase: 'phase_1',
-      aiChatEnabled: false,
-      aiChatMemoryEnabled: false,
-      aiChatContext: AiChatContextPermissions(
+      assistantEnabled: false,
+      assistantMemoryEnabled: false,
+      assistantContext: AssistantContextAccess(
         healthProfile: true,
         dailyRecords: true,
         sleepRecords: true,
@@ -802,32 +802,32 @@ class _DisabledAiChatRepository implements AiChatRepository {
       streamingTransport: 'sse',
       markdownRenderingRecommended: true,
       ragEnabled: false,
-      tools: <AiChatToolCapability>[],
+      tools: <AssistantToolCapability>[],
       updatedAt: null,
     );
   }
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
-    return const Stream<AiChatGenerationEvent>.empty();
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+    return const Stream<AssistantGenerationEvent>.empty();
   }
 }
 
-class _DisabledWithHistoryAiChatRepository extends _DisabledAiChatRepository {
+class _DisabledWithHistoryAssistantRepository extends _DisabledAssistantRepository {
   @override
-  Future<AiChatConversation?> getLatestConversation() async {
-    return AiChatConversation(
+  Future<AssistantConversation?> getLatestConversation() async {
+    return AssistantConversation(
       id: 'conversation-disabled-history',
       title: '睡眠复盘',
       status: 'active',
-      messages: <AiChatMessage>[
-        AiChatMessage(
-          role: AiChatMessageRole.user,
+      messages: <AssistantMessage>[
+        AssistantMessage(
+          role: AssistantMessageRole.user,
           content: '之前那次睡眠为什么这么差？',
           createdAt: DateTime.parse('2026-06-18T02:00:00Z'),
         ),
-        AiChatMessage(
-          role: AiChatMessageRole.assistant,
+        AssistantMessage(
+          role: AssistantMessageRole.assistant,
           content: '我先结合你最近几天的睡眠记录来解释。',
           createdAt: DateTime.parse('2026-06-18T02:01:00Z'),
         ),
@@ -839,13 +839,13 @@ class _DisabledWithHistoryAiChatRepository extends _DisabledAiChatRepository {
   }
 }
 
-class _RestoredConversationAiChatRepository implements AiChatRepository {
+class _RestoredConversationAssistantRepository implements AssistantRepository {
   int clearCalls = 0;
 
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async {
-    return <AiChatConversationSummary>[
-      AiChatConversationSummary(
+  Future<List<AssistantConversationSummary>> listRecentConversations() async {
+    return <AssistantConversationSummary>[
+      AssistantConversationSummary(
         id: 'conversation-restored',
         title: '睡眠跟进',
         status: 'active',
@@ -857,19 +857,19 @@ class _RestoredConversationAiChatRepository implements AiChatRepository {
   }
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async {
-    return AiChatConversation(
+  Future<AssistantConversation?> getLatestConversation() async {
+    return AssistantConversation(
       id: 'conversation-restored',
       title: '睡眠跟进',
       status: 'active',
-      messages: <AiChatMessage>[
-        AiChatMessage(
-          role: AiChatMessageRole.user,
+      messages: <AssistantMessage>[
+        AssistantMessage(
+          role: AssistantMessageRole.user,
           content: '昨晚睡得不太好',
           createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
         ),
-        AiChatMessage(
-          role: AiChatMessageRole.assistant,
+        AssistantMessage(
+          role: AssistantMessageRole.assistant,
           content: '我看到你最近有睡眠记录，可以先从作息规律开始看。',
           createdAt: DateTime.parse('2026-06-18T01:01:00Z'),
           usedTools: const <String>['get_sleep_summary_by_range'],
@@ -882,7 +882,7 @@ class _RestoredConversationAiChatRepository implements AiChatRepository {
   }
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) async {
+  Future<AssistantConversation> openConversation(String conversationId) async {
     return (await getLatestConversation())!;
   }
 
@@ -893,30 +893,30 @@ class _RestoredConversationAiChatRepository implements AiChatRepository {
   }
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async =>
-      _FakeAiChatRepository._capabilities;
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
-    return const Stream<AiChatGenerationEvent>.empty();
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+    return const Stream<AssistantGenerationEvent>.empty();
   }
 }
 
-class _RetryAwareAiChatRepository implements AiChatRepository {
-  _RetryAwareAiChatRepository();
+class _RetryAwareAssistantRepository implements AssistantRepository {
+  _RetryAwareAssistantRepository();
 
   final List<int> recordedMessageCounts = <int>[];
   int _attempt = 0;
 
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
-      const <AiChatConversationSummary>[];
+  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
+      const <AssistantConversationSummary>[];
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async => null;
+  Future<AssistantConversation?> getLatestConversation() async => null;
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) {
+  Future<AssistantConversation> openConversation(String conversationId) {
     throw UnimplementedError();
   }
 
@@ -924,12 +924,12 @@ class _RetryAwareAiChatRepository implements AiChatRepository {
   Future<bool> clearLatestConversation() async => false;
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async =>
-      _FakeAiChatRepository._capabilities;
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(
-    List<AiChatMessage> messages,
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
   ) async* {
     recordedMessageCounts.add(messages.length);
     _attempt += 1;
@@ -938,11 +938,11 @@ class _RetryAwareAiChatRepository implements AiChatRepository {
       throw const LucentApiException(message: '服务端出现问题', statusCode: 503);
     }
 
-    yield const AiChatGenerationChunkEvent('先从最近三天入睡时间波动来看。');
-    yield AiChatGenerationResultEvent(
+    yield const AssistantGenerationChunkEvent('先从最近三天入睡时间波动来看。');
+    yield AssistantGenerationResultEvent(
       conversationId: 'conversation-retry',
-      message: AiChatMessage(
-        role: AiChatMessageRole.assistant,
+      message: AssistantMessage(
+        role: AssistantMessageRole.assistant,
         content: '先从最近三天入睡时间波动来看。',
         createdAt: DateTime.now(),
       ),
@@ -950,13 +950,13 @@ class _RetryAwareAiChatRepository implements AiChatRepository {
   }
 }
 
-class _RecentConversationsAiChatRepository implements AiChatRepository {
+class _RecentConversationsAssistantRepository implements AssistantRepository {
   final List<String> openedConversationIds = <String>[];
 
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async {
-    return <AiChatConversationSummary>[
-      AiChatConversationSummary(
+  Future<List<AssistantConversationSummary>> listRecentConversations() async {
+    return <AssistantConversationSummary>[
+      AssistantConversationSummary(
         id: 'conversation-restored',
         title: '睡眠跟进',
         status: 'active',
@@ -964,7 +964,7 @@ class _RecentConversationsAiChatRepository implements AiChatRepository {
         createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
         updatedAt: DateTime.parse('2026-06-18T01:01:00Z'),
       ),
-      AiChatConversationSummary(
+      AssistantConversationSummary(
         id: 'conversation-headache',
         title: '头痛追踪',
         status: 'archived',
@@ -976,19 +976,19 @@ class _RecentConversationsAiChatRepository implements AiChatRepository {
   }
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async {
-    return AiChatConversation(
+  Future<AssistantConversation?> getLatestConversation() async {
+    return AssistantConversation(
       id: 'conversation-restored',
       title: '睡眠跟进',
       status: 'active',
-      messages: <AiChatMessage>[
-        AiChatMessage(
-          role: AiChatMessageRole.user,
+      messages: <AssistantMessage>[
+        AssistantMessage(
+          role: AssistantMessageRole.user,
           content: '昨晚睡得不太好',
           createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
         ),
-        AiChatMessage(
-          role: AiChatMessageRole.assistant,
+        AssistantMessage(
+          role: AssistantMessageRole.assistant,
           content: '我看到你最近有睡眠记录，可以先从作息规律开始看。',
           createdAt: DateTime.parse('2026-06-18T01:01:00Z'),
         ),
@@ -1000,20 +1000,20 @@ class _RecentConversationsAiChatRepository implements AiChatRepository {
   }
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) async {
+  Future<AssistantConversation> openConversation(String conversationId) async {
     openedConversationIds.add(conversationId);
-    return AiChatConversation(
+    return AssistantConversation(
       id: 'conversation-headache',
       title: '头痛追踪',
       status: 'active',
-      messages: <AiChatMessage>[
-        AiChatMessage(
-          role: AiChatMessageRole.user,
+      messages: <AssistantMessage>[
+        AssistantMessage(
+          role: AssistantMessageRole.user,
           content: '今天头痛还在继续',
           createdAt: DateTime.parse('2026-06-17T09:00:00Z'),
         ),
-        AiChatMessage(
-          role: AiChatMessageRole.assistant,
+        AssistantMessage(
+          role: AssistantMessageRole.assistant,
           content: '先看一下你最近记录里的触发因素。',
           createdAt: DateTime.parse('2026-06-17T09:01:00Z'),
         ),
@@ -1028,12 +1028,12 @@ class _RecentConversationsAiChatRepository implements AiChatRepository {
   Future<bool> clearLatestConversation() async => false;
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async =>
-      _FakeAiChatRepository._capabilities;
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
-    return const Stream<AiChatGenerationEvent>.empty();
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+    return const Stream<AssistantGenerationEvent>.empty();
   }
 }
 
@@ -1097,3 +1097,4 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     throw UnimplementedError();
   }
 }
+

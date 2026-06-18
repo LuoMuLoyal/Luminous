@@ -221,7 +221,7 @@ void main() {
   });
 
   group('ai chat settings', () {
-    test('setAiChatEnabled patches settings and updates state on success', () async {
+    test('setAssistantEnabled patches settings and updates state on success', () async {
       container = buildContainer();
 
       await container.read(userSettingsControllerProvider.future);
@@ -229,8 +229,8 @@ void main() {
       fakeApi.patchResponse = _buildResponse(
         aiSummariesEnabled: false,
         dataSharingConsent: true,
-        aiChatEnabled: false,
-        aiChatContext: AiChatContextSettingsDto(
+        assistantEnabled: false,
+        assistantContext: AssistantContextSettingsDto(
           healthProfile: true,
           dailyRecords: true,
           sleepRecords: true,
@@ -240,15 +240,15 @@ void main() {
 
       await container
           .read(userSettingsControllerProvider.notifier)
-          .setAiChatEnabled(false);
+          .setAssistantEnabled(false);
 
       final state = container.read(userSettingsControllerProvider);
-      expect(state.value?.aiChatEnabled, isFalse);
-      expect(fakeApi.lastPatchDto?.aiChatEnabled, isFalse);
-      expect(fakeApi.lastPatchDto?.aiChatContext, isNull);
+      expect(state.value?.assistantEnabled, isFalse);
+      expect(fakeApi.lastPatchDto?.assistantEnabled, isFalse);
+      expect(fakeApi.lastPatchDto?.assistantContext, isNull);
     });
 
-    test('setAiChatMemoryEnabled patches settings and updates state on success', () async {
+    test('setAssistantMemoryEnabled patches settings and updates state on success', () async {
       container = buildContainer();
 
       await container.read(userSettingsControllerProvider.future);
@@ -256,9 +256,9 @@ void main() {
       fakeApi.patchResponse = _buildResponse(
         aiSummariesEnabled: false,
         dataSharingConsent: true,
-        aiChatEnabled: true,
-        aiChatMemoryEnabled: true,
-        aiChatContext: AiChatContextSettingsDto(
+        assistantEnabled: true,
+        assistantMemoryEnabled: true,
+        assistantContext: AssistantContextSettingsDto(
           healthProfile: true,
           dailyRecords: true,
           sleepRecords: true,
@@ -268,19 +268,19 @@ void main() {
 
       await container
           .read(userSettingsControllerProvider.notifier)
-          .setAiChatMemoryEnabled(true);
+          .setAssistantMemoryEnabled(true);
 
       final state = container.read(userSettingsControllerProvider);
-      expect(state.value?.aiChatMemoryEnabled, isTrue);
-      expect(fakeApi.lastPatchDto?.aiChatMemoryEnabled, isTrue);
+      expect(state.value?.assistantMemoryEnabled, isTrue);
+      expect(fakeApi.lastPatchDto?.assistantMemoryEnabled, isTrue);
     });
 
-    test('setAiChatContext patches context fields and updates state on success', () async {
+    test('setAssistantContext patches context fields and updates state on success', () async {
       container = buildContainer();
 
       await container.read(userSettingsControllerProvider.future);
 
-      final nextContext = UpdateAiChatContextSettingsDto(
+      final nextContext = UpdateAssistantContextSettingsDto(
         healthProfile: false,
         dailyRecords: true,
         sleepRecords: false,
@@ -290,8 +290,8 @@ void main() {
       fakeApi.patchResponse = _buildResponse(
         aiSummariesEnabled: false,
         dataSharingConsent: true,
-        aiChatEnabled: true,
-        aiChatContext: AiChatContextSettingsDto(
+        assistantEnabled: true,
+        assistantContext: AssistantContextSettingsDto(
           healthProfile: false,
           dailyRecords: true,
           sleepRecords: false,
@@ -301,18 +301,18 @@ void main() {
 
       await container
           .read(userSettingsControllerProvider.notifier)
-          .setAiChatContext(nextContext);
+          .setAssistantContext(nextContext);
 
       final state = container.read(userSettingsControllerProvider);
-      expect(state.value?.aiChatContext.healthProfile, isFalse);
-      expect(state.value?.aiChatContext.dailyRecords, isTrue);
-      expect(state.value?.aiChatContext.sleepRecords, isFalse);
-      expect(state.value?.aiChatContext.currentMedicines, isTrue);
-      expect(fakeApi.lastPatchDto?.aiChatEnabled, isNull);
-      expect(fakeApi.lastPatchDto?.aiChatContext?.healthProfile, isFalse);
-      expect(fakeApi.lastPatchDto?.aiChatContext?.dailyRecords, isTrue);
-      expect(fakeApi.lastPatchDto?.aiChatContext?.sleepRecords, isFalse);
-      expect(fakeApi.lastPatchDto?.aiChatContext?.currentMedicines, isTrue);
+      expect(state.value?.assistantContext.healthProfile, isFalse);
+      expect(state.value?.assistantContext.dailyRecords, isTrue);
+      expect(state.value?.assistantContext.sleepRecords, isFalse);
+      expect(state.value?.assistantContext.currentMedicines, isTrue);
+      expect(fakeApi.lastPatchDto?.assistantEnabled, isNull);
+      expect(fakeApi.lastPatchDto?.assistantContext?.healthProfile, isFalse);
+      expect(fakeApi.lastPatchDto?.assistantContext?.dailyRecords, isTrue);
+      expect(fakeApi.lastPatchDto?.assistantContext?.sleepRecords, isFalse);
+      expect(fakeApi.lastPatchDto?.assistantContext?.currentMedicines, isTrue);
     });
   });
 
@@ -416,9 +416,9 @@ void main() {
 UserSettingsResponseDto _buildResponse({
   bool aiSummariesEnabled = false,
   bool dataSharingConsent = false,
-  bool aiChatEnabled = true,
-  bool aiChatMemoryEnabled = false,
-  AiChatContextSettingsDto? aiChatContext,
+  bool assistantEnabled = true,
+  bool assistantMemoryEnabled = false,
+  AssistantContextSettingsDto? assistantContext,
 }) {
   return UserSettingsResponseDto(
     code: 0,
@@ -426,11 +426,11 @@ UserSettingsResponseDto _buildResponse({
     data: UserSettingsDataDto(
       aiSummariesEnabled: aiSummariesEnabled,
       dataSharingConsent: dataSharingConsent,
-      aiChatEnabled: aiChatEnabled,
-      aiChatMemoryEnabled: aiChatMemoryEnabled,
-      aiChatContext:
-          aiChatContext ??
-          AiChatContextSettingsDto(
+      assistantEnabled: assistantEnabled,
+      assistantMemoryEnabled: assistantMemoryEnabled,
+      assistantContext:
+          assistantContext ??
+          AssistantContextSettingsDto(
             healthProfile: true,
             dailyRecords: true,
             sleepRecords: true,
@@ -458,9 +458,9 @@ class _FakeUserSettingsApi extends UserSettingsApi {
     data: UserSettingsDataDto(
       aiSummariesEnabled: false,
       dataSharingConsent: true,
-      aiChatEnabled: true,
-      aiChatMemoryEnabled: false,
-      aiChatContext: AiChatContextSettingsDto(
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      assistantContext: AssistantContextSettingsDto(
         healthProfile: true,
         dailyRecords: true,
         sleepRecords: true,
@@ -529,3 +529,4 @@ class _FakeUserSettingsApi extends UserSettingsApi {
     );
   }
 }
+

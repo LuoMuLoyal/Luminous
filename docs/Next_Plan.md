@@ -6,7 +6,7 @@ This file records the next implementation order only. Completed work belongs in 
 
 ## Current Goal
 
-The next active slice is now **AI Chat Phase 2: better read tools + write
+The next active slice is now **Assistant Phase 2: better read tools + write
 intent + confirmation**.
 
 Phase 1 is already in place:

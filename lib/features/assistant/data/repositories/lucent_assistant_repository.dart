@@ -1,67 +1,67 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/core/network/lucent_network_providers.dart';
-import 'package:luminous/features/ai_chat/data/datasources/ai_chat_remote_data_source.dart';
-import 'package:luminous/features/ai_chat/domain/entities/ai_chat_models.dart';
+import 'package:luminous/features/assistant/data/datasources/assistant_remote_data_source.dart';
+import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 
-sealed class AiChatGenerationEvent {
-  const AiChatGenerationEvent();
+sealed class AssistantGenerationEvent {
+  const AssistantGenerationEvent();
 }
 
-class AiChatGenerationChunkEvent extends AiChatGenerationEvent {
-  const AiChatGenerationChunkEvent(this.content);
+class AssistantGenerationChunkEvent extends AssistantGenerationEvent {
+  const AssistantGenerationChunkEvent(this.content);
 
   final String content;
 }
 
-class AiChatGenerationResultEvent extends AiChatGenerationEvent {
-  const AiChatGenerationResultEvent({
+class AssistantGenerationResultEvent extends AssistantGenerationEvent {
+  const AssistantGenerationResultEvent({
     required this.conversationId,
     required this.message,
   });
 
   final String conversationId;
-  final AiChatMessage message;
+  final AssistantMessage message;
 }
 
-abstract interface class AiChatRepository {
-  Future<AiChatCapabilities> getCapabilities();
+abstract interface class AssistantRepository {
+  Future<AssistantCapabilities> getCapabilities();
 
-  Future<List<AiChatConversationSummary>> listRecentConversations();
+  Future<List<AssistantConversationSummary>> listRecentConversations();
 
-  Future<AiChatConversation?> getLatestConversation();
+  Future<AssistantConversation?> getLatestConversation();
 
-  Future<AiChatConversation> openConversation(String conversationId);
+  Future<AssistantConversation> openConversation(String conversationId);
 
   Future<bool> clearLatestConversation();
 
-  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages);
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages);
 }
 
-final aiChatRemoteDataSourceProvider = Provider<AiChatRemoteDataSource>((ref) {
-  final api = ref.watch(lucentAiChatApiProvider);
+final assistantRemoteDataSourceProvider = Provider<AssistantRemoteDataSource>((ref) {
+  final api = ref.watch(lucentAssistantApiProvider);
   final dio = ref.watch(lucentDioClientProvider).dio;
-  return AiChatRemoteDataSource(api: api, dio: dio);
+  return AssistantRemoteDataSource(api: api, dio: dio);
 });
 
-final aiChatRepositoryProvider = Provider<AiChatRepository>((ref) {
-  final dataSource = ref.watch(aiChatRemoteDataSourceProvider);
-  return LucentAiChatRepository(dataSource: dataSource);
+final assistantRepositoryProvider = Provider<AssistantRepository>((ref) {
+  final dataSource = ref.watch(assistantRemoteDataSourceProvider);
+  return LucentAssistantRepository(dataSource: dataSource);
 });
 
-class LucentAiChatRepository implements AiChatRepository {
-  LucentAiChatRepository({required this.dataSource});
+class LucentAssistantRepository implements AssistantRepository {
+  LucentAssistantRepository({required this.dataSource});
 
-  final AiChatRemoteDataSource dataSource;
+  final AssistantRemoteDataSource dataSource;
 
   @override
-  Future<AiChatCapabilities> getCapabilities() async {
+  Future<AssistantCapabilities> getCapabilities() async {
     final dto = await dataSource.getCapabilities();
     return _mapCapabilities(dto);
   }
 
   @override
-  Future<AiChatConversation?> getLatestConversation() async {
+  Future<AssistantConversation?> getLatestConversation() async {
     final dto = await dataSource.getLatestConversation();
     if (dto == null) {
       return null;
@@ -70,13 +70,13 @@ class LucentAiChatRepository implements AiChatRepository {
   }
 
   @override
-  Future<List<AiChatConversationSummary>> listRecentConversations() async {
+  Future<List<AssistantConversationSummary>> listRecentConversations() async {
     final items = await dataSource.listRecentConversations();
     return items.map(_mapConversationSummary).toList(growable: false);
   }
 
   @override
-  Future<AiChatConversation> openConversation(String conversationId) async {
+  Future<AssistantConversation> openConversation(String conversationId) async {
     final dto = await dataSource.openConversation(conversationId);
     return _mapConversation(dto);
   }
@@ -87,17 +87,17 @@ class LucentAiChatRepository implements AiChatRepository {
   }
 
   @override
-  Stream<AiChatGenerationEvent> streamMessages(
-    List<AiChatMessage> messages,
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
   ) async* {
     final requestMessages = messages
         .map(
-          (message) => lucent.AiChatInputMessageDto(
+          (message) => lucent.AssistantInputMessageDto(
             role: switch (message.role) {
-              AiChatMessageRole.user =>
-                lucent.AiChatInputMessageDtoRoleEnum.user,
-              AiChatMessageRole.assistant =>
-                lucent.AiChatInputMessageDtoRoleEnum.assistant,
+              AssistantMessageRole.user =>
+                lucent.AssistantInputMessageDtoRoleEnum.user,
+              AssistantMessageRole.assistant =>
+                lucent.AssistantInputMessageDtoRoleEnum.assistant,
             },
             content: message.content,
           ),
@@ -108,19 +108,19 @@ class LucentAiChatRepository implements AiChatRepository {
       messages: requestMessages,
     )) {
       switch (event) {
-        case AiChatRemoteChunkEvent():
-          yield AiChatGenerationChunkEvent(event.content);
-        case AiChatRemoteResultEvent():
-          yield AiChatGenerationResultEvent(
+        case AssistantRemoteChunkEvent():
+          yield AssistantGenerationChunkEvent(event.content);
+        case AssistantRemoteResultEvent():
+          yield AssistantGenerationResultEvent(
             conversationId: event.conversationId,
-            message: AiChatMessage(
-              role: AiChatMessageRole.assistant,
+            message: AssistantMessage(
+              role: AssistantMessageRole.assistant,
               content: event.content,
               usedTools: event.usedTools,
               createdAt: event.generatedAt,
               proposedActions: event.proposedActions
                   .map(_mapProposedActionFromJson)
-                  .whereType<AiChatProposedAction>()
+                  .whereType<AssistantProposedAction>()
                   .toList(growable: false),
             ),
           );
@@ -128,16 +128,16 @@ class LucentAiChatRepository implements AiChatRepository {
     }
   }
 
-  AiChatCapabilities _mapCapabilities(lucent.AiChatCapabilitiesDataDto dto) {
-    return AiChatCapabilities(
+  AssistantCapabilities _mapCapabilities(lucent.AssistantCapabilitiesDataDto dto) {
+    return AssistantCapabilities(
       phase: dto.phase,
-      aiChatEnabled: dto.aiChatEnabled,
-      aiChatMemoryEnabled: dto.aiChatMemoryEnabled,
-      aiChatContext: AiChatContextPermissions(
-        healthProfile: dto.aiChatContext.healthProfile,
-        dailyRecords: dto.aiChatContext.dailyRecords,
-        sleepRecords: dto.aiChatContext.sleepRecords,
-        currentMedicines: dto.aiChatContext.currentMedicines,
+      assistantEnabled: dto.assistantEnabled,
+      assistantMemoryEnabled: dto.assistantMemoryEnabled,
+      assistantContext: AssistantContextAccess(
+        healthProfile: dto.assistantContext.healthProfile,
+        dailyRecords: dto.assistantContext.dailyRecords,
+        sleepRecords: dto.assistantContext.sleepRecords,
+        currentMedicines: dto.assistantContext.currentMedicines,
       ),
       chatModelConfigured: dto.chatModelConfigured,
       interactiveChatReady: dto.interactiveChatReady,
@@ -148,7 +148,7 @@ class LucentAiChatRepository implements AiChatRepository {
       ragEnabled: dto.ragEnabled,
       tools: dto.tools
           .map(
-            (tool) => AiChatToolCapability(
+            (tool) => AssistantToolCapability(
               id: tool.name.value,
               requiredContextSources: tool.requiredContextSources,
               permittedByUser: tool.permittedByUser,
@@ -162,8 +162,8 @@ class LucentAiChatRepository implements AiChatRepository {
     );
   }
 
-  AiChatConversation _mapConversation(lucent.AiChatConversationDataDto dto) {
-    return AiChatConversation(
+  AssistantConversation _mapConversation(lucent.AssistantConversationDataDto dto) {
+    return AssistantConversation(
       id: dto.id,
       title: dto.title?.toString(),
       status: dto.status.value,
@@ -176,10 +176,10 @@ class LucentAiChatRepository implements AiChatRepository {
     );
   }
 
-  AiChatConversationSummary _mapConversationSummary(
-    lucent.AiChatConversationSummaryDto dto,
+  AssistantConversationSummary _mapConversationSummary(
+    lucent.AssistantConversationSummaryDto dto,
   ) {
-    return AiChatConversationSummary(
+    return AssistantConversationSummary(
       id: dto.id,
       title: dto.title?.toString(),
       status: dto.status.value,
@@ -189,17 +189,17 @@ class LucentAiChatRepository implements AiChatRepository {
     );
   }
 
-  AiChatMessage _mapConversationMessage(
-    lucent.AiChatConversationMessageDto dto,
+  AssistantMessage _mapConversationMessage(
+    lucent.AssistantConversationMessageDto dto,
   ) {
-    return AiChatMessage(
+    return AssistantMessage(
       role: switch (dto.role) {
-        lucent.AiChatConversationMessageDtoRoleEnum.user =>
-          AiChatMessageRole.user,
-        lucent.AiChatConversationMessageDtoRoleEnum.assistant =>
-          AiChatMessageRole.assistant,
-        lucent.AiChatConversationMessageDtoRoleEnum.unknownDefaultOpenApi =>
-          AiChatMessageRole.assistant,
+        lucent.AssistantConversationMessageDtoRoleEnum.user =>
+          AssistantMessageRole.user,
+        lucent.AssistantConversationMessageDtoRoleEnum.assistant =>
+          AssistantMessageRole.assistant,
+        lucent.AssistantConversationMessageDtoRoleEnum.unknownDefaultOpenApi =>
+          AssistantMessageRole.assistant,
       },
       content: dto.content,
       createdAt: _parseDateTime(dto.createdAt) ?? DateTime.now(),
@@ -207,8 +207,8 @@ class LucentAiChatRepository implements AiChatRepository {
     );
   }
 
-  AiChatProposedAction? _mapProposedActionFromJson(Map<String, dynamic> json) {
-    final type = AiChatProposedActionType.fromValue(
+  AssistantProposedAction? _mapProposedActionFromJson(Map<String, dynamic> json) {
+    final type = AssistantProposedActionType.fromValue(
       json['type']?.toString() ?? '',
     );
     if (type == null) {
@@ -225,13 +225,13 @@ class LucentAiChatRepository implements AiChatRepository {
         items
             .whereType<Map>()
             .map(
-              (item) => AiChatProposalPreviewField(
+              (item) => AssistantProposalPreviewField(
                 label: item['label']?.toString() ?? '',
                 value: item['value']?.toString() ?? '',
               ),
             )
             .toList(growable: false),
-      _ => const <AiChatProposalPreviewField>[],
+      _ => const <AssistantProposalPreviewField>[],
     };
 
     final payloadVersion = switch (json['payloadVersion']) {
@@ -240,7 +240,7 @@ class LucentAiChatRepository implements AiChatRepository {
       _ => 1,
     };
 
-    return AiChatProposedAction(
+    return AssistantProposedAction(
       id: json['id']?.toString() ?? '',
       type: type,
       title: json['title']?.toString() ?? '',
@@ -254,8 +254,8 @@ class LucentAiChatRepository implements AiChatRepository {
     );
   }
 
-  AiChatProposalPayload? _mapProposalPayload(
-    AiChatProposedActionType type,
+  AssistantProposalPayload? _mapProposalPayload(
+    AssistantProposedActionType type,
     Object? rawPayload,
   ) {
     final payload = _mapStringKeyedMap(rawPayload);
@@ -264,15 +264,15 @@ class LucentAiChatRepository implements AiChatRepository {
     }
 
     switch (type) {
-      case AiChatProposedActionType.createDailyRecord:
+      case AssistantProposedActionType.createDailyRecord:
         final draft = _mapStringKeyedMap(payload['draft']);
         final kind = draft?['kind']?.toString();
         final occurredAt = draft?['occurredAt']?.toString();
         if (draft == null || kind == null || occurredAt == null) {
           return null;
         }
-        return AiChatCreateDailyRecordProposalPayload(
-          draft: AiChatCreateDailyRecordDraft(
+        return AssistantCreateDailyRecordProposalPayload(
+          draft: AssistantCreateDailyRecordDraft(
             kind: kind,
             occurredAt: occurredAt,
             title: draft['title']?.toString(),
@@ -282,35 +282,35 @@ class LucentAiChatRepository implements AiChatRepository {
             payload: _mapStringKeyedMap(draft['payload']),
           ),
         );
-      case AiChatProposedActionType.updateDailyRecord:
+      case AssistantProposedActionType.updateDailyRecord:
         final recordId = payload['recordId']?.toString();
         final draft = _mapStringKeyedMap(payload['draft']);
         if (recordId == null || draft == null) {
           return null;
         }
-        return AiChatUpdateDailyRecordProposalPayload(
+        return AssistantUpdateDailyRecordProposalPayload(
           recordId: recordId,
           draft: draft,
         );
-      case AiChatProposedActionType.deleteDailyRecord:
+      case AssistantProposedActionType.deleteDailyRecord:
         final recordId = payload['recordId']?.toString();
         if (recordId == null) {
           return null;
         }
-        return AiChatDeleteDailyRecordProposalPayload(recordId: recordId);
-      case AiChatProposedActionType.updateUserSettings:
+        return AssistantDeleteDailyRecordProposalPayload(recordId: recordId);
+      case AssistantProposedActionType.updateUserSettings:
         final draft = _mapStringKeyedMap(payload['draft']);
         if (draft == null) {
           return null;
         }
-        final context = _mapStringKeyedMap(draft['aiChatContext']);
-        return AiChatUpdateUserSettingsProposalPayload(
-          draft: AiChatUpdateUserSettingsDraft(
-            aiChatEnabled: draft['aiChatEnabled'] as bool?,
-            aiChatMemoryEnabled: draft['aiChatMemoryEnabled'] as bool?,
-            aiChatContext: context == null
+        final context = _mapStringKeyedMap(draft['assistantContext']);
+        return AssistantUpdateUserSettingsProposalPayload(
+          draft: AssistantUpdateUserSettingsDraft(
+            assistantEnabled: draft['assistantEnabled'] as bool?,
+            assistantMemoryEnabled: draft['assistantMemoryEnabled'] as bool?,
+            assistantContext: context == null
                 ? null
-                : AiChatContextPermissions(
+                : AssistantContextAccess(
                     healthProfile: context['healthProfile'] as bool? ?? false,
                     dailyRecords: context['dailyRecords'] as bool? ?? false,
                     sleepRecords: context['sleepRecords'] as bool? ?? false,

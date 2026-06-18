@@ -26,6 +26,7 @@ Persisted preference keys:
 
 - Do not hardcode user-visible text in pages or widgets.
 - Add visible text to both ARB files.
+- Assistant strings use `assistant*` ARB keys directly. Do not reintroduce compatibility alias layers for assistant l10n.
 - Report AI summary state copy such as generate/loading/error/disabled hints is owned by the Report ARB entries, not by repository/domain fallback strings.
 - Record natural-language intake strings such as bottom-sheet title, parse/save actions, candidate counts, selection hints, partial-save toasts, candidate failure hints, and per-kind candidate editor labels are owned by the Record ARB entries.
 - Reminder UI strings for date windows, local sound preference, SMS unavailable state, delivery history, and on-device notification title/body/channel labels are owned by the Medicine feature ARB entries.

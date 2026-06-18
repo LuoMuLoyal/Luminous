@@ -2,21 +2,21 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart'
-    show UpdateAiChatContextSettingsDto, UpdateUserSettingsDto;
+    show UpdateAssistantContextSettingsDto, UpdateUserSettingsDto;
 import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
-import 'package:luminous/features/ai_chat/data/repositories/lucent_ai_chat_repository.dart';
-import 'package:luminous/features/ai_chat/domain/entities/ai_chat_models.dart';
+import 'package:luminous/features/assistant/data/repositories/lucent_assistant_repository.dart';
+import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 
-enum AiChatSendErrorType { server, streamInterrupted, emptyResult, unknown }
+enum AssistantSendErrorType { server, streamInterrupted, emptyResult, unknown }
 
-class AiChatState {
-  const AiChatState({
+class AssistantState {
+  const AssistantState({
     this.isLoadingCapabilities = false,
     this.isLoadingConversation = false,
     this.isLoadingRecentConversations = false,
@@ -30,8 +30,8 @@ class AiChatState {
     this.sendErrorType,
     this.lastFailedInput,
     this.conversationId,
-    this.recentConversations = const <AiChatConversationSummary>[],
-    this.messages = const <AiChatMessage>[],
+    this.recentConversations = const <AssistantConversationSummary>[],
+    this.messages = const <AssistantMessage>[],
     this.streamingDraft = '',
   });
 
@@ -40,21 +40,21 @@ class AiChatState {
   final bool isLoadingRecentConversations;
   final bool isOpeningConversation;
   final bool isSending;
-  final AiChatCapabilities? capabilities;
+  final AssistantCapabilities? capabilities;
   final String? capabilityError;
   final String? conversationError;
   final String? recentConversationError;
   final String? sendError;
-  final AiChatSendErrorType? sendErrorType;
+  final AssistantSendErrorType? sendErrorType;
   final String? lastFailedInput;
   final String? conversationId;
-  final List<AiChatConversationSummary> recentConversations;
-  final List<AiChatMessage> messages;
+  final List<AssistantConversationSummary> recentConversations;
+  final List<AssistantMessage> messages;
   final String streamingDraft;
 
   bool get hasConversation => messages.isNotEmpty || streamingDraft.isNotEmpty;
 
-  AiChatState copyWith({
+  AssistantState copyWith({
     bool? isLoadingCapabilities,
     bool? isLoadingConversation,
     bool? isLoadingRecentConversations,
@@ -68,11 +68,11 @@ class AiChatState {
     Object? sendErrorType = _sentinel,
     Object? lastFailedInput = _sentinel,
     Object? conversationId = _sentinel,
-    List<AiChatConversationSummary>? recentConversations,
-    List<AiChatMessage>? messages,
+    List<AssistantConversationSummary>? recentConversations,
+    List<AssistantMessage>? messages,
     String? streamingDraft,
   }) {
-    return AiChatState(
+    return AssistantState(
       isLoadingCapabilities:
           isLoadingCapabilities ?? this.isLoadingCapabilities,
       isLoadingConversation:
@@ -84,7 +84,7 @@ class AiChatState {
       isSending: isSending ?? this.isSending,
       capabilities: identical(capabilities, _sentinel)
           ? this.capabilities
-          : capabilities as AiChatCapabilities?,
+          : capabilities as AssistantCapabilities?,
       capabilityError: identical(capabilityError, _sentinel)
           ? this.capabilityError
           : capabilityError as String?,
@@ -99,7 +99,7 @@ class AiChatState {
           : sendError as String?,
       sendErrorType: identical(sendErrorType, _sentinel)
           ? this.sendErrorType
-          : sendErrorType as AiChatSendErrorType?,
+          : sendErrorType as AssistantSendErrorType?,
       lastFailedInput: identical(lastFailedInput, _sentinel)
           ? this.lastFailedInput
           : lastFailedInput as String?,
@@ -115,16 +115,16 @@ class AiChatState {
 
 const Object _sentinel = Object();
 
-class AiChatController extends Notifier<AiChatState> {
+class AssistantController extends Notifier<AssistantState> {
   @override
-  AiChatState build() {
+  AssistantState build() {
     final session = ref.watch(authSessionProvider);
     if (!session.canAccessProtectedData) {
-      return const AiChatState();
+      return const AssistantState();
     }
 
     Future<void>.microtask(_bootstrap);
-    return const AiChatState(
+    return const AssistantState(
       isLoadingCapabilities: true,
       isLoadingConversation: true,
       isLoadingRecentConversations: true,
@@ -147,8 +147,8 @@ class AiChatController extends Notifier<AiChatState> {
         capabilities: null,
         capabilityError: null,
         conversationId: null,
-        recentConversations: const <AiChatConversationSummary>[],
-        messages: const <AiChatMessage>[],
+        recentConversations: const <AssistantConversationSummary>[],
+        messages: const <AssistantMessage>[],
         streamingDraft: '',
         conversationError: null,
         recentConversationError: null,
@@ -160,7 +160,7 @@ class AiChatController extends Notifier<AiChatState> {
 
     try {
       final capabilities = await ref
-          .read(aiChatRepositoryProvider)
+          .read(assistantRepositoryProvider)
           .getCapabilities();
       state = state.copyWith(
         isLoadingCapabilities: false,
@@ -182,7 +182,7 @@ class AiChatController extends Notifier<AiChatState> {
       state = state.copyWith(
         isLoadingConversation: false,
         conversationId: null,
-        messages: const <AiChatMessage>[],
+        messages: const <AssistantMessage>[],
         streamingDraft: '',
         conversationError: null,
       );
@@ -196,12 +196,12 @@ class AiChatController extends Notifier<AiChatState> {
 
     try {
       final conversation = await ref
-          .read(aiChatRepositoryProvider)
+          .read(assistantRepositoryProvider)
           .getLatestConversation();
       state = state.copyWith(
         isLoadingConversation: false,
         conversationId: conversation?.id,
-        messages: conversation?.messages ?? const <AiChatMessage>[],
+        messages: conversation?.messages ?? const <AssistantMessage>[],
         streamingDraft: '',
         conversationError: null,
         sendError: null,
@@ -222,7 +222,7 @@ class AiChatController extends Notifier<AiChatState> {
     if (!session.canAccessProtectedData) {
       state = state.copyWith(
         isLoadingRecentConversations: false,
-        recentConversations: const <AiChatConversationSummary>[],
+        recentConversations: const <AssistantConversationSummary>[],
         recentConversationError: null,
       );
       return;
@@ -235,7 +235,7 @@ class AiChatController extends Notifier<AiChatState> {
 
     try {
       final items = await ref
-          .read(aiChatRepositoryProvider)
+          .read(assistantRepositoryProvider)
           .listRecentConversations();
       state = state.copyWith(
         isLoadingRecentConversations: false,
@@ -269,7 +269,7 @@ class AiChatController extends Notifier<AiChatState> {
 
     try {
       final conversation = await ref
-          .read(aiChatRepositoryProvider)
+          .read(assistantRepositoryProvider)
           .openConversation(conversationId);
       state = state.copyWith(
         isOpeningConversation: false,
@@ -306,15 +306,15 @@ class AiChatController extends Notifier<AiChatState> {
     }
 
     final nextMessages = appendUserMessage
-        ? <AiChatMessage>[
+        ? <AssistantMessage>[
             ...state.messages,
-            AiChatMessage(
-              role: AiChatMessageRole.user,
+            AssistantMessage(
+              role: AssistantMessageRole.user,
               content: trimmed,
               createdAt: DateTime.now(),
             ),
           ]
-        : List<AiChatMessage>.of(state.messages);
+        : List<AssistantMessage>.of(state.messages);
 
     state = state.copyWith(
       messages: nextMessages,
@@ -327,20 +327,20 @@ class AiChatController extends Notifier<AiChatState> {
 
     try {
       await for (final event
-          in ref.read(aiChatRepositoryProvider).streamMessages(nextMessages)) {
+          in ref.read(assistantRepositoryProvider).streamMessages(nextMessages)) {
         switch (event) {
-          case AiChatGenerationChunkEvent():
+          case AssistantGenerationChunkEvent():
             state = state.copyWith(
               streamingDraft: '${state.streamingDraft}${event.content}',
             );
-          case AiChatGenerationResultEvent():
+          case AssistantGenerationResultEvent():
             state = state.copyWith(
               isSending: false,
               streamingDraft: '',
               conversationId: event.conversationId.isEmpty
                   ? state.conversationId
                   : event.conversationId,
-              messages: <AiChatMessage>[...state.messages, event.message],
+              messages: <AssistantMessage>[...state.messages, event.message],
             );
             await loadRecentConversations();
             return;
@@ -350,7 +350,7 @@ class AiChatController extends Notifier<AiChatState> {
       state = state.copyWith(
         isSending: false,
         sendError: 'AI 流式响应已结束，但没有返回最终结果。',
-        sendErrorType: AiChatSendErrorType.emptyResult,
+        sendErrorType: AssistantSendErrorType.emptyResult,
         lastFailedInput: trimmed,
       );
     } catch (error) {
@@ -366,18 +366,18 @@ class AiChatController extends Notifier<AiChatState> {
     }
   }
 
-  AiChatSendErrorType _classifySendError(Object error) {
+  AssistantSendErrorType _classifySendError(Object error) {
     if (error is LucentApiException) {
       final statusCode = error.statusCode;
       if (statusCode != null && statusCode >= 500) {
-        return AiChatSendErrorType.server;
+        return AssistantSendErrorType.server;
       }
-      return AiChatSendErrorType.server;
+      return AssistantSendErrorType.server;
     }
     if (error is StateError || error is FormatException) {
-      return AiChatSendErrorType.streamInterrupted;
+      return AssistantSendErrorType.streamInterrupted;
     }
-    return AiChatSendErrorType.unknown;
+    return AssistantSendErrorType.unknown;
   }
 
   Future<void> retryLastMessage() async {
@@ -397,7 +397,7 @@ class AiChatController extends Notifier<AiChatState> {
     }
 
     try {
-      await ref.read(aiChatRepositoryProvider).clearLatestConversation();
+      await ref.read(assistantRepositoryProvider).clearLatestConversation();
     } catch (error) {
       final message = LucentErrorMapper.fromObject(error).message;
       state = state.copyWith(conversationError: message);
@@ -406,7 +406,7 @@ class AiChatController extends Notifier<AiChatState> {
 
     state = state.copyWith(
       conversationId: null,
-      messages: const <AiChatMessage>[],
+      messages: const <AssistantMessage>[],
       streamingDraft: '',
       conversationError: null,
       sendError: null,
@@ -421,7 +421,7 @@ class AiChatController extends Notifier<AiChatState> {
       return false;
     }
     final last = state.messages.last;
-    return last.role == AiChatMessageRole.user && last.content == input;
+    return last.role == AssistantMessageRole.user && last.content == input;
   }
 
   Future<void> confirmProposedAction({
@@ -444,7 +444,7 @@ class AiChatController extends Notifier<AiChatState> {
     _updateProposalState(
       messageId: messageId,
       proposalId: proposalId,
-      executionState: AiChatProposalExecutionState.executing,
+      executionState: AssistantProposalExecutionState.executing,
       executionError: null,
     );
 
@@ -453,7 +453,7 @@ class AiChatController extends Notifier<AiChatState> {
       _updateProposalState(
         messageId: messageId,
         proposalId: proposalId,
-        executionState: AiChatProposalExecutionState.confirmed,
+        executionState: AssistantProposalExecutionState.confirmed,
         executionError: null,
       );
     } catch (error) {
@@ -461,7 +461,7 @@ class AiChatController extends Notifier<AiChatState> {
       _updateProposalState(
         messageId: messageId,
         proposalId: proposal.id,
-        executionState: AiChatProposalExecutionState.failed,
+        executionState: AssistantProposalExecutionState.failed,
         executionError: messageText,
       );
       rethrow;
@@ -475,16 +475,16 @@ class AiChatController extends Notifier<AiChatState> {
     _updateProposalState(
       messageId: messageId,
       proposalId: proposalId,
-      executionState: AiChatProposalExecutionState.dismissed,
+      executionState: AssistantProposalExecutionState.dismissed,
       executionError: null,
     );
   }
 
-  Future<void> _executeProposal(AiChatProposedAction proposal) async {
+  Future<void> _executeProposal(AssistantProposedAction proposal) async {
     switch (proposal.payload) {
-      case AiChatCreateDailyRecordProposalPayload():
+      case AssistantCreateDailyRecordProposalPayload():
         final payload =
-            proposal.payload as AiChatCreateDailyRecordProposalPayload;
+            proposal.payload as AssistantCreateDailyRecordProposalPayload;
         await ref
             .read(dailyRecordRepositoryProvider)
             .create(
@@ -498,9 +498,9 @@ class AiChatController extends Notifier<AiChatState> {
                 payload: payload.draft.payload,
               ),
             );
-      case AiChatUpdateDailyRecordProposalPayload():
+      case AssistantUpdateDailyRecordProposalPayload():
         final payload =
-            proposal.payload as AiChatUpdateDailyRecordProposalPayload;
+            proposal.payload as AssistantUpdateDailyRecordProposalPayload;
         await ref
             .read(dailyRecordRepositoryProvider)
             .update(
@@ -518,28 +518,28 @@ class AiChatController extends Notifier<AiChatState> {
                     : dailyRecordNoChange,
               ),
             );
-      case AiChatDeleteDailyRecordProposalPayload():
+      case AssistantDeleteDailyRecordProposalPayload():
         final payload =
-            proposal.payload as AiChatDeleteDailyRecordProposalPayload;
+            proposal.payload as AssistantDeleteDailyRecordProposalPayload;
         await ref.read(dailyRecordRepositoryProvider).delete(payload.recordId);
-      case AiChatUpdateUserSettingsProposalPayload():
+      case AssistantUpdateUserSettingsProposalPayload():
         final payload =
-            proposal.payload as AiChatUpdateUserSettingsProposalPayload;
+            proposal.payload as AssistantUpdateUserSettingsProposalPayload;
         await ref
             .read(userSettingsControllerProvider.notifier)
             .applySettingsPatch(
               UpdateUserSettingsDto(
-                aiChatEnabled: payload.draft.aiChatEnabled,
-                aiChatMemoryEnabled: payload.draft.aiChatMemoryEnabled,
-                aiChatContext: payload.draft.aiChatContext == null
+                assistantEnabled: payload.draft.assistantEnabled,
+                assistantMemoryEnabled: payload.draft.assistantMemoryEnabled,
+                assistantContext: payload.draft.assistantContext == null
                     ? null
-                    : UpdateAiChatContextSettingsDto(
+                    : UpdateAssistantContextSettingsDto(
                         healthProfile:
-                            payload.draft.aiChatContext!.healthProfile,
-                        dailyRecords: payload.draft.aiChatContext!.dailyRecords,
-                        sleepRecords: payload.draft.aiChatContext!.sleepRecords,
+                            payload.draft.assistantContext!.healthProfile,
+                        dailyRecords: payload.draft.assistantContext!.dailyRecords,
+                        sleepRecords: payload.draft.assistantContext!.sleepRecords,
                         currentMedicines:
-                            payload.draft.aiChatContext!.currentMedicines,
+                            payload.draft.assistantContext!.currentMedicines,
                       ),
               ),
             );
@@ -547,7 +547,7 @@ class AiChatController extends Notifier<AiChatState> {
     }
   }
 
-  (AiChatMessage, AiChatProposedAction)? _findProposalTarget({
+  (AssistantMessage, AssistantProposedAction)? _findProposalTarget({
     required String messageId,
     required String proposalId,
   }) {
@@ -567,7 +567,7 @@ class AiChatController extends Notifier<AiChatState> {
   void _updateProposalState({
     required String messageId,
     required String proposalId,
-    required AiChatProposalExecutionState executionState,
+    required AssistantProposalExecutionState executionState,
     required String? executionError,
   }) {
     state = state.copyWith(
@@ -604,12 +604,12 @@ class AiChatController extends Notifier<AiChatState> {
     };
   }
 
-  String messageIdOf(AiChatMessage message) => _messageIdOf(message);
+  String messageIdOf(AssistantMessage message) => _messageIdOf(message);
 
-  String _messageIdOf(AiChatMessage message) {
+  String _messageIdOf(AssistantMessage message) {
     return '${message.role.name}-${message.createdAt.toIso8601String()}-${message.content.hashCode}';
   }
 }
 
-final aiChatControllerProvider =
-    NotifierProvider<AiChatController, AiChatState>(AiChatController.new);
+final assistantControllerProvider =
+    NotifierProvider<AssistantController, AssistantState>(AssistantController.new);

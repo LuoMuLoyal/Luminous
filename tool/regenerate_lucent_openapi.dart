@@ -43,6 +43,15 @@ Future<void> main() async {
   }
 
   try {
+    final deletedStaleAssistantArtifacts = _deleteStaleAssistantArtifacts(
+      generatedPackageRoot,
+    );
+    stdout.writeln(
+      deletedStaleAssistantArtifacts == 0
+          ? 'No stale assistant generated artifacts needed cleanup.'
+          : 'Removed $deletedStaleAssistantArtifacts stale assistant generated artifacts before regeneration.',
+    );
+
     await _runCommand(
       'pnpm',
       ['export:openapi'],
@@ -456,6 +465,52 @@ int _deleteGeneratedNoiseArtifacts(Directory generatedPackageRoot) {
   }
 
   return deletedArtifacts;
+}
+
+int _deleteStaleAssistantArtifacts(Directory generatedPackageRoot) {
+  var deleted = 0;
+
+  final modelDir = Directory(
+    '${generatedPackageRoot.path}${Platform.pathSeparator}lib'
+    '${Platform.pathSeparator}src${Platform.pathSeparator}model',
+  );
+  if (modelDir.existsSync()) {
+    for (final entity in modelDir.listSync()) {
+      if (entity is! File) {
+        continue;
+      }
+      final name = entity.uri.pathSegments.last;
+      final isLegacyAssistantModel =
+          name.contains('ai_chat_') ||
+          name.contains('stream_ai_chat_') ||
+          name.contains('update_ai_chat_');
+      if (!isLegacyAssistantModel) {
+        continue;
+      }
+      entity.deleteSync();
+      deleted += 1;
+    }
+  }
+
+  final apiDir = Directory(
+    '${generatedPackageRoot.path}${Platform.pathSeparator}lib'
+    '${Platform.pathSeparator}src${Platform.pathSeparator}api',
+  );
+  if (apiDir.existsSync()) {
+    for (final entity in apiDir.listSync()) {
+      if (entity is! File) {
+        continue;
+      }
+      final name = entity.uri.pathSegments.last;
+      if (!name.contains('ai_chat_')) {
+        continue;
+      }
+      entity.deleteSync();
+      deleted += 1;
+    }
+  }
+
+  return deleted;
 }
 
 int _patchMissingGeneratedApiExports(Directory generatedPackageRoot) {

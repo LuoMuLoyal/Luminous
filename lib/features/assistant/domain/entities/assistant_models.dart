@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 @immutable
-class AiChatContextPermissions {
-  const AiChatContextPermissions({
+class AssistantContextAccess {
+  const AssistantContextAccess({
     required this.healthProfile,
     required this.dailyRecords,
     required this.sleepRecords,
@@ -23,8 +23,8 @@ class AiChatContextPermissions {
 }
 
 @immutable
-class AiChatToolCapability {
-  const AiChatToolCapability({
+class AssistantToolCapability {
+  const AssistantToolCapability({
     required this.id,
     required this.requiredContextSources,
     required this.permittedByUser,
@@ -42,12 +42,12 @@ class AiChatToolCapability {
 }
 
 @immutable
-class AiChatCapabilities {
-  const AiChatCapabilities({
+class AssistantCapabilities {
+  const AssistantCapabilities({
     required this.phase,
-    required this.aiChatEnabled,
-    required this.aiChatMemoryEnabled,
-    required this.aiChatContext,
+    required this.assistantEnabled,
+    required this.assistantMemoryEnabled,
+    required this.assistantContext,
     required this.chatModelConfigured,
     required this.interactiveChatReady,
     required this.langGraphReady,
@@ -60,9 +60,9 @@ class AiChatCapabilities {
   });
 
   final String phase;
-  final bool aiChatEnabled;
-  final bool aiChatMemoryEnabled;
-  final AiChatContextPermissions aiChatContext;
+  final bool assistantEnabled;
+  final bool assistantMemoryEnabled;
+  final AssistantContextAccess assistantContext;
   final bool chatModelConfigured;
   final bool interactiveChatReady;
   final bool langGraphReady;
@@ -70,11 +70,11 @@ class AiChatCapabilities {
   final String streamingTransport;
   final bool markdownRenderingRecommended;
   final bool ragEnabled;
-  final List<AiChatToolCapability> tools;
+  final List<AssistantToolCapability> tools;
   final DateTime? updatedAt;
 
   bool get canSendMessages =>
-      aiChatEnabled &&
+      assistantEnabled &&
       chatModelConfigured &&
       interactiveChatReady &&
       streamingSupported;
@@ -82,9 +82,9 @@ class AiChatCapabilities {
   int get enabledToolCount => tools.where((tool) => tool.enabled).length;
 }
 
-enum AiChatMessageRole { user, assistant }
+enum AssistantMessageRole { user, assistant }
 
-enum AiChatProposalExecutionState {
+enum AssistantProposalExecutionState {
   pending,
   executing,
   confirmed,
@@ -92,17 +92,17 @@ enum AiChatProposalExecutionState {
   failed,
 }
 
-enum AiChatProposedActionType {
+enum AssistantProposedActionType {
   createDailyRecord('create_daily_record'),
   updateDailyRecord('update_daily_record'),
   deleteDailyRecord('delete_daily_record'),
   updateUserSettings('update_user_settings');
 
-  const AiChatProposedActionType(this.value);
+  const AssistantProposedActionType(this.value);
 
   final String value;
 
-  static AiChatProposedActionType? fromValue(String raw) {
+  static AssistantProposedActionType? fromValue(String raw) {
     for (final value in values) {
       if (value.value == raw) {
         return value;
@@ -113,22 +113,22 @@ enum AiChatProposedActionType {
 }
 
 @immutable
-class AiChatProposalPreviewField {
-  const AiChatProposalPreviewField({required this.label, required this.value});
+class AssistantProposalPreviewField {
+  const AssistantProposalPreviewField({required this.label, required this.value});
 
   final String label;
   final String value;
 }
 
-sealed class AiChatProposalPayload {
-  const AiChatProposalPayload(this.type);
+sealed class AssistantProposalPayload {
+  const AssistantProposalPayload(this.type);
 
-  final AiChatProposedActionType type;
+  final AssistantProposedActionType type;
 }
 
 @immutable
-class AiChatCreateDailyRecordDraft {
-  const AiChatCreateDailyRecordDraft({
+class AssistantCreateDailyRecordDraft {
+  const AssistantCreateDailyRecordDraft({
     required this.kind,
     required this.occurredAt,
     required this.title,
@@ -147,18 +147,18 @@ class AiChatCreateDailyRecordDraft {
   final Map<String, dynamic>? payload;
 }
 
-class AiChatCreateDailyRecordProposalPayload extends AiChatProposalPayload {
-  const AiChatCreateDailyRecordProposalPayload({required this.draft})
-    : super(AiChatProposedActionType.createDailyRecord);
+class AssistantCreateDailyRecordProposalPayload extends AssistantProposalPayload {
+  const AssistantCreateDailyRecordProposalPayload({required this.draft})
+    : super(AssistantProposedActionType.createDailyRecord);
 
-  final AiChatCreateDailyRecordDraft draft;
+  final AssistantCreateDailyRecordDraft draft;
 }
 
-class AiChatUpdateDailyRecordProposalPayload extends AiChatProposalPayload {
-  const AiChatUpdateDailyRecordProposalPayload({
+class AssistantUpdateDailyRecordProposalPayload extends AssistantProposalPayload {
+  const AssistantUpdateDailyRecordProposalPayload({
     required this.recordId,
     required this.draft,
-  }) : super(AiChatProposedActionType.updateDailyRecord);
+  }) : super(AssistantProposedActionType.updateDailyRecord);
 
   final String recordId;
   final Map<String, dynamic> draft;
@@ -183,41 +183,41 @@ class AiChatUpdateDailyRecordProposalPayload extends AiChatProposalPayload {
   };
 }
 
-class AiChatDeleteDailyRecordProposalPayload extends AiChatProposalPayload {
-  const AiChatDeleteDailyRecordProposalPayload({required this.recordId})
-    : super(AiChatProposedActionType.deleteDailyRecord);
+class AssistantDeleteDailyRecordProposalPayload extends AssistantProposalPayload {
+  const AssistantDeleteDailyRecordProposalPayload({required this.recordId})
+    : super(AssistantProposedActionType.deleteDailyRecord);
 
   final String recordId;
 }
 
 @immutable
-class AiChatUpdateUserSettingsDraft {
-  const AiChatUpdateUserSettingsDraft({
-    this.aiChatEnabled,
-    this.aiChatMemoryEnabled,
-    this.aiChatContext,
+class AssistantUpdateUserSettingsDraft {
+  const AssistantUpdateUserSettingsDraft({
+    this.assistantEnabled,
+    this.assistantMemoryEnabled,
+    this.assistantContext,
   });
 
-  final bool? aiChatEnabled;
-  final bool? aiChatMemoryEnabled;
-  final AiChatContextPermissions? aiChatContext;
+  final bool? assistantEnabled;
+  final bool? assistantMemoryEnabled;
+  final AssistantContextAccess? assistantContext;
 
   bool get isEmpty =>
-      aiChatEnabled == null &&
-      aiChatMemoryEnabled == null &&
-      aiChatContext == null;
+      assistantEnabled == null &&
+      assistantMemoryEnabled == null &&
+      assistantContext == null;
 }
 
-class AiChatUpdateUserSettingsProposalPayload extends AiChatProposalPayload {
-  const AiChatUpdateUserSettingsProposalPayload({required this.draft})
-    : super(AiChatProposedActionType.updateUserSettings);
+class AssistantUpdateUserSettingsProposalPayload extends AssistantProposalPayload {
+  const AssistantUpdateUserSettingsProposalPayload({required this.draft})
+    : super(AssistantProposedActionType.updateUserSettings);
 
-  final AiChatUpdateUserSettingsDraft draft;
+  final AssistantUpdateUserSettingsDraft draft;
 }
 
 @immutable
-class AiChatProposedAction {
-  const AiChatProposedAction({
+class AssistantProposedAction {
+  const AssistantProposedAction({
     required this.id,
     required this.type,
     required this.title,
@@ -228,34 +228,34 @@ class AiChatProposedAction {
     required this.payload,
     this.confirmationRequired = true,
     this.backendStatus = 'proposed',
-    this.executionState = AiChatProposalExecutionState.pending,
+    this.executionState = AssistantProposalExecutionState.pending,
     this.executionError,
   });
 
   final String id;
-  final AiChatProposedActionType type;
+  final AssistantProposedActionType type;
   final String title;
   final String summary;
   final String? reason;
-  final List<AiChatProposalPreviewField> previewFields;
+  final List<AssistantProposalPreviewField> previewFields;
   final int payloadVersion;
-  final AiChatProposalPayload payload;
+  final AssistantProposalPayload payload;
   final bool confirmationRequired;
   final String backendStatus;
-  final AiChatProposalExecutionState executionState;
+  final AssistantProposalExecutionState executionState;
   final String? executionError;
 
   bool get isVisible =>
-      executionState != AiChatProposalExecutionState.dismissed;
+      executionState != AssistantProposalExecutionState.dismissed;
   bool get isActionable =>
-      executionState == AiChatProposalExecutionState.pending ||
-      executionState == AiChatProposalExecutionState.failed;
+      executionState == AssistantProposalExecutionState.pending ||
+      executionState == AssistantProposalExecutionState.failed;
 
-  AiChatProposedAction copyWith({
-    AiChatProposalExecutionState? executionState,
+  AssistantProposedAction copyWith({
+    AssistantProposalExecutionState? executionState,
     Object? executionError = _proposalSentinel,
   }) {
-    return AiChatProposedAction(
+    return AssistantProposedAction(
       id: id,
       type: type,
       title: title,
@@ -275,29 +275,29 @@ class AiChatProposedAction {
 }
 
 @immutable
-class AiChatMessage {
-  const AiChatMessage({
+class AssistantMessage {
+  const AssistantMessage({
     required this.role,
     required this.content,
     required this.createdAt,
     this.usedTools = const <String>[],
-    this.proposedActions = const <AiChatProposedAction>[],
+    this.proposedActions = const <AssistantProposedAction>[],
   });
 
-  final AiChatMessageRole role;
+  final AssistantMessageRole role;
   final String content;
   final DateTime createdAt;
   final List<String> usedTools;
-  final List<AiChatProposedAction> proposedActions;
+  final List<AssistantProposedAction> proposedActions;
 
-  AiChatMessage copyWith({
-    AiChatMessageRole? role,
+  AssistantMessage copyWith({
+    AssistantMessageRole? role,
     String? content,
     DateTime? createdAt,
     List<String>? usedTools,
-    List<AiChatProposedAction>? proposedActions,
+    List<AssistantProposedAction>? proposedActions,
   }) {
-    return AiChatMessage(
+    return AssistantMessage(
       role: role ?? this.role,
       content: content ?? this.content,
       createdAt: createdAt ?? this.createdAt,
@@ -308,8 +308,8 @@ class AiChatMessage {
 }
 
 @immutable
-class AiChatConversation {
-  const AiChatConversation({
+class AssistantConversation {
+  const AssistantConversation({
     required this.id,
     required this.title,
     required this.status,
@@ -322,7 +322,7 @@ class AiChatConversation {
   final String id;
   final String? title;
   final String status;
-  final List<AiChatMessage> messages;
+  final List<AssistantMessage> messages;
   final DateTime? lastMessageAt;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -331,8 +331,8 @@ class AiChatConversation {
 const Object _proposalSentinel = Object();
 
 @immutable
-class AiChatConversationSummary {
-  const AiChatConversationSummary({
+class AssistantConversationSummary {
+  const AssistantConversationSummary({
     required this.id,
     required this.title,
     required this.status,

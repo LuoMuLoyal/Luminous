@@ -3,18 +3,18 @@ import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/core/network/lucent_sse.dart';
 
-sealed class AiChatRemoteEvent {
-  const AiChatRemoteEvent();
+sealed class AssistantRemoteEvent {
+  const AssistantRemoteEvent();
 }
 
-class AiChatRemoteChunkEvent extends AiChatRemoteEvent {
-  const AiChatRemoteChunkEvent(this.content);
+class AssistantRemoteChunkEvent extends AssistantRemoteEvent {
+  const AssistantRemoteChunkEvent(this.content);
 
   final String content;
 }
 
-class AiChatRemoteResultEvent extends AiChatRemoteEvent {
-  const AiChatRemoteResultEvent({
+class AssistantRemoteResultEvent extends AssistantRemoteEvent {
+  const AssistantRemoteResultEvent({
     required this.conversationId,
     required this.content,
     required this.usedTools,
@@ -29,14 +29,14 @@ class AiChatRemoteResultEvent extends AiChatRemoteEvent {
   final List<Map<String, dynamic>> proposedActions;
 }
 
-class AiChatRemoteDataSource {
-  AiChatRemoteDataSource({required this.api, required this.dio});
+class AssistantRemoteDataSource {
+  AssistantRemoteDataSource({required this.api, required this.dio});
 
-  final lucent.AIChatApi api;
+  final lucent.AssistantApi api;
   final Dio dio;
 
-  Future<lucent.AiChatCapabilitiesDataDto> getCapabilities() async {
-    final response = await api.aiChatControllerGetCapabilitiesV1();
+  Future<lucent.AssistantCapabilitiesDataDto> getCapabilities() async {
+    final response = await api.assistantControllerGetCapabilitiesV1();
     final data = response.data?.data;
     if (data == null) {
       throw const LucentApiException(message: 'AI 对话能力响应为空，请稍后再试。');
@@ -44,21 +44,21 @@ class AiChatRemoteDataSource {
     return data;
   }
 
-  Future<lucent.AiChatConversationDataDto?> getLatestConversation() async {
-    final response = await api.aiChatControllerGetLatestConversationV1();
+  Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
+    final response = await api.assistantControllerGetLatestConversationV1();
     return response.data?.data;
   }
 
-  Future<List<lucent.AiChatConversationSummaryDto>>
+  Future<List<lucent.AssistantConversationSummaryDto>>
   listRecentConversations() async {
-    final response = await api.aiChatControllerListRecentConversationsV1();
-    return response.data?.data ?? const <lucent.AiChatConversationSummaryDto>[];
+    final response = await api.assistantControllerListRecentConversationsV1();
+    return response.data?.data ?? const <lucent.AssistantConversationSummaryDto>[];
   }
 
-  Future<lucent.AiChatConversationDataDto> openConversation(
+  Future<lucent.AssistantConversationDataDto> openConversation(
     String conversationId,
   ) async {
-    final response = await api.aiChatControllerOpenConversationV1(
+    final response = await api.assistantControllerOpenConversationV1(
       conversationId: conversationId,
     );
     final data = response.data?.data;
@@ -69,17 +69,17 @@ class AiChatRemoteDataSource {
   }
 
   Future<bool> clearLatestConversation() async {
-    final response = await api.aiChatControllerClearLatestConversationV1();
+    final response = await api.assistantControllerClearLatestConversationV1();
     return response.data?.data?.cleared ?? false;
   }
 
-  Stream<AiChatRemoteEvent> streamMessages({
-    required List<lucent.AiChatInputMessageDto> messages,
+  Stream<AssistantRemoteEvent> streamMessages({
+    required List<lucent.AssistantInputMessageDto> messages,
   }) async* {
     final sse = LucentSseClient(dio: dio);
 
     await for (final event in sse.postJson(
-      '/api/v1/user/ai-chat/messages/stream',
+      '/api/v1/user/assistant/messages/stream',
       body: <String, Object?>{
         'messages': messages.map((message) => message.toJson()).toList(),
       },
@@ -89,13 +89,13 @@ class AiChatRemoteDataSource {
           final data = _requireMap(event.data);
           final content = data['content']?.toString() ?? '';
           if (content.isNotEmpty) {
-            yield AiChatRemoteChunkEvent(content);
+            yield AssistantRemoteChunkEvent(content);
           }
         case 'result':
           final data = _requireMap(event.data);
           final usedTools = _readStringList(data['usedTools']);
           final generatedAtText = data['generatedAt']?.toString();
-          yield AiChatRemoteResultEvent(
+          yield AssistantRemoteResultEvent(
             conversationId: data['conversationId']?.toString() ?? '',
             content: data['content']?.toString() ?? '',
             usedTools: usedTools,

@@ -47,7 +47,7 @@ void main() {
     expect(find.text(l10n.mineSettingsLanguageTitle), findsOneWidget);
     expect(find.text(l10n.minePrivacyReportTitle), findsOneWidget);
     expect(find.text(l10n.minePrivacyAiTitle), findsOneWidget);
-    expect(find.text(l10n.aiChatEntryTitle), findsOneWidget);
+    expect(find.text(l10n.assistantEntryTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsNotificationsTitle), findsOneWidget);
     expect(find.text(l10n.mineReminderMedicineTitle), findsOneWidget);
     expect(find.text(l10n.mineReminderWaterTitle), findsOneWidget);
@@ -349,7 +349,7 @@ void main() {
     expect(find.text('advanced-settings-page'), findsOneWidget);
   });
 
-  testWidgets('Settings AI chat row routes to AI chat page', (tester) async {
+  testWidgets('Settings assistant row routes to assistant page', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
 
     await _pumpSettingsPage(
@@ -364,7 +364,7 @@ void main() {
           GoRoute(
             path: '/assistant',
             builder: (context, state) =>
-                const Scaffold(body: Text('ai-chat-page')),
+                const Scaffold(body: Text('assistant-page')),
           ),
         ],
       ),
@@ -378,7 +378,7 @@ void main() {
     await tester.tap(find.byKey(const Key('settings-row-privacy-ai-chat')));
     await tester.pumpAndSettle();
 
-    expect(find.text('ai-chat-page'), findsOneWidget);
+    expect(find.text('assistant-page'), findsOneWidget);
   });
 
   testWidgets('Settings export row shows unavailable status from latest export', (
