@@ -214,8 +214,78 @@ class _TodayTopBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: AppSpacingTokens.md),
+        const _AssistantEntryButton(),
+        const SizedBox(width: AppSpacingTokens.xs),
         _NotificationButton(hasUnread: hasUnreadNotifications),
       ],
+    );
+  }
+}
+
+class _AssistantEntryButton extends ConsumerWidget {
+  const _AssistantEntryButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final session = ref.watch(authSessionProvider);
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+
+    return Tooltip(
+      message: l10n.aiChatEntryTitle,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          key: const Key('today-assistant-entry'),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+          onTap: () async {
+            if (session.canAccessProtectedData) {
+              context.push('/assistant');
+              return;
+            }
+            if (session.isLoading) {
+              return;
+            }
+            await showAuthRequiredDialog(
+              context,
+              onLogin: () => context.push(loginRouteForReturnTo('/assistant')),
+            );
+          },
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: TodayPalette.tealSoft,
+              borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+              border: Border.all(color: surface.hairline),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacingTokens.sm,
+                vertical: AppSpacingTokens.xs,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.auto_awesome_outlined,
+                    size: AppSpacingTokens.md,
+                    color: TodayPalette.tealDeep,
+                  ),
+                  const SizedBox(width: AppSpacingTokens.xxs),
+                  Text(
+                    l10n.aiChatEntryTitle,
+                    style: typography.bodySmStrong.copyWith(
+                      color: TodayPalette.tealDeep,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

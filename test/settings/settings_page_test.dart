@@ -362,7 +362,7 @@ void main() {
             builder: (context, state) => const SettingsPage(),
           ),
           GoRoute(
-            path: '/settings/ai-chat',
+            path: '/assistant',
             builder: (context, state) =>
                 const Scaffold(body: Text('ai-chat-page')),
           ),
