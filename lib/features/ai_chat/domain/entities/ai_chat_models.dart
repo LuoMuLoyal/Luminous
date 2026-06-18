@@ -117,3 +117,22 @@ class AiChatConversation {
   final DateTime createdAt;
   final DateTime updatedAt;
 }
+
+@immutable
+class AiChatConversationSummary {
+  const AiChatConversationSummary({
+    required this.id,
+    required this.title,
+    required this.status,
+    required this.lastMessageAt,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  final String id;
+  final String? title;
+  final String status;
+  final DateTime? lastMessageAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+}
