@@ -1141,6 +1141,16 @@
   "aiChatSendAction": "发送",
   "aiChatSendingAction": "发送中",
   "aiChatStreamingLabel": "正在生成",
+  "aiChatRetryAction": "重新发送",
+  "aiChatErrorStreamInterrupted": "连接中断了，请检查网络后重试。",
+  "aiChatErrorEmptyResult": "AI 没有返回有效内容，可以再试一次。",
+  "aiChatErrorServer": "服务端出现问题，请稍后再试。",
+  "aiChatToolHealthContext": "健康档案",
+  "aiChatToolRecentDailyRecords": "近期记录",
+  "aiChatToolRecentSleepSummary": "睡眠概况",
+  "aiChatToolCurrentMedicines": "当前用药",
+  "aiChatUsedToolsLabel": "参考来源",
+  "aiChatConversationDisabledByUserHint": "你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。",
   "todayUpdatedAt": "更新于 {time}",
   "@todayUpdatedAt": {
     "placeholders": {

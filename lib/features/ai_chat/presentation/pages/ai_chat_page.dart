@@ -298,9 +298,27 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
                                 const SizedBox(height: AppSpacingTokens.md),
                                 AppStateMessageView(
                                   title: l10n.aiChatSendErrorTitle,
-                                  description: chatState.sendError!,
-                                  icon: Icons.error_outline_rounded,
+                                  description: _sendErrorDescription(
+                                    l10n,
+                                    chatState.sendErrorType,
+                                    chatState.sendError!,
+                                  ),
+                                  icon: _sendErrorIcon(
+                                    chatState.sendErrorType,
+                                  ),
                                   tone: AppStateTone.warning,
+                                  actionLabel: chatState.lastFailedInput != null
+                                      ? l10n.aiChatRetryAction
+                                      : null,
+                                  onAction: chatState.lastFailedInput != null
+                                      ? () => ref
+                                          .read(
+                                            aiChatControllerProvider.notifier,
+                                          )
+                                          .retryLastMessage()
+                                      : null,
+                                  actionKey:
+                                      const Key('ai-chat-retry-action'),
                                   padding: const EdgeInsets.all(
                                     AppSpacingTokens.md,
                                   ),
@@ -601,7 +619,7 @@ class _ConversationView extends StatelessWidget {
     AiChatCapabilities capabilities,
   ) {
     if (!capabilities.aiChatEnabled) {
-      return l10n.aiChatConversationDisabledByUser;
+      return l10n.aiChatConversationDisabledByUserHint;
     }
     if (!capabilities.chatModelConfigured) {
       return l10n.aiChatConversationModelMissing;
@@ -674,15 +692,24 @@ class _MessageBubble extends StatelessWidget {
                       ).bodySm.copyWith(color: surface.body),
                     ),
                   ),
-                if (usedTools.isNotEmpty || isStreaming) ...[
+                if (isStreaming) ...[
                   const SizedBox(height: AppSpacingTokens.sm),
                   Text(
-                    isStreaming
-                        ? AppLocalizations.of(context)!.aiChatStreamingLabel
-                        : usedTools.join(', '),
+                    AppLocalizations.of(context)!.aiChatStreamingLabel,
                     style: _typography(
                       context,
                     ).bodySm.copyWith(color: surface.mute),
+                  ),
+                ],
+                if (!isStreaming && usedTools.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  Wrap(
+                    spacing: AppSpacingTokens.xs,
+                    runSpacing: AppSpacingTokens.xs,
+                    children: [
+                      for (final tool in usedTools)
+                        _ToolChip(label: _localizeToolName(tool, context)),
+                    ],
                   ),
                 ],
               ],
@@ -771,6 +798,70 @@ class _StatusChip extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ToolChip extends StatelessWidget {
+  const _ToolChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        border: Border.all(color: surface.hairline),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.sm,
+          vertical: 2,
+        ),
+        child: Text(
+          label,
+          style: _typography(context).bodySm.copyWith(color: surface.body),
+        ),
+      ),
+    );
+  }
+}
+
+String _localizeToolName(String toolId, BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  return switch (toolId) {
+    'health_context_snapshot' => l10n.aiChatToolHealthContext,
+    'recent_daily_records' => l10n.aiChatToolRecentDailyRecords,
+    'recent_sleep_summary' => l10n.aiChatToolRecentSleepSummary,
+    'current_medicines' => l10n.aiChatToolCurrentMedicines,
+    _ => toolId,
+  };
+}
+
+String _sendErrorDescription(
+  AppLocalizations l10n,
+  AiChatSendErrorType? errorType,
+  String fallback,
+) {
+  return switch (errorType) {
+    AiChatSendErrorType.streamInterrupted =>
+      l10n.aiChatErrorStreamInterrupted,
+    AiChatSendErrorType.emptyResult => l10n.aiChatErrorEmptyResult,
+    AiChatSendErrorType.server => l10n.aiChatErrorServer,
+    AiChatSendErrorType.unknown || null => fallback,
+  };
+}
+
+IconData _sendErrorIcon(AiChatSendErrorType? errorType) {
+  return switch (errorType) {
+    AiChatSendErrorType.streamInterrupted => Icons.wifi_off_rounded,
+    AiChatSendErrorType.emptyResult => Icons.hourglass_empty_rounded,
+    AiChatSendErrorType.server => Icons.cloud_off_rounded,
+    AiChatSendErrorType.unknown || null => Icons.error_outline_rounded,
+  };
 }
 
 AppTypographyScale _typography(BuildContext context) {

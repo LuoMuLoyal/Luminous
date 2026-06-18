@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/features/ai_chat/data/repositories/lucent_ai_chat_repository.dart';
 import 'package:luminous/features/ai_chat/domain/entities/ai_chat_models.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+
+enum AiChatSendErrorType { server, streamInterrupted, emptyResult, unknown }
 
 class AiChatState {
   const AiChatState({
@@ -13,6 +16,8 @@ class AiChatState {
     this.capabilities,
     this.capabilityError,
     this.sendError,
+    this.sendErrorType,
+    this.lastFailedInput,
     this.messages = const <AiChatMessage>[],
     this.streamingDraft = '',
   });
@@ -22,6 +27,8 @@ class AiChatState {
   final AiChatCapabilities? capabilities;
   final String? capabilityError;
   final String? sendError;
+  final AiChatSendErrorType? sendErrorType;
+  final String? lastFailedInput;
   final List<AiChatMessage> messages;
   final String streamingDraft;
 
@@ -33,6 +40,8 @@ class AiChatState {
     Object? capabilities = _sentinel,
     Object? capabilityError = _sentinel,
     Object? sendError = _sentinel,
+    Object? sendErrorType = _sentinel,
+    Object? lastFailedInput = _sentinel,
     List<AiChatMessage>? messages,
     String? streamingDraft,
   }) {
@@ -49,6 +58,12 @@ class AiChatState {
       sendError: identical(sendError, _sentinel)
           ? this.sendError
           : sendError as String?,
+      sendErrorType: identical(sendErrorType, _sentinel)
+          ? this.sendErrorType
+          : sendErrorType as AiChatSendErrorType?,
+      lastFailedInput: identical(lastFailedInput, _sentinel)
+          ? this.lastFailedInput
+          : lastFailedInput as String?,
       messages: messages ?? this.messages,
       streamingDraft: streamingDraft ?? this.streamingDraft,
     );
@@ -125,6 +140,8 @@ class AiChatController extends Notifier<AiChatState> {
       messages: nextMessages,
       isSending: true,
       sendError: null,
+      sendErrorType: null,
+      lastFailedInput: null,
       streamingDraft: '',
     );
 
@@ -153,15 +170,42 @@ class AiChatController extends Notifier<AiChatState> {
       state = state.copyWith(
         isSending: false,
         sendError: 'AI 流式响应已结束，但没有返回最终结果。',
+        sendErrorType: AiChatSendErrorType.emptyResult,
+        lastFailedInput: trimmed,
       );
     } catch (error) {
       final message = LucentErrorMapper.fromObject(error).message;
+      final errorType = _classifySendError(error);
       state = state.copyWith(
         isSending: false,
         sendError: message,
+        sendErrorType: errorType,
+        lastFailedInput: trimmed,
         streamingDraft: '',
       );
     }
+  }
+
+  AiChatSendErrorType _classifySendError(Object error) {
+    if (error is LucentApiException) {
+      final statusCode = error.statusCode;
+      if (statusCode != null && statusCode >= 500) {
+        return AiChatSendErrorType.server;
+      }
+      return AiChatSendErrorType.server;
+    }
+    if (error is StateError || error is FormatException) {
+      return AiChatSendErrorType.streamInterrupted;
+    }
+    return AiChatSendErrorType.unknown;
+  }
+
+  Future<void> retryLastMessage() async {
+    final input = state.lastFailedInput;
+    if (input == null || input.isEmpty) {
+      return;
+    }
+    await sendMessage(input);
   }
 
   void clearConversation() {
@@ -169,6 +213,8 @@ class AiChatController extends Notifier<AiChatState> {
       messages: const <AiChatMessage>[],
       streamingDraft: '',
       sendError: null,
+      sendErrorType: null,
+      lastFailedInput: null,
     );
   }
 }
