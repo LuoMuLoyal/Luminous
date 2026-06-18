@@ -11,8 +11,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
   @override
   Future<UserSettingsDataDto> build() async {
     final api = ref.read(lucentUserSettingsApiProvider);
-    final response =
-        await api.userSettingsControllerGetSettingsV1();
+    final response = await api.userSettingsControllerGetSettingsV1();
     final data = response.data?.data;
     if (data == null) {
       throw StateError('User settings response data is null.');
@@ -42,10 +41,13 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
     await _patch(UpdateUserSettingsDto(dataSharingConsent: consent));
   }
 
+  Future<void> applySettingsPatch(UpdateUserSettingsDto dto) async {
+    await _patch(dto);
+  }
+
   Future<void> _patch(UpdateUserSettingsDto dto) async {
     final api = ref.read(lucentUserSettingsApiProvider);
-    final response =
-        await api.userSettingsControllerUpdateSettingsV1(
+    final response = await api.userSettingsControllerUpdateSettingsV1(
       updateUserSettingsDto: dto,
     );
     final data = response.data?.data;
@@ -58,5 +60,5 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
 
 final userSettingsControllerProvider =
     AsyncNotifierProvider<UserSettingsController, UserSettingsDataDto>(
-  UserSettingsController.new,
-);
+      UserSettingsController.new,
+    );

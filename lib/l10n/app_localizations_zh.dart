@@ -2557,11 +2557,56 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiChatToolSleepByRange => '睡眠概况';
 
   @override
+  String get aiChatToolProposeCreateRecord => '保存建议';
+
+  @override
+  String get aiChatToolProposeUpdateRecord => '修改建议';
+
+  @override
+  String get aiChatToolProposeDeleteRecord => '删除建议';
+
+  @override
+  String get aiChatToolProposeUpdateSettings => '设置建议';
+
+  @override
   String get aiChatUsedToolsLabel => '参考来源';
 
   @override
   String get aiChatConversationDisabledByUserHint =>
       '你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。';
+
+  @override
+  String get aiChatProposalConfirmCreateAction => '确认保存';
+
+  @override
+  String get aiChatProposalConfirmUpdateAction => '确认修改';
+
+  @override
+  String get aiChatProposalConfirmDeleteAction => '确认删除';
+
+  @override
+  String get aiChatProposalConfirmSettingsAction => '确认更新';
+
+  @override
+  String get aiChatProposalDismissAction => '取消';
+
+  @override
+  String get aiChatProposalPendingState => '待确认';
+
+  @override
+  String get aiChatProposalExecutingState => '执行中';
+
+  @override
+  String get aiChatProposalConfirmedState => '已确认';
+
+  @override
+  String get aiChatProposalDismissedState => '已取消';
+
+  @override
+  String get aiChatProposalFailedState => '执行失败';
+
+  @override
+  String get aiChatProposalConfirmedToast => '已执行这条建议。';
 
   @override
   String todayUpdatedAt(String time) {

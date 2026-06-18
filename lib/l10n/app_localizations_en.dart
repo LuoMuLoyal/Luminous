@@ -2758,11 +2758,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiChatToolSleepByRange => 'Sleep summary';
 
   @override
+  String get aiChatToolProposeCreateRecord => 'Save proposal';
+
+  @override
+  String get aiChatToolProposeUpdateRecord => 'Update proposal';
+
+  @override
+  String get aiChatToolProposeDeleteRecord => 'Delete proposal';
+
+  @override
+  String get aiChatToolProposeUpdateSettings => 'Settings proposal';
+
+  @override
   String get aiChatUsedToolsLabel => 'Sources used';
 
   @override
   String get aiChatConversationDisabledByUserHint =>
       'AI chat is turned off. Toggle “Enable AI chat” above to resume.';
+
+  @override
+  String get aiChatProposalConfirmCreateAction => 'Confirm save';
+
+  @override
+  String get aiChatProposalConfirmUpdateAction => 'Confirm update';
+
+  @override
+  String get aiChatProposalConfirmDeleteAction => 'Confirm delete';
+
+  @override
+  String get aiChatProposalConfirmSettingsAction => 'Confirm update';
+
+  @override
+  String get aiChatProposalDismissAction => 'Dismiss';
+
+  @override
+  String get aiChatProposalPendingState => 'Pending';
+
+  @override
+  String get aiChatProposalExecutingState => 'Running';
+
+  @override
+  String get aiChatProposalConfirmedState => 'Confirmed';
+
+  @override
+  String get aiChatProposalDismissedState => 'Dismissed';
+
+  @override
+  String get aiChatProposalFailedState => 'Failed';
+
+  @override
+  String get aiChatProposalConfirmedToast => 'The proposed action was applied.';
 
   @override
   String todayUpdatedAt(String time) {

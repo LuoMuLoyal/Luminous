@@ -75,6 +75,14 @@ const _$AiChatToolCapabilityDtoNameEnumEnumMap = {
   AiChatToolCapabilityDtoNameEnum.getCurrentMedicines: 'get_current_medicines',
   AiChatToolCapabilityDtoNameEnum.getSleepSummaryByRange:
       'get_sleep_summary_by_range',
+  AiChatToolCapabilityDtoNameEnum.proposeCreateDailyRecord:
+      'propose_create_daily_record',
+  AiChatToolCapabilityDtoNameEnum.proposeUpdateDailyRecord:
+      'propose_update_daily_record',
+  AiChatToolCapabilityDtoNameEnum.proposeDeleteDailyRecord:
+      'propose_delete_daily_record',
+  AiChatToolCapabilityDtoNameEnum.proposeUpdateUserSettings:
+      'propose_update_user_settings',
   AiChatToolCapabilityDtoNameEnum.unknownDefaultOpenApi:
       'unknown_default_open_api',
 };

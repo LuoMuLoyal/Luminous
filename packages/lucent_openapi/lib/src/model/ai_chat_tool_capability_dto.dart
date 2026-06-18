@@ -138,6 +138,22 @@ enum AiChatToolCapabilityDtoNameEnum {
   getSleepSummaryByRange(r'get_sleep_summary_by_range'),
 
   /// Stable tool identifier exposed to the client.
+  @JsonValue(r'propose_create_daily_record')
+  proposeCreateDailyRecord(r'propose_create_daily_record'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'propose_update_daily_record')
+  proposeUpdateDailyRecord(r'propose_update_daily_record'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'propose_delete_daily_record')
+  proposeDeleteDailyRecord(r'propose_delete_daily_record'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'propose_update_user_settings')
+  proposeUpdateUserSettings(r'propose_update_user_settings'),
+
+  /// Stable tool identifier exposed to the client.
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

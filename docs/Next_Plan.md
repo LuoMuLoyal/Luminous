@@ -70,6 +70,11 @@ The assistant layer sits on top of that baseline, not instead of it.
    - Success signal:
      - users can ask the assistant to help write, but every mutation is still
        explicitly user-approved
+   - Current status:
+     - backend proposal protocol is now live
+     - `/assistant` now renders confirmation cards and can confirm/cancel
+       proposal actions
+     - next follow-up is polish and expansion, not first-time wiring
 
 4. **Then reshape Record around fast entry**
    - Priority order:

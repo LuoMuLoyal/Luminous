@@ -4976,6 +4976,30 @@ abstract class AppLocalizations {
   /// **'睡眠概况'**
   String get aiChatToolSleepByRange;
 
+  /// No description provided for @aiChatToolProposeCreateRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存建议'**
+  String get aiChatToolProposeCreateRecord;
+
+  /// No description provided for @aiChatToolProposeUpdateRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'修改建议'**
+  String get aiChatToolProposeUpdateRecord;
+
+  /// No description provided for @aiChatToolProposeDeleteRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除建议'**
+  String get aiChatToolProposeDeleteRecord;
+
+  /// No description provided for @aiChatToolProposeUpdateSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置建议'**
+  String get aiChatToolProposeUpdateSettings;
+
   /// No description provided for @aiChatUsedToolsLabel.
   ///
   /// In zh, this message translates to:
@@ -4987,6 +5011,72 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。'**
   String get aiChatConversationDisabledByUserHint;
+
+  /// No description provided for @aiChatProposalConfirmCreateAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认保存'**
+  String get aiChatProposalConfirmCreateAction;
+
+  /// No description provided for @aiChatProposalConfirmUpdateAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认修改'**
+  String get aiChatProposalConfirmUpdateAction;
+
+  /// No description provided for @aiChatProposalConfirmDeleteAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认删除'**
+  String get aiChatProposalConfirmDeleteAction;
+
+  /// No description provided for @aiChatProposalConfirmSettingsAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认更新'**
+  String get aiChatProposalConfirmSettingsAction;
+
+  /// No description provided for @aiChatProposalDismissAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消'**
+  String get aiChatProposalDismissAction;
+
+  /// No description provided for @aiChatProposalPendingState.
+  ///
+  /// In zh, this message translates to:
+  /// **'待确认'**
+  String get aiChatProposalPendingState;
+
+  /// No description provided for @aiChatProposalExecutingState.
+  ///
+  /// In zh, this message translates to:
+  /// **'执行中'**
+  String get aiChatProposalExecutingState;
+
+  /// No description provided for @aiChatProposalConfirmedState.
+  ///
+  /// In zh, this message translates to:
+  /// **'已确认'**
+  String get aiChatProposalConfirmedState;
+
+  /// No description provided for @aiChatProposalDismissedState.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消'**
+  String get aiChatProposalDismissedState;
+
+  /// No description provided for @aiChatProposalFailedState.
+  ///
+  /// In zh, this message translates to:
+  /// **'执行失败'**
+  String get aiChatProposalFailedState;
+
+  /// No description provided for @aiChatProposalConfirmedToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'已执行这条建议。'**
+  String get aiChatProposalConfirmedToast;
 
   /// No description provided for @todayUpdatedAt.
   ///
