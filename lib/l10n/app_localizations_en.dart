@@ -2684,6 +2684,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiChatStreamingLabel => 'Generating';
 
   @override
+  String get aiChatRetryAction => 'Retry';
+
+  @override
+  String get aiChatErrorStreamInterrupted =>
+      'The connection was interrupted. Check your network and try again.';
+
+  @override
+  String get aiChatErrorEmptyResult =>
+      'AI did not return a valid response. Please try again.';
+
+  @override
+  String get aiChatErrorServer =>
+      'The server encountered an issue. Please try again later.';
+
+  @override
+  String get aiChatToolHealthContext => 'Health profile';
+
+  @override
+  String get aiChatToolRecentDailyRecords => 'Recent records';
+
+  @override
+  String get aiChatToolRecentSleepSummary => 'Sleep summary';
+
+  @override
+  String get aiChatToolCurrentMedicines => 'Current medicines';
+
+  @override
+  String get aiChatUsedToolsLabel => 'Sources used';
+
+  @override
+  String get aiChatConversationDisabledByUserHint =>
+      'AI chat is turned off. Toggle “Enable AI chat” above to resume.';
+
+  @override
   String todayUpdatedAt(String time) {
     return 'Updated at $time';
   }

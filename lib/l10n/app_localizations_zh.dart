@@ -2487,6 +2487,37 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiChatStreamingLabel => '正在生成';
 
   @override
+  String get aiChatRetryAction => '重新发送';
+
+  @override
+  String get aiChatErrorStreamInterrupted => '连接中断了，请检查网络后重试。';
+
+  @override
+  String get aiChatErrorEmptyResult => 'AI 没有返回有效内容，可以再试一次。';
+
+  @override
+  String get aiChatErrorServer => '服务端出现问题，请稍后再试。';
+
+  @override
+  String get aiChatToolHealthContext => '健康档案';
+
+  @override
+  String get aiChatToolRecentDailyRecords => '近期记录';
+
+  @override
+  String get aiChatToolRecentSleepSummary => '睡眠概况';
+
+  @override
+  String get aiChatToolCurrentMedicines => '当前用药';
+
+  @override
+  String get aiChatUsedToolsLabel => '参考来源';
+
+  @override
+  String get aiChatConversationDisabledByUserHint =>
+      '你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。';
+
+  @override
   String todayUpdatedAt(String time) {
     return '更新于 $time';
   }

@@ -1141,6 +1141,16 @@
   "aiChatSendAction": "Send",
   "aiChatSendingAction": "Sending",
   "aiChatStreamingLabel": "Generating",
+  "aiChatRetryAction": "Retry",
+  "aiChatErrorStreamInterrupted": "The connection was interrupted. Check your network and try again.",
+  "aiChatErrorEmptyResult": "AI did not return a valid response. Please try again.",
+  "aiChatErrorServer": "The server encountered an issue. Please try again later.",
+  "aiChatToolHealthContext": "Health profile",
+  "aiChatToolRecentDailyRecords": "Recent records",
+  "aiChatToolRecentSleepSummary": "Sleep summary",
+  "aiChatToolCurrentMedicines": "Current medicines",
+  "aiChatUsedToolsLabel": "Sources used",
+  "aiChatConversationDisabledByUserHint": "AI chat is turned off. Toggle “Enable AI chat” above to resume.",
   "todayUpdatedAt": "Updated at {time}",
   "@todayUpdatedAt": {
     "placeholders": {

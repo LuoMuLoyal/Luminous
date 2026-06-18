@@ -4838,6 +4838,66 @@ abstract class AppLocalizations {
   /// **'正在生成'**
   String get aiChatStreamingLabel;
 
+  /// No description provided for @aiChatRetryAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新发送'**
+  String get aiChatRetryAction;
+
+  /// No description provided for @aiChatErrorStreamInterrupted.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接中断了，请检查网络后重试。'**
+  String get aiChatErrorStreamInterrupted;
+
+  /// No description provided for @aiChatErrorEmptyResult.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 没有返回有效内容，可以再试一次。'**
+  String get aiChatErrorEmptyResult;
+
+  /// No description provided for @aiChatErrorServer.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务端出现问题，请稍后再试。'**
+  String get aiChatErrorServer;
+
+  /// No description provided for @aiChatToolHealthContext.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康档案'**
+  String get aiChatToolHealthContext;
+
+  /// No description provided for @aiChatToolRecentDailyRecords.
+  ///
+  /// In zh, this message translates to:
+  /// **'近期记录'**
+  String get aiChatToolRecentDailyRecords;
+
+  /// No description provided for @aiChatToolRecentSleepSummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠概况'**
+  String get aiChatToolRecentSleepSummary;
+
+  /// No description provided for @aiChatToolCurrentMedicines.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前用药'**
+  String get aiChatToolCurrentMedicines;
+
+  /// No description provided for @aiChatUsedToolsLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'参考来源'**
+  String get aiChatUsedToolsLabel;
+
+  /// No description provided for @aiChatConversationDisabledByUserHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。'**
+  String get aiChatConversationDisabledByUserHint;
+
   /// No description provided for @todayUpdatedAt.
   ///
   /// In zh, this message translates to:
