@@ -118,6 +118,10 @@ class LucentAiChatRepository implements AiChatRepository {
               content: event.content,
               usedTools: event.usedTools,
               createdAt: event.generatedAt,
+              proposedActions: event.proposedActions
+                  .map(_mapProposedActionFromJson)
+                  .whereType<AiChatProposedAction>()
+                  .toList(growable: false),
             ),
           );
       }
@@ -201,6 +205,131 @@ class LucentAiChatRepository implements AiChatRepository {
       createdAt: _parseDateTime(dto.createdAt) ?? DateTime.now(),
       usedTools: dto.usedTools,
     );
+  }
+
+  AiChatProposedAction? _mapProposedActionFromJson(Map<String, dynamic> json) {
+    final type = AiChatProposedActionType.fromValue(
+      json['type']?.toString() ?? '',
+    );
+    if (type == null) {
+      return null;
+    }
+
+    final payload = _mapProposalPayload(type, json['payload']);
+    if (payload == null) {
+      return null;
+    }
+
+    final previewFields = switch (json['previewFields']) {
+      final List<Object?> items =>
+        items
+            .whereType<Map>()
+            .map(
+              (item) => AiChatProposalPreviewField(
+                label: item['label']?.toString() ?? '',
+                value: item['value']?.toString() ?? '',
+              ),
+            )
+            .toList(growable: false),
+      _ => const <AiChatProposalPreviewField>[],
+    };
+
+    final payloadVersion = switch (json['payloadVersion']) {
+      final int value => value,
+      final num value => value.toInt(),
+      _ => 1,
+    };
+
+    return AiChatProposedAction(
+      id: json['id']?.toString() ?? '',
+      type: type,
+      title: json['title']?.toString() ?? '',
+      summary: json['summary']?.toString() ?? '',
+      reason: json['reason']?.toString(),
+      previewFields: previewFields,
+      payloadVersion: payloadVersion,
+      payload: payload,
+      confirmationRequired: json['confirmationRequired'] != false,
+      backendStatus: json['status']?.toString() ?? 'proposed',
+    );
+  }
+
+  AiChatProposalPayload? _mapProposalPayload(
+    AiChatProposedActionType type,
+    Object? rawPayload,
+  ) {
+    final payload = _mapStringKeyedMap(rawPayload);
+    if (payload == null) {
+      return null;
+    }
+
+    switch (type) {
+      case AiChatProposedActionType.createDailyRecord:
+        final draft = _mapStringKeyedMap(payload['draft']);
+        final kind = draft?['kind']?.toString();
+        final occurredAt = draft?['occurredAt']?.toString();
+        if (draft == null || kind == null || occurredAt == null) {
+          return null;
+        }
+        return AiChatCreateDailyRecordProposalPayload(
+          draft: AiChatCreateDailyRecordDraft(
+            kind: kind,
+            occurredAt: occurredAt,
+            title: draft['title']?.toString(),
+            value: draft['value']?.toString(),
+            unit: draft['unit']?.toString(),
+            note: draft['note']?.toString(),
+            payload: _mapStringKeyedMap(draft['payload']),
+          ),
+        );
+      case AiChatProposedActionType.updateDailyRecord:
+        final recordId = payload['recordId']?.toString();
+        final draft = _mapStringKeyedMap(payload['draft']);
+        if (recordId == null || draft == null) {
+          return null;
+        }
+        return AiChatUpdateDailyRecordProposalPayload(
+          recordId: recordId,
+          draft: draft,
+        );
+      case AiChatProposedActionType.deleteDailyRecord:
+        final recordId = payload['recordId']?.toString();
+        if (recordId == null) {
+          return null;
+        }
+        return AiChatDeleteDailyRecordProposalPayload(recordId: recordId);
+      case AiChatProposedActionType.updateUserSettings:
+        final draft = _mapStringKeyedMap(payload['draft']);
+        if (draft == null) {
+          return null;
+        }
+        final context = _mapStringKeyedMap(draft['aiChatContext']);
+        return AiChatUpdateUserSettingsProposalPayload(
+          draft: AiChatUpdateUserSettingsDraft(
+            aiChatEnabled: draft['aiChatEnabled'] as bool?,
+            aiChatMemoryEnabled: draft['aiChatMemoryEnabled'] as bool?,
+            aiChatContext: context == null
+                ? null
+                : AiChatContextPermissions(
+                    healthProfile: context['healthProfile'] as bool? ?? false,
+                    dailyRecords: context['dailyRecords'] as bool? ?? false,
+                    sleepRecords: context['sleepRecords'] as bool? ?? false,
+                    currentMedicines:
+                        context['currentMedicines'] as bool? ?? false,
+                  ),
+          ),
+        );
+    }
+  }
+
+  Map<String, dynamic>? _mapStringKeyedMap(Object? raw) {
+    if (raw is Map<String, dynamic>) {
+      return raw;
+    }
+    if (raw is Map) {
+      return raw.map((key, value) => MapEntry(key.toString(), value));
+    }
+    return null;
   }
 
   DateTime? _parseDateTime(Object? raw) {

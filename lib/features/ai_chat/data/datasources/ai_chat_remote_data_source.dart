@@ -19,12 +19,14 @@ class AiChatRemoteResultEvent extends AiChatRemoteEvent {
     required this.content,
     required this.usedTools,
     required this.generatedAt,
+    required this.proposedActions,
   });
 
   final String conversationId;
   final String content;
   final List<String> usedTools;
   final DateTime generatedAt;
+  final List<Map<String, dynamic>> proposedActions;
 }
 
 class AiChatRemoteDataSource {
@@ -47,7 +49,8 @@ class AiChatRemoteDataSource {
     return response.data?.data;
   }
 
-  Future<List<lucent.AiChatConversationSummaryDto>> listRecentConversations() async {
+  Future<List<lucent.AiChatConversationSummaryDto>>
+  listRecentConversations() async {
     final response = await api.aiChatControllerListRecentConversationsV1();
     return response.data?.data ?? const <lucent.AiChatConversationSummaryDto>[];
   }
@@ -98,6 +101,7 @@ class AiChatRemoteDataSource {
             usedTools: usedTools,
             generatedAt:
                 DateTime.tryParse(generatedAtText ?? '') ?? DateTime.now(),
+            proposedActions: _readMapList(data['proposedActions']),
           );
         case 'error':
           throw _mapStreamError(event.data);
@@ -124,6 +128,13 @@ class AiChatRemoteDataSource {
       return raw.map((value) => value.toString()).toList(growable: false);
     }
     return const <String>[];
+  }
+
+  List<Map<String, dynamic>> _readMapList(Object? raw) {
+    if (raw is! List) {
+      return const <Map<String, dynamic>>[];
+    }
+    return raw.map((item) => _requireMap(item)).toList(growable: false);
   }
 
   LucentApiException _mapStreamError(Object? data) {

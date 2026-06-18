@@ -80,7 +80,8 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
           IconButton(
             key: const Key('ai-chat-recent-conversations-action'),
             tooltip: l10n.aiChatRecentConversationsAction,
-            onPressed: !session.canAccessProtectedData ||
+            onPressed:
+                !session.canAccessProtectedData ||
                     chatState.isLoadingRecentConversations ||
                     chatState.isOpeningConversation
                 ? null
@@ -90,7 +91,8 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
           IconButton(
             key: const Key('ai-chat-new-conversation-action'),
             tooltip: l10n.aiChatNewConversationAction,
-            onPressed: !session.canAccessProtectedData ||
+            onPressed:
+                !session.canAccessProtectedData ||
                     chatState.isLoadingConversation ||
                     chatState.isSending ||
                     chatState.isOpeningConversation
@@ -162,6 +164,21 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
                           .read(aiChatControllerProvider.notifier)
                           .retryLastMessage()
                     : null,
+                onConfirmProposal:
+                    ({required messageId, required proposalId}) =>
+                        _handleConfirmProposal(
+                          context,
+                          messageId: messageId,
+                          proposalId: proposalId,
+                        ),
+                onDismissProposal: ({required messageId, required proposalId}) {
+                  ref
+                      .read(aiChatControllerProvider.notifier)
+                      .dismissProposedAction(
+                        messageId: messageId,
+                        proposalId: proposalId,
+                      );
+                },
               ),
             ),
             if (chatState.recentConversationError != null) ...[
@@ -318,9 +335,29 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
     await ref.read(aiChatControllerProvider.notifier).clearConversation();
   }
 
-  Future<void> _showRecentConversationsSheet(
-    BuildContext context,
-  ) async {
+  Future<void> _handleConfirmProposal(
+    BuildContext context, {
+    required String messageId,
+    required String proposalId,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await ref
+          .read(aiChatControllerProvider.notifier)
+          .confirmProposedAction(messageId: messageId, proposalId: proposalId);
+      if (!context.mounted) {
+        return;
+      }
+      await AppToast.show(context, l10n.aiChatProposalConfirmedToast);
+    } catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+      await AppToast.show(context, LucentErrorMapper.fromObject(error).message);
+    }
+  }
+
+  Future<void> _showRecentConversationsSheet(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     await showModalBottomSheet<void>(
       context: context,
@@ -533,6 +570,8 @@ class _ConversationSurface extends StatelessWidget {
     required this.controller,
     required this.onSend,
     this.onRetry,
+    required this.onConfirmProposal,
+    required this.onDismissProposal,
   });
 
   final AiChatState state;
@@ -541,6 +580,13 @@ class _ConversationSurface extends StatelessWidget {
   final TextEditingController controller;
   final Future<void> Function() onSend;
   final VoidCallback? onRetry;
+  final Future<void> Function({
+    required String messageId,
+    required String proposalId,
+  })
+  onConfirmProposal;
+  final void Function({required String messageId, required String proposalId})
+  onDismissProposal;
 
   @override
   Widget build(BuildContext context) {
@@ -557,9 +603,9 @@ class _ConversationSurface extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
               child: Text(
                 l10n.aiChatOpeningConversationLabel,
-                style: _typography(context).bodySm.copyWith(
-                  color: surface.mute,
-                ),
+                style: _typography(
+                  context,
+                ).bodySm.copyWith(color: surface.mute),
               ),
             ),
           ],
@@ -568,6 +614,8 @@ class _ConversationSurface extends StatelessWidget {
               state: state,
               capabilities: capabilities,
               scrollController: scrollController,
+              onConfirmProposal: onConfirmProposal,
+              onDismissProposal: onDismissProposal,
             ),
           ),
           if (state.sendError != null) ...[
@@ -764,11 +812,20 @@ class _ConversationView extends StatelessWidget {
     required this.state,
     required this.capabilities,
     required this.scrollController,
+    required this.onConfirmProposal,
+    required this.onDismissProposal,
   });
 
   final AiChatState state;
   final AiChatCapabilities capabilities;
   final ScrollController scrollController;
+  final Future<void> Function({
+    required String messageId,
+    required String proposalId,
+  })
+  onConfirmProposal;
+  final void Function({required String messageId, required String proposalId})
+  onDismissProposal;
 
   @override
   Widget build(BuildContext context) {
@@ -806,6 +863,7 @@ class _ConversationView extends StatelessWidget {
         final item = items[index];
         if (item.streamingDraft != null) {
           return _MessageBubble(
+            messageId: 'streaming-draft',
             role: AiChatMessageRole.assistant,
             content: item.streamingDraft!,
             isStreaming: true,
@@ -815,9 +873,13 @@ class _ConversationView extends StatelessWidget {
 
         final message = item.message!;
         return _MessageBubble(
+          messageId: _messageIdFor(message),
           role: message.role,
           content: message.content,
           usedTools: message.usedTools,
+          proposedActions: message.proposedActions,
+          onConfirmProposal: onConfirmProposal,
+          onDismissProposal: onDismissProposal,
         );
       },
       separatorBuilder: (_, __) => const SizedBox(height: AppSpacingTokens.md),
@@ -854,16 +916,29 @@ class _ConversationItem {
 
 class _MessageBubble extends StatelessWidget {
   const _MessageBubble({
+    required this.messageId,
     required this.role,
     required this.content,
     required this.usedTools,
+    this.proposedActions = const <AiChatProposedAction>[],
     this.isStreaming = false,
+    this.onConfirmProposal,
+    this.onDismissProposal,
   });
 
+  final String messageId;
   final AiChatMessageRole role;
   final String content;
   final List<String> usedTools;
+  final List<AiChatProposedAction> proposedActions;
   final bool isStreaming;
+  final Future<void> Function({
+    required String messageId,
+    required String proposalId,
+  })?
+  onConfirmProposal;
+  final void Function({required String messageId, required String proposalId})?
+  onDismissProposal;
 
   @override
   Widget build(BuildContext context) {
@@ -923,9 +998,154 @@ class _MessageBubble extends StatelessWidget {
                     ],
                   ),
                 ],
+                if (!isStreaming &&
+                    !isUser &&
+                    proposedActions.any((proposal) => proposal.isVisible)) ...[
+                  const SizedBox(height: AppSpacingTokens.md),
+                  for (final proposal in proposedActions.where(
+                    (proposal) => proposal.isVisible,
+                  ))
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: AppSpacingTokens.sm,
+                      ),
+                      child: _ProposalCard(
+                        messageId: messageId,
+                        proposal: proposal,
+                        onConfirmProposal: onConfirmProposal,
+                        onDismissProposal: onDismissProposal,
+                      ),
+                    ),
+                ],
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProposalCard extends StatelessWidget {
+  const _ProposalCard({
+    required this.messageId,
+    required this.proposal,
+    required this.onConfirmProposal,
+    required this.onDismissProposal,
+  });
+
+  final String messageId;
+  final AiChatProposedAction proposal;
+  final Future<void> Function({
+    required String messageId,
+    required String proposalId,
+  })?
+  onConfirmProposal;
+  final void Function({required String messageId, required String proposalId})?
+  onDismissProposal;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final l10n = AppLocalizations.of(context)!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: surface.hairline),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  _proposalIcon(proposal.type),
+                  size: 18,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: AppSpacingTokens.xs),
+                Expanded(
+                  child: Text(
+                    proposal.title,
+                    style: _typography(context).bodyMdStrong,
+                  ),
+                ),
+                Text(
+                  _proposalStateText(l10n, proposal),
+                  style: _typography(context).bodySm.copyWith(
+                    color: _proposalStateColor(theme, proposal),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacingTokens.xs),
+            Text(proposal.summary, style: _typography(context).bodySm),
+            if (proposal.reason case final reason?) ...[
+              const SizedBox(height: AppSpacingTokens.xs),
+              Text(
+                reason,
+                style: _typography(
+                  context,
+                ).bodySm.copyWith(color: surface.body),
+              ),
+            ],
+            if (proposal.previewFields.isNotEmpty) ...[
+              const SizedBox(height: AppSpacingTokens.sm),
+              Wrap(
+                spacing: AppSpacingTokens.xs,
+                runSpacing: AppSpacingTokens.xs,
+                children: [
+                  for (final field in proposal.previewFields)
+                    _ToolChip(label: '${field.label}: ${field.value}'),
+                ],
+              ),
+            ],
+            if (proposal.executionError case final error?) ...[
+              const SizedBox(height: AppSpacingTokens.sm),
+              Text(
+                error,
+                style: _typography(
+                  context,
+                ).bodySm.copyWith(color: theme.colorScheme.error),
+              ),
+            ],
+            const SizedBox(height: AppSpacingTokens.sm),
+            Row(
+              children: [
+                FilledButton(
+                  key: Key('ai-chat-proposal-confirm-${proposal.id}'),
+                  onPressed:
+                      proposal.executionState ==
+                              AiChatProposalExecutionState.executing ||
+                          onConfirmProposal == null
+                      ? null
+                      : () => onConfirmProposal!(
+                          messageId: messageId,
+                          proposalId: proposal.id,
+                        ),
+                  child: Text(_proposalConfirmLabel(l10n, proposal.type)),
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                TextButton(
+                  key: Key('ai-chat-proposal-dismiss-${proposal.id}'),
+                  onPressed:
+                      proposal.executionState ==
+                          AiChatProposalExecutionState.executing
+                      ? null
+                      : () => onDismissProposal?.call(
+                          messageId: messageId,
+                          proposalId: proposal.id,
+                        ),
+                  child: Text(l10n.aiChatProposalDismissAction),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -1147,14 +1367,16 @@ class _RecentConversationSheet extends StatelessWidget {
                                           context,
                                           item,
                                         ),
-                                        style: _typography(context).bodySm
-                                            .copyWith(color: surface.body),
+                                        style: _typography(
+                                          context,
+                                        ).bodySm.copyWith(color: surface.body),
                                       ),
                                     ),
                                     if (selected)
                                       Text(
-                                        AppLocalizations.of(context)!
-                                            .aiChatRecentConversationCurrentLabel,
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.aiChatRecentConversationCurrentLabel,
                                         style: _typography(context).bodySm
                                             .copyWith(
                                               color: theme.colorScheme.primary,
@@ -1193,7 +1415,63 @@ String _localizeToolName(String toolId, BuildContext context) {
     'get_user_settings' => l10n.aiChatToolUserSettings,
     'get_current_medicines' => l10n.aiChatToolCurrentMedicines,
     'get_sleep_summary_by_range' => l10n.aiChatToolSleepByRange,
+    'propose_create_daily_record' => l10n.aiChatToolProposeCreateRecord,
+    'propose_update_daily_record' => l10n.aiChatToolProposeUpdateRecord,
+    'propose_delete_daily_record' => l10n.aiChatToolProposeDeleteRecord,
+    'propose_update_user_settings' => l10n.aiChatToolProposeUpdateSettings,
     _ => toolId,
+  };
+}
+
+String _messageIdFor(AiChatMessage message) {
+  return '${message.role.name}-${message.createdAt.toIso8601String()}-${message.content.hashCode}';
+}
+
+IconData _proposalIcon(AiChatProposedActionType type) {
+  return switch (type) {
+    AiChatProposedActionType.createDailyRecord => Icons.add_task_rounded,
+    AiChatProposedActionType.updateDailyRecord => Icons.edit_note_rounded,
+    AiChatProposedActionType.deleteDailyRecord => Icons.delete_outline_rounded,
+    AiChatProposedActionType.updateUserSettings => Icons.tune_rounded,
+  };
+}
+
+String _proposalConfirmLabel(
+  AppLocalizations l10n,
+  AiChatProposedActionType type,
+) {
+  return switch (type) {
+    AiChatProposedActionType.createDailyRecord =>
+      l10n.aiChatProposalConfirmCreateAction,
+    AiChatProposedActionType.updateDailyRecord =>
+      l10n.aiChatProposalConfirmUpdateAction,
+    AiChatProposedActionType.deleteDailyRecord =>
+      l10n.aiChatProposalConfirmDeleteAction,
+    AiChatProposedActionType.updateUserSettings =>
+      l10n.aiChatProposalConfirmSettingsAction,
+  };
+}
+
+String _proposalStateText(
+  AppLocalizations l10n,
+  AiChatProposedAction proposal,
+) {
+  return switch (proposal.executionState) {
+    AiChatProposalExecutionState.pending => l10n.aiChatProposalPendingState,
+    AiChatProposalExecutionState.executing => l10n.aiChatProposalExecutingState,
+    AiChatProposalExecutionState.confirmed => l10n.aiChatProposalConfirmedState,
+    AiChatProposalExecutionState.dismissed => l10n.aiChatProposalDismissedState,
+    AiChatProposalExecutionState.failed => l10n.aiChatProposalFailedState,
+  };
+}
+
+Color _proposalStateColor(ThemeData theme, AiChatProposedAction proposal) {
+  return switch (proposal.executionState) {
+    AiChatProposalExecutionState.pending => theme.colorScheme.primary,
+    AiChatProposalExecutionState.executing => theme.colorScheme.primary,
+    AiChatProposalExecutionState.confirmed => const Color(0xFF159B55),
+    AiChatProposalExecutionState.dismissed => theme.colorScheme.outline,
+    AiChatProposalExecutionState.failed => theme.colorScheme.error,
   };
 }
 

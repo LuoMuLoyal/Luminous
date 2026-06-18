@@ -1,11 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucent_openapi/lucent_openapi.dart'
+    show UpdateAiChatContextSettingsDto, UpdateUserSettingsDto;
 import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/features/ai_chat/data/repositories/lucent_ai_chat_repository.dart';
 import 'package:luminous/features/ai_chat/domain/entities/ai_chat_models.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
+import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 
 enum AiChatSendErrorType { server, streamInterrupted, emptyResult, unknown }
 
@@ -73,7 +79,8 @@ class AiChatState {
           isLoadingConversation ?? this.isLoadingConversation,
       isLoadingRecentConversations:
           isLoadingRecentConversations ?? this.isLoadingRecentConversations,
-      isOpeningConversation: isOpeningConversation ?? this.isOpeningConversation,
+      isOpeningConversation:
+          isOpeningConversation ?? this.isOpeningConversation,
       isSending: isSending ?? this.isSending,
       capabilities: identical(capabilities, _sentinel)
           ? this.capabilities
@@ -245,7 +252,9 @@ class AiChatController extends Notifier<AiChatState> {
   }
 
   Future<void> openConversation(String conversationId) async {
-    if (state.isSending || state.isLoadingConversation || state.isOpeningConversation) {
+    if (state.isSending ||
+        state.isLoadingConversation ||
+        state.isOpeningConversation) {
       return;
     }
 
@@ -413,6 +422,192 @@ class AiChatController extends Notifier<AiChatState> {
     }
     final last = state.messages.last;
     return last.role == AiChatMessageRole.user && last.content == input;
+  }
+
+  Future<void> confirmProposedAction({
+    required String messageId,
+    required String proposalId,
+  }) async {
+    final target = _findProposalTarget(
+      messageId: messageId,
+      proposalId: proposalId,
+    );
+    if (target == null) {
+      return;
+    }
+
+    final proposal = target.$2;
+    if (!proposal.isActionable) {
+      return;
+    }
+
+    _updateProposalState(
+      messageId: messageId,
+      proposalId: proposalId,
+      executionState: AiChatProposalExecutionState.executing,
+      executionError: null,
+    );
+
+    try {
+      await _executeProposal(proposal);
+      _updateProposalState(
+        messageId: messageId,
+        proposalId: proposalId,
+        executionState: AiChatProposalExecutionState.confirmed,
+        executionError: null,
+      );
+    } catch (error) {
+      final messageText = LucentErrorMapper.fromObject(error).message;
+      _updateProposalState(
+        messageId: messageId,
+        proposalId: proposal.id,
+        executionState: AiChatProposalExecutionState.failed,
+        executionError: messageText,
+      );
+      rethrow;
+    }
+  }
+
+  void dismissProposedAction({
+    required String messageId,
+    required String proposalId,
+  }) {
+    _updateProposalState(
+      messageId: messageId,
+      proposalId: proposalId,
+      executionState: AiChatProposalExecutionState.dismissed,
+      executionError: null,
+    );
+  }
+
+  Future<void> _executeProposal(AiChatProposedAction proposal) async {
+    switch (proposal.payload) {
+      case AiChatCreateDailyRecordProposalPayload():
+        final payload =
+            proposal.payload as AiChatCreateDailyRecordProposalPayload;
+        await ref
+            .read(dailyRecordRepositoryProvider)
+            .create(
+              DailyRecordCreateInput(
+                kind: _mapDailyRecordKind(payload.draft.kind),
+                occurredAt: payload.draft.occurredAt,
+                title: payload.draft.title,
+                value: payload.draft.value,
+                unit: payload.draft.unit,
+                note: payload.draft.note,
+                payload: payload.draft.payload,
+              ),
+            );
+      case AiChatUpdateDailyRecordProposalPayload():
+        final payload =
+            proposal.payload as AiChatUpdateDailyRecordProposalPayload;
+        await ref
+            .read(dailyRecordRepositoryProvider)
+            .update(
+              payload.recordId,
+              DailyRecordUpdateInput(
+                occurredAt: payload.hasOccurredAt
+                    ? payload.occurredAt
+                    : dailyRecordNoChange,
+                title: payload.hasTitle ? payload.title : dailyRecordNoChange,
+                value: payload.hasValue ? payload.value : dailyRecordNoChange,
+                unit: payload.hasUnit ? payload.unit : dailyRecordNoChange,
+                note: payload.hasNote ? payload.note : dailyRecordNoChange,
+                payload: payload.hasPayload
+                    ? payload.payload
+                    : dailyRecordNoChange,
+              ),
+            );
+      case AiChatDeleteDailyRecordProposalPayload():
+        final payload =
+            proposal.payload as AiChatDeleteDailyRecordProposalPayload;
+        await ref.read(dailyRecordRepositoryProvider).delete(payload.recordId);
+      case AiChatUpdateUserSettingsProposalPayload():
+        final payload =
+            proposal.payload as AiChatUpdateUserSettingsProposalPayload;
+        await ref
+            .read(userSettingsControllerProvider.notifier)
+            .applySettingsPatch(
+              UpdateUserSettingsDto(
+                aiChatEnabled: payload.draft.aiChatEnabled,
+                aiChatMemoryEnabled: payload.draft.aiChatMemoryEnabled,
+                aiChatContext: payload.draft.aiChatContext == null
+                    ? null
+                    : UpdateAiChatContextSettingsDto(
+                        healthProfile:
+                            payload.draft.aiChatContext!.healthProfile,
+                        dailyRecords: payload.draft.aiChatContext!.dailyRecords,
+                        sleepRecords: payload.draft.aiChatContext!.sleepRecords,
+                        currentMedicines:
+                            payload.draft.aiChatContext!.currentMedicines,
+                      ),
+              ),
+            );
+        await loadCapabilities();
+    }
+  }
+
+  (AiChatMessage, AiChatProposedAction)? _findProposalTarget({
+    required String messageId,
+    required String proposalId,
+  }) {
+    for (final message in state.messages) {
+      if (_messageIdOf(message) != messageId) {
+        continue;
+      }
+      for (final proposal in message.proposedActions) {
+        if (proposal.id == proposalId) {
+          return (message, proposal);
+        }
+      }
+    }
+    return null;
+  }
+
+  void _updateProposalState({
+    required String messageId,
+    required String proposalId,
+    required AiChatProposalExecutionState executionState,
+    required String? executionError,
+  }) {
+    state = state.copyWith(
+      messages: state.messages
+          .map((message) {
+            if (_messageIdOf(message) != messageId) {
+              return message;
+            }
+            return message.copyWith(
+              proposedActions: message.proposedActions
+                  .map(
+                    (proposal) => proposal.id == proposalId
+                        ? proposal.copyWith(
+                            executionState: executionState,
+                            executionError: executionError,
+                          )
+                        : proposal,
+                  )
+                  .toList(growable: false),
+            );
+          })
+          .toList(growable: false),
+    );
+  }
+
+  DailyRecordKind _mapDailyRecordKind(String raw) {
+    return switch (raw) {
+      'water' => DailyRecordKind.water,
+      'meal' => DailyRecordKind.meal,
+      'symptom' => DailyRecordKind.symptom,
+      'note' => DailyRecordKind.note,
+      'sleep' => DailyRecordKind.sleep,
+      _ => DailyRecordKind.note,
+    };
+  }
+
+  String messageIdOf(AiChatMessage message) => _messageIdOf(message);
+
+  String _messageIdOf(AiChatMessage message) {
+    return '${message.role.name}-${message.createdAt.toIso8601String()}-${message.content.hashCode}';
   }
 }
 

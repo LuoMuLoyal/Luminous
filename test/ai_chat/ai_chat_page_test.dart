@@ -5,7 +5,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_openapi/lucent_openapi.dart'
+    show
+        AiChatContextSettingsDto,
+        UpdateAiChatContextSettingsDto,
+        UpdateUserSettingsDto,
+        UserSettingsDataDto;
 import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/ai_chat/data/repositories/lucent_ai_chat_repository.dart';
@@ -13,6 +18,11 @@ import 'package:luminous/features/ai_chat/domain/entities/ai_chat_models.dart';
 import 'package:luminous/features/ai_chat/presentation/pages/ai_chat_page.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
+import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
+import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
+import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -185,6 +195,109 @@ void main() {
     expect(find.text('睡眠概况'), findsOneWidget);
   });
 
+  testWidgets('assistant message shows proposal card', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _ProposalAiChatRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('ai-chat-input')), '帮我记一杯水');
+    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('保存这条记录'), findsOneWidget);
+    expect(find.text('确认保存'), findsOneWidget);
+    expect(find.text('取消'), findsOneWidget);
+    expect(find.text('类型: water'), findsOneWidget);
+  });
+
+  testWidgets('confirm create proposal writes daily record', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final dailyRecordRepository = _FakeDailyRecordRepository();
+
+    await tester.pumpWidget(
+      _buildTestApp(
+        repository: _ProposalAiChatRepository(),
+        dailyRecordRepository: dailyRecordRepository,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('ai-chat-input')), '帮我记一杯水');
+    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('ai-chat-proposal-confirm-proposal-create-1')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(dailyRecordRepository.createdInputs, hasLength(1));
+    expect(
+      dailyRecordRepository.createdInputs.single.kind,
+      DailyRecordKind.water,
+    );
+    expect(dailyRecordRepository.createdInputs.single.value, '300');
+    expect(find.text('已确认'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+  });
+
+  testWidgets('confirm settings proposal patches user settings', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final settingsController = _TrackingUserSettingsController();
+
+    await tester.pumpWidget(
+      _buildTestApp(
+        repository: _SettingsProposalAiChatRepository(),
+        settingsController: settingsController,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('ai-chat-input')), '关闭记忆');
+    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const Key('ai-chat-proposal-confirm-proposal-settings-1')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(settingsController.lastPatchedSettings, isNotNull);
+    expect(
+      settingsController.lastPatchedSettings?.aiChatMemoryEnabled,
+      isFalse,
+    );
+    expect(find.text('已确认'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+  });
+
+  testWidgets('dismiss proposal hides proposal card', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _ProposalAiChatRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('ai-chat-input')), '帮我记一杯水');
+    await tester.tap(find.byKey(const Key('ai-chat-send-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('保存这条记录'), findsOneWidget);
+
+    await tester.tap(
+      find.byKey(const Key('ai-chat-proposal-dismiss-proposal-create-1')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('保存这条记录'), findsNothing);
+  });
+
   testWidgets('disabled AI chat shows hint about toggle above', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
     final repository = _DisabledAiChatRepository();
@@ -304,7 +417,9 @@ void main() {
     expect(find.text('头痛追踪'), findsOneWidget);
 
     await tester.tap(
-      find.byKey(const Key('ai-chat-recent-conversation-conversation-headache')),
+      find.byKey(
+        const Key('ai-chat-recent-conversation-conversation-headache'),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -402,13 +517,20 @@ class _FakeAiChatRepository implements AiChatRepository {
   }
 }
 
-Widget _buildTestApp({required AiChatRepository repository}) {
+Widget _buildTestApp({
+  required AiChatRepository repository,
+  DailyRecordRepository? dailyRecordRepository,
+  UserSettingsController? settingsController,
+}) {
   return ProviderScope(
     overrides: [
       authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
       aiChatRepositoryProvider.overrideWithValue(repository),
+      dailyRecordRepositoryProvider.overrideWithValue(
+        dailyRecordRepository ?? _FakeDailyRecordRepository(),
+      ),
       userSettingsControllerProvider.overrideWith(
-        () => _ReadyUserSettingsController(),
+        () => settingsController ?? _ReadyUserSettingsController(),
       ),
     ],
     child: MaterialApp.router(
@@ -456,6 +578,15 @@ class _ReadyUserSettingsController extends UserSettingsController {
       ),
       updatedAt: null,
     );
+  }
+}
+
+class _TrackingUserSettingsController extends _ReadyUserSettingsController {
+  UpdateUserSettingsDto? lastPatchedSettings;
+
+  @override
+  Future<void> applySettingsPatch(UpdateUserSettingsDto dto) async {
+    lastPatchedSettings = dto;
   }
 }
 
@@ -518,6 +649,118 @@ class _SuccessWithToolsAiChatRepository implements AiChatRepository {
           content: '你最近的睡眠质量不错，建议保持规律作息。',
           usedTools: const <String>['get_sleep_summary_by_range'],
           createdAt: DateTime.now(),
+        ),
+      ),
+    ]);
+  }
+}
+
+class _ProposalAiChatRepository implements AiChatRepository {
+  @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
+      const <AiChatConversationSummary>[];
+
+  @override
+  Future<AiChatConversation?> getLatestConversation() async => null;
+
+  @override
+  Future<AiChatConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> clearLatestConversation() async => false;
+
+  @override
+  Future<AiChatCapabilities> getCapabilities() async =>
+      _FakeAiChatRepository._capabilities;
+
+  @override
+  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
+    return Stream<AiChatGenerationEvent>.fromIterable([
+      AiChatGenerationResultEvent(
+        conversationId: 'conversation-proposal',
+        message: AiChatMessage(
+          role: AiChatMessageRole.assistant,
+          content: '我已经整理成一条可确认的记录建议。',
+          createdAt: DateTime.parse('2026-06-18T03:00:00Z'),
+          proposedActions: const <AiChatProposedAction>[
+            AiChatProposedAction(
+              id: 'proposal-create-1',
+              type: AiChatProposedActionType.createDailyRecord,
+              title: '保存这条记录',
+              summary: '准备保存一条 2026-06-18 的 water 记录。',
+              reason: 'Detected water intake.',
+              previewFields: <AiChatProposalPreviewField>[
+                AiChatProposalPreviewField(label: '类型', value: 'water'),
+              ],
+              payloadVersion: 1,
+              payload: AiChatCreateDailyRecordProposalPayload(
+                draft: AiChatCreateDailyRecordDraft(
+                  kind: 'water',
+                  occurredAt: '2026-06-18',
+                  title: null,
+                  value: '300',
+                  unit: 'ml',
+                  note: null,
+                  payload: null,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ]);
+  }
+}
+
+class _SettingsProposalAiChatRepository implements AiChatRepository {
+  @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
+      const <AiChatConversationSummary>[];
+
+  @override
+  Future<AiChatConversation?> getLatestConversation() async => null;
+
+  @override
+  Future<AiChatConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> clearLatestConversation() async => false;
+
+  @override
+  Future<AiChatCapabilities> getCapabilities() async =>
+      _FakeAiChatRepository._capabilities;
+
+  @override
+  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
+    return Stream<AiChatGenerationEvent>.fromIterable([
+      AiChatGenerationResultEvent(
+        conversationId: 'conversation-settings-proposal',
+        message: AiChatMessage(
+          role: AiChatMessageRole.assistant,
+          content: '我整理出了一组设置变更。',
+          createdAt: DateTime.parse('2026-06-18T03:30:00Z'),
+          proposedActions: const <AiChatProposedAction>[
+            AiChatProposedAction(
+              id: 'proposal-settings-1',
+              type: AiChatProposedActionType.updateUserSettings,
+              title: '更新助手相关设置',
+              summary: '我整理出了一组设置变更，确认后才会真正写入。',
+              reason: null,
+              previewFields: <AiChatProposalPreviewField>[
+                AiChatProposalPreviewField(label: '持久化记忆', value: '关闭'),
+              ],
+              payloadVersion: 1,
+              payload: AiChatUpdateUserSettingsProposalPayload(
+                draft: AiChatUpdateUserSettingsDraft(
+                  aiChatMemoryEnabled: false,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     ]);
@@ -791,5 +1034,66 @@ class _RecentConversationsAiChatRepository implements AiChatRepository {
   @override
   Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
     return const Stream<AiChatGenerationEvent>.empty();
+  }
+}
+
+class _FakeDailyRecordRepository implements DailyRecordRepository {
+  final List<DailyRecordCreateInput> createdInputs = <DailyRecordCreateInput>[];
+
+  @override
+  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
+    createdInputs.add(input);
+    return DailyRecordItem(
+      id: 'record-created',
+      kind: input.kind,
+      occurredAt: input.occurredAt,
+      title: input.title,
+      value: input.value,
+      unit: input.unit,
+      note: input.note,
+      payload: input.payload,
+      createdAt: '2026-06-18T00:00:00Z',
+      updatedAt: '2026-06-18T00:00:00Z',
+    );
+  }
+
+  @override
+  Future<void> delete(String id) async {}
+
+  @override
+  Future<DailyRecordListData> fetchRecords(
+    String date, {
+    String? kind,
+    int page = 1,
+    int pageSize = 50,
+  }) async => const DailyRecordListData(items: <DailyRecordItem>[], total: 0);
+
+  @override
+  Future<DailyRecordSummaryData> fetchSummary(String date) async =>
+      const DailyRecordSummaryData(summaries: <DailyRecordSummary>[]);
+
+  @override
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DailyRecordItem> get(String id) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DailyRecordAttachmentInput> uploadImage(
+    DailyRecordImageUploadInput input,
+  ) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DailyRecordItem> update(String id, DailyRecordUpdateInput input) {
+    throw UnimplementedError();
   }
 }
