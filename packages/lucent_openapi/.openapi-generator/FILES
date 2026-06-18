@@ -37,8 +37,10 @@ lib/src/model/ai_chat_context_settings_dto.dart
 lib/src/model/ai_chat_controller_clear_latest_conversation_v1200_response.dart
 lib/src/model/ai_chat_controller_clear_latest_conversation_v1200_response_data.dart
 lib/src/model/ai_chat_conversation_data_dto.dart
+lib/src/model/ai_chat_conversation_list_response_dto.dart
 lib/src/model/ai_chat_conversation_message_dto.dart
 lib/src/model/ai_chat_conversation_response_dto.dart
+lib/src/model/ai_chat_conversation_summary_dto.dart
 lib/src/model/ai_chat_input_message_dto.dart
 lib/src/model/ai_chat_stream_result_dto.dart
 lib/src/model/ai_chat_tool_capability_dto.dart

@@ -27,7 +27,11 @@ class AiChatGenerationResultEvent extends AiChatGenerationEvent {
 abstract interface class AiChatRepository {
   Future<AiChatCapabilities> getCapabilities();
 
+  Future<List<AiChatConversationSummary>> listRecentConversations();
+
   Future<AiChatConversation?> getLatestConversation();
+
+  Future<AiChatConversation> openConversation(String conversationId);
 
   Future<bool> clearLatestConversation();
 
@@ -62,6 +66,18 @@ class LucentAiChatRepository implements AiChatRepository {
     if (dto == null) {
       return null;
     }
+    return _mapConversation(dto);
+  }
+
+  @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async {
+    final items = await dataSource.listRecentConversations();
+    return items.map(_mapConversationSummary).toList(growable: false);
+  }
+
+  @override
+  Future<AiChatConversation> openConversation(String conversationId) async {
+    final dto = await dataSource.openConversation(conversationId);
     return _mapConversation(dto);
   }
 
@@ -149,6 +165,19 @@ class LucentAiChatRepository implements AiChatRepository {
       messages: dto.messages
           .map(_mapConversationMessage)
           .toList(growable: false),
+      lastMessageAt: _parseDateTime(dto.lastMessageAt),
+      createdAt: _parseDateTime(dto.createdAt) ?? DateTime.now(),
+      updatedAt: _parseDateTime(dto.updatedAt) ?? DateTime.now(),
+    );
+  }
+
+  AiChatConversationSummary _mapConversationSummary(
+    lucent.AiChatConversationSummaryDto dto,
+  ) {
+    return AiChatConversationSummary(
+      id: dto.id,
+      title: dto.title?.toString(),
+      status: dto.status.value,
       lastMessageAt: _parseDateTime(dto.lastMessageAt),
       createdAt: _parseDateTime(dto.createdAt) ?? DateTime.now(),
       updatedAt: _parseDateTime(dto.updatedAt) ?? DateTime.now(),

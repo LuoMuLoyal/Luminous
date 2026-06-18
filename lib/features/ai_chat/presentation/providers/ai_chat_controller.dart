@@ -13,28 +13,36 @@ class AiChatState {
   const AiChatState({
     this.isLoadingCapabilities = false,
     this.isLoadingConversation = false,
+    this.isLoadingRecentConversations = false,
+    this.isOpeningConversation = false,
     this.isSending = false,
     this.capabilities,
     this.capabilityError,
     this.conversationError,
+    this.recentConversationError,
     this.sendError,
     this.sendErrorType,
     this.lastFailedInput,
     this.conversationId,
+    this.recentConversations = const <AiChatConversationSummary>[],
     this.messages = const <AiChatMessage>[],
     this.streamingDraft = '',
   });
 
   final bool isLoadingCapabilities;
   final bool isLoadingConversation;
+  final bool isLoadingRecentConversations;
+  final bool isOpeningConversation;
   final bool isSending;
   final AiChatCapabilities? capabilities;
   final String? capabilityError;
   final String? conversationError;
+  final String? recentConversationError;
   final String? sendError;
   final AiChatSendErrorType? sendErrorType;
   final String? lastFailedInput;
   final String? conversationId;
+  final List<AiChatConversationSummary> recentConversations;
   final List<AiChatMessage> messages;
   final String streamingDraft;
 
@@ -43,14 +51,18 @@ class AiChatState {
   AiChatState copyWith({
     bool? isLoadingCapabilities,
     bool? isLoadingConversation,
+    bool? isLoadingRecentConversations,
+    bool? isOpeningConversation,
     bool? isSending,
     Object? capabilities = _sentinel,
     Object? capabilityError = _sentinel,
     Object? conversationError = _sentinel,
+    Object? recentConversationError = _sentinel,
     Object? sendError = _sentinel,
     Object? sendErrorType = _sentinel,
     Object? lastFailedInput = _sentinel,
     Object? conversationId = _sentinel,
+    List<AiChatConversationSummary>? recentConversations,
     List<AiChatMessage>? messages,
     String? streamingDraft,
   }) {
@@ -59,6 +71,9 @@ class AiChatState {
           isLoadingCapabilities ?? this.isLoadingCapabilities,
       isLoadingConversation:
           isLoadingConversation ?? this.isLoadingConversation,
+      isLoadingRecentConversations:
+          isLoadingRecentConversations ?? this.isLoadingRecentConversations,
+      isOpeningConversation: isOpeningConversation ?? this.isOpeningConversation,
       isSending: isSending ?? this.isSending,
       capabilities: identical(capabilities, _sentinel)
           ? this.capabilities
@@ -69,6 +84,9 @@ class AiChatState {
       conversationError: identical(conversationError, _sentinel)
           ? this.conversationError
           : conversationError as String?,
+      recentConversationError: identical(recentConversationError, _sentinel)
+          ? this.recentConversationError
+          : recentConversationError as String?,
       sendError: identical(sendError, _sentinel)
           ? this.sendError
           : sendError as String?,
@@ -81,6 +99,7 @@ class AiChatState {
       conversationId: identical(conversationId, _sentinel)
           ? this.conversationId
           : conversationId as String?,
+      recentConversations: recentConversations ?? this.recentConversations,
       messages: messages ?? this.messages,
       streamingDraft: streamingDraft ?? this.streamingDraft,
     );
@@ -101,11 +120,16 @@ class AiChatController extends Notifier<AiChatState> {
     return const AiChatState(
       isLoadingCapabilities: true,
       isLoadingConversation: true,
+      isLoadingRecentConversations: true,
     );
   }
 
   Future<void> _bootstrap() async {
-    await Future.wait<void>([loadCapabilities(), loadLatestConversation()]);
+    await Future.wait<void>([
+      loadCapabilities(),
+      loadLatestConversation(),
+      loadRecentConversations(),
+    ]);
   }
 
   Future<void> loadCapabilities() async {
@@ -116,9 +140,11 @@ class AiChatController extends Notifier<AiChatState> {
         capabilities: null,
         capabilityError: null,
         conversationId: null,
+        recentConversations: const <AiChatConversationSummary>[],
         messages: const <AiChatMessage>[],
         streamingDraft: '',
         conversationError: null,
+        recentConversationError: null,
       );
       return;
     }
@@ -184,6 +210,75 @@ class AiChatController extends Notifier<AiChatState> {
     }
   }
 
+  Future<void> loadRecentConversations() async {
+    final session = ref.read(authSessionProvider);
+    if (!session.canAccessProtectedData) {
+      state = state.copyWith(
+        isLoadingRecentConversations: false,
+        recentConversations: const <AiChatConversationSummary>[],
+        recentConversationError: null,
+      );
+      return;
+    }
+
+    state = state.copyWith(
+      isLoadingRecentConversations: true,
+      recentConversationError: null,
+    );
+
+    try {
+      final items = await ref
+          .read(aiChatRepositoryProvider)
+          .listRecentConversations();
+      state = state.copyWith(
+        isLoadingRecentConversations: false,
+        recentConversations: items,
+        recentConversationError: null,
+      );
+    } catch (error) {
+      final message = LucentErrorMapper.fromObject(error).message;
+      state = state.copyWith(
+        isLoadingRecentConversations: false,
+        recentConversationError: message,
+      );
+    }
+  }
+
+  Future<void> openConversation(String conversationId) async {
+    if (state.isSending || state.isLoadingConversation || state.isOpeningConversation) {
+      return;
+    }
+
+    state = state.copyWith(
+      isOpeningConversation: true,
+      conversationError: null,
+      sendError: null,
+      sendErrorType: null,
+      lastFailedInput: null,
+      streamingDraft: '',
+    );
+
+    try {
+      final conversation = await ref
+          .read(aiChatRepositoryProvider)
+          .openConversation(conversationId);
+      state = state.copyWith(
+        isOpeningConversation: false,
+        conversationId: conversation.id,
+        messages: conversation.messages,
+        streamingDraft: '',
+        conversationError: null,
+      );
+      await loadRecentConversations();
+    } catch (error) {
+      final message = LucentErrorMapper.fromObject(error).message;
+      state = state.copyWith(
+        isOpeningConversation: false,
+        conversationError: message,
+      );
+    }
+  }
+
   Future<void> sendMessage(String input) async {
     await _sendMessageInternal(input.trim(), appendUserMessage: true);
   }
@@ -238,6 +333,7 @@ class AiChatController extends Notifier<AiChatState> {
                   : event.conversationId,
               messages: <AiChatMessage>[...state.messages, event.message],
             );
+            await loadRecentConversations();
             return;
         }
       }
@@ -308,6 +404,7 @@ class AiChatController extends Notifier<AiChatState> {
       sendErrorType: null,
       lastFailedInput: null,
     );
+    await loadRecentConversations();
   }
 
   bool _hasPendingUserMessage(String input) {

@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 
 import 'package:lucent_openapi/src/model/ai_chat_capabilities_response_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_controller_clear_latest_conversation_v1200_response.dart';
+import 'package:lucent_openapi/src/model/ai_chat_conversation_list_response_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_conversation_response_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_stream_result_dto.dart';
 import 'package:lucent_openapi/src/model/stream_ai_chat_messages_dto.dart';
@@ -185,6 +186,148 @@ _responseData = rawData == null ? null : deserialize<AiChatCapabilitiesResponseD
     final _path = r'/api/v1/user/ai-chat/latest';
     final _options = Options(
       method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    AiChatConversationResponseDto? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<AiChatConversationResponseDto, AiChatConversationResponseDto>(rawData, 'AiChatConversationResponseDto', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<AiChatConversationResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// List recent persisted AI chat conversations for the user
+  /// 
+  ///
+  /// Parameters:
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [AiChatConversationListResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<AiChatConversationListResponseDto>> aiChatControllerListRecentConversationsV1({ 
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/ai-chat/conversations';
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    AiChatConversationListResponseDto? _responseData;
+
+    try {
+final rawData = _response.data;
+_responseData = rawData == null ? null : deserialize<AiChatConversationListResponseDto, AiChatConversationListResponseDto>(rawData, 'AiChatConversationListResponseDto', growable: true);
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<AiChatConversationListResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Activate one persisted AI chat conversation and return its full history
+  /// 
+  ///
+  /// Parameters:
+  /// * [conversationId] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [AiChatConversationResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<AiChatConversationResponseDto>> aiChatControllerOpenConversationV1({ 
+    required String conversationId,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/ai-chat/conversations/{conversationId}/open'.replaceAll('{' r'conversationId' '}', conversationId.toString());
+    final _options = Options(
+      method: r'POST',
       headers: <String, dynamic>{
         ...?headers,
       },

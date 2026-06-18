@@ -9,8 +9,10 @@ import 'package:lucent_openapi/src/model/ai_chat_context_settings_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_controller_clear_latest_conversation_v1200_response.dart';
 import 'package:lucent_openapi/src/model/ai_chat_controller_clear_latest_conversation_v1200_response_data.dart';
 import 'package:lucent_openapi/src/model/ai_chat_conversation_data_dto.dart';
+import 'package:lucent_openapi/src/model/ai_chat_conversation_list_response_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_conversation_message_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_conversation_response_dto.dart';
+import 'package:lucent_openapi/src/model/ai_chat_conversation_summary_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_input_message_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_stream_result_dto.dart';
 import 'package:lucent_openapi/src/model/ai_chat_tool_capability_dto.dart';
@@ -185,10 +187,14 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return AiChatControllerClearLatestConversationV1200ResponseData.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AiChatConversationDataDto':
           return AiChatConversationDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AiChatConversationListResponseDto':
+          return AiChatConversationListResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AiChatConversationMessageDto':
           return AiChatConversationMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AiChatConversationResponseDto':
           return AiChatConversationResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AiChatConversationSummaryDto':
+          return AiChatConversationSummaryDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AiChatInputMessageDto':
           return AiChatInputMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AiChatStreamResultDto':

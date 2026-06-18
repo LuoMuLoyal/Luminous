@@ -2487,6 +2487,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiChatNewConversationAction => '新对话';
 
   @override
+  String get aiChatRecentConversationsAction => '最近会话';
+
+  @override
+  String get aiChatRecentConversationsTitle => '最近会话';
+
+  @override
+  String get aiChatRecentConversationsEmptyTitle => '还没有历史会话';
+
+  @override
+  String get aiChatRecentConversationsEmptyDescription =>
+      '开始一次对话后，最近的会话会显示在这里。';
+
+  @override
+  String get aiChatRecentConversationCurrentLabel => '当前';
+
+  @override
+  String get aiChatOpeningConversationLabel => '正在切换会话…';
+
+  @override
+  String get aiChatUntitledConversation => '未命名会话';
+
+  @override
   String get aiChatStreamingLabel => '正在生成';
 
   @override

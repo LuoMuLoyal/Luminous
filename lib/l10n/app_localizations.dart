@@ -4838,6 +4838,48 @@ abstract class AppLocalizations {
   /// **'新对话'**
   String get aiChatNewConversationAction;
 
+  /// No description provided for @aiChatRecentConversationsAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近会话'**
+  String get aiChatRecentConversationsAction;
+
+  /// No description provided for @aiChatRecentConversationsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近会话'**
+  String get aiChatRecentConversationsTitle;
+
+  /// No description provided for @aiChatRecentConversationsEmptyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'还没有历史会话'**
+  String get aiChatRecentConversationsEmptyTitle;
+
+  /// No description provided for @aiChatRecentConversationsEmptyDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'开始一次对话后，最近的会话会显示在这里。'**
+  String get aiChatRecentConversationsEmptyDescription;
+
+  /// No description provided for @aiChatRecentConversationCurrentLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前'**
+  String get aiChatRecentConversationCurrentLabel;
+
+  /// No description provided for @aiChatOpeningConversationLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在切换会话…'**
+  String get aiChatOpeningConversationLabel;
+
+  /// No description provided for @aiChatUntitledConversation.
+  ///
+  /// In zh, this message translates to:
+  /// **'未命名会话'**
+  String get aiChatUntitledConversation;
+
   /// No description provided for @aiChatStreamingLabel.
   ///
   /// In zh, this message translates to:

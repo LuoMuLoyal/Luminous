@@ -39,7 +39,7 @@ The next slice sits on top of that baseline, not instead of it.
 2. **Continue the simple mobile chat surface after Phase 1**
    - Priority order:
      - refine the current lightweight entry point and chat page
-     - extend from single latest-conversation persistence to multi-conversation management only if the product flow really needs it
+     - keep the new recent-conversation list/open flow lightweight before deciding whether broader management is needed
      - keep streaming assistant output with markdown
      - keep retry/error/loading/history-restore states visible and testable
      - expand permission messaging and settings polish around health context
@@ -49,7 +49,7 @@ The next slice sits on top of that baseline, not instead of it.
      - prefer a self-owned page plus a dedicated markdown streaming renderer
      - only re-evaluate `flutter_ai_chat_ui` after the backend contract is stable
    - Success signal:
-     - the mobile chat can restore the latest persisted session, stream, render, fail clearly, and remain product-rule-controlled without depending on a framework UI shell
+     - the mobile chat can restore the latest persisted session, open a recent session, stream, render, fail clearly, and remain product-rule-controlled without depending on a framework UI shell
 
 3. **Add RAG later as one extra tool, not as the starting architecture**
    - Keep this bounded to:

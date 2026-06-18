@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -77,9 +78,22 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
         leading: SettingsBackButton(onTap: () => context.pop()),
         actions: [
           IconButton(
+            key: const Key('ai-chat-recent-conversations-action'),
+            tooltip: l10n.aiChatRecentConversationsAction,
+            onPressed: !session.canAccessProtectedData ||
+                    chatState.isLoadingRecentConversations ||
+                    chatState.isOpeningConversation
+                ? null
+                : () => _showRecentConversationsSheet(context),
+            icon: const Icon(Icons.history_rounded),
+          ),
+          IconButton(
             key: const Key('ai-chat-new-conversation-action'),
             tooltip: l10n.aiChatNewConversationAction,
-            onPressed: chatState.isLoadingConversation || chatState.isSending
+            onPressed: !session.canAccessProtectedData ||
+                    chatState.isLoadingConversation ||
+                    chatState.isSending ||
+                    chatState.isOpeningConversation
                 ? null
                 : _handleStartNewConversation,
             icon: const Icon(Icons.add_rounded),
@@ -150,6 +164,19 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
                     : null,
               ),
             ),
+            if (chatState.recentConversationError != null) ...[
+              const SizedBox(height: AppSpacingTokens.md),
+              AppStateMessageView(
+                title: l10n.aiChatRecentConversationsTitle,
+                description: chatState.recentConversationError!,
+                icon: Icons.history_toggle_off_rounded,
+                tone: AppStateTone.warning,
+                actionLabel: l10n.todayRetryAction,
+                onAction: () => ref
+                    .read(aiChatControllerProvider.notifier)
+                    .loadRecentConversations(),
+              ),
+            ],
             const SizedBox(height: AppSpacingTokens.md),
             _AssistantControlsPanel(
               surface: surface,
@@ -270,6 +297,44 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
   Future<void> _handleStartNewConversation() async {
     _inputController.clear();
     await ref.read(aiChatControllerProvider.notifier).clearConversation();
+  }
+
+  Future<void> _showRecentConversationsSheet(
+    BuildContext context,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacingTokens.lg),
+            child: Consumer(
+              builder: (context, ref, _) {
+                final latestState = ref.watch(aiChatControllerProvider);
+                return _RecentConversationSheet(
+                  state: latestState,
+                  title: l10n.aiChatRecentConversationsTitle,
+                  emptyTitle: l10n.aiChatRecentConversationsEmptyTitle,
+                  emptyDescription:
+                      l10n.aiChatRecentConversationsEmptyDescription,
+                  onRetry: () => ref
+                      .read(aiChatControllerProvider.notifier)
+                      .loadRecentConversations(),
+                  onSelect: (conversationId) async {
+                    Navigator.of(sheetContext).pop();
+                    await ref
+                        .read(aiChatControllerProvider.notifier)
+                        .openConversation(conversationId);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _scrollToBottom() {
@@ -468,6 +533,17 @@ class _ConversationSurface extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (state.isOpeningConversation) ...[
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
+              child: Text(
+                l10n.aiChatOpeningConversationLabel,
+                style: _typography(context).bodySm.copyWith(
+                  color: surface.mute,
+                ),
+              ),
+            ),
+          ],
           Expanded(
             child: _ConversationView(
               state: state,
@@ -925,6 +1001,146 @@ class _ToolChip extends StatelessWidget {
   }
 }
 
+class _RecentConversationSheet extends StatelessWidget {
+  const _RecentConversationSheet({
+    required this.state,
+    required this.title,
+    required this.emptyTitle,
+    required this.emptyDescription,
+    required this.onRetry,
+    required this.onSelect,
+  });
+
+  final AiChatState state;
+  final String title;
+  final String emptyTitle;
+  final String emptyDescription;
+  final VoidCallback onRetry;
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final items = state.recentConversations;
+
+    return SizedBox(
+      height: MediaQuery.sizeOf(context).height * 0.72,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: _typography(context).displaySm),
+          const SizedBox(height: AppSpacingTokens.md),
+          Expanded(
+            child: Builder(
+              builder: (context) {
+                if (state.isLoadingRecentConversations && items.isEmpty) {
+                  return const AppStateSkeletonView(
+                    blocks: <AppStateSkeletonBlock>[
+                      AppStateSkeletonBlock(height: 72),
+                      AppStateSkeletonBlock(height: 72),
+                      AppStateSkeletonBlock(height: 72),
+                    ],
+                  );
+                }
+                if (state.recentConversationError != null && items.isEmpty) {
+                  return AppStateMessageView(
+                    title: title,
+                    description: state.recentConversationError!,
+                    icon: Icons.history_toggle_off_rounded,
+                    tone: AppStateTone.warning,
+                    actionLabel: AppLocalizations.of(context)!.todayRetryAction,
+                    onAction: onRetry,
+                  );
+                }
+                if (items.isEmpty) {
+                  return AppStateMessageView(
+                    title: emptyTitle,
+                    description: emptyDescription,
+                    icon: Icons.chat_bubble_outline_rounded,
+                  );
+                }
+
+                return ListView.separated(
+                  key: const Key('ai-chat-recent-conversation-list'),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    final selected = item.id == state.conversationId;
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        key: Key('ai-chat-recent-conversation-${item.id}'),
+                        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                        onTap: state.isOpeningConversation
+                            ? null
+                            : () => onSelect(item.id),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: selected
+                                ? theme.colorScheme.primary.withValues(
+                                    alpha: 0.12,
+                                  )
+                                : surface.canvas,
+                            borderRadius: BorderRadius.circular(
+                              AppRadiusTokens.lg,
+                            ),
+                            border: Border.all(color: surface.hairline),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(AppSpacingTokens.md),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _conversationTitle(context, item),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: _typography(context).bodyMdStrong,
+                                ),
+                                const SizedBox(height: AppSpacingTokens.xs),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        _conversationTimestampLabel(
+                                          context,
+                                          item,
+                                        ),
+                                        style: _typography(context).bodySm
+                                            .copyWith(color: surface.body),
+                                      ),
+                                    ),
+                                    if (selected)
+                                      Text(
+                                        AppLocalizations.of(context)!
+                                            .aiChatRecentConversationCurrentLabel,
+                                        style: _typography(context).bodySm
+                                            .copyWith(
+                                              color: theme.colorScheme.primary,
+                                            ),
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(height: AppSpacingTokens.sm),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 String _localizeToolName(String toolId, BuildContext context) {
   final l10n = AppLocalizations.of(context)!;
   return switch (toolId) {
@@ -964,4 +1180,26 @@ AppTypographyScale _typography(BuildContext context) {
   return width < AppBreakpoints.mobile
       ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
       : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+}
+
+String _conversationTitle(
+  BuildContext context,
+  AiChatConversationSummary summary,
+) {
+  final title = summary.title?.trim();
+  if (title != null && title.isNotEmpty) {
+    return title;
+  }
+  return AppLocalizations.of(context)!.aiChatUntitledConversation;
+}
+
+String _conversationTimestampLabel(
+  BuildContext context,
+  AiChatConversationSummary summary,
+) {
+  final locale = Localizations.localeOf(context).toString();
+  final value = summary.lastMessageAt ?? summary.updatedAt;
+  final local = value.toLocal();
+  final pattern = locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm';
+  return intl.DateFormat(pattern, locale).format(local);
 }

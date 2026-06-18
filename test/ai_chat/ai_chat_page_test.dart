@@ -279,6 +279,39 @@ void main() {
     expect(find.text('帮我看看最近睡眠'), findsOneWidget);
     expect(find.text('先从最近三天入睡时间波动来看。'), findsOneWidget);
   });
+
+  testWidgets('recent conversation sheet opens and switches conversation', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repository = _RecentConversationsAiChatRepository();
+
+    await tester.pumpWidget(_buildTestApp(repository: repository));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const Key('ai-chat-recent-conversations-action')),
+      findsOneWidget,
+    );
+
+    await tester.tap(
+      find.byKey(const Key('ai-chat-recent-conversations-action')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('最近会话'), findsOneWidget);
+    expect(find.text('睡眠跟进'), findsOneWidget);
+    expect(find.text('头痛追踪'), findsOneWidget);
+
+    await tester.tap(
+      find.byKey(const Key('ai-chat-recent-conversation-conversation-headache')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(repository.openedConversationIds, <String>['conversation-headache']);
+    expect(find.text('今天头痛还在继续'), findsOneWidget);
+    expect(find.text('先看一下你最近记录里的触发因素。'), findsOneWidget);
+  });
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
@@ -345,7 +378,16 @@ class _FakeAiChatRepository implements AiChatRepository {
   );
 
   @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
+      const <AiChatConversationSummary>[];
+
+  @override
   Future<AiChatConversation?> getLatestConversation() async => null;
+
+  @override
+  Future<AiChatConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
 
   @override
   Future<bool> clearLatestConversation() async => false;
@@ -417,7 +459,16 @@ class _ReadyUserSettingsController extends UserSettingsController {
 
 class _ErrorStreamAiChatRepository implements AiChatRepository {
   @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
+      const <AiChatConversationSummary>[];
+
+  @override
   Future<AiChatConversation?> getLatestConversation() async => null;
+
+  @override
+  Future<AiChatConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
 
   @override
   Future<bool> clearLatestConversation() async => false;
@@ -436,7 +487,16 @@ class _ErrorStreamAiChatRepository implements AiChatRepository {
 
 class _SuccessWithToolsAiChatRepository implements AiChatRepository {
   @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
+      const <AiChatConversationSummary>[];
+
+  @override
   Future<AiChatConversation?> getLatestConversation() async => null;
+
+  @override
+  Future<AiChatConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
 
   @override
   Future<bool> clearLatestConversation() async => false;
@@ -464,7 +524,16 @@ class _SuccessWithToolsAiChatRepository implements AiChatRepository {
 
 class _DisabledAiChatRepository implements AiChatRepository {
   @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
+      const <AiChatConversationSummary>[];
+
+  @override
   Future<AiChatConversation?> getLatestConversation() async => null;
+
+  @override
+  Future<AiChatConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
 
   @override
   Future<bool> clearLatestConversation() async => false;
@@ -528,6 +597,20 @@ class _RestoredConversationAiChatRepository implements AiChatRepository {
   int clearCalls = 0;
 
   @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async {
+    return <AiChatConversationSummary>[
+      AiChatConversationSummary(
+        id: 'conversation-restored',
+        title: '睡眠跟进',
+        status: 'active',
+        lastMessageAt: DateTime.parse('2026-06-18T01:01:00Z'),
+        createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-18T01:01:00Z'),
+      ),
+    ];
+  }
+
+  @override
   Future<AiChatConversation?> getLatestConversation() async {
     return AiChatConversation(
       id: 'conversation-restored',
@@ -553,6 +636,11 @@ class _RestoredConversationAiChatRepository implements AiChatRepository {
   }
 
   @override
+  Future<AiChatConversation> openConversation(String conversationId) async {
+    return (await getLatestConversation())!;
+  }
+
+  @override
   Future<bool> clearLatestConversation() async {
     clearCalls += 1;
     return true;
@@ -575,7 +663,16 @@ class _RetryAwareAiChatRepository implements AiChatRepository {
   int _attempt = 0;
 
   @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async =>
+      const <AiChatConversationSummary>[];
+
+  @override
   Future<AiChatConversation?> getLatestConversation() async => null;
+
+  @override
+  Future<AiChatConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
 
   @override
   Future<bool> clearLatestConversation() async => false;
@@ -604,5 +701,92 @@ class _RetryAwareAiChatRepository implements AiChatRepository {
         createdAt: DateTime.now(),
       ),
     );
+  }
+}
+
+class _RecentConversationsAiChatRepository implements AiChatRepository {
+  final List<String> openedConversationIds = <String>[];
+
+  @override
+  Future<List<AiChatConversationSummary>> listRecentConversations() async {
+    return <AiChatConversationSummary>[
+      AiChatConversationSummary(
+        id: 'conversation-restored',
+        title: '睡眠跟进',
+        status: 'active',
+        lastMessageAt: DateTime.parse('2026-06-18T01:01:00Z'),
+        createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-18T01:01:00Z'),
+      ),
+      AiChatConversationSummary(
+        id: 'conversation-headache',
+        title: '头痛追踪',
+        status: 'archived',
+        lastMessageAt: DateTime.parse('2026-06-17T09:01:00Z'),
+        createdAt: DateTime.parse('2026-06-17T09:00:00Z'),
+        updatedAt: DateTime.parse('2026-06-17T09:01:00Z'),
+      ),
+    ];
+  }
+
+  @override
+  Future<AiChatConversation?> getLatestConversation() async {
+    return AiChatConversation(
+      id: 'conversation-restored',
+      title: '睡眠跟进',
+      status: 'active',
+      messages: <AiChatMessage>[
+        AiChatMessage(
+          role: AiChatMessageRole.user,
+          content: '昨晚睡得不太好',
+          createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
+        ),
+        AiChatMessage(
+          role: AiChatMessageRole.assistant,
+          content: '我看到你最近有睡眠记录，可以先从作息规律开始看。',
+          createdAt: DateTime.parse('2026-06-18T01:01:00Z'),
+        ),
+      ],
+      lastMessageAt: DateTime.parse('2026-06-18T01:01:00Z'),
+      createdAt: DateTime.parse('2026-06-18T01:00:00Z'),
+      updatedAt: DateTime.parse('2026-06-18T01:01:00Z'),
+    );
+  }
+
+  @override
+  Future<AiChatConversation> openConversation(String conversationId) async {
+    openedConversationIds.add(conversationId);
+    return AiChatConversation(
+      id: 'conversation-headache',
+      title: '头痛追踪',
+      status: 'active',
+      messages: <AiChatMessage>[
+        AiChatMessage(
+          role: AiChatMessageRole.user,
+          content: '今天头痛还在继续',
+          createdAt: DateTime.parse('2026-06-17T09:00:00Z'),
+        ),
+        AiChatMessage(
+          role: AiChatMessageRole.assistant,
+          content: '先看一下你最近记录里的触发因素。',
+          createdAt: DateTime.parse('2026-06-17T09:01:00Z'),
+        ),
+      ],
+      lastMessageAt: DateTime.parse('2026-06-17T09:01:00Z'),
+      createdAt: DateTime.parse('2026-06-17T09:00:00Z'),
+      updatedAt: DateTime.parse('2026-06-17T09:01:00Z'),
+    );
+  }
+
+  @override
+  Future<bool> clearLatestConversation() async => false;
+
+  @override
+  Future<AiChatCapabilities> getCapabilities() async =>
+      _FakeAiChatRepository._capabilities;
+
+  @override
+  Stream<AiChatGenerationEvent> streamMessages(List<AiChatMessage> messages) {
+    return const Stream<AiChatGenerationEvent>.empty();
   }
 }

@@ -47,6 +47,24 @@ class AiChatRemoteDataSource {
     return response.data?.data;
   }
 
+  Future<List<lucent.AiChatConversationSummaryDto>> listRecentConversations() async {
+    final response = await api.aiChatControllerListRecentConversationsV1();
+    return response.data?.data ?? const <lucent.AiChatConversationSummaryDto>[];
+  }
+
+  Future<lucent.AiChatConversationDataDto> openConversation(
+    String conversationId,
+  ) async {
+    final response = await api.aiChatControllerOpenConversationV1(
+      conversationId: conversationId,
+    );
+    final data = response.data?.data;
+    if (data == null) {
+      throw const LucentApiException(message: '会话详情响应为空，请稍后再试。');
+    }
+    return data;
+  }
+
   Future<bool> clearLatestConversation() async {
     final response = await api.aiChatControllerClearLatestConversationV1();
     return response.data?.data?.cleared ?? false;

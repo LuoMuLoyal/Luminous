@@ -68,6 +68,8 @@ Class | Method | HTTP request | Description
 [*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerClearLatestConversationV1**](doc/AIChatApi.md#aichatcontrollerclearlatestconversationv1) | **POST** /api/v1/user/ai-chat/latest/clear | Archive the authenticated user latest active AI chat conversation
 [*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerGetCapabilitiesV1**](doc/AIChatApi.md#aichatcontrollergetcapabilitiesv1) | **GET** /api/v1/user/ai-chat/capabilities | Get authenticated user AI chat capabilities and permissions
 [*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerGetLatestConversationV1**](doc/AIChatApi.md#aichatcontrollergetlatestconversationv1) | **GET** /api/v1/user/ai-chat/latest | Get the authenticated user latest persisted AI chat conversation
+[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerListRecentConversationsV1**](doc/AIChatApi.md#aichatcontrollerlistrecentconversationsv1) | **GET** /api/v1/user/ai-chat/conversations | List recent persisted AI chat conversations for the user
+[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerOpenConversationV1**](doc/AIChatApi.md#aichatcontrolleropenconversationv1) | **POST** /api/v1/user/ai-chat/conversations/{conversationId}/open | Activate one persisted AI chat conversation and return its full history
 [*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerStreamMessagesV1**](doc/AIChatApi.md#aichatcontrollerstreammessagesv1) | **POST** /api/v1/user/ai-chat/messages/stream | Stream authenticated user AI chat assistant response
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerChangeEmailV1**](doc/AccountApi.md#accountcontrollerchangeemailv1) | **POST** /api/v1/account/email | Change authenticated account email
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerChangePasswordV1**](doc/AccountApi.md#accountcontrollerchangepasswordv1) | **POST** /api/v1/account/password | Change authenticated account password
@@ -151,8 +153,10 @@ Class | Method | HTTP request | Description
  - [AiChatControllerClearLatestConversationV1200Response](doc/AiChatControllerClearLatestConversationV1200Response.md)
  - [AiChatControllerClearLatestConversationV1200ResponseData](doc/AiChatControllerClearLatestConversationV1200ResponseData.md)
  - [AiChatConversationDataDto](doc/AiChatConversationDataDto.md)
+ - [AiChatConversationListResponseDto](doc/AiChatConversationListResponseDto.md)
  - [AiChatConversationMessageDto](doc/AiChatConversationMessageDto.md)
  - [AiChatConversationResponseDto](doc/AiChatConversationResponseDto.md)
+ - [AiChatConversationSummaryDto](doc/AiChatConversationSummaryDto.md)
  - [AiChatInputMessageDto](doc/AiChatInputMessageDto.md)
  - [AiChatStreamResultDto](doc/AiChatStreamResultDto.md)
  - [AiChatToolCapabilityDto](doc/AiChatToolCapabilityDto.md)

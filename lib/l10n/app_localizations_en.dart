@@ -2684,6 +2684,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiChatNewConversationAction => 'New chat';
 
   @override
+  String get aiChatRecentConversationsAction => 'Recent chats';
+
+  @override
+  String get aiChatRecentConversationsTitle => 'Recent chats';
+
+  @override
+  String get aiChatRecentConversationsEmptyTitle => 'No chat history yet';
+
+  @override
+  String get aiChatRecentConversationsEmptyDescription =>
+      'Recent conversations will appear here after you start chatting.';
+
+  @override
+  String get aiChatRecentConversationCurrentLabel => 'Current';
+
+  @override
+  String get aiChatOpeningConversationLabel => 'Switching conversation…';
+
+  @override
+  String get aiChatUntitledConversation => 'Untitled conversation';
+
+  @override
   String get aiChatStreamingLabel => 'Generating';
 
   @override

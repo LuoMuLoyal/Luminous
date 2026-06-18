@@ -32,7 +32,7 @@ class AiChatConversationResponseDto {
   @JsonKey(name: r'message', required: true, includeIfNull: false)
   final String message;
 
-  /// Latest persisted conversation for the authenticated user, or null when none exists yet.
+  /// Persisted conversation payload, or null when none exists.
   @JsonKey(name: r'data', required: true, includeIfNull: true)
   final AiChatConversationDataDto? data;
 
