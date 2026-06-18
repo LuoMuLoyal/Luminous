@@ -1158,6 +1158,8 @@
   "aiChatToolTodayRecords": "Today records",
   "aiChatToolRecordsByDate": "Records by date",
   "aiChatToolRecordsByRange": "Records by range",
+  "aiChatToolTodaySummaryByDate": "Today summary by date",
+  "aiChatToolReportSummaryByRange": "Report summary by range",
   "aiChatToolRecentTodaySummaries": "Past Today summaries",
   "aiChatToolRecentReportSummaries": "Past Report summaries",
   "aiChatToolUserProfile": "User profile",

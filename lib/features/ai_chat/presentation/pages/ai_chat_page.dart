@@ -1409,6 +1409,8 @@ String _localizeToolName(String toolId, BuildContext context) {
     'get_today_records' => l10n.aiChatToolTodayRecords,
     'get_records_by_date' => l10n.aiChatToolRecordsByDate,
     'get_records_by_range' => l10n.aiChatToolRecordsByRange,
+    'get_today_summary_by_date' => l10n.aiChatToolTodaySummaryByDate,
+    'get_report_summary_by_range' => l10n.aiChatToolReportSummaryByRange,
     'get_recent_today_summaries' => l10n.aiChatToolRecentTodaySummaries,
     'get_recent_report_summaries' => l10n.aiChatToolRecentReportSummaries,
     'get_user_profile' => l10n.aiChatToolUserProfile,
