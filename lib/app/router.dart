@@ -64,7 +64,7 @@ final router = GoRouter(
       builder: (context, state) => const SettingsPage(),
     ),
     GoRoute(
-      path: '/settings/ai-chat',
+      path: '/assistant',
       builder: (context, state) => const AiChatPage(),
     ),
     GoRoute(

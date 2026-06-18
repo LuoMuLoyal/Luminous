@@ -6,14 +6,14 @@ import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
-import 'package:luminous/core/widgets/responsive_content_frame.dart';
+import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/ai_chat/domain/entities/ai_chat_models.dart';
 import 'package:luminous/features/ai_chat/presentation/providers/ai_chat_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -72,304 +72,97 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
 
     return Material(
       color: surface.canvasSoft,
-      child: SafeArea(
-        child: ResponsiveContentFrame(
-          expand: true,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile
-                  ? AppSpacingTokens.lg
-                  : AppSpacingTokens.xl,
-            ),
-            child: Column(
-              children: [
-                _Header(
-                  title: l10n.aiChatPageTitle,
-                  onBack: () => context.pop(),
-                  onClear: chatState.hasConversation
-                      ? ref.read(aiChatControllerProvider.notifier).clearConversation
-                      : null,
+      child: PageScaffoldShell(
+        title: l10n.aiChatPageTitle,
+        centerTitle: true,
+        leading: SettingsBackButton(onTap: () => context.pop()),
+        actions: chatState.hasConversation
+            ? [
+                IconButton(
+                  key: const Key('ai-chat-clear-action'),
+                  tooltip: l10n.recordNlpResetAction,
+                  onPressed: ref
+                      .read(aiChatControllerProvider.notifier)
+                      .clearConversation,
+                  icon: const Icon(Icons.delete_sweep_outlined),
                 ),
-                const SizedBox(height: AppSpacingTokens.lg),
-                if (session.isRestoring) ...[
-                  const Expanded(child: _AiChatLoadingView()),
-                ] else if (!session.canAccessProtectedData) ...[
-                  Expanded(
-                    child: AppStateErrorView(
-                      title: l10n.authNotSignedIn,
-                      description: l10n.aiChatSignedOutDescription,
-                      icon: Icons.lock_outline_rounded,
-                      actionLabel: l10n.authGoLogin,
-                      onAction: () =>
-                          context.go(loginRouteForReturnTo('/settings/ai-chat')),
-                    ),
-                  ),
-                ] else if (chatState.isLoadingCapabilities &&
-                    capabilities == null &&
-                    chatState.capabilityError == null) ...[
-                  const Expanded(child: _AiChatLoadingView()),
-                ] else if (capabilities == null) ...[
-                  Expanded(
-                    child: AppStateErrorView(
-                      title: l10n.aiChatLoadErrorTitle,
-                      description:
-                          chatState.capabilityError ?? l10n.aiChatLoadErrorFallback,
-                      icon: Icons.cloud_off_rounded,
-                      actionLabel: l10n.todayRetryAction,
-                      onAction: () => ref
-                          .read(aiChatControllerProvider.notifier)
-                          .loadCapabilities(),
-                    ),
-                  ),
-                ] else ...[
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final compactHeight = constraints.maxHeight < 620;
-                        final settingsSection = SettingsSectionSurface(
-                          surface: surface,
-                          padding: EdgeInsets.zero,
-                          child: Column(
-                            children: [
-                              SettingsListRow(
-                                key: const Key('ai-chat-row-enabled'),
-                                title: l10n.aiChatSettingsEnableTitle,
-                                subtitle: l10n.aiChatSettingsEnableSubtitle,
-                                icon: Icons.auto_awesome_outlined,
-                                trailing: IgnorePointer(
-                                  child: Switch(
-                                    value: settings?.aiChatEnabled ??
-                                        capabilities.aiChatEnabled,
-                                    onChanged: (_) {},
-                                  ),
-                                ),
-                                onTap: () => _toggleAiChatEnabled(
-                                  context,
-                                  !(settings?.aiChatEnabled ??
-                                      capabilities.aiChatEnabled),
-                                ),
-                                showDivider: true,
-                              ),
-                              SettingsListRow(
-                                key: const Key('ai-chat-row-context-health-profile'),
-                                title: l10n.aiChatContextHealthProfile,
-                                icon: Icons.badge_outlined,
-                                trailing: IgnorePointer(
-                                  child: Switch(
-                                    value: settings?.aiChatContext.healthProfile ??
-                                        capabilities.aiChatContext.healthProfile,
-                                    onChanged: (_) {},
-                                  ),
-                                ),
-                                onTap: () => _toggleContextSetting(
-                                  context,
-                                  settings: settings,
-                                  fallbackContext: effectiveContext,
-                                  healthProfile:
-                                      !(settings?.aiChatContext.healthProfile ??
-                                          capabilities.aiChatContext.healthProfile),
-                                ),
-                                showDivider: true,
-                              ),
-                              SettingsListRow(
-                                key: const Key('ai-chat-row-context-daily-records'),
-                                title: l10n.aiChatContextDailyRecords,
-                                icon: Icons.event_note_outlined,
-                                trailing: IgnorePointer(
-                                  child: Switch(
-                                    value: settings?.aiChatContext.dailyRecords ??
-                                        capabilities.aiChatContext.dailyRecords,
-                                    onChanged: (_) {},
-                                  ),
-                                ),
-                                onTap: () => _toggleContextSetting(
-                                  context,
-                                  settings: settings,
-                                  fallbackContext: effectiveContext,
-                                  dailyRecords:
-                                      !(settings?.aiChatContext.dailyRecords ??
-                                          capabilities.aiChatContext.dailyRecords),
-                                ),
-                                showDivider: true,
-                              ),
-                              SettingsListRow(
-                                key: const Key('ai-chat-row-context-sleep-records'),
-                                title: l10n.aiChatContextSleepRecords,
-                                icon: Icons.bedtime_outlined,
-                                trailing: IgnorePointer(
-                                  child: Switch(
-                                    value: settings?.aiChatContext.sleepRecords ??
-                                        capabilities.aiChatContext.sleepRecords,
-                                    onChanged: (_) {},
-                                  ),
-                                ),
-                                onTap: () => _toggleContextSetting(
-                                  context,
-                                  settings: settings,
-                                  fallbackContext: effectiveContext,
-                                  sleepRecords:
-                                      !(settings?.aiChatContext.sleepRecords ??
-                                          capabilities.aiChatContext.sleepRecords),
-                                ),
-                                showDivider: true,
-                              ),
-                              SettingsListRow(
-                                key: const Key('ai-chat-row-context-current-medicines'),
-                                title: l10n.aiChatContextCurrentMedicines,
-                                icon: Icons.medication_outlined,
-                                trailing: IgnorePointer(
-                                  child: Switch(
-                                    value:
-                                        settings?.aiChatContext.currentMedicines ??
-                                        capabilities.aiChatContext.currentMedicines,
-                                    onChanged: (_) {},
-                                  ),
-                                ),
-                                onTap: () => _toggleContextSetting(
-                                  context,
-                                  settings: settings,
-                                  fallbackContext: effectiveContext,
-                                  currentMedicines:
-                                      !(settings?.aiChatContext.currentMedicines ??
-                                          capabilities.aiChatContext.currentMedicines),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                        final statusSection = SettingsSectionSurface(
-                          surface: surface,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                l10n.aiChatStatusSectionTitle,
-                                style: typography.bodyMdStrong,
-                              ),
-                              const SizedBox(height: AppSpacingTokens.sm),
-                              Text(
-                                _statusSummaryText(l10n, capabilities),
-                                style: typography.bodySm.copyWith(
-                                  color: surface.body,
-                                ),
-                              ),
-                              const SizedBox(height: AppSpacingTokens.md),
-                              Wrap(
-                                spacing: AppSpacingTokens.sm,
-                                runSpacing: AppSpacingTokens.sm,
-                                children: [
-                                  _StatusChip(
-                                    label:
-                                        '${l10n.aiChatStatusToolsLabel} ${capabilities.enabledToolCount}/${capabilities.tools.length}',
-                                    enabled: capabilities.enabledToolCount > 0,
-                                  ),
-                                  _StatusChip(
-                                    label:
-                                        '${l10n.aiChatStatusContextLabel} ${capabilities.aiChatContext.enabledCount}/4',
-                                    enabled:
-                                        capabilities.aiChatContext.enabledCount > 0,
-                                  ),
-                                  _StatusChip(
-                                    label: l10n.aiChatStatusStreamingLabel,
-                                    enabled: capabilities.streamingSupported,
-                                  ),
-                                  _StatusChip(
-                                    label: l10n.aiChatStatusRagLabel,
-                                    enabled: capabilities.ragEnabled,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                        final conversationSection = SettingsSectionSurface(
-                          surface: surface,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: _ConversationView(
-                                  state: chatState,
-                                  capabilities: capabilities,
-                                  scrollController: _scrollController,
-                                ),
-                              ),
-                              if (chatState.sendError != null) ...[
-                                const SizedBox(height: AppSpacingTokens.md),
-                                AppStateMessageView(
-                                  title: l10n.aiChatSendErrorTitle,
-                                  description: _sendErrorDescription(
-                                    l10n,
-                                    chatState.sendErrorType,
-                                    chatState.sendError!,
-                                  ),
-                                  icon: _sendErrorIcon(
-                                    chatState.sendErrorType,
-                                  ),
-                                  tone: AppStateTone.warning,
-                                  actionLabel: chatState.lastFailedInput != null
-                                      ? l10n.aiChatRetryAction
-                                      : null,
-                                  onAction: chatState.lastFailedInput != null
-                                      ? () => ref
-                                          .read(
-                                            aiChatControllerProvider.notifier,
-                                          )
-                                          .retryLastMessage()
-                                      : null,
-                                  actionKey:
-                                      const Key('ai-chat-retry-action'),
-                                  padding: const EdgeInsets.all(
-                                    AppSpacingTokens.md,
-                                  ),
-                                ),
-                              ],
-                              const SizedBox(height: AppSpacingTokens.md),
-                              _InputComposer(
-                                controller: _inputController,
-                                canSend:
-                                    capabilities.canSendMessages &&
-                                    !chatState.isSending,
-                                isSending: chatState.isSending,
-                                onSend: _handleSend,
-                              ),
-                            ],
-                          ),
-                        );
-
-                        if (compactHeight) {
-                          return ListView(
-                            padding: EdgeInsets.zero,
-                            children: [
-                              settingsSection,
-                              const SizedBox(height: AppSpacingTokens.md),
-                              statusSection,
-                              const SizedBox(height: AppSpacingTokens.md),
-                              SizedBox(
-                                height: constraints.maxHeight * 0.72,
-                                child: conversationSection,
-                              ),
-                            ],
-                          );
-                        }
-
-                        return Column(
-                          children: [
-                            settingsSection,
-                            const SizedBox(height: AppSpacingTokens.md),
-                            statusSection,
-                            const SizedBox(height: AppSpacingTokens.md),
-                            Expanded(child: conversationSection),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ],
+              ]
+            : null,
+        children: [
+          if (session.isRestoring) ...[
+            const _AiChatLoadingView(),
+          ] else if (!session.canAccessProtectedData) ...[
+            _AssistantStateCard(
+              title: l10n.authNotSignedIn,
+              description: l10n.aiChatSignedOutDescription,
+              icon: Icons.lock_outline_rounded,
+              actionLabel: l10n.authGoLogin,
+              onAction: () =>
+                  context.go(loginRouteForReturnTo('/assistant')),
             ),
-          ),
-        ),
+          ] else if (chatState.isLoadingCapabilities &&
+              capabilities == null &&
+              chatState.capabilityError == null) ...[
+            const _AiChatLoadingView(),
+          ] else if (capabilities == null) ...[
+            _AssistantStateCard(
+              title: l10n.aiChatLoadErrorTitle,
+              description:
+                  chatState.capabilityError ?? l10n.aiChatLoadErrorFallback,
+              icon: Icons.cloud_off_rounded,
+              tone: AppStateTone.warning,
+              actionLabel: l10n.todayRetryAction,
+              onAction: () =>
+                  ref.read(aiChatControllerProvider.notifier).loadCapabilities(),
+            ),
+          ] else ...[
+            _AssistantHero(
+              capabilities: capabilities,
+              statusSummary: _statusSummaryText(l10n, capabilities),
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            SizedBox(
+              height: width < AppBreakpoints.mobile ? 460 : 520,
+              child: _ConversationSurface(
+                state: chatState,
+                capabilities: capabilities,
+                scrollController: _scrollController,
+                controller: _inputController,
+                onSend: _handleSend,
+                onRetry: chatState.lastFailedInput != null
+                    ? () => ref
+                        .read(aiChatControllerProvider.notifier)
+                        .retryLastMessage()
+                    : null,
+              ),
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            _AssistantControlsPanel(
+              surface: surface,
+              typography: typography,
+              settings: settings,
+              fallbackContext: effectiveContext,
+              capabilities: capabilities,
+              onToggleEnabled: (nextValue) =>
+                  _toggleAiChatEnabled(context, nextValue),
+              onToggleContext: ({
+                bool? healthProfile,
+                bool? dailyRecords,
+                bool? sleepRecords,
+                bool? currentMedicines,
+              }) =>
+                  _toggleContextSetting(
+                    context,
+                    settings: settings,
+                    fallbackContext: effectiveContext,
+                    healthProfile: healthProfile,
+                    dailyRecords: dailyRecords,
+                    sleepRecords: sleepRecords,
+                    currentMedicines: currentMedicines,
+                  ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -487,65 +280,343 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
   }
 }
 
-class _Header extends StatelessWidget {
-  const _Header({
-    required this.title,
-    required this.onBack,
-    required this.onClear,
-  });
-
-  final String title;
-  final VoidCallback onBack;
-  final VoidCallback? onClear;
+class _AiChatLoadingView extends StatelessWidget {
+  const _AiChatLoadingView();
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Row(
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(
-          width: 48,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: SettingsBackButton(onTap: onBack),
-          ),
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 28, widthFactor: 0.3),
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.52),
+            AppInlineSkeletonBlock(height: 18, widthFactor: 0.74),
+          ],
         ),
-        Expanded(
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: _typography(context).displaySm,
-          ),
+        SizedBox(height: AppSpacingTokens.md),
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 240),
+            AppInlineSkeletonBlock(height: 56),
+          ],
         ),
-        SizedBox(
-          width: 48,
-          child: onClear == null
-              ? null
-              : IconButton(
-                  key: const Key('ai-chat-clear-action'),
-                  tooltip: l10n.recordNlpResetAction,
-                  onPressed: onClear,
-                  icon: const Icon(Icons.delete_sweep_outlined),
-                ),
+        SizedBox(height: AppSpacingTokens.md),
+        AppInlineSkeletonSection(
+          children: [
+            AppInlineSkeletonBlock(height: 56),
+            AppInlineSkeletonBlock(height: 56),
+            AppInlineSkeletonBlock(height: 56),
+          ],
         ),
       ],
     );
   }
 }
 
-class _AiChatLoadingView extends StatelessWidget {
-  const _AiChatLoadingView();
+class _AssistantStateCard extends StatelessWidget {
+  const _AssistantStateCard({
+    required this.title,
+    required this.description,
+    required this.icon,
+    this.actionLabel,
+    this.onAction,
+    this.tone = AppStateTone.neutral,
+  });
+
+  final String title;
+  final String description;
+  final IconData icon;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+  final AppStateTone tone;
 
   @override
   Widget build(BuildContext context) {
-    return AppStateSkeletonView(
-      blocks: const [
-        AppStateSkeletonBlock(height: 160),
-        AppStateSkeletonBlock(height: 88),
-        AppStateSkeletonBlock(height: 320),
-      ],
-      padding: EdgeInsets.zero,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 560),
+        child: AppStateMessageView(
+          title: title,
+          description: description,
+          icon: icon,
+          actionLabel: actionLabel,
+          onAction: onAction,
+          tone: tone,
+        ),
+      ),
+    );
+  }
+}
+
+class _AssistantHero extends StatelessWidget {
+  const _AssistantHero({
+    required this.capabilities,
+    required this.statusSummary,
+  });
+
+  final AiChatCapabilities capabilities;
+  final String statusSummary;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final l10n = AppLocalizations.of(context)!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.colorScheme.primary.withValues(alpha: 0.12),
+            surface.canvas,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+        border: Border.all(color: surface.hairline),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.aiChatPageTitle,
+              style: _typography(context).displayMd,
+            ),
+            const SizedBox(height: AppSpacingTokens.xs),
+            Text(
+              statusSummary,
+              style: _typography(
+                context,
+              ).bodyMd.copyWith(color: surface.body),
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            Wrap(
+              spacing: AppSpacingTokens.sm,
+              runSpacing: AppSpacingTokens.sm,
+              children: [
+                _StatusChip(
+                  label:
+                      '${l10n.aiChatStatusToolsLabel} ${capabilities.enabledToolCount}/${capabilities.tools.length}',
+                  enabled: capabilities.enabledToolCount > 0,
+                ),
+                _StatusChip(
+                  label:
+                      '${l10n.aiChatStatusContextLabel} ${capabilities.aiChatContext.enabledCount}/4',
+                  enabled: capabilities.aiChatContext.enabledCount > 0,
+                ),
+                _StatusChip(
+                  label: l10n.aiChatStatusStreamingLabel,
+                  enabled: capabilities.streamingSupported,
+                ),
+                _StatusChip(
+                  label: l10n.aiChatStatusRagLabel,
+                  enabled: capabilities.ragEnabled,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ConversationSurface extends StatelessWidget {
+  const _ConversationSurface({
+    required this.state,
+    required this.capabilities,
+    required this.scrollController,
+    required this.controller,
+    required this.onSend,
+    this.onRetry,
+  });
+
+  final AiChatState state;
+  final AiChatCapabilities capabilities;
+  final ScrollController scrollController;
+  final TextEditingController controller;
+  final Future<void> Function() onSend;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return SettingsSectionSurface(
+      surface: surface,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _ConversationView(
+              state: state,
+              capabilities: capabilities,
+              scrollController: scrollController,
+            ),
+          ),
+          if (state.sendError != null) ...[
+            const SizedBox(height: AppSpacingTokens.md),
+            AppStateMessageView(
+              title: l10n.aiChatSendErrorTitle,
+              description: _sendErrorDescription(
+                l10n,
+                state.sendErrorType,
+                state.sendError!,
+              ),
+              icon: _sendErrorIcon(state.sendErrorType),
+              tone: AppStateTone.warning,
+              actionLabel: onRetry != null ? l10n.aiChatRetryAction : null,
+              onAction: onRetry,
+              actionKey: const Key('ai-chat-retry-action'),
+              padding: const EdgeInsets.all(AppSpacingTokens.md),
+            ),
+          ],
+          const SizedBox(height: AppSpacingTokens.md),
+          _InputComposer(
+            controller: controller,
+            canSend: capabilities.canSendMessages && !state.isSending,
+            isSending: state.isSending,
+            onSend: onSend,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AssistantControlsPanel extends StatelessWidget {
+  const _AssistantControlsPanel({
+    required this.surface,
+    required this.typography,
+    required this.settings,
+    required this.fallbackContext,
+    required this.capabilities,
+    required this.onToggleEnabled,
+    required this.onToggleContext,
+  });
+
+  final AppThemeSurface surface;
+  final AppTypographyScale typography;
+  final UserSettingsDataDto? settings;
+  final UpdateAiChatContextSettingsDto? fallbackContext;
+  final AiChatCapabilities capabilities;
+  final ValueChanged<bool> onToggleEnabled;
+  final Future<void> Function({
+    bool? healthProfile,
+    bool? dailyRecords,
+    bool? sleepRecords,
+    bool? currentMedicines,
+  }) onToggleContext;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return SettingsSectionSurface(
+      surface: surface,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.aiChatStatusSectionTitle,
+            style: typography.bodyMdStrong,
+          ),
+          const SizedBox(height: AppSpacingTokens.sm),
+          Text(
+            l10n.aiChatEntrySubtitle,
+            style: typography.bodySm.copyWith(color: surface.body),
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          SettingsListRow(
+            key: const Key('ai-chat-row-enabled'),
+            title: l10n.aiChatSettingsEnableTitle,
+            subtitle: l10n.aiChatSettingsEnableSubtitle,
+            icon: Icons.auto_awesome_outlined,
+            trailing: IgnorePointer(
+              child: Switch(
+                value: settings?.aiChatEnabled ?? capabilities.aiChatEnabled,
+                onChanged: (_) {},
+              ),
+            ),
+            onTap: () =>
+                onToggleEnabled(!(settings?.aiChatEnabled ?? capabilities.aiChatEnabled)),
+            showDivider: true,
+          ),
+          SettingsListRow(
+            key: const Key('ai-chat-row-context-health-profile'),
+            title: l10n.aiChatContextHealthProfile,
+            icon: Icons.badge_outlined,
+            trailing: IgnorePointer(
+              child: Switch(
+                value: settings?.aiChatContext.healthProfile ??
+                    capabilities.aiChatContext.healthProfile,
+                onChanged: (_) {},
+              ),
+            ),
+            onTap: () => onToggleContext(
+              healthProfile: !(settings?.aiChatContext.healthProfile ??
+                  capabilities.aiChatContext.healthProfile),
+            ),
+            showDivider: true,
+          ),
+          SettingsListRow(
+            key: const Key('ai-chat-row-context-daily-records'),
+            title: l10n.aiChatContextDailyRecords,
+            icon: Icons.event_note_outlined,
+            trailing: IgnorePointer(
+              child: Switch(
+                value: settings?.aiChatContext.dailyRecords ??
+                    capabilities.aiChatContext.dailyRecords,
+                onChanged: (_) {},
+              ),
+            ),
+            onTap: () => onToggleContext(
+              dailyRecords: !(settings?.aiChatContext.dailyRecords ??
+                  capabilities.aiChatContext.dailyRecords),
+            ),
+            showDivider: true,
+          ),
+          SettingsListRow(
+            key: const Key('ai-chat-row-context-sleep-records'),
+            title: l10n.aiChatContextSleepRecords,
+            icon: Icons.bedtime_outlined,
+            trailing: IgnorePointer(
+              child: Switch(
+                value: settings?.aiChatContext.sleepRecords ??
+                    capabilities.aiChatContext.sleepRecords,
+                onChanged: (_) {},
+              ),
+            ),
+            onTap: () => onToggleContext(
+              sleepRecords: !(settings?.aiChatContext.sleepRecords ??
+                  capabilities.aiChatContext.sleepRecords),
+            ),
+            showDivider: true,
+          ),
+          SettingsListRow(
+            key: const Key('ai-chat-row-context-current-medicines'),
+            title: l10n.aiChatContextCurrentMedicines,
+            icon: Icons.medication_outlined,
+            trailing: IgnorePointer(
+              child: Switch(
+                value: settings?.aiChatContext.currentMedicines ??
+                    capabilities.aiChatContext.currentMedicines,
+                onChanged: (_) {},
+              ),
+            ),
+            onTap: () => onToggleContext(
+              currentMedicines: !(settings?.aiChatContext.currentMedicines ??
+                  capabilities.aiChatContext.currentMedicines),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

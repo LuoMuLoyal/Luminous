@@ -38,10 +38,10 @@ void main() {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           routerConfig: GoRouter(
-            initialLocation: '/settings/ai-chat',
+            initialLocation: '/assistant',
             routes: [
               GoRoute(
-                path: '/settings/ai-chat',
+                path: '/assistant',
                 builder: (context, state) => const AiChatPage(),
               ),
               GoRoute(
@@ -88,10 +88,10 @@ void main() {
             ],
             supportedLocales: AppLocalizations.supportedLocales,
             routerConfig: GoRouter(
-              initialLocation: '/settings/ai-chat',
+              initialLocation: '/assistant',
               routes: [
                 GoRoute(
-                  path: '/settings/ai-chat',
+                  path: '/assistant',
                   builder: (context, state) => const AiChatPage(),
                 ),
                 GoRoute(
@@ -109,6 +109,12 @@ void main() {
 
       expect(find.byKey(const Key('ai-chat-row-context-health-profile')), findsOneWidget);
 
+      final pageScrollable = find.byType(Scrollable).first;
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('ai-chat-row-context-health-profile')),
+        240,
+        scrollable: pageScrollable,
+      );
       await tester.tap(find.byKey(const Key('ai-chat-row-context-health-profile')));
       await tester.pumpAndSettle();
 
@@ -276,10 +282,10 @@ Widget _buildTestApp({required AiChatRepository repository}) {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: GoRouter(
-        initialLocation: '/settings/ai-chat',
+        initialLocation: '/assistant',
         routes: [
           GoRoute(
-            path: '/settings/ai-chat',
+            path: '/assistant',
             builder: (context, state) => const AiChatPage(),
           ),
           GoRoute(

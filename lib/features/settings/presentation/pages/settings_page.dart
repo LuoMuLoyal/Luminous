@@ -266,10 +266,10 @@ class _PrivacySettingsSection extends ConsumerWidget {
             showChevron: true,
             onTap: () {
               if (!signedIn) {
-                pushAuthRequiredRoute(context, '/settings/ai-chat');
+                pushAuthRequiredRoute(context, '/assistant');
                 return;
               }
-              context.push('/settings/ai-chat');
+              context.push('/assistant');
             },
           ),
         ],
