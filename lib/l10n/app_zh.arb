@@ -1140,6 +1140,7 @@
   "aiChatInputHint": "比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。",
   "aiChatSendAction": "发送",
   "aiChatSendingAction": "发送中",
+  "aiChatNewConversationAction": "新对话",
   "aiChatStreamingLabel": "正在生成",
   "aiChatRetryAction": "重新发送",
   "aiChatErrorStreamInterrupted": "连接中断了，请检查网络后重试。",

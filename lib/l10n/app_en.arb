@@ -1140,6 +1140,7 @@
   "aiChatInputHint": "For example: Based on my recent sleep and medicines, what should I pay attention to?",
   "aiChatSendAction": "Send",
   "aiChatSendingAction": "Sending",
+  "aiChatNewConversationAction": "New chat",
   "aiChatStreamingLabel": "Generating",
   "aiChatRetryAction": "Retry",
   "aiChatErrorStreamInterrupted": "The connection was interrupted. Check your network and try again.",
