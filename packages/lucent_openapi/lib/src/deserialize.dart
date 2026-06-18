@@ -3,22 +3,22 @@ import 'package:lucent_openapi/src/model/account_email_data_dto.dart';
 import 'package:lucent_openapi/src/model/account_email_response_dto.dart';
 import 'package:lucent_openapi/src/model/account_identity_dto.dart';
 import 'package:lucent_openapi/src/model/account_response_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_capabilities_data_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_capabilities_response_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_context_settings_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_controller_clear_latest_conversation_v1200_response.dart';
-import 'package:lucent_openapi/src/model/ai_chat_controller_clear_latest_conversation_v1200_response_data.dart';
-import 'package:lucent_openapi/src/model/ai_chat_conversation_data_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_conversation_list_response_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_conversation_message_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_conversation_response_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_conversation_summary_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_input_message_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_stream_result_dto.dart';
-import 'package:lucent_openapi/src/model/ai_chat_tool_capability_dto.dart';
 import 'package:lucent_openapi/src/model/air_quality_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/app_info_data_dto.dart';
 import 'package:lucent_openapi/src/model/app_info_response_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_capabilities_data_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_capabilities_response_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_context_settings_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_controller_clear_latest_conversation_v1200_response.dart';
+import 'package:lucent_openapi/src/model/assistant_controller_clear_latest_conversation_v1200_response_data.dart';
+import 'package:lucent_openapi/src/model/assistant_conversation_data_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_conversation_list_response_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_conversation_message_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_conversation_response_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_conversation_summary_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_input_message_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_stream_result_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_tool_capability_dto.dart';
 import 'package:lucent_openapi/src/model/change_email_dto.dart';
 import 'package:lucent_openapi/src/model/change_password_dto.dart';
 import 'package:lucent_openapi/src/model/cn_medicine_detail_dto.dart';
@@ -112,7 +112,7 @@ import 'package:lucent_openapi/src/model/report_trend_dto.dart';
 import 'package:lucent_openapi/src/model/reset_password_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_response_dto.dart';
-import 'package:lucent_openapi/src/model/stream_ai_chat_messages_dto.dart';
+import 'package:lucent_openapi/src/model/stream_assistant_messages_dto.dart';
 import 'package:lucent_openapi/src/model/success_response_dto.dart';
 import 'package:lucent_openapi/src/model/support_resource_dto.dart';
 import 'package:lucent_openapi/src/model/support_resource_list_data_dto.dart';
@@ -124,7 +124,7 @@ import 'package:lucent_openapi/src/model/today_analysis_response_dto.dart';
 import 'package:lucent_openapi/src/model/today_analysis_stream_result_dto.dart';
 import 'package:lucent_openapi/src/model/tokens_dto.dart';
 import 'package:lucent_openapi/src/model/update_account_dto.dart';
-import 'package:lucent_openapi/src/model/update_ai_chat_context_settings_dto.dart';
+import 'package:lucent_openapi/src/model/update_assistant_context_settings_dto.dart';
 import 'package:lucent_openapi/src/model/update_current_medicine_dto.dart';
 import 'package:lucent_openapi/src/model/update_daily_record_dto.dart';
 import 'package:lucent_openapi/src/model/update_dose_log_dto.dart';
@@ -175,32 +175,6 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return AccountIdentityDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AccountResponseDto':
           return AccountResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatCapabilitiesDataDto':
-          return AiChatCapabilitiesDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatCapabilitiesResponseDto':
-          return AiChatCapabilitiesResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatContextSettingsDto':
-          return AiChatContextSettingsDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatControllerClearLatestConversationV1200Response':
-          return AiChatControllerClearLatestConversationV1200Response.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatControllerClearLatestConversationV1200ResponseData':
-          return AiChatControllerClearLatestConversationV1200ResponseData.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatConversationDataDto':
-          return AiChatConversationDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatConversationListResponseDto':
-          return AiChatConversationListResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatConversationMessageDto':
-          return AiChatConversationMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatConversationResponseDto':
-          return AiChatConversationResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatConversationSummaryDto':
-          return AiChatConversationSummaryDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatInputMessageDto':
-          return AiChatInputMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatStreamResultDto':
-          return AiChatStreamResultDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'AiChatToolCapabilityDto':
-          return AiChatToolCapabilityDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AirQualityIndicatorDto':
           return AirQualityIndicatorDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AirQualityLevel':
@@ -210,6 +184,32 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return AppInfoDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'AppInfoResponseDto':
           return AppInfoResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantCapabilitiesDataDto':
+          return AssistantCapabilitiesDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantCapabilitiesResponseDto':
+          return AssistantCapabilitiesResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantContextSettingsDto':
+          return AssistantContextSettingsDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantControllerClearLatestConversationV1200Response':
+          return AssistantControllerClearLatestConversationV1200Response.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantControllerClearLatestConversationV1200ResponseData':
+          return AssistantControllerClearLatestConversationV1200ResponseData.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantConversationDataDto':
+          return AssistantConversationDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantConversationListResponseDto':
+          return AssistantConversationListResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantConversationMessageDto':
+          return AssistantConversationMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantConversationResponseDto':
+          return AssistantConversationResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantConversationSummaryDto':
+          return AssistantConversationSummaryDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantInputMessageDto':
+          return AssistantInputMessageDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantStreamResultDto':
+          return AssistantStreamResultDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'AssistantToolCapabilityDto':
+          return AssistantToolCapabilityDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ChangeEmailDto':
           return ChangeEmailDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'ChangePasswordDto':
@@ -447,8 +447,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
         case 'SexAtBirth':
           
           
-        case 'StreamAiChatMessagesDto':
-          return StreamAiChatMessagesDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'StreamAssistantMessagesDto':
+          return StreamAssistantMessagesDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'SuccessResponseDto':
           return SuccessResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'SupportResourceActionType':
@@ -480,8 +480,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           
         case 'UpdateAccountDto':
           return UpdateAccountDto.fromJson(value as Map<String, dynamic>) as ReturnType;
-        case 'UpdateAiChatContextSettingsDto':
-          return UpdateAiChatContextSettingsDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'UpdateAssistantContextSettingsDto':
+          return UpdateAssistantContextSettingsDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UpdateCurrentMedicineDto':
           return UpdateCurrentMedicineDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'UpdateDailyRecordDto':

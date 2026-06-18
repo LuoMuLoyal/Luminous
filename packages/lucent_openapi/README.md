@@ -48,13 +48,14 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import 'package:lucent_openapi/lucent_openapi.dart';
 
 
-final api = LucentOpenapi().getAIChatApi();
+final api = LucentOpenapi().getAccountApi();
+final ChangeEmailDto changeEmailDto = ; // ChangeEmailDto | 
 
 try {
-    final response = await api.aiChatControllerClearLatestConversationV1();
+    final response = await api.accountControllerChangeEmailV1(changeEmailDto);
     print(response);
 } on DioException catch (e) {
-    print("Exception when calling AIChatApi->aiChatControllerClearLatestConversationV1: $e\n");
+    print("Exception when calling AccountApi->accountControllerChangeEmailV1: $e\n");
 }
 
 ```
@@ -65,12 +66,6 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerClearLatestConversationV1**](doc/AIChatApi.md#aichatcontrollerclearlatestconversationv1) | **POST** /api/v1/user/ai-chat/latest/clear | Archive the authenticated user latest active AI chat conversation
-[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerGetCapabilitiesV1**](doc/AIChatApi.md#aichatcontrollergetcapabilitiesv1) | **GET** /api/v1/user/ai-chat/capabilities | Get authenticated user AI chat capabilities and permissions
-[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerGetLatestConversationV1**](doc/AIChatApi.md#aichatcontrollergetlatestconversationv1) | **GET** /api/v1/user/ai-chat/latest | Get the authenticated user latest persisted AI chat conversation
-[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerListRecentConversationsV1**](doc/AIChatApi.md#aichatcontrollerlistrecentconversationsv1) | **GET** /api/v1/user/ai-chat/conversations | List recent persisted AI chat conversations for the user
-[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerOpenConversationV1**](doc/AIChatApi.md#aichatcontrolleropenconversationv1) | **POST** /api/v1/user/ai-chat/conversations/{conversationId}/open | Activate one persisted AI chat conversation and return its full history
-[*AIChatApi*](doc/AIChatApi.md) | [**aiChatControllerStreamMessagesV1**](doc/AIChatApi.md#aichatcontrollerstreammessagesv1) | **POST** /api/v1/user/ai-chat/messages/stream | Stream authenticated user AI chat assistant response
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerChangeEmailV1**](doc/AccountApi.md#accountcontrollerchangeemailv1) | **POST** /api/v1/account/email | Change authenticated account email
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerChangePasswordV1**](doc/AccountApi.md#accountcontrollerchangepasswordv1) | **POST** /api/v1/account/password | Change authenticated account password
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1**](doc/AccountApi.md#accountcontrollercreatewechatwebidentitylinkauthorizeurlv1) | **POST** /api/v1/account/identities/wechat-web/authorize | Create WeChat web OAuth authorize URL for linking
@@ -80,6 +75,12 @@ Class | Method | HTTP request | Description
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerLinkWechatWebIdentityV1**](doc/AccountApi.md#accountcontrollerlinkwechatwebidentityv1) | **POST** /api/v1/account/identities/wechat-web/callback | Link WeChat web identity to authenticated account
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerUnlinkIdentityV1**](doc/AccountApi.md#accountcontrollerunlinkidentityv1) | **DELETE** /api/v1/account/identities/{identityId} | Unlink authenticated account OAuth identity
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerUpdateAccountV1**](doc/AccountApi.md#accountcontrollerupdateaccountv1) | **PATCH** /api/v1/account | Update authenticated account profile
+[*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerClearLatestConversationV1**](doc/AssistantApi.md#assistantcontrollerclearlatestconversationv1) | **POST** /api/v1/user/assistant/latest/clear | Archive the authenticated user latest active assistant conversation
+[*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerGetCapabilitiesV1**](doc/AssistantApi.md#assistantcontrollergetcapabilitiesv1) | **GET** /api/v1/user/assistant/capabilities | Get authenticated user assistant capabilities and permissions
+[*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerGetLatestConversationV1**](doc/AssistantApi.md#assistantcontrollergetlatestconversationv1) | **GET** /api/v1/user/assistant/latest | Get the authenticated user latest persisted assistant conversation
+[*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerListRecentConversationsV1**](doc/AssistantApi.md#assistantcontrollerlistrecentconversationsv1) | **GET** /api/v1/user/assistant/conversations | List recent persisted assistant conversations for the user
+[*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerOpenConversationV1**](doc/AssistantApi.md#assistantcontrolleropenconversationv1) | **POST** /api/v1/user/assistant/conversations/{conversationId}/open | Activate one persisted assistant conversation and return its full history
+[*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerStreamMessagesV1**](doc/AssistantApi.md#assistantcontrollerstreammessagesv1) | **POST** /api/v1/user/assistant/messages/stream | Stream authenticated user assistant response
 [*AuthApi*](doc/AuthApi.md) | [**authControllerCreateWechatWebAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
 [*AuthApi*](doc/AuthApi.md) | [**authControllerForgotPasswordV1**](doc/AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginV1**](doc/AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
@@ -147,23 +148,23 @@ Class | Method | HTTP request | Description
  - [AccountEmailResponseDto](doc/AccountEmailResponseDto.md)
  - [AccountIdentityDto](doc/AccountIdentityDto.md)
  - [AccountResponseDto](doc/AccountResponseDto.md)
- - [AiChatCapabilitiesDataDto](doc/AiChatCapabilitiesDataDto.md)
- - [AiChatCapabilitiesResponseDto](doc/AiChatCapabilitiesResponseDto.md)
- - [AiChatContextSettingsDto](doc/AiChatContextSettingsDto.md)
- - [AiChatControllerClearLatestConversationV1200Response](doc/AiChatControllerClearLatestConversationV1200Response.md)
- - [AiChatControllerClearLatestConversationV1200ResponseData](doc/AiChatControllerClearLatestConversationV1200ResponseData.md)
- - [AiChatConversationDataDto](doc/AiChatConversationDataDto.md)
- - [AiChatConversationListResponseDto](doc/AiChatConversationListResponseDto.md)
- - [AiChatConversationMessageDto](doc/AiChatConversationMessageDto.md)
- - [AiChatConversationResponseDto](doc/AiChatConversationResponseDto.md)
- - [AiChatConversationSummaryDto](doc/AiChatConversationSummaryDto.md)
- - [AiChatInputMessageDto](doc/AiChatInputMessageDto.md)
- - [AiChatStreamResultDto](doc/AiChatStreamResultDto.md)
- - [AiChatToolCapabilityDto](doc/AiChatToolCapabilityDto.md)
  - [AirQualityIndicatorDto](doc/AirQualityIndicatorDto.md)
  - [AirQualityLevel](doc/AirQualityLevel.md)
  - [AppInfoDataDto](doc/AppInfoDataDto.md)
  - [AppInfoResponseDto](doc/AppInfoResponseDto.md)
+ - [AssistantCapabilitiesDataDto](doc/AssistantCapabilitiesDataDto.md)
+ - [AssistantCapabilitiesResponseDto](doc/AssistantCapabilitiesResponseDto.md)
+ - [AssistantContextSettingsDto](doc/AssistantContextSettingsDto.md)
+ - [AssistantControllerClearLatestConversationV1200Response](doc/AssistantControllerClearLatestConversationV1200Response.md)
+ - [AssistantControllerClearLatestConversationV1200ResponseData](doc/AssistantControllerClearLatestConversationV1200ResponseData.md)
+ - [AssistantConversationDataDto](doc/AssistantConversationDataDto.md)
+ - [AssistantConversationListResponseDto](doc/AssistantConversationListResponseDto.md)
+ - [AssistantConversationMessageDto](doc/AssistantConversationMessageDto.md)
+ - [AssistantConversationResponseDto](doc/AssistantConversationResponseDto.md)
+ - [AssistantConversationSummaryDto](doc/AssistantConversationSummaryDto.md)
+ - [AssistantInputMessageDto](doc/AssistantInputMessageDto.md)
+ - [AssistantStreamResultDto](doc/AssistantStreamResultDto.md)
+ - [AssistantToolCapabilityDto](doc/AssistantToolCapabilityDto.md)
  - [ChangeEmailDto](doc/ChangeEmailDto.md)
  - [ChangePasswordDto](doc/ChangePasswordDto.md)
  - [CnMedicineDetailDto](doc/CnMedicineDetailDto.md)
@@ -274,7 +275,7 @@ Class | Method | HTTP request | Description
  - [SendVerificationCodeDto](doc/SendVerificationCodeDto.md)
  - [SendVerificationCodeResponseDto](doc/SendVerificationCodeResponseDto.md)
  - [SexAtBirth](doc/SexAtBirth.md)
- - [StreamAiChatMessagesDto](doc/StreamAiChatMessagesDto.md)
+ - [StreamAssistantMessagesDto](doc/StreamAssistantMessagesDto.md)
  - [SuccessResponseDto](doc/SuccessResponseDto.md)
  - [SupportResourceActionType](doc/SupportResourceActionType.md)
  - [SupportResourceDto](doc/SupportResourceDto.md)
@@ -289,7 +290,7 @@ Class | Method | HTTP request | Description
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
  - [UpdateAccountDto](doc/UpdateAccountDto.md)
- - [UpdateAiChatContextSettingsDto](doc/UpdateAiChatContextSettingsDto.md)
+ - [UpdateAssistantContextSettingsDto](doc/UpdateAssistantContextSettingsDto.md)
  - [UpdateCurrentMedicineDto](doc/UpdateCurrentMedicineDto.md)
  - [UpdateDailyRecordDto](doc/UpdateDailyRecordDto.md)
  - [UpdateDoseLogDto](doc/UpdateDoseLogDto.md)

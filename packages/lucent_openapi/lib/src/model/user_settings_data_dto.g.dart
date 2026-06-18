@@ -14,23 +14,23 @@ UserSettingsDataDto _$UserSettingsDataDtoFromJson(
     requiredKeys: const [
       'aiSummariesEnabled',
       'dataSharingConsent',
-      'aiChatEnabled',
-      'aiChatMemoryEnabled',
-      'aiChatContext',
+      'assistantEnabled',
+      'assistantMemoryEnabled',
+      'assistantContext',
       'updatedAt',
     ],
   );
   final val = UserSettingsDataDto(
     aiSummariesEnabled: $checkedConvert('aiSummariesEnabled', (v) => v as bool),
     dataSharingConsent: $checkedConvert('dataSharingConsent', (v) => v as bool),
-    aiChatEnabled: $checkedConvert('aiChatEnabled', (v) => v as bool),
-    aiChatMemoryEnabled: $checkedConvert(
-      'aiChatMemoryEnabled',
+    assistantEnabled: $checkedConvert('assistantEnabled', (v) => v as bool),
+    assistantMemoryEnabled: $checkedConvert(
+      'assistantMemoryEnabled',
       (v) => v as bool,
     ),
-    aiChatContext: $checkedConvert(
-      'aiChatContext',
-      (v) => AiChatContextSettingsDto.fromJson(v as Map<String, dynamic>),
+    assistantContext: $checkedConvert(
+      'assistantContext',
+      (v) => AssistantContextSettingsDto.fromJson(v as Map<String, dynamic>),
     ),
     updatedAt: $checkedConvert('updatedAt', (v) => v as String?),
   );
@@ -42,8 +42,8 @@ Map<String, dynamic> _$UserSettingsDataDtoToJson(
 ) => <String, dynamic>{
   'aiSummariesEnabled': instance.aiSummariesEnabled,
   'dataSharingConsent': instance.dataSharingConsent,
-  'aiChatEnabled': instance.aiChatEnabled,
-  'aiChatMemoryEnabled': instance.aiChatMemoryEnabled,
-  'aiChatContext': instance.aiChatContext.toJson(),
+  'assistantEnabled': instance.assistantEnabled,
+  'assistantMemoryEnabled': instance.assistantMemoryEnabled,
+  'assistantContext': instance.assistantContext.toJson(),
   'updatedAt': instance.updatedAt,
 };

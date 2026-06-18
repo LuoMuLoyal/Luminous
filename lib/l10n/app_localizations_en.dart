@@ -1818,10 +1818,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minePrivacyAiSubtitle => 'Daily summaries, trend advice';
 
   @override
-  String get aiChatEntryTitle => 'AI chat';
+  String get assistantEntryTitle => 'AI chat';
 
   @override
-  String get aiChatEntrySubtitle =>
+  String get assistantEntrySubtitle =>
       'Streaming replies with controlled health context';
 
   @override
@@ -2582,238 +2582,239 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayRetryAction => 'Retry';
 
   @override
-  String get aiChatPageTitle => 'AI chat';
+  String get assistantPageTitle => 'AI chat';
 
   @override
-  String get aiChatSignedOutDescription =>
+  String get assistantSignedOutDescription =>
       'Sign in to use AI chat and decide whether your health context may be used.';
 
   @override
-  String get aiChatLoadErrorTitle => 'AI chat did not load this time';
+  String get assistantLoadErrorTitle => 'AI chat did not load this time';
 
   @override
-  String get aiChatLoadErrorFallback =>
+  String get assistantLoadErrorFallback =>
       'Capabilities were not loaded this time. Try fetching them again.';
 
   @override
-  String get aiChatSettingsEnableTitle => 'Enable AI chat';
+  String get assistantSettingsEnableTitle => 'Enable AI chat';
 
   @override
-  String get aiChatSettingsEnableSubtitle =>
+  String get assistantSettingsEnableSubtitle =>
       'When disabled, no new chat requests will be sent';
 
   @override
-  String get aiChatSettingsMemoryTitle => 'Enable persistent memory';
+  String get assistantSettingsMemoryTitle => 'Enable persistent memory';
 
   @override
-  String get aiChatSettingsMemorySubtitle =>
+  String get assistantSettingsMemorySubtitle =>
       'When a new chat starts, the assistant may reference earlier conversations';
 
   @override
-  String get aiChatContextHealthProfile => 'Health profile';
+  String get assistantContextHealthProfile => 'Health profile';
 
   @override
-  String get aiChatContextDailyRecords => 'Recent records';
+  String get assistantContextDailyRecords => 'Recent records';
 
   @override
-  String get aiChatContextSleepRecords => 'Sleep data';
+  String get assistantContextSleepRecords => 'Sleep data';
 
   @override
-  String get aiChatContextCurrentMedicines => 'Current medicines';
+  String get assistantContextCurrentMedicines => 'Current medicines';
 
   @override
-  String get aiChatStatusSectionTitle => 'Current status';
+  String get assistantStatusSectionTitle => 'Current status';
 
   @override
-  String get aiChatStatusReady =>
+  String get assistantStatusReady =>
       'Backend capabilities are ready and chat can start.';
 
   @override
-  String get aiChatStatusDisabled =>
+  String get assistantStatusDisabled =>
       'AI chat is turned off, so no chat request will be sent.';
 
   @override
-  String get aiChatStatusModelMissing =>
+  String get assistantStatusModelMissing =>
       'The backend does not have a usable chat model configured yet.';
 
   @override
-  String get aiChatStatusNotReady =>
+  String get assistantStatusNotReady =>
       'The interactive chat route is not fully ready yet.';
 
   @override
-  String get aiChatStatusToolsLabel => 'Tools';
+  String get assistantStatusToolsLabel => 'Tools';
 
   @override
-  String get aiChatStatusContextLabel => 'Context';
+  String get assistantStatusContextLabel => 'Context';
 
   @override
-  String get aiChatStatusStreamingLabel => 'Streaming';
+  String get assistantStatusStreamingLabel => 'Streaming';
 
   @override
-  String get aiChatStatusRagLabel => 'RAG';
+  String get assistantStatusRagLabel => 'RAG';
 
   @override
-  String get aiChatConversationDisabledTitle => 'Chat cannot start yet';
+  String get assistantConversationDisabledTitle => 'Chat cannot start yet';
 
   @override
-  String get aiChatConversationDisabledByUser =>
+  String get assistantConversationDisabledByUser =>
       'AI chat is turned off. Enable it again before sending messages.';
 
   @override
-  String get aiChatConversationModelMissing =>
+  String get assistantConversationModelMissing =>
       'The backend does not have a usable model yet, so replies cannot be generated.';
 
   @override
-  String get aiChatConversationNotReady =>
+  String get assistantConversationNotReady =>
       'The interactive chat route is not ready yet. Keep the current settings for now.';
 
   @override
-  String get aiChatConversationEmptyTitle => 'Start the first message';
+  String get assistantConversationEmptyTitle => 'Start the first message';
 
   @override
-  String get aiChatConversationEmptyDescription =>
+  String get assistantConversationEmptyDescription =>
       'You can ask about recent sleep, recent records, or current medicines directly.';
 
   @override
-  String get aiChatSendErrorTitle => 'This reply did not complete';
+  String get assistantSendErrorTitle => 'This reply did not complete';
 
   @override
-  String get aiChatInputHint =>
+  String get assistantInputHint =>
       'For example: Based on my recent sleep and medicines, what should I pay attention to?';
 
   @override
-  String get aiChatSendAction => 'Send';
+  String get assistantSendAction => 'Send';
 
   @override
-  String get aiChatSendingAction => 'Sending';
+  String get assistantSendingAction => 'Sending';
 
   @override
-  String get aiChatNewConversationAction => 'New chat';
+  String get assistantNewConversationAction => 'New chat';
 
   @override
-  String get aiChatRecentConversationsAction => 'Recent chats';
+  String get assistantRecentConversationsAction => 'Recent chats';
 
   @override
-  String get aiChatRecentConversationsTitle => 'Recent chats';
+  String get assistantRecentConversationsTitle => 'Recent chats';
 
   @override
-  String get aiChatRecentConversationsEmptyTitle => 'No chat history yet';
+  String get assistantRecentConversationsEmptyTitle => 'No chat history yet';
 
   @override
-  String get aiChatRecentConversationsEmptyDescription =>
+  String get assistantRecentConversationsEmptyDescription =>
       'Recent conversations will appear here after you start chatting.';
 
   @override
-  String get aiChatRecentConversationCurrentLabel => 'Current';
+  String get assistantRecentConversationCurrentLabel => 'Current';
 
   @override
-  String get aiChatOpeningConversationLabel => 'Switching conversation…';
+  String get assistantOpeningConversationLabel => 'Switching conversation…';
 
   @override
-  String get aiChatUntitledConversation => 'Untitled conversation';
+  String get assistantUntitledConversation => 'Untitled conversation';
 
   @override
-  String get aiChatStreamingLabel => 'Generating';
+  String get assistantStreamingLabel => 'Generating';
 
   @override
-  String get aiChatRetryAction => 'Retry';
+  String get assistantRetryAction => 'Retry';
 
   @override
-  String get aiChatErrorStreamInterrupted =>
+  String get assistantErrorStreamInterrupted =>
       'The connection was interrupted. Check your network and try again.';
 
   @override
-  String get aiChatErrorEmptyResult =>
+  String get assistantErrorEmptyResult =>
       'AI did not return a valid response. Please try again.';
 
   @override
-  String get aiChatErrorServer =>
+  String get assistantErrorServer =>
       'The server encountered an issue. Please try again later.';
 
   @override
-  String get aiChatToolTodayRecords => 'Today records';
+  String get assistantToolTodayRecords => 'Today records';
 
   @override
-  String get aiChatToolRecordsByDate => 'Records by date';
+  String get assistantToolRecordsByDate => 'Records by date';
 
   @override
-  String get aiChatToolRecordsByRange => 'Records by range';
+  String get assistantToolRecordsByRange => 'Records by range';
 
   @override
-  String get aiChatToolTodaySummaryByDate => 'Today summary by date';
+  String get assistantToolTodaySummaryByDate => 'Today summary by date';
 
   @override
-  String get aiChatToolReportSummaryByRange => 'Report summary by range';
+  String get assistantToolReportSummaryByRange => 'Report summary by range';
 
   @override
-  String get aiChatToolRecentTodaySummaries => 'Past Today summaries';
+  String get assistantToolRecentTodaySummaries => 'Past Today summaries';
 
   @override
-  String get aiChatToolRecentReportSummaries => 'Past Report summaries';
+  String get assistantToolRecentReportSummaries => 'Past Report summaries';
 
   @override
-  String get aiChatToolUserProfile => 'User profile';
+  String get assistantToolUserProfile => 'User profile';
 
   @override
-  String get aiChatToolUserSettings => 'User settings';
+  String get assistantToolUserSettings => 'User settings';
 
   @override
-  String get aiChatToolCurrentMedicines => 'Current medicines';
+  String get assistantToolCurrentMedicines => 'Current medicines';
 
   @override
-  String get aiChatToolSleepByRange => 'Sleep summary';
+  String get assistantToolSleepByRange => 'Sleep summary';
 
   @override
-  String get aiChatToolProposeCreateRecord => 'Save proposal';
+  String get assistantToolProposeCreateRecord => 'Save proposal';
 
   @override
-  String get aiChatToolProposeUpdateRecord => 'Update proposal';
+  String get assistantToolProposeUpdateRecord => 'Update proposal';
 
   @override
-  String get aiChatToolProposeDeleteRecord => 'Delete proposal';
+  String get assistantToolProposeDeleteRecord => 'Delete proposal';
 
   @override
-  String get aiChatToolProposeUpdateSettings => 'Settings proposal';
+  String get assistantToolProposeUpdateSettings => 'Settings proposal';
 
   @override
-  String get aiChatUsedToolsLabel => 'Sources used';
+  String get assistantUsedToolsLabel => 'Sources used';
 
   @override
-  String get aiChatConversationDisabledByUserHint =>
+  String get assistantConversationDisabledByUserHint =>
       'AI chat is turned off. Toggle “Enable AI chat” above to resume.';
 
   @override
-  String get aiChatProposalConfirmCreateAction => 'Confirm save';
+  String get assistantProposalConfirmCreateAction => 'Confirm save';
 
   @override
-  String get aiChatProposalConfirmUpdateAction => 'Confirm update';
+  String get assistantProposalConfirmUpdateAction => 'Confirm update';
 
   @override
-  String get aiChatProposalConfirmDeleteAction => 'Confirm delete';
+  String get assistantProposalConfirmDeleteAction => 'Confirm delete';
 
   @override
-  String get aiChatProposalConfirmSettingsAction => 'Confirm update';
+  String get assistantProposalConfirmSettingsAction => 'Confirm update';
 
   @override
-  String get aiChatProposalDismissAction => 'Dismiss';
+  String get assistantProposalDismissAction => 'Dismiss';
 
   @override
-  String get aiChatProposalPendingState => 'Pending';
+  String get assistantProposalPendingState => 'Pending';
 
   @override
-  String get aiChatProposalExecutingState => 'Running';
+  String get assistantProposalExecutingState => 'Running';
 
   @override
-  String get aiChatProposalConfirmedState => 'Confirmed';
+  String get assistantProposalConfirmedState => 'Confirmed';
 
   @override
-  String get aiChatProposalDismissedState => 'Dismissed';
+  String get assistantProposalDismissedState => 'Dismissed';
 
   @override
-  String get aiChatProposalFailedState => 'Failed';
+  String get assistantProposalFailedState => 'Failed';
 
   @override
-  String get aiChatProposalConfirmedToast => 'The proposed action was applied.';
+  String get assistantProposalConfirmedToast =>
+      'The proposed action was applied.';
 
   @override
   String todayUpdatedAt(String time) {

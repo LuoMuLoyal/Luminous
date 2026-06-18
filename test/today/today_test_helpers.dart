@@ -83,9 +83,9 @@ UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
   return UserSettingsDataDto(
     aiSummariesEnabled: aiSummariesEnabled,
     dataSharingConsent: false,
-    aiChatEnabled: true,
-    aiChatMemoryEnabled: false,
-    aiChatContext: AiChatContextSettingsDto(
+    assistantEnabled: true,
+    assistantMemoryEnabled: false,
+    assistantContext: AssistantContextSettingsDto(
       healthProfile: true,
       dailyRecords: true,
       sleepRecords: true,
@@ -96,3 +96,4 @@ UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
 }
 
 final DateTime generatedAt = DateTime.utc(2026, 6, 12, 10, 23, 45);
+

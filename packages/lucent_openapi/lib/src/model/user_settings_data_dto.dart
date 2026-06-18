@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_openapi/src/model/ai_chat_context_settings_dto.dart';
+import 'package:lucent_openapi/src/model/assistant_context_settings_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_settings_data_dto.g.dart';
@@ -21,11 +21,11 @@ class UserSettingsDataDto {
 
     required this.dataSharingConsent,
 
-    required this.aiChatEnabled,
+    required this.assistantEnabled,
 
-    required this.aiChatMemoryEnabled,
+    required this.assistantMemoryEnabled,
 
-    required this.aiChatContext,
+    required this.assistantContext,
 
     required this.updatedAt,
   });
@@ -38,17 +38,21 @@ class UserSettingsDataDto {
   @JsonKey(name: r'dataSharingConsent', required: true, includeIfNull: false)
   final bool dataSharingConsent;
 
-  /// Allow the authenticated user to use the AI chat feature.
-  @JsonKey(name: r'aiChatEnabled', required: true, includeIfNull: false)
-  final bool aiChatEnabled;
+  /// Allow the authenticated user to use the assistant feature.
+  @JsonKey(name: r'assistantEnabled', required: true, includeIfNull: false)
+  final bool assistantEnabled;
 
-  /// Allow AI chat to reuse persisted assistant history as cross-conversation memory.
-  @JsonKey(name: r'aiChatMemoryEnabled', required: true, includeIfNull: false)
-  final bool aiChatMemoryEnabled;
+  /// Allow the assistant to reuse persisted conversation history as cross-conversation memory.
+  @JsonKey(
+    name: r'assistantMemoryEnabled',
+    required: true,
+    includeIfNull: false,
+  )
+  final bool assistantMemoryEnabled;
 
-  /// Fine-grained AI chat context permissions.
-  @JsonKey(name: r'aiChatContext', required: true, includeIfNull: false)
-  final AiChatContextSettingsDto aiChatContext;
+  /// Fine-grained assistant context permissions.
+  @JsonKey(name: r'assistantContext', required: true, includeIfNull: false)
+  final AssistantContextSettingsDto assistantContext;
 
   /// ISO-8601 timestamp of last update.
   @JsonKey(name: r'updatedAt', required: true, includeIfNull: true)
@@ -60,18 +64,18 @@ class UserSettingsDataDto {
       other is UserSettingsDataDto &&
           other.aiSummariesEnabled == aiSummariesEnabled &&
           other.dataSharingConsent == dataSharingConsent &&
-          other.aiChatEnabled == aiChatEnabled &&
-          other.aiChatMemoryEnabled == aiChatMemoryEnabled &&
-          other.aiChatContext == aiChatContext &&
+          other.assistantEnabled == assistantEnabled &&
+          other.assistantMemoryEnabled == assistantMemoryEnabled &&
+          other.assistantContext == assistantContext &&
           other.updatedAt == updatedAt;
 
   @override
   int get hashCode =>
       aiSummariesEnabled.hashCode +
       dataSharingConsent.hashCode +
-      aiChatEnabled.hashCode +
-      aiChatMemoryEnabled.hashCode +
-      aiChatContext.hashCode +
+      assistantEnabled.hashCode +
+      assistantMemoryEnabled.hashCode +
+      assistantContext.hashCode +
       (updatedAt == null ? 0 : updatedAt.hashCode);
 
   factory UserSettingsDataDto.fromJson(Map<String, dynamic> json) =>

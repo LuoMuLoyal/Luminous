@@ -1667,10 +1667,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get minePrivacyAiSubtitle => '每日总结、趋势建议';
 
   @override
-  String get aiChatEntryTitle => 'AI 对话';
+  String get assistantEntryTitle => 'AI 对话';
 
   @override
-  String get aiChatEntrySubtitle => '流式问答与受控健康上下文';
+  String get assistantEntrySubtitle => '流式问答与受控健康上下文';
 
   @override
   String get minePrivacyOnlyMe => '仅自己可见';
@@ -2397,222 +2397,223 @@ class AppLocalizationsZh extends AppLocalizations {
   String get todayRetryAction => '重试';
 
   @override
-  String get aiChatPageTitle => 'AI 对话';
+  String get assistantPageTitle => 'AI 对话';
 
   @override
-  String get aiChatSignedOutDescription => '登录后才可以使用 AI 对话，并由你决定是否开放健康上下文。';
+  String get assistantSignedOutDescription => '登录后才可以使用 AI 对话，并由你决定是否开放健康上下文。';
 
   @override
-  String get aiChatLoadErrorTitle => 'AI 对话暂时没有加载出来';
+  String get assistantLoadErrorTitle => 'AI 对话暂时没有加载出来';
 
   @override
-  String get aiChatLoadErrorFallback => '能力信息这次没有取到，可以重新拉取一次。';
+  String get assistantLoadErrorFallback => '能力信息这次没有取到，可以重新拉取一次。';
 
   @override
-  String get aiChatSettingsEnableTitle => '启用 AI 对话';
+  String get assistantSettingsEnableTitle => '启用 AI 对话';
 
   @override
-  String get aiChatSettingsEnableSubtitle => '关闭后不会发送新的对话请求';
+  String get assistantSettingsEnableSubtitle => '关闭后不会发送新的对话请求';
 
   @override
-  String get aiChatSettingsMemoryTitle => '启用持久化记忆';
+  String get assistantSettingsMemoryTitle => '启用持久化记忆';
 
   @override
-  String get aiChatSettingsMemorySubtitle => '新对话开始时，可选择让助手参考之前的对话历史';
+  String get assistantSettingsMemorySubtitle => '新对话开始时，可选择让助手参考之前的对话历史';
 
   @override
-  String get aiChatContextHealthProfile => '健康档案';
+  String get assistantContextHealthProfile => '健康档案';
 
   @override
-  String get aiChatContextDailyRecords => '最近记录';
+  String get assistantContextDailyRecords => '最近记录';
 
   @override
-  String get aiChatContextSleepRecords => '睡眠数据';
+  String get assistantContextSleepRecords => '睡眠数据';
 
   @override
-  String get aiChatContextCurrentMedicines => '当前用药';
+  String get assistantContextCurrentMedicines => '当前用药';
 
   @override
-  String get aiChatStatusSectionTitle => '当前状态';
+  String get assistantStatusSectionTitle => '当前状态';
 
   @override
-  String get aiChatStatusReady => '后端能力已就绪，可以开始对话。';
+  String get assistantStatusReady => '后端能力已就绪，可以开始对话。';
 
   @override
-  String get aiChatStatusDisabled => '你已关闭 AI 对话，当前不会发送聊天请求。';
+  String get assistantStatusDisabled => '你已关闭 AI 对话，当前不会发送聊天请求。';
 
   @override
-  String get aiChatStatusModelMissing => '服务端还没有可用的聊天模型配置。';
+  String get assistantStatusModelMissing => '服务端还没有可用的聊天模型配置。';
 
   @override
-  String get aiChatStatusNotReady => '交互式对话链路还没有完全就绪。';
+  String get assistantStatusNotReady => '交互式对话链路还没有完全就绪。';
 
   @override
-  String get aiChatStatusToolsLabel => '工具';
+  String get assistantStatusToolsLabel => '工具';
 
   @override
-  String get aiChatStatusContextLabel => '上下文';
+  String get assistantStatusContextLabel => '上下文';
 
   @override
-  String get aiChatStatusStreamingLabel => '流式输出';
+  String get assistantStatusStreamingLabel => '流式输出';
 
   @override
-  String get aiChatStatusRagLabel => 'RAG';
+  String get assistantStatusRagLabel => 'RAG';
 
   @override
-  String get aiChatConversationDisabledTitle => '当前还不能开始对话';
+  String get assistantConversationDisabledTitle => '当前还不能开始对话';
 
   @override
-  String get aiChatConversationDisabledByUser => '你已关闭 AI 对话，重新开启后才能发送消息。';
+  String get assistantConversationDisabledByUser => '你已关闭 AI 对话，重新开启后才能发送消息。';
 
   @override
-  String get aiChatConversationModelMissing => '服务端还没有可用模型，暂时无法生成回复。';
+  String get assistantConversationModelMissing => '服务端还没有可用模型，暂时无法生成回复。';
 
   @override
-  String get aiChatConversationNotReady => '交互式对话链路还没准备好，先保持当前设置即可。';
+  String get assistantConversationNotReady => '交互式对话链路还没准备好，先保持当前设置即可。';
 
   @override
-  String get aiChatConversationEmptyTitle => '开始第一条消息';
+  String get assistantConversationEmptyTitle => '开始第一条消息';
 
   @override
-  String get aiChatConversationEmptyDescription => '可以直接问最近睡眠、最近记录或当前用药相关的问题。';
+  String get assistantConversationEmptyDescription =>
+      '可以直接问最近睡眠、最近记录或当前用药相关的问题。';
 
   @override
-  String get aiChatSendErrorTitle => '这次回复没有完成';
+  String get assistantSendErrorTitle => '这次回复没有完成';
 
   @override
-  String get aiChatInputHint => '比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。';
+  String get assistantInputHint => '比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。';
 
   @override
-  String get aiChatSendAction => '发送';
+  String get assistantSendAction => '发送';
 
   @override
-  String get aiChatSendingAction => '发送中';
+  String get assistantSendingAction => '发送中';
 
   @override
-  String get aiChatNewConversationAction => '新对话';
+  String get assistantNewConversationAction => '新对话';
 
   @override
-  String get aiChatRecentConversationsAction => '最近会话';
+  String get assistantRecentConversationsAction => '最近会话';
 
   @override
-  String get aiChatRecentConversationsTitle => '最近会话';
+  String get assistantRecentConversationsTitle => '最近会话';
 
   @override
-  String get aiChatRecentConversationsEmptyTitle => '还没有历史会话';
+  String get assistantRecentConversationsEmptyTitle => '还没有历史会话';
 
   @override
-  String get aiChatRecentConversationsEmptyDescription =>
+  String get assistantRecentConversationsEmptyDescription =>
       '开始一次对话后，最近的会话会显示在这里。';
 
   @override
-  String get aiChatRecentConversationCurrentLabel => '当前';
+  String get assistantRecentConversationCurrentLabel => '当前';
 
   @override
-  String get aiChatOpeningConversationLabel => '正在切换会话…';
+  String get assistantOpeningConversationLabel => '正在切换会话…';
 
   @override
-  String get aiChatUntitledConversation => '未命名会话';
+  String get assistantUntitledConversation => '未命名会话';
 
   @override
-  String get aiChatStreamingLabel => '正在生成';
+  String get assistantStreamingLabel => '正在生成';
 
   @override
-  String get aiChatRetryAction => '重新发送';
+  String get assistantRetryAction => '重新发送';
 
   @override
-  String get aiChatErrorStreamInterrupted => '连接中断了，请检查网络后重试。';
+  String get assistantErrorStreamInterrupted => '连接中断了，请检查网络后重试。';
 
   @override
-  String get aiChatErrorEmptyResult => 'AI 没有返回有效内容，可以再试一次。';
+  String get assistantErrorEmptyResult => 'AI 没有返回有效内容，可以再试一次。';
 
   @override
-  String get aiChatErrorServer => '服务端出现问题，请稍后再试。';
+  String get assistantErrorServer => '服务端出现问题，请稍后再试。';
 
   @override
-  String get aiChatToolTodayRecords => '今日记录';
+  String get assistantToolTodayRecords => '今日记录';
 
   @override
-  String get aiChatToolRecordsByDate => '按日记录';
+  String get assistantToolRecordsByDate => '按日记录';
 
   @override
-  String get aiChatToolRecordsByRange => '区间记录';
+  String get assistantToolRecordsByRange => '区间记录';
 
   @override
-  String get aiChatToolTodaySummaryByDate => '指定日期总结';
+  String get assistantToolTodaySummaryByDate => '指定日期总结';
 
   @override
-  String get aiChatToolReportSummaryByRange => '指定报告总结';
+  String get assistantToolReportSummaryByRange => '指定报告总结';
 
   @override
-  String get aiChatToolRecentTodaySummaries => '今日历史总结';
+  String get assistantToolRecentTodaySummaries => '今日历史总结';
 
   @override
-  String get aiChatToolRecentReportSummaries => '报告历史总结';
+  String get assistantToolRecentReportSummaries => '报告历史总结';
 
   @override
-  String get aiChatToolUserProfile => '用户档案';
+  String get assistantToolUserProfile => '用户档案';
 
   @override
-  String get aiChatToolUserSettings => '用户设置';
+  String get assistantToolUserSettings => '用户设置';
 
   @override
-  String get aiChatToolCurrentMedicines => '当前用药';
+  String get assistantToolCurrentMedicines => '当前用药';
 
   @override
-  String get aiChatToolSleepByRange => '睡眠概况';
+  String get assistantToolSleepByRange => '睡眠概况';
 
   @override
-  String get aiChatToolProposeCreateRecord => '保存建议';
+  String get assistantToolProposeCreateRecord => '保存建议';
 
   @override
-  String get aiChatToolProposeUpdateRecord => '修改建议';
+  String get assistantToolProposeUpdateRecord => '修改建议';
 
   @override
-  String get aiChatToolProposeDeleteRecord => '删除建议';
+  String get assistantToolProposeDeleteRecord => '删除建议';
 
   @override
-  String get aiChatToolProposeUpdateSettings => '设置建议';
+  String get assistantToolProposeUpdateSettings => '设置建议';
 
   @override
-  String get aiChatUsedToolsLabel => '参考来源';
+  String get assistantUsedToolsLabel => '参考来源';
 
   @override
-  String get aiChatConversationDisabledByUserHint =>
+  String get assistantConversationDisabledByUserHint =>
       '你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。';
 
   @override
-  String get aiChatProposalConfirmCreateAction => '确认保存';
+  String get assistantProposalConfirmCreateAction => '确认保存';
 
   @override
-  String get aiChatProposalConfirmUpdateAction => '确认修改';
+  String get assistantProposalConfirmUpdateAction => '确认修改';
 
   @override
-  String get aiChatProposalConfirmDeleteAction => '确认删除';
+  String get assistantProposalConfirmDeleteAction => '确认删除';
 
   @override
-  String get aiChatProposalConfirmSettingsAction => '确认更新';
+  String get assistantProposalConfirmSettingsAction => '确认更新';
 
   @override
-  String get aiChatProposalDismissAction => '取消';
+  String get assistantProposalDismissAction => '取消';
 
   @override
-  String get aiChatProposalPendingState => '待确认';
+  String get assistantProposalPendingState => '待确认';
 
   @override
-  String get aiChatProposalExecutingState => '执行中';
+  String get assistantProposalExecutingState => '执行中';
 
   @override
-  String get aiChatProposalConfirmedState => '已确认';
+  String get assistantProposalConfirmedState => '已确认';
 
   @override
-  String get aiChatProposalDismissedState => '已取消';
+  String get assistantProposalDismissedState => '已取消';
 
   @override
-  String get aiChatProposalFailedState => '执行失败';
+  String get assistantProposalFailedState => '执行失败';
 
   @override
-  String get aiChatProposalConfirmedToast => '已执行这条建议。';
+  String get assistantProposalConfirmedToast => '已执行这条建议。';
 
   @override
   String todayUpdatedAt(String time) {

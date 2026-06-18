@@ -3,7 +3,7 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_openapi/src/model/update_ai_chat_context_settings_dto.dart';
+import 'package:lucent_openapi/src/model/update_assistant_context_settings_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'update_user_settings_dto.g.dart';
@@ -21,11 +21,11 @@ class UpdateUserSettingsDto {
 
     this.dataSharingConsent,
 
-    this.aiChatEnabled,
+    this.assistantEnabled,
 
-    this.aiChatMemoryEnabled,
+    this.assistantMemoryEnabled,
 
-    this.aiChatContext,
+    this.assistantContext,
   });
 
   /// Allow AI-generated summaries and advice.
@@ -36,17 +36,21 @@ class UpdateUserSettingsDto {
   @JsonKey(name: r'dataSharingConsent', required: false, includeIfNull: false)
   final bool? dataSharingConsent;
 
-  /// Allow the authenticated user to use the AI chat feature.
-  @JsonKey(name: r'aiChatEnabled', required: false, includeIfNull: false)
-  final bool? aiChatEnabled;
+  /// Allow the authenticated user to use the assistant feature.
+  @JsonKey(name: r'assistantEnabled', required: false, includeIfNull: false)
+  final bool? assistantEnabled;
 
-  /// Allow AI chat to reuse persisted assistant history as cross-conversation memory.
-  @JsonKey(name: r'aiChatMemoryEnabled', required: false, includeIfNull: false)
-  final bool? aiChatMemoryEnabled;
+  /// Allow the assistant to reuse persisted conversation history as cross-conversation memory.
+  @JsonKey(
+    name: r'assistantMemoryEnabled',
+    required: false,
+    includeIfNull: false,
+  )
+  final bool? assistantMemoryEnabled;
 
-  /// Fine-grained permissions for what AI chat may read.
-  @JsonKey(name: r'aiChatContext', required: false, includeIfNull: false)
-  final UpdateAiChatContextSettingsDto? aiChatContext;
+  /// Fine-grained permissions for what the assistant may read.
+  @JsonKey(name: r'assistantContext', required: false, includeIfNull: false)
+  final UpdateAssistantContextSettingsDto? assistantContext;
 
   @override
   bool operator ==(Object other) =>
@@ -54,17 +58,17 @@ class UpdateUserSettingsDto {
       other is UpdateUserSettingsDto &&
           other.aiSummariesEnabled == aiSummariesEnabled &&
           other.dataSharingConsent == dataSharingConsent &&
-          other.aiChatEnabled == aiChatEnabled &&
-          other.aiChatMemoryEnabled == aiChatMemoryEnabled &&
-          other.aiChatContext == aiChatContext;
+          other.assistantEnabled == assistantEnabled &&
+          other.assistantMemoryEnabled == assistantMemoryEnabled &&
+          other.assistantContext == assistantContext;
 
   @override
   int get hashCode =>
       aiSummariesEnabled.hashCode +
       dataSharingConsent.hashCode +
-      aiChatEnabled.hashCode +
-      aiChatMemoryEnabled.hashCode +
-      aiChatContext.hashCode;
+      assistantEnabled.hashCode +
+      assistantMemoryEnabled.hashCode +
+      assistantContext.hashCode;
 
   factory UpdateUserSettingsDto.fromJson(Map<String, dynamic> json) =>
       _$UpdateUserSettingsDtoFromJson(json);

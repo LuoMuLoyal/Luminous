@@ -261,8 +261,8 @@ class _PrivacySettingsSection extends ConsumerWidget {
           SettingsListRow(
             key: const Key('settings-row-privacy-ai-chat'),
             icon: Icons.chat_bubble_outline_rounded,
-            title: l10n.aiChatEntryTitle,
-            subtitle: l10n.aiChatEntrySubtitle,
+            title: l10n.assistantEntryTitle,
+            subtitle: l10n.assistantEntrySubtitle,
             showChevron: true,
             onTap: () {
               if (!signedIn) {

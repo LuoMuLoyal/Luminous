@@ -234,7 +234,7 @@ class _AssistantEntryButton extends ConsumerWidget {
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
     return Tooltip(
-      message: l10n.aiChatEntryTitle,
+      message: l10n.assistantEntryTitle,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -274,7 +274,7 @@ class _AssistantEntryButton extends ConsumerWidget {
                   ),
                   const SizedBox(width: AppSpacingTokens.xxs),
                   Text(
-                    l10n.aiChatEntryTitle,
+                    l10n.assistantEntryTitle,
                     style: typography.bodySmStrong.copyWith(
                       color: TodayPalette.tealDeep,
                       fontWeight: FontWeight.w700,

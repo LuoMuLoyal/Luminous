@@ -137,7 +137,7 @@ class LucentDioClient {
   DataExportApi get dataExportApi => _openapi.getDataExportApi();
   ReportsApi get reportsApi => _openapi.getReportsApi();
   TodayAnalysisApi get todayAnalysisApi => _openapi.getTodayAnalysisApi();
-  AIChatApi get aiChatApi => _openapi.getAIChatApi();
+  AssistantApi get assistantApi => _openapi.getAssistantApi();
 
   Map<String, String> medicinesHeaders({bool bypassCache = false}) {
     if (!bypassCache) {
