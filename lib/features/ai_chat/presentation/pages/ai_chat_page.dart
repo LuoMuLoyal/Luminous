@@ -75,18 +75,16 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
         title: l10n.aiChatPageTitle,
         centerTitle: true,
         leading: SettingsBackButton(onTap: () => context.pop()),
-        actions: chatState.hasConversation
-            ? [
-                IconButton(
-                  key: const Key('ai-chat-clear-action'),
-                  tooltip: l10n.recordNlpResetAction,
-                  onPressed: ref
-                      .read(aiChatControllerProvider.notifier)
-                      .clearConversation,
-                  icon: const Icon(Icons.delete_sweep_outlined),
-                ),
-              ]
-            : null,
+        actions: [
+          IconButton(
+            key: const Key('ai-chat-new-conversation-action'),
+            tooltip: l10n.aiChatNewConversationAction,
+            onPressed: chatState.isLoadingConversation || chatState.isSending
+                ? null
+                : _handleStartNewConversation,
+            icon: const Icon(Icons.add_rounded),
+          ),
+        ],
         children: [
           if (session.isRestoring) ...[
             const _AiChatLoadingView(),
@@ -267,6 +265,11 @@ class _AiChatPageState extends ConsumerState<AiChatPage> {
     }
     _inputController.clear();
     await ref.read(aiChatControllerProvider.notifier).sendMessage(input);
+  }
+
+  Future<void> _handleStartNewConversation() async {
+    _inputController.clear();
+    await ref.read(aiChatControllerProvider.notifier).clearConversation();
   }
 
   void _scrollToBottom() {

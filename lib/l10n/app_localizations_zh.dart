@@ -2484,6 +2484,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiChatSendingAction => '发送中';
 
   @override
+  String get aiChatNewConversationAction => '新对话';
+
+  @override
   String get aiChatStreamingLabel => '正在生成';
 
   @override

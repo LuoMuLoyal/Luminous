@@ -4832,6 +4832,12 @@ abstract class AppLocalizations {
   /// **'发送中'**
   String get aiChatSendingAction;
 
+  /// No description provided for @aiChatNewConversationAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'新对话'**
+  String get aiChatNewConversationAction;
+
   /// No description provided for @aiChatStreamingLabel.
   ///
   /// In zh, this message translates to:

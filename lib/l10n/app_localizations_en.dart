@@ -2681,6 +2681,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiChatSendingAction => 'Sending';
 
   @override
+  String get aiChatNewConversationAction => 'New chat';
+
+  @override
   String get aiChatStreamingLabel => 'Generating';
 
   @override

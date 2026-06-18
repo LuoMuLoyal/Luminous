@@ -192,6 +192,11 @@ void main() {
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
 
+    expect(
+      find.byKey(const Key('ai-chat-new-conversation-action')),
+      findsOneWidget,
+    );
+
     // Should show hint about toggling above
     expect(find.text('你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。'), findsOneWidget);
   });
@@ -222,7 +227,7 @@ void main() {
   });
 
   testWidgets(
-    'clear conversation archives latest conversation through repository',
+    'new conversation action archives latest conversation through repository',
     (tester) async {
       SharedPreferences.setMockInitialValues(const <String, Object>{});
       final repository = _RestoredConversationAiChatRepository();
@@ -230,14 +235,24 @@ void main() {
       await tester.pumpWidget(_buildTestApp(repository: repository));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('ai-chat-clear-action')), findsOneWidget);
+      expect(
+        find.byKey(const Key('ai-chat-new-conversation-action')),
+        findsOneWidget,
+      );
 
-      await tester.tap(find.byKey(const Key('ai-chat-clear-action')));
+      await tester.enterText(
+        find.byKey(const Key('ai-chat-input')),
+        '这条输入会被清空',
+      );
+      await tester.tap(
+        find.byKey(const Key('ai-chat-new-conversation-action')),
+      );
       await tester.pumpAndSettle();
 
       expect(repository.clearCalls, 1);
       expect(find.text('昨晚睡得不太好'), findsNothing);
       expect(find.text('开始第一条消息'), findsOneWidget);
+      expect(find.text('这条输入会被清空'), findsNothing);
     },
   );
 
