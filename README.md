@@ -31,6 +31,7 @@ flutter test integration_test
 dart run tool/regenerate_lucent_openapi.dart
 powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1
 powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1
+powershell -ExecutionPolicy Bypass -File tool/install_git_hooks.ps1
 dart run melos run daily
 dart run melos run fullstack
 dart run melos run fullstack-today-report
@@ -51,12 +52,16 @@ its built-in default test account values.
   `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
 - Local full-stack gate entry:
   `powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1`
+- Shared git hooks installer:
+  `powershell -ExecutionPolicy Bypass -File tool/install_git_hooks.ps1`
 - Short script-style entries:
   `dart run melos run daily`
   `dart run melos run fullstack`
   `dart run melos run fullstack-today-report`
 - `tool/run_fullstack_checks.ps1` starts Lucent test runtime through `../Lucent/scripts/dev/start-test-runtime.ps1`, checks `GET http://127.0.0.1:3000/api/v1/health`, then runs the four Android-emulator lanes sequentially.
 - `tool/run_fullstack_checks.ps1` now prefers `.env.fullstack-e2e` via `--dart-define-from-file` when that file exists.
+- Shared repo hooks live in `.githooks/`. After cloning, run `powershell -ExecutionPolicy Bypass -File tool/install_git_hooks.ps1` once to point `core.hooksPath` at that folder. The executable Git hook entrypoints stay extensionless, while the real Windows PowerShell logic lives in matching `.ps1` files.
+- Current hook scope: `pre-commit` runs `flutter gen-l10n`, `dart format --output=none --set-exit-if-changed .`, and `flutter analyze`; `pre-push` runs `tool/run_daily_checks.ps1`.
 - Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a separate Lucent test runtime, test database state, and Android emulator orchestration across two repositories.
 
 ## Docs
