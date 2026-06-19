@@ -29,7 +29,16 @@ class TodayAiRemoteDataSource {
     final response = await api.todayAnalysisControllerGenerateV1(
       generateTodayAnalysisDto: lucent.GenerateTodayAnalysisDto(date: date),
     );
-    return response.data!.data;
+    final data = response.data?.data;
+    if (data == null) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        type: DioExceptionType.badResponse,
+        error: '今日 AI 摘要响应为空，请稍后再试。',
+      );
+    }
+    return data;
   }
 
   Stream<TodayAiRemoteEvent> generateStream({String? date}) async* {
