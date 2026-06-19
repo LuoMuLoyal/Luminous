@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/responsive_content_frame.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/features/search/presentation/providers/search_provider.dart';
+import 'package:luminous/features/search/presentation/widgets/search_header_widgets.dart';
+import 'package:luminous/features/search/presentation/widgets/search_result_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-
-part 'search_parts.dart';
 
 class MedicineSearchView extends StatelessWidget {
   const MedicineSearchView({
@@ -172,9 +170,9 @@ class _MobileSearchLayout extends StatelessWidget {
       key: const PageStorageKey<String>('medicine-search-scroll'),
       padding: const EdgeInsets.only(bottom: AppSpacingTokens.xl),
       children: [
-        _SearchTopBar(l10n: l10n, typography: typography, surface: surface),
+        SearchTopBar(l10n: l10n, typography: typography, surface: surface),
         const SizedBox(height: AppSpacingTokens.lg),
-        _SearchInput(
+        SearchInput(
           l10n: l10n,
           typography: typography,
           surface: surface,
@@ -182,7 +180,7 @@ class _MobileSearchLayout extends StatelessWidget {
           onChanged: onQueryChanged,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _SourceSwitch(
+        SourceSwitch(
           selectedSource: state.source,
           l10n: l10n,
           typography: typography,
@@ -191,21 +189,21 @@ class _MobileSearchLayout extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacingTokens.lg),
         if (state.query.trim().isEmpty) ...[
-          _RecentSearches(
+          RecentSearches(
             keywords: const <String>[],
             l10n: l10n,
             typography: typography,
             surface: surface,
           ),
           const SizedBox(height: AppSpacingTokens.lg),
-          _QuickActions(
+          QuickActions(
             actions: const <MedicineSearchQuickAction>[],
             l10n: l10n,
             typography: typography,
             surface: surface,
           ),
           const SizedBox(height: AppSpacingTokens.xl),
-          _Categories(
+          Categories(
             categories: const <MedicineSearchCategory>[],
             l10n: l10n,
             typography: typography,
@@ -220,7 +218,7 @@ class _MobileSearchLayout extends StatelessWidget {
           ...state.results.map(
             (result) => Padding(
               padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
-              child: _SearchResultTile(
+              child: SearchResultTile(
                 result: result,
                 l10n: l10n,
                 typography: typography,
@@ -235,7 +233,7 @@ class _MobileSearchLayout extends StatelessWidget {
             ),
           ),
           if (state.results.isEmpty)
-            _NoResultTools(l10n: l10n, typography: typography, surface: surface),
+            NoResultTools(l10n: l10n, typography: typography, surface: surface),
         ],
       ],
     );
@@ -294,7 +292,7 @@ class _DesktopSearchLayout extends StatelessWidget {
         const SizedBox(width: AppSpacingTokens.lg),
         Expanded(
           flex: 3,
-          child: _PreviewPanel(
+          child: PreviewPanel(
             state: state,
             l10n: l10n,
             typography: typography,
@@ -332,16 +330,16 @@ class _DesktopSearchPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: _panelDecoration(surface),
+      decoration: panelDecoration(surface),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.xl),
         child: ListView(
           children: [
-            _DesktopTabs(l10n: l10n, typography: typography, surface: surface),
+            DesktopTabs(l10n: l10n, typography: typography, surface: surface),
             const SizedBox(height: AppSpacingTokens.xl),
             Text(l10n.medicineSearchPageTitle, style: typography.displaySm),
             const SizedBox(height: AppSpacingTokens.md),
-            _SearchInput(
+            SearchInput(
               l10n: l10n,
               typography: typography,
               surface: surface,
@@ -349,7 +347,7 @@ class _DesktopSearchPanel extends StatelessWidget {
               onChanged: onQueryChanged,
             ),
             const SizedBox(height: AppSpacingTokens.md),
-            _SourceSwitch(
+            SourceSwitch(
               selectedSource: state.source,
               l10n: l10n,
               typography: typography,
@@ -358,21 +356,21 @@ class _DesktopSearchPanel extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacingTokens.lg),
             if (state.query.trim().isEmpty) ...[
-              _RecentSearches(
+              RecentSearches(
                 keywords: const <String>[],
                 l10n: l10n,
                 typography: typography,
                 surface: surface,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
-              _QuickActions(
+              QuickActions(
                 actions: const <MedicineSearchQuickAction>[],
                 l10n: l10n,
                 typography: typography,
                 surface: surface,
               ),
               const SizedBox(height: AppSpacingTokens.xl),
-              _Categories(
+              Categories(
                 categories: const <MedicineSearchCategory>[],
                 l10n: l10n,
                 typography: typography,
@@ -387,7 +385,7 @@ class _DesktopSearchPanel extends StatelessWidget {
               ...state.results.map(
                 (result) => Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
-                  child: _SearchResultTile(
+                  child: SearchResultTile(
                     result: result,
                     l10n: l10n,
                     typography: typography,
@@ -401,7 +399,7 @@ class _DesktopSearchPanel extends StatelessWidget {
                 ),
               ),
               if (state.results.isEmpty)
-                _NoResultTools(l10n: l10n, typography: typography, surface: surface),
+                NoResultTools(l10n: l10n, typography: typography, surface: surface),
             ],
           ],
         ),
