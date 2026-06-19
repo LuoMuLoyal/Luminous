@@ -1183,6 +1183,12 @@
   "assistantProposalDismissedState": "Dismissed",
   "assistantProposalFailedState": "Failed",
   "assistantProposalConfirmedToast": "The proposed action was applied.",
+  "assistantProposalTargetLabel": "Target",
+  "assistantProposalMatchedByLabel": "Matched by",
+  "assistantProposalSettingKeysLabel": "Settings",
+  "assistantProposalExpiresAtLabel": "Expires at",
+  "assistantProposalConstraintsLabel": "Constraints before confirm",
+  "assistantProposalExpiredHint": "This proposal has expired. Generate a fresh one before confirming.",
   "todayUpdatedAt": "Updated at {time}",
   "@todayUpdatedAt": {
     "placeholders": {

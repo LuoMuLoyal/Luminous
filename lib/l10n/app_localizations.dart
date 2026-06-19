@@ -5090,6 +5090,42 @@ abstract class AppLocalizations {
   /// **'已执行这条建议。'**
   String get assistantProposalConfirmedToast;
 
+  /// No description provided for @assistantProposalTargetLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'目标'**
+  String get assistantProposalTargetLabel;
+
+  /// No description provided for @assistantProposalMatchedByLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位方式'**
+  String get assistantProposalMatchedByLabel;
+
+  /// No description provided for @assistantProposalSettingKeysLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置项'**
+  String get assistantProposalSettingKeysLabel;
+
+  /// No description provided for @assistantProposalExpiresAtLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'过期时间'**
+  String get assistantProposalExpiresAtLabel;
+
+  /// No description provided for @assistantProposalConstraintsLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认前约束'**
+  String get assistantProposalConstraintsLabel;
+
+  /// No description provided for @assistantProposalExpiredHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'这条建议已经过期，请重新生成后再确认。'**
+  String get assistantProposalExpiredHint;
+
   /// No description provided for @todayUpdatedAt.
   ///
   /// In zh, this message translates to:

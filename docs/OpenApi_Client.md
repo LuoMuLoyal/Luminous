@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-18
+Last updated: 2026-06-19
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 
@@ -25,7 +25,7 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps instead of generated write DTOs.
 - Medicine reminder create/update writes use a local write input plus raw Dio JSON so `daysOfWeek: null`, `startDate`, and `endDate` are sent with the intended nullable behavior; generated reminder DTOs remain the read-side mapper.
 - Reminder delivery history is read through the feature data source and maps generated/raw response fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain code should still depend on the feature repository boundary.
-- Today AI analysis, Report AI summary, and assistant streaming all use manual Dio + SSE parsing in `lib/core/network/lucent_sse.dart`, not generated OpenAPI transport methods. Assistant capability/latest/clear plus recent-conversation list/open reads still use the generated REST methods, and generated DTOs remain the contract source for capability/result payload shapes.
+- Today AI analysis, Report AI summary, and assistant streaming all use manual Dio + SSE parsing in `lib/core/network/lucent_sse.dart`, not generated OpenAPI transport methods. Assistant capability/latest/clear plus recent-conversation list/open reads still use the generated REST methods, and generated DTOs remain the contract source for capability/result payload shapes. Assistant streamed `proposedActions` now also carry `target`, `constraints`, and `expiresAt`, while high-certainty read tool envelopes remain server-internal prompt context rather than public REST DTOs.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.
 - `401002` triggers refresh and retry.

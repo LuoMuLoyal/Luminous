@@ -1183,6 +1183,12 @@
   "assistantProposalDismissedState": "已取消",
   "assistantProposalFailedState": "执行失败",
   "assistantProposalConfirmedToast": "已执行这条建议。",
+  "assistantProposalTargetLabel": "目标",
+  "assistantProposalMatchedByLabel": "定位方式",
+  "assistantProposalSettingKeysLabel": "设置项",
+  "assistantProposalExpiresAtLabel": "过期时间",
+  "assistantProposalConstraintsLabel": "确认前约束",
+  "assistantProposalExpiredHint": "这条建议已经过期，请重新生成后再确认。",
   "todayUpdatedAt": "更新于 {time}",
   "@todayUpdatedAt": {
     "placeholders": {

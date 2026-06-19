@@ -1,6 +1,6 @@
 # Luminous Docs
 
-Last updated: 2026-06-15
+Last updated: 2026-06-19
 
 This directory keeps current product, frontend, and workflow documentation for the Luminous Flutter client. Historical execution plans are not active docs. If a complex task needs a live execution plan, put it under `../plans/` instead of `docs/`.
 
@@ -10,7 +10,7 @@ This directory keeps current product, frontend, and workflow documentation for t
 | --- | --- | --- |
 | `Product_Vision.md` | Product positioning, MVP scope, tab responsibilities, AI/safety boundaries | Current implementation status or task logs |
 | `Current_State.md` | What is implemented or intentionally deferred right now | Future plans, long rationale, or change history |
-| `Next_Plan.md` | The next implementation order and explicit non-start items | Completed work details or historical plans |
+| `Next_Plan.md` | The next implementation order and explicit non-start items | Completed work details, current-state facts, or historical plans |
 | `TODO.md` | Remaining MVP gaps and gated backlog that still needs delivery | Current-state facts or historical change logs |
 | `MigrationLog.md` + `migration-log/YYYY-MM-DD.md` | Date-based change history only | Source-of-truth product rules |
 | `Project_Guardrails.md` | Reusable project-specific mistakes to avoid | One-off task notes |
@@ -45,3 +45,9 @@ Luminous/plans/
 ```
 
 After the task is complete, move stable facts into the owning docs and delete the plan file.
+
+## Boundary Reminder
+
+- If a sentence says what is already done or what is currently true, it belongs in `Current_State.md` or the migration log, not `Next_Plan.md`.
+- `Next_Plan.md` should stay focused on sequencing, priorities, and explicit non-start items.
+- When a plan starts collecting status bullets, move those bullets out instead of letting the plan become a second state document.

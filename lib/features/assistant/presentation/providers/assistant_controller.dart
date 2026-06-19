@@ -481,6 +481,9 @@ class AssistantController extends Notifier<AssistantState> {
   }
 
   Future<void> _executeProposal(AssistantProposedAction proposal) async {
+    if (proposal.isExpired) {
+      throw const LucentApiException(message: '这条建议已过期，请重新生成。');
+    }
     switch (proposal.payload) {
       case AssistantCreateDailyRecordProposalPayload():
         final payload =

@@ -2616,6 +2616,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get assistantProposalConfirmedToast => '已执行这条建议。';
 
   @override
+  String get assistantProposalTargetLabel => '目标';
+
+  @override
+  String get assistantProposalMatchedByLabel => '定位方式';
+
+  @override
+  String get assistantProposalSettingKeysLabel => '设置项';
+
+  @override
+  String get assistantProposalExpiresAtLabel => '过期时间';
+
+  @override
+  String get assistantProposalConstraintsLabel => '确认前约束';
+
+  @override
+  String get assistantProposalExpiredHint => '这条建议已经过期，请重新生成后再确认。';
+
+  @override
   String todayUpdatedAt(String time) {
     return '更新于 $time';
   }

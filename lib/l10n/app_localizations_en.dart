@@ -2817,6 +2817,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'The proposed action was applied.';
 
   @override
+  String get assistantProposalTargetLabel => 'Target';
+
+  @override
+  String get assistantProposalMatchedByLabel => 'Matched by';
+
+  @override
+  String get assistantProposalSettingKeysLabel => 'Settings';
+
+  @override
+  String get assistantProposalExpiresAtLabel => 'Expires at';
+
+  @override
+  String get assistantProposalConstraintsLabel => 'Constraints before confirm';
+
+  @override
+  String get assistantProposalExpiredHint =>
+      'This proposal has expired. Generate a fresh one before confirming.';
+
+  @override
   String todayUpdatedAt(String time) {
     return 'Updated at $time';
   }
