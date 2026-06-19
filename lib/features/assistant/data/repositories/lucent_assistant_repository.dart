@@ -234,6 +234,30 @@ class LucentAssistantRepository implements AssistantRepository {
       _ => const <AssistantProposalPreviewField>[],
     };
 
+    final targetJson = _mapStringKeyedMap(json['target']);
+    final target = AssistantProposalTarget(
+      kind: targetJson?['kind']?.toString() ?? 'unknown',
+      label: targetJson?['label']?.toString() ?? '',
+      recordId: targetJson?['recordId']?.toString(),
+      settingKeys: switch (targetJson?['settingKeys']) {
+        final List<Object?> items =>
+          items.map((item) => item.toString()).toList(growable: false),
+        _ => const <String>[],
+      },
+      matchedBy: switch (targetJson?['matchedBy']) {
+        final List<Object?> items =>
+          items.map((item) => item.toString()).toList(growable: false),
+        _ => const <String>[],
+      },
+      snapshot: _mapStringKeyedMap(targetJson?['snapshot']),
+    );
+
+    final constraints = switch (json['constraints']) {
+      final List<Object?> items =>
+        items.map((item) => item.toString()).toList(growable: false),
+      _ => const <String>[],
+    };
+
     final payloadVersion = switch (json['payloadVersion']) {
       final int value => value,
       final num value => value.toInt(),
@@ -247,6 +271,9 @@ class LucentAssistantRepository implements AssistantRepository {
       summary: json['summary']?.toString() ?? '',
       reason: json['reason']?.toString(),
       previewFields: previewFields,
+      target: target,
+      constraints: constraints,
+      expiresAt: _parseDateTime(json['expiresAt']),
       payloadVersion: payloadVersion,
       payload: payload,
       confirmationRequired: json['confirmationRequired'] != false,

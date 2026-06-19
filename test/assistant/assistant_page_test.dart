@@ -211,6 +211,10 @@ void main() {
     expect(find.text('确认保存'), findsOneWidget);
     expect(find.text('取消'), findsOneWidget);
     expect(find.text('类型: water'), findsOneWidget);
+    expect(find.text('目标: 2026-06-18 water 300 ml'), findsOneWidget);
+    expect(find.text('定位方式: relative_today'), findsOneWidget);
+    expect(find.text('确认前约束'), findsOneWidget);
+    expect(find.text('• 必须先经过你确认，后端不会直接写入。'), findsOneWidget);
   });
 
   testWidgets('confirm create proposal writes daily record', (tester) async {
@@ -296,6 +300,34 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('保存这条记录'), findsNothing);
+  });
+
+  testWidgets('expired proposal cannot be confirmed and shows expiry hint', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final dailyRecordRepository = _FakeDailyRecordRepository();
+
+    await tester.pumpWidget(
+      _buildTestApp(
+        repository: _ExpiredProposalAssistantRepository(),
+        dailyRecordRepository: dailyRecordRepository,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我记一杯水');
+    await tester.tap(find.byKey(const Key('assistant-send-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('这条建议已经过期，请重新生成后再确认。'), findsOneWidget);
+    expect(
+      tester.widget<FilledButton>(
+        find.byKey(const Key('assistant-proposal-confirm-proposal-create-expired')),
+      ).onPressed,
+      isNull,
+    );
+    expect(dailyRecordRepository.createdInputs, isEmpty);
   });
 
   testWidgets('disabled AI chat shows hint about toggle above', (tester) async {
@@ -684,7 +716,7 @@ class _ProposalAssistantRepository implements AssistantRepository {
           role: AssistantMessageRole.assistant,
           content: '我已经整理成一条可确认的记录建议。',
           createdAt: DateTime.parse('2026-06-18T03:00:00Z'),
-          proposedActions: const <AssistantProposedAction>[
+          proposedActions: <AssistantProposedAction>[
             AssistantProposedAction(
               id: 'proposal-create-1',
               type: AssistantProposedActionType.createDailyRecord,
@@ -694,6 +726,13 @@ class _ProposalAssistantRepository implements AssistantRepository {
               previewFields: <AssistantProposalPreviewField>[
                 AssistantProposalPreviewField(label: '类型', value: 'water'),
               ],
+              target: AssistantProposalTarget(
+                kind: 'daily_record_draft',
+                label: '2026-06-18 water 300 ml',
+                matchedBy: <String>['relative_today'],
+              ),
+              constraints: <String>['必须先经过你确认，后端不会直接写入。'],
+              expiresAt: DateTime.now().add(const Duration(minutes: 15)),
               payloadVersion: 1,
               payload: AssistantCreateDailyRecordProposalPayload(
                 draft: AssistantCreateDailyRecordDraft(
@@ -743,7 +782,7 @@ class _SettingsProposalAssistantRepository implements AssistantRepository {
           role: AssistantMessageRole.assistant,
           content: '我整理出了一组设置变更。',
           createdAt: DateTime.parse('2026-06-18T03:30:00Z'),
-          proposedActions: const <AssistantProposedAction>[
+          proposedActions: <AssistantProposedAction>[
             AssistantProposedAction(
               id: 'proposal-settings-1',
               type: AssistantProposedActionType.updateUserSettings,
@@ -753,10 +792,83 @@ class _SettingsProposalAssistantRepository implements AssistantRepository {
               previewFields: <AssistantProposalPreviewField>[
                 AssistantProposalPreviewField(label: '持久化记忆', value: '关闭'),
               ],
+              target: AssistantProposalTarget(
+                kind: 'user_settings',
+                label: '助手设置',
+                settingKeys: <String>['assistantMemoryEnabled'],
+              ),
+              constraints: <String>['必须先经过你确认，后端不会直接写入。'],
+              expiresAt: DateTime.now().add(const Duration(minutes: 15)),
               payloadVersion: 1,
               payload: AssistantUpdateUserSettingsProposalPayload(
                 draft: AssistantUpdateUserSettingsDraft(
                   assistantMemoryEnabled: false,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ]);
+  }
+}
+
+class _ExpiredProposalAssistantRepository implements AssistantRepository {
+  @override
+  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
+      const <AssistantConversationSummary>[];
+
+  @override
+  Future<AssistantConversation?> getLatestConversation() async => null;
+
+  @override
+  Future<AssistantConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> clearLatestConversation() async => false;
+
+  @override
+  Future<AssistantCapabilities> getCapabilities() async =>
+      _FakeAssistantRepository._capabilities;
+
+  @override
+  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+    return Stream<AssistantGenerationEvent>.fromIterable([
+      AssistantGenerationResultEvent(
+        conversationId: 'conversation-proposal-expired',
+        message: AssistantMessage(
+          role: AssistantMessageRole.assistant,
+          content: '这是一条已经过期的建议。',
+          createdAt: DateTime.parse('2026-06-18T04:00:00Z'),
+          proposedActions: <AssistantProposedAction>[
+            AssistantProposedAction(
+              id: 'proposal-create-expired',
+              type: AssistantProposedActionType.createDailyRecord,
+              title: '保存这条记录',
+              summary: '这条建议已经过期。',
+              reason: 'Expired test fixture.',
+              previewFields: <AssistantProposalPreviewField>[
+                AssistantProposalPreviewField(label: '类型', value: 'water'),
+              ],
+              target: AssistantProposalTarget(
+                kind: 'daily_record_draft',
+                label: '2026-06-18 water 300 ml',
+                matchedBy: <String>['relative_today'],
+              ),
+              constraints: <String>['必须先经过你确认，后端不会直接写入。'],
+              expiresAt: DateTime.now().subtract(const Duration(minutes: 5)),
+              payloadVersion: 1,
+              payload: AssistantCreateDailyRecordProposalPayload(
+                draft: AssistantCreateDailyRecordDraft(
+                  kind: 'water',
+                  occurredAt: '2026-06-18',
+                  title: null,
+                  value: '300',
+                  unit: 'ml',
+                  note: null,
+                  payload: null,
                 ),
               ),
             ),

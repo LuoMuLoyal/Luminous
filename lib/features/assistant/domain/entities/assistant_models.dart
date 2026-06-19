@@ -120,6 +120,25 @@ class AssistantProposalPreviewField {
   final String value;
 }
 
+@immutable
+class AssistantProposalTarget {
+  const AssistantProposalTarget({
+    required this.kind,
+    required this.label,
+    this.recordId,
+    this.settingKeys = const <String>[],
+    this.matchedBy = const <String>[],
+    this.snapshot,
+  });
+
+  final String kind;
+  final String label;
+  final String? recordId;
+  final List<String> settingKeys;
+  final List<String> matchedBy;
+  final Map<String, dynamic>? snapshot;
+}
+
 sealed class AssistantProposalPayload {
   const AssistantProposalPayload(this.type);
 
@@ -224,6 +243,9 @@ class AssistantProposedAction {
     required this.summary,
     required this.reason,
     required this.previewFields,
+    required this.target,
+    required this.constraints,
+    required this.expiresAt,
     required this.payloadVersion,
     required this.payload,
     this.confirmationRequired = true,
@@ -238,6 +260,9 @@ class AssistantProposedAction {
   final String summary;
   final String? reason;
   final List<AssistantProposalPreviewField> previewFields;
+  final AssistantProposalTarget target;
+  final List<String> constraints;
+  final DateTime? expiresAt;
   final int payloadVersion;
   final AssistantProposalPayload payload;
   final bool confirmationRequired;
@@ -245,11 +270,14 @@ class AssistantProposedAction {
   final AssistantProposalExecutionState executionState;
   final String? executionError;
 
+  bool get isExpired =>
+      expiresAt != null && expiresAt!.isBefore(DateTime.now());
   bool get isVisible =>
       executionState != AssistantProposalExecutionState.dismissed;
   bool get isActionable =>
-      executionState == AssistantProposalExecutionState.pending ||
-      executionState == AssistantProposalExecutionState.failed;
+      !isExpired &&
+      (executionState == AssistantProposalExecutionState.pending ||
+          executionState == AssistantProposalExecutionState.failed);
 
   AssistantProposedAction copyWith({
     AssistantProposalExecutionState? executionState,
@@ -262,6 +290,9 @@ class AssistantProposedAction {
       summary: summary,
       reason: reason,
       previewFields: previewFields,
+      target: target,
+      constraints: constraints,
+      expiresAt: expiresAt,
       payloadVersion: payloadVersion,
       payload: payload,
       confirmationRequired: confirmationRequired,

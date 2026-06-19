@@ -1105,6 +1105,8 @@ class _ProposalCard extends StatelessWidget {
                 ],
               ),
             ],
+            const SizedBox(height: AppSpacingTokens.sm),
+            _ProposalMetaSection(proposal: proposal),
             if (proposal.executionError case final error?) ...[
               const SizedBox(height: AppSpacingTokens.sm),
               Text(
@@ -1122,6 +1124,7 @@ class _ProposalCard extends StatelessWidget {
                   onPressed:
                       proposal.executionState ==
                               AssistantProposalExecutionState.executing ||
+                          proposal.isExpired ||
                           onConfirmProposal == null
                       ? null
                       : () => onConfirmProposal!(
@@ -1145,6 +1148,84 @@ class _ProposalCard extends StatelessWidget {
                 ),
               ],
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProposalMetaSection extends StatelessWidget {
+  const _ProposalMetaSection({required this.proposal});
+
+  final AssistantProposedAction proposal;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final metaRows = <String>[
+      '${l10n.assistantProposalTargetLabel}: ${proposal.target.label}',
+      if (proposal.target.matchedBy.isNotEmpty)
+        '${l10n.assistantProposalMatchedByLabel}: ${proposal.target.matchedBy.join(', ')}',
+      if (proposal.target.settingKeys.isNotEmpty)
+        '${l10n.assistantProposalSettingKeysLabel}: ${proposal.target.settingKeys.join(', ')}',
+      if (proposal.expiresAt case final expiresAt?)
+        '${l10n.assistantProposalExpiresAtLabel}: ${intl.DateFormat(
+          locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm',
+          locale,
+        ).format(expiresAt.toLocal())}',
+    ];
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.65),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.sm),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final row in metaRows)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Text(
+                  row,
+                  style: _typography(
+                    context,
+                  ).bodySm.copyWith(color: surface.body),
+                ),
+              ),
+            if (proposal.constraints.isNotEmpty) ...[
+              const SizedBox(height: AppSpacingTokens.xs),
+              Text(
+                l10n.assistantProposalConstraintsLabel,
+                style: _typography(context).bodySmStrong,
+              ),
+              const SizedBox(height: 2),
+              for (final constraint in proposal.constraints)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    '• $constraint',
+                    style: _typography(
+                      context,
+                    ).bodySm.copyWith(color: surface.body),
+                  ),
+                ),
+            ],
+            if (proposal.isExpired) ...[
+              const SizedBox(height: AppSpacingTokens.xs),
+              Text(
+                l10n.assistantProposalExpiredHint,
+                style: _typography(
+                  context,
+                ).bodySm.copyWith(color: theme.colorScheme.error),
+              ),
+            ],
           ],
         ),
       ),
