@@ -11,7 +11,10 @@ import 'package:luminous/features/medicine/presentation/widgets/medicine_workspa
 import 'package:luminous/l10n/app_localizations.dart';
 
 part 'medicine_mobile_drugbox_section.dart';
-part 'medicine_mobile_sections.dart';
+part 'medicine_mobile_quick_operations_section.dart';
+part 'medicine_mobile_records_section.dart';
+part 'medicine_mobile_reference_section.dart';
+part 'medicine_mobile_safety_section.dart';
 part 'medicine_mobile_shared.dart';
 
 class MedicineMobileDashboardView extends StatelessWidget {
