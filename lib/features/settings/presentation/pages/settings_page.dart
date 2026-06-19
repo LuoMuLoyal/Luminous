@@ -12,6 +12,8 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
@@ -517,7 +519,27 @@ class _AdvancedSettingsSection extends ConsumerWidget {
                 ListTile(
                   title: Text(r.title),
                   subtitle: r.subtitle != null ? Text(r.subtitle!) : null,
-                  onTap: () => Navigator.pop(context),
+                  enabled: r.actionUrl != null &&
+                      r.actionUrl!.isNotEmpty &&
+                      r.actionType != null,
+                  onTap: r.actionUrl != null &&
+                          r.actionUrl!.isNotEmpty &&
+                          r.actionType != null
+                      ? () async {
+                          Navigator.pop(context);
+                          if (r.actionType ==
+                                  SupportResourceActionType.url ||
+                              r.actionType ==
+                                  SupportResourceActionType.phone) {
+                            final uri = Uri.tryParse(r.actionUrl!);
+                            if (uri != null) {
+                              await const ExternalUrlLauncher().open(uri);
+                            }
+                          } else {
+                            pushAuthRequiredRoute(context, r.actionUrl!);
+                          }
+                        }
+                      : null,
                 ),
             ],
           ),
