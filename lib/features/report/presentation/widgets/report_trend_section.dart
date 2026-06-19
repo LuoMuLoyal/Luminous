@@ -1,0 +1,216 @@
+import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
+import 'package:luminous/features/report/presentation/widgets/report_components.dart';
+import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
+import 'package:luminous/features/report/presentation/widgets/report_top_bar.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+class ReportTrendSection extends StatelessWidget {
+  const ReportTrendSection({
+    super.key,
+    required this.trends,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final List<ReportTrendSeries> trends;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ReportSectionHeader(
+          title: l10n.reportTrendSectionTitle,
+          trailing: ReportPeriodPill(label: l10n.reportRangeLast7Days),
+        ),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Divider(height: 1, thickness: 1, color: surface.hairline),
+        const SizedBox(height: AppSpacingTokens.md),
+        Wrap(
+          spacing: AppSpacingTokens.md,
+          runSpacing: AppSpacingTokens.xs,
+          children: [
+            for (final series in trends)
+              _LegendDot(
+                color: series.color,
+                label: reportMetricTitle(l10n, series.kind),
+                typography: typography,
+                surface: surface,
+              ),
+          ],
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        _TrendPlaceholder(
+          trends: trends,
+          l10n: l10n,
+          typography: typography,
+          surface: surface,
+        ),
+        const SizedBox(height: AppSpacingTokens.sm),
+        Align(
+          alignment: Alignment.centerRight,
+          child: ReportTextAction(
+            label: l10n.reportViewDetailsAction,
+            color: ReportPalette.blue,
+            onTap: () =>
+                showReportToast(context, l10n.reportViewDetailsAction),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TrendPlaceholder extends StatelessWidget {
+  const _TrendPlaceholder({
+    required this.trends,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final List<ReportTrendSeries> trends;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvasSoft,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: surface.hairline),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 176,
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      for (var index = 0; index < 5; index += 1)
+                        Divider(height: 1, color: surface.hairline),
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        for (final series in trends)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSpacingTokens.xs,
+                            ),
+                            child: AppSkeletonSlot(
+                              skeleton: const AppInlineSkeletonBlock(
+                                height: 22,
+                                width: 46,
+                                radius: AppRadiusTokens.sm,
+                              ),
+                              child: ReportPill(
+                                label: series.currentValue,
+                                color: series.color,
+                                backgroundAlpha: 0.92,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 54),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        for (final series in trends)
+                          AppSkeletonSlot(
+                            skeleton: const AppInlineSkeletonBlock(
+                              height: 30,
+                              radius: AppRadiusTokens.sm,
+                            ),
+                            child: ReportMetricTrack(
+                              values: series.values,
+                              color: series.color,
+                              height: 30,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacingTokens.sm),
+            Row(
+              children: [
+                for (final label in l10n.reportTrendDateLabels.split('|'))
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: typography.caption.copyWith(
+                        color: surface.body,
+                        letterSpacing: 0,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  const _LegendDot({
+    required this.color,
+    required this.label,
+    required this.typography,
+    required this.surface,
+  });
+
+  final Color color;
+  final String label;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          child: const SizedBox.square(dimension: 8),
+        ),
+        const SizedBox(width: AppSpacingTokens.xs),
+        Text(
+          label,
+          style: typography.caption.copyWith(
+            color: surface.body,
+            letterSpacing: 0,
+          ),
+        ),
+      ],
+    );
+  }
+}

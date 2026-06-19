@@ -1,0 +1,132 @@
+import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
+import 'package:luminous/features/report/presentation/widgets/report_components.dart';
+import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+class ReportScoreHero extends StatelessWidget {
+  const ReportScoreHero({
+    super.key,
+    required this.dashboard,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+  });
+
+  final ReportDashboard dashboard;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+
+  @override
+  Widget build(BuildContext context) {
+    final score = dashboard.score;
+
+    return ReportPanel(
+      padding: const EdgeInsets.all(AppSpacingTokens.lg),
+      borderColor: ReportPalette.previewScore.withValues(alpha: 0.22),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.reportScoreTitle,
+                        style: typography.displaySm.copyWith(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.info_outline_rounded,
+                      color: surface.mute,
+                      size: AppSpacingTokens.lg,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.md),
+                Wrap(
+                  spacing: AppSpacingTokens.sm,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    AppSkeletonSlot(
+                      skeleton: const AppInlineSkeletonBlock(
+                        height: 58,
+                        width: 76,
+                        radius: AppRadiusTokens.md,
+                      ),
+                      child: Text(
+                        score.value.toString(),
+                        style: typography.displayXl.copyWith(
+                          color: ReportPalette.previewScore,
+                          fontSize: 54,
+                          height: 1,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      l10n.reportScoreOutOf(score.maxValue),
+                      style: typography.bodyLg.copyWith(
+                        color: surface.body,
+                        letterSpacing: 0,
+                      ),
+                    ),
+                    AppSkeletonSlot(
+                      skeleton: const AppInlineSkeletonBlock(
+                        height: 22,
+                        width: 64,
+                        radius: AppRadiusTokens.sm,
+                      ),
+                      child: ReportPill(
+                        label: reportStatusLabel(l10n, score.status),
+                        color: reportStatusColor(score.status),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.lg),
+                AppSkeletonSlot(
+                  skeleton: const AppInlineSkeletonBlock(
+                    height: 20,
+                    widthFactor: 0.86,
+                    radius: AppRadiusTokens.sm,
+                  ),
+                  child: ReportTextAction(
+                    label: score.summary,
+                    onTap: () => showReportToast(context, score.summary),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacingTokens.md),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: ReportPalette.previewScoreSoft,
+              shape: BoxShape.circle,
+            ),
+            child: const SizedBox.square(
+              dimension: 112,
+              child: Icon(
+                Icons.fact_check_rounded,
+                color: ReportPalette.previewScore,
+                size: 68,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
