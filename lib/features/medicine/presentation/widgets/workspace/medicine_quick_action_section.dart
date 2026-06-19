@@ -1,0 +1,110 @@
+import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
+import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
+import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
+import 'package:luminous/features/medicine/presentation/widgets/workspace/medicine_workspace_helpers.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+class MedicineQuickActionSection extends StatelessWidget {
+  const MedicineQuickActionSection({
+    super.key,
+    required this.workspace,
+    required this.typography,
+    required this.surface,
+    required this.l10n,
+  });
+
+  final MedicineWorkspace workspace;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return MedicineSectionSurface(
+      title: l10n.medicineQuickActionSectionTitle,
+      typography: typography,
+      surface: surface,
+      child: Row(
+        children: [
+          for (var index = 0;
+              index < workspace.quickActions.length;
+              index += 1)
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  right: index == workspace.quickActions.length - 1
+                      ? 0
+                      : AppSpacingTokens.sm,
+                ),
+                child: _QuickActionTile(
+                  action: workspace.quickActions[index],
+                  typography: typography,
+                  surface: surface,
+                  l10n: l10n,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickActionTile extends StatelessWidget {
+  const _QuickActionTile({
+    required this.action,
+    required this.typography,
+    required this.surface,
+    required this.l10n,
+  });
+
+  final MedicineQuickAction action;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => showPlannedAction(
+          context,
+          medicineCopy(l10n, action.titleKey),
+          quickActionResult(action.titleKey, l10n),
+        ),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+          child: Column(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: action.accent.withValues(alpha: 0.11),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+                  border: Border.all(
+                    color: action.accent.withValues(alpha: 0.12),
+                  ),
+                ),
+                child: Icon(action.icon, color: action.accent, size: 32),
+              ),
+              const SizedBox(height: AppSpacingTokens.sm),
+              Text(
+                medicineCopy(l10n, action.titleKey),
+                style: typography.bodySmStrong,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
