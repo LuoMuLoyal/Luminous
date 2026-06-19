@@ -123,7 +123,9 @@
 - 配置默认值位置清晰
 - 测试支持不再悄悄偏离正式密码哈希配置
 
-### 5. AI Boundary Confirmation Before Next Slice
+### 5. AI Boundary Confirmation Before Next Slice ✅ (completed 2026-07-01)
+
+决策文档：`Lucent/plans/2026-07-01-ai-boundary-confirmation.md`
 
 目标：在开始月报 AI 之前，把“是否需要 agent / 是否要先抽共享 AI copy/prompt 模式”定下来，但不提前做大重构。
 
@@ -157,9 +159,10 @@
 
 ## Observable Done State
 
-- `Next_Plan.md` 不再继续列出已经完成的测试缺口
+- ✅ `Next_Plan.md` 不再继续列出已经完成的测试缺口
 - weekly AI summary 的错误路径从“运行时崩”变成“明确可处理的失败”
-- sleep placeholder 范围在 Today / Record / Settings 三处统一
-- 用户可见 mock 药名文案被清掉
-- Lucent 的 fallback secret / argon2 偏差被收口
-- 后续可以在这个基础上开始 monthly AI summary，而不是继续清理前置噪音
+- ✅ sleep placeholder 范围在 Today / Record / Settings 三处统一
+- ✅ 用户可见 mock 药名文案被清掉
+- ✅ Lucent 的 fallback secret / argon2 偏差被收口
+- ✅ 后续可以在这个基础上开始 monthly AI summary，而不是继续清理前置噪音
+- ✅ AI 架构边界已确认：monthly=bounded linear, agent 不扩界, 共享服务提取延后至 monthly 验证后
