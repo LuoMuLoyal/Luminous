@@ -870,41 +870,68 @@ void main() {
     expect(repo.requestedDates, contains(DateTime(2026, 6, 5)));
   });
 
-  testWidgets(
-    'Record mobile quick action opens create page with kind and date',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(390, 844);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-      final dailyRepo = _FakeDailyRecordRepository();
+  testWidgets('Record water quick action opens fast entry and saves', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final dailyRepo = _FakeDailyRecordRepository();
 
-      await _pumpRecordRouter(
-        tester,
-        dailyRecordRepository: dailyRepo,
-        selectedDate: DateTime(2026, 6, 6),
-      );
-      await tester.pumpAndSettle();
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      selectedDate: DateTime(2026, 6, 6),
+    );
+    await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('record-quick-water')));
-      await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('record-quick-water')));
+    await tester.pumpAndSettle();
 
-      expect(find.byType(RecordCreatePage), findsOneWidget);
-      final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
-        find.byType(DropdownButtonFormField<DailyRecordKind>),
-      );
-      expect(dropdown.initialValue, DailyRecordKind.water);
+    expect(find.byType(RecordCreatePage), findsNothing);
+    expect(find.byKey(const Key('record-fast-entry-water')), findsOneWidget);
+    expect(find.byKey(const Key('daily-record-kind-water')), findsNothing);
 
-      await tester.tap(find.widgetWithText(ElevatedButton, '保存'));
-      await tester.pumpAndSettle();
-      await tester.pump(const Duration(seconds: 2));
+    await tester.tap(find.byKey(const Key('record-fast-entry-save-action')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
 
-      expect(dailyRepo.createInput?.kind, DailyRecordKind.water);
-      expect(dailyRepo.createInput?.occurredAt, '2026-06-06');
-    },
-  );
+    expect(dailyRepo.createInput?.kind, DailyRecordKind.water);
+    expect(dailyRepo.createInput?.occurredAt, '2026-06-06');
+    expect(dailyRepo.createInput?.unit, 'ml');
+  });
+
+  testWidgets('Record water quick action more opens full create page', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await _pumpRecordRouter(
+      tester,
+      selectedDate: DateTime(2026, 6, 6),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-water')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-fast-entry-more-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RecordCreatePage), findsOneWidget);
+    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
+      find.byType(DropdownButtonFormField<DailyRecordKind>),
+    );
+    expect(dropdown.initialValue, DailyRecordKind.water);
+  });
 
   testWidgets('Record mobile quick action shows login dialog when signed out', (
     tester,

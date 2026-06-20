@@ -9,6 +9,7 @@ import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
+import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
@@ -16,6 +17,7 @@ import 'package:luminous/features/record/presentation/providers/record_dashboard
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
+import 'package:luminous/features/record/presentation/widgets/record_fast_entry_sheet.dart';
 import 'package:luminous/features/record/presentation/widgets/record_nlp_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -168,7 +170,7 @@ class RecordPage extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     RecordQuickAction action,
-  ) {
+  ) async {
     if (action.locked) {
       showRecordToast(context, _quickActionLabel(context, action));
       return;
@@ -181,10 +183,38 @@ class RecordPage extends ConsumerWidget {
     }
 
     final selectedDate = ref.read(selectedRecordDateProvider);
-    pushAuthRequiredRoute(
-      context,
-      '/record/create?kind=${Uri.encodeComponent(kind.name)}'
-      '&date=${Uri.encodeComponent(_formatDate(selectedDate))}',
+    final date = _formatDate(selectedDate);
+    final route = '/record/create?kind=${Uri.encodeComponent(kind.name)}'
+        '&date=${Uri.encodeComponent(date)}';
+    final session = ref.read(authSessionProvider);
+
+    if (!session.canAccessProtectedData) {
+      if (session.isLoading) {
+        return;
+      }
+      await showAuthRequiredDialog(
+        context,
+        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+      );
+      return;
+    }
+
+    if (!_usesFastEntry(kind)) {
+      if (!context.mounted) {
+        return;
+      }
+      context.push(route);
+      return;
+    }
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => RecordFastEntrySheet(
+        kind: kind,
+        occurredAt: date,
+        moreRoute: route,
+      ),
     );
   }
 
@@ -217,6 +247,13 @@ class RecordPage extends ConsumerWidget {
     return '${value.year.toString().padLeft(4, '0')}-'
         '${value.month.toString().padLeft(2, '0')}-'
         '${value.day.toString().padLeft(2, '0')}';
+  }
+
+  bool _usesFastEntry(DailyRecordKind kind) {
+    return switch (kind) {
+      DailyRecordKind.water => true,
+      _ => false,
+    };
   }
 
   Future<void> _openNlpSheet(

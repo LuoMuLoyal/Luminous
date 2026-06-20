@@ -90,6 +90,23 @@
   "recordImageUnsupportedToast": "Only JPG, PNG, WEBP, or GIF images are supported.",
   "recordImagePickFailedToast": "Image was not selected.",
   "recordQuickSectionTitle": "Quick record",
+  "recordFastEntryTitle": "Quick {type}",
+  "@recordFastEntryTitle": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFastEntryDateHint": "Save to {date}",
+  "@recordFastEntryDateHint": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFastEntryMoreAction": "More",
   "recordAiInputHint": "My stomach feels a bit bloated after eating...",
   "recordAiBadge": "AI",
   "recordNlpFabAction": "Natural language",
