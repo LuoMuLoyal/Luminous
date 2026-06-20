@@ -28,6 +28,7 @@ import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/record_page.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
+import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -785,7 +786,80 @@ void main() {
     expect(repo.deleteCalledWith, 'test-id-1');
   });
 
-  testWidgets('Record mobile sleep quick action opens create page with kind', (
+  testWidgets('Record sleep quick action opens fast entry and saves', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    SleepStructuredFields.forcedPickedTimes.addAll(const [
+      TimeOfDay(hour: 23, minute: 0),
+      TimeOfDay(hour: 7, minute: 30),
+    ]);
+    addTearDown(() {
+      SleepStructuredFields.forceInputTimePicker = false;
+      SleepStructuredFields.forcedPickedTimes.clear();
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final dailyRepo = _FakeDailyRecordRepository();
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      selectedDate: DateTime(2026, 6, 6),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-sleep')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RecordCreatePage), findsNothing);
+    expect(find.byKey(const Key('record-fast-entry-sleep')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('sleep-bedtime-picker')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('sleep-waketime-picker')));
+    await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('sleep-quality-field')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('良好').last);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('sleep-deep-minutes-field')),
+      '120',
+    );
+    await tester.enterText(
+      find.byKey(const Key('sleep-light-minutes-field')),
+      '240',
+    );
+    await tester.enterText(
+      find.byKey(const Key('sleep-rem-minutes-field')),
+      '90',
+    );
+
+    await tester.tap(find.byKey(const Key('record-fast-entry-save-action')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    final input = dailyRepo.createInput;
+    expect(input, isNotNull);
+    expect(input!.kind, DailyRecordKind.sleep);
+    expect(input.occurredAt, '2026-06-06');
+    expect(input.value, isNull);
+    expect(input.unit, isNull);
+    expect(input.note, isNull);
+    expect(input.payload?['durationMinutes'], 510);
+    expect(input.payload?['quality'], 'good');
+    expect(input.payload?['deepMinutes'], 120);
+    expect(input.payload?['lightMinutes'], 240);
+    expect(input.payload?['remMinutes'], 90);
+  });
+
+  testWidgets('Record sleep quick action more opens full create page', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -804,10 +878,17 @@ void main() {
     await tester.tap(find.byKey(const Key('record-quick-sleep')));
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byKey(const Key('record-fast-entry-more-action')));
+    await tester.pumpAndSettle();
+
     expect(find.byType(RecordCreatePage), findsOneWidget);
+    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
+      find.byType(DropdownButtonFormField<DailyRecordKind>),
+    );
+    expect(dropdown.initialValue, DailyRecordKind.sleep);
   });
 
-  testWidgets('Record mobile note quick action opens create page with kind', (
+  testWidgets('Record mobile note quick action opens fast entry first', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -835,11 +916,8 @@ void main() {
     await tester.tap(noteAction);
     await tester.pumpAndSettle();
 
-    expect(find.byType(RecordCreatePage), findsOneWidget);
-    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-    );
-    expect(dropdown.initialValue, DailyRecordKind.note);
+    expect(find.byType(RecordCreatePage), findsNothing);
+    expect(find.byKey(const Key('record-fast-entry-note')), findsOneWidget);
   });
 
   testWidgets('Record page previous day action reloads selected date', (

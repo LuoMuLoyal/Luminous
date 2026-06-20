@@ -22,6 +22,11 @@ class SleepStructuredFields extends StatelessWidget {
   /// Tests must reset this to false in `addTearDown`.
   static bool forceInputTimePicker = false;
 
+  /// Optional test-only override queue for deterministic picked times without
+  /// opening the platform time-picker dialog.
+  /// Tests must clear this in `addTearDown`.
+  static final List<TimeOfDay> forcedPickedTimes = <TimeOfDay>[];
+
   const SleepStructuredFields({
     super.key,
     required this.l10n,
@@ -191,6 +196,10 @@ class _TimePickerField extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(AppRadiusTokens.md),
       onTap: () async {
+        if (SleepStructuredFields.forcedPickedTimes.isNotEmpty) {
+          onPicked(SleepStructuredFields.forcedPickedTimes.removeAt(0));
+          return;
+        }
         final picked = await showTimePicker(
           context: context,
           initialTime: time ?? const TimeOfDay(hour: 23, minute: 0),

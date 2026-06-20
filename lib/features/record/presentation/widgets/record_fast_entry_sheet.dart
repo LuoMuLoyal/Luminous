@@ -8,6 +8,7 @@ import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -36,6 +37,12 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
   final _titleController = TextEditingController();
 
   bool _saving = false;
+  TimeOfDay? _sleepBedtime;
+  TimeOfDay? _sleepWakeTime;
+  String? _sleepQuality;
+  int? _sleepDeepMinutes;
+  int? _sleepLightMinutes;
+  int? _sleepRemMinutes;
 
   @override
   void initState() {
@@ -95,6 +102,27 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
               noteController: _noteController,
               showKindField: false,
             ),
+            if (widget.kind == DailyRecordKind.sleep) ...[
+              const SizedBox(height: AppSpacingTokens.sm),
+              SleepStructuredFields(
+                l10n: l10n,
+                bedtime: _sleepBedtime,
+                wakeTime: _sleepWakeTime,
+                quality: _sleepQuality,
+                deepMinutes: _sleepDeepMinutes,
+                lightMinutes: _sleepLightMinutes,
+                remMinutes: _sleepRemMinutes,
+                onBedtimeChanged: (v) => setState(() => _sleepBedtime = v),
+                onWakeTimeChanged: (v) => setState(() => _sleepWakeTime = v),
+                onQualityChanged: (v) => setState(() => _sleepQuality = v),
+                onDeepMinutesChanged: (v) =>
+                    setState(() => _sleepDeepMinutes = v),
+                onLightMinutesChanged: (v) =>
+                    setState(() => _sleepLightMinutes = v),
+                onRemMinutesChanged: (v) =>
+                    setState(() => _sleepRemMinutes = v),
+              ),
+            ],
             const SizedBox(height: AppSpacingTokens.md),
             Row(
               children: [
@@ -128,6 +156,14 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
   }
 
   Future<void> _save() async {
+    if (widget.kind == DailyRecordKind.sleep && !_isValidSleepValue()) {
+      AppToast.show(
+        context,
+        AppLocalizations.of(context)!.recordSleepInvalidValueToast,
+      );
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       final repo = ref.read(dailyRecordRepositoryProvider);
@@ -140,6 +176,7 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
           value: rules.showValue ? _optionalText(_valueController) : null,
           unit: rules.showUnit ? _unitValue() : null,
           note: _optionalText(_noteController),
+          payload: _buildSleepPayload(),
         ),
       );
 
@@ -172,5 +209,53 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
       return dailyRecordWaterDefaultUnit;
     }
     return null;
+  }
+
+  Map<String, dynamic>? _buildSleepPayload() {
+    if (widget.kind != DailyRecordKind.sleep) return null;
+    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
+    if (minutes == null || minutes <= 0) return null;
+
+    final payload = <String, dynamic>{'durationMinutes': minutes};
+    final recordDate = DateTime.parse(widget.occurredAt);
+
+    if (_sleepBedtime != null && _sleepWakeTime != null) {
+      final wake = DateTime(
+        recordDate.year,
+        recordDate.month,
+        recordDate.day,
+        _sleepWakeTime!.hour,
+        _sleepWakeTime!.minute,
+      );
+      var bed = DateTime(
+        recordDate.year,
+        recordDate.month,
+        recordDate.day,
+        _sleepBedtime!.hour,
+        _sleepBedtime!.minute,
+      );
+      if (!bed.isBefore(wake)) {
+        bed = bed.subtract(const Duration(days: 1));
+      }
+      payload['startAt'] = bed.toUtc().toIso8601String();
+      payload['endAt'] = wake.toUtc().toIso8601String();
+    }
+    if (_sleepQuality != null) payload['quality'] = _sleepQuality;
+    if (_sleepDeepMinutes != null && _sleepDeepMinutes! > 0) {
+      payload['deepMinutes'] = _sleepDeepMinutes;
+    }
+    if (_sleepLightMinutes != null && _sleepLightMinutes! > 0) {
+      payload['lightMinutes'] = _sleepLightMinutes;
+    }
+    if (_sleepRemMinutes != null && _sleepRemMinutes! > 0) {
+      payload['remMinutes'] = _sleepRemMinutes;
+    }
+    return payload;
+  }
+
+  bool _isValidSleepValue() {
+    if (widget.kind != DailyRecordKind.sleep) return true;
+    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
+    return minutes != null && minutes > 0;
   }
 }
