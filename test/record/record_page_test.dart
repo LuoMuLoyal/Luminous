@@ -1089,6 +1089,82 @@ void main() {
     expect(dropdown.initialValue, DailyRecordKind.symptom);
   });
 
+  testWidgets('Record note quick action opens fast entry and saves', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final dailyRepo = _FakeDailyRecordRepository();
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      selectedDate: DateTime(2026, 6, 6),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-note')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RecordCreatePage), findsNothing);
+    expect(find.byKey(const Key('record-fast-entry-note')), findsOneWidget);
+    expect(find.byKey(const Key('daily-record-kind-note')), findsNothing);
+
+    await tester.enterText(
+      find.byKey(const Key('daily-record-title-field')),
+      'Quiet day',
+    );
+    await tester.enterText(
+      find.byKey(const Key('daily-record-note-field')),
+      'No special symptoms',
+    );
+    await tester.tap(find.byKey(const Key('record-fast-entry-save-action')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    final input = dailyRepo.createInput;
+    expect(input, isNotNull);
+    expect(input!.kind, DailyRecordKind.note);
+    expect(input.occurredAt, '2026-06-06');
+    expect(input.title, 'Quiet day');
+    expect(input.value, isNull);
+    expect(input.unit, isNull);
+    expect(input.note, 'No special symptoms');
+  });
+
+  testWidgets('Record note quick action more opens full create page', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await _pumpRecordRouter(
+      tester,
+      selectedDate: DateTime(2026, 6, 6),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-note')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-fast-entry-more-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RecordCreatePage), findsOneWidget);
+    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
+      find.byType(DropdownButtonFormField<DailyRecordKind>),
+    );
+    expect(dropdown.initialValue, DailyRecordKind.note);
+  });
+
   testWidgets('Record mobile quick action shows login dialog when signed out', (
     tester,
   ) async {

@@ -253,7 +253,8 @@ class RecordPage extends ConsumerWidget {
     return switch (kind) {
       DailyRecordKind.water ||
       DailyRecordKind.meal ||
-      DailyRecordKind.symptom => true,
+      DailyRecordKind.symptom ||
+      DailyRecordKind.note => true,
       _ => false,
     };
   }
