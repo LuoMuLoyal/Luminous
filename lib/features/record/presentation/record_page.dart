@@ -254,7 +254,8 @@ class RecordPage extends ConsumerWidget {
       DailyRecordKind.water ||
       DailyRecordKind.meal ||
       DailyRecordKind.symptom ||
-      DailyRecordKind.note => true,
+      DailyRecordKind.note ||
+      DailyRecordKind.sleep => true,
       _ => false,
     };
   }
