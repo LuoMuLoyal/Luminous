@@ -251,7 +251,7 @@ class RecordPage extends ConsumerWidget {
 
   bool _usesFastEntry(DailyRecordKind kind) {
     return switch (kind) {
-      DailyRecordKind.water => true,
+      DailyRecordKind.water || DailyRecordKind.meal => true,
       _ => false,
     };
   }
