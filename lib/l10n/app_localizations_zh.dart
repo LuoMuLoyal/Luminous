@@ -204,6 +204,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordQuickSectionTitle => '快速记录';
 
   @override
+  String recordFastEntryTitle(String type) {
+    return '快速记录$type';
+  }
+
+  @override
+  String recordFastEntryDateHint(String date) {
+    return '保存到 $date';
+  }
+
+  @override
+  String get recordFastEntryMoreAction => '更多';
+
+  @override
   String get recordAiInputHint => '刚吃完饭胃有点胀...';
 
   @override

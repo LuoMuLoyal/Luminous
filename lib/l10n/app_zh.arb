@@ -90,6 +90,23 @@
   "recordImageUnsupportedToast": "仅支持 JPG、PNG、WEBP 或 GIF 图片",
   "recordImagePickFailedToast": "图片未选择",
   "recordQuickSectionTitle": "快速记录",
+  "recordFastEntryTitle": "快速记录{type}",
+  "@recordFastEntryTitle": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFastEntryDateHint": "保存到 {date}",
+  "@recordFastEntryDateHint": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFastEntryMoreAction": "更多",
   "recordAiInputHint": "刚吃完饭胃有点胀...",
   "recordAiBadge": "AI",
   "recordNlpFabAction": "自然语言",

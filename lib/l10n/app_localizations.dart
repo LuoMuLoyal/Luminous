@@ -476,6 +476,24 @@ abstract class AppLocalizations {
   /// **'快速记录'**
   String get recordQuickSectionTitle;
 
+  /// No description provided for @recordFastEntryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'快速记录{type}'**
+  String recordFastEntryTitle(String type);
+
+  /// No description provided for @recordFastEntryDateHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存到 {date}'**
+  String recordFastEntryDateHint(String date);
+
+  /// No description provided for @recordFastEntryMoreAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'更多'**
+  String get recordFastEntryMoreAction;
+
   /// No description provided for @recordAiInputHint.
   ///
   /// In zh, this message translates to:

@@ -215,6 +215,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordQuickSectionTitle => 'Quick record';
 
   @override
+  String recordFastEntryTitle(String type) {
+    return 'Quick $type';
+  }
+
+  @override
+  String recordFastEntryDateHint(String date) {
+    return 'Save to $date';
+  }
+
+  @override
+  String get recordFastEntryMoreAction => 'More';
+
+  @override
   String get recordAiInputHint =>
       'My stomach feels a bit bloated after eating...';
 

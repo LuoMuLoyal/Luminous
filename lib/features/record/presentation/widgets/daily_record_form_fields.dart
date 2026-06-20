@@ -16,6 +16,7 @@ class DailyRecordFormFields extends StatelessWidget {
     required this.unitController,
     required this.titleController,
     required this.noteController,
+    this.showKindField = true,
   });
 
   final DailyRecordKind kind;
@@ -24,6 +25,7 @@ class DailyRecordFormFields extends StatelessWidget {
   final TextEditingController unitController;
   final TextEditingController titleController;
   final TextEditingController noteController;
+  final bool showKindField;
 
   @override
   Widget build(BuildContext context) {
@@ -33,23 +35,25 @@ class DailyRecordFormFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        DropdownButtonFormField<DailyRecordKind>(
-          key: ValueKey('daily-record-kind-${kind.name}'),
-          initialValue: kind,
-          decoration: InputDecoration(labelText: l10n.recordCreateFieldKind),
-          items: _visibleDailyRecordKinds(kind)
-              .map(
-                (k) => DropdownMenuItem(
-                  value: k,
-                  child: Text(dailyRecordKindLabel(l10n, k)),
-                ),
-              )
-              .toList(),
-          onChanged: (value) {
-            if (value != null) onKindChanged(value);
-          },
-        ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        if (showKindField) ...[
+          DropdownButtonFormField<DailyRecordKind>(
+            key: ValueKey('daily-record-kind-${kind.name}'),
+            initialValue: kind,
+            decoration: InputDecoration(labelText: l10n.recordCreateFieldKind),
+            items: _visibleDailyRecordKinds(kind)
+                .map(
+                  (k) => DropdownMenuItem(
+                    value: k,
+                    child: Text(dailyRecordKindLabel(l10n, k)),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              if (value != null) onKindChanged(value);
+            },
+          ),
+          const SizedBox(height: AppSpacingTokens.sm),
+        ],
         if (rules.showValue) ...[
           TextField(
             key: const Key('daily-record-value-field'),
