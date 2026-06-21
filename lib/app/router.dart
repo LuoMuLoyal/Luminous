@@ -15,6 +15,7 @@ import 'package:luminous/features/record/domain/entities/record_type_mapping.dar
 import 'package:luminous/features/record/presentation/pages/record_create.dart';
 import 'package:luminous/features/record/presentation/pages/record_detail.dart';
 import 'package:luminous/features/record/presentation/pages/record_edit.dart';
+import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
@@ -148,7 +149,8 @@ final router = GoRouter(
       path: '/record/create',
       builder: (context, state) => RecordCreatePage(
         initialKind: dailyRecordKindFromName(state.uri.queryParameters['kind']),
-        initialDate: _parseRecordDate(state.uri.queryParameters['date']),
+        initialDate: parseRecordDate(state.uri.queryParameters['date']),
+        initialTime: state.uri.queryParameters['time'],
       ),
     ),
     GoRoute(
@@ -163,10 +165,3 @@ final router = GoRouter(
     ),
   ],
 );
-
-DateTime? _parseRecordDate(String? value) {
-  if (value == null) return null;
-  final parsed = DateTime.tryParse(value);
-  if (parsed == null) return null;
-  return DateTime(parsed.year, parsed.month, parsed.day);
-}

@@ -13,6 +13,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
@@ -114,7 +115,10 @@ class _RecordDetailBody extends ConsumerWidget {
                         ),
                         const SizedBox(height: AppSpacingTokens.xs),
                         Text(
-                          _formatDateTime(record.occurredAt),
+                          formatRecordDateTimeLabel(
+                            record.occurredAt,
+                            occurredTime: record.occurredTime,
+                          ),
                           style: typography.bodySm.copyWith(
                             color: surface.body,
                           ),
@@ -145,7 +149,7 @@ class _RecordDetailBody extends ConsumerWidget {
                         ),
                       _DetailRowData(
                         l10n.recordDetailUpdatedAtLabel,
-                        _formatDateTime(record.updatedAt),
+                        formatRecordDateTimeLabel(record.updatedAt),
                       ),
                     ],
                   ),
@@ -566,11 +570,4 @@ String _sleepQualityLabel(AppLocalizations l10n, String quality) {
     'excellent' => l10n.recordSleepQualityExcellent,
     _ => quality,
   };
-}
-
-String _formatDateTime(String value) {
-  final parsed = DateTime.tryParse(value);
-  if (parsed == null) return value;
-  final local = parsed.toLocal();
-  return '${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
 }

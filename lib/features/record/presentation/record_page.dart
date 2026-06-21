@@ -14,6 +14,8 @@ import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/providers/record_time_provider.dart';
+import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
@@ -63,7 +65,7 @@ class RecordPage extends ConsumerWidget {
                 surface: surface,
                 onTap: () => pushAuthRequiredRoute(
                   context,
-                  '/record/create?date=${_formatDate(selectedDate)}',
+                  '/record/create?date=${formatRecordDate(selectedDate)}',
                 ),
                 iconOnly: true,
               ),
@@ -121,7 +123,7 @@ class RecordPage extends ConsumerWidget {
                 surface: surface,
                 onTap: () => pushAuthRequiredRoute(
                   context,
-                  '/record/create?date=${_formatDate(selectedDate)}',
+                  '/record/create?date=${formatRecordDate(selectedDate)}',
                 ),
               ),
             ],
@@ -183,9 +185,12 @@ class RecordPage extends ConsumerWidget {
     }
 
     final selectedDate = ref.read(selectedRecordDateProvider);
-    final date = _formatDate(selectedDate);
+    final now = ref.read(currentRecordDateTimeProvider);
+    final date = formatRecordDate(selectedDate);
+    final currentTime = formatRecordTimeValue(now);
     final route = '/record/create?kind=${Uri.encodeComponent(kind.name)}'
-        '&date=${Uri.encodeComponent(date)}';
+        '&date=${Uri.encodeComponent(date)}'
+        '&time=${Uri.encodeComponent(currentTime)}';
     final session = ref.read(authSessionProvider);
 
     if (!session.canAccessProtectedData) {
@@ -213,6 +218,7 @@ class RecordPage extends ConsumerWidget {
       builder: (sheetContext) => RecordFastEntrySheet(
         kind: kind,
         occurredAt: date,
+        currentDateTime: now,
         moreRoute: route,
       ),
     );
@@ -241,12 +247,6 @@ class RecordPage extends ConsumerWidget {
   String _quickActionLabel(BuildContext context, RecordQuickAction action) {
     final l10n = AppLocalizations.of(context)!;
     return l10n.recordQuickActionLabel(recordCopy(l10n, action.titleKey));
-  }
-
-  String _formatDate(DateTime value) {
-    return '${value.year.toString().padLeft(4, '0')}-'
-        '${value.month.toString().padLeft(2, '0')}-'
-        '${value.day.toString().padLeft(2, '0')}';
   }
 
   bool _usesFastEntry(DailyRecordKind kind) {
@@ -282,7 +282,7 @@ class RecordPage extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) => RecordNlpSheet(
-        occurredAt: _formatDate(selectedDate),
+        occurredAt: formatRecordDate(selectedDate),
       ),
     );
   }

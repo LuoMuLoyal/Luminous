@@ -20,8 +20,10 @@ import 'package:luminous/features/record/domain/entities/daily_record_inputs.dar
         DailyRecordUpdateInput,
         dailyRecordNoChange;
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_image_attachment_field.dart';
+import 'package:luminous/features/record/presentation/widgets/record_occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
@@ -53,6 +55,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   _PendingDailyRecordImage? _selectedImage;
   bool _attachmentsChanged = false;
   DateTime? _recordOccurredAt;
+  String? _recordOccurredTime;
 
   TimeOfDay? _sleepBedtime;
   TimeOfDay? _sleepWakeTime;
@@ -95,7 +98,8 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
         _selectedImage = null;
         _attachmentsChanged = false;
         _loadSleepPayload(record.payload);
-        _recordOccurredAt = DateTime.tryParse(record.occurredAt);
+        _recordOccurredAt = parseRecordDate(record.occurredAt);
+        _recordOccurredTime = record.occurredTime?.trim();
         _loaded = true;
         _loadingRecord = false;
       });
@@ -162,6 +166,13 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              RecordOccurredAtFields(
+                date: _recordOccurredAt ?? DateTime.now(),
+                time: _recordOccurredTime,
+                onDateTap: _pickRecordDate,
+                onTimeTap: _pickRecordTime,
+              ),
+              const SizedBox(height: AppSpacingTokens.sm),
               DailyRecordFormFields(
                 kind: _kind,
                 onKindChanged: _onKindChanged,
@@ -250,6 +261,8 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
         widget.recordId,
         DailyRecordUpdateInput(
           kind: _kind,
+          occurredAt: formatRecordDate(_recordOccurredAt ?? DateTime.now()),
+          occurredTime: _recordOccurredTime,
           title: rules.showTitle ? _optionalText(_titleController) : null,
           value: rules.showValue ? _normalizedValueForKind(_kind) : null,
           unit: rules.showUnit ? _unitTextForKind(_kind) : null,
@@ -420,6 +433,37 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
     if (_kind != DailyRecordKind.sleep) return true;
     final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
     return minutes != null && minutes > 0;
+  }
+
+  Future<void> _pickRecordDate() async {
+    final initialDate = _recordOccurredAt ?? DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked == null) return;
+    setState(() {
+      _recordOccurredAt = DateTime(picked.year, picked.month, picked.day);
+    });
+  }
+
+  Future<void> _pickRecordTime() async {
+    final parsed = parseRecordTime(_recordOccurredTime);
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(
+        hour: parsed?.hour ?? DateTime.now().hour,
+        minute: parsed?.minute ?? DateTime.now().minute,
+      ),
+    );
+    if (picked == null) return;
+    setState(() {
+      _recordOccurredTime = formatRecordTimeValue(
+        DateTime(2000, 1, 1, picked.hour, picked.minute),
+      );
+    });
   }
 
   void _loadSleepPayload(Map<String, dynamic>? payload) {

@@ -7,8 +7,8 @@ import 'package:luminous/features/record/data/providers/daily_record_providers.d
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
-import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -18,11 +18,13 @@ class RecordFastEntrySheet extends ConsumerStatefulWidget {
     super.key,
     required this.kind,
     required this.occurredAt,
+    required this.currentDateTime,
     required this.moreRoute,
   });
 
   final DailyRecordKind kind;
   final String occurredAt;
+  final DateTime currentDateTime;
   final String moreRoute;
 
   @override
@@ -31,49 +33,21 @@ class RecordFastEntrySheet extends ConsumerStatefulWidget {
 }
 
 class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
-  final _valueController = TextEditingController();
-  final _unitController = TextEditingController();
-  final _noteController = TextEditingController();
-  final _titleController = TextEditingController();
-
   bool _saving = false;
-  TimeOfDay? _sleepBedtime;
-  TimeOfDay? _sleepWakeTime;
-  String? _sleepQuality;
-  int? _sleepDeepMinutes;
-  int? _sleepLightMinutes;
-  int? _sleepRemMinutes;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.kind == DailyRecordKind.water) {
-      _unitController.text = dailyRecordWaterDefaultUnit;
-    }
-  }
-
-  @override
-  void dispose() {
-    _valueController.dispose();
-    _unitController.dispose();
-    _noteController.dispose();
-    _titleController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final typeLabel = dailyRecordKindLabel(l10n, widget.kind);
+    final choices = _choicesFor(widget.kind, l10n);
 
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.only(
-          left: AppSpacingTokens.md,
-          right: AppSpacingTokens.md,
-          top: AppSpacingTokens.md,
-          bottom: MediaQuery.viewInsetsOf(context).bottom +
-              AppSpacingTokens.md,
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacingTokens.md,
+          AppSpacingTokens.md,
+          AppSpacingTokens.md,
+          AppSpacingTokens.md,
         ),
         child: Column(
           key: Key('record-fast-entry-${widget.kind.name}'),
@@ -93,55 +67,24 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
               ).textTheme.bodySmall?.copyWith(color: Colors.black54),
             ),
             const SizedBox(height: AppSpacingTokens.md),
-            DailyRecordFormFields(
-              kind: widget.kind,
-              onKindChanged: (_) {},
-              valueController: _valueController,
-              unitController: _unitController,
-              titleController: _titleController,
-              noteController: _noteController,
-              showKindField: false,
-            ),
-            if (widget.kind == DailyRecordKind.sleep) ...[
-              const SizedBox(height: AppSpacingTokens.sm),
-              SleepStructuredFields(
-                l10n: l10n,
-                bedtime: _sleepBedtime,
-                wakeTime: _sleepWakeTime,
-                quality: _sleepQuality,
-                deepMinutes: _sleepDeepMinutes,
-                lightMinutes: _sleepLightMinutes,
-                remMinutes: _sleepRemMinutes,
-                onBedtimeChanged: (v) => setState(() => _sleepBedtime = v),
-                onWakeTimeChanged: (v) => setState(() => _sleepWakeTime = v),
-                onQualityChanged: (v) => setState(() => _sleepQuality = v),
-                onDeepMinutesChanged: (v) =>
-                    setState(() => _sleepDeepMinutes = v),
-                onLightMinutesChanged: (v) =>
-                    setState(() => _sleepLightMinutes = v),
-                onRemMinutesChanged: (v) =>
-                    setState(() => _sleepRemMinutes = v),
-              ),
-            ],
-            const SizedBox(height: AppSpacingTokens.md),
-            Row(
+            Wrap(
+              spacing: AppSpacingTokens.sm,
+              runSpacing: AppSpacingTokens.sm,
               children: [
-                Expanded(
-                  child: OutlinedButton(
-                    key: const Key('record-fast-entry-more-action'),
-                    onPressed: _saving ? null : _openMore,
-                    child: Text(l10n.recordFastEntryMoreAction),
+                for (var index = 0; index < choices.length; index += 1)
+                  _QuickChoiceChip(
+                    key: Key('record-fast-entry-choice-${widget.kind.name}-$index'),
+                    label: choices[index].label,
+                    enabled: !_saving,
+                    onTap: () => _saveChoice(choices[index]),
                   ),
-                ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                Expanded(
-                  child: FilledButton(
-                    key: const Key('record-fast-entry-save-action'),
-                    onPressed: _saving ? null : _save,
-                    child: Text(l10n.mineEditSaveAction),
-                  ),
-                ),
               ],
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            OutlinedButton(
+              key: const Key('record-fast-entry-more-action'),
+              onPressed: _saving ? null : _openMore,
+              child: Text(l10n.recordFastEntryMoreAction),
             ),
           ],
         ),
@@ -155,30 +98,21 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
     context.push(widget.moreRoute);
   }
 
-  Future<void> _save() async {
-    if (widget.kind == DailyRecordKind.sleep && !_isValidSleepValue()) {
-      AppToast.show(
-        context,
-        AppLocalizations.of(context)!.recordSleepInvalidValueToast,
-      );
-      return;
-    }
-
+  Future<void> _saveChoice(_QuickChoice choice) async {
     setState(() => _saving = true);
     try {
-      final repo = ref.read(dailyRecordRepositoryProvider);
-      final rules = dailyRecordFormRules(widget.kind);
-      await repo.create(
-        DailyRecordCreateInput(
-          kind: widget.kind,
-          occurredAt: widget.occurredAt,
-          title: rules.showTitle ? _optionalText(_titleController) : null,
-          value: rules.showValue ? _optionalText(_valueController) : null,
-          unit: rules.showUnit ? _unitValue() : null,
-          note: _optionalText(_noteController),
-          payload: _buildSleepPayload(),
-        ),
-      );
+      await ref.read(dailyRecordRepositoryProvider).create(
+            DailyRecordCreateInput(
+              kind: widget.kind,
+              occurredAt: widget.occurredAt,
+              occurredTime: formatRecordTimeValue(widget.currentDateTime),
+              title: choice.title,
+              value: choice.value,
+              unit: choice.unit,
+              note: choice.note,
+              payload: choice.payload,
+            ),
+          );
 
       ref.invalidate(recordDashboardProvider);
       ref.invalidate(todayDashboardProvider);
@@ -196,66 +130,135 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
       setState(() => _saving = false);
     }
   }
+}
 
-  String? _optionalText(TextEditingController controller) {
-    final value = controller.text.trim();
-    return value.isEmpty ? null : value;
+class _QuickChoiceChip extends StatelessWidget {
+  const _QuickChoiceChip({
+    super.key,
+    required this.label,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionChip(
+      label: Text(label),
+      onPressed: enabled ? onTap : null,
+    );
   }
+}
 
-  String? _unitValue() {
-    final value = _unitController.text.trim();
-    if (value.isNotEmpty) return value;
-    if (widget.kind == DailyRecordKind.water) {
-      return dailyRecordWaterDefaultUnit;
-    }
-    return null;
-  }
+class _QuickChoice {
+  const _QuickChoice({
+    required this.label,
+    this.title,
+    this.value,
+    this.unit,
+    this.note,
+    this.payload,
+  });
 
-  Map<String, dynamic>? _buildSleepPayload() {
-    if (widget.kind != DailyRecordKind.sleep) return null;
-    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
-    if (minutes == null || minutes <= 0) return null;
+  final String label;
+  final String? title;
+  final String? value;
+  final String? unit;
+  final String? note;
+  final Map<String, dynamic>? payload;
+}
 
-    final payload = <String, dynamic>{'durationMinutes': minutes};
-    final recordDate = DateTime.parse(widget.occurredAt);
-
-    if (_sleepBedtime != null && _sleepWakeTime != null) {
-      final wake = DateTime(
-        recordDate.year,
-        recordDate.month,
-        recordDate.day,
-        _sleepWakeTime!.hour,
-        _sleepWakeTime!.minute,
-      );
-      var bed = DateTime(
-        recordDate.year,
-        recordDate.month,
-        recordDate.day,
-        _sleepBedtime!.hour,
-        _sleepBedtime!.minute,
-      );
-      if (!bed.isBefore(wake)) {
-        bed = bed.subtract(const Duration(days: 1));
-      }
-      payload['startAt'] = bed.toUtc().toIso8601String();
-      payload['endAt'] = wake.toUtc().toIso8601String();
-    }
-    if (_sleepQuality != null) payload['quality'] = _sleepQuality;
-    if (_sleepDeepMinutes != null && _sleepDeepMinutes! > 0) {
-      payload['deepMinutes'] = _sleepDeepMinutes;
-    }
-    if (_sleepLightMinutes != null && _sleepLightMinutes! > 0) {
-      payload['lightMinutes'] = _sleepLightMinutes;
-    }
-    if (_sleepRemMinutes != null && _sleepRemMinutes! > 0) {
-      payload['remMinutes'] = _sleepRemMinutes;
-    }
-    return payload;
-  }
-
-  bool _isValidSleepValue() {
-    if (widget.kind != DailyRecordKind.sleep) return true;
-    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
-    return minutes != null && minutes > 0;
-  }
+List<_QuickChoice> _choicesFor(DailyRecordKind kind, AppLocalizations l10n) {
+  return switch (kind) {
+    DailyRecordKind.water => const [
+        _QuickChoice(label: '250 ml', value: '250', unit: 'ml'),
+        _QuickChoice(label: '500 ml', value: '500', unit: 'ml'),
+        _QuickChoice(label: '1 cup', value: '1', unit: 'cup'),
+        _QuickChoice(label: '1 time', value: '1', unit: 'times'),
+      ],
+    DailyRecordKind.meal => [
+        _QuickChoice(
+          label: l10n.recordFastChoiceMealBreakfast,
+          title: l10n.recordFastChoiceMealBreakfast,
+        ),
+        _QuickChoice(
+          label: l10n.recordFastChoiceMealLunch,
+          title: l10n.recordFastChoiceMealLunch,
+        ),
+        _QuickChoice(
+          label: l10n.recordFastChoiceMealDinner,
+          title: l10n.recordFastChoiceMealDinner,
+        ),
+        _QuickChoice(
+          label: l10n.recordFastChoiceMealSnack,
+          title: l10n.recordFastChoiceMealSnack,
+        ),
+      ],
+    DailyRecordKind.symptom => [
+        _QuickChoice(
+          label: l10n.recordFastChoiceSymptomHeadache,
+          title: l10n.recordFastChoiceSymptomHeadache,
+          value: l10n.recordFastChoiceSeverityMild,
+        ),
+        _QuickChoice(
+          label: l10n.recordFastChoiceSymptomStomachache,
+          title: l10n.recordFastChoiceSymptomStomachache,
+          value: l10n.recordFastChoiceSeverityMild,
+        ),
+        _QuickChoice(
+          label: l10n.recordFastChoiceSymptomDizzy,
+          title: l10n.recordFastChoiceSymptomDizzy,
+          value: l10n.recordFastChoiceSeverityMild,
+        ),
+        _QuickChoice(
+          label: l10n.recordFastChoiceSymptomFever,
+          title: l10n.recordFastChoiceSymptomFever,
+          value: l10n.recordFastChoiceSeverityMild,
+        ),
+      ],
+    DailyRecordKind.note => [
+        _QuickChoice(
+          label: l10n.recordFastChoiceNoteStable,
+          title: l10n.recordFastChoiceNoteStable,
+          note: l10n.recordFastChoiceNoteStable,
+        ),
+        _QuickChoice(
+          label: l10n.recordFastChoiceNoteTired,
+          title: l10n.recordFastChoiceNoteTired,
+          note: l10n.recordFastChoiceNoteTired,
+        ),
+        _QuickChoice(
+          label: l10n.recordFastChoiceNoteBusy,
+          title: l10n.recordFastChoiceNoteBusy,
+          note: l10n.recordFastChoiceNoteBusy,
+        ),
+        _QuickChoice(
+          label: l10n.recordFastChoiceNoteRecovered,
+          title: l10n.recordFastChoiceNoteRecovered,
+          note: l10n.recordFastChoiceNoteRecovered,
+        ),
+      ],
+    DailyRecordKind.sleep => [
+        _QuickChoice(
+          label: '6h',
+          payload: <String, dynamic>{'durationMinutes': 360},
+        ),
+        _QuickChoice(
+          label: '7h',
+          payload: <String, dynamic>{'durationMinutes': 420},
+        ),
+        _QuickChoice(
+          label: '8h',
+          payload: <String, dynamic>{'durationMinutes': 480},
+        ),
+        _QuickChoice(
+          label: '9h',
+          payload: <String, dynamic>{'durationMinutes': 540},
+        ),
+      ],
+    _ => const [],
+  };
 }

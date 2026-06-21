@@ -14,8 +14,10 @@ import 'package:luminous/features/record/data/providers/daily_record_providers.d
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/daily_record_image_attachment_field.dart';
+import 'package:luminous/features/record/presentation/widgets/record_occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
@@ -23,10 +25,16 @@ import 'package:luminous/features/today/presentation/providers/today_dashboard_p
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordCreatePage extends ConsumerStatefulWidget {
-  const RecordCreatePage({super.key, this.initialKind, this.initialDate});
+  const RecordCreatePage({
+    super.key,
+    this.initialKind,
+    this.initialDate,
+    this.initialTime,
+  });
 
   final DailyRecordKind? initialKind;
   final DateTime? initialDate;
+  final String? initialTime;
 
   @override
   ConsumerState<RecordCreatePage> createState() => _RecordCreatePageState();
@@ -42,6 +50,8 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
 
   bool _saving = false;
   _PendingDailyRecordImage? _selectedImage;
+  late DateTime _recordDate;
+  String? _recordTime;
 
   TimeOfDay? _sleepBedtime;
   TimeOfDay? _sleepWakeTime;
@@ -54,6 +64,9 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
   void initState() {
     super.initState();
     _kind = widget.initialKind ?? DailyRecordKind.water;
+    final seedDate = widget.initialDate ?? DateTime.now();
+    _recordDate = DateTime(seedDate.year, seedDate.month, seedDate.day);
+    _recordTime = widget.initialTime?.trim();
     _applyKindDefaults(_kind);
   }
 
@@ -87,9 +100,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
       );
     }
 
-    final selectedRecordDate = ref.watch(selectedRecordDateProvider);
-    final recordDate = widget.initialDate ?? selectedRecordDate;
-    final dateStr = _formatDate(recordDate);
+    final dateStr = formatRecordDate(_recordDate);
 
     return PageScaffoldShell(
       title: l10n.recordAddAction,
@@ -101,6 +112,13 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              RecordOccurredAtFields(
+                date: _recordDate,
+                time: _recordTime,
+                onDateTap: _pickRecordDate,
+                onTimeTap: _pickRecordTime,
+              ),
+              const SizedBox(height: AppSpacingTokens.sm),
               DailyRecordFormFields(
                 kind: _kind,
                 onKindChanged: _onKindChanged,
@@ -171,6 +189,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
         DailyRecordCreateInput(
           kind: _kind,
           occurredAt: dateStr,
+          occurredTime: _recordTime,
           title: rules.showTitle ? _optionalText(_titleController) : null,
           value: rules.showValue ? _normalizedValueForKind(_kind) : null,
           unit: rules.showUnit ? _unitTextForKind(_kind) : null,
@@ -256,8 +275,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
       // Sleep date convention: occurredAt is the wake date.
       // endAt falls on the wake date; startAt is the evening before
       // (or the same day for short naps that don't cross midnight).
-      final selectedDate = ref.read(selectedRecordDateProvider);
-      final recordDate = widget.initialDate ?? selectedDate;
+      final recordDate = _recordDate;
       final wake = DateTime(
         recordDate.year,
         recordDate.month,
@@ -293,6 +311,36 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     if (_kind != DailyRecordKind.sleep) return true;
     final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
     return minutes != null && minutes > 0;
+  }
+
+  Future<void> _pickRecordDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _recordDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked == null) return;
+    setState(() {
+      _recordDate = DateTime(picked.year, picked.month, picked.day);
+    });
+  }
+
+  Future<void> _pickRecordTime() async {
+    final parsed = parseRecordTime(_recordTime);
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(
+        hour: parsed?.hour ?? DateTime.now().hour,
+        minute: parsed?.minute ?? DateTime.now().minute,
+      ),
+    );
+    if (picked == null) return;
+    setState(() {
+      _recordTime = formatRecordTimeValue(
+        DateTime(2000, 1, 1, picked.hour, picked.minute),
+      );
+    });
   }
 
   Future<void> _onPickImage() async {
@@ -363,12 +411,6 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     if (name.endsWith('.webp')) return 'image/webp';
     if (name.endsWith('.gif')) return 'image/gif';
     return null;
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.year.toString().padLeft(4, '0')}-'
-        '${date.month.toString().padLeft(2, '0')}-'
-        '${date.day.toString().padLeft(2, '0')}';
   }
 }
 
