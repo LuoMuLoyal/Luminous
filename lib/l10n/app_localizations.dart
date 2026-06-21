@@ -248,6 +248,18 @@ abstract class AppLocalizations {
   /// **'类型'**
   String get recordCreateFieldKind;
 
+  /// No description provided for @recordCreateFieldDate.
+  ///
+  /// In zh, this message translates to:
+  /// **'日期'**
+  String get recordCreateFieldDate;
+
+  /// No description provided for @recordCreateFieldTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'时间'**
+  String get recordCreateFieldTime;
+
   /// No description provided for @recordCreateFieldUnit.
   ///
   /// In zh, this message translates to:
@@ -493,6 +505,84 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'更多'**
   String get recordFastEntryMoreAction;
+
+  /// No description provided for @recordFastChoiceMealBreakfast.
+  ///
+  /// In zh, this message translates to:
+  /// **'早餐'**
+  String get recordFastChoiceMealBreakfast;
+
+  /// No description provided for @recordFastChoiceMealLunch.
+  ///
+  /// In zh, this message translates to:
+  /// **'午餐'**
+  String get recordFastChoiceMealLunch;
+
+  /// No description provided for @recordFastChoiceMealDinner.
+  ///
+  /// In zh, this message translates to:
+  /// **'晚餐'**
+  String get recordFastChoiceMealDinner;
+
+  /// No description provided for @recordFastChoiceMealSnack.
+  ///
+  /// In zh, this message translates to:
+  /// **'加餐'**
+  String get recordFastChoiceMealSnack;
+
+  /// No description provided for @recordFastChoiceSymptomHeadache.
+  ///
+  /// In zh, this message translates to:
+  /// **'头痛'**
+  String get recordFastChoiceSymptomHeadache;
+
+  /// No description provided for @recordFastChoiceSymptomStomachache.
+  ///
+  /// In zh, this message translates to:
+  /// **'胃痛'**
+  String get recordFastChoiceSymptomStomachache;
+
+  /// No description provided for @recordFastChoiceSymptomDizzy.
+  ///
+  /// In zh, this message translates to:
+  /// **'头晕'**
+  String get recordFastChoiceSymptomDizzy;
+
+  /// No description provided for @recordFastChoiceSymptomFever.
+  ///
+  /// In zh, this message translates to:
+  /// **'发热'**
+  String get recordFastChoiceSymptomFever;
+
+  /// No description provided for @recordFastChoiceSeverityMild.
+  ///
+  /// In zh, this message translates to:
+  /// **'轻度'**
+  String get recordFastChoiceSeverityMild;
+
+  /// No description provided for @recordFastChoiceNoteStable.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天状态平稳'**
+  String get recordFastChoiceNoteStable;
+
+  /// No description provided for @recordFastChoiceNoteTired.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天有点累'**
+  String get recordFastChoiceNoteTired;
+
+  /// No description provided for @recordFastChoiceNoteBusy.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天比较忙'**
+  String get recordFastChoiceNoteBusy;
+
+  /// No description provided for @recordFastChoiceNoteRecovered.
+  ///
+  /// In zh, this message translates to:
+  /// **'今天恢复不错'**
+  String get recordFastChoiceNoteRecovered;
 
   /// No description provided for @recordAiInputHint.
   ///

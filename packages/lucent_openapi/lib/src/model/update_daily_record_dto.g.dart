@@ -19,6 +19,7 @@ UpdateDailyRecordDto _$UpdateDailyRecordDtoFromJson(
       ),
     ),
     occurredAt: $checkedConvert('occurredAt', (v) => v as String?),
+    occurredTime: $checkedConvert('occurredTime', (v) => v),
     title: $checkedConvert('title', (v) => v),
     value: $checkedConvert('value', (v) => v),
     unit: $checkedConvert('unit', (v) => v),
@@ -44,6 +45,7 @@ Map<String, dynamic> _$UpdateDailyRecordDtoToJson(
   if (_$DailyRecordKindEnumMap[instance.kind] != null)
     'kind': _$DailyRecordKindEnumMap[instance.kind],
   if (instance.occurredAt != null) 'occurredAt': instance.occurredAt,
+  if (instance.occurredTime != null) 'occurredTime': instance.occurredTime,
   if (instance.title != null) 'title': instance.title,
   if (instance.value != null) 'value': instance.value,
   if (instance.unit != null) 'unit': instance.unit,

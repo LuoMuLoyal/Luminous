@@ -6,6 +6,7 @@ import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
+import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 
 /// Lucent-backed implementation of [RecordRepository] that maps real daily
 /// records into the timeline while keeping other dashboard sections as static
@@ -25,7 +26,7 @@ class LucentRecordRepository implements RecordRepository {
       selectedDate.month,
       selectedDate.day,
     );
-    final dateStr = _formatDate(date);
+    final dateStr = formatRecordDate(date);
     final selectedKind = filterType == null
         ? null
         : dailyRecordKindForEntryType(filterType);
@@ -70,7 +71,7 @@ class LucentRecordRepository implements RecordRepository {
 
   RecordTimelineEntry _toTimelineEntry(DailyRecordItem record) {
     final kind = record.kind;
-    final timeStr = _formatRecordTime(record.occurredAt);
+    final timeStr = formatRecordTimeLabel(record.occurredTime);
 
     final (icon, accent, soft) = switch (kind) {
       DailyRecordKind.water => (
@@ -229,19 +230,8 @@ class LucentRecordRepository implements RecordRepository {
     };
   }
 
-  static String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-  }
-
   static bool _isSameDay(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;
-  }
-
-  static String _formatRecordTime(String occurredAt) {
-    final parsed = DateTime.tryParse(occurredAt);
-    final time = parsed?.toLocal();
-    if (time == null) return '--:--';
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
   static final _staticQuickActions = <RecordQuickAction>[

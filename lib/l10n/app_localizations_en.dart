@@ -99,6 +99,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordCreateFieldKind => 'Kind';
 
   @override
+  String get recordCreateFieldDate => 'Date';
+
+  @override
+  String get recordCreateFieldTime => 'Time';
+
+  @override
   String get recordCreateFieldUnit => 'Unit';
 
   @override
@@ -226,6 +232,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordFastEntryMoreAction => 'More';
+
+  @override
+  String get recordFastChoiceMealBreakfast => 'Breakfast';
+
+  @override
+  String get recordFastChoiceMealLunch => 'Lunch';
+
+  @override
+  String get recordFastChoiceMealDinner => 'Dinner';
+
+  @override
+  String get recordFastChoiceMealSnack => 'Snack';
+
+  @override
+  String get recordFastChoiceSymptomHeadache => 'Headache';
+
+  @override
+  String get recordFastChoiceSymptomStomachache => 'Stomachache';
+
+  @override
+  String get recordFastChoiceSymptomDizzy => 'Dizziness';
+
+  @override
+  String get recordFastChoiceSymptomFever => 'Fever';
+
+  @override
+  String get recordFastChoiceSeverityMild => 'Mild';
+
+  @override
+  String get recordFastChoiceNoteStable => 'Stable today';
+
+  @override
+  String get recordFastChoiceNoteTired => 'Feeling tired today';
+
+  @override
+  String get recordFastChoiceNoteBusy => 'Busy today';
+
+  @override
+  String get recordFastChoiceNoteRecovered => 'Recovered better today';
 
   @override
   String get recordAiInputHint =>

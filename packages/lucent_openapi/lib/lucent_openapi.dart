@@ -158,6 +158,7 @@ export 'package:lucent_openapi/src/model/report_trend_dto.dart';
 export 'package:lucent_openapi/src/model/reset_password_dto.dart';
 export 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
 export 'package:lucent_openapi/src/model/send_verification_code_response_dto.dart';
+export 'package:lucent_openapi/src/model/set_password_dto.dart';
 export 'package:lucent_openapi/src/model/sex_at_birth.dart';
 export 'package:lucent_openapi/src/model/stream_assistant_messages_dto.dart';
 export 'package:lucent_openapi/src/model/success_response_dto.dart';

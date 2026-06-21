@@ -22,6 +22,8 @@ class UpdateDailyRecordDto {
 
     this.occurredAt,
 
+    this.occurredTime,
+
     this.title,
 
     this.value,
@@ -46,6 +48,10 @@ class UpdateDailyRecordDto {
   /// Date in YYYY-MM-DD format.
   @JsonKey(name: r'occurredAt', required: false, includeIfNull: false)
   final String? occurredAt;
+
+  /// Time in HH:mm 24-hour format. Use null to clear.
+  @JsonKey(name: r'occurredTime', required: false, includeIfNull: false)
+  final Object? occurredTime;
 
   /// Short label. Use null to clear.
   @JsonKey(name: r'title', required: false, includeIfNull: false)
@@ -77,6 +83,7 @@ class UpdateDailyRecordDto {
       other is UpdateDailyRecordDto &&
           other.kind == kind &&
           other.occurredAt == occurredAt &&
+          other.occurredTime == occurredTime &&
           other.title == title &&
           other.value == value &&
           other.unit == unit &&
@@ -88,6 +95,7 @@ class UpdateDailyRecordDto {
   int get hashCode =>
       kind.hashCode +
       occurredAt.hashCode +
+      (occurredTime == null ? 0 : occurredTime.hashCode) +
       (title == null ? 0 : title.hashCode) +
       (value == null ? 0 : value.hashCode) +
       (unit == null ? 0 : unit.hashCode) +

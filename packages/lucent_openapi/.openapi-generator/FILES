@@ -157,6 +157,7 @@ lib/src/model/report_trend_dto.dart
 lib/src/model/reset_password_dto.dart
 lib/src/model/send_verification_code_dto.dart
 lib/src/model/send_verification_code_response_dto.dart
+lib/src/model/set_password_dto.dart
 lib/src/model/sex_at_birth.dart
 lib/src/model/stream_assistant_messages_dto.dart
 lib/src/model/success_response_dto.dart

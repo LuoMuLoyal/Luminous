@@ -24,6 +24,8 @@ class DailyRecordItemDto {
 
     required this.occurredAt,
 
+    this.occurredTime,
+
     this.title,
 
     this.value,
@@ -58,6 +60,10 @@ class DailyRecordItemDto {
   /// Date in YYYY-MM-DD format.
   @JsonKey(name: r'occurredAt', required: true, includeIfNull: false)
   final String occurredAt;
+
+  /// Time in HH:mm 24-hour format when available.
+  @JsonKey(name: r'occurredTime', required: false, includeIfNull: false)
+  final Object? occurredTime;
 
   /// Short label.
   @JsonKey(name: r'title', required: false, includeIfNull: false)
@@ -101,6 +107,7 @@ class DailyRecordItemDto {
           other.id == id &&
           other.kind == kind &&
           other.occurredAt == occurredAt &&
+          other.occurredTime == occurredTime &&
           other.title == title &&
           other.value == value &&
           other.unit == unit &&
@@ -116,6 +123,7 @@ class DailyRecordItemDto {
       id.hashCode +
       kind.hashCode +
       occurredAt.hashCode +
+      (occurredTime == null ? 0 : occurredTime.hashCode) +
       title.hashCode +
       value.hashCode +
       unit.hashCode +

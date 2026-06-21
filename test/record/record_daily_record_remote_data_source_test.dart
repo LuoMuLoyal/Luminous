@@ -28,6 +28,7 @@ void main() {
         DailyRecordCreateInput(
           kind: DailyRecordKind.meal,
           occurredAt: '2026-06-06',
+          occurredTime: '09:45',
           title: 'Breakfast',
           attachments: const <DailyRecordAttachmentInput>[
             DailyRecordAttachmentInput(
@@ -45,6 +46,7 @@ void main() {
 
       final request = adapter.requestAt('POST', '/api/v1/user/daily-records');
       expect(request.jsonBody['kind'], 'meal');
+      expect(request.jsonBody['occurredTime'], '09:45');
       expect(request.jsonBody['title'], 'Breakfast');
       final attachments = request.jsonBody['attachments'] as List<Object?>;
       expect(attachments, hasLength(1));
@@ -59,7 +61,10 @@ void main() {
     test('update omits attachments to keep existing metadata', () async {
       await dataSource.update(
         'record-1',
-        const DailyRecordUpdateInput(title: 'Updated'),
+        const DailyRecordUpdateInput(
+          title: 'Updated',
+          occurredTime: '10:20',
+        ),
       );
 
       final request = adapter.requestAt(
@@ -67,6 +72,7 @@ void main() {
         '/api/v1/user/daily-records/record-1',
       );
       expect(request.jsonBody, containsPair('title', 'Updated'));
+      expect(request.jsonBody, containsPair('occurredTime', '10:20'));
       expect(request.jsonBody.containsKey('attachments'), isFalse);
     });
 
@@ -242,6 +248,7 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
       'id': 'record-1',
       'kind': 'meal',
       'occurredAt': '2026-06-06',
+      'occurredTime': '09:45',
       'title': 'Record',
       'value': null,
       'unit': null,

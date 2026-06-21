@@ -112,6 +112,7 @@ import 'package:lucent_openapi/src/model/report_trend_dto.dart';
 import 'package:lucent_openapi/src/model/reset_password_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_dto.dart';
 import 'package:lucent_openapi/src/model/send_verification_code_response_dto.dart';
+import 'package:lucent_openapi/src/model/set_password_dto.dart';
 import 'package:lucent_openapi/src/model/stream_assistant_messages_dto.dart';
 import 'package:lucent_openapi/src/model/success_response_dto.dart';
 import 'package:lucent_openapi/src/model/support_resource_dto.dart';
@@ -444,6 +445,8 @@ final _regMap = RegExp(r'^Map<String,(.*)>$');
           return SendVerificationCodeDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'SendVerificationCodeResponseDto':
           return SendVerificationCodeResponseDto.fromJson(value as Map<String, dynamic>) as ReturnType;
+        case 'SetPasswordDto':
+          return SetPasswordDto.fromJson(value as Map<String, dynamic>) as ReturnType;
         case 'SexAtBirth':
           
           

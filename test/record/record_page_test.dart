@@ -26,9 +26,9 @@ import 'package:luminous/features/record/presentation/pages/record_create.dart';
 import 'package:luminous/features/record/presentation/pages/record_detail.dart';
 import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/providers/record_time_provider.dart';
 import 'package:luminous/features/record/presentation/record_page.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
-import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -714,7 +714,8 @@ void main() {
 
   testWidgets('Record detail page renders full saved fields', (tester) async {
     final repo = _FakeDailyRecordRepository(
-      itemOccurredAt: '2026-06-06T09:45:00',
+      itemOccurredAt: '2026-06-06',
+      itemOccurredTime: '09:45',
       withAttachment: true,
     );
 
@@ -791,22 +792,18 @@ void main() {
   ) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
-    SleepStructuredFields.forcedPickedTimes.addAll(const [
-      TimeOfDay(hour: 23, minute: 0),
-      TimeOfDay(hour: 7, minute: 30),
-    ]);
     addTearDown(() {
-      SleepStructuredFields.forceInputTimePicker = false;
-      SleepStructuredFields.forcedPickedTimes.clear();
       tester.view.resetDevicePixelRatio();
       tester.view.resetPhysicalSize();
     });
     final dailyRepo = _FakeDailyRecordRepository();
+    final currentDateTime = DateTime(2026, 6, 6, 9, 45);
 
     await _pumpRecordRouter(
       tester,
       dailyRecordRepository: dailyRepo,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: currentDateTime,
     );
     await tester.pumpAndSettle();
 
@@ -815,33 +812,7 @@ void main() {
 
     expect(find.byType(RecordCreatePage), findsNothing);
     expect(find.byKey(const Key('record-fast-entry-sleep')), findsOneWidget);
-
-    await tester.tap(find.byKey(const Key('sleep-bedtime-picker')));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const Key('sleep-waketime-picker')));
-    await tester.pumpAndSettle();
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const Key('sleep-quality-field')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('良好').last);
-    await tester.pumpAndSettle();
-
-    await tester.enterText(
-      find.byKey(const Key('sleep-deep-minutes-field')),
-      '120',
-    );
-    await tester.enterText(
-      find.byKey(const Key('sleep-light-minutes-field')),
-      '240',
-    );
-    await tester.enterText(
-      find.byKey(const Key('sleep-rem-minutes-field')),
-      '90',
-    );
-
-    await tester.tap(find.byKey(const Key('record-fast-entry-save-action')));
+    await tester.tap(find.byKey(const Key('record-fast-entry-choice-sleep-2')));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
 
@@ -849,14 +820,12 @@ void main() {
     expect(input, isNotNull);
     expect(input!.kind, DailyRecordKind.sleep);
     expect(input.occurredAt, '2026-06-06');
+    expect(input.occurredTime, '09:45');
+    expect(input.title, isNull);
     expect(input.value, isNull);
     expect(input.unit, isNull);
     expect(input.note, isNull);
-    expect(input.payload?['durationMinutes'], 510);
-    expect(input.payload?['quality'], 'good');
-    expect(input.payload?['deepMinutes'], 120);
-    expect(input.payload?['lightMinutes'], 240);
-    expect(input.payload?['remMinutes'], 90);
+    expect(input.payload, {'durationMinutes': 480});
   });
 
   testWidgets('Record sleep quick action more opens full create page', (
@@ -872,6 +841,7 @@ void main() {
     await _pumpRecordRouter(
       tester,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: DateTime(2026, 6, 6, 9, 45),
     );
     await tester.pumpAndSettle();
 
@@ -886,6 +856,8 @@ void main() {
       find.byType(DropdownButtonFormField<DailyRecordKind>),
     );
     expect(dropdown.initialValue, DailyRecordKind.sleep);
+    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
+    expect(find.text('时间 · 09:45'), findsOneWidget);
   });
 
   testWidgets('Record mobile note quick action opens fast entry first', (
@@ -958,11 +930,13 @@ void main() {
       tester.view.resetPhysicalSize();
     });
     final dailyRepo = _FakeDailyRecordRepository();
+    final currentDateTime = DateTime(2026, 6, 6, 9, 45);
 
     await _pumpRecordRouter(
       tester,
       dailyRecordRepository: dailyRepo,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: currentDateTime,
     );
     await tester.pumpAndSettle();
 
@@ -973,12 +947,14 @@ void main() {
     expect(find.byKey(const Key('record-fast-entry-water')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-water')), findsNothing);
 
-    await tester.tap(find.byKey(const Key('record-fast-entry-save-action')));
+    await tester.tap(find.byKey(const Key('record-fast-entry-choice-water-1')));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
 
     expect(dailyRepo.createInput?.kind, DailyRecordKind.water);
     expect(dailyRepo.createInput?.occurredAt, '2026-06-06');
+    expect(dailyRepo.createInput?.occurredTime, '09:45');
+    expect(dailyRepo.createInput?.value, '500');
     expect(dailyRepo.createInput?.unit, 'ml');
   });
 
@@ -995,6 +971,7 @@ void main() {
     await _pumpRecordRouter(
       tester,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: DateTime(2026, 6, 6, 9, 45),
     );
     await tester.pumpAndSettle();
 
@@ -1009,6 +986,8 @@ void main() {
       find.byType(DropdownButtonFormField<DailyRecordKind>),
     );
     expect(dropdown.initialValue, DailyRecordKind.water);
+    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
+    expect(find.text('时间 · 09:45'), findsOneWidget);
   });
 
   testWidgets('Record meal quick action opens fast entry and saves', (
@@ -1021,11 +1000,13 @@ void main() {
       tester.view.resetPhysicalSize();
     });
     final dailyRepo = _FakeDailyRecordRepository();
+    final currentDateTime = DateTime(2026, 6, 6, 9, 45);
 
     await _pumpRecordRouter(
       tester,
       dailyRecordRepository: dailyRepo,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: currentDateTime,
     );
     await tester.pumpAndSettle();
 
@@ -1036,15 +1017,7 @@ void main() {
     expect(find.byKey(const Key('record-fast-entry-meal')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-meal')), findsNothing);
 
-    await tester.enterText(
-      find.byKey(const Key('daily-record-value-field')),
-      'Chicken salad',
-    );
-    await tester.enterText(
-      find.byKey(const Key('daily-record-note-field')),
-      'Lunch',
-    );
-    await tester.tap(find.byKey(const Key('record-fast-entry-save-action')));
+    await tester.tap(find.byKey(const Key('record-fast-entry-choice-meal-1')));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
 
@@ -1052,10 +1025,11 @@ void main() {
     expect(input, isNotNull);
     expect(input!.kind, DailyRecordKind.meal);
     expect(input.occurredAt, '2026-06-06');
-    expect(input.title, isNull);
-    expect(input.value, 'Chicken salad');
+    expect(input.occurredTime, '09:45');
+    expect(input.title, '午餐');
+    expect(input.value, isNull);
     expect(input.unit, isNull);
-    expect(input.note, 'Lunch');
+    expect(input.note, isNull);
   });
 
   testWidgets('Record meal quick action more opens full create page', (
@@ -1071,6 +1045,7 @@ void main() {
     await _pumpRecordRouter(
       tester,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: DateTime(2026, 6, 6, 9, 45),
     );
     await tester.pumpAndSettle();
 
@@ -1085,6 +1060,8 @@ void main() {
       find.byType(DropdownButtonFormField<DailyRecordKind>),
     );
     expect(dropdown.initialValue, DailyRecordKind.meal);
+    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
+    expect(find.text('时间 · 09:45'), findsOneWidget);
   });
 
   testWidgets('Record symptom quick action opens fast entry and saves', (
@@ -1097,11 +1074,13 @@ void main() {
       tester.view.resetPhysicalSize();
     });
     final dailyRepo = _FakeDailyRecordRepository();
+    final currentDateTime = DateTime(2026, 6, 6, 9, 45);
 
     await _pumpRecordRouter(
       tester,
       dailyRecordRepository: dailyRepo,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: currentDateTime,
     );
     await tester.pumpAndSettle();
 
@@ -1112,19 +1091,7 @@ void main() {
     expect(find.byKey(const Key('record-fast-entry-symptom')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-symptom')), findsNothing);
 
-    await tester.enterText(
-      find.byKey(const Key('daily-record-title-field')),
-      'Headache',
-    );
-    await tester.enterText(
-      find.byKey(const Key('daily-record-value-field')),
-      'Mild',
-    );
-    await tester.enterText(
-      find.byKey(const Key('daily-record-note-field')),
-      'After lunch',
-    );
-    await tester.tap(find.byKey(const Key('record-fast-entry-save-action')));
+    await tester.tap(find.byKey(const Key('record-fast-entry-choice-symptom-0')));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
 
@@ -1132,10 +1099,11 @@ void main() {
     expect(input, isNotNull);
     expect(input!.kind, DailyRecordKind.symptom);
     expect(input.occurredAt, '2026-06-06');
-    expect(input.title, 'Headache');
-    expect(input.value, 'Mild');
+    expect(input.occurredTime, '09:45');
+    expect(input.title, '头痛');
+    expect(input.value, '轻度');
     expect(input.unit, isNull);
-    expect(input.note, 'After lunch');
+    expect(input.note, isNull);
   });
 
   testWidgets('Record symptom quick action more opens full create page', (
@@ -1151,6 +1119,7 @@ void main() {
     await _pumpRecordRouter(
       tester,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: DateTime(2026, 6, 6, 9, 45),
     );
     await tester.pumpAndSettle();
 
@@ -1165,6 +1134,8 @@ void main() {
       find.byType(DropdownButtonFormField<DailyRecordKind>),
     );
     expect(dropdown.initialValue, DailyRecordKind.symptom);
+    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
+    expect(find.text('时间 · 09:45'), findsOneWidget);
   });
 
   testWidgets('Record note quick action opens fast entry and saves', (
@@ -1177,11 +1148,13 @@ void main() {
       tester.view.resetPhysicalSize();
     });
     final dailyRepo = _FakeDailyRecordRepository();
+    final currentDateTime = DateTime(2026, 6, 6, 9, 45);
 
     await _pumpRecordRouter(
       tester,
       dailyRecordRepository: dailyRepo,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: currentDateTime,
     );
     await tester.pumpAndSettle();
 
@@ -1192,15 +1165,7 @@ void main() {
     expect(find.byKey(const Key('record-fast-entry-note')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-note')), findsNothing);
 
-    await tester.enterText(
-      find.byKey(const Key('daily-record-title-field')),
-      'Quiet day',
-    );
-    await tester.enterText(
-      find.byKey(const Key('daily-record-note-field')),
-      'No special symptoms',
-    );
-    await tester.tap(find.byKey(const Key('record-fast-entry-save-action')));
+    await tester.tap(find.byKey(const Key('record-fast-entry-choice-note-1')));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
 
@@ -1208,10 +1173,11 @@ void main() {
     expect(input, isNotNull);
     expect(input!.kind, DailyRecordKind.note);
     expect(input.occurredAt, '2026-06-06');
-    expect(input.title, 'Quiet day');
+    expect(input.occurredTime, '09:45');
+    expect(input.title, '今天有点累');
     expect(input.value, isNull);
     expect(input.unit, isNull);
-    expect(input.note, 'No special symptoms');
+    expect(input.note, '今天有点累');
   });
 
   testWidgets('Record note quick action more opens full create page', (
@@ -1227,6 +1193,7 @@ void main() {
     await _pumpRecordRouter(
       tester,
       selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: DateTime(2026, 6, 6, 9, 45),
     );
     await tester.pumpAndSettle();
 
@@ -1241,6 +1208,8 @@ void main() {
       find.byType(DropdownButtonFormField<DailyRecordKind>),
     );
     expect(dropdown.initialValue, DailyRecordKind.note);
+    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
+    expect(find.text('时间 · 09:45'), findsOneWidget);
   });
 
   testWidgets('Record mobile quick action shows login dialog when signed out', (
@@ -1483,7 +1452,8 @@ void main() {
     'Lucent record repository uses selected date and occurredAt time',
     () async {
       final dailyRepo = _FakeDailyRecordRepository(
-        itemOccurredAt: '2026-06-06T09:45:00',
+        itemOccurredAt: '2026-06-06',
+        itemOccurredTime: '09:45',
         itemKind: DailyRecordKind.symptom,
         itemTitle: 'Headache',
         itemValue: 'mild',
@@ -1577,7 +1547,8 @@ void main() {
     'Lucent timeline note without title leaves rawTitle null for localized fallback',
     () async {
       final dailyRepo = _FakeDailyRecordRepository(
-        itemOccurredAt: '2026-06-06T14:00:00',
+        itemOccurredAt: '2026-06-06',
+        itemOccurredTime: '14:00',
         itemKind: DailyRecordKind.note,
         itemTitle: null,
         itemValue: null,
@@ -1597,7 +1568,8 @@ void main() {
     'Lucent timeline note with title uses it as rawTitle',
     () async {
       final dailyRepo = _FakeDailyRecordRepository(
-        itemOccurredAt: '2026-06-06T14:00:00',
+        itemOccurredAt: '2026-06-06',
+        itemOccurredTime: '14:00',
         itemKind: DailyRecordKind.note,
         itemTitle: 'Evening reflection',
         itemValue: null,
@@ -1617,7 +1589,8 @@ void main() {
     'Lucent timeline uses type-dependent titleKey instead of hardcoded typeMood',
     () async {
       final dailyRepo = _FakeDailyRecordRepository(
-        itemOccurredAt: '2026-06-06T08:00:00',
+        itemOccurredAt: '2026-06-06',
+        itemOccurredTime: '08:00',
         itemKind: DailyRecordKind.water,
         itemTitle: null,
         itemValue: '500',
@@ -1658,6 +1631,7 @@ Future<void> _pumpRecordRouter(
   HealthContextSnapshot? healthContextSnapshot,
   String initialLocation = '/',
   DateTime? selectedDate,
+  DateTime? currentDateTime,
   AuthSessionNotifier Function()? authSessionNotifier,
 }) async {
   await tester.pumpWidget(
@@ -1679,6 +1653,8 @@ Future<void> _pumpRecordRouter(
           selectedRecordDateProvider.overrideWith(
             () => _FixedSelectedRecordDateNotifier(selectedDate),
           ),
+        if (currentDateTime != null)
+          currentRecordDateTimeProvider.overrideWithValue(currentDateTime),
       ],
       child: MaterialApp.router(
         theme: AppTheme.light,
@@ -1704,6 +1680,7 @@ Future<void> _pumpRecordPage(
   AuthSessionNotifier Function()? authSessionNotifier,
   HealthContextSnapshot? healthContextSnapshot,
   DateTime? selectedDate,
+  DateTime? currentDateTime,
   Locale locale = const Locale('zh'),
 }) async {
   final overrides = [
@@ -1721,6 +1698,8 @@ Future<void> _pumpRecordPage(
       selectedRecordDateProvider.overrideWith(
         () => _FixedSelectedRecordDateNotifier(selectedDate),
       ),
+    if (currentDateTime != null)
+      currentRecordDateTimeProvider.overrideWithValue(currentDateTime),
   ];
 
   await tester.pumpWidget(
@@ -1765,6 +1744,7 @@ GoRouter _buildRecordTestRouter(String initialLocation) {
             state.uri.queryParameters['kind'],
           ),
           initialDate: _parseRecordDate(state.uri.queryParameters['date']),
+          initialTime: state.uri.queryParameters['time'],
         ),
       ),
       GoRoute(
@@ -1818,6 +1798,7 @@ GoRouter _buildEditTestRouter({
 class _FakeDailyRecordRepository implements DailyRecordRepository {
   _FakeDailyRecordRepository({
     this.itemOccurredAt,
+    this.itemOccurredTime,
     this.itemKind = DailyRecordKind.vital,
     this.itemTitle = 'Blood pressure',
     this.itemValue = '118/76',
@@ -1831,6 +1812,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   });
 
   final String? itemOccurredAt;
+  final String? itemOccurredTime;
   final DailyRecordKind itemKind;
   final String? itemTitle;
   final String? itemValue;
@@ -1866,6 +1848,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
           id: 'test-id-1',
           kind: itemKind,
           occurredAt: itemOccurredAt ?? date,
+          occurredTime: itemOccurredTime,
           title: itemTitle,
           value: itemValue,
           unit: itemUnit,
@@ -1901,6 +1884,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
       id: id,
       kind: itemKind,
       occurredAt: itemOccurredAt ?? '2026-05-20',
+      occurredTime: itemOccurredTime,
       title: itemTitle,
       value: itemValue,
       unit: itemUnit,
@@ -1958,6 +1942,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
       id: 'created-id-${createIndex + 1}',
       kind: input.kind,
       occurredAt: input.occurredAt,
+      occurredTime: input.occurredTime,
       title: input.title,
       value: input.value,
       unit: input.unit,
@@ -1978,7 +1963,13 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     return DailyRecordItem(
       id: id,
       kind: DailyRecordKind.vital,
-      occurredAt: fetchDate ?? '2026-05-20',
+      occurredAt: (input.occurredAt == dailyRecordNoChange
+              ? fetchDate
+              : input.occurredAt as String?) ??
+          '2026-05-20',
+      occurredTime: input.occurredTime == dailyRecordNoChange
+          ? itemOccurredTime
+          : input.occurredTime as String?,
       title: input.title as String?,
       value: input.value as String?,
       unit: input.unit as String?,

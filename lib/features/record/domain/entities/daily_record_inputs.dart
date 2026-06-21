@@ -7,6 +7,7 @@ class DailyRecordCreateInput {
   const DailyRecordCreateInput({
     required this.kind,
     required this.occurredAt,
+    this.occurredTime,
     this.title,
     this.value,
     this.unit,
@@ -17,6 +18,7 @@ class DailyRecordCreateInput {
 
   final DailyRecordKind kind;
   final String occurredAt;
+  final String? occurredTime;
   final String? title;
   final String? value;
   final String? unit;
@@ -29,6 +31,7 @@ class DailyRecordUpdateInput {
   const DailyRecordUpdateInput({
     this.kind = dailyRecordNoChange,
     this.occurredAt = dailyRecordNoChange,
+    this.occurredTime = dailyRecordNoChange,
     this.title = dailyRecordNoChange,
     this.value = dailyRecordNoChange,
     this.unit = dailyRecordNoChange,
@@ -39,6 +42,7 @@ class DailyRecordUpdateInput {
 
   final Object? kind;
   final Object? occurredAt;
+  final Object? occurredTime;
   final Object? title;
   final Object? value;
   final Object? unit;

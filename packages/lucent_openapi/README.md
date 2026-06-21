@@ -73,6 +73,7 @@ Class | Method | HTTP request | Description
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerGetAccountV1**](doc/AccountApi.md#accountcontrollergetaccountv1) | **GET** /api/v1/account | Get authenticated account profile
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerLinkWechatMobileIdentityV1**](doc/AccountApi.md#accountcontrollerlinkwechatmobileidentityv1) | **POST** /api/v1/account/identities/wechat-mobile/callback | Link WeChat mobile identity to authenticated account
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerLinkWechatWebIdentityV1**](doc/AccountApi.md#accountcontrollerlinkwechatwebidentityv1) | **POST** /api/v1/account/identities/wechat-web/callback | Link WeChat web identity to authenticated account
+[*AccountApi*](doc/AccountApi.md) | [**accountControllerSetPasswordV1**](doc/AccountApi.md#accountcontrollersetpasswordv1) | **POST** /api/v1/account/set-password | Set initial password for OAuth-only account using email verification
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerUnlinkIdentityV1**](doc/AccountApi.md#accountcontrollerunlinkidentityv1) | **DELETE** /api/v1/account/identities/{identityId} | Unlink authenticated account OAuth identity
 [*AccountApi*](doc/AccountApi.md) | [**accountControllerUpdateAccountV1**](doc/AccountApi.md#accountcontrollerupdateaccountv1) | **PATCH** /api/v1/account | Update authenticated account profile
 [*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerClearLatestConversationV1**](doc/AssistantApi.md#assistantcontrollerclearlatestconversationv1) | **POST** /api/v1/user/assistant/latest/clear | Archive the authenticated user latest active assistant conversation
@@ -83,6 +84,7 @@ Class | Method | HTTP request | Description
 [*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerStreamMessagesV1**](doc/AssistantApi.md#assistantcontrollerstreammessagesv1) | **POST** /api/v1/user/assistant/messages/stream | Stream authenticated user assistant response
 [*AuthApi*](doc/AuthApi.md) | [**authControllerCreateWechatWebAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
 [*AuthApi*](doc/AuthApi.md) | [**authControllerForgotPasswordV1**](doc/AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
+[*AuthApi*](doc/AuthApi.md) | [**authControllerListSessionsV1**](doc/AuthApi.md#authcontrollerlistsessionsv1) | **GET** /api/v1/auth/sessions | 列出当前用户的活跃会话
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginV1**](doc/AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatMobileV1**](doc/AuthApi.md#authcontrollerloginwithwechatmobilev1) | **POST** /api/v1/auth/oauth/wechat-mobile/callback | 微信移动端登录回调
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatWebV1**](doc/AuthApi.md#authcontrollerloginwithwechatwebv1) | **POST** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录回调登录
@@ -91,6 +93,7 @@ Class | Method | HTTP request | Description
 [*AuthApi*](doc/AuthApi.md) | [**authControllerRefreshV1**](doc/AuthApi.md#authcontrollerrefreshv1) | **POST** /api/v1/auth/refresh | 刷新令牌
 [*AuthApi*](doc/AuthApi.md) | [**authControllerRegisterV1**](doc/AuthApi.md#authcontrollerregisterv1) | **POST** /api/v1/auth/register | 用户注册
 [*AuthApi*](doc/AuthApi.md) | [**authControllerResetPasswordV1**](doc/AuthApi.md#authcontrollerresetpasswordv1) | **POST** /api/v1/auth/reset-password | 重置密码
+[*AuthApi*](doc/AuthApi.md) | [**authControllerRevokeSessionV1**](doc/AuthApi.md#authcontrollerrevokesessionv1) | **DELETE** /api/v1/auth/sessions/{sessionId} | 撤销指定会话
 [*AuthApi*](doc/AuthApi.md) | [**authControllerSendVerificationCodeV1**](doc/AuthApi.md#authcontrollersendverificationcodev1) | **POST** /api/v1/auth/send-verification-code | 发送邮箱验证码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerVerifyEmailV1**](doc/AuthApi.md#authcontrollerverifyemailv1) | **POST** /api/v1/auth/verify-email | 验证邮箱
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateImageUploadV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreateimageuploadv1) | **POST** /api/v1/user/daily-records/attachments/images/presign-upload | Create a Tencent COS signed URL for daily record image upload
@@ -274,6 +277,7 @@ Class | Method | HTTP request | Description
  - [ResetPasswordDto](doc/ResetPasswordDto.md)
  - [SendVerificationCodeDto](doc/SendVerificationCodeDto.md)
  - [SendVerificationCodeResponseDto](doc/SendVerificationCodeResponseDto.md)
+ - [SetPasswordDto](doc/SetPasswordDto.md)
  - [SexAtBirth](doc/SexAtBirth.md)
  - [StreamAssistantMessagesDto](doc/StreamAssistantMessagesDto.md)
  - [SuccessResponseDto](doc/SuccessResponseDto.md)

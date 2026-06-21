@@ -1,27 +1,23 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-19
+Last updated: 2026-06-20
 
 This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
 
 ## Current Goal
 
-The next active slice is **Record fast-entry UX**.
+The next active slice is **medicine safety depth**.
 
 ## Immediate Work Order
 
-1. **Reshape Record around fast entry**
+1. **Deepen medicine safety where trust still depends on bounded review**
    - Priority order:
-     - tap a record type -> open a lightweight fast-entry surface first
-     - common values save quickly with the current time
-     - “more” opens the full form
-     - present `note` as the user-facing custom record entry
-   - Mood:
-     - reserve a mood entry point, but do not let mood become the main job of
-       this slice
+     - expand the reviewed safety rules only where source coverage is explicit
+     - keep uncertainty visible when data is missing or unreviewed
+     - improve actionability of red-flag outputs without faking broad coverage
    - Success signal:
-     - Record becomes faster to use day to day without needing the assistant
-       for every small entry
+     - Medicine keeps becoming the strongest trust anchor after Record is now
+       fast enough for daily use
 
 2. **Keep assistant evolution bounded to concrete new scenarios**
    - Only extend assistant tools/proposals when a specific missing user task is chosen
@@ -40,13 +36,15 @@ The next active slice is **Record fast-entry UX**.
      - RAG improves explanation depth without becoming the first dependency of
        the whole chat feature
 
-4. **Make medicine safety depth the next trust slice after Record fast entry**
-   - Keep the recommendation unchanged:
-     - stronger medicine safety depth is still the best trust-building slice
-       after the current Record / assistant baseline is genuinely useful
+4. **Keep Record follow-up work bounded after the finished fast-entry slice**
+   - Record fast entry, quick-choice save, editable date/time fields, and
+     concrete `occurredTime` persistence are done.
+   - Only reopen Record when a specific follow-up gap is chosen, such as:
+     - broader full-stack E2E around the new time-of-day contract
+     - more nuanced quick-choice sets per kind
+     - additional timeline/detail polish backed by real product need
    - Success signal:
-     - chat expands product usefulness while medicine safety remains the core
-       trust anchor
+     - Record stays stable instead of becoming an open-ended polish sink
 
 5. **Keep Web as a deliberate decision, not a stealth requirement**
    - `Luminous-site` is still a competition/marketing surface, not a signed-in product shell
@@ -73,8 +71,8 @@ The next active slice is **Record fast-entry UX**.
 
 If the team wants the shortest path with the highest payoff, use this order:
 
-1. record fast-entry UX
-2. medicine safety depth
+1. medicine safety depth
+2. only then reopen Record if a specific follow-up gap is chosen
 3. only then RAG as an extra tool if still needed
 4. only then re-open the Web question
 

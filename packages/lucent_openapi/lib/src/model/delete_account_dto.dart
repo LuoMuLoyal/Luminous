@@ -15,19 +15,25 @@ part 'delete_account_dto.g.dart';
 )
 class DeleteAccountDto {
   /// Returns a new [DeleteAccountDto] instance.
-  DeleteAccountDto({required this.password});
+  DeleteAccountDto({this.password, this.code});
 
-  /// 当前密码（确认注销）
-  @JsonKey(name: r'password', required: true, includeIfNull: false)
-  final String password;
+  /// 当前密码（有密码的用户使用此方式确认注销）
+  @JsonKey(name: r'password', required: false, includeIfNull: false)
+  final String? password;
+
+  /// 邮箱验证码（OAuth-only 用户使用此方式确认注销）
+  @JsonKey(name: r'code', required: false, includeIfNull: false)
+  final String? code;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DeleteAccountDto && other.password == password;
+      other is DeleteAccountDto &&
+          other.password == password &&
+          other.code == code;
 
   @override
-  int get hashCode => password.hashCode;
+  int get hashCode => password.hashCode + code.hashCode;
 
   factory DeleteAccountDto.fromJson(Map<String, dynamic> json) =>
       _$DeleteAccountDtoFromJson(json);

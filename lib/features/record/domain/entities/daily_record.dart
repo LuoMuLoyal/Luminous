@@ -6,6 +6,7 @@ class DailyRecordItem {
     required this.id,
     required this.kind,
     required this.occurredAt,
+    this.occurredTime,
     this.title,
     this.value,
     this.unit,
@@ -20,6 +21,7 @@ class DailyRecordItem {
   final String id;
   final DailyRecordKind kind;
   final String occurredAt;
+  final String? occurredTime;
   final String? title;
   final String? value;
   final String? unit;

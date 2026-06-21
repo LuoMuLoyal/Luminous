@@ -90,6 +90,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordCreateFieldKind => '类型';
 
   @override
+  String get recordCreateFieldDate => '日期';
+
+  @override
+  String get recordCreateFieldTime => '时间';
+
+  @override
   String get recordCreateFieldUnit => '单位';
 
   @override
@@ -215,6 +221,45 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordFastEntryMoreAction => '更多';
+
+  @override
+  String get recordFastChoiceMealBreakfast => '早餐';
+
+  @override
+  String get recordFastChoiceMealLunch => '午餐';
+
+  @override
+  String get recordFastChoiceMealDinner => '晚餐';
+
+  @override
+  String get recordFastChoiceMealSnack => '加餐';
+
+  @override
+  String get recordFastChoiceSymptomHeadache => '头痛';
+
+  @override
+  String get recordFastChoiceSymptomStomachache => '胃痛';
+
+  @override
+  String get recordFastChoiceSymptomDizzy => '头晕';
+
+  @override
+  String get recordFastChoiceSymptomFever => '发热';
+
+  @override
+  String get recordFastChoiceSeverityMild => '轻度';
+
+  @override
+  String get recordFastChoiceNoteStable => '今天状态平稳';
+
+  @override
+  String get recordFastChoiceNoteTired => '今天有点累';
+
+  @override
+  String get recordFastChoiceNoteBusy => '今天比较忙';
+
+  @override
+  String get recordFastChoiceNoteRecovered => '今天恢复不错';
 
   @override
   String get recordAiInputHint => '刚吃完饭胃有点胀...';

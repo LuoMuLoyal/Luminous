@@ -36,6 +36,8 @@ const _$SendVerificationCodeDtoSceneEnumEnumMap = {
   SendVerificationCodeDtoSceneEnum.login: 'login',
   SendVerificationCodeDtoSceneEnum.resetPassword: 'reset-password',
   SendVerificationCodeDtoSceneEnum.changeEmail: 'change-email',
+  SendVerificationCodeDtoSceneEnum.setPassword: 'set-password',
+  SendVerificationCodeDtoSceneEnum.deleteAccount: 'delete-account',
   SendVerificationCodeDtoSceneEnum.unknownDefaultOpenApi:
       'unknown_default_open_api',
 };

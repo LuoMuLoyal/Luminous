@@ -70,6 +70,14 @@ enum SendVerificationCodeDtoSceneEnum {
   changeEmail(r'change-email'),
 
   /// 验证码场景
+  @JsonValue(r'set-password')
+  setPassword(r'set-password'),
+
+  /// 验证码场景
+  @JsonValue(r'delete-account')
+  deleteAccount(r'delete-account'),
+
+  /// 验证码场景
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

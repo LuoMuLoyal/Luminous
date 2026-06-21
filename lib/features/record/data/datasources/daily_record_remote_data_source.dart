@@ -116,6 +116,7 @@ class DailyRecordRemoteDataSource {
       'kind': input.kind.name,
       'occurredAt': input.occurredAt,
     };
+    _putIfNotNull(payload, 'occurredTime', input.occurredTime);
     _putIfNotNull(payload, 'title', input.title);
     _putIfNotNull(payload, 'value', input.value);
     _putIfNotNull(payload, 'unit', input.unit);
@@ -150,6 +151,12 @@ class DailyRecordRemoteDataSource {
       payload,
       'occurredAt',
       input.occurredAt,
+      (v) => v as String?,
+    );
+    _putIfChanged<String?>(
+      payload,
+      'occurredTime',
+      input.occurredTime,
       (v) => v as String?,
     );
     _putIfChanged<String?>(payload, 'title', input.title, (v) => v as String?);
@@ -226,6 +233,7 @@ class DailyRecordRemoteDataSource {
       id: item.id,
       kind: _parseKind(item.kind.value),
       occurredAt: item.occurredAt,
+      occurredTime: _asStringOrNull(item.occurredTime),
       title: item.title as String?,
       value: item.value as String?,
       unit: item.unit as String?,

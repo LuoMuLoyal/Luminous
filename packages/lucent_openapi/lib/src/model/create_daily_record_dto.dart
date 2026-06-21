@@ -22,6 +22,8 @@ class CreateDailyRecordDto {
 
     required this.occurredAt,
 
+    this.occurredTime,
+
     this.title,
 
     this.value,
@@ -46,6 +48,10 @@ class CreateDailyRecordDto {
   /// Date in YYYY-MM-DD format. For sleep records this is the wake date (the morning the user wakes up from that sleep).
   @JsonKey(name: r'occurredAt', required: true, includeIfNull: false)
   final String occurredAt;
+
+  /// Time in HH:mm 24-hour format. When omitted, UI flows may treat the record as date-only.
+  @JsonKey(name: r'occurredTime', required: false, includeIfNull: false)
+  final String? occurredTime;
 
   /// Short label.
   @JsonKey(name: r'title', required: false, includeIfNull: false)
@@ -77,6 +83,7 @@ class CreateDailyRecordDto {
       other is CreateDailyRecordDto &&
           other.kind == kind &&
           other.occurredAt == occurredAt &&
+          other.occurredTime == occurredTime &&
           other.title == title &&
           other.value == value &&
           other.unit == unit &&
@@ -88,6 +95,7 @@ class CreateDailyRecordDto {
   int get hashCode =>
       kind.hashCode +
       occurredAt.hashCode +
+      occurredTime.hashCode +
       title.hashCode +
       value.hashCode +
       unit.hashCode +
