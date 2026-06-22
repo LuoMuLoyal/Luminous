@@ -155,7 +155,7 @@ class _MonthDayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF159B55);
+    final accent = surface.accent;
     final color = day.inMonth
         ? Theme.of(context).colorScheme.onSurface
         : surface.mute;
@@ -183,7 +183,9 @@ class _MonthDayCell extends StatelessWidget {
                   child: Text(
                     '${day.day}',
                     style: typography.caption.copyWith(
-                      color: day.selected ? Colors.white : color,
+                      color: day.selected
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : color,
                       fontWeight: day.selected
                           ? FontWeight.w600
                           : FontWeight.w400,
@@ -253,7 +255,7 @@ class _FilterRow extends StatelessWidget {
                 filter.selected
                     ? Icons.check_box_rounded
                     : Icons.check_box_outline_blank_rounded,
-                color: filter.selected ? const Color(0xFF159B55) : surface.mute,
+                color: filter.selected ? surface.accent : surface.mute,
                 size: 18,
               ),
               const SizedBox(width: AppSpacingTokens.sm),

@@ -166,14 +166,14 @@ class _CurrentMedicineEditPageState
                 values: HealthMedicineSource.values,
                 onChanged: (v) => setState(() => _source = v),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _sourceRefIdController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldSourceRefId,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 key: const Key('medicine-displayname-field'),
                 controller: _displayNameController,
@@ -181,46 +181,46 @@ class _CurrentMedicineEditPageState
                   labelText: l10n.mineEditFieldDisplayName,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _strengthTextController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldStrengthText,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _doseTextController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldDoseText,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _routeController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldRoute),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _startedAtController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldStartedAt,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _noteController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
                 maxLines: 3,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacingTokens.lg),
               ElevatedButton(
                 key: const Key('medicine-save-button'),
                 onPressed: _onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
               if (!isNew) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacingTokens.sm),
                 OutlinedButton(
                   key: const Key('medicine-delete-button'),
                   onPressed: _onDelete,

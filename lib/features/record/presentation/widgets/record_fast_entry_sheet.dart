@@ -64,7 +64,7 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
               l10n.recordFastEntryDateHint(widget.occurredAt),
               style: Theme.of(
                 context,
-              ).textTheme.bodySmall?.copyWith(color: Colors.black54),
+              ).textTheme.bodySmall?.copyWith(color: AppColorTokens.mute),
             ),
             const SizedBox(height: AppSpacingTokens.md),
             Wrap(
@@ -73,7 +73,9 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
               children: [
                 for (var index = 0; index < choices.length; index += 1)
                   _QuickChoiceChip(
-                    key: Key('record-fast-entry-choice-${widget.kind.name}-$index'),
+                    key: Key(
+                      'record-fast-entry-choice-${widget.kind.name}-$index',
+                    ),
                     label: choices[index].label,
                     enabled: !_saving,
                     onTap: () => _saveChoice(choices[index]),
@@ -101,7 +103,9 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
   Future<void> _saveChoice(_QuickChoice choice) async {
     setState(() => _saving = true);
     try {
-      await ref.read(dailyRecordRepositoryProvider).create(
+      await ref
+          .read(dailyRecordRepositoryProvider)
+          .create(
             DailyRecordCreateInput(
               kind: widget.kind,
               occurredAt: widget.occurredAt,
@@ -146,10 +150,7 @@ class _QuickChoiceChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ActionChip(
-      label: Text(label),
-      onPressed: enabled ? onTap : null,
-    );
+    return ActionChip(label: Text(label), onPressed: enabled ? onTap : null);
   }
 }
 
@@ -174,91 +175,91 @@ class _QuickChoice {
 List<_QuickChoice> _choicesFor(DailyRecordKind kind, AppLocalizations l10n) {
   return switch (kind) {
     DailyRecordKind.water => const [
-        _QuickChoice(label: '250 ml', value: '250', unit: 'ml'),
-        _QuickChoice(label: '500 ml', value: '500', unit: 'ml'),
-        _QuickChoice(label: '1 cup', value: '1', unit: 'cup'),
-        _QuickChoice(label: '1 time', value: '1', unit: 'times'),
-      ],
+      _QuickChoice(label: '250 ml', value: '250', unit: 'ml'),
+      _QuickChoice(label: '500 ml', value: '500', unit: 'ml'),
+      _QuickChoice(label: '1 cup', value: '1', unit: 'cup'),
+      _QuickChoice(label: '1 time', value: '1', unit: 'times'),
+    ],
     DailyRecordKind.meal => [
-        _QuickChoice(
-          label: l10n.recordFastChoiceMealBreakfast,
-          title: l10n.recordFastChoiceMealBreakfast,
-        ),
-        _QuickChoice(
-          label: l10n.recordFastChoiceMealLunch,
-          title: l10n.recordFastChoiceMealLunch,
-        ),
-        _QuickChoice(
-          label: l10n.recordFastChoiceMealDinner,
-          title: l10n.recordFastChoiceMealDinner,
-        ),
-        _QuickChoice(
-          label: l10n.recordFastChoiceMealSnack,
-          title: l10n.recordFastChoiceMealSnack,
-        ),
-      ],
+      _QuickChoice(
+        label: l10n.recordFastChoiceMealBreakfast,
+        title: l10n.recordFastChoiceMealBreakfast,
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceMealLunch,
+        title: l10n.recordFastChoiceMealLunch,
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceMealDinner,
+        title: l10n.recordFastChoiceMealDinner,
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceMealSnack,
+        title: l10n.recordFastChoiceMealSnack,
+      ),
+    ],
     DailyRecordKind.symptom => [
-        _QuickChoice(
-          label: l10n.recordFastChoiceSymptomHeadache,
-          title: l10n.recordFastChoiceSymptomHeadache,
-          value: l10n.recordFastChoiceSeverityMild,
-        ),
-        _QuickChoice(
-          label: l10n.recordFastChoiceSymptomStomachache,
-          title: l10n.recordFastChoiceSymptomStomachache,
-          value: l10n.recordFastChoiceSeverityMild,
-        ),
-        _QuickChoice(
-          label: l10n.recordFastChoiceSymptomDizzy,
-          title: l10n.recordFastChoiceSymptomDizzy,
-          value: l10n.recordFastChoiceSeverityMild,
-        ),
-        _QuickChoice(
-          label: l10n.recordFastChoiceSymptomFever,
-          title: l10n.recordFastChoiceSymptomFever,
-          value: l10n.recordFastChoiceSeverityMild,
-        ),
-      ],
+      _QuickChoice(
+        label: l10n.recordFastChoiceSymptomHeadache,
+        title: l10n.recordFastChoiceSymptomHeadache,
+        value: l10n.recordFastChoiceSeverityMild,
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceSymptomStomachache,
+        title: l10n.recordFastChoiceSymptomStomachache,
+        value: l10n.recordFastChoiceSeverityMild,
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceSymptomDizzy,
+        title: l10n.recordFastChoiceSymptomDizzy,
+        value: l10n.recordFastChoiceSeverityMild,
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceSymptomFever,
+        title: l10n.recordFastChoiceSymptomFever,
+        value: l10n.recordFastChoiceSeverityMild,
+      ),
+    ],
     DailyRecordKind.note => [
-        _QuickChoice(
-          label: l10n.recordFastChoiceNoteStable,
-          title: l10n.recordFastChoiceNoteStable,
-          note: l10n.recordFastChoiceNoteStable,
-        ),
-        _QuickChoice(
-          label: l10n.recordFastChoiceNoteTired,
-          title: l10n.recordFastChoiceNoteTired,
-          note: l10n.recordFastChoiceNoteTired,
-        ),
-        _QuickChoice(
-          label: l10n.recordFastChoiceNoteBusy,
-          title: l10n.recordFastChoiceNoteBusy,
-          note: l10n.recordFastChoiceNoteBusy,
-        ),
-        _QuickChoice(
-          label: l10n.recordFastChoiceNoteRecovered,
-          title: l10n.recordFastChoiceNoteRecovered,
-          note: l10n.recordFastChoiceNoteRecovered,
-        ),
-      ],
+      _QuickChoice(
+        label: l10n.recordFastChoiceNoteStable,
+        title: l10n.recordFastChoiceNoteStable,
+        note: l10n.recordFastChoiceNoteStable,
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceNoteTired,
+        title: l10n.recordFastChoiceNoteTired,
+        note: l10n.recordFastChoiceNoteTired,
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceNoteBusy,
+        title: l10n.recordFastChoiceNoteBusy,
+        note: l10n.recordFastChoiceNoteBusy,
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceNoteRecovered,
+        title: l10n.recordFastChoiceNoteRecovered,
+        note: l10n.recordFastChoiceNoteRecovered,
+      ),
+    ],
     DailyRecordKind.sleep => [
-        _QuickChoice(
-          label: '6h',
-          payload: <String, dynamic>{'durationMinutes': 360},
-        ),
-        _QuickChoice(
-          label: '7h',
-          payload: <String, dynamic>{'durationMinutes': 420},
-        ),
-        _QuickChoice(
-          label: '8h',
-          payload: <String, dynamic>{'durationMinutes': 480},
-        ),
-        _QuickChoice(
-          label: '9h',
-          payload: <String, dynamic>{'durationMinutes': 540},
-        ),
-      ],
+      _QuickChoice(
+        label: '6h',
+        payload: <String, dynamic>{'durationMinutes': 360},
+      ),
+      _QuickChoice(
+        label: '7h',
+        payload: <String, dynamic>{'durationMinutes': 420},
+      ),
+      _QuickChoice(
+        label: '8h',
+        payload: <String, dynamic>{'durationMinutes': 480},
+      ),
+      _QuickChoice(
+        label: '9h',
+        payload: <String, dynamic>{'durationMinutes': 540},
+      ),
+    ],
     _ => const [],
   };
 }

@@ -124,8 +124,8 @@ class RecordQuickEntryPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rows = <List<RecordQuickAction>>[];
-    for (var index = 0; index < actions.length; index += 5) {
-      rows.add(actions.skip(index).take(5).toList(growable: false));
+    for (var index = 0; index < actions.length; index += 3) {
+      rows.add(actions.skip(index).take(3).toList(growable: false));
     }
 
     return Column(
@@ -140,16 +140,16 @@ class RecordQuickEntryPanel extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              for (var rowIndex = 0;
-                  rowIndex < rows.length;
-                  rowIndex += 1) ...[
+              for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) ...[
                 SizedBox(
                   height: 92,
                   child: Row(
                     children: [
-                      for (var index = 0;
-                          index < rows[rowIndex].length;
-                          index += 1) ...[
+                      for (
+                        var index = 0;
+                        index < rows[rowIndex].length;
+                        index += 1
+                      ) ...[
                         Expanded(
                           child: _QuickRecordTile(
                             action: rows[rowIndex][index],
@@ -165,9 +165,11 @@ class RecordQuickEntryPanel extends StatelessWidget {
                             height: AppSpacingTokens.x4l,
                           ),
                       ],
-                      for (var filler = rows[rowIndex].length;
-                          filler < 5;
-                          filler += 1)
+                      for (
+                        var filler = rows[rowIndex].length;
+                        filler < 3;
+                        filler += 1
+                      )
                         const Expanded(child: SizedBox.shrink()),
                     ],
                   ),

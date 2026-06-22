@@ -20,7 +20,7 @@ class RecordIndentedDivider extends StatelessWidget {
       thickness: 1,
       indent: indent,
       endIndent: endIndent,
-      color: surface.hairline.withValues(alpha: 0.62),
+      color: surface.hairline,
     );
   }
 }
@@ -40,11 +40,7 @@ class RecordShortVerticalDivider extends StatelessWidget {
     return Center(
       child: SizedBox(
         height: height,
-        child: VerticalDivider(
-          width: 1,
-          thickness: 1,
-          color: surface.hairline.withValues(alpha: 0.62),
-        ),
+        child: VerticalDivider(width: 1, thickness: 1, color: surface.hairline),
       ),
     );
   }

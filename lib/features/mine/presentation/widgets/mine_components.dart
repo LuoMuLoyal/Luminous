@@ -118,8 +118,8 @@ class MineIconBadge extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.backgroundColor,
-    this.size = 44,
-    this.iconSize = 22,
+    this.size = 48,
+    this.iconSize = 24,
   });
 
   final IconData icon;
@@ -159,7 +159,7 @@ class MineStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.11),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
       ),
       child: Padding(

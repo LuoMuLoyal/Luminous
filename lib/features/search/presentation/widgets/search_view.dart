@@ -98,13 +98,13 @@ class MedicineSearchLoadingView extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _SkeletonBlock(height: 48),
+              AppInlineSkeletonBlock(height: 48),
               SizedBox(height: AppSpacingTokens.md),
-              _SkeletonBlock(height: 160),
+              AppInlineSkeletonBlock(height: 160),
               SizedBox(height: AppSpacingTokens.md),
-              _SkeletonBlock(height: 160),
+              AppInlineSkeletonBlock(height: 160),
               SizedBox(height: AppSpacingTokens.md),
-              _SkeletonBlock(height: 160),
+              AppInlineSkeletonBlock(height: 160),
             ],
           ),
         ),
@@ -225,10 +225,9 @@ class _MobileSearchLayout extends StatelessWidget {
                 surface: surface,
                 expandedAction: true,
                 onTap: () => onResultSelected(result.id),
-                onAddToCurrentMedicines:
-                    onAddToCurrentMedicines != null
-                        ? () => onAddToCurrentMedicines!(result)
-                        : null,
+                onAddToCurrentMedicines: onAddToCurrentMedicines != null
+                    ? () => onAddToCurrentMedicines!(result)
+                    : null,
               ),
             ),
           ),
@@ -391,38 +390,22 @@ class _DesktopSearchPanel extends StatelessWidget {
                     typography: typography,
                     surface: surface,
                     onTap: () => onResultSelected(result.id),
-                    onAddToCurrentMedicines:
-                        onAddToCurrentMedicines != null
-                            ? () => onAddToCurrentMedicines!(result)
-                            : null,
+                    onAddToCurrentMedicines: onAddToCurrentMedicines != null
+                        ? () => onAddToCurrentMedicines!(result)
+                        : null,
                   ),
                 ),
               ),
               if (state.results.isEmpty)
-                NoResultTools(l10n: l10n, typography: typography, surface: surface),
+                NoResultTools(
+                  l10n: l10n,
+                  typography: typography,
+                  surface: surface,
+                ),
             ],
           ],
         ),
       ),
-    );
-  }
-}
-
-class _SkeletonBlock extends StatelessWidget {
-  const _SkeletonBlock({required this.height});
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-      ),
-      child: SizedBox(height: height, width: double.infinity),
     );
   }
 }

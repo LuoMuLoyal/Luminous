@@ -94,7 +94,7 @@ class AppStateMessageView extends StatelessWidget {
   Color _accentFor(AppThemeSurface surface) {
     return switch (tone) {
       AppStateTone.neutral => surface.link,
-      AppStateTone.success => const Color(0xFF159B55),
+      AppStateTone.success => surface.accent,
       AppStateTone.warning => surface.warning,
       AppStateTone.danger => surface.error,
     };

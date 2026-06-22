@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -185,19 +186,7 @@ IconData overviewFallbackIcon(RecordEntryType type) {
 }
 
 Color overviewFallbackColor(RecordEntryType type) {
-  return switch (type) {
-    RecordEntryType.medication => AppColorTokens.cyanDeep,
-    RecordEntryType.symptom => AppColorTokens.warning,
-    RecordEntryType.water => AppColorTokens.link,
-    RecordEntryType.meal => AppColorTokens.cyanDeep,
-    RecordEntryType.vitals => AppColorTokens.error,
-    RecordEntryType.mood => AppColorTokens.violet,
-    RecordEntryType.activity => AppColorTokens.gradientDevelopStart,
-    RecordEntryType.sleep => AppColorTokens.violet,
-    RecordEntryType.heartRate => AppColorTokens.error,
-    RecordEntryType.weight => AppColorTokens.linkDeep,
-    RecordEntryType.note => AppColorTokens.link,
-  };
+  return RecordTypeColors.foreground(type);
 }
 
 String mobileFilterLabel(AppLocalizations l10n, RecordFilter filter) {

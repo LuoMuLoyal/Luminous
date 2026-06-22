@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -51,7 +50,7 @@ abstract final class AppTheme {
         onSurface: colors.ink,
         onSurfaceVariant: colors.surface.body,
         outline: colors.surface.hairline,
-        error: const Color(0xFFFF6363),
+        error: AppColorTokens.errorDark,
         onError: AppColorTokens.primary,
       ),
       brightness: Brightness.dark,
@@ -126,7 +125,7 @@ _ResolvedThemePalette _paletteColors(
       ),
     (AppThemePalettePreference.classic, Brightness.dark) =>
       const _ResolvedThemePalette(
-        primary: AppColors.seed,
+        primary: AppColorTokens.seed,
         onPrimary: AppColorTokens.onPrimary,
         secondary: AppColorTokens.link,
         onSecondary: AppColorTokens.onPrimary,

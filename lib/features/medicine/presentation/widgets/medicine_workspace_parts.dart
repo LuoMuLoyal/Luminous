@@ -90,7 +90,7 @@ class MedicineSectionHeader extends StatelessWidget {
           child: Text(
             title,
             style: (compact ? typography.bodyMdStrong : typography.displaySm)
-                .copyWith(fontWeight: FontWeight.w800, letterSpacing: 0),
+                .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

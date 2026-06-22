@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/data/repositories/lucent_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
 
 class MockRecordRepository implements RecordRepository {
@@ -43,21 +44,6 @@ class MockRecordRepository implements RecordRepository {
     );
   }
 
-  static const _meal = Color(0xFF149B5A);
-  static const _mealSoft = Color(0xFFEAF8EF);
-  static const _vitals = Color(0xFFFF4D57);
-  static const _vitalsSoft = Color(0xFFFFEEEE);
-  static const _water = Color(0xFF428BFF);
-  static const _waterSoft = Color(0xFFEFF5FF);
-  static const _mood = Color(0xFF7D67E8);
-  static const _moodSoft = Color(0xFFF0ECFF);
-  static const _symptom = Color(0xFFFF8A00);
-  static const _symptomSoft = Color(0xFFFFF2E0);
-  static const _medication = Color(0xFFFF7A1A);
-  static const _medicationSoft = Color(0xFFFFF0E6);
-  static const _sleep = Color(0xFF7B61FF);
-  static const _sleepSoft = Color(0xFFF0ECFF);
-
   static List<RecordWeekDay> _weekDaysFor(DateTime selectedDate) {
     final date = DateTime(
       selectedDate.year,
@@ -66,13 +52,13 @@ class MockRecordRepository implements RecordRepository {
     );
     final monday = date.subtract(Duration(days: date.weekday - 1));
     const markerPattern = <List<Color>>[
-      <Color>[_meal],
-      <Color>[_meal],
-      <Color>[_symptom],
-      <Color>[_meal, _water],
-      <Color>[_mood],
-      <Color>[_vitals],
-      <Color>[_water],
+      <Color>[RecordTypeColors.meal],
+      <Color>[RecordTypeColors.meal],
+      <Color>[RecordTypeColors.symptom],
+      <Color>[RecordTypeColors.meal, RecordTypeColors.water],
+      <Color>[RecordTypeColors.mood],
+      <Color>[RecordTypeColors.vital],
+      <Color>[RecordTypeColors.water],
     ];
 
     return List.generate(7, (index) {
@@ -107,122 +93,122 @@ class MockRecordRepository implements RecordRepository {
       day: 12,
       inMonth: true,
       selected: false,
-      markers: <Color>[_meal],
+      markers: <Color>[RecordTypeColors.meal],
     ),
     RecordCalendarDay(
       day: 13,
       inMonth: true,
       selected: false,
-      markers: <Color>[_meal],
+      markers: <Color>[RecordTypeColors.meal],
     ),
     RecordCalendarDay(
       day: 14,
       inMonth: true,
       selected: false,
-      markers: <Color>[_symptom],
+      markers: <Color>[RecordTypeColors.symptom],
     ),
     RecordCalendarDay(
       day: 15,
       inMonth: true,
       selected: true,
-      markers: <Color>[_meal, _water],
+      markers: <Color>[RecordTypeColors.meal, RecordTypeColors.water],
     ),
     RecordCalendarDay(
       day: 16,
       inMonth: true,
       selected: false,
-      markers: <Color>[_mood],
+      markers: <Color>[RecordTypeColors.mood],
     ),
     RecordCalendarDay(
       day: 17,
       inMonth: true,
       selected: false,
-      markers: <Color>[_vitals],
+      markers: <Color>[RecordTypeColors.vital],
       hasAlert: true,
     ),
     RecordCalendarDay(
       day: 18,
       inMonth: true,
       selected: false,
-      markers: <Color>[_water],
+      markers: <Color>[RecordTypeColors.water],
     ),
     RecordCalendarDay(
       day: 19,
       inMonth: true,
       selected: false,
-      markers: <Color>[_meal],
+      markers: <Color>[RecordTypeColors.meal],
     ),
     RecordCalendarDay(
       day: 20,
       inMonth: true,
       selected: false,
-      markers: <Color>[_medication],
+      markers: <Color>[RecordTypeColors.medication],
     ),
     RecordCalendarDay(
       day: 21,
       inMonth: true,
       selected: false,
-      markers: <Color>[_water],
+      markers: <Color>[RecordTypeColors.water],
     ),
     RecordCalendarDay(
       day: 22,
       inMonth: true,
       selected: false,
-      markers: <Color>[_meal],
+      markers: <Color>[RecordTypeColors.meal],
     ),
     RecordCalendarDay(
       day: 23,
       inMonth: true,
       selected: false,
-      markers: <Color>[_mood],
+      markers: <Color>[RecordTypeColors.mood],
     ),
     RecordCalendarDay(
       day: 24,
       inMonth: true,
       selected: false,
-      markers: <Color>[_medication],
+      markers: <Color>[RecordTypeColors.medication],
     ),
     RecordCalendarDay(
       day: 25,
       inMonth: true,
       selected: false,
-      markers: <Color>[_water],
+      markers: <Color>[RecordTypeColors.water],
     ),
     RecordCalendarDay(
       day: 26,
       inMonth: true,
       selected: false,
-      markers: <Color>[_meal],
+      markers: <Color>[RecordTypeColors.meal],
     ),
     RecordCalendarDay(
       day: 27,
       inMonth: true,
       selected: false,
-      markers: <Color>[_symptom],
+      markers: <Color>[RecordTypeColors.symptom],
     ),
     RecordCalendarDay(
       day: 28,
       inMonth: true,
       selected: false,
-      markers: <Color>[_meal],
+      markers: <Color>[RecordTypeColors.meal],
     ),
     RecordCalendarDay(
       day: 29,
       inMonth: true,
       selected: false,
-      markers: <Color>[_water],
+      markers: <Color>[RecordTypeColors.water],
     ),
     RecordCalendarDay(
       day: 30,
       inMonth: true,
       selected: false,
-      markers: <Color>[_water],
+      markers: <Color>[RecordTypeColors.water],
     ),
     RecordCalendarDay(
       day: 31,
       inMonth: true,
       selected: false,
-      markers: <Color>[_mood],
+      markers: <Color>[RecordTypeColors.mood],
     ),
     RecordCalendarDay(day: 1, inMonth: false, selected: false, markers: []),
   ];
@@ -233,40 +219,40 @@ class MockRecordRepository implements RecordRepository {
       icon: Icons.restaurant_menu_rounded,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryTimesUnit,
-      accent: _meal,
-      softColor: _mealSoft,
+      accent: RecordTypeColors.meal,
+      softColor: RecordTypeColors.mealSoft,
     ),
     RecordQuickAction(
       type: RecordEntryType.vitals,
       icon: Icons.favorite_rounded,
       titleKey: RecordCopyKey.typeVitals,
       subtitleKey: RecordCopyKey.summaryNormal,
-      accent: _vitals,
-      softColor: _vitalsSoft,
+      accent: RecordTypeColors.vital,
+      softColor: RecordTypeColors.vitalSoft,
     ),
     RecordQuickAction(
       type: RecordEntryType.water,
       icon: Icons.local_drink_rounded,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
-      accent: _water,
-      softColor: _waterSoft,
+      accent: RecordTypeColors.water,
+      softColor: RecordTypeColors.waterSoft,
     ),
     RecordQuickAction(
       type: RecordEntryType.symptom,
       icon: Icons.sick_outlined,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: _symptom,
-      softColor: _symptomSoft,
+      accent: RecordTypeColors.symptom,
+      softColor: RecordTypeColors.symptomSoft,
     ),
     RecordQuickAction(
       type: RecordEntryType.medication,
       icon: Icons.medication_rounded,
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: _medication,
-      softColor: _medicationSoft,
+      accent: RecordTypeColors.medication,
+      softColor: RecordTypeColors.medicationSoft,
     ),
     // Deferred by Product_Vision MVP: keep the lightweight mood entry shape
     // because it may support future self-check-ins, but do not surface it as a
@@ -276,24 +262,24 @@ class MockRecordRepository implements RecordRepository {
       icon: Icons.mood_rounded,
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: _mood,
-      softColor: _moodSoft,
+      accent: RecordTypeColors.mood,
+      softColor: RecordTypeColors.moodSoft,
     ),
     RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: Icons.dark_mode_rounded,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: _sleep,
-      softColor: _sleepSoft,
+      accent: RecordTypeColors.sleep,
+      softColor: RecordTypeColors.sleepSoft,
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
       icon: Icons.notes_rounded,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: _medication,
-      softColor: _medicationSoft,
+      accent: RecordTypeColors.medication,
+      softColor: RecordTypeColors.medicationSoft,
     ),
   ];
 
@@ -314,8 +300,8 @@ class MockRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.summaryMealTitle,
       value: '2',
       unitKey: RecordCopyKey.summaryTimesUnit,
-      accent: _meal,
-      softColor: _mealSoft,
+      accent: RecordTypeColors.meal,
+      softColor: RecordTypeColors.mealSoft,
     ),
     RecordSummaryItem(
       type: RecordEntryType.water,
@@ -323,8 +309,8 @@ class MockRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.summaryWaterTitle,
       value: '5 / 8',
       unitKey: RecordCopyKey.summaryCupsUnit,
-      accent: _water,
-      softColor: _waterSoft,
+      accent: RecordTypeColors.water,
+      softColor: RecordTypeColors.waterSoft,
     ),
     RecordSummaryItem(
       type: RecordEntryType.vitals,
@@ -332,8 +318,8 @@ class MockRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.summaryLatestVitalTitle,
       value: '118/76',
       detailKey: RecordCopyKey.summaryNormal,
-      accent: _vitals,
-      softColor: _vitalsSoft,
+      accent: RecordTypeColors.vital,
+      softColor: RecordTypeColors.vitalSoft,
     ),
   ];
 
@@ -342,35 +328,35 @@ class MockRecordRepository implements RecordRepository {
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
       icon: Icons.restaurant_menu_rounded,
-      accent: _meal,
+      accent: RecordTypeColors.meal,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
       icon: Icons.favorite_rounded,
-      accent: _vitals,
+      accent: RecordTypeColors.vital,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
       icon: Icons.local_drink_rounded,
-      accent: _water,
+      accent: RecordTypeColors.water,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
       icon: Icons.sick_outlined,
-      accent: _symptom,
+      accent: RecordTypeColors.symptom,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
       icon: Icons.medication_rounded,
-      accent: _medication,
+      accent: RecordTypeColors.medication,
       selected: true,
     ),
     // Deferred by Product_Vision MVP: keep mood filters available for future
@@ -379,21 +365,21 @@ class MockRecordRepository implements RecordRepository {
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
       icon: Icons.mood_rounded,
-      accent: _mood,
+      accent: RecordTypeColors.mood,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
       icon: Icons.dark_mode_rounded,
-      accent: _sleep,
+      accent: RecordTypeColors.sleep,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
       icon: Icons.notes_rounded,
-      accent: _medication,
+      accent: RecordTypeColors.medication,
       selected: true,
     ),
   ];
@@ -435,8 +421,8 @@ class MockRecordRepository implements RecordRepository {
       time: '08:30',
       type: RecordEntryType.medication,
       icon: Icons.medication_rounded,
-      accent: _medication,
-      softColor: _medicationSoft,
+      accent: RecordTypeColors.medication,
+      softColor: RecordTypeColors.medicationSoft,
       titleKey: RecordCopyKey.typeMedication,
       valueKey: RecordCopyKey.timelineMedicationName,
       detailKey: RecordCopyKey.timelineMedicationDetail,
@@ -446,8 +432,8 @@ class MockRecordRepository implements RecordRepository {
       time: '09:15',
       type: RecordEntryType.water,
       icon: Icons.local_drink_rounded,
-      accent: _water,
-      softColor: _waterSoft,
+      accent: RecordTypeColors.water,
+      softColor: RecordTypeColors.waterSoft,
       titleKey: RecordCopyKey.typeWater,
       valueKey: RecordCopyKey.timelineWaterAmount,
       detailKey: RecordCopyKey.timelineWaterProgress,
@@ -457,8 +443,8 @@ class MockRecordRepository implements RecordRepository {
       time: '12:45',
       type: RecordEntryType.meal,
       icon: Icons.restaurant_menu_rounded,
-      accent: _meal,
-      softColor: _mealSoft,
+      accent: RecordTypeColors.meal,
+      softColor: RecordTypeColors.mealSoft,
       titleKey: RecordCopyKey.timelineMealLunch,
       valueKey: RecordCopyKey.timelineMealName,
       detailKey: RecordCopyKey.timelineMealNutrition,
@@ -470,8 +456,8 @@ class MockRecordRepository implements RecordRepository {
       time: '15:20',
       type: RecordEntryType.symptom,
       icon: Icons.sick_outlined,
-      accent: _symptom,
-      softColor: _symptomSoft,
+      accent: RecordTypeColors.symptom,
+      softColor: RecordTypeColors.symptomSoft,
       titleKey: RecordCopyKey.timelineSymptomRecord,
       detailKey: RecordCopyKey.timelineSymptomDetail,
       badgeKey: RecordCopyKey.timelineManualBadge,
@@ -484,8 +470,8 @@ class MockRecordRepository implements RecordRepository {
       time: '10:30',
       type: RecordEntryType.mood,
       icon: Icons.mood_rounded,
-      accent: _mood,
-      softColor: _moodSoft,
+      accent: RecordTypeColors.mood,
+      softColor: RecordTypeColors.moodSoft,
       titleKey: RecordCopyKey.timelineMoodCalm,
       detailKey: RecordCopyKey.timelineMoodDetail,
       trailingIcon: Icons.chevron_right_rounded,
@@ -494,8 +480,8 @@ class MockRecordRepository implements RecordRepository {
       time: '23:30',
       type: RecordEntryType.sleep,
       icon: Icons.dark_mode_rounded,
-      accent: _sleep,
-      softColor: _sleepSoft,
+      accent: RecordTypeColors.sleep,
+      softColor: RecordTypeColors.sleepSoft,
       titleKey: RecordCopyKey.timelineSleepRecord,
       detailKey: RecordCopyKey.timelineSleepDetail,
       badgeKey: RecordCopyKey.summaryNormal,
@@ -505,8 +491,8 @@ class MockRecordRepository implements RecordRepository {
       time: '16:00',
       type: RecordEntryType.note,
       icon: Icons.notes_rounded,
-      accent: _medication,
-      softColor: _medicationSoft,
+      accent: RecordTypeColors.medication,
+      softColor: RecordTypeColors.medicationSoft,
       titleKey: RecordCopyKey.typeNote,
       trailingIcon: Icons.chevron_right_rounded,
     ),
@@ -514,8 +500,8 @@ class MockRecordRepository implements RecordRepository {
       time: '06:10',
       type: RecordEntryType.weight,
       icon: Icons.water_drop_outlined,
-      accent: _water,
-      softColor: _waterSoft,
+      accent: RecordTypeColors.water,
+      softColor: RecordTypeColors.waterSoft,
       titleKey: RecordCopyKey.typeWeight,
       value: '66.2 kg',
       detailKey: RecordCopyKey.timelineWeightDetail,
@@ -528,7 +514,7 @@ class MockRecordRepository implements RecordRepository {
       kind: RecordTrendKind.bloodSugar,
       titleKey: RecordCopyKey.trendBloodSugarTitle,
       rangeKey: RecordCopyKey.range7Days,
-      color: _meal,
+      color: RecordTypeColors.meal,
       points: <double>[6.4, 7.9, 7.1, 8.6, 6.3, 8.1, 6.7],
       legendKey: RecordCopyKey.trendBloodSugarLegend,
     ),
@@ -536,7 +522,7 @@ class MockRecordRepository implements RecordRepository {
       kind: RecordTrendKind.hydration,
       titleKey: RecordCopyKey.trendHydrationTitle,
       rangeKey: RecordCopyKey.range30Days,
-      color: _water,
+      color: RecordTypeColors.water,
       points: <double>[],
       bars: <double>[
         0.78,

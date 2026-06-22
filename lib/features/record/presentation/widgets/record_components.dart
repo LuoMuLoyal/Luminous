@@ -106,7 +106,7 @@ class RecordHeaderActionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     const accent = AppColorTokens.cyanDeep;
     final foreground = emphasized
-        ? Colors.white
+        ? Theme.of(context).colorScheme.onPrimary
         : Theme.of(context).colorScheme.onSurface;
 
     return Tooltip(
@@ -156,8 +156,8 @@ class RecordIconBadge extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.backgroundColor,
-    this.size = 42,
-    this.iconSize = 22,
+    this.size = 48,
+    this.iconSize = 24,
   });
 
   final IconData icon;
@@ -197,7 +197,7 @@ class RecordPill extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
       ),
       child: Padding(

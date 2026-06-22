@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+
 const mineGreen = AppColorTokens.cyanDeep;
 
 class MinePanel extends StatelessWidget {
@@ -30,7 +31,11 @@ class MinePanel extends StatelessWidget {
 }
 
 class MineSectionTitle extends StatelessWidget {
-  const MineSectionTitle({super.key, required this.title, required this.typography});
+  const MineSectionTitle({
+    super.key,
+    required this.title,
+    required this.typography,
+  });
 
   final String title;
   final AppTypographyScale typography;
@@ -39,7 +44,10 @@ class MineSectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: typography.displaySm.copyWith(fontWeight: FontWeight.w800, letterSpacing: 0),
+      style: typography.displaySm.copyWith(
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0,
+      ),
     );
   }
 }

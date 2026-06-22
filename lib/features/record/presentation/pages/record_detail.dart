@@ -12,6 +12,7 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
@@ -129,31 +130,31 @@ class _RecordDetailBody extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: AppSpacingTokens.lg),
-                  _DetailRows(
-                    rows: [
-                      _DetailRowData(
-                        l10n.recordCreateFieldKind,
-                        _kindLabel(l10n, record.kind),
-                      ),
-                      if (_nonEmpty(record.value) != null)
-                        _DetailRowData(
-                          l10n.recordDetailValueLabel,
-                          _valueWithUnit(record.value!, record.unit),
-                        ),
-                      if (_nonEmpty(record.note) != null)
-                        _DetailRowData(l10n.recordCreateFieldNote, record.note!),
-                      if (_nonEmpty(record.source) != null)
-                        _DetailRowData(
-                          l10n.recordDetailSourceLabel,
-                          record.source!,
-                        ),
-                      _DetailRowData(
-                        l10n.recordDetailUpdatedAtLabel,
-                        formatRecordDateTimeLabel(record.updatedAt),
-                      ),
-                    ],
+              _DetailRows(
+                rows: [
+                  _DetailRowData(
+                    l10n.recordCreateFieldKind,
+                    _kindLabel(l10n, record.kind),
                   ),
-                  ..._buildSleepDetails(l10n, record.payload),
+                  if (_nonEmpty(record.value) != null)
+                    _DetailRowData(
+                      l10n.recordDetailValueLabel,
+                      _valueWithUnit(record.value!, record.unit),
+                    ),
+                  if (_nonEmpty(record.note) != null)
+                    _DetailRowData(l10n.recordCreateFieldNote, record.note!),
+                  if (_nonEmpty(record.source) != null)
+                    _DetailRowData(
+                      l10n.recordDetailSourceLabel,
+                      record.source!,
+                    ),
+                  _DetailRowData(
+                    l10n.recordDetailUpdatedAtLabel,
+                    formatRecordDateTimeLabel(record.updatedAt),
+                  ),
+                ],
+              ),
+              ..._buildSleepDetails(l10n, record.payload),
             ],
           ),
         ),
@@ -406,47 +407,17 @@ class _KindIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (icon, color, background) = switch (kind) {
-      DailyRecordKind.water => (
-        Icons.water_drop_rounded,
-        const Color(0xFF428BFF),
-        const Color(0xFFE8F2FF),
-      ),
-      DailyRecordKind.meal => (
-        Icons.restaurant_rounded,
-        const Color(0xFFFF8A00),
-        const Color(0xFFFFF2E0),
-      ),
-      DailyRecordKind.vital => (
-        Icons.favorite_rounded,
-        const Color(0xFFFF4D57),
-        const Color(0xFFFFEEEE),
-      ),
-      DailyRecordKind.mood => (
-        Icons.sentiment_satisfied_rounded,
-        const Color(0xFF7D67E8),
-        const Color(0xFFF0ECFF),
-      ),
-      DailyRecordKind.symptom => (
-        Icons.healing_rounded,
-        const Color(0xFFFF8A00),
-        const Color(0xFFFFF2E0),
-      ),
-      DailyRecordKind.activity => (
-        Icons.directions_run_rounded,
-        const Color(0xFF16A66A),
-        const Color(0xFFEAF9F1),
-      ),
-      DailyRecordKind.note => (
-        Icons.notes_rounded,
-        const Color(0xFF428BFF),
-        const Color(0xFFE8F2FF),
-      ),
-      DailyRecordKind.sleep => (
-        Icons.dark_mode_rounded,
-        const Color(0xFF7D67E8),
-        const Color(0xFFF0ECFF),
-      ),
+    final (color, background) = RecordTypeColors.forKind(kind);
+
+    final icon = switch (kind) {
+      DailyRecordKind.water => Icons.water_drop_rounded,
+      DailyRecordKind.meal => Icons.restaurant_rounded,
+      DailyRecordKind.vital => Icons.favorite_rounded,
+      DailyRecordKind.mood => Icons.sentiment_satisfied_rounded,
+      DailyRecordKind.symptom => Icons.healing_rounded,
+      DailyRecordKind.activity => Icons.directions_run_rounded,
+      DailyRecordKind.note => Icons.notes_rounded,
+      DailyRecordKind.sleep => Icons.dark_mode_rounded,
     };
 
     return DecoratedBox(
