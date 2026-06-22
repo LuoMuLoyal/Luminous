@@ -581,6 +581,74 @@ void main() {
     expect(input.note, isNull);
   });
 
+  testWidgets(
+    'Record edit page preserves duration-only sleep payload when saving note edits',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final repo = _FakeDailyRecordRepository(
+        itemKind: DailyRecordKind.sleep,
+        itemTitle: null,
+        itemValue: null,
+        itemUnit: null,
+        itemNote: null,
+        itemPayload: {'durationMinutes': 480},
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            dailyRecordRepositoryProvider.overrideWithValue(repo),
+            authSessionProvider.overrideWith(
+              () => _SignedInAuthSessionNotifier(),
+            ),
+          ],
+          child: MaterialApp.router(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            locale: const Locale('zh'),
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: _buildEditTestRouter(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('sleep-bedtime-picker')), findsOneWidget);
+      expect(find.byKey(const Key('sleep-waketime-picker')), findsOneWidget);
+
+      await tester.enterText(
+        find.byKey(const Key('daily-record-note-field')),
+        'edit-preserve-time',
+      );
+
+      final saveButton = find.byKey(const Key('record-edit-save-action'));
+      await tester.ensureVisible(saveButton);
+      await tester.pumpAndSettle();
+      await tester.tap(saveButton);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 3));
+
+      expect(repo.updateCalledWith, 'test-id-1');
+      final input = repo.lastUpdateInput;
+      expect(input, isNotNull);
+      expect(input!.note, 'edit-preserve-time');
+      expect(input.payload, {'durationMinutes': 480});
+    },
+  );
+
   testWidgets('Record edit page shows delete confirmation and deletes', (
     tester,
   ) async {

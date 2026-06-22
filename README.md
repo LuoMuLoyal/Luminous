@@ -58,7 +58,7 @@ its built-in default test account values.
   `dart run melos run daily`
   `dart run melos run fullstack`
   `dart run melos run fullstack-today-report`
-- `tool/run_fullstack_checks.dart` starts Lucent test runtime through `pnpm --dir ../Lucent test:runtime:start`, checks `GET http://127.0.0.1:3000/api/v1/health`, then runs the four Android-emulator lanes sequentially.
+- `tool/run_fullstack_checks.dart` starts Lucent test runtime through `pnpm --dir ../Lucent test:runtime:start`, checks `GET http://127.0.0.1:3000/api/v1/health`, then runs the five Android-emulator lanes sequentially.
 - `tool/run_fullstack_checks.dart` now prefers `.env.fullstack-e2e` via `--dart-define-from-file` when that file exists.
 - Shared repo hooks live in `.githooks/`. After cloning, run `dart run tool/install_git_hooks.dart` once to point `core.hooksPath` at that folder. Hook entrypoints now call Dart directly instead of delegating through PowerShell wrappers.
 - Current hook scope: `pre-commit` runs `flutter gen-l10n`, `dart format --output=none --set-exit-if-changed` on staged Dart files, and `flutter analyze`; `pre-push` runs `tool/run_daily_checks.dart`.
