@@ -394,9 +394,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
     if (kind != DailyRecordKind.sleep) return null;
     final minutes = _resolvedSleepDurationMinutes();
     if (minutes == null || minutes <= 0) return null;
-    final payload = <String, dynamic>{
-      'durationMinutes': minutes,
-    };
+    final payload = <String, dynamic>{'durationMinutes': minutes};
     if (_sleepBedtime != null && _sleepWakeTime != null) {
       // Sleep date convention: occurredAt is the wake date.
       // endAt falls on the wake date; startAt is the evening before
