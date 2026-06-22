@@ -95,6 +95,7 @@ Future<void> runFullstackChecks(
     'integration_test/auth/fullstack_auth_smoke_test.dart',
     'integration_test/record/fullstack_record_lane_test.dart',
     'integration_test/record/fullstack_sleep_lane_test.dart',
+    'integration_test/record/fullstack_quick_choice_time_lane_test.dart',
     'integration_test/app/fullstack_today_report_lane_test.dart',
   ];
 

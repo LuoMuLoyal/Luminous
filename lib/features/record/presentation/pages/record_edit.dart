@@ -52,6 +52,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
   bool _loaded = false;
   bool _loadingRecord = false;
   DailyRecordAttachment? _existingImageAttachment;
+  Map<String, dynamic>? _existingSleepPayload;
   _PendingDailyRecordImage? _selectedImage;
   bool _attachmentsChanged = false;
   DateTime? _recordOccurredAt;
@@ -95,6 +96,9 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
                   attachment.kind == DailyRecordAttachmentKind.image,
             )
             .firstOrNull;
+        _existingSleepPayload = record.payload == null
+            ? null
+            : Map<String, dynamic>.from(record.payload!);
         _selectedImage = null;
         _attachmentsChanged = false;
         _loadSleepPayload(record.payload);
@@ -388,7 +392,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
 
   Map<String, dynamic>? _buildSleepPayload(DailyRecordKind kind) {
     if (kind != DailyRecordKind.sleep) return null;
-    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
+    final minutes = _resolvedSleepDurationMinutes();
     if (minutes == null || minutes <= 0) return null;
     final payload = <String, dynamic>{
       'durationMinutes': minutes,
@@ -431,8 +435,22 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
 
   bool _isValidSleepValue() {
     if (_kind != DailyRecordKind.sleep) return true;
-    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
+    final minutes = _resolvedSleepDurationMinutes();
     return minutes != null && minutes > 0;
+  }
+
+  int? _resolvedSleepDurationMinutes() {
+    final computed = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
+    if (computed != null && computed > 0) {
+      return computed;
+    }
+
+    final existing = _existingSleepPayload?['durationMinutes'];
+    if (existing is num && existing > 0) {
+      return existing.round();
+    }
+
+    return null;
   }
 
   Future<void> _pickRecordDate() async {
