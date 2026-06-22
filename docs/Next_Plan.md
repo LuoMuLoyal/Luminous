@@ -55,9 +55,9 @@ The next active slice is **medicine safety depth**.
 
 6. **Keep the local validation discipline as a gate, not a suggestion**
    - Repo-safe daily entry:
-     - `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
+     - `dart run tool/run_daily_checks.dart`
    - Full-stack gate entry:
-     - `powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1`
+     - `dart run tool/run_fullstack_checks.dart`
    - Use the full-stack gate before merging changes that touch:
      - auth/session restore
      - Today/Report protected loading

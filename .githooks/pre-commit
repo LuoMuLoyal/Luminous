@@ -1,2 +1,2 @@
 #!/bin/sh
-exec pwsh -NoProfile -ExecutionPolicy Bypass -File "$0.ps1" "$@"
+exec dart run "$(dirname "$0")/../tool/git_hook.dart" pre-commit "$@"

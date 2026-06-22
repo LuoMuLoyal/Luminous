@@ -33,5 +33,4 @@ jobs:
           cache: true
 
       - name: Run repo-safe daily checks
-        shell: pwsh
-        run: ./tool/run_daily_checks.ps1
+        run: dart run tool/run_daily_checks.dart

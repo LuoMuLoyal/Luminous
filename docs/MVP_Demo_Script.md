@@ -91,8 +91,8 @@ Do not rely on deferred capabilities such as OCR, voice, dynamic nearby-care loo
 
 ## Demo Prep Checklist
 
-- `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
-- `powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1`
+- `dart run tool/run_daily_checks.dart`
+- `dart run tool/run_fullstack_checks.dart`
 - Confirm one demo account can:
   - sign in
   - create at least one record
