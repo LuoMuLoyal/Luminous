@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 Future<bool?> showMedicineReminderDeleteSheet(BuildContext context) {
   final l10n = AppLocalizations.of(context)!;
   final theme = Theme.of(context);
+  final surface = theme.extension<AppThemeSurface>()!;
   final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
   return showModalBottomSheet<bool>(
@@ -28,14 +28,14 @@ Future<bool?> showMedicineReminderDeleteSheet(BuildContext context) {
               Align(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: MedicinePalette.red.withValues(alpha: 0.1),
+                    color: surface.error.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const SizedBox.square(
+                  child: SizedBox.square(
                     dimension: AppSpacingTokens.x3l,
                     child: Icon(
                       Icons.delete_outline_rounded,
-                      color: MedicinePalette.red,
+                      color: surface.error,
                     ),
                   ),
                 ),
@@ -51,7 +51,7 @@ Future<bool?> showMedicineReminderDeleteSheet(BuildContext context) {
                 l10n.medicineReminderDeleteConfirmBody,
                 textAlign: TextAlign.center,
                 style: typography.bodySm.copyWith(
-                  color: Theme.of(context).extension<AppThemeSurface>()!.body,
+                  color: surface.body,
                   letterSpacing: 0,
                 ),
               ),
@@ -59,7 +59,7 @@ Future<bool?> showMedicineReminderDeleteSheet(BuildContext context) {
               FilledButton(
                 key: const Key('medicine-reminder-delete-confirm-button'),
                 style: FilledButton.styleFrom(
-                  backgroundColor: MedicinePalette.red,
+                  backgroundColor: surface.error,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadiusTokens.md),

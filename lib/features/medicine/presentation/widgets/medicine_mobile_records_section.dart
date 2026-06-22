@@ -18,7 +18,11 @@ class _MedicineRecordsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rows = _recordRowsFor(l10n, items).take(4).toList(growable: false);
+    final rows = _recordRowsFor(
+      l10n,
+      items,
+      surface,
+    ).take(4).toList(growable: false);
 
     return MedicinePanel(
       key: const Key('medicine-today-plan'),
@@ -67,7 +71,7 @@ class _MedicineRecordsSection extends StatelessWidget {
                   child: Center(
                     child: MedicineTextAction(
                       label: l10n.medicineViewMoreRecordsAction,
-                      color: MedicinePalette.blue,
+                      color: surface.link,
                       onTap: () =>
                           AppToast.show(context, l10n.medicineViewPlanToast),
                     ),
@@ -211,7 +215,7 @@ class _MedicineRecordRow extends StatelessWidget {
                           key: const Key('medicine-record-dose-action-taken'),
                           label: l10n.medicineDoseActionTaken,
                           icon: Icons.check_rounded,
-                          color: MedicinePalette.teal,
+                          color: surface.teal,
                           filled: true,
                           onTap: () => onMarkDose!(
                             row.item.currentMedicineId!,
@@ -225,7 +229,7 @@ class _MedicineRecordRow extends StatelessWidget {
                           key: const Key('medicine-record-dose-action-skipped'),
                           label: l10n.medicineDoseActionSkipped,
                           icon: Icons.remove_done_rounded,
-                          color: MedicinePalette.orangeDeep,
+                          color: surface.warningDeep,
                           onTap: () => onMarkDose!(
                             row.item.currentMedicineId!,
                             MedicineDoseAction.skipped,

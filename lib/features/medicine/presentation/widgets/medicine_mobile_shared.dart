@@ -198,6 +198,7 @@ _NextDose? _nextDoseFor(MedicineWorkspace workspace) {
 List<_RecordRow> _recordRowsFor(
   AppLocalizations l10n,
   List<MedicinePlanItem> items,
+  AppThemeSurface surface,
 ) {
   final rows = <_RecordRow>[];
   for (final item in items) {
@@ -209,13 +210,14 @@ List<_RecordRow> _recordRowsFor(
           null,
           rows.length,
           l10n.medicineRecordScheduledStatus,
+          surface,
         ),
       );
       continue;
     }
 
     for (final slot in item.slots) {
-      rows.add(_rowFromItem(l10n, item, slot, rows.length, null));
+      rows.add(_rowFromItem(l10n, item, slot, rows.length, null, surface));
     }
   }
   return rows;
@@ -227,12 +229,13 @@ _RecordRow _rowFromItem(
   MedicineDoseSlot? slot,
   int index,
   String? fallbackStatus,
+  AppThemeSurface surface,
 ) {
   final status = slot?.status ?? MedicineDoseStatus.pending;
   final statusColor = switch (status) {
-    MedicineDoseStatus.taken => MedicinePalette.teal,
-    MedicineDoseStatus.skipped => MedicinePalette.orangeDeep,
-    MedicineDoseStatus.pending => MedicinePalette.blue,
+    MedicineDoseStatus.taken => surface.teal,
+    MedicineDoseStatus.skipped => surface.warningDeep,
+    MedicineDoseStatus.pending => surface.link,
   };
   final statusIcon = switch (status) {
     MedicineDoseStatus.taken => Icons.check_rounded,

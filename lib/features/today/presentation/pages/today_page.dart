@@ -11,6 +11,11 @@ import 'package:luminous/features/today/presentation/widgets/today_dashboard_vie
 class TodayPage extends ConsumerWidget {
   const TodayPage({super.key});
 
+  Future<void> _refreshDashboard(WidgetRef ref) async {
+    ref.invalidate(todayDashboardProvider);
+    await ref.read(todayDashboardProvider.future);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardAsync = ref.watch(todayDashboardProvider);
@@ -36,10 +41,14 @@ class TodayPage extends ConsumerWidget {
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: maxWidth),
                 child: dashboardAsync.when(
-                  data: (dashboard) => TodayDashboardView(dashboard: dashboard),
-                  loading: () => const TodayDashboardView(
+                  data: (dashboard) => TodayDashboardView(
+                    dashboard: dashboard,
+                    onRefresh: () => _refreshDashboard(ref),
+                  ),
+                  loading: () => TodayDashboardView(
                     dashboard: MockTodayRepository.previewDashboard,
                     isLoading: true,
+                    onRefresh: () => _refreshDashboard(ref),
                   ),
                   error: (_, __) => TodayErrorView(
                     onRetry: () => ref.invalidate(todayDashboardProvider),

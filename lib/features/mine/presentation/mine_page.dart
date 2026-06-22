@@ -15,6 +15,11 @@ import 'package:luminous/l10n/app_localizations.dart';
 class MinePage extends ConsumerWidget {
   const MinePage({super.key});
 
+  Future<void> _refreshDashboard(WidgetRef ref) async {
+    ref.invalidate(mineDashboardProvider);
+    await ref.read(mineDashboardProvider.future);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authSession = ref.watch(authSessionProvider);
@@ -40,25 +45,29 @@ class MinePage extends ConsumerWidget {
       decoration: BoxDecoration(color: surface.canvasSoft),
       child: SafeArea(
         bottom: false,
-        child: ListView(
-          key: const PageStorageKey<String>('mine-mobile-scroll'),
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacingTokens.md,
-            AppSpacingTokens.md,
-            AppSpacingTokens.md,
-            AppSpacingTokens.x5l,
-          ),
-          children: [
-            MineTopBar(
-              onNotificationsTap: () => showMineToast(
-                context,
-                AppLocalizations.of(context)!.mineHeaderNotifications,
-              ),
-              onSettingsTap: () => context.push('/settings'),
+        child: RefreshIndicator(
+          onRefresh: () => _refreshDashboard(ref),
+          child: ListView(
+            key: const PageStorageKey<String>('mine-mobile-scroll'),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacingTokens.md,
+              AppSpacingTokens.md,
+              AppSpacingTokens.md,
+              AppSpacingTokens.x5l,
             ),
-            const SizedBox(height: AppSpacingTokens.md),
-            body,
-          ],
+            children: [
+              MineTopBar(
+                onNotificationsTap: () => showMineToast(
+                  context,
+                  AppLocalizations.of(context)!.mineHeaderNotifications,
+                ),
+                onSettingsTap: () => context.push('/settings'),
+              ),
+              const SizedBox(height: AppSpacingTokens.md),
+              body,
+            ],
+          ),
         ),
       ),
     );

@@ -309,7 +309,7 @@ class ReminderFormBody extends StatelessWidget {
               key: const Key('medicine-reminder-form-delete-button'),
               onPressed: isSaving ? null : onDelete,
               style: FilledButton.styleFrom(
-                backgroundColor: MedicinePalette.red,
+                backgroundColor: surface.error,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadiusTokens.md),

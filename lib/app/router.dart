@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
 import 'package:luminous/features/auth/presentation/pages/change_email_page.dart';
@@ -24,144 +25,239 @@ import 'package:luminous/features/settings/presentation/pages/settings_page.dart
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 
+const _transitionIn = Duration(milliseconds: 300);
+const _transitionOut = Duration(milliseconds: 200);
+
+CustomTransitionPage<T> _fadePage<T>({
+  required LocalKey key,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: key,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        FadeTransition(opacity: animation, child: child),
+    transitionDuration: _transitionIn,
+    reverseTransitionDuration: _transitionOut,
+  );
+}
+
+CustomTransitionPage<T> _slidePage<T>({
+  required LocalKey key,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: key,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0.15, 0),
+            end: Offset.zero,
+          ).chain(CurveTween(curve: Curves.easeOutCubic)).animate(animation),
+          child: FadeTransition(
+            opacity: Tween<double>(begin: 0, end: 1).animate(animation),
+            child: child,
+          ),
+        ),
+    transitionDuration: _transitionIn,
+    reverseTransitionDuration: _transitionOut,
+  );
+}
+
 final router = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(path: '/', builder: (context, state) => const ShellPage()),
+    // -- auth (fade) --
     GoRoute(
       path: '/login',
-      builder: (context, state) =>
-          LoginPage(returnTo: state.uri.queryParameters['returnTo']),
+      pageBuilder: (context, state) => _fadePage(
+        key: state.pageKey,
+        child: LoginPage(returnTo: state.uri.queryParameters['returnTo']),
+      ),
     ),
     GoRoute(
       path: '/login/oauth/wechat',
-      builder: (context, state) => LoginPage(
-        wechatCode: state.uri.queryParameters['code'],
-        wechatState: state.uri.queryParameters['state'],
-        returnTo: state.uri.queryParameters['returnTo'],
+      pageBuilder: (context, state) => _fadePage(
+        key: state.pageKey,
+        child: LoginPage(
+          wechatCode: state.uri.queryParameters['code'],
+          wechatState: state.uri.queryParameters['state'],
+          returnTo: state.uri.queryParameters['returnTo'],
+        ),
       ),
     ),
     GoRoute(
       path: '/forgot-password',
-      builder: (context, state) => const ForgotPasswordPage(),
+      pageBuilder: (context, state) =>
+          _fadePage(key: state.pageKey, child: const ForgotPasswordPage()),
     ),
     GoRoute(
       path: '/register',
-      builder: (context, state) => const RegisterPage(),
+      pageBuilder: (context, state) =>
+          _fadePage(key: state.pageKey, child: const RegisterPage()),
     ),
+    // -- settings / account (slide) --
     GoRoute(
       path: '/account',
-      builder: (context, state) => const AccountSettingsPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const AccountSettingsPage()),
     ),
     GoRoute(
       path: '/account/oauth/wechat',
-      builder: (context, state) => AccountSettingsPage(
-        wechatCode: state.uri.queryParameters['code'],
-        wechatState: state.uri.queryParameters['state'],
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: AccountSettingsPage(
+          wechatCode: state.uri.queryParameters['code'],
+          wechatState: state.uri.queryParameters['state'],
+        ),
       ),
     ),
     GoRoute(
       path: '/settings',
-      builder: (context, state) => const SettingsPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const SettingsPage()),
     ),
     GoRoute(
       path: '/assistant',
-      builder: (context, state) => const AssistantPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const AssistantPage()),
     ),
     GoRoute(
       path: '/settings/language',
-      builder: (context, state) => const LanguageSettingsPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const LanguageSettingsPage()),
     ),
     GoRoute(
       path: '/settings/theme',
-      builder: (context, state) => const ThemeSettingsPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const ThemeSettingsPage()),
     ),
     GoRoute(
       path: '/settings/notifications',
-      builder: (context, state) => const NotificationSettingsPage(),
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: const NotificationSettingsPage(),
+      ),
     ),
     GoRoute(
       path: '/settings/more',
-      builder: (context, state) => const AdvancedSettingsPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const AdvancedSettingsPage()),
     ),
     GoRoute(
       path: '/account/change-email',
-      builder: (context, state) => const ChangeEmailPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const ChangeEmailPage()),
     ),
+    // -- entity CRUD + feature pages (slide) --
     GoRoute(
       path: '/medicine/search',
-      builder: (context, state) => const SearchPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const SearchPage()),
     ),
     GoRoute(
       path: '/medicine/risk-check',
-      builder: (context, state) => const MedicineRiskCheckPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const MedicineRiskCheckPage()),
     ),
     GoRoute(
       path: '/medicine/reminders/new',
-      builder: (context, state) => MedicineReminderEditPage(
-        initialMedicineId: state.uri.queryParameters['medicineId'],
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: MedicineReminderEditPage(
+          initialMedicineId: state.uri.queryParameters['medicineId'],
+        ),
       ),
     ),
     GoRoute(
       path: '/medicine/reminders/:medicineId',
-      builder: (context, state) => MedicineReminderDetailPage(
-        currentMedicineId: state.pathParameters['medicineId']!,
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: MedicineReminderDetailPage(
+          currentMedicineId: state.pathParameters['medicineId']!,
+        ),
       ),
     ),
     GoRoute(
       path: '/medicine/reminders/:medicineId/edit',
-      builder: (context, state) => MedicineReminderEditPage(
-        currentMedicineId: state.pathParameters['medicineId'],
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: MedicineReminderEditPage(
+          currentMedicineId: state.pathParameters['medicineId'],
+        ),
       ),
     ),
     GoRoute(
       path: '/mine/profile/edit',
-      builder: (context, state) => const ProfileEditPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const ProfileEditPage()),
     ),
     GoRoute(
       path: '/mine/allergy/new',
-      builder: (context, state) => const AllergyEditPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const AllergyEditPage()),
     ),
     GoRoute(
       path: '/mine/allergy/:id/edit',
-      builder: (context, state) =>
-          AllergyEditPage(allergyId: state.pathParameters['id']),
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: AllergyEditPage(allergyId: state.pathParameters['id']),
+      ),
     ),
     GoRoute(
       path: '/mine/condition/new',
-      builder: (context, state) => const ConditionEditPage(),
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const ConditionEditPage()),
     ),
     GoRoute(
       path: '/mine/condition/:id/edit',
-      builder: (context, state) =>
-          ConditionEditPage(conditionId: state.pathParameters['id']),
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: ConditionEditPage(conditionId: state.pathParameters['id']),
+      ),
     ),
     GoRoute(
       path: '/mine/medicine/new',
-      builder: (context, state) => const CurrentMedicineEditPage(),
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: const CurrentMedicineEditPage(),
+      ),
     ),
     GoRoute(
       path: '/mine/medicine/:id/edit',
-      builder: (context, state) =>
-          CurrentMedicineEditPage(medicineId: state.pathParameters['id']),
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: CurrentMedicineEditPage(medicineId: state.pathParameters['id']),
+      ),
     ),
     GoRoute(
       path: '/record/create',
-      builder: (context, state) => RecordCreatePage(
-        initialKind: dailyRecordKindFromName(state.uri.queryParameters['kind']),
-        initialDate: parseRecordDate(state.uri.queryParameters['date']),
-        initialTime: state.uri.queryParameters['time'],
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: RecordCreatePage(
+          initialKind: dailyRecordKindFromName(
+            state.uri.queryParameters['kind'],
+          ),
+          initialDate: parseRecordDate(state.uri.queryParameters['date']),
+          initialTime: state.uri.queryParameters['time'],
+        ),
       ),
     ),
     GoRoute(
       path: '/record/:id',
-      builder: (context, state) =>
-          RecordDetailPage(recordId: state.pathParameters['id']!),
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: RecordDetailPage(recordId: state.pathParameters['id']!),
+      ),
     ),
     GoRoute(
       path: '/record/:id/edit',
-      builder: (context, state) =>
-          RecordEditPage(recordId: state.pathParameters['id']!),
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: RecordEditPage(recordId: state.pathParameters['id']!),
+      ),
     ),
   ],
 );
