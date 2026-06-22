@@ -4,6 +4,7 @@ import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
+import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
@@ -73,47 +74,17 @@ class LucentRecordRepository implements RecordRepository {
     final kind = record.kind;
     final timeStr = formatRecordTimeLabel(record.occurredTime);
 
-    final (icon, accent, soft) = switch (kind) {
-      DailyRecordKind.water => (
-        Icons.water_drop_rounded,
-        const Color(0xFF428BFF),
-        const Color(0xFFE8F2FF),
-      ),
-      DailyRecordKind.meal => (
-        Icons.restaurant_rounded,
-        AppColorTokens.warning,
-        AppColorTokens.warningSoft,
-      ),
-      DailyRecordKind.vital => (
-        Icons.favorite_rounded,
-        AppColorTokens.error,
-        AppColorTokens.errorSoft,
-      ),
-      DailyRecordKind.mood => (
-        Icons.sentiment_satisfied_rounded,
-        const Color(0xFF7D67E8),
-        const Color(0xFFF0ECFF),
-      ),
-      DailyRecordKind.symptom => (
-        Icons.healing_rounded,
-        AppColorTokens.warningDeep,
-        AppColorTokens.warningSoft,
-      ),
-      DailyRecordKind.activity => (
-        Icons.directions_run_rounded,
-        AppColorTokens.gradientDevelopStart,
-        const Color(0xFFE8FFF2),
-      ),
-      DailyRecordKind.note => (
-        Icons.notes_rounded,
-        AppColorTokens.link,
-        AppColorTokens.linkSoft,
-      ),
-      DailyRecordKind.sleep => (
-        Icons.dark_mode_rounded,
-        AppColorTokens.violet,
-        AppColorTokens.violetSoft,
-      ),
+    final (accent, soft) = RecordTypeColors.forKind(kind);
+
+    final icon = switch (kind) {
+      DailyRecordKind.water => Icons.water_drop_rounded,
+      DailyRecordKind.meal => Icons.restaurant_rounded,
+      DailyRecordKind.vital => Icons.favorite_rounded,
+      DailyRecordKind.mood => Icons.sentiment_satisfied_rounded,
+      DailyRecordKind.symptom => Icons.healing_rounded,
+      DailyRecordKind.activity => Icons.directions_run_rounded,
+      DailyRecordKind.note => Icons.notes_rounded,
+      DailyRecordKind.sleep => Icons.dark_mode_rounded,
     };
 
     final titleKey = switch (kind) {

@@ -130,6 +130,7 @@ class AuthSectionCard extends StatelessWidget {
         color: surface.canvasSoft,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         border: Border.all(color: surface.hairline),
+        boxShadow: AppShadowTokens.level1,
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.lg),
@@ -248,18 +249,21 @@ class _AuthTextFieldState extends State<AuthTextField> {
         child: Row(
           children: [
             Expanded(
-              child: TextField(
-                controller: widget.controller,
-                focusNode: _focusNode,
-                enabled: widget.enabled,
-                keyboardType: widget.keyboardType,
-                obscureText: widget.obscureText,
-                maxLines: 1,
-                style: typography.bodyMd.copyWith(color: contentColor),
-                cursorColor: theme.colorScheme.primary,
-                decoration: InputDecoration.collapsed(
-                  hintText: widget.label,
-                  hintStyle: typography.bodySm.copyWith(color: surface.mute),
+              child: Semantics(
+                label: widget.label,
+                child: TextField(
+                  controller: widget.controller,
+                  focusNode: _focusNode,
+                  enabled: widget.enabled,
+                  keyboardType: widget.keyboardType,
+                  obscureText: widget.obscureText,
+                  maxLines: 1,
+                  style: typography.bodyMd.copyWith(color: contentColor),
+                  cursorColor: theme.colorScheme.primary,
+                  decoration: InputDecoration.collapsed(
+                    hintText: widget.label,
+                    hintStyle: typography.bodySm.copyWith(color: surface.mute),
+                  ),
                 ),
               ),
             ),

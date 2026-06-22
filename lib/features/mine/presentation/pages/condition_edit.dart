@@ -150,34 +150,34 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
                 controller: _labelController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldLabel),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               _enumDropdown<HealthConditionStatus>(
                 label: l10n.mineEditFieldStatus,
                 value: _status,
                 values: HealthConditionStatus.values,
                 onChanged: (v) => setState(() => _status = v),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _diagnosedAtController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldDiagnosedAt,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _noteController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
                 maxLines: 3,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacingTokens.lg),
               ElevatedButton(
                 key: const Key('condition-save-button'),
                 onPressed: _onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
               if (!isNew) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacingTokens.sm),
                 OutlinedButton(
                   key: const Key('condition-delete-button'),
                   onPressed: _onDelete,

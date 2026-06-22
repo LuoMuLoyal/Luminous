@@ -8,7 +8,14 @@ This file records the next implementation order only. Completed work belongs in 
 
 **Medicine safety depth** is complete.
 
-The next active slice is **TBD** — choose from the follow-up directions below.
+The next active slice is **bounded assistant leaflet RAG planning and backend implementation prep**.
+
+Immediate collaboration note:
+
+- The user plans to do a UI/UX pass first.
+- Backend-side next work should therefore be limited to locking the Lucent RAG
+  slice boundary and execution plan, not starting a second broad frontend track
+  in parallel.
 
 ## Completed: Medicine Safety Depth
 
@@ -35,22 +42,30 @@ These are not urgent blockers — they represent the next depth increment when m
 
 ## Immediate Work Order
 
-2. **Keep assistant evolution bounded to concrete new scenarios**
-   - Only extend assistant tools/proposals when a specific missing user task is chosen
-   - Do not reopen broad tool refactors without a new capability target
-   - Keep memory optional, explicit, and user-controlled when new assistant work resumes
+1. **Do the UI/UX pass separately from backend RAG**
+   - Let the upcoming UI/UX work focus on presentation and interaction quality
+   - Do not make the UI pass block the RAG boundary decision
+   - Do not start a second large frontend product slice under the name of RAG
 
-3. **Add RAG later as one extra tool, not as the starting architecture**
+2. **Start RAG as one extra assistant tool, not as a new app architecture**
    - Keep this bounded to:
-     - medicine leaflet dataset ingestion strategy
+     - medicine leaflet dataset ingestion/index strategy
      - retrieval-only augmentation over approved medicine knowledge
      - server-side tool integration after the base chat loop is already stable
    - Explicit non-scope:
      - replacing the reviewed medicine safety rule engine
      - pretending retrieval equals safe risk judgment
+     - making retrieval a mandatory dependency for all assistant replies
+   - Current execution source:
+     - `../Lucent/plans/2026-06-22-assistant-leaflet-rag-slice.md`
    - Success signal:
      - RAG improves explanation depth without becoming the first dependency of
        the whole chat feature
+
+3. **Keep assistant evolution bounded to concrete new scenarios**
+   - Only extend assistant tools/proposals when a specific missing user task is chosen
+   - Do not reopen broad tool refactors without a new capability target
+   - Keep memory optional, explicit, and user-controlled when new assistant work resumes
 
 4. **Keep Record follow-up work bounded after the finished fast-entry slice**
    - Record fast entry, quick-choice save, editable date/time fields, and
@@ -87,10 +102,11 @@ These are not urgent blockers — they represent the next depth increment when m
 
 If the team wants the shortest path with the highest payoff, use this order:
 
-1. reopen Record if a specific follow-up gap is chosen
-2. RAG as an extra tool if still needed
-3. re-open the Web question if desired
-4. revisit medicine safety depth follow-ups from the 7 candidates above
+1. finish the planned UI/UX pass
+2. execute the bounded Lucent assistant leaflet-RAG slice
+3. reopen Record only if a specific follow-up gap is chosen
+4. re-open the Web question if desired
+5. revisit medicine safety depth follow-ups from the 7 candidates above
 
 ## Deferred But Useful
 

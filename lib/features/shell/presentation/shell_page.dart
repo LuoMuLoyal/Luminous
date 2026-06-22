@@ -33,7 +33,7 @@ class ShellPage extends ConsumerWidget {
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
     final l10n = AppLocalizations.of(context);
-    final typography = width < 600
+    final typography = width < AppBreakpoints.mobile
         ? AppTypographyTokens.mobile(scheme.onSurface)
         : AppTypographyTokens.desktop(scheme.onSurface);
     final isDesktop = width >= AppBreakpoints.desktop;
@@ -125,7 +125,7 @@ class ShellPage extends ConsumerWidget {
               child: NavigationBar(
                 backgroundColor: surface.canvas.withValues(alpha: 0.96),
                 surfaceTintColor: Colors.transparent,
-                height: width < 600 ? 70 : 76,
+                height: width < AppBreakpoints.mobile ? 70 : 76,
                 selectedIndex: currentIndex,
                 onDestinationSelected: notifier.selectTab,
                 destinations: destinations,
@@ -270,7 +270,7 @@ class _DesktopSidebarBrand extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.spa_rounded, size: 18, color: Color(0xFF159B55)),
+          const Icon(Icons.spa_rounded, size: 18, color: AppColorTokens.accent),
           const SizedBox(width: AppSpacingTokens.sm),
           Text(
             'Luminous',
@@ -303,7 +303,7 @@ class _DesktopSidebarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF159B55);
+    final accent = surface.accent;
     final foreground = selected
         ? accent
         : Theme.of(context).colorScheme.onSurface;
@@ -315,11 +315,9 @@ class _DesktopSidebarItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: selected ? const Color(0xFFEAF8EE) : Colors.transparent,
+            color: selected ? AppColorTokens.accentSoft : Colors.transparent,
             borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(
-              color: selected ? const Color(0xFFCDEBD8) : Colors.transparent,
-            ),
+            border: Border.all(color: selected ? accent : Colors.transparent),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(

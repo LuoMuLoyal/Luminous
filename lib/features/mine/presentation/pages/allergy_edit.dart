@@ -151,20 +151,20 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
                 values: HealthAllergyKind.values,
                 onChanged: (v) => setState(() => _kind = v),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 key: const Key('allergy-label-field'),
                 controller: _labelController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldLabel),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _reactionController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldReaction,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               DropdownButtonFormField<HealthAllergySeverity>(
                 initialValue: _severity,
                 decoration: InputDecoration(
@@ -179,20 +179,20 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
                   if (v != null) setState(() => _severity = v);
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 controller: _noteController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
                 maxLines: 3,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacingTokens.lg),
               ElevatedButton(
                 key: const Key('allergy-save-button'),
                 onPressed: _onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
               if (!isNew) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacingTokens.sm),
                 OutlinedButton(
                   key: const Key('allergy-delete-button'),
                   onPressed: _onDelete,

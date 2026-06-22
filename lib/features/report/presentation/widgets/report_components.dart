@@ -74,7 +74,7 @@ class ReportSectionHeader extends StatelessWidget {
           child: Text(
             title,
             style: typography.displaySm.copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
               letterSpacing: 0,
             ),
             maxLines: 1,

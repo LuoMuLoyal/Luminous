@@ -148,7 +148,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
                       setState(() => _sleepRemMinutes = v),
                 ),
               ],
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               DailyRecordImageAttachmentField(
                 l10n: l10n,
                 selectedBytes: _selectedImage?.bytes,
@@ -158,7 +158,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
                 onRemove: _onRemoveImage,
                 enabled: !_saving,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacingTokens.lg),
               ElevatedButton(
                 key: const Key('record-create-save-action'),
                 onPressed: _saving ? null : () => _onSave(dateStr),
@@ -268,9 +268,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     if (kind != DailyRecordKind.sleep) return null;
     final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
     if (minutes == null || minutes <= 0) return null;
-    final payload = <String, dynamic>{
-      'durationMinutes': minutes,
-    };
+    final payload = <String, dynamic>{'durationMinutes': minutes};
     if (_sleepBedtime != null && _sleepWakeTime != null) {
       // Sleep date convention: occurredAt is the wake date.
       // endAt falls on the wake date; startAt is the evening before

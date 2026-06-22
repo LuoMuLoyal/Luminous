@@ -206,7 +206,7 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
                       setState(() => _sleepRemMinutes = v),
                 ),
               ],
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               DailyRecordImageAttachmentField(
                 l10n: l10n,
                 selectedBytes: _selectedImage?.bytes,
@@ -218,13 +218,13 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
                 onRemove: _onRemoveImage,
                 enabled: !_saving && !_deleting,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacingTokens.lg),
               ElevatedButton(
                 key: const Key('record-edit-save-action'),
                 onPressed: _saving ? null : _onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacingTokens.sm),
               OutlinedButton.icon(
                 key: const Key('record-edit-delete-action'),
                 onPressed: _deleting || _saving ? null : _onDelete,

@@ -206,7 +206,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                     children: [
                       const Icon(
                         Icons.mic_none_rounded,
-                        color: Color(0xFF159B55),
+                        color: AppColorTokens.accent,
                         size: 20,
                       ),
                       const SizedBox(width: AppSpacingTokens.sm),
@@ -214,7 +214,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                         child: Text(
                           l10n.recordVoiceAction,
                           style: typography.bodySmStrong.copyWith(
-                            color: const Color(0xFF159B55),
+                            color: AppColorTokens.accent,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -246,9 +246,9 @@ class _WeekDayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF159B55);
+    final accent = surface.accent;
     final foreground = day.selected
-        ? Colors.white
+        ? Theme.of(context).colorScheme.onPrimary
         : Theme.of(context).colorScheme.onSurface;
 
     return Material(

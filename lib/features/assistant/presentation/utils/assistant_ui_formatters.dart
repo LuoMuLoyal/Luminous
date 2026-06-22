@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/core/design/app_typography_tokens.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
@@ -79,8 +80,7 @@ String proposalStateText(
       l10n.assistantProposalConfirmedState,
     AssistantProposalExecutionState.dismissed =>
       l10n.assistantProposalDismissedState,
-    AssistantProposalExecutionState.failed =>
-      l10n.assistantProposalFailedState,
+    AssistantProposalExecutionState.failed => l10n.assistantProposalFailedState,
   };
 }
 
@@ -88,7 +88,7 @@ Color proposalStateColor(ThemeData theme, AssistantProposedAction proposal) {
   return switch (proposal.executionState) {
     AssistantProposalExecutionState.pending => theme.colorScheme.primary,
     AssistantProposalExecutionState.executing => theme.colorScheme.primary,
-    AssistantProposalExecutionState.confirmed => const Color(0xFF159B55),
+    AssistantProposalExecutionState.confirmed => AppColorTokens.accent,
     AssistantProposalExecutionState.dismissed => theme.colorScheme.outline,
     AssistantProposalExecutionState.failed => theme.colorScheme.error,
   };

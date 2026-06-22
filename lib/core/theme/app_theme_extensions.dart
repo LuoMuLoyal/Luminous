@@ -13,6 +13,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
     required this.mute,
     required this.link,
     required this.linkSoft,
+    required this.accent,
     required this.success,
     required this.error,
     required this.warning,
@@ -27,6 +28,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
   final Color mute;
   final Color link;
   final Color linkSoft;
+  final Color accent;
   final Color success;
   final Color error;
   final Color warning;
@@ -41,6 +43,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
     mute: AppColorTokens.mute,
     link: AppColorTokens.link,
     linkSoft: AppColorTokens.linkSoft,
+    accent: AppColorTokens.accent,
     success: AppColorTokens.success,
     error: AppColorTokens.error,
     warning: AppColorTokens.warning,
@@ -56,8 +59,9 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
     mute: Color(0xFF9A9A9A),
     link: AppColorTokens.link,
     linkSoft: Color(0xFF1A2A42),
+    accent: AppColorTokens.accent,
     success: AppColorTokens.success,
-    error: Color(0xFFFF6363),
+    error: AppColorTokens.errorDark,
     warning: Color(0xFFFFC861),
   );
 
@@ -71,6 +75,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
     mute: Color(0xFF83929A),
     link: Color(0xFF47A0C9),
     linkSoft: Color(0xFFDCEFF7),
+    accent: Color(0xFF47A0C9),
     success: Color(0xFF47A0C9),
     error: Color(0xFFD65F7F),
     warning: Color(0xFFB9894B),
@@ -86,6 +91,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
     mute: Color(0xFF95A4AA),
     link: Color(0xFF95CEE8),
     linkSoft: Color(0xFF223946),
+    accent: Color(0xFF95CEE8),
     success: Color(0xFF95CEE8),
     error: Color(0xFFFF7A98),
     warning: Color(0xFFE6BE77),
@@ -101,6 +107,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
     mute: Color(0xFF899280),
     link: Color(0xFF4AA112),
     linkSoft: Color(0xFFE5F1D8),
+    accent: Color(0xFF4AA112),
     success: Color(0xFF4AA112),
     error: Color(0xFFD15F55),
     warning: Color(0xFFD4B01D),
@@ -116,6 +123,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
     mute: Color(0xFFA2AA98),
     link: Color(0xFFE7F0D6),
     linkSoft: Color(0xFF314024),
+    accent: Color(0xFFA7D66F),
     success: Color(0xFFA7D66F),
     error: Color(0xFFFF7B70),
     warning: Color(0xFFE4C844),
@@ -132,6 +140,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
     Color? mute,
     Color? link,
     Color? linkSoft,
+    Color? accent,
     Color? success,
     Color? error,
     Color? warning,
@@ -146,6 +155,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
       mute: mute ?? this.mute,
       link: link ?? this.link,
       linkSoft: linkSoft ?? this.linkSoft,
+      accent: accent ?? this.accent,
       success: success ?? this.success,
       error: error ?? this.error,
       warning: warning ?? this.warning,
@@ -169,6 +179,7 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
       mute: Color.lerp(mute, other.mute, t) ?? mute,
       link: Color.lerp(link, other.link, t) ?? link,
       linkSoft: Color.lerp(linkSoft, other.linkSoft, t) ?? linkSoft,
+      accent: Color.lerp(accent, other.accent, t) ?? accent,
       success: Color.lerp(success, other.success, t) ?? success,
       error: Color.lerp(error, other.error, t) ?? error,
       warning: Color.lerp(warning, other.warning, t) ?? warning,

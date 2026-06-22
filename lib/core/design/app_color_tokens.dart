@@ -37,6 +37,11 @@ abstract final class AppColorTokens {
   static const Color gradientPreviewEnd = Color(0xFFFF0080);
   static const Color gradientShipStart = Color(0xFFFF4D4D);
   static const Color gradientShipEnd = Color(0xFFF9CB28);
+  static const Color accent = Color(0xFF159B55);
+  static const Color accentSoft = Color(0xFFEAF8EE);
+  static const Color errorDark = Color(0xFFFF6363);
   static const Color selectionBackground = Color(0xFF171717);
   static const Color selectionForeground = Color(0xFFF2F2F2);
+
+  static const seed = primary;
 }

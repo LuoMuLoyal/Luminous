@@ -286,7 +286,7 @@ class _TimelineCard extends StatelessWidget {
 
   Color _trailingColor(AppThemeSurface surface) {
     if (entry.trailingIcon == Icons.check_circle_outline_rounded) {
-      return const Color(0xFF159B55);
+      return surface.accent;
     }
     return surface.mute;
   }

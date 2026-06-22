@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 
@@ -33,7 +34,7 @@ class TodayPanel extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.all(AppSpacingTokens.md),
     this.color,
-    this.radius = AppRadiusTokens.xl,
+    this.radius = AppRadiusTokens.lg,
     this.borderColor,
     this.shadow = AppShadowTokens.level1,
   });
@@ -82,7 +83,7 @@ class TodaySectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final width = MediaQuery.sizeOf(context).width;
-    final typography = width < 600
+    final typography = width < AppBreakpoints.mobile
         ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
         : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
 
@@ -99,7 +100,7 @@ class TodaySectionHeader extends StatelessWidget {
             style: (compact ? typography.bodyMdStrong : typography.displaySm)
                 .copyWith(
                   color: theme.colorScheme.onSurface,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 0,
                 ),
           ),
@@ -151,11 +152,7 @@ class TodayTextAction extends StatelessWidget {
               ),
               if (icon != null) ...[
                 const SizedBox(width: AppSpacingTokens.xxs),
-                Icon(
-                  icon,
-                  size: AppSpacingTokens.md + AppSpacingTokens.xxs,
-                  color: foreground,
-                ),
+                Icon(icon, size: AppSpacingTokens.md, color: foreground),
               ],
             ],
           ),
@@ -227,7 +224,7 @@ class TodayStatusPill extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
