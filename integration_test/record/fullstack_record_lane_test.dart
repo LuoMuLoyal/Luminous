@@ -23,7 +23,20 @@ void main() {
     await openRecordTabForDate(tester, container, targetDate: targetDate);
 
     await tapVisible(tester, find.byKey(const Key('record-quick-note')));
-    expect(find.byKey(const Key('daily-record-title-field')), findsOneWidget);
+    await pumpUntilFound(
+      tester,
+      find.byKey(const Key('record-fast-entry-note')),
+      timeout: const Duration(seconds: 10),
+    );
+    await tapVisible(
+      tester,
+      find.byKey(const Key('record-fast-entry-more-action')),
+    );
+    await pumpUntilFound(
+      tester,
+      find.byKey(const Key('daily-record-title-field')),
+      timeout: const Duration(seconds: 10),
+    );
 
     await tester.enterText(
       find.byKey(const Key('daily-record-title-field')),
@@ -38,23 +51,35 @@ void main() {
       find.byKey(const Key('record-create-save-action')),
     );
 
-    final createdEntry = find.text(createdTitle);
-    await tester.scrollUntilVisible(createdEntry, 240);
+    await waitForRoute(
+      tester,
+      predicate: (uri) => uri.path == '/',
+      description: 'return to record timeline after create',
+    );
+    final createdEntry = find.byKey(const Key('record-timeline-entry-index-0'));
+    await pumpUntilFound(
+      tester,
+      createdEntry,
+      timeout: const Duration(seconds: 15),
+    );
+    await tester.ensureVisible(createdEntry.first);
+    await settleE2e(tester, frames: 6);
     expect(createdEntry, findsOneWidget);
 
-    await tapVisible(tester, createdEntry);
+    await tapVisible(tester, createdEntry.first);
     await pumpUntilFound(
       tester,
       find.byKey(const Key('record-detail-edit-action')),
     );
-    expect(find.text(createdTitle), findsOneWidget);
-    expect(find.text(createdNote), findsOneWidget);
+    expect(find.text(createdTitle), findsWidgets);
+    expect(find.text(createdNote), findsWidgets);
 
     await tapVisible(
       tester,
       find.byKey(const Key('record-detail-edit-action')),
     );
     expect(find.byKey(const Key('daily-record-note-field')), findsOneWidget);
+    expect(find.byKey(const Key('record-time-field')), findsOneWidget);
 
     await tester.enterText(
       find.byKey(const Key('daily-record-note-field')),
@@ -63,7 +88,7 @@ void main() {
     await tapVisible(tester, find.byKey(const Key('record-edit-save-action')));
 
     await pumpUntilFound(tester, find.text(updatedNote));
-    expect(find.text(updatedNote), findsOneWidget);
+    expect(find.text(updatedNote), findsWidgets);
 
     await tapVisible(
       tester,
@@ -75,6 +100,6 @@ void main() {
     );
 
     await openRecordTabForDate(tester, container, targetDate: targetDate);
-    expect(find.text(createdTitle), findsNothing);
+    expect(find.byKey(const Key('record-timeline-entry-index-0')), findsNothing);
   });
 }

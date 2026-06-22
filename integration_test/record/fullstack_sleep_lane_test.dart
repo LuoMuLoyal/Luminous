@@ -29,11 +29,21 @@ void main() {
 
       await openRecordTabForDate(tester, container, targetDate: targetDate);
 
-      final sleepAction = find.byKey(const Key('record-quick-sleep'));
-      await tester.scrollUntilVisible(sleepAction, 240);
-      await tester.tap(sleepAction);
-      await settleE2e(tester);
-
+      await tapVisible(tester, find.byKey(const Key('record-quick-sleep')));
+      await pumpUntilFound(
+        tester,
+        find.byKey(const Key('record-fast-entry-sleep')),
+        timeout: const Duration(seconds: 10),
+      );
+      await tapVisible(
+        tester,
+        find.byKey(const Key('record-fast-entry-more-action')),
+      );
+      await pumpUntilFound(
+        tester,
+        find.byKey(const Key('sleep-quality-field')),
+        timeout: const Duration(seconds: 10),
+      );
       expect(find.byKey(const Key('sleep-quality-field')), findsOneWidget);
 
       // Bedtime: accept default 23:00.

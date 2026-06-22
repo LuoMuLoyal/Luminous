@@ -5,6 +5,16 @@ allprojects {
     }
 }
 
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.force(
+            "androidx.test:runner:1.2.0",
+            "androidx.test:rules:1.2.0",
+            "androidx.test.espresso:espresso-core:3.3.0",
+        )
+    }
+}
+
 val newBuildDir: Directory =
     rootProject.layout.buildDirectory
         .dir("../../build")

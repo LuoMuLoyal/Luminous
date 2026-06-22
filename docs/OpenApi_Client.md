@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-20
+Last updated: 2026-06-22
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 

@@ -12,7 +12,8 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
 $workspaceRoot = Resolve-Path (Join-Path $repoRoot '..')
 $lucentRoot = Join-Path $workspaceRoot 'Lucent'
-$startRuntimeScript = Join-Path $lucentRoot 'scripts\dev\start-test-runtime.ps1'
+$stopRuntimeCommand = @('pnpm', 'test:runtime:stop')
+$startRuntimeCommand = @('pnpm', 'test:runtime:start')
 $healthUrl = 'http://127.0.0.1:3000/api/v1/health'
 $healthTimeoutSeconds = 30
 $defaultDefineFile = Join-Path $repoRoot '.env.fullstack-e2e'
@@ -28,7 +29,8 @@ $activeDefineFile = if ($DefineFile.Trim()) {
 Push-Location $repoRoot
 try {
   Write-Host '==> Start Lucent test runtime'
-  powershell -ExecutionPolicy Bypass -File $startRuntimeScript
+  & $stopRuntimeCommand[0] --dir $lucentRoot $stopRuntimeCommand[1]
+  & $startRuntimeCommand[0] --dir $lucentRoot $startRuntimeCommand[1]
 
   Write-Host '==> Verify Lucent health'
   $deadline = (Get-Date).AddSeconds($healthTimeoutSeconds)
