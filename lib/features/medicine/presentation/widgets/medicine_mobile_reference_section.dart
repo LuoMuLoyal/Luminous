@@ -15,16 +15,16 @@ class _ReferenceNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     return MedicinePanel(
       color: Color.alphaBlend(
-        MedicinePalette.orangeSoft.withValues(alpha: 0.44),
+        surface.warningSoft.withValues(alpha: 0.44),
         surface.canvas,
       ),
-      borderColor: MedicinePalette.orange.withValues(alpha: 0.24),
+      borderColor: surface.warning.withValues(alpha: 0.24),
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.warning_amber_rounded,
-            color: MedicinePalette.orange,
+            color: surface.warning,
             size: AppSpacingTokens.xl,
           ),
           const SizedBox(width: AppSpacingTokens.sm),
@@ -35,7 +35,7 @@ class _ReferenceNotice extends StatelessWidget {
                 Text(
                   l10n.medicineReferenceNoticeTitle,
                   style: typography.bodyMdStrong.copyWith(
-                    color: MedicinePalette.orangeDeep,
+                    color: surface.warningDeep,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0,
                   ),
@@ -53,7 +53,7 @@ class _ReferenceNotice extends StatelessWidget {
           ),
           Icon(
             Icons.chevron_right_rounded,
-            color: MedicinePalette.orangeDeep,
+            color: surface.warningDeep,
             size: AppSpacingTokens.lg,
           ),
         ],
@@ -78,22 +78,22 @@ class _SafetyTipsSection extends StatelessWidget {
     final tips = [
       _SafetyTip(
         icon: Icons.local_drink_outlined,
-        color: MedicinePalette.blue,
+        color: surface.link,
         text: l10n.medicineSafetyTipSpacing,
       ),
       _SafetyTip(
         icon: Icons.coffee_rounded,
-        color: MedicinePalette.orangeDeep,
+        color: surface.warningDeep,
         text: l10n.medicineSafetyTipCoffee,
       ),
       _SafetyTip(
         icon: Icons.schedule_rounded,
-        color: MedicinePalette.blue,
+        color: surface.link,
         text: l10n.medicineSafetyTipTiming,
       ),
       _SafetyTip(
         icon: Icons.thermostat_rounded,
-        color: MedicinePalette.teal,
+        color: surface.teal,
         text: l10n.medicineSafetyTipStorage,
       ),
     ];
@@ -104,16 +104,16 @@ class _SafetyTipsSection extends StatelessWidget {
       children: [
         MedicineSectionHeader(
           title: l10n.medicineSafetyTipsTitle,
-          leading: const Icon(
+          leading: Icon(
             Icons.lightbulb_outline_rounded,
-            color: MedicinePalette.orange,
+            color: surface.warning,
             size: AppSpacingTokens.lg,
           ),
           compact: true,
           trailing: MedicineTextAction(
             label: l10n.medicineSafetyTipsRefreshAction,
             icon: Icons.refresh_rounded,
-            color: MedicinePalette.blue,
+            color: surface.link,
             onTap: () =>
                 AppToast.show(context, l10n.medicineSafetyTipsRefreshAction),
           ),

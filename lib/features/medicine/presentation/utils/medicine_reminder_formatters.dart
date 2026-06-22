@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -26,10 +25,7 @@ List<MedicineReminderItem> remindersFor(
     ..sort(compareReminderTime);
 }
 
-int compareReminderTime(
-  MedicineReminderItem left,
-  MedicineReminderItem right,
-) {
+int compareReminderTime(MedicineReminderItem left, MedicineReminderItem right) {
   final hour = left.scheduledHour.compareTo(right.scheduledHour);
   if (hour != 0) return hour;
   return left.scheduledMinute.compareTo(right.scheduledMinute);
@@ -85,10 +81,8 @@ String soundPreferenceLabel(
   return switch (value) {
     MedicineReminderSoundPreference.defaultTone =>
       l10n.medicineReminderSoundDefault,
-    MedicineReminderSoundPreference.gentle =>
-      l10n.medicineReminderSoundGentle,
-    MedicineReminderSoundPreference.silent =>
-      l10n.medicineReminderSoundSilent,
+    MedicineReminderSoundPreference.gentle => l10n.medicineReminderSoundGentle,
+    MedicineReminderSoundPreference.silent => l10n.medicineReminderSoundSilent,
   };
 }
 
@@ -121,9 +115,9 @@ IconData deliveryStatusIcon(String value) {
 
 Color deliveryStatusColor(String value, AppThemeSurface surface) {
   return switch (value) {
-    'delivered' => MedicinePalette.teal,
-    'failed' => MedicinePalette.red,
-    'scheduled' => MedicinePalette.orangeDeep,
+    'delivered' => surface.teal,
+    'failed' => surface.error,
+    'scheduled' => surface.warningDeep,
     _ => surface.mute,
   };
 }

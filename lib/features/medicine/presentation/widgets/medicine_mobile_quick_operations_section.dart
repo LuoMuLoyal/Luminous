@@ -18,21 +18,21 @@ class _QuickOperationSection extends StatelessWidget {
     final operations = [
       _QuickOperation(
         icon: Icons.add_rounded,
-        color: MedicinePalette.teal,
+        color: surface.teal,
         title: l10n.medicineQuickAddTitle,
         subtitle: l10n.medicineQuickAddSubtitle,
         onTap: () => context.push('/medicine/search'),
       ),
       _QuickOperation(
         icon: Icons.fact_check_rounded,
-        color: MedicinePalette.violet,
+        color: surface.violet,
         title: l10n.medicineQuickRecordTitle,
         subtitle: l10n.medicineQuickRecordSubtitle,
         onTap: () => AppToast.show(context, l10n.medicineQuickRecordToast),
       ),
       _QuickOperation(
         icon: Icons.notifications_none_rounded,
-        color: MedicinePalette.blue,
+        color: surface.link,
         title: l10n.medicineReminderQuickTitle,
         subtitle: l10n.medicineReminderQuickSubtitle,
         onTap:
@@ -41,7 +41,7 @@ class _QuickOperationSection extends StatelessWidget {
       ),
       _QuickOperation(
         icon: Icons.health_and_safety_rounded,
-        color: MedicinePalette.orangeDeep,
+        color: surface.warningDeep,
         title: l10n.medicineQuickSafetyCheckTitle,
         subtitle: l10n.medicineQuickSafetyCheckSubtitle,
         onTap: () => pushAuthRequiredRoute(context, '/medicine/risk-check'),

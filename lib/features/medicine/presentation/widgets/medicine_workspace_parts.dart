@@ -4,26 +4,6 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 enum MedicineDoseAction { taken, skipped }
 
-abstract final class MedicinePalette {
-  static const Color ink = AppColorTokens.ink;
-  static const Color body = AppColorTokens.body;
-  static const Color mute = AppColorTokens.mute;
-  static const Color panel = AppColorTokens.canvas;
-  static const Color panelSoft = AppColorTokens.canvasSoft;
-  static const Color line = AppColorTokens.hairline;
-  static const Color teal = AppColorTokens.cyanDeep;
-  static const Color tealSoft = AppColorTokens.cyanSoft;
-  static const Color blue = AppColorTokens.link;
-  static const Color blueSoft = AppColorTokens.linkSoft;
-  static const Color orange = AppColorTokens.warning;
-  static const Color orangeDeep = AppColorTokens.warningDeep;
-  static const Color orangeSoft = AppColorTokens.warningSoft;
-  static const Color red = AppColorTokens.error;
-  static const Color redSoft = AppColorTokens.errorSoft;
-  static const Color violet = AppColorTokens.violet;
-  static const Color violetSoft = AppColorTokens.violetSoft;
-}
-
 class MedicinePanel extends StatelessWidget {
   const MedicinePanel({
     super.key,

@@ -27,10 +27,10 @@ class _DrugBoxSection extends StatelessWidget {
     return MedicinePanel(
       key: const Key('medicine-hero'),
       color: Color.alphaBlend(
-        MedicinePalette.tealSoft.withValues(alpha: 0.08),
+        surface.tealSoft.withValues(alpha: 0.08),
         surface.canvas,
       ),
-      borderColor: MedicinePalette.teal.withValues(alpha: 0.14),
+      borderColor: surface.teal.withValues(alpha: 0.14),
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       shadow: const <BoxShadow>[],
       child: Column(
@@ -41,9 +41,9 @@ class _DrugBoxSection extends StatelessWidget {
             compact: true,
             leading: MedicineIconBadge(
               icon: Icons.medical_services_rounded,
-              color: MedicinePalette.teal,
+              color: surface.teal,
               backgroundColor: Color.alphaBlend(
-                MedicinePalette.tealSoft.withValues(alpha: 0.28),
+                surface.tealSoft.withValues(alpha: 0.28),
                 surface.canvas,
               ),
               size: AppSpacingTokens.x2l,
@@ -226,7 +226,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
             Expanded(
               child: _DrugBoxMetricItem(
                 icon: Icons.schedule_rounded,
-                color: MedicinePalette.teal,
+                color: surface.teal,
                 label: l10n.medicineNextDoseReminderTitle,
                 value: value,
                 detail: detail,
@@ -238,7 +238,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
             Expanded(
               child: _DrugBoxMetricItem(
                 icon: Icons.check_circle_rounded,
-                color: MedicinePalette.teal,
+                color: surface.teal,
                 label: l10n.medicineHeroMetricAdherenceLabel,
                 value: workspace.hero.metricAdherence,
                 detail: l10n.medicineDoseDueStatus,
@@ -256,7 +256,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 key: const Key('medicine-next-dose-action-taken'),
                 label: l10n.medicineDoseActionTaken,
                 icon: Icons.check_rounded,
-                color: MedicinePalette.teal,
+                color: surface.teal,
                 filled: true,
                 onTap: () =>
                     onMarkDose!(currentMedicineId, MedicineDoseAction.taken),
@@ -266,7 +266,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 key: const Key('medicine-next-dose-action-skipped'),
                 label: l10n.medicineDoseActionSkipped,
                 icon: Icons.remove_done_rounded,
-                color: MedicinePalette.orangeDeep,
+                color: surface.warningDeep,
                 onTap: () =>
                     onMarkDose!(currentMedicineId, MedicineDoseAction.skipped),
               ),
@@ -383,9 +383,9 @@ class _DrugBoxEmpty extends StatelessWidget {
         children: [
           MedicineIconBadge(
             icon: Icons.medication_outlined,
-            color: MedicinePalette.teal,
+            color: surface.teal,
             backgroundColor: Color.alphaBlend(
-              MedicinePalette.tealSoft.withValues(alpha: 0.28),
+              surface.tealSoft.withValues(alpha: 0.28),
               surface.canvas,
             ),
             shape: BoxShape.circle,

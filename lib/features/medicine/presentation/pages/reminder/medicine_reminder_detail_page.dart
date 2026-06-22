@@ -47,9 +47,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
       );
     }
 
-    final detail = ref.watch(
-      medicineReminderDetailProvider(currentMedicineId),
-    );
+    final detail = ref.watch(medicineReminderDetailProvider(currentMedicineId));
 
     return PageScaffoldShell(
       title: l10n.medicineReminderDetailTitle,
@@ -112,16 +110,16 @@ class _ReminderDetailBody extends ConsumerWidget {
         children: [
           MedicinePanel(
             color: Color.alphaBlend(
-              MedicinePalette.tealSoft.withValues(alpha: 0.38),
+              surface.tealSoft.withValues(alpha: 0.38),
               surface.canvas,
             ),
-            borderColor: MedicinePalette.teal.withValues(alpha: 0.14),
+            borderColor: surface.teal.withValues(alpha: 0.14),
             shadow: const <BoxShadow>[],
             child: Row(
               children: [
-                const MedicineIconBadge(
+                MedicineIconBadge(
                   icon: Icons.medication_rounded,
-                  color: MedicinePalette.orangeDeep,
+                  color: surface.warningDeep,
                   backgroundColor: AppColorTokens.warningSoft,
                   shape: BoxShape.circle,
                   size: AppSpacingTokens.x4l,
@@ -159,7 +157,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   label: isActive
                       ? l10n.medicineReminderEnabledStatus
                       : l10n.medicineReminderDisabledStatus,
-                  color: isActive ? MedicinePalette.teal : surface.mute,
+                  color: isActive ? surface.teal : surface.mute,
                 ),
               ],
             ),
@@ -198,7 +196,8 @@ class _ReminderDetailBody extends ConsumerWidget {
                 ReminderInfoRow(
                   icon: Icons.calendar_today_rounded,
                   label: l10n.medicineReminderStartDateLabel,
-                  value: firstReminder?.startDate ??
+                  value:
+                      firstReminder?.startDate ??
                       l10n.medicineReminderDateNotSet,
                   typography: typography,
                   surface: surface,
@@ -207,8 +206,8 @@ class _ReminderDetailBody extends ConsumerWidget {
                 ReminderInfoRow(
                   icon: Icons.event_busy_rounded,
                   label: l10n.medicineReminderEndDateLabel,
-                  value: firstReminder?.endDate ??
-                      l10n.medicineReminderDateNotSet,
+                  value:
+                      firstReminder?.endDate ?? l10n.medicineReminderDateNotSet,
                   typography: typography,
                   surface: surface,
                   showDivider: true,
@@ -252,7 +251,7 @@ class _ReminderDetailBody extends ConsumerWidget {
           FilledButton.icon(
             key: const Key('medicine-reminder-delete-button'),
             style: FilledButton.styleFrom(
-              backgroundColor: MedicinePalette.red,
+              backgroundColor: surface.error,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadiusTokens.md),
@@ -272,10 +271,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                         .read(medicineReminderFormProvider.notifier)
                         .deleteGroup(reminders);
                     if (deleted && context.mounted) {
-                      AppToast.show(
-                        context,
-                        l10n.medicineReminderDeletedToast,
-                      );
+                      AppToast.show(context, l10n.medicineReminderDeletedToast);
                       context.pop();
                     } else if (context.mounted) {
                       AppToast.show(context, l10n.settingsSyncFailed);

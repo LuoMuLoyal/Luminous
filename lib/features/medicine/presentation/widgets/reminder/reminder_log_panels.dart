@@ -67,9 +67,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
                 )
               : Column(
                   children: [
-                    for (var index = 0;
-                        index < visibleLogs.length;
-                        index += 1)
+                    for (var index = 0; index < visibleLogs.length; index += 1)
                       _TodayLogRow(
                         log: visibleLogs[index],
                         isLast: index == visibleLogs.length - 1,
@@ -142,9 +140,7 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
                 )
               : Column(
                   children: [
-                    for (var index = 0;
-                        index < visibleLogs.length;
-                        index += 1)
+                    for (var index = 0; index < visibleLogs.length; index += 1)
                       _DeliveryLogRow(
                         log: visibleLogs[index],
                         isLast: index == visibleLogs.length - 1,
@@ -244,10 +240,10 @@ class _TodayLogRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final color = switch (log.status) {
-      DoseLogStatus.taken => MedicinePalette.teal,
-      DoseLogStatus.skipped => MedicinePalette.orangeDeep,
-      DoseLogStatus.missed => MedicinePalette.red,
-      DoseLogStatus.planned => MedicinePalette.blue,
+      DoseLogStatus.taken => surface.teal,
+      DoseLogStatus.skipped => surface.warningDeep,
+      DoseLogStatus.missed => surface.error,
+      DoseLogStatus.planned => surface.link,
     };
     final label = switch (log.status) {
       DoseLogStatus.taken => l10n.medicineDoseStatusTaken,

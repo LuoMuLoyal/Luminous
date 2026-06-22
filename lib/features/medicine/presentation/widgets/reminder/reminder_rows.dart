@@ -68,7 +68,8 @@ class ReminderInfoRow extends StatelessWidget {
         Divider(
           height: 1,
           thickness: 1,
-          indent: AppSpacingTokens.md + AppSpacingTokens.lg + AppSpacingTokens.md,
+          indent:
+              AppSpacingTokens.md + AppSpacingTokens.lg + AppSpacingTokens.md,
           color: surface.hairline,
         ),
       ],
@@ -131,8 +132,9 @@ class ValueActionRow extends StatelessWidget {
               if (onClear != null) ...[
                 const SizedBox(width: AppSpacingTokens.xs),
                 IconButton(
-                  tooltip: AppLocalizations.of(context)!
-                      .medicineReminderClearDateAction,
+                  tooltip: AppLocalizations.of(
+                    context,
+                  )!.medicineReminderClearDateAction,
                   visualDensity: VisualDensity.compact,
                   onPressed: onClear,
                   icon: const Icon(Icons.close_rounded, size: 18),
@@ -361,9 +363,9 @@ class SelectedMedicineRow extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       child: Row(
         children: [
-          const MedicineIconBadge(
+          MedicineIconBadge(
             icon: Icons.medication_rounded,
-            color: MedicinePalette.teal,
+            color: surface.teal,
             shape: BoxShape.circle,
           ),
           const SizedBox(width: AppSpacingTokens.md),

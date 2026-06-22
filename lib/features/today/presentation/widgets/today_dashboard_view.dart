@@ -16,10 +16,12 @@ class TodayDashboardView extends StatelessWidget {
     super.key,
     required this.dashboard,
     this.isLoading = false,
+    required this.onRefresh,
   });
 
   final TodayDashboard dashboard;
   final bool isLoading;
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +29,8 @@ class TodayDashboardView extends StatelessWidget {
     final isDesktop = width >= AppBreakpoints.desktop;
 
     final content = isDesktop
-        ? _DesktopTodayDashboard(dashboard: dashboard)
-        : _MobileTodayDashboard(dashboard: dashboard);
+        ? _DesktopTodayDashboard(dashboard: dashboard, onRefresh: onRefresh)
+        : _MobileTodayDashboard(dashboard: dashboard, onRefresh: onRefresh);
 
     return AppSkeletonScope(isLoading: isLoading, child: content);
   }
@@ -78,9 +80,13 @@ class TodayEmptyView extends StatelessWidget {
 }
 
 class _MobileTodayDashboard extends StatelessWidget {
-  const _MobileTodayDashboard({required this.dashboard});
+  const _MobileTodayDashboard({
+    required this.dashboard,
+    required this.onRefresh,
+  });
 
   final TodayDashboard dashboard;
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -96,75 +102,87 @@ class _MobileTodayDashboard extends StatelessWidget {
       TodayTodoSection(dashboard: dashboard),
     ];
 
-    return ListView.separated(
-      key: const PageStorageKey<String>('today-dashboard-scroll'),
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacingTokens.md,
-        AppSpacingTokens.md,
-        AppSpacingTokens.md,
-        AppSpacingTokens.x5l + AppSpacingTokens.xs,
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView.separated(
+        key: const PageStorageKey<String>('today-dashboard-scroll'),
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacingTokens.md,
+          AppSpacingTokens.md,
+          AppSpacingTokens.md,
+          AppSpacingTokens.x5l + AppSpacingTokens.xs,
+        ),
+        itemBuilder: (context, index) => sections[index],
+        separatorBuilder: (context, index) =>
+            const SizedBox(height: AppSpacingTokens.lg),
+        itemCount: sections.length,
       ),
-      itemBuilder: (context, index) => sections[index],
-      separatorBuilder: (context, index) =>
-          const SizedBox(height: AppSpacingTokens.lg),
-      itemCount: sections.length,
     );
   }
 }
 
 class _DesktopTodayDashboard extends StatelessWidget {
-  const _DesktopTodayDashboard({required this.dashboard});
+  const _DesktopTodayDashboard({
+    required this.dashboard,
+    required this.onRefresh,
+  });
 
   final TodayDashboard dashboard;
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      key: const PageStorageKey<String>('today-dashboard-desktop-scroll'),
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacingTokens.xl,
-        AppSpacingTokens.xl,
-        AppSpacingTokens.xl,
-        AppSpacingTokens.xl,
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView(
+        key: const PageStorageKey<String>('today-dashboard-desktop-scroll'),
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacingTokens.xl,
+          AppSpacingTokens.xl,
+          AppSpacingTokens.xl,
+          AppSpacingTokens.xl,
+        ),
+        children: [
+          TodayTopBar(
+            moment: dashboard.user.moment,
+            hasUnreadNotifications: dashboard.user.hasUnreadNotifications,
+          ),
+          const SizedBox(height: AppSpacingTokens.lg),
+          TodayOverviewSection(dashboard: dashboard),
+          const SizedBox(height: AppSpacingTokens.lg),
+          TodayAiSummarySection(dashboard: dashboard),
+          const SizedBox(height: AppSpacingTokens.lg),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 7,
+                child: Column(
+                  children: [
+                    TodayPrioritySection(dashboard: dashboard),
+                    const SizedBox(height: AppSpacingTokens.lg),
+                    TodayTodoSection(dashboard: dashboard),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacingTokens.lg),
+              Expanded(
+                flex: 5,
+                child: Column(
+                  children: [
+                    TodayRecommendationSection(
+                      dashboard: dashboard,
+                      compact: true,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
-      children: [
-        TodayTopBar(
-          moment: dashboard.user.moment,
-          hasUnreadNotifications: dashboard.user.hasUnreadNotifications,
-        ),
-        const SizedBox(height: AppSpacingTokens.lg),
-        TodayOverviewSection(dashboard: dashboard),
-        const SizedBox(height: AppSpacingTokens.lg),
-        TodayAiSummarySection(dashboard: dashboard),
-        const SizedBox(height: AppSpacingTokens.lg),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 7,
-              child: Column(
-                children: [
-                  TodayPrioritySection(dashboard: dashboard),
-                  const SizedBox(height: AppSpacingTokens.lg),
-                  TodayTodoSection(dashboard: dashboard),
-                ],
-              ),
-            ),
-            const SizedBox(width: AppSpacingTokens.lg),
-            Expanded(
-              flex: 5,
-              child: Column(
-                children: [
-                  TodayRecommendationSection(
-                    dashboard: dashboard,
-                    compact: true,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }
