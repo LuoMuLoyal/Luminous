@@ -515,6 +515,11 @@
   "medicineRiskCheckContextGeriatric": "老年人",
   "medicineRiskCheckContextAlcohol": "酒精",
   "medicineRiskCheckContextCaffeine": "咖啡因",
+  "medicineRiskConclusionContraindicated": "禁用",
+  "medicineRiskConclusionAvoid": "避免使用",
+  "medicineRiskConclusionCaution": "慎用",
+  "medicineRiskConclusionConsultClinician": "咨询医生",
+  "medicineRiskConclusionInsufficientInformation": "信息不足",
   "medicineQuickRecordToast": "会打开服药记录入口。",
   "medicineRecordsTitle": "用药记录",
   "medicineAllMedicinesFilter": "全部药品",
@@ -1526,5 +1531,8 @@
   },
   "medicineRiskCheckRedFlagResourceEmergency": "急救资源",
   "medicineRiskCheckRedFlagResourceHospital": "校医院",
-  "medicineRiskCheckRedFlagResourcePharmacy": "校园药房"
+  "medicineRiskCheckRedFlagResourcePharmacy": "校园药房",
+  "medicineRiskCheckRedFlagActionSevereAllergy": "请立即联系急救（120），不要自行处理",
+  "medicineRiskCheckRedFlagActionPregnancyContraindication": "请停止自行用药，尽快咨询医生或药师",
+  "medicineRiskCheckRedFlagActionInformationGap": "当前处于高风险状态，部分药品无法自动检查，建议尽快线下确认"
 }

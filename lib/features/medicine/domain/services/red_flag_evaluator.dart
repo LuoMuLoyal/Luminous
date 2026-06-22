@@ -31,10 +31,12 @@ class RedFlagEvaluator {
     if (severeAllergens.isEmpty) return const [];
 
     return result.findings
-        .where((f) =>
-            f.type == MedicineRiskFindingType.allergy &&
-            f.relatedLabel != null &&
-            severeAllergens.contains(f.relatedLabel!.trim()))
+        .where(
+          (f) =>
+              f.type == MedicineRiskFindingType.allergy &&
+              f.relatedLabel != null &&
+              severeAllergens.contains(f.relatedLabel!.trim()),
+        )
         .map(
           (f) => RedFlagAlert(
             rule: RedFlagRule.severeAllergy,
@@ -59,6 +61,10 @@ class RedFlagEvaluator {
               f.context != MedicineRiskFindingContext.lactation) {
             return false;
           }
+          if (f.specialPopulationConclusion ==
+              SpecialPopulationConclusion.contraindicated) {
+            return true;
+          }
           final evidence = f.evidence?.toLowerCase() ?? '';
           return contraindicationKeywords.any(
             (kw) => evidence.contains(kw.toLowerCase()),
@@ -81,8 +87,8 @@ class RedFlagEvaluator {
   ) {
     if (result.coverageIssues.isEmpty) return const [];
 
-    final hasHighRiskProfile = snapshot.allergies
-            .any((a) => a.isActive && a.severity == 'severe') ||
+    final hasHighRiskProfile =
+        snapshot.allergies.any((a) => a.isActive && a.severity == 'severe') ||
         snapshot.profile.pregnancyState == 'pregnant' ||
         snapshot.profile.lactationState == 'yes';
 
@@ -94,7 +100,9 @@ class RedFlagEvaluator {
           (issue) => RedFlagAlert(
             rule: RedFlagRule.informationGap,
             primaryMedicineName: issue.medicineName,
-            resourceId: 'campus-hospital',
+            // No resourceId — we cannot promise a verified resource loop
+            // for information gaps. The action copy tells the user to
+            // verify offline but does not link to a fake action.
           ),
         )
         .toList(growable: false);
