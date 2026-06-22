@@ -318,7 +318,75 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
   });
 
-  testWidgets('Report export card shows latest export status for matching kind', (
+  testWidgets(
+    'Report export card shows latest export status for matching kind',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final exportApi = _FakeReportDataExportApi()
+        ..latestResponse = DataExportLatestResponseDto(
+          code: 0,
+          message: 'ok',
+          data: DataExportRequestDataDto(
+            id: 'req-monthly',
+            kind: DataExportKind.monthly,
+            format: DataExportFormat.pdf,
+            range: DataExportRange.last30Days,
+            status: DataExportStatus.processing,
+            requestedAt: '2026-06-12T00:00:00.000Z',
+          ),
+        );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            reportRepositoryProvider.overrideWithValue(
+              const MockReportRepository(),
+            ),
+            userSettingsControllerProvider.overrideWith(
+              EnabledUserSettingsController.new,
+            ),
+            lucentDataExportApiProvider.overrideWithValue(exportApi),
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            locale: const Locale('zh'),
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const ReportPage(),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      final scrollable = find.byType(Scrollable).first;
+      final exportSection = find.byKey(const Key('report-export-section'));
+      await tester.scrollUntilVisible(
+        exportSection,
+        260,
+        scrollable: scrollable,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('处理中'), findsWidgets);
+    },
+  );
+
+  testWidgets('Generate action triggers dashboard refresh via loading state', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -328,31 +396,104 @@ void main() {
       tester.view.resetPhysicalSize();
     });
 
-    final exportApi = _FakeReportDataExportApi()
-      ..latestResponse = DataExportLatestResponseDto(
-        code: 0,
-        message: 'ok',
-        data: DataExportRequestDataDto(
-          id: 'req-monthly',
-          kind: DataExportKind.monthly,
-          format: DataExportFormat.pdf,
-          range: DataExportRange.last30Days,
-          status: DataExportStatus.processing,
-          requestedAt: '2026-06-12T00:00:00.000Z',
-        ),
-      );
+    final repo = _CountingPendingReportRepository();
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          reportRepositoryProvider.overrideWithValue(
-            const MockReportRepository(),
-          ),
+          reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          lucentDataExportApiProvider.overrideWithValue(exportApi),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ReportPage(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    expect(repo.fetchCount, 1);
+
+    await tester.tap(find.byKey(const Key('report-generate-action')));
+    await tester.pump();
+    expect(repo.fetchCount, 2);
+
+    repo.complete(MockReportRepository.previewDashboard);
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('Error state shows AppStateErrorView with retry', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    final repo = _ThrowingReportRepository();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          reportRepositoryProvider.overrideWithValue(repo),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ReportPage(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AppStateErrorView), findsOneWidget);
+    expect(find.text(l10n.todayRetryAction), findsOneWidget);
+  });
+
+  testWidgets('Empty data renders without crash', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final repo = _EmptyReportRepository();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          reportRepositoryProvider.overrideWithValue(repo),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -373,12 +514,51 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final scrollable = find.byType(Scrollable).first;
-    final exportSection = find.byKey(const Key('report-export-section'));
-    await tester.scrollUntilVisible(exportSection, 260, scrollable: scrollable);
-    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('report-generate-action')), findsOneWidget);
+  });
 
-    expect(find.text('处理中'), findsWidgets);
+  testWidgets('Sync action triggers dashboard refresh', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final repo = _RefreshableReportRepository();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          reportRepositoryProvider.overrideWithValue(repo),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ReportPage(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    expect(repo.fetchCount, 1);
+
+    await tester.tap(find.byKey(const Key('report-sync-action')));
+    await tester.pumpAndSettle();
+    expect(repo.fetchCount, 2);
   });
 }
 
@@ -515,7 +695,8 @@ class _FakeReportDataExportApi extends DataExportApi {
   }) async {
     getLatestCallCount += 1;
     return Response<DataExportLatestResponseDto>(
-      data: latestResponse ??
+      data:
+          latestResponse ??
           DataExportLatestResponseDto(
             code: 0,
             message: 'ok',
@@ -539,4 +720,48 @@ class _FakeReportDataExportApi extends DataExportApi {
       statusCode: 200,
     );
   }
+}
+
+class _CountingPendingReportRepository implements ReportRepository {
+  int fetchCount = 0;
+  final _pending = Completer<ReportDashboard>();
+
+  @override
+  Future<ReportDashboard> fetchDashboard() {
+    fetchCount++;
+    return _pending.future;
+  }
+
+  void complete(ReportDashboard dashboard) {
+    _pending.complete(dashboard);
+  }
+}
+
+class _ThrowingReportRepository implements ReportRepository {
+  @override
+  Future<ReportDashboard> fetchDashboard() async {
+    throw Exception('Test error');
+  }
+}
+
+class _EmptyReportRepository implements ReportRepository {
+  @override
+  Future<ReportDashboard> fetchDashboard() async {
+    return _emptyDashboard;
+  }
+
+  static const _emptyDashboard = ReportDashboard(
+    score: ReportHealthScore(
+      value: 0,
+      maxValue: 100,
+      status: ReportStatus.stable,
+      summary: '',
+    ),
+    metrics: [],
+    trends: [],
+    findings: [],
+    exportActions: [],
+    patterns: [],
+    aiSummaryEnabled: false,
+  );
 }

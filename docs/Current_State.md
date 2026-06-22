@@ -88,6 +88,12 @@ Deferred code that remains useful should be marked with:
 - Breakpoints reference `AppBreakpoints` constants; no hardcoded `600`.
 - Route transitions use `CustomTransitionPage` with `FadeTransition` for auth pages and `SlideTransition`+`FadeTransition` for drill-down pages (300ms in / 200ms out).
 - Today and Mine pages support pull-to-refresh via `RefreshIndicator` + `AlwaysScrollableScrollPhysics`.
+- ShellPage uses lazy tab loading (`_pages[currentIndex]` instead of `IndexedStack`); only the current tab's providers fire on startup. Riverpod caches already-fetched data so tab-switch-back is instant.
+- Charts (record trends) use `fl_chart` (`LineChart`/`BarChart`) instead of handwritten `CustomPainter` widgets.
+- Freezed is applied to 8 classes: `DailyRecordCandidateResult`/`Item`, `AssistantProposedAction`/`Message`, and 4 form-state classes; ~52 domain entities remain on manual classes pending phased migration.
+- Golden screenshot tests live in `test/golden/` using Flutter's built-in `matchesGoldenFile()` (zero extra deps). Baseline images generated with `flutter test --update-goldens test/golden/`.
+- Shared utility `coerceToStringMap` in `lib/core/network/map_utils.dart` deduplicates 4 copies of the same `_coerceToMap` helper.
+- `compareReminderTime` deduplicated from 3 copies to 1 public version in `medicine_reminder_formatters.dart`.
 
 ## Removed From Active Scope
 

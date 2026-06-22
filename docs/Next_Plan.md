@@ -8,14 +8,15 @@ This file records the next implementation order only. Completed work belongs in 
 
 **Medicine safety depth** is complete.
 
+**UI/UX pass is complete** (2026-06-22): design token systematization, component consistency, page transitions, pull-to-refresh, MedicinePalette removal, fl_chart migration, freezed partial migration, golden test baseline, ShellPage lazy loading. Remaining frontend items tracked in `TODO.md`.
+
 The next active slice is **bounded assistant leaflet RAG planning and backend implementation prep**.
 
 Immediate collaboration note:
 
-- The user plans to do a UI/UX pass first.
-- Backend-side next work should therefore be limited to locking the Lucent RAG
-  slice boundary and execution plan, not starting a second broad frontend track
-  in parallel.
+- The UI/UX pass planned by the user is now complete.
+- Backend-side next work should proceed with locking the Lucent RAG
+  slice boundary and execution plan.
 
 ## Completed: Medicine Safety Depth
 
