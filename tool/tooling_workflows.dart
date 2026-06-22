@@ -48,11 +48,20 @@ Future<void> runPreCommitChecks(ToolContext context) async {
   if (stagedDartFiles.isNotEmpty) {
     await runLoggedCommand(
       'dart',
-      ['format', '--output=none', '--set-exit-if-changed', ...stagedDartFiles],
+      ['format', ...stagedDartFiles],
       workingDirectory: context.repoRoot,
-      stepName:
-          'dart format --output=none --set-exit-if-changed <staged dart files>',
+      stepName: 'dart format <staged dart files>',
     );
+    // Re-stage the formatted files so the commit includes the changes.
+    final gitResult = await Process.run('git', [
+      'add',
+      ...stagedDartFiles,
+    ], workingDirectory: context.repoRoot.path);
+    if (gitResult.exitCode != 0) {
+      stderr.writeln(gitResult.stderr);
+      exitCode = gitResult.exitCode;
+      return;
+    }
     stdout.writeln('');
   }
 
