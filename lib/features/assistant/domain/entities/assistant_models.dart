@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'assistant_models.freezed.dart';
 
 @immutable
 class AssistantContextAccess {
@@ -114,7 +117,10 @@ enum AssistantProposedActionType {
 
 @immutable
 class AssistantProposalPreviewField {
-  const AssistantProposalPreviewField({required this.label, required this.value});
+  const AssistantProposalPreviewField({
+    required this.label,
+    required this.value,
+  });
 
   final String label;
   final String value;
@@ -166,14 +172,16 @@ class AssistantCreateDailyRecordDraft {
   final Map<String, dynamic>? payload;
 }
 
-class AssistantCreateDailyRecordProposalPayload extends AssistantProposalPayload {
+class AssistantCreateDailyRecordProposalPayload
+    extends AssistantProposalPayload {
   const AssistantCreateDailyRecordProposalPayload({required this.draft})
     : super(AssistantProposedActionType.createDailyRecord);
 
   final AssistantCreateDailyRecordDraft draft;
 }
 
-class AssistantUpdateDailyRecordProposalPayload extends AssistantProposalPayload {
+class AssistantUpdateDailyRecordProposalPayload
+    extends AssistantProposalPayload {
   const AssistantUpdateDailyRecordProposalPayload({
     required this.recordId,
     required this.draft,
@@ -202,7 +210,8 @@ class AssistantUpdateDailyRecordProposalPayload extends AssistantProposalPayload
   };
 }
 
-class AssistantDeleteDailyRecordProposalPayload extends AssistantProposalPayload {
+class AssistantDeleteDailyRecordProposalPayload
+    extends AssistantProposalPayload {
   const AssistantDeleteDailyRecordProposalPayload({required this.recordId})
     : super(AssistantProposedActionType.deleteDailyRecord);
 
@@ -227,48 +236,36 @@ class AssistantUpdateUserSettingsDraft {
       assistantContext == null;
 }
 
-class AssistantUpdateUserSettingsProposalPayload extends AssistantProposalPayload {
+class AssistantUpdateUserSettingsProposalPayload
+    extends AssistantProposalPayload {
   const AssistantUpdateUserSettingsProposalPayload({required this.draft})
     : super(AssistantProposedActionType.updateUserSettings);
 
   final AssistantUpdateUserSettingsDraft draft;
 }
 
-@immutable
-class AssistantProposedAction {
-  const AssistantProposedAction({
-    required this.id,
-    required this.type,
-    required this.title,
-    required this.summary,
-    required this.reason,
-    required this.previewFields,
-    required this.target,
-    required this.constraints,
-    required this.expiresAt,
-    required this.payloadVersion,
-    required this.payload,
-    this.confirmationRequired = true,
-    this.backendStatus = 'proposed',
-    this.executionState = AssistantProposalExecutionState.pending,
-    this.executionError,
-  });
+@freezed
+abstract class AssistantProposedAction with _$AssistantProposedAction {
+  const AssistantProposedAction._();
 
-  final String id;
-  final AssistantProposedActionType type;
-  final String title;
-  final String summary;
-  final String? reason;
-  final List<AssistantProposalPreviewField> previewFields;
-  final AssistantProposalTarget target;
-  final List<String> constraints;
-  final DateTime? expiresAt;
-  final int payloadVersion;
-  final AssistantProposalPayload payload;
-  final bool confirmationRequired;
-  final String backendStatus;
-  final AssistantProposalExecutionState executionState;
-  final String? executionError;
+  const factory AssistantProposedAction({
+    required String id,
+    required AssistantProposedActionType type,
+    required String title,
+    required String summary,
+    required String? reason,
+    required List<AssistantProposalPreviewField> previewFields,
+    required AssistantProposalTarget target,
+    required List<String> constraints,
+    required DateTime? expiresAt,
+    required int payloadVersion,
+    required AssistantProposalPayload payload,
+    @Default(true) bool confirmationRequired,
+    @Default('proposed') String backendStatus,
+    @Default(AssistantProposalExecutionState.pending)
+    AssistantProposalExecutionState executionState,
+    String? executionError,
+  }) = _AssistantProposedAction;
 
   bool get isExpired =>
       expiresAt != null && expiresAt!.isBefore(DateTime.now());
@@ -278,64 +275,18 @@ class AssistantProposedAction {
       !isExpired &&
       (executionState == AssistantProposalExecutionState.pending ||
           executionState == AssistantProposalExecutionState.failed);
-
-  AssistantProposedAction copyWith({
-    AssistantProposalExecutionState? executionState,
-    Object? executionError = _proposalSentinel,
-  }) {
-    return AssistantProposedAction(
-      id: id,
-      type: type,
-      title: title,
-      summary: summary,
-      reason: reason,
-      previewFields: previewFields,
-      target: target,
-      constraints: constraints,
-      expiresAt: expiresAt,
-      payloadVersion: payloadVersion,
-      payload: payload,
-      confirmationRequired: confirmationRequired,
-      backendStatus: backendStatus,
-      executionState: executionState ?? this.executionState,
-      executionError: identical(executionError, _proposalSentinel)
-          ? this.executionError
-          : executionError as String?,
-    );
-  }
 }
 
-@immutable
-class AssistantMessage {
-  const AssistantMessage({
-    required this.role,
-    required this.content,
-    required this.createdAt,
-    this.usedTools = const <String>[],
-    this.proposedActions = const <AssistantProposedAction>[],
-  });
-
-  final AssistantMessageRole role;
-  final String content;
-  final DateTime createdAt;
-  final List<String> usedTools;
-  final List<AssistantProposedAction> proposedActions;
-
-  AssistantMessage copyWith({
-    AssistantMessageRole? role,
-    String? content,
-    DateTime? createdAt,
-    List<String>? usedTools,
-    List<AssistantProposedAction>? proposedActions,
-  }) {
-    return AssistantMessage(
-      role: role ?? this.role,
-      content: content ?? this.content,
-      createdAt: createdAt ?? this.createdAt,
-      usedTools: usedTools ?? this.usedTools,
-      proposedActions: proposedActions ?? this.proposedActions,
-    );
-  }
+@freezed
+abstract class AssistantMessage with _$AssistantMessage {
+  const factory AssistantMessage({
+    required AssistantMessageRole role,
+    required String content,
+    required DateTime createdAt,
+    @Default(<String>[]) List<String> usedTools,
+    @Default(<AssistantProposedAction>[])
+    List<AssistantProposedAction> proposedActions,
+  }) = _AssistantMessage;
 }
 
 @immutable
@@ -358,8 +309,6 @@ class AssistantConversation {
   final DateTime createdAt;
   final DateTime updatedAt;
 }
-
-const Object _proposalSentinel = Object();
 
 @immutable
 class AssistantConversationSummary {

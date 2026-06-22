@@ -3,6 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/network/lucent_api_exception.dart';
+import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/lucent_envelope.dart';
 import 'package:luminous/core/network/lucent_result_code.dart';
 import 'package:luminous/core/network/lucent_session_store.dart';
@@ -184,7 +185,7 @@ class LucentDioClient {
     }
 
     final data = error.response?.data;
-    final json = _coerceToMap(data);
+    final json = coerceToStringMap(data);
     final envelope = json == null
         ? null
         : LucentEnvelope<Object?>.fromJson(json, dataDecoder: (raw) => raw);
@@ -231,17 +232,15 @@ class LucentDioClient {
         ),
       );
 
-      final json = _coerceToMap(response.data);
+      final json = coerceToStringMap(response.data);
       if (json == null) {
-        throw const LucentApiException(
-          message: '刷新登录状态失败：响应为空。',
-        );
+        throw const LucentApiException(message: '刷新登录状态失败：响应为空。');
       }
 
       final envelope = LucentEnvelope<LucentSessionTokens>.fromJson(
         json,
         dataDecoder: (raw) {
-          final dataMap = _coerceToMap(raw) ?? const <String, dynamic>{};
+          final dataMap = coerceToStringMap(raw) ?? const <String, dynamic>{};
           final accessToken = dataMap['accessToken']?.toString().trim() ?? '';
           final nextRefreshToken =
               dataMap['refreshToken']?.toString().trim() ?? '';
@@ -286,7 +285,7 @@ class LucentDioClient {
 
   DioException _mapToApiException(DioException error) {
     final response = error.response;
-    final json = _coerceToMap(response?.data);
+    final json = coerceToStringMap(response?.data);
     final envelope = json == null
         ? null
         : LucentEnvelope<Object?>.fromJson(json, dataDecoder: (raw) => raw);
@@ -320,17 +319,5 @@ class LucentDioClient {
       DioExceptionType.badResponse => '请求失败，请稍后再试。',
       DioExceptionType.unknown => '发生了未预期的网络错误。',
     };
-  }
-
-  Map<String, dynamic>? _coerceToMap(Object? value) {
-    if (value is Map<String, dynamic>) {
-      return value;
-    }
-    if (value is Map) {
-      return value.map(
-        (key, entryValue) => MapEntry(key.toString(), entryValue),
-      );
-    }
-    return null;
   }
 }

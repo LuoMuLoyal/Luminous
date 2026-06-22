@@ -1,5 +1,4 @@
-import 'dart:math' as math;
-
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -284,16 +283,75 @@ class RecordLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final allValues = [...points, ...secondaryPoints];
+    final minY = allValues.isEmpty
+        ? 0.0
+        : allValues.reduce((a, b) => a < b ? a : b);
+    final maxY = allValues.isEmpty
+        ? 1.0
+        : allValues.reduce((a, b) => a > b ? a : b);
+    final span = (maxY - minY).abs() < 1 ? 1.0 : (maxY - minY);
+
+    List<LineChartBarData> bars() {
+      final primary = points
+          .asMap()
+          .entries
+          .map((e) => FlSpot(e.key.toDouble(), e.value))
+          .toList();
+      final result = <LineChartBarData>[
+        LineChartBarData(
+          spots: primary,
+          color: color,
+          barWidth: 2,
+          dotData: FlDotData(
+            show: true,
+            getDotPainter: (spot, percent, bar, index) =>
+                FlDotCirclePainter(radius: 3, color: color),
+          ),
+          belowBarData: BarAreaData(show: false),
+        ),
+      ];
+      if (secondaryColor != null && secondaryPoints.isNotEmpty) {
+        final secondary = secondaryPoints
+            .asMap()
+            .entries
+            .map((e) => FlSpot(e.key.toDouble(), e.value))
+            .toList();
+        result.add(
+          LineChartBarData(
+            spots: secondary,
+            color: secondaryColor!,
+            barWidth: 2,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, bar, index) =>
+                  FlDotCirclePainter(radius: 3, color: secondaryColor!),
+            ),
+            belowBarData: BarAreaData(show: false),
+          ),
+        );
+      }
+      return result;
+    }
+
     return SizedBox(
       height: height,
       width: double.infinity,
-      child: CustomPaint(
-        painter: _LineChartPainter(
-          points: points,
-          color: color,
-          surface: surface,
-          secondaryPoints: secondaryPoints,
-          secondaryColor: secondaryColor,
+      child: LineChart(
+        LineChartData(
+          minY: minY - span * 0.1,
+          maxY: maxY + span * 0.1,
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            getDrawingHorizontalLine: (_) =>
+                FlLine(color: surface.hairline, strokeWidth: 1),
+            horizontalInterval: (maxY - minY + span * 0.2) / 4,
+          ),
+          borderData: FlBorderData(show: false),
+          titlesData: const FlTitlesData(show: false),
+          lineTouchData: const LineTouchData(enabled: false),
+          lineBarsData: bars(),
         ),
       ),
     );
@@ -319,11 +377,35 @@ class RecordBarChart extends StatelessWidget {
     return SizedBox(
       height: height,
       width: double.infinity,
-      child: CustomPaint(
-        painter: _BarChartPainter(
-          values: values,
-          color: color,
-          gridColor: surface.hairline,
+      child: BarChart(
+        BarChartData(
+          minY: 0,
+          maxY: 1.0,
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            getDrawingHorizontalLine: (_) =>
+                FlLine(color: surface.hairline, strokeWidth: 1),
+            horizontalInterval: 1.0 / 3,
+          ),
+          borderData: FlBorderData(show: false),
+          titlesData: const FlTitlesData(show: false),
+          barTouchData: const BarTouchData(enabled: false),
+          barGroups: values.asMap().entries.map((e) {
+            return BarChartGroupData(
+              x: e.key,
+              barRods: [
+                BarChartRodData(
+                  toY: e.value.clamp(0.0, 1.0),
+                  color: color.withValues(alpha: 0.7),
+                  width: 12,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(AppRadiusTokens.xs),
+                  ),
+                ),
+              ],
+            );
+          }).toList(),
         ),
       ),
     );
@@ -333,121 +415,4 @@ class RecordBarChart extends StatelessWidget {
 void showRecordToast(BuildContext context, String action) {
   final l10n = AppLocalizations.of(context)!;
   AppToast.show(context, l10n.recordActionToast(action));
-}
-
-class _LineChartPainter extends CustomPainter {
-  const _LineChartPainter({
-    required this.points,
-    required this.color,
-    required this.surface,
-    required this.secondaryPoints,
-    required this.secondaryColor,
-  });
-
-  final List<double> points;
-  final Color color;
-  final AppThemeSurface surface;
-  final List<double> secondaryPoints;
-  final Color? secondaryColor;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    _drawGrid(canvas, size);
-    _drawSeries(canvas, size, points, color);
-    if (secondaryPoints.isNotEmpty && secondaryColor != null) {
-      _drawSeries(canvas, size, secondaryPoints, secondaryColor!);
-    }
-  }
-
-  void _drawGrid(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = surface.hairline
-      ..strokeWidth = 1;
-    for (var index = 1; index <= 3; index += 1) {
-      final y = size.height * index / 4;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
-    }
-  }
-
-  void _drawSeries(Canvas canvas, Size size, List<double> data, Color color) {
-    if (data.length < 2) return;
-    final minValue = data.reduce(math.min);
-    final maxValue = data.reduce(math.max);
-    final span = math.max(maxValue - minValue, 1);
-    final path = Path();
-    final dotPaint = Paint()..color = color;
-    final linePaint = Paint()
-      ..color = color
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
-    for (var index = 0; index < data.length; index += 1) {
-      final x = size.width * index / (data.length - 1);
-      final normalized = (data[index] - minValue) / span;
-      final y = size.height - (normalized * (size.height - 18)) - 9;
-      if (index == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-      canvas.drawCircle(Offset(x, y), 3, dotPaint);
-    }
-    canvas.drawPath(path, linePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _LineChartPainter oldDelegate) {
-    return oldDelegate.points != points ||
-        oldDelegate.secondaryPoints != secondaryPoints ||
-        oldDelegate.color != color ||
-        oldDelegate.secondaryColor != secondaryColor ||
-        oldDelegate.surface != surface;
-  }
-}
-
-class _BarChartPainter extends CustomPainter {
-  const _BarChartPainter({
-    required this.values,
-    required this.color,
-    required this.gridColor,
-  });
-
-  final List<double> values;
-  final Color color;
-  final Color gridColor;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final gridPaint = Paint()
-      ..color = gridColor
-      ..strokeWidth = 1;
-    for (var index = 1; index <= 2; index += 1) {
-      final y = size.height * index / 3;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
-    }
-
-    if (values.isEmpty) return;
-    final gap = size.width / (values.length * 2 + 1);
-    final barWidth = gap;
-    final paint = Paint()..color = color.withValues(alpha: 0.7);
-    for (var index = 0; index < values.length; index += 1) {
-      final left = gap + index * gap * 2;
-      final heightFactor = values[index].clamp(0.0, 1.0);
-      final height = heightFactor * (size.height - 8);
-      final rect = RRect.fromRectAndRadius(
-        Rect.fromLTWH(left, size.height - height, barWidth, height),
-        const Radius.circular(AppRadiusTokens.xs),
-      );
-      canvas.drawRRect(rect, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _BarChartPainter oldDelegate) {
-    return oldDelegate.values != values ||
-        oldDelegate.color != color ||
-        oldDelegate.gridColor != gridColor;
-  }
 }

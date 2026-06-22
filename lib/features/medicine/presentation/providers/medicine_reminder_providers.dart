@@ -7,6 +7,7 @@ import 'package:luminous/features/health_context/domain/entities/health_context_
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
@@ -165,7 +166,7 @@ final medicineReminderDetailProvider =
           reminders
               .where((item) => item.currentMedicineId == currentMedicineId)
               .toList()
-            ..sort(_compareReminderTime);
+            ..sort(compareReminderTime);
       final medicineLogs = todayLogs
           .where((item) => item.currentMedicineId == currentMedicineId)
           .toList(growable: false);
@@ -203,7 +204,7 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
 
     try {
       final dataSource = ref.read(medicineReminderRemoteDataSourceProvider);
-      final existing = [...existingReminders]..sort(_compareReminderTime);
+      final existing = [...existingReminders]..sort(compareReminderTime);
       final times = [...input.times]
         ..sort((left, right) {
           final hour = left.hour.compareTo(right.hour);
@@ -274,12 +275,3 @@ final medicineReminderFormProvider =
     NotifierProvider<MedicineReminderFormNotifier, MedicineReminderFormState>(
       MedicineReminderFormNotifier.new,
     );
-
-int _compareReminderTime(
-  MedicineReminderItem left,
-  MedicineReminderItem right,
-) {
-  final hour = left.scheduledHour.compareTo(right.scheduledHour);
-  if (hour != 0) return hour;
-  return left.scheduledMinute.compareTo(right.scheduledMinute);
-}

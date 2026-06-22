@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/network/map_utils.dart';
 
 const Object settingsProfileNoChange = Object();
 
@@ -30,7 +31,7 @@ class SettingsProfileRemoteDataSource {
       options: Options(contentType: Headers.jsonContentType),
     );
 
-    final body = _coerceToMap(response.data);
+    final body = coerceToStringMap(response.data);
     if (body == null) {
       throw DioException(
         requestOptions: response.requestOptions,
@@ -41,17 +42,5 @@ class SettingsProfileRemoteDataSource {
     }
 
     return HealthContextResponseDto.fromJson(body).data;
-  }
-
-  Map<String, dynamic>? _coerceToMap(Object? value) {
-    if (value is Map<String, dynamic>) {
-      return value;
-    }
-    if (value is Map) {
-      return value.map(
-        (key, entryValue) => MapEntry(key.toString(), entryValue),
-      );
-    }
-    return null;
   }
 }
