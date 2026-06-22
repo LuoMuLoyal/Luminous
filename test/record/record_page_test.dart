@@ -137,7 +137,9 @@ void main() {
     );
   });
 
-  testWidgets('Record page opens natural-language sheet on mobile', (tester) async {
+  testWidgets('Record page opens natural-language sheet on mobile', (
+    tester,
+  ) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
     addTearDown(() {
@@ -194,10 +196,7 @@ void main() {
         ),
       );
 
-      await _pumpRecordPage(
-        tester,
-        dailyRecordRepository: repo,
-      );
+      await _pumpRecordPage(tester, dailyRecordRepository: repo);
 
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('record-ai-input')));
@@ -210,8 +209,14 @@ void main() {
       await tester.tap(find.byKey(const Key('record-nlp-generate-action')));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('record-nlp-candidate-title-0')), findsOneWidget);
-      expect(find.byKey(const Key('record-nlp-candidate-select-1')), findsOneWidget);
+      expect(
+        find.byKey(const Key('record-nlp-candidate-title-0')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('record-nlp-candidate-select-1')),
+        findsOneWidget,
+      );
 
       await tester.enterText(
         find.byKey(const Key('record-nlp-candidate-title-0')),
@@ -267,10 +272,7 @@ void main() {
         ),
       );
 
-      await _pumpRecordPage(
-        tester,
-        dailyRecordRepository: repo,
-      );
+      await _pumpRecordPage(tester, dailyRecordRepository: repo);
 
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('record-ai-input')));
@@ -288,7 +290,9 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.tap(find.byKey(const Key('record-nlp-candidate-unit-0-cup')));
+      await tester.tap(
+        find.byKey(const Key('record-nlp-candidate-unit-0-cup')),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('次').last);
       await tester.pumpAndSettle();
@@ -349,10 +353,7 @@ void main() {
         failCreateAtIndexes: {1},
       );
 
-      await _pumpRecordPage(
-        tester,
-        dailyRecordRepository: repo,
-      );
+      await _pumpRecordPage(tester, dailyRecordRepository: repo);
 
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('record-ai-input')));
@@ -1159,7 +1160,9 @@ void main() {
     expect(find.byKey(const Key('record-fast-entry-symptom')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-symptom')), findsNothing);
 
-    await tester.tap(find.byKey(const Key('record-fast-entry-choice-symptom-0')));
+    await tester.tap(
+      find.byKey(const Key('record-fast-entry-choice-symptom-0')),
+    );
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
 
@@ -1575,25 +1578,19 @@ void main() {
     },
   );
 
-  test(
-    'recordEntryTypeForDailyRecordKind maps note to note type',
-    () {
-      expect(
-        recordEntryTypeForDailyRecordKind(DailyRecordKind.note),
-        RecordEntryType.note,
-      );
-    },
-  );
+  test('recordEntryTypeForDailyRecordKind maps note to note type', () {
+    expect(
+      recordEntryTypeForDailyRecordKind(DailyRecordKind.note),
+      RecordEntryType.note,
+    );
+  });
 
-  test(
-    'dailyRecordKindForEntryType maps note type to note kind',
-    () {
-      expect(
-        dailyRecordKindForEntryType(RecordEntryType.note),
-        DailyRecordKind.note,
-      );
-    },
-  );
+  test('dailyRecordKindForEntryType maps note type to note kind', () {
+    expect(
+      dailyRecordKindForEntryType(RecordEntryType.note),
+      DailyRecordKind.note,
+    );
+  });
 
   test(
     'Lucent record repository does not fall back to mock timeline for empty filter results',
@@ -1632,26 +1629,23 @@ void main() {
     },
   );
 
-  test(
-    'Lucent timeline note with title uses it as rawTitle',
-    () async {
-      final dailyRepo = _FakeDailyRecordRepository(
-        itemOccurredAt: '2026-06-06',
-        itemOccurredTime: '14:00',
-        itemKind: DailyRecordKind.note,
-        itemTitle: 'Evening reflection',
-        itemValue: null,
-        itemUnit: null,
-        itemNote: 'Felt good today',
-      );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+  test('Lucent timeline note with title uses it as rawTitle', () async {
+    final dailyRepo = _FakeDailyRecordRepository(
+      itemOccurredAt: '2026-06-06',
+      itemOccurredTime: '14:00',
+      itemKind: DailyRecordKind.note,
+      itemTitle: 'Evening reflection',
+      itemValue: null,
+      itemUnit: null,
+      itemNote: 'Felt good today',
+    );
+    final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
 
-      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+    final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
 
-      expect(dashboard.timeline.single.rawTitle, 'Evening reflection');
-      expect(dashboard.timeline.single.titleKey, RecordCopyKey.typeNote);
-    },
-  );
+    expect(dashboard.timeline.single.rawTitle, 'Evening reflection');
+    expect(dashboard.timeline.single.titleKey, RecordCopyKey.typeNote);
+  });
 
   test(
     'Lucent timeline uses type-dependent titleKey instead of hardcoded typeMood',
@@ -2031,7 +2025,8 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     return DailyRecordItem(
       id: id,
       kind: DailyRecordKind.vital,
-      occurredAt: (input.occurredAt == dailyRecordNoChange
+      occurredAt:
+          (input.occurredAt == dailyRecordNoChange
               ? fetchDate
               : input.occurredAt as String?) ??
           '2026-05-20',
@@ -2147,7 +2142,6 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
       ),
     );
   }
-
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {

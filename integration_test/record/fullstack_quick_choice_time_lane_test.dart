@@ -48,13 +48,7 @@ void main() {
 
       await openRecordTabForDate(tester, container, targetDate: targetDate);
 
-      const kinds = <String>[
-        'water',
-        'meal',
-        'symptom',
-        'note',
-        'sleep',
-      ];
+      const kinds = <String>['water', 'meal', 'symptom', 'note', 'sleep'];
 
       // ── Phase 1: quick-choice save for each kind ───────────────
 
@@ -110,7 +104,8 @@ void main() {
         expect(
           tester.any(chipLabelInEntry),
           isTrue,
-          reason: 'timeline entry for $kind should contain chip label "$chipLabel"',
+          reason:
+              'timeline entry for $kind should contain chip label "$chipLabel"',
         );
 
         // 6. Now read the HH:mm from this same entry.
@@ -142,8 +137,11 @@ void main() {
       final sleepTime = createdTimes['sleep']!;
       await _tapTimelineEntry(tester, 0);
 
-      expect(find.textContaining(sleepTime), findsWidgets,
-          reason: 'detail page should show occurredTime $sleepTime');
+      expect(
+        find.textContaining(sleepTime),
+        findsWidgets,
+        reason: 'detail page should show occurredTime $sleepTime',
+      );
 
       // ── Phase 3: edit preserves occurredTime, no day-crossing ───
 
@@ -152,12 +150,12 @@ void main() {
         find.byKey(const Key('record-detail-edit-action')),
       );
 
-      await pumpUntilFound(
-        tester,
-        find.byKey(const Key('record-time-field')),
+      await pumpUntilFound(tester, find.byKey(const Key('record-time-field')));
+      expect(
+        find.textContaining(sleepTime),
+        findsWidgets,
+        reason: 'edit page time field should show $sleepTime',
       );
-      expect(find.textContaining(sleepTime), findsWidgets,
-          reason: 'edit page time field should show $sleepTime');
 
       // Change the note field only (don't touch time)
       final noteField = find.byKey(const Key('daily-record-note-field'));
@@ -165,7 +163,10 @@ void main() {
         await tester.enterText(noteField, 'edit-preserve-time');
       }
 
-      await tapVisible(tester, find.byKey(const Key('record-edit-save-action')));
+      await tapVisible(
+        tester,
+        find.byKey(const Key('record-edit-save-action')),
+      );
 
       await pumpUntilFound(
         tester,
@@ -173,16 +174,23 @@ void main() {
         timeout: const Duration(seconds: 10),
       );
 
-      expect(find.textContaining(sleepTime), findsWidgets,
-          reason: 'after edit, detail page should still show occurredTime $sleepTime');
+      expect(
+        find.textContaining(sleepTime),
+        findsWidgets,
+        reason:
+            'after edit, detail page should still show occurredTime $sleepTime',
+      );
 
       // Date should NOT have changed (no day-crossing)
       final dateText =
           '${targetDate.year}-'
           '${targetDate.month.toString().padLeft(2, '0')}-'
           '${targetDate.day.toString().padLeft(2, '0')}';
-      expect(find.textContaining(dateText), findsWidgets,
-          reason: 'date should still be $dateText after edit');
+      expect(
+        find.textContaining(dateText),
+        findsWidgets,
+        reason: 'date should still be $dateText after edit',
+      );
     },
   );
 }
@@ -206,9 +214,7 @@ Future<void> _waitForSheetDismissed(
     }
   } while (tester.binding.clock.now().isBefore(endTime));
 
-  throw TestFailure(
-    'Timed out waiting for fast-entry sheet $kind to dismiss',
-  );
+  throw TestFailure('Timed out waiting for fast-entry sheet $kind to dismiss');
 }
 
 Future<void> _tapTimelineEntry(WidgetTester tester, int index) async {
