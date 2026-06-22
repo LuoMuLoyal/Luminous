@@ -39,8 +39,8 @@ This file records current implementation facts only. Product direction lives in 
   - Record sleep structured-entry lane
   - Today + Report protected-dashboard lane with Report sync verification plus real Today/Report AI streaming generation
 - Repo-local validation entrypoints are now split into:
-  - `tool/run_daily_checks.ps1` for repo-safe checks (`flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`)
-  - `tool/run_fullstack_checks.ps1` for Android emulator + Lucent test-runtime lanes
+  - `tool/run_daily_checks.dart` for repo-safe checks (`flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`)
+  - `tool/run_fullstack_checks.dart` for Android emulator + Lucent test-runtime lanes
 - Melos now provides shorter local script-style wrappers for the same validation flows, including `dart run melos run daily`, `dart run melos run fullstack`, and per-lane full-stack entries that read `.env.fullstack-e2e` through `--dart-define-from-file`.
 - Frontend tests are now grouped by feature under nested `test/` and `integration_test/` directories instead of one flat root.
 - The real full-stack helper uses explicit Dart defines, Lucent test-state preparation, stable shell/login/action keys, and an in-memory session store so old secure-storage sessions do not leak into the lane.

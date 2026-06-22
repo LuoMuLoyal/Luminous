@@ -47,3 +47,4 @@ dart run tool/regenerate_lucent_openapi.dart
 - UI/page state or project state changed: update `docs/Current_State.md`.
 - Next work changed: update `docs/Next_Plan.md`.
 - Recurring mistakes or rules changed: update `docs/Project_Guardrails.md`.
+- Frontend tooling scripts under `tool/` should default to Dart; do not add new PowerShell-only validation or hook wrappers.

@@ -69,9 +69,9 @@ Reset or verify these before demo:
    - follow `../Lucent/docs/deployment.md`
    - run `pnpm deploy:smoke` on the server-side app directory with the required env vars
 2. Frontend repo-safe checks:
-   - `powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1`
+   - `dart run tool/run_daily_checks.dart`
 3. Full-stack local lane:
-   - `powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1`
+   - `dart run tool/run_fullstack_checks.dart`
 4. Manual device rehearsal:
    - follow `MVP_Demo_Script.md` once from login to export
 

@@ -114,10 +114,10 @@ melos:
       run: flutter pub get
     daily:
       description: Run local daily validation
-      run: powershell -ExecutionPolicy Bypass -File tool/run_daily_checks.ps1
+      run: dart run tool/run_daily_checks.dart
     fullstack:
       description: Run the Android emulator full-stack validation gate
-      run: powershell -ExecutionPolicy Bypass -File tool/run_fullstack_checks.ps1
+      run: dart run tool/run_fullstack_checks.dart
     fullstack-auth:
       description: Run the full-stack auth smoke lane
       run: flutter test integration_test/auth/fullstack_auth_smoke_test.dart -d emulator-5554 --dart-define-from-file=.env.fullstack-e2e
