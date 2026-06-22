@@ -16,6 +16,13 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 import '../auth/auth_test_helpers.dart';
 
+class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() {
+    return const AuthSessionState(isAuthenticated: false, isLoading: false);
+  }
+}
+
 void main() {
   testWidgets('Shell page uses five desktop tabs plus settings/help actions', (
     tester,
@@ -74,7 +81,9 @@ void main() {
           reportRepositoryProvider.overrideWithValue(
             const MockReportRepository(),
           ),
-          supportResourcesProvider('campus').overrideWith((ref) async => const []),
+          supportResourcesProvider(
+            'campus',
+          ).overrideWith((ref) async => const []),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -114,4 +123,122 @@ void main() {
     expect(find.text('Lumi'), findsOneWidget);
     expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
   });
+
+  testWidgets('Shell page renders mobile bottom navigation', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await _pumpShell(tester);
+
+    // Mobile layout should show a NavigationBar
+    expect(find.byType(NavigationBar), findsOneWidget);
+  });
+
+  testWidgets('Shell page signed-out renders without crash', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedOutAuthSessionNotifier(),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ShellPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Shell should render without exceptions
+    expect(tester.takeException(), isNull);
+  });
+}
+
+Future<void> _pumpShell(WidgetTester tester) async {
+  final mockSnapshot = HealthContextSnapshot(
+    summary: const HealthSummary(
+      age: 27,
+      onboardingCompleted: true,
+      activeAllergyCount: 0,
+      conditionCount: 0,
+      currentMedicineCount: 0,
+      missingCoreProfileFields: [],
+    ),
+    profile: const HealthProfile(
+      birthDate: null,
+      sexAtBirth: null,
+      heightCm: null,
+      pregnancyState: null,
+      lactationState: null,
+      bloodType: null,
+      locale: null,
+      timezone: null,
+      unitSystem: null,
+      onboardingCompletedAt: null,
+      extras: {},
+    ),
+    allergies: const [],
+    conditions: const [],
+    currentMedicines: const [],
+  );
+
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) => Future.value(mockSnapshot),
+        ),
+        medicineWorkspaceRepositoryProvider.overrideWithValue(
+          const MockMedicineWorkspaceRepository(),
+        ),
+        recordRepositoryProvider.overrideWithValue(
+          const MockRecordRepository(),
+        ),
+        todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
+        reportRepositoryProvider.overrideWithValue(
+          const MockReportRepository(),
+        ),
+        supportResourcesProvider(
+          'campus',
+        ).overrideWith((ref) async => const []),
+      ],
+      child: MaterialApp(
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        locale: const Locale('zh'),
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const ShellPage(),
+      ),
+    ),
+  );
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 300));
 }

@@ -80,18 +80,11 @@ class ShellPage extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(
                             AppRadiusTokens.xl,
                           ),
-                          child: IndexedStack(
-                            index: currentIndex,
-                            children: _pages
-                                .map((page) {
-                                  return DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color: surface.canvasSoft,
-                                    ),
-                                    child: page,
-                                  );
-                                })
-                                .toList(growable: false),
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: surface.canvasSoft,
+                            ),
+                            child: _pages[currentIndex],
                           ),
                         ),
                       ),
@@ -100,7 +93,7 @@ class ShellPage extends ConsumerWidget {
                 ),
               ),
             )
-          : IndexedStack(index: currentIndex, children: _pages),
+          : _pages[currentIndex],
       bottomNavigationBar: isDesktop
           ? null
           : NavigationBarTheme(
