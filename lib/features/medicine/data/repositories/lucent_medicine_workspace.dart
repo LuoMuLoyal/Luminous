@@ -7,6 +7,7 @@ import 'package:luminous/features/medicine/data/datasources/medicine_reminder_re
 import 'package:luminous/features/medicine/data/repositories/medicine_risk_check_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
+import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
 
 /// Lucent-backed [MedicineWorkspaceRepository] that derives the medicine
 /// workspace from the current user's real health-context data.
@@ -26,7 +27,9 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {
     final snapshot = await healthRepo.fetchHealthContext();
-    final riskCheckResult = await riskCheckRepository.fetchForSnapshot(snapshot);
+    final riskCheckResult = await riskCheckRepository.fetchForSnapshot(
+      snapshot,
+    );
     final medicines = snapshot.currentMedicines
         .where((medicine) => medicine.isCurrent)
         .toList(growable: false);
@@ -59,7 +62,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         remindersByMedicine.putIfAbsent(medicineId, () => []).add(reminder);
       }
       for (final reminders in remindersByMedicine.values) {
-        reminders.sort(_compareReminderTime);
+        reminders.sort(compareReminderTime);
       }
     } catch (_) {}
 
@@ -126,15 +129,6 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   static String _formatAdherence(int completedCount, int totalCount) {
     if (totalCount == 0) return '--';
     return '${((completedCount / totalCount) * 100).round()}%';
-  }
-
-  static int _compareReminderTime(
-    MedicineReminderItem left,
-    MedicineReminderItem right,
-  ) {
-    final hour = left.scheduledHour.compareTo(right.scheduledHour);
-    if (hour != 0) return hour;
-    return left.scheduledMinute.compareTo(right.scheduledMinute);
   }
 
   static String? _nextPendingSlotTime(List<MedicinePlanItem> pendingItems) {

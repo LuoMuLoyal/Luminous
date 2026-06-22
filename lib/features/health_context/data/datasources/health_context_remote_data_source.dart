@@ -3,26 +3,28 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
+import 'package:luminous/core/network/map_utils.dart';
 
 /// Remote data source that fetches and writes health-context data to Lucent.
 class HealthContextRemoteDataSource {
-  HealthContextRemoteDataSource({required UserHealthContextApi api, required Dio dio})
-    : _api = api,
-      _dio = dio;
+  HealthContextRemoteDataSource({
+    required UserHealthContextApi api,
+    required Dio dio,
+  }) : _api = api,
+       _dio = dio;
 
   final UserHealthContextApi _api;
   final Dio _dio;
 
   /// Calls GET /api/v1/user/health-context and returns the parsed DTO.
   Future<HealthContextDataDto> fetchHealthContext() async {
-    final response = await _api.userHealthContextControllerGetUserHealthContextV1();
+    final response = await _api
+        .userHealthContextControllerGetUserHealthContextV1();
     return response.data!.data;
   }
 
   /// Calls PATCH /api/v1/user/health-context/profile and returns the parsed DTO.
-  Future<HealthContextDataDto> updateProfile(
-    HealthProfileUpdateInput input,
-  ) {
+  Future<HealthContextDataDto> updateProfile(HealthProfileUpdateInput input) {
     return _write(
       method: 'PATCH',
       path: '/api/v1/user/health-context/profile',
@@ -31,9 +33,7 @@ class HealthContextRemoteDataSource {
   }
 
   /// Calls POST /api/v1/user/health-context/allergies and returns the parsed DTO.
-  Future<HealthContextDataDto> createAllergy(
-    HealthAllergyWriteInput input,
-  ) {
+  Future<HealthContextDataDto> createAllergy(HealthAllergyWriteInput input) {
     return _write(
       method: 'POST',
       path: '/api/v1/user/health-context/allergies',
@@ -134,7 +134,7 @@ class HealthContextRemoteDataSource {
       options: Options(method: method, contentType: Headers.jsonContentType),
     );
 
-    final body = _coerceToMap(response.data);
+    final body = coerceToStringMap(response.data);
     if (body == null) {
       throw DioException(
         requestOptions: response.requestOptions,
@@ -145,18 +145,6 @@ class HealthContextRemoteDataSource {
     }
 
     return HealthContextResponseDto.fromJson(body).data;
-  }
-
-  static Map<String, dynamic>? _coerceToMap(Object? value) {
-    if (value is Map<String, dynamic>) {
-      return value;
-    }
-    if (value is Map) {
-      return value.map(
-        (key, entryValue) => MapEntry(key.toString(), entryValue),
-      );
-    }
-    return null;
   }
 }
 
@@ -177,9 +165,7 @@ Map<String, dynamic> healthProfileUpdatePayload(
   return payload;
 }
 
-Map<String, dynamic> healthAllergyCreatePayload(
-  HealthAllergyWriteInput input,
-) {
+Map<String, dynamic> healthAllergyCreatePayload(HealthAllergyWriteInput input) {
   return _compactCreatePayload(<String, dynamic>{
     'kind': input.kind.value,
     'label': input.label,
@@ -260,7 +246,8 @@ Map<String, dynamic> currentMedicineUpdatePayload(
 }
 
 Map<String, dynamic> _compactCreatePayload(Map<String, dynamic> payload) {
-  return Map<String, dynamic>.from(payload)..removeWhere((_, value) => value == null);
+  return Map<String, dynamic>.from(payload)
+    ..removeWhere((_, value) => value == null);
 }
 
 void _putIfChanged(Map<String, dynamic> payload, String key, Object? value) {

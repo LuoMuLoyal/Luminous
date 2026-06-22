@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
+import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 
@@ -192,7 +193,7 @@ class DailyRecordRemoteDataSource {
       options: Options(method: 'DELETE', contentType: Headers.jsonContentType),
     );
 
-    final body = _coerceToMap(response.data);
+    final body = coerceToStringMap(response.data);
     final code = body?['code'];
     if (body == null || code != 0) {
       throw DioException(
@@ -215,7 +216,7 @@ class DailyRecordRemoteDataSource {
       options: Options(method: method, contentType: Headers.jsonContentType),
     );
 
-    final body = _coerceToMap(response.data);
+    final body = coerceToStringMap(response.data);
     if (body == null) {
       throw DioException(
         requestOptions: response.requestOptions,
@@ -327,14 +328,8 @@ class DailyRecordRemoteDataSource {
     return null;
   }
 
-  Map<String, dynamic>? _coerceToMap(Object? value) {
-    if (value is Map<String, dynamic>) return value;
-    if (value is Map) return value.map((k, v) => MapEntry(k.toString(), v));
-    return null;
-  }
-
   Map<String, String> _coerceToStringMap(Object? value) {
-    final map = _coerceToMap(value);
+    final map = coerceToStringMap(value);
     if (map == null) return const <String, String>{};
     return map.map((key, value) => MapEntry(key, value.toString()));
   }

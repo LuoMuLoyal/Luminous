@@ -1,21 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 
-/// Form state for the profile edit page.
-class HealthProfileFormState {
-  const HealthProfileFormState({
-    this.isSaving = false,
-    this.errorMessage,
-    this.saved = false,
-  });
+part 'health_edit_forms.freezed.dart';
 
-  final bool isSaving;
-  final String? errorMessage;
-  final bool saved;
+/// Form state for the profile edit page.
+@freezed
+abstract class HealthProfileFormState with _$HealthProfileFormState {
+  const factory HealthProfileFormState({
+    @Default(false) bool isSaving,
+    String? errorMessage,
+    @Default(false) bool saved,
+  }) = _HealthProfileFormState;
 }
 
 class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
@@ -47,16 +47,13 @@ final healthProfileFormProvider =
 
 // ── Allergy ──
 
-class AllergyFormState {
-  const AllergyFormState({
-    this.isSaving = false,
-    this.errorMessage,
-    this.saved = false,
-  });
-
-  final bool isSaving;
-  final String? errorMessage;
-  final bool saved;
+@freezed
+abstract class AllergyFormState with _$AllergyFormState {
+  const factory AllergyFormState({
+    @Default(false) bool isSaving,
+    String? errorMessage,
+    @Default(false) bool saved,
+  }) = _AllergyFormState;
 }
 
 class AllergyFormNotifier extends Notifier<AllergyFormState> {
@@ -107,16 +104,13 @@ final allergyFormProvider =
 
 // ── Condition ──
 
-class ConditionFormState {
-  const ConditionFormState({
-    this.isSaving = false,
-    this.errorMessage,
-    this.saved = false,
-  });
-
-  final bool isSaving;
-  final String? errorMessage;
-  final bool saved;
+@freezed
+abstract class ConditionFormState with _$ConditionFormState {
+  const factory ConditionFormState({
+    @Default(false) bool isSaving,
+    String? errorMessage,
+    @Default(false) bool saved,
+  }) = _ConditionFormState;
 }
 
 class ConditionFormNotifier extends Notifier<ConditionFormState> {
@@ -167,16 +161,13 @@ final conditionFormProvider =
 
 // ── Current Medicine ──
 
-class CurrentMedicineFormState {
-  const CurrentMedicineFormState({
-    this.isSaving = false,
-    this.errorMessage,
-    this.saved = false,
-  });
-
-  final bool isSaving;
-  final String? errorMessage;
-  final bool saved;
+@freezed
+abstract class CurrentMedicineFormState with _$CurrentMedicineFormState {
+  const factory CurrentMedicineFormState({
+    @Default(false) bool isSaving,
+    String? errorMessage,
+    @Default(false) bool saved,
+  }) = _CurrentMedicineFormState;
 }
 
 class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
