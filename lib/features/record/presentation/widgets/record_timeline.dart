@@ -43,6 +43,7 @@ class RecordTimelinePanel extends StatelessWidget {
         children: [
           for (var index = 0; index < entries.length; index += 1)
             _TimelineEntryRow(
+              index: index,
               entry: entries[index],
               l10n: l10n,
               typography: typography,
@@ -58,6 +59,7 @@ class RecordTimelinePanel extends StatelessWidget {
 
 class _TimelineEntryRow extends StatelessWidget {
   const _TimelineEntryRow({
+    required this.index,
     required this.entry,
     required this.l10n,
     required this.typography,
@@ -66,6 +68,7 @@ class _TimelineEntryRow extends StatelessWidget {
     required this.dense,
   });
 
+  final int index;
   final RecordTimelineEntry entry;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
@@ -115,6 +118,7 @@ class _TimelineEntryRow extends StatelessWidget {
             padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacingTokens.md),
             child: _TimelineCard(
               entry: entry,
+              index: index,
               l10n: l10n,
               typography: typography,
               surface: surface,
@@ -130,6 +134,7 @@ class _TimelineEntryRow extends StatelessWidget {
 class _TimelineCard extends StatelessWidget {
   const _TimelineCard({
     required this.entry,
+    required this.index,
     required this.l10n,
     required this.typography,
     required this.surface,
@@ -137,6 +142,7 @@ class _TimelineCard extends StatelessWidget {
   });
 
   final RecordTimelineEntry entry;
+  final int index;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
@@ -156,8 +162,12 @@ class _TimelineCard extends StatelessWidget {
         : recordCopy(l10n, entry.detailKey!);
 
     return Material(
+      key: entry.recordId == null
+          ? null
+          : Key('record-timeline-entry-${entry.recordId}'),
       color: Colors.transparent,
       child: InkWell(
+        key: Key('record-timeline-entry-index-$index'),
         onTap: () {
           if (entry.recordId != null) {
             pushAuthRequiredRoute(context, '/record/${entry.recordId}');

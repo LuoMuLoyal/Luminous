@@ -44,6 +44,7 @@ class RecordMobileTimeline extends StatelessWidget {
             children: [
               for (var index = 0; index < entries.length; index += 1) ...[
                 _TimelineRow(
+                  index: index,
                   entry: entries[index],
                   l10n: l10n,
                   typography: typography,
@@ -67,6 +68,7 @@ class RecordMobileTimeline extends StatelessWidget {
 
 class _TimelineRow extends StatelessWidget {
   const _TimelineRow({
+    required this.index,
     required this.entry,
     required this.l10n,
     required this.typography,
@@ -74,6 +76,7 @@ class _TimelineRow extends StatelessWidget {
     required this.isLast,
   });
 
+  final int index;
   final RecordTimelineEntry entry;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
@@ -99,8 +102,12 @@ class _TimelineRow extends StatelessWidget {
     ].join(' · ');
 
     return Material(
+      key: entry.recordId == null
+          ? null
+          : Key('record-timeline-entry-${entry.recordId}'),
       color: Colors.transparent,
       child: InkWell(
+        key: Key('record-timeline-entry-index-$index'),
         onTap: () {
           if (entry.recordId != null) {
             pushAuthRequiredRoute(context, '/record/${entry.recordId}');

@@ -103,35 +103,48 @@ Future<void> prepareFullstackRecordLane(FullstackE2eConfig config) async {
   final dio = Dio(
     BaseOptions(
       baseUrl: config.baseUrl,
-      connectTimeout: const Duration(seconds: 20),
-      receiveTimeout: const Duration(seconds: 20),
-      sendTimeout: const Duration(seconds: 20),
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+      sendTimeout: const Duration(seconds: 30),
       contentType: Headers.jsonContentType,
       responseType: ResponseType.json,
     ),
   );
 
   try {
-    final response = await dio.post<Map<String, dynamic>>(
-      '/api/v1/testing/fullstack-e2e/record-lane/prepare',
-      data: <String, String>{
-        'email': config.email,
-        'password': config.password,
-        'date': config.recordDate,
-        'nickname': config.nickname,
-      },
-    );
+    DioException? lastError;
 
-    final body = response.data;
-    if (response.statusCode != 200 || body == null || body['code'] != 0) {
-      throw TestFailure(
-        'Lucent full-stack prepare failed with status ${response.statusCode}: ${body ?? '<empty>'}',
-      );
+    for (var attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        final response = await dio.post<Map<String, dynamic>>(
+          '/api/v1/testing/fullstack-e2e/record-lane/prepare',
+          data: <String, String>{
+            'email': config.email,
+            'password': config.password,
+            'date': config.recordDate,
+            'nickname': config.nickname,
+          },
+        );
+
+        final body = response.data;
+        if (response.statusCode != 200 || body == null || body['code'] != 0) {
+          throw TestFailure(
+            'Lucent full-stack prepare failed with status ${response.statusCode}: ${body ?? '<empty>'}',
+          );
+        }
+        return;
+      } on DioException catch (error) {
+        lastError = error;
+        if (attempt == 3) {
+          break;
+        }
+        await Future<void>.delayed(const Duration(seconds: 2));
+      }
     }
-  } on DioException catch (error) {
+
     throw TestFailure(
       'Could not prepare Lucent full-stack record lane at ${config.baseUrl}: '
-      '${error.message ?? error.error ?? error.type.name}',
+      '${lastError?.message ?? lastError?.error ?? lastError?.type.name ?? 'unknown dio error'}',
     );
   } finally {
     dio.close(force: true);
