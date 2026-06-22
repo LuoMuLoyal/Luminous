@@ -922,6 +922,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineRiskCheckContextCaffeine => '咖啡因';
 
   @override
+  String get medicineRiskConclusionContraindicated => '禁用';
+
+  @override
+  String get medicineRiskConclusionAvoid => '避免使用';
+
+  @override
+  String get medicineRiskConclusionCaution => '慎用';
+
+  @override
+  String get medicineRiskConclusionConsultClinician => '咨询医生';
+
+  @override
+  String get medicineRiskConclusionInsufficientInformation => '信息不足';
+
+  @override
   String get medicineQuickRecordToast => '会打开服药记录入口。';
 
   @override
@@ -3307,4 +3322,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get medicineRiskCheckRedFlagResourcePharmacy => '校园药房';
+
+  @override
+  String get medicineRiskCheckRedFlagActionSevereAllergy =>
+      '请立即联系急救（120），不要自行处理';
+
+  @override
+  String get medicineRiskCheckRedFlagActionPregnancyContraindication =>
+      '请停止自行用药，尽快咨询医生或药师';
+
+  @override
+  String get medicineRiskCheckRedFlagActionInformationGap =>
+      '当前处于高风险状态，部分药品无法自动检查，建议尽快线下确认';
 }

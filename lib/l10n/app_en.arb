@@ -515,6 +515,11 @@
   "medicineRiskCheckContextGeriatric": "Geriatric",
   "medicineRiskCheckContextAlcohol": "Alcohol",
   "medicineRiskCheckContextCaffeine": "Caffeine",
+  "medicineRiskConclusionContraindicated": "Contraindicated",
+  "medicineRiskConclusionAvoid": "Avoid",
+  "medicineRiskConclusionCaution": "Use with Caution",
+  "medicineRiskConclusionConsultClinician": "Consult Clinician",
+  "medicineRiskConclusionInsufficientInformation": "Insufficient Info",
   "medicineQuickRecordToast": "This will open dose logging.",
   "medicineRecordsTitle": "Medication records",
   "medicineAllMedicinesFilter": "All meds",
@@ -1526,5 +1531,8 @@
   },
   "medicineRiskCheckRedFlagResourceEmergency": "Emergency",
   "medicineRiskCheckRedFlagResourceHospital": "Campus clinic",
-  "medicineRiskCheckRedFlagResourcePharmacy": "Campus pharmacy"
+  "medicineRiskCheckRedFlagResourcePharmacy": "Campus pharmacy",
+  "medicineRiskCheckRedFlagActionSevereAllergy": "Call emergency services (911) immediately. Do not self-treat.",
+  "medicineRiskCheckRedFlagActionPregnancyContraindication": "Stop self-medication. Consult a doctor or pharmacist as soon as possible.",
+  "medicineRiskCheckRedFlagActionInformationGap": "You are in a high-risk state and some medicines cannot be auto-checked. Verify offline as soon as possible."
 }

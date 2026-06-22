@@ -25,7 +25,11 @@ class MedicineRiskChecker {
 
     for (var index = 0; index < medicines.length; index += 1) {
       final current = medicines[index];
-      for (var otherIndex = index + 1; otherIndex < medicines.length; otherIndex += 1) {
+      for (
+        var otherIndex = index + 1;
+        otherIndex < medicines.length;
+        otherIndex += 1
+      ) {
         final other = medicines[otherIndex];
         final interaction = _pairInteractionFinding(current, other);
         if (interaction != null) {
@@ -60,6 +64,174 @@ class MedicineRiskChecker {
   static final _pediatricAgeThreshold = 18;
   static final _geriatricAgeThreshold = 65;
 
+  // ── Special-population text classifier ──────────────────────────
+  // Conservative keyword matching only — no NLP.
+  // Falls back to insufficientInformation when no keyword matches.
+
+  static const _contraindicatedKeywords = [
+    '禁用',
+    '禁忌',
+    '禁止使用',
+    '不得使用',
+    '不应使用',
+    'contraindicated',
+    'contraindication',
+    'must not be used',
+    'should not be used',
+    'do not use',
+  ];
+
+  static const _avoidKeywords = [
+    '避免使用',
+    '避免',
+    '不宜使用',
+    '不推荐',
+    '不建议',
+    'avoid',
+    'not recommended',
+    'should be avoided',
+    'not advised',
+  ];
+
+  static const _cautionKeywords = [
+    '慎用',
+    '谨慎',
+    '注意',
+    '小心',
+    '慎重',
+    'caution',
+    'with caution',
+    'careful',
+    'use with care',
+  ];
+
+  static const _consultKeywords = [
+    '咨询医生',
+    '咨询医师',
+    '咨询药师',
+    '遵医嘱',
+    '在医生指导下',
+    '医师指导',
+    '医生指导下',
+    'consult',
+    'physician',
+    'doctor',
+    'pharmacist',
+    'under medical supervision',
+    'seek medical advice',
+  ];
+
+  static const _pregnancyContextKeywords = [
+    '孕',
+    '妊娠',
+    '胎儿',
+    '胚胎',
+    '备孕',
+    '产后',
+    'pregnan',
+    'gestat',
+    'fetus',
+    'foetus',
+    'conception',
+    'postpartum',
+  ];
+
+  static const _lactationContextKeywords = [
+    '哺乳',
+    '乳汁',
+    '授乳',
+    '喂奶',
+    'lactat',
+    'breastfeed',
+    'breast-feeding',
+    'breast feeding',
+    'nursing',
+    'milk',
+  ];
+
+  SpecialPopulationConclusion _classifySpecialPopulationText(String text) {
+    final lower = text.toLowerCase();
+    if (_containsAny(lower, _contraindicatedKeywords)) {
+      return SpecialPopulationConclusion.contraindicated;
+    }
+    if (_containsAny(lower, _avoidKeywords)) {
+      return SpecialPopulationConclusion.avoid;
+    }
+    if (_containsAny(lower, _cautionKeywords)) {
+      return SpecialPopulationConclusion.caution;
+    }
+    if (_containsAny(lower, _consultKeywords)) {
+      return SpecialPopulationConclusion.consultClinician;
+    }
+    return SpecialPopulationConclusion.insufficientInformation;
+  }
+
+  static bool _containsAny(String text, Iterable<String> keywords) {
+    return keywords.any((kw) => text.contains(kw));
+  }
+
+  MedicineRiskSeverity _severityForConclusion(
+    SpecialPopulationConclusion conclusion,
+  ) {
+    return switch (conclusion) {
+      SpecialPopulationConclusion.contraindicated => MedicineRiskSeverity.high,
+      SpecialPopulationConclusion.avoid => MedicineRiskSeverity.high,
+      SpecialPopulationConclusion.caution => MedicineRiskSeverity.medium,
+      SpecialPopulationConclusion.consultClinician =>
+        MedicineRiskSeverity.medium,
+      SpecialPopulationConclusion.insufficientInformation =>
+        MedicineRiskSeverity.info,
+    };
+  }
+
+  MedicineRiskFinding _specialGroupClassifiedFinding({
+    required String medicineName,
+    required MedicineRiskFindingContext context,
+    required String evidenceText,
+  }) {
+    final conclusion = _classifySpecialPopulationText(evidenceText);
+    return MedicineRiskFinding(
+      type: MedicineRiskFindingType.specialGroup,
+      severity: _severityForConclusion(conclusion),
+      context: context,
+      primaryMedicineName: medicineName,
+      evidence: evidenceText,
+      specialPopulationConclusion: conclusion,
+    );
+  }
+
+  String? _specialPopulationEvidenceForContext({
+    required Object? rawText,
+    required MedicineRiskFindingContext context,
+  }) {
+    final text = _asNonEmptyString(rawText);
+    if (text == null) return null;
+
+    if (context != MedicineRiskFindingContext.pregnancy &&
+        context != MedicineRiskFindingContext.lactation) {
+      return text;
+    }
+
+    final lower = text.toLowerCase();
+    final mentionsPregnancy = _containsAny(lower, _pregnancyContextKeywords);
+    final mentionsLactation = _containsAny(lower, _lactationContextKeywords);
+
+    if (context == MedicineRiskFindingContext.pregnancy &&
+        mentionsLactation &&
+        !mentionsPregnancy) {
+      return null;
+    }
+    if (context == MedicineRiskFindingContext.lactation &&
+        mentionsPregnancy &&
+        !mentionsLactation) {
+      return null;
+    }
+
+    return text;
+  }
+
+  // ── Special-group evaluation ────────────────────────────────────
+
   List<MedicineRiskFinding> _specialGroupFindings(
     HealthContextSnapshot snapshot,
     MedicineRiskMedicineDetail medicine,
@@ -68,83 +240,91 @@ class MedicineRiskChecker {
     final detail = medicine.detail.detail;
     final age = snapshot.summary.age;
 
-    final pregnancyText = _asNonEmptyString(detail.pregnancyLactation);
+    final pregnancyText = _specialPopulationEvidenceForContext(
+      rawText: detail.pregnancyLactation,
+      context: MedicineRiskFindingContext.pregnancy,
+    );
     final pregnancyState = snapshot.profile.pregnancyState;
-    final hasPregnancyRisk = pregnancyState == 'pregnant' ||
+    final hasPregnancyRisk =
+        pregnancyState == 'pregnant' ||
         pregnancyState == 'trying' ||
         pregnancyState == 'postpartum';
     if (pregnancyText != null && hasPregnancyRisk) {
       findings.add(
-        MedicineRiskFinding(
-          type: MedicineRiskFindingType.specialGroup,
-          severity: MedicineRiskSeverity.high,
+        _specialGroupClassifiedFinding(
+          medicineName: medicine.displayName,
           context: MedicineRiskFindingContext.pregnancy,
-          primaryMedicineName: medicine.displayName,
-          evidence: pregnancyText,
+          evidenceText: pregnancyText,
         ),
       );
     } else if (pregnancyText == null && hasPregnancyRisk) {
-      findings.add(_noSpecialGroupWarningFinding(
-        medicine.displayName,
-        MedicineRiskFindingContext.pregnancy,
-      ));
+      findings.add(
+        _noSpecialGroupWarningFinding(
+          medicine.displayName,
+          MedicineRiskFindingContext.pregnancy,
+        ),
+      );
     }
 
     final lactationState = snapshot.profile.lactationState;
     final hasLactationRisk = lactationState == 'yes';
-    if (pregnancyText != null && hasLactationRisk) {
+    final lactationText = _specialPopulationEvidenceForContext(
+      rawText: detail.pregnancyLactation,
+      context: MedicineRiskFindingContext.lactation,
+    );
+    if (lactationText != null && hasLactationRisk) {
       findings.add(
-        MedicineRiskFinding(
-          type: MedicineRiskFindingType.specialGroup,
-          severity: MedicineRiskSeverity.high,
+        _specialGroupClassifiedFinding(
+          medicineName: medicine.displayName,
           context: MedicineRiskFindingContext.lactation,
-          primaryMedicineName: medicine.displayName,
-          evidence: pregnancyText,
+          evidenceText: lactationText,
         ),
       );
-    } else if (pregnancyText == null && hasLactationRisk) {
-      findings.add(_noSpecialGroupWarningFinding(
-        medicine.displayName,
-        MedicineRiskFindingContext.lactation,
-      ));
+    } else if (lactationText == null && hasLactationRisk) {
+      findings.add(
+        _noSpecialGroupWarningFinding(
+          medicine.displayName,
+          MedicineRiskFindingContext.lactation,
+        ),
+      );
     }
 
     final isPediatric = age != null && age < _pediatricAgeThreshold;
     final pediatricText = _asNonEmptyString(detail.pediatricUse);
     if (pediatricText != null && isPediatric) {
       findings.add(
-        MedicineRiskFinding(
-          type: MedicineRiskFindingType.specialGroup,
-          severity: MedicineRiskSeverity.medium,
+        _specialGroupClassifiedFinding(
+          medicineName: medicine.displayName,
           context: MedicineRiskFindingContext.pediatric,
-          primaryMedicineName: medicine.displayName,
-          evidence: pediatricText,
+          evidenceText: pediatricText,
         ),
       );
     } else if (pediatricText == null && isPediatric) {
-      findings.add(_noSpecialGroupWarningFinding(
-        medicine.displayName,
-        MedicineRiskFindingContext.pediatric,
-      ));
+      findings.add(
+        _noSpecialGroupWarningFinding(
+          medicine.displayName,
+          MedicineRiskFindingContext.pediatric,
+        ),
+      );
     }
 
     final isGeriatric = age != null && age > _geriatricAgeThreshold;
     final geriatricText = _asNonEmptyString(detail.geriatricUse);
     if (geriatricText != null && isGeriatric) {
       findings.add(
-        MedicineRiskFinding(
-          type: MedicineRiskFindingType.specialGroup,
-          severity: MedicineRiskSeverity.medium,
+        _specialGroupClassifiedFinding(
+          medicineName: medicine.displayName,
           context: MedicineRiskFindingContext.geriatric,
-          primaryMedicineName: medicine.displayName,
-          evidence: geriatricText,
+          evidenceText: geriatricText,
         ),
       );
     } else if (geriatricText == null && isGeriatric) {
-      findings.add(_noSpecialGroupWarningFinding(
-        medicine.displayName,
-        MedicineRiskFindingContext.geriatric,
-      ));
+      findings.add(
+        _noSpecialGroupWarningFinding(
+          medicine.displayName,
+          MedicineRiskFindingContext.geriatric,
+        ),
+      );
     }
 
     return findings;
@@ -377,17 +557,13 @@ class MedicineRiskChecker {
 }
 
 class MedicineRiskMedicineDetail {
-  const MedicineRiskMedicineDetail({
-    required this.item,
-    required this.detail,
-  });
+  const MedicineRiskMedicineDetail({required this.item, required this.detail});
 
   final CurrentMedicineItem item;
   final MedicineDetailDataDto detail;
 
-  String get displayName => item.displayName.trim().isNotEmpty
-      ? item.displayName
-      : detail.name;
+  String get displayName =>
+      item.displayName.trim().isNotEmpty ? item.displayName : detail.name;
 
   /// Ingredient tokens extracted from the medicine detail, regardless of source.
   /// CN: parsed from the `ingredients` string (Chinese semicolon-separated).
@@ -479,20 +655,18 @@ Set<String> _extractIngredientTokens(String value) {
       .replaceAll('+', ',')
       .replaceAll(' and ', ',')
       .replaceAll(' AND ', ',');
-  final parts = normalized.split(
-    RegExp(r'[;,/\n\r\+\|]'),
-  );
+  final parts = normalized.split(RegExp(r'[;,/\n\r\+\|]'));
 
-  return parts
-      .map(_cleanIngredientToken)
-      .whereType<String>()
-      .toSet();
+  return parts.map(_cleanIngredientToken).whereType<String>().toSet();
 }
 
 String? _cleanIngredientToken(String raw) {
   final withoutParens = raw.replaceAll(RegExp(r'\([^)]*\)'), ' ');
   final withoutStrength = withoutParens.replaceAll(
-    RegExp(r'\b\d+(\.\d+)?\s*(mg|g|ml|mcg|iu|%|片|粒|袋|支|丸)\b', caseSensitive: false),
+    RegExp(
+      r'\b\d+(\.\d+)?\s*(mg|g|ml|mcg|iu|%|片|粒|袋|支|丸)\b',
+      caseSensitive: false,
+    ),
     ' ',
   );
   final normalized = _normalizeToken(

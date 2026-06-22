@@ -24,6 +24,26 @@ enum MedicineRiskCoverageReason {
   detailUnavailable,
 }
 
+/// Conservative structured conclusion for special-population risk text.
+/// Classified via keyword matching — never via NLP.
+/// Falls back to [insufficientInformation] when no confident keyword is found.
+enum SpecialPopulationConclusion {
+  /// Explicit contraindication (禁用 / contraindicated / 禁忌).
+  contraindicated,
+
+  /// Should avoid (避免使用 / avoid / not recommended).
+  avoid,
+
+  /// Use with caution (慎用 / caution / use with care).
+  caution,
+
+  /// Consult a clinician or pharmacist (咨询医生 / consult).
+  consultClinician,
+
+  /// Text exists but no keyword matched — cannot classify confidently.
+  insufficientInformation,
+}
+
 class MedicineRiskCheckResult {
   const MedicineRiskCheckResult({
     required this.currentMedicineCount,
@@ -60,6 +80,7 @@ class MedicineRiskFinding {
     this.secondaryMedicineName,
     this.relatedLabel,
     this.evidence,
+    this.specialPopulationConclusion,
   });
 
   final MedicineRiskFindingType type;
@@ -69,6 +90,12 @@ class MedicineRiskFinding {
   final String? secondaryMedicineName;
   final String? relatedLabel;
   final String? evidence;
+
+  /// Non-null only when [type] is [MedicineRiskFindingType.specialGroup]
+  /// and the source text was classified into a structured conclusion.
+  /// Carries the classified risk level for UI two-layer display
+  /// (conclusion label + evidence source text).
+  final SpecialPopulationConclusion? specialPopulationConclusion;
 }
 
 class MedicineRiskCoverageIssue {
@@ -81,11 +108,7 @@ class MedicineRiskCoverageIssue {
   final MedicineRiskCoverageReason reason;
 }
 
-enum RedFlagRule {
-  severeAllergy,
-  pregnancyContraindication,
-  informationGap,
-}
+enum RedFlagRule { severeAllergy, pregnancyContraindication, informationGap }
 
 class RedFlagAlert {
   const RedFlagAlert({

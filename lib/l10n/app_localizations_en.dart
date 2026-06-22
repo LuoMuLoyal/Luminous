@@ -1009,6 +1009,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineRiskCheckContextCaffeine => 'Caffeine';
 
   @override
+  String get medicineRiskConclusionContraindicated => 'Contraindicated';
+
+  @override
+  String get medicineRiskConclusionAvoid => 'Avoid';
+
+  @override
+  String get medicineRiskConclusionCaution => 'Use with Caution';
+
+  @override
+  String get medicineRiskConclusionConsultClinician => 'Consult Clinician';
+
+  @override
+  String get medicineRiskConclusionInsufficientInformation =>
+      'Insufficient Info';
+
+  @override
   String get medicineQuickRecordToast => 'This will open dose logging.';
 
   @override
@@ -3546,4 +3562,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get medicineRiskCheckRedFlagResourcePharmacy => 'Campus pharmacy';
+
+  @override
+  String get medicineRiskCheckRedFlagActionSevereAllergy =>
+      'Call emergency services (911) immediately. Do not self-treat.';
+
+  @override
+  String get medicineRiskCheckRedFlagActionPregnancyContraindication =>
+      'Stop self-medication. Consult a doctor or pharmacist as soon as possible.';
+
+  @override
+  String get medicineRiskCheckRedFlagActionInformationGap =>
+      'You are in a high-risk state and some medicines cannot be auto-checked. Verify offline as soon as possible.';
 }

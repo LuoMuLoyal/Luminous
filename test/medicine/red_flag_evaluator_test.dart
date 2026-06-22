@@ -241,6 +241,78 @@ void main() {
     expect(alerts.first.resourceId, 'campus-hospital');
   });
 
+  test(
+    'Rule 2: structured contraindicated conclusion triggers red flag even without legacy keyword',
+    () {
+      final snapshot = HealthContextSnapshot(
+        summary: HealthSummary(
+          age: 28,
+          onboardingCompleted: true,
+          activeAllergyCount: 0,
+          conditionCount: 0,
+          currentMedicineCount: 1,
+          missingCoreProfileFields: [],
+        ),
+        profile: HealthProfile(
+          birthDate: null,
+          sexAtBirth: null,
+          heightCm: null,
+          pregnancyState: 'pregnant',
+          lactationState: 'no',
+          bloodType: null,
+          locale: null,
+          timezone: null,
+          unitSystem: null,
+          onboardingCompletedAt: null,
+          extras: {},
+        ),
+        allergies: const [],
+        conditions: [],
+        currentMedicines: [
+          CurrentMedicineItem(
+            id: 'm1',
+            source: 'cn',
+            sourceRefId: 'cn-1',
+            displayName: '异维A酸',
+            strengthText: null,
+            doseText: null,
+            route: null,
+            startedAt: null,
+            endedAt: null,
+            isCurrent: true,
+            note: null,
+            createdAt: '2026-01-01T00:00:00.000Z',
+            updatedAt: '2026-01-01T00:00:00.000Z',
+          ),
+        ],
+      );
+
+      final result = MedicineRiskCheckResult(
+        currentMedicineCount: 1,
+        checkedMedicineCount: 1,
+        findings: [
+          MedicineRiskFinding(
+            type: MedicineRiskFindingType.specialGroup,
+            severity: MedicineRiskSeverity.high,
+            context: MedicineRiskFindingContext.pregnancy,
+            primaryMedicineName: '异维A酸',
+            evidence: 'Must not be used during pregnancy.',
+            specialPopulationConclusion:
+                SpecialPopulationConclusion.contraindicated,
+          ),
+        ],
+        coverageIssues: [],
+      );
+
+      final evaluator = const RedFlagEvaluator();
+      final alerts = evaluator.evaluate(snapshot: snapshot, result: result);
+
+      expect(alerts, hasLength(1));
+      expect(alerts.first.rule, RedFlagRule.pregnancyContraindication);
+      expect(alerts.first.resourceId, 'campus-hospital');
+    },
+  );
+
   test('Rule 3: information gap for high-risk user triggers red flag', () {
     final snapshot = HealthContextSnapshot(
       summary: HealthSummary(
@@ -329,7 +401,7 @@ void main() {
 
     expect(alerts, hasLength(1));
     expect(alerts.first.rule, RedFlagRule.informationGap);
-    expect(alerts.first.resourceId, 'campus-hospital');
+    expect(alerts.first.resourceId, isNull);
   });
 
   test('Rule 3: no red flag for low-risk user with coverage gaps', () {

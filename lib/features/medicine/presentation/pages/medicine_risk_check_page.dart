@@ -172,7 +172,11 @@ class _MedicineRiskCheckBody extends StatelessWidget {
               title: l10n.medicineRiskCheckFindingsTitle,
               child: Column(
                 children: [
-                  for (var index = 0; index < result.findings.length; index += 1)
+                  for (
+                    var index = 0;
+                    index < result.findings.length;
+                    index += 1
+                  )
                     _RiskFindingTile(
                       finding: result.findings[index],
                       isLast: index == result.findings.length - 1,
@@ -237,10 +241,7 @@ class _RiskMetricChip extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              label,
-              style: typography.bodySm.copyWith(color: surface.mute),
-            ),
+            Text(label, style: typography.bodySm.copyWith(color: surface.mute)),
             const SizedBox(height: AppSpacingTokens.xxs),
             Text(
               value,
@@ -469,7 +470,11 @@ class _RedFlagBanner extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.warning_amber_rounded, color: AppColorTokens.error, size: 20),
+              const Icon(
+                Icons.warning_amber_rounded,
+                color: AppColorTokens.error,
+                size: 20,
+              ),
               const SizedBox(width: AppSpacingTokens.sm),
               Text(
                 redFlagBannerTitle(l10n),
@@ -522,7 +527,8 @@ class _RedFlagAlertRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final resource = _matchedResource;
-    final hasRealAction = resource != null &&
+    final hasRealAction =
+        resource != null &&
         resource.actionUrl != null &&
         resource.actionUrl!.isNotEmpty &&
         resource.actionType != null;
@@ -543,6 +549,27 @@ class _RedFlagAlertRow extends StatelessWidget {
                 Text(
                   redFlagAlertCopy(l10n, alert),
                   style: typography.bodySm.copyWith(color: surface.body),
+                ),
+                const SizedBox(height: AppSpacingTokens.sm),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.error_outline_rounded,
+                      color: AppColorTokens.error,
+                      size: 16,
+                    ),
+                    const SizedBox(width: AppSpacingTokens.xs),
+                    Expanded(
+                      child: Text(
+                        redFlagActionCopy(l10n, alert),
+                        style: typography.bodySm.copyWith(
+                          color: AppColorTokens.error,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -566,7 +593,9 @@ class _RedFlagAlertRow extends StatelessWidget {
                 ),
               ),
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.sm),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacingTokens.sm,
+                ),
                 visualDensity: VisualDensity.compact,
               ),
             ),
@@ -577,14 +606,24 @@ class _RedFlagAlertRow extends StatelessWidget {
   }
 
   Future<void> _openResource(BuildContext context, String resourceId) async {
-    final resource = campusResources.where((r) => r.id == resourceId).firstOrNull;
-    if (resource == null || resource.actionUrl == null || resource.actionType == null) return;
+    final resource = campusResources
+        .where((r) => r.id == resourceId)
+        .firstOrNull;
+    if (resource == null ||
+        resource.actionUrl == null ||
+        resource.actionType == null) {
+      return;
+    }
 
     final target = resource.actionUrl!;
-    if (target.isEmpty) return;
+    if (target.isEmpty) {
+      return;
+    }
 
     final uri = Uri.tryParse(target);
-    if (uri == null) return;
+    if (uri == null) {
+      return;
+    }
 
     await const ExternalUrlLauncher().open(uri);
   }

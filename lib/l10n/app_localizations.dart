@@ -1784,6 +1784,36 @@ abstract class AppLocalizations {
   /// **'咖啡因'**
   String get medicineRiskCheckContextCaffeine;
 
+  /// No description provided for @medicineRiskConclusionContraindicated.
+  ///
+  /// In zh, this message translates to:
+  /// **'禁用'**
+  String get medicineRiskConclusionContraindicated;
+
+  /// No description provided for @medicineRiskConclusionAvoid.
+  ///
+  /// In zh, this message translates to:
+  /// **'避免使用'**
+  String get medicineRiskConclusionAvoid;
+
+  /// No description provided for @medicineRiskConclusionCaution.
+  ///
+  /// In zh, this message translates to:
+  /// **'慎用'**
+  String get medicineRiskConclusionCaution;
+
+  /// No description provided for @medicineRiskConclusionConsultClinician.
+  ///
+  /// In zh, this message translates to:
+  /// **'咨询医生'**
+  String get medicineRiskConclusionConsultClinician;
+
+  /// No description provided for @medicineRiskConclusionInsufficientInformation.
+  ///
+  /// In zh, this message translates to:
+  /// **'信息不足'**
+  String get medicineRiskConclusionInsufficientInformation;
+
   /// No description provided for @medicineQuickRecordToast.
   ///
   /// In zh, this message translates to:
@@ -6403,6 +6433,24 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'校园药房'**
   String get medicineRiskCheckRedFlagResourcePharmacy;
+
+  /// No description provided for @medicineRiskCheckRedFlagActionSevereAllergy.
+  ///
+  /// In zh, this message translates to:
+  /// **'请立即联系急救（120），不要自行处理'**
+  String get medicineRiskCheckRedFlagActionSevereAllergy;
+
+  /// No description provided for @medicineRiskCheckRedFlagActionPregnancyContraindication.
+  ///
+  /// In zh, this message translates to:
+  /// **'请停止自行用药，尽快咨询医生或药师'**
+  String get medicineRiskCheckRedFlagActionPregnancyContraindication;
+
+  /// No description provided for @medicineRiskCheckRedFlagActionInformationGap.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前处于高风险状态，部分药品无法自动检查，建议尽快线下确认'**
+  String get medicineRiskCheckRedFlagActionInformationGap;
 }
 
 class _AppLocalizationsDelegate
