@@ -248,7 +248,7 @@ class AuthTextField extends StatefulWidget {
 
 class _AuthTextFieldState extends State<AuthTextField> {
   late final FocusNode _focusNode;
-  late bool _obscured;
+  bool _obscured = false;
 
   @override
   void initState() {
@@ -652,6 +652,7 @@ class AuthBrandLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final theme = Theme.of(context);
 
     return Container(
       width: size,
@@ -671,7 +672,11 @@ class AuthBrandLogo extends StatelessWidget {
         child: Image.asset(
           _assetPath,
           fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+          errorBuilder: (context, error, stackTrace) => Icon(
+            Icons.health_and_safety_rounded,
+            color: theme.colorScheme.primary,
+            size: size - AppSpacingTokens.sm * 2,
+          ),
         ),
       ),
     );
