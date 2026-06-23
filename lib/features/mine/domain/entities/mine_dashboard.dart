@@ -1,153 +1,108 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class MineDashboard {
-  const MineDashboard({
-    required this.account,
-    required this.completion,
-    required this.profile,
-    required this.alerts,
-    required this.archiveEntries,
-    required this.campusServices,
-    required this.privacyNotice,
-  });
+part 'mine_dashboard.freezed.dart';
 
-  final MineAccount account;
-  final MineCompletion completion;
-  final MineProfileSnapshot profile;
-  final List<MineStatusCard> alerts;
-  final List<MineArchiveEntry> archiveEntries;
-  final List<MineActionEntry> campusServices;
-  final MinePrivacyNotice privacyNotice;
+@freezed
+abstract class MineDashboard with _$MineDashboard {
+  const factory MineDashboard({
+    required MineAccount account,
+    required MineCompletion completion,
+    required MineProfileSnapshot profile,
+    required List<MineStatusCard> alerts,
+    required List<MineArchiveEntry> archiveEntries,
+    required List<MineActionEntry> campusServices,
+    required MinePrivacyNotice privacyNotice,
+  }) = _MineDashboard;
 }
 
-class MineProfileSnapshot {
-  const MineProfileSnapshot({
-    required this.age,
-    required this.heightCm,
-    required this.allergyCount,
-    required this.conditionCount,
-    required this.currentMedicineCount,
-    required this.basicInfoCompleted,
-  });
-
-  final int? age;
-  final double? heightCm;
-  final int allergyCount;
-  final int conditionCount;
-  final int currentMedicineCount;
-  final bool basicInfoCompleted;
+@freezed
+abstract class MineProfileSnapshot with _$MineProfileSnapshot {
+  const factory MineProfileSnapshot({
+    required int? age,
+    required double? heightCm,
+    required int allergyCount,
+    required int conditionCount,
+    required int currentMedicineCount,
+    required bool basicInfoCompleted,
+  }) = _MineProfileSnapshot;
 }
 
-class MineAccount {
-  const MineAccount({
-    required this.isAuthenticated,
-    required this.displayNameKey,
-    this.displayName,
-    required this.email,
-    required this.statusKey,
-    required this.roleKey,
-    this.emailVerified = false,
-    this.hasPassword = false,
-    this.linkedIdentityCount = 0,
-    this.lastLoginAt,
-  });
-
-  final bool isAuthenticated;
-  final MineCopyKey displayNameKey;
-  final String? displayName;
-  final String email;
-  final MineCopyKey statusKey;
-  final MineCopyKey roleKey;
-  final bool emailVerified;
-  final bool hasPassword;
-  final int linkedIdentityCount;
-  final DateTime? lastLoginAt;
+@freezed
+abstract class MineAccount with _$MineAccount {
+  const factory MineAccount({
+    required bool isAuthenticated,
+    required MineCopyKey displayNameKey,
+    String? displayName,
+    required String email,
+    required MineCopyKey statusKey,
+    required MineCopyKey roleKey,
+    @Default(false) bool emailVerified,
+    @Default(false) bool hasPassword,
+    @Default(0) int linkedIdentityCount,
+    DateTime? lastLoginAt,
+  }) = _MineAccount;
 }
 
-class MineCompletion {
-  const MineCompletion({
-    required this.progress,
-    required this.percentLabel,
-    required this.titleKey,
-  });
-
-  final double progress;
-  final String percentLabel;
-  final MineCopyKey titleKey;
+@freezed
+abstract class MineCompletion with _$MineCompletion {
+  const factory MineCompletion({
+    required double progress,
+    required String percentLabel,
+    required MineCopyKey titleKey,
+  }) = _MineCompletion;
 }
 
-class MineStatusCard {
-  const MineStatusCard({
-    required this.icon,
-    required this.accent,
-    required this.titleKey,
-    required this.subtitleKey,
-    required this.badgeKey,
-  });
-
-  final IconData icon;
-  final Color accent;
-  final MineCopyKey titleKey;
-  final MineCopyKey subtitleKey;
-  final MineCopyKey badgeKey;
+@freezed
+abstract class MineStatusCard with _$MineStatusCard {
+  const factory MineStatusCard({
+    required IconData icon,
+    required Color accent,
+    required MineCopyKey titleKey,
+    required MineCopyKey subtitleKey,
+    required MineCopyKey badgeKey,
+  }) = _MineStatusCard;
 }
 
-class MineArchiveEntry {
-  const MineArchiveEntry({
-    required this.icon,
-    required this.accent,
-    required this.titleKey,
-    required this.subtitleKey,
-    this.statusKey,
-    this.route,
-  });
-
-  final IconData icon;
-  final Color accent;
-  final MineCopyKey titleKey;
-  final MineCopyKey subtitleKey;
-  final MineCopyKey? statusKey;
-  final String? route;
+@freezed
+abstract class MineArchiveEntry with _$MineArchiveEntry {
+  const factory MineArchiveEntry({
+    required IconData icon,
+    required Color accent,
+    required MineCopyKey titleKey,
+    required MineCopyKey subtitleKey,
+    MineCopyKey? statusKey,
+    String? route,
+  }) = _MineArchiveEntry;
 }
 
-class MineActionEntry {
-  const MineActionEntry({
-    required this.icon,
-    required this.accent,
-    required this.titleKey,
-    required this.subtitleKey,
-    this.rawTitle,
-    this.rawSubtitle,
-    this.actionType,
-    this.actionTarget,
-  });
+@freezed
+abstract class MineActionEntry with _$MineActionEntry {
+  const factory MineActionEntry({
+    required IconData icon,
+    required Color accent,
+    required MineCopyKey titleKey,
+    required MineCopyKey subtitleKey,
 
-  final IconData icon;
-  final Color accent;
-  final MineCopyKey titleKey;
-  final MineCopyKey subtitleKey;
+    /// Server-provided display title; takes precedence over [titleKey] when set.
+    String? rawTitle,
 
-  /// Server-provided display title; takes precedence over [titleKey] when set.
-  final String? rawTitle;
-
-  /// Server-provided display subtitle; takes precedence over [subtitleKey].
-  final String? rawSubtitle;
-  final MineActionTargetType? actionType;
-  final String? actionTarget;
+    /// Server-provided display subtitle; takes precedence over [subtitleKey].
+    String? rawSubtitle,
+    MineActionTargetType? actionType,
+    String? actionTarget,
+  }) = _MineActionEntry;
 }
 
 enum MineActionTargetType { internal, url, phone }
 
-class MinePrivacyNotice {
-  const MinePrivacyNotice({
-    required this.icon,
-    required this.titleKey,
-    required this.actionKey,
-  });
-
-  final IconData icon;
-  final MineCopyKey titleKey;
-  final MineCopyKey actionKey;
+@freezed
+abstract class MinePrivacyNotice with _$MinePrivacyNotice {
+  const factory MinePrivacyNotice({
+    required IconData icon,
+    required MineCopyKey titleKey,
+    required MineCopyKey actionKey,
+  }) = _MinePrivacyNotice;
 }
 
 enum MineCopyKey {

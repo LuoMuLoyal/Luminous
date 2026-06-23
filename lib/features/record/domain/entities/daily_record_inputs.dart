@@ -1,95 +1,67 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
+
+part 'daily_record_inputs.freezed.dart';
 
 /// Sentinel for optional update fields — omit to leave unchanged.
 const Object dailyRecordNoChange = Object();
 
-class DailyRecordCreateInput {
-  const DailyRecordCreateInput({
-    required this.kind,
-    required this.occurredAt,
-    this.occurredTime,
-    this.title,
-    this.value,
-    this.unit,
-    this.note,
-    this.payload,
-    this.attachments = const <DailyRecordAttachmentInput>[],
-  });
-
-  final DailyRecordKind kind;
-  final String occurredAt;
-  final String? occurredTime;
-  final String? title;
-  final String? value;
-  final String? unit;
-  final String? note;
-  final Map<String, dynamic>? payload;
-  final List<DailyRecordAttachmentInput> attachments;
+@freezed
+abstract class DailyRecordCreateInput with _$DailyRecordCreateInput {
+  const factory DailyRecordCreateInput({
+    required DailyRecordKind kind,
+    required String occurredAt,
+    String? occurredTime,
+    String? title,
+    String? value,
+    String? unit,
+    String? note,
+    Map<String, dynamic>? payload,
+    @Default([]) List<DailyRecordAttachmentInput> attachments,
+  }) = _DailyRecordCreateInput;
 }
 
-class DailyRecordUpdateInput {
-  const DailyRecordUpdateInput({
-    this.kind = dailyRecordNoChange,
-    this.occurredAt = dailyRecordNoChange,
-    this.occurredTime = dailyRecordNoChange,
-    this.title = dailyRecordNoChange,
-    this.value = dailyRecordNoChange,
-    this.unit = dailyRecordNoChange,
-    this.note = dailyRecordNoChange,
-    this.payload = dailyRecordNoChange,
-    this.attachments = dailyRecordNoChange,
-  });
+@freezed
+abstract class DailyRecordUpdateInput with _$DailyRecordUpdateInput {
+  const factory DailyRecordUpdateInput({
+    @Default(dailyRecordNoChange) Object? kind,
+    @Default(dailyRecordNoChange) Object? occurredAt,
+    @Default(dailyRecordNoChange) Object? occurredTime,
+    @Default(dailyRecordNoChange) Object? title,
+    @Default(dailyRecordNoChange) Object? value,
+    @Default(dailyRecordNoChange) Object? unit,
+    @Default(dailyRecordNoChange) Object? note,
+    @Default(dailyRecordNoChange) Object? payload,
 
-  final Object? kind;
-  final Object? occurredAt;
-  final Object? occurredTime;
-  final Object? title;
-  final Object? value;
-  final Object? unit;
-  final Object? note;
-  final Object? payload;
-
-  /// Attachment PATCH semantics:
-  /// - [dailyRecordNoChange]: omit field and keep existing attachments.
-  /// - empty list: send [] and clear attachments.
-  /// - non-empty list: replace attachments with the given metadata list.
-  final Object? attachments;
+    /// Attachment PATCH semantics:
+    /// - [dailyRecordNoChange]: omit field and keep existing attachments.
+    /// - empty list: send [] and clear attachments.
+    /// - non-empty list: replace attachments with the given metadata list.
+    @Default(dailyRecordNoChange) Object? attachments,
+  }) = _DailyRecordUpdateInput;
 }
 
-class DailyRecordAttachmentInput {
-  const DailyRecordAttachmentInput({
-    required this.objectKey,
-    this.bucket,
-    this.provider,
-    this.fileName,
-    this.contentType,
-    this.sizeBytes,
-    this.width,
-    this.height,
-    this.publicUrl,
-  });
-
-  final String objectKey;
-  final String? bucket;
-  final String? provider;
-  final String? fileName;
-  final String? contentType;
-  final int? sizeBytes;
-  final int? width;
-  final int? height;
-  final String? publicUrl;
+@freezed
+abstract class DailyRecordAttachmentInput with _$DailyRecordAttachmentInput {
+  const factory DailyRecordAttachmentInput({
+    required String objectKey,
+    String? bucket,
+    String? provider,
+    String? fileName,
+    String? contentType,
+    int? sizeBytes,
+    int? width,
+    int? height,
+    String? publicUrl,
+  }) = _DailyRecordAttachmentInput;
 }
 
-class DailyRecordImageUploadInput {
-  const DailyRecordImageUploadInput({
-    required this.bytes,
-    required this.contentType,
-    required this.sizeBytes,
-    this.fileName,
-  });
-
-  final List<int> bytes;
-  final String contentType;
-  final int sizeBytes;
-  final String? fileName;
+@freezed
+abstract class DailyRecordImageUploadInput with _$DailyRecordImageUploadInput {
+  const factory DailyRecordImageUploadInput({
+    required List<int> bytes,
+    required String contentType,
+    required int sizeBytes,
+    String? fileName,
+  }) = _DailyRecordImageUploadInput;
 }

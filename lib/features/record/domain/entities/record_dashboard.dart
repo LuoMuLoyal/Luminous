@@ -1,197 +1,133 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class RecordDashboard {
-  const RecordDashboard({
-    required this.selectedDate,
-    required this.selectedDay,
-    required this.weekDays,
-    required this.monthDays,
-    required this.quickActions,
-    required this.summary,
-    required this.filters,
-    required this.timeline,
-    required this.trends,
-  });
+part 'record_dashboard.freezed.dart';
 
-  final DateTime selectedDate;
-  final int selectedDay;
-  final List<RecordWeekDay> weekDays;
-  final List<RecordCalendarDay> monthDays;
-  final List<RecordQuickAction> quickActions;
-  final RecordDaySummary summary;
-  final List<RecordFilter> filters;
-  final List<RecordTimelineEntry> timeline;
-  final List<RecordTrend> trends;
+@freezed
+abstract class RecordDashboard with _$RecordDashboard {
+  const factory RecordDashboard({
+    required DateTime selectedDate,
+    required int selectedDay,
+    required List<RecordWeekDay> weekDays,
+    required List<RecordCalendarDay> monthDays,
+    required List<RecordQuickAction> quickActions,
+    required RecordDaySummary summary,
+    required List<RecordFilter> filters,
+    required List<RecordTimelineEntry> timeline,
+    required List<RecordTrend> trends,
+  }) = _RecordDashboard;
 }
 
-class RecordWeekDay {
-  const RecordWeekDay({
-    required this.date,
-    required this.day,
-    required this.weekdayKey,
-    required this.selected,
-    required this.markers,
-    this.hasAlert = false,
-  });
-
-  final DateTime date;
-  final int day;
-  final RecordCopyKey weekdayKey;
-  final bool selected;
-  final List<Color> markers;
-  final bool hasAlert;
+@freezed
+abstract class RecordWeekDay with _$RecordWeekDay {
+  const factory RecordWeekDay({
+    required DateTime date,
+    required int day,
+    required RecordCopyKey weekdayKey,
+    required bool selected,
+    required List<Color> markers,
+    @Default(false) bool hasAlert,
+  }) = _RecordWeekDay;
 }
 
-class RecordCalendarDay {
-  const RecordCalendarDay({
-    required this.day,
-    required this.inMonth,
-    required this.selected,
-    required this.markers,
-    this.hasAlert = false,
-  });
-
-  final int day;
-  final bool inMonth;
-  final bool selected;
-  final List<Color> markers;
-  final bool hasAlert;
+@freezed
+abstract class RecordCalendarDay with _$RecordCalendarDay {
+  const factory RecordCalendarDay({
+    required int day,
+    required bool inMonth,
+    required bool selected,
+    required List<Color> markers,
+    @Default(false) bool hasAlert,
+  }) = _RecordCalendarDay;
 }
 
-class RecordQuickAction {
-  const RecordQuickAction({
-    required this.type,
-    required this.icon,
-    required this.titleKey,
-    required this.subtitleKey,
-    required this.accent,
-    required this.softColor,
-    this.locked = false,
-  });
-
-  final RecordEntryType type;
-  final IconData icon;
-  final RecordCopyKey titleKey;
-  final RecordCopyKey subtitleKey;
-  final Color accent;
-  final Color softColor;
-  final bool locked;
+@freezed
+abstract class RecordQuickAction with _$RecordQuickAction {
+  const factory RecordQuickAction({
+    required RecordEntryType type,
+    required IconData icon,
+    required RecordCopyKey titleKey,
+    required RecordCopyKey subtitleKey,
+    required Color accent,
+    required Color softColor,
+    @Default(false) bool locked,
+  }) = _RecordQuickAction;
 }
 
-class RecordDaySummary {
-  const RecordDaySummary({required this.items});
-
-  final List<RecordSummaryItem> items;
+@freezed
+abstract class RecordDaySummary with _$RecordDaySummary {
+  const factory RecordDaySummary({required List<RecordSummaryItem> items}) =
+      _RecordDaySummary;
 }
 
-class RecordSummaryItem {
-  const RecordSummaryItem({
-    required this.type,
-    required this.icon,
-    required this.titleKey,
-    required this.value,
-    this.unitKey,
-    this.detailKey,
-    required this.accent,
-    required this.softColor,
-  });
-
-  final RecordEntryType type;
-  final IconData icon;
-  final RecordCopyKey titleKey;
-  final String value;
-  final RecordCopyKey? unitKey;
-  final RecordCopyKey? detailKey;
-  final Color accent;
-  final Color softColor;
+@freezed
+abstract class RecordSummaryItem with _$RecordSummaryItem {
+  const factory RecordSummaryItem({
+    required RecordEntryType type,
+    required IconData icon,
+    required RecordCopyKey titleKey,
+    required String value,
+    RecordCopyKey? unitKey,
+    RecordCopyKey? detailKey,
+    required Color accent,
+    required Color softColor,
+  }) = _RecordSummaryItem;
 }
 
-class RecordFilter {
-  const RecordFilter({
-    required this.type,
-    required this.titleKey,
-    required this.icon,
-    required this.accent,
-    required this.selected,
-    this.locked = false,
-  });
-
-  final RecordEntryType type;
-  final RecordCopyKey titleKey;
-  final IconData icon;
-  final Color accent;
-  final bool selected;
-  final bool locked;
+@freezed
+abstract class RecordFilter with _$RecordFilter {
+  const factory RecordFilter({
+    required RecordEntryType type,
+    required RecordCopyKey titleKey,
+    required IconData icon,
+    required Color accent,
+    required bool selected,
+    @Default(false) bool locked,
+  }) = _RecordFilter;
 }
 
-class RecordTimelineEntry {
-  const RecordTimelineEntry({
-    required this.time,
-    required this.type,
-    required this.icon,
-    required this.accent,
-    required this.softColor,
-    required this.titleKey,
-    this.value,
-    this.valueKey,
-    this.unitKey,
-    this.detailKey,
-    this.badgeKey,
-    this.imagePlaceholderKey,
-    this.imageUrl,
-    this.trailingIcon,
-    this.rawTitle,
-    this.recordId,
-  });
+@freezed
+abstract class RecordTimelineEntry with _$RecordTimelineEntry {
+  const factory RecordTimelineEntry({
+    required String time,
+    required RecordEntryType type,
+    required IconData icon,
+    required Color accent,
+    required Color softColor,
+    required RecordCopyKey titleKey,
+    String? value,
+    RecordCopyKey? valueKey,
+    RecordCopyKey? unitKey,
+    RecordCopyKey? detailKey,
+    RecordCopyKey? badgeKey,
+    RecordCopyKey? imagePlaceholderKey,
+    String? imageUrl,
+    IconData? trailingIcon,
 
-  final String time;
-  final RecordEntryType type;
-  final IconData icon;
-  final Color accent;
-  final Color softColor;
-  final RecordCopyKey titleKey;
-  final String? value;
-  final RecordCopyKey? valueKey;
-  final RecordCopyKey? unitKey;
-  final RecordCopyKey? detailKey;
-  final RecordCopyKey? badgeKey;
-  final RecordCopyKey? imagePlaceholderKey;
-  final String? imageUrl;
-  final IconData? trailingIcon;
+    /// When non-null, the view should use this raw string instead of resolving
+    /// [titleKey] through [recordCopy].
+    String? rawTitle,
 
-  /// When non-null, the view should use this raw string instead of resolving
-  /// [titleKey] through [recordCopy].
-  final String? rawTitle;
-
-  /// When non-null, this timeline entry represents a real daily record
-  /// that can be edited or deleted via the daily-record API.
-  final String? recordId;
+    /// When non-null, this timeline entry represents a real daily record
+    /// that can be edited or deleted via the daily-record API.
+    String? recordId,
+  }) = _RecordTimelineEntry;
 }
 
-class RecordTrend {
-  const RecordTrend({
-    required this.kind,
-    required this.titleKey,
-    required this.rangeKey,
-    required this.color,
-    required this.points,
-    this.secondaryColor,
-    this.secondaryPoints = const <double>[],
-    this.bars = const <double>[],
-    this.legendKey,
-    this.secondaryLegendKey,
-  });
-
-  final RecordTrendKind kind;
-  final RecordCopyKey titleKey;
-  final RecordCopyKey rangeKey;
-  final Color color;
-  final List<double> points;
-  final Color? secondaryColor;
-  final List<double> secondaryPoints;
-  final List<double> bars;
-  final RecordCopyKey? legendKey;
-  final RecordCopyKey? secondaryLegendKey;
+@freezed
+abstract class RecordTrend with _$RecordTrend {
+  const factory RecordTrend({
+    required RecordTrendKind kind,
+    required RecordCopyKey titleKey,
+    required RecordCopyKey rangeKey,
+    required Color color,
+    required List<double> points,
+    Color? secondaryColor,
+    @Default([]) List<double> secondaryPoints,
+    @Default([]) List<double> bars,
+    RecordCopyKey? legendKey,
+    RecordCopyKey? secondaryLegendKey,
+  }) = _RecordTrend;
 }
 
 enum RecordEntryType {

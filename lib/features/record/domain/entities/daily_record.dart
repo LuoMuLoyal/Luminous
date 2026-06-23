@@ -1,68 +1,58 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'daily_record.freezed.dart';
+
 /// Domain-safe enum for daily record kinds (mirrors Lucent DailyRecordKind).
-enum DailyRecordKind { water, meal, vital, mood, symptom, activity, note, sleep }
+enum DailyRecordKind {
+  water,
+  meal,
+  vital,
+  mood,
+  symptom,
+  activity,
+  note,
+  sleep,
+}
 
-class DailyRecordItem {
-  const DailyRecordItem({
-    required this.id,
-    required this.kind,
-    required this.occurredAt,
-    this.occurredTime,
-    this.title,
-    this.value,
-    this.unit,
-    this.note,
-    this.source,
-    this.payload,
-    this.attachments = const <DailyRecordAttachment>[],
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  final String id;
-  final DailyRecordKind kind;
-  final String occurredAt;
-  final String? occurredTime;
-  final String? title;
-  final String? value;
-  final String? unit;
-  final String? note;
-  final String? source;
-  final Map<String, dynamic>? payload;
-  final List<DailyRecordAttachment> attachments;
-  final String createdAt;
-  final String updatedAt;
+@freezed
+abstract class DailyRecordItem with _$DailyRecordItem {
+  const factory DailyRecordItem({
+    required String id,
+    required DailyRecordKind kind,
+    required String occurredAt,
+    String? occurredTime,
+    String? title,
+    String? value,
+    String? unit,
+    String? note,
+    String? source,
+    Map<String, dynamic>? payload,
+    @Default([]) List<DailyRecordAttachment> attachments,
+    required String createdAt,
+    required String updatedAt,
+  }) = _DailyRecordItem;
 }
 
 enum DailyRecordAttachmentKind { image }
 
-class DailyRecordAttachment {
-  const DailyRecordAttachment({
-    required this.id,
-    required this.kind,
-    required this.objectKey,
-    this.bucket,
-    this.provider,
-    this.fileName,
-    this.contentType,
-    this.sizeBytes,
-    this.width,
-    this.height,
-    this.publicUrl,
-    required this.createdAt,
-  });
+@freezed
+abstract class DailyRecordAttachment with _$DailyRecordAttachment {
+  const DailyRecordAttachment._();
 
-  final String id;
-  final DailyRecordAttachmentKind kind;
-  final String objectKey;
-  final String? bucket;
-  final String? provider;
-  final String? fileName;
-  final String? contentType;
-  final int? sizeBytes;
-  final int? width;
-  final int? height;
-  final String? publicUrl;
-  final String createdAt;
+  const factory DailyRecordAttachment({
+    required String id,
+    required DailyRecordAttachmentKind kind,
+    required String objectKey,
+    String? bucket,
+    String? provider,
+    String? fileName,
+    String? contentType,
+    int? sizeBytes,
+    int? width,
+    int? height,
+    String? publicUrl,
+    required String createdAt,
+  }) = _DailyRecordAttachment;
 
   String? get displayUrl {
     final url = publicUrl?.trim();
@@ -70,27 +60,26 @@ class DailyRecordAttachment {
   }
 }
 
-class DailyRecordSummary {
-  const DailyRecordSummary({
-    required this.kind,
-    required this.count,
-    this.latest,
-  });
-
-  final DailyRecordKind kind;
-  final num count;
-  final DailyRecordItem? latest;
+@freezed
+abstract class DailyRecordSummary with _$DailyRecordSummary {
+  const factory DailyRecordSummary({
+    required DailyRecordKind kind,
+    required num count,
+    DailyRecordItem? latest,
+  }) = _DailyRecordSummary;
 }
 
-class DailyRecordListData {
-  const DailyRecordListData({required this.items, required this.total});
-
-  final List<DailyRecordItem> items;
-  final num total;
+@freezed
+abstract class DailyRecordListData with _$DailyRecordListData {
+  const factory DailyRecordListData({
+    required List<DailyRecordItem> items,
+    required num total,
+  }) = _DailyRecordListData;
 }
 
-class DailyRecordSummaryData {
-  const DailyRecordSummaryData({required this.summaries});
-
-  final List<DailyRecordSummary> summaries;
+@freezed
+abstract class DailyRecordSummaryData with _$DailyRecordSummaryData {
+  const factory DailyRecordSummaryData({
+    required List<DailyRecordSummary> summaries,
+  }) = _DailyRecordSummaryData;
 }
