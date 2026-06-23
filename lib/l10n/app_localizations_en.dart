@@ -2241,6 +2241,32 @@ class AppLocalizationsEn extends AppLocalizations {
       'Password updated. Please sign in again.';
 
   @override
+  String get authLoginSubtitle => 'Sign in to continue your health tracking';
+
+  @override
+  String get authRegisterSubtitle =>
+      'Join Luminous and start your health journal';
+
+  @override
+  String get authForgotPasswordSubtitle =>
+      'We\'ll send a code to reset your password';
+
+  @override
+  String authTermsAgreement(String terms, String privacy) {
+    return 'By creating an account, you agree to the $terms and $privacy';
+  }
+
+  @override
+  String get authTermsOfService => 'Terms of Service';
+
+  @override
+  String get authPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get authTermsComingSoonToast =>
+      'Terms and privacy policy will be available soon.';
+
+  @override
   String get authChangeEmailFormTitle => 'Change email';
 
   @override

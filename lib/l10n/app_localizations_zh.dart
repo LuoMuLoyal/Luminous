@@ -2073,6 +2073,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authResetPasswordSuccess => '密码已更新，请重新登录。';
 
   @override
+  String get authLoginSubtitle => '登录以继续你的健康记录';
+
+  @override
+  String get authRegisterSubtitle => '加入 Luminous,开启你的健康记录';
+
+  @override
+  String get authForgotPasswordSubtitle => '我们将发送验证码以重置你的密码';
+
+  @override
+  String authTermsAgreement(String terms, String privacy) {
+    return '创建即表示同意$terms与$privacy';
+  }
+
+  @override
+  String get authTermsOfService => '服务条款';
+
+  @override
+  String get authPrivacyPolicy => '隐私政策';
+
+  @override
+  String get authTermsComingSoonToast => '服务条款与隐私政策即将上线。';
+
+  @override
   String get authChangeEmailFormTitle => '更换邮箱';
 
   @override

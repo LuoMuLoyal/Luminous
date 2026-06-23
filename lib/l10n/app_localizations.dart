@@ -4046,6 +4046,48 @@ abstract class AppLocalizations {
   /// **'密码已更新，请重新登录。'**
   String get authResetPasswordSuccess;
 
+  /// No description provided for @authLoginSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录以继续你的健康记录'**
+  String get authLoginSubtitle;
+
+  /// No description provided for @authRegisterSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入 Luminous,开启你的健康记录'**
+  String get authRegisterSubtitle;
+
+  /// No description provided for @authForgotPasswordSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'我们将发送验证码以重置你的密码'**
+  String get authForgotPasswordSubtitle;
+
+  /// No description provided for @authTermsAgreement.
+  ///
+  /// In zh, this message translates to:
+  /// **'创建即表示同意{terms}与{privacy}'**
+  String authTermsAgreement(String terms, String privacy);
+
+  /// No description provided for @authTermsOfService.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务条款'**
+  String get authTermsOfService;
+
+  /// No description provided for @authPrivacyPolicy.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私政策'**
+  String get authPrivacyPolicy;
+
+  /// No description provided for @authTermsComingSoonToast.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务条款与隐私政策即将上线。'**
+  String get authTermsComingSoonToast;
+
   /// No description provided for @authChangeEmailFormTitle.
   ///
   /// In zh, this message translates to:
