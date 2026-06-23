@@ -951,6 +951,23 @@
   "authPasswordsDoNotMatch": "Passwords do not match.",
   "authResetPasswordSubmit": "Reset password",
   "authResetPasswordSuccess": "Password updated. Please sign in again.",
+  "authLoginSubtitle": "Sign in to continue your health tracking",
+  "authRegisterSubtitle": "Join Luminous and start your health journal",
+  "authForgotPasswordSubtitle": "We'll send a code to reset your password",
+  "authTermsAgreement": "By creating an account, you agree to the {terms} and {privacy}",
+  "@authTermsAgreement": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
+  "authTermsOfService": "Terms of Service",
+  "authPrivacyPolicy": "Privacy Policy",
+  "authTermsComingSoonToast": "Terms and privacy policy will be available soon.",
   "authChangeEmailFormTitle": "Change email",
   "authNewEmailLabel": "New email",
   "authChangeEmailSubmit": "Update email",

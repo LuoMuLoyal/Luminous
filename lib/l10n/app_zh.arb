@@ -951,6 +951,23 @@
   "authPasswordsDoNotMatch": "两次输入的密码不一致。",
   "authResetPasswordSubmit": "重置密码",
   "authResetPasswordSuccess": "密码已更新，请重新登录。",
+  "authLoginSubtitle": "登录以继续你的健康记录",
+  "authRegisterSubtitle": "加入 Luminous,开启你的健康记录",
+  "authForgotPasswordSubtitle": "我们将发送验证码以重置你的密码",
+  "authTermsAgreement": "创建即表示同意{terms}与{privacy}",
+  "@authTermsAgreement": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
+  "authTermsOfService": "服务条款",
+  "authPrivacyPolicy": "隐私政策",
+  "authTermsComingSoonToast": "服务条款与隐私政策即将上线。",
   "authChangeEmailFormTitle": "更换邮箱",
   "authNewEmailLabel": "新邮箱",
   "authChangeEmailSubmit": "更新邮箱",
