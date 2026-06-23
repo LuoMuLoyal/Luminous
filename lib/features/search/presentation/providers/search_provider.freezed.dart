@@ -49,7 +49,7 @@ $Res call({
 });
 
 
-
+$MedicineSearchSafetyPreviewCopyWith<$Res>? get detailPreview;
 
 }
 /// @nodoc
@@ -74,7 +74,19 @@ as String?,detailPreview: freezed == detailPreview ? _self.detailPreview : detai
 as MedicineSearchSafetyPreview?,
   ));
 }
+/// Create a copy of MedicineSearchState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MedicineSearchSafetyPreviewCopyWith<$Res>? get detailPreview {
+    if (_self.detailPreview == null) {
+    return null;
+  }
 
+  return $MedicineSearchSafetyPreviewCopyWith<$Res>(_self.detailPreview!, (value) {
+    return _then(_self.copyWith(detailPreview: value));
+  });
+}
 }
 
 
@@ -263,7 +275,7 @@ $Res call({
 });
 
 
-
+@override $MedicineSearchSafetyPreviewCopyWith<$Res>? get detailPreview;
 
 }
 /// @nodoc
@@ -289,7 +301,19 @@ as MedicineSearchSafetyPreview?,
   ));
 }
 
+/// Create a copy of MedicineSearchState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MedicineSearchSafetyPreviewCopyWith<$Res>? get detailPreview {
+    if (_self.detailPreview == null) {
+    return null;
+  }
 
+  return $MedicineSearchSafetyPreviewCopyWith<$Res>(_self.detailPreview!, (value) {
+    return _then(_self.copyWith(detailPreview: value));
+  });
+}
 }
 
 // dart format on

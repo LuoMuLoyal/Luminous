@@ -67,7 +67,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final l10n = AppLocalizations.of(context);
 
     return AuthShell(
-      title: l10n?.authSignIn ?? 'Sign in',
+      title: l10n?.authWelcomeBack ?? 'Welcome back',
+      subtitle: l10n?.authLoginSubtitle,
+      logo: const AuthBrandLogo(),
       centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,6 +113,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             label: l10n?.authEmailLabel ?? 'Email',
             hint: l10n?.authEmailHint ?? 'name@example.com',
             keyboardType: TextInputType.emailAddress,
+            prefix: const Icon(Icons.mail_outline),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           AnimatedSwitcher(
@@ -136,6 +139,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         l10n?.authPasswordHint ??
                         'At least 8 characters, ideally with mixed case and numbers',
                     obscureText: true,
+                    prefix: const Icon(Icons.lock_outline),
                   )
                 : AuthCodeFieldRow(
                     key: const ValueKey('auth-login-code-field'),
@@ -450,6 +454,7 @@ class _WechatOAuthPanel extends StatelessWidget {
                 l10n?.authWechatCallbackHint ??
                 'Paste the callback URL after scanning',
             keyboardType: TextInputType.url,
+            prefix: const Icon(Icons.link),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           AuthPrimaryButton(
