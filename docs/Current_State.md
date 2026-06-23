@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-06-22
+Last updated: 2026-06-23
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -86,14 +86,15 @@ Deferred code that remains useful should be marked with:
 - UI components standardize on: pill alpha `0.12`, status pill radius `AppRadiusTokens.sm`, panel radius `AppRadiusTokens.lg`, section header fontWeight `w600`, icon badge size `48px`, text action icon `16px`.
 - Spacing uses `AppSpacingTokens` (xxs=4 … section=192); hardcoded `12`/`24` pixel values are replaced with `sm`/`lg` tokens project-wide.
 - Breakpoints reference `AppBreakpoints` constants; no hardcoded `600`.
-- Route transitions use `CustomTransitionPage` with `FadeTransition` for auth pages and `SlideTransition`+`FadeTransition` for drill-down pages (300ms in / 200ms out).
+- Route transitions use `CustomTransitionPage` with `FadeTransition` for auth pages (400ms in / 280ms out) and `SlideTransition`+`FadeTransition` for drill-down pages (220ms in / 150ms out).
 - Today and Mine pages support pull-to-refresh via `RefreshIndicator` + `AlwaysScrollableScrollPhysics`.
 - ShellPage uses lazy tab loading (`_pages[currentIndex]` instead of `IndexedStack`); only the current tab's providers fire on startup. Riverpod caches already-fetched data so tab-switch-back is instant.
 - Charts (record trends) use `fl_chart` (`LineChart`/`BarChart`) instead of handwritten `CustomPainter` widgets.
-- Freezed is applied to 8 classes: `DailyRecordCandidateResult`/`Item`, `AssistantProposedAction`/`Message`, and 4 form-state classes; ~52 domain entities remain on manual classes pending phased migration.
+- Freezed is applied to 74 classes across presentation state and domain entities; all hand-written data classes have been migrated.
 - Golden screenshot tests live in `test/golden/` using Flutter's built-in `matchesGoldenFile()` (zero extra deps). Baseline images generated with `flutter test --update-goldens test/golden/`.
-- Shared utility `coerceToStringMap` in `lib/core/network/map_utils.dart` deduplicates 4 copies of the same `_coerceToMap` helper.
+- Shared utility `coerceToStringMap` in `lib/core/network/map_utils.dart` deduplicates 5 copies of the same `_coerceToMap` helper.
 - `compareReminderTime` deduplicated from 3 copies to 1 public version in `medicine_reminder_formatters.dart`.
+- Login page password/code mode switch uses `flutter_animate`'s `.fadeIn().slideX()` instead of `AnimatedSwitcher`, matching the project-wide entrance animation pattern.
 
 ## Removed From Active Scope
 

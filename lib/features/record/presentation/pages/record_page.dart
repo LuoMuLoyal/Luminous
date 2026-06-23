@@ -47,7 +47,8 @@ class RecordPage extends ConsumerWidget {
       floatingActionButton: isMobileLayout
           ? FloatingActionButton.extended(
               key: const Key('record-nlp-fab'),
-              onPressed: () => _openNlpSheet(context, ref, session, selectedDate),
+              onPressed: () =>
+                  _openNlpSheet(context, ref, session, selectedDate),
               icon: const Icon(Icons.auto_awesome_rounded),
               label: Text(l10n.recordNlpFabAction),
             )
@@ -136,7 +137,8 @@ class RecordPage extends ConsumerWidget {
             onDateSelected: (date) => _setSelectedDate(ref, date),
             onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
             onQuickAction: (action) => _handleQuickAction(context, ref, action),
-            onAiInputTap: () => _openNlpSheet(context, ref, session, selectedDate),
+            onAiInputTap: () =>
+                _openNlpSheet(context, ref, session, selectedDate),
           ),
           loading: () => RecordDashboardView(
             dashboard: MockRecordRepository.loadingDashboard(
@@ -149,7 +151,8 @@ class RecordPage extends ConsumerWidget {
             onDateSelected: (date) => _setSelectedDate(ref, date),
             onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
             onQuickAction: (action) => _handleQuickAction(context, ref, action),
-            onAiInputTap: () => _openNlpSheet(context, ref, session, selectedDate),
+            onAiInputTap: () =>
+                _openNlpSheet(context, ref, session, selectedDate),
           ),
           error: (_, __) => AppStateErrorView(
             title: l10n.recordErrorTitle,
@@ -188,7 +191,8 @@ class RecordPage extends ConsumerWidget {
     final now = ref.read(currentRecordDateTimeProvider);
     final date = formatRecordDate(selectedDate);
     final currentTime = formatRecordTimeValue(now);
-    final route = '/record/create?kind=${Uri.encodeComponent(kind.name)}'
+    final route =
+        '/record/create?kind=${Uri.encodeComponent(kind.name)}'
         '&date=${Uri.encodeComponent(date)}'
         '&time=${Uri.encodeComponent(currentTime)}';
     final session = ref.read(authSessionProvider);
@@ -281,9 +285,8 @@ class RecordPage extends ConsumerWidget {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (sheetContext) => RecordNlpSheet(
-        occurredAt: formatRecordDate(selectedDate),
-      ),
+      builder: (sheetContext) =>
+          RecordNlpSheet(occurredAt: formatRecordDate(selectedDate)),
     );
   }
 }

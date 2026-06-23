@@ -1,6 +1,9 @@
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_risk_medicine_detail.dart';
+import 'package:luminous/features/medicine/domain/services/medicine_risk_checker_utils.dart';
+
+export 'package:luminous/features/medicine/domain/entities/medicine_risk_medicine_detail.dart';
 
 class MedicineRiskChecker {
   const MedicineRiskChecker();
@@ -204,7 +207,7 @@ class MedicineRiskChecker {
     required Object? rawText,
     required MedicineRiskFindingContext context,
   }) {
-    final text = _asNonEmptyString(rawText);
+    final text = asNonEmptyString(rawText);
     if (text == null) return null;
 
     if (context != MedicineRiskFindingContext.pregnancy &&
@@ -290,7 +293,7 @@ class MedicineRiskChecker {
     }
 
     final isPediatric = age != null && age < _pediatricAgeThreshold;
-    final pediatricText = _asNonEmptyString(detail.pediatricUse);
+    final pediatricText = asNonEmptyString(detail.pediatricUse);
     if (pediatricText != null && isPediatric) {
       findings.add(
         _specialGroupClassifiedFinding(
@@ -309,7 +312,7 @@ class MedicineRiskChecker {
     }
 
     final isGeriatric = age != null && age > _geriatricAgeThreshold;
-    final geriatricText = _asNonEmptyString(detail.geriatricUse);
+    final geriatricText = asNonEmptyString(detail.geriatricUse);
     if (geriatricText != null && isGeriatric) {
       findings.add(
         _specialGroupClassifiedFinding(
@@ -364,18 +367,18 @@ class MedicineRiskChecker {
     final detail = medicine.detail.detail;
     final haystacks = <String>[
       medicine.displayName,
-      _asNonEmptyString(detail.ingredients) ?? '',
-      _asNonEmptyString(detail.contraindications) ?? '',
-      _asNonEmptyString(detail.precautions) ?? '',
+      asNonEmptyString(detail.ingredients) ?? '',
+      asNonEmptyString(detail.contraindications) ?? '',
+      asNonEmptyString(detail.precautions) ?? '',
       ...medicine.drugbankSynonymTokens,
     ];
-    final normalizedHaystack = _normalizeToken(haystacks.join(' '));
+    final normalizedHaystack = normalizeToken(haystacks.join(' '));
 
     final findings = <MedicineRiskFinding>[];
     for (final allergyItem in activeAllergies) {
       final rawLabel = allergyItem.label.trim();
       if (rawLabel.isEmpty) continue;
-      final allergyToken = _normalizeToken(rawLabel);
+      final allergyToken = normalizeToken(rawLabel);
       if (allergyToken.isEmpty) continue;
 
       final matchTokens = _expandAllergyTokens(allergyToken);
@@ -395,10 +398,10 @@ class MedicineRiskChecker {
           context: MedicineRiskFindingContext.none,
           primaryMedicineName: medicine.displayName,
           relatedLabel: rawLabel,
-          evidence: _firstNonEmpty(
-            _asNonEmptyString(detail.contraindications),
-            _asNonEmptyString(detail.ingredients),
-            _asNonEmptyString(detail.precautions),
+          evidence: firstNonEmpty(
+            asNonEmptyString(detail.contraindications),
+            asNonEmptyString(detail.ingredients),
+            asNonEmptyString(detail.precautions),
           ),
         ),
       );
@@ -412,10 +415,10 @@ class MedicineRiskChecker {
     final result = <String>{normalizedAllergy};
     for (final entry in _allergyCrossLanguageMap.entries) {
       final hasMatch = entry.value.any(
-        (variant) => _normalizeToken(variant) == normalizedAllergy,
+        (variant) => normalizeToken(variant) == normalizedAllergy,
       );
       if (hasMatch) {
-        result.addAll(entry.value.map(_normalizeToken));
+        result.addAll(entry.value.map(normalizeToken));
       }
     }
     return result;
@@ -426,7 +429,7 @@ class MedicineRiskChecker {
   ) {
     final findings = <MedicineRiskFinding>[];
     for (final interaction in medicine.detail.detail.foodInteractions) {
-      final normalized = _normalizeToken(interaction);
+      final normalized = normalizeToken(interaction);
       if (normalized.contains('alcohol') || normalized.contains('酒')) {
         findings.add(
           MedicineRiskFinding(
@@ -521,7 +524,7 @@ class MedicineRiskChecker {
       context: MedicineRiskFindingContext.none,
       primaryMedicineName: current.displayName,
       secondaryMedicineName: other.displayName,
-      evidence: _duplicateIngredientEvidence(sharedTokens),
+      evidence: duplicateIngredientEvidence(sharedTokens),
     );
   }
 
@@ -550,149 +553,28 @@ class MedicineRiskChecker {
       if (item is! Map) continue;
       final dynamic id = item['drugbankId'];
       if (id?.toString() != targetId) continue;
-      return _asNonEmptyString(item['description']);
+      return asNonEmptyString(item['description']);
     }
     return null;
   }
-}
 
-class MedicineRiskMedicineDetail {
-  const MedicineRiskMedicineDetail({required this.item, required this.detail});
-
-  final CurrentMedicineItem item;
-  final MedicineDetailDataDto detail;
-
-  String get displayName =>
-      item.displayName.trim().isNotEmpty ? item.displayName : detail.name;
-
-  /// Ingredient tokens extracted from the medicine detail, regardless of source.
-  /// CN: parsed from the `ingredients` string (Chinese semicolon-separated).
-  /// DrugBank: derived from `synonyms` (normalized lowercase).
-  Set<String> get normalizedIngredientTokens {
-    if (item.source == 'cn') {
-      final ingredients = _asNonEmptyString(detail.detail.ingredients);
-      if (ingredients == null) return const {};
-      return _extractIngredientTokens(ingredients);
-    }
-    if (item.source == 'drugbank') {
-      return drugbankSynonymTokens;
-    }
-    return const {};
+  String _buildCoverageSummary({
+    required int currentMedicineCount,
+    required int checkedMedicineCount,
+    required List<MedicineRiskCoverageIssue> coverageIssues,
+    required List<MedicineRiskMedicineDetail> medicines,
+  }) {
+    if (currentMedicineCount == 0) return '';
+    if (coverageIssues.isEmpty) return '';
+    final manualCount = coverageIssues
+        .where(
+          (issue) => issue.reason == MedicineRiskCoverageReason.manualEntry,
+        )
+        .length;
+    final unavailableCount = coverageIssues.length - manualCount;
+    final parts = <String>[];
+    if (manualCount > 0) parts.add('$manualCount 种手动录入药品无法自动检查');
+    if (unavailableCount > 0) parts.add('$unavailableCount 种药品详情不可用');
+    return parts.join('；');
   }
-
-  /// Ingredient tokens from all available sources, useful for allergy matching.
-  Set<String> get allSourceIngredientTokens {
-    final tokens = <String>{};
-    tokens.addAll(normalizedIngredientTokens);
-    tokens.add(_normalizeToken(displayName));
-    return tokens;
-  }
-
-  /// Normalized synonym tokens for DrugBank medicines.
-  Set<String> get drugbankSynonymTokens {
-    if (item.source != 'drugbank') return const {};
-    final names = detail.name.trim();
-    final result = <String>{if (names.isNotEmpty) _normalizeToken(names)};
-    for (final synonym in detail.detail.synonyms) {
-      final token = _normalizeToken(synonym);
-      if (token.isNotEmpty) result.add(token);
-    }
-    return result;
-  }
-
-  Set<String> get drugbankInteractionTargets {
-    if (item.source != 'drugbank') return const {};
-    final value = detail.detail.drugInteractions;
-    if (value is! List) return const {};
-    return value
-        .whereType<Map>()
-        .map((entry) => entry['drugbankId']?.toString() ?? '')
-        .map((value) => value.trim())
-        .where((value) => value.isNotEmpty)
-        .toSet();
-  }
-}
-
-String _duplicateIngredientEvidence(Set<String> sharedTokens) {
-  final values = sharedTokens.toList()..sort();
-  return values.join(' / ');
-}
-
-String _buildCoverageSummary({
-  required int currentMedicineCount,
-  required int checkedMedicineCount,
-  required List<MedicineRiskCoverageIssue> coverageIssues,
-  required List<MedicineRiskMedicineDetail> medicines,
-}) {
-  if (currentMedicineCount == 0) {
-    return '';
-  }
-  if (coverageIssues.isEmpty) {
-    return '';
-  }
-  final manualCount = coverageIssues
-      .where((issue) => issue.reason == MedicineRiskCoverageReason.manualEntry)
-      .length;
-  final unavailableCount = coverageIssues.length - manualCount;
-
-  final parts = <String>[];
-  if (manualCount > 0) {
-    parts.add('$manualCount 种手动录入药品无法自动检查');
-  }
-  if (unavailableCount > 0) {
-    parts.add('$unavailableCount 种药品详情不可用');
-  }
-  return parts.join('；');
-}
-
-Set<String> _extractIngredientTokens(String value) {
-  final normalized = value
-      .replaceAll('（', '(')
-      .replaceAll('）', ')')
-      .replaceAll('；', ';')
-      .replaceAll('，', ',')
-      .replaceAll('、', ',')
-      .replaceAll('+', ',')
-      .replaceAll(' and ', ',')
-      .replaceAll(' AND ', ',');
-  final parts = normalized.split(RegExp(r'[;,/\n\r\+\|]'));
-
-  return parts.map(_cleanIngredientToken).whereType<String>().toSet();
-}
-
-String? _cleanIngredientToken(String raw) {
-  final withoutParens = raw.replaceAll(RegExp(r'\([^)]*\)'), ' ');
-  final withoutStrength = withoutParens.replaceAll(
-    RegExp(
-      r'\b\d+(\.\d+)?\s*(mg|g|ml|mcg|iu|%|片|粒|袋|支|丸)\b',
-      caseSensitive: false,
-    ),
-    ' ',
-  );
-  final normalized = _normalizeToken(
-    withoutStrength
-        .replaceAll(RegExp(r'[·\.\-]'), ' ')
-        .replaceAll(RegExp(r'\s+'), ' ')
-        .trim(),
-  );
-  if (normalized.isEmpty) return null;
-  if (normalized.length <= 1) return null;
-  return normalized;
-}
-
-String? _asNonEmptyString(Object? value) {
-  final text = value?.toString().trim();
-  if (text == null || text.isEmpty) return null;
-  return text;
-}
-
-String? _firstNonEmpty(String? a, String? b, String? c) {
-  if (a != null && a.isNotEmpty) return a;
-  if (b != null && b.isNotEmpty) return b;
-  if (c != null && c.isNotEmpty) return c;
-  return null;
-}
-
-String _normalizeToken(String value) {
-  return value.toLowerCase().replaceAll(RegExp(r'\s+'), '');
 }

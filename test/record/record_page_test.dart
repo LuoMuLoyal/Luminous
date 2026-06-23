@@ -27,7 +27,7 @@ import 'package:luminous/features/record/presentation/pages/record_detail.dart';
 import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/providers/record_time_provider.dart';
-import 'package:luminous/features/record/presentation/record_page.dart';
+import 'package:luminous/features/record/presentation/pages/record_page.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
