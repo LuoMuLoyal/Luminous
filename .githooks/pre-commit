@@ -1,2 +1,2 @@
 #!/bin/sh
-exec dart run "$(dirname "$0")/../tool/git_hook.dart" pre-commit "$@"
+exec dart run "$(dirname "$0")/../tool/git_hook.dart" pre-commit
