@@ -146,6 +146,10 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(
+      find.byKey(const Key('wechat-login-start-button')),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('wechat-login-start-button')));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
@@ -191,6 +195,10 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(
+      find.byKey(const Key('wechat-login-start-button')),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('wechat-login-start-button')));
     await tester.pumpAndSettle();
 
@@ -230,9 +238,15 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(
+      find.byKey(const Key('wechat-login-start-button')),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('wechat-login-start-button')));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2));
+    await tester.ensureVisible(find.byKey(const Key('wechat-callback-input')));
+    await tester.pumpAndSettle();
     await tester.enterText(
       find.byKey(const Key('wechat-callback-input')),
       'https://app.example.com/oauth/wechat/callback?code=wechat-code&state=state-1',
