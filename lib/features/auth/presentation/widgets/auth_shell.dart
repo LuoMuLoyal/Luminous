@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 const double _authControlHeight = 56;
 
@@ -14,6 +15,8 @@ class AuthShell extends StatelessWidget {
     this.enableFormAnimation = true,
     this.leading,
     this.centerTitle = false,
+    this.logo,
+    this.subtitle,
   });
 
   final String title;
@@ -21,6 +24,8 @@ class AuthShell extends StatelessWidget {
   final bool enableFormAnimation;
   final Widget? leading;
   final bool centerTitle;
+  final Widget? logo;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +67,8 @@ class AuthShell extends StatelessWidget {
                       leading: leading,
                       centerTitle: centerTitle,
                       typography: typography,
+                      logo: logo,
+                      subtitle: subtitle,
                     ),
                     const SizedBox(height: AppSpacingTokens.lg),
                     _AuthFormPanel(
@@ -86,31 +93,62 @@ class _AuthPageHeader extends StatelessWidget {
     required this.leading,
     required this.centerTitle,
     required this.typography,
+    this.logo,
+    this.subtitle,
   });
 
   final String title;
   final Widget? leading;
   final bool centerTitle;
   final AppTypographyScale typography;
+  final Widget? logo;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 48,
-          child: leading == null
-              ? null
-              : Align(alignment: Alignment.centerLeft, child: leading),
-        ),
-        Expanded(
-          child: Text(
-            title,
-            textAlign: centerTitle ? TextAlign.center : TextAlign.left,
-            style: typography.displaySm,
+    // 当没有 logo 也没有 subtitle 时,保持原有横向行布局(向后兼容)。
+    if (logo == null && subtitle == null) {
+      return Row(
+        children: [
+          SizedBox(
+            width: 48,
+            child: leading == null
+                ? null
+                : Align(alignment: Alignment.centerLeft, child: leading),
           ),
-        ),
-        const SizedBox(width: 48),
+          Expanded(
+            child: Text(
+              title,
+              textAlign: centerTitle ? TextAlign.center : TextAlign.left,
+              style: typography.displaySm,
+            ),
+          ),
+          const SizedBox(width: 48),
+        ],
+      );
+    }
+
+    // 三段式纵向布局: Logo + Title + Subtitle(支持可选 leading)。
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (leading != null)
+          Align(alignment: Alignment.centerLeft, child: leading),
+        if (logo != null) ...[
+          Center(child: logo),
+          const SizedBox(height: AppSpacingTokens.md),
+        ],
+        Text(title, textAlign: TextAlign.center, style: typography.displaySm),
+        if (subtitle != null) ...[
+          const SizedBox(height: AppSpacingTokens.xs),
+          Text(
+            subtitle!,
+            textAlign: TextAlign.center,
+            style: typography.bodySm.copyWith(
+              color: Theme.of(context).extension<AppThemeSurface>()!.mute,
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -190,6 +228,7 @@ class AuthTextField extends StatefulWidget {
     this.hint,
     this.keyboardType,
     this.obscureText = false,
+    this.prefix,
     this.suffix,
     this.enabled = true,
   });
@@ -199,6 +238,7 @@ class AuthTextField extends StatefulWidget {
   final String? hint;
   final TextInputType? keyboardType;
   final bool obscureText;
+  final Widget? prefix;
   final Widget? suffix;
   final bool enabled;
 
@@ -208,11 +248,21 @@ class AuthTextField extends StatefulWidget {
 
 class _AuthTextFieldState extends State<AuthTextField> {
   late final FocusNode _focusNode;
+  late bool _obscured;
 
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode()..addListener(_handleFocusChanged);
+    _obscured = widget.obscureText;
+  }
+
+  @override
+  void didUpdateWidget(covariant AuthTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.obscureText != widget.obscureText) {
+      _obscured = widget.obscureText;
+    }
   }
 
   @override
@@ -225,6 +275,10 @@ class _AuthTextFieldState extends State<AuthTextField> {
 
   void _handleFocusChanged() {
     setState(() {});
+  }
+
+  void _toggleObscure() {
+    setState(() => _obscured = !_obscured);
   }
 
   @override
@@ -240,6 +294,28 @@ class _AuthTextFieldState extends State<AuthTextField> {
     final contentColor = widget.enabled
         ? theme.colorScheme.onSurface
         : surface.mute;
+    final iconColor = _focusNode.hasFocus
+        ? theme.colorScheme.primary
+        : surface.mute;
+
+    // 密码字段: 若外部未自定义 suffix,自动注入可见性切换按钮。
+    final Widget? effectiveSuffix =
+        widget.suffix ??
+        (widget.obscureText
+            ? IconButton(
+                onPressed: _toggleObscure,
+                icon: Icon(
+                  _obscured
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  size: 20,
+                ),
+                color: iconColor,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                tooltip: _obscured ? 'Show password' : 'Hide password',
+              )
+            : null);
 
     return _AuthControlFrame(
       backgroundColor: widget.enabled ? surface.canvas : surface.canvasSoft,
@@ -248,6 +324,13 @@ class _AuthTextFieldState extends State<AuthTextField> {
         padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md),
         child: Row(
           children: [
+            if (widget.prefix != null) ...[
+              IconTheme.merge(
+                data: IconThemeData(color: iconColor, size: 20),
+                child: widget.prefix!,
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+            ],
             Expanded(
               child: Semantics(
                 label: widget.label,
@@ -256,7 +339,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   focusNode: _focusNode,
                   enabled: widget.enabled,
                   keyboardType: widget.keyboardType,
-                  obscureText: widget.obscureText,
+                  obscureText: _obscured,
                   maxLines: 1,
                   style: typography.bodyMd.copyWith(color: contentColor),
                   cursorColor: theme.colorScheme.primary,
@@ -267,9 +350,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
                 ),
               ),
             ),
-            if (widget.suffix != null) ...[
+            if (effectiveSuffix != null) ...[
               const SizedBox(width: AppSpacingTokens.xs),
-              widget.suffix!,
+              effectiveSuffix,
             ],
           ],
         ),
@@ -552,6 +635,122 @@ class AuthPrimaryButton extends StatelessWidget {
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
             : Text(label, style: typography.buttonLg),
+      ),
+    );
+  }
+}
+
+/// Auth 页面品牌 Logo。用浅灰圆角渐变容器包裹白色 app icon,
+/// 解决白底图标与白色卡片背景融合的问题,并增加层次感。
+class AuthBrandLogo extends StatelessWidget {
+  const AuthBrandLogo({super.key, this.size = 64});
+
+  final double size;
+
+  static const String _assetPath = 'assets/icons/luminous_app_icon.png';
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[surface.canvasSoft, surface.canvasSoft2],
+        ),
+        boxShadow: AppShadowTokens.level1,
+      ),
+      padding: const EdgeInsets.all(AppSpacingTokens.sm),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        child: Image.asset(
+          _assetPath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
+}
+
+/// 注册页底部服务条款提示。当前用 toast 占位,未来可替换为真实跳转。
+class AuthTermsNotice extends StatelessWidget {
+  const AuthTermsNotice({
+    super.key,
+    required this.onTerms,
+    required this.onPrivacy,
+  });
+
+  final VoidCallback onTerms;
+  final VoidCallback onPrivacy;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = MediaQuery.sizeOf(context).width < AppBreakpoints.mobile
+        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
+        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+    final l10n = AppLocalizations.of(context);
+
+    final linkStyle = typography.bodySm.copyWith(
+      color: surface.link,
+      fontWeight: FontWeight.w600,
+    );
+    final linkButtonStyle = TextButton.styleFrom(
+      padding: EdgeInsets.zero,
+      minimumSize: const Size(0, 28),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+
+    final String leadText =
+        l10n?.authTermsAgreement('', '') ??
+        'By creating an account, you agree to the ';
+    final String connector = l10n?.localeName.startsWith('zh') == true
+        ? '与'
+        : ' and ';
+    final String termsLabel = l10n?.authTermsOfService ?? 'Terms of Service';
+    final String privacyLabel = l10n?.authPrivacyPolicy ?? 'Privacy Policy';
+
+    // 裁剪 leadText 末尾残留的占位符空位:英文 "agree to the  and " → "agree to the "
+    final String trimmedLead = leadText.trimRight().replaceAll(
+      RegExp(r'\s+(and|与)\s*$'),
+      '',
+    );
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xs),
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          runAlignment: WrapAlignment.center,
+          children: [
+            Text(
+              trimmedLead,
+              style: typography.bodySm.copyWith(color: surface.body),
+            ),
+            TextButton(
+              onPressed: onTerms,
+              style: linkButtonStyle,
+              child: Text(termsLabel, style: linkStyle),
+            ),
+            Text(
+              connector,
+              style: typography.bodySm.copyWith(color: surface.body),
+            ),
+            TextButton(
+              onPressed: onPrivacy,
+              style: linkButtonStyle,
+              child: Text(privacyLabel, style: linkStyle),
+            ),
+          ],
+        ),
       ),
     );
   }
