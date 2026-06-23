@@ -49,6 +49,8 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
 
     return AuthShell(
       title: l10n?.authResetPasswordAction ?? 'Reset password',
+      subtitle: l10n?.authForgotPasswordSubtitle,
+      logo: const AuthBrandLogo(),
       centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,6 +61,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
             label: l10n?.authEmailLabel ?? 'Email',
             hint: l10n?.authEmailHint ?? 'name@example.com',
             keyboardType: TextInputType.emailAddress,
+            prefix: const Icon(Icons.mail_outline),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           AuthCodeFieldRow(
@@ -89,6 +92,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 l10n?.authPasswordHint ??
                 'At least 8 characters, ideally with mixed case and numbers',
             obscureText: true,
+            prefix: const Icon(Icons.lock_outline),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           AuthTextField(
@@ -98,6 +102,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 l10n?.authPasswordHint ??
                 'At least 8 characters, ideally with mixed case and numbers',
             obscureText: true,
+            prefix: const Icon(Icons.lock_outline),
           ),
           if ((state.errorMessage?.isNotEmpty ?? false) || success != null) ...[
             const SizedBox(height: AppSpacingTokens.md),
