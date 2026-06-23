@@ -46,6 +46,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
     return AuthShell(
       title: l10n?.authCreateAccountAction ?? 'Create account',
+      subtitle: l10n?.authRegisterSubtitle,
+      logo: const AuthBrandLogo(),
       centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,6 +58,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             label: l10n?.authEmailLabel ?? 'Email',
             hint: l10n?.authEmailHint ?? 'name@example.com',
             keyboardType: TextInputType.emailAddress,
+            prefix: const Icon(Icons.mail_outline),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           AuthCodeFieldRow(
@@ -86,12 +89,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 l10n?.authPasswordHint ??
                 'At least 8 characters, ideally with mixed case and numbers',
             obscureText: true,
+            prefix: const Icon(Icons.lock_outline),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           AuthTextField(
             controller: _nicknameController,
             label: l10n?.authNicknameLabel ?? 'Nickname',
             hint: l10n?.authNicknameHint ?? 'Optional',
+            prefix: const Icon(Icons.person_outline),
           ),
           if ((state.errorMessage?.isNotEmpty ?? false) ||
               (state.successMessage?.isNotEmpty ?? false)) ...[
@@ -115,6 +120,19 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
               }
               await notifier.submit();
             },
+          ),
+          const SizedBox(height: AppSpacingTokens.sm),
+          AuthTermsNotice(
+            onTerms: () => AppToast.show(
+              context,
+              l10n?.authTermsComingSoonToast ??
+                  'Terms and privacy policy will be available soon.',
+            ),
+            onPrivacy: () => AppToast.show(
+              context,
+              l10n?.authTermsComingSoonToast ??
+                  'Terms and privacy policy will be available soon.',
+            ),
           ),
           const SizedBox(height: AppSpacingTokens.sm),
           AuthFooterAction(
