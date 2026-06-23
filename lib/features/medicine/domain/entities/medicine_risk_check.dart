@@ -1,3 +1,7 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'medicine_risk_check.freezed.dart';
+
 enum MedicineRiskSeverity { high, medium, info }
 
 enum MedicineRiskFindingType {
@@ -44,23 +48,17 @@ enum SpecialPopulationConclusion {
   insufficientInformation,
 }
 
-class MedicineRiskCheckResult {
-  const MedicineRiskCheckResult({
-    required this.currentMedicineCount,
-    required this.checkedMedicineCount,
-    required this.findings,
-    required this.coverageIssues,
-    this.coverageSummary = '',
-  });
+@freezed
+abstract class MedicineRiskCheckResult with _$MedicineRiskCheckResult {
+  const MedicineRiskCheckResult._();
 
-  final int currentMedicineCount;
-  final int checkedMedicineCount;
-  final List<MedicineRiskFinding> findings;
-  final List<MedicineRiskCoverageIssue> coverageIssues;
-
-  /// Human-readable summary of coverage gaps (e.g. "2 种手动录入药品无法自动检查").
-  /// Empty when all medicines are fully covered.
-  final String coverageSummary;
+  const factory MedicineRiskCheckResult({
+    required int currentMedicineCount,
+    required int checkedMedicineCount,
+    required List<MedicineRiskFinding> findings,
+    required List<MedicineRiskCoverageIssue> coverageIssues,
+    @Default('') String coverageSummary,
+  }) = _MedicineRiskCheckResult;
 
   int get findingCount => findings.length;
 
@@ -71,57 +69,43 @@ class MedicineRiskCheckResult {
   bool get hasCoverageGaps => coverageIssues.isNotEmpty;
 }
 
-class MedicineRiskFinding {
-  const MedicineRiskFinding({
-    required this.type,
-    required this.severity,
-    required this.context,
-    required this.primaryMedicineName,
-    this.secondaryMedicineName,
-    this.relatedLabel,
-    this.evidence,
-    this.specialPopulationConclusion,
-  });
+@freezed
+abstract class MedicineRiskFinding with _$MedicineRiskFinding {
+  const factory MedicineRiskFinding({
+    required MedicineRiskFindingType type,
+    required MedicineRiskSeverity severity,
+    required MedicineRiskFindingContext context,
+    required String primaryMedicineName,
+    String? secondaryMedicineName,
+    String? relatedLabel,
+    String? evidence,
 
-  final MedicineRiskFindingType type;
-  final MedicineRiskSeverity severity;
-  final MedicineRiskFindingContext context;
-  final String primaryMedicineName;
-  final String? secondaryMedicineName;
-  final String? relatedLabel;
-  final String? evidence;
-
-  /// Non-null only when [type] is [MedicineRiskFindingType.specialGroup]
-  /// and the source text was classified into a structured conclusion.
-  /// Carries the classified risk level for UI two-layer display
-  /// (conclusion label + evidence source text).
-  final SpecialPopulationConclusion? specialPopulationConclusion;
+    /// Non-null only when [type] is [MedicineRiskFindingType.specialGroup]
+    /// and the source text was classified into a structured conclusion.
+    /// Carries the classified risk level for UI two-layer display
+    /// (conclusion label + evidence source text).
+    SpecialPopulationConclusion? specialPopulationConclusion,
+  }) = _MedicineRiskFinding;
 }
 
-class MedicineRiskCoverageIssue {
-  const MedicineRiskCoverageIssue({
-    required this.medicineName,
-    required this.reason,
-  });
-
-  final String medicineName;
-  final MedicineRiskCoverageReason reason;
+@freezed
+abstract class MedicineRiskCoverageIssue with _$MedicineRiskCoverageIssue {
+  const factory MedicineRiskCoverageIssue({
+    required String medicineName,
+    required MedicineRiskCoverageReason reason,
+  }) = _MedicineRiskCoverageIssue;
 }
 
 enum RedFlagRule { severeAllergy, pregnancyContraindication, informationGap }
 
-class RedFlagAlert {
-  const RedFlagAlert({
-    required this.rule,
-    required this.primaryMedicineName,
-    this.relatedLabel,
-    this.resourceId,
-  });
+@freezed
+abstract class RedFlagAlert with _$RedFlagAlert {
+  const factory RedFlagAlert({
+    required RedFlagRule rule,
+    required String primaryMedicineName,
+    String? relatedLabel,
 
-  final RedFlagRule rule;
-  final String primaryMedicineName;
-  final String? relatedLabel;
-
-  /// Matches a support-resource id (e.g. 'campus-emergency', 'campus-hospital').
-  final String? resourceId;
+    /// Matches a support-resource id (e.g. 'campus-emergency', 'campus-hospital').
+    String? resourceId,
+  }) = _RedFlagAlert;
 }

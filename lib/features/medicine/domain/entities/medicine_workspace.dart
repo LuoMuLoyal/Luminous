@@ -1,140 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 
-class MedicineWorkspace {
-  const MedicineWorkspace({
-    required this.hero,
-    required this.quickActions,
-    required this.plan,
-    required this.alerts,
-    required this.promisePoints,
-    this.riskCheckResult,
-  });
+part 'medicine_workspace.freezed.dart';
 
-  final MedicineHero hero;
-  final List<MedicineQuickAction> quickActions;
-  final MedicinePlanSurface plan;
-  final List<MedicineAlert> alerts;
-  final List<MedicinePromisePoint> promisePoints;
-  final MedicineRiskCheckResult? riskCheckResult;
+@freezed
+abstract class MedicineWorkspace with _$MedicineWorkspace {
+  const factory MedicineWorkspace({
+    required MedicineHero hero,
+    required List<MedicineQuickAction> quickActions,
+    required MedicinePlanSurface plan,
+    required List<MedicineAlert> alerts,
+    required List<MedicinePromisePoint> promisePoints,
+    MedicineRiskCheckResult? riskCheckResult,
+  }) = _MedicineWorkspace;
 }
 
-class MedicineHero {
-  const MedicineHero({
-    required this.metricDosesToday,
-    required this.metricAdherence,
-    required this.metricNextDose,
-  });
-
-  final String metricDosesToday;
-  final String metricAdherence;
-  final String metricNextDose;
+@freezed
+abstract class MedicineHero with _$MedicineHero {
+  const factory MedicineHero({
+    required String metricDosesToday,
+    required String metricAdherence,
+    required String metricNextDose,
+  }) = _MedicineHero;
 }
 
-class MedicineQuickAction {
-  const MedicineQuickAction({
-    required this.icon,
-    required this.titleKey,
-    required this.subtitleKey,
-    required this.accent,
-  });
-
-  final IconData icon;
-  final MedicineCopyKey titleKey;
-  final MedicineCopyKey subtitleKey;
-  final Color accent;
+@freezed
+abstract class MedicineQuickAction with _$MedicineQuickAction {
+  const factory MedicineQuickAction({
+    required IconData icon,
+    required MedicineCopyKey titleKey,
+    required MedicineCopyKey subtitleKey,
+    required Color accent,
+  }) = _MedicineQuickAction;
 }
 
-class MedicinePlanSurface {
-  const MedicinePlanSurface({required this.items});
-
-  final List<MedicinePlanItem> items;
+@freezed
+abstract class MedicinePlanSurface with _$MedicinePlanSurface {
+  const factory MedicinePlanSurface({required List<MedicinePlanItem> items}) =
+      _MedicinePlanSurface;
 }
 
-class MedicinePlanItem {
-  const MedicinePlanItem({
-    required this.color,
-    required this.nameKey,
-    required this.dosageKey,
-    required this.scheduleKey,
-    required this.slots,
-    required this.stateKey,
-    required this.stateColor,
-    this.todayStatus,
-    this.rawName,
-    this.rawDosage,
-    this.rawSchedule,
-    this.rawState,
-    this.currentMedicineId,
-  });
+@freezed
+abstract class MedicinePlanItem with _$MedicinePlanItem {
+  const factory MedicinePlanItem({
+    required Color color,
+    required MedicineCopyKey nameKey,
+    required MedicineCopyKey dosageKey,
+    required MedicineCopyKey scheduleKey,
+    required List<MedicineDoseSlot> slots,
+    required MedicineCopyKey stateKey,
+    required Color stateColor,
+    MedicineDoseStatus? todayStatus,
 
-  final Color color;
-  final MedicineCopyKey nameKey;
-  final MedicineCopyKey dosageKey;
-  final MedicineCopyKey scheduleKey;
-  final List<MedicineDoseSlot> slots;
-  final MedicineCopyKey stateKey;
-  final Color stateColor;
-  final MedicineDoseStatus? todayStatus;
-
-  /// When non-null, the view should use these raw strings instead of
-  /// resolving [nameKey]/[dosageKey]/[scheduleKey]/[stateKey] through
-  /// [medicineCopy].
-  final String? rawName;
-  final String? rawDosage;
-  final String? rawSchedule;
-  final String? rawState;
-  final String? currentMedicineId;
+    /// When non-null, the view should use these raw strings instead of
+    /// resolving [nameKey]/[dosageKey]/[scheduleKey]/[stateKey] through
+    /// [medicineCopy].
+    String? rawName,
+    String? rawDosage,
+    String? rawSchedule,
+    String? rawState,
+    String? currentMedicineId,
+  }) = _MedicinePlanItem;
 }
 
-class MedicineDoseSlot {
-  const MedicineDoseSlot({
-    this.timeKey,
-    this.rawTime,
-    required this.statusKey,
-    required this.status,
-  }) : assert(timeKey != null || rawTime != null);
-
-  final MedicineCopyKey? timeKey;
-  final String? rawTime;
-  final MedicineCopyKey statusKey;
-  final MedicineDoseStatus status;
+@freezed
+abstract class MedicineDoseSlot with _$MedicineDoseSlot {
+  const factory MedicineDoseSlot({
+    MedicineCopyKey? timeKey,
+    String? rawTime,
+    required MedicineCopyKey statusKey,
+    required MedicineDoseStatus status,
+  }) = _MedicineDoseSlot;
 }
 
 enum MedicineDoseStatus { taken, skipped, pending }
 
-class MedicineAlert {
-  const MedicineAlert({
-    required this.icon,
-    this.titleKey,
-    this.bodyKey,
-    this.detailKey,
-    this.actionKey,
-    required this.color,
-    required this.softColor,
-    this.rawTitle,
-    this.rawBody,
-    this.rawDetail,
-    this.rawAction,
-  });
-
-  final IconData icon;
-  final MedicineCopyKey? titleKey;
-  final MedicineCopyKey? bodyKey;
-  final MedicineCopyKey? detailKey;
-  final MedicineCopyKey? actionKey;
-  final Color color;
-  final Color softColor;
-  final String? rawTitle;
-  final String? rawBody;
-  final String? rawDetail;
-  final String? rawAction;
+@freezed
+abstract class MedicineAlert with _$MedicineAlert {
+  const factory MedicineAlert({
+    required IconData icon,
+    MedicineCopyKey? titleKey,
+    MedicineCopyKey? bodyKey,
+    MedicineCopyKey? detailKey,
+    MedicineCopyKey? actionKey,
+    required Color color,
+    required Color softColor,
+    String? rawTitle,
+    String? rawBody,
+    String? rawDetail,
+    String? rawAction,
+  }) = _MedicineAlert;
 }
 
-class MedicinePromisePoint {
-  const MedicinePromisePoint({required this.copyKey});
-
-  final MedicineCopyKey copyKey;
+@freezed
+abstract class MedicinePromisePoint with _$MedicinePromisePoint {
+  const factory MedicinePromisePoint({required MedicineCopyKey copyKey}) =
+      _MedicinePromisePoint;
 }
 
 enum MedicineCopyKey {

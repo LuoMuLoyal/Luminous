@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'search_entities.freezed.dart';
 
 enum MedicineSearchSource { cn, drugbank }
 
@@ -17,86 +20,63 @@ enum MedicineSearchCategoryType {
 // recognition, and product contract is ready.
 enum MedicineSearchActionType { photo, barcode, keyword, switchSource }
 
-class MedicineSearchDashboard {
-  const MedicineSearchDashboard({
-    required this.query,
-    required this.selectedSource,
-    required this.recentKeywords,
-    required this.quickActions,
-    required this.categories,
-    required this.results,
-    required this.selectedResultId,
-    required this.safetyPreview,
-  });
+@freezed
+abstract class MedicineSearchDashboard with _$MedicineSearchDashboard {
+  const MedicineSearchDashboard._();
 
-  final String query;
-  final MedicineSearchSource selectedSource;
-  final List<String> recentKeywords;
-  final List<MedicineSearchQuickAction> quickActions;
-  final List<MedicineSearchCategory> categories;
-  final List<MedicineSearchResult> results;
-  final String selectedResultId;
-  final MedicineSearchSafetyPreview safetyPreview;
+  const factory MedicineSearchDashboard({
+    required String query,
+    required MedicineSearchSource selectedSource,
+    required List<String> recentKeywords,
+    required List<MedicineSearchQuickAction> quickActions,
+    required List<MedicineSearchCategory> categories,
+    required List<MedicineSearchResult> results,
+    required String selectedResultId,
+    required MedicineSearchSafetyPreview safetyPreview,
+  }) = _MedicineSearchDashboard;
 
   MedicineSearchResult get selectedResult {
     return results.firstWhere((result) => result.id == selectedResultId);
   }
 }
 
-class MedicineSearchQuickAction {
-  const MedicineSearchQuickAction({
-    required this.type,
-    required this.icon,
-    required this.accent,
-  });
-
-  final MedicineSearchActionType type;
-  final IconData icon;
-  final Color accent;
+@freezed
+abstract class MedicineSearchQuickAction with _$MedicineSearchQuickAction {
+  const factory MedicineSearchQuickAction({
+    required MedicineSearchActionType type,
+    required IconData icon,
+    required Color accent,
+  }) = _MedicineSearchQuickAction;
 }
 
-class MedicineSearchCategory {
-  const MedicineSearchCategory({
-    required this.type,
-    required this.icon,
-    required this.accent,
-    required this.softColor,
-  });
-
-  final MedicineSearchCategoryType type;
-  final IconData icon;
-  final Color accent;
-  final Color softColor;
+@freezed
+abstract class MedicineSearchCategory with _$MedicineSearchCategory {
+  const factory MedicineSearchCategory({
+    required MedicineSearchCategoryType type,
+    required IconData icon,
+    required Color accent,
+    required Color softColor,
+  }) = _MedicineSearchCategory;
 }
 
-class MedicineSearchResult {
-  const MedicineSearchResult({
-    required this.id,
-    required this.source,
-    required this.name,
-    required this.subtitle,
-    required this.summary,
-    required this.tags,
-    required this.matchType,
-  });
-
-  final String id;
-  final MedicineSearchSource source;
-  final String name;
-  final String subtitle;
-  final String summary;
-  final List<String> tags;
-  final MedicineSearchMatchType matchType;
+@freezed
+abstract class MedicineSearchResult with _$MedicineSearchResult {
+  const factory MedicineSearchResult({
+    required String id,
+    required MedicineSearchSource source,
+    required String name,
+    required String subtitle,
+    required String summary,
+    required List<String> tags,
+    required MedicineSearchMatchType matchType,
+  }) = _MedicineSearchResult;
 }
 
-class MedicineSearchSafetyPreview {
-  const MedicineSearchSafetyPreview({
-    required this.title,
-    required this.conditions,
-    required this.checklist,
-  });
-
-  final String title;
-  final List<String> conditions;
-  final List<String> checklist;
+@freezed
+abstract class MedicineSearchSafetyPreview with _$MedicineSearchSafetyPreview {
+  const factory MedicineSearchSafetyPreview({
+    required String title,
+    required List<String> conditions,
+    required List<String> checklist,
+  }) = _MedicineSearchSafetyPreview;
 }

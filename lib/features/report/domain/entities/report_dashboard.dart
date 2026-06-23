@@ -1,127 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ReportDashboard {
-  const ReportDashboard({
-    required this.score,
-    required this.metrics,
-    required this.trends,
-    required this.findings,
-    required this.exportActions,
-    required this.patterns,
-    required this.aiSummaryEnabled,
-  });
+part 'report_dashboard.freezed.dart';
 
-  final ReportHealthScore score;
-  final List<ReportMetric> metrics;
-  final List<ReportTrendSeries> trends;
-  final List<ReportFinding> findings;
-  final List<ReportExportAction> exportActions;
-  final List<ReportPatternCard> patterns;
-  final bool aiSummaryEnabled;
+@freezed
+abstract class ReportDashboard with _$ReportDashboard {
+  const factory ReportDashboard({
+    required ReportHealthScore score,
+    required List<ReportMetric> metrics,
+    required List<ReportTrendSeries> trends,
+    required List<ReportFinding> findings,
+    required List<ReportExportAction> exportActions,
+    required List<ReportPatternCard> patterns,
+    required bool aiSummaryEnabled,
+  }) = _ReportDashboard;
 }
 
-class ReportHealthScore {
-  const ReportHealthScore({
-    required this.value,
-    required this.maxValue,
-    required this.status,
-    required this.summary,
-  });
-
-  final int value;
-  final int maxValue;
-  final ReportStatus status;
-  final String summary;
+@freezed
+abstract class ReportHealthScore with _$ReportHealthScore {
+  const factory ReportHealthScore({
+    required int value,
+    required int maxValue,
+    required ReportStatus status,
+    required String summary,
+  }) = _ReportHealthScore;
 }
 
-class ReportMetric {
-  const ReportMetric({
-    required this.kind,
-    required this.icon,
-    required this.color,
-    required this.value,
-    required this.unit,
-    required this.status,
-    required this.delta,
-    required this.direction,
-    required this.sparkline,
-  });
-
-  final ReportDataKind kind;
-  final IconData icon;
-  final Color color;
-  final String value;
-  final String unit;
-  final ReportStatus status;
-  final String delta;
-  final ReportMetricDirection direction;
-  final List<double> sparkline;
+@freezed
+abstract class ReportMetric with _$ReportMetric {
+  const factory ReportMetric({
+    required ReportDataKind kind,
+    required IconData icon,
+    required Color color,
+    required String value,
+    required String unit,
+    required ReportStatus status,
+    required String delta,
+    required ReportMetricDirection direction,
+    required List<double> sparkline,
+  }) = _ReportMetric;
 }
 
 enum ReportMetricDirection { up, down, flat }
 
-class ReportTrendSeries {
-  const ReportTrendSeries({
-    required this.kind,
-    required this.color,
-    required this.unit,
-    required this.values,
-    required this.currentValue,
-  });
-
-  final ReportDataKind kind;
-  final Color color;
-  final String unit;
-  final List<double> values;
-  final String currentValue;
+@freezed
+abstract class ReportTrendSeries with _$ReportTrendSeries {
+  const factory ReportTrendSeries({
+    required ReportDataKind kind,
+    required Color color,
+    required String unit,
+    required List<double> values,
+    required String currentValue,
+  }) = _ReportTrendSeries;
 }
 
-class ReportFinding {
-  const ReportFinding({
-    required this.kind,
-    required this.icon,
-    required this.color,
-    required this.title,
-    required this.body,
-  });
-
-  final ReportInsightKind kind;
-  final IconData icon;
-  final Color color;
-  final String title;
-  final String body;
+@freezed
+abstract class ReportFinding with _$ReportFinding {
+  const factory ReportFinding({
+    required ReportInsightKind kind,
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String body,
+  }) = _ReportFinding;
 }
 
-class ReportExportAction {
-  const ReportExportAction({
-    required this.kind,
-    required this.icon,
-    required this.color,
-  });
-
-  final ReportExportKind kind;
-  final IconData icon;
-  final Color color;
+@freezed
+abstract class ReportExportAction with _$ReportExportAction {
+  const factory ReportExportAction({
+    required ReportExportKind kind,
+    required IconData icon,
+    required Color color,
+  }) = _ReportExportAction;
 }
 
-class ReportPatternCard {
-  const ReportPatternCard({
-    required this.kind,
-    required this.icon,
-    required this.color,
-    required this.title,
-    required this.status,
-    required this.body,
-    required this.sparkline,
-  });
-
-  final ReportInsightKind kind;
-  final IconData icon;
-  final Color color;
-  final String title;
-  final ReportStatus status;
-  final String body;
-  final List<double> sparkline;
+@freezed
+abstract class ReportPatternCard with _$ReportPatternCard {
+  const factory ReportPatternCard({
+    required ReportInsightKind kind,
+    required IconData icon,
+    required Color color,
+    required String title,
+    required ReportStatus status,
+    required String body,
+    required List<double> sparkline,
+  }) = _ReportPatternCard;
 }
 
 enum ReportStatus { good, stable, needsAttention, insufficientData, unknown }

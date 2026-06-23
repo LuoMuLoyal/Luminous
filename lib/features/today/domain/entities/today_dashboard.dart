@@ -1,3 +1,7 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'today_dashboard.freezed.dart';
+
 TodayDayMoment todayDayMomentFromHour(int hour) {
   if (hour < 12) return TodayDayMoment.morning;
   if (hour < 18) return TodayDayMoment.afternoon;
@@ -23,52 +27,40 @@ enum TodayLumiSuggestionType { pollenProtection }
 
 enum TodayPriorityItemType { medication, water }
 
-class TodayDashboard {
-  const TodayDashboard({
-    required this.user,
-    required this.water,
-    required this.medication,
-    required this.vitals,
-    required this.mealSuggestion,
-    required this.environment,
-    required this.lumiSuggestion,
-    required this.priorityItems,
-  });
-
-  final TodayUserSnapshot user;
-  final TodayWaterSummary water;
-  final TodayMedicationSummary medication;
-  final List<TodayVitalSummary> vitals;
-  final TodayMealSuggestion mealSuggestion;
-
-  // Deferred by Product_Vision MVP: keep environment signals because Lucent has
-  // a useful reference-data contract, but do not surface it until a concrete
-  // Today or Mine product job is ready.
-  final TodayEnvironmentSummary environment;
-  final TodayLumiSuggestion lumiSuggestion;
-  final List<TodayPriorityItem> priorityItems;
+@freezed
+abstract class TodayDashboard with _$TodayDashboard {
+  const factory TodayDashboard({
+    required TodayUserSnapshot user,
+    required TodayWaterSummary water,
+    required TodayMedicationSummary medication,
+    required List<TodayVitalSummary> vitals,
+    required TodayMealSuggestion mealSuggestion,
+    // Deferred by Product_Vision MVP: keep environment signals because Lucent has
+    // a useful reference-data contract, but do not surface it until a concrete
+    // Today or Mine product job is ready.
+    required TodayEnvironmentSummary environment,
+    required TodayLumiSuggestion lumiSuggestion,
+    required List<TodayPriorityItem> priorityItems,
+  }) = _TodayDashboard;
 }
 
-class TodayUserSnapshot {
-  const TodayUserSnapshot({
-    required this.moment,
-    required this.hasUnreadNotifications,
-    required this.updatedAtLabel,
-  });
-
-  final TodayDayMoment moment;
-  final bool hasUnreadNotifications;
-  final String updatedAtLabel;
+@freezed
+abstract class TodayUserSnapshot with _$TodayUserSnapshot {
+  const factory TodayUserSnapshot({
+    required TodayDayMoment moment,
+    required bool hasUnreadNotifications,
+    required String updatedAtLabel,
+  }) = _TodayUserSnapshot;
 }
 
-class TodayWaterSummary {
-  const TodayWaterSummary({
-    required this.completedCount,
-    required this.targetCount,
-  }) : assert(targetCount > 0);
+@freezed
+abstract class TodayWaterSummary with _$TodayWaterSummary {
+  const TodayWaterSummary._();
 
-  final int completedCount;
-  final int targetCount;
+  const factory TodayWaterSummary({
+    required int completedCount,
+    required int targetCount,
+  }) = _TodayWaterSummary;
 
   int get remainingCount {
     final remaining = targetCount - completedCount;
@@ -81,73 +73,61 @@ class TodayWaterSummary {
   }
 }
 
-class TodayMedicationSummary {
-  const TodayMedicationSummary({
-    required this.medicineCount,
-    required this.pendingCount,
-    required this.nextDoseTimeLabel,
-    required this.nextMedicine,
-    this.nextMedicineName,
-  });
-
-  final int medicineCount;
-  final int pendingCount;
-  final String nextDoseTimeLabel;
-  final TodayMedicationKind nextMedicine;
-
-  /// When non-null, the view should use this raw name instead of the
-  /// [nextMedicine] enum. Set by the real repository from health-context data.
-  final String? nextMedicineName;
+@freezed
+abstract class TodayMedicationSummary with _$TodayMedicationSummary {
+  const factory TodayMedicationSummary({
+    required int medicineCount,
+    required int pendingCount,
+    required String nextDoseTimeLabel,
+    required TodayMedicationKind nextMedicine,
+    String? nextMedicineName,
+  }) = _TodayMedicationSummary;
 }
 
-class TodayVitalSummary {
-  const TodayVitalSummary({required this.type, required this.valueLabel});
-
-  final TodayVitalType type;
-  final String valueLabel;
+@freezed
+abstract class TodayVitalSummary with _$TodayVitalSummary {
+  const factory TodayVitalSummary({
+    required TodayVitalType type,
+    required String valueLabel,
+  }) = _TodayVitalSummary;
 }
 
-class TodayMealSuggestion {
-  const TodayMealSuggestion({required this.type});
-
-  final TodayMealSuggestionType type;
+@freezed
+abstract class TodayMealSuggestion with _$TodayMealSuggestion {
+  const factory TodayMealSuggestion({required TodayMealSuggestionType type}) =
+      _TodayMealSuggestion;
 }
 
-class TodayEnvironmentSummary {
-  const TodayEnvironmentSummary({required this.signals});
-
-  final List<TodayEnvironmentSignal> signals;
+@freezed
+abstract class TodayEnvironmentSummary with _$TodayEnvironmentSummary {
+  const factory TodayEnvironmentSummary({
+    required List<TodayEnvironmentSignal> signals,
+  }) = _TodayEnvironmentSummary;
 }
 
-class TodayEnvironmentSignal {
-  const TodayEnvironmentSignal({required this.type, required this.level});
-
-  final TodayEnvironmentSignalType type;
-  final TodayEnvironmentLevel level;
+@freezed
+abstract class TodayEnvironmentSignal with _$TodayEnvironmentSignal {
+  const factory TodayEnvironmentSignal({
+    required TodayEnvironmentSignalType type,
+    required TodayEnvironmentLevel level,
+  }) = _TodayEnvironmentSignal;
 }
 
-class TodayLumiSuggestion {
-  const TodayLumiSuggestion({required this.type});
-
-  final TodayLumiSuggestionType type;
+@freezed
+abstract class TodayLumiSuggestion with _$TodayLumiSuggestion {
+  const factory TodayLumiSuggestion({required TodayLumiSuggestionType type}) =
+      _TodayLumiSuggestion;
 }
 
-class TodayPriorityItem {
-  const TodayPriorityItem({
-    required this.id,
-    required this.type,
-    this.count,
-    this.targetCount,
-    this.timeLabel,
-    this.medicineName,
-    this.progress,
-  });
-
-  final String id;
-  final TodayPriorityItemType type;
-  final int? count;
-  final int? targetCount;
-  final String? timeLabel;
-  final String? medicineName;
-  final double? progress;
+@freezed
+abstract class TodayPriorityItem with _$TodayPriorityItem {
+  const factory TodayPriorityItem({
+    required String id,
+    required TodayPriorityItemType type,
+    int? count,
+    int? targetCount,
+    String? timeLabel,
+    String? medicineName,
+    double? progress,
+  }) = _TodayPriorityItem;
 }
