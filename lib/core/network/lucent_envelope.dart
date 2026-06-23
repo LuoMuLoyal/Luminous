@@ -1,3 +1,5 @@
+import 'map_utils.dart';
+
 class LucentEnvelope<T> {
   const LucentEnvelope({
     required this.code,
@@ -26,13 +28,7 @@ class LucentEnvelope<T> {
       code: _parseCode(codeValue),
       message: messageValue?.toString() ?? '',
       data: dataDecoder == null ? rawData as T? : dataDecoder(rawData),
-      meta: metaValue is Map<String, dynamic>
-          ? metaValue
-          : metaValue is Map
-          ? metaValue.map(
-              (key, value) => MapEntry(key.toString(), value),
-            )
-          : null,
+      meta: coerceToStringMap(metaValue),
     );
   }
 
