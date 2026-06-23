@@ -116,51 +116,53 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             prefix: const Icon(Icons.mail_outline),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AnimatedSwitcher(
-            duration: 160.ms,
-            switchInCurve: Curves.easeOutCubic,
-            switchOutCurve: Curves.easeInCubic,
-            transitionBuilder: (child, animation) {
-              final offset = Tween<Offset>(
-                begin: const Offset(0.02, 0),
-                end: Offset.zero,
-              ).animate(animation);
-              return FadeTransition(
-                opacity: animation,
-                child: SlideTransition(position: offset, child: child),
-              );
-            },
-            child: state.mode == AuthLoginMode.password
-                ? AuthTextField(
-                    key: const ValueKey('password-login-field'),
-                    controller: _passwordController,
-                    label: l10n?.authPasswordLabel ?? 'Password',
-                    hint:
-                        l10n?.authPasswordHint ??
-                        'At least 8 characters, ideally with mixed case and numbers',
-                    obscureText: true,
-                    prefix: const Icon(Icons.lock_outline),
-                  )
-                : AuthCodeFieldRow(
-                    key: const ValueKey('auth-login-code-field'),
-                    controller: _codeController,
-                    label: l10n?.authCodeLabel ?? 'Verification code',
-                    buttonLabel: l10n?.authSendCode ?? 'Send code',
-                    isLoading: state.isSendingCode,
-                    onSendCode: () async {
-                      notifier.updateEmail(_emailController.text);
-                      if (_emailController.text.trim().isEmpty) {
-                        await AppToast.show(
-                          context,
-                          l10n?.authEmailRequiredToast ??
-                              'Please enter your email.',
-                        );
-                        return;
-                      }
-                      await notifier.sendCode();
-                    },
-                  ),
-          ),
+          if (state.mode == AuthLoginMode.password)
+            AuthTextField(
+                  key: const ValueKey('password-login-field'),
+                  controller: _passwordController,
+                  label: l10n?.authPasswordLabel ?? 'Password',
+                  hint:
+                      l10n?.authPasswordHint ??
+                      'At least 8 characters, ideally with mixed case and numbers',
+                  obscureText: true,
+                  prefix: const Icon(Icons.lock_outline),
+                )
+                .animate(key: const ValueKey('password-field-anim'))
+                .fadeIn(duration: 160.ms, curve: Curves.easeOutCubic)
+                .slideX(
+                  begin: 0.02,
+                  end: 0,
+                  duration: 160.ms,
+                  curve: Curves.easeOutCubic,
+                )
+          else
+            AuthCodeFieldRow(
+                  key: const ValueKey('auth-login-code-field'),
+                  controller: _codeController,
+                  label: l10n?.authCodeLabel ?? 'Verification code',
+                  buttonLabel: l10n?.authSendCode ?? 'Send code',
+                  isLoading: state.isSendingCode,
+                  onSendCode: () async {
+                    notifier.updateEmail(_emailController.text);
+                    if (_emailController.text.trim().isEmpty) {
+                      await AppToast.show(
+                        context,
+                        l10n?.authEmailRequiredToast ??
+                            'Please enter your email.',
+                      );
+                      return;
+                    }
+                    await notifier.sendCode();
+                  },
+                )
+                .animate(key: const ValueKey('code-field-anim'))
+                .fadeIn(duration: 160.ms, curve: Curves.easeOutCubic)
+                .slideX(
+                  begin: 0.02,
+                  end: 0,
+                  duration: 160.ms,
+                  curve: Curves.easeOutCubic,
+                ),
           if (state.errorMessage != null && state.errorMessage!.isNotEmpty) ...[
             const SizedBox(height: AppSpacingTokens.md),
             AuthStatusMessage(error: state.errorMessage),

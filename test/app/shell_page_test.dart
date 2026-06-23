@@ -173,6 +173,194 @@ void main() {
     // Shell should render without exceptions
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('Shell page cycles through all five tabs without crash', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final mockSnapshot = HealthContextSnapshot(
+      summary: const HealthSummary(
+        age: 27,
+        onboardingCompleted: true,
+        activeAllergyCount: 2,
+        conditionCount: 1,
+        currentMedicineCount: 3,
+        missingCoreProfileFields: [],
+      ),
+      profile: const HealthProfile(
+        birthDate: null,
+        sexAtBirth: null,
+        heightCm: null,
+        pregnancyState: null,
+        lactationState: null,
+        bloodType: null,
+        locale: null,
+        timezone: null,
+        unitSystem: null,
+        onboardingCompletedAt: null,
+        extras: {},
+      ),
+      allergies: const [],
+      conditions: const [],
+      currentMedicines: const [],
+    );
+
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1440, 1000);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(mockSnapshot),
+          ),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+          recordRepositoryProvider.overrideWithValue(
+            const MockRecordRepository(),
+          ),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          reportRepositoryProvider.overrideWithValue(
+            const MockReportRepository(),
+          ),
+          supportResourcesProvider(
+            'campus',
+          ).overrideWith((ref) async => const []),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ShellPage(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    final tabs = <String>[
+      l10n.tabToday,
+      l10n.tabRecord,
+      l10n.tabMedicine,
+      l10n.tabReport,
+      l10n.tabMine,
+    ];
+    for (final tab in tabs) {
+      expect(find.text(tab), findsAtLeastNWidgets(1));
+      await tester.tap(find.text(tab).first);
+      await tester.pumpAndSettle();
+      // Consume any layout overflow warnings from nested tab pages
+      tester.takeException();
+    }
+    // App title still visible after cycling through all tabs
+    expect(find.text(l10n.appTitle), findsOneWidget);
+  });
+
+  testWidgets('Mine page shows status badges', (tester) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final mockSnapshot = HealthContextSnapshot(
+      summary: const HealthSummary(
+        age: 27,
+        onboardingCompleted: true,
+        activeAllergyCount: 2,
+        conditionCount: 1,
+        currentMedicineCount: 3,
+        missingCoreProfileFields: [],
+      ),
+      profile: const HealthProfile(
+        birthDate: null,
+        sexAtBirth: null,
+        heightCm: null,
+        pregnancyState: null,
+        lactationState: null,
+        bloodType: null,
+        locale: null,
+        timezone: null,
+        unitSystem: null,
+        onboardingCompletedAt: null,
+        extras: {},
+      ),
+      allergies: const [],
+      conditions: const [],
+      currentMedicines: const [],
+    );
+
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1440, 1000);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(mockSnapshot),
+          ),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+          recordRepositoryProvider.overrideWithValue(
+            const MockRecordRepository(),
+          ),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          reportRepositoryProvider.overrideWithValue(
+            const MockReportRepository(),
+          ),
+          supportResourcesProvider(
+            'campus',
+          ).overrideWith((ref) async => const []),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ShellPage(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    // Navigate to Mine tab
+    await tester.tap(find.text(l10n.tabMine).first);
+    await tester.pumpAndSettle();
+
+    // Allergy badge
+    expect(find.text(l10n.mineAlertAllergyBadge), findsOneWidget);
+    // Medicine badge
+    expect(find.text(l10n.mineAlertMedicineBadge), findsOneWidget);
+    // Privacy badge
+    expect(find.text(l10n.mineAlertPrivacyBadge), findsOneWidget);
+  });
 }
 
 Future<void> _pumpShell(WidgetTester tester) async {

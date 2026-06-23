@@ -25,8 +25,10 @@ import 'package:luminous/features/settings/presentation/pages/settings_page.dart
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 
-const _transitionIn = Duration(milliseconds: 300);
-const _transitionOut = Duration(milliseconds: 200);
+const _authTransitionIn = Duration(milliseconds: 400);
+const _authTransitionOut = Duration(milliseconds: 280);
+const _crudTransitionIn = Duration(milliseconds: 220);
+const _crudTransitionOut = Duration(milliseconds: 150);
 
 CustomTransitionPage<T> _fadePage<T>({
   required LocalKey key,
@@ -37,8 +39,8 @@ CustomTransitionPage<T> _fadePage<T>({
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
         FadeTransition(opacity: animation, child: child),
-    transitionDuration: _transitionIn,
-    reverseTransitionDuration: _transitionOut,
+    transitionDuration: _authTransitionIn,
+    reverseTransitionDuration: _authTransitionOut,
   );
 }
 
@@ -60,8 +62,8 @@ CustomTransitionPage<T> _slidePage<T>({
             child: child,
           ),
         ),
-    transitionDuration: _transitionIn,
-    reverseTransitionDuration: _transitionOut,
+    transitionDuration: _crudTransitionIn,
+    reverseTransitionDuration: _crudTransitionOut,
   );
 }
 
