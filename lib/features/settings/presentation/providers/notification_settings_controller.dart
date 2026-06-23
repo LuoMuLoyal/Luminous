@@ -1,42 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class NotificationSettingsState {
-  const NotificationSettingsState({
-    this.medicationReminders = true,
-    this.healthAlerts = true,
-    this.weeklySummary = false,
-    this.waterReminders = true,
-    this.sleepReminders = true,
-    this.permissionState = NotificationPermissionState.unsupported,
-  });
+part 'notification_settings_controller.freezed.dart';
 
-  final bool medicationReminders;
-  final bool healthAlerts;
-  final bool weeklySummary;
-  final bool waterReminders;
-  final bool sleepReminders;
-  final NotificationPermissionState permissionState;
-
-  NotificationSettingsState copyWith({
-    bool? medicationReminders,
-    bool? healthAlerts,
-    bool? weeklySummary,
-    bool? waterReminders,
-    bool? sleepReminders,
-    NotificationPermissionState? permissionState,
-  }) {
-    return NotificationSettingsState(
-      medicationReminders: medicationReminders ?? this.medicationReminders,
-      healthAlerts: healthAlerts ?? this.healthAlerts,
-      weeklySummary: weeklySummary ?? this.weeklySummary,
-      waterReminders: waterReminders ?? this.waterReminders,
-      sleepReminders: sleepReminders ?? this.sleepReminders,
-      permissionState: permissionState ?? this.permissionState,
-    );
-  }
+@freezed
+abstract class NotificationSettingsState with _$NotificationSettingsState {
+  const factory NotificationSettingsState({
+    @Default(true) bool medicationReminders,
+    @Default(true) bool healthAlerts,
+    @Default(false) bool weeklySummary,
+    @Default(true) bool waterReminders,
+    @Default(true) bool sleepReminders,
+    @Default(NotificationPermissionState.unsupported)
+    NotificationPermissionState permissionState,
+  }) = _NotificationSettingsState;
 }
 
 class NotificationSettingsController

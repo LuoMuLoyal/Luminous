@@ -1,62 +1,30 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
 
+part 'search_provider.freezed.dart';
+
 /// State for the medicine search page.
-class MedicineSearchState {
-  const MedicineSearchState({
-    required this.query,
-    required this.source,
-    required this.results,
-    required this.isSearching,
-    required this.errorMessage,
-    required this.selectedResultId,
-    required this.detailPreview,
-  });
-
-  final String query;
-  final MedicineSearchSource source;
-  final List<MedicineSearchResult> results;
-  final bool isSearching;
-  final String? errorMessage;
-  final String? selectedResultId;
-  final MedicineSearchSafetyPreview? detailPreview;
-
-  MedicineSearchState copyWith({
-    String? query,
-    MedicineSearchSource? source,
-    List<MedicineSearchResult>? results,
-    bool? isSearching,
+@freezed
+abstract class MedicineSearchState with _$MedicineSearchState {
+  const factory MedicineSearchState({
+    @Default('') String query,
+    @Default(MedicineSearchSource.cn) MedicineSearchSource source,
+    @Default([]) List<MedicineSearchResult> results,
+    @Default(false) bool isSearching,
     String? errorMessage,
     String? selectedResultId,
     MedicineSearchSafetyPreview? detailPreview,
-  }) {
-    return MedicineSearchState(
-      query: query ?? this.query,
-      source: source ?? this.source,
-      results: results ?? this.results,
-      isSearching: isSearching ?? this.isSearching,
-      errorMessage: errorMessage,
-      selectedResultId: selectedResultId,
-      detailPreview: detailPreview,
-    );
-  }
+  }) = _MedicineSearchState;
 }
 
 /// Notifier that manages medicine search state interactively.
 class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
   @override
   MedicineSearchState build() {
-    return const MedicineSearchState(
-      query: '',
-      source: MedicineSearchSource.cn,
-      results: <MedicineSearchResult>[],
-      isSearching: false,
-      errorMessage: null,
-      selectedResultId: null,
-      detailPreview: null,
-    );
+    return const MedicineSearchState();
   }
 
   Future<void> updateQuery(String query) async {
@@ -64,10 +32,7 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
     if (query.trim().isNotEmpty) {
       await _doSearch();
     } else {
-      state = state.copyWith(
-        results: const [],
-        errorMessage: null,
-      );
+      state = state.copyWith(results: const [], errorMessage: null);
     }
   }
 
@@ -100,10 +65,7 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
     try {
       final results = await ref
           .watch(medicineSearchRepositoryProvider)
-          .search(
-            query: state.query.trim(),
-            source: state.source,
-          )
+          .search(query: state.query.trim(), source: state.source)
           .timeout(
             const Duration(seconds: 5),
             onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
@@ -116,8 +78,8 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
         selectedResultId: results.isNotEmpty ? results.first.id : null,
         detailPreview: results.isNotEmpty
             ? await ref
-                .watch(medicineSearchRepositoryProvider)
-                .fetchDetail(results.first.id, results.first.source)
+                  .watch(medicineSearchRepositoryProvider)
+                  .fetchDetail(results.first.id, results.first.source)
             : null,
       );
     } catch (e) {
@@ -132,5 +94,5 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
 
 final medicineSearchNotifierProvider =
     NotifierProvider<MedicineSearchNotifier, MedicineSearchState>(
-  MedicineSearchNotifier.new,
-);
+      MedicineSearchNotifier.new,
+    );

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
@@ -9,9 +10,11 @@ import 'package:luminous/features/record/presentation/providers/record_dashboard
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 
+part 'record_nlp_controller.freezed.dart';
+
 class RecordNlpController extends Notifier<RecordNlpState> {
   @override
-  RecordNlpState build() => const RecordNlpState.idle();
+  RecordNlpState build() => RecordNlpState.idle();
 
   void updateDraft(String value) {
     state = state.copyWith(draft: value, errorMessage: null);
@@ -63,10 +66,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
 
     final text = state.draft.trim();
     if (text.isEmpty) {
-      state = state.copyWith(
-        status: RecordNlpStatus.error,
-        errorMessage: null,
-      );
+      state = state.copyWith(status: RecordNlpStatus.error, errorMessage: null);
       return state;
     }
 
@@ -105,15 +105,11 @@ class RecordNlpController extends Notifier<RecordNlpState> {
   }
 
   Future<RecordNlpSaveOutcome> saveSelected() async {
-    return _saveCandidates(
-      (candidate) => candidate.selected,
-    );
+    return _saveCandidates((candidate) => candidate.selected);
   }
 
   Future<RecordNlpSaveOutcome> retryFailed() async {
-    return _saveCandidates(
-      (candidate) => candidate.hasFailedSave,
-    );
+    return _saveCandidates((candidate) => candidate.hasFailedSave);
   }
 
   Future<RecordNlpSaveOutcome> _saveCandidates(
@@ -179,10 +175,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
         candidates: remainingItems,
         errorMessage: null,
       );
-      return RecordNlpSaveOutcome.saved(
-        savedCount: savedCount,
-        failedCount: 0,
-      );
+      return RecordNlpSaveOutcome.saved(savedCount: savedCount, failedCount: 0);
     }
 
     state = state.copyWith(
@@ -198,7 +191,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
   }
 
   void reset() {
-    state = const RecordNlpState.idle();
+    state = RecordNlpState.idle();
   }
 }
 
@@ -209,27 +202,19 @@ final recordNlpControllerProvider =
 
 enum RecordNlpStatus { idle, generating, reviewing, saving, saved, error }
 
-class RecordNlpState {
-  const RecordNlpState({
-    required this.status,
-    required this.draft,
-    required this.candidates,
-    this.resultMeta,
-    this.errorMessage,
-  });
+@freezed
+abstract class RecordNlpState with _$RecordNlpState {
+  const RecordNlpState._();
 
-  const RecordNlpState.idle()
-    : this(
-        status: RecordNlpStatus.idle,
-        draft: '',
-        candidates: const <RecordNlpCandidateDraft>[],
-      );
+  const factory RecordNlpState({
+    @Default(RecordNlpStatus.idle) RecordNlpStatus status,
+    @Default('') String draft,
+    @Default([]) List<RecordNlpCandidateDraft> candidates,
+    RecordNlpResultMeta? resultMeta,
+    String? errorMessage,
+  }) = _RecordNlpState;
 
-  final RecordNlpStatus status;
-  final String draft;
-  final List<RecordNlpCandidateDraft> candidates;
-  final RecordNlpResultMeta? resultMeta;
-  final String? errorMessage;
+  factory RecordNlpState.idle() => const RecordNlpState();
 
   bool get isGenerating => status == RecordNlpStatus.generating;
   bool get isSaving => status == RecordNlpStatus.saving;
@@ -243,26 +228,6 @@ class RecordNlpState {
   int get selectedCount => selectedCandidates.length;
   int get failedCount => failedCandidates.length;
   bool get hasFailedCandidates => failedCount > 0;
-
-  RecordNlpState copyWith({
-    RecordNlpStatus? status,
-    String? draft,
-    List<RecordNlpCandidateDraft>? candidates,
-    Object? resultMeta = _recordNlpNoChange,
-    Object? errorMessage = _recordNlpNoChange,
-  }) {
-    return RecordNlpState(
-      status: status ?? this.status,
-      draft: draft ?? this.draft,
-      candidates: candidates ?? this.candidates,
-      resultMeta: identical(resultMeta, _recordNlpNoChange)
-          ? this.resultMeta
-          : resultMeta as RecordNlpResultMeta?,
-      errorMessage: identical(errorMessage, _recordNlpNoChange)
-          ? this.errorMessage
-          : errorMessage as String?,
-    );
-  }
 }
 
 class RecordNlpResultMeta {
@@ -285,19 +250,22 @@ class RecordNlpResultMeta {
   final String confirmationHint;
 }
 
-class RecordNlpCandidateDraft {
-  const RecordNlpCandidateDraft({
-    required this.kind,
-    required this.occurredAt,
-    this.title,
-    this.value,
-    this.unit,
-    this.note,
-    this.payload,
-    required this.rationale,
-    required this.selected,
-    this.lastErrorMessage,
-  });
+@freezed
+abstract class RecordNlpCandidateDraft with _$RecordNlpCandidateDraft {
+  const RecordNlpCandidateDraft._();
+
+  const factory RecordNlpCandidateDraft({
+    required DailyRecordKind kind,
+    required String occurredAt,
+    String? title,
+    String? value,
+    String? unit,
+    String? note,
+    Map<String, dynamic>? payload,
+    required String rationale,
+    @Default(true) bool selected,
+    String? lastErrorMessage,
+  }) = _RecordNlpCandidateDraft;
 
   factory RecordNlpCandidateDraft.fromCandidate(DailyRecordCandidateItem item) {
     return RecordNlpCandidateDraft(
@@ -307,62 +275,15 @@ class RecordNlpCandidateDraft {
       value: item.value,
       unit: item.unit,
       note: item.note,
-      payload: item.payload == null ? null : Map<String, dynamic>.from(item.payload!),
+      payload: item.payload == null
+          ? null
+          : Map<String, dynamic>.from(item.payload!),
       rationale: item.rationale,
       selected: true,
     );
   }
 
-  final DailyRecordKind kind;
-  final String occurredAt;
-  final String? title;
-  final String? value;
-  final String? unit;
-  final String? note;
-  final Map<String, dynamic>? payload;
-  final String rationale;
-  final bool selected;
-  final String? lastErrorMessage;
-
   bool get hasFailedSave => lastErrorMessage?.trim().isNotEmpty ?? false;
-
-  RecordNlpCandidateDraft copyWith({
-    DailyRecordKind? kind,
-    String? occurredAt,
-    Object? title = _recordNlpNoChange,
-    Object? value = _recordNlpNoChange,
-    Object? unit = _recordNlpNoChange,
-    Object? note = _recordNlpNoChange,
-    Object? payload = _recordNlpNoChange,
-    String? rationale,
-    bool? selected,
-    Object? lastErrorMessage = _recordNlpNoChange,
-  }) {
-    return RecordNlpCandidateDraft(
-      kind: kind ?? this.kind,
-      occurredAt: occurredAt ?? this.occurredAt,
-      title: identical(title, _recordNlpNoChange)
-          ? this.title
-          : title as String?,
-      value: identical(value, _recordNlpNoChange)
-          ? this.value
-          : value as String?,
-      unit: identical(unit, _recordNlpNoChange)
-          ? this.unit
-          : unit as String?,
-      note: identical(note, _recordNlpNoChange)
-          ? this.note
-          : note as String?,
-      payload: identical(payload, _recordNlpNoChange)
-          ? this.payload
-          : payload as Map<String, dynamic>?,
-      rationale: rationale ?? this.rationale,
-      selected: selected ?? this.selected,
-      lastErrorMessage: identical(lastErrorMessage, _recordNlpNoChange)
-          ? this.lastErrorMessage
-          : lastErrorMessage as String?,
-    );
-  }
 
   DailyRecordCreateInput toCreateInput() {
     return DailyRecordCreateInput(
@@ -447,5 +368,3 @@ class RecordNlpSaveOutcome {
 }
 
 enum RecordNlpSaveOutcomeKind { saved, partial, empty, authRequired, error }
-
-const _recordNlpNoChange = Object();
