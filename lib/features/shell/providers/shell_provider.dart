@@ -1,13 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ShellState {
-  const ShellState({this.currentIndex = 0});
+part 'shell_provider.freezed.dart';
 
-  final int currentIndex;
-
-  ShellState copyWith({int? currentIndex}) {
-    return ShellState(currentIndex: currentIndex ?? this.currentIndex);
-  }
+@freezed
+abstract class ShellState with _$ShellState {
+  const factory ShellState({@Default(0) int currentIndex}) = _ShellState;
 }
 
 class ShellNotifier extends Notifier<ShellState> {

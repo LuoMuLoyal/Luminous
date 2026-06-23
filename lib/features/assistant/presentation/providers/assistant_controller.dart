@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lucent_openapi/lucent_openapi.dart'
     show UpdateAssistantContextSettingsDto, UpdateUserSettingsDto;
 import 'package:luminous/core/network/lucent_api_exception.dart';
@@ -13,107 +14,35 @@ import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 
+part 'assistant_controller.freezed.dart';
+
 enum AssistantSendErrorType { server, streamInterrupted, emptyResult, unknown }
 
-class AssistantState {
-  const AssistantState({
-    this.isLoadingCapabilities = false,
-    this.isLoadingConversation = false,
-    this.isLoadingRecentConversations = false,
-    this.isOpeningConversation = false,
-    this.isSending = false,
-    this.capabilities,
-    this.capabilityError,
-    this.conversationError,
-    this.recentConversationError,
-    this.sendError,
-    this.sendErrorType,
-    this.lastFailedInput,
-    this.conversationId,
-    this.recentConversations = const <AssistantConversationSummary>[],
-    this.messages = const <AssistantMessage>[],
-    this.streamingDraft = '',
-  });
+@freezed
+abstract class AssistantState with _$AssistantState {
+  const AssistantState._();
 
-  final bool isLoadingCapabilities;
-  final bool isLoadingConversation;
-  final bool isLoadingRecentConversations;
-  final bool isOpeningConversation;
-  final bool isSending;
-  final AssistantCapabilities? capabilities;
-  final String? capabilityError;
-  final String? conversationError;
-  final String? recentConversationError;
-  final String? sendError;
-  final AssistantSendErrorType? sendErrorType;
-  final String? lastFailedInput;
-  final String? conversationId;
-  final List<AssistantConversationSummary> recentConversations;
-  final List<AssistantMessage> messages;
-  final String streamingDraft;
+  const factory AssistantState({
+    @Default(false) bool isLoadingCapabilities,
+    @Default(false) bool isLoadingConversation,
+    @Default(false) bool isLoadingRecentConversations,
+    @Default(false) bool isOpeningConversation,
+    @Default(false) bool isSending,
+    AssistantCapabilities? capabilities,
+    String? capabilityError,
+    String? conversationError,
+    String? recentConversationError,
+    String? sendError,
+    AssistantSendErrorType? sendErrorType,
+    String? lastFailedInput,
+    String? conversationId,
+    @Default([]) List<AssistantConversationSummary> recentConversations,
+    @Default([]) List<AssistantMessage> messages,
+    @Default('') String streamingDraft,
+  }) = _AssistantState;
 
   bool get hasConversation => messages.isNotEmpty || streamingDraft.isNotEmpty;
-
-  AssistantState copyWith({
-    bool? isLoadingCapabilities,
-    bool? isLoadingConversation,
-    bool? isLoadingRecentConversations,
-    bool? isOpeningConversation,
-    bool? isSending,
-    Object? capabilities = _sentinel,
-    Object? capabilityError = _sentinel,
-    Object? conversationError = _sentinel,
-    Object? recentConversationError = _sentinel,
-    Object? sendError = _sentinel,
-    Object? sendErrorType = _sentinel,
-    Object? lastFailedInput = _sentinel,
-    Object? conversationId = _sentinel,
-    List<AssistantConversationSummary>? recentConversations,
-    List<AssistantMessage>? messages,
-    String? streamingDraft,
-  }) {
-    return AssistantState(
-      isLoadingCapabilities:
-          isLoadingCapabilities ?? this.isLoadingCapabilities,
-      isLoadingConversation:
-          isLoadingConversation ?? this.isLoadingConversation,
-      isLoadingRecentConversations:
-          isLoadingRecentConversations ?? this.isLoadingRecentConversations,
-      isOpeningConversation:
-          isOpeningConversation ?? this.isOpeningConversation,
-      isSending: isSending ?? this.isSending,
-      capabilities: identical(capabilities, _sentinel)
-          ? this.capabilities
-          : capabilities as AssistantCapabilities?,
-      capabilityError: identical(capabilityError, _sentinel)
-          ? this.capabilityError
-          : capabilityError as String?,
-      conversationError: identical(conversationError, _sentinel)
-          ? this.conversationError
-          : conversationError as String?,
-      recentConversationError: identical(recentConversationError, _sentinel)
-          ? this.recentConversationError
-          : recentConversationError as String?,
-      sendError: identical(sendError, _sentinel)
-          ? this.sendError
-          : sendError as String?,
-      sendErrorType: identical(sendErrorType, _sentinel)
-          ? this.sendErrorType
-          : sendErrorType as AssistantSendErrorType?,
-      lastFailedInput: identical(lastFailedInput, _sentinel)
-          ? this.lastFailedInput
-          : lastFailedInput as String?,
-      conversationId: identical(conversationId, _sentinel)
-          ? this.conversationId
-          : conversationId as String?,
-      recentConversations: recentConversations ?? this.recentConversations,
-      messages: messages ?? this.messages,
-      streamingDraft: streamingDraft ?? this.streamingDraft,
-    );
-  }
 }
-
-const Object _sentinel = Object();
 
 class AssistantController extends Notifier<AssistantState> {
   @override
@@ -327,7 +256,9 @@ class AssistantController extends Notifier<AssistantState> {
 
     try {
       await for (final event
-          in ref.read(assistantRepositoryProvider).streamMessages(nextMessages)) {
+          in ref
+              .read(assistantRepositoryProvider)
+              .streamMessages(nextMessages)) {
         switch (event) {
           case AssistantGenerationChunkEvent():
             state = state.copyWith(
@@ -539,8 +470,10 @@ class AssistantController extends Notifier<AssistantState> {
                     : UpdateAssistantContextSettingsDto(
                         healthProfile:
                             payload.draft.assistantContext!.healthProfile,
-                        dailyRecords: payload.draft.assistantContext!.dailyRecords,
-                        sleepRecords: payload.draft.assistantContext!.sleepRecords,
+                        dailyRecords:
+                            payload.draft.assistantContext!.dailyRecords,
+                        sleepRecords:
+                            payload.draft.assistantContext!.sleepRecords,
                         currentMedicines:
                             payload.draft.assistantContext!.currentMedicines,
                       ),
@@ -615,4 +548,6 @@ class AssistantController extends Notifier<AssistantState> {
 }
 
 final assistantControllerProvider =
-    NotifierProvider<AssistantController, AssistantState>(AssistantController.new);
+    NotifierProvider<AssistantController, AssistantState>(
+      AssistantController.new,
+    );
