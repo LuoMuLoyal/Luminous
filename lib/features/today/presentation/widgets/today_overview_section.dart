@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_text_action.dart';
+import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -31,7 +33,7 @@ class TodayOverviewSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TodaySectionHeader(
+          AppSectionHeader(
             title: l10n.todayHealthSummaryCardTitle,
             leading: const Icon(
               Icons.check_circle_outline_rounded,
@@ -45,7 +47,7 @@ class TodayOverviewSection extends StatelessWidget {
                 width: 96,
                 radius: AppRadiusTokens.pill,
               ),
-              child: TodayTextAction(
+              child: AppTextAction(
                 label: l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
                 icon: Icons.refresh_rounded,
                 onTap: () => AppToast.show(
@@ -62,9 +64,7 @@ class TodayOverviewSection extends StatelessWidget {
               for (var index = 0; index < items.length; index += 1) ...[
                 Expanded(child: _OverviewMetric(item: items[index])),
                 if (index < items.length - 1)
-                  const _VerticalMetricDivider(
-                    height: AppSpacingTokens.x3l,
-                  ),
+                  const _VerticalMetricDivider(height: AppSpacingTokens.x3l),
               ],
             ],
           ),

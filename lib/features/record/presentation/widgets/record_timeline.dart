@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:luminous/core/widgets/app_text_action.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
+import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_image_placeholder.dart';
@@ -30,11 +33,9 @@ class RecordTimelinePanel extends StatelessWidget {
     return RecordSectionSurface(
       key: const Key('record-timeline'),
       title: l10n.recordTimelineSectionTitle,
-      trailing: RecordTextAction(
+      trailing: AppTextAction(
         label: l10n.recordAllTypesAction,
         icon: Icons.keyboard_arrow_down_rounded,
-        typography: typography,
-        surface: surface,
         onTap: () => showRecordToast(context, l10n.recordAllTypesAction),
       ),
       typography: typography,
@@ -189,7 +190,7 @@ class _TimelineCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RecordIconBadge(
+                AppIconBadge(
                   icon: entry.icon,
                   color: entry.accent,
                   backgroundColor: entry.softColor,
@@ -214,7 +215,7 @@ class _TimelineCard extends StatelessWidget {
                           ),
                           if (entry.badgeKey != null) ...[
                             const SizedBox(width: AppSpacingTokens.sm),
-                            RecordPill(
+                            AppStatusPill(
                               label: recordCopy(l10n, entry.badgeKey!),
                               color: entry.accent,
                               typography: typography,

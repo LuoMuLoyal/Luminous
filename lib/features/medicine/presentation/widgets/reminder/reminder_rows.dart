@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
+import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReminderInfoRow extends StatelessWidget {
@@ -263,7 +264,7 @@ class UnavailableMethodRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacingTokens.sm),
-          MedicineStatusPill(label: status, color: surface.mute),
+          AppStatusPill(label: status, color: surface.mute),
         ],
       ),
     );
@@ -363,7 +364,7 @@ class SelectedMedicineRow extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       child: Row(
         children: [
-          MedicineIconBadge(
+          AppIconBadge(
             icon: Icons.medication_rounded,
             color: surface.teal,
             shape: BoxShape.circle,

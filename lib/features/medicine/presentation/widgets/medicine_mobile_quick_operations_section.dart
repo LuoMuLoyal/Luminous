@@ -52,7 +52,7 @@ class _QuickOperationSection extends StatelessWidget {
       key: const Key('medicine-quick-actions'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MedicineSectionHeader(title: l10n.medicineQuickOperationTitle),
+        AppSectionHeader(title: l10n.medicineQuickOperationTitle),
         const SizedBox(height: AppSpacingTokens.sm),
         MedicinePanel(
           padding: EdgeInsets.zero,
@@ -107,7 +107,7 @@ class _QuickOperationRow extends StatelessWidget {
           ),
           child: Row(
             children: [
-              MedicineIconBadge(
+              AppIconBadge(
                 icon: operation.icon,
                 color: operation.color,
                 backgroundColor: operation.color.withValues(alpha: 0.08),

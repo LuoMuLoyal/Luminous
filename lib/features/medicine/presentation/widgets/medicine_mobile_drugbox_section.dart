@@ -36,10 +36,10 @@ class _DrugBoxSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MedicineSectionHeader(
+          AppSectionHeader(
             title: l10n.medicineDrugboxTitle,
             compact: true,
-            leading: MedicineIconBadge(
+            leading: AppIconBadge(
               icon: Icons.medical_services_rounded,
               color: surface.teal,
               backgroundColor: Color.alphaBlend(
@@ -49,7 +49,7 @@ class _DrugBoxSection extends StatelessWidget {
               size: AppSpacingTokens.x2l,
               iconSize: AppSpacingTokens.lg,
             ),
-            trailing: MedicineTextAction(
+            trailing: AppTextAction(
               label: l10n.medicineManageMedicinesAction,
               onTap: () =>
                   AppToast.show(context, l10n.medicineManageMedicinesAction),
@@ -381,7 +381,7 @@ class _DrugBoxEmpty extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
       child: Row(
         children: [
-          MedicineIconBadge(
+          AppIconBadge(
             icon: Icons.medication_outlined,
             color: surface.teal,
             backgroundColor: Color.alphaBlend(
@@ -498,7 +498,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                             width: 54,
                             radius: AppRadiusTokens.pill,
                           ),
-                          child: MedicineStatusPill(
+                          child: AppStatusPill(
                             label: state,
                             color: item.stateColor,
                           ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/widgets/app_section_header.dart';
+import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
@@ -33,7 +35,7 @@ class ReportExportSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReportSectionHeader(title: l10n.reportExportSectionTitle),
+        AppSectionHeader(title: l10n.reportExportSectionTitle),
         const SizedBox(height: AppSpacingTokens.sm),
         GridView.builder(
           shrinkWrap: true,
@@ -84,11 +86,7 @@ class _ExportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = reportExportTitle(l10n, action.kind);
-    final subtitle = reportExportCardSubtitle(
-      l10n,
-      action.kind,
-      latestRequest,
-    );
+    final subtitle = reportExportCardSubtitle(l10n, action.kind, latestRequest);
     final enabled = onTap != null;
     final showProgress = requestInFlight.matches(
       reportExportInputForKind(action.kind),
@@ -106,7 +104,7 @@ class _ExportCard extends StatelessWidget {
         child: ReportPanel(
           child: Row(
             children: [
-              ReportIconBadge(icon: action.icon, color: action.color),
+              AppIconBadge(icon: action.icon, color: action.color),
               const SizedBox(width: AppSpacingTokens.md),
               Expanded(
                 child: Column(

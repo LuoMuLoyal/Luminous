@@ -30,7 +30,7 @@ class _MedicineRecordsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MedicineSectionHeader(
+          AppSectionHeader(
             title: l10n.medicineRecordsTitle,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -69,7 +69,7 @@ class _MedicineRecordsSection extends StatelessWidget {
                     vertical: AppSpacingTokens.md,
                   ),
                   child: Center(
-                    child: MedicineTextAction(
+                    child: AppTextAction(
                       label: l10n.medicineViewMoreRecordsAction,
                       color: surface.link,
                       onTap: () =>
@@ -142,7 +142,7 @@ class _MedicineRecordRow extends StatelessWidget {
             width: AppSpacingTokens.lg,
             child: Column(
               children: [
-                MedicineIconBadge(
+                AppIconBadge(
                   icon: row.statusIcon,
                   color: row.statusColor,
                   backgroundColor: row.statusColor.withValues(alpha: 0.1),
@@ -199,7 +199,7 @@ class _MedicineRecordRow extends StatelessWidget {
                         width: 44,
                         radius: AppRadiusTokens.pill,
                       ),
-                      child: MedicineStatusPill(
+                      child: AppStatusPill(
                         label: row.statusLabel,
                         color: row.statusColor,
                       ),

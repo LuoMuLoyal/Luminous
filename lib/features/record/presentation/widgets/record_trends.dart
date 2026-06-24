@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_text_action.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
@@ -27,10 +29,9 @@ class RecordTrendsPanel extends StatelessWidget {
     return RecordSectionSurface(
       key: const Key('record-trends'),
       title: l10n.recordTrendsSectionTitle,
-      trailing: RecordTextAction(
+      trailing: AppTextAction(
         label: l10n.recordEditAction,
-        typography: typography,
-        surface: surface,
+        icon: null,
         onTap: () => showRecordToast(context, l10n.recordEditAction),
       ),
       typography: typography,
@@ -97,7 +98,7 @@ class _TrendCard extends StatelessWidget {
                         style: typography.bodySmStrong,
                       ),
                     ),
-                    RecordPill(
+                    AppStatusPill(
                       label: recordCopy(l10n, trend.rangeKey),
                       color: trend.color,
                       typography: typography,

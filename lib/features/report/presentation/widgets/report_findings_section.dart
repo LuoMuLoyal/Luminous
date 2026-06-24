@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_header.dart';
+import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -25,7 +27,7 @@ class ReportFindingsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReportSectionHeader(title: l10n.reportFindingsSectionTitle),
+        AppSectionHeader(title: l10n.reportFindingsSectionTitle),
         const SizedBox(height: AppSpacingTokens.sm),
         Divider(height: 1, thickness: 1, color: surface.hairline),
         const SizedBox(height: AppSpacingTokens.md),
@@ -84,7 +86,7 @@ class _FindingCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    ReportIconBadge(
+                    AppIconBadge(
                       icon: finding.icon,
                       color: finding.color,
                       size: 42,
@@ -92,7 +94,7 @@ class _FindingCard extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     const Spacer(),
-                    ReportIconBadge(
+                    AppIconBadge(
                       icon: Icons.chevron_right_rounded,
                       color: surface.body,
                       size: 28,
