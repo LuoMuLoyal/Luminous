@@ -3,7 +3,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_risk_tag_pill.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskFindingTile extends StatelessWidget {
@@ -76,13 +76,20 @@ class MedicineRiskFindingTile extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              MedicineRiskTagPill(
+              AppStatusPill(
                 label: medicineRiskSeverityLabel(l10n, finding.severity),
                 color: color,
+                radius: AppRadiusTokens.pill,
+                backgroundAlpha: 0.08,
               ),
               if (contextLabel.isNotEmpty) ...[
                 const SizedBox(height: AppSpacingTokens.xxs),
-                MedicineRiskTagPill(label: contextLabel, color: surface.mute),
+                AppStatusPill(
+                  label: contextLabel,
+                  color: surface.mute,
+                  radius: AppRadiusTokens.pill,
+                  backgroundAlpha: 0.08,
+                ),
               ],
             ],
           ),

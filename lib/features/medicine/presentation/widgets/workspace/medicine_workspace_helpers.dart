@@ -48,42 +48,6 @@ class SectionTextAction extends StatelessWidget {
   }
 }
 
-class MedicineStatusBadge extends StatelessWidget {
-  const MedicineStatusBadge({
-    super.key,
-    required this.label,
-    required this.color,
-    required this.typography,
-  });
-
-  final String label;
-  final Color color;
-  final AppTypographyScale typography;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.sm,
-          vertical: AppSpacingTokens.xxs,
-        ),
-        child: Text(
-          label,
-          style: typography.bodySmStrong.copyWith(
-            color: color,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 String quickActionResult(MedicineCopyKey key, AppLocalizations l10n) {
   return switch (key) {
     MedicineCopyKey.quickActionCameraTitle =>

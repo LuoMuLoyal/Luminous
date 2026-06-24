@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
+import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -154,7 +156,7 @@ class _MetricCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  ReportIconBadge(
+                  AppIconBadge(
                     icon: metric.icon,
                     color: metric.color,
                     size: 34,
@@ -213,7 +215,7 @@ class _MetricCard extends StatelessWidget {
                       width: 54,
                       radius: AppRadiusTokens.sm,
                     ),
-                    child: ReportPill(
+                    child: AppStatusPill(
                       label: reportStatusLabel(l10n, metric.status),
                       color: reportStatusColor(metric.status),
                       backgroundAlpha: 0.1,

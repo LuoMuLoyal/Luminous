@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
@@ -43,9 +44,7 @@ class MedicineTodayPlanSection extends StatelessWidget {
       surface: surface,
       child: Column(
         children: [
-          for (var index = 0;
-              index < workspace.plan.items.length;
-              index += 1)
+          for (var index = 0; index < workspace.plan.items.length; index += 1)
             Padding(
               padding: EdgeInsets.only(
                 bottom: index == workspace.plan.items.length - 1
@@ -135,10 +134,12 @@ class _MedicationPlanTile extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: AppSpacingTokens.sm),
-                    MedicineStatusBadge(
+                    AppStatusPill(
                       label: stateText,
                       color: item.stateColor,
                       typography: typography,
+                      radius: AppRadiusTokens.pill,
+                      large: true,
                     ),
                   ],
                 ),
@@ -152,14 +153,13 @@ class _MedicationPlanTile extends StatelessWidget {
                   child: Column(
                     children: [
                       if (item.slots.isEmpty)
-                        _DosePlaceholderRow(
-                          typography: typography,
-                          l10n: l10n,
-                        )
+                        _DosePlaceholderRow(typography: typography, l10n: l10n)
                       else
-                        for (var index = 0;
-                            index < item.slots.length;
-                            index += 1)
+                        for (
+                          var index = 0;
+                          index < item.slots.length;
+                          index += 1
+                        )
                           _DoseSlotRow(
                             slot: item.slots[index],
                             typography: typography,
@@ -309,10 +309,7 @@ class _DoseSlotRow extends StatelessWidget {
 }
 
 class _DosePlaceholderRow extends StatelessWidget {
-  const _DosePlaceholderRow({
-    required this.typography,
-    required this.l10n,
-  });
+  const _DosePlaceholderRow({required this.typography, required this.l10n});
 
   final AppTypographyScale typography;
   final AppLocalizations l10n;

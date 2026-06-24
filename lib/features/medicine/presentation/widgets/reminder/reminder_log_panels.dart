@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
@@ -201,7 +202,7 @@ class _DeliveryLogRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacingTokens.sm),
-          MedicineStatusPill(
+          AppStatusPill(
             label: deliveryStatusLabel(l10n, log.status),
             color: color,
           ),
@@ -270,7 +271,7 @@ class _TodayLogRow extends StatelessWidget {
               ),
             ),
           ),
-          MedicineStatusPill(label: label, color: color),
+          AppStatusPill(label: label, color: color),
         ],
       ),
     );

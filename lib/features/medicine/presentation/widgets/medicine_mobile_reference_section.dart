@@ -102,7 +102,7 @@ class _SafetyTipsSection extends StatelessWidget {
       key: const Key('medicine-safety-tips'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MedicineSectionHeader(
+        AppSectionHeader(
           title: l10n.medicineSafetyTipsTitle,
           leading: Icon(
             Icons.lightbulb_outline_rounded,
@@ -110,7 +110,7 @@ class _SafetyTipsSection extends StatelessWidget {
             size: AppSpacingTokens.lg,
           ),
           compact: true,
-          trailing: MedicineTextAction(
+          trailing: AppTextAction(
             label: l10n.medicineSafetyTipsRefreshAction,
             icon: Icons.refresh_rounded,
             color: surface.link,
@@ -168,7 +168,7 @@ class _SafetyTipRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          MedicineIconBadge(
+          AppIconBadge(
             icon: tip.icon,
             color: tip.color,
             backgroundColor: tip.color.withValues(alpha: 0.08),

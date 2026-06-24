@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_text_action.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
+import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -27,7 +30,7 @@ class ReportTrendSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReportSectionHeader(
+        AppSectionHeader(
           title: l10n.reportTrendSectionTitle,
           trailing: ReportPeriodPill(label: l10n.reportRangeLast7Days),
         ),
@@ -57,11 +60,11 @@ class ReportTrendSection extends StatelessWidget {
         const SizedBox(height: AppSpacingTokens.sm),
         Align(
           alignment: Alignment.centerRight,
-          child: ReportTextAction(
+          child: AppTextAction(
             label: l10n.reportViewDetailsAction,
+            flexible: true,
             color: ReportPalette.blue,
-            onTap: () =>
-                showReportToast(context, l10n.reportViewDetailsAction),
+            onTap: () => showReportToast(context, l10n.reportViewDetailsAction),
           ),
         ),
       ],
@@ -122,7 +125,7 @@ class _TrendPlaceholder extends StatelessWidget {
                                 width: 46,
                                 radius: AppRadiusTokens.sm,
                               ),
-                              child: ReportPill(
+                              child: AppStatusPill(
                                 label: series.currentValue,
                                 color: series.color,
                                 backgroundAlpha: 0.92,

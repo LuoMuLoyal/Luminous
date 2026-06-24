@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
+import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -163,7 +165,7 @@ class _TimelineRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacingTokens.sm),
-              RecordIconBadge(
+              AppIconBadge(
                 icon: entry.icon,
                 color: entry.accent,
                 backgroundColor: entry.softColor,
@@ -205,7 +207,7 @@ class _TimelineRow extends StatelessWidget {
                     width: 44,
                     radius: AppRadiusTokens.sm,
                   ),
-                  child: RecordPill(
+                  child: AppStatusPill(
                     label: recordCopy(l10n, entry.badgeKey!),
                     color: entry.accent,
                     typography: typography,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_text_action.dart';
+import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 
 class TodaySection extends StatelessWidget {
   const TodaySection({
@@ -21,11 +22,11 @@ class TodaySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TodaySectionHeader(
+        AppSectionHeader(
           title: title,
           trailing: actionLabel == null
               ? null
-              : TodayTextAction(label: actionLabel!, onTap: onAction ?? () {}),
+              : AppTextAction(label: actionLabel!, onTap: onAction ?? () {}),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
         child,

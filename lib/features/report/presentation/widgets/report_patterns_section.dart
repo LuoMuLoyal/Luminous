@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_header.dart';
+import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -26,7 +28,7 @@ class ReportPatternsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReportSectionHeader(title: l10n.reportPatternSectionTitle),
+        AppSectionHeader(title: l10n.reportPatternSectionTitle),
         const SizedBox(height: AppSpacingTokens.sm),
         GridView.builder(
           shrinkWrap: true,
@@ -78,7 +80,7 @@ class _PatternCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  ReportIconBadge(
+                  AppIconBadge(
                     icon: pattern.icon,
                     color: pattern.color,
                     size: 36,

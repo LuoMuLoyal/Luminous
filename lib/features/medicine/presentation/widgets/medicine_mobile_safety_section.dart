@@ -21,9 +21,9 @@ class _SafetyEngineSection extends StatelessWidget {
       key: const Key('medicine-safety-panel'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MedicineSectionHeader(
+        AppSectionHeader(
           title: l10n.medicineSafetyEngineTitle,
-          trailing: MedicineTextAction(
+          trailing: AppTextAction(
             label: l10n.medicineSafetyAllRecordsAction,
             onTap: () => context.push('/medicine/risk-check'),
           ),
@@ -86,7 +86,7 @@ class _SafetyAlertRow extends StatelessWidget {
           ),
           child: Row(
             children: [
-              MedicineIconBadge(
+              AppIconBadge(
                 icon: alert.icon,
                 color: alert.color,
                 backgroundColor: Color.alphaBlend(
@@ -133,7 +133,7 @@ class _SafetyAlertRow extends StatelessWidget {
                   width: 54,
                   radius: AppRadiusTokens.pill,
                 ),
-                child: MedicineStatusPill(
+                child: AppStatusPill(
                   label: medicineAlertAction(l10n, alert),
                   color: alert.color,
                 ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_text_action.dart';
+import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -88,7 +90,7 @@ class ReportScoreHero extends StatelessWidget {
                         width: 64,
                         radius: AppRadiusTokens.sm,
                       ),
-                      child: ReportPill(
+                      child: AppStatusPill(
                         label: reportStatusLabel(l10n, score.status),
                         color: reportStatusColor(score.status),
                       ),
@@ -102,8 +104,9 @@ class ReportScoreHero extends StatelessWidget {
                     widthFactor: 0.86,
                     radius: AppRadiusTokens.sm,
                   ),
-                  child: ReportTextAction(
+                  child: AppTextAction(
                     label: score.summary,
+                    flexible: true,
                     onTap: () => showReportToast(context, score.summary),
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
@@ -113,10 +114,9 @@ class RecordFilterPanel extends StatelessWidget {
     return RecordSectionSurface(
       key: const Key('record-filter-panel'),
       title: l10n.recordFilterSectionTitle,
-      trailing: RecordTextAction(
+      trailing: AppTextAction(
         label: l10n.recordFilterSelectAll,
-        typography: typography,
-        surface: surface,
+        icon: null,
         onTap: () => showRecordToast(context, l10n.recordFilterSelectAll),
       ),
       typography: typography,

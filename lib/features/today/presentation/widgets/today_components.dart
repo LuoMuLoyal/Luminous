@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 
@@ -65,103 +64,6 @@ class TodayPanel extends StatelessWidget {
   }
 }
 
-class TodaySectionHeader extends StatelessWidget {
-  const TodaySectionHeader({
-    super.key,
-    required this.title,
-    this.leading,
-    this.trailing,
-    this.compact = false,
-  });
-
-  final String title;
-  final Widget? leading;
-  final Widget? trailing;
-  final bool compact;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        if (leading != null) ...[
-          leading!,
-          const SizedBox(width: AppSpacingTokens.xs),
-        ],
-        Expanded(
-          child: Text(
-            title,
-            style: (compact ? typography.bodyMdStrong : typography.displaySm)
-                .copyWith(
-                  color: theme.colorScheme.onSurface,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
-                ),
-          ),
-        ),
-        if (trailing != null) trailing!,
-      ],
-    );
-  }
-}
-
-class TodayTextAction extends StatelessWidget {
-  const TodayTextAction({
-    super.key,
-    required this.label,
-    required this.onTap,
-    this.icon = Icons.chevron_right_rounded,
-    this.emphasized = false,
-  });
-
-  final String label;
-  final VoidCallback onTap;
-  final IconData? icon;
-  final bool emphasized;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-    final foreground = emphasized ? TodayPalette.tealDeep : surface.body;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xxs),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                label,
-                style: typography.bodySmStrong.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
-                ),
-              ),
-              if (icon != null) ...[
-                const SizedBox(width: AppSpacingTokens.xxs),
-                Icon(icon, size: AppSpacingTokens.md, color: foreground),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class TodayGlyphTile extends StatelessWidget {
   const TodayGlyphTile({
     super.key,
@@ -203,43 +105,6 @@ class TodayGlyphTile extends StatelessWidget {
           icon,
           color: gradient ? AppColorTokens.onPrimary : color,
           size: size * 0.5,
-        ),
-      ),
-    );
-  }
-}
-
-class TodayStatusPill extends StatelessWidget {
-  const TodayStatusPill({super.key, required this.label, required this.color});
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.xs,
-          vertical: AppSpacingTokens.xxs,
-        ),
-        child: Text(
-          label,
-          style: typography.caption.copyWith(
-            color: color,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
       ),
     );
