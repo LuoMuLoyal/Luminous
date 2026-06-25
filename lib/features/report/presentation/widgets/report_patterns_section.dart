@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
@@ -92,8 +93,18 @@ class _PatternCard extends StatelessWidget {
                   AppIconBadge(
                     icon: pattern.icon,
                     color: pattern.color,
-                    size: 36,
-                    iconSize: 20,
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.088,
+                      minValue: 30,
+                      maxValue: 38,
+                    ),
+                    iconSize: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.048,
+                      minValue: 16,
+                      maxValue: 22,
+                    ),
                     shape: BoxShape.circle,
                   ),
                   const SizedBox(width: AppSpacingTokens.xs),
@@ -137,14 +148,24 @@ class _PatternCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: AppSkeletonSlot(
-                      skeleton: const AppInlineSkeletonBlock(
-                        height: 28,
+                      skeleton: AppInlineSkeletonBlock(
+                        height: AppResponsiveSizing.scaleByHeight(
+                          context,
+                          fraction: 0.034,
+                          minValue: 22,
+                          maxValue: 30,
+                        ),
                         radius: AppRadiusTokens.sm,
                       ),
                       child: ReportMetricTrack(
                         values: pattern.sparkline,
                         color: pattern.color,
-                        height: 28,
+                        height: AppResponsiveSizing.scaleByHeight(
+                          context,
+                          fraction: 0.034,
+                          minValue: 22,
+                          maxValue: 30,
+                        ),
                       ),
                     ),
                   ),

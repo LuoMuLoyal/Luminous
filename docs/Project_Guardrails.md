@@ -46,6 +46,7 @@ This replaces the long historical error audit as the current quick-read checklis
 - The mobile MVP bottom navigation is frozen as `today / record / medicine / report / mine`. Do not add or revive a generic More tab; route low-frequency utilities through Mine, contextual Today actions, or defer them.
 - Do not hide shared business data under one page feature just because it was first used there. If the same provider/service is consumed by Mine, Medicine, and Settings, move it to a neutral feature boundary such as `features/support/` instead of leaving it nested under `settings`.
 - Keep design-system primitives in `lib/core/design/`. Do not split responsive breakpoints or theme seed colors into parallel `core/constants` files when they are part of the same UI token system.
+- Prefer `AppResponsiveSizing` helpers or `AppSpacingTokens` over literal widths/heights for layout-affecting dimensions. Fixed values are acceptable only for hairline dividers, minimum tap targets, or one-off decorative details.
 
 ## CI/CD And Generated Files
 

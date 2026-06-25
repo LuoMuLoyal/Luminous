@@ -203,9 +203,9 @@ class _TimelineRow extends StatelessWidget {
               if (entry.badgeKey != null) ...[
                 const SizedBox(width: AppSpacingTokens.xs),
                 AppSkeletonSlot(
-                  skeleton: const AppInlineSkeletonBlock(
-                    height: 22,
-                    width: 44,
+                  skeleton: AppInlineSkeletonBlock(
+                    height: (typography.bodySm.fontSize ?? 14) + 8,
+                    widthFactor: 0.16,
                     radius: AppRadiusTokens.sm,
                   ),
                   child: AppStatusPill(
