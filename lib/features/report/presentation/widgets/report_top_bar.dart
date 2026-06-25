@@ -10,8 +10,8 @@ class ReportTopBar extends StatelessWidget {
   const ReportTopBar({
     super.key,
     required this.dateRangeLabel,
-    required this.selectedRange,
-    required this.onRangeSelected,
+    required this.selectedQuery,
+    required this.onQueryChanged,
     required this.onGenerate,
     required this.onSync,
     this.isGenerating = false,
@@ -19,8 +19,8 @@ class ReportTopBar extends StatelessWidget {
   });
 
   final String dateRangeLabel;
-  final ReportDashboardRange selectedRange;
-  final ValueChanged<ReportDashboardRange> onRangeSelected;
+  final ReportDashboardQuery selectedQuery;
+  final ValueChanged<ReportDashboardQuery> onQueryChanged;
   final VoidCallback onGenerate;
   final VoidCallback onSync;
   final bool isGenerating;
@@ -63,7 +63,7 @@ class ReportTopBar extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacingTokens.md),
             ReportPeriodPill(
-              range: selectedRange,
+              range: selectedQuery.range,
               onTap: () => _showRangePicker(context),
             ),
           ],
@@ -121,14 +121,14 @@ class ReportTopBar extends StatelessWidget {
   }
 
   Future<void> _showRangePicker(BuildContext context) async {
-    final selected = await showModalBottomSheet<ReportDashboardRange>(
+    final selected = await showModalBottomSheet<ReportDashboardQuery>(
       context: context,
       useRootNavigator: true,
       builder: (context) =>
-          ReportRangePickerSheet(selectedRange: selectedRange),
+          ReportRangePickerSheet(selectedQuery: selectedQuery),
     );
-    if (selected != null && selected != selectedRange) {
-      onRangeSelected(selected);
+    if (selected != null && selected != selectedQuery) {
+      onQueryChanged(selected);
     }
   }
 }

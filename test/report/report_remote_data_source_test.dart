@@ -26,7 +26,7 @@ void main() {
       'fetchDashboard requests dashboard endpoint and unwraps envelope',
       () async {
         final dashboard = await dataSource.fetchDashboard(
-          ReportDashboardRange.last7Days,
+          const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
         );
 
         final request = adapter.requestAt(

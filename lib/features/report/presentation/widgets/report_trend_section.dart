@@ -17,16 +17,16 @@ class ReportTrendSection extends StatelessWidget {
   const ReportTrendSection({
     super.key,
     required this.trends,
-    required this.selectedRange,
-    required this.onRangeSelected,
+    required this.selectedQuery,
+    required this.onQueryChanged,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
 
   final List<ReportTrendSeries> trends;
-  final ReportDashboardRange selectedRange;
-  final ValueChanged<ReportDashboardRange> onRangeSelected;
+  final ReportDashboardQuery selectedQuery;
+  final ValueChanged<ReportDashboardQuery> onQueryChanged;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
@@ -39,7 +39,7 @@ class ReportTrendSection extends StatelessWidget {
         AppSectionHeader(
           title: l10n.reportTrendSectionTitle,
           trailing: ReportPeriodPill(
-            range: selectedRange,
+            range: selectedQuery.range,
             onTap: () => _showRangePicker(context),
           ),
         ),
@@ -81,14 +81,14 @@ class ReportTrendSection extends StatelessWidget {
   }
 
   Future<void> _showRangePicker(BuildContext context) async {
-    final selected = await showModalBottomSheet<ReportDashboardRange>(
+    final selected = await showModalBottomSheet<ReportDashboardQuery>(
       context: context,
       useRootNavigator: true,
       builder: (context) =>
-          ReportRangePickerSheet(selectedRange: selectedRange),
+          ReportRangePickerSheet(selectedQuery: selectedQuery),
     );
-    if (selected != null && selected != selectedRange) {
-      onRangeSelected(selected);
+    if (selected != null && selected != selectedQuery) {
+      onQueryChanged(selected);
     }
   }
 }

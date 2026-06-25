@@ -30,9 +30,9 @@ class ReportPage extends ConsumerWidget {
   const ReportPage({super.key});
 
   Future<void> _refreshDashboard(WidgetRef ref) async {
-    final range = ref.read(reportDashboardSelectedRangeProvider);
-    ref.invalidate(reportDashboardProvider(range));
-    await ref.read(reportDashboardProvider(range).future);
+    final query = ref.read(reportDashboardSelectedQueryProvider);
+    ref.invalidate(reportDashboardProvider(query));
+    await ref.read(reportDashboardProvider(query).future);
   }
 
   void _openRecordFilter(
@@ -152,11 +152,11 @@ class ReportPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
-    final selectedDashboardRange = ref.watch(
-      reportDashboardSelectedRangeProvider,
+    final selectedDashboardQuery = ref.watch(
+      reportDashboardSelectedQueryProvider,
     );
     final dashboardAsync = ref.watch(
-      reportDashboardProvider(selectedDashboardRange),
+      reportDashboardProvider(selectedDashboardQuery),
     );
     final selectedAiSummaryRange = ref.watch(
       reportAiSummarySelectedRangeProvider,
@@ -206,11 +206,11 @@ class ReportPage extends ConsumerWidget {
         isSyncing: false,
         topBar: ReportTopBar(
           dateRangeLabel: dateRangeLabel,
-          selectedRange: selectedDashboardRange,
-          onRangeSelected: (range) {
+          selectedQuery: selectedDashboardQuery,
+          onQueryChanged: (query) {
             ref
-                .read(reportDashboardSelectedRangeProvider.notifier)
-                .setRange(range);
+                .read(reportDashboardSelectedQueryProvider.notifier)
+                .setQuery(query);
           },
           onGenerate: () {
             ref
@@ -235,11 +235,11 @@ class ReportPage extends ConsumerWidget {
             ReportDashboardView(
               dashboard: dashboard,
               authSession: session,
-              dashboardRange: selectedDashboardRange,
-              onDashboardRangeChanged: (range) {
+              dashboardQuery: selectedDashboardQuery,
+              onDashboardQueryChanged: (query) {
                 ref
-                    .read(reportDashboardSelectedRangeProvider.notifier)
-                    .setRange(range);
+                    .read(reportDashboardSelectedQueryProvider.notifier)
+                    .setQuery(query);
               },
               aiSummaryState: aiSummaryState,
               aiSummaryRange: selectedAiSummaryRange,
@@ -270,22 +270,22 @@ class ReportPage extends ConsumerWidget {
         isGenerating: aiSummaryState.isLoading,
         isSyncing: session.canAccessProtectedData,
         onGenerate: () =>
-            ref.invalidate(reportDashboardProvider(selectedDashboardRange)),
+            ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
         onSync: () =>
-            ref.invalidate(reportDashboardProvider(selectedDashboardRange)),
+            ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
         onRefresh: () => _refreshDashboard(ref),
         topBar: ReportTopBar(
           dateRangeLabel: dateRangeLabel,
-          selectedRange: selectedDashboardRange,
-          onRangeSelected: (range) {
+          selectedQuery: selectedDashboardQuery,
+          onQueryChanged: (query) {
             ref
-                .read(reportDashboardSelectedRangeProvider.notifier)
-                .setRange(range);
+                .read(reportDashboardSelectedQueryProvider.notifier)
+                .setQuery(query);
           },
           onGenerate: () =>
-              ref.invalidate(reportDashboardProvider(selectedDashboardRange)),
+              ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
           onSync: () =>
-              ref.invalidate(reportDashboardProvider(selectedDashboardRange)),
+              ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
           isGenerating: aiSummaryState.isLoading,
           isSyncing: session.canAccessProtectedData,
         ),
@@ -293,11 +293,11 @@ class ReportPage extends ConsumerWidget {
           dashboard: MockReportRepository.previewDashboard,
           authSession: session,
           isLoading: true,
-          dashboardRange: selectedDashboardRange,
-          onDashboardRangeChanged: (range) {
+          dashboardQuery: selectedDashboardQuery,
+          onDashboardQueryChanged: (query) {
             ref
-                .read(reportDashboardSelectedRangeProvider.notifier)
-                .setRange(range);
+                .read(reportDashboardSelectedQueryProvider.notifier)
+                .setQuery(query);
           },
           aiSummaryRange: selectedAiSummaryRange,
           latestExportRequest: latestExportRequest,
@@ -317,7 +317,7 @@ class ReportPage extends ConsumerWidget {
               icon: Icons.bar_chart_rounded,
               actionLabel: l10n.todayRetryAction,
               onAction: () => ref.invalidate(
-                reportDashboardProvider(selectedDashboardRange),
+                reportDashboardProvider(selectedDashboardQuery),
               ),
               tone: AppStateTone.warning,
             ),

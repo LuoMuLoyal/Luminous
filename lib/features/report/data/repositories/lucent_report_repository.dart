@@ -11,8 +11,8 @@ class LucentReportRepository implements ReportRepository {
   final ReportRemoteDataSource dataSource;
 
   @override
-  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) async {
-    final dto = await dataSource.fetchDashboard(range);
+  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
+    final dto = await dataSource.fetchDashboard(query);
     final findings = dto.findings.map(_mapFinding).toList(growable: false);
     final score = _mapScore(dto.score);
 

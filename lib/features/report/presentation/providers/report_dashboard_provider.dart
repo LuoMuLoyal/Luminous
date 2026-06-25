@@ -8,10 +8,16 @@ import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 const _reportDashboardTimeout = Duration(seconds: 5);
 
 final reportDashboardProvider =
-    FutureProvider.family<ReportDashboard, ReportDashboardRange>((ref, range) {
+    FutureProvider.family<ReportDashboard, ReportDashboardQuery>((ref, query) {
       final session = ref.watch(authSessionProvider);
       if (session.isConfirmedSignedOut) {
-        return Future.value(MockReportRepository.signedOutDashboard);
+        return Future.value(
+          MockReportRepository.signedOutDashboard.copyWith(
+            range: query.range,
+            startDate: _dateOnly(query.startDate ?? DateTime(2026, 6, 6)),
+            endDate: _dateOnly(query.endDate ?? DateTime(2026, 6, 12)),
+          ),
+        );
       }
       if (session.isLoading) {
         return pendingAuthSessionResolution<ReportDashboard>();
@@ -22,25 +28,43 @@ final reportDashboardProvider =
 
       return ref
           .watch(reportRepositoryProvider)
-          .fetchDashboard(range)
+          .fetchDashboard(query)
           .timeout(
             _reportDashboardTimeout,
             onTimeout: () => throw TimeoutException('report_dashboard_timeout'),
           );
     });
 
-class ReportDashboardSelectedRangeNotifier
-    extends Notifier<ReportDashboardRange> {
+String _dateOnly(DateTime date) {
+  final local = date.toLocal();
+  return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
+}
+
+class ReportDashboardSelectedQueryNotifier
+    extends Notifier<ReportDashboardQuery> {
   @override
-  ReportDashboardRange build() => ReportDashboardRange.last7Days;
+  ReportDashboardQuery build() =>
+      const ReportDashboardQuery(range: ReportDashboardRange.last7Days);
+
+  void setQuery(ReportDashboardQuery query) {
+    state = query;
+  }
 
   void setRange(ReportDashboardRange range) {
-    state = range;
+    state = ReportDashboardQuery(range: range);
+  }
+
+  void setCustomRange(DateTime startDate, DateTime endDate) {
+    state = ReportDashboardQuery(
+      range: ReportDashboardRange.custom,
+      startDate: startDate,
+      endDate: endDate,
+    );
   }
 }
 
-final reportDashboardSelectedRangeProvider =
+final reportDashboardSelectedQueryProvider =
     NotifierProvider<
-      ReportDashboardSelectedRangeNotifier,
-      ReportDashboardRange
-    >(ReportDashboardSelectedRangeNotifier.new);
+      ReportDashboardSelectedQueryNotifier,
+      ReportDashboardQuery
+    >(ReportDashboardSelectedQueryNotifier.new);

@@ -14,6 +14,19 @@ enum ReportDashboardRange {
 }
 
 @freezed
+abstract class ReportDashboardQuery with _$ReportDashboardQuery {
+  const factory ReportDashboardQuery({
+    required ReportDashboardRange range,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) = _ReportDashboardQuery;
+
+  const ReportDashboardQuery._();
+
+  bool get isCustom => range == ReportDashboardRange.custom;
+}
+
+@freezed
 abstract class ReportDashboard with _$ReportDashboard {
   const factory ReportDashboard({
     required ReportDashboardRange range,

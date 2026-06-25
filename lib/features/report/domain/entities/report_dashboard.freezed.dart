@@ -12,6 +12,269 @@ part of 'report_dashboard.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
+mixin _$ReportDashboardQuery {
+
+ ReportDashboardRange get range; DateTime? get startDate; DateTime? get endDate;
+/// Create a copy of ReportDashboardQuery
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ReportDashboardQueryCopyWith<ReportDashboardQuery> get copyWith => _$ReportDashboardQueryCopyWithImpl<ReportDashboardQuery>(this as ReportDashboardQuery, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportDashboardQuery&&(identical(other.range, range) || other.range == range)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,range,startDate,endDate);
+
+@override
+String toString() {
+  return 'ReportDashboardQuery(range: $range, startDate: $startDate, endDate: $endDate)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ReportDashboardQueryCopyWith<$Res>  {
+  factory $ReportDashboardQueryCopyWith(ReportDashboardQuery value, $Res Function(ReportDashboardQuery) _then) = _$ReportDashboardQueryCopyWithImpl;
+@useResult
+$Res call({
+ ReportDashboardRange range, DateTime? startDate, DateTime? endDate
+});
+
+
+
+
+}
+/// @nodoc
+class _$ReportDashboardQueryCopyWithImpl<$Res>
+    implements $ReportDashboardQueryCopyWith<$Res> {
+  _$ReportDashboardQueryCopyWithImpl(this._self, this._then);
+
+  final ReportDashboardQuery _self;
+  final $Res Function(ReportDashboardQuery) _then;
+
+/// Create a copy of ReportDashboardQuery
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? range = null,Object? startDate = freezed,Object? endDate = freezed,}) {
+  return _then(_self.copyWith(
+range: null == range ? _self.range : range // ignore: cast_nullable_to_non_nullable
+as ReportDashboardRange,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ReportDashboardQuery].
+extension ReportDashboardQueryPatterns on ReportDashboardQuery {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ReportDashboardQuery value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ReportDashboardQuery() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ReportDashboardQuery value)  $default,){
+final _that = this;
+switch (_that) {
+case _ReportDashboardQuery():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ReportDashboardQuery value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ReportDashboardQuery() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ReportDashboardRange range,  DateTime? startDate,  DateTime? endDate)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ReportDashboardQuery() when $default != null:
+return $default(_that.range,_that.startDate,_that.endDate);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ReportDashboardRange range,  DateTime? startDate,  DateTime? endDate)  $default,) {final _that = this;
+switch (_that) {
+case _ReportDashboardQuery():
+return $default(_that.range,_that.startDate,_that.endDate);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ReportDashboardRange range,  DateTime? startDate,  DateTime? endDate)?  $default,) {final _that = this;
+switch (_that) {
+case _ReportDashboardQuery() when $default != null:
+return $default(_that.range,_that.startDate,_that.endDate);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _ReportDashboardQuery extends ReportDashboardQuery {
+  const _ReportDashboardQuery({required this.range, this.startDate, this.endDate}): super._();
+  
+
+@override final  ReportDashboardRange range;
+@override final  DateTime? startDate;
+@override final  DateTime? endDate;
+
+/// Create a copy of ReportDashboardQuery
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ReportDashboardQueryCopyWith<_ReportDashboardQuery> get copyWith => __$ReportDashboardQueryCopyWithImpl<_ReportDashboardQuery>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportDashboardQuery&&(identical(other.range, range) || other.range == range)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,range,startDate,endDate);
+
+@override
+String toString() {
+  return 'ReportDashboardQuery(range: $range, startDate: $startDate, endDate: $endDate)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ReportDashboardQueryCopyWith<$Res> implements $ReportDashboardQueryCopyWith<$Res> {
+  factory _$ReportDashboardQueryCopyWith(_ReportDashboardQuery value, $Res Function(_ReportDashboardQuery) _then) = __$ReportDashboardQueryCopyWithImpl;
+@override @useResult
+$Res call({
+ ReportDashboardRange range, DateTime? startDate, DateTime? endDate
+});
+
+
+
+
+}
+/// @nodoc
+class __$ReportDashboardQueryCopyWithImpl<$Res>
+    implements _$ReportDashboardQueryCopyWith<$Res> {
+  __$ReportDashboardQueryCopyWithImpl(this._self, this._then);
+
+  final _ReportDashboardQuery _self;
+  final $Res Function(_ReportDashboardQuery) _then;
+
+/// Create a copy of ReportDashboardQuery
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? range = null,Object? startDate = freezed,Object? endDate = freezed,}) {
+  return _then(_ReportDashboardQuery(
+range: null == range ? _self.range : range // ignore: cast_nullable_to_non_nullable
+as ReportDashboardRange,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$ReportDashboard {
 
  ReportDashboardRange get range; String get startDate; String get endDate; ReportHealthScore get score; List<ReportMetric> get metrics; List<ReportTrendSeries> get trends; List<ReportFinding> get findings; List<ReportExportAction> get exportActions; List<ReportPatternCard> get patterns; bool get aiSummaryEnabled;
