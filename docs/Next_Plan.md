@@ -1,12 +1,10 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-23
+Last updated: 2026-06-25
 
-This file records the next implementation order only. Completed work belongs in `MigrationLog.md`; current facts belong in `Current_State.md`.
+This file records the next implementation order only. Completed work belongs in `migration-log/YYYY-MM-DD.md`; current facts belong in `Current_State.md`.
 
 ## Current Goal
-
-**UI/UX pass and freezed migration are complete** (2026-06-23).
 
 The next active slice is **bounded assistant leaflet RAG planning and backend implementation prep** in Lucent.
 
@@ -29,17 +27,11 @@ The next active slice is **bounded assistant leaflet RAG planning and backend im
    - Do not reopen broad tool refactors without a new capability target
    - Keep memory optional, explicit, and user-controlled
 
-3. **Keep Record follow-up work bounded**
-   - Only reopen Record when a specific follow-up gap is chosen, such as:
-     - broader full-stack E2E around the new time-of-day contract
-     - more nuanced quick-choice sets per kind
-     - additional timeline/detail polish backed by real product need
-
-4. **Keep Web as a deliberate decision**
+3. **Keep Web as a deliberate decision**
    - `Luminous-site` is still a competition/marketing surface, not a signed-in product shell
    - If authenticated Web report preview becomes the chosen next slice later, open a dedicated plan
 
-5. **Keep the local validation discipline**
+4. **Keep the local validation discipline**
    - Repo-safe daily: `dart run tool/run_daily_checks.dart`
    - Full-stack gate: `dart run tool/run_fullstack_checks.dart` before changes touching auth/session, Today/Report protected loading, daily-records API, generated clients, or E2E helpers
 
@@ -78,3 +70,10 @@ The next active slice is **bounded assistant leaflet RAG planning and backend im
 - backend reminder delivery workers
 - paid or credentialed external services without explicit approval
 - environment frontend wiring until the target Today/Mine job is explicit
+
+## Contract References
+
+- `Lucent/docs/public/reminder-contract.md`: reminder boundary
+- `Lucent/docs/public/environment-contract.md`: environment snapshot boundary
+- `Lucent/docs/public/data-sources.md`: medicine data-source/import strategy
+- `Lucent/docs/public/mine-settings-contract.md`: export/status/support-resource boundary
