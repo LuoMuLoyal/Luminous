@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-06-23
+Last updated: 2026-06-25
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -27,6 +27,11 @@ This file records current implementation facts only. Product direction lives in 
 - Current generated client baseline after Record `occurredTime` contract expansion: 62 paths / 171 schemas.
 - Implemented backend areas used by Luminous: auth/account, user-scoped health context, medicine search/detail, current medicines, dose logs, medicine reminders, daily records with single-image attachment metadata, environment snapshot, user settings, support resources, app info, and data export requests.
 - User-scoped business data is served under `/api/v1/user/*`; account profile/security actions remain under `/api/v1/account/*`.
+
+## Completed Baselines
+
+- UI/UX pass and freezed migration are complete.
+- Record fast-entry UX is in place: quick actions open a lightweight fast-entry surface first, common values save with the current time, and `more` opens the full form.
 
 ## Luminous Runtime Snapshot
 

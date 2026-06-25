@@ -8,9 +8,11 @@ This replaces the long historical error audit as the current quick-read checklis
 
 - Do not duplicate the same fact across docs. Product decisions go in `Product_Vision.md`; current facts in `Current_State.md`; next work in `Next_Plan.md`; history in `MigrationLog.md`.
 - Do not record implementation status, completed work, or current runtime truth in `Next_Plan.md`. If it is already true now, move it to `Current_State.md` or `MigrationLog.md`.
+- **When a goal in `Next_Plan.md` is completed, delete it from `Next_Plan.md`; do not mark it complete there.** Move the resulting current-state facts to `Current_State.md` and record the change in the daily `migration-log/YYYY-MM-DD.md`.
 - Active multi-step execution plans belong in `../plans/`, not in `docs/` and not in the workspace root.
 - Do not keep old execution plans in active docs after they are superseded. Move useful decisions into the owning doc and delete the plan.
 - Do not use migration logs as current source of truth; they are historical records only.
+- `Lumos-docs/` is a slow-updating showcase site, not a reference. Treat `Lucent/docs/` and `Luminous/docs/` inside each repo as the authoritative source.
 
 ## Contracts
 
