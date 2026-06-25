@@ -51,8 +51,7 @@ class _DrugBoxSection extends StatelessWidget {
             ),
             trailing: AppTextAction(
               label: l10n.medicineManageMedicinesAction,
-              onTap: () =>
-                  AppToast.show(context, l10n.medicineManageMedicinesAction),
+              onTap: () => pushAuthRequiredRoute(context, '/mine/medicine/new'),
             ),
           ),
           const SizedBox(height: AppSpacingTokens.xxs),
@@ -445,11 +444,17 @@ class _DrugBoxMedicationRow extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          if (currentMedicineId == null || onOpenReminder == null) {
+          if (currentMedicineId == null) {
             AppToast.show(context, l10n.medicineOpenPlanItemToast);
             return;
           }
-          onOpenReminder!(currentMedicineId);
+          if (onOpenReminder != null) {
+            onOpenReminder!(currentMedicineId);
+            return;
+          }
+          context.push(
+            '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}',
+          );
         },
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: Padding(

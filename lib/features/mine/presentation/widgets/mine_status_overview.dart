@@ -3,8 +3,8 @@ import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -73,7 +73,8 @@ class _StatusOverviewItem extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showMineToast(context, mineCopy(l10n, entry.titleKey)),
+        onTap: () =>
+            pushAuthRequiredRoute(context, _routeForStatus(entry.titleKey)),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
@@ -128,6 +129,14 @@ class _StatusOverviewItem extends StatelessWidget {
       ),
     );
   }
+}
+
+String _routeForStatus(MineCopyKey titleKey) {
+  return switch (titleKey) {
+    MineCopyKey.alertAllergyTitle => '/mine/allergy/new',
+    MineCopyKey.alertMedicineTitle => '/mine/medicine/new',
+    MineCopyKey.alertPrivacyTitle || _ => '/account',
+  };
 }
 
 class _SoftIcon extends StatelessWidget {

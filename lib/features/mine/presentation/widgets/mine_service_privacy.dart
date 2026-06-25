@@ -67,7 +67,7 @@ class MinePrivacyNoticeSection extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showMineToast(context, mineCopy(l10n, notice.actionKey)),
+        onTap: () => pushAuthRequiredRoute(context, '/account'),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(

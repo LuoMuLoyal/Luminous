@@ -1,21 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class TodayTodoSection extends StatelessWidget {
+class TodayTodoSection extends ConsumerWidget {
   const TodayTodoSection({super.key, required this.dashboard});
 
   final TodayDashboard dashboard;
 
+  void _handleTap(BuildContext context, WidgetRef ref, TodayTodoItem item) {
+    switch (item.type) {
+      case TodayTodoType.medication:
+        ref.read(shellProvider.notifier).selectTab(2);
+      case TodayTodoType.water:
+        context.push('/record/create?kind=water');
+      case TodayTodoType.custom:
+        context.push('/record/create');
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
     final items = buildTodoItems(l10n, dashboard);
@@ -28,7 +41,10 @@ class TodayTodoSection extends StatelessWidget {
         child: Column(
           children: [
             for (var index = 0; index < items.length; index += 1) ...[
-              _TodoRow(item: items[index]),
+              _TodoRow(
+                item: items[index],
+                onTap: () => _handleTap(context, ref, items[index]),
+              ),
               if (index < items.length - 1)
                 Divider(
                   height: 1,
@@ -45,9 +61,10 @@ class TodayTodoSection extends StatelessWidget {
 }
 
 class _TodoRow extends StatelessWidget {
-  const _TodoRow({required this.item});
+  const _TodoRow({required this.item, required this.onTap});
 
   final TodayTodoItem item;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +75,7 @@ class _TodoRow extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => AppToast.show(context, item.action),
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacingTokens.md,

@@ -23,6 +23,7 @@ class RecordDashboardView extends StatelessWidget {
     this.isLoading = false,
     this.onQuickAction,
     this.onAiInputTap,
+    this.onNewEntry,
     this.onFilterSelected,
     this.onDateSelected,
     this.onPickDate,
@@ -32,6 +33,7 @@ class RecordDashboardView extends StatelessWidget {
   final bool isLoading;
   final ValueChanged<RecordQuickAction>? onQuickAction;
   final VoidCallback? onAiInputTap;
+  final VoidCallback? onNewEntry;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
   final VoidCallback? onPickDate;
@@ -53,6 +55,10 @@ class RecordDashboardView extends StatelessWidget {
             l10n: l10n,
             typography: typography,
             surface: surface,
+            onDateSelected: onDateSelected,
+            onFilterSelected: onFilterSelected,
+            onQuickAction: onQuickAction,
+            onNewEntry: onNewEntry,
           )
         : _MobileRecordDashboard(
             dashboard: dashboard,
@@ -154,12 +160,20 @@ class _DesktopRecordDashboard extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onDateSelected,
+    this.onFilterSelected,
+    this.onQuickAction,
+    this.onNewEntry,
   });
 
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<DateTime>? onDateSelected;
+  final ValueChanged<RecordEntryType?>? onFilterSelected;
+  final ValueChanged<RecordQuickAction>? onQuickAction;
+  final VoidCallback? onNewEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -172,9 +186,12 @@ class _DesktopRecordDashboard extends StatelessWidget {
             children: [
               RecordMonthCalendarPanel(
                 days: dashboard.monthDays,
+                selectedDate: dashboard.selectedDate,
                 l10n: l10n,
                 typography: typography,
                 surface: surface,
+                onDateSelected: onDateSelected,
+                onMonthChanged: onDateSelected,
               ),
               const SizedBox(height: AppSpacingTokens.md),
               RecordFilterPanel(
@@ -182,6 +199,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 l10n: l10n,
                 typography: typography,
                 surface: surface,
+                onFilterSelected: onFilterSelected,
               ),
             ],
           ),
@@ -196,6 +214,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 l10n: l10n,
                 typography: typography,
                 surface: surface,
+                onTypeSelected: onFilterSelected,
               ),
               const SizedBox(height: AppSpacingTokens.md),
               RecordTimelinePanel(
@@ -203,6 +222,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 l10n: l10n,
                 typography: typography,
                 surface: surface,
+                onClearFilter: () => onFilterSelected?.call(null),
               ),
             ],
           ),
@@ -217,6 +237,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 l10n: l10n,
                 typography: typography,
                 surface: surface,
+                onEdit: onNewEntry,
               ),
               const SizedBox(height: AppSpacingTokens.md),
               RecordNewEntryPanel(
@@ -224,6 +245,8 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 l10n: l10n,
                 typography: typography,
                 surface: surface,
+                onNewEntry: onNewEntry,
+                onQuickAction: onQuickAction,
               ),
             ],
           ),

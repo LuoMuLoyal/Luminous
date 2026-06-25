@@ -17,6 +17,7 @@ class RecordTrendsPanel extends StatelessWidget {
     required this.typography,
     required this.surface,
     this.compact = false,
+    this.onEdit,
   });
 
   final List<RecordTrend> trends;
@@ -24,6 +25,7 @@ class RecordTrendsPanel extends StatelessWidget {
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final bool compact;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class RecordTrendsPanel extends StatelessWidget {
       trailing: AppTextAction(
         label: l10n.recordEditAction,
         icon: null,
-        onTap: () => showRecordToast(context, l10n.recordEditAction),
+        onTap: onEdit ?? () => showRecordToast(context, l10n.recordEditAction),
       ),
       typography: typography,
       surface: surface,

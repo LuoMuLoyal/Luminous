@@ -6,31 +6,32 @@ This file records the next implementation order only. Completed work belongs in 
 
 ## Current Goal
 
-The next active slice is **finishing the Luminous responsive layout and UI detail cleanup** now that the backend assistant leaflet RAG slice is delivered.
+The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder interactions (reachable with existing routes/providers) are wired; the remaining B/C-class items are recorded below and require backend/API work or product decisions before implementation.
 
 ## Immediate Work Order
 
-1. **Finish Record/Report hardcoded-dimension cleanup**
-   - Replace remaining literal widths/heights in icon badges, skeleton blocks, and small card internals with `AppResponsiveSizing` helpers or `AppSpacingTokens`.
-   - Keep changes visual-only; do not alter business logic or test assertions.
+1. **Finish v4.0.0 release prep**
+   - Resolve or defer the B/C-class placeholder items listed below.
+   - Run the full validation gate before tagging 4.0.0.
 
 2. **Keep assistant evolution bounded to concrete new scenarios**
-   - Only extend assistant tools/proposals when a specific missing user task is chosen
-   - Do not reopen broad tool refactors without a new capability target
-   - Keep memory optional, explicit, and user-controlled
+   - Only extend assistant tools/proposals when a specific missing user task is chosen.
+   - Do not reopen broad tool refactors without a new capability target.
+   - Keep memory optional, explicit, and user-controlled.
 
 3. **Keep Web as a deliberate decision**
-   - `Luminous-site` is still a competition/marketing surface, not a signed-in product shell
-   - If authenticated Web report preview becomes the chosen next slice later, open a dedicated plan
+   - `Luminous-site` is still a competition/marketing surface, not a signed-in product shell.
+   - If authenticated Web report preview becomes the chosen next slice later, open a dedicated plan.
 
 4. **Keep the local validation discipline**
-   - Repo-safe daily: `dart run tool/run_daily_checks.dart`
-   - Full-stack gate: `dart run tool/run_fullstack_checks.dart` before changes touching auth/session, Today/Report protected loading, daily-records API, generated clients, or E2E helpers
+   - Repo-safe daily: `dart run tool/run_daily_checks.dart`.
+   - Full-stack gate: `dart run tool/run_fullstack_checks.dart` before changes touching auth/session, Today/Report protected loading, daily-records API, generated clients, or E2E helpers.
 
 ## Recently Completed
 
 - **Backend assistant leaflet RAG** (`Lucent` commit `6f165e3`): `get_medicine_leaflet_context` tool, leaflet index rebuild script, dynamic `ragEnabled` capabilities truth, and updated assistant contract.
 - **Luminous Record/Report responsive pass** (`Luminous` commit `0a57312`): removed Record "Today overview", widened Report finding cards, added `AppResponsiveSizing`, and replaced the highest-impact fixed layout dimensions.
+- **Luminous v4.0.0 A-class placeholder wiring** (`Luminous` commit `31faeb0`): replaced Today/Record/Medicine/Mine/Search/Report metric placeholder toasts with real navigation, provider invalidation, or filtering behavior.
 
 ## Deferred But Useful
 
@@ -38,7 +39,11 @@ The next active slice is **finishing the Luminous responsive layout and UI detai
 - agent-assisted support discovery and map-backed nearby-care lookup
 - lightweight mood record shapes and a future mood quick-entry/tool hook
 - environment signals for contextual Today/Mine use
-- medicine scan/OCR/photo/barcode/prescription action shapes
+- Today/Mine notification bell inbox (needs backend notification API)
+- Medicine safety-tip "换一批" (needs backend tips API; currently hard-coded)
+- Report score/finding/pattern/trend/AI action card drill-down (needs product decision: detail page vs filter Record tab)
+- Report period selector (needs backend period-filtered API)
+- voice input, photo/scan/OCR/barcode/prescription action shapes (need native plugins + backend contracts)
 - local-only sleep reminder preferences beyond simple placeholder labeling
 - real authenticated Web report preview beyond the competition site
 - system health app bridging through Apple Health / Health Connect

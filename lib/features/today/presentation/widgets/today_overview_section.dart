@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -48,12 +49,11 @@ class TodayOverviewSection extends StatelessWidget {
                 width: 96,
                 radius: AppRadiusTokens.pill,
               ),
-              child: AppTextAction(
-                label: l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
-                icon: Icons.refresh_rounded,
-                onTap: () => AppToast.show(
-                  context,
-                  l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
+              child: Consumer(
+                builder: (context, ref, child) => AppTextAction(
+                  label: l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
+                  icon: Icons.refresh_rounded,
+                  onTap: () => ref.invalidate(todayDashboardProvider),
                 ),
               ),
             ),

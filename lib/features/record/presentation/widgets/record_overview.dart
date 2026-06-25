@@ -16,12 +16,14 @@ class RecordWeekStrip extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onDateSelected,
   });
 
   final List<RecordWeekDay> days;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<DateTime>? onDateSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,7 @@ class RecordWeekStrip extends StatelessWidget {
                   l10n: l10n,
                   typography: typography,
                   surface: surface,
+                  onTap: onDateSelected,
                 ),
               ),
             )
@@ -58,6 +61,7 @@ class RecordQuickActions extends StatelessWidget {
     required this.typography,
     required this.surface,
     this.compact = false,
+    this.onQuickAction,
   });
 
   final List<RecordQuickAction> actions;
@@ -65,6 +69,7 @@ class RecordQuickActions extends StatelessWidget {
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final bool compact;
+  final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +96,7 @@ class RecordQuickActions extends StatelessWidget {
                       l10n: l10n,
                       typography: typography,
                       surface: surface,
+                      onTap: onQuickAction,
                     ),
                   ),
                 )
@@ -109,12 +115,14 @@ class RecordSummaryGrid extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onTypeSelected,
   });
 
   final RecordDaySummary summary;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<RecordEntryType>? onTypeSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +150,7 @@ class RecordSummaryGrid extends StatelessWidget {
                       l10n: l10n,
                       typography: typography,
                       surface: surface,
+                      onTap: onTypeSelected,
                     ),
                   ),
                 )
@@ -160,12 +169,16 @@ class RecordNewEntryPanel extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onNewEntry,
+    this.onQuickAction,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final VoidCallback? onNewEntry;
+  final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +199,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                     action: action,
                     l10n: l10n,
                     typography: typography,
+                    onTap: onQuickAction,
                   ),
                 )
                 .toList(),
@@ -194,7 +208,9 @@ class RecordNewEntryPanel extends StatelessWidget {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => showRecordToast(context, l10n.recordVoiceAction),
+              onTap:
+                  onNewEntry ??
+                  () => showRecordToast(context, l10n.recordVoiceAction),
               borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -240,12 +256,14 @@ class _WeekDayCell extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onTap,
   });
 
   final RecordWeekDay day;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<DateTime>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -257,8 +275,14 @@ class _WeekDayCell extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () =>
-            showRecordToast(context, '${l10n.recordOpenDateAction} ${day.day}'),
+        onTap: () {
+          final handler = onTap;
+          if (handler == null) {
+            showRecordToast(context, '${l10n.recordOpenDateAction} ${day.day}');
+            return;
+          }
+          handler(day.date);
+        },
         borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
@@ -302,12 +326,14 @@ class _QuickActionTile extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onTap,
   });
 
   final RecordQuickAction action;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<RecordQuickAction>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -316,7 +342,14 @@ class _QuickActionTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showRecordToast(context, label),
+        onTap: () {
+          final handler = onTap;
+          if (handler == null) {
+            showRecordToast(context, label);
+            return;
+          }
+          handler(action);
+        },
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -360,12 +393,14 @@ class _SummaryTile extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onTap,
   });
 
   final RecordSummaryItem item;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<RecordEntryType>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -377,7 +412,14 @@ class _SummaryTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showRecordToast(context, recordCopy(l10n, item.titleKey)),
+        onTap: () {
+          final handler = onTap;
+          if (handler == null) {
+            showRecordToast(context, recordCopy(l10n, item.titleKey));
+            return;
+          }
+          handler(item.type);
+        },
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -463,11 +505,13 @@ class _NewEntryChip extends StatelessWidget {
     required this.action,
     required this.l10n,
     required this.typography,
+    this.onTap,
   });
 
   final RecordQuickAction action;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
+  final ValueChanged<RecordQuickAction>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -476,7 +520,14 @@ class _NewEntryChip extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showRecordToast(context, label),
+        onTap: () {
+          final handler = onTap;
+          if (handler == null) {
+            showRecordToast(context, label);
+            return;
+          }
+          handler(action);
+        },
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(

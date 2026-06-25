@@ -28,7 +28,7 @@ class _QuickOperationSection extends StatelessWidget {
         color: surface.violet,
         title: l10n.medicineQuickRecordTitle,
         subtitle: l10n.medicineQuickRecordSubtitle,
-        onTap: () => AppToast.show(context, l10n.medicineQuickRecordToast),
+        onTap: () => context.push('/record/create'),
       ),
       _QuickOperation(
         icon: Icons.notifications_none_rounded,

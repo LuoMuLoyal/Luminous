@@ -81,11 +81,12 @@ class _ArchiveRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final row = _TapRow(
       onTap: () {
-        if (entry.route == null) {
+        final route = entry.route ?? _fallbackRouteFor(entry.titleKey);
+        if (route == null) {
           showMineToast(context, mineCopy(l10n, entry.titleKey));
           return;
         }
-        pushAuthRequiredRoute(context, entry.route!);
+        pushAuthRequiredRoute(context, route);
       },
       surface: surface,
       child: Row(
@@ -199,6 +200,16 @@ class _SoftIcon extends StatelessWidget {
       child: Icon(icon, color: color, size: _defaultIconSize),
     ),
   );
+}
+
+String? _fallbackRouteFor(MineCopyKey titleKey) {
+  return switch (titleKey) {
+    MineCopyKey.archiveBasicTitle => '/mine/profile/edit',
+    MineCopyKey.archiveAllergyTitle => '/mine/allergy/new',
+    MineCopyKey.archiveMedicineTitle => '/mine/medicine/new',
+    MineCopyKey.archiveEmergencyTitle => '/settings',
+    _ => null,
+  };
 }
 
 String _profileMeta(AppLocalizations l10n, MineProfileSnapshot profile) {

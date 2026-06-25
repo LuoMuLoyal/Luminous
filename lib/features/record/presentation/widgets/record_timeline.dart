@@ -21,6 +21,7 @@ class RecordTimelinePanel extends StatelessWidget {
     required this.typography,
     required this.surface,
     this.dense = false,
+    this.onClearFilter,
   });
 
   final List<RecordTimelineEntry> entries;
@@ -28,6 +29,7 @@ class RecordTimelinePanel extends StatelessWidget {
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final bool dense;
+  final VoidCallback? onClearFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,9 @@ class RecordTimelinePanel extends StatelessWidget {
       trailing: AppTextAction(
         label: l10n.recordAllTypesAction,
         icon: Icons.keyboard_arrow_down_rounded,
-        onTap: () => showRecordToast(context, l10n.recordAllTypesAction),
+        onTap:
+            onClearFilter ??
+            () => showRecordToast(context, l10n.recordAllTypesAction),
       ),
       typography: typography,
       surface: surface,

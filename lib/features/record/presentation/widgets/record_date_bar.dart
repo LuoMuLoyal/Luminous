@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -50,9 +49,7 @@ class RecordDateBar extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap:
-                  onPickDate ??
-                  () => showRecordToast(context, l10n.recordPickDateAction),
+              onTap: onPickDate,
               borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
               child: DecoratedBox(
                 decoration: BoxDecoration(

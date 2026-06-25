@@ -24,6 +24,7 @@ class ReportDashboardView extends ConsumerWidget {
     this.onAiSummaryRangeChanged,
     this.onGenerateAiSummary,
     this.onExportActionTap,
+    this.onMetricSelected,
     this.latestExportRequest,
     this.exportRequestInFlight = const DataExportRequestInFlightState(
       inFlight: false,
@@ -38,6 +39,7 @@ class ReportDashboardView extends ConsumerWidget {
   final ValueChanged<ReportAiSummaryRange>? onAiSummaryRangeChanged;
   final Future<void> Function()? onGenerateAiSummary;
   final Future<void> Function(ReportExportKind kind)? onExportActionTap;
+  final ValueChanged<ReportDataKind>? onMetricSelected;
   final DataExportRequestDataDto? latestExportRequest;
   final DataExportRequestInFlightState exportRequestInFlight;
 
@@ -67,6 +69,7 @@ class ReportDashboardView extends ConsumerWidget {
           l10n: l10n,
           typography: typography,
           surface: surface,
+          onMetricSelected: onMetricSelected,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         ReportTrendSection(

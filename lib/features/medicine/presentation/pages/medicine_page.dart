@@ -198,7 +198,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => AppToast.show(context, l10n.medicineSafetyGuardLabel),
+          onTap: () => context.push('/medicine/risk-check'),
           borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
           child: Padding(
             padding: const EdgeInsets.symmetric(

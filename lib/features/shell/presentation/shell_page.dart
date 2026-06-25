@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
@@ -193,10 +192,7 @@ class _DesktopSidebar extends StatelessWidget {
               _DesktopSidebarActionItem(
                 icon: Icons.help_outline_rounded,
                 label: l10n?.desktopSidebarHelp ?? '帮助',
-                onTap: () => AppToast.show(
-                  context,
-                  l10n?.desktopSidebarHelpToast ?? '会打开帮助与支持。',
-                ),
+                onTap: () => context.push('/assistant'),
                 typography: typography,
               ),
             ],

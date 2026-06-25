@@ -12,8 +12,11 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/providers/report_ai_summary_provider.dart';
+import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
+import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
+import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -28,6 +31,23 @@ class ReportPage extends ConsumerWidget {
   Future<void> _refreshDashboard(WidgetRef ref) async {
     ref.invalidate(reportDashboardProvider);
     await ref.read(reportDashboardProvider.future);
+  }
+
+  void _openRecordFilter(
+    BuildContext context,
+    WidgetRef ref,
+    ReportDataKind kind,
+  ) {
+    final filterType = switch (kind) {
+      ReportDataKind.medication => RecordEntryType.medication,
+      ReportDataKind.water => RecordEntryType.water,
+      ReportDataKind.sleep => RecordEntryType.sleep,
+      ReportDataKind.general => null,
+    };
+    if (filterType != null) {
+      ref.read(selectedRecordFilterProvider.notifier).setFilter(filterType);
+    }
+    ref.read(shellProvider.notifier).selectTab(1);
   }
 
   Future<void> _handleExportAction(
@@ -46,9 +66,7 @@ class ReportPage extends ConsumerWidget {
     final launcher = ref.read(externalUrlLauncherProvider);
 
     try {
-      final request = await controller.requestExport(
-        _exportInputForKind(kind),
-      );
+      final request = await controller.requestExport(_exportInputForKind(kind));
       if (!context.mounted) {
         return;
       }
@@ -139,7 +157,10 @@ class ReportPage extends ConsumerWidget {
     final aiSummaryState = ref.watch(
       reportAiSummaryControllerProvider(selectedAiSummaryRange),
     );
-    final latestExportRequest = ref.watch(dataExportControllerProvider).asData?.value;
+    final latestExportRequest = ref
+        .watch(dataExportControllerProvider)
+        .asData
+        ?.value;
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
@@ -188,6 +209,7 @@ class ReportPage extends ConsumerWidget {
               },
               onExportActionTap: (kind) =>
                   _handleExportAction(context, ref, kind),
+              onMetricSelected: (kind) => _openRecordFilter(context, ref, kind),
             ),
           ],
         ),
@@ -205,6 +227,7 @@ class ReportPage extends ConsumerWidget {
           aiSummaryRange: selectedAiSummaryRange,
           latestExportRequest: latestExportRequest,
           exportRequestInFlight: exportRequestInFlight,
+          onMetricSelected: (kind) => _openRecordFilter(context, ref, kind),
         ),
       ),
       error: (error, _) {
