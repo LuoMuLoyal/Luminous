@@ -221,16 +221,6 @@
   "recordFilterAllAction": "全部",
   "recordFilterSelectAll": "全选",
   "recordAllTypesAction": "全部类型",
-  "recordTodayOverviewTitle": "今日记录概览",
-  "recordTodayOverviewEvents": "记录事件",
-  "recordTodayOverviewEventCount": "{count} 条",
-  "@recordTodayOverviewEventCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "recordVoiceInputTitle": "语音输入",
   "recordGuideHint": "小贴士：坚持记录有助于更好地了解自己的健康状态",
   "recordGuideAction": "查看记录指南",

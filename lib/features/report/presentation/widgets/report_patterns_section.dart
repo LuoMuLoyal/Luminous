@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
@@ -24,6 +25,13 @@ class ReportPatternsSection extends StatelessWidget {
   final AppTypographyScale typography;
   final AppThemeSurface surface;
 
+  double _patternCardHeight(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    if (width >= AppBreakpoints.desktop) return 196;
+    if (width >= AppBreakpoints.tablet) return 188;
+    return 176;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,11 +43,11 @@ class ReportPatternsSection extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: patterns.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: AppSpacingTokens.sm,
             mainAxisSpacing: AppSpacingTokens.sm,
-            mainAxisExtent: 180,
+            mainAxisExtent: _patternCardHeight(context),
           ),
           itemBuilder: (context, index) {
             return _PatternCard(
