@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -33,7 +34,7 @@ class RecordMonthCalendarPanel extends StatelessWidget {
       RecordCopyKey.weekdaySat,
     ];
 
-    return RecordSectionSurface(
+    return AppSectionSurface(
       key: const Key('record-calendar-panel'),
       typography: typography,
       surface: surface,
@@ -111,7 +112,7 @@ class RecordFilterPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    return AppSectionSurface(
       key: const Key('record-filter-panel'),
       title: l10n.recordFilterSectionTitle,
       trailing: AppTextAction(

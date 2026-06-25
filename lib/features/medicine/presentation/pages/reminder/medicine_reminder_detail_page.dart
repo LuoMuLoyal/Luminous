@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -12,7 +13,6 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_delete_sheet.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_log_panels.dart';
@@ -110,7 +110,7 @@ class _ReminderDetailBody extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          MedicinePanel(
+          AppSectionSurface(
             color: Color.alphaBlend(
               surface.tealSoft.withValues(alpha: 0.38),
               surface.canvas,
@@ -165,7 +165,7 @@ class _ReminderDetailBody extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          MedicinePanel(
+          AppSectionSurface(
             padding: EdgeInsets.zero,
             child: Column(
               children: [

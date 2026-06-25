@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -6,7 +7,6 @@ import 'package:luminous/features/assistant/domain/entities/assistant_models.dar
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
 import 'package:luminous/features/assistant/presentation/widgets/assistant_message_bubble.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantConversationSurface extends StatelessWidget {
@@ -41,7 +41,7 @@ class AssistantConversationSurface extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
-    return SettingsSectionSurface(
+    return AppSectionSurface(
       surface: surface,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,9 +51,9 @@ class AssistantConversationSurface extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
               child: Text(
                 l10n.assistantOpeningConversationLabel,
-                style: assistantTypography(context).bodySm.copyWith(
-                  color: surface.mute,
-                ),
+                style: assistantTypography(
+                  context,
+                ).bodySm.copyWith(color: surface.mute),
               ),
             ),
           ],
@@ -77,8 +77,7 @@ class AssistantConversationSurface extends StatelessWidget {
               ),
               icon: sendErrorIcon(state.sendErrorType),
               tone: AppStateTone.warning,
-              actionLabel:
-                  onRetry != null ? l10n.assistantRetryAction : null,
+              actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
               onAction: onRetry,
               actionKey: const Key('assistant-retry-action'),
               padding: const EdgeInsets.all(AppSpacingTokens.md),
@@ -247,9 +246,7 @@ class _InputComposer extends StatelessWidget {
           key: const Key('assistant-send-action'),
           onPressed: canSend ? onSend : null,
           child: Text(
-            isSending
-                ? l10n.assistantSendingAction
-                : l10n.assistantSendAction,
+            isSending ? l10n.assistantSendingAction : l10n.assistantSendAction,
           ),
         ),
       ],

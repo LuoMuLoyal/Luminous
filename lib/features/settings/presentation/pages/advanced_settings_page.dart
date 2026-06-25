@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
+import 'package:luminous/core/widgets/app_setting_row.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -8,7 +10,6 @@ import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
@@ -29,13 +30,13 @@ class AdvancedSettingsPage extends ConsumerWidget {
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
-        MineSectionSurface(
+        AppSectionSurface(
           typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('advanced-settings-row-clear-cache'),
                 title: l10n.settingsAdvancedClearImageCache,
                 icon: Icons.image_outlined,
@@ -49,7 +50,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                 },
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('advanced-settings-row-reset-defaults'),
                 title: l10n.settingsAdvancedResetDefaults,
                 icon: Icons.refresh_rounded,
@@ -82,7 +83,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                 },
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('advanced-settings-row-licenses'),
                 title: l10n.settingsAdvancedOpenSourceLicenses,
                 icon: Icons.description_outlined,

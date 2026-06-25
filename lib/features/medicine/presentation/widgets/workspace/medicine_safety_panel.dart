@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/workspace/medicine_workspace_helpers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -28,7 +28,7 @@ class MedicineSafetyPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        MedicineSectionSurface(
+        AppSectionSurface(
           title: l10n.medicineSafetyPanelTitle,
           typography: typography,
           surface: surface,
@@ -104,9 +104,7 @@ class _AlertTile extends StatelessWidget {
                 Expanded(
                   child: Text(
                     medicineAlertTitle(l10n, alert),
-                    style: typography.bodySmStrong.copyWith(
-                      color: alert.color,
-                    ),
+                    style: typography.bodySmStrong.copyWith(color: alert.color),
                   ),
                 ),
               ],
@@ -255,9 +253,7 @@ class _PromisePanel extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.md),
                 ...workspace.promisePoints.map(
                   (point) => Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: AppSpacingTokens.md,
-                    ),
+                    padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
                     child: _PromisePoint(
                       label: medicineCopy(l10n, point.copyKey),
                       typography: typography,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
@@ -30,7 +31,7 @@ class RecordTimelinePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    return AppSectionSurface(
       key: const Key('record-timeline'),
       title: l10n.recordTimelineSectionTitle,
       trailing: AppTextAction(

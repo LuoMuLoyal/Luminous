@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 abstract final class TodayPalette {
   static const Color ink = AppColorTokens.ink;
@@ -25,43 +24,6 @@ abstract final class TodayPalette {
   static const Color amberSoft = AppColorTokens.warningSoft;
   static const Color green = AppColorTokens.cyanDeep;
   static const Color greenSoft = AppColorTokens.cyanSoft;
-}
-
-class TodayPanel extends StatelessWidget {
-  const TodayPanel({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.all(AppSpacingTokens.md),
-    this.color,
-    this.radius = AppRadiusTokens.lg,
-    this.borderColor,
-    this.shadow = AppShadowTokens.level1,
-  });
-
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-  final Color? color;
-  final double radius;
-  final Color? borderColor;
-  final List<BoxShadow> shadow;
-
-  @override
-  Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color ?? (dark ? surface.canvasSoft : TodayPalette.panel),
-        borderRadius: BorderRadius.circular(radius),
-        border: Border.all(
-          color: borderColor ?? (dark ? surface.hairline : TodayPalette.line),
-        ),
-        boxShadow: dark ? AppShadowTokens.level1 : shadow,
-      ),
-      child: Padding(padding: padding, child: child),
-    );
-  }
 }
 
 class TodayGlyphTile extends StatelessWidget {

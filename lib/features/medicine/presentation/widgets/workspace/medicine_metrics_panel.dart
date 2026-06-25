@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/workspace/medicine_workspace_helpers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -22,7 +22,7 @@ class MedicineMetricsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MedicineSectionSurface(
+    return AppSectionSurface(
       title: '',
       typography: typography,
       surface: surface,

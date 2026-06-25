@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -24,7 +25,7 @@ class TodayPrioritySection extends StatelessWidget {
       title: l10n.todayPrioritySectionTitle,
       actionLabel: l10n.todayManageAction,
       onAction: () => AppToast.show(context, l10n.todayManageAction),
-      child: TodayPanel(
+      child: AppSectionSurface(
         padding: EdgeInsets.zero,
         child: Column(
           children: [

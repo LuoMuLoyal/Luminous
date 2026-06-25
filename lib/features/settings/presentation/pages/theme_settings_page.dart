@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
+import 'package:luminous/core/widgets/app_setting_row.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -32,13 +33,13 @@ class ThemeSettingsPage extends ConsumerWidget {
       children: [
         _SectionLabel(label: l10n.settingsThemeAppearanceTitle),
         const SizedBox(height: AppSpacingTokens.sm),
-        MineSectionSurface(
+        AppSectionSurface(
           typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('theme-row-system'),
                 title: l10n.mineThemeModeSystem,
                 icon: Icons.settings_brightness_rounded,
@@ -49,7 +50,7 @@ class ThemeSettingsPage extends ConsumerWidget {
                     _handleThemeTap(ref, AppThemeModePreference.system),
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('theme-row-light'),
                 title: l10n.mineThemeModeLight,
                 icon: Icons.light_mode_rounded,
@@ -59,7 +60,7 @@ class ThemeSettingsPage extends ConsumerWidget {
                 onTap: () => _handleThemeTap(ref, AppThemeModePreference.light),
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('theme-row-dark'),
                 title: l10n.mineThemeModeDark,
                 icon: Icons.dark_mode_rounded,
@@ -74,13 +75,13 @@ class ThemeSettingsPage extends ConsumerWidget {
         const SizedBox(height: AppSpacingTokens.lg),
         _SectionLabel(label: l10n.settingsThemePaletteTitle),
         const SizedBox(height: AppSpacingTokens.sm),
-        MineSectionSurface(
+        AppSectionSurface(
           typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('theme-palette-row-classic'),
                 title: l10n.settingsThemePaletteClassic,
                 icon: Icons.contrast_rounded,
@@ -96,7 +97,7 @@ class ThemeSettingsPage extends ConsumerWidget {
                     _handlePaletteTap(ref, AppThemePalettePreference.classic),
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('theme-palette-row-blue-pink'),
                 title: l10n.settingsThemePaletteBluePink,
                 icon: Icons.palette_outlined,
@@ -113,7 +114,7 @@ class ThemeSettingsPage extends ConsumerWidget {
                     _handlePaletteTap(ref, AppThemePalettePreference.bluePink),
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('theme-palette-row-yellow-green'),
                 title: l10n.settingsThemePaletteYellowGreen,
                 icon: Icons.palette_outlined,

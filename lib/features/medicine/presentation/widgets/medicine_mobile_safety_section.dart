@@ -29,7 +29,7 @@ class _SafetyEngineSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        MedicinePanel(
+        AppSectionSurface(
           padding: EdgeInsets.zero,
           child: Column(
             children: [

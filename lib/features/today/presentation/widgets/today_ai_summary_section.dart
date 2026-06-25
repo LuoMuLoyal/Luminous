@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -46,7 +47,7 @@ class TodayAiSummarySection extends ConsumerWidget {
         ? l10n.todayAiSummaryOpenSettingsAction
         : l10n.todayAiSummaryGenerateAction;
 
-    return TodayPanel(
+    return AppSectionSurface(
       key: const Key('today-ai-summary-card'),
       padding: EdgeInsets.zero,
       radius: AppRadiusTokens.lg,
@@ -121,10 +122,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                           if (result.status ==
                                   TodayAiAnalysisCardStatus.error &&
                               (result.errorMessage?.isNotEmpty ?? false)) {
-                            await AppToast.show(
-                              context,
-                              result.errorMessage!,
-                            );
+                            await AppToast.show(context, result.errorMessage!);
                           }
                         },
                   style: TextButton.styleFrom(
@@ -159,9 +157,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                 ),
               ),
             ),
-          for (var index = 0;
-              index < content.bullets.length;
-              index += 1) ...[
+          for (var index = 0; index < content.bullets.length; index += 1) ...[
             _AiSummaryRow(item: content.bullets[index]),
             if (index < content.bullets.length - 1)
               Divider(

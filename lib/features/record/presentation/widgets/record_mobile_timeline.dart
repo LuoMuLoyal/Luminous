@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -38,7 +39,7 @@ class RecordMobileTimeline extends StatelessWidget {
           style: typography.displaySm,
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        RecordSectionSurface(
+        AppSectionSurface(
           typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,

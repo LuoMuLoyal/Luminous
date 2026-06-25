@@ -24,39 +24,6 @@ abstract final class ReportPalette {
   static const Color orangeSoft = AppColorTokens.warningSoft;
 }
 
-class ReportPanel extends StatelessWidget {
-  const ReportPanel({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.all(AppSpacingTokens.md),
-    this.color,
-    this.borderColor,
-    this.radius = AppRadiusTokens.lg,
-  });
-
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-  final Color? color;
-  final Color? borderColor;
-  final double radius;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color ?? surface.canvas,
-        borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: borderColor ?? surface.hairline),
-        boxShadow: AppShadowTokens.level1,
-      ),
-      child: Padding(padding: padding, child: child),
-    );
-  }
-}
-
 class ReportMetricTrack extends StatelessWidget {
   const ReportMetricTrack({
     super.key,

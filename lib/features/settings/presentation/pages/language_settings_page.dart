@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
+import 'package:luminous/core/widgets/app_setting_row.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -8,7 +10,6 @@ import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -31,27 +32,23 @@ class LanguageSettingsPage extends ConsumerWidget {
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
-        MineSectionSurface(
+        AppSectionSurface(
           typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('language-row-system'),
                 title: l10n.settingsLanguageSystemLabel,
                 trailing: _SelectionIcon(
                   selected: currentLocale == AppLocale.system,
                 ),
-                onTap: () => _handleLocaleTap(
-                  context,
-                  ref,
-                  l10n,
-                  AppLocale.system,
-                ),
+                onTap: () =>
+                    _handleLocaleTap(context, ref, l10n, AppLocale.system),
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('language-row-zh'),
                 title: l10n.settingsLanguageChineseLabel,
                 trailing: _SelectionIcon(
@@ -61,14 +58,13 @@ class LanguageSettingsPage extends ConsumerWidget {
                     _handleLocaleTap(context, ref, l10n, AppLocale.zhCn),
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('language-row-en'),
                 title: l10n.settingsLanguageEnglishLabel,
                 trailing: _SelectionIcon(
                   selected: currentLocale == AppLocale.en,
                 ),
-                onTap: () =>
-                    _handleLocaleTap(context, ref, l10n, AppLocale.en),
+                onTap: () => _handleLocaleTap(context, ref, l10n, AppLocale.en),
               ),
             ],
           ),

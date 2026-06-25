@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/widgets/app_setting_row.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -50,13 +52,13 @@ class SettingsPage extends ConsumerWidget {
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
-        SettingsSectionSurface(
+        AppSectionSurface(
           key: const Key('settings-group-account'),
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              SettingsActionRow(
+              AppSettingRow(
                 key: const Key('settings-row-account'),
                 icon: Icons.verified_user_outlined,
                 title: l10n.mineSettingsAccountTitle,
@@ -64,8 +66,6 @@ class SettingsPage extends ConsumerWidget {
                     session.user?.email ??
                     session.user?.nickname ??
                     l10n.mineAccountSignedOut,
-                typography: typography,
-                surface: surface,
                 onTap: () {
                   if (session.isLoading) {
                     return;
@@ -77,29 +77,25 @@ class SettingsPage extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        SettingsSectionSurface(
+        AppSectionSurface(
           key: const Key('settings-group-preferences'),
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              SettingsActionRow(
+              AppSettingRow(
                 key: const Key('settings-row-theme'),
                 icon: Icons.dark_mode_outlined,
                 title: l10n.mineSettingsThemeTitle,
                 value: _themeSettingsLabel(l10n, currentTheme, currentPalette),
-                typography: typography,
-                surface: surface,
                 onTap: () => context.push('/settings/theme'),
                 showDivider: true,
               ),
-              SettingsActionRow(
+              AppSettingRow(
                 key: const Key('settings-row-language'),
                 icon: Icons.language_outlined,
                 title: l10n.mineSettingsLanguageTitle,
                 value: _languageLabel(l10n, currentLocale),
-                typography: typography,
-                surface: surface,
                 onTap: () => context.push('/settings/language'),
               ),
             ],
@@ -208,12 +204,12 @@ class _PrivacySettingsSection extends ConsumerWidget {
         : null;
     final settings = settingsAsync?.asData?.value;
 
-    return SettingsSectionSurface(
+    return AppSectionSurface(
       surface: surface,
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('settings-row-privacy-report'),
             icon: Icons.ios_share_outlined,
             title: l10n.minePrivacyReportTitle,
@@ -237,7 +233,7 @@ class _PrivacySettingsSection extends ConsumerWidget {
             },
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('settings-row-privacy-ai'),
             icon: Icons.auto_awesome_outlined,
             title: l10n.minePrivacyAiTitle,
@@ -260,7 +256,7 @@ class _PrivacySettingsSection extends ConsumerWidget {
             },
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('settings-row-privacy-ai-chat'),
             icon: Icons.chat_bubble_outline_rounded,
             title: l10n.assistantEntryTitle,
@@ -300,12 +296,12 @@ class _ReminderSettingsSection extends ConsumerWidget {
     String statusLabel(bool enabled) =>
         enabled ? l10n.mineReminderEnabled : l10n.mineReminderDisabled;
 
-    return SettingsSectionSurface(
+    return AppSectionSurface(
       surface: surface,
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('settings-row-notifications'),
             icon: Icons.notifications_none_rounded,
             title: l10n.mineSettingsNotificationsTitle,
@@ -313,7 +309,7 @@ class _ReminderSettingsSection extends ConsumerWidget {
             onTap: () => context.push('/settings/notifications'),
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('settings-row-reminder-medicine'),
             icon: Icons.medication_outlined,
             title: l10n.mineReminderMedicineTitle,
@@ -324,7 +320,7 @@ class _ReminderSettingsSection extends ConsumerWidget {
             onTap: () => context.push('/settings/notifications'),
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('settings-row-reminder-water'),
             icon: Icons.water_drop_outlined,
             title: l10n.mineReminderWaterTitle,
@@ -335,7 +331,7 @@ class _ReminderSettingsSection extends ConsumerWidget {
             onTap: () => context.push('/settings/notifications'),
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('settings-row-reminder-sleep'),
             icon: Icons.nightlight_outlined,
             title: l10n.mineReminderSleepTitle,
@@ -378,24 +374,23 @@ class _AdvancedSettingsSection extends ConsumerWidget {
         DataExportUiStatus.requested => l10n.mineExportStatusRequested,
         DataExportUiStatus.processing => l10n.mineExportStatusPending,
         DataExportUiStatus.completed => l10n.mineExportStatusCompleted,
-        DataExportUiStatus.completedLinkMissing => l10n.mineExportStatusLinkMissing,
+        DataExportUiStatus.completedLinkMissing =>
+          l10n.mineExportStatusLinkMissing,
         DataExportUiStatus.failed => l10n.mineExportStatusFailed,
         DataExportUiStatus.unavailable => l10n.mineExportStatusUnavailable,
       };
     }
 
-    return SettingsSectionSurface(
+    return AppSectionSurface(
       surface: surface,
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          SettingsActionRow(
+          AppSettingRow(
             key: const Key('settings-row-export'),
             icon: Icons.download_outlined,
             title: l10n.mineSettingExportTitle,
             value: exportValue(),
-            typography: typography,
-            surface: surface,
             onTap: () async {
               if (!signedIn) {
                 pushAuthRequiredRoute(context, '/settings');
@@ -460,32 +455,26 @@ class _AdvancedSettingsSection extends ConsumerWidget {
             },
             showDivider: true,
           ),
-          SettingsActionRow(
+          AppSettingRow(
             key: const Key('settings-row-help'),
             icon: Icons.help_outline_rounded,
             title: l10n.mineSettingHelpTitle,
             value: l10n.mineSettingHelpValue,
-            typography: typography,
-            surface: surface,
             onTap: () => _showHelpSheet(context, ref),
             showDivider: true,
           ),
-          SettingsActionRow(
+          AppSettingRow(
             key: const Key('settings-row-about'),
             icon: Icons.info_outline_rounded,
             title: l10n.mineSettingAboutTitle,
             value: l10n.mineSettingAboutValue,
-            typography: typography,
-            surface: surface,
             onTap: () => _showAboutSheet(context, ref),
             showDivider: true,
           ),
-          SettingsActionRow(
+          AppSettingRow(
             key: const Key('settings-row-advanced'),
             icon: Icons.tune_rounded,
             title: l10n.mineSettingsAdvancedTitle,
-            typography: typography,
-            surface: surface,
             onTap: () => context.push('/settings/more'),
           ),
         ],
@@ -519,18 +508,18 @@ class _AdvancedSettingsSection extends ConsumerWidget {
                 ListTile(
                   title: Text(r.title),
                   subtitle: r.subtitle != null ? Text(r.subtitle!) : null,
-                  enabled: r.actionUrl != null &&
+                  enabled:
+                      r.actionUrl != null &&
                       r.actionUrl!.isNotEmpty &&
                       r.actionType != null,
-                  onTap: r.actionUrl != null &&
+                  onTap:
+                      r.actionUrl != null &&
                           r.actionUrl!.isNotEmpty &&
                           r.actionType != null
                       ? () async {
                           Navigator.pop(context);
-                          if (r.actionType ==
-                                  SupportResourceActionType.url ||
-                              r.actionType ==
-                                  SupportResourceActionType.phone) {
+                          if (r.actionType == SupportResourceActionType.url ||
+                              r.actionType == SupportResourceActionType.phone) {
                             final uri = Uri.tryParse(r.actionUrl!);
                             if (uri != null) {
                               await const ExternalUrlLauncher().open(uri);

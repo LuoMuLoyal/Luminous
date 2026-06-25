@@ -13,7 +13,7 @@ class _ReferenceNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MedicinePanel(
+    return AppSectionSurface(
       color: Color.alphaBlend(
         surface.warningSoft.withValues(alpha: 0.44),
         surface.canvas,
@@ -119,7 +119,7 @@ class _SafetyTipsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        MedicinePanel(
+        AppSectionSurface(
           padding: EdgeInsets.zero,
           child: Column(
             children: [
