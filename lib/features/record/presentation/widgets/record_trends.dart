@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -26,7 +27,7 @@ class RecordTrendsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    return AppSectionSurface(
       key: const Key('record-trends'),
       title: l10n.recordTrendsSectionTitle,
       trailing: AppTextAction(

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -8,7 +9,6 @@ import 'package:luminous/features/health_context/domain/entities/health_context_
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_form_fields.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -97,7 +97,7 @@ class ReminderFormBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          MedicinePanel(
+          AppSectionSurface(
             padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,7 +150,7 @@ class ReminderFormBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          MedicinePanel(
+          AppSectionSurface(
             padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,7 +228,7 @@ class ReminderFormBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          MedicinePanel(
+          AppSectionSurface(
             padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,7 +276,7 @@ class ReminderFormBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          MedicinePanel(
+          AppSectionSurface(
             padding: const EdgeInsets.all(AppSpacingTokens.md),
             child: TextField(
               controller: noteController,

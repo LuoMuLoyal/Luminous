@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/network/lucent_api_exception.dart';
@@ -28,7 +29,6 @@ import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/providers/record_time_provider.dart';
 import 'package:luminous/features/record/presentation/pages/record_page.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -74,7 +74,7 @@ void main() {
       expect(
         find.descendant(
           of: find.byKey(Key(key)),
-          matching: find.byType(RecordSectionSurface),
+          matching: find.byType(AppSectionSurface),
         ),
         findsOneWidget,
       );
@@ -82,7 +82,7 @@ void main() {
     expect(
       find.descendant(
         of: find.byKey(const Key('record-filter-chips')),
-        matching: find.byType(RecordSectionSurface),
+        matching: find.byType(AppSectionSurface),
       ),
       findsNothing,
     );

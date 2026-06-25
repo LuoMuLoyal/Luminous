@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -27,7 +28,7 @@ class MedicineTodayPlanSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MedicineSectionSurface(
+    return AppSectionSurface(
       title: l10n.medicineTodayPlanTitle,
       trailing: SectionTextAction(
         label:

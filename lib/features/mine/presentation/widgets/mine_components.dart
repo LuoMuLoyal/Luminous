@@ -4,64 +4,6 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class MineSectionSurface extends StatelessWidget {
-  const MineSectionSurface({
-    super.key,
-    required this.child,
-    required this.typography,
-    required this.surface,
-    this.title,
-    this.trailing,
-    this.padding = const EdgeInsets.all(AppSpacingTokens.lg),
-    this.backgroundColor,
-  });
-
-  final Widget child;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-  final String? title;
-  final Widget? trailing;
-  final EdgeInsetsGeometry padding;
-  final Color? backgroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final hasHeader = (title != null && title!.isNotEmpty) || trailing != null;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: backgroundColor ?? surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-        boxShadow: AppShadowTokens.level1,
-      ),
-      child: Padding(
-        padding: padding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (hasHeader) ...[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (title != null && title!.isNotEmpty)
-                    Expanded(child: Text(title!, style: typography.displaySm)),
-                  if (trailing != null) ...[
-                    const SizedBox(width: AppSpacingTokens.md),
-                    trailing!,
-                  ],
-                ],
-              ),
-              const SizedBox(height: AppSpacingTokens.lg),
-            ],
-            child,
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class MineHeaderActionChip extends StatelessWidget {
   const MineHeaderActionChip({
     super.key,

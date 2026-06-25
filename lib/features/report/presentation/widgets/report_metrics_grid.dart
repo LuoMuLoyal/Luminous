@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -149,7 +150,7 @@ class _MetricCard extends StatelessWidget {
       child: InkWell(
         onTap: () => showReportToast(context, title),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: ReportPanel(
+        child: AppSectionSurface(
           padding: const EdgeInsets.all(AppSpacingTokens.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

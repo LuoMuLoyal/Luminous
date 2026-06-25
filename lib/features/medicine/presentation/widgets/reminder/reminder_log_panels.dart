@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReminderTodayLogPanel extends StatelessWidget {
@@ -41,7 +41,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        MedicinePanel(
+        AppSectionSurface(
           padding: EdgeInsets.zero,
           child: visibleLogs.isEmpty
               ? Padding(
@@ -114,7 +114,7 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        MedicinePanel(
+        AppSectionSurface(
           padding: EdgeInsets.zero,
           child: visibleLogs.isEmpty
               ? Padding(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -20,7 +21,7 @@ class TodayOverviewSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final items = buildOverviewItems(l10n, dashboard);
 
-    return TodayPanel(
+    return AppSectionSurface(
       key: const Key('today-health-summary-card'),
       padding: const EdgeInsets.fromLTRB(
         AppSpacingTokens.md,

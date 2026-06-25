@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
+import 'package:luminous/core/widgets/app_setting_row.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
@@ -31,13 +32,13 @@ class NotificationSettingsPage extends ConsumerWidget {
         if (settings.permissionState != NotificationPermissionState.unsupported)
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
-            child: MineSectionSurface(
+            child: AppSectionSurface(
               typography: typography,
               surface: surface,
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
-                  SettingsListRow(
+                  AppSettingRow(
                     key: const Key('notification-row-permission'),
                     title: _permissionTitle(l10n, settings.permissionState),
                     subtitle: _permissionSubtitle(
@@ -45,7 +46,8 @@ class NotificationSettingsPage extends ConsumerWidget {
                       settings.permissionState,
                     ),
                     icon: Icons.notifications_active_outlined,
-                    trailing: settings.permissionState ==
+                    trailing:
+                        settings.permissionState ==
                             NotificationPermissionState.granted
                         ? Icon(
                             Icons.check_circle_rounded,
@@ -63,9 +65,7 @@ class NotificationSettingsPage extends ConsumerWidget {
                         return;
                       }
                       await ref
-                          .read(
-                            notificationSettingsControllerProvider.notifier,
-                          )
+                          .read(notificationSettingsControllerProvider.notifier)
                           .requestPermission();
                     },
                   ),
@@ -76,7 +76,7 @@ class NotificationSettingsPage extends ConsumerWidget {
         else
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
-            child: MineSectionSurface(
+            child: AppSectionSurface(
               typography: typography,
               surface: surface,
               padding: const EdgeInsets.all(AppSpacingTokens.md),
@@ -98,13 +98,13 @@ class NotificationSettingsPage extends ConsumerWidget {
               ),
             ),
           ),
-        MineSectionSurface(
+        AppSectionSurface(
           typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('notification-row-medication'),
                 title: l10n.settingsNotificationsMedicationReminders,
                 icon: Icons.medication_liquid_outlined,
@@ -119,7 +119,7 @@ class NotificationSettingsPage extends ConsumerWidget {
                     .setMedicationReminders(!settings.medicationReminders),
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('notification-row-health-alerts'),
                 title: l10n.settingsNotificationsHealthAlerts,
                 icon: Icons.favorite_border_rounded,
@@ -134,7 +134,7 @@ class NotificationSettingsPage extends ConsumerWidget {
                     .setHealthAlerts(!settings.healthAlerts),
                 showDivider: true,
               ),
-              SettingsListRow(
+              AppSettingRow(
                 key: const Key('notification-row-weekly-summary'),
                 title: l10n.settingsNotificationsWeeklySummary,
                 icon: Icons.calendar_today_outlined,

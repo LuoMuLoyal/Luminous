@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -135,7 +136,7 @@ class RecordQuickEntryPanel extends StatelessWidget {
       children: [
         Text(l10n.recordQuickSectionTitle, style: typography.displaySm),
         const SizedBox(height: AppSpacingTokens.sm),
-        RecordSectionSurface(
+        AppSectionSurface(
           typography: typography,
           surface: surface,
           padding: EdgeInsets.zero,
@@ -291,7 +292,7 @@ class RecordGuideRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    return AppSectionSurface(
       key: const Key('record-guide-row'),
       typography: typography,
       surface: surface,

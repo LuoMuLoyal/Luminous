@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/widgets/app_setting_row.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantControlsPanel extends StatelessWidget {
@@ -38,7 +39,7 @@ class AssistantControlsPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return SettingsSectionSurface(
+    return AppSectionSurface(
       surface: surface,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +54,7 @@ class AssistantControlsPanel extends StatelessWidget {
             style: typography.bodySm.copyWith(color: surface.body),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('assistant-row-enabled'),
             title: l10n.assistantSettingsEnableTitle,
             subtitle: l10n.assistantSettingsEnableSubtitle,
@@ -70,7 +71,7 @@ class AssistantControlsPanel extends StatelessWidget {
             ),
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('assistant-row-memory-enabled'),
             title: l10n.assistantSettingsMemoryTitle,
             subtitle: l10n.assistantSettingsMemorySubtitle,
@@ -89,7 +90,7 @@ class AssistantControlsPanel extends StatelessWidget {
             ),
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('assistant-row-context-health-profile'),
             title: l10n.assistantContextHealthProfile,
             icon: Icons.badge_outlined,
@@ -108,7 +109,7 @@ class AssistantControlsPanel extends StatelessWidget {
             ),
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('assistant-row-context-daily-records'),
             title: l10n.assistantContextDailyRecords,
             icon: Icons.event_note_outlined,
@@ -127,7 +128,7 @@ class AssistantControlsPanel extends StatelessWidget {
             ),
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('assistant-row-context-sleep-records'),
             title: l10n.assistantContextSleepRecords,
             icon: Icons.bedtime_outlined,
@@ -146,7 +147,7 @@ class AssistantControlsPanel extends StatelessWidget {
             ),
             showDivider: true,
           ),
-          SettingsListRow(
+          AppSettingRow(
             key: const Key('assistant-row-context-current-medicines'),
             title: l10n.assistantContextCurrentMedicines,
             icon: Icons.medication_outlined,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/workspace/medicine_workspace_helpers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -23,15 +23,13 @@ class MedicineQuickActionSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MedicineSectionSurface(
+    return AppSectionSurface(
       title: l10n.medicineQuickActionSectionTitle,
       typography: typography,
       surface: surface,
       child: Row(
         children: [
-          for (var index = 0;
-              index < workspace.quickActions.length;
-              index += 1)
+          for (var index = 0; index < workspace.quickActions.length; index += 1)
             Expanded(
               child: Padding(
                 padding: EdgeInsets.only(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_tokens.dart';
 import 'package:luminous/features/record/presentation/widgets/record_shared_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -62,7 +62,7 @@ class _OverviewGrid extends StatelessWidget {
       rows.add(items.skip(index).take(3).toList(growable: false));
     }
 
-    return RecordSectionSurface(
+    return AppSectionSurface(
       typography: typography,
       surface: surface,
       padding: EdgeInsets.zero,

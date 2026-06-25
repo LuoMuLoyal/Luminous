@@ -54,7 +54,7 @@ class _QuickOperationSection extends StatelessWidget {
       children: [
         AppSectionHeader(title: l10n.medicineQuickOperationTitle),
         const SizedBox(height: AppSpacingTokens.sm),
-        MedicinePanel(
+        AppSectionSurface(
           padding: EdgeInsets.zero,
           child: Column(
             children: [

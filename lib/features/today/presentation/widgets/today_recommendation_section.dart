@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -28,7 +29,7 @@ class TodayRecommendationSection extends StatelessWidget {
       title: l10n.todayRecommendationSectionTitle,
       actionLabel: l10n.todayViewMoreAction,
       onAction: () => AppToast.show(context, l10n.todayViewMoreAction),
-      child: TodayPanel(
+      child: AppSectionSurface(
         key: const Key('today-recommendation-card'),
         padding: EdgeInsets.zero,
         child: Column(

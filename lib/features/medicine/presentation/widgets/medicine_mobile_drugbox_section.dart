@@ -24,7 +24,7 @@ class _DrugBoxSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = workspace.plan.items.take(2).toList(growable: false);
 
-    return MedicinePanel(
+    return AppSectionSurface(
       key: const Key('medicine-hero'),
       color: Color.alphaBlend(
         surface.tealSoft.withValues(alpha: 0.08),

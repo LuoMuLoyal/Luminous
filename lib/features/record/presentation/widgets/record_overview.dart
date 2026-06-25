@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -23,7 +24,7 @@ class RecordWeekStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    return AppSectionSurface(
       typography: typography,
       surface: surface,
       padding: const EdgeInsets.symmetric(
@@ -66,7 +67,7 @@ class RecordQuickActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    return AppSectionSurface(
       key: const Key('record-quick-actions'),
       title: l10n.recordQuickSectionTitle,
       typography: typography,
@@ -116,7 +117,7 @@ class RecordSummaryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    return AppSectionSurface(
       key: const Key('record-summary'),
       title: l10n.recordSummarySectionTitle,
       subtitle: l10n.recordSummaryDateLabel,
@@ -167,7 +168,7 @@ class RecordNewEntryPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecordSectionSurface(
+    return AppSectionSurface(
       key: const Key('record-new-entry-panel'),
       title: l10n.recordNewEntrySectionTitle,
       typography: typography,

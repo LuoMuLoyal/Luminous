@@ -24,7 +24,7 @@ class _MedicineRecordsSection extends StatelessWidget {
       surface,
     ).take(4).toList(growable: false);
 
-    return MedicinePanel(
+    return AppSectionSurface(
       key: const Key('medicine-today-plan'),
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       child: Column(

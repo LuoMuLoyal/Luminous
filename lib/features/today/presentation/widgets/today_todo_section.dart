@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -22,7 +22,7 @@ class TodayTodoSection extends StatelessWidget {
 
     return TodaySection(
       title: l10n.todayTodoSectionTitle,
-      child: TodayPanel(
+      child: AppSectionSurface(
         key: const Key('today-todo-card'),
         padding: EdgeInsets.zero,
         child: Column(
@@ -87,8 +87,7 @@ class _TodoRow extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       widthFactor: 0.84,
-                      isLoading:
-                          item.subtitleIsDynamic ? null : false,
+                      isLoading: item.subtitleIsDynamic ? null : false,
                     ),
                     const SizedBox(height: AppSpacingTokens.xs),
                     AppSkeletonText(
@@ -100,8 +99,7 @@ class _TodoRow extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       widthFactor: 0.84,
-                      isLoading:
-                          item.subtitleIsDynamic ? null : false,
+                      isLoading: item.subtitleIsDynamic ? null : false,
                     ),
                   ],
                 ),
@@ -110,11 +108,8 @@ class _TodoRow extends StatelessWidget {
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: item.color.withValues(alpha: 0.08),
-                  borderRadius:
-                      BorderRadius.circular(AppRadiusTokens.pill),
-                  border: Border.all(
-                    color: item.color.withValues(alpha: 0.12),
-                  ),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                  border: Border.all(color: item.color.withValues(alpha: 0.12)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
