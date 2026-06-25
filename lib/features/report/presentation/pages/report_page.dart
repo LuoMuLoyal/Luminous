@@ -15,6 +15,7 @@ import 'package:luminous/features/report/presentation/providers/report_ai_summar
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
+import 'package:luminous/features/report/presentation/utils/report_ui_formatters.dart';
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
@@ -29,8 +30,9 @@ class ReportPage extends ConsumerWidget {
   const ReportPage({super.key});
 
   Future<void> _refreshDashboard(WidgetRef ref) async {
-    ref.invalidate(reportDashboardProvider);
-    await ref.read(reportDashboardProvider.future);
+    final range = ref.read(reportDashboardSelectedRangeProvider);
+    ref.invalidate(reportDashboardProvider(range));
+    await ref.read(reportDashboardProvider(range).future);
   }
 
   void _openRecordFilter(
@@ -150,7 +152,12 @@ class ReportPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
-    final dashboardAsync = ref.watch(reportDashboardProvider);
+    final selectedDashboardRange = ref.watch(
+      reportDashboardSelectedRangeProvider,
+    );
+    final dashboardAsync = ref.watch(
+      reportDashboardProvider(selectedDashboardRange),
+    );
     final selectedAiSummaryRange = ref.watch(
       reportAiSummarySelectedRangeProvider,
     );
@@ -164,6 +171,24 @@ class ReportPage extends ConsumerWidget {
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
+    final dateRangeLabel = dashboardAsync.when(
+      data: (dashboard) => reportDashboardDateRangeLabel(
+        context,
+        dashboard.startDate,
+        dashboard.endDate,
+      ),
+      loading: () => reportDashboardDateRangeLabel(
+        context,
+        MockReportRepository.previewDashboard.startDate,
+        MockReportRepository.previewDashboard.endDate,
+      ),
+      error: (_, __) => reportDashboardDateRangeLabel(
+        context,
+        MockReportRepository.previewDashboard.startDate,
+        MockReportRepository.previewDashboard.endDate,
+      ),
+    );
+
     return dashboardAsync.when(
       data: (dashboard) => _ReportMobileShell(
         onGenerate: () {
@@ -175,10 +200,31 @@ class ReportPage extends ConsumerWidget {
               )
               .generate();
         },
-        onSync: () => ref.invalidate(reportDashboardProvider),
+        onSync: () => _refreshDashboard(ref),
         onRefresh: () => _refreshDashboard(ref),
         isGenerating: aiSummaryState.isLoading,
         isSyncing: false,
+        topBar: ReportTopBar(
+          dateRangeLabel: dateRangeLabel,
+          selectedRange: selectedDashboardRange,
+          onRangeSelected: (range) {
+            ref
+                .read(reportDashboardSelectedRangeProvider.notifier)
+                .setRange(range);
+          },
+          onGenerate: () {
+            ref
+                .read(
+                  reportAiSummaryControllerProvider(
+                    selectedAiSummaryRange,
+                  ).notifier,
+                )
+                .generate();
+          },
+          onSync: () => _refreshDashboard(ref),
+          isGenerating: aiSummaryState.isLoading,
+          isSyncing: false,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -189,6 +235,12 @@ class ReportPage extends ConsumerWidget {
             ReportDashboardView(
               dashboard: dashboard,
               authSession: session,
+              dashboardRange: selectedDashboardRange,
+              onDashboardRangeChanged: (range) {
+                ref
+                    .read(reportDashboardSelectedRangeProvider.notifier)
+                    .setRange(range);
+              },
               aiSummaryState: aiSummaryState,
               aiSummaryRange: selectedAiSummaryRange,
               latestExportRequest: latestExportRequest,
@@ -217,13 +269,36 @@ class ReportPage extends ConsumerWidget {
       loading: () => _ReportMobileShell(
         isGenerating: aiSummaryState.isLoading,
         isSyncing: session.canAccessProtectedData,
-        onGenerate: () => ref.invalidate(reportDashboardProvider),
-        onSync: () => ref.invalidate(reportDashboardProvider),
+        onGenerate: () =>
+            ref.invalidate(reportDashboardProvider(selectedDashboardRange)),
+        onSync: () =>
+            ref.invalidate(reportDashboardProvider(selectedDashboardRange)),
         onRefresh: () => _refreshDashboard(ref),
+        topBar: ReportTopBar(
+          dateRangeLabel: dateRangeLabel,
+          selectedRange: selectedDashboardRange,
+          onRangeSelected: (range) {
+            ref
+                .read(reportDashboardSelectedRangeProvider.notifier)
+                .setRange(range);
+          },
+          onGenerate: () =>
+              ref.invalidate(reportDashboardProvider(selectedDashboardRange)),
+          onSync: () =>
+              ref.invalidate(reportDashboardProvider(selectedDashboardRange)),
+          isGenerating: aiSummaryState.isLoading,
+          isSyncing: session.canAccessProtectedData,
+        ),
         child: ReportDashboardView(
           dashboard: MockReportRepository.previewDashboard,
           authSession: session,
           isLoading: true,
+          dashboardRange: selectedDashboardRange,
+          onDashboardRangeChanged: (range) {
+            ref
+                .read(reportDashboardSelectedRangeProvider.notifier)
+                .setRange(range);
+          },
           aiSummaryRange: selectedAiSummaryRange,
           latestExportRequest: latestExportRequest,
           exportRequestInFlight: exportRequestInFlight,
@@ -241,7 +316,9 @@ class ReportPage extends ConsumerWidget {
               description: l10n.reportErrorDescription,
               icon: Icons.bar_chart_rounded,
               actionLabel: l10n.todayRetryAction,
-              onAction: () => ref.invalidate(reportDashboardProvider),
+              onAction: () => ref.invalidate(
+                reportDashboardProvider(selectedDashboardRange),
+              ),
               tone: AppStateTone.warning,
             ),
           ),
@@ -319,6 +396,7 @@ class _ReportSignedOutNotice extends StatelessWidget {
 class _ReportMobileShell extends StatelessWidget {
   const _ReportMobileShell({
     required this.child,
+    required this.topBar,
     required this.onGenerate,
     required this.onSync,
     required this.onRefresh,
@@ -327,6 +405,7 @@ class _ReportMobileShell extends StatelessWidget {
   });
 
   final Widget child;
+  final ReportTopBar topBar;
   final VoidCallback onGenerate;
   final VoidCallback onSync;
   final Future<void> Function() onRefresh;
@@ -353,12 +432,7 @@ class _ReportMobileShell extends StatelessWidget {
               AppSpacingTokens.x5l,
             ),
             children: [
-              ReportTopBar(
-                isGenerating: isGenerating,
-                isSyncing: isSyncing,
-                onGenerate: onGenerate,
-                onSync: onSync,
-              ),
+              topBar,
               const SizedBox(height: AppSpacingTokens.md),
               child,
             ],

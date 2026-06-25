@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -63,7 +64,15 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       expect(find.text(l10n.tabReport), findsOneWidget);
-      expect(find.text(l10n.reportWeekDateRange), findsOneWidget);
+      final startLabel = DateFormat(
+        'M月d日',
+        'zh',
+      ).format(DateTime.parse('2026-06-06'));
+      final endLabel = DateFormat(
+        'M月d日',
+        'zh',
+      ).format(DateTime.parse('2026-06-12'));
+      expect(find.text('$startLabel - $endLabel'), findsOneWidget);
       expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
       expect(
         find.descendant(
@@ -567,7 +576,7 @@ class _PendingReportRepository implements ReportRepository {
   bool fetchCalled = false;
 
   @override
-  Future<ReportDashboard> fetchDashboard() {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) {
     fetchCalled = true;
     return _pending.future;
   }
@@ -587,7 +596,7 @@ class _RefreshableReportRepository implements ReportRepository {
   ];
 
   @override
-  Future<ReportDashboard> fetchDashboard() {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) {
     fetchCount += 1;
     if (_pending.isEmpty) {
       final completer = Completer<ReportDashboard>()
@@ -727,7 +736,7 @@ class _CountingPendingReportRepository implements ReportRepository {
   final _pending = Completer<ReportDashboard>();
 
   @override
-  Future<ReportDashboard> fetchDashboard() {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) {
     fetchCount++;
     return _pending.future;
   }
@@ -739,18 +748,21 @@ class _CountingPendingReportRepository implements ReportRepository {
 
 class _ThrowingReportRepository implements ReportRepository {
   @override
-  Future<ReportDashboard> fetchDashboard() async {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) async {
     throw Exception('Test error');
   }
 }
 
 class _EmptyReportRepository implements ReportRepository {
   @override
-  Future<ReportDashboard> fetchDashboard() async {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) async {
     return _emptyDashboard;
   }
 
   static const _emptyDashboard = ReportDashboard(
+    range: ReportDashboardRange.last7Days,
+    startDate: '2026-06-06',
+    endDate: '2026-06-12',
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,

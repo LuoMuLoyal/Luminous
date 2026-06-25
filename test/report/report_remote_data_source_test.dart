@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/features/report/data/datasources/report_remote_data_source.dart';
+import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 
 void main() {
   group('ReportRemoteDataSource', () {
@@ -24,7 +25,9 @@ void main() {
     test(
       'fetchDashboard requests dashboard endpoint and unwraps envelope',
       () async {
-        final dashboard = await dataSource.fetchDashboard();
+        final dashboard = await dataSource.fetchDashboard(
+          ReportDashboardRange.last7Days,
+        );
 
         final request = adapter.requestAt(
           'GET',

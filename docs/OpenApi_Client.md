@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-22
+Last updated: 2026-06-25
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 
@@ -15,7 +15,7 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 ## Current Generated Baseline
 
 - Last known Lucent export: 62 paths / 171 schemas.
-- Generated package includes auth/account, user-scoped health context, daily records with persisted `occurredTime`, AI daily-record candidate parsing, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, assistant capability discovery plus recent-conversation list/open and latest-conversation restore/archive DTOs, report dashboard, Today AI analysis, range-based report AI summary (`last_7_days` / `last_30_days`), public support resources/app info, data export request status plus explicit create-request DTOs/enums, and the new Today/Report AI stream response DTOs.
+- Generated package includes auth/account, user-scoped health context, daily records with persisted `occurredTime`, AI daily-record candidate parsing, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, assistant capability discovery plus recent-conversation list/open and latest-conversation restore/archive DTOs, report dashboard with `last_7_days`/`last_30_days`/`custom` range support, Today AI analysis, range-based report AI summary (`last_7_days` / `last_30_days` / `custom`), public support resources/app info, data export request status plus explicit create-request DTOs/enums, and the new Today/Report AI stream response DTOs.
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay under `/api/v1/account/*`.
 
 ## Usage Rules
