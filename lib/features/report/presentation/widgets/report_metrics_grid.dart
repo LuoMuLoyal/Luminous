@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
@@ -168,8 +169,18 @@ class _MetricCard extends StatelessWidget {
                   AppIconBadge(
                     icon: metric.icon,
                     color: metric.color,
-                    size: 34,
-                    iconSize: 19,
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.084,
+                      minValue: 28,
+                      maxValue: 36,
+                    ),
+                    iconSize: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.046,
+                      minValue: 16,
+                      maxValue: 20,
+                    ),
                     shape: BoxShape.circle,
                   ),
                   const SizedBox(width: AppSpacingTokens.xs),
@@ -198,7 +209,7 @@ class _MetricCard extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0,
                     ),
-                    width: 48,
+                    widthFactor: 0.32,
                   ),
                   if (metric.unit.isNotEmpty)
                     Padding(
@@ -219,9 +230,9 @@ class _MetricCard extends StatelessWidget {
               Row(
                 children: [
                   AppSkeletonSlot(
-                    skeleton: const AppInlineSkeletonBlock(
-                      height: 22,
-                      width: 54,
+                    skeleton: AppInlineSkeletonBlock(
+                      height: (typography.bodySm.fontSize ?? 14) + 8,
+                      widthFactor: 0.36,
                       radius: AppRadiusTokens.sm,
                     ),
                     child: AppStatusPill(
@@ -231,7 +242,16 @@ class _MetricCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: AppSpacingTokens.xs),
-                  Icon(directionIcon, size: 14, color: directionColor),
+                  Icon(
+                    directionIcon,
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.034,
+                      minValue: 12,
+                      maxValue: 16,
+                    ),
+                    color: directionColor,
+                  ),
                   const SizedBox(width: AppSpacingTokens.xxs),
                   Expanded(
                     child: AppSkeletonText(

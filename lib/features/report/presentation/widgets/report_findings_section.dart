@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
@@ -90,16 +90,36 @@ class _FindingCard extends StatelessWidget {
                     AppIconBadge(
                       icon: finding.icon,
                       color: finding.color,
-                      size: 42,
-                      iconSize: 22,
+                      size: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.1,
+                        minValue: 36,
+                        maxValue: 44,
+                      ),
+                      iconSize: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.052,
+                        minValue: 18,
+                        maxValue: 24,
+                      ),
                       shape: BoxShape.circle,
                     ),
                     const Spacer(),
                     AppIconBadge(
                       icon: Icons.chevron_right_rounded,
                       color: surface.body,
-                      size: 28,
-                      iconSize: 18,
+                      size: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.068,
+                        minValue: 24,
+                        maxValue: 30,
+                      ),
+                      iconSize: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.042,
+                        minValue: 16,
+                        maxValue: 20,
+                      ),
                       shape: BoxShape.circle,
                     ),
                   ],

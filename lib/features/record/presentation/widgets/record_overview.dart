@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -395,8 +396,18 @@ class _SummaryTile extends StatelessWidget {
                       icon: item.icon,
                       color: item.accent,
                       backgroundColor: item.softColor,
-                      size: 30,
-                      iconSize: 17,
+                      size: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.072,
+                        minValue: 24,
+                        maxValue: 32,
+                      ),
+                      iconSize: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.042,
+                        minValue: 14,
+                        maxValue: 18,
+                      ),
                     ),
                     const SizedBox(width: AppSpacingTokens.sm),
                     Expanded(

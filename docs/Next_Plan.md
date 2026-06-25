@@ -6,21 +6,13 @@ This file records the next implementation order only. Completed work belongs in 
 
 ## Current Goal
 
-The next active slice is **bounded assistant leaflet RAG planning and backend implementation prep** in Lucent.
+The next active slice is **finishing the Luminous responsive layout and UI detail cleanup** now that the backend assistant leaflet RAG slice is delivered.
 
 ## Immediate Work Order
 
-1. **Start RAG as one extra assistant tool, not as a new app architecture**
-   - Keep this bounded to:
-     - medicine leaflet dataset ingestion/index strategy
-     - retrieval-only augmentation over approved medicine knowledge
-     - server-side tool integration after the base chat loop is already stable
-   - Explicit non-scope:
-     - replacing the reviewed medicine safety rule engine
-     - pretending retrieval equals safe risk judgment
-     - making retrieval a mandatory dependency for all assistant replies
-   - Current execution source:
-     - `../Lucent/plans/2026-06-22-assistant-leaflet-rag-slice.md`
+1. **Finish Record/Report hardcoded-dimension cleanup**
+   - Replace remaining literal widths/heights in icon badges, skeleton blocks, and small card internals with `AppResponsiveSizing` helpers or `AppSpacingTokens`.
+   - Keep changes visual-only; do not alter business logic or test assertions.
 
 2. **Keep assistant evolution bounded to concrete new scenarios**
    - Only extend assistant tools/proposals when a specific missing user task is chosen
@@ -34,6 +26,11 @@ The next active slice is **bounded assistant leaflet RAG planning and backend im
 4. **Keep the local validation discipline**
    - Repo-safe daily: `dart run tool/run_daily_checks.dart`
    - Full-stack gate: `dart run tool/run_fullstack_checks.dart` before changes touching auth/session, Today/Report protected loading, daily-records API, generated clients, or E2E helpers
+
+## Recently Completed
+
+- **Backend assistant leaflet RAG** (`Lucent` commit `6f165e3`): `get_medicine_leaflet_context` tool, leaflet index rebuild script, dynamic `ragEnabled` capabilities truth, and updated assistant contract.
+- **Luminous Record/Report responsive pass** (`Luminous` commit `0a57312`): removed Record "Today overview", widened Report finding cards, added `AppResponsiveSizing`, and replaced the highest-impact fixed layout dimensions.
 
 ## Deferred But Useful
 
