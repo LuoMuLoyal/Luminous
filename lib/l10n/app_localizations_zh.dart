@@ -398,17 +398,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordAllTypesAction => '全部类型';
 
   @override
-  String get recordTodayOverviewTitle => '今日记录概览';
-
-  @override
-  String get recordTodayOverviewEvents => '记录事件';
-
-  @override
-  String recordTodayOverviewEventCount(int count) {
-    return '$count 条';
-  }
-
-  @override
   String get recordVoiceInputTitle => '语音输入';
 
   @override

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/record_date_bar.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_tokens.dart';
 import 'package:luminous/features/record/presentation/widgets/record_mobile_filter.dart';
-import 'package:luminous/features/record/presentation/widgets/record_mobile_overview.dart';
 import 'package:luminous/features/record/presentation/widgets/record_mobile_timeline.dart';
 import 'package:luminous/features/record/presentation/widgets/record_overview.dart';
 import 'package:luminous/features/record/presentation/widgets/record_quick_entry_panel.dart';
@@ -126,13 +126,6 @@ class _MobileRecordDashboard extends StatelessWidget {
           onQuickAction: onQuickAction,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        RecordMobileOverview(
-          dashboard: dashboard,
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
         RecordMobileFilter(
           filters: mobileFilters,
           l10n: l10n,
@@ -149,11 +142,7 @@ class _MobileRecordDashboard extends StatelessWidget {
           surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        RecordGuideRow(
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
+        RecordGuideRow(l10n: l10n, typography: typography, surface: surface),
       ],
     );
   }
@@ -178,7 +167,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 300,
+          width: AppResponsiveSizing.sidebarWidth(context),
           child: Column(
             children: [
               RecordMonthCalendarPanel(
@@ -220,7 +209,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacingTokens.lg),
         SizedBox(
-          width: 330,
+          width: AppResponsiveSizing.sidebarWidth(context),
           child: Column(
             children: [
               RecordTrendsPanel(

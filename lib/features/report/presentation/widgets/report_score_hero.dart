@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
@@ -71,7 +72,12 @@ class ReportScoreHero extends StatelessWidget {
                         score.value.toString(),
                         style: typography.displayXl.copyWith(
                           color: ReportPalette.previewScore,
-                          fontSize: 54,
+                          fontSize: AppResponsiveSizing.scaleByWidth(
+                            context,
+                            fraction: 0.128,
+                            minValue: 40,
+                            maxValue: 54,
+                          ),
                           height: 1,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0,
@@ -120,12 +126,22 @@ class ReportScoreHero extends StatelessWidget {
               color: ReportPalette.previewScoreSoft,
               shape: BoxShape.circle,
             ),
-            child: const SizedBox.square(
-              dimension: 112,
+            child: SizedBox.square(
+              dimension: AppResponsiveSizing.scaleByWidth(
+                context,
+                fraction: 0.26,
+                minValue: 80,
+                maxValue: 112,
+              ),
               child: Icon(
                 Icons.fact_check_rounded,
                 color: ReportPalette.previewScore,
-                size: 68,
+                size: AppResponsiveSizing.scaleByWidth(
+                  context,
+                  fraction: 0.16,
+                  minValue: 48,
+                  maxValue: 68,
+                ),
               ),
             ),
           ),

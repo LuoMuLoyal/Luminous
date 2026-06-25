@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/widgets/app_section_header.dart';
@@ -98,7 +99,12 @@ class _TrendPlaceholder extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: 176,
+              height: AppResponsiveSizing.scaleByHeight(
+                context,
+                fraction: 0.22,
+                minValue: 144,
+                maxValue: 200,
+              ),
               child: Stack(
                 children: [
                   Column(
@@ -136,7 +142,14 @@ class _TrendPlaceholder extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 54),
+                    padding: EdgeInsets.only(
+                      right: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.14,
+                        minValue: 48,
+                        maxValue: 72,
+                      ),
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

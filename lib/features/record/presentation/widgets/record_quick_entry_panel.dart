@@ -143,38 +143,35 @@ class RecordQuickEntryPanel extends StatelessWidget {
           child: Column(
             children: [
               for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) ...[
-                SizedBox(
-                  height: 92,
-                  child: Row(
-                    children: [
-                      for (
-                        var index = 0;
-                        index < rows[rowIndex].length;
-                        index += 1
-                      ) ...[
-                        Expanded(
-                          child: _QuickRecordTile(
-                            action: rows[rowIndex][index],
-                            l10n: l10n,
-                            typography: typography,
-                            surface: surface,
-                            onQuickAction: onQuickAction,
-                          ),
+                Row(
+                  children: [
+                    for (
+                      var index = 0;
+                      index < rows[rowIndex].length;
+                      index += 1
+                    ) ...[
+                      Expanded(
+                        child: _QuickRecordTile(
+                          action: rows[rowIndex][index],
+                          l10n: l10n,
+                          typography: typography,
+                          surface: surface,
+                          onQuickAction: onQuickAction,
                         ),
-                        if (index < rows[rowIndex].length - 1)
-                          RecordShortVerticalDivider(
-                            surface: surface,
-                            height: AppSpacingTokens.x4l,
-                          ),
-                      ],
-                      for (
-                        var filler = rows[rowIndex].length;
-                        filler < 3;
-                        filler += 1
-                      )
-                        const Expanded(child: SizedBox.shrink()),
+                      ),
+                      if (index < rows[rowIndex].length - 1)
+                        RecordShortVerticalDivider(
+                          surface: surface,
+                          height: AppSpacingTokens.x4l,
+                        ),
                     ],
-                  ),
+                    for (
+                      var filler = rows[rowIndex].length;
+                      filler < 3;
+                      filler += 1
+                    )
+                      const Expanded(child: SizedBox.shrink()),
+                  ],
                 ),
                 if (rowIndex < rows.length - 1)
                   RecordIndentedDivider(

@@ -824,24 +824,6 @@ abstract class AppLocalizations {
   /// **'全部类型'**
   String get recordAllTypesAction;
 
-  /// No description provided for @recordTodayOverviewTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'今日记录概览'**
-  String get recordTodayOverviewTitle;
-
-  /// No description provided for @recordTodayOverviewEvents.
-  ///
-  /// In zh, this message translates to:
-  /// **'记录事件'**
-  String get recordTodayOverviewEvents;
-
-  /// No description provided for @recordTodayOverviewEventCount.
-  ///
-  /// In zh, this message translates to:
-  /// **'{count} 条'**
-  String recordTodayOverviewEventCount(int count);
-
   /// No description provided for @recordVoiceInputTitle.
   ///
   /// In zh, this message translates to:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
@@ -30,6 +31,13 @@ class ReportExportSection extends StatelessWidget {
   final AppThemeSurface surface;
   final Future<void> Function(ReportExportKind kind)? onActionTap;
 
+  double _exportCardHeight(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    if (width >= AppBreakpoints.desktop) return 124;
+    if (width >= AppBreakpoints.tablet) return 112;
+    return 104;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -41,11 +49,11 @@ class ReportExportSection extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: actions.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: AppSpacingTokens.sm,
             mainAxisSpacing: AppSpacingTokens.sm,
-            mainAxisExtent: 118,
+            mainAxisExtent: _exportCardHeight(context),
           ),
           itemBuilder: (context, index) {
             return _ExportCard(

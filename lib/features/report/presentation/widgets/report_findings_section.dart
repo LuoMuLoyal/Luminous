@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/widgets/app_section_header.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
@@ -37,7 +38,7 @@ class ReportFindingsSection extends StatelessWidget {
             children: [
               for (var index = 0; index < findings.length; index += 1) ...[
                 SizedBox(
-                  width: 238,
+                  width: AppResponsiveSizing.cardWidth(context),
                   child: _FindingCard(
                     finding: findings[index],
                     typography: typography,

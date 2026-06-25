@@ -453,24 +453,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordAllTypesAction => 'All types';
 
   @override
-  String get recordTodayOverviewTitle => 'Today overview';
-
-  @override
-  String get recordTodayOverviewEvents => 'Events';
-
-  @override
-  String recordTodayOverviewEventCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count items',
-      one: '1 item',
-      zero: '0 items',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get recordVoiceInputTitle => 'Voice input';
 
   @override

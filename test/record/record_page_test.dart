@@ -54,7 +54,6 @@ void main() {
       'record-ai-input',
       'record-timeline',
       'record-filter-chips',
-      'record-today-overview',
       'record-guide-row',
     ];
 
@@ -66,11 +65,7 @@ void main() {
     }
 
     expect(find.text(l10n.recordQuickSectionTitle), findsOneWidget);
-    for (final key in <String>[
-      'record-quick-actions',
-      'record-today-overview',
-      'record-timeline',
-    ]) {
+    for (final key in <String>['record-quick-actions', 'record-timeline']) {
       expect(
         find.descendant(
           of: find.byKey(Key(key)),
@@ -94,7 +89,6 @@ void main() {
     expect(find.byKey(const Key('record-quick-operations')), findsNothing);
     expect(find.byKey(const Key('record-quick-sleep')), findsOneWidget);
     expect(find.byKey(const Key('record-quick-vitals')), findsNothing);
-    expect(find.text(l10n.recordSummaryWaterTitle), findsOneWidget);
     expect(find.text(l10n.recordSummaryLatestVitalTitle), findsNothing);
     expect(find.text('情绪平均'), findsNothing);
     expect(find.text('查看今日报告'), findsNothing);

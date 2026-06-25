@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
@@ -33,11 +34,11 @@ class ReportMetricsGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: displayMetrics.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: AppSpacingTokens.sm,
         mainAxisSpacing: AppSpacingTokens.sm,
-        mainAxisExtent: 166,
+        mainAxisExtent: _metricCardHeight(context),
       ),
       itemBuilder: (context, index) {
         return _MetricCard(
@@ -113,6 +114,13 @@ class ReportMetricsGrid extends StatelessWidget {
       }
       return count == 0 ? 0 : sum / count;
     }, growable: false);
+  }
+
+  double _metricCardHeight(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    if (width >= AppBreakpoints.desktop) return 184;
+    if (width >= AppBreakpoints.tablet) return 172;
+    return 160;
   }
 
   bool get _allMetricValuesUnavailable =>
