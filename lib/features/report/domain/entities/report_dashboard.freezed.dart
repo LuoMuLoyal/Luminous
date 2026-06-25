@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ReportDashboard {
 
- ReportHealthScore get score; List<ReportMetric> get metrics; List<ReportTrendSeries> get trends; List<ReportFinding> get findings; List<ReportExportAction> get exportActions; List<ReportPatternCard> get patterns; bool get aiSummaryEnabled;
+ ReportDashboardRange get range; String get startDate; String get endDate; ReportHealthScore get score; List<ReportMetric> get metrics; List<ReportTrendSeries> get trends; List<ReportFinding> get findings; List<ReportExportAction> get exportActions; List<ReportPatternCard> get patterns; bool get aiSummaryEnabled;
 /// Create a copy of ReportDashboard
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ReportDashboardCopyWith<ReportDashboard> get copyWith => _$ReportDashboardCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportDashboard&&(identical(other.score, score) || other.score == score)&&const DeepCollectionEquality().equals(other.metrics, metrics)&&const DeepCollectionEquality().equals(other.trends, trends)&&const DeepCollectionEquality().equals(other.findings, findings)&&const DeepCollectionEquality().equals(other.exportActions, exportActions)&&const DeepCollectionEquality().equals(other.patterns, patterns)&&(identical(other.aiSummaryEnabled, aiSummaryEnabled) || other.aiSummaryEnabled == aiSummaryEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportDashboard&&(identical(other.range, range) || other.range == range)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.score, score) || other.score == score)&&const DeepCollectionEquality().equals(other.metrics, metrics)&&const DeepCollectionEquality().equals(other.trends, trends)&&const DeepCollectionEquality().equals(other.findings, findings)&&const DeepCollectionEquality().equals(other.exportActions, exportActions)&&const DeepCollectionEquality().equals(other.patterns, patterns)&&(identical(other.aiSummaryEnabled, aiSummaryEnabled) || other.aiSummaryEnabled == aiSummaryEnabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,score,const DeepCollectionEquality().hash(metrics),const DeepCollectionEquality().hash(trends),const DeepCollectionEquality().hash(findings),const DeepCollectionEquality().hash(exportActions),const DeepCollectionEquality().hash(patterns),aiSummaryEnabled);
+int get hashCode => Object.hash(runtimeType,range,startDate,endDate,score,const DeepCollectionEquality().hash(metrics),const DeepCollectionEquality().hash(trends),const DeepCollectionEquality().hash(findings),const DeepCollectionEquality().hash(exportActions),const DeepCollectionEquality().hash(patterns),aiSummaryEnabled);
 
 @override
 String toString() {
-  return 'ReportDashboard(score: $score, metrics: $metrics, trends: $trends, findings: $findings, exportActions: $exportActions, patterns: $patterns, aiSummaryEnabled: $aiSummaryEnabled)';
+  return 'ReportDashboard(range: $range, startDate: $startDate, endDate: $endDate, score: $score, metrics: $metrics, trends: $trends, findings: $findings, exportActions: $exportActions, patterns: $patterns, aiSummaryEnabled: $aiSummaryEnabled)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ReportDashboardCopyWith<$Res>  {
   factory $ReportDashboardCopyWith(ReportDashboard value, $Res Function(ReportDashboard) _then) = _$ReportDashboardCopyWithImpl;
 @useResult
 $Res call({
- ReportHealthScore score, List<ReportMetric> metrics, List<ReportTrendSeries> trends, List<ReportFinding> findings, List<ReportExportAction> exportActions, List<ReportPatternCard> patterns, bool aiSummaryEnabled
+ ReportDashboardRange range, String startDate, String endDate, ReportHealthScore score, List<ReportMetric> metrics, List<ReportTrendSeries> trends, List<ReportFinding> findings, List<ReportExportAction> exportActions, List<ReportPatternCard> patterns, bool aiSummaryEnabled
 });
 
 
@@ -62,9 +62,12 @@ class _$ReportDashboardCopyWithImpl<$Res>
 
 /// Create a copy of ReportDashboard
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? score = null,Object? metrics = null,Object? trends = null,Object? findings = null,Object? exportActions = null,Object? patterns = null,Object? aiSummaryEnabled = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? range = null,Object? startDate = null,Object? endDate = null,Object? score = null,Object? metrics = null,Object? trends = null,Object? findings = null,Object? exportActions = null,Object? patterns = null,Object? aiSummaryEnabled = null,}) {
   return _then(_self.copyWith(
-score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+range: null == range ? _self.range : range // ignore: cast_nullable_to_non_nullable
+as ReportDashboardRange,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as String,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
+as String,score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
 as ReportHealthScore,metrics: null == metrics ? _self.metrics : metrics // ignore: cast_nullable_to_non_nullable
 as List<ReportMetric>,trends: null == trends ? _self.trends : trends // ignore: cast_nullable_to_non_nullable
 as List<ReportTrendSeries>,findings: null == findings ? _self.findings : findings // ignore: cast_nullable_to_non_nullable
@@ -165,10 +168,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ReportHealthScore score,  List<ReportMetric> metrics,  List<ReportTrendSeries> trends,  List<ReportFinding> findings,  List<ReportExportAction> exportActions,  List<ReportPatternCard> patterns,  bool aiSummaryEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ReportDashboardRange range,  String startDate,  String endDate,  ReportHealthScore score,  List<ReportMetric> metrics,  List<ReportTrendSeries> trends,  List<ReportFinding> findings,  List<ReportExportAction> exportActions,  List<ReportPatternCard> patterns,  bool aiSummaryEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReportDashboard() when $default != null:
-return $default(_that.score,_that.metrics,_that.trends,_that.findings,_that.exportActions,_that.patterns,_that.aiSummaryEnabled);case _:
+return $default(_that.range,_that.startDate,_that.endDate,_that.score,_that.metrics,_that.trends,_that.findings,_that.exportActions,_that.patterns,_that.aiSummaryEnabled);case _:
   return orElse();
 
 }
@@ -186,10 +189,10 @@ return $default(_that.score,_that.metrics,_that.trends,_that.findings,_that.expo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ReportHealthScore score,  List<ReportMetric> metrics,  List<ReportTrendSeries> trends,  List<ReportFinding> findings,  List<ReportExportAction> exportActions,  List<ReportPatternCard> patterns,  bool aiSummaryEnabled)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ReportDashboardRange range,  String startDate,  String endDate,  ReportHealthScore score,  List<ReportMetric> metrics,  List<ReportTrendSeries> trends,  List<ReportFinding> findings,  List<ReportExportAction> exportActions,  List<ReportPatternCard> patterns,  bool aiSummaryEnabled)  $default,) {final _that = this;
 switch (_that) {
 case _ReportDashboard():
-return $default(_that.score,_that.metrics,_that.trends,_that.findings,_that.exportActions,_that.patterns,_that.aiSummaryEnabled);case _:
+return $default(_that.range,_that.startDate,_that.endDate,_that.score,_that.metrics,_that.trends,_that.findings,_that.exportActions,_that.patterns,_that.aiSummaryEnabled);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +209,10 @@ return $default(_that.score,_that.metrics,_that.trends,_that.findings,_that.expo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ReportHealthScore score,  List<ReportMetric> metrics,  List<ReportTrendSeries> trends,  List<ReportFinding> findings,  List<ReportExportAction> exportActions,  List<ReportPatternCard> patterns,  bool aiSummaryEnabled)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ReportDashboardRange range,  String startDate,  String endDate,  ReportHealthScore score,  List<ReportMetric> metrics,  List<ReportTrendSeries> trends,  List<ReportFinding> findings,  List<ReportExportAction> exportActions,  List<ReportPatternCard> patterns,  bool aiSummaryEnabled)?  $default,) {final _that = this;
 switch (_that) {
 case _ReportDashboard() when $default != null:
-return $default(_that.score,_that.metrics,_that.trends,_that.findings,_that.exportActions,_that.patterns,_that.aiSummaryEnabled);case _:
+return $default(_that.range,_that.startDate,_that.endDate,_that.score,_that.metrics,_that.trends,_that.findings,_that.exportActions,_that.patterns,_that.aiSummaryEnabled);case _:
   return null;
 
 }
@@ -221,9 +224,12 @@ return $default(_that.score,_that.metrics,_that.trends,_that.findings,_that.expo
 
 
 class _ReportDashboard implements ReportDashboard {
-  const _ReportDashboard({required this.score, required final  List<ReportMetric> metrics, required final  List<ReportTrendSeries> trends, required final  List<ReportFinding> findings, required final  List<ReportExportAction> exportActions, required final  List<ReportPatternCard> patterns, required this.aiSummaryEnabled}): _metrics = metrics,_trends = trends,_findings = findings,_exportActions = exportActions,_patterns = patterns;
+  const _ReportDashboard({required this.range, required this.startDate, required this.endDate, required this.score, required final  List<ReportMetric> metrics, required final  List<ReportTrendSeries> trends, required final  List<ReportFinding> findings, required final  List<ReportExportAction> exportActions, required final  List<ReportPatternCard> patterns, required this.aiSummaryEnabled}): _metrics = metrics,_trends = trends,_findings = findings,_exportActions = exportActions,_patterns = patterns;
   
 
+@override final  ReportDashboardRange range;
+@override final  String startDate;
+@override final  String endDate;
 @override final  ReportHealthScore score;
  final  List<ReportMetric> _metrics;
 @override List<ReportMetric> get metrics {
@@ -272,16 +278,16 @@ _$ReportDashboardCopyWith<_ReportDashboard> get copyWith => __$ReportDashboardCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportDashboard&&(identical(other.score, score) || other.score == score)&&const DeepCollectionEquality().equals(other._metrics, _metrics)&&const DeepCollectionEquality().equals(other._trends, _trends)&&const DeepCollectionEquality().equals(other._findings, _findings)&&const DeepCollectionEquality().equals(other._exportActions, _exportActions)&&const DeepCollectionEquality().equals(other._patterns, _patterns)&&(identical(other.aiSummaryEnabled, aiSummaryEnabled) || other.aiSummaryEnabled == aiSummaryEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportDashboard&&(identical(other.range, range) || other.range == range)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.score, score) || other.score == score)&&const DeepCollectionEquality().equals(other._metrics, _metrics)&&const DeepCollectionEquality().equals(other._trends, _trends)&&const DeepCollectionEquality().equals(other._findings, _findings)&&const DeepCollectionEquality().equals(other._exportActions, _exportActions)&&const DeepCollectionEquality().equals(other._patterns, _patterns)&&(identical(other.aiSummaryEnabled, aiSummaryEnabled) || other.aiSummaryEnabled == aiSummaryEnabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,score,const DeepCollectionEquality().hash(_metrics),const DeepCollectionEquality().hash(_trends),const DeepCollectionEquality().hash(_findings),const DeepCollectionEquality().hash(_exportActions),const DeepCollectionEquality().hash(_patterns),aiSummaryEnabled);
+int get hashCode => Object.hash(runtimeType,range,startDate,endDate,score,const DeepCollectionEquality().hash(_metrics),const DeepCollectionEquality().hash(_trends),const DeepCollectionEquality().hash(_findings),const DeepCollectionEquality().hash(_exportActions),const DeepCollectionEquality().hash(_patterns),aiSummaryEnabled);
 
 @override
 String toString() {
-  return 'ReportDashboard(score: $score, metrics: $metrics, trends: $trends, findings: $findings, exportActions: $exportActions, patterns: $patterns, aiSummaryEnabled: $aiSummaryEnabled)';
+  return 'ReportDashboard(range: $range, startDate: $startDate, endDate: $endDate, score: $score, metrics: $metrics, trends: $trends, findings: $findings, exportActions: $exportActions, patterns: $patterns, aiSummaryEnabled: $aiSummaryEnabled)';
 }
 
 
@@ -292,7 +298,7 @@ abstract mixin class _$ReportDashboardCopyWith<$Res> implements $ReportDashboard
   factory _$ReportDashboardCopyWith(_ReportDashboard value, $Res Function(_ReportDashboard) _then) = __$ReportDashboardCopyWithImpl;
 @override @useResult
 $Res call({
- ReportHealthScore score, List<ReportMetric> metrics, List<ReportTrendSeries> trends, List<ReportFinding> findings, List<ReportExportAction> exportActions, List<ReportPatternCard> patterns, bool aiSummaryEnabled
+ ReportDashboardRange range, String startDate, String endDate, ReportHealthScore score, List<ReportMetric> metrics, List<ReportTrendSeries> trends, List<ReportFinding> findings, List<ReportExportAction> exportActions, List<ReportPatternCard> patterns, bool aiSummaryEnabled
 });
 
 
@@ -309,9 +315,12 @@ class __$ReportDashboardCopyWithImpl<$Res>
 
 /// Create a copy of ReportDashboard
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? score = null,Object? metrics = null,Object? trends = null,Object? findings = null,Object? exportActions = null,Object? patterns = null,Object? aiSummaryEnabled = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? range = null,Object? startDate = null,Object? endDate = null,Object? score = null,Object? metrics = null,Object? trends = null,Object? findings = null,Object? exportActions = null,Object? patterns = null,Object? aiSummaryEnabled = null,}) {
   return _then(_ReportDashboard(
-score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+range: null == range ? _self.range : range // ignore: cast_nullable_to_non_nullable
+as ReportDashboardRange,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as String,endDate: null == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
+as String,score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
 as ReportHealthScore,metrics: null == metrics ? _self._metrics : metrics // ignore: cast_nullable_to_non_nullable
 as List<ReportMetric>,trends: null == trends ? _self._trends : trends // ignore: cast_nullable_to_non_nullable
 as List<ReportTrendSeries>,findings: null == findings ? _self._findings : findings // ignore: cast_nullable_to_non_nullable

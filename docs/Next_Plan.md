@@ -42,7 +42,7 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 - Today/Mine notification bell inbox (needs backend notification API)
 - Medicine safety-tip "换一批" (needs backend tips API; currently hard-coded)
 - Report score/finding/pattern/trend/AI action card drill-down (needs product decision: detail page vs filter Record tab)
-- Report period selector (needs backend period-filtered API)
+- Report custom date-range picker UI (backend contract already supports `custom` + `startDate`/`endDate`)
 - voice input, photo/scan/OCR/barcode/prescription action shapes (need native plugins + backend contracts)
 - local-only sleep reminder preferences beyond simple placeholder labeling
 - real authenticated Web report preview beyond the competition site

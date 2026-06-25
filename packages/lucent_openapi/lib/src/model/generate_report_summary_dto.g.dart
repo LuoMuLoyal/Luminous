@@ -18,6 +18,8 @@ GenerateReportSummaryDto _$GenerateReportSummaryDtoFromJson(
         unknownValue: GenerateReportSummaryDtoRangeEnum.unknownDefaultOpenApi,
       ),
     ),
+    startDate: $checkedConvert('startDate', (v) => v as String?),
+    endDate: $checkedConvert('endDate', (v) => v as String?),
   );
   return val;
 });
@@ -27,11 +29,14 @@ Map<String, dynamic> _$GenerateReportSummaryDtoToJson(
 ) => <String, dynamic>{
   if (_$GenerateReportSummaryDtoRangeEnumEnumMap[instance.range] != null)
     'range': _$GenerateReportSummaryDtoRangeEnumEnumMap[instance.range],
+  if (instance.startDate != null) 'startDate': instance.startDate,
+  if (instance.endDate != null) 'endDate': instance.endDate,
 };
 
 const _$GenerateReportSummaryDtoRangeEnumEnumMap = {
   GenerateReportSummaryDtoRangeEnum.last7Days: 'last_7_days',
   GenerateReportSummaryDtoRangeEnum.last30Days: 'last_30_days',
+  GenerateReportSummaryDtoRangeEnum.custom: 'custom',
   GenerateReportSummaryDtoRangeEnum.unknownDefaultOpenApi:
       'unknown_default_open_api',
 };

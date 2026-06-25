@@ -3234,10 +3234,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineEditFieldEndedAt => 'Ended at (YYYY-MM-DD)';
 
   @override
-  String get reportWeekDateRange => 'May 19 - May 25';
+  String get reportRangePickerTitle => 'Select report period';
 
   @override
-  String get reportPeriodThisWeek => 'This week';
+  String get reportRangeCustom => 'Custom';
 
   @override
   String get reportGenerateAction => 'Generate summary';

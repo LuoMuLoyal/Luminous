@@ -19,6 +19,8 @@ class ReportDashboardView extends ConsumerWidget {
     required this.dashboard,
     required this.authSession,
     this.isLoading = false,
+    this.dashboardRange = ReportDashboardRange.last7Days,
+    this.onDashboardRangeChanged,
     this.aiSummaryState = const ReportAiSummaryCardState.idle(),
     this.aiSummaryRange = ReportAiSummaryRange.last7Days,
     this.onAiSummaryRangeChanged,
@@ -34,6 +36,8 @@ class ReportDashboardView extends ConsumerWidget {
   final ReportDashboard dashboard;
   final AuthSessionState authSession;
   final bool isLoading;
+  final ReportDashboardRange dashboardRange;
+  final ValueChanged<ReportDashboardRange>? onDashboardRangeChanged;
   final ReportAiSummaryCardState aiSummaryState;
   final ReportAiSummaryRange aiSummaryRange;
   final ValueChanged<ReportAiSummaryRange>? onAiSummaryRangeChanged;
@@ -75,6 +79,8 @@ class ReportDashboardView extends ConsumerWidget {
         ReportTrendSection(
           key: const Key('report-trend-section'),
           trends: dashboard.trends,
+          selectedRange: dashboardRange,
+          onRangeSelected: onDashboardRangeChanged ?? (_) {},
           l10n: l10n,
           typography: typography,
           surface: surface,

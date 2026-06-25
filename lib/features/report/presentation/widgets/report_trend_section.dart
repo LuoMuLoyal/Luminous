@@ -8,6 +8,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_components.dart';
+import 'package:luminous/features/report/presentation/widgets/report_range_picker_sheet.dart';
 import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
 import 'package:luminous/features/report/presentation/widgets/report_top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -16,12 +17,16 @@ class ReportTrendSection extends StatelessWidget {
   const ReportTrendSection({
     super.key,
     required this.trends,
+    required this.selectedRange,
+    required this.onRangeSelected,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
 
   final List<ReportTrendSeries> trends;
+  final ReportDashboardRange selectedRange;
+  final ValueChanged<ReportDashboardRange> onRangeSelected;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
@@ -33,7 +38,10 @@ class ReportTrendSection extends StatelessWidget {
       children: [
         AppSectionHeader(
           title: l10n.reportTrendSectionTitle,
-          trailing: ReportPeriodPill(label: l10n.reportRangeLast7Days),
+          trailing: ReportPeriodPill(
+            range: selectedRange,
+            onTap: () => _showRangePicker(context),
+          ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
         Divider(height: 1, thickness: 1, color: surface.hairline),
@@ -70,6 +78,18 @@ class ReportTrendSection extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _showRangePicker(BuildContext context) async {
+    final selected = await showModalBottomSheet<ReportDashboardRange>(
+      context: context,
+      useRootNavigator: true,
+      builder: (context) =>
+          ReportRangePickerSheet(selectedRange: selectedRange),
+    );
+    if (selected != null && selected != selectedRange) {
+      onRangeSelected(selected);
+    }
   }
 }
 

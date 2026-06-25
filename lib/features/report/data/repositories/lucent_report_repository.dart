@@ -11,12 +11,15 @@ class LucentReportRepository implements ReportRepository {
   final ReportRemoteDataSource dataSource;
 
   @override
-  Future<ReportDashboard> fetchDashboard() async {
-    final dto = await dataSource.fetchDashboard();
+  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) async {
+    final dto = await dataSource.fetchDashboard(range);
     final findings = dto.findings.map(_mapFinding).toList(growable: false);
     final score = _mapScore(dto.score);
 
     return ReportDashboard(
+      range: _mapRange(dto.range.value),
+      startDate: dto.startDate,
+      endDate: dto.endDate,
       score: score,
       metrics: dto.metrics.map(_mapMetric).toList(growable: false),
       trends: dto.trends.map(_mapTrend).toList(growable: false),
@@ -85,6 +88,16 @@ class LucentReportRepository implements ReportRepository {
       sparkline: dto.sparkline.map((value) => value.toDouble()).toList(),
     );
   }
+
+  ReportDashboardRange _mapRange(String value) {
+    return switch (value) {
+      'last_7_days' => ReportDashboardRange.last7Days,
+      'last_30_days' => ReportDashboardRange.last30Days,
+      'custom' => ReportDashboardRange.custom,
+      _ => ReportDashboardRange.last7Days,
+    };
+  }
+
   ReportStatus _mapStatus(String value) {
     return switch (value) {
       'good' => ReportStatus.good,
@@ -139,6 +152,7 @@ class LucentReportRepository implements ReportRepository {
       ReportDataKind.general => AppColorTokens.health,
     };
   }
+
   IconData _insightIcon(ReportInsightKind kind) {
     return switch (kind) {
       ReportInsightKind.medication => Icons.verified_rounded,

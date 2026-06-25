@@ -65,6 +65,7 @@ Map<String, dynamic> _$ReportSummaryDataDtoToJson(
 const _$ReportSummaryDataDtoRangeEnumEnumMap = {
   ReportSummaryDataDtoRangeEnum.last7Days: 'last_7_days',
   ReportSummaryDataDtoRangeEnum.last30Days: 'last_30_days',
+  ReportSummaryDataDtoRangeEnum.custom: 'custom',
   ReportSummaryDataDtoRangeEnum.unknownDefaultOpenApi:
       'unknown_default_open_api',
 };

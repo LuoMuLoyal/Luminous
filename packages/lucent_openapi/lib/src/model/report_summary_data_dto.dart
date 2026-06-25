@@ -103,6 +103,8 @@ enum ReportSummaryDataDtoRangeEnum {
   last7Days(r'last_7_days'),
   @JsonValue(r'last_30_days')
   last30Days(r'last_30_days'),
+  @JsonValue(r'custom')
+  custom(r'custom'),
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

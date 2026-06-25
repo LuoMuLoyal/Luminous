@@ -3021,10 +3021,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineEditFieldEndedAt => '结束日期 (YYYY-MM-DD)';
 
   @override
-  String get reportWeekDateRange => '5月19日 - 5月25日';
+  String get reportRangePickerTitle => '选择报告周期';
 
   @override
-  String get reportPeriodThisWeek => '本周';
+  String get reportRangeCustom => '自定义';
 
   @override
   String get reportGenerateAction => '生成总结';

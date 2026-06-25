@@ -5852,17 +5852,17 @@ abstract class AppLocalizations {
   /// **'结束日期 (YYYY-MM-DD)'**
   String get mineEditFieldEndedAt;
 
-  /// No description provided for @reportWeekDateRange.
+  /// No description provided for @reportRangePickerTitle.
   ///
   /// In zh, this message translates to:
-  /// **'5月19日 - 5月25日'**
-  String get reportWeekDateRange;
+  /// **'选择报告周期'**
+  String get reportRangePickerTitle;
 
-  /// No description provided for @reportPeriodThisWeek.
+  /// No description provided for @reportRangeCustom.
   ///
   /// In zh, this message translates to:
-  /// **'本周'**
-  String get reportPeriodThisWeek;
+  /// **'自定义'**
+  String get reportRangeCustom;
 
   /// No description provided for @reportGenerateAction.
   ///

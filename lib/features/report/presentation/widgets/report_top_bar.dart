@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_components.dart';
+import 'package:luminous/features/report/presentation/widgets/report_range_picker_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportTopBar extends StatelessWidget {
   const ReportTopBar({
     super.key,
+    required this.dateRangeLabel,
+    required this.selectedRange,
+    required this.onRangeSelected,
     required this.onGenerate,
     required this.onSync,
     this.isGenerating = false,
     this.isSyncing = false,
   });
 
+  final String dateRangeLabel;
+  final ReportDashboardRange selectedRange;
+  final ValueChanged<ReportDashboardRange> onRangeSelected;
   final VoidCallback onGenerate;
   final VoidCallback onSync;
   final bool isGenerating;
@@ -44,7 +52,7 @@ class ReportTopBar extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacingTokens.sm),
                   Text(
-                    l10n.reportWeekDateRange,
+                    dateRangeLabel,
                     style: typography.bodyLg.copyWith(
                       color: surface.body,
                       letterSpacing: 0,
@@ -54,7 +62,10 @@ class ReportTopBar extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacingTokens.md),
-            ReportPeriodPill(label: l10n.reportPeriodThisWeek),
+            ReportPeriodPill(
+              range: selectedRange,
+              onTap: () => _showRangePicker(context),
+            ),
           ],
         ),
         const SizedBox(height: AppSpacingTokens.xs),
@@ -69,10 +80,11 @@ class ReportTopBar extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: ReportPalette.previewScore,
                   foregroundColor: AppColorTokens.onPrimary,
-                  disabledBackgroundColor:
-                      ReportPalette.previewScore.withValues(alpha: 0.38),
-                  disabledForegroundColor:
-                      AppColorTokens.onPrimary.withValues(alpha: 0.7),
+                  disabledBackgroundColor: ReportPalette.previewScore
+                      .withValues(alpha: 0.38),
+                  disabledForegroundColor: AppColorTokens.onPrimary.withValues(
+                    alpha: 0.7,
+                  ),
                 ),
                 icon: Icon(
                   isGenerating
@@ -93,9 +105,7 @@ class ReportTopBar extends StatelessWidget {
                 key: const Key('report-sync-action'),
                 onPressed: isSyncing ? null : onSync,
                 icon: Icon(
-                  isSyncing
-                      ? Icons.hourglass_top_rounded
-                      : Icons.sync_rounded,
+                  isSyncing ? Icons.hourglass_top_rounded : Icons.sync_rounded,
                 ),
                 color: theme.colorScheme.onSurface,
                 visualDensity: VisualDensity.compact,
@@ -108,6 +118,18 @@ class ReportTopBar extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _showRangePicker(BuildContext context) async {
+    final selected = await showModalBottomSheet<ReportDashboardRange>(
+      context: context,
+      useRootNavigator: true,
+      builder: (context) =>
+          ReportRangePickerSheet(selectedRange: selectedRange),
+    );
+    if (selected != null && selected != selectedRange) {
+      onRangeSelected(selected);
+    }
   }
 }
 
@@ -175,12 +197,20 @@ class _ReportSnapshotStatus extends StatelessWidget {
 }
 
 class ReportPeriodPill extends StatelessWidget {
-  const ReportPeriodPill({super.key, required this.label});
+  const ReportPeriodPill({super.key, required this.range, required this.onTap});
 
-  final String label;
+  final ReportDashboardRange range;
+  final VoidCallback onTap;
+
+  String _label(AppLocalizations l10n) => switch (range) {
+    ReportDashboardRange.last7Days => l10n.reportRangeLast7Days,
+    ReportDashboardRange.last30Days => l10n.reportRangeLast30Days,
+    ReportDashboardRange.custom => l10n.reportRangeCustom,
+  };
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
@@ -188,7 +218,7 @@ class ReportPeriodPill extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showReportToast(context, label),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -205,7 +235,7 @@ class ReportPeriodPill extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  label,
+                  _label(l10n),
                   style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
                 ),
                 const SizedBox(width: AppSpacingTokens.xxs),

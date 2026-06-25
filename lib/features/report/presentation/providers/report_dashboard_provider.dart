@@ -7,23 +7,40 @@ import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 
 const _reportDashboardTimeout = Duration(seconds: 5);
 
-final reportDashboardProvider = FutureProvider<ReportDashboard>((ref) {
-  final session = ref.watch(authSessionProvider);
-  if (session.isConfirmedSignedOut) {
-    return Future.value(MockReportRepository.signedOutDashboard);
-  }
-  if (session.isLoading) {
-    return pendingAuthSessionResolution<ReportDashboard>();
-  }
-  if (!session.canAccessProtectedData) {
-    return pendingAuthSessionResolution<ReportDashboard>();
-  }
+final reportDashboardProvider =
+    FutureProvider.family<ReportDashboard, ReportDashboardRange>((ref, range) {
+      final session = ref.watch(authSessionProvider);
+      if (session.isConfirmedSignedOut) {
+        return Future.value(MockReportRepository.signedOutDashboard);
+      }
+      if (session.isLoading) {
+        return pendingAuthSessionResolution<ReportDashboard>();
+      }
+      if (!session.canAccessProtectedData) {
+        return pendingAuthSessionResolution<ReportDashboard>();
+      }
 
-  return ref
-      .watch(reportRepositoryProvider)
-      .fetchDashboard()
-      .timeout(
-        _reportDashboardTimeout,
-        onTimeout: () => throw TimeoutException('report_dashboard_timeout'),
-      );
-});
+      return ref
+          .watch(reportRepositoryProvider)
+          .fetchDashboard(range)
+          .timeout(
+            _reportDashboardTimeout,
+            onTimeout: () => throw TimeoutException('report_dashboard_timeout'),
+          );
+    });
+
+class ReportDashboardSelectedRangeNotifier
+    extends Notifier<ReportDashboardRange> {
+  @override
+  ReportDashboardRange build() => ReportDashboardRange.last7Days;
+
+  void setRange(ReportDashboardRange range) {
+    state = range;
+  }
+}
+
+final reportDashboardSelectedRangeProvider =
+    NotifierProvider<
+      ReportDashboardSelectedRangeNotifier,
+      ReportDashboardRange
+    >(ReportDashboardSelectedRangeNotifier.new);

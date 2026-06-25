@@ -22,11 +22,14 @@ class MockReportRepository implements ReportRepository {
   const MockReportRepository();
 
   @override
-  Future<ReportDashboard> fetchDashboard() async {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) async {
     return previewDashboard;
   }
 
   static const previewDashboard = ReportDashboard(
+    range: ReportDashboardRange.last7Days,
+    startDate: '2026-06-06',
+    endDate: '2026-06-12',
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,
@@ -132,6 +135,9 @@ class MockReportRepository implements ReportRepository {
   );
 
   static const signedOutDashboard = ReportDashboard(
+    range: ReportDashboardRange.last7Days,
+    startDate: '2026-06-06',
+    endDate: '2026-06-12',
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,

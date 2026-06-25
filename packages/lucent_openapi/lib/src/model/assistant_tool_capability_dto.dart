@@ -146,6 +146,10 @@ enum AssistantToolCapabilityDtoNameEnum {
   getSleepSummaryByRange(r'get_sleep_summary_by_range'),
 
   /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_medicine_leaflet_context')
+  getMedicineLeafletContext(r'get_medicine_leaflet_context'),
+
+  /// Stable tool identifier exposed to the client.
   @JsonValue(r'propose_create_daily_record')
   proposeCreateDailyRecord(r'propose_create_daily_record'),
 

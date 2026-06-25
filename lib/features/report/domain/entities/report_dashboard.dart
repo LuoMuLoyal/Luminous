@@ -3,9 +3,22 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'report_dashboard.freezed.dart';
 
+enum ReportDashboardRange {
+  last7Days('last_7_days'),
+  last30Days('last_30_days'),
+  custom('custom');
+
+  const ReportDashboardRange(this.apiValue);
+
+  final String apiValue;
+}
+
 @freezed
 abstract class ReportDashboard with _$ReportDashboard {
   const factory ReportDashboard({
+    required ReportDashboardRange range,
+    required String startDate,
+    required String endDate,
     required ReportHealthScore score,
     required List<ReportMetric> metrics,
     required List<ReportTrendSeries> trends,

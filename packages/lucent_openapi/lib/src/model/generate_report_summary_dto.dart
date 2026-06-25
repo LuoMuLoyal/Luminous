@@ -15,7 +15,7 @@ part 'generate_report_summary_dto.g.dart';
 )
 class GenerateReportSummaryDto {
   /// Returns a new [GenerateReportSummaryDto] instance.
-  GenerateReportSummaryDto({this.range});
+  GenerateReportSummaryDto({this.range, this.startDate, this.endDate});
 
   /// Supported report summary aggregation range.
   @JsonKey(
@@ -26,13 +26,24 @@ class GenerateReportSummaryDto {
   )
   final GenerateReportSummaryDtoRangeEnum? range;
 
+  /// Required when range is \"custom\". ISO 8601 date string (YYYY-MM-DD).
+  @JsonKey(name: r'startDate', required: false, includeIfNull: false)
+  final String? startDate;
+
+  /// Required when range is \"custom\". ISO 8601 date string (YYYY-MM-DD).
+  @JsonKey(name: r'endDate', required: false, includeIfNull: false)
+  final String? endDate;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is GenerateReportSummaryDto && other.range == range;
+      other is GenerateReportSummaryDto &&
+          other.range == range &&
+          other.startDate == startDate &&
+          other.endDate == endDate;
 
   @override
-  int get hashCode => range.hashCode;
+  int get hashCode => range.hashCode + startDate.hashCode + endDate.hashCode;
 
   factory GenerateReportSummaryDto.fromJson(Map<String, dynamic> json) =>
       _$GenerateReportSummaryDtoFromJson(json);
@@ -54,6 +65,10 @@ enum GenerateReportSummaryDtoRangeEnum {
   /// Supported report summary aggregation range.
   @JsonValue(r'last_30_days')
   last30Days(r'last_30_days'),
+
+  /// Supported report summary aggregation range.
+  @JsonValue(r'custom')
+  custom(r'custom'),
 
   /// Supported report summary aggregation range.
   @JsonValue(r'unknown_default_open_api')

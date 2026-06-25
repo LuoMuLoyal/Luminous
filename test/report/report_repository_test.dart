@@ -52,7 +52,9 @@ void main() {
         ),
       );
 
-      final dashboard = await repository.fetchDashboard();
+      final dashboard = await repository.fetchDashboard(
+        ReportDashboardRange.last7Days,
+      );
 
       expect(dashboard.score.status, ReportStatus.stable);
       expect(dashboard.metrics.single.kind, ReportDataKind.sleep);
@@ -113,7 +115,9 @@ void main() {
         ),
       );
 
-      final dashboard = await repository.fetchDashboard();
+      final dashboard = await repository.fetchDashboard(
+        ReportDashboardRange.last7Days,
+      );
 
       expect(dashboard.aiSummaryEnabled, isTrue);
       expect(
@@ -141,7 +145,11 @@ class _FakeReportRemoteDataSource extends ReportRemoteDataSource {
   final lucent.ReportDashboardDataDto _dto;
 
   @override
-  Future<lucent.ReportDashboardDataDto> fetchDashboard() async => _dto;
+  Future<lucent.ReportDashboardDataDto> fetchDashboard(
+    ReportDashboardRange range, {
+    String? startDate,
+    String? endDate,
+  }) async => _dto;
 }
 
 lucent.ReportDashboardDataDto _dashboardDto({
