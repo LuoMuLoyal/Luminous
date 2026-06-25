@@ -20,6 +20,7 @@ class ReportMetricsGrid extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onMetricSelected,
   });
 
   final ReportDashboard dashboard;
@@ -27,6 +28,7 @@ class ReportMetricsGrid extends StatelessWidget {
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<ReportDataKind>? onMetricSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,7 @@ class ReportMetricsGrid extends StatelessWidget {
           l10n: l10n,
           typography: typography,
           surface: surface,
+          onTap: onMetricSelected,
         );
       },
     );
@@ -134,12 +137,14 @@ class _MetricCard extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onTap,
   });
 
   final ReportMetric metric;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<ReportDataKind>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +162,14 @@ class _MetricCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showReportToast(context, title),
+        onTap: () {
+          final handler = onTap;
+          if (handler == null) {
+            showReportToast(context, title);
+            return;
+          }
+          handler(metric.kind);
+        },
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: AppSectionSurface(
           padding: const EdgeInsets.all(AppSpacingTokens.md),

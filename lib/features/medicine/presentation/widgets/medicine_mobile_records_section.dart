@@ -1,6 +1,6 @@
 part of 'medicine_mobile_dashboard_view.dart';
 
-class _MedicineRecordsSection extends StatelessWidget {
+class _MedicineRecordsSection extends ConsumerWidget {
   const _MedicineRecordsSection({
     required this.items,
     required this.l10n,
@@ -17,7 +17,7 @@ class _MedicineRecordsSection extends StatelessWidget {
   onMarkDose;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final rows = _recordRowsFor(
       l10n,
       items,
@@ -73,7 +73,7 @@ class _MedicineRecordsSection extends StatelessWidget {
                       label: l10n.medicineViewMoreRecordsAction,
                       color: surface.link,
                       onTap: () =>
-                          AppToast.show(context, l10n.medicineViewPlanToast),
+                          ref.read(shellProvider.notifier).selectTab(1),
                     ),
                   ),
                 ),

@@ -139,6 +139,7 @@ class RecordPage extends ConsumerWidget {
             onQuickAction: (action) => _handleQuickAction(context, ref, action),
             onAiInputTap: () =>
                 _openNlpSheet(context, ref, session, selectedDate),
+            onNewEntry: () => _openRecordCreate(context, ref),
           ),
           loading: () => RecordDashboardView(
             dashboard: MockRecordRepository.loadingDashboard(
@@ -153,6 +154,7 @@ class RecordPage extends ConsumerWidget {
             onQuickAction: (action) => _handleQuickAction(context, ref, action),
             onAiInputTap: () =>
                 _openNlpSheet(context, ref, session, selectedDate),
+            onNewEntry: () => _openRecordCreate(context, ref),
           ),
           error: (_, __) => AppStateErrorView(
             title: l10n.recordErrorTitle,
@@ -169,6 +171,14 @@ class RecordPage extends ConsumerWidget {
 
   void _setSelectedDate(WidgetRef ref, DateTime date) {
     ref.read(selectedRecordDateProvider.notifier).setDate(date);
+  }
+
+  void _openRecordCreate(BuildContext context, WidgetRef ref) {
+    final selectedDate = ref.read(selectedRecordDateProvider);
+    pushAuthRequiredRoute(
+      context,
+      '/record/create?date=${formatRecordDate(selectedDate)}',
+    );
   }
 
   void _handleQuickAction(

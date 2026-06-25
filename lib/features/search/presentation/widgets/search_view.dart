@@ -194,6 +194,7 @@ class _MobileSearchLayout extends StatelessWidget {
             l10n: l10n,
             typography: typography,
             surface: surface,
+            onKeywordSelected: onQueryChanged,
           ),
           const SizedBox(height: AppSpacingTokens.lg),
           QuickActions(
@@ -207,6 +208,8 @@ class _MobileSearchLayout extends StatelessWidget {
             categories: const <MedicineSearchCategory>[],
             l10n: l10n,
             typography: typography,
+            onCategorySelected: (category) =>
+                onQueryChanged(categoryLabel(l10n, category.type)),
           ),
         ],
         if (state.query.trim().isNotEmpty) ...[

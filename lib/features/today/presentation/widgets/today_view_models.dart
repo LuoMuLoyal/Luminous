@@ -28,6 +28,7 @@ class TodayOverviewItem {
 class TodayViewPriorityItem {
   const TodayViewPriorityItem({
     required this.key,
+    required this.type,
     required this.icon,
     required this.color,
     required this.title,
@@ -38,6 +39,7 @@ class TodayViewPriorityItem {
   });
 
   final Key key;
+  final TodayPriorityItemType type;
   final IconData icon;
   final Color color;
   final String title;
@@ -87,8 +89,11 @@ class TodayAiSummaryCardContent {
   final String? footer;
 }
 
+enum TodayTodoType { medication, water, custom }
+
 class TodayTodoItem {
   const TodayTodoItem({
+    required this.type,
     required this.title,
     required this.subtitle,
     required this.source,
@@ -99,6 +104,7 @@ class TodayTodoItem {
     required this.subtitleIsDynamic,
   });
 
+  final TodayTodoType type;
   final String title;
   final String subtitle;
   final String source;
@@ -198,6 +204,7 @@ List<TodayViewPriorityItem> buildPriorityItems(
       switch (item.type) {
         TodayPriorityItemType.medication => TodayViewPriorityItem(
           key: const Key('today-medication-card'),
+          type: TodayPriorityItemType.medication,
           icon: Icons.medication_rounded,
           color: TodayPalette.healthGreen,
           title: l10n.todayMedicationCardTitle,
@@ -212,6 +219,7 @@ List<TodayViewPriorityItem> buildPriorityItems(
         ),
         TodayPriorityItemType.water => TodayViewPriorityItem(
           key: const Key('today-water-card'),
+          type: TodayPriorityItemType.water,
           icon: Icons.local_drink_rounded,
           color: TodayPalette.teal,
           title: l10n.todayWaterPriorityTitle,
@@ -417,6 +425,7 @@ List<TodayTodoItem> buildTodoItems(
 
   return [
     TodayTodoItem(
+      type: TodayTodoType.medication,
       title: l10n.todayTodoMedicationTitle,
       subtitle: l10n.todayTodoMedicationSubtitle(
         dashboard.medication.nextDoseTimeLabel,
@@ -432,6 +441,7 @@ List<TodayTodoItem> buildTodoItems(
       subtitleIsDynamic: true,
     ),
     TodayTodoItem(
+      type: TodayTodoType.water,
       title: l10n.todayTodoWaterTitle,
       subtitle: l10n.todayTodoWaterSubtitle(waterProgressPercent),
       source: l10n.todayTodoSourceSystem,
@@ -444,6 +454,7 @@ List<TodayTodoItem> buildTodoItems(
       subtitleIsDynamic: true,
     ),
     TodayTodoItem(
+      type: TodayTodoType.custom,
       title: l10n.todayTodoCustomTitle,
       subtitle: l10n.todayTodoCustomSubtitle,
       source: l10n.todayTodoSourceUser,

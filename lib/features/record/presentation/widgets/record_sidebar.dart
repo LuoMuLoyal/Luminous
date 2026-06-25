@@ -12,15 +12,28 @@ class RecordMonthCalendarPanel extends StatelessWidget {
   const RecordMonthCalendarPanel({
     super.key,
     required this.days,
+    required this.selectedDate,
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onDateSelected,
+    this.onMonthChanged,
   });
 
   final List<RecordCalendarDay> days;
+  final DateTime selectedDate;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<DateTime>? onDateSelected;
+  final ValueChanged<DateTime>? onMonthChanged;
+
+  void _changeMonth(int delta) {
+    if (onMonthChanged == null) return;
+    final base = DateTime(selectedDate.year, selectedDate.month, 1);
+    final shifted = DateTime(base.year, base.month + delta, 1);
+    onMonthChanged!(shifted);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +64,12 @@ class RecordMonthCalendarPanel extends StatelessWidget {
               _CalendarIconButton(
                 icon: Icons.chevron_left_rounded,
                 label: l10n.recordPreviousDayAction,
+                onTap: () => _changeMonth(-1),
               ),
               _CalendarIconButton(
                 icon: Icons.chevron_right_rounded,
                 label: l10n.recordNextDayAction,
+                onTap: () => _changeMonth(1),
               ),
             ],
           ),
@@ -85,9 +100,11 @@ class RecordMonthCalendarPanel extends StatelessWidget {
             itemCount: days.length,
             itemBuilder: (context, index) => _MonthDayCell(
               day: days[index],
+              selectedDate: selectedDate,
               typography: typography,
               surface: surface,
               l10n: l10n,
+              onTap: onDateSelected,
             ),
           ),
         ],
@@ -103,12 +120,14 @@ class RecordFilterPanel extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onFilterSelected,
   });
 
   final List<RecordFilter> filters;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final ValueChanged<RecordEntryType?>? onFilterSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +137,14 @@ class RecordFilterPanel extends StatelessWidget {
       trailing: AppTextAction(
         label: l10n.recordFilterSelectAll,
         icon: null,
-        onTap: () => showRecordToast(context, l10n.recordFilterSelectAll),
+        onTap: () {
+          final handler = onFilterSelected;
+          if (handler == null) {
+            showRecordToast(context, l10n.recordFilterSelectAll);
+            return;
+          }
+          handler(null);
+        },
       ),
       typography: typography,
       surface: surface,
@@ -132,6 +158,9 @@ class RecordFilterPanel extends StatelessWidget {
                   l10n: l10n,
                   typography: typography,
                   surface: surface,
+                  onTap: onFilterSelected == null
+                      ? null
+                      : () => onFilterSelected!(filter.type),
                 ),
               ),
             )
@@ -144,15 +173,19 @@ class RecordFilterPanel extends StatelessWidget {
 class _MonthDayCell extends StatelessWidget {
   const _MonthDayCell({
     required this.day,
+    required this.selectedDate,
     required this.typography,
     required this.surface,
     required this.l10n,
+    this.onTap,
   });
 
   final RecordCalendarDay day;
+  final DateTime selectedDate;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final AppLocalizations l10n;
+  final ValueChanged<DateTime>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -167,8 +200,14 @@ class _MonthDayCell extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () =>
-            showRecordToast(context, '${l10n.recordOpenDateAction} ${day.day}'),
+        onTap: () {
+          final handler = onTap;
+          if (handler == null) {
+            showRecordToast(context, '${l10n.recordOpenDateAction} ${day.day}');
+            return;
+          }
+          handler(_dateForDay(day, selectedDate));
+        },
         borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
         child: Stack(
           alignment: Alignment.center,
@@ -232,12 +271,14 @@ class _FilterRow extends StatelessWidget {
     required this.l10n,
     required this.typography,
     required this.surface,
+    this.onTap,
   });
 
   final RecordFilter filter;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +287,7 @@ class _FilterRow extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showRecordToast(context, label),
+        onTap: onTap ?? () => showRecordToast(context, label),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
@@ -295,18 +336,44 @@ class _FilterRow extends StatelessWidget {
 }
 
 class _CalendarIconButton extends StatelessWidget {
-  const _CalendarIconButton({required this.icon, required this.label});
+  const _CalendarIconButton({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
 
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       tooltip: label,
       visualDensity: VisualDensity.compact,
-      onPressed: () => showRecordToast(context, label),
+      onPressed: onTap ?? () => showRecordToast(context, label),
       icon: Icon(icon, size: 18),
     );
   }
+}
+
+DateTime _dateForDay(RecordCalendarDay day, DateTime selectedDate) {
+  final monthStart = DateTime(selectedDate.year, selectedDate.month, 1);
+  DateTime candidate;
+  if (day.inMonth) {
+    candidate = DateTime(monthStart.year, monthStart.month, day.day);
+  } else if (day.day > 20) {
+    // Belongs to the previous month shown at the start of the grid.
+    candidate = DateTime(
+      monthStart.year,
+      monthStart.month,
+      1,
+    ).subtract(const Duration(days: 1));
+    candidate = DateTime(candidate.year, candidate.month, day.day);
+  } else {
+    // Belongs to the next month shown at the end of the grid.
+    candidate = DateTime(monthStart.year, monthStart.month + 1, 1);
+    candidate = DateTime(candidate.year, candidate.month, day.day);
+  }
+  return candidate;
 }

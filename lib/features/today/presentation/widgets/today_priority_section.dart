@@ -1,22 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class TodayPrioritySection extends StatelessWidget {
+class TodayPrioritySection extends ConsumerWidget {
   const TodayPrioritySection({super.key, required this.dashboard});
 
   final TodayDashboard dashboard;
 
+  void _handleItemTap(
+    BuildContext context,
+    WidgetRef ref,
+    TodayViewPriorityItem item,
+  ) {
+    switch (item.type) {
+      case TodayPriorityItemType.medication:
+        ref.read(shellProvider.notifier).selectTab(2);
+      case TodayPriorityItemType.water:
+        context.push('/record/create?kind=water');
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final items = buildPriorityItems(l10n, dashboard);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
@@ -24,13 +39,16 @@ class TodayPrioritySection extends StatelessWidget {
     return TodaySection(
       title: l10n.todayPrioritySectionTitle,
       actionLabel: l10n.todayManageAction,
-      onAction: () => AppToast.show(context, l10n.todayManageAction),
+      onAction: () => ref.read(shellProvider.notifier).selectTab(1),
       child: AppSectionSurface(
         padding: EdgeInsets.zero,
         child: Column(
           children: [
             for (var index = 0; index < items.length; index += 1) ...[
-              _PriorityRow(item: items[index]),
+              _PriorityRow(
+                item: items[index],
+                onTap: () => _handleItemTap(context, ref, items[index]),
+              ),
               if (index < items.length - 1)
                 Divider(
                   height: 1,
@@ -46,13 +64,14 @@ class TodayPrioritySection extends StatelessWidget {
   }
 }
 
-class _PriorityRow extends StatelessWidget {
-  const _PriorityRow({required this.item});
+class _PriorityRow extends ConsumerWidget {
+  const _PriorityRow({required this.item, required this.onTap});
 
   final TodayViewPriorityItem item;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
@@ -61,7 +80,7 @@ class _PriorityRow extends StatelessWidget {
       key: item.key,
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => AppToast.show(context, item.action),
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacingTokens.md,
@@ -132,7 +151,7 @@ class _PriorityRow extends StatelessWidget {
                       widthFactor: 0.76,
                     ),
                     const SizedBox(height: AppSpacingTokens.xs),
-                    _PriorityActionPill(item: item),
+                    _PriorityActionPill(item: item, onTap: onTap),
                   ],
                 ),
               ),
@@ -144,13 +163,14 @@ class _PriorityRow extends StatelessWidget {
   }
 }
 
-class _PriorityActionPill extends StatelessWidget {
-  const _PriorityActionPill({required this.item});
+class _PriorityActionPill extends ConsumerWidget {
+  const _PriorityActionPill({required this.item, required this.onTap});
 
   final TodayViewPriorityItem item;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final typography = AppTypographyTokens.mobile(
       Theme.of(context).colorScheme.onSurface,
     );
@@ -158,7 +178,7 @@ class _PriorityActionPill extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => AppToast.show(context, item.action),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
         child: DecoratedBox(
           decoration: BoxDecoration(
