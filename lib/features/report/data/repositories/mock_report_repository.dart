@@ -22,8 +22,25 @@ class MockReportRepository implements ReportRepository {
   const MockReportRepository();
 
   @override
-  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) async {
-    return previewDashboard;
+  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
+    return _dashboardForQuery(query);
+  }
+
+  static ReportDashboard _dashboardForQuery(ReportDashboardQuery query) {
+    final startDate = query.startDate ?? DateTime(2026, 6, 6);
+    final endDate = query.endDate ?? DateTime(2026, 6, 12);
+    final startIso = _dateOnly(startDate);
+    final endIso = _dateOnly(endDate);
+    return previewDashboard.copyWith(
+      range: query.range,
+      startDate: startIso,
+      endDate: endIso,
+    );
+  }
+
+  static String _dateOnly(DateTime date) {
+    final local = date.toLocal();
+    return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
   }
 
   static const previewDashboard = ReportDashboard(

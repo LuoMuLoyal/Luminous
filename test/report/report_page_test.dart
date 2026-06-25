@@ -576,7 +576,7 @@ class _PendingReportRepository implements ReportRepository {
   bool fetchCalled = false;
 
   @override
-  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) {
     fetchCalled = true;
     return _pending.future;
   }
@@ -596,7 +596,7 @@ class _RefreshableReportRepository implements ReportRepository {
   ];
 
   @override
-  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) {
     fetchCount += 1;
     if (_pending.isEmpty) {
       final completer = Completer<ReportDashboard>()
@@ -736,7 +736,7 @@ class _CountingPendingReportRepository implements ReportRepository {
   final _pending = Completer<ReportDashboard>();
 
   @override
-  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) {
     fetchCount++;
     return _pending.future;
   }
@@ -748,14 +748,14 @@ class _CountingPendingReportRepository implements ReportRepository {
 
 class _ThrowingReportRepository implements ReportRepository {
   @override
-  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) async {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
     throw Exception('Test error');
   }
 }
 
 class _EmptyReportRepository implements ReportRepository {
   @override
-  Future<ReportDashboard> fetchDashboard(ReportDashboardRange range) async {
+  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
     return _emptyDashboard;
   }
 
