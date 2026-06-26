@@ -116,6 +116,7 @@ class _FakeReportsAdapter implements HttpClientAdapter {
           <String, Object?>{'kind': 'medication', 'text': '用药记录良好。'},
         ],
         'actionLabel': '查看报告',
+        'action': 'today',
         'confidenceNote': '仅基于近 7 天已记录数据生成。',
       },
     });

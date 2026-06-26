@@ -88,7 +88,9 @@ void main() {
       expect(result.status, ReportAiSummaryCardStatus.idle);
       expect(
         container
-            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .read(
+              reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+            )
             .status,
         ReportAiSummaryCardStatus.idle,
       );
@@ -118,7 +120,9 @@ void main() {
       expect(result.status, ReportAiSummaryCardStatus.disabled);
       expect(
         container
-            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .read(
+              reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+            )
             .isDisabled,
         isTrue,
       );
@@ -171,62 +175,67 @@ void main() {
       // Final state is success.
       expect(
         container
-            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .read(
+              reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+            )
             .status,
         ReportAiSummaryCardStatus.success,
       );
     });
 
-    test('loading state carries streaming summary before final result', () async {
-      final fakeRepo = _FakeReportAiSummaryRepository(
-        streamEvents: [
-          const ReportAiGenerationSummaryEvent('近 7 天总结正在生成中。'),
-          ReportAiGenerationResultEvent(
-            _testSummary(range: ReportAiSummaryRange.last7Days),
+    test(
+      'loading state carries streaming summary before final result',
+      () async {
+        final fakeRepo = _FakeReportAiSummaryRepository(
+          streamEvents: [
+            const ReportAiGenerationSummaryEvent('近 7 天总结正在生成中。'),
+            ReportAiGenerationResultEvent(
+              _testSummary(range: ReportAiSummaryRange.last7Days),
+            ),
+          ],
+        );
+
+        final container = ProviderContainer(
+          overrides: [
+            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+            userSettingsControllerProvider.overrideWith(
+              EnabledUserSettingsController.new,
+            ),
+            reportAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        await container.read(userSettingsControllerProvider.future);
+
+        final states = <ReportAiSummaryCardState>[];
+        container.listen(
+          reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+          (prev, next) {
+            states.add(next);
+          },
+          fireImmediately: true,
+        );
+
+        final result = await container
+            .read(
+              reportAiSummaryControllerProvider(
+                ReportAiSummaryRange.last7Days,
+              ).notifier,
+            )
+            .generate();
+
+        expect(result.status, ReportAiSummaryCardStatus.success);
+        expect(
+          states.any(
+            (state) =>
+                state.status == ReportAiSummaryCardStatus.loading &&
+                state.streamingSummary == '近 7 天总结正在生成中。',
           ),
-        ],
-      );
-
-      final container = ProviderContainer(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-          userSettingsControllerProvider.overrideWith(
-            EnabledUserSettingsController.new,
-          ),
-          reportAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      await container.read(userSettingsControllerProvider.future);
-
-      final states = <ReportAiSummaryCardState>[];
-      container.listen(
-        reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
-        (prev, next) {
-          states.add(next);
-        },
-        fireImmediately: true,
-      );
-
-      final result = await container
-          .read(
-            reportAiSummaryControllerProvider(
-              ReportAiSummaryRange.last7Days,
-            ).notifier,
-          )
-          .generate();
-
-      expect(result.status, ReportAiSummaryCardStatus.success);
-      expect(
-        states.any(
-          (state) =>
-              state.status == ReportAiSummaryCardStatus.loading &&
-              state.streamingSummary == '近 7 天总结正在生成中。',
-        ),
-        isTrue,
-      );
-    });
+          isTrue,
+        );
+      },
+    );
 
     test('backend 403 → disabled state', () async {
       final fakeRepo = _FakeReportAiSummaryRepository(
@@ -267,7 +276,9 @@ void main() {
       expect(result.status, ReportAiSummaryCardStatus.disabled);
       expect(
         container
-            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .read(
+              reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+            )
             .status,
         ReportAiSummaryCardStatus.disabled,
       );
@@ -342,13 +353,17 @@ void main() {
 
       expect(
         container
-            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .read(
+              reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+            )
             .status,
         ReportAiSummaryCardStatus.success,
       );
       expect(
         container
-            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .read(
+              reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+            )
             .summary
             ?.summary,
         '测试周总结',
@@ -376,7 +391,9 @@ void main() {
       expect(result.summary?.summary, '测试周总结');
       expect(
         container
-            .read(reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days))
+            .read(
+              reportAiSummaryControllerProvider(ReportAiSummaryRange.last7Days),
+            )
             .summary
             ?.summary,
         '测试周总结',
@@ -414,14 +431,22 @@ ReportAiSummary _testSummary({required ReportAiSummaryRange range}) {
 // ---------------------------------------------------------------------------
 
 class _FakeReportAiSummaryRepository implements ReportAiSummaryRepository {
-  _FakeReportAiSummaryRepository({this.response, this.error, this.streamEvents});
+  _FakeReportAiSummaryRepository({
+    this.response,
+    this.error,
+    this.streamEvents,
+  });
 
   ReportAiSummary? response;
   Object? error;
   List<ReportAiGenerationEvent>? streamEvents;
 
   @override
-  Future<ReportAiSummary> generate(ReportAiSummaryRange range) async {
+  Future<ReportAiSummary> generate(
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  }) async {
     if (error != null) {
       // ignore: only_throw_errors
       throw error!;
@@ -431,8 +456,10 @@ class _FakeReportAiSummaryRepository implements ReportAiSummaryRepository {
 
   @override
   Stream<ReportAiGenerationEvent> generateStream(
-    ReportAiSummaryRange range,
-  ) async* {
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  }) async* {
     if (error != null) {
       // ignore: only_throw_errors
       throw error!;

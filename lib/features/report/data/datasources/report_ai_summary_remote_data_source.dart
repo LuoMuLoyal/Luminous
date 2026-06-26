@@ -26,17 +26,25 @@ class ReportAiSummaryRemoteDataSource {
   final lucent.ReportsApi api;
   final Dio dio;
 
-  Future<lucent.ReportSummaryDataDto> generate(ReportAiSummaryRange range) async {
+  Future<lucent.ReportSummaryDataDto> generate(
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  }) async {
     final dtoRange = switch (range) {
       ReportAiSummaryRange.last7Days =>
         lucent.GenerateReportSummaryDtoRangeEnum.last7Days,
       ReportAiSummaryRange.last30Days =>
         lucent.GenerateReportSummaryDtoRangeEnum.last30Days,
+      ReportAiSummaryRange.custom =>
+        lucent.GenerateReportSummaryDtoRangeEnum.custom,
     };
 
     final response = await api.reportsControllerGenerateSummaryV1(
       generateReportSummaryDto: lucent.GenerateReportSummaryDto(
         range: dtoRange,
+        startDate: startDate,
+        endDate: endDate,
       ),
     );
     final data = response.data?.data;
@@ -52,20 +60,27 @@ class ReportAiSummaryRemoteDataSource {
   }
 
   Stream<ReportAiRemoteEvent> generateStream(
-    ReportAiSummaryRange range,
-  ) async* {
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  }) async* {
     final dtoRange = switch (range) {
       ReportAiSummaryRange.last7Days => 'last_7_days',
       ReportAiSummaryRange.last30Days => 'last_30_days',
+      ReportAiSummaryRange.custom => 'custom',
+    };
+
+    final body = <String, Object?>{
+      'range': dtoRange,
+      if (startDate != null) 'startDate': startDate,
+      if (endDate != null) 'endDate': endDate,
     };
 
     final sse = LucentSseClient(dio: dio);
 
     await for (final event in sse.postJson(
       '/api/v1/user/reports/summary/generate/stream',
-      body: <String, Object?>{
-        'range': dtoRange,
-      },
+      body: body,
     )) {
       switch (event.event) {
         case 'summary':
@@ -96,9 +111,7 @@ class ReportAiSummaryRemoteDataSource {
       return data;
     }
     if (data is Map) {
-      return data.map(
-        (key, value) => MapEntry(key.toString(), value),
-      );
+      return data.map((key, value) => MapEntry(key.toString(), value));
     }
     throw const LucentApiException(message: 'Lucent SSE payload is invalid.');
   }

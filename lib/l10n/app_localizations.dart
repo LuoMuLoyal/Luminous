@@ -6092,6 +6092,12 @@ abstract class AppLocalizations {
   /// **'基于近 30 天记录的智能分析'**
   String get reportAiSummarySubtitleLast30Days;
 
+  /// No description provided for @reportAiSummarySubtitleCustom.
+  ///
+  /// In zh, this message translates to:
+  /// **'基于所选时段的智能分析'**
+  String get reportAiSummarySubtitleCustom;
+
   /// No description provided for @reportAiSummaryDefaultHint.
   ///
   /// In zh, this message translates to:
@@ -6109,6 +6115,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'正在生成近 30 天 AI 总结'**
   String get reportAiSummaryGeneratingHintLast30Days;
+
+  /// No description provided for @reportAiSummaryGeneratingHintCustom.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在生成所选时段 AI 总结'**
+  String get reportAiSummaryGeneratingHintCustom;
 
   /// No description provided for @reportAiSummaryErrorHint.
   ///

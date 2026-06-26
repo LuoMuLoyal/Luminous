@@ -3360,6 +3360,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Smart analysis based on the last 30 days of records';
 
   @override
+  String get reportAiSummarySubtitleCustom =>
+      'Smart analysis based on the selected period';
+
+  @override
   String get reportAiSummaryDefaultHint =>
       'This week\'s AI summary has not been generated yet, so the latest report snapshot is shown for now.';
 
@@ -3370,6 +3374,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportAiSummaryGeneratingHintLast30Days =>
       'Generating the last 30 days AI summary';
+
+  @override
+  String get reportAiSummaryGeneratingHintCustom =>
+      'Generating the selected period AI summary';
 
   @override
   String get reportAiSummaryErrorHint =>

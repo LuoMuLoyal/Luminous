@@ -23,8 +23,16 @@ class ReportAiGenerationResultEvent extends ReportAiGenerationEvent {
 }
 
 abstract interface class ReportAiSummaryRepository {
-  Future<ReportAiSummary> generate(ReportAiSummaryRange range);
-  Stream<ReportAiGenerationEvent> generateStream(ReportAiSummaryRange range);
+  Future<ReportAiSummary> generate(
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  });
+  Stream<ReportAiGenerationEvent> generateStream(
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  });
 }
 
 final reportAiSummaryRemoteDataSourceProvider =
@@ -47,8 +55,16 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
   final ReportAiSummaryRemoteDataSource dataSource;
 
   @override
-  Future<ReportAiSummary> generate(ReportAiSummaryRange range) async {
-    await for (final event in generateStream(range)) {
+  Future<ReportAiSummary> generate(
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  }) async {
+    await for (final event in generateStream(
+      range,
+      startDate: startDate,
+      endDate: endDate,
+    )) {
       if (event is ReportAiGenerationResultEvent) {
         return event.summary;
       }
@@ -58,9 +74,15 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
 
   @override
   Stream<ReportAiGenerationEvent> generateStream(
-    ReportAiSummaryRange range,
-  ) async* {
-    await for (final event in dataSource.generateStream(range)) {
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  }) async* {
+    await for (final event in dataSource.generateStream(
+      range,
+      startDate: startDate,
+      endDate: endDate,
+    )) {
       switch (event) {
         case ReportAiRemoteSummaryEvent():
           yield ReportAiGenerationSummaryEvent(event.summary);
@@ -79,6 +101,7 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
       summary: dto.summary,
       bullets: dto.bullets.map(_mapBullet).toList(growable: false),
       actionLabel: dto.actionLabel,
+      action: dto.action,
       confidenceNote: dto.confidenceNote,
     );
   }
@@ -87,6 +110,8 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
     return switch (range) {
       lucent.ReportSummaryDataDtoRangeEnum.last30Days =>
         ReportAiSummaryRange.last30Days,
+      lucent.ReportSummaryDataDtoRangeEnum.custom =>
+        ReportAiSummaryRange.custom,
       _ => ReportAiSummaryRange.last7Days,
     };
   }

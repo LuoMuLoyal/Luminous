@@ -17,6 +17,7 @@ TodayAnalysisDataDto _$TodayAnalysisDataDtoFromJson(
       'summary',
       'bullets',
       'actionLabel',
+      'action',
       'confidenceNote',
     ],
   );
@@ -33,6 +34,7 @@ TodayAnalysisDataDto _$TodayAnalysisDataDtoFromJson(
           .toList(),
     ),
     actionLabel: $checkedConvert('actionLabel', (v) => v as String),
+    action: $checkedConvert('action', (v) => v as String),
     confidenceNote: $checkedConvert('confidenceNote', (v) => v as String),
   );
   return val;
@@ -46,5 +48,6 @@ Map<String, dynamic> _$TodayAnalysisDataDtoToJson(
   'summary': instance.summary,
   'bullets': instance.bullets.map((e) => e.toJson()).toList(),
   'actionLabel': instance.actionLabel,
+  'action': instance.action,
   'confidenceNote': instance.confidenceNote,
 };

@@ -3143,6 +3143,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportAiSummarySubtitleLast30Days => '基于近 30 天记录的智能分析';
 
   @override
+  String get reportAiSummarySubtitleCustom => '基于所选时段的智能分析';
+
+  @override
   String get reportAiSummaryDefaultHint => '还没有生成本周 AI 总结，当前先显示最近一次报告快照。';
 
   @override
@@ -3150,6 +3153,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reportAiSummaryGeneratingHintLast30Days => '正在生成近 30 天 AI 总结';
+
+  @override
+  String get reportAiSummaryGeneratingHintCustom => '正在生成所选时段 AI 总结';
 
   @override
   String get reportAiSummaryErrorHint => '本周 AI 总结生成失败，当前先保留报告快照。';

@@ -30,6 +30,7 @@ void main() {
             ),
           ],
           actionLabel: '查看报告',
+          action: 'today',
           confidenceNote: '仅基于近 7 天已记录数据生成，不构成诊断或治疗建议。',
         ),
       ),
@@ -47,7 +48,8 @@ void main() {
   });
 }
 
-class _FakeReportAiSummaryRemoteDataSource extends ReportAiSummaryRemoteDataSource {
+class _FakeReportAiSummaryRemoteDataSource
+    extends ReportAiSummaryRemoteDataSource {
   _FakeReportAiSummaryRemoteDataSource(this._dto)
     : super(
         api: lucent.ReportsApi(Dio(BaseOptions())),
@@ -58,13 +60,17 @@ class _FakeReportAiSummaryRemoteDataSource extends ReportAiSummaryRemoteDataSour
 
   @override
   Future<lucent.ReportSummaryDataDto> generate(
-    ReportAiSummaryRange range,
-  ) async => _dto;
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  }) async => _dto;
 
   @override
   Stream<ReportAiRemoteEvent> generateStream(
-    ReportAiSummaryRange range,
-  ) async* {
+    ReportAiSummaryRange range, {
+    String? startDate,
+    String? endDate,
+  }) async* {
     yield ReportAiRemoteResultEvent(_dto);
   }
 }

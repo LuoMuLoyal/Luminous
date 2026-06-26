@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 enum ReportAiSummaryRange {
   last7Days('last_7_days'),
-  last30Days('last_30_days');
+  last30Days('last_30_days'),
+  custom('custom');
 
   const ReportAiSummaryRange(this.apiValue);
 
@@ -18,6 +19,7 @@ class ReportAiSummary {
     required this.summary,
     required this.bullets,
     required this.actionLabel,
+    this.action,
     required this.confidenceNote,
   });
 
@@ -28,6 +30,7 @@ class ReportAiSummary {
   final String summary;
   final List<ReportAiSummaryBullet> bullets;
   final String actionLabel;
+  final String? action;
   final String confidenceNote;
 }
 
@@ -70,10 +73,7 @@ class ReportAiSummaryCardState {
        );
 
   const ReportAiSummaryCardState.success(ReportAiSummary summary)
-    : this(
-        status: ReportAiSummaryCardStatus.success,
-        summary: summary,
-      );
+    : this(status: ReportAiSummaryCardStatus.success, summary: summary);
 
   const ReportAiSummaryCardState.error({
     required String message,
