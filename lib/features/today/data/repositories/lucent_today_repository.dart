@@ -84,7 +84,7 @@ class LucentTodayRepository implements TodayRepository {
     return TodayDashboard(
       user: TodayUserSnapshot(
         moment: todayDayMomentFromHour(today.hour),
-        hasUnreadNotifications: true, // mock
+        hasUnreadNotifications: false,
         updatedAtLabel: _formatTimeLabel(today),
       ),
       water: TodayWaterSummary(completedCount: waterCount, targetCount: 8),

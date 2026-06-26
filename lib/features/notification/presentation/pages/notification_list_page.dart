@@ -41,6 +41,13 @@ class NotificationListPage extends ConsumerWidget {
               return _EmptyView();
             }
             final groups = _groupByRelativeDate(items);
+            final controller = ref.read(
+              notificationListControllerProvider.notifier,
+            );
+            final isLoadingMore = ref.watch(
+              notificationListLoadingMoreProvider,
+            );
+            final hasMore = controller.hasMore;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -66,6 +73,21 @@ class NotificationListPage extends ConsumerWidget {
                     );
                   }),
                   const SizedBox(height: AppSpacingTokens.md),
+                ],
+                if (hasMore) ...[
+                  const SizedBox(height: AppSpacingTokens.md),
+                  Center(
+                    child: isLoadingMore
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : TextButton(
+                            onPressed: () => controller.loadMore(),
+                            child: Text(l10n.notificationLoadMore),
+                          ),
+                  ),
                 ],
               ],
             );

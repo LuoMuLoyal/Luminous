@@ -1560,6 +1560,7 @@
   "notificationDeleteConfirmDescription": "This cannot be undone. Are you sure?",
   "notificationDeleteConfirmCancel": "Cancel",
   "notificationDeleteConfirmConfirm": "Delete",
+  "notificationLoadMore": "Load more",
   "notificationNotFoundTitle": "Notification expired",
   "notificationNotFoundDescription": "This notification may have been deleted or expired."
 }

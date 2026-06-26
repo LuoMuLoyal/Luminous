@@ -45,6 +45,18 @@ final notificationListPageProvider =
       return data;
     });
 
+// ── Loading-more flag ──────────────────────────────────────────────────────
+
+class _LoadingMoreNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void setLoading(bool value) => state = value;
+}
+
+final notificationListLoadingMoreProvider =
+    NotifierProvider<_LoadingMoreNotifier, bool>(_LoadingMoreNotifier.new);
+
 // ── Notification detail ──────────────────────────────────────────────────────
 
 final notificationDetailProvider =
@@ -69,8 +81,17 @@ final notificationDetailProvider =
 
 class NotificationListController
     extends AsyncNotifier<NotificationListResponseDto> {
+  int _currentPage = 1;
+
+  bool get hasMore {
+    final value = state.value;
+    if (value == null) return false;
+    return value.items.length < value.total.toInt();
+  }
+
   @override
   Future<NotificationListResponseDto> build() async {
+    _currentPage = 1;
     final api = ref.read(lucentNotificationsApiProvider);
     final response = await api.notificationsControllerFindAllV1(
       page: 1,
@@ -83,10 +104,43 @@ class NotificationListController
     return data;
   }
 
+  Future<void> loadMore() async {
+    final current = state.value;
+    if (current == null || !hasMore) return;
+
+    ref.read(notificationListLoadingMoreProvider.notifier).setLoading(true);
+    try {
+      final api = ref.read(lucentNotificationsApiProvider);
+      final nextPage = _currentPage + 1;
+      final response = await api.notificationsControllerFindAllV1(
+        page: nextPage,
+        pageSize: _notificationPageSize,
+      );
+      final data = response.data;
+      if (data == null || data.code != 0) {
+        throw StateError(data?.message ?? 'Failed to fetch notifications.');
+      }
+      _currentPage = nextPage;
+      state = AsyncValue.data(
+        NotificationListResponseDto(
+          code: data.code,
+          message: data.message,
+          items: [...current.items, ...data.items],
+          total: data.total,
+        ),
+      );
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    } finally {
+      ref.read(notificationListLoadingMoreProvider.notifier).setLoading(false);
+    }
+  }
+
   Future<void> markAllAsRead() async {
     final api = ref.read(lucentNotificationsApiProvider);
     await api.notificationsControllerMarkAllAsReadV1();
     ref.invalidate(notificationUnreadCountProvider);
+    _currentPage = 1;
     state = await AsyncValue.guard(() async {
       final response = await api.notificationsControllerFindAllV1(
         page: 1,
@@ -104,6 +158,7 @@ class NotificationListController
     final api = ref.read(lucentNotificationsApiProvider);
     await api.notificationsControllerRemoveV1(id: id);
     ref.invalidate(notificationUnreadCountProvider);
+    _currentPage = 1;
     state = await AsyncValue.guard(() async {
       final response = await api.notificationsControllerFindAllV1(
         page: 1,
