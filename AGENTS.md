@@ -37,6 +37,10 @@ dart run tool/regenerate_lucent_openapi.dart
 - Do not add explanatory, narrative, onboarding, or marketing-style copy to normal app pages by default. Keep user-visible text limited to necessary titles, labels, values, statuses, and actions.
 - Child pages reached from settings, mine, or other in-app navigation should default to a standard app header: left back arrow and centered title. Avoid hero-style headers or extra descriptive paragraphs unless the task explicitly requires them.
 
+## Working Directory
+
+Work inside `Luminous/` for pure frontend changes. When operating from the workspace root, use `git -C Luminous ...` and absolute paths so commands run against this repo, not the workspace root or `Lucent`.
+
 ## Docs
 
 - Read `docs/README.md` before editing docs.
