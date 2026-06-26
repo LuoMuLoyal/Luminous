@@ -47,6 +47,11 @@ This replaces the long historical error audit as the current quick-read checklis
 - Do not hide shared business data under one page feature just because it was first used there. If the same provider/service is consumed by Mine, Medicine, and Settings, move it to a neutral feature boundary such as `features/support/` instead of leaving it nested under `settings`.
 - Keep design-system primitives in `lib/core/design/`. Do not split responsive breakpoints or theme seed colors into parallel `core/constants` files when they are part of the same UI token system.
 - Prefer `AppResponsiveSizing` helpers or `AppSpacingTokens` over literal widths/heights for layout-affecting dimensions. Fixed values are acceptable only for hairline dividers, minimum tap targets, or one-off decorative details.
+- New Dialogs must use `AppDialog` (`lib/core/widgets/app_dialog.dart`) instead of hand-writing the `Dialog` + `ConstrainedBox` + `SafeArea` + `Padding` + scroll wrapper.
+- Auth form validation must reuse `AuthValidationMixin` / `CooldownTimerMixin` from `lib/features/auth/presentation/providers/auth_form_mixin.dart`; do not duplicate email regex, code/password validation, or cooldown timer logic.
+- Prefer `flutter_hooks` (`useTextEditingController`, `useEffect`, etc.) for widget-local lifecycle over manual `initState`/`dispose` in `StatefulWidget`. Convert new widgets to `HookConsumerWidget` / `HookWidget` when they need controllers, focus nodes, timers, or animation controllers.
+- Use `email_validator` instead of hand-written email regex.
+- Always check `mounted` / `context.mounted` before calling `Navigator.pop`, `setState`, or showing feedback after async work. Prefer `safePop()` wrappers or early-return guards.
 
 ## CI/CD And Generated Files
 
