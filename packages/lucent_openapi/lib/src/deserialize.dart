@@ -82,6 +82,7 @@ import 'package:lucent_openapi/src/model/medicine_reminder_item_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_reminder_list_data_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_reminder_list_response_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_reminder_response_dto.dart';
+import 'package:lucent_openapi/src/model/medicine_safety_tip_response_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_search_item_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_search_meta_dto.dart';
 import 'package:lucent_openapi/src/model/medicine_search_response_dto.dart';
@@ -477,6 +478,11 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineReminderResponseDto':
       return MedicineReminderResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineSafetyTipResponseDto':
+      return MedicineSafetyTipResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'MedicineSearchItemDto':
       return MedicineSearchItemDto.fromJson(value as Map<String, dynamic>)

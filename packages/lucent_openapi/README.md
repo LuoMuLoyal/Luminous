@@ -120,6 +120,7 @@ Class | Method | HTTP request | Description
 [*MedicineRemindersApi*](doc/MedicineRemindersApi.md) | [**medicineRemindersControllerListV1**](doc/MedicineRemindersApi.md#medicinereminderscontrollerlistv1) | **GET** /api/v1/user/medicine-reminders | List medicine reminder schedules
 [*MedicineRemindersApi*](doc/MedicineRemindersApi.md) | [**medicineRemindersControllerUpdateV1**](doc/MedicineRemindersApi.md#medicinereminderscontrollerupdatev1) | **PATCH** /api/v1/user/medicine-reminders/{id} | Update a medicine reminder schedule
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
+[*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetSafetyTipsV1**](doc/MedicinesApi.md#medicinescontrollergetsafetytipsv1) | **GET** /api/v1/medicines/safety-tips | 随机返回用药安全提示
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
 [*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerCreateV1**](doc/NotificationsApi.md#notificationscontrollercreatev1) | **POST** /api/v1/user/notifications | Create a notification (internal/test)
 [*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerFindAllV1**](doc/NotificationsApi.md#notificationscontrollerfindallv1) | **GET** /api/v1/user/notifications | List user notifications
@@ -252,6 +253,7 @@ Class | Method | HTTP request | Description
  - [MedicineReminderListDataDto](doc/MedicineReminderListDataDto.md)
  - [MedicineReminderListResponseDto](doc/MedicineReminderListResponseDto.md)
  - [MedicineReminderResponseDto](doc/MedicineReminderResponseDto.md)
+ - [MedicineSafetyTipResponseDto](doc/MedicineSafetyTipResponseDto.md)
  - [MedicineSearchItemDto](doc/MedicineSearchItemDto.md)
  - [MedicineSearchMetaDto](doc/MedicineSearchMetaDto.md)
  - [MedicineSearchResponseDto](doc/MedicineSearchResponseDto.md)

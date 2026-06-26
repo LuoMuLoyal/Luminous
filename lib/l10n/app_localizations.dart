@@ -1880,30 +1880,6 @@ abstract class AppLocalizations {
   /// **'换一换'**
   String get medicineSafetyTipsRefreshAction;
 
-  /// No description provided for @medicineSafetyTipSpacing.
-  ///
-  /// In zh, this message translates to:
-  /// **'服药期间如需饮酒，建议间隔至少 24 小时以上。'**
-  String get medicineSafetyTipSpacing;
-
-  /// No description provided for @medicineSafetyTipCoffee.
-  ///
-  /// In zh, this message translates to:
-  /// **'咖啡 / 浓茶 / 能量饮料可能影响部分药物效果，注意适量。'**
-  String get medicineSafetyTipCoffee;
-
-  /// No description provided for @medicineSafetyTipTiming.
-  ///
-  /// In zh, this message translates to:
-  /// **'按时按量用药，不要自行增减或停药。'**
-  String get medicineSafetyTipTiming;
-
-  /// No description provided for @medicineSafetyTipStorage.
-  ///
-  /// In zh, this message translates to:
-  /// **'药品请置于阴凉干燥处，避免儿童接触。'**
-  String get medicineSafetyTipStorage;
-
   /// No description provided for @medicineErrorTitle.
   ///
   /// In zh, this message translates to:

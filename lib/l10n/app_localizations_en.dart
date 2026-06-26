@@ -1051,22 +1051,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineSafetyTipsRefreshAction => 'Refresh';
 
   @override
-  String get medicineSafetyTipSpacing =>
-      'If alcohol is unavoidable during medication, leave at least 24 hours when possible.';
-
-  @override
-  String get medicineSafetyTipCoffee =>
-      'Coffee, strong tea, or energy drinks may affect some medicines. Use moderately.';
-
-  @override
-  String get medicineSafetyTipTiming =>
-      'Take medicines on time and as directed. Do not change or stop them yourself.';
-
-  @override
-  String get medicineSafetyTipStorage =>
-      'Store medicines in a cool, dry place and keep them away from children.';
-
-  @override
   String get medicineErrorTitle => 'Medication page did not load';
 
   @override

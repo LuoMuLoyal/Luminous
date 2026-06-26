@@ -125,6 +125,7 @@ export 'package:lucent_openapi/src/model/medicine_reminder_item_dto.dart';
 export 'package:lucent_openapi/src/model/medicine_reminder_list_data_dto.dart';
 export 'package:lucent_openapi/src/model/medicine_reminder_list_response_dto.dart';
 export 'package:lucent_openapi/src/model/medicine_reminder_response_dto.dart';
+export 'package:lucent_openapi/src/model/medicine_safety_tip_response_dto.dart';
 export 'package:lucent_openapi/src/model/medicine_search_item_dto.dart';
 export 'package:lucent_openapi/src/model/medicine_search_meta_dto.dart';
 export 'package:lucent_openapi/src/model/medicine_search_response_dto.dart';

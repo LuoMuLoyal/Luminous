@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/widgets/app_status_pill.dart';
@@ -11,7 +12,9 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_safety_tip.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
+import 'package:luminous/features/medicine/presentation/providers/medicine_safety_tips_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';

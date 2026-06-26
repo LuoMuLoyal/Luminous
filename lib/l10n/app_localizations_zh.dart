@@ -968,18 +968,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineSafetyTipsRefreshAction => '换一换';
 
   @override
-  String get medicineSafetyTipSpacing => '服药期间如需饮酒，建议间隔至少 24 小时以上。';
-
-  @override
-  String get medicineSafetyTipCoffee => '咖啡 / 浓茶 / 能量饮料可能影响部分药物效果，注意适量。';
-
-  @override
-  String get medicineSafetyTipTiming => '按时按量用药，不要自行增减或停药。';
-
-  @override
-  String get medicineSafetyTipStorage => '药品请置于阴凉干燥处，避免儿童接触。';
-
-  @override
   String get medicineErrorTitle => '用药页暂时没有加载出来';
 
   @override
