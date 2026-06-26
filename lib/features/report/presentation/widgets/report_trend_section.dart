@@ -8,7 +8,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_components.dart';
-import 'package:luminous/features/report/presentation/widgets/report_range_picker_sheet.dart';
+import 'package:luminous/features/report/presentation/widgets/report_range_picker_dialog.dart';
 import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
 import 'package:luminous/features/report/presentation/widgets/report_top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -81,11 +81,9 @@ class ReportTrendSection extends StatelessWidget {
   }
 
   Future<void> _showRangePicker(BuildContext context) async {
-    final selected = await showModalBottomSheet<ReportDashboardQuery>(
-      context: context,
-      useRootNavigator: true,
-      builder: (context) =>
-          ReportRangePickerSheet(selectedQuery: selectedQuery),
+    final selected = await showReportRangePickerDialog(
+      context,
+      selectedQuery: selectedQuery,
     );
     if (selected != null && selected != selectedQuery) {
       onQueryChanged(selected);

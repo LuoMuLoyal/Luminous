@@ -13,8 +13,8 @@ import 'package:luminous/features/report/presentation/providers/report_dashboard
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class RecordFastEntrySheet extends ConsumerStatefulWidget {
-  const RecordFastEntrySheet({
+class RecordFastEntryDialog extends ConsumerStatefulWidget {
+  const RecordFastEntryDialog({
     super.key,
     required this.kind,
     required this.occurredAt,
@@ -28,11 +28,11 @@ class RecordFastEntrySheet extends ConsumerStatefulWidget {
   final String moreRoute;
 
   @override
-  ConsumerState<RecordFastEntrySheet> createState() =>
-      _RecordFastEntrySheetState();
+  ConsumerState<RecordFastEntryDialog> createState() =>
+      _RecordFastEntryDialogState();
 }
 
-class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
+class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
   bool _saving = false;
 
   @override
@@ -41,56 +41,48 @@ class _RecordFastEntrySheetState extends ConsumerState<RecordFastEntrySheet> {
     final typeLabel = dailyRecordKindLabel(l10n, widget.kind);
     final choices = _choicesFor(widget.kind, l10n);
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacingTokens.md,
-          AppSpacingTokens.md,
-          AppSpacingTokens.md,
-          AppSpacingTokens.md,
-        ),
-        child: Column(
-          key: Key('record-fast-entry-${widget.kind.name}'),
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.recordFastEntryTitle(typeLabel),
-              key: const Key('record-fast-entry-title'),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: AppSpacingTokens.xs),
-            Text(
-              l10n.recordFastEntryDateHint(widget.occurredAt),
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: AppColorTokens.mute),
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            Wrap(
-              spacing: AppSpacingTokens.sm,
-              runSpacing: AppSpacingTokens.sm,
-              children: [
-                for (var index = 0; index < choices.length; index += 1)
-                  _QuickChoiceChip(
-                    key: Key(
-                      'record-fast-entry-choice-${widget.kind.name}-$index',
-                    ),
-                    label: choices[index].label,
-                    enabled: !_saving,
-                    onTap: () => _saveChoice(choices[index]),
+    return AlertDialog(
+      key: Key('record-fast-entry-${widget.kind.name}'),
+      title: Text(l10n.recordFastEntryTitle(typeLabel)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.recordFastEntryDateHint(widget.occurredAt),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColorTokens.mute),
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          Wrap(
+            spacing: AppSpacingTokens.sm,
+            runSpacing: AppSpacingTokens.sm,
+            children: [
+              for (var index = 0; index < choices.length; index += 1)
+                _QuickChoiceChip(
+                  key: Key(
+                    'record-fast-entry-choice-${widget.kind.name}-$index',
                   ),
-              ],
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            OutlinedButton(
-              key: const Key('record-fast-entry-more-action'),
-              onPressed: _saving ? null : _openMore,
-              child: Text(l10n.recordFastEntryMoreAction),
-            ),
-          ],
-        ),
+                  label: choices[index].label,
+                  enabled: !_saving,
+                  onTap: () => _saveChoice(choices[index]),
+                ),
+            ],
+          ),
+        ],
       ),
+      actions: [
+        TextButton(
+          key: const Key('record-fast-entry-more-action'),
+          onPressed: _saving ? null : _openMore,
+          child: Text(l10n.recordFastEntryMoreAction),
+        ),
+        TextButton(
+          onPressed: _saving ? null : () => Navigator.of(context).pop(),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+        ),
+      ],
     );
   }
 

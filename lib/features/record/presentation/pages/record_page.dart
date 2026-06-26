@@ -19,8 +19,8 @@ import 'package:luminous/features/record/presentation/utils/record_date_time_for
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
-import 'package:luminous/features/record/presentation/widgets/record_fast_entry_sheet.dart';
-import 'package:luminous/features/record/presentation/widgets/record_nlp_sheet.dart';
+import 'package:luminous/features/record/presentation/widgets/record_fast_entry_dialog.dart';
+import 'package:luminous/features/record/presentation/widgets/record_nlp_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordPage extends ConsumerWidget {
@@ -48,7 +48,7 @@ class RecordPage extends ConsumerWidget {
           ? FloatingActionButton.extended(
               key: const Key('record-nlp-fab'),
               onPressed: () =>
-                  _openNlpSheet(context, ref, session, selectedDate),
+                  _openNlpDialog(context, ref, session, selectedDate),
               icon: const Icon(Icons.auto_awesome_rounded),
               label: Text(l10n.recordNlpFabAction),
             )
@@ -138,7 +138,7 @@ class RecordPage extends ConsumerWidget {
             onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
             onQuickAction: (action) => _handleQuickAction(context, ref, action),
             onAiInputTap: () =>
-                _openNlpSheet(context, ref, session, selectedDate),
+                _openNlpDialog(context, ref, session, selectedDate),
             onNewEntry: () => _openRecordCreate(context, ref),
           ),
           loading: () => RecordDashboardView(
@@ -153,7 +153,7 @@ class RecordPage extends ConsumerWidget {
             onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
             onQuickAction: (action) => _handleQuickAction(context, ref, action),
             onAiInputTap: () =>
-                _openNlpSheet(context, ref, session, selectedDate),
+                _openNlpDialog(context, ref, session, selectedDate),
             onNewEntry: () => _openRecordCreate(context, ref),
           ),
           error: (_, __) => AppStateErrorView(
@@ -226,10 +226,9 @@ class RecordPage extends ConsumerWidget {
       return;
     }
 
-    await showModalBottomSheet<void>(
+    await showDialog<void>(
       context: context,
-      isScrollControlled: true,
-      builder: (sheetContext) => RecordFastEntrySheet(
+      builder: (dialogContext) => RecordFastEntryDialog(
         kind: kind,
         occurredAt: date,
         currentDateTime: now,
@@ -274,7 +273,7 @@ class RecordPage extends ConsumerWidget {
     };
   }
 
-  Future<void> _openNlpSheet(
+  Future<void> _openNlpDialog(
     BuildContext context,
     WidgetRef ref,
     AuthSessionState session,
@@ -292,11 +291,10 @@ class RecordPage extends ConsumerWidget {
     }
 
     ref.read(recordNlpControllerProvider.notifier).reset();
-    await showModalBottomSheet<void>(
+    await showDialog<void>(
       context: context,
-      isScrollControlled: true,
-      builder: (sheetContext) =>
-          RecordNlpSheet(occurredAt: formatRecordDate(selectedDate)),
+      builder: (dialogContext) =>
+          RecordNlpDialog(occurredAt: formatRecordDate(selectedDate)),
     );
   }
 }
