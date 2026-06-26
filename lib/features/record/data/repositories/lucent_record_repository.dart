@@ -87,6 +87,10 @@ class LucentRecordRepository implements RecordRepository {
       DailyRecordKind.sleep => Icons.dark_mode_rounded,
     };
 
+    // Mood records created through the fast-entry dialog store the level in
+    // the payload, so expose a readable subtitle such as "情绪 · 不错".
+    final moodValueKey = _moodValueKey(kind, record.payload);
+
     final titleKey = switch (kind) {
       DailyRecordKind.water => RecordCopyKey.typeWater,
       DailyRecordKind.meal => RecordCopyKey.typeMeal,
@@ -98,13 +102,14 @@ class LucentRecordRepository implements RecordRepository {
       DailyRecordKind.sleep => RecordCopyKey.typeSleep,
     };
 
-    // For notes without a real title, leave rawTitle null so the timeline
-    // resolves through the localized titleKey (or uses note content as a
-    // short preview). Other kinds keep the existing "kind value" fallback.
+    // For notes and mood records without a real title, leave rawTitle null so
+    // the timeline resolves through the localized titleKey (or uses note
+    // content as a short preview). Other kinds keep the existing "kind value"
+    // fallback.
     final String? rawTitle;
     if (record.title != null) {
       rawTitle = record.title;
-    } else if (kind == DailyRecordKind.note) {
+    } else if (kind == DailyRecordKind.note || kind == DailyRecordKind.mood) {
       rawTitle = null;
     } else {
       rawTitle = '${kind.name} ${record.value ?? ''}'.trim();
@@ -121,6 +126,7 @@ class LucentRecordRepository implements RecordRepository {
       value: record.value != null
           ? '${record.value}${record.unit != null ? ' ${record.unit}' : ''}'
           : _sleepPayloadValue(kind, record.payload) ?? record.note,
+      valueKey: moodValueKey,
       detailKey: record.note != null && record.value != null ? null : null,
       imageUrl: record.attachments
           .where(
@@ -148,6 +154,26 @@ class LucentRecordRepository implements RecordRepository {
     if (h == 0) return '${m}m';
     if (m == 0) return '${h}h';
     return '${h}h ${m}m';
+  }
+
+  /// Returns the localized copy key for a mood record's value line
+  /// (e.g. "情绪 · 不错"), or null when the record is not a mood record or has
+  /// no usable mood data.
+  static RecordCopyKey? _moodValueKey(
+    DailyRecordKind kind,
+    Map<String, dynamic>? payload,
+  ) {
+    if (kind != DailyRecordKind.mood || payload == null) return null;
+    final label = payload['moodLabel'];
+    if (label is! String) return null;
+    return switch (label) {
+      'great' => RecordCopyKey.timelineMoodGreat,
+      'good' => RecordCopyKey.timelineMoodGood,
+      'okay' => RecordCopyKey.timelineMoodOkay,
+      'bad' => RecordCopyKey.timelineMoodBad,
+      'terrible' => RecordCopyKey.timelineMoodTerrible,
+      _ => null,
+    };
   }
 
   // --- static mock (backend does not yet provide) ---
@@ -222,9 +248,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.cyanDeep,
       softColor: AppColorTokens.cyanSoft,
     ),
-    // Deferred by Product_Vision MVP: keep the lightweight mood shape for
-    // future self-check-ins, but do not surface it as a formal mental-health
-    // module in the active Record quick actions.
+    // Lightweight mood self-check-in quick action.
     RecordQuickAction(
       type: RecordEntryType.mood,
       icon: Icons.sentiment_satisfied_rounded,
@@ -379,6 +403,7 @@ class LucentRecordRepository implements RecordRepository {
       RecordEntryType.meal ||
       RecordEntryType.sleep ||
       RecordEntryType.medication ||
+      RecordEntryType.mood ||
       RecordEntryType.note => true,
       _ => false,
     };

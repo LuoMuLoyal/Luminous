@@ -37,11 +37,9 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 ## Deferred But Useful
 
 - agent-assisted support discovery and map-backed nearby-care lookup
-- lightweight mood record shapes and a future mood quick-entry/tool hook
 - environment signals for contextual Today/Mine use
 - Report score/finding/pattern/trend/AI action card drill-down (needs product decision: detail page vs filter Record tab)
 - voice input, photo/scan/OCR/barcode/prescription action shapes (need native plugins + backend contracts)
-- local-only sleep reminder preferences beyond simple placeholder labeling
 - real authenticated Web report preview beyond the competition site
 - system health app bridging through Apple Health / Health Connect
 

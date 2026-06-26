@@ -254,9 +254,7 @@ class MockRecordRepository implements RecordRepository {
       accent: RecordTypeColors.medication,
       softColor: RecordTypeColors.medicationSoft,
     ),
-    // Deferred by Product_Vision MVP: keep the lightweight mood entry shape
-    // because it may support future self-check-ins, but do not surface it as a
-    // formal mental-health module in the active Record quick actions.
+    // Lightweight mood self-check-in quick action.
     RecordQuickAction(
       type: RecordEntryType.mood,
       icon: Icons.mood_rounded,
@@ -285,11 +283,7 @@ class MockRecordRepository implements RecordRepository {
 
   static List<RecordQuickAction> _quickActionsFor() {
     return _quickActions
-        .where(
-          (action) =>
-              action.type != RecordEntryType.mood &&
-              action.type != RecordEntryType.vitals,
-        )
+        .where((action) => action.type != RecordEntryType.vitals)
         .toList(growable: false);
   }
 

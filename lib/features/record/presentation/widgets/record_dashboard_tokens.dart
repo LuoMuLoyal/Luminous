@@ -11,11 +11,12 @@ List<RecordQuickAction> buildMobileQuickActions(
 ) {
   final preferredTypes = <RecordEntryType>[
     RecordEntryType.symptom,
-    RecordEntryType.water,
     RecordEntryType.meal,
-    RecordEntryType.sleep,
     RecordEntryType.medication,
     RecordEntryType.note,
+    RecordEntryType.water,
+    RecordEntryType.sleep,
+    RecordEntryType.mood,
   ];
   final byType = {for (final action in actions) action.type: action};
   final ordered = <RecordQuickAction>[

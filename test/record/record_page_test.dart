@@ -29,6 +29,7 @@ import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/providers/record_time_provider.dart';
 import 'package:luminous/features/record/presentation/pages/record_page.dart';
+import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -1277,6 +1278,81 @@ void main() {
     expect(find.text('时间 · 09:45'), findsOneWidget);
   });
 
+  testWidgets('Record mood quick action opens fast entry and saves', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final dailyRepo = _FakeDailyRecordRepository();
+    final currentDateTime = DateTime(2026, 6, 6, 9, 45);
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: currentDateTime,
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-mood')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RecordCreatePage), findsNothing);
+    expect(find.byKey(const Key('record-fast-entry-mood')), findsOneWidget);
+    expect(find.byKey(const Key('daily-record-kind-mood')), findsNothing);
+
+    await tester.tap(find.byKey(const Key('record-fast-entry-choice-mood-1')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    final input = dailyRepo.createInput;
+    expect(input, isNotNull);
+    expect(input!.kind, DailyRecordKind.mood);
+    expect(input.occurredAt, '2026-06-06');
+    expect(input.occurredTime, '09:45');
+    expect(input.title, isNull);
+    expect(input.value, isNull);
+    expect(input.unit, isNull);
+    expect(input.note, isNull);
+    expect(input.payload, {'moodLevel': 4, 'moodLabel': 'good'});
+  });
+
+  testWidgets('Record mood quick action more opens full create page', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await _pumpRecordRouter(
+      tester,
+      selectedDate: DateTime(2026, 6, 6),
+      currentDateTime: DateTime(2026, 6, 6, 9, 45),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-mood')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-fast-entry-more-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RecordCreatePage), findsOneWidget);
+    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
+      find.byType(DropdownButtonFormField<DailyRecordKind>),
+    );
+    expect(dropdown.initialValue, DailyRecordKind.mood);
+    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
+    expect(find.text('时间 · 09:45'), findsOneWidget);
+  });
+
   testWidgets('Record mobile quick action shows login dialog when signed out', (
     tester,
   ) async {
@@ -1569,6 +1645,34 @@ void main() {
       final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
 
       expect(dashboard.timeline.single.value, '7h 30m');
+    },
+  );
+
+  test(
+    'Lucent record repository shows mood level from payload when value is null',
+    () async {
+      final dailyRepo = _FakeDailyRecordRepository(
+        itemKind: DailyRecordKind.mood,
+        itemTitle: null,
+        itemValue: null,
+        itemUnit: null,
+        itemNote: null,
+        itemPayload: {'moodLevel': 4, 'moodLabel': 'good'},
+      );
+      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      expect(dashboard.timeline.single.rawTitle, isNull);
+      expect(dashboard.timeline.single.titleKey, RecordCopyKey.typeMood);
+      expect(dashboard.timeline.single.value, isNull);
+      expect(
+        dashboard.timeline.single.valueKey,
+        RecordCopyKey.timelineMoodGood,
+      );
+      expect(recordCopy(l10n, dashboard.timeline.single.valueKey!), '情绪 · 不错');
     },
   );
 

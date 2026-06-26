@@ -122,6 +122,11 @@
   "recordFastChoiceNoteTired": "今天有点累",
   "recordFastChoiceNoteBusy": "今天比较忙",
   "recordFastChoiceNoteRecovered": "今天恢复不错",
+  "recordFastChoiceMoodGreat": "很棒",
+  "recordFastChoiceMoodGood": "不错",
+  "recordFastChoiceMoodOkay": "一般",
+  "recordFastChoiceMoodBad": "不太好",
+  "recordFastChoiceMoodTerrible": "很糟",
   "recordAiInputHint": "刚吃完饭胃有点胀...",
   "recordAiBadge": "AI",
   "recordNlpFabAction": "自然语言",
@@ -276,6 +281,11 @@
   "recordTimelineMedicationDetail": "已服用 · 与用药计划同步",
   "recordTimelineMoodCalm": "情绪 · 平静",
   "recordTimelineMoodDetail": "心情不错，睡得还可以",
+  "recordTimelineMoodGreat": "情绪 · 很棒",
+  "recordTimelineMoodGood": "情绪 · 不错",
+  "recordTimelineMoodOkay": "情绪 · 一般",
+  "recordTimelineMoodBad": "情绪 · 不太好",
+  "recordTimelineMoodTerrible": "情绪 · 很糟",
   "recordTimelineSymptomRecord": "症状记录",
   "recordTimelineSymptomDetail": "头痛 · 疼痛评分 3/5",
   "recordTimelineSleepRecord": "睡眠记录",
@@ -794,6 +804,18 @@
   "mineReminderSleepTitle": "睡眠提醒",
   "mineReminderLocalOnly": "仅本地",
   "mineReminderEnabled": "已开启",
+  "mineReminderSleepOff": "未开启",
+  "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
+  "@mineReminderSleepSummary": {
+    "placeholders": {
+      "bedtime": {
+        "type": "String"
+      },
+      "wakeTime": {
+        "type": "String"
+      }
+    }
+  },
   "mineAccountSettingsTitle": "账号与设置",
   "mineSettingLanguageTitle": "语言设置",
   "mineSettingLanguageValue": "简体中文",
@@ -872,6 +894,10 @@
   "settingsNotificationsPermissionUnsupported": "当前平台不提供通知权限状态",
   "settingsNotificationsPermissionEnabledHint": "通知已授权。下方开关可控制各类通知的显示。",
   "settingsNotificationsPermissionDisabledHint": "点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。",
+  "settingsNotificationsSleepReminderTitle": "睡眠提醒",
+  "settingsNotificationsSleepBedtime": "就寝时间",
+  "settingsNotificationsSleepWakeTime": "起床时间",
+  "settingsNotificationsTimeUnset": "未设置",
   "mineErrorTitle": "我的页面暂时没有加载出来",
   "mineErrorDescription": "结构已经接好，可以重新拉取一次数据。",
   "mineActionToast": "{action}：后续会接入对应详情或设置流程。",

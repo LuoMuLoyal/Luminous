@@ -65,6 +65,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
                     'record-fast-entry-choice-${widget.kind.name}-$index',
                   ),
                   label: choices[index].label,
+                  prefix: choices[index].prefix,
                   enabled: !_saving,
                   onTap: () => _saveChoice(choices[index]),
                 ),
@@ -132,23 +133,30 @@ class _QuickChoiceChip extends StatelessWidget {
   const _QuickChoiceChip({
     super.key,
     required this.label,
+    this.prefix,
     required this.enabled,
     required this.onTap,
   });
 
   final String label;
+  final Widget? prefix;
   final bool enabled;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return ActionChip(label: Text(label), onPressed: enabled ? onTap : null);
+    return ActionChip(
+      avatar: prefix,
+      label: Text(label),
+      onPressed: enabled ? onTap : null,
+    );
   }
 }
 
 class _QuickChoice {
   const _QuickChoice({
     required this.label,
+    this.prefix,
     this.title,
     this.value,
     this.unit,
@@ -157,6 +165,7 @@ class _QuickChoice {
   });
 
   final String label;
+  final Widget? prefix;
   final String? title;
   final String? value;
   final String? unit;
@@ -250,6 +259,33 @@ List<_QuickChoice> _choicesFor(DailyRecordKind kind, AppLocalizations l10n) {
       _QuickChoice(
         label: '9h',
         payload: <String, dynamic>{'durationMinutes': 540},
+      ),
+    ],
+    DailyRecordKind.mood => [
+      _QuickChoice(
+        label: l10n.recordFastChoiceMoodGreat,
+        prefix: const Text('😄'),
+        payload: <String, dynamic>{'moodLevel': 5, 'moodLabel': 'great'},
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceMoodGood,
+        prefix: const Text('🙂'),
+        payload: <String, dynamic>{'moodLevel': 4, 'moodLabel': 'good'},
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceMoodOkay,
+        prefix: const Text('😐'),
+        payload: <String, dynamic>{'moodLevel': 3, 'moodLabel': 'okay'},
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceMoodBad,
+        prefix: const Text('😟'),
+        payload: <String, dynamic>{'moodLevel': 2, 'moodLabel': 'bad'},
+      ),
+      _QuickChoice(
+        label: l10n.recordFastChoiceMoodTerrible,
+        prefix: const Text('😫'),
+        payload: <String, dynamic>{'moodLevel': 1, 'moodLabel': 'terrible'},
       ),
     ],
     _ => const [],

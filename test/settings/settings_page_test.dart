@@ -9,6 +9,7 @@ import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,7 +53,7 @@ void main() {
     expect(find.text(l10n.mineReminderMedicineTitle), findsOneWidget);
     expect(find.text(l10n.mineReminderWaterTitle), findsOneWidget);
     expect(find.text(l10n.mineReminderSleepTitle), findsOneWidget);
-    expect(find.text(l10n.mineReminderLocalOnly), findsOneWidget);
+    expect(find.text('未开启'), findsOneWidget);
     expect(find.text(l10n.mineSettingExportTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingHelpTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingAboutTitle), findsOneWidget);
@@ -315,6 +316,61 @@ void main() {
     expect(find.text('notifications-settings-page'), findsOneWidget);
   });
 
+  testWidgets('Settings sleep reminder row shows time range when enabled', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
+          notificationSettingsControllerProvider.overrideWith(
+            () => _StaticNotificationSettingsController(
+              const NotificationSettingsState(
+                sleepReminderEnabled: true,
+                sleepBedtime: TimeOfDay(hour: 22, minute: 0),
+                sleepWakeTime: TimeOfDay(hour: 7, minute: 0),
+              ),
+            ),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/settings',
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsPage(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-row-reminder-sleep')),
+      240,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('22:00 - 07:00'), findsOneWidget);
+  });
+
   testWidgets('Settings advanced row routes to advanced settings page', (
     tester,
   ) async {
@@ -349,7 +405,9 @@ void main() {
     expect(find.text('advanced-settings-page'), findsOneWidget);
   });
 
-  testWidgets('Settings assistant row routes to assistant page', (tester) async {
+  testWidgets('Settings assistant row routes to assistant page', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
 
     await _pumpSettingsPage(
@@ -381,62 +439,65 @@ void main() {
     expect(find.text('assistant-page'), findsOneWidget);
   });
 
-  testWidgets('Settings export row shows unavailable status from latest export', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+  testWidgets(
+    'Settings export row shows unavailable status from latest export',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
 
-    final exportRequest = DataExportRequestDataDto(
-      id: 'req-unavailable',
-      kind: DataExportKind.hospital,
-      format: DataExportFormat.pdf,
-      range: DataExportRange.last7Days,
-      status: DataExportStatus.unavailable,
-      requestedAt: '2026-06-12T00:00:00.000Z',
-      errorMessage: 'COS unavailable',
-    );
+      final exportRequest = DataExportRequestDataDto(
+        id: 'req-unavailable',
+        kind: DataExportKind.hospital,
+        format: DataExportFormat.pdf,
+        range: DataExportRange.last7Days,
+        status: DataExportStatus.unavailable,
+        requestedAt: '2026-06-12T00:00:00.000Z',
+        errorMessage: 'COS unavailable',
+      );
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
-          dataExportControllerProvider.overrideWith(
-            () => _StaticDataExportController(exportRequest),
-          ),
-        ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(
+              () => _SignedInAuthSessionNotifier(),
+            ),
+            dataExportControllerProvider.overrideWith(
+              () => _StaticDataExportController(exportRequest),
+            ),
           ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
-            initialLocation: '/settings',
-            routes: [
-              GoRoute(
-                path: '/settings',
-                builder: (context, state) => const SettingsPage(),
-              ),
+          child: MaterialApp.router(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            locale: const Locale('zh'),
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
             ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: GoRouter(
+              initialLocation: '/settings',
+              routes: [
+                GoRoute(
+                  path: '/settings',
+                  builder: (context, state) => const SettingsPage(),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    await tester.pump();
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('settings-row-export')),
-      240,
-    );
-    await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('settings-row-export')),
+        240,
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.text('暂不可用'), findsOneWidget);
-  });
+      expect(find.text('暂不可用'), findsOneWidget);
+    },
+  );
 
   testWidgets('Settings footer action logs out and routes to login page', (
     tester,
@@ -573,4 +634,14 @@ class _StaticDataExportController extends DataExportController {
 
   @override
   Future<DataExportRequestDataDto?> build() async => _value;
+}
+
+class _StaticNotificationSettingsController
+    extends NotificationSettingsController {
+  _StaticNotificationSettingsController(this._value);
+
+  final NotificationSettingsState _value;
+
+  @override
+  Future<NotificationSettingsState> build() async => _value;
 }
