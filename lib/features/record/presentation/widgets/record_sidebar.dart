@@ -4,7 +4,6 @@ import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -134,18 +133,13 @@ class RecordFilterPanel extends StatelessWidget {
     return AppSectionSurface(
       key: const Key('record-filter-panel'),
       title: l10n.recordFilterSectionTitle,
-      trailing: AppTextAction(
-        label: l10n.recordFilterSelectAll,
-        icon: null,
-        onTap: () {
-          final handler = onFilterSelected;
-          if (handler == null) {
-            showRecordToast(context, l10n.recordFilterSelectAll);
-            return;
-          }
-          handler(null);
-        },
-      ),
+      trailing: onFilterSelected == null
+          ? null
+          : AppTextAction(
+              label: l10n.recordFilterSelectAll,
+              icon: null,
+              onTap: () => onFilterSelected!(null),
+            ),
       typography: typography,
       surface: surface,
       child: Column(
@@ -200,14 +194,9 @@ class _MonthDayCell extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {
-          final handler = onTap;
-          if (handler == null) {
-            showRecordToast(context, '${l10n.recordOpenDateAction} ${day.day}');
-            return;
-          }
-          handler(_dateForDay(day, selectedDate));
-        },
+        onTap: onTap == null
+            ? null
+            : () => onTap!(_dateForDay(day, selectedDate)),
         borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
         child: Stack(
           alignment: Alignment.center,
@@ -287,7 +276,7 @@ class _FilterRow extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap ?? () => showRecordToast(context, label),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
@@ -351,7 +340,7 @@ class _CalendarIconButton extends StatelessWidget {
     return IconButton(
       tooltip: label,
       visualDensity: VisualDensity.compact,
-      onPressed: onTap ?? () => showRecordToast(context, label),
+      onPressed: onTap,
       icon: Icon(icon, size: 18),
     );
   }

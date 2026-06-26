@@ -5,7 +5,6 @@ import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -208,9 +207,7 @@ class RecordNewEntryPanel extends StatelessWidget {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap:
-                  onNewEntry ??
-                  () => showRecordToast(context, l10n.recordVoiceAction),
+              onTap: onNewEntry,
               borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -275,14 +272,7 @@ class _WeekDayCell extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {
-          final handler = onTap;
-          if (handler == null) {
-            showRecordToast(context, '${l10n.recordOpenDateAction} ${day.day}');
-            return;
-          }
-          handler(day.date);
-        },
+        onTap: onTap == null ? null : () => onTap!(day.date),
         borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
@@ -342,14 +332,7 @@ class _QuickActionTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {
-          final handler = onTap;
-          if (handler == null) {
-            showRecordToast(context, label);
-            return;
-          }
-          handler(action);
-        },
+        onTap: onTap == null ? null : () => onTap!(action),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -412,14 +395,7 @@ class _SummaryTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {
-          final handler = onTap;
-          if (handler == null) {
-            showRecordToast(context, recordCopy(l10n, item.titleKey));
-            return;
-          }
-          handler(item.type);
-        },
+        onTap: onTap == null ? null : () => onTap!(item.type),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -520,14 +496,7 @@ class _NewEntryChip extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {
-          final handler = onTap;
-          if (handler == null) {
-            showRecordToast(context, label);
-            return;
-          }
-          handler(action);
-        },
+        onTap: onTap == null ? null : () => onTap!(action),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(

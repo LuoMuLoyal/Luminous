@@ -4,7 +4,6 @@ import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_tokens.dart';
 import 'package:luminous/features/record/presentation/widgets/record_shared_widgets.dart';
@@ -34,7 +33,7 @@ class RecordAiInputBar extends StatelessWidget {
       key: const Key('record-ai-input'),
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap ?? () => showRecordToast(context, l10n.recordAiInputHint),
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -213,9 +212,7 @@ class _QuickRecordTile extends StatelessWidget {
       key: Key('record-quick-${action.type.name}'),
       color: Colors.transparent,
       child: InkWell(
-        onTap: onQuickAction == null
-            ? () => showRecordToast(context, actionLabel)
-            : () => onQuickAction!(action),
+        onTap: onQuickAction == null ? null : () => onQuickAction!(action),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: Semantics(
           button: true,
@@ -297,7 +294,7 @@ class RecordGuideRow extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => showRecordToast(context, l10n.recordGuideAction),
+          onTap: null,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacingTokens.md,

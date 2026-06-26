@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -45,7 +44,7 @@ class RecordMobileFilter extends StatelessWidget {
               typography: typography,
               surface: surface,
               onTap: onFilterSelected == null
-                  ? () => showRecordToast(context, l10n.recordFilterAllAction)
+                  ? null
                   : () => onFilterSelected!(null),
             ),
             for (final filter in filters)
@@ -58,10 +57,7 @@ class RecordMobileFilter extends StatelessWidget {
                 typography: typography,
                 surface: surface,
                 onTap: filter.locked || onFilterSelected == null
-                    ? () => showRecordToast(
-                        context,
-                        mobileFilterLabel(l10n, filter),
-                      )
+                    ? null
                     : () => onFilterSelected!(filter.type),
               ),
           ],
@@ -90,7 +86,7 @@ class _FilterChip extends StatelessWidget {
   final bool locked;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -136,9 +132,7 @@ class _FilterChip extends StatelessWidget {
                       ),
                       child: Text(
                         AppLocalizations.of(context)!.recordNotEnabledLabel,
-                        style: typography.caption.copyWith(
-                          color: surface.body,
-                        ),
+                        style: typography.caption.copyWith(color: surface.body),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

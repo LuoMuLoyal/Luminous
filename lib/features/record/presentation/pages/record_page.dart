@@ -16,7 +16,6 @@ import 'package:luminous/features/record/presentation/controllers/record_nlp_con
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/providers/record_time_provider.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
-import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
 import 'package:luminous/features/record/presentation/widgets/record_fast_entry_dialog.dart';
@@ -186,16 +185,14 @@ class RecordPage extends ConsumerWidget {
     WidgetRef ref,
     RecordQuickAction action,
   ) async {
-    if (action.locked) {
-      showRecordToast(context, _quickActionLabel(context, action));
-      return;
-    }
+    assert(!action.locked, 'Locked quick actions should be disabled by UI');
 
     final kind = dailyRecordKindForEntryType(action.type);
-    if (kind == null) {
-      showRecordToast(context, _quickActionLabel(context, action));
-      return;
-    }
+    assert(
+      kind != null,
+      'All active quick actions must map to a DailyRecordKind',
+    );
+    if (kind == null) return;
 
     final selectedDate = ref.read(selectedRecordDateProvider);
     final now = ref.read(currentRecordDateTimeProvider);
@@ -255,11 +252,6 @@ class RecordPage extends ConsumerWidget {
 
   DateTime _dateOnly(DateTime value) {
     return DateTime(value.year, value.month, value.day);
-  }
-
-  String _quickActionLabel(BuildContext context, RecordQuickAction action) {
-    final l10n = AppLocalizations.of(context)!;
-    return l10n.recordQuickActionLabel(recordCopy(l10n, action.titleKey));
   }
 
   bool _usesFastEntry(DailyRecordKind kind) {

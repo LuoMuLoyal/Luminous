@@ -7,7 +7,6 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/record_shared_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -111,13 +110,9 @@ class _TimelineRow extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         key: Key('record-timeline-entry-index-$index'),
-        onTap: () {
-          if (entry.recordId != null) {
-            pushAuthRequiredRoute(context, '/record/${entry.recordId}');
-          } else {
-            showRecordToast(context, label);
-          }
-        },
+        onTap: entry.recordId != null
+            ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
+            : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacingTokens.md,
