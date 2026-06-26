@@ -140,6 +140,8 @@ class LucentDioClient {
   TodayAnalysisApi get todayAnalysisApi => _openapi.getTodayAnalysisApi();
   AssistantApi get assistantApi => _openapi.getAssistantApi();
 
+  NotificationsApi get notificationsApi => _openapi.getNotificationsApi();
+
   Map<String, String> medicinesHeaders({bool bypassCache = false}) {
     if (!bypassCache) {
       return const <String, String>{};

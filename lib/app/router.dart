@@ -24,6 +24,8 @@ import 'package:luminous/features/settings/presentation/pages/notification_setti
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
+import 'package:luminous/features/notification/presentation/pages/notification_list_page.dart';
+import 'package:luminous/features/notification/presentation/pages/notification_detail_page.dart';
 
 const _authTransitionIn = Duration(milliseconds: 400);
 const _authTransitionOut = Duration(milliseconds: 280);
@@ -147,6 +149,21 @@ final router = GoRouter(
       path: '/settings/more',
       pageBuilder: (context, state) =>
           _slidePage(key: state.pageKey, child: const AdvancedSettingsPage()),
+    ),
+    // -- notifications (slide) --
+    GoRoute(
+      path: '/notifications',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const NotificationListPage()),
+    ),
+    GoRoute(
+      path: '/notifications/:id',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: NotificationDetailPage(
+          notificationId: state.pathParameters['id']!,
+        ),
+      ),
     ),
     GoRoute(
       path: '/account/change-email',
