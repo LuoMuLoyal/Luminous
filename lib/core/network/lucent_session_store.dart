@@ -90,9 +90,9 @@ class SecureLucentSessionStore implements LucentSessionStore {
   final SharedPrefsLucentSessionStore _fallbackStore;
 
   bool get _useFallback {
-    return kIsWeb ||
-        defaultTargetPlatform == TargetPlatform.windows ||
-        defaultTargetPlatform == TargetPlatform.linux;
+    // Web does not support flutter_secure_storage; Windows and Linux
+    // are supported via DPAPI / Secret Service API since v9.0.
+    return kIsWeb;
   }
 
   @override
