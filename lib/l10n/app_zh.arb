@@ -908,6 +908,15 @@
       }
     }
   },
+  "authCodeResendWait": "请 {seconds} 秒后再发送验证码",
+  "@authCodeResendWait": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "authRegisterSuccess": "注册成功，请登录",
   "authSignIn": "登录",
   "authWechatSignIn": "微信登录",
   "authWechatAuthorizeOpened": "已在浏览器打开微信授权页。",

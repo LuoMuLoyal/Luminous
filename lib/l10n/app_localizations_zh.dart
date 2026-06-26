@@ -1982,6 +1982,14 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String authCodeResendWait(int seconds) {
+    return '请 $seconds 秒后再发送验证码';
+  }
+
+  @override
+  String get authRegisterSuccess => '注册成功，请登录';
+
+  @override
   String get authSignIn => '登录';
 
   @override

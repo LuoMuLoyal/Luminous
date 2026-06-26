@@ -3872,6 +3872,18 @@ abstract class AppLocalizations {
   /// **'{seconds} 秒后重发'**
   String authSendCodeAgain(int seconds);
 
+  /// No description provided for @authCodeResendWait.
+  ///
+  /// In zh, this message translates to:
+  /// **'请 {seconds} 秒后再发送验证码'**
+  String authCodeResendWait(int seconds);
+
+  /// No description provided for @authRegisterSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'注册成功，请登录'**
+  String get authRegisterSuccess;
+
   /// No description provided for @authSignIn.
   ///
   /// In zh, this message translates to:

@@ -2134,6 +2134,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String authCodeResendWait(int seconds) {
+    return 'Please wait ${seconds}s before resending the code.';
+  }
+
+  @override
+  String get authRegisterSuccess => 'Account created. Please sign in.';
+
+  @override
   String get authSignIn => 'Sign in';
 
   @override

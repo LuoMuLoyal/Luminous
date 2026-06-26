@@ -18,6 +18,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   late final TextEditingController _emailController;
   late final TextEditingController _codeController;
   late final TextEditingController _passwordController;
+  late final TextEditingController _confirmPasswordController;
   late final TextEditingController _nicknameController;
 
   @override
@@ -26,6 +27,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     _emailController = TextEditingController();
     _codeController = TextEditingController();
     _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
     _nicknameController = TextEditingController();
   }
 
@@ -34,6 +36,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     _emailController.dispose();
     _codeController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     _nicknameController.dispose();
     super.dispose();
   }
@@ -48,6 +51,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       title: l10n?.authCreateAccountAction ?? 'Create account',
       subtitle: l10n?.authRegisterSubtitle,
       logo: const AuthBrandLogo(),
+      leading: const AuthBackButton(),
       centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,6 +82,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 );
                 return;
               }
+              if (state.cooldownSeconds != null && state.cooldownSeconds! > 0) {
+                await AppToast.show(
+                  context,
+                  l10n?.authCodeResendWait(state.cooldownSeconds!) ??
+                      'Please wait ${state.cooldownSeconds}s before resending.',
+                );
+                return;
+              }
               await notifier.sendCode();
             },
           ),
@@ -85,6 +97,16 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           AuthTextField(
             controller: _passwordController,
             label: l10n?.authPasswordLabel ?? 'Password',
+            hint:
+                l10n?.authPasswordHint ??
+                'At least 8 characters, ideally with mixed case and numbers',
+            obscureText: true,
+            prefix: const Icon(Icons.lock_outline),
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          AuthTextField(
+            controller: _confirmPasswordController,
+            label: l10n?.authConfirmPasswordLabel ?? 'Confirm password',
             hint:
                 l10n?.authPasswordHint ??
                 'At least 8 characters, ideally with mixed case and numbers',
@@ -114,11 +136,30 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
               notifier.updateEmail(_emailController.text);
               notifier.updateCode(_codeController.text);
               notifier.updatePassword(_passwordController.text);
+              notifier.updateConfirmPassword(_confirmPasswordController.text);
               notifier.updateNickname(_nicknameController.text);
               if (!_validateSubmit(context, l10n)) {
                 return;
               }
-              await notifier.submit();
+              final passwordsMatch = notifier.validatePasswordMatch(
+                message:
+                    l10n?.authPasswordsDoNotMatch ?? 'Passwords do not match.',
+              );
+              if (!passwordsMatch) {
+                return;
+              }
+              final ok = await notifier.submit();
+              if (ok && context.mounted) {
+                await AppToast.show(
+                  context,
+                  l10n?.authRegisterSuccess ??
+                      'Account created. Please sign in.',
+                );
+                if (!context.mounted) {
+                  return;
+                }
+                context.go('/login');
+              }
             },
           ),
           const SizedBox(height: AppSpacingTokens.sm),
@@ -150,13 +191,17 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       _emailController.text.trim().isEmpty,
       _codeController.text.trim().isEmpty,
       _passwordController.text.trim().isEmpty,
+      _confirmPasswordController.text.trim().isEmpty,
     )) {
-      (true, _, _) =>
+      (true, _, _, _) =>
         l10n?.authEmailRequiredToast ?? 'Please enter your email.',
-      (_, true, _) =>
+      (_, true, _, _) =>
         l10n?.authCodeRequiredToast ?? 'Please enter the verification code.',
-      (_, _, true) =>
+      (_, _, true, _) =>
         l10n?.authPasswordRequiredToast ?? 'Please enter your password.',
+      (_, _, _, true) =>
+        l10n?.authConfirmPasswordRequiredToast ??
+            'Please confirm your password.',
       _ => null,
     };
     if (message == null) {
