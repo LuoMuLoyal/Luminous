@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -225,19 +226,7 @@ class ReportAiSummarySection extends StatelessWidget {
   }
 
   void _handleAction(BuildContext context, String action) {
-    if (action.isEmpty) return;
-
-    final route = switch (action) {
-      'today' => '/',
-      'report' => '/report',
-      'assistant' => '/assistant',
-      'medicine' => '/medicine',
-      'record' => '/record',
-      'mine' => '/mine',
-      'settings' => '/settings',
-      _ => action.startsWith('/') ? action : null,
-    };
-
+    final route = mapActionToRoute(action);
     if (route != null) {
       context.push(route);
     }
