@@ -98,6 +98,10 @@ Deferred code that remains useful should be marked with:
 - Charts (record trends) use `fl_chart` (`LineChart`/`BarChart`) instead of handwritten `CustomPainter` widgets.
 - Freezed is applied to 74 classes across presentation state and domain entities; all hand-written data classes have been migrated.
 - Golden screenshot tests live in `test/golden/` using Flutter's built-in `matchesGoldenFile()` (zero extra deps). Baseline images generated with `flutter test --update-goldens test/golden/`.
+- Shared dialog shell `AppDialog` (`lib/core/widgets/app_dialog.dart`) is the default for new dialogs; `RecordNlpDialog` and `MedicineAddPrecheckDialog` already use it.
+- Auth form providers share `AuthValidationMixin` and `CooldownTimerMixin` (`lib/features/auth/presentation/providers/auth_form_mixin.dart`) so email/code/password validation and cooldown timers are not duplicated.
+- `email_validator` replaces the hand-written email regex in auth validation.
+- `flutter_hooks` / `hooks_riverpod` are available; `RecordNlpDialog` uses `useTextEditingController` instead of manual `initState`/`dispose`.
 - Shared utility `coerceToStringMap` in `lib/core/network/map_utils.dart` deduplicates 5 copies of the same `_coerceToMap` helper.
 - `compareReminderTime` deduplicated from 3 copies to 1 public version in `medicine_reminder_formatters.dart`.
 - Login page password/code mode switch uses `flutter_animate`'s `.fadeIn().slideX()` instead of `AnimatedSwitcher`, matching the project-wide entrance animation pattern.

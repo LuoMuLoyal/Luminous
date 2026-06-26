@@ -1,12 +1,11 @@
 import 'dart:async';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Shared validation helpers for auth forms (register, password reset, etc.).
 mixin AuthValidationMixin {
-  static final _emailRegExp = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-
-  bool isValidEmail(String value) => _emailRegExp.hasMatch(value);
+  bool isValidEmail(String value) => EmailValidator.validate(value);
 
   String? validateEmail(
     String email, {
