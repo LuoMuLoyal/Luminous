@@ -27,6 +27,9 @@ abstract class LoginFormState with _$LoginFormState {
     @Default(false) bool isStartingWechatLogin,
     @Default(false) bool isCompletingWechatLogin,
     int? cooldownSeconds,
+    String? emailError,
+    String? passwordError,
+    String? codeError,
     String? wechatAuthorizeUrl,
     String? wechatState,
     String? errorMessage,
@@ -45,15 +48,19 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
   }
 
   void updateEmail(String value) {
-    state = state.copyWith(email: value, errorMessage: null);
+    state = state.copyWith(email: value, emailError: null, errorMessage: null);
   }
 
   void updatePassword(String value) {
-    state = state.copyWith(password: value, errorMessage: null);
+    state = state.copyWith(
+      password: value,
+      passwordError: null,
+      errorMessage: null,
+    );
   }
 
   void updateCode(String value) {
-    state = state.copyWith(code: value, errorMessage: null);
+    state = state.copyWith(code: value, codeError: null, errorMessage: null);
   }
 
   void updateWechatCallbackInput(String value) {
@@ -62,6 +69,54 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
 
   void updateMode(AuthLoginMode mode) {
     state = state.copyWith(mode: mode, errorMessage: null);
+  }
+
+  void setEmailError(String message) {
+    state = state.copyWith(emailError: message);
+  }
+
+  bool validate({
+    required String emailRequired,
+    required String emailInvalid,
+    required String passwordRequired,
+    required String codeRequired,
+  }) {
+    final email = state.email.trim();
+    final emailError = email.isEmpty
+        ? emailRequired
+        : _isValidEmail(email)
+        ? null
+        : emailInvalid;
+
+    final String? passwordError;
+    final String? codeError;
+    if (state.mode == AuthLoginMode.password) {
+      passwordError = state.password.trim().isEmpty ? passwordRequired : null;
+      codeError = null;
+    } else {
+      passwordError = null;
+      codeError = state.code.trim().isEmpty ? codeRequired : null;
+    }
+
+    state = state.copyWith(
+      emailError: emailError,
+      passwordError: passwordError,
+      codeError: codeError,
+      errorMessage: null,
+    );
+
+    return emailError == null && passwordError == null && codeError == null;
+  }
+
+  bool validateEmailOnly({required String emailRequired}) {
+    final email = state.email.trim();
+    final emailError = email.isEmpty ? emailRequired : null;
+    state = state.copyWith(emailError: emailError, errorMessage: null);
+    return emailError == null;
+  }
+
+  static bool _isValidEmail(String value) {
+    return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value);
   }
 
   Future<AuthSession?> submit() async {

@@ -57,61 +57,90 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AuthTextField(
-            controller: _emailController,
-            label: l10n?.authEmailLabel ?? 'Email',
-            hint: l10n?.authEmailHint ?? 'name@example.com',
-            keyboardType: TextInputType.emailAddress,
-            prefix: const Icon(Icons.mail_outline),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AuthTextField(
+                controller: _emailController,
+                label: l10n?.authEmailLabel ?? 'Email',
+                hint: l10n?.authEmailHint ?? 'name@example.com',
+                keyboardType: TextInputType.emailAddress,
+                prefix: const Icon(Icons.mail_outline),
+              ),
+              AuthFieldError(state.emailError),
+            ],
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AuthCodeFieldRow(
-            controller: _codeController,
-            label: l10n?.authCodeLabel ?? 'Verification code',
-            buttonLabel: state.cooldownSeconds == null
-                ? l10n?.authSendCode ?? 'Send code'
-                : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
-                      'Send again (${state.cooldownSeconds}s)',
-            isLoading: state.isSendingCode,
-            onSendCode: () async {
-              notifier.updateEmail(_emailController.text);
-              if (_emailController.text.trim().isEmpty) {
-                await AppToast.show(
-                  context,
-                  l10n?.authEmailRequiredToast ?? 'Please enter your email.',
-                );
-                return;
-              }
-              if (state.cooldownSeconds != null && state.cooldownSeconds! > 0) {
-                await AppToast.show(
-                  context,
-                  l10n?.authCodeResendWait(state.cooldownSeconds!) ??
-                      'Please wait ${state.cooldownSeconds}s before resending.',
-                );
-                return;
-              }
-              await notifier.sendCode();
-            },
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AuthCodeFieldRow(
+                controller: _codeController,
+                label: l10n?.authCodeLabel ?? 'Verification code',
+                buttonLabel: state.cooldownSeconds == null
+                    ? l10n?.authSendCode ?? 'Send code'
+                    : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
+                          'Send again (${state.cooldownSeconds}s)',
+                isLoading: state.isSendingCode,
+                onSendCode: () async {
+                  notifier.updateEmail(_emailController.text);
+                  if (!notifier.validateEmailOnly(
+                    emailRequired:
+                        l10n?.authEmailRequiredError ??
+                        'Please enter your email.',
+                  )) {
+                    return;
+                  }
+                  if (state.cooldownSeconds != null &&
+                      state.cooldownSeconds! > 0) {
+                    await AppToast.show(
+                      context,
+                      l10n?.authCodeResendWait(state.cooldownSeconds!) ??
+                          'Please wait ${state.cooldownSeconds}s before resending.',
+                    );
+                    return;
+                  }
+                  await notifier.sendCode();
+                },
+              ),
+              AuthFieldError(state.codeError),
+            ],
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AuthTextField(
-            controller: _passwordController,
-            label: l10n?.authPasswordLabel ?? 'Password',
-            hint:
-                l10n?.authPasswordHint ??
-                'At least 8 characters, ideally with mixed case and numbers',
-            obscureText: true,
-            prefix: const Icon(Icons.lock_outline),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AuthTextField(
+                controller: _passwordController,
+                label: l10n?.authPasswordLabel ?? 'Password',
+                hint:
+                    l10n?.authPasswordHint ??
+                    'At least 8 characters, ideally with mixed case and numbers',
+                obscureText: true,
+                prefix: const Icon(Icons.lock_outline),
+              ),
+              AuthFieldError(state.passwordError),
+            ],
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AuthTextField(
-            controller: _confirmPasswordController,
-            label: l10n?.authConfirmPasswordLabel ?? 'Confirm password',
-            hint:
-                l10n?.authPasswordHint ??
-                'At least 8 characters, ideally with mixed case and numbers',
-            obscureText: true,
-            prefix: const Icon(Icons.lock_outline),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AuthTextField(
+                controller: _confirmPasswordController,
+                label: l10n?.authConfirmPasswordLabel ?? 'Confirm password',
+                hint:
+                    l10n?.authPasswordHint ??
+                    'At least 8 characters, ideally with mixed case and numbers',
+                obscureText: true,
+                prefix: const Icon(Icons.lock_outline),
+              ),
+              AuthFieldError(state.confirmPasswordError),
+            ],
           ),
           const SizedBox(height: AppSpacingTokens.md),
           AuthTextField(
@@ -138,14 +167,26 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
               notifier.updatePassword(_passwordController.text);
               notifier.updateConfirmPassword(_confirmPasswordController.text);
               notifier.updateNickname(_nicknameController.text);
-              if (!_validateSubmit(context, l10n)) {
-                return;
-              }
-              final passwordsMatch = notifier.validatePasswordMatch(
-                message:
-                    l10n?.authPasswordsDoNotMatch ?? 'Passwords do not match.',
+              final isValid = notifier.validate(
+                emailRequired:
+                    l10n?.authEmailRequiredError ?? 'Please enter your email.',
+                emailInvalid:
+                    l10n?.authEmailInvalidError ??
+                    'Please enter a valid email address.',
+                codeRequired:
+                    l10n?.authCodeRequiredError ??
+                    'Please enter the verification code.',
+                passwordRequired:
+                    l10n?.authPasswordRequiredError ??
+                    'Please enter your password.',
+                confirmPasswordRequired:
+                    l10n?.authConfirmPasswordRequiredError ??
+                    'Please confirm your password.',
+                passwordsDoNotMatch:
+                    l10n?.authPasswordsDoNotMatchError ??
+                    'Passwords do not match.',
               );
-              if (!passwordsMatch) {
+              if (!isValid) {
                 return;
               }
               final ok = await notifier.submit();
@@ -184,30 +225,5 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         ],
       ),
     );
-  }
-
-  bool _validateSubmit(BuildContext context, AppLocalizations? l10n) {
-    final message = switch ((
-      _emailController.text.trim().isEmpty,
-      _codeController.text.trim().isEmpty,
-      _passwordController.text.trim().isEmpty,
-      _confirmPasswordController.text.trim().isEmpty,
-    )) {
-      (true, _, _, _) =>
-        l10n?.authEmailRequiredToast ?? 'Please enter your email.',
-      (_, true, _, _) =>
-        l10n?.authCodeRequiredToast ?? 'Please enter the verification code.',
-      (_, _, true, _) =>
-        l10n?.authPasswordRequiredToast ?? 'Please enter your password.',
-      (_, _, _, true) =>
-        l10n?.authConfirmPasswordRequiredToast ??
-            'Please confirm your password.',
-      _ => null,
-    };
-    if (message == null) {
-      return true;
-    }
-    AppToast.show(context, message);
-    return false;
   }
 }

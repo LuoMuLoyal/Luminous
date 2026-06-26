@@ -899,6 +899,12 @@
   "authCodeRequiredToast": "Please enter the verification code.",
   "authPasswordRequiredToast": "Please enter your password.",
   "authConfirmPasswordRequiredToast": "Please confirm your password.",
+  "authEmailRequiredError": "Please enter your email.",
+  "authEmailInvalidError": "Please enter a valid email address.",
+  "authCodeRequiredError": "Please enter the verification code.",
+  "authPasswordRequiredError": "Please enter your password.",
+  "authConfirmPasswordRequiredError": "Please confirm your password.",
+  "authPasswordsDoNotMatchError": "Passwords do not match.",
   "authSendCode": "Send code",
   "authSendCodeAgain": "Send again ({seconds}s)",
   "@authSendCodeAgain": {

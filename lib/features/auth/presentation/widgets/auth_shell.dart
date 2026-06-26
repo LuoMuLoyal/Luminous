@@ -7,6 +7,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 export 'auth_action_row.dart';
 export 'auth_back_button.dart';
 export 'auth_branding.dart';
+export 'auth_field_error.dart';
 export 'auth_status_message.dart';
 export 'auth_text_field.dart';
 

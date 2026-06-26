@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PasswordResetState {
 
- String get email; String get code; String get password; String get confirmPassword; bool get isSubmitting; bool get isSendingCode; int? get cooldownSeconds; String? get errorMessage; String? get successMessage;
+ String get email; String get code; String get password; String get confirmPassword; bool get isSubmitting; bool get isSendingCode; int? get cooldownSeconds; String? get emailError; String? get codeError; String? get passwordError; String? get confirmPasswordError; String? get errorMessage; String? get successMessage;
 /// Create a copy of PasswordResetState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PasswordResetStateCopyWith<PasswordResetState> get copyWith => _$PasswordResetS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordResetState&&(identical(other.email, email) || other.email == email)&&(identical(other.code, code) || other.code == code)&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isSendingCode, isSendingCode) || other.isSendingCode == isSendingCode)&&(identical(other.cooldownSeconds, cooldownSeconds) || other.cooldownSeconds == cooldownSeconds)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordResetState&&(identical(other.email, email) || other.email == email)&&(identical(other.code, code) || other.code == code)&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isSendingCode, isSendingCode) || other.isSendingCode == isSendingCode)&&(identical(other.cooldownSeconds, cooldownSeconds) || other.cooldownSeconds == cooldownSeconds)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.codeError, codeError) || other.codeError == codeError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,email,code,password,confirmPassword,isSubmitting,isSendingCode,cooldownSeconds,errorMessage,successMessage);
+int get hashCode => Object.hash(runtimeType,email,code,password,confirmPassword,isSubmitting,isSendingCode,cooldownSeconds,emailError,codeError,passwordError,confirmPasswordError,errorMessage,successMessage);
 
 @override
 String toString() {
-  return 'PasswordResetState(email: $email, code: $code, password: $password, confirmPassword: $confirmPassword, isSubmitting: $isSubmitting, isSendingCode: $isSendingCode, cooldownSeconds: $cooldownSeconds, errorMessage: $errorMessage, successMessage: $successMessage)';
+  return 'PasswordResetState(email: $email, code: $code, password: $password, confirmPassword: $confirmPassword, isSubmitting: $isSubmitting, isSendingCode: $isSendingCode, cooldownSeconds: $cooldownSeconds, emailError: $emailError, codeError: $codeError, passwordError: $passwordError, confirmPasswordError: $confirmPasswordError, errorMessage: $errorMessage, successMessage: $successMessage)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PasswordResetStateCopyWith<$Res>  {
   factory $PasswordResetStateCopyWith(PasswordResetState value, $Res Function(PasswordResetState) _then) = _$PasswordResetStateCopyWithImpl;
 @useResult
 $Res call({
- String email, String code, String password, String confirmPassword, bool isSubmitting, bool isSendingCode, int? cooldownSeconds, String? errorMessage, String? successMessage
+ String email, String code, String password, String confirmPassword, bool isSubmitting, bool isSendingCode, int? cooldownSeconds, String? emailError, String? codeError, String? passwordError, String? confirmPasswordError, String? errorMessage, String? successMessage
 });
 
 
@@ -62,7 +62,7 @@ class _$PasswordResetStateCopyWithImpl<$Res>
 
 /// Create a copy of PasswordResetState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? code = null,Object? password = null,Object? confirmPassword = null,Object? isSubmitting = null,Object? isSendingCode = null,Object? cooldownSeconds = freezed,Object? errorMessage = freezed,Object? successMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? code = null,Object? password = null,Object? confirmPassword = null,Object? isSubmitting = null,Object? isSendingCode = null,Object? cooldownSeconds = freezed,Object? emailError = freezed,Object? codeError = freezed,Object? passwordError = freezed,Object? confirmPasswordError = freezed,Object? errorMessage = freezed,Object? successMessage = freezed,}) {
   return _then(_self.copyWith(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
@@ -71,7 +71,11 @@ as String,confirmPassword: null == confirmPassword ? _self.confirmPassword : con
 as String,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
 as bool,isSendingCode: null == isSendingCode ? _self.isSendingCode : isSendingCode // ignore: cast_nullable_to_non_nullable
 as bool,cooldownSeconds: freezed == cooldownSeconds ? _self.cooldownSeconds : cooldownSeconds // ignore: cast_nullable_to_non_nullable
-as int?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as int?,emailError: freezed == emailError ? _self.emailError : emailError // ignore: cast_nullable_to_non_nullable
+as String?,codeError: freezed == codeError ? _self.codeError : codeError // ignore: cast_nullable_to_non_nullable
+as String?,passwordError: freezed == passwordError ? _self.passwordError : passwordError // ignore: cast_nullable_to_non_nullable
+as String?,confirmPasswordError: freezed == confirmPasswordError ? _self.confirmPasswordError : confirmPasswordError // ignore: cast_nullable_to_non_nullable
+as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,successMessage: freezed == successMessage ? _self.successMessage : successMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -158,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String code,  String password,  String confirmPassword,  bool isSubmitting,  bool isSendingCode,  int? cooldownSeconds,  String? errorMessage,  String? successMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String code,  String password,  String confirmPassword,  bool isSubmitting,  bool isSendingCode,  int? cooldownSeconds,  String? emailError,  String? codeError,  String? passwordError,  String? confirmPasswordError,  String? errorMessage,  String? successMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PasswordResetState() when $default != null:
-return $default(_that.email,_that.code,_that.password,_that.confirmPassword,_that.isSubmitting,_that.isSendingCode,_that.cooldownSeconds,_that.errorMessage,_that.successMessage);case _:
+return $default(_that.email,_that.code,_that.password,_that.confirmPassword,_that.isSubmitting,_that.isSendingCode,_that.cooldownSeconds,_that.emailError,_that.codeError,_that.passwordError,_that.confirmPasswordError,_that.errorMessage,_that.successMessage);case _:
   return orElse();
 
 }
@@ -179,10 +183,10 @@ return $default(_that.email,_that.code,_that.password,_that.confirmPassword,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String code,  String password,  String confirmPassword,  bool isSubmitting,  bool isSendingCode,  int? cooldownSeconds,  String? errorMessage,  String? successMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String code,  String password,  String confirmPassword,  bool isSubmitting,  bool isSendingCode,  int? cooldownSeconds,  String? emailError,  String? codeError,  String? passwordError,  String? confirmPasswordError,  String? errorMessage,  String? successMessage)  $default,) {final _that = this;
 switch (_that) {
 case _PasswordResetState():
-return $default(_that.email,_that.code,_that.password,_that.confirmPassword,_that.isSubmitting,_that.isSendingCode,_that.cooldownSeconds,_that.errorMessage,_that.successMessage);case _:
+return $default(_that.email,_that.code,_that.password,_that.confirmPassword,_that.isSubmitting,_that.isSendingCode,_that.cooldownSeconds,_that.emailError,_that.codeError,_that.passwordError,_that.confirmPasswordError,_that.errorMessage,_that.successMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +203,10 @@ return $default(_that.email,_that.code,_that.password,_that.confirmPassword,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String code,  String password,  String confirmPassword,  bool isSubmitting,  bool isSendingCode,  int? cooldownSeconds,  String? errorMessage,  String? successMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String code,  String password,  String confirmPassword,  bool isSubmitting,  bool isSendingCode,  int? cooldownSeconds,  String? emailError,  String? codeError,  String? passwordError,  String? confirmPasswordError,  String? errorMessage,  String? successMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _PasswordResetState() when $default != null:
-return $default(_that.email,_that.code,_that.password,_that.confirmPassword,_that.isSubmitting,_that.isSendingCode,_that.cooldownSeconds,_that.errorMessage,_that.successMessage);case _:
+return $default(_that.email,_that.code,_that.password,_that.confirmPassword,_that.isSubmitting,_that.isSendingCode,_that.cooldownSeconds,_that.emailError,_that.codeError,_that.passwordError,_that.confirmPasswordError,_that.errorMessage,_that.successMessage);case _:
   return null;
 
 }
@@ -214,7 +218,7 @@ return $default(_that.email,_that.code,_that.password,_that.confirmPassword,_tha
 
 
 class _PasswordResetState implements PasswordResetState {
-  const _PasswordResetState({this.email = '', this.code = '', this.password = '', this.confirmPassword = '', this.isSubmitting = false, this.isSendingCode = false, this.cooldownSeconds, this.errorMessage, this.successMessage});
+  const _PasswordResetState({this.email = '', this.code = '', this.password = '', this.confirmPassword = '', this.isSubmitting = false, this.isSendingCode = false, this.cooldownSeconds, this.emailError, this.codeError, this.passwordError, this.confirmPasswordError, this.errorMessage, this.successMessage});
   
 
 @override@JsonKey() final  String email;
@@ -224,6 +228,10 @@ class _PasswordResetState implements PasswordResetState {
 @override@JsonKey() final  bool isSubmitting;
 @override@JsonKey() final  bool isSendingCode;
 @override final  int? cooldownSeconds;
+@override final  String? emailError;
+@override final  String? codeError;
+@override final  String? passwordError;
+@override final  String? confirmPasswordError;
 @override final  String? errorMessage;
 @override final  String? successMessage;
 
@@ -237,16 +245,16 @@ _$PasswordResetStateCopyWith<_PasswordResetState> get copyWith => __$PasswordRes
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PasswordResetState&&(identical(other.email, email) || other.email == email)&&(identical(other.code, code) || other.code == code)&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isSendingCode, isSendingCode) || other.isSendingCode == isSendingCode)&&(identical(other.cooldownSeconds, cooldownSeconds) || other.cooldownSeconds == cooldownSeconds)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PasswordResetState&&(identical(other.email, email) || other.email == email)&&(identical(other.code, code) || other.code == code)&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isSendingCode, isSendingCode) || other.isSendingCode == isSendingCode)&&(identical(other.cooldownSeconds, cooldownSeconds) || other.cooldownSeconds == cooldownSeconds)&&(identical(other.emailError, emailError) || other.emailError == emailError)&&(identical(other.codeError, codeError) || other.codeError == codeError)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.confirmPasswordError, confirmPasswordError) || other.confirmPasswordError == confirmPasswordError)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,email,code,password,confirmPassword,isSubmitting,isSendingCode,cooldownSeconds,errorMessage,successMessage);
+int get hashCode => Object.hash(runtimeType,email,code,password,confirmPassword,isSubmitting,isSendingCode,cooldownSeconds,emailError,codeError,passwordError,confirmPasswordError,errorMessage,successMessage);
 
 @override
 String toString() {
-  return 'PasswordResetState(email: $email, code: $code, password: $password, confirmPassword: $confirmPassword, isSubmitting: $isSubmitting, isSendingCode: $isSendingCode, cooldownSeconds: $cooldownSeconds, errorMessage: $errorMessage, successMessage: $successMessage)';
+  return 'PasswordResetState(email: $email, code: $code, password: $password, confirmPassword: $confirmPassword, isSubmitting: $isSubmitting, isSendingCode: $isSendingCode, cooldownSeconds: $cooldownSeconds, emailError: $emailError, codeError: $codeError, passwordError: $passwordError, confirmPasswordError: $confirmPasswordError, errorMessage: $errorMessage, successMessage: $successMessage)';
 }
 
 
@@ -257,7 +265,7 @@ abstract mixin class _$PasswordResetStateCopyWith<$Res> implements $PasswordRese
   factory _$PasswordResetStateCopyWith(_PasswordResetState value, $Res Function(_PasswordResetState) _then) = __$PasswordResetStateCopyWithImpl;
 @override @useResult
 $Res call({
- String email, String code, String password, String confirmPassword, bool isSubmitting, bool isSendingCode, int? cooldownSeconds, String? errorMessage, String? successMessage
+ String email, String code, String password, String confirmPassword, bool isSubmitting, bool isSendingCode, int? cooldownSeconds, String? emailError, String? codeError, String? passwordError, String? confirmPasswordError, String? errorMessage, String? successMessage
 });
 
 
@@ -274,7 +282,7 @@ class __$PasswordResetStateCopyWithImpl<$Res>
 
 /// Create a copy of PasswordResetState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? code = null,Object? password = null,Object? confirmPassword = null,Object? isSubmitting = null,Object? isSendingCode = null,Object? cooldownSeconds = freezed,Object? errorMessage = freezed,Object? successMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? code = null,Object? password = null,Object? confirmPassword = null,Object? isSubmitting = null,Object? isSendingCode = null,Object? cooldownSeconds = freezed,Object? emailError = freezed,Object? codeError = freezed,Object? passwordError = freezed,Object? confirmPasswordError = freezed,Object? errorMessage = freezed,Object? successMessage = freezed,}) {
   return _then(_PasswordResetState(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
@@ -283,7 +291,11 @@ as String,confirmPassword: null == confirmPassword ? _self.confirmPassword : con
 as String,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
 as bool,isSendingCode: null == isSendingCode ? _self.isSendingCode : isSendingCode // ignore: cast_nullable_to_non_nullable
 as bool,cooldownSeconds: freezed == cooldownSeconds ? _self.cooldownSeconds : cooldownSeconds // ignore: cast_nullable_to_non_nullable
-as int?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as int?,emailError: freezed == emailError ? _self.emailError : emailError // ignore: cast_nullable_to_non_nullable
+as String?,codeError: freezed == codeError ? _self.codeError : codeError // ignore: cast_nullable_to_non_nullable
+as String?,passwordError: freezed == passwordError ? _self.passwordError : passwordError // ignore: cast_nullable_to_non_nullable
+as String?,confirmPasswordError: freezed == confirmPasswordError ? _self.confirmPasswordError : confirmPasswordError // ignore: cast_nullable_to_non_nullable
+as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,successMessage: freezed == successMessage ? _self.successMessage : successMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

@@ -899,6 +899,12 @@
   "authCodeRequiredToast": "请先填写验证码。",
   "authPasswordRequiredToast": "请先填写密码。",
   "authConfirmPasswordRequiredToast": "请先确认密码。",
+  "authEmailRequiredError": "请输入邮箱。",
+  "authEmailInvalidError": "请输入有效的邮箱地址。",
+  "authCodeRequiredError": "请输入验证码。",
+  "authPasswordRequiredError": "请输入密码。",
+  "authConfirmPasswordRequiredError": "请确认密码。",
+  "authPasswordsDoNotMatchError": "两次输入的密码不一致。",
   "authSendCode": "发送验证码",
   "authSendCodeAgain": "{seconds} 秒后重发",
   "@authSendCodeAgain": {

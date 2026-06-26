@@ -2126,6 +2126,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please confirm your password.';
 
   @override
+  String get authEmailRequiredError => 'Please enter your email.';
+
+  @override
+  String get authEmailInvalidError => 'Please enter a valid email address.';
+
+  @override
+  String get authCodeRequiredError => 'Please enter the verification code.';
+
+  @override
+  String get authPasswordRequiredError => 'Please enter your password.';
+
+  @override
+  String get authConfirmPasswordRequiredError =>
+      'Please confirm your password.';
+
+  @override
+  String get authPasswordsDoNotMatchError => 'Passwords do not match.';
+
+  @override
   String get authSendCode => 'Send code';
 
   @override

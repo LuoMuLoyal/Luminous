@@ -3860,6 +3860,42 @@ abstract class AppLocalizations {
   /// **'请先确认密码。'**
   String get authConfirmPasswordRequiredToast;
 
+  /// No description provided for @authEmailRequiredError.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入邮箱。'**
+  String get authEmailRequiredError;
+
+  /// No description provided for @authEmailInvalidError.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入有效的邮箱地址。'**
+  String get authEmailInvalidError;
+
+  /// No description provided for @authCodeRequiredError.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入验证码。'**
+  String get authCodeRequiredError;
+
+  /// No description provided for @authPasswordRequiredError.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入密码。'**
+  String get authPasswordRequiredError;
+
+  /// No description provided for @authConfirmPasswordRequiredError.
+  ///
+  /// In zh, this message translates to:
+  /// **'请确认密码。'**
+  String get authConfirmPasswordRequiredError;
+
+  /// No description provided for @authPasswordsDoNotMatchError.
+  ///
+  /// In zh, this message translates to:
+  /// **'两次输入的密码不一致。'**
+  String get authPasswordsDoNotMatchError;
+
   /// No description provided for @authSendCode.
   ///
   /// In zh, this message translates to:

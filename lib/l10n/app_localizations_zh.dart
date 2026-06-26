@@ -1974,6 +1974,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get authConfirmPasswordRequiredToast => '请先确认密码。';
 
   @override
+  String get authEmailRequiredError => '请输入邮箱。';
+
+  @override
+  String get authEmailInvalidError => '请输入有效的邮箱地址。';
+
+  @override
+  String get authCodeRequiredError => '请输入验证码。';
+
+  @override
+  String get authPasswordRequiredError => '请输入密码。';
+
+  @override
+  String get authConfirmPasswordRequiredError => '请确认密码。';
+
+  @override
+  String get authPasswordsDoNotMatchError => '两次输入的密码不一致。';
+
+  @override
   String get authSendCode => '发送验证码';
 
   @override
