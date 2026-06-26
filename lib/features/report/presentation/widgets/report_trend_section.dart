@@ -73,7 +73,7 @@ class ReportTrendSection extends StatelessWidget {
             label: l10n.reportViewDetailsAction,
             flexible: true,
             color: ReportPalette.blue,
-            onTap: () => showReportToast(context, l10n.reportViewDetailsAction),
+            onTap: null,
           ),
         ),
       ],

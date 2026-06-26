@@ -1472,14 +1472,6 @@
   "reportPatternMedicationStatus": "表现优秀",
   "reportPatternMedicationBody": "按时服药有助于维持健康状态",
   "reportReferenceNotice": "本报告仅供参考，不构成诊断或治疗建议。",
-  "reportActionToast": "{action}：后续会打开对应操作。",
-  "@reportActionToast": {
-    "placeholders": {
-      "action": {
-        "type": "String"
-      }
-    }
-  },
   "reportErrorTitle": "报告页暂时没有加载出来",
   "reportErrorDescription": "报告数据这次没有拉取成功，可以重新同步一次。",
   "reportSignedOutInlineHint": "登录后查看你的真实周报、AI 总结和导出结果。",

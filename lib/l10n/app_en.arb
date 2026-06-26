@@ -1472,14 +1472,6 @@
   "reportPatternMedicationStatus": "Excellent",
   "reportPatternMedicationBody": "Taking medicine on time helps maintain health status.",
   "reportReferenceNotice": "This report is for reference only and is not diagnosis or treatment advice.",
-  "reportActionToast": "{action}: this will open the related action later.",
-  "@reportActionToast": {
-    "placeholders": {
-      "action": {
-        "type": "String"
-      }
-    }
-  },
   "reportErrorTitle": "Report did not load this time",
   "reportErrorDescription": "Report data did not load this time. Try syncing again.",
   "reportSignedOutInlineHint": "Sign in to view your real weekly report, AI summary, and exports.",

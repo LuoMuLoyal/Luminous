@@ -3228,11 +3228,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportReferenceNotice => '本报告仅供参考，不构成诊断或治疗建议。';
 
   @override
-  String reportActionToast(String action) {
-    return '$action：后续会打开对应操作。';
-  }
-
-  @override
   String get reportErrorTitle => '报告页暂时没有加载出来';
 
   @override

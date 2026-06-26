@@ -6266,12 +6266,6 @@ abstract class AppLocalizations {
   /// **'本报告仅供参考，不构成诊断或治疗建议。'**
   String get reportReferenceNotice;
 
-  /// No description provided for @reportActionToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'{action}：后续会打开对应操作。'**
-  String reportActionToast(String action);
-
   /// No description provided for @reportErrorTitle.
   ///
   /// In zh, this message translates to:

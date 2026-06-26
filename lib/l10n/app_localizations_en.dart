@@ -3459,11 +3459,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'This report is for reference only and is not diagnosis or treatment advice.';
 
   @override
-  String reportActionToast(String action) {
-    return '$action: this will open the related action later.';
-  }
-
-  @override
   String get reportErrorTitle => 'Report did not load this time';
 
   @override
