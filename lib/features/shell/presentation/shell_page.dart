@@ -95,32 +95,36 @@ class ShellPage extends ConsumerWidget {
           : _pages[currentIndex],
       bottomNavigationBar: isDesktop
           ? null
-          : NavigationBarTheme(
-              data: NavigationBarThemeData(
-                indicatorColor: AppColorTokens.healthSoft,
-                iconTheme: WidgetStateProperty.resolveWith((states) {
-                  final selected = states.contains(WidgetState.selected);
-                  return IconThemeData(
-                    color: selected ? selectedNavColor : unselectedNavColor,
-                    size: 24,
-                  );
-                }),
-                labelTextStyle: WidgetStateProperty.resolveWith((states) {
-                  final selected = states.contains(WidgetState.selected);
-                  return typography.caption.copyWith(
-                    color: selected ? selectedNavColor : scheme.onSurface,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    letterSpacing: 0,
-                  );
-                }),
-              ),
-              child: NavigationBar(
-                backgroundColor: surface.canvas.withValues(alpha: 0.96),
-                surfaceTintColor: Colors.transparent,
-                height: width < AppBreakpoints.mobile ? 70 : 76,
-                selectedIndex: currentIndex,
-                onDestinationSelected: notifier.selectTab,
-                destinations: destinations,
+          : MediaQuery.withClampedTextScaling(
+              maxScaleFactor: 1.2,
+              child: NavigationBarTheme(
+                data: NavigationBarThemeData(
+                  indicatorColor: AppColorTokens.healthSoft,
+                  iconTheme: WidgetStateProperty.resolveWith((states) {
+                    final selected = states.contains(WidgetState.selected);
+                    return IconThemeData(
+                      color: selected ? selectedNavColor : unselectedNavColor,
+                      size: 24,
+                    );
+                  }),
+                  labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                    final selected = states.contains(WidgetState.selected);
+                    return typography.caption.copyWith(
+                      color: selected ? selectedNavColor : scheme.onSurface,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      letterSpacing: 0,
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  }),
+                ),
+                child: NavigationBar(
+                  backgroundColor: surface.canvas.withValues(alpha: 0.96),
+                  surfaceTintColor: Colors.transparent,
+                  height: width < AppBreakpoints.mobile ? 70 : 76,
+                  selectedIndex: currentIndex,
+                  onDestinationSelected: notifier.selectTab,
+                  destinations: destinations,
+                ),
               ),
             ),
     );
@@ -147,55 +151,58 @@ class _DesktopSidebar extends StatelessWidget {
     );
     final l10n = AppLocalizations.of(context);
 
-    return SizedBox(
-      width: 232,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: surface.canvas,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-          border: Border.all(color: surface.hairline),
-          boxShadow: AppShadowTokens.level1,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacingTokens.md,
-            AppSpacingTokens.md,
-            AppSpacingTokens.md,
-            AppSpacingTokens.lg,
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: 1.15,
+      child: SizedBox(
+        width: 232,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: surface.canvas,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+            border: Border.all(color: surface.hairline),
+            boxShadow: AppShadowTokens.level1,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const _DesktopSidebarBrand(),
-              const SizedBox(height: AppSpacingTokens.lg),
-              ...ShellTab.values.map(
-                (tab) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.xs),
-                  child: _DesktopSidebarItem(
-                    tab: tab,
-                    selected: currentIndex == tab.index,
-                    label: tab.label(l10n),
-                    onTap: () => onSelect(tab.index),
-                    typography: typography,
-                    surface: surface,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacingTokens.md,
+              AppSpacingTokens.md,
+              AppSpacingTokens.md,
+              AppSpacingTokens.lg,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _DesktopSidebarBrand(),
+                const SizedBox(height: AppSpacingTokens.lg),
+                ...ShellTab.values.map(
+                  (tab) => Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacingTokens.xs),
+                    child: _DesktopSidebarItem(
+                      tab: tab,
+                      selected: currentIndex == tab.index,
+                      label: tab.label(l10n),
+                      onTap: () => onSelect(tab.index),
+                      typography: typography,
+                      surface: surface,
+                    ),
                   ),
                 ),
-              ),
-              const Spacer(),
-              _DesktopSidebarActionItem(
-                icon: Icons.settings_outlined,
-                label: l10n?.desktopSidebarSettings ?? '设置',
-                onTap: () => context.push('/settings'),
-                typography: typography,
-              ),
-              const SizedBox(height: AppSpacingTokens.xs),
-              _DesktopSidebarActionItem(
-                icon: Icons.help_outline_rounded,
-                label: l10n?.desktopSidebarHelp ?? '帮助',
-                onTap: () => context.push('/assistant'),
-                typography: typography,
-              ),
-            ],
+                const Spacer(),
+                _DesktopSidebarActionItem(
+                  icon: Icons.settings_outlined,
+                  label: l10n?.desktopSidebarSettings ?? '设置',
+                  onTap: () => context.push('/settings'),
+                  typography: typography,
+                ),
+                const SizedBox(height: AppSpacingTokens.xs),
+                _DesktopSidebarActionItem(
+                  icon: Icons.help_outline_rounded,
+                  label: l10n?.desktopSidebarHelp ?? '帮助',
+                  onTap: () => context.push('/assistant'),
+                  typography: typography,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -321,9 +328,13 @@ class _DesktopSidebarItem extends StatelessWidget {
                   color: foreground,
                 ),
                 const SizedBox(width: AppSpacingTokens.md),
-                Text(
-                  label,
-                  style: typography.bodyMdStrong.copyWith(color: foreground),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: typography.bodyMdStrong.copyWith(color: foreground),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),

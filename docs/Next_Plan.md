@@ -1,6 +1,6 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-25
+Last updated: 2026-06-26
 
 This file records the next implementation order only. Completed work belongs in `migration-log/YYYY-MM-DD.md`; current facts belong in `Current_State.md`.
 
@@ -36,7 +36,6 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 
 ## Deferred But Useful
 
-- focused truncation/polish pass for compact CN/EN labels across the five tabs
 - agent-assisted support discovery and map-backed nearby-care lookup
 - lightweight mood record shapes and a future mood quick-entry/tool hook
 - environment signals for contextual Today/Mine use
