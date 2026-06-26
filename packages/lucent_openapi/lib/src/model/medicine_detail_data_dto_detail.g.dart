@@ -81,6 +81,8 @@ MedicineDetailDataDtoDetail _$MedicineDetailDataDtoDetailFromJson(
     pediatricUse: $checkedConvert('pediatricUse', (v) => v),
     geriatricUse: $checkedConvert('geriatricUse', (v) => v),
     pregnancyLactation: $checkedConvert('pregnancyLactation', (v) => v),
+    pregnancy: $checkedConvert('pregnancy', (v) => v),
+    lactation: $checkedConvert('lactation', (v) => v),
     pharmacologyToxicology: $checkedConvert('pharmacologyToxicology', (v) => v),
     pharmacokinetics: $checkedConvert('pharmacokinetics', (v) => v),
     overdose: $checkedConvert('overdose', (v) => v),
@@ -145,6 +147,8 @@ Map<String, dynamic> _$MedicineDetailDataDtoDetailToJson(
   if (instance.geriatricUse != null) 'geriatricUse': instance.geriatricUse,
   if (instance.pregnancyLactation != null)
     'pregnancyLactation': instance.pregnancyLactation,
+  if (instance.pregnancy != null) 'pregnancy': instance.pregnancy,
+  if (instance.lactation != null) 'lactation': instance.lactation,
   if (instance.pharmacologyToxicology != null)
     'pharmacologyToxicology': instance.pharmacologyToxicology,
   if (instance.pharmacokinetics != null)

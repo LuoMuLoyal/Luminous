@@ -352,7 +352,7 @@ void main() {
           detail: _detail(
             id: 'cn-1',
             name: '药品',
-            // no pregnancyLactation field — warning unavailable
+            // no pregnancy/lactation fields — warning unavailable
           ),
         ),
       ],
@@ -386,7 +386,7 @@ void main() {
           detail: _detail(
             id: 'cn-1',
             name: '药品',
-            // no pregnancyLactation field
+            // no pregnancy/lactation fields
           ),
         ),
       ],
@@ -587,7 +587,7 @@ void main() {
       medicines: [
         MedicineRiskMedicineDetail(
           item: snapshot.currentMedicines[0],
-          detail: _detail(id: 'cn-1', name: '药品', pregnancyLactation: '孕妇禁用'),
+          detail: _detail(id: 'cn-1', name: '药品', pregnancy: '孕妇禁用'),
         ),
       ],
     );
@@ -613,7 +613,7 @@ void main() {
       medicines: [
         MedicineRiskMedicineDetail(
           item: snapshot.currentMedicines[0],
-          detail: _detail(id: 'cn-1', name: '药品', pregnancyLactation: '哺乳期禁用'),
+          detail: _detail(id: 'cn-1', name: '药品', lactation: '哺乳期禁用'),
         ),
       ],
     );
@@ -815,7 +815,7 @@ void main() {
 
   // ── Age threshold boundary tests ────────────────────────────────
 
-  test('pediatric fires for age 17, not for age 18 (with field)', () {
+  test('pediatric fires for age 17 and 18 (with field)', () {
     final snapshot17 = _basicSnapshot(age: 17, medicineCount: 1);
     final snapshot18 = _basicSnapshot(age: 18, medicineCount: 1);
     final detail = _detail(id: 'cn-1', name: '药品', pediatricUse: '儿童慎用');
@@ -853,54 +853,55 @@ void main() {
           f.type == MedicineRiskFindingType.specialGroup &&
           f.context == MedicineRiskFindingContext.pediatric,
     );
-    expect(pediatric18, isEmpty);
+    expect(pediatric18, hasLength(1));
+    expect(pediatric18.first.severity, MedicineRiskSeverity.medium);
+    expect(pediatric18.first.evidence, '儿童慎用');
   });
 
-  test(
-    'pediatric info-level boundary fires for age 17 without field, silent for age 18',
-    () {
-      final snapshot17 = _basicSnapshot(age: 17, medicineCount: 1);
-      final snapshot18 = _basicSnapshot(age: 18, medicineCount: 1);
-      final detail = _detail(id: 'cn-1', name: '药品'); // no pediatricUse
-      final checker = const MedicineRiskChecker();
-      final result17 = checker.evaluate(
-        snapshot: snapshot17,
-        medicines: [
-          MedicineRiskMedicineDetail(
-            item: snapshot17.currentMedicines[0],
-            detail: detail,
-          ),
-        ],
-      );
-      final result18 = checker.evaluate(
-        snapshot: snapshot18,
-        medicines: [
-          MedicineRiskMedicineDetail(
-            item: snapshot18.currentMedicines[0],
-            detail: detail,
-          ),
-        ],
-      );
+  test('pediatric info-level boundary fires for age <= 18 without field', () {
+    final snapshot17 = _basicSnapshot(age: 17, medicineCount: 1);
+    final snapshot18 = _basicSnapshot(age: 18, medicineCount: 1);
+    final detail = _detail(id: 'cn-1', name: '药品'); // no pediatricUse
+    final checker = const MedicineRiskChecker();
+    final result17 = checker.evaluate(
+      snapshot: snapshot17,
+      medicines: [
+        MedicineRiskMedicineDetail(
+          item: snapshot17.currentMedicines[0],
+          detail: detail,
+        ),
+      ],
+    );
+    final result18 = checker.evaluate(
+      snapshot: snapshot18,
+      medicines: [
+        MedicineRiskMedicineDetail(
+          item: snapshot18.currentMedicines[0],
+          detail: detail,
+        ),
+      ],
+    );
 
-      final pediatric17 = result17.findings.where(
-        (f) =>
-            f.type == MedicineRiskFindingType.specialGroup &&
-            f.context == MedicineRiskFindingContext.pediatric,
-      );
-      expect(pediatric17, hasLength(1));
-      expect(pediatric17.first.severity, MedicineRiskSeverity.info);
-      expect(pediatric17.first.evidence, isNull);
+    final pediatric17 = result17.findings.where(
+      (f) =>
+          f.type == MedicineRiskFindingType.specialGroup &&
+          f.context == MedicineRiskFindingContext.pediatric,
+    );
+    expect(pediatric17, hasLength(1));
+    expect(pediatric17.first.severity, MedicineRiskSeverity.info);
+    expect(pediatric17.first.evidence, isNull);
 
-      final pediatric18 = result18.findings.where(
-        (f) =>
-            f.type == MedicineRiskFindingType.specialGroup &&
-            f.context == MedicineRiskFindingContext.pediatric,
-      );
-      expect(pediatric18, isEmpty);
-    },
-  );
+    final pediatric18 = result18.findings.where(
+      (f) =>
+          f.type == MedicineRiskFindingType.specialGroup &&
+          f.context == MedicineRiskFindingContext.pediatric,
+    );
+    expect(pediatric18, hasLength(1));
+    expect(pediatric18.first.severity, MedicineRiskSeverity.info);
+    expect(pediatric18.first.evidence, isNull);
+  });
 
-  test('geriatric fires for age 66, not for age 64 or 65 (with field)', () {
+  test('geriatric fires for age >= 65, not for age 64 (with field)', () {
     final snapshot64 = _basicSnapshot(age: 64, medicineCount: 1);
     final snapshot65 = _basicSnapshot(age: 65, medicineCount: 1);
     final snapshot66 = _basicSnapshot(age: 66, medicineCount: 1);
@@ -947,7 +948,9 @@ void main() {
           f.type == MedicineRiskFindingType.specialGroup &&
           f.context == MedicineRiskFindingContext.geriatric,
     );
-    expect(geriatric65, isEmpty);
+    expect(geriatric65, hasLength(1));
+    expect(geriatric65.first.severity, MedicineRiskSeverity.medium);
+    expect(geriatric65.first.evidence, '老人慎用');
 
     final geriatric66 = result66.findings.where(
       (f) =>
@@ -960,12 +963,22 @@ void main() {
   });
 
   test(
-    'geriatric info-level boundary fires for age 66 without field, silent for age 65',
+    'geriatric info-level boundary fires for age >= 65 without field, silent for age 64',
     () {
+      final snapshot64 = _basicSnapshot(age: 64, medicineCount: 1);
       final snapshot65 = _basicSnapshot(age: 65, medicineCount: 1);
       final snapshot66 = _basicSnapshot(age: 66, medicineCount: 1);
       final detail = _detail(id: 'cn-1', name: '药品'); // no geriatricUse
       final checker = const MedicineRiskChecker();
+      final result64 = checker.evaluate(
+        snapshot: snapshot64,
+        medicines: [
+          MedicineRiskMedicineDetail(
+            item: snapshot64.currentMedicines[0],
+            detail: detail,
+          ),
+        ],
+      );
       final result65 = checker.evaluate(
         snapshot: snapshot65,
         medicines: [
@@ -985,12 +998,21 @@ void main() {
         ],
       );
 
+      final geriatric64 = result64.findings.where(
+        (f) =>
+            f.type == MedicineRiskFindingType.specialGroup &&
+            f.context == MedicineRiskFindingContext.geriatric,
+      );
+      expect(geriatric64, isEmpty);
+
       final geriatric65 = result65.findings.where(
         (f) =>
             f.type == MedicineRiskFindingType.specialGroup &&
             f.context == MedicineRiskFindingContext.geriatric,
       );
-      expect(geriatric65, isEmpty);
+      expect(geriatric65, hasLength(1));
+      expect(geriatric65.first.severity, MedicineRiskSeverity.info);
+      expect(geriatric65.first.evidence, isNull);
 
       final geriatric66 = result66.findings.where(
         (f) =>
@@ -1637,6 +1659,8 @@ MedicineDetailDataDto _detail({
   String? pediatricUse,
   String? geriatricUse,
   String? pregnancyLactation,
+  String? pregnancy,
+  String? lactation,
 }) {
   return MedicineDetailDataDto(
     id: id,
@@ -1657,6 +1681,8 @@ MedicineDetailDataDto _detail({
       pediatricUse: pediatricUse,
       geriatricUse: geriatricUse,
       pregnancyLactation: pregnancyLactation,
+      pregnancy: pregnancy,
+      lactation: lactation,
     ),
   );
 }

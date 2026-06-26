@@ -46,6 +46,10 @@ class CnMedicineDetailDto {
 
     this.pregnancyLactation,
 
+    this.pregnancy,
+
+    this.lactation,
+
     this.pharmacologyToxicology,
 
     this.drugInteractions,
@@ -109,8 +113,16 @@ class CnMedicineDetailDto {
   @JsonKey(name: r'geriatricUse', required: false, includeIfNull: false)
   final Object? geriatricUse;
 
+  /// Deprecated: use pregnancy and lactation fields. Kept for backward compatibility.
+  @Deprecated('pregnancyLactation has been deprecated')
   @JsonKey(name: r'pregnancyLactation', required: false, includeIfNull: false)
   final Object? pregnancyLactation;
+
+  @JsonKey(name: r'pregnancy', required: false, includeIfNull: false)
+  final Object? pregnancy;
+
+  @JsonKey(name: r'lactation', required: false, includeIfNull: false)
+  final Object? lactation;
 
   @JsonKey(
     name: r'pharmacologyToxicology',
@@ -165,6 +177,8 @@ class CnMedicineDetailDto {
           other.pediatricUse == pediatricUse &&
           other.geriatricUse == geriatricUse &&
           other.pregnancyLactation == pregnancyLactation &&
+          other.pregnancy == pregnancy &&
+          other.lactation == lactation &&
           other.pharmacologyToxicology == pharmacologyToxicology &&
           other.drugInteractions == drugInteractions &&
           other.pharmacokinetics == pharmacokinetics &&
@@ -193,6 +207,8 @@ class CnMedicineDetailDto {
       (pediatricUse == null ? 0 : pediatricUse.hashCode) +
       (geriatricUse == null ? 0 : geriatricUse.hashCode) +
       (pregnancyLactation == null ? 0 : pregnancyLactation.hashCode) +
+      (pregnancy == null ? 0 : pregnancy.hashCode) +
+      (lactation == null ? 0 : lactation.hashCode) +
       (pharmacologyToxicology == null ? 0 : pharmacologyToxicology.hashCode) +
       (drugInteractions == null ? 0 : drugInteractions.hashCode) +
       (pharmacokinetics == null ? 0 : pharmacokinetics.hashCode) +

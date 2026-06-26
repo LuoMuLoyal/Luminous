@@ -45,13 +45,11 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 
 ## Medicine Safety Follow-Up Directions
 
-1. **Age threshold debate** (≤18 vs <18, ≥65 vs >65)
-2. **Separate lactation field** — currently pregnancy and lactation share the same field
-3. **Allergy severity null-handling** — `severity == null` with `reaction == 'anaphylaxis'`
-4. **CN medicine interaction gap** — CN-sourced medicines invisible to interaction checker
-5. **Avoid-tier escalation policy** — structured `avoid` conclusions stay below red-flag
-6. **Duplicate cross-language matching** — "对乙酰氨基酚" vs "paracetamol"
-7. **DrugBank synonym over-generalization** — different NSAIDs sharing synonyms
+1. **Allergy severity null-handling** — `severity == null` with `reaction == 'anaphylaxis'`
+2. **CN medicine interaction gap** — CN-sourced medicines invisible to interaction checker
+3. **Avoid-tier escalation policy** — structured `avoid` conclusions stay below red-flag
+4. **Duplicate cross-language matching** — "对乙酰氨基酚" vs "paracetamol"
+5. **DrugBank synonym over-generalization** — different NSAIDs sharing synonyms
 
 ## Do Not Start Yet
 

@@ -67,6 +67,8 @@ class MedicineRiskChecker {
   static final _pediatricAgeThreshold = 18;
   static final _geriatricAgeThreshold = 65;
 
+  // Inclusive boundaries: pediatric <= 18, geriatric >= 65.
+
   // ── Special-population text classifier ──────────────────────────
   // Conservative keyword matching only — no NLP.
   // Falls back to insufficientInformation when no keyword matches.
@@ -203,17 +205,15 @@ class MedicineRiskChecker {
     );
   }
 
-  String? _specialPopulationEvidenceForContext({
-    required Object? rawText,
-    required MedicineRiskFindingContext context,
-  }) {
+  /// Filters legacy combined pregnancy/lactation text so that context-only
+  /// evidence does not leak into the opposite context. Used only as a fallback
+  /// when the backend has not yet provided split [pregnancy]/[lactation] fields.
+  String? _legacySpecialPopulationEvidence(
+    Object? rawText,
+    MedicineRiskFindingContext context,
+  ) {
     final text = asNonEmptyString(rawText);
     if (text == null) return null;
-
-    if (context != MedicineRiskFindingContext.pregnancy &&
-        context != MedicineRiskFindingContext.lactation) {
-      return text;
-    }
 
     final lower = text.toLowerCase();
     final mentionsPregnancy = _containsAny(lower, _pregnancyContextKeywords);
@@ -243,10 +243,12 @@ class MedicineRiskChecker {
     final detail = medicine.detail.detail;
     final age = snapshot.summary.age;
 
-    final pregnancyText = _specialPopulationEvidenceForContext(
-      rawText: detail.pregnancyLactation,
-      context: MedicineRiskFindingContext.pregnancy,
-    );
+    final pregnancyText =
+        asNonEmptyString(detail.pregnancy) ??
+        _legacySpecialPopulationEvidence(
+          detail.pregnancyLactation, // ignore: deprecated_member_use
+          MedicineRiskFindingContext.pregnancy,
+        );
     final pregnancyState = snapshot.profile.pregnancyState;
     final hasPregnancyRisk =
         pregnancyState == 'pregnant' ||
@@ -271,10 +273,12 @@ class MedicineRiskChecker {
 
     final lactationState = snapshot.profile.lactationState;
     final hasLactationRisk = lactationState == 'yes';
-    final lactationText = _specialPopulationEvidenceForContext(
-      rawText: detail.pregnancyLactation,
-      context: MedicineRiskFindingContext.lactation,
-    );
+    final lactationText =
+        asNonEmptyString(detail.lactation) ??
+        _legacySpecialPopulationEvidence(
+          detail.pregnancyLactation, // ignore: deprecated_member_use
+          MedicineRiskFindingContext.lactation,
+        );
     if (lactationText != null && hasLactationRisk) {
       findings.add(
         _specialGroupClassifiedFinding(
@@ -292,7 +296,7 @@ class MedicineRiskChecker {
       );
     }
 
-    final isPediatric = age != null && age < _pediatricAgeThreshold;
+    final isPediatric = age != null && age <= _pediatricAgeThreshold;
     final pediatricText = asNonEmptyString(detail.pediatricUse);
     if (pediatricText != null && isPediatric) {
       findings.add(
@@ -311,7 +315,7 @@ class MedicineRiskChecker {
       );
     }
 
-    final isGeriatric = age != null && age > _geriatricAgeThreshold;
+    final isGeriatric = age != null && age >= _geriatricAgeThreshold;
     final geriatricText = asNonEmptyString(detail.geriatricUse);
     if (geriatricText != null && isGeriatric) {
       findings.add(
