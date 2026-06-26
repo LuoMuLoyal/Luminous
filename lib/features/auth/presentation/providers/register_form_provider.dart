@@ -19,6 +19,10 @@ abstract class RegisterFormState with _$RegisterFormState {
     @Default(false) bool isSubmitting,
     @Default(false) bool isSendingCode,
     int? cooldownSeconds,
+    String? emailError,
+    String? codeError,
+    String? passwordError,
+    String? confirmPasswordError,
     String? errorMessage,
     String? successMessage,
   }) = _RegisterFormState;
@@ -36,35 +40,84 @@ class RegisterFormNotifier extends Notifier<RegisterFormState> {
   }
 
   void updateEmail(String value) {
-    state = state.copyWith(email: value, errorMessage: null);
+    state = state.copyWith(email: value, emailError: null, errorMessage: null);
   }
 
   void updatePassword(String value) {
-    state = state.copyWith(password: value, errorMessage: null);
+    state = state.copyWith(
+      password: value,
+      passwordError: null,
+      errorMessage: null,
+    );
   }
 
   void updateConfirmPassword(String value) {
-    state = state.copyWith(confirmPassword: value, errorMessage: null);
+    state = state.copyWith(
+      confirmPassword: value,
+      confirmPasswordError: null,
+      errorMessage: null,
+    );
   }
 
   void updateCode(String value) {
-    state = state.copyWith(code: value, errorMessage: null);
+    state = state.copyWith(code: value, codeError: null, errorMessage: null);
   }
 
   void updateNickname(String value) {
     state = state.copyWith(nickname: value, errorMessage: null);
   }
 
-  bool validatePasswordMatch({required String message}) {
-    if (state.password == state.confirmPassword) {
-      return true;
-    }
+  void setEmailError(String message) {
+    state = state.copyWith(emailError: message);
+  }
+
+  bool validate({
+    required String emailRequired,
+    required String emailInvalid,
+    required String codeRequired,
+    required String passwordRequired,
+    required String confirmPasswordRequired,
+    required String passwordsDoNotMatch,
+  }) {
+    final email = state.email.trim();
+    final emailError = email.isEmpty
+        ? emailRequired
+        : _isValidEmail(email)
+        ? null
+        : emailInvalid;
+    final codeError = state.code.trim().isEmpty ? codeRequired : null;
+    final passwordError = state.password.trim().isEmpty
+        ? passwordRequired
+        : null;
+    final confirmPasswordError = state.confirmPassword.trim().isEmpty
+        ? confirmPasswordRequired
+        : state.confirmPassword != state.password
+        ? passwordsDoNotMatch
+        : null;
+
     state = state.copyWith(
-      isSubmitting: false,
-      errorMessage: message,
-      successMessage: null,
+      emailError: emailError,
+      codeError: codeError,
+      passwordError: passwordError,
+      confirmPasswordError: confirmPasswordError,
+      errorMessage: null,
     );
-    return false;
+
+    return emailError == null &&
+        codeError == null &&
+        passwordError == null &&
+        confirmPasswordError == null;
+  }
+
+  bool validateEmailOnly({required String emailRequired}) {
+    final email = state.email.trim();
+    final emailError = email.isEmpty ? emailRequired : null;
+    state = state.copyWith(emailError: emailError, errorMessage: null);
+    return emailError == null;
+  }
+
+  static bool _isValidEmail(String value) {
+    return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value);
   }
 
   Future<bool> sendCode() async {
