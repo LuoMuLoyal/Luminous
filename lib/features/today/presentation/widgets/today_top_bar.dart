@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -148,8 +147,7 @@ class _NotificationButton extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           IconButton(
-            onPressed: () =>
-                AppToast.show(context, l10n.todayNotificationsTooltip),
+            onPressed: () => context.push('/notifications'),
             icon: const Icon(
               Icons.notifications_none_rounded,
               size: AppSpacingTokens.lg + AppSpacingTokens.xxs,

@@ -121,6 +121,14 @@ Class | Method | HTTP request | Description
 [*MedicineRemindersApi*](doc/MedicineRemindersApi.md) | [**medicineRemindersControllerUpdateV1**](doc/MedicineRemindersApi.md#medicinereminderscontrollerupdatev1) | **PATCH** /api/v1/user/medicine-reminders/{id} | Update a medicine reminder schedule
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
+[*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerCreateV1**](doc/NotificationsApi.md#notificationscontrollercreatev1) | **POST** /api/v1/user/notifications | Create a notification (internal/test)
+[*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerFindAllV1**](doc/NotificationsApi.md#notificationscontrollerfindallv1) | **GET** /api/v1/user/notifications | List user notifications
+[*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerFindOneV1**](doc/NotificationsApi.md#notificationscontrollerfindonev1) | **GET** /api/v1/user/notifications/{id} | Get a notification detail
+[*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerGetUnreadCountV1**](doc/NotificationsApi.md#notificationscontrollergetunreadcountv1) | **GET** /api/v1/user/notifications/unread-count | Get unread notification count
+[*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerMarkAllAsReadV1**](doc/NotificationsApi.md#notificationscontrollermarkallasreadv1) | **PATCH** /api/v1/user/notifications/mark-all-read | Mark all notifications as read
+[*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerMarkAsReadV1**](doc/NotificationsApi.md#notificationscontrollermarkasreadv1) | **PATCH** /api/v1/user/notifications/{id}/read | Mark a notification as read
+[*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerMarkAsUnreadV1**](doc/NotificationsApi.md#notificationscontrollermarkasunreadv1) | **PATCH** /api/v1/user/notifications/{id}/unread | Mark a notification as unread
+[*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerRemoveV1**](doc/NotificationsApi.md#notificationscontrollerremovev1) | **DELETE** /api/v1/user/notifications/{id} | Delete a notification
 [*ReminderDeliveriesApi*](doc/ReminderDeliveriesApi.md) | [**reminderDeliveriesControllerListV1**](doc/ReminderDeliveriesApi.md#reminderdeliveriescontrollerlistv1) | **GET** /api/v1/user/reminder-deliveries | List reminder delivery audit logs
 [*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGenerateSummaryStreamV1**](doc/ReportsApi.md#reportscontrollergeneratesummarystreamv1) | **POST** /api/v1/user/reports/summary/generate/stream | Stream authenticated user AI summary generation for report
 [*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGenerateSummaryV1**](doc/ReportsApi.md#reportscontrollergeneratesummaryv1) | **POST** /api/v1/user/reports/summary/generate | Generate authenticated user AI summary for report
@@ -180,6 +188,7 @@ Class | Method | HTTP request | Description
  - [CreateHealthContextAllergyDto](doc/CreateHealthContextAllergyDto.md)
  - [CreateHealthContextConditionDto](doc/CreateHealthContextConditionDto.md)
  - [CreateMedicineReminderDto](doc/CreateMedicineReminderDto.md)
+ - [CreateNotificationDto](doc/CreateNotificationDto.md)
  - [DailyRecordAttachmentDto](doc/DailyRecordAttachmentDto.md)
  - [DailyRecordAttachmentInputDto](doc/DailyRecordAttachmentInputDto.md)
  - [DailyRecordAttachmentKind](doc/DailyRecordAttachmentKind.md)
@@ -247,6 +256,10 @@ Class | Method | HTTP request | Description
  - [MedicineSearchMetaDto](doc/MedicineSearchMetaDto.md)
  - [MedicineSearchResponseDto](doc/MedicineSearchResponseDto.md)
  - [MedicineSource](doc/MedicineSource.md)
+ - [NotificationDetailDto](doc/NotificationDetailDto.md)
+ - [NotificationDetailResponseDto](doc/NotificationDetailResponseDto.md)
+ - [NotificationListItemDto](doc/NotificationListItemDto.md)
+ - [NotificationListResponseDto](doc/NotificationListResponseDto.md)
  - [OAuthAuthorizeDataDto](doc/OAuthAuthorizeDataDto.md)
  - [OAuthAuthorizeDto](doc/OAuthAuthorizeDto.md)
  - [OAuthAuthorizeResponseDto](doc/OAuthAuthorizeResponseDto.md)
@@ -293,6 +306,7 @@ Class | Method | HTTP request | Description
  - [TodayAnalysisStreamResultDto](doc/TodayAnalysisStreamResultDto.md)
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
+ - [UnreadCountResponseDto](doc/UnreadCountResponseDto.md)
  - [UpdateAccountDto](doc/UpdateAccountDto.md)
  - [UpdateAssistantContextSettingsDto](doc/UpdateAssistantContextSettingsDto.md)
  - [UpdateCurrentMedicineDto](doc/UpdateCurrentMedicineDto.md)
@@ -313,6 +327,7 @@ Class | Method | HTTP request | Description
  - [UserFullDto](doc/UserFullDto.md)
  - [UserHealthProfileDto](doc/UserHealthProfileDto.md)
  - [UserHealthSummaryDto](doc/UserHealthSummaryDto.md)
+ - [UserNotificationType](doc/UserNotificationType.md)
  - [UserSettingsDataDto](doc/UserSettingsDataDto.md)
  - [UserSettingsResponseDto](doc/UserSettingsResponseDto.md)
  - [UvIndicatorDto](doc/UvIndicatorDto.md)

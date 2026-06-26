@@ -7,7 +7,6 @@ import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/mine/data/repositories/mock_mine_repository.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_components.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_dashboard_view.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_sections.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -58,10 +57,7 @@ class MinePage extends ConsumerWidget {
             ),
             children: [
               MineTopBar(
-                onNotificationsTap: () => showMineToast(
-                  context,
-                  AppLocalizations.of(context)!.mineHeaderNotifications,
-                ),
+                onNotificationsTap: () => context.push('/notifications'),
                 onSettingsTap: () => context.push('/settings'),
               ),
               const SizedBox(height: AppSpacingTokens.md),

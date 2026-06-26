@@ -6475,6 +6475,126 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'当前处于高风险状态，部分药品无法自动检查，建议尽快线下确认'**
   String get medicineRiskCheckRedFlagActionInformationGap;
+
+  /// No description provided for @notificationListTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知'**
+  String get notificationListTitle;
+
+  /// No description provided for @notificationDetailTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知详情'**
+  String get notificationDetailTitle;
+
+  /// No description provided for @notificationEmptyTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无通知'**
+  String get notificationEmptyTitle;
+
+  /// No description provided for @notificationEmptyDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'有新消息时会在这里显示。'**
+  String get notificationEmptyDescription;
+
+  /// No description provided for @notificationErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知加载失败'**
+  String get notificationErrorTitle;
+
+  /// No description provided for @notificationRetryAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'重试'**
+  String get notificationRetryAction;
+
+  /// No description provided for @notificationMarkAllRead.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部已读'**
+  String get notificationMarkAllRead;
+
+  /// No description provided for @notificationMarkAllReadSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'已全部标记为已读'**
+  String get notificationMarkAllReadSuccess;
+
+  /// No description provided for @notificationMarkUnreadSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'已标记为未读'**
+  String get notificationMarkUnreadSuccess;
+
+  /// No description provided for @notificationDeleteSuccess.
+  ///
+  /// In zh, this message translates to:
+  /// **'已删除'**
+  String get notificationDeleteSuccess;
+
+  /// No description provided for @notificationActionNavigate.
+  ///
+  /// In zh, this message translates to:
+  /// **'去处理'**
+  String get notificationActionNavigate;
+
+  /// No description provided for @notificationActionMarkRead.
+  ///
+  /// In zh, this message translates to:
+  /// **'设为已读'**
+  String get notificationActionMarkRead;
+
+  /// No description provided for @notificationActionMarkUnread.
+  ///
+  /// In zh, this message translates to:
+  /// **'设为未读'**
+  String get notificationActionMarkUnread;
+
+  /// No description provided for @notificationActionDelete.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除'**
+  String get notificationActionDelete;
+
+  /// No description provided for @notificationDeleteConfirmTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认删除'**
+  String get notificationDeleteConfirmTitle;
+
+  /// No description provided for @notificationDeleteConfirmDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除后无法恢复，确定要继续吗？'**
+  String get notificationDeleteConfirmDescription;
+
+  /// No description provided for @notificationDeleteConfirmCancel.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消'**
+  String get notificationDeleteConfirmCancel;
+
+  /// No description provided for @notificationDeleteConfirmConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除'**
+  String get notificationDeleteConfirmConfirm;
+
+  /// No description provided for @notificationNotFoundTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知已失效'**
+  String get notificationNotFoundTitle;
+
+  /// No description provided for @notificationNotFoundDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'这条通知可能已被删除或已过期。'**
+  String get notificationNotFoundDescription;
 }
 
 class _AppLocalizationsDelegate

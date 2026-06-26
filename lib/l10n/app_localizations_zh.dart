@@ -3346,4 +3346,64 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get medicineRiskCheckRedFlagActionInformationGap =>
       '当前处于高风险状态，部分药品无法自动检查，建议尽快线下确认';
+
+  @override
+  String get notificationListTitle => '通知';
+
+  @override
+  String get notificationDetailTitle => '通知详情';
+
+  @override
+  String get notificationEmptyTitle => '暂无通知';
+
+  @override
+  String get notificationEmptyDescription => '有新消息时会在这里显示。';
+
+  @override
+  String get notificationErrorTitle => '通知加载失败';
+
+  @override
+  String get notificationRetryAction => '重试';
+
+  @override
+  String get notificationMarkAllRead => '全部已读';
+
+  @override
+  String get notificationMarkAllReadSuccess => '已全部标记为已读';
+
+  @override
+  String get notificationMarkUnreadSuccess => '已标记为未读';
+
+  @override
+  String get notificationDeleteSuccess => '已删除';
+
+  @override
+  String get notificationActionNavigate => '去处理';
+
+  @override
+  String get notificationActionMarkRead => '设为已读';
+
+  @override
+  String get notificationActionMarkUnread => '设为未读';
+
+  @override
+  String get notificationActionDelete => '删除';
+
+  @override
+  String get notificationDeleteConfirmTitle => '确认删除';
+
+  @override
+  String get notificationDeleteConfirmDescription => '删除后无法恢复，确定要继续吗？';
+
+  @override
+  String get notificationDeleteConfirmCancel => '取消';
+
+  @override
+  String get notificationDeleteConfirmConfirm => '删除';
+
+  @override
+  String get notificationNotFoundTitle => '通知已失效';
+
+  @override
+  String get notificationNotFoundDescription => '这条通知可能已被删除或已过期。';
 }

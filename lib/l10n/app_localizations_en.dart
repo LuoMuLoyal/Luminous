@@ -3582,4 +3582,66 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get medicineRiskCheckRedFlagActionInformationGap =>
       'You are in a high-risk state and some medicines cannot be auto-checked. Verify offline as soon as possible.';
+
+  @override
+  String get notificationListTitle => 'Notifications';
+
+  @override
+  String get notificationDetailTitle => 'Notification Detail';
+
+  @override
+  String get notificationEmptyTitle => 'No notifications';
+
+  @override
+  String get notificationEmptyDescription => 'New messages will appear here.';
+
+  @override
+  String get notificationErrorTitle => 'Failed to load notifications';
+
+  @override
+  String get notificationRetryAction => 'Retry';
+
+  @override
+  String get notificationMarkAllRead => 'Mark all read';
+
+  @override
+  String get notificationMarkAllReadSuccess => 'All marked as read';
+
+  @override
+  String get notificationMarkUnreadSuccess => 'Marked as unread';
+
+  @override
+  String get notificationDeleteSuccess => 'Deleted';
+
+  @override
+  String get notificationActionNavigate => 'Go to handle';
+
+  @override
+  String get notificationActionMarkRead => 'Mark as read';
+
+  @override
+  String get notificationActionMarkUnread => 'Mark as unread';
+
+  @override
+  String get notificationActionDelete => 'Delete';
+
+  @override
+  String get notificationDeleteConfirmTitle => 'Confirm delete';
+
+  @override
+  String get notificationDeleteConfirmDescription =>
+      'This cannot be undone. Are you sure?';
+
+  @override
+  String get notificationDeleteConfirmCancel => 'Cancel';
+
+  @override
+  String get notificationDeleteConfirmConfirm => 'Delete';
+
+  @override
+  String get notificationNotFoundTitle => 'Notification expired';
+
+  @override
+  String get notificationNotFoundDescription =>
+      'This notification may have been deleted or expired.';
 }
