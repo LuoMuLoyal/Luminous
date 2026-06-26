@@ -500,11 +500,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordVoiceAction => 'Voice record (hold to talk)';
 
   @override
-  String recordActionToast(String action) {
-    return '$action: this will open the related action later.';
-  }
-
-  @override
   String get recordErrorTitle => 'Record did not load this time';
 
   @override

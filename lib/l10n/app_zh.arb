@@ -236,14 +236,6 @@
   "recordOpenDateAction": "查看日期",
   "recordNotEnabledLabel": "未开启",
   "recordVoiceAction": "语音记录（长按说话）",
-  "recordActionToast": "{action}：后续会打开对应操作。",
-  "@recordActionToast": {
-    "placeholders": {
-      "action": {
-        "type": "String"
-      }
-    }
-  },
   "recordErrorTitle": "记录页暂时没有加载出来",
   "recordErrorDescription": "数据边界已经接好，可以重新拉取一次。",
   "recordWeekdaySun": "日",

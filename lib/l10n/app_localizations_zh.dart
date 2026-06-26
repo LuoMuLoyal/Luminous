@@ -443,11 +443,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordVoiceAction => '语音记录（长按说话）';
 
   @override
-  String recordActionToast(String action) {
-    return '$action：后续会打开对应操作。';
-  }
-
-  @override
   String get recordErrorTitle => '记录页暂时没有加载出来';
 
   @override

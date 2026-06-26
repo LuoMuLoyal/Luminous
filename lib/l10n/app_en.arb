@@ -236,14 +236,6 @@
   "recordOpenDateAction": "Open date",
   "recordNotEnabledLabel": "Off",
   "recordVoiceAction": "Voice record (hold to talk)",
-  "recordActionToast": "{action}: this will open the related action later.",
-  "@recordActionToast": {
-    "placeholders": {
-      "action": {
-        "type": "String"
-      }
-    }
-  },
   "recordErrorTitle": "Record did not load this time",
   "recordErrorDescription": "The data boundary is wired, so try fetching it again.",
   "recordWeekdaySun": "Sun",

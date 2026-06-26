@@ -1,9 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordHeaderActionChip extends StatelessWidget {
   const RecordHeaderActionChip({
@@ -220,9 +218,4 @@ class RecordBarChart extends StatelessWidget {
       ),
     );
   }
-}
-
-void showRecordToast(BuildContext context, String action) {
-  final l10n = AppLocalizations.of(context)!;
-  AppToast.show(context, l10n.recordActionToast(action));
 }

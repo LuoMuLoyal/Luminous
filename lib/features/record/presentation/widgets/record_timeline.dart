@@ -9,7 +9,6 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_image_placeholder.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -36,13 +35,13 @@ class RecordTimelinePanel extends StatelessWidget {
     return AppSectionSurface(
       key: const Key('record-timeline'),
       title: l10n.recordTimelineSectionTitle,
-      trailing: AppTextAction(
-        label: l10n.recordAllTypesAction,
-        icon: Icons.keyboard_arrow_down_rounded,
-        onTap:
-            onClearFilter ??
-            () => showRecordToast(context, l10n.recordAllTypesAction),
-      ),
+      trailing: onClearFilter == null
+          ? null
+          : AppTextAction(
+              label: l10n.recordAllTypesAction,
+              icon: Icons.keyboard_arrow_down_rounded,
+              onTap: onClearFilter!,
+            ),
       typography: typography,
       surface: surface,
       child: Column(
@@ -174,13 +173,9 @@ class _TimelineCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         key: Key('record-timeline-entry-index-$index'),
-        onTap: () {
-          if (entry.recordId != null) {
-            pushAuthRequiredRoute(context, '/record/${entry.recordId}');
-          } else {
-            showRecordToast(context, label);
-          }
-        },
+        onTap: entry.recordId != null
+            ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
+            : null,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(

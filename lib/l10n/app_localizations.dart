@@ -914,12 +914,6 @@ abstract class AppLocalizations {
   /// **'语音记录（长按说话）'**
   String get recordVoiceAction;
 
-  /// No description provided for @recordActionToast.
-  ///
-  /// In zh, this message translates to:
-  /// **'{action}：后续会打开对应操作。'**
-  String recordActionToast(String action);
-
   /// No description provided for @recordErrorTitle.
   ///
   /// In zh, this message translates to:

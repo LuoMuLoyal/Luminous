@@ -32,11 +32,13 @@ class RecordTrendsPanel extends StatelessWidget {
     return AppSectionSurface(
       key: const Key('record-trends'),
       title: l10n.recordTrendsSectionTitle,
-      trailing: AppTextAction(
-        label: l10n.recordEditAction,
-        icon: null,
-        onTap: onEdit ?? () => showRecordToast(context, l10n.recordEditAction),
-      ),
+      trailing: onEdit == null
+          ? null
+          : AppTextAction(
+              label: l10n.recordEditAction,
+              icon: null,
+              onTap: onEdit!,
+            ),
       typography: typography,
       surface: surface,
       child: Column(
@@ -80,7 +82,7 @@ class _TrendCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showRecordToast(context, recordCopy(l10n, trend.titleKey)),
+        onTap: null,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
