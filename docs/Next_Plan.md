@@ -40,7 +40,6 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 - agent-assisted support discovery and map-backed nearby-care lookup
 - lightweight mood record shapes and a future mood quick-entry/tool hook
 - environment signals for contextual Today/Mine use
-- Medicine safety-tip "换一批" (needs backend tips API; currently hard-coded)
 - Report score/finding/pattern/trend/AI action card drill-down (needs product decision: detail page vs filter Record tab)
 - voice input, photo/scan/OCR/barcode/prescription action shapes (need native plugins + backend contracts)
 - local-only sleep reminder preferences beyond simple placeholder labeling

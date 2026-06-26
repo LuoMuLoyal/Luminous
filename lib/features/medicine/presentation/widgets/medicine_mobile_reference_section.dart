@@ -62,7 +62,7 @@ class _ReferenceNotice extends StatelessWidget {
   }
 }
 
-class _SafetyTipsSection extends StatelessWidget {
+class _SafetyTipsSection extends ConsumerWidget {
   const _SafetyTipsSection({
     required this.l10n,
     required this.typography,
@@ -74,29 +74,8 @@ class _SafetyTipsSection extends StatelessWidget {
   final AppThemeSurface surface;
 
   @override
-  Widget build(BuildContext context) {
-    final tips = [
-      _SafetyTip(
-        icon: Icons.local_drink_outlined,
-        color: surface.link,
-        text: l10n.medicineSafetyTipSpacing,
-      ),
-      _SafetyTip(
-        icon: Icons.coffee_rounded,
-        color: surface.warningDeep,
-        text: l10n.medicineSafetyTipCoffee,
-      ),
-      _SafetyTip(
-        icon: Icons.schedule_rounded,
-        color: surface.link,
-        text: l10n.medicineSafetyTipTiming,
-      ),
-      _SafetyTip(
-        icon: Icons.thermostat_rounded,
-        color: surface.teal,
-        text: l10n.medicineSafetyTipStorage,
-      ),
-    ];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tipsAsync = ref.watch(medicineSafetyTipListProvider);
 
     return Column(
       key: const Key('medicine-safety-tips'),
@@ -114,35 +93,113 @@ class _SafetyTipsSection extends StatelessWidget {
             label: l10n.medicineSafetyTipsRefreshAction,
             icon: Icons.refresh_rounded,
             color: surface.link,
-            onTap: () =>
-                AppToast.show(context, l10n.medicineSafetyTipsRefreshAction),
+            onTap: tipsAsync.isLoading
+                ? () {}
+                : () => ref
+                      .read(medicineSafetyTipListProvider.notifier)
+                      .refresh(),
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
         AppSectionSurface(
           padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              for (var index = 0; index < tips.length; index += 1) ...[
-                _SafetyTipRow(
-                  tip: tips[index],
-                  typography: typography,
-                  surface: surface,
-                ),
-                if (index < tips.length - 1)
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent:
-                        AppSpacingTokens.md +
-                        AppSpacingTokens.x3l +
-                        AppSpacingTokens.md,
-                    color: surface.hairline,
-                  ),
-              ],
-            ],
+          child: tipsAsync.when(
+            data: (tips) => _buildTipList(tips),
+            loading: () => _buildSkeleton(),
+            error: (error, _) => AppStateMessageView(
+              title: l10n.medicineErrorTitle,
+              description: l10n.medicineErrorDescription,
+              icon: Icons.error_outline_rounded,
+              actionLabel: l10n.medicineSafetyTipsRefreshAction,
+              onAction: () =>
+                  ref.read(medicineSafetyTipListProvider.notifier).refresh(),
+              tone: AppStateTone.danger,
+            ),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildTipList(List<MedicineSafetyTip> tips) {
+    if (tips.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        child: Text(
+          l10n.medicineSafetyTipsTitle,
+          style: typography.bodySm.copyWith(color: surface.body),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        for (var index = 0; index < tips.length; index += 1) ...[
+          _SafetyTipRow(
+            tip: _SafetyTip(
+              icon: medicineSafetyTipIcon(tips[index].category),
+              color: medicineSafetyTipColor(tips[index].category, surface),
+              text: tips[index].text,
+            ),
+            typography: typography,
+            surface: surface,
+          ),
+          if (index < tips.length - 1)
+            Divider(
+              height: 1,
+              thickness: 1,
+              indent:
+                  AppSpacingTokens.md +
+                  AppSpacingTokens.x3l +
+                  AppSpacingTokens.md,
+              color: surface.hairline,
+            ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSkeleton() {
+    return Column(
+      children: [
+        for (var index = 0; index < 4; index += 1) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.md,
+              vertical: AppSpacingTokens.sm,
+            ),
+            child: Row(
+              children: [
+                Shimmer.fromColors(
+                  baseColor: surface.hairline,
+                  highlightColor: surface.canvas,
+                  child: Container(
+                    width: AppSpacingTokens.x3l,
+                    height: AppSpacingTokens.x3l,
+                    decoration: BoxDecoration(
+                      color: surface.hairline,
+                      borderRadius: BorderRadius.circular(AppSpacingTokens.md),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.md),
+                Expanded(
+                  child: AppInlineSkeletonBlock(height: AppSpacingTokens.lg),
+                ),
+              ],
+            ),
+          ),
+          if (index < 3)
+            Divider(
+              height: 1,
+              thickness: 1,
+              indent:
+                  AppSpacingTokens.md +
+                  AppSpacingTokens.x3l +
+                  AppSpacingTokens.md,
+              color: surface.hairline,
+            ),
+        ],
       ],
     );
   }
