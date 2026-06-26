@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
@@ -24,6 +26,7 @@ abstract class LoginFormState with _$LoginFormState {
     @Default(false) bool isSendingCode,
     @Default(false) bool isStartingWechatLogin,
     @Default(false) bool isCompletingWechatLogin,
+    int? cooldownSeconds,
     String? wechatAuthorizeUrl,
     String? wechatState,
     String? errorMessage,
@@ -31,8 +34,15 @@ abstract class LoginFormState with _$LoginFormState {
 }
 
 class LoginFormNotifier extends Notifier<LoginFormState> {
+  Timer? _cooldownTimer;
+
   @override
-  LoginFormState build() => const LoginFormState();
+  LoginFormState build() {
+    ref.onDispose(() {
+      _cooldownTimer?.cancel();
+    });
+    return const LoginFormState();
+  }
 
   void updateEmail(String value) {
     state = state.copyWith(email: value, errorMessage: null);
@@ -79,7 +89,7 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
     }
   }
 
-  Future<CooldownMessageDto?> sendCode() async {
+  Future<bool> sendCode() async {
     state = state.copyWith(isSendingCode: true, errorMessage: null);
     try {
       final result = await ref
@@ -88,16 +98,32 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
             email: state.email,
             scene: AuthVerificationScene.login,
           );
-      state = state.copyWith(isSendingCode: false);
-      return result;
+      final cooldown = result.cooldown.toInt();
+      state = state.copyWith(isSendingCode: false, cooldownSeconds: cooldown);
+      _startCooldownTimer(cooldown);
+      return true;
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSendingCode: false,
         errorMessage: apiError.message,
       );
-      return null;
+      return false;
     }
+  }
+
+  void _startCooldownTimer(int seconds) {
+    _cooldownTimer?.cancel();
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final current = state.cooldownSeconds;
+      if (current == null || current <= 1) {
+        timer.cancel();
+        _cooldownTimer = null;
+        state = state.copyWith(cooldownSeconds: null);
+      } else {
+        state = state.copyWith(cooldownSeconds: current - 1);
+      }
+    });
   }
 
   Future<OAuthAuthorizeDataDto?> createWechatWebAuthorizeUrl({

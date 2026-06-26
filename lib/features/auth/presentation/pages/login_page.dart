@@ -70,6 +70,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       title: l10n?.authWelcomeBack ?? 'Welcome back',
       subtitle: l10n?.authLoginSubtitle,
       logo: const AuthBrandLogo(),
+      leading: const AuthBackButton(),
       centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +141,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   key: const ValueKey('auth-login-code-field'),
                   controller: _codeController,
                   label: l10n?.authCodeLabel ?? 'Verification code',
-                  buttonLabel: l10n?.authSendCode ?? 'Send code',
+                  buttonLabel: state.cooldownSeconds == null
+                      ? l10n?.authSendCode ?? 'Send code'
+                      : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
+                            'Send again (${state.cooldownSeconds}s)',
                   isLoading: state.isSendingCode,
                   onSendCode: () async {
                     notifier.updateEmail(_emailController.text);
@@ -149,6 +153,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         context,
                         l10n?.authEmailRequiredToast ??
                             'Please enter your email.',
+                      );
+                      return;
+                    }
+                    if (state.cooldownSeconds != null &&
+                        state.cooldownSeconds! > 0) {
+                      await AppToast.show(
+                        context,
+                        l10n?.authCodeResendWait(state.cooldownSeconds!) ??
+                            'Please wait ${state.cooldownSeconds}s before resending.',
                       );
                       return;
                     }

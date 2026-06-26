@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/pages/register_page.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 
@@ -15,9 +16,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
-        ],
+        overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
         child: TestAuthApp(
           router: GoRouter(
             initialLocation: '/register',
@@ -43,12 +42,10 @@ void main() {
     expect(remote.sentCodeScene, AuthVerificationScene.register);
   });
 
-  testWidgets('Register page submits and applies session', (tester) async {
+  testWidgets('Register page submits and navigates to login', (tester) async {
     final remote = FakeAuthRemoteDataSource();
     final container = ProviderContainer(
-      overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
-      ],
+      overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
     );
     addTearDown(container.dispose);
 
@@ -63,6 +60,10 @@ void main() {
                 path: '/register',
                 builder: (context, state) => const RegisterPage(),
               ),
+              GoRoute(
+                path: '/login',
+                builder: (context, state) => const LoginPage(),
+              ),
             ],
           ),
         ),
@@ -73,18 +74,20 @@ void main() {
     await tester.enterText(inputs.at(0), 'register@example.com');
     await tester.enterText(inputs.at(1), '123456');
     await tester.enterText(inputs.at(2), 'Password123');
-    await tester.enterText(inputs.at(3), 'Lumi');
-    await tester.tap(find.widgetWithText(FilledButton, '创建账号'));
+    await tester.enterText(inputs.at(3), 'Password123');
+    await tester.enterText(inputs.at(4), 'Lumi');
+    final submitButton = find.widgetWithText(FilledButton, '创建账号');
+    await tester.ensureVisible(submitButton);
+    await tester.tap(submitButton);
     await tester.pumpAndSettle();
+    // Let the success toast timer fire.
+    await tester.pump(const Duration(milliseconds: 2000));
 
     expect(remote.registerEmail, 'register@example.com');
     expect(remote.registerCode, '123456');
     expect(remote.registerPassword, 'Password123');
     expect(remote.registerNickname, 'Lumi');
-    expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-    expect(
-      container.read(authSessionProvider).user?.email,
-      'register@example.com',
-    );
+    expect(container.read(authSessionProvider).isAuthenticated, isFalse);
+    expect(find.byType(LoginPage), findsOneWidget);
   });
 }

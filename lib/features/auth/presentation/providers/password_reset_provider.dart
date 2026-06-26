@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
@@ -21,8 +23,15 @@ abstract class PasswordResetState with _$PasswordResetState {
 }
 
 class PasswordResetNotifier extends Notifier<PasswordResetState> {
+  Timer? _cooldownTimer;
+
   @override
-  PasswordResetState build() => const PasswordResetState();
+  PasswordResetState build() {
+    ref.onDispose(() {
+      _cooldownTimer?.cancel();
+    });
+    return const PasswordResetState();
+  }
 
   void updateEmail(String value) {
     state = state.copyWith(email: value, errorMessage: null);
@@ -55,7 +64,6 @@ class PasswordResetNotifier extends Notifier<PasswordResetState> {
   Future<bool> sendResetCode() async {
     state = state.copyWith(
       isSendingCode: true,
-      cooldownSeconds: null,
       errorMessage: null,
       successMessage: null,
     );
@@ -63,15 +71,31 @@ class PasswordResetNotifier extends Notifier<PasswordResetState> {
       final result = await ref
           .read(authRemoteDataSourceProvider)
           .forgotPassword(email: state.email);
+      final cooldown = result.cooldown.toInt();
       state = state.copyWith(
         isSendingCode: false,
-        cooldownSeconds: result.cooldown.toInt(),
+        cooldownSeconds: cooldown,
         successMessage: result.message,
       );
+      _startCooldownTimer(cooldown);
       return true;
     } catch (error) {
       return _fail(error);
     }
+  }
+
+  void _startCooldownTimer(int seconds) {
+    _cooldownTimer?.cancel();
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final current = state.cooldownSeconds;
+      if (current == null || current <= 1) {
+        timer.cancel();
+        _cooldownTimer = null;
+        state = state.copyWith(cooldownSeconds: null);
+      } else {
+        state = state.copyWith(cooldownSeconds: current - 1);
+      }
+    });
   }
 
   Future<bool> resetPassword() async {

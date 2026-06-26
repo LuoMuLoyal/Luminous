@@ -13,9 +13,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
-        ],
+        overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
         child: TestAuthApp(
           router: GoRouter(
             initialLocation: '/forgot-password',
@@ -30,7 +28,10 @@ void main() {
       ),
     );
 
-    await tester.enterText(find.byType(EditableText).first, 'reset@example.com');
+    await tester.enterText(
+      find.byType(EditableText).first,
+      'reset@example.com',
+    );
     await tester.tap(find.text('发送验证码'));
     await tester.pumpAndSettle();
 
@@ -42,9 +43,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
-        ],
+        overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
         child: TestAuthApp(
           router: GoRouter(
             initialLocation: '/forgot-password',
@@ -64,8 +63,10 @@ void main() {
     await tester.enterText(inputs.at(1), '654321');
     await tester.enterText(inputs.at(2), 'Password123');
     await tester.enterText(inputs.at(3), 'Password123');
-    await tester.tap(find.widgetWithText(FilledButton, '重置密码'));
-    await tester.pump();
+    final submitButton = find.widgetWithText(FilledButton, '重置密码');
+    await tester.ensureVisible(submitButton);
+    await tester.tap(submitButton);
+    await tester.pumpAndSettle();
 
     expect(remote.resetPasswordEmail, 'reset@example.com');
     expect(remote.resetPasswordCode, '654321');

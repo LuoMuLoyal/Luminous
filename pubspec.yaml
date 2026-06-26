@@ -105,6 +105,7 @@ flutter:
   generate: true
   assets:
     - assets/
+    - assets/icons/luminous_app_icon.png
 
 melos:
   useRootAsPackage: true

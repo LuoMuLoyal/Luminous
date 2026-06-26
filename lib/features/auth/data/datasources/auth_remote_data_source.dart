@@ -187,14 +187,7 @@ class AuthRemoteDataSource {
     if (body == null) {
       throw const LucentApiException(message: 'Register response is empty.');
     }
-    final session = AuthMapper.toSessionFromRegister(body);
-    await _client.writeSession(
-      LucentSessionTokens(
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
-      ),
-    );
-    return session;
+    return AuthMapper.toSessionFromRegister(body);
   }
 
   Future<void> logout() async {

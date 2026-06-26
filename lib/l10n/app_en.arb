@@ -908,6 +908,15 @@
       }
     }
   },
+  "authCodeResendWait": "Please wait {seconds}s before resending the code.",
+  "@authCodeResendWait": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "authRegisterSuccess": "Account created. Please sign in.",
   "authSignIn": "Sign in",
   "authWechatSignIn": "Sign in with WeChat",
   "authWechatAuthorizeOpened": "WeChat authorization opened in your browser.",
