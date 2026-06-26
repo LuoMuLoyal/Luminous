@@ -122,6 +122,11 @@
   "recordFastChoiceNoteTired": "Feeling tired today",
   "recordFastChoiceNoteBusy": "Busy today",
   "recordFastChoiceNoteRecovered": "Recovered better today",
+  "recordFastChoiceMoodGreat": "Great",
+  "recordFastChoiceMoodGood": "Good",
+  "recordFastChoiceMoodOkay": "Okay",
+  "recordFastChoiceMoodBad": "Not great",
+  "recordFastChoiceMoodTerrible": "Terrible",
   "recordAiInputHint": "My stomach feels a bit bloated after eating...",
   "recordAiBadge": "AI",
   "recordNlpFabAction": "Natural language",
@@ -276,6 +281,11 @@
   "recordTimelineMedicationDetail": "Taken · synced with medication plan",
   "recordTimelineMoodCalm": "Mood · Calm",
   "recordTimelineMoodDetail": "Mood is steady, sleep was okay",
+  "recordTimelineMoodGreat": "Mood · Great",
+  "recordTimelineMoodGood": "Mood · Good",
+  "recordTimelineMoodOkay": "Mood · Okay",
+  "recordTimelineMoodBad": "Mood · Not great",
+  "recordTimelineMoodTerrible": "Mood · Terrible",
   "recordTimelineSymptomRecord": "Symptom record",
   "recordTimelineSymptomDetail": "Headache · pain score 3/5",
   "recordTimelineSleepRecord": "Sleep record",
@@ -794,6 +804,18 @@
   "mineReminderSleepTitle": "Sleep",
   "mineReminderLocalOnly": "Local only",
   "mineReminderEnabled": "Enabled",
+  "mineReminderSleepOff": "Off",
+  "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
+  "@mineReminderSleepSummary": {
+    "placeholders": {
+      "bedtime": {
+        "type": "String"
+      },
+      "wakeTime": {
+        "type": "String"
+      }
+    }
+  },
   "mineAccountSettingsTitle": "Account and settings",
   "mineSettingLanguageTitle": "Language",
   "mineSettingLanguageValue": "English",
@@ -872,6 +894,10 @@
   "settingsNotificationsPermissionUnsupported": "Notification permission status is unavailable on this platform",
   "settingsNotificationsPermissionEnabledHint": "Notifications are allowed. Preference toggles below control which types appear.",
   "settingsNotificationsPermissionDisabledHint": "Tap to open the system permission dialog. Notifications need system approval before local reminders can appear.",
+  "settingsNotificationsSleepReminderTitle": "Sleep Reminder",
+  "settingsNotificationsSleepBedtime": "Bedtime",
+  "settingsNotificationsSleepWakeTime": "Wake time",
+  "settingsNotificationsTimeUnset": "Not set",
   "mineErrorTitle": "Mine did not load this time",
   "mineErrorDescription": "The structure is wired. Try fetching the data again.",
   "mineActionToast": "{action}: this will open the related details or settings flow later.",

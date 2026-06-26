@@ -584,6 +584,36 @@ abstract class AppLocalizations {
   /// **'今天恢复不错'**
   String get recordFastChoiceNoteRecovered;
 
+  /// No description provided for @recordFastChoiceMoodGreat.
+  ///
+  /// In zh, this message translates to:
+  /// **'很棒'**
+  String get recordFastChoiceMoodGreat;
+
+  /// No description provided for @recordFastChoiceMoodGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'不错'**
+  String get recordFastChoiceMoodGood;
+
+  /// No description provided for @recordFastChoiceMoodOkay.
+  ///
+  /// In zh, this message translates to:
+  /// **'一般'**
+  String get recordFastChoiceMoodOkay;
+
+  /// No description provided for @recordFastChoiceMoodBad.
+  ///
+  /// In zh, this message translates to:
+  /// **'不太好'**
+  String get recordFastChoiceMoodBad;
+
+  /// No description provided for @recordFastChoiceMoodTerrible.
+  ///
+  /// In zh, this message translates to:
+  /// **'很糟'**
+  String get recordFastChoiceMoodTerrible;
+
   /// No description provided for @recordAiInputHint.
   ///
   /// In zh, this message translates to:
@@ -1153,6 +1183,36 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'心情不错，睡得还可以'**
   String get recordTimelineMoodDetail;
+
+  /// No description provided for @recordTimelineMoodGreat.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪 · 很棒'**
+  String get recordTimelineMoodGreat;
+
+  /// No description provided for @recordTimelineMoodGood.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪 · 不错'**
+  String get recordTimelineMoodGood;
+
+  /// No description provided for @recordTimelineMoodOkay.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪 · 一般'**
+  String get recordTimelineMoodOkay;
+
+  /// No description provided for @recordTimelineMoodBad.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪 · 不太好'**
+  String get recordTimelineMoodBad;
+
+  /// No description provided for @recordTimelineMoodTerrible.
+  ///
+  /// In zh, this message translates to:
+  /// **'情绪 · 很糟'**
+  String get recordTimelineMoodTerrible;
 
   /// No description provided for @recordTimelineSymptomRecord.
   ///
@@ -3416,6 +3476,18 @@ abstract class AppLocalizations {
   /// **'已开启'**
   String get mineReminderEnabled;
 
+  /// No description provided for @mineReminderSleepOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'未开启'**
+  String get mineReminderSleepOff;
+
+  /// No description provided for @mineReminderSleepSummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'{bedtime} - {wakeTime}'**
+  String mineReminderSleepSummary(String bedtime, String wakeTime);
+
   /// No description provided for @mineAccountSettingsTitle.
   ///
   /// In zh, this message translates to:
@@ -3739,6 +3811,30 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'**
   String get settingsNotificationsPermissionDisabledHint;
+
+  /// No description provided for @settingsNotificationsSleepReminderTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'睡眠提醒'**
+  String get settingsNotificationsSleepReminderTitle;
+
+  /// No description provided for @settingsNotificationsSleepBedtime.
+  ///
+  /// In zh, this message translates to:
+  /// **'就寝时间'**
+  String get settingsNotificationsSleepBedtime;
+
+  /// No description provided for @settingsNotificationsSleepWakeTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'起床时间'**
+  String get settingsNotificationsSleepWakeTime;
+
+  /// No description provided for @settingsNotificationsTimeUnset.
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置'**
+  String get settingsNotificationsTimeUnset;
 
   /// No description provided for @mineErrorTitle.
   ///

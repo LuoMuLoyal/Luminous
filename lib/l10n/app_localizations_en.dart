@@ -273,6 +273,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordFastChoiceNoteRecovered => 'Recovered better today';
 
   @override
+  String get recordFastChoiceMoodGreat => 'Great';
+
+  @override
+  String get recordFastChoiceMoodGood => 'Good';
+
+  @override
+  String get recordFastChoiceMoodOkay => 'Okay';
+
+  @override
+  String get recordFastChoiceMoodBad => 'Not great';
+
+  @override
+  String get recordFastChoiceMoodTerrible => 'Terrible';
+
+  @override
   String get recordAiInputHint =>
       'My stomach feels a bit bloated after eating...';
 
@@ -622,6 +637,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordTimelineMoodDetail => 'Mood is steady, sleep was okay';
+
+  @override
+  String get recordTimelineMoodGreat => 'Mood · Great';
+
+  @override
+  String get recordTimelineMoodGood => 'Mood · Good';
+
+  @override
+  String get recordTimelineMoodOkay => 'Mood · Okay';
+
+  @override
+  String get recordTimelineMoodBad => 'Mood · Not great';
+
+  @override
+  String get recordTimelineMoodTerrible => 'Mood · Terrible';
 
   @override
   String get recordTimelineSymptomRecord => 'Symptom record';
@@ -1884,6 +1914,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineReminderEnabled => 'Enabled';
 
   @override
+  String get mineReminderSleepOff => 'Off';
+
+  @override
+  String mineReminderSleepSummary(String bedtime, String wakeTime) {
+    return '$bedtime - $wakeTime';
+  }
+
+  @override
   String get mineAccountSettingsTitle => 'Account and settings';
 
   @override
@@ -2058,6 +2096,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsNotificationsPermissionDisabledHint =>
       'Tap to open the system permission dialog. Notifications need system approval before local reminders can appear.';
+
+  @override
+  String get settingsNotificationsSleepReminderTitle => 'Sleep Reminder';
+
+  @override
+  String get settingsNotificationsSleepBedtime => 'Bedtime';
+
+  @override
+  String get settingsNotificationsSleepWakeTime => 'Wake time';
+
+  @override
+  String get settingsNotificationsTimeUnset => 'Not set';
 
   @override
   String get mineErrorTitle => 'Mine did not load this time';

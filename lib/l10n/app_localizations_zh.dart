@@ -262,6 +262,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordFastChoiceNoteRecovered => '今天恢复不错';
 
   @override
+  String get recordFastChoiceMoodGreat => '很棒';
+
+  @override
+  String get recordFastChoiceMoodGood => '不错';
+
+  @override
+  String get recordFastChoiceMoodOkay => '一般';
+
+  @override
+  String get recordFastChoiceMoodBad => '不太好';
+
+  @override
+  String get recordFastChoiceMoodTerrible => '很糟';
+
+  @override
   String get recordAiInputHint => '刚吃完饭胃有点胀...';
 
   @override
@@ -562,6 +577,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recordTimelineMoodDetail => '心情不错，睡得还可以';
+
+  @override
+  String get recordTimelineMoodGreat => '情绪 · 很棒';
+
+  @override
+  String get recordTimelineMoodGood => '情绪 · 不错';
+
+  @override
+  String get recordTimelineMoodOkay => '情绪 · 一般';
+
+  @override
+  String get recordTimelineMoodBad => '情绪 · 不太好';
+
+  @override
+  String get recordTimelineMoodTerrible => '情绪 · 很糟';
 
   @override
   String get recordTimelineSymptomRecord => '症状记录';
@@ -1742,6 +1772,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineReminderEnabled => '已开启';
 
   @override
+  String get mineReminderSleepOff => '未开启';
+
+  @override
+  String mineReminderSleepSummary(String bedtime, String wakeTime) {
+    return '$bedtime - $wakeTime';
+  }
+
+  @override
   String get mineAccountSettingsTitle => '账号与设置';
 
   @override
@@ -1910,6 +1948,18 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get settingsNotificationsPermissionDisabledHint =>
       '点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。';
+
+  @override
+  String get settingsNotificationsSleepReminderTitle => '睡眠提醒';
+
+  @override
+  String get settingsNotificationsSleepBedtime => '就寝时间';
+
+  @override
+  String get settingsNotificationsSleepWakeTime => '起床时间';
+
+  @override
+  String get settingsNotificationsTimeUnset => '未设置';
 
   @override
   String get mineErrorTitle => '我的页面暂时没有加载出来';

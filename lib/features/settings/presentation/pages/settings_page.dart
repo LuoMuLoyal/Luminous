@@ -336,7 +336,7 @@ class _ReminderSettingsSection extends ConsumerWidget {
             icon: Icons.nightlight_outlined,
             title: l10n.mineReminderSleepTitle,
             trailing: Text(
-              l10n.mineReminderLocalOnly,
+              _sleepReminderSummary(l10n, settings),
               style: typography.bodySm.copyWith(color: surface.body),
             ),
             onTap: () => context.push('/settings/notifications'),
@@ -617,4 +617,21 @@ class _FooterActionButton extends StatelessWidget {
       ),
     );
   }
+}
+
+String _sleepReminderSummary(
+  AppLocalizations l10n,
+  NotificationSettingsState settings,
+) {
+  if (!settings.sleepReminderEnabled) return l10n.mineReminderSleepOff;
+  final bedtime = _formatTimeOfDay(settings.sleepBedtime);
+  final wakeTime = _formatTimeOfDay(settings.sleepWakeTime);
+  return l10n.mineReminderSleepSummary(bedtime, wakeTime);
+}
+
+String _formatTimeOfDay(TimeOfDay? time) {
+  if (time == null) return '--:--';
+  final hour = time.hour.toString().padLeft(2, '0');
+  final minute = time.minute.toString().padLeft(2, '0');
+  return '$hour:$minute';
 }

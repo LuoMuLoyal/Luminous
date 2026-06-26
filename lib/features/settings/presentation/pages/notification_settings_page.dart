@@ -151,6 +151,82 @@ class NotificationSettingsPage extends ConsumerWidget {
             ],
           ),
         ),
+        const SizedBox(height: AppSpacingTokens.md),
+        AppSectionSurface(
+          typography: typography,
+          surface: surface,
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              AppSettingRow(
+                key: const Key('notification-row-sleep-reminder'),
+                title: l10n.settingsNotificationsSleepReminderTitle,
+                icon: Icons.nightlight_outlined,
+                trailing: IgnorePointer(
+                  child: Switch(
+                    value: settings.sleepReminderEnabled,
+                    onChanged: (_) {},
+                  ),
+                ),
+                onTap: () => ref
+                    .read(notificationSettingsControllerProvider.notifier)
+                    .setSleepReminderEnabled(!settings.sleepReminderEnabled),
+                showDivider: true,
+              ),
+              AppSettingRow(
+                key: const Key('notification-row-sleep-bedtime'),
+                title: l10n.settingsNotificationsSleepBedtime,
+                value: _formatTimeOfDay(
+                  settings.sleepBedtime,
+                  fallback: l10n.settingsNotificationsTimeUnset,
+                ),
+                onTap: settings.sleepReminderEnabled
+                    ? () async {
+                        final selected = await showTimePicker(
+                          context: context,
+                          initialTime:
+                              settings.sleepBedtime ??
+                              const TimeOfDay(hour: 23, minute: 0),
+                        );
+                        if (selected != null && context.mounted) {
+                          await ref
+                              .read(
+                                notificationSettingsControllerProvider.notifier,
+                              )
+                              .setSleepBedtime(selected);
+                        }
+                      }
+                    : () {},
+                showDivider: true,
+              ),
+              AppSettingRow(
+                key: const Key('notification-row-sleep-wake-time'),
+                title: l10n.settingsNotificationsSleepWakeTime,
+                value: _formatTimeOfDay(
+                  settings.sleepWakeTime,
+                  fallback: l10n.settingsNotificationsTimeUnset,
+                ),
+                onTap: settings.sleepReminderEnabled
+                    ? () async {
+                        final selected = await showTimePicker(
+                          context: context,
+                          initialTime:
+                              settings.sleepWakeTime ??
+                              const TimeOfDay(hour: 7, minute: 0),
+                        );
+                        if (selected != null && context.mounted) {
+                          await ref
+                              .read(
+                                notificationSettingsControllerProvider.notifier,
+                              )
+                              .setSleepWakeTime(selected);
+                        }
+                      }
+                    : () {},
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -181,6 +257,13 @@ String? _permissionSubtitle(
       l10n.settingsNotificationsPermissionDisabledHint,
     NotificationPermissionState.unsupported => null,
   };
+}
+
+String _formatTimeOfDay(TimeOfDay? time, {required String fallback}) {
+  if (time == null) return fallback;
+  final hour = time.hour.toString().padLeft(2, '0');
+  final minute = time.minute.toString().padLeft(2, '0');
+  return '$hour:$minute';
 }
 
 AppTypographyScale _typography(BuildContext context) {

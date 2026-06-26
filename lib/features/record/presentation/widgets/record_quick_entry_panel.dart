@@ -124,10 +124,9 @@ class RecordQuickEntryPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rows = <List<RecordQuickAction>>[];
-    for (var index = 0; index < actions.length; index += 3) {
-      rows.add(actions.skip(index).take(3).toList(growable: false));
-    }
+    // Split into a primary 2x2 grid and a secondary 1x3 row.
+    final primary = actions.take(4).toList(growable: false);
+    final secondary = actions.skip(4).toList(growable: false);
 
     return Column(
       key: const Key('record-quick-actions'),
@@ -141,47 +140,135 @@ class RecordQuickEntryPanel extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) ...[
-                Row(
-                  children: [
-                    for (
-                      var index = 0;
-                      index < rows[rowIndex].length;
-                      index += 1
-                    ) ...[
-                      Expanded(
-                        child: _QuickRecordTile(
-                          action: rows[rowIndex][index],
-                          l10n: l10n,
-                          typography: typography,
-                          surface: surface,
-                          onQuickAction: onQuickAction,
-                        ),
-                      ),
-                      if (index < rows[rowIndex].length - 1)
-                        RecordShortVerticalDivider(
-                          surface: surface,
-                          height: AppSpacingTokens.x4l,
-                        ),
-                    ],
-                    for (
-                      var filler = rows[rowIndex].length;
-                      filler < 3;
-                      filler += 1
-                    )
-                      const Expanded(child: SizedBox.shrink()),
-                  ],
+              _QuickRecordGrid2x2(
+                actions: primary,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+                onQuickAction: onQuickAction,
+              ),
+              if (secondary.isNotEmpty) ...[
+                RecordIndentedDivider(
+                  surface: surface,
+                  indent: AppSpacingTokens.md,
+                  endIndent: AppSpacingTokens.md,
                 ),
-                if (rowIndex < rows.length - 1)
-                  RecordIndentedDivider(
-                    surface: surface,
-                    indent: AppSpacingTokens.md,
-                    endIndent: AppSpacingTokens.md,
-                  ),
+                _QuickRecordRow3(
+                  actions: secondary,
+                  l10n: l10n,
+                  typography: typography,
+                  surface: surface,
+                  onQuickAction: onQuickAction,
+                ),
               ],
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _QuickRecordGrid2x2 extends StatelessWidget {
+  const _QuickRecordGrid2x2({
+    required this.actions,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+    this.onQuickAction,
+  });
+
+  final List<RecordQuickAction> actions;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+  final ValueChanged<RecordQuickAction>? onQuickAction;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <List<RecordQuickAction>>[];
+    for (var index = 0; index < actions.length; index += 2) {
+      rows.add(actions.skip(index).take(2).toList(growable: false));
+    }
+
+    return Column(
+      children: [
+        for (var rowIndex = 0; rowIndex < rows.length; rowIndex += 1) ...[
+          Row(
+            children: [
+              for (
+                var index = 0;
+                index < rows[rowIndex].length;
+                index += 1
+              ) ...[
+                Expanded(
+                  child: _QuickRecordTile(
+                    action: rows[rowIndex][index],
+                    l10n: l10n,
+                    typography: typography,
+                    surface: surface,
+                    onQuickAction: onQuickAction,
+                  ),
+                ),
+                if (index < rows[rowIndex].length - 1)
+                  RecordShortVerticalDivider(
+                    surface: surface,
+                    height: AppSpacingTokens.x4l,
+                  ),
+              ],
+              for (var filler = rows[rowIndex].length; filler < 2; filler += 1)
+                const Expanded(child: SizedBox.shrink()),
+            ],
+          ),
+          if (rowIndex < rows.length - 1)
+            RecordIndentedDivider(
+              surface: surface,
+              indent: AppSpacingTokens.md,
+              endIndent: AppSpacingTokens.md,
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+class _QuickRecordRow3 extends StatelessWidget {
+  const _QuickRecordRow3({
+    required this.actions,
+    required this.l10n,
+    required this.typography,
+    required this.surface,
+    this.onQuickAction,
+  });
+
+  final List<RecordQuickAction> actions;
+  final AppLocalizations l10n;
+  final AppTypographyScale typography;
+  final AppThemeSurface surface;
+  final ValueChanged<RecordQuickAction>? onQuickAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (var index = 0; index < actions.length; index += 1) ...[
+          Expanded(
+            child: _QuickRecordTile(
+              action: actions[index],
+              l10n: l10n,
+              typography: typography,
+              surface: surface,
+              onQuickAction: onQuickAction,
+            ),
+          ),
+          if (index < actions.length - 1)
+            RecordShortVerticalDivider(
+              surface: surface,
+              height: AppSpacingTokens.x4l,
+            ),
+        ],
+        for (var filler = actions.length; filler < 3; filler += 1)
+          const Expanded(child: SizedBox.shrink()),
       ],
     );
   }
