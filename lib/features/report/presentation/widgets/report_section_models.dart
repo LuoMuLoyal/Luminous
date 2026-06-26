@@ -234,6 +234,7 @@ String reportAiSummarySubtitle(
 ) {
   return switch (range) {
     ReportAiSummaryRange.last30Days => l10n.reportAiSummarySubtitleLast30Days,
+    ReportAiSummaryRange.custom => l10n.reportAiSummarySubtitleCustom,
     ReportAiSummaryRange.last7Days => l10n.reportAiSummarySubtitle,
   };
 }
@@ -245,6 +246,7 @@ String reportAiSummaryGeneratingLabel(
   return switch (range) {
     ReportAiSummaryRange.last30Days =>
       l10n.reportAiSummaryGeneratingHintLast30Days,
+    ReportAiSummaryRange.custom => l10n.reportAiSummaryGeneratingHintCustom,
     ReportAiSummaryRange.last7Days => l10n.reportAiSummaryGeneratingHint,
   };
 }

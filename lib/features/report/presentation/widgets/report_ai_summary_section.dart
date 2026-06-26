@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -48,6 +49,7 @@ class ReportAiSummarySection extends StatelessWidget {
       aiState: aiState,
       selectedRange: selectedRange,
     );
+    final action = aiState.summary?.action;
     final actionLabel = aiState.summary?.actionLabel;
 
     return Column(
@@ -100,6 +102,10 @@ class ReportAiSummarySection extends StatelessWidget {
                             value: ReportAiSummaryRange.last30Days,
                             label: Text(l10n.reportRangeLast30Days),
                           ),
+                          ButtonSegment(
+                            value: ReportAiSummaryRange.custom,
+                            label: Text(l10n.reportRangeCustom),
+                          ),
                         ],
                         selected: {selectedRange},
                         onSelectionChanged: onRangeChanged == null
@@ -110,10 +116,9 @@ class ReportAiSummarySection extends StatelessWidget {
                                 }
                               },
                       ),
-                      if (actionLabel != null)
+                      if (actionLabel != null && action != null)
                         OutlinedButton(
-                          onPressed: () =>
-                              showReportToast(context, actionLabel),
+                          onPressed: () => _handleAction(context, action),
                           child: Text(actionLabel),
                         ),
                     ],
@@ -217,5 +222,24 @@ class ReportAiSummarySection extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  void _handleAction(BuildContext context, String action) {
+    if (action.isEmpty) return;
+
+    final route = switch (action) {
+      'today' => '/',
+      'report' => '/report',
+      'assistant' => '/assistant',
+      'medicine' => '/medicine',
+      'record' => '/record',
+      'mine' => '/mine',
+      'settings' => '/settings',
+      _ => action.startsWith('/') ? action : null,
+    };
+
+    if (route != null) {
+      context.push(route);
+    }
   }
 }

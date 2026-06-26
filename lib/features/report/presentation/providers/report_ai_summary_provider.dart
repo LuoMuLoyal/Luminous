@@ -4,6 +4,7 @@ import 'package:luminous/core/network/lucent_result_code.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/report/data/repositories/lucent_report_ai_summary_repository.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
+import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 
 class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
@@ -46,10 +47,21 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
       streamingSummary: _defaultStreamingSummary,
     );
 
+    String? startDate;
+    String? endDate;
+    if (range == ReportAiSummaryRange.custom) {
+      final query = ref.read(reportDashboardSelectedQueryProvider);
+      if (query.isCustom) {
+        startDate = _formatDate(query.startDate);
+        endDate = _formatDate(query.endDate);
+      }
+    }
+
     try {
-      await for (final event in ref
-          .read(reportAiSummaryRepositoryProvider)
-          .generateStream(range)) {
+      await for (final event
+          in ref
+              .read(reportAiSummaryRepositoryProvider)
+              .generateStream(range, startDate: startDate, endDate: endDate)) {
         switch (event) {
           case ReportAiGenerationSummaryEvent():
             state = ReportAiSummaryCardState.loading(
@@ -77,13 +89,20 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
       return state;
     }
   }
+
+  String? _formatDate(DateTime? date) {
+    if (date == null) return null;
+    final local = date.toLocal();
+    return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
+  }
 }
 
-final reportAiSummaryControllerProvider = NotifierProvider.family<
-  ReportAiSummaryController,
-  ReportAiSummaryCardState,
-  ReportAiSummaryRange
->((range) => ReportAiSummaryController(range));
+final reportAiSummaryControllerProvider =
+    NotifierProvider.family<
+      ReportAiSummaryController,
+      ReportAiSummaryCardState,
+      ReportAiSummaryRange
+    >((range) => ReportAiSummaryController(range));
 
 class ReportAiSummarySelectedRangeNotifier
     extends Notifier<ReportAiSummaryRange> {
@@ -95,7 +114,8 @@ class ReportAiSummarySelectedRangeNotifier
   }
 }
 
-final reportAiSummarySelectedRangeProvider = NotifierProvider<
-  ReportAiSummarySelectedRangeNotifier,
-  ReportAiSummaryRange
->(ReportAiSummarySelectedRangeNotifier.new);
+final reportAiSummarySelectedRangeProvider =
+    NotifierProvider<
+      ReportAiSummarySelectedRangeNotifier,
+      ReportAiSummaryRange
+    >(ReportAiSummarySelectedRangeNotifier.new);
