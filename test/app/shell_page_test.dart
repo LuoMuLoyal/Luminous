@@ -138,6 +138,25 @@ void main() {
     expect(find.byType(NavigationBar), findsOneWidget);
   });
 
+  testWidgets(
+    'Shell page renders mobile bottom navigation at large text scale',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+        tester.platformDispatcher.clearTextScaleFactorTestValue();
+      });
+
+      await _pumpShell(tester);
+
+      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('Shell page signed-out renders without crash', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
