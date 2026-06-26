@@ -1,10 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
+
+import 'auth_form_mixin.dart';
 
 part 'register_form_provider.freezed.dart';
 
@@ -28,14 +28,11 @@ abstract class RegisterFormState with _$RegisterFormState {
   }) = _RegisterFormState;
 }
 
-class RegisterFormNotifier extends Notifier<RegisterFormState> {
-  Timer? _cooldownTimer;
-
+class RegisterFormNotifier extends Notifier<RegisterFormState>
+    with AuthValidationMixin, CooldownTimerMixin<RegisterFormState> {
   @override
   RegisterFormState build() {
-    ref.onDispose(() {
-      _cooldownTimer?.cancel();
-    });
+    ref.onDispose(disposeCooldown);
     return const RegisterFormState();
   }
 
@@ -79,21 +76,22 @@ class RegisterFormNotifier extends Notifier<RegisterFormState> {
     required String confirmPasswordRequired,
     required String passwordsDoNotMatch,
   }) {
-    final email = state.email.trim();
-    final emailError = email.isEmpty
-        ? emailRequired
-        : _isValidEmail(email)
-        ? null
-        : emailInvalid;
-    final codeError = state.code.trim().isEmpty ? codeRequired : null;
-    final passwordError = state.password.trim().isEmpty
-        ? passwordRequired
-        : null;
-    final confirmPasswordError = state.confirmPassword.trim().isEmpty
-        ? confirmPasswordRequired
-        : state.confirmPassword != state.password
-        ? passwordsDoNotMatch
-        : null;
+    final emailError = validateEmail(
+      state.email,
+      emailRequired: emailRequired,
+      emailInvalid: emailInvalid,
+    );
+    final codeError = validateCode(state.code, codeRequired: codeRequired);
+    final passwordError = validatePassword(
+      state.password,
+      passwordRequired: passwordRequired,
+    );
+    final confirmPasswordError = validateConfirmPassword(
+      state.password,
+      state.confirmPassword,
+      confirmPasswordRequired: confirmPasswordRequired,
+      passwordsDoNotMatch: passwordsDoNotMatch,
+    );
 
     state = state.copyWith(
       emailError: emailError,
@@ -110,14 +108,9 @@ class RegisterFormNotifier extends Notifier<RegisterFormState> {
   }
 
   bool validateEmailOnly({required String emailRequired}) {
-    final email = state.email.trim();
-    final emailError = email.isEmpty ? emailRequired : null;
+    final emailError = state.email.trim().isEmpty ? emailRequired : null;
     state = state.copyWith(emailError: emailError, errorMessage: null);
     return emailError == null;
-  }
-
-  static bool _isValidEmail(String value) {
-    return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value);
   }
 
   Future<bool> sendCode() async {
@@ -136,10 +129,14 @@ class RegisterFormNotifier extends Notifier<RegisterFormState> {
       final cooldown = result.cooldown.toInt();
       state = state.copyWith(
         isSendingCode: false,
-        cooldownSeconds: cooldown,
         successMessage: result.message,
       );
-      _startCooldownTimer(cooldown);
+      startCooldown(
+        cooldown,
+        getCooldownSeconds: () => state.cooldownSeconds,
+        setCooldownSeconds: (value) =>
+            state = state.copyWith(cooldownSeconds: value),
+      );
       return true;
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
@@ -150,20 +147,6 @@ class RegisterFormNotifier extends Notifier<RegisterFormState> {
       );
       return false;
     }
-  }
-
-  void _startCooldownTimer(int seconds) {
-    _cooldownTimer?.cancel();
-    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final current = state.cooldownSeconds;
-      if (current == null || current <= 1) {
-        timer.cancel();
-        _cooldownTimer = null;
-        state = state.copyWith(cooldownSeconds: null);
-      } else {
-        state = state.copyWith(cooldownSeconds: current - 1);
-      }
-    });
   }
 
   Future<bool> submit() async {
