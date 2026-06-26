@@ -12,7 +12,7 @@ import 'package:luminous/features/health_context/domain/entities/health_context_
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_delete_sheet.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_form_body.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_loading.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
@@ -203,8 +203,7 @@ class _MedicineReminderEditPageState
                     .read(medicineReminderSoundProvider.notifier)
                     .setSound(value),
                 onSave: () => _onSave(snapshotData, reminderItems),
-                onDelete:
-                    _isEdit ? () => _confirmDelete(reminderItems) : null,
+                onDelete: _isEdit ? () => _confirmDelete(reminderItems) : null,
               );
             },
           ),
@@ -396,7 +395,7 @@ class _MedicineReminderEditPageState
       if (mounted) context.pop();
       return;
     }
-    final confirmed = await showMedicineReminderDeleteSheet(context);
+    final confirmed = await showMedicineReminderDeleteDialog(context);
     if (confirmed != true) return;
     ref.read(medicineReminderFormProvider.notifier).deleteGroup(existing);
   }

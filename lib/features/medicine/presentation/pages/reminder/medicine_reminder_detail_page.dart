@@ -13,7 +13,7 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_delete_sheet.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_log_panels.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
@@ -265,7 +265,7 @@ class _ReminderDetailBody extends ConsumerWidget {
             onPressed: reminders.isEmpty
                 ? null
                 : () async {
-                    final confirmed = await showMedicineReminderDeleteSheet(
+                    final confirmed = await showMedicineReminderDeleteDialog(
                       context,
                     );
                     if (confirmed != true) return;

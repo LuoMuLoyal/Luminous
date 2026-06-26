@@ -3,7 +3,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_components.dart';
-import 'package:luminous/features/report/presentation/widgets/report_range_picker_sheet.dart';
+import 'package:luminous/features/report/presentation/widgets/report_range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportTopBar extends StatelessWidget {
@@ -121,11 +121,9 @@ class ReportTopBar extends StatelessWidget {
   }
 
   Future<void> _showRangePicker(BuildContext context) async {
-    final selected = await showModalBottomSheet<ReportDashboardQuery>(
-      context: context,
-      useRootNavigator: true,
-      builder: (context) =>
-          ReportRangePickerSheet(selectedQuery: selectedQuery),
+    final selected = await showReportRangePickerDialog(
+      context,
+      selectedQuery: selectedQuery,
     );
     if (selected != null && selected != selectedQuery) {
       onQueryChanged(selected);

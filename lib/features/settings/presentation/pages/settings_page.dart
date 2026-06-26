@@ -460,7 +460,7 @@ class _AdvancedSettingsSection extends ConsumerWidget {
             icon: Icons.help_outline_rounded,
             title: l10n.mineSettingHelpTitle,
             value: l10n.mineSettingHelpValue,
-            onTap: () => _showHelpSheet(context, ref),
+            onTap: () => _showHelpDialog(context, ref),
             showDivider: true,
           ),
           AppSettingRow(
@@ -468,7 +468,7 @@ class _AdvancedSettingsSection extends ConsumerWidget {
             icon: Icons.info_outline_rounded,
             title: l10n.mineSettingAboutTitle,
             value: l10n.mineSettingAboutValue,
-            onTap: () => _showAboutSheet(context, ref),
+            onTap: () => _showAboutDialog(context, ref),
             showDivider: true,
           ),
           AppSettingRow(
@@ -482,7 +482,7 @@ class _AdvancedSettingsSection extends ConsumerWidget {
     );
   }
 
-  Future<void> _showHelpSheet(BuildContext context, WidgetRef ref) async {
+  Future<void> _showHelpDialog(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
     final resources = await ref.read(supportResourcesProvider('help').future);
     if (!context.mounted) return;
@@ -490,22 +490,19 @@ class _AdvancedSettingsSection extends ConsumerWidget {
       await AppToast.show(context, l10n.mineSettingHelpTitle);
       return;
     }
-    await showModalBottomSheet<void>(
+    await showDialog<void>(
       context: context,
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.mineSettingHelpTitle,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: AppSpacingTokens.md),
-              for (final r in resources)
-                ListTile(
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l10n.mineSettingHelpTitle),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: resources.length,
+              itemBuilder: (context, index) {
+                final r = resources[index];
+                return ListTile(
                   title: Text(r.title),
                   subtitle: r.subtitle != null ? Text(r.subtitle!) : null,
                   enabled:
@@ -517,7 +514,7 @@ class _AdvancedSettingsSection extends ConsumerWidget {
                           r.actionUrl!.isNotEmpty &&
                           r.actionType != null
                       ? () async {
-                          Navigator.pop(context);
+                          Navigator.pop(dialogContext);
                           if (r.actionType == SupportResourceActionType.url ||
                               r.actionType == SupportResourceActionType.phone) {
                             final uri = Uri.tryParse(r.actionUrl!);
@@ -529,32 +526,28 @@ class _AdvancedSettingsSection extends ConsumerWidget {
                           }
                         }
                       : null,
-                ),
-            ],
+                );
+              },
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Future<void> _showAboutSheet(BuildContext context, WidgetRef ref) async {
+  Future<void> _showAboutDialog(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
     final info = await ref.read(appInfoProvider.future);
     if (!context.mounted) return;
-    await showModalBottomSheet<void>(
+    await showDialog<void>(
       context: context,
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.lg),
-          child: Column(
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l10n.mineSettingAboutTitle),
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                l10n.mineSettingAboutTitle,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: AppSpacingTokens.md),
               Text(info?.name ?? 'Luminous'),
               Text('${l10n.mineSettingAboutValue} ${info?.version ?? ''}'),
               if (info?.description != null)
@@ -564,8 +557,8 @@ class _AdvancedSettingsSection extends ConsumerWidget {
                 ),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

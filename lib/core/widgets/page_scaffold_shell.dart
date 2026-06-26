@@ -15,6 +15,9 @@ class PageScaffoldShell extends StatelessWidget {
     required this.children,
     this.scrollable = true,
     this.floatingActionButton,
+    this.drawer,
+    this.endDrawer,
+    this.scaffoldKey,
   });
 
   final String title;
@@ -25,6 +28,9 @@ class PageScaffoldShell extends StatelessWidget {
   final List<Widget> children;
   final bool scrollable;
   final Widget? floatingActionButton;
+  final Widget? drawer;
+  final Widget? endDrawer;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
   @override
   Widget build(BuildContext context) {
@@ -68,21 +74,30 @@ class PageScaffoldShell extends StatelessWidget {
       child: scrollable ? SingleChildScrollView(child: content) : content,
     );
 
-    return Material(
-      color: surface.canvasSoft,
-      child: floatingActionButton == null
-          ? pageContent
-          : Stack(
-              children: [
-                Positioned.fill(child: pageContent),
-                Positioned(
-                  right: AppSpacingTokens.lg,
-                  bottom: AppSpacingTokens.lg,
-                  child: floatingActionButton!,
-                ),
-              ],
-            ),
-    );
+    final scaffoldBody = floatingActionButton == null
+        ? pageContent
+        : Stack(
+            children: [
+              Positioned.fill(child: pageContent),
+              Positioned(
+                right: AppSpacingTokens.lg,
+                bottom: AppSpacingTokens.lg,
+                child: floatingActionButton!,
+              ),
+            ],
+          );
+
+    if (drawer != null || endDrawer != null) {
+      return Scaffold(
+        key: scaffoldKey,
+        backgroundColor: surface.canvasSoft,
+        body: scaffoldBody,
+        drawer: drawer,
+        endDrawer: endDrawer,
+      );
+    }
+
+    return Material(color: surface.canvasSoft, child: scaffoldBody);
   }
 }
 

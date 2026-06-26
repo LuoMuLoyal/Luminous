@@ -15,7 +15,7 @@ import 'package:luminous/features/assistant/presentation/widgets/assistant_contr
 import 'package:luminous/features/assistant/presentation/widgets/assistant_conversation_surface.dart';
 import 'package:luminous/features/assistant/presentation/widgets/assistant_hero.dart';
 import 'package:luminous/features/assistant/presentation/widgets/assistant_loading_view.dart';
-import 'package:luminous/features/assistant/presentation/widgets/assistant_recent_conversation_sheet.dart';
+import 'package:luminous/features/assistant/presentation/widgets/assistant_conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/assistant_state_card.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
@@ -33,6 +33,8 @@ class AssistantPage extends ConsumerStatefulWidget {
 class _AssistantPageState extends ConsumerState<AssistantPage> {
   final TextEditingController _inputController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey<ScaffoldState> _drawerScaffoldKey =
+      GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -77,9 +79,27 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
     return Material(
       color: surface.canvasSoft,
       child: PageScaffoldShell(
+        scaffoldKey: _drawerScaffoldKey,
         title: l10n.assistantPageTitle,
         centerTitle: true,
         leading: SettingsBackButton(onTap: () => context.pop()),
+        endDrawer: Drawer(
+          child: AssistantConversationDrawer(
+            state: chatState,
+            title: l10n.assistantRecentConversationsTitle,
+            emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
+            emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
+            onRetry: () => ref
+                .read(assistantControllerProvider.notifier)
+                .loadRecentConversations(),
+            onSelect: (conversationId) async {
+              Navigator.of(context).pop();
+              await ref
+                  .read(assistantControllerProvider.notifier)
+                  .openConversation(conversationId);
+            },
+          ),
+        ),
         actions: [
           IconButton(
             key: const Key('assistant-recent-conversations-action'),
@@ -89,7 +109,7 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
                     chatState.isLoadingRecentConversations ||
                     chatState.isOpeningConversation
                 ? null
-                : () => _showRecentConversationsSheet(context),
+                : _openRecentConversationsDrawer,
             icon: const Icon(Icons.history_rounded),
           ),
           IconButton(
@@ -175,8 +195,7 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
                           messageId: messageId,
                           proposalId: proposalId,
                         ),
-                onDismissProposal:
-                    ({required messageId, required proposalId}) {
+                onDismissProposal: ({required messageId, required proposalId}) {
                   ref
                       .read(assistantControllerProvider.notifier)
                       .dismissProposedAction(
@@ -362,40 +381,8 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
     }
   }
 
-  Future<void> _showRecentConversationsSheet(BuildContext context) async {
-    final l10n = AppLocalizations.of(context)!;
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.lg),
-            child: Consumer(
-              builder: (context, ref, _) {
-                final latestState = ref.watch(assistantControllerProvider);
-                return AssistantRecentConversationSheet(
-                  state: latestState,
-                  title: l10n.assistantRecentConversationsTitle,
-                  emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
-                  emptyDescription:
-                      l10n.assistantRecentConversationsEmptyDescription,
-                  onRetry: () => ref
-                      .read(assistantControllerProvider.notifier)
-                      .loadRecentConversations(),
-                  onSelect: (conversationId) async {
-                    Navigator.of(sheetContext).pop();
-                    await ref
-                        .read(assistantControllerProvider.notifier)
-                        .openConversation(conversationId);
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
+  void _openRecentConversationsDrawer() {
+    _drawerScaffoldKey.currentState?.openEndDrawer();
   }
 
   void _scrollToBottom() {
