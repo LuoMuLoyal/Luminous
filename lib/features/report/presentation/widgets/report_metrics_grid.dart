@@ -162,14 +162,7 @@ class _MetricCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {
-          final handler = onTap;
-          if (handler == null) {
-            showReportToast(context, title);
-            return;
-          }
-          handler(metric.kind);
-        },
+        onTap: onTap == null ? null : () => onTap!(metric.kind),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: AppSectionSurface(
           padding: const EdgeInsets.all(AppSpacingTokens.md),

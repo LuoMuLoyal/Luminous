@@ -82,7 +82,7 @@ class _PatternCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showReportToast(context, pattern.title),
+        onTap: null,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: AppSectionSurface(
           child: Column(

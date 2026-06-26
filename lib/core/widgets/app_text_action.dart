@@ -13,7 +13,7 @@ class AppTextAction extends StatelessWidget {
   });
 
   final String label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final IconData? icon;
   final Color? color;
   final bool flexible;

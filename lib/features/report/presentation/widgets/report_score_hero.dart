@@ -114,7 +114,7 @@ class ReportScoreHero extends StatelessWidget {
                   child: AppTextAction(
                     label: score.summary,
                     flexible: true,
-                    onTap: () => showReportToast(context, score.summary),
+                    onTap: null,
                   ),
                 ),
               ],

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/l10n/app_localizations.dart';
 
 abstract final class ReportPalette {
   static const Color ink = AppColorTokens.ink;
@@ -74,9 +72,4 @@ class ReportMetricTrack extends StatelessWidget {
       ),
     );
   }
-}
-
-void showReportToast(BuildContext context, String action) {
-  final l10n = AppLocalizations.of(context)!;
-  AppToast.show(context, l10n.reportActionToast(action));
 }

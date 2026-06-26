@@ -6,7 +6,6 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportFindingsSection extends StatelessWidget {
@@ -72,7 +71,7 @@ class _FindingCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showReportToast(context, finding.title),
+        onTap: null,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
