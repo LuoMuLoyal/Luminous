@@ -16,6 +16,7 @@ import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
+import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -130,6 +131,7 @@ void main() {
               () => _EmailSignedInAuthSessionNotifier(),
             ),
             mineDashboardProvider.overrideWith((ref) => pending.future),
+            notificationUnreadCountProvider.overrideWith((ref) => 0),
           ],
           child: _materialApp(const MinePage()),
         ),
@@ -452,6 +454,7 @@ Future<void> _pumpMinePage(WidgetTester tester) async {
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(_mockSnapshot),
         ),
+        notificationUnreadCountProvider.overrideWith((ref) => 0),
       ],
       child: _materialApp(const MinePage()),
     ),

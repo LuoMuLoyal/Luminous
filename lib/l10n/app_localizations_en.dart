@@ -3639,6 +3639,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationDeleteConfirmConfirm => 'Delete';
 
   @override
+  String get notificationLoadMore => 'Load more';
+
+  @override
   String get notificationNotFoundTitle => 'Notification expired';
 
   @override

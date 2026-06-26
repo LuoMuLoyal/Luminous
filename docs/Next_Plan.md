@@ -29,7 +29,7 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 
 ## Recently Completed
 
-- **Backend notification module + Luminous notification inbox** (`Lucent`/`Luminous` commits around 2026-06-26): `UserNotification` Prisma model and enum, NestJS CRUD API with unread count and batch read, inline notification generation after AI summary, report export, and password change events; Flutter notification list/detail pages, unread red-dot badge, grouped list with swipe-to-delete and batch mark-all-read, action routing from detail page, and full ARB localization.
+- **Backend notification module + Luminous notification inbox** (`Lucent`/`Luminous` commits around 2026-06-26): `UserNotification` Prisma model and enum, NestJS CRUD API with unread count and batch read, inline notification generation after AI summary, report export, and password change events; Flutter notification list/detail pages, unread red-dot badge driven by real backend unread count, grouped list with paginated load-more, swipe-to-delete and batch mark-all-read, action routing from detail page, and full ARB localization.
 - **Backend assistant leaflet RAG** (`Lucent` commit `6f165e3`): `get_medicine_leaflet_context` tool, leaflet index rebuild script, dynamic `ragEnabled` capabilities truth, and updated assistant contract.
 - **Luminous Record/Report responsive pass** (`Luminous` commit `0a57312`): removed Record "Today overview", widened Report finding cards, added `AppResponsiveSizing`, and replaced the highest-impact fixed layout dimensions.
 - **Luminous v4.0.0 placeholder wiring** (`Luminous` commit `64c6a27`): replaced Today/Record/Medicine/Mine/Search/Report metric placeholder toasts with real navigation, provider invalidation, or filtering behavior.

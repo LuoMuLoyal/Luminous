@@ -6,20 +6,16 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
+import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayTopBar extends StatelessWidget {
-  const TodayTopBar({
-    super.key,
-    required this.moment,
-    required this.hasUnreadNotifications,
-  });
+  const TodayTopBar({super.key, required this.moment});
 
   final TodayDayMoment moment;
-  final bool hasUnreadNotifications;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +53,7 @@ class TodayTopBar extends StatelessWidget {
         const SizedBox(width: AppSpacingTokens.md),
         const _AssistantEntryButton(),
         const SizedBox(width: AppSpacingTokens.xs),
-        _NotificationButton(hasUnread: hasUnreadNotifications),
+        const _NotificationButton(),
       ],
     );
   }
@@ -131,15 +127,16 @@ class _AssistantEntryButton extends ConsumerWidget {
   }
 }
 
-class _NotificationButton extends StatelessWidget {
-  const _NotificationButton({required this.hasUnread});
-
-  final bool hasUnread;
+class _NotificationButton extends ConsumerWidget {
+  const _NotificationButton();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final unreadAsync = ref.watch(notificationUnreadCountProvider);
+    final hasUnread =
+        unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
 
     return Tooltip(
       message: l10n.todayNotificationsTooltip,

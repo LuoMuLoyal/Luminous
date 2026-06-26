@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class MineTopBar extends StatelessWidget {
-  const MineTopBar({super.key, required this.onNotificationsTap, required this.onSettingsTap});
+class MineTopBar extends ConsumerWidget {
+  const MineTopBar({
+    super.key,
+    required this.onNotificationsTap,
+    required this.onSettingsTap,
+  });
 
   final VoidCallback onNotificationsTap;
   final VoidCallback onSettingsTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final unreadAsync = ref.watch(notificationUnreadCountProvider);
+    final hasUnread =
+        unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
 
     return Row(
       children: [
         Expanded(
           child: Text(
             l10n.tabMine,
-            style: typography.displayXl.copyWith(fontWeight: FontWeight.w800, letterSpacing: 0),
+            style: typography.displayXl.copyWith(
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0,
+            ),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.md),
@@ -28,7 +40,7 @@ class MineTopBar extends StatelessWidget {
           tooltip: l10n.mineHeaderNotifications,
           icon: Icons.notifications_none_rounded,
           onTap: onNotificationsTap,
-          showBadge: true,
+          showBadge: hasUnread,
         ),
         const SizedBox(width: AppSpacingTokens.xs),
         _IconActionButton(
@@ -43,7 +55,13 @@ class MineTopBar extends StatelessWidget {
 }
 
 class _IconActionButton extends StatelessWidget {
-  const _IconActionButton({super.key, required this.tooltip, required this.icon, required this.onTap, this.showBadge = false});
+  const _IconActionButton({
+    super.key,
+    required this.tooltip,
+    required this.icon,
+    required this.onTap,
+    this.showBadge = false,
+  });
   final String tooltip;
   final IconData icon;
   final VoidCallback onTap;
@@ -64,7 +82,11 @@ class _IconActionButton extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Icon(icon, size: 28, color: Theme.of(context).colorScheme.onSurface),
+                Icon(
+                  icon,
+                  size: 28,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
                 if (showBadge)
                   Positioned(
                     right: AppSpacingTokens.xs,

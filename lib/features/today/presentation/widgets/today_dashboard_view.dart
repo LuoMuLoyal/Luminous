@@ -91,10 +91,7 @@ class _MobileTodayDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sections = <Widget>[
-      TodayTopBar(
-        moment: dashboard.user.moment,
-        hasUnreadNotifications: dashboard.user.hasUnreadNotifications,
-      ),
+      TodayTopBar(moment: dashboard.user.moment),
       TodayOverviewSection(dashboard: dashboard),
       TodayAiSummarySection(dashboard: dashboard),
       TodayPrioritySection(dashboard: dashboard),
@@ -145,10 +142,7 @@ class _DesktopTodayDashboard extends StatelessWidget {
           AppSpacingTokens.xl,
         ),
         children: [
-          TodayTopBar(
-            moment: dashboard.user.moment,
-            hasUnreadNotifications: dashboard.user.hasUnreadNotifications,
-          ),
+          TodayTopBar(moment: dashboard.user.moment),
           const SizedBox(height: AppSpacingTokens.lg),
           TodayOverviewSection(dashboard: dashboard),
           const SizedBox(height: AppSpacingTokens.lg),

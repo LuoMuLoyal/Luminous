@@ -6584,6 +6584,12 @@ abstract class AppLocalizations {
   /// **'删除'**
   String get notificationDeleteConfirmConfirm;
 
+  /// No description provided for @notificationLoadMore.
+  ///
+  /// In zh, this message translates to:
+  /// **'加载更多'**
+  String get notificationLoadMore;
+
   /// No description provided for @notificationNotFoundTitle.
   ///
   /// In zh, this message translates to:

@@ -3402,6 +3402,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notificationDeleteConfirmConfirm => '删除';
 
   @override
+  String get notificationLoadMore => '加载更多';
+
+  @override
   String get notificationNotFoundTitle => '通知已失效';
 
   @override
