@@ -13,7 +13,6 @@ import 'package:luminous/features/record/presentation/widgets/record_overview.da
 import 'package:luminous/features/record/presentation/widgets/record_quick_entry_panel.dart';
 import 'package:luminous/features/record/presentation/widgets/record_sidebar.dart';
 import 'package:luminous/features/record/presentation/widgets/record_timeline.dart';
-import 'package:luminous/features/record/presentation/widgets/record_trends.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordDashboardView extends StatelessWidget {
@@ -232,14 +231,6 @@ class _DesktopRecordDashboard extends StatelessWidget {
           width: AppResponsiveSizing.sidebarWidth(context),
           child: Column(
             children: [
-              RecordTrendsPanel(
-                trends: dashboard.trends,
-                l10n: l10n,
-                typography: typography,
-                surface: surface,
-                onEdit: onNewEntry,
-              ),
-              const SizedBox(height: AppSpacingTokens.md),
               RecordNewEntryPanel(
                 actions: dashboard.quickActions,
                 l10n: l10n,
