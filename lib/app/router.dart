@@ -26,7 +26,6 @@ import 'package:luminous/features/report/presentation/pages/report_page.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
@@ -298,13 +297,6 @@ final router = GoRouter(
                   pageBuilder: (context, state) => _slidePage(
                     key: state.pageKey,
                     child: const ThemeSettingsPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'notifications',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const NotificationSettingsPage(),
                   ),
                 ),
                 GoRoute(

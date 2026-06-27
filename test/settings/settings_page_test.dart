@@ -5,6 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/core/widgets/app_dialog.dart';
+import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
+import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
@@ -247,42 +250,7 @@ void main() {
     expect(find.text('theme-settings-page'), findsOneWidget);
   });
 
-  testWidgets(
-    'Settings notifications row routes to notifications settings page',
-    (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
-
-      await _pumpSettingsPage(
-        tester,
-        router: GoRouter(
-          initialLocation: '/settings',
-          routes: [
-            GoRoute(
-              path: '/settings',
-              builder: (context, state) => const SettingsPage(),
-            ),
-            GoRoute(
-              path: '/settings/notifications',
-              builder: (context, state) =>
-                  const Scaffold(body: Text('notifications-settings-page')),
-            ),
-          ],
-        ),
-      );
-
-      await tester.pump();
-      await tester.scrollUntilVisible(
-        find.byKey(const Key('settings-row-notifications')),
-        240,
-      );
-      await tester.tap(find.byKey(const Key('settings-row-notifications')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('notifications-settings-page'), findsOneWidget);
-    },
-  );
-
-  testWidgets('Settings reminder rows route to notifications settings page', (
+  testWidgets('Settings notifications row opens notification settings dialog', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
@@ -296,10 +264,35 @@ void main() {
             path: '/settings',
             builder: (context, state) => const SettingsPage(),
           ),
+        ],
+      ),
+    );
+
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-row-notifications')),
+      240,
+    );
+    await tester.tap(find.byKey(const Key('settings-row-notifications')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AppDialog), findsOneWidget);
+    expect(find.text('系统通知已开启'), findsOneWidget);
+  });
+
+  testWidgets('Settings reminder rows open per-type reminder dialogs', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await _pumpSettingsPage(
+      tester,
+      router: GoRouter(
+        initialLocation: '/settings',
+        routes: [
           GoRoute(
-            path: '/settings/notifications',
-            builder: (context, state) =>
-                const Scaffold(body: Text('notifications-settings-page')),
+            path: '/settings',
+            builder: (context, state) => const SettingsPage(),
           ),
         ],
       ),
@@ -313,7 +306,14 @@ void main() {
     await tester.tap(find.byKey(const Key('settings-row-reminder-medicine')));
     await tester.pumpAndSettle();
 
-    expect(find.text('notifications-settings-page'), findsOneWidget);
+    expect(find.byType(AppDialog), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AppDialog),
+        matching: find.byType(Switch),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Settings sleep reminder row shows time range when enabled', (
@@ -568,6 +568,9 @@ Future<void> _pumpSettingsPage(
     ProviderScope(
       overrides: [
         authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
+        notificationPermissionServiceProvider.overrideWithValue(
+          _FakeNotificationPermissionService(),
+        ),
       ],
       child: MaterialApp.router(
         theme: AppTheme.light,
@@ -618,6 +621,19 @@ class _LogoutTrackingAuthSessionNotifier extends AuthSessionNotifier {
     logoutCalled = true;
     state = const AuthSessionState(isAuthenticated: false, isLoading: false);
   }
+}
+
+class _FakeNotificationPermissionService extends NotificationPermissionService {
+  @override
+  Future<void> ensureInitialized() async {}
+
+  @override
+  Future<NotificationPermissionState> getPermissionState() async =>
+      NotificationPermissionState.granted;
+
+  @override
+  Future<NotificationPermissionState> requestPermission() async =>
+      NotificationPermissionState.granted;
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {

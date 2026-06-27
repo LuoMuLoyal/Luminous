@@ -142,7 +142,6 @@ void main() {
       '/settings',
       '/settings/language',
       '/settings/theme',
-      '/settings/notifications',
       '/settings/more',
       '/assistant',
       '/notifications',
