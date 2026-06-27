@@ -1,6 +1,8 @@
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_medicine_detail.dart';
+import 'package:luminous/features/medicine/domain/services/allergy_severity_helper.dart';
+import 'package:luminous/features/medicine/domain/services/ingredient_canonicalizer.dart';
 import 'package:luminous/features/medicine/domain/services/medicine_risk_checker_utils.dart';
 
 export 'package:luminous/features/medicine/domain/entities/medicine_risk_medicine_detail.dart';
@@ -350,17 +352,6 @@ class MedicineRiskChecker {
     );
   }
 
-  static final _allergyCrossLanguageMap = <String, Set<String>>{
-    'penicillin': {'青霉素', 'penicillin', '盘尼西林'},
-    'aspirin': {'阿司匹林', 'aspirin', '乙酰水杨酸', 'acetylsalicylicacid'},
-    'cephalosporin': {'头孢', 'cephalosporin', '先锋霉素'},
-    'sulfa': {'磺胺', 'sulfa', 'sulfonamide'},
-    'ibuprofen': {'布洛芬', 'ibuprofen'},
-    'acetaminophen': {'对乙酰氨基酚', 'acetaminophen', 'paracetamol', '扑热息痛'},
-    'metformin': {'二甲双胍', 'metformin'},
-    'amoxicillin': {'阿莫西林', 'amoxicillin'},
-  };
-
   List<MedicineRiskFinding> _allergyFindings(
     List<AllergyItem> activeAllergies,
     MedicineRiskMedicineDetail medicine,
@@ -398,7 +389,7 @@ class MedicineRiskChecker {
       findings.add(
         MedicineRiskFinding(
           type: MedicineRiskFindingType.allergy,
-          severity: MedicineRiskSeverity.high,
+          severity: _allergyFindingSeverity(allergyItem),
           context: MedicineRiskFindingContext.none,
           primaryMedicineName: medicine.displayName,
           relatedLabel: rawLabel,
@@ -414,18 +405,19 @@ class MedicineRiskChecker {
     return findings;
   }
 
-  /// Expand an allergy token into all known variants via the cross-language map.
+  MedicineRiskSeverity _allergyFindingSeverity(AllergyItem allergy) {
+    return switch (inferredAllergySeverity(allergy)) {
+      'severe' => MedicineRiskSeverity.high,
+      'moderate' => MedicineRiskSeverity.medium,
+      'mild' => MedicineRiskSeverity.info,
+      _ => MedicineRiskSeverity.high,
+    };
+  }
+
+  /// Expand an allergy token into all known variants via the canonical
+  /// cross-language ingredient map.
   Set<String> _expandAllergyTokens(String normalizedAllergy) {
-    final result = <String>{normalizedAllergy};
-    for (final entry in _allergyCrossLanguageMap.entries) {
-      final hasMatch = entry.value.any(
-        (variant) => normalizeToken(variant) == normalizedAllergy,
-      );
-      if (hasMatch) {
-        result.addAll(entry.value.map(normalizeToken));
-      }
-    }
-    return result;
+    return expandCanonicalIngredientTokens({normalizedAllergy});
   }
 
   List<MedicineRiskFinding> _foodInteractionFindings(
@@ -469,10 +461,10 @@ class MedicineRiskChecker {
     MedicineRiskMedicineDetail other,
   ) {
     final currentTargets = current.drugbankInteractionTargets;
-    if (currentTargets.isNotEmpty &&
-        other.item.source == 'drugbank' &&
-        other.item.sourceRefId != null &&
-        currentTargets.contains(other.item.sourceRefId)) {
+    final otherIds = other.drugbankIds;
+    final overlappingIds = currentTargets.intersection(otherIds);
+    if (overlappingIds.isNotEmpty) {
+      final targetId = overlappingIds.first;
       return MedicineRiskFinding(
         type: MedicineRiskFindingType.interaction,
         severity: MedicineRiskSeverity.high,
@@ -481,16 +473,16 @@ class MedicineRiskChecker {
         secondaryMedicineName: other.displayName,
         evidence: _interactionEvidenceFor(
           current.detail.detail.drugInteractions,
-          other.item.sourceRefId!,
+          targetId,
         ),
       );
     }
 
     final otherTargets = other.drugbankInteractionTargets;
-    if (otherTargets.isNotEmpty &&
-        current.item.source == 'drugbank' &&
-        current.item.sourceRefId != null &&
-        otherTargets.contains(current.item.sourceRefId)) {
+    final currentIds = current.drugbankIds;
+    final reverseOverlappingIds = otherTargets.intersection(currentIds);
+    if (reverseOverlappingIds.isNotEmpty) {
+      final targetId = reverseOverlappingIds.first;
       return MedicineRiskFinding(
         type: MedicineRiskFindingType.interaction,
         severity: MedicineRiskSeverity.high,
@@ -499,7 +491,7 @@ class MedicineRiskChecker {
         secondaryMedicineName: current.displayName,
         evidence: _interactionEvidenceFor(
           other.detail.detail.drugInteractions,
-          current.item.sourceRefId!,
+          targetId,
         ),
       );
     }
@@ -511,8 +503,8 @@ class MedicineRiskChecker {
     MedicineRiskMedicineDetail current,
     MedicineRiskMedicineDetail other,
   ) {
-    final currentTokens = current.normalizedIngredientTokens;
-    final otherTokens = other.normalizedIngredientTokens;
+    final currentTokens = current.canonicalIngredientKeys;
+    final otherTokens = other.canonicalIngredientKeys;
     if (currentTokens.isEmpty || otherTokens.isEmpty) {
       return null;
     }

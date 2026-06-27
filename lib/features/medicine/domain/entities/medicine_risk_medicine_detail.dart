@@ -1,5 +1,6 @@
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:luminous/features/medicine/domain/services/ingredient_canonicalizer.dart';
 import 'package:luminous/features/medicine/domain/services/medicine_risk_checker_utils.dart';
 
 class MedicineRiskMedicineDetail {
@@ -25,9 +26,16 @@ class MedicineRiskMedicineDetail {
 
   Set<String> get allSourceIngredientTokens {
     final tokens = <String>{};
-    tokens.addAll(normalizedIngredientTokens);
+    tokens.addAll(canonicalIngredientKeys);
     tokens.add(normalizeToken(displayName));
     return tokens;
+  }
+
+  /// Normalized ingredient tokens mapped to canonical keys via the
+  /// cross-language map, so e.g. “对乙酰氨基酚” and “acetaminophen” both become
+  /// “acetaminophen” for duplicate detection and allergy matching.
+  Set<String> get canonicalIngredientKeys {
+    return canonicalIngredientKeysFor(normalizedIngredientTokens);
   }
 
   Set<String> get drugbankSynonymTokens {
@@ -39,6 +47,26 @@ class MedicineRiskMedicineDetail {
       if (token.isNotEmpty) result.add(token);
     }
     return result;
+  }
+
+  /// DrugBank IDs that identify this medicine. For DrugBank medicines this is
+  /// the source reference ID; for CN medicines it is the optional list of
+  /// mapped DrugBank IDs from the V2 data source.
+  Set<String> get drugbankIds {
+    if (item.source == 'drugbank') {
+      final id = item.sourceRefId;
+      return id == null || id.isEmpty ? const {} : {id};
+    }
+    if (item.source == 'cn') {
+      final value = detail.detail.drugbankIds;
+      if (value != null) {
+        return value
+            .map((entry) => entry.trim())
+            .where((entry) => entry.isNotEmpty)
+            .toSet();
+      }
+    }
+    return const {};
   }
 
   Set<String> get drugbankInteractionTargets {
