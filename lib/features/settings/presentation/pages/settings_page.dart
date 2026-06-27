@@ -20,6 +20,7 @@ import 'package:luminous/features/support/data/providers/support_resources_provi
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/widgets/notification_setting_dialogs.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -306,7 +307,7 @@ class _ReminderSettingsSection extends ConsumerWidget {
             icon: Icons.notifications_none_rounded,
             title: l10n.mineSettingsNotificationsTitle,
             showChevron: true,
-            onTap: () => context.push('/settings/notifications'),
+            onTap: () => showNotificationGeneralDialog(context),
             showDivider: true,
           ),
           AppSettingRow(
@@ -317,7 +318,7 @@ class _ReminderSettingsSection extends ConsumerWidget {
               statusLabel(settings.medicationReminders),
               style: typography.bodySm.copyWith(color: surface.body),
             ),
-            onTap: () => context.push('/settings/notifications'),
+            onTap: () => showMedicationReminderDialog(context),
             showDivider: true,
           ),
           AppSettingRow(
@@ -328,7 +329,7 @@ class _ReminderSettingsSection extends ConsumerWidget {
               statusLabel(settings.waterReminders),
               style: typography.bodySm.copyWith(color: surface.body),
             ),
-            onTap: () => context.push('/settings/notifications'),
+            onTap: () => showWaterReminderDialog(context),
             showDivider: true,
           ),
           AppSettingRow(
@@ -339,7 +340,7 @@ class _ReminderSettingsSection extends ConsumerWidget {
               _sleepReminderSummary(l10n, settings),
               style: typography.bodySm.copyWith(color: surface.body),
             ),
-            onTap: () => context.push('/settings/notifications'),
+            onTap: () => showSleepReminderDialog(context),
           ),
         ],
       ),

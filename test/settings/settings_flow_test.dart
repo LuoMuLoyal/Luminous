@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/widgets/app_dialog.dart';
 import 'package:luminous/app/app.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -16,7 +17,6 @@ import 'package:luminous/features/settings/data/providers/settings_profile_data_
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,73 +71,70 @@ void main() {
     },
   );
 
-  testWidgets('Notification settings toggles a switch and persists the value', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{
-      'app.locale': 'zh-CN',
-    });
+  testWidgets(
+    'Medication reminder toggles from dialog and persists the value',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{
+        'app.locale': 'zh-CN',
+      });
 
-    await _pumpApp(
-      tester,
-      notificationService: _FakeNotificationPermissionService(
-        state: NotificationPermissionState.granted,
-      ),
-    );
+      await _pumpApp(
+        tester,
+        notificationService: _FakeNotificationPermissionService(
+          state: NotificationPermissionState.granted,
+        ),
+      );
 
-    await _tapSettingsRow(tester, 'settings-row-notifications');
+      await _tapSettingsRow(tester, 'settings-row-reminder-medicine');
 
-    final medicationRow = find.byKey(const Key('notification-row-medication'));
-    final switchFinder = find.descendant(
-      of: medicationRow,
-      matching: _findAnySwitch(),
-    );
-    expect(switchFinder, findsOneWidget);
+      final switchFinder = find.descendant(
+        of: find.byType(AppDialog),
+        matching: find.byType(Switch),
+      );
+      expect(switchFinder, findsOneWidget);
 
-    final beforeValue = _readSwitchValue(tester, switchFinder.first);
+      final beforeValue = _readSwitchValue(tester, switchFinder.first);
 
-    await tester.tap(medicationRow);
-    await tester.pumpAndSettle();
+      await tester.tap(switchFinder.first);
+      await tester.pumpAndSettle();
 
-    final afterValue = _readSwitchValue(
-      tester,
-      find.descendant(of: medicationRow, matching: _findAnySwitch()).first,
-    );
-    expect(afterValue, isNot(beforeValue));
-
-    final preferences = await SharedPreferences.getInstance();
-    expect(
-      preferences.getBool('settings.notifications.medicationReminders'),
-      afterValue,
-    );
-
-    final snapshot = _snapshotPreferences(preferences);
-    await tester.pumpWidget(const SizedBox.shrink());
-    await tester.pumpAndSettle();
-
-    SharedPreferences.setMockInitialValues(snapshot);
-    await _pumpApp(
-      tester,
-      notificationService: _FakeNotificationPermissionService(
-        state: NotificationPermissionState.granted,
-      ),
-    );
-
-    await _tapSettingsRow(tester, 'settings-row-notifications');
-
-    expect(
-      _readSwitchValue(
+      final afterValue = _readSwitchValue(
         tester,
         find
             .descendant(
-              of: find.byKey(const Key('notification-row-medication')),
-              matching: _findAnySwitch(),
+              of: find.byType(AppDialog),
+              matching: find.byType(Switch),
             )
             .first,
-      ),
-      afterValue,
-    );
-  });
+      );
+      expect(afterValue, isNot(beforeValue));
+
+      final preferences = await SharedPreferences.getInstance();
+      expect(
+        preferences.getBool('settings.notifications.medicationReminders'),
+        afterValue,
+      );
+
+      // Close dialog and reopen to verify persistence.
+      await tester.tap(find.text('关闭').last);
+      await tester.pumpAndSettle();
+
+      await _tapSettingsRow(tester, 'settings-row-reminder-medicine');
+
+      expect(
+        _readSwitchValue(
+          tester,
+          find
+              .descendant(
+                of: find.byType(AppDialog),
+                matching: find.byType(Switch),
+              )
+              .first,
+        ),
+        afterValue,
+      );
+    },
+  );
 
   testWidgets('Notification settings shows granted permission state', (
     tester,
@@ -178,7 +175,13 @@ void main() {
 
     expect(find.text('系统通知未开启'), findsOneWidget);
     expect(find.text('点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'), findsOneWidget);
-    expect(find.byIcon(Icons.chevron_right_rounded), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(AppDialog),
+        matching: find.byIcon(Icons.chevron_right_rounded),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Advanced settings page is reachable and shows actions', (
@@ -280,13 +283,6 @@ Future<void> _pumpApp(
 
   await tester.pump();
   await tester.pumpAndSettle();
-}
-
-Finder _findAnySwitch() {
-  return find.byWidgetPredicate(
-    (widget) => widget is Switch || widget is CupertinoSwitch,
-    description: 'switch',
-  );
 }
 
 bool _readSwitchValue(WidgetTester tester, Finder finder) {
@@ -432,10 +428,6 @@ GoRouter _buildSettingsTestRouter() {
       GoRoute(
         path: '/settings/theme',
         builder: (context, state) => const ThemeSettingsPage(),
-      ),
-      GoRoute(
-        path: '/settings/notifications',
-        builder: (context, state) => const NotificationSettingsPage(),
       ),
       GoRoute(
         path: '/settings/more',
