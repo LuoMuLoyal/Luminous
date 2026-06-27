@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -56,8 +57,44 @@ class ReportDashboardView extends ConsumerWidget {
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
     final settingsAsync = ref.watch(userSettingsControllerProvider);
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= AppBreakpoints.desktop;
 
-    final content = Column(
+    final content = isDesktop
+        ? _buildDesktopLayout(
+            l10n: l10n,
+            surface: surface,
+            typography: typography,
+            settingsAsync: settingsAsync,
+          )
+        : _buildMobileLayout(
+            l10n: l10n,
+            surface: surface,
+            typography: typography,
+            settingsAsync: settingsAsync,
+          );
+
+    final scopedContent = AppSkeletonScope(
+      isLoading: isLoading,
+      child: content,
+    );
+    if (isLoading) {
+      return scopedContent;
+    }
+
+    return scopedContent
+        .animate()
+        .fadeIn(duration: 220.ms)
+        .slideY(begin: 0.02, end: 0);
+  }
+
+  Widget _buildMobileLayout({
+    required AppLocalizations l10n,
+    required AppThemeSurface surface,
+    required AppTypographyScale typography,
+    required AsyncValue<UserSettingsDataDto>? settingsAsync,
+  }) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ReportScoreHero(
@@ -137,18 +174,109 @@ class ReportDashboardView extends ConsumerWidget {
         ),
       ],
     );
+  }
 
-    final scopedContent = AppSkeletonScope(
-      isLoading: isLoading,
-      child: content,
+  Widget _buildDesktopLayout({
+    required AppLocalizations l10n,
+    required AppThemeSurface surface,
+    required AppTypographyScale typography,
+    required AsyncValue<UserSettingsDataDto>? settingsAsync,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 7,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ReportScoreHero(
+                key: const Key('report-score-hero'),
+                dashboard: dashboard,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              ReportTrendSection(
+                key: const Key('report-trend-section'),
+                trends: dashboard.trends,
+                selectedQuery: dashboardQuery,
+                onQueryChanged: onDashboardQueryChanged ?? (_) {},
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              ReportFindingsSection(
+                key: const Key('report-findings-section'),
+                findings: dashboard.findings,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              ReportAiSummarySection(
+                key: const Key('report-ai-summary-section'),
+                dashboard: dashboard,
+                authSession: authSession,
+                settingsAsync: settingsAsync,
+                aiState: aiSummaryState,
+                selectedRange: aiSummaryRange,
+                onRangeChanged: onAiSummaryRangeChanged,
+                onGenerate: onGenerateAiSummary,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: AppSpacingTokens.lg),
+        Expanded(
+          flex: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ReportMetricsGrid(
+                key: const Key('report-metrics-grid'),
+                dashboard: dashboard,
+                metrics: dashboard.metrics,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+                onMetricSelected: onMetricSelected,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              ReportExportSection(
+                key: const Key('report-export-section'),
+                actions: dashboard.exportActions,
+                latestRequest: latestExportRequest,
+                requestInFlight: exportRequestInFlight,
+                onActionTap: onExportActionTap,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              ReportPatternsSection(
+                key: const Key('report-patterns-section'),
+                patterns: dashboard.patterns,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              ReportReferenceNotice(
+                key: const Key('report-reference-notice'),
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
-    if (isLoading) {
-      return scopedContent;
-    }
-
-    return scopedContent
-        .animate()
-        .fadeIn(duration: 220.ms)
-        .slideY(begin: 0.02, end: 0);
   }
 }
