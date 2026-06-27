@@ -1,53 +1,115 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
+import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class TodayRecommendationSection extends StatelessWidget {
-  const TodayRecommendationSection({
-    super.key,
-    required this.dashboard,
-    this.compact = false,
-  });
+class TodayRecommendationSection extends ConsumerWidget {
+  const TodayRecommendationSection({super.key, this.compact = false});
 
-  final TodayDashboard dashboard;
   final bool compact;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final items = buildRecommendationItems(l10n, dashboard);
+    final recommendationsAsync = ref.watch(todayRecommendationsProvider);
 
     return TodaySection(
       title: l10n.todayRecommendationSectionTitle,
       actionLabel: l10n.todayViewMoreAction,
-      onAction: () => AppToast.show(context, l10n.todayViewMoreAction),
+      onAction: () => _refresh(ref),
       child: AppSectionSurface(
         key: const Key('today-recommendation-card'),
         padding: EdgeInsets.zero,
-        child: Column(
-          children: [
-            for (var index = 0; index < items.length; index += 1) ...[
-              _RecommendationRow(item: items[index], compact: compact),
-              if (index < items.length - 1)
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                  indent: AppSpacingTokens.x4l + AppSpacingTokens.xs,
-                  color: surface.hairline.withValues(alpha: 0.62),
-                ),
-            ],
-          ],
+        child: recommendationsAsync.when(
+          data: (recommendations) {
+            final items = recommendations
+                .map((r) => _mapToItem(context, r))
+                .whereType<TodayRecommendationItem>()
+                .toList(growable: false);
+            if (items.isEmpty) {
+              return const SizedBox.shrink();
+            }
+            return Column(
+              children: [
+                for (var index = 0; index < items.length; index += 1) ...[
+                  _RecommendationRow(item: items[index], compact: compact),
+                  if (index < items.length - 1)
+                    Divider(
+                      height: 1,
+                      thickness: 1,
+                      indent: AppSpacingTokens.x4l + AppSpacingTokens.xs,
+                      color: surface.hairline.withValues(alpha: 0.62),
+                    ),
+                ],
+              ],
+            );
+          },
+          loading: () => const SizedBox(
+            height: 144,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (_, __) => const SizedBox.shrink(),
         ),
       ),
     );
+  }
+
+  void _refresh(WidgetRef ref) {
+    ref.read(todayRecommendationsProvider.notifier).refresh();
+  }
+
+  TodayRecommendationItem? _mapToItem(
+    BuildContext context,
+    TodayRecommendation recommendation,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    final category = recommendation.category ?? 'habit';
+    return switch (category) {
+      'medicine' => TodayRecommendationItem(
+        icon: Icons.health_and_safety_outlined,
+        color: TodayPalette.teal,
+        title: recommendation.text,
+        subtitle: l10n.todayRecommendationMedicineSafetyBody,
+        action: l10n.todayLearnMoreAction,
+      ),
+      'sleep' => TodayRecommendationItem(
+        icon: Icons.bedtime_rounded,
+        color: TodayPalette.blue,
+        title: recommendation.text,
+        subtitle: l10n.todayRecommendationSleepBody,
+        action: l10n.todayLearnMoreAction,
+      ),
+      'record' => TodayRecommendationItem(
+        icon: Icons.edit_note_rounded,
+        color: TodayPalette.amber,
+        title: recommendation.text,
+        subtitle: l10n.todayRecommendationWaterBody,
+        action: l10n.todayCompleteAction,
+      ),
+      'report' => TodayRecommendationItem(
+        icon: Icons.assessment_outlined,
+        color: TodayPalette.violet,
+        title: recommendation.text,
+        subtitle: l10n.todayRecommendationSleepBody,
+        action: l10n.todayLearnMoreAction,
+      ),
+      _ => TodayRecommendationItem(
+        icon: Icons.lightbulb_outline_rounded,
+        color: TodayPalette.teal,
+        title: recommendation.text,
+        subtitle: l10n.todayRecommendationWaterBody,
+        action: l10n.todayLearnMoreAction,
+      ),
+    };
   }
 }
 

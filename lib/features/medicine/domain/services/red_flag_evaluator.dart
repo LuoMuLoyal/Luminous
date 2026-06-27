@@ -1,5 +1,6 @@
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
+import 'package:luminous/features/medicine/domain/services/allergy_severity_helper.dart';
 
 class RedFlagEvaluator {
   const RedFlagEvaluator();
@@ -23,7 +24,7 @@ class RedFlagEvaluator {
     MedicineRiskCheckResult result,
   ) {
     final severeAllergens = snapshot.allergies
-        .where((a) => a.isActive && a.severity == 'severe')
+        .where((a) => a.isActive && isSevereAllergy(a))
         .map((a) => a.label.trim())
         .where((l) => l.isNotEmpty)
         .toSet();
@@ -88,7 +89,7 @@ class RedFlagEvaluator {
     if (result.coverageIssues.isEmpty) return const [];
 
     final hasHighRiskProfile =
-        snapshot.allergies.any((a) => a.isActive && a.severity == 'severe') ||
+        snapshot.allergies.any((a) => a.isActive && isSevereAllergy(a)) ||
         snapshot.profile.pregnancyState == 'pregnant' ||
         snapshot.profile.lactationState == 'yes';
 

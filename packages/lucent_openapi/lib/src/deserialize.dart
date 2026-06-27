@@ -129,6 +129,7 @@ import 'package:lucent_openapi/src/model/today_analysis_bullet_dto.dart';
 import 'package:lucent_openapi/src/model/today_analysis_data_dto.dart';
 import 'package:lucent_openapi/src/model/today_analysis_response_dto.dart';
 import 'package:lucent_openapi/src/model/today_analysis_stream_result_dto.dart';
+import 'package:lucent_openapi/src/model/today_recommendation_response_dto.dart';
 import 'package:lucent_openapi/src/model/tokens_dto.dart';
 import 'package:lucent_openapi/src/model/unread_count_response_dto.dart';
 import 'package:lucent_openapi/src/model/update_account_dto.dart';
@@ -635,6 +636,11 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'TodayAnalysisStreamResultDto':
       return TodayAnalysisStreamResultDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayRecommendationResponseDto':
+      return TodayRecommendationResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

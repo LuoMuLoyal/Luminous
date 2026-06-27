@@ -69,6 +69,8 @@ class CnMedicineDetailDto {
     this.sourceUrl,
 
     this.imageUrl,
+
+    this.drugbankIds,
   });
 
   @JsonKey(name: r'kind', required: true, includeIfNull: false)
@@ -158,6 +160,10 @@ class CnMedicineDetailDto {
   @JsonKey(name: r'imageUrl', required: false, includeIfNull: false)
   final Object? imageUrl;
 
+  /// Optional mapped DrugBank IDs used for interaction checking.
+  @JsonKey(name: r'drugbankIds', required: false, includeIfNull: false)
+  final List<String>? drugbankIds;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -188,7 +194,8 @@ class CnMedicineDetailDto {
           other.barcode == barcode &&
           other.nationalDrugCode == nationalDrugCode &&
           other.sourceUrl == sourceUrl &&
-          other.imageUrl == imageUrl;
+          other.imageUrl == imageUrl &&
+          other.drugbankIds == drugbankIds;
 
   @override
   int get hashCode =>
@@ -218,7 +225,8 @@ class CnMedicineDetailDto {
       (barcode == null ? 0 : barcode.hashCode) +
       (nationalDrugCode == null ? 0 : nationalDrugCode.hashCode) +
       (sourceUrl == null ? 0 : sourceUrl.hashCode) +
-      (imageUrl == null ? 0 : imageUrl.hashCode);
+      (imageUrl == null ? 0 : imageUrl.hashCode) +
+      (drugbankIds == null ? 0 : drugbankIds.hashCode);
 
   factory CnMedicineDetailDto.fromJson(Map<String, dynamic> json) =>
       _$CnMedicineDetailDtoFromJson(json);

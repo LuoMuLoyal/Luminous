@@ -178,6 +178,7 @@ export 'package:lucent_openapi/src/model/today_analysis_bullet_dto.dart';
 export 'package:lucent_openapi/src/model/today_analysis_data_dto.dart';
 export 'package:lucent_openapi/src/model/today_analysis_response_dto.dart';
 export 'package:lucent_openapi/src/model/today_analysis_stream_result_dto.dart';
+export 'package:lucent_openapi/src/model/today_recommendation_response_dto.dart';
 export 'package:lucent_openapi/src/model/tokens_dto.dart';
 export 'package:lucent_openapi/src/model/unit_system.dart';
 export 'package:lucent_openapi/src/model/unread_count_response_dto.dart';

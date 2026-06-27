@@ -178,6 +178,7 @@ lib/src/model/today_analysis_bullet_dto.dart
 lib/src/model/today_analysis_data_dto.dart
 lib/src/model/today_analysis_response_dto.dart
 lib/src/model/today_analysis_stream_result_dto.dart
+lib/src/model/today_recommendation_response_dto.dart
 lib/src/model/tokens_dto.dart
 lib/src/model/unit_system.dart
 lib/src/model/unread_count_response_dto.dart

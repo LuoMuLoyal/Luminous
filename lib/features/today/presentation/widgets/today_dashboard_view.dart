@@ -95,7 +95,7 @@ class _MobileTodayDashboard extends StatelessWidget {
       TodayOverviewSection(dashboard: dashboard),
       TodayAiSummarySection(dashboard: dashboard),
       TodayPrioritySection(dashboard: dashboard),
-      TodayRecommendationSection(dashboard: dashboard),
+      const TodayRecommendationSection(),
       TodayTodoSection(dashboard: dashboard),
     ];
 
@@ -165,12 +165,7 @@ class _DesktopTodayDashboard extends StatelessWidget {
               Expanded(
                 flex: 5,
                 child: Column(
-                  children: [
-                    TodayRecommendationSection(
-                      dashboard: dashboard,
-                      compact: true,
-                    ),
-                  ],
+                  children: [const TodayRecommendationSection(compact: true)],
                 ),
               ),
             ],

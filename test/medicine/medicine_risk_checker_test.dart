@@ -100,6 +100,54 @@ void main() {
     );
   });
 
+  test('detects DrugBank-CN interaction via mapped drugbankIds', () {
+    final snapshot = _basicSnapshot(age: 30, medicineCount: 2).copyWith(
+      currentMedicines: [
+        _currentMed(
+          id: 'med-1',
+          source: 'drugbank',
+          sourceRefId: 'DB00001',
+          displayName: 'Drug A',
+        ),
+        _currentMed(
+          id: 'med-2',
+          source: 'cn',
+          sourceRefId: 'cn-2',
+          displayName: '中文药 B',
+        ),
+      ],
+    );
+    final checker = const MedicineRiskChecker();
+    final result = checker.evaluate(
+      snapshot: snapshot,
+      medicines: [
+        MedicineRiskMedicineDetail(
+          item: snapshot.currentMedicines[0],
+          detail: _detail(
+            id: 'DB00001',
+            name: 'Drug A',
+            drugInteractions: [
+              {'drugbankId': 'DB00002', 'description': 'Interaction detail'},
+            ],
+          ),
+        ),
+        MedicineRiskMedicineDetail(
+          item: snapshot.currentMedicines[1],
+          detail: _detail(
+            id: 'cn-2',
+            name: '中文药 B',
+            drugbankIds: const ['DB00002'],
+          ),
+        ),
+      ],
+    );
+
+    expect(
+      result.findings.any((f) => f.type == MedicineRiskFindingType.interaction),
+      isTrue,
+    );
+  });
+
   test('detects CN duplicate ingredient and food interaction', () {
     final snapshot = _basicSnapshot(age: 30, medicineCount: 2);
     final checker = const MedicineRiskChecker();
@@ -131,7 +179,7 @@ void main() {
     final duplicate = result.findings.firstWhere(
       (f) => f.type == MedicineRiskFindingType.duplicateIngredient,
     );
-    expect(duplicate.evidence, '对乙酰氨基酚');
+    expect(duplicate.evidence, 'acetaminophen');
     expect(
       result.findings.any(
         (f) =>
@@ -1656,6 +1704,7 @@ MedicineDetailDataDto _detail({
   List<String> synonyms = const [],
   List<String> foodInteractions = const [],
   Object? drugInteractions,
+  List<String>? drugbankIds,
   String? pediatricUse,
   String? geriatricUse,
   String? pregnancyLactation,
@@ -1677,6 +1726,7 @@ MedicineDetailDataDto _detail({
       synonyms: synonyms,
       foodInteractions: foodInteractions,
       drugInteractions: drugInteractions,
+      drugbankIds: drugbankIds,
       ingredients: ingredients,
       pediatricUse: pediatricUse,
       geriatricUse: geriatricUse,

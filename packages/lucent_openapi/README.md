@@ -138,6 +138,7 @@ Class | Method | HTTP request | Description
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetResourcesV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetresourcesv1) | **GET** /api/v1/public/support-resources | Get static support resource entries
 [*TodayAnalysisApi*](doc/TodayAnalysisApi.md) | [**todayAnalysisControllerGenerateStreamV1**](doc/TodayAnalysisApi.md#todayanalysiscontrollergeneratestreamv1) | **POST** /api/v1/user/today-analysis/generate/stream | Stream authenticated user today AI analysis generation
 [*TodayAnalysisApi*](doc/TodayAnalysisApi.md) | [**todayAnalysisControllerGenerateV1**](doc/TodayAnalysisApi.md#todayanalysiscontrollergeneratev1) | **POST** /api/v1/user/today-analysis/generate | Generate authenticated user today AI analysis
+[*TodayAnalysisApi*](doc/TodayAnalysisApi.md) | [**todayAnalysisControllerGetRecommendationsV1**](doc/TodayAnalysisApi.md#todayanalysiscontrollergetrecommendationsv1) | **GET** /api/v1/user/today-analysis/recommendations | 随机返回今日健康推荐
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateAllergyV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateallergyv1) | **POST** /api/v1/user/health-context/allergies | Create an allergy record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateConditionV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreateconditionv1) | **POST** /api/v1/user/health-context/conditions | Create a condition record
 [*UserHealthContextApi*](doc/UserHealthContextApi.md) | [**userHealthContextControllerCreateCurrentMedicineV1**](doc/UserHealthContextApi.md#userhealthcontextcontrollercreatecurrentmedicinev1) | **POST** /api/v1/user/health-context/current-medicines | Add a current medicine record
@@ -306,6 +307,7 @@ Class | Method | HTTP request | Description
  - [TodayAnalysisDataDto](doc/TodayAnalysisDataDto.md)
  - [TodayAnalysisResponseDto](doc/TodayAnalysisResponseDto.md)
  - [TodayAnalysisStreamResultDto](doc/TodayAnalysisStreamResultDto.md)
+ - [TodayRecommendationResponseDto](doc/TodayRecommendationResponseDto.md)
  - [TokensDto](doc/TokensDto.md)
  - [UnitSystem](doc/UnitSystem.md)
  - [UnreadCountResponseDto](doc/UnreadCountResponseDto.md)

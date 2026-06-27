@@ -92,6 +92,10 @@ MedicineDetailDataDtoDetail _$MedicineDetailDataDtoDetailFromJson(
     nationalDrugCode: $checkedConvert('nationalDrugCode', (v) => v),
     sourceUrl: $checkedConvert('sourceUrl', (v) => v),
     imageUrl: $checkedConvert('imageUrl', (v) => v),
+    drugbankIds: $checkedConvert(
+      'drugbankIds',
+      (v) => (v as List<dynamic>?)?.map((e) => e as String).toList(),
+    ),
   );
   return val;
 });
@@ -162,4 +166,5 @@ Map<String, dynamic> _$MedicineDetailDataDtoDetailToJson(
     'nationalDrugCode': instance.nationalDrugCode,
   if (instance.sourceUrl != null) 'sourceUrl': instance.sourceUrl,
   if (instance.imageUrl != null) 'imageUrl': instance.imageUrl,
+  if (instance.drugbankIds != null) 'drugbankIds': instance.drugbankIds,
 };
