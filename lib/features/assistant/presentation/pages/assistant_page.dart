@@ -82,6 +82,7 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
         scaffoldKey: _drawerScaffoldKey,
         title: l10n.assistantPageTitle,
         centerTitle: true,
+        scrollable: false,
         leading: SettingsBackButton(onTap: () => context.pop()),
         endDrawer: Drawer(
           child: AssistantConversationDrawer(
@@ -175,8 +176,7 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
               ),
             ],
             const SizedBox(height: AppSpacingTokens.md),
-            SizedBox(
-              height: width < AppBreakpoints.mobile ? 460 : 520,
+            Expanded(
               child: AssistantConversationSurface(
                 state: chatState,
                 capabilities: capabilities,
