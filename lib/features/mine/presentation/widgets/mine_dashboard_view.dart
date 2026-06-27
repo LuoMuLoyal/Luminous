@@ -47,10 +47,17 @@ class MineDashboardView extends StatelessWidget {
       return scopedContent;
     }
 
-    return scopedContent
-        .animate()
-        .fadeIn(duration: 220.ms)
-        .slideY(begin: 0.02, end: 0);
+    return Animate(
+      effects: const [
+        FadeEffect(duration: Duration(milliseconds: 220)),
+        SlideEffect(
+          begin: Offset(0, 0.02),
+          end: Offset.zero,
+          duration: Duration(milliseconds: 220),
+        ),
+      ],
+      child: scopedContent,
+    );
   }
 
   Widget _buildMobileLayout({

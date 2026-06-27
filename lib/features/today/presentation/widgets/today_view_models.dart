@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/today_components.dart';
@@ -321,11 +318,11 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
 TodayAiSummaryCardContent buildAiCardContent({
   required AppLocalizations l10n,
   required TodayDashboard dashboard,
-  required AuthSessionState authSession,
-  required AsyncValue<UserSettingsDataDto>? settingsAsync,
+  required bool canAccessProtectedData,
+  required bool? aiSummariesEnabled,
   required TodayAiAnalysisCardState aiState,
 }) {
-  if (!authSession.canAccessProtectedData) {
+  if (!canAccessProtectedData) {
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(
@@ -338,8 +335,7 @@ TodayAiSummaryCardContent buildAiCardContent({
     );
   }
 
-  final settings = settingsAsync?.asData?.value;
-  if (settings?.aiSummariesEnabled == false || aiState.isDisabled) {
+  if (aiSummariesEnabled == false || aiState.isDisabled) {
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(

@@ -20,7 +20,6 @@ const _sidebarAnimationCurve = Curves.easeInOutCubic;
 const _sidebarNarrowThreshold = 120.0;
 const _sidebarBrandThreshold = 160.0;
 const _sidebarFullThreshold = 200.0;
-const _contentParallax = 8.0;
 
 class ShellPage extends ConsumerWidget {
   const ShellPage({super.key, this.navigationShell});
@@ -50,16 +49,12 @@ class ShellPage extends ConsumerWidget {
     final typography = width < AppBreakpoints.mobile
         ? AppTypographyTokens.mobile(scheme.onSurface)
         : AppTypographyTokens.desktop(scheme.onSurface);
-    final isDesktop = width >= AppBreakpoints.desktop;
     const selectedNavColor = AppColorTokens.health;
     final unselectedNavColor = surface.body;
     final isHiddenBranch =
         navigationShell != null && currentIndex >= ShellTab.values.length;
 
-    final sidebarAsync = ref.watch(shellSidebarProvider);
-    final sidebarState = sidebarAsync.value ?? const ShellSidebarState();
-    final isCollapsed = sidebarState.collapsed;
-    final sidebarWidth = sidebarState.width;
+    final isDesktop = width >= AppBreakpoints.desktop;
 
     final destinations = ShellTab.values
         .map(
@@ -82,26 +77,6 @@ class ShellPage extends ConsumerWidget {
       }
     }
 
-    void onSettings() {
-      if (navigationShell != null) {
-        navigationShell!.goBranch(ShellBranch.settings.index);
-      } else {
-        context.push('/settings');
-      }
-    }
-
-    void onHelp() {
-      if (navigationShell != null) {
-        navigationShell!.goBranch(ShellBranch.assistant.index);
-      } else {
-        context.push('/assistant');
-      }
-    }
-
-    Future<void> onToggleSidebar() async {
-      await ref.read(shellSidebarProvider.notifier).toggle();
-    }
-
     return Scaffold(
       backgroundColor: surface.canvasSoft,
       body: isDesktop
@@ -111,31 +86,12 @@ class ShellPage extends ConsumerWidget {
                 child: Row(
                   children: [
                     _DesktopSidebar(
-                      currentIndex: currentIndex,
-                      collapsed: isCollapsed,
-                      targetWidth: sidebarWidth,
-                      onSelect: onSelectTab,
-                      onSettings: onSettings,
-                      onHelp: onHelp,
-                      onToggle: onToggleSidebar,
+                      navigationShell: navigationShell!,
                       surface: surface,
-                      l10n: l10n,
                     ),
                     const SizedBox(width: AppSpacingTokens.md),
                     Expanded(
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween<double>(
-                          begin: isCollapsed ? 0.0 : -_contentParallax,
-                          end: isCollapsed ? 0.0 : -_contentParallax,
-                        ),
-                        duration: _sidebarAnimationDuration,
-                        curve: _sidebarAnimationCurve,
-                        builder: (context, offset, child) {
-                          return Transform.translate(
-                            offset: Offset(offset, 0),
-                            child: child,
-                          );
-                        },
+                      child: RepaintBoundary(
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             color: surface.canvas,
@@ -202,37 +158,21 @@ class ShellPage extends ConsumerWidget {
   }
 }
 
-class _DesktopSidebar extends StatefulWidget {
-  const _DesktopSidebar({
-    required this.currentIndex,
-    required this.collapsed,
-    required this.targetWidth,
-    required this.onSelect,
-    required this.onSettings,
-    required this.onHelp,
-    required this.onToggle,
-    required this.surface,
-    required this.l10n,
-  });
+class _DesktopSidebar extends ConsumerStatefulWidget {
+  const _DesktopSidebar({required this.navigationShell, required this.surface});
 
-  final int currentIndex;
-  final bool collapsed;
-  final double targetWidth;
-  final ValueChanged<int> onSelect;
-  final VoidCallback onSettings;
-  final VoidCallback onHelp;
-  final VoidCallback onToggle;
+  final StatefulNavigationShell navigationShell;
   final AppThemeSurface surface;
-  final AppLocalizations? l10n;
 
   @override
-  State<_DesktopSidebar> createState() => _DesktopSidebarState();
+  ConsumerState<_DesktopSidebar> createState() => _DesktopSidebarState();
 }
 
-class _DesktopSidebarState extends State<_DesktopSidebar>
+class _DesktopSidebarState extends ConsumerState<_DesktopSidebar>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late Animation<double> _widthAnimation;
+  late double _targetWidth;
 
   @override
   void initState() {
@@ -241,22 +181,8 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
       vsync: this,
       duration: _sidebarAnimationDuration,
     );
-    _widthAnimation = _alwaysTween(widget.targetWidth);
-  }
-
-  @override
-  void didUpdateWidget(covariant _DesktopSidebar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.targetWidth != widget.targetWidth) {
-      _widthAnimation =
-          Tween<double>(
-            begin: _widthAnimation.value,
-            end: widget.targetWidth,
-          ).animate(
-            CurvedAnimation(parent: _controller, curve: _sidebarAnimationCurve),
-          );
-      _controller.forward(from: 0);
-    }
+    _targetWidth = ShellSidebarDimensions.expandedWidth;
+    _widthAnimation = _alwaysTween(_targetWidth);
   }
 
   @override
@@ -270,12 +196,36 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
         CurvedAnimation(parent: _controller, curve: _sidebarAnimationCurve),
       );
 
+  void _onSelect(int index) => widget.navigationShell.goBranch(index);
+
+  void _onSettings() =>
+      widget.navigationShell.goBranch(ShellBranch.settings.index);
+
+  void _onHelp() =>
+      widget.navigationShell.goBranch(ShellBranch.assistant.index);
+
+  void _onToggle() => ref.read(shellSidebarProvider.notifier).toggle();
+
   @override
   Widget build(BuildContext context) {
+    final sidebarAsync = ref.watch(shellSidebarProvider);
+    final sidebarState = sidebarAsync.value ?? const ShellSidebarState();
+    final isCollapsed = sidebarState.collapsed;
+    final targetWidth = sidebarState.width;
+    final currentIndex = widget.navigationShell.currentIndex;
     final typography = AppTypographyTokens.desktop(
       Theme.of(context).colorScheme.onSurface,
     );
     final l10n = AppLocalizations.of(context);
+
+    if (_targetWidth != targetWidth) {
+      _targetWidth = targetWidth;
+      _widthAnimation =
+          Tween<double>(begin: _widthAnimation.value, end: targetWidth).animate(
+            CurvedAnimation(parent: _controller, curve: _sidebarAnimationCurve),
+          );
+      _controller.forward(from: 0);
+    }
 
     return MediaQuery.withClampedTextScaling(
       maxScaleFactor: 1.15,
@@ -319,10 +269,10 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _DesktopSidebarBrand(
-                      collapsed: widget.collapsed,
+                      collapsed: isCollapsed,
                       showBrand: showBrand,
                       brandOpacity: brandOpacity,
-                      onToggle: widget.onToggle,
+                      onToggle: _onToggle,
                     ),
                     const SizedBox(height: AppSpacingTokens.lg),
                     ...ShellTab.values.map(
@@ -332,11 +282,11 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
                         ),
                         child: _DesktopSidebarItem(
                           tab: tab,
-                          selected: widget.currentIndex == tab.index,
+                          selected: currentIndex == tab.index,
                           isNarrow: isNarrow,
                           labelOpacity: itemLabelOpacity,
                           label: tab.label(l10n),
-                          onTap: () => widget.onSelect(tab.index),
+                          onTap: () => _onSelect(tab.index),
                           typography: typography,
                           surface: widget.surface,
                         ),
@@ -348,7 +298,7 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
                       label: l10n?.desktopSidebarSettings ?? '设置',
                       isNarrow: isNarrow,
                       labelOpacity: itemLabelOpacity,
-                      onTap: widget.onSettings,
+                      onTap: _onSettings,
                       typography: typography,
                     ),
                     const SizedBox(height: AppSpacingTokens.xs),
@@ -357,7 +307,7 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
                       label: l10n?.desktopSidebarHelp ?? '帮助',
                       isNarrow: isNarrow,
                       labelOpacity: itemLabelOpacity,
-                      onTap: widget.onHelp,
+                      onTap: _onHelp,
                       typography: typography,
                     ),
                   ],

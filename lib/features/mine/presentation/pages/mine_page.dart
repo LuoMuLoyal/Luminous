@@ -9,6 +9,7 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/mine/data/repositories/mock_mine_repository.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_dashboard_view.dart';
+import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_sections.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -22,7 +23,13 @@ class MinePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authSession = ref.watch(authSessionProvider);
+    final userNickname = ref.watch(
+      authSessionProvider.select((s) => s.user?.nickname),
+    );
+    final userEmail = ref.watch(
+      authSessionProvider.select((s) => s.user?.email),
+    );
+    final userId = ref.watch(authSessionProvider.select((s) => s.user?.id));
     final dashboardAsync = ref.watch(mineDashboardProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
@@ -32,10 +39,10 @@ class MinePage extends ConsumerWidget {
       data: (dashboard) => MineDashboardView(dashboard: dashboard),
       loading: () => MineDashboardView(
         dashboard: MockMineRepository.loadingDashboard(
-          displayName: authSession.user?.nickname?.trim().isNotEmpty == true
-              ? authSession.user!.nickname!.trim()
-              : authSession.user?.email ?? authSession.user?.id,
-          email: authSession.user?.email ?? '',
+          displayName: userNickname?.trim().isNotEmpty == true
+              ? userNickname!.trim()
+              : userEmail ?? userId,
+          email: userEmail ?? '',
         ),
         isLoading: true,
       ),
@@ -43,42 +50,45 @@ class MinePage extends ConsumerWidget {
           MineErrorView(onRetry: () => ref.invalidate(mineDashboardProvider)),
     );
 
-    return isDesktop
-        ? _MineDesktopShell(
-            onRefresh: () => _refreshDashboard(ref),
-            topBar: MineTopBar(
-              onNotificationsTap: () => context.push('/notifications'),
-              onSettingsTap: () => context.push('/settings'),
-            ),
-            child: body,
-          )
-        : DecoratedBox(
-            decoration: BoxDecoration(color: surface.canvasSoft),
-            child: SafeArea(
-              bottom: false,
-              child: RefreshIndicator(
-                onRefresh: () => _refreshDashboard(ref),
-                child: ListView(
-                  key: const PageStorageKey<String>('mine-mobile-scroll'),
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.x5l,
-                  ),
-                  children: [
-                    MineTopBar(
-                      onNotificationsTap: () => context.push('/notifications'),
-                      onSettingsTap: () => context.push('/settings'),
+    return ShellDeferredContent(
+      child: isDesktop
+          ? _MineDesktopShell(
+              onRefresh: () => _refreshDashboard(ref),
+              topBar: MineTopBar(
+                onNotificationsTap: () => context.push('/notifications'),
+                onSettingsTap: () => context.push('/settings'),
+              ),
+              child: body,
+            )
+          : DecoratedBox(
+              decoration: BoxDecoration(color: surface.canvasSoft),
+              child: SafeArea(
+                bottom: false,
+                child: RefreshIndicator(
+                  onRefresh: () => _refreshDashboard(ref),
+                  child: ListView(
+                    key: const PageStorageKey<String>('mine-mobile-scroll'),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacingTokens.md,
+                      AppSpacingTokens.md,
+                      AppSpacingTokens.md,
+                      AppSpacingTokens.x5l,
                     ),
-                    const SizedBox(height: AppSpacingTokens.md),
-                    body,
-                  ],
+                    children: [
+                      MineTopBar(
+                        onNotificationsTap: () =>
+                            context.push('/notifications'),
+                        onSettingsTap: () => context.push('/settings'),
+                      ),
+                      const SizedBox(height: AppSpacingTokens.md),
+                      body,
+                    ],
+                  ),
                 ),
               ),
             ),
-          );
+    );
   }
 }
 

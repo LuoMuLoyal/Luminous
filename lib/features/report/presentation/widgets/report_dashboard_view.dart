@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class ReportDashboardView extends ConsumerWidget {
+class ReportDashboardView extends StatelessWidget {
   const ReportDashboardView({
     super.key,
     required this.dashboard,
-    required this.authSession,
+    required this.canAccessProtectedData,
+    this.aiSummariesEnabled,
     this.isLoading = false,
     this.dashboardQuery = const ReportDashboardQuery(
       range: ReportDashboardRange.last7Days,
@@ -37,7 +35,8 @@ class ReportDashboardView extends ConsumerWidget {
   });
 
   final ReportDashboard dashboard;
-  final AuthSessionState authSession;
+  final bool canAccessProtectedData;
+  final bool? aiSummariesEnabled;
   final bool isLoading;
   final ReportDashboardQuery dashboardQuery;
   final ValueChanged<ReportDashboardQuery>? onDashboardQueryChanged;
@@ -51,12 +50,11 @@ class ReportDashboardView extends ConsumerWidget {
   final DataExportRequestInFlightState exportRequestInFlight;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-    final settingsAsync = ref.watch(userSettingsControllerProvider);
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
@@ -65,13 +63,11 @@ class ReportDashboardView extends ConsumerWidget {
             l10n: l10n,
             surface: surface,
             typography: typography,
-            settingsAsync: settingsAsync,
           )
         : _buildMobileLayout(
             l10n: l10n,
             surface: surface,
             typography: typography,
-            settingsAsync: settingsAsync,
           );
 
     final scopedContent = AppSkeletonScope(
@@ -82,17 +78,23 @@ class ReportDashboardView extends ConsumerWidget {
       return scopedContent;
     }
 
-    return scopedContent
-        .animate()
-        .fadeIn(duration: 220.ms)
-        .slideY(begin: 0.02, end: 0);
+    return Animate(
+      effects: const [
+        FadeEffect(duration: Duration(milliseconds: 220)),
+        SlideEffect(
+          begin: Offset(0, 0.02),
+          end: Offset.zero,
+          duration: Duration(milliseconds: 220),
+        ),
+      ],
+      child: scopedContent,
+    );
   }
 
   Widget _buildMobileLayout({
     required AppLocalizations l10n,
     required AppThemeSurface surface,
     required AppTypographyScale typography,
-    required AsyncValue<UserSettingsDataDto>? settingsAsync,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,8 +138,8 @@ class ReportDashboardView extends ConsumerWidget {
         ReportAiSummarySection(
           key: const Key('report-ai-summary-section'),
           dashboard: dashboard,
-          authSession: authSession,
-          settingsAsync: settingsAsync,
+          canAccessProtectedData: canAccessProtectedData,
+          aiSummariesEnabled: aiSummariesEnabled,
           aiState: aiSummaryState,
           selectedRange: aiSummaryRange,
           onRangeChanged: onAiSummaryRangeChanged,
@@ -180,7 +182,6 @@ class ReportDashboardView extends ConsumerWidget {
     required AppLocalizations l10n,
     required AppThemeSurface surface,
     required AppTypographyScale typography,
-    required AsyncValue<UserSettingsDataDto>? settingsAsync,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,8 +220,8 @@ class ReportDashboardView extends ConsumerWidget {
               ReportAiSummarySection(
                 key: const Key('report-ai-summary-section'),
                 dashboard: dashboard,
-                authSession: authSession,
-                settingsAsync: settingsAsync,
+                canAccessProtectedData: canAccessProtectedData,
+                aiSummariesEnabled: aiSummariesEnabled,
                 aiState: aiSummaryState,
                 selectedRange: aiSummaryRange,
                 onRangeChanged: onAiSummaryRangeChanged,

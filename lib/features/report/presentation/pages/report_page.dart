@@ -18,9 +18,11 @@ import 'package:luminous/features/record/presentation/providers/record_dashboard
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/utils/report_ui_formatters.dart';
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
+import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 DataExportRequestInput _exportInputForKind(ReportExportKind kind) {
@@ -152,7 +154,19 @@ class ReportPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(authSessionProvider);
+    final canAccessProtectedData = ref.watch(
+      authSessionProvider.select((s) => s.canAccessProtectedData),
+    );
+    final isConfirmedSignedOut = ref.watch(
+      authSessionProvider.select((s) => s.isConfirmedSignedOut),
+    );
+    final aiSummariesEnabled = canAccessProtectedData
+        ? ref.watch(
+            userSettingsControllerProvider.select(
+              (s) => s.asData?.value.aiSummariesEnabled,
+            ),
+          )
+        : null;
     final selectedDashboardQuery = ref.watch(
       reportDashboardSelectedQueryProvider,
     );
@@ -165,10 +179,9 @@ class ReportPage extends ConsumerWidget {
     final aiSummaryState = ref.watch(
       reportAiSummaryControllerProvider(selectedAiSummaryRange),
     );
-    final latestExportRequest = ref
-        .watch(dataExportControllerProvider)
-        .asData
-        ?.value;
+    final latestExportRequest = ref.watch(
+      dataExportControllerProvider.select((s) => s.asData?.value),
+    );
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
@@ -192,30 +205,10 @@ class ReportPage extends ConsumerWidget {
       ),
     );
 
-    return dashboardAsync.when(
-      data: (dashboard) => isDesktop
-          ? _ReportDesktopShell(
-              onGenerate: () {
-                ref
-                    .read(
-                      reportAiSummaryControllerProvider(
-                        selectedAiSummaryRange,
-                      ).notifier,
-                    )
-                    .generate();
-              },
-              onSync: () => _refreshDashboard(ref),
-              onRefresh: () => _refreshDashboard(ref),
-              isGenerating: aiSummaryState.isLoading,
-              isSyncing: false,
-              topBar: ReportTopBar(
-                dateRangeLabel: dateRangeLabel,
-                selectedQuery: selectedDashboardQuery,
-                onQueryChanged: (query) {
-                  ref
-                      .read(reportDashboardSelectedQueryProvider.notifier)
-                      .setQuery(query);
-                },
+    return ShellDeferredContent(
+      child: dashboardAsync.when(
+        data: (dashboard) => isDesktop
+            ? _ReportDesktopShell(
                 onGenerate: () {
                   ref
                       .read(
@@ -226,73 +219,74 @@ class ReportPage extends ConsumerWidget {
                       .generate();
                 },
                 onSync: () => _refreshDashboard(ref),
+                onRefresh: () => _refreshDashboard(ref),
                 isGenerating: aiSummaryState.isLoading,
                 isSyncing: false,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (session.isConfirmedSignedOut) ...[
-                    _ReportSignedOutNotice(),
-                    const SizedBox(height: AppSpacingTokens.md),
+                topBar: ReportTopBar(
+                  dateRangeLabel: dateRangeLabel,
+                  selectedQuery: selectedDashboardQuery,
+                  onQueryChanged: (query) {
+                    ref
+                        .read(reportDashboardSelectedQueryProvider.notifier)
+                        .setQuery(query);
+                  },
+                  onGenerate: () {
+                    ref
+                        .read(
+                          reportAiSummaryControllerProvider(
+                            selectedAiSummaryRange,
+                          ).notifier,
+                        )
+                        .generate();
+                  },
+                  onSync: () => _refreshDashboard(ref),
+                  isGenerating: aiSummaryState.isLoading,
+                  isSyncing: false,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isConfirmedSignedOut) ...[
+                      _ReportSignedOutNotice(),
+                      const SizedBox(height: AppSpacingTokens.md),
+                    ],
+                    ReportDashboardView(
+                      dashboard: dashboard,
+                      canAccessProtectedData: canAccessProtectedData,
+                      aiSummariesEnabled: aiSummariesEnabled,
+                      dashboardQuery: selectedDashboardQuery,
+                      onDashboardQueryChanged: (query) {
+                        ref
+                            .read(reportDashboardSelectedQueryProvider.notifier)
+                            .setQuery(query);
+                      },
+                      aiSummaryState: aiSummaryState,
+                      aiSummaryRange: selectedAiSummaryRange,
+                      latestExportRequest: latestExportRequest,
+                      exportRequestInFlight: exportRequestInFlight,
+                      onAiSummaryRangeChanged: (range) {
+                        ref
+                            .read(reportAiSummarySelectedRangeProvider.notifier)
+                            .setRange(range);
+                      },
+                      onGenerateAiSummary: () async {
+                        await ref
+                            .read(
+                              reportAiSummaryControllerProvider(
+                                selectedAiSummaryRange,
+                              ).notifier,
+                            )
+                            .generate();
+                      },
+                      onExportActionTap: (kind) =>
+                          _handleExportAction(context, ref, kind),
+                      onMetricSelected: (kind) =>
+                          _openRecordFilter(context, ref, kind),
+                    ),
                   ],
-                  ReportDashboardView(
-                    dashboard: dashboard,
-                    authSession: session,
-                    dashboardQuery: selectedDashboardQuery,
-                    onDashboardQueryChanged: (query) {
-                      ref
-                          .read(reportDashboardSelectedQueryProvider.notifier)
-                          .setQuery(query);
-                    },
-                    aiSummaryState: aiSummaryState,
-                    aiSummaryRange: selectedAiSummaryRange,
-                    latestExportRequest: latestExportRequest,
-                    exportRequestInFlight: exportRequestInFlight,
-                    onAiSummaryRangeChanged: (range) {
-                      ref
-                          .read(reportAiSummarySelectedRangeProvider.notifier)
-                          .setRange(range);
-                    },
-                    onGenerateAiSummary: () async {
-                      await ref
-                          .read(
-                            reportAiSummaryControllerProvider(
-                              selectedAiSummaryRange,
-                            ).notifier,
-                          )
-                          .generate();
-                    },
-                    onExportActionTap: (kind) =>
-                        _handleExportAction(context, ref, kind),
-                    onMetricSelected: (kind) =>
-                        _openRecordFilter(context, ref, kind),
-                  ),
-                ],
-              ),
-            )
-          : _ReportMobileShell(
-              onGenerate: () {
-                ref
-                    .read(
-                      reportAiSummaryControllerProvider(
-                        selectedAiSummaryRange,
-                      ).notifier,
-                    )
-                    .generate();
-              },
-              onSync: () => _refreshDashboard(ref),
-              onRefresh: () => _refreshDashboard(ref),
-              isGenerating: aiSummaryState.isLoading,
-              isSyncing: false,
-              topBar: ReportTopBar(
-                dateRangeLabel: dateRangeLabel,
-                selectedQuery: selectedDashboardQuery,
-                onQueryChanged: (query) {
-                  ref
-                      .read(reportDashboardSelectedQueryProvider.notifier)
-                      .setQuery(query);
-                },
+                ),
+              )
+            : _ReportMobileShell(
                 onGenerate: () {
                   ref
                       .read(
@@ -303,151 +297,184 @@ class ReportPage extends ConsumerWidget {
                       .generate();
                 },
                 onSync: () => _refreshDashboard(ref),
+                onRefresh: () => _refreshDashboard(ref),
                 isGenerating: aiSummaryState.isLoading,
                 isSyncing: false,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (session.isConfirmedSignedOut) ...[
-                    _ReportSignedOutNotice(),
-                    const SizedBox(height: AppSpacingTokens.md),
+                topBar: ReportTopBar(
+                  dateRangeLabel: dateRangeLabel,
+                  selectedQuery: selectedDashboardQuery,
+                  onQueryChanged: (query) {
+                    ref
+                        .read(reportDashboardSelectedQueryProvider.notifier)
+                        .setQuery(query);
+                  },
+                  onGenerate: () {
+                    ref
+                        .read(
+                          reportAiSummaryControllerProvider(
+                            selectedAiSummaryRange,
+                          ).notifier,
+                        )
+                        .generate();
+                  },
+                  onSync: () => _refreshDashboard(ref),
+                  isGenerating: aiSummaryState.isLoading,
+                  isSyncing: false,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isConfirmedSignedOut) ...[
+                      _ReportSignedOutNotice(),
+                      const SizedBox(height: AppSpacingTokens.md),
+                    ],
+                    ReportDashboardView(
+                      dashboard: dashboard,
+                      canAccessProtectedData: canAccessProtectedData,
+                      aiSummariesEnabled: aiSummariesEnabled,
+                      dashboardQuery: selectedDashboardQuery,
+                      onDashboardQueryChanged: (query) {
+                        ref
+                            .read(reportDashboardSelectedQueryProvider.notifier)
+                            .setQuery(query);
+                      },
+                      aiSummaryState: aiSummaryState,
+                      aiSummaryRange: selectedAiSummaryRange,
+                      latestExportRequest: latestExportRequest,
+                      exportRequestInFlight: exportRequestInFlight,
+                      onAiSummaryRangeChanged: (range) {
+                        ref
+                            .read(reportAiSummarySelectedRangeProvider.notifier)
+                            .setRange(range);
+                      },
+                      onGenerateAiSummary: () async {
+                        await ref
+                            .read(
+                              reportAiSummaryControllerProvider(
+                                selectedAiSummaryRange,
+                              ).notifier,
+                            )
+                            .generate();
+                      },
+                      onExportActionTap: (kind) =>
+                          _handleExportAction(context, ref, kind),
+                      onMetricSelected: (kind) =>
+                          _openRecordFilter(context, ref, kind),
+                    ),
                   ],
-                  ReportDashboardView(
-                    dashboard: dashboard,
-                    authSession: session,
-                    dashboardQuery: selectedDashboardQuery,
-                    onDashboardQueryChanged: (query) {
-                      ref
-                          .read(reportDashboardSelectedQueryProvider.notifier)
-                          .setQuery(query);
-                    },
-                    aiSummaryState: aiSummaryState,
-                    aiSummaryRange: selectedAiSummaryRange,
-                    latestExportRequest: latestExportRequest,
-                    exportRequestInFlight: exportRequestInFlight,
-                    onAiSummaryRangeChanged: (range) {
-                      ref
-                          .read(reportAiSummarySelectedRangeProvider.notifier)
-                          .setRange(range);
-                    },
-                    onGenerateAiSummary: () async {
-                      await ref
-                          .read(
-                            reportAiSummaryControllerProvider(
-                              selectedAiSummaryRange,
-                            ).notifier,
-                          )
-                          .generate();
-                    },
-                    onExportActionTap: (kind) =>
-                        _handleExportAction(context, ref, kind),
-                    onMetricSelected: (kind) =>
-                        _openRecordFilter(context, ref, kind),
+                ),
+              ),
+        loading: () => isDesktop
+            ? _ReportDesktopShell(
+                isGenerating: aiSummaryState.isLoading,
+                isSyncing: canAccessProtectedData,
+                onGenerate: () => ref.invalidate(
+                  reportDashboardProvider(selectedDashboardQuery),
+                ),
+                onSync: () => ref.invalidate(
+                  reportDashboardProvider(selectedDashboardQuery),
+                ),
+                onRefresh: () => _refreshDashboard(ref),
+                topBar: ReportTopBar(
+                  dateRangeLabel: dateRangeLabel,
+                  selectedQuery: selectedDashboardQuery,
+                  onQueryChanged: (query) {
+                    ref
+                        .read(reportDashboardSelectedQueryProvider.notifier)
+                        .setQuery(query);
+                  },
+                  onGenerate: () => ref.invalidate(
+                    reportDashboardProvider(selectedDashboardQuery),
                   ),
-                ],
-              ),
-            ),
-      loading: () => isDesktop
-          ? _ReportDesktopShell(
-              isGenerating: aiSummaryState.isLoading,
-              isSyncing: session.canAccessProtectedData,
-              onGenerate: () =>
-                  ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-              onSync: () =>
-                  ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-              onRefresh: () => _refreshDashboard(ref),
-              topBar: ReportTopBar(
-                dateRangeLabel: dateRangeLabel,
-                selectedQuery: selectedDashboardQuery,
-                onQueryChanged: (query) {
-                  ref
-                      .read(reportDashboardSelectedQueryProvider.notifier)
-                      .setQuery(query);
-                },
-                onGenerate: () =>
-                    ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-                onSync: () =>
-                    ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
+                  onSync: () => ref.invalidate(
+                    reportDashboardProvider(selectedDashboardQuery),
+                  ),
+                  isGenerating: aiSummaryState.isLoading,
+                  isSyncing: canAccessProtectedData,
+                ),
+                child: ReportDashboardView(
+                  dashboard: MockReportRepository.previewDashboard,
+                  canAccessProtectedData: canAccessProtectedData,
+                  aiSummariesEnabled: aiSummariesEnabled,
+                  isLoading: true,
+                  dashboardQuery: selectedDashboardQuery,
+                  onDashboardQueryChanged: (query) {
+                    ref
+                        .read(reportDashboardSelectedQueryProvider.notifier)
+                        .setQuery(query);
+                  },
+                  aiSummaryRange: selectedAiSummaryRange,
+                  latestExportRequest: latestExportRequest,
+                  exportRequestInFlight: exportRequestInFlight,
+                  onMetricSelected: (kind) =>
+                      _openRecordFilter(context, ref, kind),
+                ),
+              )
+            : _ReportMobileShell(
                 isGenerating: aiSummaryState.isLoading,
-                isSyncing: session.canAccessProtectedData,
+                isSyncing: canAccessProtectedData,
+                onGenerate: () => ref.invalidate(
+                  reportDashboardProvider(selectedDashboardQuery),
+                ),
+                onSync: () => ref.invalidate(
+                  reportDashboardProvider(selectedDashboardQuery),
+                ),
+                onRefresh: () => _refreshDashboard(ref),
+                topBar: ReportTopBar(
+                  dateRangeLabel: dateRangeLabel,
+                  selectedQuery: selectedDashboardQuery,
+                  onQueryChanged: (query) {
+                    ref
+                        .read(reportDashboardSelectedQueryProvider.notifier)
+                        .setQuery(query);
+                  },
+                  onGenerate: () => ref.invalidate(
+                    reportDashboardProvider(selectedDashboardQuery),
+                  ),
+                  onSync: () => ref.invalidate(
+                    reportDashboardProvider(selectedDashboardQuery),
+                  ),
+                  isGenerating: aiSummaryState.isLoading,
+                  isSyncing: canAccessProtectedData,
+                ),
+                child: ReportDashboardView(
+                  dashboard: MockReportRepository.previewDashboard,
+                  canAccessProtectedData: canAccessProtectedData,
+                  aiSummariesEnabled: aiSummariesEnabled,
+                  isLoading: true,
+                  dashboardQuery: selectedDashboardQuery,
+                  onDashboardQueryChanged: (query) {
+                    ref
+                        .read(reportDashboardSelectedQueryProvider.notifier)
+                        .setQuery(query);
+                  },
+                  aiSummaryRange: selectedAiSummaryRange,
+                  latestExportRequest: latestExportRequest,
+                  exportRequestInFlight: exportRequestInFlight,
+                  onMetricSelected: (kind) =>
+                      _openRecordFilter(context, ref, kind),
+                ),
               ),
-              child: ReportDashboardView(
-                dashboard: MockReportRepository.previewDashboard,
-                authSession: session,
-                isLoading: true,
-                dashboardQuery: selectedDashboardQuery,
-                onDashboardQueryChanged: (query) {
-                  ref
-                      .read(reportDashboardSelectedQueryProvider.notifier)
-                      .setQuery(query);
-                },
-                aiSummaryRange: selectedAiSummaryRange,
-                latestExportRequest: latestExportRequest,
-                exportRequestInFlight: exportRequestInFlight,
-                onMetricSelected: (kind) =>
-                    _openRecordFilter(context, ref, kind),
-              ),
-            )
-          : _ReportMobileShell(
-              isGenerating: aiSummaryState.isLoading,
-              isSyncing: session.canAccessProtectedData,
-              onGenerate: () =>
-                  ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-              onSync: () =>
-                  ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-              onRefresh: () => _refreshDashboard(ref),
-              topBar: ReportTopBar(
-                dateRangeLabel: dateRangeLabel,
-                selectedQuery: selectedDashboardQuery,
-                onQueryChanged: (query) {
-                  ref
-                      .read(reportDashboardSelectedQueryProvider.notifier)
-                      .setQuery(query);
-                },
-                onGenerate: () =>
-                    ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-                onSync: () =>
-                    ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-                isGenerating: aiSummaryState.isLoading,
-                isSyncing: session.canAccessProtectedData,
-              ),
-              child: ReportDashboardView(
-                dashboard: MockReportRepository.previewDashboard,
-                authSession: session,
-                isLoading: true,
-                dashboardQuery: selectedDashboardQuery,
-                onDashboardQueryChanged: (query) {
-                  ref
-                      .read(reportDashboardSelectedQueryProvider.notifier)
-                      .setQuery(query);
-                },
-                aiSummaryRange: selectedAiSummaryRange,
-                latestExportRequest: latestExportRequest,
-                exportRequestInFlight: exportRequestInFlight,
-                onMetricSelected: (kind) =>
-                    _openRecordFilter(context, ref, kind),
+        error: (error, _) {
+          final l10n = AppLocalizations.of(context)!;
+          return DecoratedBox(
+            decoration: BoxDecoration(color: surface.canvasSoft),
+            child: SafeArea(
+              bottom: false,
+              child: AppStateErrorView(
+                title: l10n.reportErrorTitle,
+                description: l10n.reportErrorDescription,
+                icon: Icons.bar_chart_rounded,
+                actionLabel: l10n.todayRetryAction,
+                onAction: () => ref.invalidate(
+                  reportDashboardProvider(selectedDashboardQuery),
+                ),
+                tone: AppStateTone.warning,
               ),
             ),
-      error: (error, _) {
-        final l10n = AppLocalizations.of(context)!;
-        return DecoratedBox(
-          decoration: BoxDecoration(color: surface.canvasSoft),
-          child: SafeArea(
-            bottom: false,
-            child: AppStateErrorView(
-              title: l10n.reportErrorTitle,
-              description: l10n.reportErrorDescription,
-              icon: Icons.bar_chart_rounded,
-              actionLabel: l10n.todayRetryAction,
-              onAction: () => ref.invalidate(
-                reportDashboardProvider(selectedDashboardQuery),
-              ),
-              tone: AppStateTone.warning,
-            ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

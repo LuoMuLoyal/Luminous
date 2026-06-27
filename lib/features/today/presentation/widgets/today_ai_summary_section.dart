@@ -26,21 +26,26 @@ class TodayAiSummarySection extends ConsumerWidget {
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-    final authSession = ref.watch(authSessionProvider);
-    final settingsAsync = authSession.canAccessProtectedData
-        ? ref.watch(userSettingsControllerProvider)
+    final canAccessProtectedData = ref.watch(
+      authSessionProvider.select((s) => s.canAccessProtectedData),
+    );
+    final aiSummariesEnabled = canAccessProtectedData
+        ? ref.watch(
+            userSettingsControllerProvider.select(
+              (s) => s.asData?.value.aiSummariesEnabled,
+            ),
+          )
         : null;
     final aiState = ref.watch(todayAiAnalysisControllerProvider);
     final content = buildAiCardContent(
       l10n: l10n,
       dashboard: dashboard,
-      authSession: authSession,
-      settingsAsync: settingsAsync,
+      canAccessProtectedData: canAccessProtectedData,
+      aiSummariesEnabled: aiSummariesEnabled,
       aiState: aiState,
     );
     final isSettingsDisabled =
-        settingsAsync?.asData?.value.aiSummariesEnabled == false ||
-        aiState.isDisabled;
+        aiSummariesEnabled == false || aiState.isDisabled;
     final actionLabel = aiState.isLoading
         ? l10n.todayAiSummaryGeneratingAction
         : isSettingsDisabled
@@ -102,13 +107,12 @@ class TodayAiSummarySection extends ConsumerWidget {
                   onPressed: aiState.isLoading
                       ? null
                       : () async {
-                          if (!authSession.canAccessProtectedData) {
+                          if (!canAccessProtectedData) {
                             await pushAuthRequiredRoute(context, '/today');
                             return;
                           }
 
-                          final settings = settingsAsync?.asData?.value;
-                          if (settings?.aiSummariesEnabled == false) {
+                          if (aiSummariesEnabled == false) {
                             context.push('/settings');
                             return;
                           }
