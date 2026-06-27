@@ -567,6 +567,7 @@ class _ReportDesktopShell extends StatelessWidget {
   }
 }
 
+class _ReportMobileShell extends StatelessWidget {
   const _ReportMobileShell({
     required this.child,
     required this.topBar,
