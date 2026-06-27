@@ -143,11 +143,11 @@ class _DesktopTodayDashboard extends StatelessWidget {
         ),
         children: [
           TodayTopBar(moment: dashboard.user.moment),
-          const SizedBox(height: AppSpacingTokens.lg),
+          const SizedBox(height: AppSpacingTokens.xl),
           TodayOverviewSection(dashboard: dashboard),
-          const SizedBox(height: AppSpacingTokens.lg),
+          const SizedBox(height: AppSpacingTokens.xl),
           TodayAiSummarySection(dashboard: dashboard),
-          const SizedBox(height: AppSpacingTokens.lg),
+          const SizedBox(height: AppSpacingTokens.xl),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -156,12 +156,12 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 child: Column(
                   children: [
                     TodayPrioritySection(dashboard: dashboard),
-                    const SizedBox(height: AppSpacingTokens.lg),
+                    const SizedBox(height: AppSpacingTokens.xl),
                     TodayTodoSection(dashboard: dashboard),
                   ],
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.lg),
+              const SizedBox(width: AppSpacingTokens.xl),
               Expanded(
                 flex: 5,
                 child: Column(
