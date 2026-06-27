@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -24,6 +25,8 @@ class MinePage extends ConsumerWidget {
     final authSession = ref.watch(authSessionProvider);
     final dashboardAsync = ref.watch(mineDashboardProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= AppBreakpoints.desktop;
 
     final body = dashboardAsync.when(
       data: (dashboard) => MineDashboardView(dashboard: dashboard),
@@ -40,33 +43,42 @@ class MinePage extends ConsumerWidget {
           MineErrorView(onRetry: () => ref.invalidate(mineDashboardProvider)),
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
-      child: SafeArea(
-        bottom: false,
-        child: RefreshIndicator(
-          onRefresh: () => _refreshDashboard(ref),
-          child: ListView(
-            key: const PageStorageKey<String>('mine-mobile-scroll'),
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacingTokens.md,
-              AppSpacingTokens.md,
-              AppSpacingTokens.md,
-              AppSpacingTokens.x5l,
+    return isDesktop
+        ? _MineDesktopShell(
+            onRefresh: () => _refreshDashboard(ref),
+            topBar: MineTopBar(
+              onNotificationsTap: () => context.push('/notifications'),
+              onSettingsTap: () => context.push('/settings'),
             ),
-            children: [
-              MineTopBar(
-                onNotificationsTap: () => context.push('/notifications'),
-                onSettingsTap: () => context.push('/settings'),
+            child: body,
+          )
+        : DecoratedBox(
+            decoration: BoxDecoration(color: surface.canvasSoft),
+            child: SafeArea(
+              bottom: false,
+              child: RefreshIndicator(
+                onRefresh: () => _refreshDashboard(ref),
+                child: ListView(
+                  key: const PageStorageKey<String>('mine-mobile-scroll'),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacingTokens.md,
+                    AppSpacingTokens.md,
+                    AppSpacingTokens.md,
+                    AppSpacingTokens.x5l,
+                  ),
+                  children: [
+                    MineTopBar(
+                      onNotificationsTap: () => context.push('/notifications'),
+                      onSettingsTap: () => context.push('/settings'),
+                    ),
+                    const SizedBox(height: AppSpacingTokens.md),
+                    body,
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpacingTokens.md),
-              body,
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }
 
@@ -86,6 +98,48 @@ class MineErrorView extends StatelessWidget {
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: AppStateTone.warning,
+    );
+  }
+}
+
+class _MineDesktopShell extends StatelessWidget {
+  const _MineDesktopShell({
+    required this.child,
+    required this.topBar,
+    required this.onRefresh,
+  });
+
+  final Widget child;
+  final MineTopBar topBar;
+  final Future<void> Function() onRefresh;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(color: surface.canvasSoft),
+      child: SafeArea(
+        bottom: false,
+        child: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: ListView(
+            key: const PageStorageKey<String>('mine-desktop-scroll'),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacingTokens.xl,
+              AppSpacingTokens.xl,
+              AppSpacingTokens.xl,
+              AppSpacingTokens.xl,
+            ),
+            children: [
+              topBar,
+              const SizedBox(height: AppSpacingTokens.lg),
+              child,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

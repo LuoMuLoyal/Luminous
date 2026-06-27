@@ -4,6 +4,7 @@ import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -170,6 +171,8 @@ class ReportPage extends ConsumerWidget {
         ?.value;
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= AppBreakpoints.desktop;
 
     final dateRangeLabel = dashboardAsync.when(
       data: (dashboard) => reportDashboardDateRangeLabel(
@@ -190,68 +193,10 @@ class ReportPage extends ConsumerWidget {
     );
 
     return dashboardAsync.when(
-      data: (dashboard) => _ReportMobileShell(
-        onGenerate: () {
-          ref
-              .read(
-                reportAiSummaryControllerProvider(
-                  selectedAiSummaryRange,
-                ).notifier,
-              )
-              .generate();
-        },
-        onSync: () => _refreshDashboard(ref),
-        onRefresh: () => _refreshDashboard(ref),
-        isGenerating: aiSummaryState.isLoading,
-        isSyncing: false,
-        topBar: ReportTopBar(
-          dateRangeLabel: dateRangeLabel,
-          selectedQuery: selectedDashboardQuery,
-          onQueryChanged: (query) {
-            ref
-                .read(reportDashboardSelectedQueryProvider.notifier)
-                .setQuery(query);
-          },
-          onGenerate: () {
-            ref
-                .read(
-                  reportAiSummaryControllerProvider(
-                    selectedAiSummaryRange,
-                  ).notifier,
-                )
-                .generate();
-          },
-          onSync: () => _refreshDashboard(ref),
-          isGenerating: aiSummaryState.isLoading,
-          isSyncing: false,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (session.isConfirmedSignedOut) ...[
-              _ReportSignedOutNotice(),
-              const SizedBox(height: AppSpacingTokens.md),
-            ],
-            ReportDashboardView(
-              dashboard: dashboard,
-              authSession: session,
-              dashboardQuery: selectedDashboardQuery,
-              onDashboardQueryChanged: (query) {
+      data: (dashboard) => isDesktop
+          ? _ReportDesktopShell(
+              onGenerate: () {
                 ref
-                    .read(reportDashboardSelectedQueryProvider.notifier)
-                    .setQuery(query);
-              },
-              aiSummaryState: aiSummaryState,
-              aiSummaryRange: selectedAiSummaryRange,
-              latestExportRequest: latestExportRequest,
-              exportRequestInFlight: exportRequestInFlight,
-              onAiSummaryRangeChanged: (range) {
-                ref
-                    .read(reportAiSummarySelectedRangeProvider.notifier)
-                    .setRange(range);
-              },
-              onGenerateAiSummary: () async {
-                await ref
                     .read(
                       reportAiSummaryControllerProvider(
                         selectedAiSummaryRange,
@@ -259,52 +204,231 @@ class ReportPage extends ConsumerWidget {
                     )
                     .generate();
               },
-              onExportActionTap: (kind) =>
-                  _handleExportAction(context, ref, kind),
-              onMetricSelected: (kind) => _openRecordFilter(context, ref, kind),
+              onSync: () => _refreshDashboard(ref),
+              onRefresh: () => _refreshDashboard(ref),
+              isGenerating: aiSummaryState.isLoading,
+              isSyncing: false,
+              topBar: ReportTopBar(
+                dateRangeLabel: dateRangeLabel,
+                selectedQuery: selectedDashboardQuery,
+                onQueryChanged: (query) {
+                  ref
+                      .read(reportDashboardSelectedQueryProvider.notifier)
+                      .setQuery(query);
+                },
+                onGenerate: () {
+                  ref
+                      .read(
+                        reportAiSummaryControllerProvider(
+                          selectedAiSummaryRange,
+                        ).notifier,
+                      )
+                      .generate();
+                },
+                onSync: () => _refreshDashboard(ref),
+                isGenerating: aiSummaryState.isLoading,
+                isSyncing: false,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (session.isConfirmedSignedOut) ...[
+                    _ReportSignedOutNotice(),
+                    const SizedBox(height: AppSpacingTokens.md),
+                  ],
+                  ReportDashboardView(
+                    dashboard: dashboard,
+                    authSession: session,
+                    dashboardQuery: selectedDashboardQuery,
+                    onDashboardQueryChanged: (query) {
+                      ref
+                          .read(reportDashboardSelectedQueryProvider.notifier)
+                          .setQuery(query);
+                    },
+                    aiSummaryState: aiSummaryState,
+                    aiSummaryRange: selectedAiSummaryRange,
+                    latestExportRequest: latestExportRequest,
+                    exportRequestInFlight: exportRequestInFlight,
+                    onAiSummaryRangeChanged: (range) {
+                      ref
+                          .read(reportAiSummarySelectedRangeProvider.notifier)
+                          .setRange(range);
+                    },
+                    onGenerateAiSummary: () async {
+                      await ref
+                          .read(
+                            reportAiSummaryControllerProvider(
+                              selectedAiSummaryRange,
+                            ).notifier,
+                          )
+                          .generate();
+                    },
+                    onExportActionTap: (kind) =>
+                        _handleExportAction(context, ref, kind),
+                    onMetricSelected: (kind) =>
+                        _openRecordFilter(context, ref, kind),
+                  ),
+                ],
+              ),
+            )
+          : _ReportMobileShell(
+              onGenerate: () {
+                ref
+                    .read(
+                      reportAiSummaryControllerProvider(
+                        selectedAiSummaryRange,
+                      ).notifier,
+                    )
+                    .generate();
+              },
+              onSync: () => _refreshDashboard(ref),
+              onRefresh: () => _refreshDashboard(ref),
+              isGenerating: aiSummaryState.isLoading,
+              isSyncing: false,
+              topBar: ReportTopBar(
+                dateRangeLabel: dateRangeLabel,
+                selectedQuery: selectedDashboardQuery,
+                onQueryChanged: (query) {
+                  ref
+                      .read(reportDashboardSelectedQueryProvider.notifier)
+                      .setQuery(query);
+                },
+                onGenerate: () {
+                  ref
+                      .read(
+                        reportAiSummaryControllerProvider(
+                          selectedAiSummaryRange,
+                        ).notifier,
+                      )
+                      .generate();
+                },
+                onSync: () => _refreshDashboard(ref),
+                isGenerating: aiSummaryState.isLoading,
+                isSyncing: false,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (session.isConfirmedSignedOut) ...[
+                    _ReportSignedOutNotice(),
+                    const SizedBox(height: AppSpacingTokens.md),
+                  ],
+                  ReportDashboardView(
+                    dashboard: dashboard,
+                    authSession: session,
+                    dashboardQuery: selectedDashboardQuery,
+                    onDashboardQueryChanged: (query) {
+                      ref
+                          .read(reportDashboardSelectedQueryProvider.notifier)
+                          .setQuery(query);
+                    },
+                    aiSummaryState: aiSummaryState,
+                    aiSummaryRange: selectedAiSummaryRange,
+                    latestExportRequest: latestExportRequest,
+                    exportRequestInFlight: exportRequestInFlight,
+                    onAiSummaryRangeChanged: (range) {
+                      ref
+                          .read(reportAiSummarySelectedRangeProvider.notifier)
+                          .setRange(range);
+                    },
+                    onGenerateAiSummary: () async {
+                      await ref
+                          .read(
+                            reportAiSummaryControllerProvider(
+                              selectedAiSummaryRange,
+                            ).notifier,
+                          )
+                          .generate();
+                    },
+                    onExportActionTap: (kind) =>
+                        _handleExportAction(context, ref, kind),
+                    onMetricSelected: (kind) =>
+                        _openRecordFilter(context, ref, kind),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-      loading: () => _ReportMobileShell(
-        isGenerating: aiSummaryState.isLoading,
-        isSyncing: session.canAccessProtectedData,
-        onGenerate: () =>
-            ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-        onSync: () =>
-            ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-        onRefresh: () => _refreshDashboard(ref),
-        topBar: ReportTopBar(
-          dateRangeLabel: dateRangeLabel,
-          selectedQuery: selectedDashboardQuery,
-          onQueryChanged: (query) {
-            ref
-                .read(reportDashboardSelectedQueryProvider.notifier)
-                .setQuery(query);
-          },
-          onGenerate: () =>
-              ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-          onSync: () =>
-              ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
-          isGenerating: aiSummaryState.isLoading,
-          isSyncing: session.canAccessProtectedData,
-        ),
-        child: ReportDashboardView(
-          dashboard: MockReportRepository.previewDashboard,
-          authSession: session,
-          isLoading: true,
-          dashboardQuery: selectedDashboardQuery,
-          onDashboardQueryChanged: (query) {
-            ref
-                .read(reportDashboardSelectedQueryProvider.notifier)
-                .setQuery(query);
-          },
-          aiSummaryRange: selectedAiSummaryRange,
-          latestExportRequest: latestExportRequest,
-          exportRequestInFlight: exportRequestInFlight,
-          onMetricSelected: (kind) => _openRecordFilter(context, ref, kind),
-        ),
-      ),
+      loading: () => isDesktop
+          ? _ReportDesktopShell(
+              isGenerating: aiSummaryState.isLoading,
+              isSyncing: session.canAccessProtectedData,
+              onGenerate: () =>
+                  ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
+              onSync: () =>
+                  ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
+              onRefresh: () => _refreshDashboard(ref),
+              topBar: ReportTopBar(
+                dateRangeLabel: dateRangeLabel,
+                selectedQuery: selectedDashboardQuery,
+                onQueryChanged: (query) {
+                  ref
+                      .read(reportDashboardSelectedQueryProvider.notifier)
+                      .setQuery(query);
+                },
+                onGenerate: () =>
+                    ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
+                onSync: () =>
+                    ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
+                isGenerating: aiSummaryState.isLoading,
+                isSyncing: session.canAccessProtectedData,
+              ),
+              child: ReportDashboardView(
+                dashboard: MockReportRepository.previewDashboard,
+                authSession: session,
+                isLoading: true,
+                dashboardQuery: selectedDashboardQuery,
+                onDashboardQueryChanged: (query) {
+                  ref
+                      .read(reportDashboardSelectedQueryProvider.notifier)
+                      .setQuery(query);
+                },
+                aiSummaryRange: selectedAiSummaryRange,
+                latestExportRequest: latestExportRequest,
+                exportRequestInFlight: exportRequestInFlight,
+                onMetricSelected: (kind) =>
+                    _openRecordFilter(context, ref, kind),
+              ),
+            )
+          : _ReportMobileShell(
+              isGenerating: aiSummaryState.isLoading,
+              isSyncing: session.canAccessProtectedData,
+              onGenerate: () =>
+                  ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
+              onSync: () =>
+                  ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
+              onRefresh: () => _refreshDashboard(ref),
+              topBar: ReportTopBar(
+                dateRangeLabel: dateRangeLabel,
+                selectedQuery: selectedDashboardQuery,
+                onQueryChanged: (query) {
+                  ref
+                      .read(reportDashboardSelectedQueryProvider.notifier)
+                      .setQuery(query);
+                },
+                onGenerate: () =>
+                    ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
+                onSync: () =>
+                    ref.invalidate(reportDashboardProvider(selectedDashboardQuery)),
+                isGenerating: aiSummaryState.isLoading,
+                isSyncing: session.canAccessProtectedData,
+              ),
+              child: ReportDashboardView(
+                dashboard: MockReportRepository.previewDashboard,
+                authSession: session,
+                isLoading: true,
+                dashboardQuery: selectedDashboardQuery,
+                onDashboardQueryChanged: (query) {
+                  ref
+                      .read(reportDashboardSelectedQueryProvider.notifier)
+                      .setQuery(query);
+                },
+                aiSummaryRange: selectedAiSummaryRange,
+                latestExportRequest: latestExportRequest,
+                exportRequestInFlight: exportRequestInFlight,
+                onMetricSelected: (kind) =>
+                    _openRecordFilter(context, ref, kind),
+              ),
+            ),
       error: (error, _) {
         final l10n = AppLocalizations.of(context)!;
         return DecoratedBox(
@@ -393,7 +517,56 @@ class _ReportSignedOutNotice extends StatelessWidget {
   }
 }
 
-class _ReportMobileShell extends StatelessWidget {
+class _ReportDesktopShell extends StatelessWidget {
+  const _ReportDesktopShell({
+    required this.child,
+    required this.topBar,
+    required this.onGenerate,
+    required this.onSync,
+    required this.onRefresh,
+    this.isGenerating = false,
+    this.isSyncing = false,
+  });
+
+  final Widget child;
+  final ReportTopBar topBar;
+  final VoidCallback onGenerate;
+  final VoidCallback onSync;
+  final Future<void> Function() onRefresh;
+  final bool isGenerating;
+  final bool isSyncing;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(color: surface.canvasSoft),
+      child: SafeArea(
+        bottom: false,
+        child: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: ListView(
+            key: const PageStorageKey<String>('report-desktop-scroll'),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacingTokens.xl,
+              AppSpacingTokens.xl,
+              AppSpacingTokens.xl,
+              AppSpacingTokens.xl,
+            ),
+            children: [
+              topBar,
+              const SizedBox(height: AppSpacingTokens.lg),
+              child,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
   const _ReportMobileShell({
     required this.child,
     required this.topBar,

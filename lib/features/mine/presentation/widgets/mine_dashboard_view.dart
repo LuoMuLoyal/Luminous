@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -23,8 +24,41 @@ class MineDashboardView extends StatelessWidget {
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= AppBreakpoints.desktop;
 
-    final content = Column(
+    final content = isDesktop
+        ? _buildDesktopLayout(
+            l10n: l10n,
+            surface: surface,
+            typography: typography,
+          )
+        : _buildMobileLayout(
+            l10n: l10n,
+            surface: surface,
+            typography: typography,
+          );
+
+    final scopedContent = AppSkeletonScope(
+      isLoading: isLoading,
+      child: content,
+    );
+    if (isLoading) {
+      return scopedContent;
+    }
+
+    return scopedContent
+        .animate()
+        .fadeIn(duration: 220.ms)
+        .slideY(begin: 0.02, end: 0);
+  }
+
+  Widget _buildMobileLayout({
+    required AppLocalizations l10n,
+    required AppThemeSurface surface,
+    required AppTypographyScale typography,
+  }) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (!dashboard.account.isAuthenticated) ...[
@@ -76,18 +110,80 @@ class MineDashboardView extends StatelessWidget {
         ),
       ],
     );
+  }
 
-    final scopedContent = AppSkeletonScope(
-      isLoading: isLoading,
-      child: content,
+  Widget _buildDesktopLayout({
+    required AppLocalizations l10n,
+    required AppThemeSurface surface,
+    required AppTypographyScale typography,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 7,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!dashboard.account.isAuthenticated) ...[
+                MineSignedOutNotice(
+                  key: const Key('mine-signed-out-notice'),
+                  typography: typography,
+                  surface: surface,
+                ),
+                const SizedBox(height: AppSpacingTokens.lg),
+              ],
+              MineAccountHero(
+                key: const Key('mine-account-header'),
+                dashboard: dashboard,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              MineArchiveSection(
+                key: const Key('mine-archive-section'),
+                dashboard: dashboard,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              MinePrivacyNoticeSection(
+                key: const Key('mine-privacy-notice'),
+                notice: dashboard.privacyNotice,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: AppSpacingTokens.lg),
+        Expanded(
+          flex: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MineStatusOverview(
+                key: const Key('mine-status-overview'),
+                dashboard: dashboard,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+              const SizedBox(height: AppSpacingTokens.lg),
+              MineCampusServiceSection(
+                key: const Key('mine-campus-section'),
+                dashboard: dashboard,
+                l10n: l10n,
+                typography: typography,
+                surface: surface,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
-    if (isLoading) {
-      return scopedContent;
-    }
-
-    return scopedContent
-        .animate()
-        .fadeIn(duration: 220.ms)
-        .slideY(begin: 0.02, end: 0);
   }
 }
