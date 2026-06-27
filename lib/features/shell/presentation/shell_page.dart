@@ -86,7 +86,7 @@ class ShellPage extends ConsumerWidget {
                 child: Row(
                   children: [
                     _DesktopSidebar(
-                      navigationShell: navigationShell!,
+                      navigationShell: navigationShell,
                       surface: surface,
                     ),
                     const SizedBox(width: AppSpacingTokens.md),
@@ -161,7 +161,7 @@ class ShellPage extends ConsumerWidget {
 class _DesktopSidebar extends ConsumerStatefulWidget {
   const _DesktopSidebar({required this.navigationShell, required this.surface});
 
-  final StatefulNavigationShell navigationShell;
+  final StatefulNavigationShell? navigationShell;
   final AppThemeSurface surface;
 
   @override
@@ -196,13 +196,25 @@ class _DesktopSidebarState extends ConsumerState<_DesktopSidebar>
         CurvedAnimation(parent: _controller, curve: _sidebarAnimationCurve),
       );
 
-  void _onSelect(int index) => widget.navigationShell.goBranch(index);
+  void _onSelect(int index) {
+    if (widget.navigationShell != null) {
+      widget.navigationShell!.goBranch(index);
+    } else {
+      ref.read(shellProvider.notifier).selectTab(index);
+    }
+  }
 
-  void _onSettings() =>
-      widget.navigationShell.goBranch(ShellBranch.settings.index);
+  void _onSettings() {
+    if (widget.navigationShell != null) {
+      widget.navigationShell!.goBranch(ShellBranch.settings.index);
+    }
+  }
 
-  void _onHelp() =>
-      widget.navigationShell.goBranch(ShellBranch.assistant.index);
+  void _onHelp() {
+    if (widget.navigationShell != null) {
+      widget.navigationShell!.goBranch(ShellBranch.assistant.index);
+    }
+  }
 
   void _onToggle() => ref.read(shellSidebarProvider.notifier).toggle();
 
@@ -212,7 +224,9 @@ class _DesktopSidebarState extends ConsumerState<_DesktopSidebar>
     final sidebarState = sidebarAsync.value ?? const ShellSidebarState();
     final isCollapsed = sidebarState.collapsed;
     final targetWidth = sidebarState.width;
-    final currentIndex = widget.navigationShell.currentIndex;
+    final currentIndex =
+        widget.navigationShell?.currentIndex ??
+        ref.watch(shellProvider).currentIndex;
     final typography = AppTypographyTokens.desktop(
       Theme.of(context).colorScheme.onSurface,
     );
