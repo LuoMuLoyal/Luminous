@@ -1,6 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/features/search/presentation/pages/search_page.dart';
+import 'package:luminous/features/search/presentation/providers/search_provider.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 String _joinPath(String parent, String child) {
   if (child.startsWith('/')) return child;
@@ -71,6 +79,43 @@ bool _isInsideStatefulShell(
 bool _routeIsInsideShell(String path) =>
     _isInsideStatefulShell(router.configuration.routes, path);
 
+class _FakeMedicineSearchNotifier extends MedicineSearchNotifier {
+  @override
+  MedicineSearchState build() => const MedicineSearchState();
+}
+
+Widget _testableRouter({
+  required String initialLocation,
+  required WidgetTester tester,
+}) {
+  SharedPreferences.setMockInitialValues(const <String, Object>{});
+  final testRouter = GoRouter(
+    initialLocation: initialLocation,
+    routes: router.configuration.routes,
+  );
+  addTearDown(testRouter.dispose);
+  return ProviderScope(
+    overrides: [
+      medicineSearchNotifierProvider.overrideWith(
+        () => _FakeMedicineSearchNotifier(),
+      ),
+    ],
+    child: MaterialApp.router(
+      routerConfig: testRouter,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      locale: const Locale('zh'),
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+    ),
+  );
+}
+
 void main() {
   group('business routes are nested inside StatefulShellRoute', () {
     const shellPaths = <String>[
@@ -127,5 +172,43 @@ void main() {
         expect(_routeIsInsideShell(path), isFalse);
       });
     }
+  });
+
+  group('deep links render inside the desktop shell', () {
+    testWidgets('/medicine/search keeps sidebar on desktop', (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(1440, 1000);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      await tester.pumpWidget(
+        _testableRouter(initialLocation: '/medicine/search', tester: tester),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Luminous'), findsOneWidget);
+      expect(find.byType(SearchPage), findsOneWidget);
+    });
+  });
+
+  group('visible branch deep links keep bottom navigation on mobile', () {
+    testWidgets('/medicine/search keeps bottom nav on mobile', (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      await tester.pumpWidget(
+        _testableRouter(initialLocation: '/medicine/search', tester: tester),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(SearchPage), findsOneWidget);
+    });
   });
 }

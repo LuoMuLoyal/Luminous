@@ -16,8 +16,11 @@ import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 const _sidebarAnimationDuration = Duration(milliseconds: 200);
-const _sidebarAnimationCurve = Curves.easeOutCubic;
-const _sidebarNarrowThreshold = 140.0;
+const _sidebarAnimationCurve = Curves.easeInOutCubic;
+const _sidebarNarrowThreshold = 120.0;
+const _sidebarBrandThreshold = 160.0;
+const _sidebarFullThreshold = 200.0;
+const _contentParallax = 8.0;
 
 class ShellPage extends ConsumerWidget {
   const ShellPage({super.key, this.navigationShell});
@@ -120,24 +123,38 @@ class ShellPage extends ConsumerWidget {
                     ),
                     const SizedBox(width: AppSpacingTokens.md),
                     Expanded(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: surface.canvas,
-                          borderRadius: BorderRadius.circular(
-                            AppRadiusTokens.xl,
-                          ),
-                          border: Border.all(color: surface.hairline),
-                          boxShadow: AppShadowTokens.level1,
+                      child: TweenAnimationBuilder<double>(
+                        tween: Tween<double>(
+                          begin: isCollapsed ? 0.0 : -_contentParallax,
+                          end: isCollapsed ? 0.0 : -_contentParallax,
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                            AppRadiusTokens.xl,
-                          ),
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: surface.canvasSoft,
+                        duration: _sidebarAnimationDuration,
+                        curve: _sidebarAnimationCurve,
+                        builder: (context, offset, child) {
+                          return Transform.translate(
+                            offset: Offset(offset, 0),
+                            child: child,
+                          );
+                        },
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: surface.canvas,
+                            borderRadius: BorderRadius.circular(
+                              AppRadiusTokens.xl,
                             ),
-                            child: content,
+                            border: Border.all(color: surface.hairline),
+                            boxShadow: AppShadowTokens.level1,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                              AppRadiusTokens.xl,
+                            ),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: surface.canvasSoft,
+                              ),
+                              child: content,
+                            ),
                           ),
                         ),
                       ),
@@ -275,10 +292,22 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final isNarrow = constraints.maxWidth < _sidebarNarrowThreshold;
+              final width = constraints.maxWidth;
+              final isNarrow = width < _sidebarNarrowThreshold;
+              final showBrand = width >= _sidebarBrandThreshold;
               final horizontalPadding = isNarrow
                   ? AppSpacingTokens.xs
                   : AppSpacingTokens.md;
+              final itemLabelOpacity = isNarrow
+                  ? 0.0
+                  : ((width - _sidebarNarrowThreshold) /
+                            (_sidebarFullThreshold - _sidebarNarrowThreshold))
+                        .clamp(0.0, 1.0);
+              final brandOpacity = !showBrand
+                  ? 0.0
+                  : ((width - _sidebarBrandThreshold) /
+                            (_sidebarFullThreshold - _sidebarBrandThreshold))
+                        .clamp(0.0, 1.0);
               return Padding(
                 padding: EdgeInsets.fromLTRB(
                   horizontalPadding,
@@ -291,7 +320,8 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
                   children: [
                     _DesktopSidebarBrand(
                       collapsed: widget.collapsed,
-                      isNarrow: isNarrow,
+                      showBrand: showBrand,
+                      brandOpacity: brandOpacity,
                       onToggle: widget.onToggle,
                     ),
                     const SizedBox(height: AppSpacingTokens.lg),
@@ -304,6 +334,7 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
                           tab: tab,
                           selected: widget.currentIndex == tab.index,
                           isNarrow: isNarrow,
+                          labelOpacity: itemLabelOpacity,
                           label: tab.label(l10n),
                           onTap: () => widget.onSelect(tab.index),
                           typography: typography,
@@ -316,6 +347,7 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
                       icon: Icons.settings_outlined,
                       label: l10n?.desktopSidebarSettings ?? '设置',
                       isNarrow: isNarrow,
+                      labelOpacity: itemLabelOpacity,
                       onTap: widget.onSettings,
                       typography: typography,
                     ),
@@ -324,6 +356,7 @@ class _DesktopSidebarState extends State<_DesktopSidebar>
                       icon: Icons.help_outline_rounded,
                       label: l10n?.desktopSidebarHelp ?? '帮助',
                       isNarrow: isNarrow,
+                      labelOpacity: itemLabelOpacity,
                       onTap: widget.onHelp,
                       typography: typography,
                     ),
@@ -343,6 +376,7 @@ class _DesktopSidebarActionItem extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.isNarrow,
+    required this.labelOpacity,
     required this.onTap,
     required this.typography,
   });
@@ -350,6 +384,7 @@ class _DesktopSidebarActionItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isNarrow;
+  final double labelOpacity;
   final VoidCallback onTap;
   final AppTypographyScale typography;
 
@@ -374,9 +409,16 @@ class _DesktopSidebarActionItem extends StatelessWidget {
                     children: [
                       Icon(icon, size: 18, color: foreground),
                       const SizedBox(width: AppSpacingTokens.md),
-                      Text(
-                        label,
-                        style: typography.bodyMd.copyWith(color: foreground),
+                      Expanded(
+                        child: Opacity(
+                          opacity: labelOpacity,
+                          child: Text(
+                            label,
+                            style: typography.bodyMd.copyWith(
+                              color: foreground,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -395,12 +437,14 @@ class _DesktopSidebarActionItem extends StatelessWidget {
 class _DesktopSidebarBrand extends StatelessWidget {
   const _DesktopSidebarBrand({
     required this.collapsed,
-    required this.isNarrow,
+    required this.showBrand,
+    required this.brandOpacity,
     required this.onToggle,
   });
 
   final bool collapsed;
-  final bool isNarrow;
+  final bool showBrand;
+  final double brandOpacity;
   final VoidCallback onToggle;
 
   @override
@@ -411,21 +455,24 @@ class _DesktopSidebarBrand extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: isNarrow ? 0 : AppSpacingTokens.sm,
+        horizontal: showBrand ? AppSpacingTokens.sm : 0,
         vertical: AppSpacingTokens.xs,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(Icons.spa_rounded, size: 18, color: AppColorTokens.accent),
-          if (!isNarrow) ...[
+          if (showBrand) ...[
             const SizedBox(width: AppSpacingTokens.sm),
             Expanded(
-              child: Text(
-                'Luminous',
-                overflow: TextOverflow.ellipsis,
-                style: typography.bodyMdStrong.copyWith(
-                  fontWeight: FontWeight.w600,
+              child: Opacity(
+                opacity: brandOpacity,
+                child: Text(
+                  'Luminous',
+                  overflow: TextOverflow.ellipsis,
+                  style: typography.bodyMdStrong.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -436,12 +483,19 @@ class _DesktopSidebarBrand extends StatelessWidget {
               onTap: onToggle,
               borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
               child: Container(
-                width: isNarrow ? 24 : 32,
-                height: isNarrow ? 24 : 32,
+                width: showBrand ? 32 : 24,
+                height: showBrand ? 32 : 24,
                 alignment: Alignment.center,
-                child: Icon(
-                  collapsed ? Icons.chevron_right : Icons.chevron_left,
-                  size: 18,
+                child: AnimatedSwitcher(
+                  duration: _sidebarAnimationDuration,
+                  transitionBuilder: (child, animation) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                  child: Icon(
+                    collapsed ? Icons.chevron_right : Icons.chevron_left,
+                    key: ValueKey<bool>(collapsed),
+                    size: 18,
+                  ),
                 ),
               ),
             ),
@@ -457,6 +511,7 @@ class _DesktopSidebarItem extends StatelessWidget {
     required this.tab,
     required this.selected,
     required this.isNarrow,
+    required this.labelOpacity,
     required this.label,
     required this.onTap,
     required this.typography,
@@ -466,6 +521,7 @@ class _DesktopSidebarItem extends StatelessWidget {
   final ShellTab tab;
   final bool selected;
   final bool isNarrow;
+  final double labelOpacity;
   final String label;
   final VoidCallback onTap;
   final AppTypographyScale typography;
@@ -507,10 +563,8 @@ class _DesktopSidebarItem extends StatelessWidget {
                       ),
                       const SizedBox(width: AppSpacingTokens.md),
                       Expanded(
-                        child: AnimatedOpacity(
-                          opacity: isNarrow ? 0 : 1,
-                          duration: _sidebarAnimationDuration,
-                          curve: _sidebarAnimationCurve,
+                        child: Opacity(
+                          opacity: labelOpacity,
                           child: Text(
                             label,
                             style: typography.bodyMd.copyWith(
