@@ -8,13 +8,19 @@ import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
 import 'package:luminous/features/record/presentation/pages/record_page.dart';
 import 'package:luminous/features/report/presentation/pages/report_page.dart';
+import 'package:luminous/features/shell/presentation/shell_branch.dart';
 import 'package:luminous/features/shell/presentation/shell_tab.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ShellPage extends ConsumerWidget {
-  const ShellPage({super.key});
+  const ShellPage({super.key, this.navigationShell});
+
+  /// The navigation shell provided by [StatefulShellRoute]. When `null` the
+  /// page falls back to the legacy [shellProvider] behaviour, which is still
+  /// useful for unit tests that render [ShellPage] in isolation.
+  final StatefulNavigationShell? navigationShell;
 
   static const _pages = <Widget>[
     TodayPage(),
@@ -26,8 +32,9 @@ class ShellPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentIndex = ref.watch(shellProvider).currentIndex;
-    final notifier = ref.read(shellProvider.notifier);
+    final legacyIndex = ref.watch(shellProvider).currentIndex;
+    final legacyNotifier = ref.read(shellProvider.notifier);
+    final currentIndex = navigationShell?.currentIndex ?? legacyIndex;
     final scheme = Theme.of(context).colorScheme;
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
@@ -38,6 +45,8 @@ class ShellPage extends ConsumerWidget {
     final isDesktop = width >= AppBreakpoints.desktop;
     const selectedNavColor = AppColorTokens.health;
     final unselectedNavColor = surface.body;
+    final isHiddenBranch =
+        navigationShell != null && currentIndex >= ShellTab.values.length;
 
     final destinations = ShellTab.values
         .map(
@@ -50,6 +59,32 @@ class ShellPage extends ConsumerWidget {
         )
         .toList(growable: false);
 
+    final content = navigationShell ?? _pages[currentIndex];
+
+    void onSelectTab(int index) {
+      if (navigationShell != null) {
+        navigationShell!.goBranch(index);
+      } else {
+        legacyNotifier.selectTab(index);
+      }
+    }
+
+    void onSettings() {
+      if (navigationShell != null) {
+        navigationShell!.goBranch(ShellBranch.settings.index);
+      } else {
+        context.push('/settings');
+      }
+    }
+
+    void onHelp() {
+      if (navigationShell != null) {
+        navigationShell!.goBranch(ShellBranch.assistant.index);
+      } else {
+        context.push('/assistant');
+      }
+    }
+
     return Scaffold(
       backgroundColor: surface.canvasSoft,
       body: isDesktop
@@ -60,7 +95,9 @@ class ShellPage extends ConsumerWidget {
                   children: [
                     _DesktopSidebar(
                       currentIndex: currentIndex,
-                      onSelect: notifier.selectTab,
+                      onSelect: onSelectTab,
+                      onSettings: onSettings,
+                      onHelp: onHelp,
                       surface: surface,
                       l10n: l10n,
                     ),
@@ -83,7 +120,7 @@ class ShellPage extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color: surface.canvasSoft,
                             ),
-                            child: _pages[currentIndex],
+                            child: content,
                           ),
                         ),
                       ),
@@ -92,8 +129,8 @@ class ShellPage extends ConsumerWidget {
                 ),
               ),
             )
-          : _pages[currentIndex],
-      bottomNavigationBar: isDesktop
+          : content,
+      bottomNavigationBar: isDesktop || isHiddenBranch
           ? null
           : MediaQuery.withClampedTextScaling(
               maxScaleFactor: 1.2,
@@ -122,7 +159,7 @@ class ShellPage extends ConsumerWidget {
                   surfaceTintColor: Colors.transparent,
                   height: width < AppBreakpoints.mobile ? 70 : 76,
                   selectedIndex: currentIndex,
-                  onDestinationSelected: notifier.selectTab,
+                  onDestinationSelected: onSelectTab,
                   destinations: destinations,
                 ),
               ),
@@ -135,12 +172,16 @@ class _DesktopSidebar extends StatelessWidget {
   const _DesktopSidebar({
     required this.currentIndex,
     required this.onSelect,
+    required this.onSettings,
+    required this.onHelp,
     required this.surface,
     required this.l10n,
   });
 
   final int currentIndex;
   final ValueChanged<int> onSelect;
+  final VoidCallback onSettings;
+  final VoidCallback onHelp;
   final AppThemeSurface surface;
   final AppLocalizations? l10n;
 
@@ -191,14 +232,14 @@ class _DesktopSidebar extends StatelessWidget {
                 _DesktopSidebarActionItem(
                   icon: Icons.settings_outlined,
                   label: l10n?.desktopSidebarSettings ?? '设置',
-                  onTap: () => context.push('/settings'),
+                  onTap: onSettings,
                   typography: typography,
                 ),
                 const SizedBox(height: AppSpacingTokens.xs),
                 _DesktopSidebarActionItem(
                   icon: Icons.help_outline_rounded,
                   label: l10n?.desktopSidebarHelp ?? '帮助',
-                  onTap: () => context.push('/assistant'),
+                  onTap: onHelp,
                   typography: typography,
                 ),
               ],
@@ -299,45 +340,37 @@ class _DesktopSidebarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = surface.accent;
-    final foreground = selected
-        ? accent
-        : Theme.of(context).colorScheme.onSurface;
+    final foreground = Theme.of(context).colorScheme.onSurface;
 
     return Material(
-      color: Colors.transparent,
+      color: selected
+          ? AppColorTokens.healthSoft.withValues(alpha: 0.5)
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: selected ? AppColorTokens.accentSoft : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: selected ? accent : Colors.transparent),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.md,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.md,
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  selected ? tab.activeIcon : tab.icon,
-                  size: 18,
-                  color: foreground,
+          child: Row(
+            children: [
+              Icon(
+                selected ? tab.activeIcon : tab.icon,
+                size: 18,
+                color: selected ? AppColorTokens.health : foreground,
+              ),
+              const SizedBox(width: AppSpacingTokens.md),
+              Text(
+                label,
+                style: typography.bodyMd.copyWith(
+                  color: selected ? AppColorTokens.health : foreground,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                 ),
-                const SizedBox(width: AppSpacingTokens.md),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: typography.bodyMdStrong.copyWith(color: foreground),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
