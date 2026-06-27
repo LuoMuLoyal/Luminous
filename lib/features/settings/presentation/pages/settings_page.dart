@@ -493,8 +493,14 @@ class _AdvancedSettingsSection extends ConsumerWidget {
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
+        final width = MediaQuery.sizeOf(dialogContext).width;
+        final isDesktop = width >= AppBreakpoints.desktop;
         return AlertDialog(
           title: Text(l10n.mineSettingHelpTitle),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: isDesktop ? AppSpacingTokens.xl : AppSpacingTokens.lg,
+            vertical: AppSpacingTokens.md,
+          ),
           content: SizedBox(
             width: double.maxFinite,
             child: ListView.builder(
@@ -542,8 +548,14 @@ class _AdvancedSettingsSection extends ConsumerWidget {
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
+        final width = MediaQuery.sizeOf(dialogContext).width;
+        final isDesktop = width >= AppBreakpoints.desktop;
         return AlertDialog(
           title: Text(l10n.mineSettingAboutTitle),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: isDesktop ? AppSpacingTokens.xl : AppSpacingTokens.lg,
+            vertical: AppSpacingTokens.md,
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
