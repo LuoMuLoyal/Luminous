@@ -36,17 +36,23 @@ class MedicineWorkspaceView extends StatelessWidget {
         ? AppTypographyTokens.mobile(scheme.onSurface)
         : AppTypographyTokens.desktop(scheme.onSurface);
     final isDesktop = width >= AppBreakpoints.desktop;
-    final alerts =
-        medicineAlertsFromRiskCheck(l10n, workspace.riskCheckResult);
+    final alerts = medicineAlertsFromRiskCheck(l10n, workspace.riskCheckResult);
 
     if (!isDesktop) {
-      return MedicineMobileDashboardView(
-            workspace: workspace,
-            onMarkDose: onMarkDose,
-          )
-          .animate()
-          .fadeIn(duration: 220.ms)
-          .slideY(begin: 0.018, end: 0, duration: 240.ms);
+      return Animate(
+        effects: const [
+          FadeEffect(duration: Duration(milliseconds: 220)),
+          SlideEffect(
+            begin: Offset(0, 0.018),
+            end: Offset.zero,
+            duration: Duration(milliseconds: 240),
+          ),
+        ],
+        child: MedicineMobileDashboardView(
+          workspace: workspace,
+          onMarkDose: onMarkDose,
+        ),
+      );
     }
 
     final primaryColumn = Column(
@@ -97,10 +103,17 @@ class MedicineWorkspaceView extends StatelessWidget {
       ],
     );
 
-    return content
-        .animate()
-        .fadeIn(duration: 240.ms)
-        .slideY(begin: 0.025, end: 0, duration: 260.ms);
+    return Animate(
+      effects: const [
+        FadeEffect(duration: Duration(milliseconds: 240)),
+        SlideEffect(
+          begin: Offset(0, 0.025),
+          end: Offset.zero,
+          duration: Duration(milliseconds: 260),
+        ),
+      ],
+      child: content,
+    );
   }
 }
 

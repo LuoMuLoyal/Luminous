@@ -142,24 +142,26 @@ class RecordLineChart extends StatelessWidget {
       return result;
     }
 
-    return SizedBox(
-      height: height,
-      width: double.infinity,
-      child: LineChart(
-        LineChartData(
-          minY: minY - span * 0.1,
-          maxY: maxY + span * 0.1,
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: false,
-            getDrawingHorizontalLine: (_) =>
-                FlLine(color: surface.hairline, strokeWidth: 1),
-            horizontalInterval: (maxY - minY + span * 0.2) / 4,
+    return RepaintBoundary(
+      child: SizedBox(
+        height: height,
+        width: double.infinity,
+        child: LineChart(
+          LineChartData(
+            minY: minY - span * 0.1,
+            maxY: maxY + span * 0.1,
+            gridData: FlGridData(
+              show: true,
+              drawVerticalLine: false,
+              getDrawingHorizontalLine: (_) =>
+                  FlLine(color: surface.hairline, strokeWidth: 1),
+              horizontalInterval: (maxY - minY + span * 0.2) / 4,
+            ),
+            borderData: FlBorderData(show: false),
+            titlesData: const FlTitlesData(show: false),
+            lineTouchData: const LineTouchData(enabled: false),
+            lineBarsData: bars(),
           ),
-          borderData: FlBorderData(show: false),
-          titlesData: const FlTitlesData(show: false),
-          lineTouchData: const LineTouchData(enabled: false),
-          lineBarsData: bars(),
         ),
       ),
     );

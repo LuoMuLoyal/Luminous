@@ -122,9 +122,9 @@ class ReportMetricsGrid extends StatelessWidget {
 
   double _metricCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    if (width >= AppBreakpoints.desktop) return 184;
-    if (width >= AppBreakpoints.tablet) return 172;
-    return 160;
+    if (width >= AppBreakpoints.desktop) return 188;
+    if (width >= AppBreakpoints.tablet) return 176;
+    return 164;
   }
 
   bool get _allMetricValuesUnavailable =>

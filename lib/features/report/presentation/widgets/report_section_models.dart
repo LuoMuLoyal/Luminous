@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/report_components.dart';
@@ -124,12 +122,12 @@ String reportExportCardSubtitle(
 ReportAiSummaryContent buildReportAiSummaryContent({
   required AppLocalizations l10n,
   required ReportDashboard dashboard,
-  required AuthSessionState authSession,
-  required AsyncValue<UserSettingsDataDto>? settingsAsync,
+  required bool canAccessProtectedData,
+  required bool? aiSummariesEnabled,
   required ReportAiSummaryCardState aiState,
   required ReportAiSummaryRange selectedRange,
 }) {
-  if (!authSession.canAccessProtectedData) {
+  if (!canAccessProtectedData) {
     return ReportAiSummaryContent(
       subtitle: l10n.reportSnapshotHint,
       bullets: [
@@ -142,8 +140,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
     );
   }
 
-  final settings = settingsAsync?.asData?.value;
-  if (settings?.aiSummariesEnabled == false || aiState.isDisabled) {
+  if (aiSummariesEnabled == false || aiState.isDisabled) {
     return ReportAiSummaryContent(
       subtitle: l10n.reportSnapshotHint,
       bullets: [

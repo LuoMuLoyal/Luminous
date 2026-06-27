@@ -12,6 +12,7 @@ import 'package:luminous/features/medicine/presentation/providers/medicine_works
 import 'package:luminous/features/medicine/presentation/widgets/medicine_mobile_dashboard_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_view.dart';
+import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -25,47 +26,49 @@ class MedicinePage extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
-    return workspaceAsync.when(
-      data: (workspace) => isDesktop
-          ? _MedicineDesktopShell(
-              child: MedicineMobileDashboardView(
-                workspace: workspace,
-                onMarkDose: (currentMedicineId, action) =>
-                    _markDose(context, ref, currentMedicineId, action),
-                onOpenReminder: (currentMedicineId) =>
-                    _openReminder(context, ref, currentMedicineId),
-                onCreateReminder: () => _openReminder(context, ref, null),
+    return ShellDeferredContent(
+      child: workspaceAsync.when(
+        data: (workspace) => isDesktop
+            ? _MedicineDesktopShell(
+                child: MedicineMobileDashboardView(
+                  workspace: workspace,
+                  onMarkDose: (currentMedicineId, action) =>
+                      _markDose(context, ref, currentMedicineId, action),
+                  onOpenReminder: (currentMedicineId) =>
+                      _openReminder(context, ref, currentMedicineId),
+                  onCreateReminder: () => _openReminder(context, ref, null),
+                ),
+              )
+            : _MedicineMobileShell(
+                child: MedicineMobileDashboardView(
+                  workspace: workspace,
+                  onMarkDose: (currentMedicineId, action) =>
+                      _markDose(context, ref, currentMedicineId, action),
+                  onOpenReminder: (currentMedicineId) =>
+                      _openReminder(context, ref, currentMedicineId),
+                  onCreateReminder: () => _openReminder(context, ref, null),
+                ),
               ),
-            )
-          : _MedicineMobileShell(
-              child: MedicineMobileDashboardView(
-                workspace: workspace,
-                onMarkDose: (currentMedicineId, action) =>
-                    _markDose(context, ref, currentMedicineId, action),
-                onOpenReminder: (currentMedicineId) =>
-                    _openReminder(context, ref, currentMedicineId),
-                onCreateReminder: () => _openReminder(context, ref, null),
+        loading: () => isDesktop
+            ? const _MedicineDesktopShell(
+                child: MedicineMobileDashboardView(
+                  workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
+                  isLoading: true,
+                ),
+              )
+            : const _MedicineMobileShell(
+                child: MedicineMobileDashboardView(
+                  workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
+                  isLoading: true,
+                ),
               ),
+        error: (_, __) => DecoratedBox(
+          decoration: BoxDecoration(color: surface.canvasSoft),
+          child: SafeArea(
+            bottom: false,
+            child: MedicineErrorView(
+              onRetry: () => ref.invalidate(medicineWorkspaceProvider),
             ),
-      loading: () => isDesktop
-          ? const _MedicineDesktopShell(
-              child: MedicineMobileDashboardView(
-                workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
-                isLoading: true,
-              ),
-            )
-          : const _MedicineMobileShell(
-              child: MedicineMobileDashboardView(
-                workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
-                isLoading: true,
-              ),
-            ),
-      error: (_, __) => DecoratedBox(
-        decoration: BoxDecoration(color: surface.canvasSoft),
-        child: SafeArea(
-          bottom: false,
-          child: MedicineErrorView(
-            onRetry: () => ref.invalidate(medicineWorkspaceProvider),
           ),
         ),
       ),

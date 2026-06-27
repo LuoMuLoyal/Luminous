@@ -133,17 +133,22 @@ class RecordSummaryGrid extends StatelessWidget {
       surface: surface,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final columns = constraints.maxWidth < 520 ? 2 : 5;
+          const minTileWidth = 140.0;
+          const spacing = AppSpacingTokens.sm;
+          final maxColumns =
+              ((constraints.maxWidth + spacing) / (minTileWidth + spacing))
+                  .floor()
+                  .clamp(1, 5);
+          final tileWidth =
+              (constraints.maxWidth - spacing * (maxColumns - 1)) / maxColumns;
+
           return Wrap(
-            spacing: AppSpacingTokens.sm,
-            runSpacing: AppSpacingTokens.sm,
+            spacing: spacing,
+            runSpacing: spacing,
             children: summary.items
                 .map(
                   (item) => SizedBox(
-                    width:
-                        (constraints.maxWidth -
-                            AppSpacingTokens.sm * (columns - 1)) /
-                        columns,
+                    width: tileWidth,
                     child: _SummaryTile(
                       item: item,
                       l10n: l10n,
@@ -432,6 +437,8 @@ class _SummaryTile extends StatelessWidget {
                       child: Text(
                         recordCopy(l10n, item.titleKey),
                         style: typography.caption.copyWith(color: surface.body),
+                        maxLines: 2,
+                        softWrap: true,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -464,6 +471,8 @@ class _SummaryTile extends StatelessWidget {
                   Text(
                     detail,
                     style: typography.caption.copyWith(color: item.accent),
+                    maxLines: 2,
+                    softWrap: true,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
