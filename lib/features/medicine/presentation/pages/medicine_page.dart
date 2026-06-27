@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -21,24 +22,44 @@ class MedicinePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final workspaceAsync = ref.watch(medicineWorkspaceProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= AppBreakpoints.desktop;
 
     return workspaceAsync.when(
-      data: (workspace) => _MedicineMobileShell(
-        child: MedicineMobileDashboardView(
-          workspace: workspace,
-          onMarkDose: (currentMedicineId, action) =>
-              _markDose(context, ref, currentMedicineId, action),
-          onOpenReminder: (currentMedicineId) =>
-              _openReminder(context, ref, currentMedicineId),
-          onCreateReminder: () => _openReminder(context, ref, null),
-        ),
-      ),
-      loading: () => const _MedicineMobileShell(
-        child: MedicineMobileDashboardView(
-          workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
-          isLoading: true,
-        ),
-      ),
+      data: (workspace) => isDesktop
+          ? _MedicineDesktopShell(
+              child: MedicineMobileDashboardView(
+                workspace: workspace,
+                onMarkDose: (currentMedicineId, action) =>
+                    _markDose(context, ref, currentMedicineId, action),
+                onOpenReminder: (currentMedicineId) =>
+                    _openReminder(context, ref, currentMedicineId),
+                onCreateReminder: () => _openReminder(context, ref, null),
+              ),
+            )
+          : _MedicineMobileShell(
+              child: MedicineMobileDashboardView(
+                workspace: workspace,
+                onMarkDose: (currentMedicineId, action) =>
+                    _markDose(context, ref, currentMedicineId, action),
+                onOpenReminder: (currentMedicineId) =>
+                    _openReminder(context, ref, currentMedicineId),
+                onCreateReminder: () => _openReminder(context, ref, null),
+              ),
+            ),
+      loading: () => isDesktop
+          ? const _MedicineDesktopShell(
+              child: MedicineMobileDashboardView(
+                workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
+                isLoading: true,
+              ),
+            )
+          : const _MedicineMobileShell(
+              child: MedicineMobileDashboardView(
+                workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
+                isLoading: true,
+              ),
+            ),
       error: (_, __) => DecoratedBox(
         decoration: BoxDecoration(color: surface.canvasSoft),
         child: SafeArea(
@@ -148,6 +169,34 @@ class _MedicineMobileShell extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.md),
             child,
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MedicineDesktopShell extends StatelessWidget {
+  const _MedicineDesktopShell({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(color: surface.canvasSoft),
+      child: SafeArea(
+        bottom: false,
+        child: ListView(
+          key: const PageStorageKey<String>('medicine-desktop-scroll'),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacingTokens.xl,
+            AppSpacingTokens.xl,
+            AppSpacingTokens.xl,
+            AppSpacingTokens.xl,
+          ),
+          children: [child],
         ),
       ),
     );
