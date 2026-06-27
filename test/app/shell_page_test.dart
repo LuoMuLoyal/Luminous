@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
@@ -122,6 +123,107 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Lumi'), findsOneWidget);
     expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
+  });
+
+  testWidgets('Desktop sidebar can be collapsed and expanded', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final mockSnapshot = HealthContextSnapshot(
+      summary: const HealthSummary(
+        age: 27,
+        onboardingCompleted: true,
+        activeAllergyCount: 2,
+        conditionCount: 1,
+        currentMedicineCount: 3,
+        missingCoreProfileFields: [],
+      ),
+      profile: const HealthProfile(
+        birthDate: null,
+        sexAtBirth: null,
+        heightCm: null,
+        pregnancyState: null,
+        lactationState: null,
+        bloodType: null,
+        locale: null,
+        timezone: null,
+        unitSystem: null,
+        onboardingCompletedAt: null,
+        extras: {},
+      ),
+      allergies: const [],
+      conditions: const [],
+      currentMedicines: const [],
+    );
+
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1440, 1000);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(mockSnapshot),
+          ),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+          recordRepositoryProvider.overrideWithValue(
+            const MockRecordRepository(),
+          ),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          reportRepositoryProvider.overrideWithValue(
+            const MockReportRepository(),
+          ),
+          supportResourcesProvider(
+            'campus',
+          ).overrideWith((ref) async => const []),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ShellPage(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    // Initially expanded: collapse button points left and settings label shows.
+    expect(find.byIcon(Icons.chevron_left), findsOneWidget);
+    expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
+    expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.chevron_left));
+    await tester.pumpAndSettle();
+
+    // Collapsed: toggle icon flips and labels are hidden.
+    expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    expect(find.text(l10n.desktopSidebarSettings), findsNothing);
+    expect(find.text(l10n.desktopSidebarHelp), findsNothing);
+
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    // Expanded again.
+    expect(find.byIcon(Icons.chevron_left), findsOneWidget);
+    expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
+    expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
   });
 
   testWidgets('Shell page renders mobile bottom navigation', (tester) async {
