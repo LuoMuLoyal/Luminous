@@ -79,6 +79,8 @@ void main() {
   testWidgets(
     'AI chat context toggle still works when settings are not loaded yet',
     (tester) async {
+      tester.view.physicalSize = const Size(1200, 1600);
+      tester.view.devicePixelRatio = 1.0;
       SharedPreferences.setMockInitialValues(const <String, Object>{});
       final repository = _FakeAssistantRepository();
       final settingsController = _PendingUserSettingsController();
@@ -322,9 +324,13 @@ void main() {
 
     expect(find.text('这条建议已经过期，请重新生成后再确认。'), findsOneWidget);
     expect(
-      tester.widget<FilledButton>(
-        find.byKey(const Key('assistant-proposal-confirm-proposal-create-expired')),
-      ).onPressed,
+      tester
+          .widget<FilledButton>(
+            find.byKey(
+              const Key('assistant-proposal-confirm-proposal-create-expired'),
+            ),
+          )
+          .onPressed,
       isNull,
     );
     expect(dailyRecordRepository.createdInputs, isEmpty);
@@ -410,7 +416,10 @@ void main() {
     await tester.pumpWidget(_buildTestApp(repository: repository));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('assistant-input')), '帮我看看最近睡眠');
+    await tester.enterText(
+      find.byKey(const Key('assistant-input')),
+      '帮我看看最近睡眠',
+    );
     await tester.tap(find.byKey(const Key('assistant-send-action')));
     await tester.pumpAndSettle();
 
@@ -544,7 +553,9 @@ class _FakeAssistantRepository implements AssistantRepository {
   Future<AssistantCapabilities> getCapabilities() async => _capabilities;
 
   @override
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
 }
@@ -643,7 +654,9 @@ class _ErrorStreamAssistantRepository implements AssistantRepository {
       _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
     return Stream<AssistantGenerationEvent>.error(
       const LucentApiException(message: '服务端出现问题', statusCode: 503),
     );
@@ -671,7 +684,9 @@ class _SuccessWithToolsAssistantRepository implements AssistantRepository {
       _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
     return Stream<AssistantGenerationEvent>.fromIterable([
       const AssistantGenerationChunkEvent('根据你的睡眠数据…'),
       AssistantGenerationResultEvent(
@@ -708,7 +723,9 @@ class _ProposalAssistantRepository implements AssistantRepository {
       _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
     return Stream<AssistantGenerationEvent>.fromIterable([
       AssistantGenerationResultEvent(
         conversationId: 'conversation-proposal',
@@ -774,7 +791,9 @@ class _SettingsProposalAssistantRepository implements AssistantRepository {
       _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
     return Stream<AssistantGenerationEvent>.fromIterable([
       AssistantGenerationResultEvent(
         conversationId: 'conversation-settings-proposal',
@@ -834,7 +853,9 @@ class _ExpiredProposalAssistantRepository implements AssistantRepository {
       _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
     return Stream<AssistantGenerationEvent>.fromIterable([
       AssistantGenerationResultEvent(
         conversationId: 'conversation-proposal-expired',
@@ -920,12 +941,15 @@ class _DisabledAssistantRepository implements AssistantRepository {
   }
 
   @override
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
 }
 
-class _DisabledWithHistoryAssistantRepository extends _DisabledAssistantRepository {
+class _DisabledWithHistoryAssistantRepository
+    extends _DisabledAssistantRepository {
   @override
   Future<AssistantConversation?> getLatestConversation() async {
     return AssistantConversation(
@@ -1009,7 +1033,9 @@ class _RestoredConversationAssistantRepository implements AssistantRepository {
       _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
 }
@@ -1144,7 +1170,9 @@ class _RecentConversationsAssistantRepository implements AssistantRepository {
       _FakeAssistantRepository._capabilities;
 
   @override
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages) {
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
 }
@@ -1209,4 +1237,3 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     throw UnimplementedError();
   }
 }
-
