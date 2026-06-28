@@ -9,7 +9,6 @@ import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
@@ -21,6 +20,7 @@ import 'package:luminous/features/record/presentation/widgets/record_components.
 import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
 import 'package:luminous/features/record/presentation/widgets/record_fast_entry_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/record_nlp_dialog.dart';
+import 'package:luminous/features/record/presentation/widgets/record_skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordPage extends ConsumerWidget {
@@ -30,7 +30,6 @@ class RecordPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardAsync = ref.watch(recordDashboardProvider);
     final selectedDate = ref.watch(selectedRecordDateProvider);
-    final selectedFilter = ref.watch(selectedRecordFilterProvider);
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
@@ -159,28 +158,7 @@ class RecordPage extends ConsumerWidget {
               ),
               onNewEntry: () => _openRecordCreate(context, ref),
             ),
-            loading: () => RecordDashboardView(
-              dashboard: MockRecordRepository.loadingDashboard(
-                selectedDate,
-                filterType: selectedFilter,
-              ),
-              isLoading: true,
-              onFilterSelected: (type) => ref
-                  .read(selectedRecordFilterProvider.notifier)
-                  .setFilter(type),
-              onDateSelected: (date) => _setSelectedDate(ref, date),
-              onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
-              onQuickAction: (action) =>
-                  _handleQuickAction(context, ref, action),
-              onAiInputTap: () => _openNlpDialog(
-                context,
-                ref,
-                canAccessProtectedData: canAccessProtectedData,
-                isAuthLoading: isAuthLoading,
-                selectedDate: selectedDate,
-              ),
-              onNewEntry: () => _openRecordCreate(context, ref),
-            ),
+            loading: () => const RecordSkeletonView(),
             error: (_, __) => AppStateErrorView(
               title: l10n.recordErrorTitle,
               description: l10n.recordErrorDescription,

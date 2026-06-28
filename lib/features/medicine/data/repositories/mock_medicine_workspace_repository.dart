@@ -30,8 +30,6 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     promisePoints: previewWorkspace.promisePoints,
   );
 
-  static const loadingWorkspace = previewWorkspace;
-
   // Deferred by Product_Vision MVP: keep scan/OCR quick-action shapes because
   // they are useful later, but do not surface them until the matching camera,
   // recognition, and prescription contract/product job is ready.
@@ -171,14 +169,6 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   );
 }
 
-final doseLogRemoteDataSourceProvider = Provider<DoseLogRemoteDataSource>((
-  ref,
-) {
-  final api = ref.watch(lucentMedicineDoseLogsApiProvider);
-  final dio = ref.watch(lucentDioClientProvider).dio;
-  return DoseLogRemoteDataSource(api: api, dio: dio);
-});
-
 final medicineReminderRemoteDataSourceProvider =
     Provider<MedicineReminderRemoteDataSource>((ref) {
       final api = ref.watch(lucentMedicineRemindersApiProvider);
@@ -191,7 +181,9 @@ final medicineWorkspaceRepositoryProvider =
       final healthRepo = ref.watch(healthContextRepositoryProvider);
       final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
       final reminderDs = ref.watch(medicineReminderRemoteDataSourceProvider);
-      final riskCheckRepository = ref.watch(medicineRiskCheckRepositoryProvider);
+      final riskCheckRepository = ref.watch(
+        medicineRiskCheckRepositoryProvider,
+      );
       return LucentMedicineWorkspaceRepository(
         healthRepo: healthRepo,
         doseLogDs: doseLogDs,

@@ -5,10 +5,9 @@ import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
-import 'package:luminous/features/mine/data/repositories/mock_mine_repository.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_dashboard_view.dart';
+import 'package:luminous/features/mine/presentation/widgets/mine_skeleton_view.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:luminous/features/mine/presentation/widgets/mine_sections.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -23,13 +22,6 @@ class MinePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userNickname = ref.watch(
-      authSessionProvider.select((s) => s.user?.nickname),
-    );
-    final userEmail = ref.watch(
-      authSessionProvider.select((s) => s.user?.email),
-    );
-    final userId = ref.watch(authSessionProvider.select((s) => s.user?.id));
     final dashboardAsync = ref.watch(mineDashboardProvider);
     final surface = Theme.of(context).extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
@@ -37,15 +29,7 @@ class MinePage extends ConsumerWidget {
 
     final body = dashboardAsync.when(
       data: (dashboard) => MineDashboardView(dashboard: dashboard),
-      loading: () => MineDashboardView(
-        dashboard: MockMineRepository.loadingDashboard(
-          displayName: userNickname?.trim().isNotEmpty == true
-              ? userNickname!.trim()
-              : userEmail ?? userId,
-          email: userEmail ?? '',
-        ),
-        isLoading: true,
-      ),
+      loading: () => const MineSkeletonView(),
       error: (_, __) =>
           MineErrorView(onRetry: () => ref.invalidate(mineDashboardProvider)),
     );
