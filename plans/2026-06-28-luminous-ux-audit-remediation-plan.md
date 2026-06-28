@@ -3,7 +3,35 @@
 > **来源**：`Luminous/docs/review/luminous-ux-audit-report.md`（审计日期 2026-06-27）  
 > **创建时间**：2026-06-28  
 > **范围**：Luminous Flutter 客户端（`lib/app/router.dart`、`lib/features/*`、`lib/core/widgets/*`）  
-> **目标**：消除报告中 6 项 Critical、12 项 High、14 项 Medium、8 项 Low 问题，使产品从“能跑”达到可用、可信、导航一致的体验基线。
+> **目标**：消除报告中 12 项 High、11 项 Medium、8 项 Low 问题（Critical 项已清零），使产品从“能跑”达到可用、可信、导航一致的体验基线。
+
+---
+
+## 0. 决策确认与待确认边界
+
+### 已确认决策
+
+| 边界 | 决策 |
+|---|---|
+| HIGH-3：Today 空态按钮 | 保留，跳转 `/record/create` |
+| HIGH-4/5：推荐类型导航 | `medicine` → `/medicine`；`sleep` → `/record/create?kind=sleep`；`record` → `/record/create?kind=water`；`report` → `/report`；`habit`/未知 → `/record`；"查看更多"改为刷新 |
+| HIGH-6：提醒快速入口 | 允许从 dashboard 直接创建提醒，fallback 到 `/medicine/reminders/new`；创建页无药品时显示 inline 提示"请先选择药品" + 跳转 `/medicine/search` 的按钮 |
+| HIGH-7/8：Shell 路由方案 | 方案 A，分两个子阶段：先移 `/settings`/`/assistant`/`/notifications` 三个隐藏分支为顶层 GoRoute，再移 `/record/*`/`/medicine/*`/`/mine/*` 子页为顶层全屏路由 |
+| HIGH-9/11：AppBackButton | 新建 `AppBackButton`，支持自定义 `fallbackRoute`（默认 `/today`）；按顺序替换：先非 Shell 子页 `SettingsBackButton`，再移出 Shell 后验证，最后替换 `AuthBackButton` |
+| HIGH-12/13：错误态文案 | 使用 l10n；HIGH-13 区分 404 与通用错误，通用描述为 "加载提醒详情失败，请检查网络后重试" |
+| HIGH-1/2：Mock 数据 | 延后；代码中先加 `// TODO` 标记 |
+
+### 待确认边界
+
+当前所有 HIGH 项边界均已确认，无阻塞执行的问题。
+
+### 子计划清单
+
+本计划为总控文档，具体实施步骤见子计划：
+
+- **Phase 1**：`plans/2026-06-28-ux-audit-high-phase1-interactions-and-back-button.md`（HIGH-10、HIGH-3、HIGH-4/5、HIGH-6、HIGH-9/11）
+- **Phase 2**：`plans/2026-06-28-ux-audit-high-phase2-shell-routing.md`（HIGH-7/8、MED-5/6/7）
+- **Phase 4**：`plans/2026-06-28-ux-audit-high-phase4-error-states.md`（HIGH-12、HIGH-13）
 
 ---
 
@@ -13,21 +41,18 @@
 
 | 类别 | Critical | High | Medium | Low |
 |---|---:|---:|---:|---:|
-| 假数据 / Mock 数据 | 1 | 2 | 1 | — |
-| 可点击元素反馈 | 1 | 4 | 2 | 1 |
-| 页面导航与路由 | 1 | 2 | 3 | 1 |
+| 假数据 / Mock 数据 | 0 | 2 | 0 | — |
+| 可点击元素反馈 | 0 | 4 | 2 | 1 |
+| 页面导航与路由 | 0 | 2 | 3 | 1 |
 | 返回键 / 返回按钮 | — | 3 | 2 | 1 |
 | 延迟 / MVP 功能混淆 | — | — | 1 | 1 |
 | 通用 UX | — | 2 | 4 | 3 |
-| **合计** | **6** | **12** | **14** | **8** |
+| **合计** | **0** | **12** | **11** | **8** |
 
-### 1.1 最紧急的 5 个问题（先修）
+### 1.1 最紧急的问题（先修）
 
-1. **CRIT-1**：5 个主 Tab 加载状态直接展示逼真 Mock 数据，造成“已加载”错觉。
-2. **CRIT-2**：`/settings/theme`、`/settings/language`、`/settings/more` 在 `router.dart` 中无定义，点击即崩溃/空白。
-3. **CRIT-3**：`/notifications` 注册为 `StatefulShellBranch`，但对应页面文件不存在。
-4. **HIGH-7 / HIGH-8**：Shell 路由架构不一致，`record/*` 子页保留底部导航而 `medicine/*` 子页没有；Settings / Assistant / Notifications 作为隐藏 ShellBranch 导致底部导航突兀消失。
-5. **HIGH-10**：`SearchPage` 没有任何返回/关闭按钮，用户可能被困。
+1. **HIGH-7 / HIGH-8**：Shell 路由架构不一致，`record/*` 子页保留底部导航而 `medicine/*` 子页没有；Settings / Assistant / Notifications 作为隐藏 ShellBranch 导致底部导航突兀消失。
+2. **HIGH-10**：`SearchPage` 没有任何返回/关闭按钮，用户可能被困。
 
 ---
 
@@ -44,47 +69,38 @@
 
 ## 3. 分阶段实施
 
-### Phase 1：修复崩溃与死胡同（Critical + 关键 High）
+### Phase 1：修复崩溃与死胡同（关键 High）
 
 **目标**：消除所有会导致崩溃、空白页或完全无反馈的路径。
 
-#### 3.1 修复缺失/错误的路由（CRIT-2, CRIT-3, HIGH-10, MED-4）
+#### 3.1 修复缺失/错误的路由（HIGH-10, MED-4）
 
 | 问题 | 文件 | 动作 |
 |---|---|---|
-| CRIT-2 | `lib/app/router.dart` | 补全 `/settings/theme`、`/settings/language`、`/settings/more` 三个 `GoRoute`；对应页面已存在，直接 builder 指向即可。 |
-| CRIT-3 | `lib/app/router.dart` | 决策：若近期不实现通知中心，则**移除** `/notifications` 的 `StatefulShellBranch` 及 `ShellBranch.notifications`；若保留，则新建 `NotificationsPage` 并接入未读数。 |
-| HIGH-10 | `lib/features/search/presentation/pages/search_page.dart` | 添加 `AppBar` + 返回按钮；移动端优先使用 `PageScaffoldShell` + `AppBackButton`（见 3.4）。 |
+| HIGH-10 | `lib/features/search/presentation/pages/search_page.dart` | 添加 `AppBar` + 返回按钮；移动端用 `PageScaffoldShell` 包装，返回按钮使用统一 `AppBackButton`（见 3.3）。 |
 | MED-4 | `lib/app/router.dart` | 删除 `/mine/medicine/new` 或改为重定向到 `/medicine/search`；避免 URL 与页面不符。 |
 
-#### 3.2 移除加载态逼真 Mock 数据（CRIT-1, MED-1）
-
-| 页面 | 当前问题 | 动作 |
-|---|---|---|
-| `today_page.dart` | `loading` 使用 `MockTodayRepository.previewDashboard` | 改为传入 `null`/空 dashboard，`TodayDashboardView` 内部根据 `isLoading` 展示 skeleton。 |
-| `record_page.dart` | `loading` 使用 `MockRecordRepository.previewDashboard` | 同上，使用空数据 + skeleton。 |
-| `medicine_page.dart` | `loading` 使用 `MockMedicineWorkspaceRepository.previewWorkspace` | 同上。 |
-| `report_page.dart` | `loading` 使用 `MockReportRepository.previewDashboard` | 同上；日期范围标签在 loading/error 时显示 `--` 或 `l10n.reportLoadingDateRange`。 |
-| `mine_page.dart` | `loading` 使用 `MockMineRepository.previewDashboard` | 同上。 |
-
-- 复用 `AppSkeletonScope` / `AppSkeletonText`（已存在）。
-- 若子组件不接受空数据，先在 `Phase 1` 内将其改为可空或增加 `isLoading` 分支。
-
-#### 3.3 消灭无意义点击（HIGH-3, HIGH-4, HIGH-5, HIGH-6）
+#### 3.2 消灭无意义点击（HIGH-3, HIGH-4, HIGH-5, HIGH-6）
 
 | 文件 | 问题 | 动作 |
 |---|---|---|
-| `today_dashboard_view.dart` | `TodayEmptyView` 的 `onAction` 为空回调 | 接入 `/record/create`；若该入口不应存在，则移除 `actionLabel`。 |
-| `today_recommendation_section.dart` | “查看更多”只是刷新 | 将 action 改为刷新图标按钮，或实现 `/today/recommendations` 列表页。 |
-| `today_recommendation_section.dart` | 推荐行点击只弹 toast | 根据推荐类型导航：药品 → `/medicine`，睡眠 → `/record/create?type=sleep`，否则移除 `InkWell`。 |
-| `medicine_mobile_quick_operations_section.dart` | 提醒入口 fallback 弹 tooltip toast | 始终导航到 `/medicine/reminders/create`；若当前上下文无药品，则在创建页内引导先选药。 |
+| `today_dashboard_view.dart` | `TodayEmptyView` 的 `onAction` 为空回调 | **保留按钮**，`onAction` 改为 `() => context.push('/record/create')`。 |
+| `today_recommendation_section.dart` | “查看更多”只是刷新 | **改为刷新行为**：保留文字但 action 改为 `ref.invalidate(...)` / `_refresh(ref)`；不实现独立列表页。 |
+| `today_recommendation_section.dart` | 推荐行点击只弹 toast | **按推荐类型映射真实导航**（`category` 字符串来自后端，当前有 `medicine` / `sleep` / `record` / `report` / 默认 `habit`）：<br>- `medicine` → `context.push('/medicine')`<br>- `sleep` → `context.push('/record/create?kind=sleep')`<br>- `record` → `context.push('/record/create?kind=water')`<br>- `report` → `context.push('/report')`<br>- `habit` / 其他 → `context.push('/record')`<br>无明确目标类型的行移除 `InkWell`，避免无效点击。 |
+| `medicine_mobile_quick_operations_section.dart` | 提醒入口 fallback 弹 tooltip toast | **允许从 dashboard 直接创建提醒**：fallback 改为 `context.push('/medicine/reminders/new')`；创建页内部处理无药品上下文时的引导（显示选药提示或跳转 `/medicine/search`）。 |
 
-#### 3.4 统一返回按钮组件（HIGH-9, HIGH-11）
+#### 3.3 统一返回按钮组件（HIGH-9, HIGH-11）
 
-- 新建/复用单一组件 `AppBackButton`（建议放在 `lib/core/widgets/app_back_button.dart`）。
-- 行为：优先 `context.pop()`；无法 pop 时回退到安全路由（如 `/today`，不是 `/`）。
-- 使用 `GoRouter.of(context).canPop()` 替代 `Navigator.of(context).canPop()`。
-- 将 `AuthBackButton` 和 `SettingsBackButton` 全部替换为 `AppBackButton`。
+**决策**：新建 `lib/core/widgets/app_back_button.dart` 作为统一返回按钮。
+
+- 行为：
+  - 优先 `GoRouter.of(context).canPop()`；能 pop 则 `context.pop()`。
+  - 无法 pop 时 fallback 到 `/today`（不是 `/`，避免回到 splash）。
+- 替换范围：
+  - `AuthBackButton` → `AppBackButton`（auth 相关页面）。
+  - `SettingsBackButton` → `AppBackButton`（settings 子页、record 子页、medicine 子页、mine 编辑页、assistant 等所有使用处）。
+- 删除或标记 `AuthBackButton`、`SettingsBackButton` 为 deprecated；若某些页面需要自定义 `onTap`，通过 `AppBackButton.onPressed` 透传，但默认行为必须走统一 fallback。
+- 同步更新 `page_scaffold_shell.dart` 等组件中硬编码的返回按钮。
 
 ---
 
@@ -92,26 +108,38 @@
 
 **目标**：明确“全屏子页” vs “Shell 内子页”的划分，消除底部导航的突兀消失。
 
-#### 3.5 决策：子页是否保留底部导航
+**决策**：采用方案 A——创建/详情/编辑类子页统一为顶层全屏 `GoRoute`，进入时隐藏底部导航；`/settings`、`/assistant`、`/notifications` 不再作为 `StatefulShellBranch`。
 
-**建议规则（需在计划中确认）**：
+#### 3.4 全屏子页规则
+
+**规则**：
 - **创建/详情/编辑类子页**：统一作为**顶层全屏路由**，进入时隐藏底部导航，使用 `AppBackButton` 返回。
-- **主 Tab 内的筛选/次级列表**：可保留在 Shell 内。
+- **主 Tab 内的筛选/次级列表**：可保留在 Shell 内（当前无此类页面）。
 
-**按此规则调整**：
-- `record/*`（create / detail / edit）从 Shell 内移出，成为顶层 `GoRoute`。
-- 或：将 `medicine/*` 子页移入 Shell，与 `record` 保持一致。
+**需移出 Shell 的路由**：
+- `record/*`：`/record/create`、 `/record/:id`、 `/record/:id/edit`。
+- `medicine/*`：`/medicine/search`、 `/medicine/risk-check`、 `/medicine/reminders/new`、 `/medicine/reminders/:medicineId`、 `/medicine/reminders/:medicineId/edit`。
+- `mine/*`：`/mine/profile/edit`、 `/mine/allergy/new`、 `/mine/allergy/:id/edit`、 `/mine/condition/new`、 `/mine/condition/:id/edit`、 `/mine/medicine/new`、 `/mine/medicine/:id/edit`。
+- 隐藏分支改为顶层：`/settings`、 `/settings/*`、 `/assistant`、 `/notifications`、 `/notifications/:id`。
 
-**推荐方案**：统一为**全屏子页**（更利于专注），即把 `record/*` 也移出 Shell。
+**配套改动**：
+- 从 `StatefulShellRoute` 中移除上述分支/子路由。
+- 更新 `ShellBranch` enum，移除 hidden branches（settings/assistant/notifications）。
+- `ShellPage` 中 `_onSettings`、 `_onHelp`、 assistant 入口从 `goBranch` 改为 `context.push('/settings')` 等。
+- 所有入口点的 `context.go(...)` 若指向子页，改为 `context.push(...)` 以保留返回栈。
 
-#### 3.6 Settings / Assistant / Notifications 的处理
+#### 3.5 Settings / Assistant / Notifications 的处理
 
-- 这三个页面不应是 `StatefulShellBranch`（它们不在底部导航中）。
-- 改为**顶层 `GoRoute`**：`/settings`、`/assistant`、`/notifications`。
-- 返回行为：从 Mine 进入 Settings → 返回 Mine；从 Settings 进入 Assistant → 返回 Settings。
-- 使用 `AppBackButton` 默认行为即可满足（可 pop 时 pop，否则回退 `/today`）；如需更精确，可在入口点传 `from` 参数或维护历史栈。
+- `/settings`、`/assistant`、`/notifications` 不再作为 `StatefulShellBranch`。
+- 改为顶层 `GoRoute`，路由结构与现有子路由保持一致。
+- 返回行为统一使用 `AppBackButton`：
+  - 从 Mine 进入 Settings → pop 回 Mine。
+  - 从 Settings 进入 Assistant → pop 回 Settings。
+  - 无法 pop 时 fallback 到 `/today`。
+- 入口跳转方式：`ShellPage` 中的 settings/help/assistant 图标从 `navigationShell.goBranch(index)` 改为 `context.push('/settings')` / `context.push('/assistant')`。
+- `/notifications` 保留现有 `:id` 子路由，同样作为顶层路由。
 
-#### 3.7 修复跨 Tab 跳转与嵌套 push（MED-5, MED-6, MED-7）
+#### 3.6 修复跨 Tab 跳转与嵌套 push（MED-5, MED-6, MED-7）
 
 | 问题 | 文件 | 动作 |
 |---|---|---|
@@ -125,21 +153,21 @@
 
 **目标**：让 Mock 数据一看就是假的，且不会进入生产持久化。
 
-#### 3.8 Mock 数据标记化（HIGH-1）
+> **HIGH-1 / HIGH-2 状态**：根据当前决策，**延后处理**。原因：Mock 数据标记方式与生产构建策略涉及产品/测试/截图一致性，需单独决策。本阶段先处理 MED-8、LOW-4。
 
-- 所有 Mock Repository 中的字符串加 `[DEMO]` 前缀或使用明显占位符：
-  - `displayName: '[DEMO] Lumi User'` → 或直接 `'__mock_user__'`
-  - `email: 'placeholder@example.com'`
-  - 药品名：`'[DEMO] 布洛芬缓释胶囊'`
-  - ID：`demo-drug-001`（避免与真实 ID 冲突）
-- 日期使用固定明显日期如 `DateTime(2099, 1, 1)` 或动态 `DateTime.now()`。
+#### 3.7 Mock 数据标记化（HIGH-1，已延后）
 
-#### 3.9 搜索 Mock 结果隔离（HIGH-2）
+- 状态：延后。
+- 待决策：标记方式（`[DEMO]` 前缀 / `__mock_*__` / `'--'` 占位）、生产构建策略（throw / 空列表 / 保留 demo 标记）、药品名是否保留真实中文名。
+- 暂不实施。
 
-- `mock/mock_repository.dart` 返回的 `MedicineSearchResult` 应带 `isDemo: true` 标记，或在添加药品时阻止写入真实 `sourceRefId`。
-- **更稳妥方案**：在生产构建中让搜索仓库 throw `UnimplementedError` 或返回空列表，直到真实搜索接口就绪。
+#### 3.8 搜索 Mock 结果隔离（HIGH-2，已延后）
 
-#### 3.10 清理延迟功能残留（MED-8, LOW-4）
+- 状态：延后。
+- 待决策：搜索 mock 在生产构建中是否返回空列表或 throw `UnimplementedError`；mock ID 与药品名标记方式。
+- 暂不实施。
+
+#### 3.9 清理延迟功能残留（MED-8, LOW-4）
 
 - 若 `quickActions` 字段确认不用于当前 MVP，从 workspace entity 中移除。
 - 搜索所有 `quickActionCameraTitle` 引用，移除或加 `kDebugMode` 保护。
@@ -148,17 +176,17 @@
 
 ### Phase 4：通用 UX 与细节打磨（HIGH-12, HIGH-13 + Medium/Low）
 
-#### 3.11 错误/空态补强
+#### 3.10 错误/空态补强（HIGH-12, HIGH-13）
 
 | 问题 | 文件 | 动作 |
 |---|---|---|
-| HIGH-12 | `today_recommendation_section.dart` | error 状态不再 `SizedBox.shrink()`，改为 `AppStateErrorView` + 重试。 |
-| HIGH-13 | `medicine_reminder_detail_page.dart` | error 描述传入 `l10n.medicineReminderErrorDescription` 或通用错误文案。 |
+| HIGH-12 | `today_recommendation_section.dart` | error 状态改为 `AppStateErrorView` compact 版本：<br>- `title`: `l10n.todayRecommendationErrorTitle`<br>- `description`: `l10n.todayRecommendationErrorDescription`<br>- `actionLabel`: `l10n.todayRetryAction`<br>- `onAction`: `() => ref.invalidate(todayRecommendationsProvider)` |
+| HIGH-13 | `medicine_reminder_detail_page.dart` | **区分错误类型**：<br>- 404 / 提醒不存在：`title` 用 `l10n.medicineReminderNotFoundTitle`，`description` 传入明确“提醒不存在”文案。<br>- 通用加载失败：`title` 用通用错误 title，`description`: `"加载提醒详情失败，请检查网络后重试"`，`actionLabel`: `"重试"`。
 | MED-9 | `report_page.dart` | error 状态添加 `AppBackButton` 或 `AppStateErrorView` 的返回动作。 |
 | LOW-7 | `medicine_reminder_detail_page.dart` | 无提醒时隐藏删除按钮，或改为空态提示。 |
 | LOW-1 | `medicine_mobile_drugbox_section.dart` | 确保 `currentMedicineId` 不为 null；若确实可能 null，则隐藏不可点击行。 |
 
-#### 3.12 Settings 页增强（MED-2, MED-3, MED-10, MED-11）
+#### 3.11 Settings 页增强（MED-2, MED-3, MED-10, MED-11）
 
 | 问题 | 动作 |
 |---|---|
@@ -167,19 +195,19 @@
 | MED-10 | 数据共享同意行点击先弹出确认 dialog，确认后再 toggle。 |
 | MED-11 | 导出按钮统一导航到 `/settings/export`；若决定保留行内导出，则删除 `/settings/export` 路由。 |
 
-#### 3.13 布局与 SafeArea 细节（LOW-5, LOW-8）
+#### 3.12 布局与 SafeArea 细节（LOW-5, LOW-8）
 
 | 问题 | 文件 | 动作 |
 |---|---|---|
 | LOW-5 | `page_scaffold_shell.dart` | FAB 的 `bottom` 增加 `MediaQuery.paddingOf(context).bottom`。 |
 | LOW-8 | `today_dashboard_view.dart` | 底部 padding 改用 `MediaQuery.paddingOf(context).bottom + bottomNavHeight` 或 `SafeArea`。 |
 
-#### 3.14 登录返回路由验证（LOW-2）
+#### 3.13 登录返回路由验证（LOW-2）
 
 - 审阅 `loginRouteForCurrentLocation` 与 `loginRouteForReturnTo` 的实现，确保 URL 编码正确、登录后确实回到原页面。
 - 补充单元测试覆盖常见路径：`/today`、`/record/create`、`/medicine/search`。 |
 
-#### 3.15 滚动位置保留验证（LOW-6）
+#### 3.14 滚动位置保留验证（LOW-6）
 
 - 检查各 Tab 列表 `PageStorageKey` 的唯一性和一致性。
 - 手动验证切换 Tab 后滚动位置是否保留；若不行，统一 key 命名。 |
@@ -190,8 +218,8 @@
 
 完成全部 Phase 后，必须满足：
 
-1. **无崩溃路由**：`/settings/theme`、`/settings/language`、`/settings/more` 能正常打开；`/notifications` 要么有页面、要么已从 router 移除。
-2. **无逼真 Mock 数据**：5 个主 Tab 在 loading 时显示 skeleton，不出现 `Lumi User`、`lumi@example.com`、`92% adherence` 等字样。
+1. **无崩溃路由**：`/settings/theme`、`/settings/language`、`/settings/more` 能正常打开；`/notifications` 已有对应页面。
+2. **无逼真 Mock 数据**：5 个主 Tab 在 loading 时显示 skeleton，不出现 `Lumi User`、`lumi@example.com`、`92% adherence` 等字样（Critical 项已完成）。
 3. **无空回调**：`flutter analyze` + 人工 grep 无 `onTap: () {}`、无“只弹 toast 无实际行为”的交互（明确的 toast 提示除外）。
 4. **返回按钮一致**：所有子页使用 `AppBackButton`，`AuthBackButton` / `SettingsBackButton` 已删除或仅作为别名。
 5. **路由架构清晰**：创建/详情/编辑子页统一为全屏路由或统一在 Shell 内，无混合情况。
@@ -207,7 +235,6 @@
 
 | 风险/决策 | 建议 | 备注 |
 |---|---|---|
-| `/notifications` 是否保留？ | 若 MVP 无通知中心，建议移除；后续需要时重新设计。 | 影响 `ShellBranch` 枚举。 |
 | `record/*` 移出 Shell 还是 `medicine/*` 移入 Shell？ | 推荐统一全屏子页（都移出）。 | 涉及多个文件的路径与返回行为。 |
 | 搜索功能是否接入真实后端？ | 若未接入，生产构建中返回空或 throw。 | 避免 mock ID 污染真实数据。 |
 | `AppBackButton` 默认回退到 `/today` 还是 `/`？ | 回退到 `/today`（`/ `是 splash）。 | 需在组件注释中说明。 |
@@ -249,13 +276,12 @@ lib/l10n/app_en.arb
 ## 7. 建议执行顺序
 
 ```text
-Phase 1.1 路由补全/移除      → 消除崩溃
-Phase 1.2 加载态 skeleton    → 消除假数据
-Phase 1.3 无意义点击修复      → 消除死胡同
-Phase 1.4 AppBackButton 组件  → 统一返回行为
-Phase 2   Shell 路由架构改造  → 一致性
-Phase 3   Mock 数据治理       → 数据可信
-Phase 4   UX 细节打磨         → 体验完整
+Phase 1.1 路由补全/移除          → 消除崩溃（HIGH-10, MED-4）
+Phase 1.2 无意义点击修复          → 消除死胡同（HIGH-3, HIGH-4/5, HIGH-6）
+Phase 1.3 AppBackButton 组件      → 统一返回行为（HIGH-9/11）
+Phase 2   Shell 路由架构改造      → 一致性（HIGH-7/8, MED-5/6/7）
+Phase 3   Mock 数据治理（剩余项） → MED-8, LOW-4（HIGH-1/2 延后）
+Phase 4   UX 细节打磨            → HIGH-12, HIGH-13, Medium/Low
 ```
 
 每个 Phase 完成后运行：

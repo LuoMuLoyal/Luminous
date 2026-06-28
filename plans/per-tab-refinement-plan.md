@@ -1,8 +1,10 @@
 # Luminous 逐个 Tab 精修实施计划
 
-> 对应背景：桌面 Shell SaaS 骨架改造已完成（`plans/desktop-shell-saas-layout-plan.md` Phase 1–5 + 折叠动画优化），下一步把 5 个可见 Tab 的体验从“能跑”打磨到“产品级”。
+> 对应背景：桌面 Shell SaaS 骨架改造已完成，下一步把 5 个可见 Tab 的体验从“能跑”打磨到“产品级”。
 > 创建时间：2026-06-27
 > 范围：Luminous 前端（`lib/features/*`）
+>
+> **状态**：长期精修计划，当前未全部执行。2026-06-28 优先处理 UX 审计 HIGH 项（见 `plans/2026-06-28-luminous-ux-audit-remediation-plan.md`），本计划中的对应条目（如 Today 空态按钮、错误态补强、路由架构统一）由该计划覆盖。本计划待 UX 审计完成后继续执行。
 
 ---
 

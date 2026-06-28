@@ -3,6 +3,7 @@ import 'package:luminous/features/today/data/repositories/lucent_today_repositor
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/today_repository.dart';
 
+// TODO(high-1): Replace realistic mock vital/health values with placeholder values.
 class MockTodayRepository implements TodayRepository {
   const MockTodayRepository();
 

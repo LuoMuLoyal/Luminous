@@ -2,6 +2,7 @@ import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/features/search/domain/repositories/search_repository.dart';
 
 /// Mock implementation of MedicineSearchRepository used for testing.
+// TODO(high-2): Mock search results use IDs/names/manufacturers that look real and may pollute production data. Decide marking strategy or isolate in production builds.
 class MockMedicineSearchRepository implements MedicineSearchRepository {
   const MockMedicineSearchRepository();
 

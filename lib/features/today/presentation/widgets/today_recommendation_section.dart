@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
+import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -57,7 +58,14 @@ class TodayRecommendationSection extends ConsumerWidget {
             height: 144,
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, __) => AppStateErrorView(
+            title: l10n.todayRecommendationErrorTitle,
+            description: l10n.todayRecommendationErrorDescription,
+            icon: Icons.error_outline_rounded,
+            actionLabel: l10n.todayRetryAction,
+            onAction: () => _refresh(ref),
+            compact: true,
+          ),
         ),
       ),
     );

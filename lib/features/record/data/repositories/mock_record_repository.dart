@@ -6,6 +6,7 @@ import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
 
+// TODO(high-1): Replace realistic mock record values (blood pressure, weight, etc.) with placeholder values.
 class MockRecordRepository implements RecordRepository {
   const MockRecordRepository();
 
