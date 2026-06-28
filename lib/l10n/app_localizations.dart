@@ -3812,11 +3812,29 @@ abstract class AppLocalizations {
   /// **'点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'**
   String get settingsNotificationsPermissionDisabledHint;
 
+  /// No description provided for @settingsNotificationsGeneralGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'通用通知'**
+  String get settingsNotificationsGeneralGroup;
+
+  /// No description provided for @settingsNotificationsReminderGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'提醒'**
+  String get settingsNotificationsReminderGroup;
+
   /// No description provided for @settingsNotificationsSleepReminderTitle.
   ///
   /// In zh, this message translates to:
   /// **'睡眠提醒'**
   String get settingsNotificationsSleepReminderTitle;
+
+  /// No description provided for @settingsNotificationsSleepReminderSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'在设定时间提醒你准备入睡'**
+  String get settingsNotificationsSleepReminderSubtitle;
 
   /// No description provided for @settingsNotificationsSleepBedtime.
   ///
@@ -3835,6 +3853,138 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'未设置'**
   String get settingsNotificationsTimeUnset;
+
+  /// No description provided for @settingsAccountSecuritySectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号与安全'**
+  String get settingsAccountSecuritySectionTitle;
+
+  /// No description provided for @settingsNotificationsSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'通知'**
+  String get settingsNotificationsSectionTitle;
+
+  /// No description provided for @settingsNotificationsSummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'已开启 {count} 项'**
+  String settingsNotificationsSummary(int count);
+
+  /// No description provided for @settingsPrivacySectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私'**
+  String get settingsPrivacySectionTitle;
+
+  /// No description provided for @settingsAiTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 设置'**
+  String get settingsAiTitle;
+
+  /// No description provided for @settingsAiSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 总结、助手与记忆'**
+  String get settingsAiSubtitle;
+
+  /// No description provided for @settingsAiSummariesTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 总结与建议'**
+  String get settingsAiSummariesTitle;
+
+  /// No description provided for @settingsAiSummariesSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'每日健康总结与趋势建议'**
+  String get settingsAiSummariesSubtitle;
+
+  /// No description provided for @settingsAiAssistantTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 助手'**
+  String get settingsAiAssistantTitle;
+
+  /// No description provided for @settingsAiAssistantSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'健康问答助手'**
+  String get settingsAiAssistantSubtitle;
+
+  /// No description provided for @settingsAiMemoryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'AI 记忆'**
+  String get settingsAiMemoryTitle;
+
+  /// No description provided for @settingsAiMemorySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'让 AI 记住你的健康偏好'**
+  String get settingsAiMemorySubtitle;
+
+  /// No description provided for @settingsGeneralSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'通用'**
+  String get settingsGeneralSectionTitle;
+
+  /// No description provided for @settingsAboutSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'关于'**
+  String get settingsAboutSectionTitle;
+
+  /// No description provided for @settingsExportDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出你的健康数据为 PDF，处理完成后可下载。'**
+  String get settingsExportDescription;
+
+  /// No description provided for @settingsExportRequestButton.
+  ///
+  /// In zh, this message translates to:
+  /// **'请求导出'**
+  String get settingsExportRequestButton;
+
+  /// No description provided for @settingsHelpEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无帮助内容'**
+  String get settingsHelpEmpty;
+
+  /// No description provided for @settingsHelpError.
+  ///
+  /// In zh, this message translates to:
+  /// **'帮助内容加载失败'**
+  String get settingsHelpError;
+
+  /// No description provided for @settingsAboutPrivacyPolicy.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐私政策'**
+  String get settingsAboutPrivacyPolicy;
+
+  /// No description provided for @settingsAboutTermsOfService.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务条款'**
+  String get settingsAboutTermsOfService;
+
+  /// No description provided for @settingsAboutLicenses.
+  ///
+  /// In zh, this message translates to:
+  /// **'开源许可'**
+  String get settingsAboutLicenses;
+
+  /// No description provided for @settingsAboutSupport.
+  ///
+  /// In zh, this message translates to:
+  /// **'帮助与反馈'**
+  String get settingsAboutSupport;
 
   /// No description provided for @mineErrorTitle.
   ///

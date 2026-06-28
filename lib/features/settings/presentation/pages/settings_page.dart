@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/app_setting_row.dart';
-import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
-import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
+import 'package:luminous/core/widgets/app_settings_navigation_row.dart';
+import 'package:luminous/core/widgets/app_settings_section.dart';
+import 'package:luminous/core/widgets/app_settings_switch_row.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
-import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
-import 'package:luminous/features/settings/presentation/widgets/notification_setting_dialogs.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -32,20 +27,7 @@ class SettingsPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
-    final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
     final session = ref.watch(authSessionProvider);
-    final currentTheme =
-        ref.watch(appThemeControllerProvider).value ??
-        AppThemeModePreference.system;
-    final currentPalette =
-        ref.watch(appThemePaletteControllerProvider).value ??
-        AppThemePalettePreference.classic;
-    final currentLocale =
-        ref.watch(appLocaleControllerProvider).asData?.value ??
-        AppLocale.system;
     final signedIn = session.canAccessProtectedData;
 
     return PageScaffoldShell(
@@ -53,75 +35,51 @@ class SettingsPage extends ConsumerWidget {
       centerTitle: true,
       leading: const SettingsBackButton(),
       children: [
+        _AccountHeader(
+          session: session,
+          signedIn: signedIn,
+          onTap: () => pushAuthRequiredRoute(context, '/account'),
+        ),
+        const SizedBox(height: AppSpacingTokens.lg),
+        AppSettingsSection(label: l10n.settingsAccountSecuritySectionTitle),
         AppSectionSurface(
-          key: const Key('settings-group-account'),
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              AppSettingRow(
-                key: const Key('settings-row-account'),
-                icon: Icons.verified_user_outlined,
+              AppSettingsNavigationRow(
+                key: const Key('settings-row-account-security'),
                 title: l10n.mineSettingsAccountTitle,
-                value:
-                    session.user?.email ??
-                    session.user?.nickname ??
-                    l10n.mineAccountSignedOut,
-                onTap: () {
-                  if (session.isLoading) {
-                    return;
-                  }
-                  pushAuthRequiredRoute(context, '/account');
-                },
+                onTap: () => pushAuthRequiredRoute(context, '/account'),
               ),
             ],
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.lg),
+        AppSettingsSection(label: l10n.settingsNotificationsSectionTitle),
         AppSectionSurface(
-          key: const Key('settings-group-preferences'),
           surface: surface,
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              AppSettingRow(
-                key: const Key('settings-row-theme'),
-                icon: Icons.dark_mode_outlined,
-                title: l10n.mineSettingsThemeTitle,
-                value: _themeSettingsLabel(l10n, currentTheme, currentPalette),
-                onTap: () => context.push('/settings/theme'),
-                showDivider: true,
-              ),
-              AppSettingRow(
-                key: const Key('settings-row-language'),
-                icon: Icons.language_outlined,
-                title: l10n.mineSettingsLanguageTitle,
-                value: _languageLabel(l10n, currentLocale),
-                onTap: () => context.push('/settings/language'),
+              AppSettingsNavigationRow(
+                key: const Key('settings-row-notifications'),
+                title: l10n.mineSettingsNotificationsTitle,
+                value: _notificationSummary(l10n, ref),
+                onTap: () => context.push('/settings/notifications'),
               ),
             ],
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _PrivacySettingsSection(
-          key: const Key('settings-group-privacy'),
-          surface: surface,
-          typography: typography,
-          signedIn: signedIn,
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _ReminderSettingsSection(
-          key: const Key('settings-group-reminders'),
-          surface: surface,
-          typography: typography,
-        ),
-        const SizedBox(height: AppSpacingTokens.md),
-        _AdvancedSettingsSection(
-          key: const Key('settings-group-advanced'),
-          surface: surface,
-          typography: typography,
-          signedIn: signedIn,
-        ),
+        const SizedBox(height: AppSpacingTokens.lg),
+        AppSettingsSection(label: l10n.settingsPrivacySectionTitle),
+        _PrivacySection(surface: surface, signedIn: signedIn),
+        const SizedBox(height: AppSpacingTokens.lg),
+        AppSettingsSection(label: l10n.settingsGeneralSectionTitle),
+        _GeneralSection(surface: surface),
+        const SizedBox(height: AppSpacingTokens.lg),
+        AppSettingsSection(label: l10n.settingsAboutSectionTitle),
+        _AboutSection(surface: surface, signedIn: signedIn),
         const SizedBox(height: AppSpacingTokens.xl),
         _FooterActionButton(
           key: const Key('settings-footer-action'),
@@ -145,56 +103,105 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-  String _themeModeLabel(
-    AppLocalizations l10n,
-    AppThemeModePreference preference,
-  ) {
-    return switch (preference) {
-      AppThemeModePreference.system => l10n.mineThemeModeSystem,
-      AppThemeModePreference.light => l10n.mineThemeModeLight,
-      AppThemeModePreference.dark => l10n.mineThemeModeDark,
-    };
-  }
+  String _notificationSummary(AppLocalizations l10n, WidgetRef ref) {
+    final settingsAsync = ref.watch(notificationSettingsControllerProvider);
+    final settings = settingsAsync.asData?.value;
+    if (settings == null) return '';
 
-  String _languageLabel(AppLocalizations l10n, AppLocale locale) {
-    return switch (locale) {
-      AppLocale.system => l10n.settingsLanguageSystemLabel,
-      AppLocale.en => l10n.settingsLanguageEnglishLabel,
-      AppLocale.zhCn => l10n.settingsLanguageChineseLabel,
-    };
-  }
+    final enabledCount = [
+      settings.medicationReminders,
+      settings.waterReminders,
+      settings.sleepReminders,
+      settings.healthAlerts,
+      settings.weeklySummary,
+    ].where((v) => v).length;
 
-  String _themePaletteLabel(
-    AppLocalizations l10n,
-    AppThemePalettePreference preference,
-  ) {
-    return switch (preference) {
-      AppThemePalettePreference.classic => l10n.settingsThemePaletteClassic,
-      AppThemePalettePreference.bluePink => l10n.settingsThemePaletteBluePink,
-      AppThemePalettePreference.yellowGreen =>
-        l10n.settingsThemePaletteYellowGreen,
-    };
-  }
-
-  String _themeSettingsLabel(
-    AppLocalizations l10n,
-    AppThemeModePreference mode,
-    AppThemePalettePreference palette,
-  ) {
-    return '${_themeModeLabel(l10n, mode)} · ${_themePaletteLabel(l10n, palette)}';
+    return l10n.settingsNotificationsSummary(enabledCount);
   }
 }
 
-class _PrivacySettingsSection extends ConsumerWidget {
-  const _PrivacySettingsSection({
-    super.key,
-    required this.surface,
-    required this.typography,
+class _AccountHeader extends StatelessWidget {
+  const _AccountHeader({
+    required this.session,
     required this.signedIn,
+    required this.onTap,
   });
 
+  final AuthSessionState session;
+  final bool signedIn;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = _typography(context);
+
+    final displayName =
+        session.user?.nickname ??
+        (signedIn ? l10n.mineAccountSignedIn : l10n.mineAccountSignedOut);
+    final subtitle =
+        session.user?.email ?? (signedIn ? '' : l10n.mineAccountSignedOutMeta);
+
+    return Material(
+      color: surface.canvas,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.md),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: surface.canvasSoft2,
+                child: Icon(
+                  Icons.person_outline_rounded,
+                  color: surface.body,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: AppSpacingTokens.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(displayName, style: typography.bodyMdStrong),
+                    if (subtitle.isNotEmpty) ...[
+                      const SizedBox(height: AppSpacingTokens.xxs),
+                      Text(
+                        subtitle,
+                        style: typography.bodySm.copyWith(color: surface.mute),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded, color: surface.mute, size: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  AppTypographyScale _typography(BuildContext context) {
+    final theme = Theme.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+    return width < AppBreakpoints.mobile
+        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
+        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+  }
+}
+
+class _PrivacySection extends ConsumerWidget {
+  const _PrivacySection({required this.surface, required this.signedIn});
+
   final AppThemeSurface surface;
-  final AppTypographyScale typography;
   final bool signedIn;
 
   @override
@@ -210,65 +217,32 @@ class _PrivacySettingsSection extends ConsumerWidget {
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          AppSettingRow(
+          AppSettingsSwitchRow(
             key: const Key('settings-row-privacy-report'),
-            icon: Icons.ios_share_outlined,
             title: l10n.minePrivacyReportTitle,
             subtitle: l10n.minePrivacyReportSubtitle,
-            trailing: Text(
-              (settings?.dataSharingConsent ?? false)
-                  ? l10n.minePrivacyShareAfterGrant
-                  : l10n.minePrivacyOnlyMe,
-              style: typography.bodySm.copyWith(color: surface.body),
-              textAlign: TextAlign.right,
-            ),
-            onTap: () {
+            value: settings?.dataSharingConsent ?? false,
+            onChanged: (value) {
               if (!signedIn) {
                 pushAuthRequiredRoute(context, '/settings');
                 return;
               }
-              final value = !(settings?.dataSharingConsent ?? false);
               ref
                   .read(userSettingsControllerProvider.notifier)
                   .setDataSharingConsent(value);
             },
             showDivider: true,
           ),
-          AppSettingRow(
-            key: const Key('settings-row-privacy-ai'),
-            icon: Icons.auto_awesome_outlined,
-            title: l10n.minePrivacyAiTitle,
-            subtitle: l10n.minePrivacyAiSubtitle,
-            trailing: IgnorePointer(
-              child: Switch(
-                value: settings?.aiSummariesEnabled ?? false,
-                onChanged: signedIn ? (_) {} : null,
-              ),
-            ),
+          AppSettingsNavigationRow(
+            key: const Key('settings-row-ai'),
+            title: l10n.settingsAiTitle,
+            subtitle: l10n.settingsAiSubtitle,
             onTap: () {
               if (!signedIn) {
                 pushAuthRequiredRoute(context, '/settings');
                 return;
               }
-              final value = !(settings?.aiSummariesEnabled ?? false);
-              ref
-                  .read(userSettingsControllerProvider.notifier)
-                  .setAiSummariesEnabled(value);
-            },
-            showDivider: true,
-          ),
-          AppSettingRow(
-            key: const Key('settings-row-privacy-ai-chat'),
-            icon: Icons.chat_bubble_outline_rounded,
-            title: l10n.assistantEntryTitle,
-            subtitle: l10n.assistantEntrySubtitle,
-            showChevron: true,
-            onTap: () {
-              if (!signedIn) {
-                pushAuthRequiredRoute(context, '/assistant');
-                return;
-              }
-              context.push('/assistant');
+              context.push('/settings/ai');
             },
           ),
         ],
@@ -277,204 +251,45 @@ class _PrivacySettingsSection extends ConsumerWidget {
   }
 }
 
-class _ReminderSettingsSection extends ConsumerWidget {
-  const _ReminderSettingsSection({
-    super.key,
-    required this.surface,
-    required this.typography,
-  });
+class _GeneralSection extends ConsumerWidget {
+  const _GeneralSection({required this.surface});
 
   final AppThemeSurface surface;
-  final AppTypographyScale typography;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final settingsAsync = ref.watch(notificationSettingsControllerProvider);
-    final settings =
-        settingsAsync.asData?.value ?? const NotificationSettingsState();
-
-    String statusLabel(bool enabled) =>
-        enabled ? l10n.mineReminderEnabled : l10n.mineReminderDisabled;
+    final currentTheme =
+        ref.watch(appThemeControllerProvider).value ??
+        AppThemeModePreference.system;
+    final currentPalette =
+        ref.watch(appThemePaletteControllerProvider).value ??
+        AppThemePalettePreference.classic;
+    final currentLocale =
+        ref.watch(appLocaleControllerProvider).asData?.value ??
+        AppLocale.system;
 
     return AppSectionSurface(
       surface: surface,
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          AppSettingRow(
-            key: const Key('settings-row-notifications'),
-            icon: Icons.notifications_none_rounded,
-            title: l10n.mineSettingsNotificationsTitle,
-            showChevron: true,
-            onTap: () => showNotificationGeneralDialog(context),
+          AppSettingsNavigationRow(
+            key: const Key('settings-row-theme'),
+            title: l10n.mineSettingsThemeTitle,
+            value: _themeSettingsLabel(l10n, currentTheme, currentPalette),
+            onTap: () => context.push('/settings/theme'),
             showDivider: true,
           ),
-          AppSettingRow(
-            key: const Key('settings-row-reminder-medicine'),
-            icon: Icons.medication_outlined,
-            title: l10n.mineReminderMedicineTitle,
-            trailing: Text(
-              statusLabel(settings.medicationReminders),
-              style: typography.bodySm.copyWith(color: surface.body),
-            ),
-            onTap: () => showMedicationReminderDialog(context),
+          AppSettingsNavigationRow(
+            key: const Key('settings-row-language'),
+            title: l10n.mineSettingsLanguageTitle,
+            value: _languageLabel(l10n, currentLocale),
+            onTap: () => context.push('/settings/language'),
             showDivider: true,
           ),
-          AppSettingRow(
-            key: const Key('settings-row-reminder-water'),
-            icon: Icons.water_drop_outlined,
-            title: l10n.mineReminderWaterTitle,
-            trailing: Text(
-              statusLabel(settings.waterReminders),
-              style: typography.bodySm.copyWith(color: surface.body),
-            ),
-            onTap: () => showWaterReminderDialog(context),
-            showDivider: true,
-          ),
-          AppSettingRow(
-            key: const Key('settings-row-reminder-sleep'),
-            icon: Icons.nightlight_outlined,
-            title: l10n.mineReminderSleepTitle,
-            trailing: Text(
-              _sleepReminderSummary(l10n, settings),
-              style: typography.bodySm.copyWith(color: surface.body),
-            ),
-            onTap: () => showSleepReminderDialog(context),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AdvancedSettingsSection extends ConsumerWidget {
-  const _AdvancedSettingsSection({
-    super.key,
-    required this.surface,
-    required this.typography,
-    required this.signedIn,
-  });
-
-  final AppThemeSurface surface;
-  final AppTypographyScale typography;
-  final bool signedIn;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    final exportAsync = signedIn
-        ? ref.watch(dataExportControllerProvider)
-        : null;
-    final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
-    final export = exportAsync?.asData?.value;
-
-    String exportValue() {
-      return switch (dataExportUiStatusForRequest(export)) {
-        DataExportUiStatus.idle => l10n.mineSettingExportValue,
-        DataExportUiStatus.requested => l10n.mineExportStatusRequested,
-        DataExportUiStatus.processing => l10n.mineExportStatusPending,
-        DataExportUiStatus.completed => l10n.mineExportStatusCompleted,
-        DataExportUiStatus.completedLinkMissing =>
-          l10n.mineExportStatusLinkMissing,
-        DataExportUiStatus.failed => l10n.mineExportStatusFailed,
-        DataExportUiStatus.unavailable => l10n.mineExportStatusUnavailable,
-      };
-    }
-
-    return AppSectionSurface(
-      surface: surface,
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          AppSettingRow(
-            key: const Key('settings-row-export'),
-            icon: Icons.download_outlined,
-            title: l10n.mineSettingExportTitle,
-            value: exportValue(),
-            onTap: () async {
-              if (!signedIn) {
-                pushAuthRequiredRoute(context, '/settings');
-                return;
-              }
-              if (exportRequestInFlight.inFlight) {
-                return;
-              }
-              try {
-                final request = await ref
-                    .read(dataExportControllerProvider.notifier)
-                    .requestExport();
-                if (!context.mounted) {
-                  return;
-                }
-
-                switch (dataExportUiStatusForRequest(request)) {
-                  case DataExportUiStatus.completed:
-                    await AppToast.show(
-                      context,
-                      l10n.mineExportStatusCompleted,
-                    );
-                    return;
-                  case DataExportUiStatus.completedLinkMissing:
-                    await AppToast.show(
-                      context,
-                      l10n.reportExportLinkMissingToast,
-                    );
-                    return;
-                  case DataExportUiStatus.failed:
-                  case DataExportUiStatus.unavailable:
-                    await AppToast.show(
-                      context,
-                      request?.errorMessage?.isNotEmpty == true
-                          ? request!.errorMessage!
-                          : dataExportUiStatusForRequest(request) ==
-                                DataExportUiStatus.unavailable
-                          ? l10n.mineExportStatusUnavailable
-                          : l10n.mineExportStatusFailed,
-                    );
-                    return;
-                  case DataExportUiStatus.requested:
-                    await AppToast.show(context, l10n.mineExportRequested);
-                    return;
-                  case DataExportUiStatus.processing:
-                    await AppToast.show(context, l10n.mineExportStatusPending);
-                    return;
-                  case DataExportUiStatus.idle:
-                    await AppToast.show(context, l10n.mineExportStatusFailed);
-                    return;
-                }
-              } catch (error) {
-                if (!context.mounted) {
-                  return;
-                }
-                final message = LucentErrorMapper.fromObject(error).message;
-                await AppToast.show(
-                  context,
-                  '${l10n.mineExportStatusFailed}: $message',
-                );
-              }
-            },
-            showDivider: true,
-          ),
-          AppSettingRow(
-            key: const Key('settings-row-help'),
-            icon: Icons.help_outline_rounded,
-            title: l10n.mineSettingHelpTitle,
-            value: l10n.mineSettingHelpValue,
-            onTap: () => _showHelpDialog(context, ref),
-            showDivider: true,
-          ),
-          AppSettingRow(
-            key: const Key('settings-row-about'),
-            icon: Icons.info_outline_rounded,
-            title: l10n.mineSettingAboutTitle,
-            value: l10n.mineSettingAboutValue,
-            onTap: () => _showAboutDialog(context, ref),
-            showDivider: true,
-          ),
-          AppSettingRow(
+          AppSettingsNavigationRow(
             key: const Key('settings-row-advanced'),
-            icon: Icons.tune_rounded,
             title: l10n.mineSettingsAdvancedTitle,
             onTap: () => context.push('/settings/more'),
           ),
@@ -483,95 +298,86 @@ class _AdvancedSettingsSection extends ConsumerWidget {
     );
   }
 
-  Future<void> _showHelpDialog(BuildContext context, WidgetRef ref) async {
-    final l10n = AppLocalizations.of(context)!;
-    final resources = await ref.read(supportResourcesProvider('help').future);
-    if (!context.mounted) return;
-    if (resources.isEmpty) {
-      await AppToast.show(context, l10n.mineSettingHelpTitle);
-      return;
-    }
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        final width = MediaQuery.sizeOf(dialogContext).width;
-        final isDesktop = width >= AppBreakpoints.desktop;
-        return AlertDialog(
-          title: Text(l10n.mineSettingHelpTitle),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: isDesktop ? AppSpacingTokens.xl : AppSpacingTokens.lg,
-            vertical: AppSpacingTokens.md,
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: resources.length,
-              itemBuilder: (context, index) {
-                final r = resources[index];
-                return ListTile(
-                  title: Text(r.title),
-                  subtitle: r.subtitle != null ? Text(r.subtitle!) : null,
-                  enabled:
-                      r.actionUrl != null &&
-                      r.actionUrl!.isNotEmpty &&
-                      r.actionType != null,
-                  onTap:
-                      r.actionUrl != null &&
-                          r.actionUrl!.isNotEmpty &&
-                          r.actionType != null
-                      ? () async {
-                          Navigator.pop(dialogContext);
-                          if (r.actionType == SupportResourceActionType.url ||
-                              r.actionType == SupportResourceActionType.phone) {
-                            final uri = Uri.tryParse(r.actionUrl!);
-                            if (uri != null) {
-                              await const ExternalUrlLauncher().open(uri);
-                            }
-                          } else {
-                            pushAuthRequiredRoute(context, r.actionUrl!);
-                          }
-                        }
-                      : null,
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
+  String _themeModeLabel(
+    AppLocalizations l10n,
+    AppThemeModePreference preference,
+  ) {
+    return switch (preference) {
+      AppThemeModePreference.system => l10n.mineThemeModeSystem,
+      AppThemeModePreference.light => l10n.mineThemeModeLight,
+      AppThemeModePreference.dark => l10n.mineThemeModeDark,
+    };
   }
 
-  Future<void> _showAboutDialog(BuildContext context, WidgetRef ref) async {
+  String _themePaletteLabel(
+    AppLocalizations l10n,
+    AppThemePalettePreference preference,
+  ) {
+    return switch (preference) {
+      AppThemePalettePreference.classic => l10n.settingsThemePaletteClassic,
+      AppThemePalettePreference.bluePink => l10n.settingsThemePaletteBluePink,
+      AppThemePalettePreference.yellowGreen =>
+        l10n.settingsThemePaletteYellowGreen,
+    };
+  }
+
+  String _languageLabel(AppLocalizations l10n, AppLocale locale) {
+    return switch (locale) {
+      AppLocale.system => l10n.settingsLanguageSystemLabel,
+      AppLocale.en => l10n.settingsLanguageEnglishLabel,
+      AppLocale.zhCn => l10n.settingsLanguageChineseLabel,
+    };
+  }
+
+  String _themeSettingsLabel(
+    AppLocalizations l10n,
+    AppThemeModePreference mode,
+    AppThemePalettePreference palette,
+  ) {
+    return '${_themeModeLabel(l10n, mode)} · ${_themePaletteLabel(l10n, palette)}';
+  }
+}
+
+class _AboutSection extends ConsumerWidget {
+  const _AboutSection({required this.surface, required this.signedIn});
+
+  final AppThemeSurface surface;
+  final bool signedIn;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final info = await ref.read(appInfoProvider.future);
-    if (!context.mounted) return;
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        final width = MediaQuery.sizeOf(dialogContext).width;
-        final isDesktop = width >= AppBreakpoints.desktop;
-        return AlertDialog(
-          title: Text(l10n.mineSettingAboutTitle),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: isDesktop ? AppSpacingTokens.xl : AppSpacingTokens.lg,
-            vertical: AppSpacingTokens.md,
+
+    return AppSectionSurface(
+      surface: surface,
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
+          AppSettingsNavigationRow(
+            key: const Key('settings-row-help'),
+            title: l10n.mineSettingHelpTitle,
+            onTap: () => context.push('/settings/help'),
+            showDivider: true,
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(info?.name ?? 'Luminous'),
-              Text('${l10n.mineSettingAboutValue} ${info?.version ?? ''}'),
-              if (info?.description != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: AppSpacingTokens.sm),
-                  child: Text(info!.description),
-                ),
-            ],
+          AppSettingsNavigationRow(
+            key: const Key('settings-row-about'),
+            title: l10n.mineSettingAboutTitle,
+            onTap: () => context.push('/settings/about'),
+            showDivider: true,
           ),
-        );
-      },
+          AppSettingsNavigationRow(
+            key: const Key('settings-row-export'),
+            title: l10n.mineSettingExportTitle,
+            onTap: () {
+              if (!signedIn) {
+                pushAuthRequiredRoute(context, '/settings');
+                return;
+              }
+              context.push('/settings/export');
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -597,32 +403,22 @@ class _FooterActionButton extends StatelessWidget {
         : destructive
         ? theme.colorScheme.error
         : surface.body;
-    final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+    final typography = _typography(context);
 
     return Material(
-      color: Colors.transparent,
+      color: surface.canvas,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-            border: Border.all(color: surface.hairline),
-            boxShadow: AppShadowTokens.level1,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.lg),
-            child: Center(
-              child: Text(
-                label,
-                style: typography.bodyMdStrong.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w600,
-                ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.lg),
+          child: Center(
+            child: Text(
+              label,
+              style: typography.bodyMdStrong.copyWith(
+                color: foreground,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -630,21 +426,12 @@ class _FooterActionButton extends StatelessWidget {
       ),
     );
   }
-}
 
-String _sleepReminderSummary(
-  AppLocalizations l10n,
-  NotificationSettingsState settings,
-) {
-  if (!settings.sleepReminderEnabled) return l10n.mineReminderSleepOff;
-  final bedtime = _formatTimeOfDay(settings.sleepBedtime);
-  final wakeTime = _formatTimeOfDay(settings.sleepWakeTime);
-  return l10n.mineReminderSleepSummary(bedtime, wakeTime);
-}
-
-String _formatTimeOfDay(TimeOfDay? time) {
-  if (time == null) return '--:--';
-  final hour = time.hour.toString().padLeft(2, '0');
-  final minute = time.minute.toString().padLeft(2, '0');
-  return '$hour:$minute';
+  AppTypographyScale _typography(BuildContext context) {
+    final theme = Theme.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+    return width < AppBreakpoints.mobile
+        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
+        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+  }
 }

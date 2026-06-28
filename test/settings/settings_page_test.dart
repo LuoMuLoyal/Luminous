@@ -3,16 +3,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/theme/app_theme.dart';
-import 'package:luminous/core/widgets/app_dialog.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
-import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
-import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,24 +35,30 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.byKey(const Key('settings-group-account')), findsOneWidget);
-    expect(find.byKey(const Key('settings-group-preferences')), findsOneWidget);
-    expect(find.byKey(const Key('settings-group-privacy')), findsOneWidget);
-    expect(find.byKey(const Key('settings-group-reminders')), findsOneWidget);
-    expect(find.byKey(const Key('settings-group-advanced')), findsOneWidget);
+    expect(
+      find.byKey(const Key('settings-row-account-security')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('settings-row-notifications')), findsOneWidget);
+    expect(
+      find.byKey(const Key('settings-row-privacy-report')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('settings-row-ai')), findsOneWidget);
+    expect(find.byKey(const Key('settings-row-theme')), findsOneWidget);
+    expect(find.byKey(const Key('settings-row-language')), findsOneWidget);
+    expect(find.byKey(const Key('settings-row-advanced')), findsOneWidget);
+    expect(find.byKey(const Key('settings-row-help')), findsOneWidget);
+    expect(find.byKey(const Key('settings-row-about')), findsOneWidget);
+    expect(find.byKey(const Key('settings-row-export')), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
     expect(find.byType(BackButton), findsOneWidget);
-    expect(find.text(l10n.mineSettingsAccountTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingsAccountTitle), findsWidgets);
     expect(find.text(l10n.mineSettingsThemeTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsLanguageTitle), findsOneWidget);
     expect(find.text(l10n.minePrivacyReportTitle), findsOneWidget);
-    expect(find.text(l10n.minePrivacyAiTitle), findsOneWidget);
-    expect(find.text(l10n.assistantEntryTitle), findsOneWidget);
+    expect(find.text(l10n.settingsAiTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsNotificationsTitle), findsOneWidget);
-    expect(find.text(l10n.mineReminderMedicineTitle), findsOneWidget);
-    expect(find.text(l10n.mineReminderWaterTitle), findsOneWidget);
-    expect(find.text(l10n.mineReminderSleepTitle), findsOneWidget);
-    expect(find.text('未开启'), findsOneWidget);
     expect(find.text(l10n.mineSettingExportTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingHelpTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingAboutTitle), findsOneWidget);
@@ -116,7 +118,7 @@ void main() {
     );
 
     await tester.pump();
-    await tester.tap(find.byKey(const Key('settings-row-account')));
+    await tester.tap(find.byKey(const Key('settings-row-account-security')));
     await tester.pumpAndSettle();
 
     expect(find.text('account-settings-page'), findsOneWidget);
@@ -167,7 +169,7 @@ void main() {
     );
 
     await tester.pump();
-    await tester.tap(find.byKey(const Key('settings-row-account')));
+    await tester.tap(find.byKey(const Key('settings-row-account-security')));
     await tester.pumpAndSettle();
 
     expect(find.byType(SettingsPage), findsOneWidget);
@@ -182,7 +184,7 @@ void main() {
     expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
     expect(find.byType(SettingsPage), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('settings-row-account')));
+    await tester.tap(find.byKey(const Key('settings-row-account-security')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('auth-required-login-action')));
     await tester.pumpAndSettle();
@@ -214,6 +216,10 @@ void main() {
     );
 
     await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-row-language')),
+      240,
+    );
     await tester.tap(find.byKey(const Key('settings-row-language')));
     await tester.pumpAndSettle();
 
@@ -244,132 +250,50 @@ void main() {
     );
 
     await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-row-theme')),
+      240,
+    );
     await tester.tap(find.byKey(const Key('settings-row-theme')));
     await tester.pumpAndSettle();
 
     expect(find.text('theme-settings-page'), findsOneWidget);
   });
 
-  testWidgets('Settings notifications row opens notification settings dialog', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+  testWidgets(
+    'Settings notifications row routes to notification settings page',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
 
-    await _pumpSettingsPage(
-      tester,
-      router: GoRouter(
-        initialLocation: '/settings',
-        routes: [
-          GoRoute(
-            path: '/settings',
-            builder: (context, state) => const SettingsPage(),
-          ),
-        ],
-      ),
-    );
-
-    await tester.pump();
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('settings-row-notifications')),
-      240,
-    );
-    await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(AppDialog), findsOneWidget);
-    expect(find.text('系统通知已开启'), findsOneWidget);
-  });
-
-  testWidgets('Settings reminder rows open per-type reminder dialogs', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
-
-    await _pumpSettingsPage(
-      tester,
-      router: GoRouter(
-        initialLocation: '/settings',
-        routes: [
-          GoRoute(
-            path: '/settings',
-            builder: (context, state) => const SettingsPage(),
-          ),
-        ],
-      ),
-    );
-
-    await tester.pump();
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('settings-row-reminder-medicine')),
-      240,
-    );
-    await tester.tap(find.byKey(const Key('settings-row-reminder-medicine')));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(AppDialog), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(AppDialog),
-        matching: find.byType(Switch),
-      ),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('Settings sleep reminder row shows time range when enabled', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(
-            () => _SignedInAuthSessionNotifier(),
-          ),
-          notificationSettingsControllerProvider.overrideWith(
-            () => _StaticNotificationSettingsController(
-              const NotificationSettingsState(
-                sleepReminderEnabled: true,
-                sleepBedtime: TimeOfDay(hour: 22, minute: 0),
-                sleepWakeTime: TimeOfDay(hour: 7, minute: 0),
-              ),
+      await _pumpSettingsPage(
+        tester,
+        router: GoRouter(
+          initialLocation: '/settings',
+          routes: [
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) => const SettingsPage(),
             ),
-          ),
-        ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+            GoRoute(
+              path: '/settings/notifications',
+              builder: (context, state) =>
+                  const Scaffold(body: Text('notification-settings-page')),
+            ),
           ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
-            initialLocation: '/settings',
-            routes: [
-              GoRoute(
-                path: '/settings',
-                builder: (context, state) => const SettingsPage(),
-              ),
-            ],
-          ),
         ),
-      ),
-    );
+      );
 
-    await tester.pump();
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('settings-row-reminder-sleep')),
-      240,
-    );
-    await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('settings-row-notifications')),
+        240,
+      );
+      await tester.tap(find.byKey(const Key('settings-row-notifications')));
+      await tester.pumpAndSettle();
 
-    expect(find.text('22:00 - 07:00'), findsOneWidget);
-  });
+      expect(find.text('notification-settings-page'), findsOneWidget);
+    },
+  );
 
   testWidgets('Settings advanced row routes to advanced settings page', (
     tester,
@@ -420,9 +344,9 @@ void main() {
             builder: (context, state) => const SettingsPage(),
           ),
           GoRoute(
-            path: '/assistant',
+            path: '/settings/ai',
             builder: (context, state) =>
-                const Scaffold(body: Text('assistant-page')),
+                const Scaffold(body: Text('ai-settings-page')),
           ),
         ],
       ),
@@ -430,74 +354,64 @@ void main() {
 
     await tester.pump();
     await tester.scrollUntilVisible(
-      find.byKey(const Key('settings-row-privacy-ai-chat')),
+      find.byKey(const Key('settings-row-ai')),
       240,
     );
-    await tester.tap(find.byKey(const Key('settings-row-privacy-ai-chat')));
+    await tester.tap(find.byKey(const Key('settings-row-ai')));
     await tester.pumpAndSettle();
 
-    expect(find.text('assistant-page'), findsOneWidget);
+    expect(find.text('ai-settings-page'), findsOneWidget);
   });
 
-  testWidgets(
-    'Settings export row shows unavailable status from latest export',
-    (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+  testWidgets('Settings export row routes to data export page', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
 
-      final exportRequest = DataExportRequestDataDto(
-        id: 'req-unavailable',
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
-        status: DataExportStatus.unavailable,
-        requestedAt: '2026-06-12T00:00:00.000Z',
-        errorMessage: 'COS unavailable',
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authSessionProvider.overrideWith(
-              () => _SignedInAuthSessionNotifier(),
-            ),
-            dataExportControllerProvider.overrideWith(
-              () => _StaticDataExportController(exportRequest),
-            ),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
           ],
-          child: MaterialApp.router(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/settings',
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsPage(),
+              ),
+              GoRoute(
+                path: '/settings/export',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('data-export-page')),
+              ),
             ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            routerConfig: GoRouter(
-              initialLocation: '/settings',
-              routes: [
-                GoRoute(
-                  path: '/settings',
-                  builder: (context, state) => const SettingsPage(),
-                ),
-              ],
-            ),
           ),
         ),
-      );
+      ),
+    );
 
-      await tester.pump();
-      await tester.scrollUntilVisible(
-        find.byKey(const Key('settings-row-export')),
-        240,
-      );
-      await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-row-export')),
+      240,
+    );
+    await tester.tap(find.byKey(const Key('settings-row-export')));
+    await tester.pumpAndSettle();
 
-      expect(find.text('暂不可用'), findsOneWidget);
-    },
-  );
+    expect(find.text('data-export-page'), findsOneWidget);
+  });
 
   testWidgets('Settings footer action logs out and routes to login page', (
     tester,
@@ -641,23 +555,4 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   AuthSessionState build() {
     return const AuthSessionState(isAuthenticated: false, isLoading: false);
   }
-}
-
-class _StaticDataExportController extends DataExportController {
-  _StaticDataExportController(this._value);
-
-  final DataExportRequestDataDto? _value;
-
-  @override
-  Future<DataExportRequestDataDto?> build() async => _value;
-}
-
-class _StaticNotificationSettingsController
-    extends NotificationSettingsController {
-  _StaticNotificationSettingsController(this._value);
-
-  final NotificationSettingsState _value;
-
-  @override
-  Future<NotificationSettingsState> build() async => _value;
 }

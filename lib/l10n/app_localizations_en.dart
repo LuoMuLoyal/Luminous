@@ -2098,7 +2098,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap to open the system permission dialog. Notifications need system approval before local reminders can appear.';
 
   @override
+  String get settingsNotificationsGeneralGroup => 'General';
+
+  @override
+  String get settingsNotificationsReminderGroup => 'Reminders';
+
+  @override
   String get settingsNotificationsSleepReminderTitle => 'Sleep Reminder';
+
+  @override
+  String get settingsNotificationsSleepReminderSubtitle =>
+      'Remind you to wind down for sleep';
 
   @override
   String get settingsNotificationsSleepBedtime => 'Bedtime';
@@ -2108,6 +2118,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsNotificationsTimeUnset => 'Not set';
+
+  @override
+  String get settingsAccountSecuritySectionTitle => 'Account & Security';
+
+  @override
+  String get settingsNotificationsSectionTitle => 'Notifications';
+
+  @override
+  String settingsNotificationsSummary(int count) {
+    return '$count enabled';
+  }
+
+  @override
+  String get settingsPrivacySectionTitle => 'Privacy';
+
+  @override
+  String get settingsAiTitle => 'AI Settings';
+
+  @override
+  String get settingsAiSubtitle => 'AI summaries, assistant & memory';
+
+  @override
+  String get settingsAiSummariesTitle => 'AI Summaries & Suggestions';
+
+  @override
+  String get settingsAiSummariesSubtitle =>
+      'Daily health summaries and trend advice';
+
+  @override
+  String get settingsAiAssistantTitle => 'AI Assistant';
+
+  @override
+  String get settingsAiAssistantSubtitle => 'Health Q&A assistant';
+
+  @override
+  String get settingsAiMemoryTitle => 'AI Memory';
+
+  @override
+  String get settingsAiMemorySubtitle =>
+      'Let AI remember your health preferences';
+
+  @override
+  String get settingsGeneralSectionTitle => 'General';
+
+  @override
+  String get settingsAboutSectionTitle => 'About';
+
+  @override
+  String get settingsExportDescription =>
+      'Export your health data as a PDF. You can download it once processing is complete.';
+
+  @override
+  String get settingsExportRequestButton => 'Request Export';
+
+  @override
+  String get settingsHelpEmpty => 'No help content available';
+
+  @override
+  String get settingsHelpError => 'Failed to load help content';
+
+  @override
+  String get settingsAboutPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get settingsAboutTermsOfService => 'Terms of Service';
+
+  @override
+  String get settingsAboutLicenses => 'Open Source Licenses';
+
+  @override
+  String get settingsAboutSupport => 'Help & Support';
 
   @override
   String get mineErrorTitle => 'Mine did not load this time';

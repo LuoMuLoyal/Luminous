@@ -1950,7 +1950,16 @@ class AppLocalizationsZh extends AppLocalizations {
       '点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。';
 
   @override
+  String get settingsNotificationsGeneralGroup => '通用通知';
+
+  @override
+  String get settingsNotificationsReminderGroup => '提醒';
+
+  @override
   String get settingsNotificationsSleepReminderTitle => '睡眠提醒';
+
+  @override
+  String get settingsNotificationsSleepReminderSubtitle => '在设定时间提醒你准备入睡';
 
   @override
   String get settingsNotificationsSleepBedtime => '就寝时间';
@@ -1960,6 +1969,74 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsNotificationsTimeUnset => '未设置';
+
+  @override
+  String get settingsAccountSecuritySectionTitle => '账号与安全';
+
+  @override
+  String get settingsNotificationsSectionTitle => '通知';
+
+  @override
+  String settingsNotificationsSummary(int count) {
+    return '已开启 $count 项';
+  }
+
+  @override
+  String get settingsPrivacySectionTitle => '隐私';
+
+  @override
+  String get settingsAiTitle => 'AI 设置';
+
+  @override
+  String get settingsAiSubtitle => 'AI 总结、助手与记忆';
+
+  @override
+  String get settingsAiSummariesTitle => 'AI 总结与建议';
+
+  @override
+  String get settingsAiSummariesSubtitle => '每日健康总结与趋势建议';
+
+  @override
+  String get settingsAiAssistantTitle => 'AI 助手';
+
+  @override
+  String get settingsAiAssistantSubtitle => '健康问答助手';
+
+  @override
+  String get settingsAiMemoryTitle => 'AI 记忆';
+
+  @override
+  String get settingsAiMemorySubtitle => '让 AI 记住你的健康偏好';
+
+  @override
+  String get settingsGeneralSectionTitle => '通用';
+
+  @override
+  String get settingsAboutSectionTitle => '关于';
+
+  @override
+  String get settingsExportDescription => '导出你的健康数据为 PDF，处理完成后可下载。';
+
+  @override
+  String get settingsExportRequestButton => '请求导出';
+
+  @override
+  String get settingsHelpEmpty => '暂无帮助内容';
+
+  @override
+  String get settingsHelpError => '帮助内容加载失败';
+
+  @override
+  String get settingsAboutPrivacyPolicy => '隐私政策';
+
+  @override
+  String get settingsAboutTermsOfService => '服务条款';
+
+  @override
+  String get settingsAboutLicenses => '开源许可';
+
+  @override
+  String get settingsAboutSupport => '帮助与反馈';
 
   @override
   String get mineErrorTitle => '我的页面暂时没有加载出来';
