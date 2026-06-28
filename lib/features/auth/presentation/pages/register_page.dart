@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/auth/presentation/providers/register_form_provider.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -51,7 +52,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       title: l10n?.authCreateAccountAction ?? 'Create account',
       subtitle: l10n?.authRegisterSubtitle,
       logo: const AuthBrandLogo(),
-      leading: const AuthBackButton(),
+      leading: const AppBackButton(fallbackRoute: '/'),
       centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

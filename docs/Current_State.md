@@ -39,8 +39,8 @@ This file records current implementation facts only. Product direction lives in 
 
 - `lib/core/widgets/app_back_button.dart` is the single back-button component for non-auth child pages. It prefers `context.pop()` when the route can pop, otherwise falls back to `/today` (or a caller-supplied route).
 - `AppBackButton` is wired into: all `/settings/*` sub-pages, `/record/create`, `/record/:id`, `/record/:id/edit`, medicine reminder detail/edit, medicine risk-check, `/mine/*` edit pages, and `/assistant`.
-- `lib/features/settings/presentation/widgets/settings_components.dart` (the old `SettingsBackButton`) has been removed.
-- `AuthBackButton` still exists for `/login`, `/register`, and `/forgot-password`; it will be unified in a later phase.
+- `lib/features/settings/presentation/widgets/settings_components.dart` (the old `SettingsBackButton`) and `lib/features/auth/presentation/widgets/auth_back_button.dart` have been removed.
+- `AppBackButton` is now used by all child pages including `/login`, `/register`, and `/forgot-password` (with `fallbackRoute: '/'`).
 - `SearchPage` is now wrapped in `PageScaffoldShell` with an `AppBar` and `AppBackButton` so it no longer traps the user.
 - `TodayEmptyView` action now routes to `/record/create` (component retained but not currently used in production code).
 - `TodayRecommendationSection` "查看更多" now refreshes the recommendations provider instead of showing a toast. Each recommendation row navigates by `category`: `medicine` → `/medicine`, `sleep` → `/record/create?kind=sleep`, `record` → `/record/create?kind=water`, `report` → `/report`, `habit`/unknown → `/record`.
@@ -54,6 +54,12 @@ This file records current implementation facts only. Product direction lives in 
 - `ShellBranch` only models the five visible tab branches; hidden branches have been removed.
 - Desktop sidebar settings/help actions now `context.push('/settings')` and `context.push('/assistant')` instead of using `goBranch`.
 - Report metric taps now push `/record` (with the relevant filter pre-selected via provider) instead of imperatively switching tabs.
+
+### Phase 3: Mock Data Marking (HIGH-1, HIGH-2)
+
+- Mock repositories are now explicitly documented as demo-only and are not used by production providers.
+- User-visible mock values are marked with `[DEMO]` or placeholder values (`--`, `demo@example.com`, `2099-01-01`, empty arrays) so they cannot be mistaken for real data.
+- `MockMedicineSearchRepository` IDs use `__mock_*__` format to prevent them from being sent to backend APIs as real `sourceRefId`s.
 
 ### Phase 4: Error/Empty State Hardening
 

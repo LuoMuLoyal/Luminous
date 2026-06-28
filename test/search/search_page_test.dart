@@ -47,7 +47,7 @@ void main() {
     await tester.enterText(find.byType(TextField), '布洛芬');
     await tester.pump(const Duration(milliseconds: 500));
 
-    expect(find.text('布洛芬片'), findsOneWidget);
+    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
   });
 
   testWidgets('add to current medicines shows login dialog when signed out', (
@@ -120,8 +120,8 @@ void main() {
     final input = fakeRepo.createdCurrentMedicine;
     expect(input, isNotNull);
     expect(input!.source, HealthMedicineSource.cn);
-    expect(input.sourceRefId, 'cn_ibuprofen_1');
-    expect(input.displayName, '布洛芬片');
+    expect(input.sourceRefId, '__mock_cn_ibuprofen__');
+    expect(input.displayName, '[DEMO] 布洛芬片');
     expect(workspaceBuildCount, greaterThan(1));
   });
 
@@ -237,7 +237,7 @@ void main() {
                   type: MedicineRiskFindingType.interaction,
                   severity: MedicineRiskSeverity.high,
                   context: MedicineRiskFindingContext.none,
-                  primaryMedicineName: '布洛芬片',
+                  primaryMedicineName: '[DEMO] 布洛芬片',
                   secondaryMedicineName: '正在服用药物',
                 ),
               ],
@@ -362,7 +362,7 @@ Future<void> _searchForIbuprofen(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 400));
   await tester.enterText(find.byType(TextField), '布洛芬');
   await tester.pump(const Duration(milliseconds: 500));
-  expect(find.text('布洛芬片'), findsOneWidget);
+  expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
@@ -457,9 +457,9 @@ class _SourceAwareSearchRepository implements MedicineSearchRepository {
 
     return const [
       MedicineSearchResult(
-        id: 'cn_ibuprofen_1',
+        id: '__mock_cn_ibuprofen__',
         source: MedicineSearchSource.cn,
-        name: '布洛芬片',
+        name: '[DEMO] 布洛芬片',
         subtitle: '0.2g*12片 · 石药集团欧意药业有限公司',
         summary: '用于缓解轻至中度疼痛。',
         tags: <String>['解热镇痛', '非处方药'],
