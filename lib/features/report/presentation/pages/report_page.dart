@@ -19,7 +19,7 @@ import 'package:luminous/features/report/presentation/utils/report_ui_formatters
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
 import 'package:luminous/features/report/presentation/widgets/report_skeleton_view.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
-import 'package:luminous/features/shell/providers/shell_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
@@ -52,7 +52,9 @@ class ReportPage extends ConsumerWidget {
     if (filterType != null) {
       ref.read(selectedRecordFilterProvider.notifier).setFilter(filterType);
     }
-    ref.read(shellProvider.notifier).selectTab(1);
+    if (context.mounted) {
+      context.push('/record');
+    }
   }
 
   Future<void> _handleExportAction(

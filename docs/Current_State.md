@@ -33,6 +33,34 @@ This file records current implementation facts only. Product direction lives in 
 - UI/UX pass and freezed migration are complete.
 - Record fast-entry UX is in place: quick actions open a lightweight fast-entry surface first, common values save with the current time, and `more` opens the full form.
 
+## UX Audit HIGH Remediation (Completed Phases)
+
+### Phase 1: Interactions and Back Button Unification
+
+- `lib/core/widgets/app_back_button.dart` is the single back-button component for non-auth child pages. It prefers `context.pop()` when the route can pop, otherwise falls back to `/today` (or a caller-supplied route).
+- `AppBackButton` is wired into: all `/settings/*` sub-pages, `/record/create`, `/record/:id`, `/record/:id/edit`, medicine reminder detail/edit, medicine risk-check, `/mine/*` edit pages, and `/assistant`.
+- `lib/features/settings/presentation/widgets/settings_components.dart` (the old `SettingsBackButton`) has been removed.
+- `AuthBackButton` still exists for `/login`, `/register`, and `/forgot-password`; it will be unified in a later phase.
+- `SearchPage` is now wrapped in `PageScaffoldShell` with an `AppBar` and `AppBackButton` so it no longer traps the user.
+- `TodayEmptyView` action now routes to `/record/create` (component retained but not currently used in production code).
+- `TodayRecommendationSection` "查看更多" now refreshes the recommendations provider instead of showing a toast. Each recommendation row navigates by `category`: `medicine` → `/medicine`, `sleep` → `/record/create?kind=sleep`, `record` → `/record/create?kind=water`, `report` → `/report`, `habit`/unknown → `/record`.
+- Medicine dashboard reminder quick action now falls back to `/medicine/reminders/new`. `MedicineReminderEditPage` shows an inline "请先选择药品" prompt with a button to `/medicine/search` when opened without a `medicineId`.
+
+### Phase 2: Shell Routing Unification
+
+- The `StatefulShellRoute` now contains only the five main tab roots: `/`, `/record`, `/medicine`, `/report`, `/mine`.
+- All create/detail/edit sub-pages (`/record/*`, `/medicine/*`, `/mine/*`) are top-level full-screen `GoRoute`s; entering them hides the mobile bottom navigation and the desktop sidebar because they are outside the shell.
+- `/settings`, `/settings/*`, `/assistant`, `/notifications`, and `/notifications/:id` are also top-level full-screen routes.
+- `ShellBranch` only models the five visible tab branches; hidden branches have been removed.
+- Desktop sidebar settings/help actions now `context.push('/settings')` and `context.push('/assistant')` instead of using `goBranch`.
+- Report metric taps now push `/record` (with the relevant filter pre-selected via provider) instead of imperatively switching tabs.
+
+### Phase 4: Error/Empty State Hardening
+
+- `TodayRecommendationSection` error state renders `AppStateErrorView` in compact mode with localized title, description, and retry action.
+- `MedicineReminderDetailPage` distinguishes a missing reminder (404) from a generic load failure and surfaces localized copy for each.
+- `AppStateErrorView` supports a `compact` flag and uses `LayoutBuilder` to avoid infinite-height issues inside scrollable parents.
+
 ## Luminous Runtime Snapshot
 
 - Stack: Flutter + Riverpod + GoRouter.

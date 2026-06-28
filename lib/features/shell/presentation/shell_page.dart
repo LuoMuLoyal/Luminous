@@ -8,7 +8,6 @@ import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
 import 'package:luminous/features/record/presentation/pages/record_page.dart';
 import 'package:luminous/features/report/presentation/pages/report_page.dart';
-import 'package:luminous/features/shell/presentation/shell_branch.dart';
 import 'package:luminous/features/shell/presentation/shell_tab.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/shell/providers/shell_sidebar_provider.dart';
@@ -51,9 +50,6 @@ class ShellPage extends ConsumerWidget {
         : AppTypographyTokens.desktop(scheme.onSurface);
     const selectedNavColor = AppColorTokens.health;
     final unselectedNavColor = surface.body;
-    final isHiddenBranch =
-        navigationShell != null && currentIndex >= ShellTab.values.length;
-
     final isDesktop = width >= AppBreakpoints.desktop;
 
     final destinations = ShellTab.values
@@ -120,7 +116,7 @@ class ShellPage extends ConsumerWidget {
               ),
             )
           : content,
-      bottomNavigationBar: isDesktop || isHiddenBranch
+      bottomNavigationBar: isDesktop
           ? null
           : MediaQuery.withClampedTextScaling(
               maxScaleFactor: 1.2,
@@ -204,17 +200,9 @@ class _DesktopSidebarState extends ConsumerState<_DesktopSidebar>
     }
   }
 
-  void _onSettings() {
-    if (widget.navigationShell != null) {
-      widget.navigationShell!.goBranch(ShellBranch.settings.index);
-    }
-  }
+  void _onSettings() => context.push('/settings');
 
-  void _onHelp() {
-    if (widget.navigationShell != null) {
-      widget.navigationShell!.goBranch(ShellBranch.assistant.index);
-    }
-  }
+  void _onHelp() => context.push('/assistant');
 
   void _onToggle() => ref.read(shellSidebarProvider.notifier).toggle();
 

@@ -13,6 +13,7 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 1. **Finish v4.0.0 release prep**
    - Resolve or defer the B/C-class placeholder items listed below.
    - Run the full validation gate before tagging 4.0.0.
+   - Consider unifying `AuthBackButton` with `AppBackButton` as the final back-button cleanup.
 
 2. **Keep assistant evolution bounded to concrete new scenarios**
    - Only extend assistant tools/proposals when a specific missing user task is chosen.
@@ -34,6 +35,8 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 - **Luminous Record/Report responsive pass** (`Luminous` commit `0a57312`): removed Record "Today overview", widened Report finding cards, added `AppResponsiveSizing`, and replaced the highest-impact fixed layout dimensions.
 - **Luminous v4.0.0 placeholder wiring** (`Luminous` commit `64c6a27`): replaced Today/Record/Medicine/Mine/Search/Report metric placeholder toasts with real navigation, provider invalidation, or filtering behavior.
 - **Luminous settings page refactor** (2026-06-28): reorganized Settings into Account & Security / Notifications / Privacy / General / About groups, moved dialogs/inline actions to sub-pages, introduced reusable settings row widgets, and implemented master-toggle sleep reminder page.
+- **Luminous UX audit HIGH Phase 1** (2026-06-28): unified back button with `AppBackButton`, added back button to `SearchPage`, wired `TodayEmptyView` and recommendation category navigation, replaced reminder quick-action fallback with create-page navigation plus no-medicine selector prompt. Tests: 489/489 passing.
+- **Luminous UX audit HIGH Phase 2** (2026-06-28): moved `/settings/*`, `/assistant`, `/notifications/*`, and all `/record/*`, `/medicine/*`, `/mine/*` create/detail/edit sub-pages out of the `StatefulShellRoute` to top-level full-screen routes; reduced `ShellBranch` to the five visible tab branches; updated desktop sidebar settings/help actions to `context.push`. Tests: 495/495 passing.
 
 ## Deferred But Useful
 

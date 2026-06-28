@@ -81,11 +81,13 @@ CustomTransitionPage<T> _slidePage<T>({
 
 /// The main application router.
 ///
-/// Most user-facing routes live inside a [StatefulShellRoute.indexedStack] so
-/// that the desktop sidebar / mobile bottom navigation stays visible while
-/// navigating between Tab roots and their nested feature pages.
+/// The five main tabs live inside a [StatefulShellRoute.indexedStack] so that
+/// the desktop sidebar / mobile bottom navigation stays visible while
+/// navigating between Tab roots.
 ///
-/// Auth and account-management routes remain top-level full-screen routes.
+/// Settings, Assistant, Notifications, and all create/detail/edit sub-pages are
+/// top-level full-screen routes so they hide the tab chrome and can be pushed
+/// and popped naturally.
 final router = GoRouter(
   initialLocation: '/',
   routes: [
@@ -93,7 +95,6 @@ final router = GoRouter(
       builder: (context, state, navigationShell) =>
           ShellPage(navigationShell: navigationShell),
       branches: [
-        // --- Visible tab branches ---
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -113,41 +114,6 @@ final router = GoRouter(
                 key: state.pageKey,
                 child: const RecordPage(),
               ),
-              routes: [
-                GoRoute(
-                  path: 'create',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: RecordCreatePage(
-                      initialKind: dailyRecordKindFromName(
-                        state.uri.queryParameters['kind'],
-                      ),
-                      initialDate: parseRecordDate(
-                        state.uri.queryParameters['date'],
-                      ),
-                      initialTime: state.uri.queryParameters['time'],
-                    ),
-                  ),
-                ),
-                GoRoute(
-                  path: ':id',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: RecordDetailPage(
-                      recordId: state.pathParameters['id']!,
-                    ),
-                  ),
-                ),
-                GoRoute(
-                  path: ':id/edit',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: RecordEditPage(
-                      recordId: state.pathParameters['id']!,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),
@@ -159,48 +125,6 @@ final router = GoRouter(
                 key: state.pageKey,
                 child: const MedicinePage(),
               ),
-              routes: [
-                GoRoute(
-                  path: 'search',
-                  pageBuilder: (context, state) =>
-                      _slidePage(key: state.pageKey, child: const SearchPage()),
-                ),
-                GoRoute(
-                  path: 'risk-check',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const MedicineRiskCheckPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'reminders/new',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: MedicineReminderEditPage(
-                      initialMedicineId:
-                          state.uri.queryParameters['medicineId'],
-                    ),
-                  ),
-                ),
-                GoRoute(
-                  path: 'reminders/:medicineId',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: MedicineReminderDetailPage(
-                      currentMedicineId: state.pathParameters['medicineId']!,
-                    ),
-                  ),
-                ),
-                GoRoute(
-                  path: 'reminders/:medicineId/edit',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: MedicineReminderEditPage(
-                      currentMedicineId: state.pathParameters['medicineId'],
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),
@@ -221,179 +145,206 @@ final router = GoRouter(
               path: '/mine',
               pageBuilder: (context, state) =>
                   NoTransitionPage(key: state.pageKey, child: const MinePage()),
-              routes: [
-                GoRoute(
-                  path: 'profile/edit',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const ProfileEditPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'allergy/new',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const AllergyEditPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'allergy/:id/edit',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: AllergyEditPage(
-                      allergyId: state.pathParameters['id'],
-                    ),
-                  ),
-                ),
-                GoRoute(
-                  path: 'condition/new',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const ConditionEditPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'condition/:id/edit',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: ConditionEditPage(
-                      conditionId: state.pathParameters['id'],
-                    ),
-                  ),
-                ),
-                GoRoute(
-                  path: 'medicine/new',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const CurrentMedicineEditPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'medicine/:id/edit',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: CurrentMedicineEditPage(
-                      medicineId: state.pathParameters['id'],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        // --- Hidden branches (desktop sidebar actions / deep links) ---
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/settings',
-              pageBuilder: (context, state) => NoTransitionPage(
-                key: state.pageKey,
-                child: const SettingsPage(),
-              ),
-              routes: [
-                GoRoute(
-                  path: 'language',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const LanguageSettingsPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'theme',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const ThemeSettingsPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'more',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const AdvancedSettingsPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'notifications',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const NotificationSettingsPage(),
-                  ),
-                  routes: [
-                    GoRoute(
-                      path: 'sleep',
-                      pageBuilder: (context, state) => _slidePage(
-                        key: state.pageKey,
-                        child: const SleepReminderSettingsPage(),
-                      ),
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'ai',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const AiSettingsPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'export',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const DataExportPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'help',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const HelpSettingsPage(),
-                  ),
-                ),
-                GoRoute(
-                  path: 'about',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: const AboutSettingsPage(),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/assistant',
-              pageBuilder: (context, state) => NoTransitionPage(
-                key: state.pageKey,
-                child: const AssistantPage(),
-              ),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/notifications',
-              pageBuilder: (context, state) => NoTransitionPage(
-                key: state.pageKey,
-                child: const NotificationListPage(),
-              ),
-              routes: [
-                GoRoute(
-                  path: ':id',
-                  pageBuilder: (context, state) => _slidePage(
-                    key: state.pageKey,
-                    child: NotificationDetailPage(
-                      notificationId: state.pathParameters['id']!,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),
       ],
+    ),
+    // -- settings (top-level full-screen) --
+    GoRoute(
+      path: '/settings',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const SettingsPage()),
+      routes: [
+        GoRoute(
+          path: 'language',
+          pageBuilder: (context, state) => _slidePage(
+            key: state.pageKey,
+            child: const LanguageSettingsPage(),
+          ),
+        ),
+        GoRoute(
+          path: 'theme',
+          pageBuilder: (context, state) =>
+              _slidePage(key: state.pageKey, child: const ThemeSettingsPage()),
+        ),
+        GoRoute(
+          path: 'more',
+          pageBuilder: (context, state) => _slidePage(
+            key: state.pageKey,
+            child: const AdvancedSettingsPage(),
+          ),
+        ),
+        GoRoute(
+          path: 'notifications',
+          pageBuilder: (context, state) => _slidePage(
+            key: state.pageKey,
+            child: const NotificationSettingsPage(),
+          ),
+          routes: [
+            GoRoute(
+              path: 'sleep',
+              pageBuilder: (context, state) => _slidePage(
+                key: state.pageKey,
+                child: const SleepReminderSettingsPage(),
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'ai',
+          pageBuilder: (context, state) =>
+              _slidePage(key: state.pageKey, child: const AiSettingsPage()),
+        ),
+        GoRoute(
+          path: 'export',
+          pageBuilder: (context, state) =>
+              _slidePage(key: state.pageKey, child: const DataExportPage()),
+        ),
+        GoRoute(
+          path: 'help',
+          pageBuilder: (context, state) =>
+              _slidePage(key: state.pageKey, child: const HelpSettingsPage()),
+        ),
+        GoRoute(
+          path: 'about',
+          pageBuilder: (context, state) =>
+              _slidePage(key: state.pageKey, child: const AboutSettingsPage()),
+        ),
+      ],
+    ),
+    // -- assistant (top-level full-screen) --
+    GoRoute(
+      path: '/assistant',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const AssistantPage()),
+    ),
+    // -- notifications inbox (top-level full-screen) --
+    GoRoute(
+      path: '/notifications',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const NotificationListPage()),
+      routes: [
+        GoRoute(
+          path: ':id',
+          pageBuilder: (context, state) => _slidePage(
+            key: state.pageKey,
+            child: NotificationDetailPage(
+              notificationId: state.pathParameters['id']!,
+            ),
+          ),
+        ),
+      ],
+    ),
+    // -- record sub-pages (top-level full-screen) --
+    GoRoute(
+      path: '/record/create',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: RecordCreatePage(
+          initialKind: dailyRecordKindFromName(
+            state.uri.queryParameters['kind'],
+          ),
+          initialDate: parseRecordDate(state.uri.queryParameters['date']),
+          initialTime: state.uri.queryParameters['time'],
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '/record/:id',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: RecordDetailPage(recordId: state.pathParameters['id']!),
+      ),
+    ),
+    GoRoute(
+      path: '/record/:id/edit',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: RecordEditPage(recordId: state.pathParameters['id']!),
+      ),
+    ),
+    // -- medicine sub-pages (top-level full-screen) --
+    GoRoute(
+      path: '/medicine/search',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const SearchPage()),
+    ),
+    GoRoute(
+      path: '/medicine/risk-check',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const MedicineRiskCheckPage()),
+    ),
+    GoRoute(
+      path: '/medicine/reminders/new',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: MedicineReminderEditPage(
+          initialMedicineId: state.uri.queryParameters['medicineId'],
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '/medicine/reminders/:medicineId',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: MedicineReminderDetailPage(
+          currentMedicineId: state.pathParameters['medicineId']!,
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '/medicine/reminders/:medicineId/edit',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: MedicineReminderEditPage(
+          currentMedicineId: state.pathParameters['medicineId'],
+        ),
+      ),
+    ),
+    // -- mine sub-pages (top-level full-screen) --
+    GoRoute(
+      path: '/mine/profile/edit',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const ProfileEditPage()),
+    ),
+    GoRoute(
+      path: '/mine/allergy/new',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const AllergyEditPage()),
+    ),
+    GoRoute(
+      path: '/mine/allergy/:id/edit',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: AllergyEditPage(allergyId: state.pathParameters['id']),
+      ),
+    ),
+    GoRoute(
+      path: '/mine/condition/new',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const ConditionEditPage()),
+    ),
+    GoRoute(
+      path: '/mine/condition/:id/edit',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: ConditionEditPage(conditionId: state.pathParameters['id']),
+      ),
+    ),
+    GoRoute(
+      path: '/mine/medicine/new',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: const CurrentMedicineEditPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/mine/medicine/:id/edit',
+      pageBuilder: (context, state) => _slidePage(
+        key: state.pageKey,
+        child: CurrentMedicineEditPage(medicineId: state.pathParameters['id']),
+      ),
     ),
     // -- auth (fade) --
     GoRoute(
