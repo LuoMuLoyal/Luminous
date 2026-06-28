@@ -7,7 +7,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -30,7 +30,7 @@ class ThemeSettingsPage extends ConsumerWidget {
     return PageScaffoldShell(
       title: l10n.mineSettingsThemeTitle,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       children: [
         _SectionLabel(label: l10n.settingsThemeAppearanceTitle),
         const SizedBox(height: AppSpacingTokens.sm),

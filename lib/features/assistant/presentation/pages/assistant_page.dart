@@ -20,7 +20,7 @@ import 'package:luminous/features/assistant/presentation/widgets/assistant_state
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantPage extends ConsumerStatefulWidget {
@@ -83,7 +83,7 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
         title: l10n.assistantPageTitle,
         centerTitle: true,
         scrollable: false,
-        leading: SettingsBackButton(onTap: () => context.pop()),
+        leading: AppBackButton(onPressed: () => context.pop()),
         endDrawer: Drawer(
           child: AssistantConversationDrawer(
             state: chatState,

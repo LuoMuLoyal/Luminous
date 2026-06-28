@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -24,7 +26,11 @@ class SearchPage extends ConsumerWidget {
     final searchState = ref.watch(medicineSearchNotifierProvider);
     final l10n = AppLocalizations.of(context)!;
 
+    final isDesktop =
+        MediaQuery.sizeOf(context).width >= AppBreakpoints.desktop;
+
     return Scaffold(
+      appBar: isDesktop ? null : AppBar(leading: const AppBackButton()),
       body: MedicineSearchView(
         state: searchState,
         onQueryChanged: (q) =>

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
@@ -23,6 +24,17 @@ import 'package:luminous/l10n/app_localizations.dart';
 import '../auth/auth_test_helpers.dart';
 
 void main() {
+  testWidgets('Medicine search page shows back button on mobile', (
+    tester,
+  ) async {
+    await _pumpSearchApp(tester);
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.byType(AppBackButton), findsOneWidget);
+  });
+
   testWidgets('Medicine search page renders search interface', (tester) async {
     await _pumpSearchApp(tester);
 

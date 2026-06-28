@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
 import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
@@ -25,34 +25,40 @@ class TodayRecommendationSection extends ConsumerWidget {
 
     return TodaySection(
       title: l10n.todayRecommendationSectionTitle,
-      actionLabel: l10n.todayViewMoreAction,
+      actionLabel: l10n.todayRecommendationRefreshAction,
       onAction: () => _refresh(ref),
       child: AppSectionSurface(
         key: const Key('today-recommendation-card'),
         padding: EdgeInsets.zero,
         child: recommendationsAsync.when(
           data: (recommendations) {
-            final items = recommendations
-                .map((r) => _mapToItem(context, r))
-                .whereType<TodayRecommendationItem>()
-                .toList(growable: false);
-            if (items.isEmpty) {
+            final rows = <Widget>[];
+            for (var index = 0; index < recommendations.length; index += 1) {
+              final recommendation = recommendations[index];
+              final item = _mapToItem(context, recommendation);
+              if (item == null) continue;
+              rows.add(
+                _RecommendationRow(
+                  item: item,
+                  onTap: _navigateForCategory(context, recommendation.category),
+                  compact: compact,
+                ),
+              );
+              if (index < recommendations.length - 1) {
+                rows.add(
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent: AppSpacingTokens.x4l + AppSpacingTokens.xs,
+                    color: surface.hairline.withValues(alpha: 0.62),
+                  ),
+                );
+              }
+            }
+            if (rows.isEmpty) {
               return const SizedBox.shrink();
             }
-            return Column(
-              children: [
-                for (var index = 0; index < items.length; index += 1) ...[
-                  _RecommendationRow(item: items[index], compact: compact),
-                  if (index < items.length - 1)
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                      indent: AppSpacingTokens.x4l + AppSpacingTokens.xs,
-                      color: surface.hairline.withValues(alpha: 0.62),
-                    ),
-                ],
-              ],
-            );
+            return Column(children: rows);
           },
           loading: () => const SizedBox(
             height: 144,
@@ -73,6 +79,16 @@ class TodayRecommendationSection extends ConsumerWidget {
 
   void _refresh(WidgetRef ref) {
     ref.read(todayRecommendationsProvider.notifier).refresh();
+  }
+
+  VoidCallback? _navigateForCategory(BuildContext context, String? category) {
+    return switch (category) {
+      'medicine' => () => context.push('/medicine'),
+      'sleep' => () => context.push('/record/create?kind=sleep'),
+      'record' => () => context.push('/record/create?kind=water'),
+      'report' => () => context.push('/report'),
+      'habit' || _ => () => context.push('/record'),
+    };
   }
 
   TodayRecommendationItem? _mapToItem(
@@ -122,10 +138,15 @@ class TodayRecommendationSection extends ConsumerWidget {
 }
 
 class _RecommendationRow extends StatelessWidget {
-  const _RecommendationRow({required this.item, required this.compact});
+  const _RecommendationRow({
+    required this.item,
+    required this.compact,
+    this.onTap,
+  });
 
   final TodayRecommendationItem item;
   final bool compact;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +157,7 @@ class _RecommendationRow extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => AppToast.show(context, item.action),
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacingTokens.md,

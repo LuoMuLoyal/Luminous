@@ -36,8 +36,7 @@ class _QuickOperationSection extends StatelessWidget {
         title: l10n.medicineReminderQuickTitle,
         subtitle: l10n.medicineReminderQuickSubtitle,
         onTap:
-            onCreateReminder ??
-            () => AppToast.show(context, l10n.medicineNotificationsTooltip),
+            onCreateReminder ?? () => context.push('/medicine/reminders/new'),
       ),
       _QuickOperation(
         icon: Icons.health_and_safety_rounded,

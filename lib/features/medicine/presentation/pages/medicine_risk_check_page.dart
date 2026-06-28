@@ -16,7 +16,7 @@ import 'package:luminous/features/medicine/presentation/widgets/medicine_risk_me
 import 'package:luminous/features/medicine/presentation/widgets/medicine_risk_red_flag.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_risk_check_loading.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskCheckPage extends ConsumerWidget {
@@ -31,7 +31,7 @@ class MedicineRiskCheckPage extends ConsumerWidget {
       return PageScaffoldShell(
         title: l10n.medicineRiskCheckPageTitle,
         centerTitle: true,
-        leading: const SettingsBackButton(),
+        leading: const AppBackButton(),
         children: [
           session.isLoading
               ? const MedicineRiskCheckLoading()
@@ -49,7 +49,7 @@ class MedicineRiskCheckPage extends ConsumerWidget {
     return PageScaffoldShell(
       title: l10n.medicineRiskCheckPageTitle,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       children: [
         resultAsync.when(
           data: (result) {
