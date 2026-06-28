@@ -36,6 +36,7 @@ class NotificationSettingsPage extends ConsumerWidget {
       children: [
         if (settings.permissionState != NotificationPermissionState.unsupported)
           _PermissionCard(
+            key: const Key('notification-permission-card'),
             state: settings.permissionState,
             onTap: () async {
               if (settings.permissionState ==
@@ -130,7 +131,7 @@ class NotificationSettingsPage extends ConsumerWidget {
 }
 
 class _PermissionCard extends StatelessWidget {
-  const _PermissionCard({required this.state, required this.onTap});
+  const _PermissionCard({super.key, required this.state, required this.onTap});
 
   final NotificationPermissionState state;
   final VoidCallback onTap;

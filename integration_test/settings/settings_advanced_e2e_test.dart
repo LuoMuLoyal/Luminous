@@ -29,15 +29,20 @@ void main() {
     await tester.tap(find.byKey(const Key('language-row-en')));
     await settleE2e(tester);
     await tester.tap(find.byType(BackButton).first);
-    await settleE2e(tester);
+    await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('settings-row-notifications')));
+    await tapVisible(
+      tester,
+      find.byKey(const Key('settings-row-notifications')),
+    );
     await settleE2e(tester);
-    final medicationRow = find.byKey(const Key('notification-row-medication'));
-    expect(readSwitchValue(tester, switchIn(medicationRow)), isTrue);
-    await tester.tap(medicationRow);
+    final medicationSwitch = find.byKey(
+      const Key('notification-switch-medication'),
+    );
+    expect(readSwitchValue(tester, switchIn(medicationSwitch)), isTrue);
+    await tester.tap(medicationSwitch);
     await settleE2e(tester);
-    expect(readSwitchValue(tester, switchIn(medicationRow)), isFalse);
+    expect(readSwitchValue(tester, switchIn(medicationSwitch)), isFalse);
     await tester.tap(find.byType(BackButton).first);
     await settleE2e(tester);
 
@@ -72,7 +77,7 @@ void main() {
     expect(
       readSwitchValue(
         tester,
-        switchIn(find.byKey(const Key('notification-row-medication'))),
+        switchIn(find.byKey(const Key('notification-switch-medication'))),
       ),
       isTrue,
     );

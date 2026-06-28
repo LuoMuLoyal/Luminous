@@ -18,7 +18,7 @@ void main() {
     await tester.enterText(find.byType(TextField), '布洛芬');
     await tester.pump(const Duration(seconds: 1));
 
-    expect(find.text('布洛芬片'), findsOneWidget);
+    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
 
     await tester.tap(find.byType(BackButton).first);
     await settleE2e(tester);
@@ -43,7 +43,7 @@ void main() {
     await tester.enterText(find.byType(TextField), '布洛芬');
     await tester.pump(const Duration(seconds: 1));
 
-    expect(find.text('布洛芬片'), findsOneWidget);
+    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
 
     final addButton = find.text('加入药箱').first;
     await tester.scrollUntilVisible(
@@ -57,9 +57,9 @@ void main() {
     final input = healthContextRepository.medicineCreate;
     expect(input, isNotNull);
     expect(input!.source, HealthMedicineSource.cn);
-    expect(input.sourceRefId, 'cn_ibuprofen_1');
-    expect(input.displayName, '布洛芬片');
-    expect(find.text('布洛芬片'), findsOneWidget);
+    expect(input.sourceRefId, '__mock_cn_ibuprofen__');
+    expect(input.displayName, '[DEMO] 布洛芬片');
+    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
   });
 
   testWidgets('medicine search add routes signed-out user to login', (
@@ -79,7 +79,7 @@ void main() {
     await tester.enterText(find.byType(TextField), '布洛芬');
     await tester.pump(const Duration(seconds: 1));
 
-    expect(find.text('布洛芬片'), findsOneWidget);
+    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
 
     final addButton = find.text('加入药箱').first;
     await tester.scrollUntilVisible(
