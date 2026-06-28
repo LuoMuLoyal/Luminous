@@ -3570,4 +3570,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get notificationNotFoundDescription => '这条通知可能已被删除或已过期。';
+
+  @override
+  String get settingsDataSharingConfirmTitle => '确认修改报告分享设置？';
+
+  @override
+  String get settingsDataSharingConfirmDescription =>
+      '开启后，你的健康报告和趋势分析可能会被用于改进服务。是否继续？';
+
+  @override
+  String get settingsDataSharingConfirmAction => '确认';
+
+  @override
+  String get settingsDataSharingCancelAction => '取消';
+
+  @override
+  String settingsAboutBuildNumberLabel(Object buildNumber) {
+    return 'Build $buildNumber';
+  }
 }

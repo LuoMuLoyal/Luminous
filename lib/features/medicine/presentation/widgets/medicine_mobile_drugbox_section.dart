@@ -22,7 +22,10 @@ class _DrugBoxSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = workspace.plan.items.take(2).toList(growable: false);
+    final items = workspace.plan.items
+        .where((item) => item.currentMedicineId != null)
+        .take(2)
+        .toList(growable: false);
 
     return AppSectionSurface(
       key: const Key('medicine-hero'),

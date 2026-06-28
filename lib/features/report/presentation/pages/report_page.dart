@@ -7,6 +7,7 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
@@ -395,9 +396,14 @@ class ReportPage extends ConsumerWidget {
               ),
         error: (error, _) {
           final l10n = AppLocalizations.of(context)!;
-          return DecoratedBox(
-            decoration: BoxDecoration(color: surface.canvasSoft),
-            child: SafeArea(
+          return Scaffold(
+            backgroundColor: surface.canvasSoft,
+            appBar: AppBar(
+              backgroundColor: surface.canvasSoft,
+              elevation: 0,
+              leading: const AppBackButton(),
+            ),
+            body: SafeArea(
               bottom: false,
               child: AppStateErrorView(
                 title: l10n.reportErrorTitle,

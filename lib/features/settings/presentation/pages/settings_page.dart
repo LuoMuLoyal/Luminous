@@ -222,14 +222,23 @@ class _PrivacySection extends ConsumerWidget {
             title: l10n.minePrivacyReportTitle,
             subtitle: l10n.minePrivacyReportSubtitle,
             value: settings?.dataSharingConsent ?? false,
-            onChanged: (value) {
+            onChanged: (value) async {
               if (!signedIn) {
                 pushAuthRequiredRoute(context, '/settings');
                 return;
               }
-              ref
-                  .read(userSettingsControllerProvider.notifier)
-                  .setDataSharingConsent(value);
+              final confirmed = await _showDataSharingConfirmation(
+                context,
+                value,
+              );
+              if (!context.mounted) {
+                return;
+              }
+              if (confirmed) {
+                ref
+                    .read(userSettingsControllerProvider.notifier)
+                    .setDataSharingConsent(value);
+              }
             },
             showDivider: true,
           ),
@@ -248,6 +257,31 @@ class _PrivacySection extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<bool> _showDataSharingConfirmation(
+    BuildContext context,
+    bool value,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(l10n.settingsDataSharingConfirmTitle),
+            content: Text(l10n.settingsDataSharingConfirmDescription),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.settingsDataSharingCancelAction),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(l10n.settingsDataSharingConfirmAction),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 }
 

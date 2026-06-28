@@ -67,6 +67,19 @@ This file records current implementation facts only. Product direction lives in 
 - `MedicineReminderDetailPage` distinguishes a missing reminder (404) from a generic load failure and surfaces localized copy for each.
 - `AppStateErrorView` supports a `compact` flag and uses `LayoutBuilder` to avoid infinite-height issues inside scrollable parents.
 
+### Medium/Low Remediation
+
+- `HelpSettingsPage` filters support resources by `available == true` in addition to a non-empty actionable URL/type, so disabled entries are not shown.
+- `AboutSettingsPage` reads `privacyPolicyUrl`, `termsOfServiceUrl`, and `supportEmail` from `AppInfoDataDto` with hard-coded fallbacks; it displays the backend `buildDate` below the version and uses `mailto:` when a support email is present.
+- `SettingsPage` data-sharing consent toggle now shows a confirmation dialog before calling `setDataSharingConsent`.
+- `SettingsPage` data-export row routes to `/settings/export` consistently with the dedicated `DataExportPage`.
+- `PageScaffoldShell` FAB bottom inset adds `MediaQuery.paddingOf(context).bottom` to avoid system gesture overlaps.
+- `TodayDashboardView` mobile bottom padding now combines the existing clearance token with `MediaQuery.paddingOf(context).bottom`.
+- `MedicineMobileDrugboxSection` filters out plan items whose `currentMedicineId` is null before rendering rows.
+- `MedicineReminderDetailPage` hides the delete button entirely when there are no reminders (previously disabled).
+- `loginRouteForReturnTo` / `loginRouteForCurrentLocation` encode the return path with `Uri`, preserving query parameters, and are covered by unit/widget tests.
+- All tab scroll views use distinct `PageStorageKey` values per surface (mobile/desktop), preserving scroll position across tab switches.
+
 ## Luminous Runtime Snapshot
 
 - Stack: Flutter + Riverpod + GoRouter.

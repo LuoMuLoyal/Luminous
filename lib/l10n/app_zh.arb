@@ -1625,5 +1625,15 @@
   "notificationDeleteConfirmConfirm": "删除",
   "notificationLoadMore": "加载更多",
   "notificationNotFoundTitle": "通知已失效",
-  "notificationNotFoundDescription": "这条通知可能已被删除或已过期。"
+  "notificationNotFoundDescription": "这条通知可能已被删除或已过期。",
+  "settingsDataSharingConfirmTitle": "确认修改报告分享设置？",
+  "settingsDataSharingConfirmDescription": "开启后，你的健康报告和趋势分析可能会被用于改进服务。是否继续？",
+  "settingsDataSharingConfirmAction": "确认",
+  "settingsDataSharingCancelAction": "取消",
+  "settingsAboutBuildNumberLabel": "Build {buildNumber}",
+  "@settingsAboutBuildNumberLabel": {
+    "placeholders": {
+      "buildNumber": {}
+    }
+  }
 }

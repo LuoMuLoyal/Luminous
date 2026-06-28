@@ -17,7 +17,6 @@ import 'package:luminous/features/medicine/domain/entities/medicine_safety_tip.d
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_safety_tips_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
-import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

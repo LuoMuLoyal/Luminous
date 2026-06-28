@@ -55,7 +55,8 @@ class HelpSettingsPage extends ConsumerWidget {
   }
 
   bool _isActionable(SupportResourceDto resource) {
-    return resource.actionUrl != null &&
+    return resource.available &&
+        resource.actionUrl != null &&
         resource.actionUrl!.isNotEmpty &&
         resource.actionType != null;
   }

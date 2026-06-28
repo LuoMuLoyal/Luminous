@@ -6919,6 +6919,36 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'这条通知可能已被删除或已过期。'**
   String get notificationNotFoundDescription;
+
+  /// No description provided for @settingsDataSharingConfirmTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认修改报告分享设置？'**
+  String get settingsDataSharingConfirmTitle;
+
+  /// No description provided for @settingsDataSharingConfirmDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启后，你的健康报告和趋势分析可能会被用于改进服务。是否继续？'**
+  String get settingsDataSharingConfirmDescription;
+
+  /// No description provided for @settingsDataSharingConfirmAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认'**
+  String get settingsDataSharingConfirmAction;
+
+  /// No description provided for @settingsDataSharingCancelAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消'**
+  String get settingsDataSharingCancelAction;
+
+  /// No description provided for @settingsAboutBuildNumberLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'Build {buildNumber}'**
+  String settingsAboutBuildNumberLabel(Object buildNumber);
 }
 
 class _AppLocalizationsDelegate

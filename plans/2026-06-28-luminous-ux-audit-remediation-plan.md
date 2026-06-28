@@ -189,34 +189,34 @@
 | HIGH-12 | `today_recommendation_section.dart` | error 状态改为 `AppStateErrorView` compact 版本：<br>- `title`: `l10n.todayRecommendationErrorTitle`<br>- `description`: `l10n.todayRecommendationErrorDescription`<br>- `actionLabel`: `l10n.todayRetryAction`<br>- `onAction`: `() => ref.invalidate(todayRecommendationsProvider)` |
 | HIGH-13 | `medicine_reminder_detail_page.dart` | **区分错误类型**：<br>- 404 / 提醒不存在：`title` 用 `l10n.medicineReminderNotFoundTitle`，`description` 传入明确“提醒不存在”文案。<br>- 通用加载失败：`title` 用通用错误 title，`description`: `"加载提醒详情失败，请检查网络后重试"`，`actionLabel`: `"重试"`。
 | MED-9 | `report_page.dart` | error 状态添加 `AppBackButton` 或 `AppStateErrorView` 的返回动作。 |
-| LOW-7 | `medicine_reminder_detail_page.dart` | 无提醒时隐藏删除按钮，或改为空态提示。 |
-| LOW-1 | `medicine_mobile_drugbox_section.dart` | 确保 `currentMedicineId` 不为 null；若确实可能 null，则隐藏不可点击行。 |
+| ~~LOW-7~~ | `medicine_reminder_detail_page.dart` | 无提醒时已隐藏删除按钮。 |
+| ~~LOW-1~~ | `medicine_mobile_drugbox_section.dart` | 已过滤 `currentMedicineId == null` 的药品行，避免不可点击行。 |
 
-#### 3.11 Settings 页增强（MED-2, MED-3, MED-10, MED-11）
+#### 3.11 Settings 页增强（MED-2, MED-3, MED-10, MED-11）— 已完成
 
 | 问题 | 动作 |
 |---|---|
-| MED-2 | Help dialog 过滤掉无 URL 的资源，不显示禁用项。 |
-| MED-3 | About dialog 增加隐私政策、服务条款、开源许可、支持联系、build number。 |
-| MED-10 | 数据共享同意行点击先弹出确认 dialog，确认后再 toggle。 |
-| MED-11 | 导出按钮统一导航到 `/settings/export`；若决定保留行内导出，则删除 `/settings/export` 路由。 |
+| ~~MED-2~~ | `HelpSettingsPage` 过滤逻辑增加 `resource.available` 校验，不显示禁用项。 |
+| ~~MED-3~~ | `AboutSettingsPage` 使用后端 `privacyPolicyUrl` / `termsOfServiceUrl` / `supportEmail`（带硬编码回退），并新增 `buildDate` 展示。 |
+| ~~MED-10~~ | `SettingsPage` 数据共享同意行点击后先弹出确认 Dialog，确认后才调用 `setDataSharingConsent`。 |
+| ~~MED-11~~ | 导出按钮统一导航到 `/settings/export`，与现有 `DataExportPage` 保持一致。 |
 
-#### 3.12 布局与 SafeArea 细节（LOW-5, LOW-8）
+#### 3.12 布局与 SafeArea 细节（LOW-5, LOW-8）— 已完成
 
 | 问题 | 文件 | 动作 |
 |---|---|---|
-| LOW-5 | `page_scaffold_shell.dart` | FAB 的 `bottom` 增加 `MediaQuery.paddingOf(context).bottom`。 |
-| LOW-8 | `today_dashboard_view.dart` | 底部 padding 改用 `MediaQuery.paddingOf(context).bottom + bottomNavHeight` 或 `SafeArea`。 |
+| ~~LOW-5~~ | `page_scaffold_shell.dart` | FAB 的 `bottom` 已增加 `MediaQuery.paddingOf(context).bottom`。 |
+| ~~LOW-8~~ | `today_dashboard_view.dart` | 移动端底部 padding 已改为 `AppSpacingTokens.x5l + MediaQuery.paddingOf(context).bottom`。 |
 
-#### 3.13 登录返回路由验证（LOW-2）
+#### 3.13 登录返回路由验证（LOW-2）— 已完成
 
-- 审阅 `loginRouteForCurrentLocation` 与 `loginRouteForReturnTo` 的实现，确保 URL 编码正确、登录后确实回到原页面。
-- 补充单元测试覆盖常见路径：`/today`、`/record/create`、`/medicine/search`。 |
+- 已审阅 `loginRouteForCurrentLocation` 与 `loginRouteForReturnTo`：使用 `Uri(path: '/login', queryParameters: {'returnTo': ...})` 编码，可正确回传含 query 参数的路径。
+- 已补充 `test/auth/auth_required_dialog_test.dart`，覆盖 `/today`、`/record/create`、`/medicine/search` 及带 query 参数路径的编码与 round-trip。 |
 
-#### 3.14 滚动位置保留验证（LOW-6）
+#### 3.14 滚动位置保留验证（LOW-6）— 已完成
 
-- 检查各 Tab 列表 `PageStorageKey` 的唯一性和一致性。
-- 手动验证切换 Tab 后滚动位置是否保留；若不行，统一 key 命名。 |
+- 已检查各 Tab 列表 `PageStorageKey`：每个主 Tab 的移动/桌面布局均使用独立 key（`today-dashboard-*`、`medicine-*`、`record-*`、`report-*`、`mine-*`、`medicine-search-*`），无重复 key。
+- 当前实现已满足切换 Tab 后滚动位置保留的前提，无需调整。 |
 
 ---
 

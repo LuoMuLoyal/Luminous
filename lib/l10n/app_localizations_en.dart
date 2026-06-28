@@ -3815,4 +3815,23 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notificationNotFoundDescription =>
       'This notification may have been deleted or expired.';
+
+  @override
+  String get settingsDataSharingConfirmTitle =>
+      'Confirm report sharing settings?';
+
+  @override
+  String get settingsDataSharingConfirmDescription =>
+      'When enabled, your health reports and trend analysis may be used to improve services. Continue?';
+
+  @override
+  String get settingsDataSharingConfirmAction => 'Confirm';
+
+  @override
+  String get settingsDataSharingCancelAction => 'Cancel';
+
+  @override
+  String settingsAboutBuildNumberLabel(Object buildNumber) {
+    return 'Build $buildNumber';
+  }
 }

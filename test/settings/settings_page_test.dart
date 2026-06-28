@@ -9,6 +9,8 @@ import 'package:luminous/features/settings/data/services/notification_permission
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -413,6 +415,78 @@ void main() {
     expect(find.text('data-export-page'), findsOneWidget);
   });
 
+  testWidgets('Data sharing toggle shows confirmation dialog before changing', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final fakeController = _FakeUserSettingsController();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
+          userSettingsControllerProvider.overrideWith(() => fakeController),
+          notificationPermissionServiceProvider.overrideWithValue(
+            _FakeNotificationPermissionService(),
+          ),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: GoRouter(
+            initialLocation: '/settings',
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsPage(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-row-privacy-report')),
+      240,
+    );
+
+    final switchFinder = find.descendant(
+      of: find.byKey(const Key('settings-row-privacy-report')),
+      matching: find.byType(Switch),
+    );
+
+    await tester.tap(switchFinder);
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.settingsDataSharingConfirmTitle), findsOneWidget);
+
+    await tester.tap(find.text(l10n.settingsDataSharingCancelAction));
+    await tester.pumpAndSettle();
+
+    expect(fakeController.lastDataSharingConsent, isNull);
+
+    await tester.tap(switchFinder);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(l10n.settingsDataSharingConfirmAction));
+    await tester.pumpAndSettle();
+
+    expect(fakeController.lastDataSharingConsent, isTrue);
+  });
+
   testWidgets('Settings footer action logs out and routes to login page', (
     tester,
   ) async {
@@ -548,6 +622,47 @@ class _FakeNotificationPermissionService extends NotificationPermissionService {
   @override
   Future<NotificationPermissionState> requestPermission() async =>
       NotificationPermissionState.granted;
+}
+
+class _FakeUserSettingsController extends UserSettingsController {
+  bool? lastDataSharingConsent;
+
+  @override
+  Future<UserSettingsDataDto> build() async {
+    return UserSettingsDataDto(
+      aiSummariesEnabled: false,
+      dataSharingConsent: false,
+      assistantEnabled: false,
+      assistantMemoryEnabled: false,
+      assistantContext: AssistantContextSettingsDto(
+        healthProfile: false,
+        dailyRecords: false,
+        sleepRecords: false,
+        currentMedicines: false,
+      ),
+      updatedAt: '2026-06-28T00:00:00Z',
+    );
+  }
+
+  @override
+  Future<void> setDataSharingConsent(bool consent) async {
+    lastDataSharingConsent = consent;
+    state = AsyncData(
+      UserSettingsDataDto(
+        aiSummariesEnabled: false,
+        dataSharingConsent: consent,
+        assistantEnabled: false,
+        assistantMemoryEnabled: false,
+        assistantContext: AssistantContextSettingsDto(
+          healthProfile: false,
+          dailyRecords: false,
+          sleepRecords: false,
+          currentMedicines: false,
+        ),
+        updatedAt: '2026-06-28T00:00:00Z',
+      ),
+    );
+  }
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
