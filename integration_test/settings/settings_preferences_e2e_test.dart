@@ -117,13 +117,15 @@ void main() {
     expect(find.text('通知设置'), findsOneWidget);
     expect(find.text('系统通知已开启'), findsOneWidget);
 
-    final medicationRow = find.byKey(const Key('notification-row-medication'));
-    final before = readSwitchValue(tester, switchIn(medicationRow));
+    final medicationSwitch = find.byKey(
+      const Key('notification-switch-medication'),
+    );
+    final before = readSwitchValue(tester, switchIn(medicationSwitch));
 
-    await tester.tap(medicationRow);
+    await tester.tap(medicationSwitch);
     await settleE2e(tester);
 
-    final after = readSwitchValue(tester, switchIn(medicationRow));
+    final after = readSwitchValue(tester, switchIn(medicationSwitch));
     expect(after, isNot(before));
 
     final preferences = await SharedPreferences.getInstance();
@@ -159,7 +161,7 @@ void main() {
     expect(find.text('系统通知未开启'), findsOneWidget);
     expect(permissionService.requestCount, 0);
 
-    await tester.tap(find.byKey(const Key('notification-row-permission')));
+    await tester.tap(find.byKey(const Key('notification-permission-card')));
     await settleE2e(tester);
 
     expect(permissionService.requestCount, 1);

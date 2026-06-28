@@ -8,6 +8,8 @@ import 'package:luminous/app/app.dart';
 import 'package:luminous/app/router.dart' show router;
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/core/network/lucent_dio_client.dart';
+import 'package:luminous/core/network/lucent_network_providers.dart'
+    show lucentBaseUrlProvider, lucentSessionStoreProvider;
 import 'package:luminous/core/network/lucent_session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
@@ -17,6 +19,10 @@ import 'package:luminous/features/health_context/data/providers/health_context_d
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/medicine_risk_check_repository.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
+import 'package:luminous/features/medicine/domain/services/medicine_risk_checker.dart';
+import 'package:luminous/features/search/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
@@ -25,6 +31,8 @@ import 'package:luminous/features/mine/data/repositories/mock_mine_repository.da
     show MockMineRepository;
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart'
     show mineRepositoryProvider;
+import 'package:luminous/features/notification/presentation/providers/notification_providers.dart'
+    show notificationUnreadCountProvider;
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
@@ -69,6 +77,7 @@ Future<ProviderContainer> pumpOfflineApp(
   AuthSessionNotifier Function()? authSessionOverride,
   AuthRemoteDataSource? authRemoteDataSource,
   HealthContextRepository? healthContextRepository,
+  MedicineRiskCheckRepository? medicineRiskCheckRepository,
   NotificationPermissionService? notificationPermissionService,
   DailyRecordRepository? dailyRecordRepository,
   RecordRepository? recordRepository,
@@ -76,9 +85,10 @@ Future<ProviderContainer> pumpOfflineApp(
   MedicineWorkspaceRepository? medicineWorkspaceRepository,
   DoseLogRemoteDataSource? doseLogRemoteDataSource,
 }) async {
-  SharedPreferences.setMockInitialValues(const <String, Object>{
-    'app.locale': 'zh-CN',
-  });
+  SharedPreferences.setMockInitialValues(const <String, Object>{});
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+  await prefs.setString('app.locale', 'zh-CN');
   router.go('/');
 
   final container = ProviderContainer(
@@ -86,6 +96,9 @@ Future<ProviderContainer> pumpOfflineApp(
       authSessionProvider.overrideWith(
         authSessionOverride ?? _NoopRestoreAuthSessionNotifier.new,
       ),
+      lucentBaseUrlProvider.overrideWithValue('http://localhost'),
+      lucentSessionStoreProvider.overrideWithValue(_MemorySessionStore()),
+      notificationUnreadCountProvider.overrideWith((ref) => Future.value(0)),
       if (authRemoteDataSource != null)
         authRemoteDataSourceProvider.overrideWithValue(authRemoteDataSource),
       healthContextSnapshotProvider.overrideWith(
@@ -95,6 +108,9 @@ Future<ProviderContainer> pumpOfflineApp(
         healthContextRepositoryProvider.overrideWithValue(
           healthContextRepository,
         ),
+      medicineRiskCheckRepositoryProvider.overrideWithValue(
+        medicineRiskCheckRepository ?? const E2eMedicineRiskCheckRepository(),
+      ),
       if (notificationPermissionService != null)
         notificationPermissionServiceProvider.overrideWithValue(
           notificationPermissionService,
@@ -238,7 +254,10 @@ Finder switchIn(Finder parent) {
 }
 
 bool readSwitchValue(WidgetTester tester, Finder finder) {
-  return tester.widget<Switch>(finder).value;
+  final switchFinder = finder.evaluate().first.widget is Switch
+      ? finder
+      : find.descendant(of: finder, matching: find.byType(Switch)).first;
+  return tester.widget<Switch>(switchFinder).value;
 }
 
 Future<void> openMineProfileEntry(WidgetTester tester, String label) async {
@@ -554,6 +573,30 @@ class E2eNotificationPermissionService extends NotificationPermissionService {
   Future<NotificationPermissionState> requestPermission() async {
     requestCount += 1;
     return state;
+  }
+}
+
+class E2eMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
+  const E2eMedicineRiskCheckRepository();
+
+  @override
+  MedicineRiskChecker get checker => const MedicineRiskChecker();
+
+  @override
+  // ignore: unused_element
+  MedicineSearchRemoteDataSource get remoteDataSource =>
+      throw UnimplementedError();
+
+  @override
+  Future<MedicineRiskCheckResult> fetchForSnapshot(
+    HealthContextSnapshot snapshot,
+  ) async {
+    return const MedicineRiskCheckResult(
+      currentMedicineCount: 0,
+      checkedMedicineCount: 0,
+      findings: [],
+      coverageIssues: [],
+    );
   }
 }
 

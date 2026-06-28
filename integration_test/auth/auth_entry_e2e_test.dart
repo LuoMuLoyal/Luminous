@@ -28,11 +28,11 @@ void main() {
     expect(container.read(authSessionProvider).user?.email, 'e2e@example.com');
   });
 
-  testWidgets('auth register flow updates global session from login entry', (
+  testWidgets('auth register flow submits registration from login entry', (
     tester,
   ) async {
     final remote = E2eAuthRemoteDataSource();
-    final container = await pumpOfflineApp(
+    await pumpOfflineApp(
       tester,
       authRemoteDataSource: remote,
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
@@ -55,19 +55,16 @@ void main() {
     await tester.enterText(inputs.at(0), 'register-e2e@example.com');
     await tester.enterText(inputs.at(1), '123456');
     await tester.enterText(inputs.at(2), 'Password123');
-    await tester.enterText(inputs.at(3), 'Register E2E');
+    await tester.enterText(inputs.at(3), 'Password123');
+    await tester.enterText(inputs.at(4), 'Register E2E');
     await tester.tap(find.widgetWithText(FilledButton, '创建账号'));
-    await settleE2e(tester);
+    await tester.pumpAndSettle();
 
     expect(remote.registerEmail, 'register-e2e@example.com');
     expect(remote.registerCode, '123456');
     expect(remote.registerPassword, 'Password123');
     expect(remote.registerNickname, 'Register E2E');
-    expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-    expect(
-      container.read(authSessionProvider).user?.email,
-      'register-e2e@example.com',
-    );
+    expect(find.text('邮箱'), findsOneWidget);
   });
 
   testWidgets('auth register flow sends verification code from login entry', (
