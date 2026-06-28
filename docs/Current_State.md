@@ -53,7 +53,7 @@ This file records current implementation facts only. Product direction lives in 
 - `/settings`, `/settings/*`, `/assistant`, `/notifications`, and `/notifications/:id` are also top-level full-screen routes.
 - `ShellBranch` only models the five visible tab branches; hidden branches have been removed.
 - Desktop sidebar settings/help actions now `context.push('/settings')` and `context.push('/assistant')` instead of using `goBranch`.
-- Report metric taps now push `/record` (with the relevant filter pre-selected via provider) instead of imperatively switching tabs.
+- Report metric taps now push `/record?filter=<kind>` (filter encoded via `RecordEntryType.name`). `RecordPage` reads the URL query parameter in `didChangeDependencies` and syncs it into `selectedRecordFilterProvider`, so refresh/deep-link preserves the filter. This closes the last HIGH remediation open question.
 
 ### Phase 3: Mock Data Marking (HIGH-1, HIGH-2)
 
@@ -119,7 +119,7 @@ This file records current implementation facts only. Product direction lives in 
 - Worker-populated reminder delivery history; the UI can read audit rows, but no local/push/SMS worker writes them yet.
 - Lightweight mood record wiring.
 - Environment contextual wiring for Today or Mine.
-- Medicine scan/OCR/photo/barcode/prescription recognition.
+- Medicine scan/OCR/photo/barcode/prescription recognition. The underlying `MedicineWorkspace.quickActions` and related enums/entities are kept but not surfaced in the UI.
 - Pregnancy/lactation/special-group health-context fields remain available for medicine safety, but Mine does not surface them as standalone profile collection.
 
 Deferred code that remains useful should be marked with:

@@ -7,6 +7,7 @@ import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.da
 import 'package:luminous/features/medicine/presentation/widgets/workspace/medicine_workspace_helpers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+// Deferred by Product_Vision MVP: this quick-action section is kept because the scan/OCR/barcode/prescription capability is useful, but it is not surfaced in the current MVP UI.
 class MedicineQuickActionSection extends StatelessWidget {
   const MedicineQuickActionSection({
     super.key,

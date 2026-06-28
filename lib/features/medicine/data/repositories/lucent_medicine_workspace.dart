@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
@@ -142,13 +143,14 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     return null;
   }
 
-  static List<MedicineQuickAction> _defaultQuickActions() => const [
-    MedicineQuickAction(
+  static List<MedicineQuickAction> _defaultQuickActions() => [
+    const MedicineQuickAction(
       icon: Icons.search_rounded,
       titleKey: MedicineCopyKey.quickActionSearchTitle,
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
       accent: AppColorTokens.cyanDeep,
     ),
+    if (kDebugMode) ...deferredScanQuickActions,
   ];
 
   // Deferred by Product_Vision MVP: keep scan/OCR quick-action shapes because

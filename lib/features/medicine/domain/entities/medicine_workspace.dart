@@ -25,6 +25,7 @@ abstract class MedicineHero with _$MedicineHero {
   }) = _MedicineHero;
 }
 
+// Deferred by Product_Vision MVP: keep this code because the capability is useful, but do not surface it until the matching contract/product job is ready.
 @freezed
 abstract class MedicineQuickAction with _$MedicineQuickAction {
   const factory MedicineQuickAction({
@@ -100,6 +101,7 @@ abstract class MedicinePromisePoint with _$MedicinePromisePoint {
 }
 
 enum MedicineCopyKey {
+  // Deferred by Product_Vision MVP: quick-action scan/OCR keys are kept but not surfaced in the MVP UI.
   quickActionCameraTitle,
   quickActionCameraSubtitle,
   quickActionBarcodeTitle,

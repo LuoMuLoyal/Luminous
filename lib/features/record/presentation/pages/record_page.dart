@@ -23,11 +23,30 @@ import 'package:luminous/features/record/presentation/widgets/record_nlp_dialog.
 import 'package:luminous/features/record/presentation/widgets/record_skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class RecordPage extends ConsumerWidget {
+class RecordPage extends ConsumerStatefulWidget {
   const RecordPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RecordPage> createState() => _RecordPageState();
+}
+
+class _RecordPageState extends ConsumerState<RecordPage> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final goRouter = GoRouter.maybeOf(context);
+    final filterParam = goRouter != null
+        ? GoRouterState.of(context).uri.queryParameters['filter']
+        : null;
+    final filter = recordEntryTypeFromName(filterParam);
+    final currentFilter = ref.read(selectedRecordFilterProvider);
+    if (filter != currentFilter) {
+      ref.read(selectedRecordFilterProvider.notifier).setFilter(filter);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final dashboardAsync = ref.watch(recordDashboardProvider);
     final selectedDate = ref.watch(selectedRecordDateProvider);
     final l10n = AppLocalizations.of(context)!;
@@ -54,7 +73,6 @@ class RecordPage extends ConsumerWidget {
                 key: const Key('record-nlp-fab'),
                 onPressed: () => _openNlpDialog(
                   context,
-                  ref,
                   canAccessProtectedData: canAccessProtectedData,
                   isAuthLoading: isAuthLoading,
                   selectedDate: selectedDate,
@@ -88,7 +106,7 @@ class RecordPage extends ConsumerWidget {
                   icon: Icons.today_outlined,
                   typography: typography,
                   surface: surface,
-                  onTap: () => _setSelectedDate(ref, DateTime.now()),
+                  onTap: () => _setSelectedDate(DateTime.now()),
                   iconOnly: isCompact,
                 ),
                 RecordHeaderActionChip(
@@ -98,7 +116,6 @@ class RecordPage extends ConsumerWidget {
                   typography: typography,
                   surface: surface,
                   onTap: () => _setSelectedDate(
-                    ref,
                     selectedDate.subtract(const Duration(days: 1)),
                   ),
                   iconOnly: true,
@@ -110,7 +127,6 @@ class RecordPage extends ConsumerWidget {
                   typography: typography,
                   surface: surface,
                   onTap: () => _setSelectedDate(
-                    ref,
                     selectedDate.add(const Duration(days: 1)),
                   ),
                   iconOnly: true,
@@ -120,7 +136,7 @@ class RecordPage extends ConsumerWidget {
                   icon: Icons.calendar_month_outlined,
                   typography: typography,
                   surface: surface,
-                  onTap: () => _pickSelectedDate(context, ref, selectedDate),
+                  onTap: () => _pickSelectedDate(context, selectedDate),
                   iconOnly: true,
                 ),
                 RecordHeaderActionChip(
@@ -145,18 +161,16 @@ class RecordPage extends ConsumerWidget {
               onFilterSelected: (type) => ref
                   .read(selectedRecordFilterProvider.notifier)
                   .setFilter(type),
-              onDateSelected: (date) => _setSelectedDate(ref, date),
-              onPickDate: () => _pickSelectedDate(context, ref, selectedDate),
-              onQuickAction: (action) =>
-                  _handleQuickAction(context, ref, action),
+              onDateSelected: (date) => _setSelectedDate(date),
+              onPickDate: () => _pickSelectedDate(context, selectedDate),
+              onQuickAction: (action) => _handleQuickAction(context, action),
               onAiInputTap: () => _openNlpDialog(
                 context,
-                ref,
                 canAccessProtectedData: canAccessProtectedData,
                 isAuthLoading: isAuthLoading,
                 selectedDate: selectedDate,
               ),
-              onNewEntry: () => _openRecordCreate(context, ref),
+              onNewEntry: () => _openRecordCreate(context),
             ),
             loading: () => const RecordSkeletonView(),
             error: (_, __) => AppStateErrorView(
@@ -173,11 +187,11 @@ class RecordPage extends ConsumerWidget {
     );
   }
 
-  void _setSelectedDate(WidgetRef ref, DateTime date) {
+  void _setSelectedDate(DateTime date) {
     ref.read(selectedRecordDateProvider.notifier).setDate(date);
   }
 
-  void _openRecordCreate(BuildContext context, WidgetRef ref) {
+  void _openRecordCreate(BuildContext context) {
     final selectedDate = ref.read(selectedRecordDateProvider);
     pushAuthRequiredRoute(
       context,
@@ -187,7 +201,6 @@ class RecordPage extends ConsumerWidget {
 
   void _handleQuickAction(
     BuildContext context,
-    WidgetRef ref,
     RecordQuickAction action,
   ) async {
     assert(!action.locked, 'Locked quick actions should be disabled by UI');
@@ -241,7 +254,6 @@ class RecordPage extends ConsumerWidget {
 
   Future<void> _pickSelectedDate(
     BuildContext context,
-    WidgetRef ref,
     DateTime selectedDate,
   ) async {
     final today = _dateOnly(DateTime.now());
@@ -252,7 +264,7 @@ class RecordPage extends ConsumerWidget {
       lastDate: today.add(const Duration(days: 365)),
     );
     if (picked == null) return;
-    _setSelectedDate(ref, picked);
+    _setSelectedDate(picked);
   }
 
   DateTime _dateOnly(DateTime value) {
@@ -272,8 +284,7 @@ class RecordPage extends ConsumerWidget {
   }
 
   Future<void> _openNlpDialog(
-    BuildContext context,
-    WidgetRef ref, {
+    BuildContext context, {
     required bool canAccessProtectedData,
     required bool isAuthLoading,
     required DateTime selectedDate,

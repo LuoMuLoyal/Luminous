@@ -40,3 +40,14 @@ DailyRecordKind? dailyRecordKindFromName(String? value) {
   }
   return null;
 }
+
+RecordEntryType? recordEntryTypeFromName(String? value) {
+  if (value == null) return null;
+  final name = value.trim();
+  if (name.isEmpty) return null;
+
+  for (final type in RecordEntryType.values) {
+    if (type.name == name) return type;
+  }
+  return null;
+}

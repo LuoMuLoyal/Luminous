@@ -14,7 +14,6 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/providers/report_ai_summary_provider.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/utils/report_ui_formatters.dart';
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
@@ -50,11 +49,11 @@ class ReportPage extends ConsumerWidget {
       ReportDataKind.sleep => RecordEntryType.sleep,
       ReportDataKind.general => null,
     };
-    if (filterType != null) {
-      ref.read(selectedRecordFilterProvider.notifier).setFilter(filterType);
-    }
     if (context.mounted) {
-      context.push('/record');
+      final route = filterType != null
+          ? '/record?filter=${Uri.encodeComponent(filterType.name)}'
+          : '/record';
+      context.push(route);
     }
   }
 
