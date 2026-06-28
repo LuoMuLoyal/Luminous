@@ -3,7 +3,10 @@ import 'package:luminous/features/today/data/repositories/lucent_today_repositor
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/today_repository.dart';
 
-// TODO(high-1): Replace realistic mock vital/health values with placeholder values.
+/// Demo-only mock implementation of [TodayRepository] used for tests.
+///
+/// Vital/metric values are intentionally placeholder so they cannot be
+/// mistaken for real health data.
 class MockTodayRepository implements TodayRepository {
   const MockTodayRepository();
 
@@ -69,22 +72,19 @@ class MockTodayRepository implements TodayRepository {
     user: TodayUserSnapshot(
       moment: TodayDayMoment.morning,
       hasUnreadNotifications: true,
-      updatedAtLabel: '08:30',
+      updatedAtLabel: '--:--',
     ),
     water: TodayWaterSummary(completedCount: 5, targetCount: 8),
     medication: TodayMedicationSummary(
       medicineCount: 1,
       pendingCount: 1,
-      nextDoseTimeLabel: '12:30',
-      nextMedicine: TodayMedicationKind.vitaminBComplex,
+      nextDoseTimeLabel: '--:--',
+      nextMedicine: TodayMedicationKind.atorvastatin,
     ),
     vitals: <TodayVitalSummary>[
-      TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '72'),
-      TodayVitalSummary(
-        type: TodayVitalType.bloodPressure,
-        valueLabel: '118/76',
-      ),
-      TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '7.2'),
+      TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
+      TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
+      TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
       // Deferred by Product_Vision MVP: keep lightweight mood data for future
       // self-check-ins, but do not surface it as a formal mental-health module.
       TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
@@ -113,15 +113,15 @@ class MockTodayRepository implements TodayRepository {
       TodayPriorityItem(
         id: 'medication',
         type: TodayPriorityItemType.medication,
-        count: 1,
-        timeLabel: '12:30',
+        count: 0,
+        timeLabel: '--:--',
       ),
       TodayPriorityItem(
         id: 'water',
         type: TodayPriorityItemType.water,
-        count: 5,
+        count: 0,
         targetCount: 8,
-        progress: 0.625,
+        progress: 0,
       ),
     ],
   );

@@ -7,6 +7,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/presentation/providers/login_form_provider.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -70,7 +71,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       title: l10n?.authWelcomeBack ?? 'Welcome back',
       subtitle: l10n?.authLoginSubtitle,
       logo: const AuthBrandLogo(),
-      leading: const AuthBackButton(),
+      leading: const AppBackButton(fallbackRoute: '/'),
       centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

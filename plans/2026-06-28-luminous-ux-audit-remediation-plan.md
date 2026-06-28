@@ -19,7 +19,7 @@
 | HIGH-7/8：Shell 路由方案 | 方案 A，分两个子阶段：先移 `/settings`/`/assistant`/`/notifications` 三个隐藏分支为顶层 GoRoute，再移 `/record/*`/`/medicine/*`/`/mine/*` 子页为顶层全屏路由 |
 | HIGH-9/11：AppBackButton | 新建 `AppBackButton`，支持自定义 `fallbackRoute`（默认 `/today`）；按顺序替换：先非 Shell 子页 `SettingsBackButton`，再移出 Shell 后验证，最后替换 `AuthBackButton` |
 | HIGH-12/13：错误态文案 | 使用 l10n；HIGH-13 区分 404 与通用错误，通用描述为 "加载提醒详情失败，请检查网络后重试" |
-| HIGH-1/2：Mock 数据 | 延后；代码中先加 `// TODO` 标记 |
+| HIGH-1/2：Mock 数据 | mock repository 用户可见值加 `[DEMO]` / `--` / `demo@example.com` 等占位；搜索 mock ID 改为 `__mock_*__` |
 
 ### 待确认边界
 
@@ -31,6 +31,7 @@
 
 - **Phase 1**：~~`plans/2026-06-28-ux-audit-high-phase1-interactions-and-back-button.md`~~ 已完成。实施结果记录在 `docs/Current_State.md` 与 `docs/migration-log/2026-06-28.md`。
 - **Phase 2**：~~`plans/2026-06-28-ux-audit-high-phase2-shell-routing.md`~~ 已完成（HIGH-7/8、MED-5/6/7）。实施结果记录在 `docs/Current_State.md` 与 `docs/migration-log/2026-06-28.md`。
+- **Phase 3**：~~HIGH-1/2 Mock 数据标记~~ 已完成。实施结果记录在 `docs/Current_State.md` 与 `docs/migration-log/2026-06-28.md`。
 - **Phase 4**：~~`plans/2026-06-28-ux-audit-high-phase4-error-states.md`~~ 已完成（HIGH-12、HIGH-13）。实施结果记录在 `docs/Current_State.md` 与 `docs/migration-log/2026-06-28.md`。
 
 ---
@@ -151,23 +152,26 @@
 
 ---
 
-### Phase 3：数据真实性与 Mock 治理（HIGH-1, HIGH-2, MED-8, LOW-4）
+### Phase 3：数据真实性与 Mock 治理（HIGH-1, HIGH-2, MED-8, LOW-4）— HIGH 部分已完成
 
 **目标**：让 Mock 数据一看就是假的，且不会进入生产持久化。
 
-> **HIGH-1 / HIGH-2 状态**：根据当前决策，**延后处理**。原因：Mock 数据标记方式与生产构建策略涉及产品/测试/截图一致性，需单独决策。本阶段先处理 MED-8、LOW-4。
+> **HIGH-1 / HIGH-2 状态**：已完成。实施细节见 `docs/Current_State.md` 与 `docs/migration-log/2026-06-28.md`。MED-8、LOW-4 仍为待处理项。
 
-#### 3.7 Mock 数据标记化（HIGH-1，已延后）
+#### 3.7 Mock 数据标记化（HIGH-1）— 已完成
 
-- 状态：延后。
-- 待决策：标记方式（`[DEMO]` 前缀 / `__mock_*__` / `'--'` 占位）、生产构建策略（throw / 空列表 / 保留 demo 标记）、药品名是否保留真实中文名。
-- 暂不实施。
+- 所有 mock repository 已添加 demo-only 说明注释。
+- 用户可见值已改为占位/demo 标记：
+  - `MockMineRepository`：`[DEMO] User`、`demo@example.com`、`2099-01-01`。
+  - `MockTodayRepository`：心率/血压/睡眠等数值改为 `--`。
+  - `MockMedicineWorkspaceRepository`：hero 指标改为 `--`。
+  - `MockRecordRepository`：血压/体重/趋势点改为 `--` 或空数组。
 
-#### 3.8 搜索 Mock 结果隔离（HIGH-2，已延后）
+#### 3.8 搜索 Mock 结果隔离（HIGH-2）— 已完成
 
-- 状态：延后。
-- 待决策：搜索 mock 在生产构建中是否返回空列表或 throw `UnimplementedError`；mock ID 与药品名标记方式。
-- 暂不实施。
+- `MockMedicineSearchRepository` 的 ID 改为 `__mock_cn_ibuprofen__` / `__mock_cn_acetaminophen__`。
+- 名称/副标题/摘要加 `[DEMO]` 前缀，避免被误认为真实药品数据。
+- 相关测试已同步更新。
 
 #### 3.9 清理延迟功能残留（MED-8, LOW-4）
 

@@ -37,6 +37,7 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 - **Luminous settings page refactor** (2026-06-28): reorganized Settings into Account & Security / Notifications / Privacy / General / About groups, moved dialogs/inline actions to sub-pages, introduced reusable settings row widgets, and implemented master-toggle sleep reminder page.
 - **Luminous UX audit HIGH Phase 1** (2026-06-28): unified back button with `AppBackButton`, added back button to `SearchPage`, wired `TodayEmptyView` and recommendation category navigation, replaced reminder quick-action fallback with create-page navigation plus no-medicine selector prompt. Tests: 489/489 passing.
 - **Luminous UX audit HIGH Phase 2** (2026-06-28): moved `/settings/*`, `/assistant`, `/notifications/*`, and all `/record/*`, `/medicine/*`, `/mine/*` create/detail/edit sub-pages out of the `StatefulShellRoute` to top-level full-screen routes; reduced `ShellBranch` to the five visible tab branches; updated desktop sidebar settings/help actions to `context.push`. Tests: 495/495 passing.
+- **Luminous UX audit HIGH wrap-up** (2026-06-28): unified `AuthBackButton` into `AppBackButton`; marked all mock repository user-facing values with `[DEMO]`/placeholder values and search mock IDs with `__mock_*__` to close HIGH-1 and HIGH-2. Tests: 495/495 passing.
 
 ## Deferred But Useful
 

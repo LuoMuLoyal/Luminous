@@ -4,7 +4,10 @@ import 'package:luminous/features/mine/data/repositories/lucent_mine_repository.
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/mine_repository.dart';
 
-// TODO(high-1): Replace realistic mock account data with clearly placeholder values.
+/// Demo-only mock implementation of [MineRepository] used for tests.
+///
+/// Account/profile values are intentionally placeholder so they cannot be
+/// mistaken for real user data.
 class MockMineRepository implements MineRepository {
   const MockMineRepository();
 
@@ -35,14 +38,14 @@ class MockMineRepository implements MineRepository {
       account: MineAccount(
         isAuthenticated: true,
         displayNameKey: MineCopyKey.accountDisplayName,
-        displayName: 'Lumi User',
-        email: 'lumi@example.com',
+        displayName: '[DEMO] User',
+        email: 'demo@example.com',
         statusKey: MineCopyKey.accountSignedIn,
         roleKey: MineCopyKey.accountStudentRole,
         emailVerified: true,
         hasPassword: true,
         linkedIdentityCount: 1,
-        lastLoginAt: DateTime.utc(2026, 1, 2, 8, 30),
+        lastLoginAt: DateTime.utc(2099, 1, 1, 0, 0),
       ),
       profile: _mockProfile,
       completion: const MineCompletion(

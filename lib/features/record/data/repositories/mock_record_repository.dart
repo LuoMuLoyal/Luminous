@@ -6,7 +6,10 @@ import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
 
-// TODO(high-1): Replace realistic mock record values (blood pressure, weight, etc.) with placeholder values.
+/// Demo-only mock implementation of [RecordRepository] used for tests.
+///
+/// Vital/record values are intentionally placeholder so they cannot be
+/// mistaken for real health data.
 class MockRecordRepository implements RecordRepository {
   const MockRecordRepository();
 
@@ -491,7 +494,7 @@ class MockRecordRepository implements RecordRepository {
       accent: RecordTypeColors.water,
       softColor: RecordTypeColors.waterSoft,
       titleKey: RecordCopyKey.typeWeight,
-      value: '66.2 kg',
+      value: '--',
       detailKey: RecordCopyKey.timelineWeightDetail,
       trailingIcon: Icons.chevron_right_rounded,
     ),
@@ -503,7 +506,7 @@ class MockRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.trendBloodSugarTitle,
       rangeKey: RecordCopyKey.range7Days,
       color: RecordTypeColors.meal,
-      points: <double>[6.4, 7.9, 7.1, 8.6, 6.3, 8.1, 6.7],
+      points: <double>[],
       legendKey: RecordCopyKey.trendBloodSugarLegend,
     ),
     RecordTrend(
@@ -512,29 +515,7 @@ class MockRecordRepository implements RecordRepository {
       rangeKey: RecordCopyKey.range30Days,
       color: RecordTypeColors.water,
       points: <double>[],
-      bars: <double>[
-        0.78,
-        0.64,
-        0.69,
-        0.66,
-        0.71,
-        0.83,
-        0.75,
-        0.86,
-        0.70,
-        0.79,
-        0.88,
-        0.65,
-        0.56,
-        0.68,
-        0.73,
-        0.84,
-        0.69,
-        0.72,
-        0.91,
-        0.97,
-        0.68,
-      ],
+      bars: <double>[],
     ),
   ];
 

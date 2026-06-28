@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/auth/presentation/providers/password_reset_provider.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -51,7 +52,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
       title: l10n?.authResetPasswordAction ?? 'Reset password',
       subtitle: l10n?.authForgotPasswordSubtitle,
       logo: const AuthBrandLogo(),
-      leading: const AuthBackButton(),
+      leading: const AppBackButton(fallbackRoute: '/'),
       centerTitle: true,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

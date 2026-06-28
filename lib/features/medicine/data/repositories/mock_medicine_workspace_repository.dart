@@ -10,7 +10,10 @@ import 'package:luminous/features/medicine/data/repositories/medicine_risk_check
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 
-// TODO(high-1): Replace realistic mock workspace data (adherence, real medicine names) with placeholder values.
+/// Demo-only mock implementation of [MedicineWorkspaceRepository] used for tests.
+///
+/// Hero metrics and medicine names are intentionally placeholder so they cannot
+/// be mistaken for real clinical data.
 class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   const MockMedicineWorkspaceRepository();
 
@@ -57,9 +60,9 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static const previewWorkspace = MedicineWorkspace(
     hero: MedicineHero(
-      metricDosesToday: '2',
-      metricAdherence: '100%',
-      metricNextDose: '20:00',
+      metricDosesToday: '0',
+      metricAdherence: '--',
+      metricNextDose: '--',
     ),
     quickActions: <MedicineQuickAction>[
       MedicineQuickAction(
