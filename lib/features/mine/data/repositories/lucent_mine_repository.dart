@@ -9,9 +9,16 @@ import 'package:luminous/features/health_context/domain/entities/health_context_
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/mine_repository.dart';
 
-/// Lucent-backed [MineRepository] that keeps account and health-context fields
-/// real while campus services are fetched from
-/// `GET /api/v1/public/support-resources?scope=campus`.
+/// Lucent-backed aggregate [MineRepository].
+///
+/// This repository intentionally has no dedicated datasource/mappers. It
+/// composes the Mine dashboard from existing data sources:
+/// - user profile / health archive / current medicines / allergies / conditions
+///   come from [healthContextSnapshotProvider].
+/// - campus service resources come from [supportResourcesProvider].
+///
+/// Mine is therefore a presentation-facing aggregation layer rather than a
+/// standalone data owner.
 class LucentMineRepository implements MineRepository {
   LucentMineRepository(this._ref);
 
@@ -33,8 +40,9 @@ class LucentMineRepository implements MineRepository {
 
   Future<List<MineActionEntry>> _fetchCampusServices() async {
     try {
-      final resources =
-          await _ref.watch(supportResourcesProvider('campus').future);
+      final resources = await _ref.watch(
+        supportResourcesProvider('campus').future,
+      );
       return resources.map(_mapSupportResource).toList();
     } catch (_) {
       return _fallbackCampusServices;
