@@ -33,6 +33,11 @@ This file records work that is still missing or intentionally gated. Current fac
   Current state: The mobile MVP path is now defined as `record -> summarize -> bounded medicine safety check -> export`, with explicit uncertainty for unchecked medicines and no claim of broad cross-source normalization or unreviewed interaction expansion.
   Remaining work below belongs to post-MVP productization or hardening, not to MVP completion.
 
+## HIGH 收尾遗留 / 边界决策
+
+- **Mock 药品名未完全脱敏（HIGH-1 残留）**：`MockMedicineWorkspaceRepository` 通过 `MedicineCopyKey.mockNameMetformin` / `mockNameAtorvastatin` / `mockNameOmeprazole` 走 ARB，显示为真实中文药名。需要把这些 mock 药品名改为 `[DEMO] 示例药品 A/B/C` 并同步更新相关测试/截图。
+- **Report 指标过滤状态未进 URL**：`ReportPage` 点指标后 push `/record` 并写 `selectedRecordFilterProvider`。若用户刷新或 deep-link 到 `/record`，过滤状态会丢失。后续决策：是否将 filter 作为 `/record?filter=<kind>` query param。
+
 ## MVP Gated But Not Blocking Right Now
 
 - Lightweight assistant with user-controlled context permissions, bounded tool use, and streaming markdown output.

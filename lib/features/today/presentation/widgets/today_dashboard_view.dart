@@ -105,11 +105,11 @@ class _MobileTodayDashboard extends StatelessWidget {
       child: ListView.separated(
         key: const PageStorageKey<String>('today-dashboard-scroll'),
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(
+        padding: EdgeInsets.fromLTRB(
           AppSpacingTokens.md,
           AppSpacingTokens.md,
           AppSpacingTokens.md,
-          AppSpacingTokens.x5l + AppSpacingTokens.xs,
+          AppSpacingTokens.x5l + MediaQuery.paddingOf(context).bottom,
         ),
         itemBuilder: (context, index) => sections[index],
         separatorBuilder: (context, index) =>

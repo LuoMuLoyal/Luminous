@@ -5,7 +5,6 @@ import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
-import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_section.dart';
@@ -24,7 +23,7 @@ class TodayPrioritySection extends ConsumerWidget {
   ) {
     switch (item.type) {
       case TodayPriorityItemType.medication:
-        ref.read(shellProvider.notifier).selectTab(2);
+        context.go('/medicine');
       case TodayPriorityItemType.water:
         context.push('/record/create?kind=water');
     }
@@ -39,7 +38,7 @@ class TodayPrioritySection extends ConsumerWidget {
     return TodaySection(
       title: l10n.todayPrioritySectionTitle,
       actionLabel: l10n.todayManageAction,
-      onAction: () => ref.read(shellProvider.notifier).selectTab(1),
+      onAction: () => context.go('/record'),
       child: AppSectionSurface(
         padding: EdgeInsets.zero,
         child: Column(

@@ -9,6 +9,7 @@ import 'package:luminous/core/widgets/app_settings_navigation_row.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AboutSettingsPage extends ConsumerWidget {
@@ -52,6 +53,15 @@ class AboutSettingsPage extends ConsumerWidget {
                 '${l10n.mineSettingAboutValue} ${infoAsync.asData?.value?.version ?? ''}',
                 style: typography.bodySm.copyWith(color: surface.mute),
               ),
+              if (infoAsync.asData?.value?.buildDate.isNotEmpty ?? false) ...[
+                const SizedBox(height: AppSpacingTokens.xxs),
+                Text(
+                  l10n.settingsAboutBuildNumberLabel(
+                    infoAsync.asData!.value!.buildDate,
+                  ),
+                  style: typography.bodySm.copyWith(color: surface.mute),
+                ),
+              ],
               if (description != null && description.isNotEmpty) ...[
                 const SizedBox(height: AppSpacingTokens.sm),
                 Text(
@@ -71,12 +81,20 @@ class AboutSettingsPage extends ConsumerWidget {
             children: [
               AppSettingsNavigationRow(
                 title: l10n.settingsAboutPrivacyPolicy,
-                onTap: () => _openUrl(context, 'https://luminous.app/privacy'),
+                onTap: () => _openUrl(
+                  context,
+                  infoAsync.asData?.value?.privacyPolicyUrl ??
+                      'https://luminous.app/privacy',
+                ),
                 showDivider: true,
               ),
               AppSettingsNavigationRow(
                 title: l10n.settingsAboutTermsOfService,
-                onTap: () => _openUrl(context, 'https://luminous.app/terms'),
+                onTap: () => _openUrl(
+                  context,
+                  infoAsync.asData?.value?.termsOfServiceUrl ??
+                      'https://luminous.app/terms',
+                ),
                 showDivider: true,
               ),
               AppSettingsNavigationRow(
@@ -89,7 +107,8 @@ class AboutSettingsPage extends ConsumerWidget {
               ),
               AppSettingsNavigationRow(
                 title: l10n.settingsAboutSupport,
-                onTap: () => _openUrl(context, 'https://luminous.app/support'),
+                subtitle: infoAsync.asData?.value?.supportEmail,
+                onTap: () => _openSupport(context, infoAsync.asData?.value),
               ),
             ],
           ),
@@ -103,6 +122,17 @@ class AboutSettingsPage extends ConsumerWidget {
     if (uri != null) {
       await const ExternalUrlLauncher().open(uri);
     }
+  }
+
+  Future<void> _openSupport(BuildContext context, AppInfoDataDto? info) async {
+    final email = info?.supportEmail;
+    if (email != null && email.isNotEmpty) {
+      await const ExternalUrlLauncher().open(
+        Uri(scheme: 'mailto', path: email),
+      );
+      return;
+    }
+    await _openUrl(context, 'https://luminous.app/support');
   }
 
   AppTypographyScale _typography(BuildContext context) {

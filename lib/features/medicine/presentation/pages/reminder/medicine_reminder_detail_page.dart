@@ -257,39 +257,39 @@ class _ReminderDetailBody extends ConsumerWidget {
             typography: typography,
             surface: surface,
           ),
-          const SizedBox(height: AppSpacingTokens.lg),
-          FilledButton.icon(
-            key: const Key('medicine-reminder-delete-button'),
-            style: FilledButton.styleFrom(
-              backgroundColor: surface.error,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+          if (reminders.isNotEmpty) ...[
+            const SizedBox(height: AppSpacingTokens.lg),
+            FilledButton.icon(
+              key: const Key('medicine-reminder-delete-button'),
+              style: FilledButton.styleFrom(
+                backgroundColor: surface.error,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSpacingTokens.md,
+                ),
               ),
-              padding: const EdgeInsets.symmetric(
-                vertical: AppSpacingTokens.md,
-              ),
+              onPressed: () async {
+                final confirmed = await showMedicineReminderDeleteDialog(
+                  context,
+                );
+                if (confirmed != true) return;
+                final deleted = await ref
+                    .read(medicineReminderFormProvider.notifier)
+                    .deleteGroup(reminders);
+                if (deleted && context.mounted) {
+                  AppToast.show(context, l10n.medicineReminderDeletedToast);
+                  context.pop();
+                } else if (context.mounted) {
+                  AppToast.show(context, l10n.settingsSyncFailed);
+                }
+              },
+              icon: const Icon(Icons.delete_outline_rounded),
+              label: Text(l10n.medicineReminderDeleteAction),
             ),
-            onPressed: reminders.isEmpty
-                ? null
-                : () async {
-                    final confirmed = await showMedicineReminderDeleteDialog(
-                      context,
-                    );
-                    if (confirmed != true) return;
-                    final deleted = await ref
-                        .read(medicineReminderFormProvider.notifier)
-                        .deleteGroup(reminders);
-                    if (deleted && context.mounted) {
-                      AppToast.show(context, l10n.medicineReminderDeletedToast);
-                      context.pop();
-                    } else if (context.mounted) {
-                      AppToast.show(context, l10n.settingsSyncFailed);
-                    }
-                  },
-            icon: const Icon(Icons.delete_outline_rounded),
-            label: Text(l10n.medicineReminderDeleteAction),
-          ),
+          ],
         ],
       ),
     );

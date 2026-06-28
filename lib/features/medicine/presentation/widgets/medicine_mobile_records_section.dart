@@ -72,8 +72,7 @@ class _MedicineRecordsSection extends ConsumerWidget {
                     child: AppTextAction(
                       label: l10n.medicineViewMoreRecordsAction,
                       color: surface.link,
-                      onTap: () =>
-                          ref.read(shellProvider.notifier).selectTab(1),
+                      onTap: () => context.go('/record'),
                     ),
                   ),
                 ),

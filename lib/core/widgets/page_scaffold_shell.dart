@@ -81,7 +81,8 @@ class PageScaffoldShell extends StatelessWidget {
               Positioned.fill(child: pageContent),
               Positioned(
                 right: AppSpacingTokens.lg,
-                bottom: AppSpacingTokens.lg,
+                bottom:
+                    AppSpacingTokens.lg + MediaQuery.paddingOf(context).bottom,
                 child: floatingActionButton!,
               ),
             ],
