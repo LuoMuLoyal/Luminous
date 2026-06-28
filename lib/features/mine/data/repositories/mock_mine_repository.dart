@@ -6,6 +6,8 @@ import 'package:luminous/features/mine/domain/repositories/mine_repository.dart'
 
 /// Demo-only mock implementation of [MineRepository] used for tests.
 ///
+/// Like [LucentMineRepository], this is an aggregate repository: it assembles
+/// the dashboard from static placeholders without its own datasource/mappers.
 /// Account/profile values are intentionally placeholder so they cannot be
 /// mistaken for real user data.
 class MockMineRepository implements MineRepository {

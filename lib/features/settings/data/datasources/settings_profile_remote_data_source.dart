@@ -2,6 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
+/// Settings is a thin configuration surface: its data layer maps directly to
+/// generated Lucent DTOs (e.g. [HealthContextDataDto]) and local platform
+/// services. There is no dedicated domain layer because the business rules are
+/// limited to form-level validation and preference persistence.
+
 const Object settingsProfileNoChange = Object();
 
 class SettingsProfileRemoteDataSource {
