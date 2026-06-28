@@ -1132,7 +1132,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineTodayPlanInspectAction => 'View all';
 
   @override
-  String get medicineMockNameMetformin => 'Example medicine A';
+  String get medicineMockNameMetformin => '[DEMO] Example medicine A';
 
   @override
   String get medicineMockDoseMetformin => '0.5 g';
@@ -1407,7 +1407,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineStatusStable => 'Stable routine';
 
   @override
-  String get medicineMockNameAtorvastatin => 'Example medicine B';
+  String get medicineMockNameAtorvastatin => '[DEMO] Example medicine B';
 
   @override
   String get medicineMockDoseAtorvastatin => '20 mg';
@@ -1419,7 +1419,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineStatusNeedsCheckin => 'Stable routine';
 
   @override
-  String get medicineMockNameOmeprazole => 'Example medicine C';
+  String get medicineMockNameOmeprazole => '[DEMO] Example medicine C';
 
   @override
   String get medicineMockDoseOmeprazole => '20 mg';

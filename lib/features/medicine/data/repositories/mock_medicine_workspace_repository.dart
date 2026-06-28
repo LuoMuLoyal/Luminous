@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
@@ -58,19 +59,20 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     ),
   ];
 
-  static const previewWorkspace = MedicineWorkspace(
-    hero: MedicineHero(
+  static final previewWorkspace = MedicineWorkspace(
+    hero: const MedicineHero(
       metricDosesToday: '0',
       metricAdherence: '--',
       metricNextDose: '--',
     ),
-    quickActions: <MedicineQuickAction>[
-      MedicineQuickAction(
+    quickActions: [
+      const MedicineQuickAction(
         icon: Icons.search_rounded,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
         accent: AppColorTokens.cyanDeep,
       ),
+      if (kDebugMode) ...deferredScanQuickActions,
     ],
     plan: MedicinePlanSurface(
       items: <MedicinePlanItem>[

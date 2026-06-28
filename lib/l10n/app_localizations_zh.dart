@@ -1044,7 +1044,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineTodayPlanInspectAction => '查看全部';
 
   @override
-  String get medicineMockNameMetformin => '示例药品 A';
+  String get medicineMockNameMetformin => '[DEMO] 示例药品 A';
 
   @override
   String get medicineMockDoseMetformin => '0.5 g';
@@ -1308,7 +1308,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineStatusStable => '稳定服用';
 
   @override
-  String get medicineMockNameAtorvastatin => '示例药品 B';
+  String get medicineMockNameAtorvastatin => '[DEMO] 示例药品 B';
 
   @override
   String get medicineMockDoseAtorvastatin => '20 mg';
@@ -1320,7 +1320,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineStatusNeedsCheckin => '稳定服用';
 
   @override
-  String get medicineMockNameOmeprazole => '示例药品 C';
+  String get medicineMockNameOmeprazole => '[DEMO] 示例药品 C';
 
   @override
   String get medicineMockDoseOmeprazole => '20 mg';

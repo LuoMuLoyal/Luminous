@@ -2039,7 +2039,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineMockNameMetformin.
   ///
   /// In zh, this message translates to:
-  /// **'示例药品 A'**
+  /// **'[DEMO] 示例药品 A'**
   String get medicineMockNameMetformin;
 
   /// No description provided for @medicineMockDoseMetformin.
@@ -2567,7 +2567,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineMockNameAtorvastatin.
   ///
   /// In zh, this message translates to:
-  /// **'示例药品 B'**
+  /// **'[DEMO] 示例药品 B'**
   String get medicineMockNameAtorvastatin;
 
   /// No description provided for @medicineMockDoseAtorvastatin.
@@ -2591,7 +2591,7 @@ abstract class AppLocalizations {
   /// No description provided for @medicineMockNameOmeprazole.
   ///
   /// In zh, this message translates to:
-  /// **'示例药品 C'**
+  /// **'[DEMO] 示例药品 C'**
   String get medicineMockNameOmeprazole;
 
   /// No description provided for @medicineMockDoseOmeprazole.

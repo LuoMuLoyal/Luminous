@@ -1,6 +1,6 @@
 # Luminous TODO
 
-Last updated: 2026-06-23
+Last updated: 2026-06-28
 
 This file records work that is still missing or intentionally gated. Current facts belong in `Current_State.md`; implementation order belongs in `Next_Plan.md`.
 
@@ -35,8 +35,7 @@ This file records work that is still missing or intentionally gated. Current fac
 
 ## HIGH 收尾遗留 / 边界决策
 
-- **Mock 药品名未完全脱敏（HIGH-1 残留）**：`MockMedicineWorkspaceRepository` 通过 `MedicineCopyKey.mockNameMetformin` / `mockNameAtorvastatin` / `mockNameOmeprazole` 走 ARB，显示为真实中文药名。需要把这些 mock 药品名改为 `[DEMO] 示例药品 A/B/C` 并同步更新相关测试/截图。
-- **Report 指标过滤状态未进 URL**：`ReportPage` 点指标后 push `/record` 并写 `selectedRecordFilterProvider`。若用户刷新或 deep-link 到 `/record`，过滤状态会丢失。后续决策：是否将 filter 作为 `/record?filter=<kind>` query param。
+- 无当前遗留。HIGH-1 mock 药品名已改为 demo 名称并同步测试；Report 指标过滤已通过 `/record?filter=<kind>` query param 实现 deep-link。
 
 ## MVP Gated But Not Blocking Right Now
 
