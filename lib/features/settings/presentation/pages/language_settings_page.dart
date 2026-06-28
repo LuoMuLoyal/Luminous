@@ -12,6 +12,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LanguageSettingsPage extends ConsumerWidget {
@@ -41,7 +42,7 @@ class LanguageSettingsPage extends ConsumerWidget {
               AppSettingRow(
                 key: const Key('language-row-system'),
                 title: l10n.settingsLanguageSystemLabel,
-                trailing: _SelectionIcon(
+                trailing: SettingsSelectionIcon(
                   selected: currentLocale == AppLocale.system,
                 ),
                 onTap: () =>
@@ -51,7 +52,7 @@ class LanguageSettingsPage extends ConsumerWidget {
               AppSettingRow(
                 key: const Key('language-row-zh'),
                 title: l10n.settingsLanguageChineseLabel,
-                trailing: _SelectionIcon(
+                trailing: SettingsSelectionIcon(
                   selected: currentLocale == AppLocale.zhCn,
                 ),
                 onTap: () =>
@@ -61,7 +62,7 @@ class LanguageSettingsPage extends ConsumerWidget {
               AppSettingRow(
                 key: const Key('language-row-en'),
                 title: l10n.settingsLanguageEnglishLabel,
-                trailing: _SelectionIcon(
+                trailing: SettingsSelectionIcon(
                   selected: currentLocale == AppLocale.en,
                 ),
                 onTap: () => _handleLocaleTap(context, ref, l10n, AppLocale.en),
@@ -90,24 +91,6 @@ Future<void> _handleLocaleTap(
     await AppToast.show(
       context,
       message.isNotEmpty ? message : l10n.settingsSyncFailed,
-    );
-  }
-}
-
-class _SelectionIcon extends StatelessWidget {
-  const _SelectionIcon({required this.selected});
-
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-
-    return Icon(
-      selected ? Icons.check_rounded : Icons.circle_outlined,
-      size: 18,
-      color: selected ? theme.colorScheme.primary : surface.mute,
     );
   }
 }

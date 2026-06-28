@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/app_dialog.dart';
 import 'package:luminous/app/app.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -15,8 +14,14 @@ import 'package:luminous/features/settings/data/datasources/settings_profile_rem
 import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
 import 'package:luminous/features/settings/data/providers/settings_profile_data_providers.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
-import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/about_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/ai_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/data_export_page.dart';
+import 'package:luminous/features/settings/presentation/pages/help_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/sleep_reminder_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,7 +77,7 @@ void main() {
   );
 
   testWidgets(
-    'Medication reminder toggles from dialog and persists the value',
+    'Medication reminder toggles from notification settings page and persists the value',
     (tester) async {
       SharedPreferences.setMockInitialValues(const <String, Object>{
         'app.locale': 'zh-CN',
@@ -85,52 +90,29 @@ void main() {
         ),
       );
 
-      await _tapSettingsRow(tester, 'settings-row-reminder-medicine');
+      await _tapSettingsRow(tester, 'settings-row-notifications');
 
-      final switchFinder = find.descendant(
-        of: find.byType(AppDialog),
-        matching: find.byType(Switch),
-      );
-      expect(switchFinder, findsOneWidget);
-
-      final beforeValue = _readSwitchValue(tester, switchFinder.first);
-
-      await tester.tap(switchFinder.first);
+      final medicationRowText = find.text('用药提醒');
+      await tester.ensureVisible(medicationRowText);
       await tester.pumpAndSettle();
 
-      final afterValue = _readSwitchValue(
-        tester,
-        find
-            .descendant(
-              of: find.byType(AppDialog),
-              matching: find.byType(Switch),
-            )
-            .first,
+      final medicationSwitchFinder = find.descendant(
+        of: find.byKey(const Key('notification-switch-medication')),
+        matching: find.byType(Switch),
       );
+      expect(medicationSwitchFinder, findsOneWidget);
+
+      final beforeValue = _readSwitchValue(tester, medicationSwitchFinder);
+
+      await tester.tap(medicationSwitchFinder);
+      await tester.pumpAndSettle();
+
+      final afterValue = _readSwitchValue(tester, medicationSwitchFinder);
       expect(afterValue, isNot(beforeValue));
 
       final preferences = await SharedPreferences.getInstance();
       expect(
         preferences.getBool('settings.notifications.medicationReminders'),
-        afterValue,
-      );
-
-      // Close dialog and reopen to verify persistence.
-      await tester.tap(find.text('关闭').last);
-      await tester.pumpAndSettle();
-
-      await _tapSettingsRow(tester, 'settings-row-reminder-medicine');
-
-      expect(
-        _readSwitchValue(
-          tester,
-          find
-              .descendant(
-                of: find.byType(AppDialog),
-                matching: find.byType(Switch),
-              )
-              .first,
-        ),
         afterValue,
       );
     },
@@ -154,7 +136,6 @@ void main() {
 
     expect(find.text('系统通知已开启'), findsOneWidget);
     expect(find.text('通知已授权。下方开关可控制各类通知的显示。'), findsOneWidget);
-    expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
   });
 
   testWidgets('Notification settings shows denied permission state', (
@@ -175,13 +156,6 @@ void main() {
 
     expect(find.text('系统通知未开启'), findsOneWidget);
     expect(find.text('点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。'), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(AppDialog),
-        matching: find.byIcon(Icons.chevron_right_rounded),
-      ),
-      findsOneWidget,
-    );
   });
 
   testWidgets('Advanced settings page is reachable and shows actions', (
@@ -432,6 +406,30 @@ GoRouter _buildSettingsTestRouter() {
       GoRoute(
         path: '/settings/more',
         builder: (context, state) => const AdvancedSettingsPage(),
+      ),
+      GoRoute(
+        path: '/settings/notifications',
+        builder: (context, state) => const NotificationSettingsPage(),
+      ),
+      GoRoute(
+        path: '/settings/notifications/sleep',
+        builder: (context, state) => const SleepReminderSettingsPage(),
+      ),
+      GoRoute(
+        path: '/settings/ai',
+        builder: (context, state) => const AiSettingsPage(),
+      ),
+      GoRoute(
+        path: '/settings/export',
+        builder: (context, state) => const DataExportPage(),
+      ),
+      GoRoute(
+        path: '/settings/help',
+        builder: (context, state) => const HelpSettingsPage(),
+      ),
+      GoRoute(
+        path: '/settings/about',
+        builder: (context, state) => const AboutSettingsPage(),
       ),
     ],
   );

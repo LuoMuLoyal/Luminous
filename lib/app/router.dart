@@ -24,9 +24,15 @@ import 'package:luminous/features/record/presentation/pages/record_page.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/report/presentation/pages/report_page.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
+import 'package:luminous/features/settings/presentation/pages/about_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/ai_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/data_export_page.dart';
+import 'package:luminous/features/settings/presentation/pages/help_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/sleep_reminder_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
@@ -304,6 +310,50 @@ final router = GoRouter(
                   pageBuilder: (context, state) => _slidePage(
                     key: state.pageKey,
                     child: const AdvancedSettingsPage(),
+                  ),
+                ),
+                GoRoute(
+                  path: 'notifications',
+                  pageBuilder: (context, state) => _slidePage(
+                    key: state.pageKey,
+                    child: const NotificationSettingsPage(),
+                  ),
+                  routes: [
+                    GoRoute(
+                      path: 'sleep',
+                      pageBuilder: (context, state) => _slidePage(
+                        key: state.pageKey,
+                        child: const SleepReminderSettingsPage(),
+                      ),
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'ai',
+                  pageBuilder: (context, state) => _slidePage(
+                    key: state.pageKey,
+                    child: const AiSettingsPage(),
+                  ),
+                ),
+                GoRoute(
+                  path: 'export',
+                  pageBuilder: (context, state) => _slidePage(
+                    key: state.pageKey,
+                    child: const DataExportPage(),
+                  ),
+                ),
+                GoRoute(
+                  path: 'help',
+                  pageBuilder: (context, state) => _slidePage(
+                    key: state.pageKey,
+                    child: const HelpSettingsPage(),
+                  ),
+                ),
+                GoRoute(
+                  path: 'about',
+                  pageBuilder: (context, state) => _slidePage(
+                    key: state.pageKey,
+                    child: const AboutSettingsPage(),
                   ),
                 ),
               ],
