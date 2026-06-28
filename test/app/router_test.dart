@@ -117,13 +117,24 @@ Widget _testableRouter({
 }
 
 void main() {
-  group('business routes are nested inside StatefulShellRoute', () {
+  group('main tab roots are nested inside StatefulShellRoute', () {
     const shellPaths = <String>[
       '/',
       '/record',
       '/medicine',
       '/report',
       '/mine',
+    ];
+
+    for (final path in shellPaths) {
+      test(path, () {
+        expect(_routeIsInsideShell(path), isTrue);
+      });
+    }
+  });
+
+  group('create/detail/edit sub-pages are top-level full-screen', () {
+    const fullScreenPaths = <String>[
       '/medicine/search',
       '/medicine/risk-check',
       '/medicine/reminders/new',
@@ -143,20 +154,15 @@ void main() {
       '/settings/language',
       '/settings/theme',
       '/settings/more',
+      '/settings/notifications',
+      '/settings/notifications/sleep',
+      '/settings/ai',
+      '/settings/export',
+      '/settings/help',
+      '/settings/about',
       '/assistant',
       '/notifications',
       '/notifications/123',
-    ];
-
-    for (final path in shellPaths) {
-      test(path, () {
-        expect(_routeIsInsideShell(path), isTrue);
-      });
-    }
-  });
-
-  group('auth and account routes remain top-level full-screen', () {
-    const fullScreenPaths = <String>[
       '/login',
       '/login/oauth/wechat',
       '/register',
@@ -173,8 +179,8 @@ void main() {
     }
   });
 
-  group('deep links render inside the desktop shell', () {
-    testWidgets('/medicine/search keeps sidebar on desktop', (tester) async {
+  group('deep links to full-screen routes hide the desktop shell', () {
+    testWidgets('/medicine/search hides sidebar on desktop', (tester) async {
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(1440, 1000);
       addTearDown(() {
@@ -187,13 +193,13 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Luminous'), findsOneWidget);
+      expect(find.text('Luminous'), findsNothing);
       expect(find.byType(SearchPage), findsOneWidget);
     });
   });
 
-  group('visible branch deep links keep bottom navigation on mobile', () {
-    testWidgets('/medicine/search keeps bottom nav on mobile', (tester) async {
+  group('deep links to full-screen routes hide mobile bottom navigation', () {
+    testWidgets('/medicine/search hides bottom nav on mobile', (tester) async {
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(390, 844);
       addTearDown(() {
@@ -206,7 +212,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(NavigationBar), findsNothing);
       expect(find.byType(SearchPage), findsOneWidget);
     });
   });

@@ -29,9 +29,9 @@
 
 本计划为总控文档，具体实施步骤见子计划：
 
-- **Phase 1**：`plans/2026-06-28-ux-audit-high-phase1-interactions-and-back-button.md`（HIGH-10、HIGH-3、HIGH-4/5、HIGH-6、HIGH-9/11）
-- **Phase 2**：`plans/2026-06-28-ux-audit-high-phase2-shell-routing.md`（HIGH-7/8、MED-5/6/7）
-- **Phase 4**：`plans/2026-06-28-ux-audit-high-phase4-error-states.md`（HIGH-12、HIGH-13）
+- **Phase 1**：~~`plans/2026-06-28-ux-audit-high-phase1-interactions-and-back-button.md`~~ 已完成。实施结果记录在 `docs/Current_State.md` 与 `docs/migration-log/2026-06-28.md`。
+- **Phase 2**：~~`plans/2026-06-28-ux-audit-high-phase2-shell-routing.md`~~ 已完成（HIGH-7/8、MED-5/6/7）。实施结果记录在 `docs/Current_State.md` 与 `docs/migration-log/2026-06-28.md`。
+- **Phase 4**：~~`plans/2026-06-28-ux-audit-high-phase4-error-states.md`~~ 已完成（HIGH-12、HIGH-13）。实施结果记录在 `docs/Current_State.md` 与 `docs/migration-log/2026-06-28.md`。
 
 ---
 
@@ -105,9 +105,10 @@
 
 ---
 
-### Phase 2：路由架构统一（HIGH-7, HIGH-8, MED-5, MED-6, MED-7）
+### Phase 2：路由架构统一（HIGH-7, HIGH-8, MED-5, MED-6, MED-7）— 已完成
 
-**目标**：明确“全屏子页” vs “Shell 内子页”的划分，消除底部导航的突兀消失。
+**目标**：明确“全屏子页” vs “Shell 内子页”的划分，消除底部导航的突兀消失。  
+**实施细节**：见 `docs/Current_State.md` 与 `docs/migration-log/2026-06-28.md`。
 
 **决策**：采用方案 A——创建/详情/编辑类子页统一为顶层全屏 `GoRoute`，进入时隐藏底部导航；`/settings`、`/assistant`、`/notifications` 不再作为 `StatefulShellBranch`。
 

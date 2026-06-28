@@ -2,19 +2,14 @@ import 'package:luminous/features/shell/presentation/shell_tab.dart';
 
 /// Branch indices used by [StatefulShellRoute].
 ///
-/// The first five branches correspond 1:1 to the visible [ShellTab] entries and
-/// are rendered in the mobile bottom navigation. The remaining branches are
-/// hidden from the bottom bar and reachable only via sidebar actions or
-/// deep-links; on mobile they render full-screen without the bottom navigation.
+/// Each branch corresponds 1:1 to a visible [ShellTab] entry and is rendered
+/// in the mobile bottom navigation and desktop sidebar.
 enum ShellBranch {
   today,
   record,
   medicine,
   report,
-  mine,
-  settings,
-  assistant,
-  notifications;
+  mine;
 
   /// Whether this branch should appear in the mobile [NavigationBar].
   bool get isVisible => index < ShellTab.values.length;
