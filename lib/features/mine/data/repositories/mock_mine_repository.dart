@@ -4,6 +4,7 @@ import 'package:luminous/features/mine/data/repositories/lucent_mine_repository.
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/mine_repository.dart';
 
+// TODO(high-1): Replace realistic mock account data with clearly placeholder values.
 class MockMineRepository implements MineRepository {
   const MockMineRepository();
 

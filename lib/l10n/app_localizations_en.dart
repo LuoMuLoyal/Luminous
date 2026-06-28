@@ -1189,6 +1189,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineReminderNotFoundTitle => 'Reminder did not load';
 
   @override
+  String get medicineReminderNotFoundDescription =>
+      'This reminder has been deleted or does not exist';
+
+  @override
+  String get medicineReminderGenericErrorTitle => 'Loading failed';
+
+  @override
+  String get medicineReminderGenericErrorDescription =>
+      'Failed to load reminder details. Please check your network and try again.';
+
+  @override
   String get medicineReminderQuickTitle => 'Reminder setup';
 
   @override
@@ -3158,6 +3169,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayRecommendationSectionTitle => 'Proactive advice';
+
+  @override
+  String get todayRecommendationErrorTitle => 'Recommendations failed to load';
+
+  @override
+  String get todayRecommendationErrorDescription =>
+      'Please check your network and try again';
 
   @override
   String get todayViewMoreAction => 'View more';

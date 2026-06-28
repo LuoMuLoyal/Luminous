@@ -85,6 +85,60 @@ void main() {
     expect(find.text('已投递'), findsOneWidget);
   });
 
+  testWidgets('Medicine reminder detail shows not found for missing medicine', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      _testApp(
+        child: const MedicineReminderDetailPage(
+          currentMedicineId: 'med-missing',
+        ),
+        reminderDataSource: _FakeReminderDataSource([]),
+        doseLogDataSource: _FakeDoseLogDataSource([]),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.medicineReminderNotFoundTitle), findsOneWidget);
+    expect(find.text(l10n.medicineReminderNotFoundDescription), findsOneWidget);
+    expect(find.text(l10n.todayRetryAction), findsOneWidget);
+  });
+
+  testWidgets('Medicine reminder detail shows generic error on load failure', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      _testApp(
+        child: const MedicineReminderDetailPage(currentMedicineId: 'med-1'),
+        reminderDataSource: _FakeReminderDataSource([]),
+        doseLogDataSource: _FakeDoseLogDataSource([]),
+        overrides: [
+          medicineReminderListProvider.overrideWith(
+            (ref) => Future<List<MedicineReminderItem>>.error(
+              Exception('network failure'),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.medicineReminderGenericErrorTitle), findsOneWidget);
+    expect(
+      find.text(l10n.medicineReminderGenericErrorDescription),
+      findsOneWidget,
+    );
+    expect(find.text(l10n.todayRetryAction), findsOneWidget);
+  });
+
   test(
     'Medicine reminder form syncs times through update/create/delete',
     () async {
@@ -140,6 +194,7 @@ Widget _testApp({
   required Widget child,
   required _FakeReminderDataSource reminderDataSource,
   required _FakeDoseLogDataSource doseLogDataSource,
+  List overrides = const [],
 }) {
   return ProviderScope(
     overrides: [
@@ -152,6 +207,7 @@ Widget _testApp({
       medicineWorkspaceProvider.overrideWith(
         (ref) async => MockMedicineWorkspaceRepository.previewWorkspace,
       ),
+      ...overrides,
     ],
     child: MaterialApp.router(
       theme: AppTheme.light,

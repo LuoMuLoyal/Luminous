@@ -428,6 +428,7 @@ class AppStateErrorView extends StatelessWidget {
     this.actionLabel,
     this.onAction,
     this.tone = AppStateTone.neutral,
+    this.compact = false,
   });
 
   final String title;
@@ -436,26 +437,49 @@ class AppStateErrorView extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
   final AppStateTone tone;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: AppStateMessageView(
-              title: title,
-              description: description,
-              icon: icon,
-              actionLabel: actionLabel,
-              onAction: onAction,
-              tone: tone,
+    final message = AppStateMessageView(
+      title: title,
+      description: description,
+      icon: icon,
+      actionLabel: actionLabel,
+      onAction: onAction,
+      tone: tone,
+      padding: compact
+          ? const EdgeInsets.all(AppSpacingTokens.md)
+          : const EdgeInsets.all(AppSpacingTokens.lg),
+    );
+
+    if (compact) {
+      return message;
+    }
+
+    // Use LayoutBuilder so the view works both in finite-height parents
+    // (e.g. the body of a non-scrollable Scaffold) and inside scrollables
+    // where the incoming max height is unbounded.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final height = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
+            : 320.0;
+        return SizedBox(
+          height: height,
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacingTokens.md,
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: message,
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

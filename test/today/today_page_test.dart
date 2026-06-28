@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,10 +9,14 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:lucent_openapi/lucent_openapi.dart' show TodayAnalysisApi;
+import 'package:luminous/features/today/data/datasources/today_recommendations_remote_data_source.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
+import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/today_dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/today_skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -381,6 +386,59 @@ void main() {
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
   });
 
+  testWidgets('Today recommendation section shows error retry on failure', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          todayRecommendationsRemoteDataSourceProvider.overrideWithValue(
+            _FailingTodayRecommendationsDataSource(),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const TodayPage(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final recommendationCard = find.byKey(
+      const Key('today-recommendation-card'),
+    );
+    await tester.scrollUntilVisible(recommendationCard, 240);
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.todayRecommendationErrorTitle), findsOneWidget);
+    expect(find.text(l10n.todayRecommendationErrorDescription), findsOneWidget);
+    expect(find.text(l10n.todayRetryAction), findsOneWidget);
+  });
+
   testWidgets('Pull-to-refresh renders RefreshIndicator', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
@@ -507,4 +565,17 @@ void main() {
     expect(medicationCard, findsOneWidget);
     expect(find.text(l10n.todayMedicationCardTitle), findsOneWidget);
   });
+}
+
+class _FailingTodayRecommendationsDataSource
+    extends TodayRecommendationsRemoteDataSource {
+  _FailingTodayRecommendationsDataSource()
+    : super(api: TodayAnalysisApi(Dio(BaseOptions())));
+
+  @override
+  Future<List<TodayRecommendation>> fetchRecommendations({
+    List<String>? excludeIds,
+  }) async {
+    throw Exception('test error');
+  }
 }

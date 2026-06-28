@@ -67,15 +67,23 @@ class MedicineReminderDetailPage extends ConsumerWidget {
         detail.when(
           data: (data) => _ReminderDetailBody(data: data),
           loading: () => const ReminderLoading(),
-          error: (_, __) => AppStateErrorView(
-            title: l10n.medicineReminderNotFoundTitle,
-            description: '',
-            icon: Icons.error_outline_rounded,
-            actionLabel: l10n.todayRetryAction,
-            onAction: () => ref.invalidate(
-              medicineReminderDetailProvider(currentMedicineId),
-            ),
-          ),
+          error: (error, _) {
+            final isNotFound =
+                error is StateError && error.message == 'Medicine not found.';
+            return AppStateErrorView(
+              title: isNotFound
+                  ? l10n.medicineReminderNotFoundTitle
+                  : l10n.medicineReminderGenericErrorTitle,
+              description: isNotFound
+                  ? l10n.medicineReminderNotFoundDescription
+                  : l10n.medicineReminderGenericErrorDescription,
+              icon: Icons.error_outline_rounded,
+              actionLabel: l10n.todayRetryAction,
+              onAction: () => ref.invalidate(
+                medicineReminderDetailProvider(currentMedicineId),
+              ),
+            );
+          },
         ),
       ],
     );

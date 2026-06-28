@@ -1101,6 +1101,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineReminderNotFoundTitle => '提醒暂时没有加载出来';
 
   @override
+  String get medicineReminderNotFoundDescription => '该提醒已被删除或不存在';
+
+  @override
+  String get medicineReminderGenericErrorTitle => '加载失败';
+
+  @override
+  String get medicineReminderGenericErrorDescription => '加载提醒详情失败，请检查网络后重试';
+
+  @override
   String get medicineReminderQuickTitle => '提醒设置';
 
   @override
@@ -2950,6 +2959,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayRecommendationSectionTitle => '主动建议';
+
+  @override
+  String get todayRecommendationErrorTitle => '推荐加载失败';
+
+  @override
+  String get todayRecommendationErrorDescription => '请检查网络后重试';
 
   @override
   String get todayViewMoreAction => '查看更多';

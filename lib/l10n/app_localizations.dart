@@ -2150,6 +2150,24 @@ abstract class AppLocalizations {
   /// **'提醒暂时没有加载出来'**
   String get medicineReminderNotFoundTitle;
 
+  /// No description provided for @medicineReminderNotFoundDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'该提醒已被删除或不存在'**
+  String get medicineReminderNotFoundDescription;
+
+  /// No description provided for @medicineReminderGenericErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'加载失败'**
+  String get medicineReminderGenericErrorTitle;
+
+  /// No description provided for @medicineReminderGenericErrorDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'加载提醒详情失败，请检查网络后重试'**
+  String get medicineReminderGenericErrorDescription;
+
   /// No description provided for @medicineReminderQuickTitle.
   ///
   /// In zh, this message translates to:
@@ -5725,6 +5743,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'主动建议'**
   String get todayRecommendationSectionTitle;
+
+  /// No description provided for @todayRecommendationErrorTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'推荐加载失败'**
+  String get todayRecommendationErrorTitle;
+
+  /// No description provided for @todayRecommendationErrorDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'请检查网络后重试'**
+  String get todayRecommendationErrorDescription;
 
   /// No description provided for @todayViewMoreAction.
   ///
