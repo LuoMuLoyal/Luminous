@@ -7,9 +7,10 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_mobile_dashboard_view.dart';
+import 'package:luminous/features/medicine/presentation/widgets/medicine_skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_view.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
@@ -50,18 +51,8 @@ class MedicinePage extends ConsumerWidget {
                 ),
               ),
         loading: () => isDesktop
-            ? const _MedicineDesktopShell(
-                child: MedicineMobileDashboardView(
-                  workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
-                  isLoading: true,
-                ),
-              )
-            : const _MedicineMobileShell(
-                child: MedicineMobileDashboardView(
-                  workspace: MockMedicineWorkspaceRepository.loadingWorkspace,
-                  isLoading: true,
-                ),
-              ),
+            ? const _MedicineDesktopShell(child: MedicineSkeletonView())
+            : const _MedicineMobileShell(child: MedicineSkeletonView()),
         error: (_, __) => DecoratedBox(
           decoration: BoxDecoration(color: surface.canvasSoft),
           child: SafeArea(

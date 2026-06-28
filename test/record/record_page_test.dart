@@ -30,6 +30,7 @@ import 'package:luminous/features/record/presentation/providers/record_dashboard
 import 'package:luminous/features/record/presentation/providers/record_time_provider.dart';
 import 'package:luminous/features/record/presentation/pages/record_page.dart';
 import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
+import 'package:luminous/features/record/presentation/widgets/record_skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -442,48 +443,46 @@ void main() {
     },
   );
 
-  testWidgets(
-    'Record loading keeps static sections visible with skeleton slots',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(390, 844);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      final pending = Completer<RecordDashboard>();
+  testWidgets('Record loading shows dedicated skeleton placeholder', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final pending = Completer<RecordDashboard>();
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-            recordDashboardProvider.overrideWith((ref) => pending.future),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          recordDashboardProvider.overrideWith((ref) => pending.future),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
           ],
-          child: MaterialApp(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const RecordPage(),
-          ),
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const RecordPage(),
         ),
-      );
-      await tester.pump();
+      ),
+    );
+    await tester.pump();
 
-      expect(find.text(l10n.tabRecord), findsOneWidget);
-      expect(find.text(l10n.recordQuickSectionTitle), findsOneWidget);
-      expect(find.byKey(const Key('record-ai-input')), findsOneWidget);
-      expect(find.byKey(const Key('record-timeline')), findsOneWidget);
-      expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
-    },
-  );
+    expect(find.text(l10n.tabRecord), findsOneWidget);
+    expect(find.byType(RecordSkeletonView), findsOneWidget);
+    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(find.text(l10n.recordQuickSectionTitle), findsNothing);
+  });
 
   testWidgets('Record edit page pre-fills fields from existing record', (
     tester,

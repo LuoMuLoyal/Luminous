@@ -17,13 +17,6 @@ class MockRecordRepository implements RecordRepository {
     return dashboardFor(selectedDate, filterType: filterType);
   }
 
-  static RecordDashboard loadingDashboard(
-    DateTime selectedDate, {
-    RecordEntryType? filterType,
-  }) {
-    return dashboardFor(selectedDate, filterType: filterType);
-  }
-
   static RecordDashboard dashboardFor(
     DateTime selectedDate, {
     RecordEntryType? filterType,

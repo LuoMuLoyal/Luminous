@@ -10,7 +10,6 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/providers/report_ai_summary_provider.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
@@ -18,6 +17,7 @@ import 'package:luminous/features/record/presentation/providers/record_dashboard
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/utils/report_ui_formatters.dart';
 import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
+import 'package:luminous/features/report/presentation/widgets/report_skeleton_view.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';
@@ -193,16 +193,8 @@ class ReportPage extends ConsumerWidget {
         dashboard.startDate,
         dashboard.endDate,
       ),
-      loading: () => reportDashboardDateRangeLabel(
-        context,
-        MockReportRepository.previewDashboard.startDate,
-        MockReportRepository.previewDashboard.endDate,
-      ),
-      error: (_, __) => reportDashboardDateRangeLabel(
-        context,
-        MockReportRepository.previewDashboard.startDate,
-        MockReportRepository.previewDashboard.endDate,
-      ),
+      loading: () => '--',
+      error: (_, __) => '--',
     );
 
     return ShellDeferredContent(
@@ -366,94 +358,38 @@ class ReportPage extends ConsumerWidget {
               ),
         loading: () => isDesktop
             ? _ReportDesktopShell(
-                isGenerating: aiSummaryState.isLoading,
-                isSyncing: canAccessProtectedData,
-                onGenerate: () => ref.invalidate(
-                  reportDashboardProvider(selectedDashboardQuery),
-                ),
-                onSync: () => ref.invalidate(
-                  reportDashboardProvider(selectedDashboardQuery),
-                ),
-                onRefresh: () => _refreshDashboard(ref),
+                isGenerating: false,
+                isSyncing: false,
+                onGenerate: () {},
+                onSync: () {},
+                onRefresh: () async {},
                 topBar: ReportTopBar(
                   dateRangeLabel: dateRangeLabel,
                   selectedQuery: selectedDashboardQuery,
-                  onQueryChanged: (query) {
-                    ref
-                        .read(reportDashboardSelectedQueryProvider.notifier)
-                        .setQuery(query);
-                  },
-                  onGenerate: () => ref.invalidate(
-                    reportDashboardProvider(selectedDashboardQuery),
-                  ),
-                  onSync: () => ref.invalidate(
-                    reportDashboardProvider(selectedDashboardQuery),
-                  ),
-                  isGenerating: aiSummaryState.isLoading,
-                  isSyncing: canAccessProtectedData,
+                  onQueryChanged: (_) {},
+                  onGenerate: () {},
+                  onSync: () {},
+                  isGenerating: false,
+                  isSyncing: false,
                 ),
-                child: ReportDashboardView(
-                  dashboard: MockReportRepository.previewDashboard,
-                  canAccessProtectedData: canAccessProtectedData,
-                  aiSummariesEnabled: aiSummariesEnabled,
-                  isLoading: true,
-                  dashboardQuery: selectedDashboardQuery,
-                  onDashboardQueryChanged: (query) {
-                    ref
-                        .read(reportDashboardSelectedQueryProvider.notifier)
-                        .setQuery(query);
-                  },
-                  aiSummaryRange: selectedAiSummaryRange,
-                  latestExportRequest: latestExportRequest,
-                  exportRequestInFlight: exportRequestInFlight,
-                  onMetricSelected: (kind) =>
-                      _openRecordFilter(context, ref, kind),
-                ),
+                child: const ReportSkeletonView(),
               )
             : _ReportMobileShell(
-                isGenerating: aiSummaryState.isLoading,
-                isSyncing: canAccessProtectedData,
-                onGenerate: () => ref.invalidate(
-                  reportDashboardProvider(selectedDashboardQuery),
-                ),
-                onSync: () => ref.invalidate(
-                  reportDashboardProvider(selectedDashboardQuery),
-                ),
-                onRefresh: () => _refreshDashboard(ref),
+                isGenerating: false,
+                isSyncing: false,
+                onGenerate: () {},
+                onSync: () {},
+                onRefresh: () async {},
                 topBar: ReportTopBar(
                   dateRangeLabel: dateRangeLabel,
                   selectedQuery: selectedDashboardQuery,
-                  onQueryChanged: (query) {
-                    ref
-                        .read(reportDashboardSelectedQueryProvider.notifier)
-                        .setQuery(query);
-                  },
-                  onGenerate: () => ref.invalidate(
-                    reportDashboardProvider(selectedDashboardQuery),
-                  ),
-                  onSync: () => ref.invalidate(
-                    reportDashboardProvider(selectedDashboardQuery),
-                  ),
-                  isGenerating: aiSummaryState.isLoading,
-                  isSyncing: canAccessProtectedData,
+                  onQueryChanged: (_) {},
+                  onGenerate: () {},
+                  onSync: () {},
+                  isGenerating: false,
+                  isSyncing: false,
                 ),
-                child: ReportDashboardView(
-                  dashboard: MockReportRepository.previewDashboard,
-                  canAccessProtectedData: canAccessProtectedData,
-                  aiSummariesEnabled: aiSummariesEnabled,
-                  isLoading: true,
-                  dashboardQuery: selectedDashboardQuery,
-                  onDashboardQueryChanged: (query) {
-                    ref
-                        .read(reportDashboardSelectedQueryProvider.notifier)
-                        .setQuery(query);
-                  },
-                  aiSummaryRange: selectedAiSummaryRange,
-                  latestExportRequest: latestExportRequest,
-                  exportRequestInFlight: exportRequestInFlight,
-                  onMetricSelected: (kind) =>
-                      _openRecordFilter(context, ref, kind),
-                ),
+                child: const ReportSkeletonView(),
               ),
         error: (error, _) {
           final l10n = AppLocalizations.of(context)!;

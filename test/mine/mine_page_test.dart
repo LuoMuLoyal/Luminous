@@ -15,6 +15,7 @@ import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
+import 'package:luminous/features/mine/presentation/widgets/mine_skeleton_view.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
@@ -112,51 +113,41 @@ void main() {
     expect(find.text(l10n.mineProfileMeta('--', '--')), findsNothing);
   });
 
-  testWidgets(
-    'Mine loading keeps static sections visible with skeleton slots',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(393, 852);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      final pending = Completer<MineDashboard>();
+  testWidgets('Mine loading shows dedicated skeleton placeholder', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final pending = Completer<MineDashboard>();
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authSessionProvider.overrideWith(
-              () => _EmailSignedInAuthSessionNotifier(),
-            ),
-            mineDashboardProvider.overrideWith((ref) => pending.future),
-            notificationUnreadCountProvider.overrideWith((ref) => 0),
-          ],
-          child: _materialApp(const MinePage()),
-        ),
-      );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _EmailSignedInAuthSessionNotifier(),
+          ),
+          mineDashboardProvider.overrideWith((ref) => pending.future),
+          notificationUnreadCountProvider.overrideWith((ref) => 0),
+        ],
+        child: _materialApp(const MinePage()),
+      ),
+    );
 
-      await tester.pump();
+    await tester.pump();
 
-      expect(find.text(l10n.tabMine), findsOneWidget);
-      expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(find.text(l10n.tabMine), findsOneWidget);
+    expect(find.byType(MineSkeletonView), findsOneWidget);
+    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
 
-      final scrollable = find.byType(Scrollable).first;
-      for (final finder in [
-        find.text(l10n.mineCampusSectionTitle),
-        find.byKey(const Key('mine-privacy-notice')),
-      ]) {
-        await tester.scrollUntilVisible(finder, 260, scrollable: scrollable);
-        await tester.pump();
-        expect(finder, findsOneWidget);
-      }
-
-      expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
-      expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
-      expect(find.byKey(const Key('mine-settings-section')), findsNothing);
-    },
-  );
+    expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
+    expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
+    expect(find.byKey(const Key('mine-settings-section')), findsNothing);
+  });
 
   testWidgets('Mine settings action routes to settings page', (tester) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));

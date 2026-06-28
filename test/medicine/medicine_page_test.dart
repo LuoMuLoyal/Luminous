@@ -17,6 +17,7 @@ import 'package:luminous/features/medicine/domain/entities/medicine_workspace.da
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_risk_check_page.dart';
+import 'package:luminous/features/medicine/presentation/widgets/medicine_skeleton_view.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
@@ -105,56 +106,47 @@ void main() {
     expect(find.text(l10n.medicineSafetyTipsTitle), findsOneWidget);
   });
 
-  testWidgets(
-    'Medicine loading keeps static chrome visible with skeleton slots',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(390, 844);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      final pending = Completer<MedicineWorkspace>();
+  testWidgets('Medicine loading shows dedicated skeleton placeholder', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final pending = Completer<MedicineWorkspace>();
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            medicineWorkspaceProvider.overrideWith((ref) => pending.future),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          medicineWorkspaceProvider.overrideWith((ref) => pending.future),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
           ],
-          child: MaterialApp(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const MedicinePage(),
-          ),
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const MedicinePage(),
         ),
-      );
+      ),
+    );
 
-      await tester.pump();
+    await tester.pump();
 
-      expect(find.text(l10n.tabMedicine), findsOneWidget);
-      expect(find.text(l10n.medicineHomeSearchHint), findsOneWidget);
-      expect(find.text(l10n.medicineDrugboxTitle), findsOneWidget);
-      expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
-
-      final quickOperationTitle = find.text(l10n.medicineQuickOperationTitle);
-      await tester.scrollUntilVisible(
-        quickOperationTitle,
-        260,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await tester.pump();
-      expect(quickOperationTitle, findsOneWidget);
-    },
-  );
+    expect(find.text(l10n.tabMedicine), findsOneWidget);
+    expect(find.text(l10n.medicineHomeSearchHint), findsOneWidget);
+    expect(find.byType(MedicineSkeletonView), findsOneWidget);
+    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(find.text(l10n.medicineDrugboxTitle), findsNothing);
+  });
 
   testWidgets('Medicine completed doses hide today dose action buttons', (
     tester,

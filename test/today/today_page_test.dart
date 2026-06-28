@@ -13,6 +13,7 @@ import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/today_dashboard_view.dart';
+import 'package:luminous/features/today/presentation/widgets/today_skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'today_test_helpers.dart';
@@ -74,54 +75,46 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
   });
 
-  testWidgets(
-    'Today loading keeps static sections visible with skeleton slots',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(390, 844);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      final pending = Completer<TodayDashboard>();
+  testWidgets('Today loading shows dedicated skeleton placeholder', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final pending = Completer<TodayDashboard>();
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            todayDashboardProvider.overrideWith((ref) => pending.future),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          todayDashboardProvider.overrideWith((ref) => pending.future),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
           ],
-          child: MaterialApp(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const TodayPage(),
-          ),
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const TodayPage(),
         ),
-      );
+      ),
+    );
 
-      await tester.pump();
+    await tester.pump();
 
-      expect(find.text(l10n.todayHeroTitle), findsOneWidget);
-      expect(find.text(l10n.todayHealthSummaryCardTitle), findsOneWidget);
-      expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
-      expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
-
-      final todoCard = find.byKey(const Key('today-todo-card'));
-      await tester.scrollUntilVisible(todoCard, 240);
-      await tester.pump(const Duration(milliseconds: 200));
-      expect(todoCard, findsOneWidget);
-      expect(find.text(l10n.todayTodoSectionTitle), findsOneWidget);
-      expect(find.text(l10n.todayTodoCustomTitle), findsOneWidget);
-    },
-  );
+    expect(find.byType(TodaySkeletonView), findsOneWidget);
+    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(find.text(l10n.todayHeroTitle), findsNothing);
+    expect(find.text(l10n.todayHealthSummaryCardTitle), findsNothing);
+  });
 
   testWidgets('Today page shows zero water and medicines without crashing', (
     tester,

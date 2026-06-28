@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' hide DoseLogStatus;
+import 'package:luminous/core/network/lucent_network_providers.dart';
 
 enum DoseLogStatus { taken, skipped, missed, planned }
 
@@ -119,3 +121,11 @@ class DoseLogRemoteDataSource {
     return null;
   }
 }
+
+final doseLogRemoteDataSourceProvider = Provider<DoseLogRemoteDataSource>((
+  ref,
+) {
+  final api = ref.watch(lucentMedicineDoseLogsApiProvider);
+  final dio = ref.watch(lucentDioClientProvider).dio;
+  return DoseLogRemoteDataSource(api: api, dio: dio);
+});
