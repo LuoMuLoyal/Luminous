@@ -17,7 +17,7 @@ import 'package:luminous/features/medicine/presentation/widgets/reminder/medicin
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_log_panels.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderDetailPage extends ConsumerWidget {
@@ -37,7 +37,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
       return PageScaffoldShell(
         title: l10n.medicineReminderDetailTitle,
         centerTitle: true,
-        leading: const SettingsBackButton(),
+        leading: const AppBackButton(),
         children: [
           session.isLoading
               ? const ReminderLoading()
@@ -54,7 +54,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
     return PageScaffoldShell(
       title: l10n.medicineReminderDetailTitle,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       actions: [
         TextButton(
           onPressed: () => context.push(

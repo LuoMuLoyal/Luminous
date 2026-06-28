@@ -12,7 +12,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AdvancedSettingsPage extends ConsumerWidget {
@@ -28,7 +28,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
     return PageScaffoldShell(
       title: l10n.mineSettingsAdvancedTitle,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       children: [
         AppSectionSurface(
           typography: typography,

@@ -2132,6 +2132,18 @@ abstract class AppLocalizations {
   /// **'新建提醒'**
   String get medicineReminderNewTitle;
 
+  /// No description provided for @medicineReminderSelectMedicineHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先选择药品'**
+  String get medicineReminderSelectMedicineHint;
+
+  /// No description provided for @medicineReminderSelectMedicineAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'去选药'**
+  String get medicineReminderSelectMedicineAction;
+
   /// No description provided for @medicineReminderEditTitle.
   ///
   /// In zh, this message translates to:
@@ -5761,6 +5773,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'查看更多'**
   String get todayViewMoreAction;
+
+  /// No description provided for @todayRecommendationRefreshAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'刷新'**
+  String get todayRecommendationRefreshAction;
 
   /// No description provided for @todayRecommendationMedicineSafetyTitle.
   ///

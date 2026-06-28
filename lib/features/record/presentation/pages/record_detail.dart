@@ -17,7 +17,7 @@ import 'package:luminous/features/record/presentation/providers/record_dashboard
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -35,7 +35,7 @@ class RecordDetailPage extends ConsumerWidget {
       return PageScaffoldShell(
         title: l10n.recordDetailTitle,
         centerTitle: true,
-        leading: const SettingsBackButton(),
+        leading: const AppBackButton(),
         children: [
           session.isLoading
               ? const _RecordDetailLoading()
@@ -52,7 +52,7 @@ class RecordDetailPage extends ConsumerWidget {
     return PageScaffoldShell(
       title: l10n.recordDetailTitle,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       actions: [
         IconButton(
           tooltip: l10n.recordEditAction,

@@ -11,7 +11,7 @@ import 'package:luminous/features/health_context/data/providers/health_context_d
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ProfileEditPage extends ConsumerStatefulWidget {
@@ -62,7 +62,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       return PageScaffoldShell(
         title: l10n.mineEditProfileTitle,
         centerTitle: true,
-        leading: const SettingsBackButton(),
+        leading: const AppBackButton(),
         children: [
           session.isLoading
               ? const _MineEditFormLoading()
@@ -86,7 +86,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
     return PageScaffoldShell(
       title: l10n.mineEditProfileTitle,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       children: [
         snapshot.when(
           data: (ctx) {

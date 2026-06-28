@@ -1092,6 +1092,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineReminderNewTitle => '新建提醒';
 
   @override
+  String get medicineReminderSelectMedicineHint => '请先选择药品';
+
+  @override
+  String get medicineReminderSelectMedicineAction => '去选药';
+
+  @override
   String get medicineReminderEditTitle => '编辑提醒';
 
   @override
@@ -2968,6 +2974,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get todayViewMoreAction => '查看更多';
+
+  @override
+  String get todayRecommendationRefreshAction => '刷新';
 
   @override
   String get todayRecommendationMedicineSafetyTitle => '用药安全小贴士';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
@@ -71,7 +72,7 @@ class TodayEmptyView extends StatelessWidget {
           description: l10n.todayEmptyDescription,
           icon: Icons.medical_information_outlined,
           actionLabel: l10n.todayEmptyAction,
-          onAction: () {},
+          onAction: () => context.push('/record/create'),
           tone: AppStateTone.success,
         ),
       ),

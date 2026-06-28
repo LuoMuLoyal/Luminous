@@ -139,6 +139,29 @@ void main() {
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
   });
 
+  testWidgets('Medicine reminder create page prompts to select medicine', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      _testApp(
+        child: const MedicineReminderEditPage(),
+        reminderDataSource: _FakeReminderDataSource([]),
+        doseLogDataSource: _FakeDoseLogDataSource([]),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.medicineReminderSelectMedicineHint), findsOneWidget);
+    expect(
+      find.text(l10n.medicineReminderSelectMedicineAction),
+      findsOneWidget,
+    );
+  });
+
   test(
     'Medicine reminder form syncs times through update/create/delete',
     () async {
@@ -223,6 +246,10 @@ Widget _testApp({
       routerConfig: GoRouter(
         routes: [
           GoRoute(path: '/', builder: (context, state) => child),
+          GoRoute(
+            path: '/medicine/reminders/new',
+            builder: (context, state) => const MedicineReminderEditPage(),
+          ),
           GoRoute(
             path: '/medicine/reminders/:medicineId/edit',
             builder: (context, state) => MedicineReminderEditPage(

@@ -10,7 +10,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class CurrentMedicineEditPage extends ConsumerStatefulWidget {
@@ -109,7 +109,7 @@ class _CurrentMedicineEditPageState
             ? l10n.mineEditMedicineNewTitle
             : l10n.mineEditMedicineTitle,
         centerTitle: true,
-        leading: const SettingsBackButton(),
+        leading: const AppBackButton(),
         children: [
           session.isLoading
               ? const _MineEditFormLoading()
@@ -128,7 +128,7 @@ class _CurrentMedicineEditPageState
       return PageScaffoldShell(
         title: l10n.mineEditMedicineTitle,
         centerTitle: true,
-        leading: const SettingsBackButton(),
+        leading: const AppBackButton(),
         children: [
           AppStateErrorView(
             title: l10n.mineErrorDescription,
@@ -145,7 +145,7 @@ class _CurrentMedicineEditPageState
       return PageScaffoldShell(
         title: l10n.mineEditMedicineTitle,
         centerTitle: true,
-        leading: const SettingsBackButton(),
+        leading: const AppBackButton(),
         children: const [_MineEditFormLoading()],
       );
     }
@@ -153,7 +153,7 @@ class _CurrentMedicineEditPageState
     return PageScaffoldShell(
       title: isNew ? l10n.mineEditMedicineNewTitle : l10n.mineEditMedicineTitle,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       children: [
         Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.md),

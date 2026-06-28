@@ -20,7 +20,7 @@ import 'package:luminous/features/record/presentation/widgets/daily_record_image
 import 'package:luminous/features/record/presentation/widgets/record_occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -88,7 +88,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
       return PageScaffoldShell(
         title: l10n.recordAddAction,
         centerTitle: true,
-        leading: const SettingsBackButton(),
+        leading: const AppBackButton(),
         children: [
           session.isLoading
               ? const _RecordFormLoading()
@@ -105,7 +105,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     return PageScaffoldShell(
       title: l10n.recordAddAction,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       children: [
         Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.md),

@@ -3,7 +3,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_settings_switch_row.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 
 /// A reusable settings page template with a master toggle at the top and a
 /// list of child settings below.
@@ -36,7 +36,7 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
     return PageScaffoldShell(
       title: title,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       children: [
         AppSettingsSwitchRow(
           title: masterTitle,

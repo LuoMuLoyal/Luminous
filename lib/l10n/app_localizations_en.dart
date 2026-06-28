@@ -1180,6 +1180,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineReminderNewTitle => 'New reminder';
 
   @override
+  String get medicineReminderSelectMedicineHint =>
+      'Please select a medicine first';
+
+  @override
+  String get medicineReminderSelectMedicineAction => 'Select medicine';
+
+  @override
   String get medicineReminderEditTitle => 'Edit reminder';
 
   @override
@@ -3179,6 +3186,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayViewMoreAction => 'View more';
+
+  @override
+  String get todayRecommendationRefreshAction => 'Refresh';
 
   @override
   String get todayRecommendationMedicineSafetyTitle => 'Medication safety tips';

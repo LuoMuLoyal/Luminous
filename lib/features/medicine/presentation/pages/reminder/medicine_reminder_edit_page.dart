@@ -2,7 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/core/widgets/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
@@ -15,7 +17,7 @@ import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_
 import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_form_body.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_loading.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_components.dart';
+import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderEditPage extends ConsumerStatefulWidget {
@@ -86,7 +88,7 @@ class _MedicineReminderEditPageState
             ? l10n.medicineReminderEditTitle
             : l10n.medicineReminderNewTitle,
         centerTitle: true,
-        leading: const SettingsBackButton(),
+        leading: const AppBackButton(),
         children: [
           session.isLoading
               ? const ReminderLoading()
@@ -115,7 +117,7 @@ class _MedicineReminderEditPageState
     return PageScaffoldShell(
       title: title,
       centerTitle: true,
-      leading: const SettingsBackButton(),
+      leading: const AppBackButton(),
       actions: [
         TextButton(
           onPressed: formState.isSaving || isLoading
@@ -138,6 +140,10 @@ class _MedicineReminderEditPageState
           )
         else if (isLoading)
           const ReminderLoading()
+        else if (!_isEdit && _selectedMedicineId == null)
+          _MedicineSelectorPrompt(
+            onSelect: () => context.push('/medicine/search'),
+          )
         else
           Builder(
             builder: (context) {
@@ -216,6 +222,14 @@ class _MedicineReminderEditPageState
     List<MedicineReminderItem> reminders,
   ) {
     if (_prefilled) return;
+
+    // When creating a new reminder without a specific medicine context,
+    // do not auto-select the first medicine. Instead, show a prompt so the
+    // user explicitly chooses a medicine first.
+    if (widget.currentMedicineId == null && widget.initialMedicineId == null) {
+      _prefilled = true;
+      return;
+    }
 
     final activeMedicines = snapshot.currentMedicines
         .where((item) => item.isCurrent)
@@ -398,5 +412,36 @@ class _MedicineReminderEditPageState
     final confirmed = await showMedicineReminderDeleteDialog(context);
     if (confirmed != true) return;
     ref.read(medicineReminderFormProvider.notifier).deleteGroup(existing);
+  }
+}
+
+class _MedicineSelectorPrompt extends StatelessWidget {
+  const _MedicineSelectorPrompt({required this.onSelect});
+
+  final VoidCallback onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+
+    return AppSectionSurface(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.medicineReminderSelectMedicineHint,
+            style: typography.bodyMd,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          FilledButton(
+            onPressed: onSelect,
+            child: Text(l10n.medicineReminderSelectMedicineAction),
+          ),
+        ],
+      ),
+    );
   }
 }
