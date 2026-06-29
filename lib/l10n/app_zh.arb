@@ -1572,6 +1572,8 @@
   "mineExportStatusFailed": "失败",
   "mineExportStatusLinkMissing": "链接待刷新",
   "mineExportStatusUnavailable": "暂不可用",
+  "mineExportDownloadButton": "下载报告",
+  "mineExportRegenerateButton": "重新生成",
   "mineExportRequested": "导出请求已提交",
   "medicineRiskCheckRedFlagBannerTitle": "红旗警告",
   "medicineRiskCheckRedFlagSevereAllergy": "严重过敏风险：{drug} 含有 {allergen}，请勿使用并立即咨询医生。",

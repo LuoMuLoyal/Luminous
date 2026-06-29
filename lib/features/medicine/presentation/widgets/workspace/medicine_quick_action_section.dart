@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/workspace/medicine_workspace_helpers.dart';
+import 'package:luminous/features/scan/presentation/pages/medicine_box_scan_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 // Deferred by Product_Vision MVP: this quick-action section is kept because the scan/OCR/barcode/prescription capability is useful, but it is not surfaced in the current MVP UI.
@@ -70,11 +73,22 @@ class _QuickActionTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => showPlannedAction(
-          context,
-          medicineCopy(l10n, action.titleKey),
-          quickActionResult(action.titleKey, l10n),
-        ),
+        onTap: () {
+          // Navigate to scan based on action type
+          if (action.titleKey == MedicineCopyKey.quickActionCameraTitle ||
+              action.titleKey == MedicineCopyKey.quickActionPrescriptionTitle) {
+            unawaited(showMedicineBoxScanSheet(context));
+          } else if (action.titleKey ==
+              MedicineCopyKey.quickActionBarcodeTitle) {
+            context.push('/scan/barcode');
+          } else {
+            showPlannedAction(
+              context,
+              medicineCopy(l10n, action.titleKey),
+              quickActionResult(action.titleKey, l10n),
+            );
+          }
+        },
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),

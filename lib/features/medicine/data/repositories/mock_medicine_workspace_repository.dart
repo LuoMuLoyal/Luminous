@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
+import 'dart:io';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
@@ -72,7 +73,8 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
         accent: AppColorTokens.cyanDeep,
       ),
-      if (kDebugMode) ...deferredScanQuickActions,
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
+        ...deferredScanQuickActions,
     ],
     plan: MedicinePlanSurface(
       items: <MedicinePlanItem>[

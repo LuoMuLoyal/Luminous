@@ -87,3 +87,7 @@ final lucentAssistantApiProvider = Provider<AssistantApi>((ref) {
 final lucentNotificationsApiProvider = Provider<NotificationsApi>((ref) {
   return ref.watch(lucentDioClientProvider).notificationsApi;
 });
+
+final lucentFilesApiProvider = Provider<FilesApi>((ref) {
+  return ref.watch(lucentDioClientProvider).filesApi;
+});
