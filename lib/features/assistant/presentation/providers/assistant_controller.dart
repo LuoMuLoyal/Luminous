@@ -8,7 +8,7 @@ import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent_assistant_repository.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';

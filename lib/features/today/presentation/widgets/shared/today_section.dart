@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/app_text_action.dart';
-import 'package:luminous/core/widgets/app_section_header.dart';
+import 'package:luminous/core/widgets/common/app_text_action.dart';
+import 'package:luminous/core/widgets/common/app_section_header.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 class TodaySection extends StatelessWidget {

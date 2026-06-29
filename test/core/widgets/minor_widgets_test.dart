@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/widgets/app_icon_badge.dart';
-import 'package:luminous/core/widgets/app_section_header.dart';
-import 'package:luminous/core/widgets/app_text_action.dart';
+import 'package:luminous/core/widgets/common/app_icon_badge.dart';
+import 'package:luminous/core/widgets/common/app_section_header.dart';
+import 'package:luminous/core/widgets/common/app_text_action.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 Widget _appShell(Widget child) {

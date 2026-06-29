@@ -8,7 +8,7 @@ import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';

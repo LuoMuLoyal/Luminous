@@ -15,7 +15,7 @@ import 'package:luminous/core/network/lucent_session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
@@ -61,7 +61,7 @@ export 'package:integration_test/integration_test.dart';
 export 'package:luminous/app/router.dart' show router;
 export 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart'
     show AuthVerificationScene;
-export 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart'
+export 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart'
     show authSessionProvider;
 export 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 export 'package:luminous/features/record/domain/entities/daily_record_inputs.dart'

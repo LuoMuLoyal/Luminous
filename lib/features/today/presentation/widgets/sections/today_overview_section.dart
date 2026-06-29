@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/widgets/app_section_surface.dart';
-import 'package:luminous/core/widgets/app_text_action.dart';
-import 'package:luminous/core/widgets/app_section_header.dart';
+import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:luminous/core/widgets/common/app_text_action.dart';
+import 'package:luminous/core/widgets/common/app_section_header.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';

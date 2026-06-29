@@ -4,14 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_section_surface.dart';
-import 'package:luminous/core/widgets/app_settings_navigation_row.dart';
-import 'package:luminous/core/widgets/app_settings_section.dart';
-import 'package:luminous/core/widgets/app_settings_switch_row.dart';
-import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
+import 'package:luminous/core/widgets/settings/app_settings_section.dart';
+import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
-import 'package:luminous/core/widgets/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class NotificationSettingsPage extends ConsumerWidget {

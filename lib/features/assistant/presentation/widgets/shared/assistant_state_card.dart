@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 
 class AssistantStateCard extends StatelessWidget {
   const AssistantStateCard({

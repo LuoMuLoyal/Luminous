@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/datasources/health_context_remote_data_source.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context_mapper.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent_health_context_repository.dart';

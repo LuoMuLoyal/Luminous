@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/app_section_surface.dart';
+import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';

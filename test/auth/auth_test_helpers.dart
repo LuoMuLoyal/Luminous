@@ -5,7 +5,7 @@ import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TestAuthApp extends StatelessWidget {

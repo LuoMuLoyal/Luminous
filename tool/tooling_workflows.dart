@@ -54,12 +54,18 @@ Future<void> runPreCommitChecks(ToolContext context) async {
 
   final stagedDartFiles = await _listStagedDartFiles(context);
   if (stagedDartFiles.isNotEmpty) {
-    await runLoggedCommand(
-      'dart',
-      ['format', ...stagedDartFiles],
-      workingDirectory: context.repoRoot,
-      stepName: 'dart format <staged dart files>',
-    );
+    // Batch files to avoid hitting Windows command-line length limits.
+    const batchSize = 40;
+    for (var i = 0; i < stagedDartFiles.length; i += batchSize) {
+      final batch = stagedDartFiles.skip(i).take(batchSize).toList();
+      await runLoggedCommand(
+        'dart',
+        ['format', ...batch],
+        workingDirectory: context.repoRoot,
+        stepName:
+            'dart format <staged dart files> (batch ${i ~/ batchSize + 1})',
+      );
+    }
     // Re-stage the formatted files so the commit includes the changes.
     final gitResult = await Process.run('git', [
       'add',

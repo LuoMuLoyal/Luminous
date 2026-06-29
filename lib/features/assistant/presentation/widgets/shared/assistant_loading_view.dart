@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 
 class AssistantLoadingView extends StatelessWidget {
   const AssistantLoadingView({super.key});

@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/widgets/app_back_button.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
@@ -15,8 +15,8 @@ import 'package:luminous/features/medicine/data/repositories/medicine_risk_check
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/features/search/presentation/providers/search_provider.dart';
-import 'package:luminous/features/search/presentation/widgets/medicine_add_precheck_dialog.dart';
-import 'package:luminous/features/search/presentation/widgets/search_view.dart';
+import 'package:luminous/features/search/presentation/widgets/shared/medicine_add_precheck_dialog.dart';
+import 'package:luminous/features/search/presentation/widgets/views/search_view.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

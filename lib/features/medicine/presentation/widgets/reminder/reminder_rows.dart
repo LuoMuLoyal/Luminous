@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/app_status_pill.dart';
-import 'package:luminous/core/widgets/app_icon_badge.dart';
+import 'package:luminous/core/widgets/common/app_status_pill.dart';
+import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';

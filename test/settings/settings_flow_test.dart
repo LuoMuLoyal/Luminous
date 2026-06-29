@@ -7,7 +7,7 @@ import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/app.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/settings/data/datasources/settings_profile_remote_data_source.dart';

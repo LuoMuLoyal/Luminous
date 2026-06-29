@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
-import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
@@ -16,7 +16,7 @@ import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_ri
 import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_red_flag.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_check_loading.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
-import 'package:luminous/core/widgets/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskCheckPage extends ConsumerWidget {
