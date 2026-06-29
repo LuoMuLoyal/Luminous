@@ -46,9 +46,9 @@ class AssistantHero extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.xs),
             Text(
               statusSummary,
-              style: assistantTypography(context).bodyMd.copyWith(
-                color: surface.body,
-              ),
+              style: assistantTypography(
+                context,
+              ).bodyMd.copyWith(color: surface.body),
             ),
             const SizedBox(height: AppSpacingTokens.md),
             Wrap(

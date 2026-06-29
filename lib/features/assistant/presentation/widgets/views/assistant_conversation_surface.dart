@@ -6,7 +6,7 @@ import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
-import 'package:luminous/features/assistant/presentation/widgets/assistant_message_bubble.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_message_bubble.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantConversationSurface extends StatelessWidget {

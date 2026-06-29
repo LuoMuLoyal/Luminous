@@ -4,7 +4,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
-import 'package:luminous/features/assistant/presentation/widgets/assistant_chips.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_chips.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantProposalCard extends StatelessWidget {
@@ -59,24 +59,21 @@ class AssistantProposalCard extends StatelessWidget {
                 ),
                 Text(
                   proposalStateText(l10n, proposal),
-                  style: assistantTypography(context).bodySm.copyWith(
-                    color: proposalStateColor(theme, proposal),
-                  ),
+                  style: assistantTypography(
+                    context,
+                  ).bodySm.copyWith(color: proposalStateColor(theme, proposal)),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacingTokens.xs),
-            Text(
-              proposal.summary,
-              style: assistantTypography(context).bodySm,
-            ),
+            Text(proposal.summary, style: assistantTypography(context).bodySm),
             if (proposal.reason case final reason?) ...[
               const SizedBox(height: AppSpacingTokens.xs),
               Text(
                 reason,
-                style: assistantTypography(context).bodySm.copyWith(
-                  color: surface.body,
-                ),
+                style: assistantTypography(
+                  context,
+                ).bodySm.copyWith(color: surface.body),
               ),
             ],
             if (proposal.previewFields.isNotEmpty) ...[
@@ -86,9 +83,7 @@ class AssistantProposalCard extends StatelessWidget {
                 runSpacing: AppSpacingTokens.xs,
                 children: [
                   for (final field in proposal.previewFields)
-                    AssistantToolChip(
-                      label: '${field.label}: ${field.value}',
-                    ),
+                    AssistantToolChip(label: '${field.label}: ${field.value}'),
                 ],
               ),
             ],
@@ -98,9 +93,9 @@ class AssistantProposalCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.sm),
               Text(
                 error,
-                style: assistantTypography(context).bodySm.copyWith(
-                  color: theme.colorScheme.error,
-                ),
+                style: assistantTypography(
+                  context,
+                ).bodySm.copyWith(color: theme.colorScheme.error),
               ),
             ],
             const SizedBox(height: AppSpacingTokens.sm),
@@ -118,9 +113,7 @@ class AssistantProposalCard extends StatelessWidget {
                           messageId: messageId,
                           proposalId: proposal.id,
                         ),
-                  child: Text(
-                    proposalConfirmLabel(l10n, proposal.type),
-                  ),
+                  child: Text(proposalConfirmLabel(l10n, proposal.type)),
                 ),
                 const SizedBox(width: AppSpacingTokens.sm),
                 TextButton(
@@ -162,16 +155,14 @@ class _ProposalMetaSection extends StatelessWidget {
       if (proposal.target.settingKeys.isNotEmpty)
         '${l10n.assistantProposalSettingKeysLabel}: ${proposal.target.settingKeys.join(', ')}',
       if (proposal.expiresAt case final expiresAt?)
-        '${l10n.assistantProposalExpiresAtLabel}: ${intl.DateFormat(
-          locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm',
-          locale,
-        ).format(expiresAt.toLocal())}',
+        '${l10n.assistantProposalExpiresAtLabel}: ${intl.DateFormat(locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm', locale).format(expiresAt.toLocal())}',
     ];
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color:
-            theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.65),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.65,
+        ),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
       ),
       child: Padding(
@@ -184,9 +175,9 @@ class _ProposalMetaSection extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 2),
                 child: Text(
                   row,
-                  style: assistantTypography(context).bodySm.copyWith(
-                    color: surface.body,
-                  ),
+                  style: assistantTypography(
+                    context,
+                  ).bodySm.copyWith(color: surface.body),
                 ),
               ),
             if (proposal.constraints.isNotEmpty) ...[
@@ -201,9 +192,9 @@ class _ProposalMetaSection extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 2),
                   child: Text(
                     '• $constraint',
-                    style: assistantTypography(context).bodySm.copyWith(
-                      color: surface.body,
-                    ),
+                    style: assistantTypography(
+                      context,
+                    ).bodySm.copyWith(color: surface.body),
                   ),
                 ),
             ],
@@ -211,9 +202,9 @@ class _ProposalMetaSection extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.xs),
               Text(
                 l10n.assistantProposalExpiredHint,
-                style: assistantTypography(context).bodySm.copyWith(
-                  color: theme.colorScheme.error,
-                ),
+                style: assistantTypography(
+                  context,
+                ).bodySm.copyWith(color: theme.colorScheme.error),
               ),
             ],
           ],

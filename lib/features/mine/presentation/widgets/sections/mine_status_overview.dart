@@ -5,7 +5,7 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_copy.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/mine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MineStatusOverview extends StatelessWidget {
