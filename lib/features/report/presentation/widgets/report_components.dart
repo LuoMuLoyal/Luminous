@@ -2,26 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 
-abstract final class ReportPalette {
-  static const Color ink = AppColorTokens.ink;
-  static const Color body = AppColorTokens.body;
-  static const Color mute = AppColorTokens.mute;
-  static const Color panel = AppColorTokens.canvas;
-  static const Color panelSoft = AppColorTokens.canvasSoft;
-  static const Color line = AppColorTokens.hairline;
-  static const Color blue = AppColorTokens.link;
-  static const Color blueSoft = AppColorTokens.linkSoft;
-  static const Color green = AppColorTokens.cyanDeep;
-  static const Color greenSoft = AppColorTokens.cyanSoft;
-  static const Color previewScore = AppColorTokens.health;
-  static const Color previewScoreSoft = AppColorTokens.healthSoft;
-  static const Color violet = AppColorTokens.violet;
-  static const Color violetSoft = AppColorTokens.violetSoft;
-  static const Color pink = AppColorTokens.highlightMagenta;
-  static const Color orange = AppColorTokens.warning;
-  static const Color orangeSoft = AppColorTokens.warningSoft;
-}
-
 class ReportMetricTrack extends StatelessWidget {
   const ReportMetricTrack({
     super.key,

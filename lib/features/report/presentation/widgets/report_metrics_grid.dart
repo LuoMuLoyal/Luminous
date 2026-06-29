@@ -1,3 +1,4 @@
+import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
@@ -8,7 +9,6 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -65,7 +65,7 @@ class ReportMetricsGrid extends StatelessWidget {
         ReportMetric(
           kind: ReportDataKind.general,
           icon: Icons.monitor_heart_rounded,
-          color: ReportPalette.previewScore,
+          color: AppColorTokens.health,
           value: _deriveOverallValue(),
           unit: _deriveOverallUnit(),
           status: dashboard.score.status,
@@ -156,7 +156,7 @@ class _MetricCard extends StatelessWidget {
     };
     final directionColor = switch (metric.direction) {
       ReportMetricDirection.down => Theme.of(context).colorScheme.error,
-      _ => ReportPalette.green,
+      _ => AppColorTokens.cyanDeep,
     };
 
     return Material(

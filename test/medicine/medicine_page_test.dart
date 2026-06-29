@@ -1,3 +1,4 @@
+import 'package:luminous/core/design/app_design.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';

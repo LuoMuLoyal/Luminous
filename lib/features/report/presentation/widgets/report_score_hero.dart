@@ -7,7 +7,6 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -31,7 +30,7 @@ class ReportScoreHero extends StatelessWidget {
 
     return AppSectionSurface(
       padding: const EdgeInsets.all(AppSpacingTokens.lg),
-      borderColor: ReportPalette.previewScore.withValues(alpha: 0.22),
+      borderColor: AppColorTokens.health.withValues(alpha: 0.22),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -71,7 +70,7 @@ class ReportScoreHero extends StatelessWidget {
                       child: Text(
                         score.value.toString(),
                         style: typography.displayXl.copyWith(
-                          color: ReportPalette.previewScore,
+                          color: AppColorTokens.health,
                           fontSize: AppResponsiveSizing.scaleByWidth(
                             context,
                             fraction: 0.128,
@@ -123,7 +122,7 @@ class ReportScoreHero extends StatelessWidget {
           const SizedBox(width: AppSpacingTokens.md),
           DecoratedBox(
             decoration: BoxDecoration(
-              color: ReportPalette.previewScoreSoft,
+              color: AppColorTokens.healthSoft,
               shape: BoxShape.circle,
             ),
             child: SizedBox.square(
@@ -135,7 +134,7 @@ class ReportScoreHero extends StatelessWidget {
               ),
               child: Icon(
                 Icons.fact_check_rounded,
-                color: ReportPalette.previewScore,
+                color: AppColorTokens.health,
                 size: AppResponsiveSizing.scaleByWidth(
                   context,
                   fraction: 0.16,

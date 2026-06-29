@@ -1,3 +1,4 @@
+import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +12,6 @@ import 'package:luminous/features/settings/presentation/providers/user_settings_
 import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/today_ai_analysis_provider.dart';
-import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -70,7 +70,7 @@ class TodayAiSummarySection extends ConsumerWidget {
               children: [
                 TodayGlyphTile(
                   icon: Icons.auto_awesome_rounded,
-                  color: TodayPalette.teal,
+                  color: AppColorTokens.cyanDeep,
                   size: AppSpacingTokens.x2l,
                   radius: AppRadiusTokens.md,
                   gradient: false,

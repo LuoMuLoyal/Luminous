@@ -8,7 +8,6 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
-import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -39,7 +38,7 @@ class TodayOverviewSection extends StatelessWidget {
             title: l10n.todayHealthSummaryCardTitle,
             leading: const Icon(
               Icons.check_circle_outline_rounded,
-              color: TodayPalette.teal,
+              color: AppColorTokens.cyanDeep,
               size: AppSpacingTokens.lg,
             ),
             compact: true,

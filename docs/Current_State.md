@@ -1,8 +1,15 @@
 # Luminous Current State
 
-Last updated: 2026-06-28
+Last updated: 2026-06-29
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
+
+## Project Governance
+
+- **Solo maintainer**: All design, development, testing, and deployment decisions are made by a single person. There is no team division of labor, no PR review requirement, and no multi-stakeholder approval process.
+- **Architecture**: Modular monolith (NestJS modules) over microservices. Each Lucent `@Module` maintains clear boundaries so future extraction is possible without a rewrite, but there is no current plan to split services.
+- **Test toolchain**: Jest remains the test runner for Lucent. Vitest was considered but rejected — NestJS ecosystem support and migration cost outweigh marginal speed gains.
+- **Monorepo workspace**: Three child repositories (`Lucent`, `Luminous`, `Luminous-site`) under a non-git workspace root. Each has its own `package.json` / `pubspec.yaml`, `node_modules`, and git history. Cross-project contract is owned by Lucent's OpenAPI spec.
 
 ## Repository Split
 
@@ -134,7 +141,7 @@ Deferred code that remains useful should be marked with:
 - `AppColorTokens` provides 40+ semantic color constants including `accent` (`#159B55`), `accentSoft`, `health`, `errorDark`, `cyanDeep`, `warningDeep`, `violet` etc.
 - `AppThemeSurface` (ThemeExtension) exposes 17 semantic surface fields: `canvas`, `canvasSoft`, `canvasSoft2`, `hairline`, `hairlineStrong`, `body`, `mute`, `link`, `linkSoft`, `accent`, `teal`, `tealSoft`, `success`, `error`, `warning`, `warningDeep`, `warningSoft`, `violet`. All features access colors through `Theme.of(context).extension<AppThemeSurface>()`.
 - `RecordTypeColors` (`lib/features/record/domain/entities/record_type_colors.dart`) centralizes per-record-type foreground/background color pairs consumed by mock data, Lucent repository, detail pages, and dashboard tokens.
-- Feature-level palette classes (`MedicinePalette`, `TodayPalette`, `ReportPalette`) are deprecated in favor of direct `AppThemeSurface` usage. `MedicinePalette` has been removed entirely.
+- Feature-level palette classes (`MedicinePalette`, `TodayPalette`, `ReportPalette`) have been removed entirely. All color references now use `AppColorTokens` directly.
 - UI components standardize on: pill alpha `0.12`, status pill radius `AppRadiusTokens.sm`, panel radius `AppRadiusTokens.lg`, section header fontWeight `w600`, icon badge size `48px`, text action icon `16px`.
 - Spacing uses `AppSpacingTokens` (xxs=4 … section=192); hardcoded `12`/`24` pixel values are replaced with `sm`/`lg` tokens project-wide.
 - Breakpoints reference `AppBreakpoints` constants; no hardcoded `600`.

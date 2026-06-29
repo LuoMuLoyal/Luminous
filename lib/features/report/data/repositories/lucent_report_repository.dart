@@ -1,3 +1,4 @@
+import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/core/design/app_color_tokens.dart';

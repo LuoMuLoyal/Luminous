@@ -1,3 +1,4 @@
+import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +8,6 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
 import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
-import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -100,35 +100,35 @@ class TodayRecommendationSection extends ConsumerWidget {
     return switch (category) {
       'medicine' => TodayRecommendationItem(
         icon: Icons.health_and_safety_outlined,
-        color: TodayPalette.teal,
+        color: AppColorTokens.cyanDeep,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationMedicineSafetyBody,
         action: l10n.todayLearnMoreAction,
       ),
       'sleep' => TodayRecommendationItem(
         icon: Icons.bedtime_rounded,
-        color: TodayPalette.blue,
+        color: AppColorTokens.link,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationSleepBody,
         action: l10n.todayLearnMoreAction,
       ),
       'record' => TodayRecommendationItem(
         icon: Icons.edit_note_rounded,
-        color: TodayPalette.amber,
+        color: AppColorTokens.warning,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationWaterBody,
         action: l10n.todayCompleteAction,
       ),
       'report' => TodayRecommendationItem(
         icon: Icons.assessment_outlined,
-        color: TodayPalette.violet,
+        color: AppColorTokens.violet,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationSleepBody,
         action: l10n.todayLearnMoreAction,
       ),
       _ => TodayRecommendationItem(
         icon: Icons.lightbulb_outline_rounded,
-        color: TodayPalette.teal,
+        color: AppColorTokens.cyanDeep,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationWaterBody,
         action: l10n.todayLearnMoreAction,

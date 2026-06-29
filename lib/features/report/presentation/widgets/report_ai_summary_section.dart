@@ -7,7 +7,6 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -58,7 +57,7 @@ class ReportAiSummarySection extends StatelessWidget {
           children: [
             AppIconBadge(
               icon: Icons.auto_awesome_rounded,
-              color: ReportPalette.green,
+              color: AppColorTokens.cyanDeep,
               size: AppSpacingTokens.x3l,
               iconSize: AppSpacingTokens.lg,
               shape: BoxShape.circle,

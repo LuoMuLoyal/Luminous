@@ -1,7 +1,7 @@
+import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------------------
@@ -165,7 +165,7 @@ List<TodayOverviewItem> buildOverviewItems(
       icon: Icons.medication_rounded,
       label: l10n.todayMedicationOverviewLabel,
       value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
-      color: TodayPalette.green,
+      color: AppColorTokens.cyanDeep,
     ),
     TodayOverviewItem(
       icon: Icons.water_drop_rounded,
@@ -174,13 +174,13 @@ List<TodayOverviewItem> buildOverviewItems(
         dashboard.water.completedCount,
         dashboard.water.targetCount,
       ),
-      color: TodayPalette.teal,
+      color: AppColorTokens.cyanDeep,
     ),
     TodayOverviewItem(
       icon: Icons.bedtime_rounded,
       label: l10n.todayVitalSleepLabel,
       value: '$sleep ${l10n.todayVitalSleepUnit}',
-      color: TodayPalette.blue,
+      color: AppColorTokens.link,
     ),
   ];
 }
@@ -203,7 +203,7 @@ List<TodayViewPriorityItem> buildPriorityItems(
           key: const Key('today-medication-card'),
           type: TodayPriorityItemType.medication,
           icon: Icons.medication_rounded,
-          color: TodayPalette.healthGreen,
+          color: AppColorTokens.health,
           title: l10n.todayMedicationCardTitle,
           subtitle: l10n.todayMedicationPrioritySubtitle(
             item.count ?? dashboard.medication.pendingCount,
@@ -218,7 +218,7 @@ List<TodayViewPriorityItem> buildPriorityItems(
           key: const Key('today-water-card'),
           type: TodayPriorityItemType.water,
           icon: Icons.local_drink_rounded,
-          color: TodayPalette.teal,
+          color: AppColorTokens.cyanDeep,
           title: l10n.todayWaterPriorityTitle,
           subtitle: l10n.todayWaterGoalCount(
             item.targetCount ?? dashboard.water.targetCount,
@@ -259,21 +259,21 @@ List<TodayRecommendationItem> buildRecommendationItems(
   return [
     TodayRecommendationItem(
       icon: Icons.health_and_safety_outlined,
-      color: TodayPalette.teal,
+      color: AppColorTokens.cyanDeep,
       title: l10n.todayRecommendationMedicineSafetyTitle,
       subtitle: l10n.todayRecommendationMedicineSafetyBody,
       action: l10n.todayLearnMoreAction,
     ),
     TodayRecommendationItem(
       icon: Icons.bedtime_rounded,
-      color: TodayPalette.blue,
+      color: AppColorTokens.link,
       title: l10n.todayRecommendationSleepTitle,
       subtitle: l10n.todayRecommendationSleepBody,
       action: l10n.todayLearnMoreAction,
     ),
     TodayRecommendationItem(
       icon: Icons.water_drop_rounded,
-      color: TodayPalette.teal,
+      color: AppColorTokens.cyanDeep,
       title: l10n.todayRecommendationWaterTitle,
       subtitle: l10n.todayRecommendationWaterBody,
       action: dashboard.water.progress >= 1
@@ -293,7 +293,7 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
   return [
     TodayAiSummaryItem(
       icon: Icons.medication_liquid_outlined,
-      color: TodayPalette.healthGreen,
+      color: AppColorTokens.health,
       text: hasMedicationRisk
           ? l10n.todayAiSummaryMedicationPending(
               dashboard.medication.pendingCount,
@@ -302,14 +302,16 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
     ),
     TodayAiSummaryItem(
       icon: Icons.local_drink_outlined,
-      color: waterRemaining == 0 ? TodayPalette.teal : TodayPalette.amber,
+      color: waterRemaining == 0
+          ? AppColorTokens.cyanDeep
+          : AppColorTokens.warning,
       text: waterRemaining == 0
           ? l10n.todayAiSummaryWaterDone
           : l10n.todayAiSummaryWaterRemaining(waterRemaining),
     ),
     TodayAiSummaryItem(
       icon: Icons.bedtime_outlined,
-      color: TodayPalette.violet,
+      color: AppColorTokens.violet,
       text: l10n.todayAiSummarySleepPlaceholder,
     ),
   ];
@@ -327,7 +329,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: Icons.lock_outline_rounded,
-          color: TodayPalette.amber,
+          color: AppColorTokens.warning,
           text: l10n.todayAiSummarySignedOutHint,
         ),
       ],
@@ -340,7 +342,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: Icons.settings_outlined,
-          color: TodayPalette.blue,
+          color: AppColorTokens.link,
           text: l10n.todayAiSummaryDisabledHint,
         ),
       ],
@@ -362,7 +364,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: Icons.error_outline_rounded,
-          color: TodayPalette.amber,
+          color: AppColorTokens.warning,
           text: l10n.todayAiSummaryErrorHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
@@ -377,7 +379,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: Icons.hourglass_top_rounded,
-          color: TodayPalette.teal,
+          color: AppColorTokens.cyanDeep,
           text: l10n.todayAiSummaryGeneratingHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
@@ -401,10 +403,10 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
   };
 
   final color = switch (bullet.kind) {
-    TodayAiAnalysisBulletKind.medication => TodayPalette.healthGreen,
-    TodayAiAnalysisBulletKind.hydration => TodayPalette.teal,
-    TodayAiAnalysisBulletKind.sleep => TodayPalette.violet,
-    TodayAiAnalysisBulletKind.general => TodayPalette.blue,
+    TodayAiAnalysisBulletKind.medication => AppColorTokens.health,
+    TodayAiAnalysisBulletKind.hydration => AppColorTokens.cyanDeep,
+    TodayAiAnalysisBulletKind.sleep => AppColorTokens.violet,
+    TodayAiAnalysisBulletKind.general => AppColorTokens.link,
   };
 
   return TodayAiSummaryItem(icon: icon, color: color, text: bullet.text);
@@ -431,7 +433,7 @@ List<TodayTodoItem> buildTodoItems(
       action: dashboard.medication.pendingCount == 0
           ? l10n.todayStatusCompleted
           : l10n.todayMedicationTakeAction,
-      color: TodayPalette.healthGreen,
+      color: AppColorTokens.health,
       completed: dashboard.medication.pendingCount == 0,
       statusIsDynamic: true,
       subtitleIsDynamic: true,
@@ -444,7 +446,7 @@ List<TodayTodoItem> buildTodoItems(
       action: dashboard.water.progress >= 1
           ? l10n.todayStatusCompleted
           : l10n.todayDrinkWaterAction,
-      color: TodayPalette.teal,
+      color: AppColorTokens.cyanDeep,
       completed: dashboard.water.progress >= 1,
       statusIsDynamic: true,
       subtitleIsDynamic: true,
@@ -455,7 +457,7 @@ List<TodayTodoItem> buildTodoItems(
       subtitle: l10n.todayTodoCustomSubtitle,
       source: l10n.todayTodoSourceUser,
       action: l10n.todayTodoAddAction,
-      color: TodayPalette.amber,
+      color: AppColorTokens.warning,
       completed: false,
       statusIsDynamic: false,
       subtitleIsDynamic: false,
