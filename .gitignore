@@ -65,3 +65,6 @@ DrugDataBase/
 temp_git_data
 docs/assets
 .codebase-memory/
+
+# Windows null-device artifact (Bash writes to "nul" as a file)
+nul

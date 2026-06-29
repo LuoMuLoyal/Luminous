@@ -1,11 +1,9 @@
-// ignore_for_file: prefer_initializing_formals
-
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 
 /// Remote data source that fetches medicine search/detail data from Lucent.
 class MedicineSearchRemoteDataSource {
-  MedicineSearchRemoteDataSource({required MedicinesApi api}) : _api = api;
+  MedicineSearchRemoteDataSource({required this._api});
 
   final MedicinesApi _api;
 

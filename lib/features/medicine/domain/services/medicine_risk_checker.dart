@@ -128,34 +128,6 @@ class MedicineRiskChecker {
     'seek medical advice',
   ];
 
-  static const _pregnancyContextKeywords = [
-    '孕',
-    '妊娠',
-    '胎儿',
-    '胚胎',
-    '备孕',
-    '产后',
-    'pregnan',
-    'gestat',
-    'fetus',
-    'foetus',
-    'conception',
-    'postpartum',
-  ];
-
-  static const _lactationContextKeywords = [
-    '哺乳',
-    '乳汁',
-    '授乳',
-    '喂奶',
-    'lactat',
-    'breastfeed',
-    'breast-feeding',
-    'breast feeding',
-    'nursing',
-    'milk',
-  ];
-
   SpecialPopulationConclusion _classifySpecialPopulationText(String text) {
     final lower = text.toLowerCase();
     if (_containsAny(lower, _contraindicatedKeywords)) {
@@ -207,34 +179,6 @@ class MedicineRiskChecker {
     );
   }
 
-  /// Filters legacy combined pregnancy/lactation text so that context-only
-  /// evidence does not leak into the opposite context. Used only as a fallback
-  /// when the backend has not yet provided split [pregnancy]/[lactation] fields.
-  String? _legacySpecialPopulationEvidence(
-    Object? rawText,
-    MedicineRiskFindingContext context,
-  ) {
-    final text = asNonEmptyString(rawText);
-    if (text == null) return null;
-
-    final lower = text.toLowerCase();
-    final mentionsPregnancy = _containsAny(lower, _pregnancyContextKeywords);
-    final mentionsLactation = _containsAny(lower, _lactationContextKeywords);
-
-    if (context == MedicineRiskFindingContext.pregnancy &&
-        mentionsLactation &&
-        !mentionsPregnancy) {
-      return null;
-    }
-    if (context == MedicineRiskFindingContext.lactation &&
-        mentionsPregnancy &&
-        !mentionsLactation) {
-      return null;
-    }
-
-    return text;
-  }
-
   // ── Special-group evaluation ────────────────────────────────────
 
   List<MedicineRiskFinding> _specialGroupFindings(
@@ -245,12 +189,7 @@ class MedicineRiskChecker {
     final detail = medicine.detail.detail;
     final age = snapshot.summary.age;
 
-    final pregnancyText =
-        asNonEmptyString(detail.pregnancy) ??
-        _legacySpecialPopulationEvidence(
-          detail.pregnancyLactation, // ignore: deprecated_member_use
-          MedicineRiskFindingContext.pregnancy,
-        );
+    final pregnancyText = asNonEmptyString(detail.pregnancy);
     final pregnancyState = snapshot.profile.pregnancyState;
     final hasPregnancyRisk =
         pregnancyState == 'pregnant' ||
@@ -275,12 +214,7 @@ class MedicineRiskChecker {
 
     final lactationState = snapshot.profile.lactationState;
     final hasLactationRisk = lactationState == 'yes';
-    final lactationText =
-        asNonEmptyString(detail.lactation) ??
-        _legacySpecialPopulationEvidence(
-          detail.pregnancyLactation, // ignore: deprecated_member_use
-          MedicineRiskFindingContext.lactation,
-        );
+    final lactationText = asNonEmptyString(detail.lactation);
     if (lactationText != null && hasLactationRisk) {
       findings.add(
         _specialGroupClassifiedFinding(
