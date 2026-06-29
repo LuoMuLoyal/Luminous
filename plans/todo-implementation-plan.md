@@ -4,7 +4,7 @@
 
 ---
 
-## 一、Lucent 后端（3 项）
+## 一、Lucent 后端（2 项）
 
 ### 1. Assistant RAG — pgvector 向量检索
 
@@ -42,6 +42,7 @@
 **引入依赖**：`pgvector` 扩展（PostgreSQL）、`@langchain/community`（可选，仅在后续升级时用 `PGVectorStore`）
 
 **预期效果**：
+
 - 从精确匹配提升到语义匹配：用户问"布洛芬伤胃吗"能匹配到"布洛芬缓释胶囊-注意事项-胃肠道反应"
 - 与现有 LangGraph 编排体系无缝集成，不改变工具接口和 graph 结构
 - embedding 配置复用，无额外 API key 管理成本
@@ -67,60 +68,9 @@
 **引入依赖**：依赖第 3 项的 pgvector + embedding 基础设施
 
 **预期效果**：
+
 - 决策是否投入做医疗问答 RAG
 - 为后续"Agent 辅助就医发现"提供语料基础
-
----
-
-### 3. Auth — 更多 OAuth Provider
-
-**现状**：仅支持微信（Web + Mobile）。
-
-**方案**：
-
-1. 抽象 `OAuthProvider` 接口
-   ```typescript
-   interface OAuthProvider {
-     readonly provider: OAuthProviderType;
-     fetchProfile(code: string): Promise<OAuthProfile>;
-   }
-   ```
-2. 实现 `AppleOAuthProvider`
-   - 使用 `apple-signin-auth` 验证 identity token（JWT）
-   - 获取 `sub`、`email`、`name`
-3. 实现 `GoogleOAuthProvider`
-   - 标准 OAuth 2.0 code flow → token → userinfo
-   - 使用 `google-auth-library`
-4. 注册到 `AuthModule`，按 provider 类型路由
-5. 前端：`Luminous` auth 页面增加 Apple / Google 登录按钮
-
-**引入依赖**：`google-auth-library`、`apple-signin-auth`
-
-**预期效果**：
-- 支持 Apple / Google 一键登录
-- Android 和 iOS 均可使用平台原生登录体验
-
----
-
-## 二、Luminous 前端（8 项）
-
-### 延后项（3）— 明确不做
-
-| 项 | 延后原因 |
-|----|----------|
-| `formz` 表单校验替代 | 当前 `AppToast` 校验模式工作正常，引入 `formz` 增加依赖但无用户体验改进 |
-| `intl.DateFormat` 替代 ISO 字符串 | `padLeft` 格式是后端线协议约定，`DateFormat` 无法替代 |
-| 默认 padding md→lg | 当前与 `AppLayoutTokens.cardPadding` 一致，修改会导致多处布局溢出 |
-
-### Not MVP（7）— 明确不做
-
-女性健康、运动恢复、专科健康包、智能设备、家庭档案、皮肤识别、Desktop-first workflows。这些是产品路线图上的远期功能，不在当前 MVP 范围内。
-
----
-
-### ✅ 已完成移出
-
-- ~~Lightweight assistant~~（2026-06-29 确认：完整实现，含 6 个权限开关、SSE 流式 Markdown、工具调用+提案确认）
 
 ---
 
@@ -129,6 +79,7 @@
 **现状**：`medicine_risk_checker.dart` 包含基础禁忌/慎用/咨询医生关键词分类和固定 red-flag 规则。
 
 **方案**：
+
 - 扩充 `_contraindicatedKeywords` / `_avoidKeywords` / `_cautionKeywords` 词表
 - 增加更多中文同义表述
 - 扩展 `_specialGroupFindings()`：增加肾功能、肝功能分级判断
@@ -145,6 +96,7 @@
 **现状**：CN 药品说明书和 DrugBank 各自独立匹配。CN 成分名（如"对乙酰氨基酚"）无法关联到 DrugBank 的相互作用数据。
 
 **方案**：
+
 - 扩充 `ingredient_canonicalizer.dart` 中 `_cnToDrugbankMap`
 - 手工维护 CN 成分名 → DrugBank ID 映射表（核心药品约 200 对）
 - 工具脚本辅助：对 CN 药品成分做字符串相似度匹配 DrugBank 名称，人工确认
@@ -152,6 +104,7 @@
 **引入依赖**：无
 
 **预期效果**：
+
 - CN 药品能触发 DrugBank 级别的相互作用检测
 - 覆盖中西药联合用药场景
 
@@ -162,6 +115,7 @@
 **现状**：部分 red-flag 措辞硬编码，校园资源入口部分为 mock。
 
 **方案**：
+
 1. 审计 `_specialGroupFindings()` 和 `_allergyFindings()` 的 risk 描述文案，确保医学表述准确
 2. 对接 `support-resources` 后端真实数据，替换 mock 入口
 3. 校园服务跳转链接更新为真实 URL
@@ -169,6 +123,7 @@
 **引入依赖**：无（需运营提供准确文案和链接）
 
 **预期效果**：
+
 - 离线急救指引更准确
 - 校园/帮助资源可真实跳转
 
@@ -179,6 +134,7 @@
 **现状**：Assistant 无地理位置感知，无法推荐附近医院/药店。
 
 **方案**：
+
 1. 后端新增 `find_nearby_care` tool
    - 接收 `{ latitude, longitude, type: 'hospital' | 'pharmacy' }`
    - 调用高德/百度地图 Place API 搜索周边
@@ -190,6 +146,7 @@
 **引入依赖**：高德地图 API key 或百度地图 API key（后端配置）
 
 **预期效果**：
+
 - 用户问"附近有什么医院"时，Assistant 返回真实 POI 列表
 - 一键跳转导航
 
@@ -200,6 +157,7 @@
 **现状**：Today 建议是固定规则生成，不感知外部环境。
 
 **方案**：
+
 1. 后端新增 `GET /api/v1/environment/suggestions`
    - 接收前端传来的城市/坐标
    - 调用天气 API 获取当前天气（温度、湿度、AQI）
@@ -210,6 +168,7 @@
 **引入依赖**：天气 API key（和风天气 / OpenWeatherMap）
 
 **预期效果**：
+
 - Today 页面显示"今日高温 35°C，注意补水和防暑"
 - 提升产品智能化感知
 
@@ -220,6 +179,7 @@
 **现状**：无。
 
 **方案**：
+
 1. 语音录入
    - 引入 `speech_to_text`
    - 用户口述 → 转文字 → 调用 NLP 解析（复用 `record_nlp_controller`）
@@ -231,6 +191,7 @@
 **引入依赖**：`speech_to_text`、`google_mlkit_text_recognition`
 
 **预期效果**：
+
 - 自然语言录入日常健康记录
 - 降低记录门槛（不用打字）
 
@@ -241,6 +202,7 @@
 **现状**：无。
 
 **方案**：
+
 1. 后端新增 `POST /api/v1/reports/clinic-summary/preview`
    - 基于 Report 数据生成脱敏版摘要
    - 脱敏规则：隐藏真实姓名、邮箱、手机号；用药数据保留通用名
@@ -252,54 +214,8 @@
 **引入依赖**：无（后端逻辑扩展）
 
 **预期效果**：
+
 - 用户可安全分享健康摘要给医生
 - 隐私可控，到期自动失效
 
----
-
-### 8. 真实认证 Web 报告预览
-
-**现状**：`Luminous-site/` 是 Nuxt 竞赛/营销主页，无登录态。
-
-**方案**：
-1. `Luminous-site/` 增加登录页 → Lucent API 认证
-2. 认证后跳转 `/report/:id` 预览页
-3. 读取 Lucent Report API，渲染与 App 一致的报告视图
-4. 支持导出 PDF（复用 Lucent PDF 生成 + 前端触发下载）
-
-**引入依赖**：无（Luminous-site 已有 Nuxt 基础）
-
-**预期效果**：
-- PC 端可查看和下载健康报告
-- 不再仅依赖 App 内查看
-
----
-
-## 三、推荐执行顺序
-
-| 优先级 | 归属 | 项 | 理由 |
-|--------|------|-----|------|
-| **P1** | Luminous | 药品规则扩展 | 纯规则数据（1-2 天），直接提升安全覆盖 |
-| **P2** | Lucent | Assistant RAG pgvector | pgvector 扩展（PostgreSQL），embedding 配置已有，工具接口不变 |
-| **P2** | Luminous | 交叉数据源归一化 | 需手工标注映射表（2-3 天），后续持续维护 |
-| **P2** | Luminous | 语音/截图录入 | 依赖包成熟（3-4 天），但 NLP 准确性待验证 |
-| **P3** | Lucent | OAuth Provider 扩展 | 需第三方开发者账号配置（2-3 天/平台） |
-| **P3** | Luminous | Agent 就医发现 | 需地图 API key 和位置权限（3-4 天） |
-| **P3** | Luminous | 环境驱动建议 | 需天气 API key（2-3 天） |
-| **P3** | Luminous | 提醒投递历史 | 需后端新表 + worker（3-4 天） |
-| **P4** | Luminous | 隐私诊所摘要 | 范围大，涉及前后端（5-7 天） |
-| **P4** | Luminous | Web 报告预览 | 跨项目（`Luminous-site/`），（5-7 天） |
-| **P4** | Lucent | alpaca 数据集评估 | 纯评估（1-2 天），无用户可见产出 |
-
----
-
-## 四、不纳入实施计划的项
-
-| 归属 | 项 | 原因 |
-|------|-----|------|
-| Luminous | 延后 ×3 | 已有明确原因延后 |
-| Luminous | Not MVP ×7 | 产品路线图远期功能 |
-
----
-
-*最后更新：2026-06-29*
+_最后更新：2026-06-29_
