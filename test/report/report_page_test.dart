@@ -17,7 +17,7 @@ import 'package:luminous/features/report/data/repositories/mock_report_repositor
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report_repository.dart';
 import 'package:luminous/features/report/presentation/pages/report_page.dart';
-import 'package:luminous/features/report/presentation/widgets/report_skeleton_view.dart';
+import 'package:luminous/features/report/presentation/widgets/views/report_skeleton_view.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import '../today/today_test_helpers.dart';

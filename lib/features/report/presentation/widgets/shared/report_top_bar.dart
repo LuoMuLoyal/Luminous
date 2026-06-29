@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_range_picker_dialog.dart';
+import 'package:luminous/features/report/presentation/widgets/dialogs/report_range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportTopBar extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:luminous/features/report/presentation/widgets/report_components.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/report_components.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/app_text_action.dart';
@@ -8,9 +8,9 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_range_picker_dialog.dart';
-import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
-import 'package:luminous/features/report/presentation/widgets/report_top_bar.dart';
+import 'package:luminous/features/report/presentation/widgets/dialogs/report_range_picker_dialog.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/report_top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportTrendSection extends StatelessWidget {

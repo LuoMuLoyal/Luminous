@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {

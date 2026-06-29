@@ -16,8 +16,8 @@ import 'package:luminous/features/report/presentation/providers/report_ai_summar
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/features/report/presentation/utils/report_ui_formatters.dart';
-import 'package:luminous/features/report/presentation/widgets/report_dashboard_view.dart';
-import 'package:luminous/features/report/presentation/widgets/report_skeleton_view.dart';
+import 'package:luminous/features/report/presentation/widgets/views/report_dashboard_view.dart';
+import 'package:luminous/features/report/presentation/widgets/views/report_skeleton_view.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/report/presentation/widgets/report_sections.dart';

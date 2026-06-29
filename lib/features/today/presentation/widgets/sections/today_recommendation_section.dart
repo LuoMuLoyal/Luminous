@@ -1,4 +1,4 @@
-import 'package:luminous/features/today/presentation/widgets/today_components.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,8 +8,8 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
 import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
-import 'package:luminous/features/today/presentation/widgets/today_section.dart';
-import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayRecommendationSection extends ConsumerWidget {

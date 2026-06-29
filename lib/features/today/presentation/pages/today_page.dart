@@ -4,8 +4,8 @@ import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
-import 'package:luminous/features/today/presentation/widgets/today_dashboard_view.dart';
-import 'package:luminous/features/today/presentation/widgets/today_skeleton_view.dart';
+import 'package:luminous/features/today/presentation/widgets/views/today_dashboard_view.dart';
+import 'package:luminous/features/today/presentation/widgets/views/today_skeleton_view.dart';
 
 /// Today page.
 class TodayPage extends ConsumerWidget {
