@@ -26,68 +26,76 @@ void main() {
   );
   final now = DateTime(2026, 6, 10, 9);
 
-  test('coordinator cancels old ids schedules new ones and persists them', () async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      medicineReminderScheduledNotificationIdsStorageKey: <String>['7', '8'],
-    });
-    final gateway = _FakeLocalNotificationGateway();
-    final coordinator = MedicineReminderNotificationCoordinator(
-      gateway: gateway,
-      planner: const MedicineReminderNotificationPlanner(),
-    );
+  test(
+    'coordinator cancels old ids schedules new ones and persists them',
+    () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        medicineReminderScheduledNotificationIdsStorageKey: <String>['7', '8'],
+      });
+      final gateway = _FakeLocalNotificationGateway();
+      final coordinator = MedicineReminderNotificationCoordinator(
+        gateway: gateway,
+        planner: const MedicineReminderNotificationPlanner(),
+      );
 
-    await coordinator.resync(
-      reminders: <MedicineReminderItem>[
-        _reminder(id: 'reminder-1', hour: 10),
-        _reminder(id: 'reminder-2', hour: 21),
-      ],
-      remindersEnabled: true,
-      sound: MedicineReminderSoundPreference.defaultTone,
-      texts: texts,
-      now: now,
-    );
+      await coordinator.resync(
+        reminders: <MedicineReminderItem>[
+          _reminder(id: 'reminder-1', hour: 10),
+          _reminder(id: 'reminder-2', hour: 21),
+        ],
+        remindersEnabled: true,
+        sound: MedicineReminderSoundPreference.defaultTone,
+        texts: texts,
+        now: now,
+      );
 
-    expect(gateway.cancelledIds, <int>[7, 8]);
-    expect(gateway.scheduledCalls, hasLength(14));
+      expect(gateway.cancelledIds, <int>[7, 8]);
+      expect(gateway.scheduledCalls, hasLength(14));
 
-    final preferences = await SharedPreferences.getInstance();
-    expect(
-      preferences.getStringList(
-        medicineReminderScheduledNotificationIdsStorageKey,
-      ),
-      hasLength(14),
-    );
-  });
+      final preferences = await SharedPreferences.getInstance();
+      expect(
+        preferences.getStringList(
+          medicineReminderScheduledNotificationIdsStorageKey,
+        ),
+        hasLength(14),
+      );
+    },
+  );
 
-  test('coordinator leaves preferences untouched when gateway is unavailable', () async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      medicineReminderScheduledNotificationIdsStorageKey: <String>['7'],
-    });
-    final gateway = _FakeLocalNotificationGateway(available: false);
-    final coordinator = MedicineReminderNotificationCoordinator(
-      gateway: gateway,
-      planner: const MedicineReminderNotificationPlanner(),
-    );
+  test(
+    'coordinator leaves preferences untouched when gateway is unavailable',
+    () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        medicineReminderScheduledNotificationIdsStorageKey: <String>['7'],
+      });
+      final gateway = _FakeLocalNotificationGateway(available: false);
+      final coordinator = MedicineReminderNotificationCoordinator(
+        gateway: gateway,
+        planner: const MedicineReminderNotificationPlanner(),
+      );
 
-    await coordinator.resync(
-      reminders: <MedicineReminderItem>[_reminder(id: 'reminder-1', hour: 10)],
-      remindersEnabled: true,
-      sound: MedicineReminderSoundPreference.defaultTone,
-      texts: texts,
-      now: now,
-    );
+      await coordinator.resync(
+        reminders: <MedicineReminderItem>[
+          _reminder(id: 'reminder-1', hour: 10),
+        ],
+        remindersEnabled: true,
+        sound: MedicineReminderSoundPreference.defaultTone,
+        texts: texts,
+        now: now,
+      );
 
-    expect(gateway.cancelledIds, isEmpty);
-    expect(gateway.scheduledCalls, isEmpty);
+      expect(gateway.cancelledIds, isEmpty);
+      expect(gateway.scheduledCalls, isEmpty);
 
-    final preferences = await SharedPreferences.getInstance();
-    expect(
-      preferences.getStringList(
-        medicineReminderScheduledNotificationIdsStorageKey,
-      ),
-      <String>['7'],
-    );
-  });
+      final preferences = await SharedPreferences.getInstance();
+      expect(
+        preferences.getStringList(
+          medicineReminderScheduledNotificationIdsStorageKey,
+        ),
+        <String>['7'],
+      );
+    },
+  );
 
   test('coordinator clears stored ids when reminders are disabled', () async {
     SharedPreferences.setMockInitialValues(<String, Object>{
@@ -119,148 +127,175 @@ void main() {
     );
   });
 
-  test('sync provider schedules on first run and reschedules after list invalidation', () async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final gateway = _FakeLocalNotificationGateway();
-    final reminderSource = _FakeReminderSource([
-      _reminder(id: 'reminder-1', hour: 10),
-    ]);
-    final container = ProviderContainer(
-      overrides: [
-        authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-        appLocaleControllerProvider.overrideWith(() => _StaticLocaleController()),
-        localNotificationGatewayProvider.overrideWithValue(gateway),
-        medicineReminderNotificationNowProvider.overrideWithValue(() => now),
-        medicineReminderRemoteDataSourceProvider.overrideWithValue(reminderSource),
-        notificationPermissionServiceProvider.overrideWithValue(
-          _FakeNotificationPermissionService(
-            state: NotificationPermissionState.granted,
+  test(
+    'sync provider schedules on first run and reschedules after list invalidation',
+    () async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final gateway = _FakeLocalNotificationGateway();
+      final reminderSource = _FakeReminderSource([
+        _reminder(id: 'reminder-1', hour: 10),
+      ]);
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          appLocaleControllerProvider.overrideWith(
+            () => _StaticLocaleController(),
           ),
-        ),
-      ],
-    );
-    addTearDown(container.dispose);
-
-    await container.read(appLocaleControllerProvider.future);
-    await container.read(notificationSettingsControllerProvider.future);
-    await container.read(medicineReminderSoundProvider.future);
-    final syncSub = _keepSyncProviderAlive(container);
-    addTearDown(syncSub.close);
-    await container.read(medicineReminderNotificationSyncProvider.future);
-
-    expect(gateway.scheduledCalls, hasLength(7));
-    final firstIds = gateway.scheduledCalls.map((item) => item.id).toList();
-
-    reminderSource.items = <MedicineReminderItem>[
-      _reminder(id: 'reminder-1', hour: 11),
-    ];
-    gateway.cancelledIds.clear();
-    gateway.scheduledCalls.clear();
-    container.invalidate(medicineReminderListProvider);
-
-    await container.read(medicineReminderNotificationSyncProvider.future);
-
-    expect(gateway.cancelledIds, firstIds);
-    expect(gateway.scheduledCalls, hasLength(7));
-    expect(
-      gateway.scheduledCalls.first.scheduledAt,
-      DateTime(2026, 6, 10, 11),
-    );
-  });
-
-  test('sync provider keeps previous schedule when reminder fetch fails', () async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      medicineReminderScheduledNotificationIdsStorageKey: <String>['11', '12'],
-    });
-    final gateway = _FakeLocalNotificationGateway();
-    final reminderSource = _FakeReminderSource(const <MedicineReminderItem>[])
-      ..throwOnFetch = true;
-    final container = ProviderContainer(
-      overrides: [
-        authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-        appLocaleControllerProvider.overrideWith(() => _StaticLocaleController()),
-        localNotificationGatewayProvider.overrideWithValue(gateway),
-        medicineReminderNotificationNowProvider.overrideWithValue(() => now),
-        medicineReminderRemoteDataSourceProvider.overrideWithValue(reminderSource),
-        notificationPermissionServiceProvider.overrideWithValue(
-          _FakeNotificationPermissionService(
-            state: NotificationPermissionState.granted,
+          localNotificationGatewayProvider.overrideWithValue(gateway),
+          medicineReminderNotificationNowProvider.overrideWithValue(() => now),
+          medicineReminderRemoteDataSourceProvider.overrideWithValue(
+            reminderSource,
           ),
-        ),
-      ],
-    );
-    addTearDown(container.dispose);
-
-    await container.read(appLocaleControllerProvider.future);
-    await container.read(notificationSettingsControllerProvider.future);
-    await container.read(medicineReminderSoundProvider.future);
-    final syncSub = _keepSyncProviderAlive(container);
-    addTearDown(syncSub.close);
-    await container.read(medicineReminderNotificationSyncProvider.future);
-
-    expect(gateway.cancelledIds, isEmpty);
-    expect(gateway.scheduledCalls, isEmpty);
-
-    final preferences = await SharedPreferences.getInstance();
-    expect(
-      preferences.getStringList(
-        medicineReminderScheduledNotificationIdsStorageKey,
-      ),
-      <String>['11', '12'],
-    );
-  });
-
-  test('sync provider clears notifications after medication reminders are turned off', () async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      medicineReminderScheduledNotificationIdsStorageKey: <String>['21', '22'],
-    });
-    final gateway = _FakeLocalNotificationGateway();
-    final reminderSource = _FakeReminderSource([
-      _reminder(id: 'reminder-1', hour: 10),
-    ]);
-    final container = ProviderContainer(
-      overrides: [
-        authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-        appLocaleControllerProvider.overrideWith(() => _StaticLocaleController()),
-        localNotificationGatewayProvider.overrideWithValue(gateway),
-        medicineReminderNotificationNowProvider.overrideWithValue(() => now),
-        medicineReminderRemoteDataSourceProvider.overrideWithValue(reminderSource),
-        notificationPermissionServiceProvider.overrideWithValue(
-          _FakeNotificationPermissionService(
-            state: NotificationPermissionState.granted,
+          notificationPermissionServiceProvider.overrideWithValue(
+            _FakeNotificationPermissionService(
+              state: NotificationPermissionState.granted,
+            ),
           ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(appLocaleControllerProvider.future);
+      await container.read(notificationSettingsControllerProvider.future);
+      await container.read(medicineReminderSoundProvider.future);
+      final syncSub = _keepSyncProviderAlive(container);
+      addTearDown(syncSub.close);
+      await container.read(medicineReminderNotificationSyncProvider.future);
+
+      expect(gateway.scheduledCalls, hasLength(7));
+      final firstIds = gateway.scheduledCalls.map((item) => item.id).toList();
+
+      reminderSource.items = <MedicineReminderItem>[
+        _reminder(id: 'reminder-1', hour: 11),
+      ];
+      gateway.cancelledIds.clear();
+      gateway.scheduledCalls.clear();
+      container.invalidate(medicineReminderListProvider);
+
+      await container.read(medicineReminderNotificationSyncProvider.future);
+
+      expect(gateway.cancelledIds, firstIds);
+      expect(gateway.scheduledCalls, hasLength(7));
+      expect(
+        gateway.scheduledCalls.first.scheduledAt,
+        DateTime(2026, 6, 10, 11),
+      );
+    },
+  );
+
+  test(
+    'sync provider keeps previous schedule when reminder fetch fails',
+    () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        medicineReminderScheduledNotificationIdsStorageKey: <String>[
+          '11',
+          '12',
+        ],
+      });
+      final gateway = _FakeLocalNotificationGateway();
+      final reminderSource = _FakeReminderSource(const <MedicineReminderItem>[])
+        ..throwOnFetch = true;
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          appLocaleControllerProvider.overrideWith(
+            () => _StaticLocaleController(),
+          ),
+          localNotificationGatewayProvider.overrideWithValue(gateway),
+          medicineReminderNotificationNowProvider.overrideWithValue(() => now),
+          medicineReminderRemoteDataSourceProvider.overrideWithValue(
+            reminderSource,
+          ),
+          notificationPermissionServiceProvider.overrideWithValue(
+            _FakeNotificationPermissionService(
+              state: NotificationPermissionState.granted,
+            ),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(appLocaleControllerProvider.future);
+      await container.read(notificationSettingsControllerProvider.future);
+      await container.read(medicineReminderSoundProvider.future);
+      final syncSub = _keepSyncProviderAlive(container);
+      addTearDown(syncSub.close);
+      await container.read(medicineReminderNotificationSyncProvider.future);
+
+      expect(gateway.cancelledIds, isEmpty);
+      expect(gateway.scheduledCalls, isEmpty);
+
+      final preferences = await SharedPreferences.getInstance();
+      expect(
+        preferences.getStringList(
+          medicineReminderScheduledNotificationIdsStorageKey,
         ),
-      ],
-    );
-    addTearDown(container.dispose);
+        <String>['11', '12'],
+      );
+    },
+  );
 
-    await container.read(appLocaleControllerProvider.future);
-    await container.read(notificationSettingsControllerProvider.future);
-    await container.read(medicineReminderSoundProvider.future);
-    final syncSub = _keepSyncProviderAlive(container);
-    addTearDown(syncSub.close);
-    await container.read(medicineReminderNotificationSyncProvider.future);
+  test(
+    'sync provider clears notifications after medication reminders are turned off',
+    () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        medicineReminderScheduledNotificationIdsStorageKey: <String>[
+          '21',
+          '22',
+        ],
+      });
+      final gateway = _FakeLocalNotificationGateway();
+      final reminderSource = _FakeReminderSource([
+        _reminder(id: 'reminder-1', hour: 10),
+      ]);
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          appLocaleControllerProvider.overrideWith(
+            () => _StaticLocaleController(),
+          ),
+          localNotificationGatewayProvider.overrideWithValue(gateway),
+          medicineReminderNotificationNowProvider.overrideWithValue(() => now),
+          medicineReminderRemoteDataSourceProvider.overrideWithValue(
+            reminderSource,
+          ),
+          notificationPermissionServiceProvider.overrideWithValue(
+            _FakeNotificationPermissionService(
+              state: NotificationPermissionState.granted,
+            ),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
 
-    gateway.cancelledIds.clear();
-    gateway.scheduledCalls.clear();
+      await container.read(appLocaleControllerProvider.future);
+      await container.read(notificationSettingsControllerProvider.future);
+      await container.read(medicineReminderSoundProvider.future);
+      final syncSub = _keepSyncProviderAlive(container);
+      addTearDown(syncSub.close);
+      await container.read(medicineReminderNotificationSyncProvider.future);
 
-    await container
-        .read(notificationSettingsControllerProvider.notifier)
-        .setMedicationReminders(false);
+      gateway.cancelledIds.clear();
+      gateway.scheduledCalls.clear();
 
-    await container.read(medicineReminderNotificationSyncProvider.future);
+      await container
+          .read(notificationSettingsControllerProvider.notifier)
+          .setMedicationReminders(false);
 
-    expect(gateway.scheduledCalls, isEmpty);
-    expect(gateway.cancelledIds, isNotEmpty);
+      await container.read(medicineReminderNotificationSyncProvider.future);
 
-    final preferences = await SharedPreferences.getInstance();
-    expect(
-      preferences.getStringList(
-        medicineReminderScheduledNotificationIdsStorageKey,
-      ),
-      isEmpty,
-    );
-  });
+      expect(gateway.scheduledCalls, isEmpty);
+      expect(gateway.cancelledIds, isNotEmpty);
+
+      final preferences = await SharedPreferences.getInstance();
+      expect(
+        preferences.getStringList(
+          medicineReminderScheduledNotificationIdsStorageKey,
+        ),
+        isEmpty,
+      );
+    },
+  );
 }
 
 ProviderSubscription<AsyncValue<void>> _keepSyncProviderAlive(
@@ -338,11 +373,7 @@ class _ScheduledCall {
 
 class _FakeReminderSource extends MedicineReminderRemoteDataSource {
   _FakeReminderSource(this.items)
-    :
-      super(
-        api: MedicineRemindersApi(_fakeDio),
-        dio: _fakeDio,
-      );
+    : super(api: MedicineRemindersApi(_fakeDio), dio: _fakeDio);
 
   static final Dio _fakeDio = Dio(BaseOptions());
 

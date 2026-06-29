@@ -96,4 +96,3 @@ UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
 }
 
 final DateTime generatedAt = DateTime.utc(2026, 6, 12, 10, 23, 45);
-

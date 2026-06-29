@@ -89,7 +89,10 @@ void main() {
 
       final reminders = await dataSource.fetchAll();
 
-      final request = adapter.requestAt('GET', '/api/v1/user/medicine-reminders');
+      final request = adapter.requestAt(
+        'GET',
+        '/api/v1/user/medicine-reminders',
+      );
       expect(request.queryParameters, isNot(contains('activeOnly')));
       expect(reminders.single.id, 'reminder-3');
     });

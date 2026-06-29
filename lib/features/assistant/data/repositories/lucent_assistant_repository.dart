@@ -35,10 +35,14 @@ abstract interface class AssistantRepository {
 
   Future<bool> clearLatestConversation();
 
-  Stream<AssistantGenerationEvent> streamMessages(List<AssistantMessage> messages);
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  );
 }
 
-final assistantRemoteDataSourceProvider = Provider<AssistantRemoteDataSource>((ref) {
+final assistantRemoteDataSourceProvider = Provider<AssistantRemoteDataSource>((
+  ref,
+) {
   final api = ref.watch(lucentAssistantApiProvider);
   final dio = ref.watch(lucentDioClientProvider).dio;
   return AssistantRemoteDataSource(api: api, dio: dio);
@@ -128,7 +132,9 @@ class LucentAssistantRepository implements AssistantRepository {
     }
   }
 
-  AssistantCapabilities _mapCapabilities(lucent.AssistantCapabilitiesDataDto dto) {
+  AssistantCapabilities _mapCapabilities(
+    lucent.AssistantCapabilitiesDataDto dto,
+  ) {
     return AssistantCapabilities(
       phase: dto.phase,
       assistantEnabled: dto.assistantEnabled,
@@ -162,7 +168,9 @@ class LucentAssistantRepository implements AssistantRepository {
     );
   }
 
-  AssistantConversation _mapConversation(lucent.AssistantConversationDataDto dto) {
+  AssistantConversation _mapConversation(
+    lucent.AssistantConversationDataDto dto,
+  ) {
     return AssistantConversation(
       id: dto.id,
       title: dto.title?.toString(),
@@ -207,7 +215,9 @@ class LucentAssistantRepository implements AssistantRepository {
     );
   }
 
-  AssistantProposedAction? _mapProposedActionFromJson(Map<String, dynamic> json) {
+  AssistantProposedAction? _mapProposedActionFromJson(
+    Map<String, dynamic> json,
+  ) {
     final type = AssistantProposedActionType.fromValue(
       json['type']?.toString() ?? '',
     );

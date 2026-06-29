@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -280,10 +282,12 @@ class _ReminderDetailBody extends ConsumerWidget {
                     .read(medicineReminderFormProvider.notifier)
                     .deleteGroup(reminders);
                 if (deleted && context.mounted) {
-                  AppToast.show(context, l10n.medicineReminderDeletedToast);
+                  unawaited(
+                    AppToast.show(context, l10n.medicineReminderDeletedToast),
+                  );
                   context.pop();
                 } else if (context.mounted) {
-                  AppToast.show(context, l10n.settingsSyncFailed);
+                  unawaited(AppToast.show(context, l10n.settingsSyncFailed));
                 }
               },
               icon: const Icon(Icons.delete_outline_rounded),

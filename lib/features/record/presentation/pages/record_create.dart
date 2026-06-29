@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -173,9 +174,11 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
 
   Future<void> _onSave(String dateStr) async {
     if (_kind == DailyRecordKind.sleep && !_isValidSleepValue()) {
-      AppToast.show(
-        context,
-        AppLocalizations.of(context)!.recordSleepInvalidValueToast,
+      unawaited(
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.recordSleepInvalidValueToast,
+        ),
       );
       return;
     }
@@ -202,17 +205,21 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
       ref.invalidate(todayDashboardProvider);
       ref.invalidate(reportDashboardProvider);
       if (mounted) {
-        AppToast.show(
-          context,
-          AppLocalizations.of(context)!.mineEditSavedToast,
+        unawaited(
+          AppToast.show(
+            context,
+            AppLocalizations.of(context)!.mineEditSavedToast,
+          ),
         );
         context.pop();
       }
     } catch (e) {
       if (mounted) {
-        AppToast.show(
-          context,
-          AppLocalizations.of(context)!.recordCreateFailedToast,
+        unawaited(
+          AppToast.show(
+            context,
+            AppLocalizations.of(context)!.recordCreateFailedToast,
+          ),
         );
       }
     } finally {

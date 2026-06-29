@@ -221,99 +221,111 @@ void main() {
   });
 
   group('ai chat settings', () {
-    test('setAssistantEnabled patches settings and updates state on success', () async {
-      container = buildContainer();
+    test(
+      'setAssistantEnabled patches settings and updates state on success',
+      () async {
+        container = buildContainer();
 
-      await container.read(userSettingsControllerProvider.future);
+        await container.read(userSettingsControllerProvider.future);
 
-      fakeApi.patchResponse = _buildResponse(
-        aiSummariesEnabled: false,
-        dataSharingConsent: true,
-        assistantEnabled: false,
-        assistantContext: AssistantContextSettingsDto(
-          healthProfile: true,
-          dailyRecords: true,
-          sleepRecords: true,
-          currentMedicines: true,
-        ),
-      );
+        fakeApi.patchResponse = _buildResponse(
+          aiSummariesEnabled: false,
+          dataSharingConsent: true,
+          assistantEnabled: false,
+          assistantContext: AssistantContextSettingsDto(
+            healthProfile: true,
+            dailyRecords: true,
+            sleepRecords: true,
+            currentMedicines: true,
+          ),
+        );
 
-      await container
-          .read(userSettingsControllerProvider.notifier)
-          .setAssistantEnabled(false);
+        await container
+            .read(userSettingsControllerProvider.notifier)
+            .setAssistantEnabled(false);
 
-      final state = container.read(userSettingsControllerProvider);
-      expect(state.value?.assistantEnabled, isFalse);
-      expect(fakeApi.lastPatchDto?.assistantEnabled, isFalse);
-      expect(fakeApi.lastPatchDto?.assistantContext, isNull);
-    });
+        final state = container.read(userSettingsControllerProvider);
+        expect(state.value?.assistantEnabled, isFalse);
+        expect(fakeApi.lastPatchDto?.assistantEnabled, isFalse);
+        expect(fakeApi.lastPatchDto?.assistantContext, isNull);
+      },
+    );
 
-    test('setAssistantMemoryEnabled patches settings and updates state on success', () async {
-      container = buildContainer();
+    test(
+      'setAssistantMemoryEnabled patches settings and updates state on success',
+      () async {
+        container = buildContainer();
 
-      await container.read(userSettingsControllerProvider.future);
+        await container.read(userSettingsControllerProvider.future);
 
-      fakeApi.patchResponse = _buildResponse(
-        aiSummariesEnabled: false,
-        dataSharingConsent: true,
-        assistantEnabled: true,
-        assistantMemoryEnabled: true,
-        assistantContext: AssistantContextSettingsDto(
-          healthProfile: true,
-          dailyRecords: true,
-          sleepRecords: true,
-          currentMedicines: true,
-        ),
-      );
+        fakeApi.patchResponse = _buildResponse(
+          aiSummariesEnabled: false,
+          dataSharingConsent: true,
+          assistantEnabled: true,
+          assistantMemoryEnabled: true,
+          assistantContext: AssistantContextSettingsDto(
+            healthProfile: true,
+            dailyRecords: true,
+            sleepRecords: true,
+            currentMedicines: true,
+          ),
+        );
 
-      await container
-          .read(userSettingsControllerProvider.notifier)
-          .setAssistantMemoryEnabled(true);
+        await container
+            .read(userSettingsControllerProvider.notifier)
+            .setAssistantMemoryEnabled(true);
 
-      final state = container.read(userSettingsControllerProvider);
-      expect(state.value?.assistantMemoryEnabled, isTrue);
-      expect(fakeApi.lastPatchDto?.assistantMemoryEnabled, isTrue);
-    });
+        final state = container.read(userSettingsControllerProvider);
+        expect(state.value?.assistantMemoryEnabled, isTrue);
+        expect(fakeApi.lastPatchDto?.assistantMemoryEnabled, isTrue);
+      },
+    );
 
-    test('setAssistantContext patches context fields and updates state on success', () async {
-      container = buildContainer();
+    test(
+      'setAssistantContext patches context fields and updates state on success',
+      () async {
+        container = buildContainer();
 
-      await container.read(userSettingsControllerProvider.future);
+        await container.read(userSettingsControllerProvider.future);
 
-      final nextContext = UpdateAssistantContextSettingsDto(
-        healthProfile: false,
-        dailyRecords: true,
-        sleepRecords: false,
-        currentMedicines: true,
-      );
-
-      fakeApi.patchResponse = _buildResponse(
-        aiSummariesEnabled: false,
-        dataSharingConsent: true,
-        assistantEnabled: true,
-        assistantContext: AssistantContextSettingsDto(
+        final nextContext = UpdateAssistantContextSettingsDto(
           healthProfile: false,
           dailyRecords: true,
           sleepRecords: false,
           currentMedicines: true,
-        ),
-      );
+        );
 
-      await container
-          .read(userSettingsControllerProvider.notifier)
-          .setAssistantContext(nextContext);
+        fakeApi.patchResponse = _buildResponse(
+          aiSummariesEnabled: false,
+          dataSharingConsent: true,
+          assistantEnabled: true,
+          assistantContext: AssistantContextSettingsDto(
+            healthProfile: false,
+            dailyRecords: true,
+            sleepRecords: false,
+            currentMedicines: true,
+          ),
+        );
 
-      final state = container.read(userSettingsControllerProvider);
-      expect(state.value?.assistantContext.healthProfile, isFalse);
-      expect(state.value?.assistantContext.dailyRecords, isTrue);
-      expect(state.value?.assistantContext.sleepRecords, isFalse);
-      expect(state.value?.assistantContext.currentMedicines, isTrue);
-      expect(fakeApi.lastPatchDto?.assistantEnabled, isNull);
-      expect(fakeApi.lastPatchDto?.assistantContext?.healthProfile, isFalse);
-      expect(fakeApi.lastPatchDto?.assistantContext?.dailyRecords, isTrue);
-      expect(fakeApi.lastPatchDto?.assistantContext?.sleepRecords, isFalse);
-      expect(fakeApi.lastPatchDto?.assistantContext?.currentMedicines, isTrue);
-    });
+        await container
+            .read(userSettingsControllerProvider.notifier)
+            .setAssistantContext(nextContext);
+
+        final state = container.read(userSettingsControllerProvider);
+        expect(state.value?.assistantContext.healthProfile, isFalse);
+        expect(state.value?.assistantContext.dailyRecords, isTrue);
+        expect(state.value?.assistantContext.sleepRecords, isFalse);
+        expect(state.value?.assistantContext.currentMedicines, isTrue);
+        expect(fakeApi.lastPatchDto?.assistantEnabled, isNull);
+        expect(fakeApi.lastPatchDto?.assistantContext?.healthProfile, isFalse);
+        expect(fakeApi.lastPatchDto?.assistantContext?.dailyRecords, isTrue);
+        expect(fakeApi.lastPatchDto?.assistantContext?.sleepRecords, isFalse);
+        expect(
+          fakeApi.lastPatchDto?.assistantContext?.currentMedicines,
+          isTrue,
+        );
+      },
+    );
   });
 
   group('toggle independence', () {
@@ -529,4 +541,3 @@ class _FakeUserSettingsApi extends UserSettingsApi {
     );
   }
 }
-

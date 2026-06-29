@@ -5,7 +5,11 @@ import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_
 import 'package:luminous/l10n/app_localizations.dart';
 
 class FrequencySegments extends StatelessWidget {
-  const FrequencySegments({super.key, required this.frequency, required this.onChanged});
+  const FrequencySegments({
+    super.key,
+    required this.frequency,
+    required this.onChanged,
+  });
 
   final ReminderFrequency frequency;
   final ValueChanged<ReminderFrequency> onChanged;
@@ -111,8 +115,7 @@ class TimePickerRow extends StatelessWidget {
                 key: Key('medicine-reminder-time-$index'),
                 label: Text(times[index].label),
                 avatar: const Icon(Icons.schedule_rounded, size: 16),
-                onDeleted:
-                    times.length > 1 ? () => onRemoveTime(index) : null,
+                onDeleted: times.length > 1 ? () => onRemoveTime(index) : null,
               ),
             ActionChip(
               key: const Key('medicine-reminder-add-time'),

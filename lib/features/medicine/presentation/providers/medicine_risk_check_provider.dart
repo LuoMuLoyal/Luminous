@@ -5,7 +5,9 @@ import 'package:luminous/features/medicine/data/repositories/medicine_risk_check
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/red_flag_evaluator.dart';
 
-final medicineRiskCheckProvider = FutureProvider<MedicineRiskCheckResult>((ref) {
+final medicineRiskCheckProvider = FutureProvider<MedicineRiskCheckResult>((
+  ref,
+) {
   final session = ref.watch(authSessionProvider);
   if (!session.canAccessProtectedData) {
     if (session.isLoading) {

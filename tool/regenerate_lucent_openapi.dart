@@ -245,17 +245,17 @@ bool _normalizeGeneratedPubspec(File pubspecFile) {
   );
   updated = _replaceYamlLine(
     updated,
-    RegExp(r"^(\s*)json_annotation:\s*.+$", multiLine: true),
+    RegExp(r'^(\s*)json_annotation:\s*.+$', multiLine: true),
     "json_annotation: '4.12.0'",
   );
   updated = _replaceYamlLine(
     updated,
-    RegExp(r"^(\s*)build_runner:\s*.+$", multiLine: true),
+    RegExp(r'^(\s*)build_runner:\s*.+$', multiLine: true),
     "build_runner: '2.15.0'",
   );
   updated = _replaceYamlLine(
     updated,
-    RegExp(r"^(\s*)json_serializable:\s*.+$", multiLine: true),
+    RegExp(r'^(\s*)json_serializable:\s*.+$', multiLine: true),
     "json_serializable: '6.14.0'",
   );
 

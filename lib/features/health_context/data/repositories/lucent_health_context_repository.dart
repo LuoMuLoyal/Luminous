@@ -11,8 +11,8 @@ class LucentHealthContextRepository implements HealthContextRepository {
   LucentHealthContextRepository({
     required HealthContextRemoteDataSource dataSource,
     required HealthContextMapper mapper,
-  })  : _dataSource = dataSource,
-        _mapper = mapper;
+  }) : _dataSource = dataSource,
+       _mapper = mapper;
 
   final HealthContextRemoteDataSource _dataSource;
   final HealthContextMapper _mapper;

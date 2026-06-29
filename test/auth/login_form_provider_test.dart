@@ -126,30 +126,40 @@ void main() {
     },
   );
 
-  test('startWechatIdentityLink completes mobile SDK identity linking', () async {
-    final remote = FakeAuthRemoteDataSource();
-    final mobileClient = _FakeWechatMobileAuthClient(code: 'mobile-link-code');
-    final container = ProviderContainer(
-      overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
-        wechatMobileAuthClientProvider.overrideWithValue(mobileClient),
-        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
-      ],
-    );
-    addTearDown(container.dispose);
+  test(
+    'startWechatIdentityLink completes mobile SDK identity linking',
+    () async {
+      final remote = FakeAuthRemoteDataSource();
+      final mobileClient = _FakeWechatMobileAuthClient(
+        code: 'mobile-link-code',
+      );
+      final container = ProviderContainer(
+        overrides: [
+          authRemoteDataSourceProvider.overrideWithValue(remote),
+          wechatMobileAuthClientProvider.overrideWithValue(mobileClient),
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+        ],
+      );
+      addTearDown(container.dispose);
 
-    final result = await container
-        .read(authAccountProvider.notifier)
-        .startWechatIdentityLink();
+      final result = await container
+          .read(authAccountProvider.notifier)
+          .startWechatIdentityLink();
 
-    expect(result, WechatIdentityLinkResult.completed);
-    expect(mobileClient.authorizeCalled, isTrue);
-    expect(remote.wechatMobileIdentityLinkCallbackCode, 'mobile-link-code');
-    expect(
-      container.read(authSessionProvider).user?.linkedIdentities.single.provider,
-      'wechat_mobile',
-    );
-  });
+      expect(result, WechatIdentityLinkResult.completed);
+      expect(mobileClient.authorizeCalled, isTrue);
+      expect(remote.wechatMobileIdentityLinkCallbackCode, 'mobile-link-code');
+      expect(
+        container
+            .read(authSessionProvider)
+            .user
+            ?.linkedIdentities
+            .single
+            .provider,
+        'wechat_mobile',
+      );
+    },
+  );
 
   test('startWechatIdentityLink completes desktop identity linking', () async {
     final remote = FakeAuthRemoteDataSource();
@@ -182,7 +192,10 @@ void main() {
         .startWechatIdentityLink();
     await Future<void>.delayed(Duration.zero);
     callbackCompleter.complete(
-      const WechatOAuthCallback(code: 'wechat-link-code', state: 'link-state-1'),
+      const WechatOAuthCallback(
+        code: 'wechat-link-code',
+        state: 'link-state-1',
+      ),
     );
     final result = await linkFuture;
 
@@ -200,52 +213,68 @@ void main() {
     expect(remote.wechatIdentityLinkCallbackState, 'link-state-1');
     expect(isCallbackServerClosed, isTrue);
     expect(
-      container.read(authSessionProvider).user?.linkedIdentities.single.provider,
+      container
+          .read(authSessionProvider)
+          .user
+          ?.linkedIdentities
+          .single
+          .provider,
       'wechat_web',
     );
   });
 
-  test('startWechatIdentityLink ignores mismatched desktop callback state', () async {
-    final remote = FakeAuthRemoteDataSource();
-    final launcher = _FakeExternalUrlLauncher();
-    final callbackCompleter = Completer<WechatOAuthCallback>();
-    var isCallbackServerClosed = false;
-    final callbackServer = WechatDesktopOAuthCallbackServer(
-      callbackUri: Uri.parse('http://127.0.0.1:49152/oauth/wechat'),
-      callback: callbackCompleter.future,
-      close: () async {
-        isCallbackServerClosed = true;
-      },
-    );
-    final listener = _FakeWechatDesktopOAuthCallbackListener(callbackServer);
-    final container = ProviderContainer(
-      overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
-        externalUrlLauncherProvider.overrideWithValue(launcher),
-        wechatDesktopOAuthCallbackListenerProvider.overrideWithValue(listener),
-        wechatMobileAuthClientProvider.overrideWithValue(
-          _UnsupportedWechatMobileAuthClient(),
+  test(
+    'startWechatIdentityLink ignores mismatched desktop callback state',
+    () async {
+      final remote = FakeAuthRemoteDataSource();
+      final launcher = _FakeExternalUrlLauncher();
+      final callbackCompleter = Completer<WechatOAuthCallback>();
+      var isCallbackServerClosed = false;
+      final callbackServer = WechatDesktopOAuthCallbackServer(
+        callbackUri: Uri.parse('http://127.0.0.1:49152/oauth/wechat'),
+        callback: callbackCompleter.future,
+        close: () async {
+          isCallbackServerClosed = true;
+        },
+      );
+      final listener = _FakeWechatDesktopOAuthCallbackListener(callbackServer);
+      final container = ProviderContainer(
+        overrides: [
+          authRemoteDataSourceProvider.overrideWithValue(remote),
+          externalUrlLauncherProvider.overrideWithValue(launcher),
+          wechatDesktopOAuthCallbackListenerProvider.overrideWithValue(
+            listener,
+          ),
+          wechatMobileAuthClientProvider.overrideWithValue(
+            _UnsupportedWechatMobileAuthClient(),
+          ),
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final linkFuture = container
+          .read(authAccountProvider.notifier)
+          .startWechatIdentityLink();
+      await Future<void>.delayed(Duration.zero);
+      callbackCompleter.complete(
+        const WechatOAuthCallback(
+          code: 'wechat-link-code',
+          state: 'wrong-state',
         ),
-        authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
-      ],
-    );
-    addTearDown(container.dispose);
+      );
+      final result = await linkFuture;
 
-    final linkFuture = container
-        .read(authAccountProvider.notifier)
-        .startWechatIdentityLink();
-    await Future<void>.delayed(Duration.zero);
-    callbackCompleter.complete(
-      const WechatOAuthCallback(code: 'wechat-link-code', state: 'wrong-state'),
-    );
-    final result = await linkFuture;
-
-    expect(result, WechatIdentityLinkResult.unsupported);
-    expect(remote.wechatIdentityLinkCallbackCode, isNull);
-    expect(remote.wechatIdentityLinkCallbackState, isNull);
-    expect(isCallbackServerClosed, isTrue);
-    expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);
-  });
+      expect(result, WechatIdentityLinkResult.unsupported);
+      expect(remote.wechatIdentityLinkCallbackCode, isNull);
+      expect(remote.wechatIdentityLinkCallbackState, isNull);
+      expect(isCallbackServerClosed, isTrue);
+      expect(
+        container.read(authSessionProvider).user?.linkedIdentities,
+        isEmpty,
+      );
+    },
+  );
 }
 
 class _FakeWechatMobileAuthClient extends WechatMobileAuthClient {

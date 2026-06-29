@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -61,10 +62,7 @@ class _CurrentMedicineEditPageState
       return;
     }
 
-    final item = snapshot.currentMedicines.cast<dynamic>().firstWhere(
-      (m) => m.id == id,
-      orElse: () => null,
-    );
+    final item = snapshot.currentMedicines.firstWhereOrNull((m) => m.id == id);
     if (item == null) {
       _notFound = true;
       _prefilled = true;
@@ -72,7 +70,7 @@ class _CurrentMedicineEditPageState
     }
 
     _prefilled = true;
-    _displayNameController.text = item.displayName ?? '';
+    _displayNameController.text = item.displayName;
     _sourceRefIdController.text = item.sourceRefId ?? '';
     _strengthTextController.text = item.strengthText ?? '';
     _doseTextController.text = item.doseText ?? '';

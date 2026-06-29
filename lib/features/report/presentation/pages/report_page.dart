@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
@@ -65,7 +67,7 @@ class ReportPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.read(authSessionProvider);
     if (!session.canAccessProtectedData) {
-      pushAuthRequiredRoute(context, '/report');
+      unawaited(pushAuthRequiredRoute(context, '/report'));
       return;
     }
 

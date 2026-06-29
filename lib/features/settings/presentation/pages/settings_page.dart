@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -224,7 +226,7 @@ class _PrivacySection extends ConsumerWidget {
             value: settings?.dataSharingConsent ?? false,
             onChanged: (value) async {
               if (!signedIn) {
-                pushAuthRequiredRoute(context, '/settings');
+                unawaited(pushAuthRequiredRoute(context, '/settings'));
                 return;
               }
               final confirmed = await _showDataSharingConfirmation(
@@ -235,9 +237,11 @@ class _PrivacySection extends ConsumerWidget {
                 return;
               }
               if (confirmed) {
-                ref
-                    .read(userSettingsControllerProvider.notifier)
-                    .setDataSharingConsent(value);
+                unawaited(
+                  ref
+                      .read(userSettingsControllerProvider.notifier)
+                      .setDataSharingConsent(value),
+                );
               }
             },
             showDivider: true,

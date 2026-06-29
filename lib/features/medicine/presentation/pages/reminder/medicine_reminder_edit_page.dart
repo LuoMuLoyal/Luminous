@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -411,7 +413,9 @@ class _MedicineReminderEditPageState
     }
     final confirmed = await showMedicineReminderDeleteDialog(context);
     if (confirmed != true) return;
-    ref.read(medicineReminderFormProvider.notifier).deleteGroup(existing);
+    unawaited(
+      ref.read(medicineReminderFormProvider.notifier).deleteGroup(existing),
+    );
   }
 }
 

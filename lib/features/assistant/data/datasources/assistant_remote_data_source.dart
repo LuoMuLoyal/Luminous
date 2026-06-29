@@ -52,7 +52,8 @@ class AssistantRemoteDataSource {
   Future<List<lucent.AssistantConversationSummaryDto>>
   listRecentConversations() async {
     final response = await api.assistantControllerListRecentConversationsV1();
-    return response.data?.data ?? const <lucent.AssistantConversationSummaryDto>[];
+    return response.data?.data ??
+        const <lucent.AssistantConversationSummaryDto>[];
   }
 
   Future<lucent.AssistantConversationDataDto> openConversation(

@@ -3,10 +3,7 @@ import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 
 class DataExportRequestInFlightState {
-  const DataExportRequestInFlightState({
-    required this.inFlight,
-    this.input,
-  });
+  const DataExportRequestInFlightState({required this.inFlight, this.input});
 
   final bool inFlight;
   final DataExportRequestInput? input;
@@ -95,7 +92,9 @@ enum DataExportUiStatus {
   unavailable,
 }
 
-DataExportUiStatus dataExportUiStatusForRequest(DataExportRequestDataDto? request) {
+DataExportUiStatus dataExportUiStatusForRequest(
+  DataExportRequestDataDto? request,
+) {
   if (request == null) {
     return DataExportUiStatus.idle;
   }
@@ -191,6 +190,4 @@ final dataExportRequestInFlightProvider =
     NotifierProvider<
       DataExportRequestInFlightNotifier,
       DataExportRequestInFlightState
-    >(
-      DataExportRequestInFlightNotifier.new,
-    );
+    >(DataExportRequestInFlightNotifier.new);

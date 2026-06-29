@@ -6,10 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:luminous/core/network/lucent_api_exception.dart';
 
 class LucentSseEvent {
-  const LucentSseEvent({
-    required this.event,
-    required this.data,
-  });
+  const LucentSseEvent({required this.event, required this.data});
 
   final String event;
   final Object? data;
@@ -33,10 +30,7 @@ class LucentSseClient {
     final response = await _dio.post<ResponseBody>(
       path,
       data: body,
-      options: Options(
-        responseType: ResponseType.stream,
-        headers: headers,
-      ),
+      options: Options(responseType: ResponseType.stream, headers: headers),
     );
 
     final responseBody = response.data;
@@ -68,9 +62,9 @@ class LucentSseClient {
       return event;
     }
 
-    await for (final chunk in byteStream
-        .cast<List<int>>()
-        .transform(utf8.decoder)) {
+    await for (final chunk in byteStream.cast<List<int>>().transform(
+      utf8.decoder,
+    )) {
       buffer += chunk;
       var lineBreakIndex = buffer.indexOf('\n');
       while (lineBreakIndex >= 0) {

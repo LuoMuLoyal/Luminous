@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
@@ -72,7 +74,7 @@ class HelpSettingsPage extends ConsumerWidget {
         await const ExternalUrlLauncher().open(uri);
       }
     } else {
-      pushAuthRequiredRoute(context, resource.actionUrl!);
+      unawaited(pushAuthRequiredRoute(context, resource.actionUrl!));
     }
   }
 }

@@ -32,9 +32,11 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
 
     // Check business code
     if (response.code != 0) {
-      throw Exception(response.message.isNotEmpty
-          ? response.message
-          : '搜索失败（${response.code}）');
+      throw Exception(
+        response.message.isNotEmpty
+            ? response.message
+            : '搜索失败（${response.code}）',
+      );
     }
 
     return response.data.map(mapper.dtoToResult).toList();
@@ -46,10 +48,7 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
     MedicineSearchSource source,
   ) async {
     try {
-      final response = await dataSource.getDetail(
-        id: id,
-        source: source.name,
-      );
+      final response = await dataSource.getDetail(id: id, source: source.name);
 
       if (response.code != 0) return null;
 
@@ -68,15 +67,16 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
 /// Provider for LucentMedicineSearchRepository.
 final lucentMedicineSearchRepositoryProvider =
     Provider<LucentMedicineSearchRepository>((ref) {
-  return LucentMedicineSearchRepository(
-    dataSource: ref.watch(medicineSearchRemoteDataSourceProvider),
-    mapper: MedicineSearchMapper(),
-  );
-});
+      return LucentMedicineSearchRepository(
+        dataSource: ref.watch(medicineSearchRemoteDataSourceProvider),
+        mapper: MedicineSearchMapper(),
+      );
+    });
 
 /// Provider that exposes the repository through the interface.
-final medicineSearchRepositoryProvider =
-    Provider<MedicineSearchRepository>((ref) {
+final medicineSearchRepositoryProvider = Provider<MedicineSearchRepository>((
+  ref,
+) {
   return ref.watch(lucentMedicineSearchRepositoryProvider);
 });
 

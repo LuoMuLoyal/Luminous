@@ -6,9 +6,8 @@ import 'package:permission_handler/permission_handler.dart';
 enum NotificationPermissionState { granted, denied, unsupported }
 
 class NotificationPermissionService {
-  NotificationPermissionService({
-    FlutterLocalNotificationsPlugin? plugin,
-  }) : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+  NotificationPermissionService({FlutterLocalNotificationsPlugin? plugin})
+    : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
   bool _initialized = false;
@@ -80,8 +79,8 @@ class NotificationPermissionService {
   }
 
   Future<bool?> _requestPluginPermission() async {
-    final android =
-        _plugin.resolvePlatformSpecificImplementation<
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >();
     if (android != null) {
@@ -94,8 +93,8 @@ class NotificationPermissionService {
       }
     }
 
-    final ios =
-        _plugin.resolvePlatformSpecificImplementation<
+    final ios = _plugin
+        .resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin
         >();
     if (ios != null) {
@@ -112,8 +111,8 @@ class NotificationPermissionService {
       }
     }
 
-    final macos =
-        _plugin.resolvePlatformSpecificImplementation<
+    final macos = _plugin
+        .resolvePlatformSpecificImplementation<
           MacOSFlutterLocalNotificationsPlugin
         >();
     if (macos != null) {
@@ -134,8 +133,8 @@ class NotificationPermissionService {
   }
 
   Future<bool?> _pluginPermissionState() async {
-    final android =
-        _plugin.resolvePlatformSpecificImplementation<
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >();
     if (android != null) {
@@ -148,8 +147,8 @@ class NotificationPermissionService {
       }
     }
 
-    final ios =
-        _plugin.resolvePlatformSpecificImplementation<
+    final ios = _plugin
+        .resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin
         >();
     if (ios != null) {
@@ -163,8 +162,8 @@ class NotificationPermissionService {
       }
     }
 
-    final macos =
-        _plugin.resolvePlatformSpecificImplementation<
+    final macos = _plugin
+        .resolvePlatformSpecificImplementation<
           MacOSFlutterLocalNotificationsPlugin
         >();
     if (macos != null) {

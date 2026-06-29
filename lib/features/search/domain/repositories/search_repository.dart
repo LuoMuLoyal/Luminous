@@ -11,5 +11,8 @@ abstract interface class MedicineSearchRepository {
   });
 
   /// Get medicine detail by id and source.
-  Future<MedicineSearchSafetyPreview?> fetchDetail(String id, MedicineSearchSource source);
+  Future<MedicineSearchSafetyPreview?> fetchDetail(
+    String id,
+    MedicineSearchSource source,
+  );
 }

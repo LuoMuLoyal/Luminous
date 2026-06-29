@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -52,10 +53,7 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
       return;
     }
 
-    final item = snapshot.allergies.cast<dynamic>().firstWhere(
-      (a) => a.id == id,
-      orElse: () => null,
-    );
+    final item = snapshot.allergies.firstWhereOrNull((a) => a.id == id);
     if (item == null) {
       _notFound = true;
       _prefilled = true;
@@ -63,7 +61,7 @@ class _AllergyEditPageState extends ConsumerState<AllergyEditPage> {
     }
 
     _prefilled = true;
-    _labelController.text = item.label ?? '';
+    _labelController.text = item.label;
     _reactionController.text = item.reaction ?? '';
     _noteController.text = item.note ?? '';
     setState(() {
