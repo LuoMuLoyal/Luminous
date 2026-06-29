@@ -24,6 +24,7 @@ class LucentDioClient {
     Future<void> Function()? onSessionExpired,
     Dio? dio,
     Iterable<Interceptor> interceptors = const [],
+    HttpClientAdapter? httpClientAdapter,
   }) : _openapi = LucentOpenapi(
          dio:
              dio ??
@@ -43,6 +44,23 @@ class LucentDioClient {
        _baseUrl = baseUrl,
        _localeResolver = localeResolver,
        _onSessionExpired = onSessionExpired {
+    if (httpClientAdapter != null) {
+      _openapi.dio.httpClientAdapter = httpClientAdapter;
+    }
+    _refreshDio = Dio(
+      BaseOptions(
+        baseUrl: _baseUrl,
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        sendTimeout: const Duration(seconds: 10),
+        contentType: Headers.jsonContentType,
+        responseType: ResponseType.json,
+        headers: const <String, String>{'Accept': 'application/json'},
+      ),
+    );
+    if (httpClientAdapter != null) {
+      _refreshDio.httpClientAdapter = httpClientAdapter;
+    }
     _openapi.dio.interceptors.addAll(<Interceptor>[
       ...interceptors,
       ..._buildInterceptors(),
@@ -54,17 +72,7 @@ class LucentDioClient {
   final String _baseUrl;
   final String Function()? _localeResolver;
   final Future<void> Function()? _onSessionExpired;
-  late final Dio _refreshDio = Dio(
-    BaseOptions(
-      baseUrl: _baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      sendTimeout: const Duration(seconds: 10),
-      contentType: Headers.jsonContentType,
-      responseType: ResponseType.json,
-      headers: const <String, String>{'Accept': 'application/json'},
-    ),
-  );
+  late final Dio _refreshDio;
   Future<LucentSessionTokens?>? _refreshFuture;
 
   List<Interceptor> _buildInterceptors() {
