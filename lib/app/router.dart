@@ -9,6 +9,7 @@ import 'package:luminous/features/auth/presentation/pages/register_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_risk_check_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_reminder_pages.dart';
+import 'package:luminous/features/scan/presentation/pages/barcode_scanner_page.dart';
 import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
@@ -395,6 +396,12 @@ final router = GoRouter(
       path: '/account/change-email',
       pageBuilder: (context, state) =>
           _slidePage(key: state.pageKey, child: const ChangeEmailPage()),
+    ),
+    // -- scan --
+    GoRoute(
+      path: '/scan/barcode',
+      pageBuilder: (context, state) =>
+          _slidePage(key: state.pageKey, child: const BarcodeScannerPage()),
     ),
   ],
 );

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
@@ -150,7 +152,8 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
       accent: AppColorTokens.cyanDeep,
     ),
-    if (kDebugMode) ...deferredScanQuickActions,
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
+      ...deferredScanQuickActions,
   ];
 
   // Deferred by Product_Vision MVP: keep scan/OCR quick-action shapes because

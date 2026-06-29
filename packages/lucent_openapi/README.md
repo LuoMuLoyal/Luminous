@@ -82,7 +82,9 @@ Class | Method | HTTP request | Description
 [*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerListRecentConversationsV1**](doc/AssistantApi.md#assistantcontrollerlistrecentconversationsv1) | **GET** /api/v1/user/assistant/conversations | List recent persisted assistant conversations for the user
 [*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerOpenConversationV1**](doc/AssistantApi.md#assistantcontrolleropenconversationv1) | **POST** /api/v1/user/assistant/conversations/{conversationId}/open | Activate one persisted assistant conversation and return its full history
 [*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerStreamMessagesV1**](doc/AssistantApi.md#assistantcontrollerstreammessagesv1) | **POST** /api/v1/user/assistant/messages/stream | Stream authenticated user assistant response
+[*AuthApi*](doc/AuthApi.md) | [**authControllerConfirmTwoFactorV1**](doc/AuthApi.md#authcontrollerconfirmtwofactorv1) | **POST** /api/v1/auth/2fa/confirm | 确认 2FA 绑定（校验 TOTP）
 [*AuthApi*](doc/AuthApi.md) | [**authControllerCreateWechatWebAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
+[*AuthApi*](doc/AuthApi.md) | [**authControllerDisableTwoFactorV1**](doc/AuthApi.md#authcontrollerdisabletwofactorv1) | **DELETE** /api/v1/auth/2fa | 禁用 2FA
 [*AuthApi*](doc/AuthApi.md) | [**authControllerForgotPasswordV1**](doc/AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerListSessionsV1**](doc/AuthApi.md#authcontrollerlistsessionsv1) | **GET** /api/v1/auth/sessions | 列出当前用户的活跃会话
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginV1**](doc/AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
@@ -95,7 +97,9 @@ Class | Method | HTTP request | Description
 [*AuthApi*](doc/AuthApi.md) | [**authControllerResetPasswordV1**](doc/AuthApi.md#authcontrollerresetpasswordv1) | **POST** /api/v1/auth/reset-password | 重置密码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerRevokeSessionV1**](doc/AuthApi.md#authcontrollerrevokesessionv1) | **DELETE** /api/v1/auth/sessions/{sessionId} | 撤销指定会话
 [*AuthApi*](doc/AuthApi.md) | [**authControllerSendVerificationCodeV1**](doc/AuthApi.md#authcontrollersendverificationcodev1) | **POST** /api/v1/auth/send-verification-code | 发送邮箱验证码
+[*AuthApi*](doc/AuthApi.md) | [**authControllerSetupTwoFactorV1**](doc/AuthApi.md#authcontrollersetuptwofactorv1) | **POST** /api/v1/auth/2fa/setup | 生成 2FA 绑定密钥和二维码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerVerifyEmailV1**](doc/AuthApi.md#authcontrollerverifyemailv1) | **POST** /api/v1/auth/verify-email | 验证邮箱
+[*AuthApi*](doc/AuthApi.md) | [**authControllerVerifyTwoFactorV1**](doc/AuthApi.md#authcontrollerverifytwofactorv1) | **POST** /api/v1/auth/2fa/verify | 登录后验证 TOTP 或恢复码，签发正式 token
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateImageUploadV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreateimageuploadv1) | **POST** /api/v1/user/daily-records/attachments/images/presign-upload | Create a Tencent COS signed URL for daily record image upload
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerCreateV1**](doc/DailyRecordsApi.md#dailyrecordscontrollercreatev1) | **POST** /api/v1/user/daily-records | Create a daily record
 [*DailyRecordsApi*](doc/DailyRecordsApi.md) | [**dailyRecordsControllerDeleteV1**](doc/DailyRecordsApi.md#dailyrecordscontrollerdeletev1) | **DELETE** /api/v1/user/daily-records/{id} | Soft-delete a daily record
@@ -107,6 +111,7 @@ Class | Method | HTTP request | Description
 [*DataExportApi*](doc/DataExportApi.md) | [**dataExportControllerCreateRequestV1**](doc/DataExportApi.md#dataexportcontrollercreaterequestv1) | **POST** /api/v1/user/data-export-requests | Create a new data export request
 [*DataExportApi*](doc/DataExportApi.md) | [**dataExportControllerGetLatestRequestV1**](doc/DataExportApi.md#dataexportcontrollergetlatestrequestv1) | **GET** /api/v1/user/data-export-requests/latest | Get the latest data export request
 [*EnvironmentApi*](doc/EnvironmentApi.md) | [**environmentControllerGetSnapshotV1**](doc/EnvironmentApi.md#environmentcontrollergetsnapshotv1) | **GET** /api/v1/environment/snapshot | Get static environment snapshot reference data
+[*FilesApi*](doc/FilesApi.md) | [**filesControllerCreateUploadV1**](doc/FilesApi.md#filescontrollercreateuploadv1) | **POST** /api/v1/user/files/upload | Create a presigned upload URL for a file
 [*HealthApi*](doc/HealthApi.md) | [**appControllerGetDeepHealthV1**](doc/HealthApi.md#appcontrollergetdeephealthv1) | **GET** /api/v1/health/deep | Detailed health probe with per-component diagnostics
 [*HealthApi*](doc/HealthApi.md) | [**appControllerGetHealthV1**](doc/HealthApi.md#appcontrollergethealthv1) | **GET** /api/v1/health | Readiness probe alias used by existing scripts
 [*HealthApi*](doc/HealthApi.md) | [**appControllerGetLiveHealthV1**](doc/HealthApi.md#appcontrollergetlivehealthv1) | **GET** /api/v1/health/live | Liveness probe for process health
@@ -121,6 +126,7 @@ Class | Method | HTTP request | Description
 [*MedicineRemindersApi*](doc/MedicineRemindersApi.md) | [**medicineRemindersControllerUpdateV1**](doc/MedicineRemindersApi.md#medicinereminderscontrollerupdatev1) | **PATCH** /api/v1/user/medicine-reminders/{id} | Update a medicine reminder schedule
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetDetailV1**](doc/MedicinesApi.md#medicinescontrollergetdetailv1) | **GET** /api/v1/medicines/{id} | Get medicine detail from a selected knowledge source
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerGetSafetyTipsV1**](doc/MedicinesApi.md#medicinescontrollergetsafetytipsv1) | **GET** /api/v1/medicines/safety-tips | 随机返回用药安全提示
+[*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerRecognizeV1**](doc/MedicinesApi.md#medicinescontrollerrecognizev1) | **POST** /api/v1/medicines/recognize | AI识别药盒图片，提取药品信息
 [*MedicinesApi*](doc/MedicinesApi.md) | [**medicinesControllerSearchV1**](doc/MedicinesApi.md#medicinescontrollersearchv1) | **GET** /api/v1/medicines | Search medicines from a selected knowledge source
 [*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerCreateV1**](doc/NotificationsApi.md#notificationscontrollercreatev1) | **POST** /api/v1/user/notifications | Create a notification (internal/test)
 [*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerFindAllV1**](doc/NotificationsApi.md#notificationscontrollerfindallv1) | **GET** /api/v1/user/notifications | List user notifications
@@ -181,12 +187,14 @@ Class | Method | HTTP request | Description
  - [ChangeEmailDto](doc/ChangeEmailDto.md)
  - [ChangePasswordDto](doc/ChangePasswordDto.md)
  - [CnMedicineDetailDto](doc/CnMedicineDetailDto.md)
+ - [ConfirmTwoFactorDto](doc/ConfirmTwoFactorDto.md)
  - [CooldownMessageDto](doc/CooldownMessageDto.md)
  - [CreateCurrentMedicineDto](doc/CreateCurrentMedicineDto.md)
  - [CreateDailyRecordDto](doc/CreateDailyRecordDto.md)
  - [CreateDailyRecordImageUploadDto](doc/CreateDailyRecordImageUploadDto.md)
  - [CreateDataExportRequestDto](doc/CreateDataExportRequestDto.md)
  - [CreateDoseLogDto](doc/CreateDoseLogDto.md)
+ - [CreateFileUploadDto](doc/CreateFileUploadDto.md)
  - [CreateHealthContextAllergyDto](doc/CreateHealthContextAllergyDto.md)
  - [CreateHealthContextConditionDto](doc/CreateHealthContextConditionDto.md)
  - [CreateMedicineReminderDto](doc/CreateMedicineReminderDto.md)
@@ -269,6 +277,7 @@ Class | Method | HTTP request | Description
  - [OAuthCodeCallbackDto](doc/OAuthCodeCallbackDto.md)
  - [PollenIndicatorDto](doc/PollenIndicatorDto.md)
  - [PollenLevel](doc/PollenLevel.md)
+ - [RecognizeMedicineDto](doc/RecognizeMedicineDto.md)
  - [RefreshDto](doc/RefreshDto.md)
  - [RefreshResponseDto](doc/RefreshResponseDto.md)
  - [RegisterDataDto](doc/RegisterDataDto.md)
@@ -337,6 +346,7 @@ Class | Method | HTTP request | Description
  - [VerifyEmailDataDto](doc/VerifyEmailDataDto.md)
  - [VerifyEmailDto](doc/VerifyEmailDto.md)
  - [VerifyEmailResponseDto](doc/VerifyEmailResponseDto.md)
+ - [VerifyTwoFactorDto](doc/VerifyTwoFactorDto.md)
 
 
 ## Documentation For Authorization

@@ -4,12 +4,13 @@ import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class DataExportPage extends ConsumerWidget {
@@ -22,7 +23,6 @@ class DataExportPage extends ConsumerWidget {
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = _typography(context);
     final exportAsync = ref.watch(dataExportControllerProvider);
-    final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
     final export = exportAsync.asData?.value;
 
     return PageScaffoldShell(
@@ -47,24 +47,73 @@ class DataExportPage extends ConsumerWidget {
                 typography: typography,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: exportRequestInFlight.inFlight
-                      ? null
-                      : () async => _requestExport(context, ref),
-                  child: exportRequestInFlight.inFlight
-                      ? const SizedBox.square(
-                          dimension: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(l10n.settingsExportRequestButton),
-                ),
-              ),
+              _buildActionButton(context, ref, export, l10n),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context,
+    WidgetRef ref,
+    DataExportRequestDataDto? export,
+    AppLocalizations l10n,
+  ) {
+    final status = dataExportUiStatusForRequest(export);
+    final downloadUrl = export?.downloadUrl;
+    final hasDownloadLink =
+        downloadUrl != null && downloadUrl.trim().isNotEmpty;
+    final requestInFlight = ref.watch(dataExportRequestInFlightProvider);
+
+    if (requestInFlight.inFlight) {
+      return const SizedBox.square(
+        dimension: 18,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    if (status == DataExportUiStatus.completed && hasDownloadLink) {
+      return SizedBox(
+        width: double.infinity,
+        child: FilledButton.icon(
+          onPressed: () => launchUrl(
+            Uri.parse(downloadUrl),
+            mode: LaunchMode.externalApplication,
+          ),
+          icon: const Icon(Icons.download_rounded, size: 18),
+          label: Text(l10n.mineExportDownloadButton),
+        ),
+      );
+    }
+
+    if (status == DataExportUiStatus.completedLinkMissing ||
+        status == DataExportUiStatus.failed) {
+      return SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: () => _requestExport(context, ref),
+          icon: const Icon(Icons.refresh_rounded, size: 18),
+          label: Text(l10n.mineExportRegenerateButton),
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      child: FilledButton(
+        onPressed:
+            status == DataExportUiStatus.idle ||
+                status == DataExportUiStatus.unavailable
+            ? () => _requestExport(context, ref)
+            : null,
+        child: Text(
+          status == DataExportUiStatus.idle
+              ? l10n.settingsExportRequestButton
+              : l10n.mineExportStatusPending,
+        ),
+      ),
     );
   }
 

@@ -1572,6 +1572,8 @@
   "mineExportStatusFailed": "Failed",
   "mineExportStatusLinkMissing": "Link refresh needed",
   "mineExportStatusUnavailable": "Unavailable",
+  "mineExportDownloadButton": "Download Report",
+  "mineExportRegenerateButton": "Regenerate",
   "mineExportRequested": "Export request submitted",
   "medicineRiskCheckRedFlagBannerTitle": "Red Flag Warning",
   "medicineRiskCheckRedFlagSevereAllergy": "Severe allergy risk: {drug} contains {allergen}. Do not use and consult a doctor immediately.",

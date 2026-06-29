@@ -22,12 +22,14 @@ import 'package:lucent_openapi/src/model/assistant_tool_capability_dto.dart';
 import 'package:lucent_openapi/src/model/change_email_dto.dart';
 import 'package:lucent_openapi/src/model/change_password_dto.dart';
 import 'package:lucent_openapi/src/model/cn_medicine_detail_dto.dart';
+import 'package:lucent_openapi/src/model/confirm_two_factor_dto.dart';
 import 'package:lucent_openapi/src/model/cooldown_message_dto.dart';
 import 'package:lucent_openapi/src/model/create_current_medicine_dto.dart';
 import 'package:lucent_openapi/src/model/create_daily_record_dto.dart';
 import 'package:lucent_openapi/src/model/create_daily_record_image_upload_dto.dart';
 import 'package:lucent_openapi/src/model/create_data_export_request_dto.dart';
 import 'package:lucent_openapi/src/model/create_dose_log_dto.dart';
+import 'package:lucent_openapi/src/model/create_file_upload_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_allergy_dto.dart';
 import 'package:lucent_openapi/src/model/create_health_context_condition_dto.dart';
 import 'package:lucent_openapi/src/model/create_medicine_reminder_dto.dart';
@@ -96,6 +98,7 @@ import 'package:lucent_openapi/src/model/o_auth_authorize_response_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_callback_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_code_callback_dto.dart';
 import 'package:lucent_openapi/src/model/pollen_indicator_dto.dart';
+import 'package:lucent_openapi/src/model/recognize_medicine_dto.dart';
 import 'package:lucent_openapi/src/model/refresh_dto.dart';
 import 'package:lucent_openapi/src/model/refresh_response_dto.dart';
 import 'package:lucent_openapi/src/model/register_data_dto.dart';
@@ -155,6 +158,7 @@ import 'package:lucent_openapi/src/model/uv_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/verify_email_data_dto.dart';
 import 'package:lucent_openapi/src/model/verify_email_dto.dart';
 import 'package:lucent_openapi/src/model/verify_email_response_dto.dart';
+import 'package:lucent_openapi/src/model/verify_two_factor_dto.dart';
 
 final _regList = RegExp(r'^List<(.*)>$');
 final _regSet = RegExp(r'^Set<(.*)>$');
@@ -268,6 +272,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'CnMedicineDetailDto':
       return CnMedicineDetailDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ConfirmTwoFactorDto':
+      return ConfirmTwoFactorDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'CooldownMessageDto':
       return CooldownMessageDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -287,6 +294,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'CreateDoseLogDto':
       return CreateDoseLogDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'CreateFileUploadDto':
+      return CreateFileUploadDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'CreateHealthContextAllergyDto':
       return CreateHealthContextAllergyDto.fromJson(
@@ -527,6 +537,9 @@ ReturnType deserialize<ReturnType, BaseType>(
       return PollenIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'PollenLevel':
+    case 'RecognizeMedicineDto':
+      return RecognizeMedicineDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'RefreshDto':
       return RefreshDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'RefreshResponseDto':
@@ -727,6 +740,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'VerifyEmailResponseDto':
       return VerifyEmailResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'VerifyTwoFactorDto':
+      return VerifyTwoFactorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     default:
       RegExpMatch? match;

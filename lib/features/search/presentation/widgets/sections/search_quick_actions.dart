@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/features/scan/presentation/pages/medicine_box_scan_page.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -56,7 +59,16 @@ class _QuickActionButton extends StatelessWidget {
   Widget build(BuildContext context) => Material(
     color: Colors.transparent,
     child: InkWell(
-      onTap: () => AppToast.show(context, actionToast(l10n, action.type)),
+      onTap: () {
+        switch (action.type) {
+          case MedicineSearchActionType.barcode:
+            context.push('/scan/barcode');
+          case MedicineSearchActionType.photo:
+            unawaited(showMedicineBoxScanSheet(context));
+          default:
+            AppToast.show(context, actionToast(l10n, action.type));
+        }
+      },
       borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.md),

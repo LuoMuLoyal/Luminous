@@ -3705,6 +3705,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineExportStatusUnavailable => 'Unavailable';
 
   @override
+  String get mineExportDownloadButton => 'Download Report';
+
+  @override
+  String get mineExportRegenerateButton => 'Regenerate';
+
+  @override
   String get mineExportRequested => 'Export request submitted';
 
   @override

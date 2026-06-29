@@ -14,6 +14,7 @@ import 'package:lucent_openapi/src/api/app_api.dart';
 import 'package:lucent_openapi/src/api/daily_records_api.dart';
 import 'package:lucent_openapi/src/api/data_export_api.dart';
 import 'package:lucent_openapi/src/api/environment_api.dart';
+import 'package:lucent_openapi/src/api/files_api.dart';
 import 'package:lucent_openapi/src/api/health_api.dart';
 import 'package:lucent_openapi/src/api/medicine_dose_logs_api.dart';
 import 'package:lucent_openapi/src/api/medicine_reminders_api.dart';
@@ -189,6 +190,12 @@ class LucentOpenapi {
   /// by doing that all interceptors will not be executed
   EnvironmentApi getEnvironmentApi() {
     return EnvironmentApi(dio);
+  }
+
+  /// Get FilesApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  FilesApi getFilesApi() {
+    return FilesApi(dio);
   }
 
   /// Get HealthApi instance, base route and serializer can be overridden by a given but be careful,

@@ -6722,6 +6722,18 @@ abstract class AppLocalizations {
   /// **'暂不可用'**
   String get mineExportStatusUnavailable;
 
+  /// No description provided for @mineExportDownloadButton.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载报告'**
+  String get mineExportDownloadButton;
+
+  /// No description provided for @mineExportRegenerateButton.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新生成'**
+  String get mineExportRegenerateButton;
+
   /// No description provided for @mineExportRequested.
   ///
   /// In zh, this message translates to:

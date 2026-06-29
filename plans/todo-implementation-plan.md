@@ -4,59 +4,9 @@
 
 ---
 
-## 一、Lucent 后端（5 项）
+## 一、Lucent 后端（3 项）
 
-### 1. Report Export — 异步 Worker
-
-**现状**：`data-export` 模块在 HTTP 请求线程中同步生成 PDF。BullMQ 已在 `mail-queue.service.ts` 中引入，Redis 连接可用。大报告（多周、多药品）可能阻塞请求超时。
-
-**方案**：
-
-1. 新建 `src/modules/data-export/services/data-export-queue.service.ts`
-   - 复用现有 Redis 连接创建 `Queue` 和 `Worker`
-   - Job data: `{ exportRequestId: string }`
-2. 修改 `DataExportController`
-   - `POST /api/v1/data-export/reports` 改为立即返回 `{ exportId, status: 'queued' }`
-   - 不再 await PDF 生成
-3. Worker 逻辑
-   - 从 DB 加载 export request → 调用现有 `ReportExportPdfService.generatePdf()` → 写入文件 → 更新 DB 状态为 `completed` / `failed`
-   - 可选：完成后通过 `NotificationsService` 推送通知
-4. 前端适配
-   - `DataExportPage` 轮询 export 状态，完成后展示下载链接
-
-**引入依赖**：无（bullmq 已在 `package.json`）
-
-**预期效果**：
-- HTTP 请求 ≤ 200ms 返回，不再超时
-- 失败自动重试（BullMQ 内置）
-- 用户可关闭页面，完成后收到通知
-
----
-
-### 2. Report Export — 结构化段落与图表
-
-**现状**：当前 PDF 模板以文字为主，缺少可视化图表。
-
-**方案**：
-
-1. 改造 `ReportExportPdfService`
-   - 按 section 分页：封面 → 综合评分 → 关键指标 → AI 总结 → 发现 → 趋势 → 导出说明
-   - 每页添加页眉/页脚（日期、页码）
-2. 图表生成
-   - 引入 `chart.js` + `chartjs-node-canvas`（Node 端生成 PNG）
-   - 趋势 section 嵌入折线图（睡眠/用药/饮水）
-   - 指标 section 嵌入雷达图（药物安全、生活方式、症状）
-3. 配置化：`ReportExportConfig` 控制包含哪些 section
-
-**引入依赖**：`chart.js`、`chartjs-node-canvas`、`@types/chart.js`
-
-**预期效果**：
-- 医生可读性显著提升
-- 视觉化展示健康趋势和风险分布
-
----
-
-### 3. Assistant RAG — pgvector 向量检索
+### 1. Assistant RAG — pgvector 向量检索
 
 **现状**：
 
@@ -98,7 +48,7 @@
 
 ---
 
-### 4. Assistant RAG — alpaca_zh_demo 数据集评估
+### 2. Assistant RAG — alpaca_zh_demo 数据集评估
 
 **现状**：`DrugDataBase/医疗问答数据集一共135万条/数据集/alpaca_zh_demo.json` 包含 1.36M 条中文医疗问答。当前未导入，仅记录为待评估。
 
@@ -122,35 +72,7 @@
 
 ---
 
-### 5. Auth — 2FA（TOTP）
-
-**现状**：密码登录无二次验证。用户可在设置中变更密码/邮箱，但无额外安全层。
-
-**方案**：
-
-1. 绑定流程
-   - `POST /api/v1/auth/2fa/generate`：生成 TOTP secret → 生成 `otpauth://` URI → 返回 QR 码（base64 PNG）
-   - `POST /api/v1/auth/2fa/confirm`：用户输入当前 TOTP → 验证通过 → 标记 `twoFactorEnabled = true`
-2. 登录流程改造
-   - `login()` 在密码验证通过后检查 `user.twoFactorEnabled`
-   - 若开启，返回 `{ requiresTwoFactor: true, tempToken }`（临时 token，仅用于 2FA 验证，有效期 5 分钟）
-   - 前端收到后跳转 2FA 输入页
-   - `POST /api/v1/auth/2fa/verify`：校验 TOTP + tempToken → 签发正式 token pair
-3. 恢复码
-   - 生成 8 个一次性恢复码（`crypto.randomBytes(4).toString('hex')`）
-   - `POST /api/v1/auth/2fa/recover`：用恢复码绕过 TOTP
-4. 数据库
-   - `User` 表新增字段：`twoFactorEnabled`、`twoFactorSecret`、`twoFactorRecoveryCodes`
-
-**引入依赖**：`otplib`、`qrcode`
-
-**预期效果**：
-- 账号安全升级，防密码泄露后被盗
-- 支持 Google Authenticator / Authy 等标准 TOTP App
-
----
-
-### 6. Auth — 更多 OAuth Provider
+### 3. Auth — 更多 OAuth Provider
 
 **现状**：仅支持微信（Web + Mobile）。
 
@@ -180,7 +102,7 @@
 
 ---
 
-## 二、Luminous 前端（11 项）
+## 二、Luminous 前端（8 项）
 
 ### 延后项（3）— 明确不做
 
@@ -273,60 +195,7 @@
 
 ---
 
-### 5. 药品安全规则深度覆盖
-
-**现状**：规则覆盖数量和深度有限。
-
-**方案**：与第 1 项协同推进，重点增加：
-- 肝肾功能不全分级（轻度/中度/重度）
-- 特定疾病禁忌（如青光眼禁用阿托品类）
-
-**引入依赖**：需医学审核
-
-**预期效果**：
-- 从"禁忌/慎用"二分类升级到多维风险评估
-- 展示分级原因（如"肝功能中度不全者慎用"）
-
----
-
-### 6. Report/Export 收尾清理
-
-**现状**：前端文案有个别不一致（状态标签、过期文案），部分边界情况未覆盖。
-
-**方案**：
-1. 统一导出状态标签（生成中 / 已完成 / 已过期 / 失败）
-2. 过期链接处理：下载链接过期后展示"重新生成"按钮
-3. 真环境验收：用真实数据跑一次完整流程（生成 → 下载 → 查看）
-4. 不重新打开后端导出范围（除非发现 real bug）
-
-**引入依赖**：无
-
-**预期效果**：
-- 导出体验打磨到可上线标准
-- 文案一致，边界情况有兜底
-
----
-
-### 7. 提醒投递历史
-
-**现状**：`medicine-reminders` 只管理当前提醒规则和状态，无历史记录。
-
-**方案**：
-1. 后端：新建 `ReminderDeliveryLog` 表
-   - 字段：`id`、`reminderId`、`userId`、`channel`（local/push/SMS）、`status`（sent/failed）、`deliveredAt`
-2. Worker：每次投递后写入 log
-3. 前端：提醒详情页新增投递历史时间线
-4. API：`GET /api/v1/medicine-reminders/:id/delivery-logs`
-
-**引入依赖**：无（Prisma migration + 后端逻辑）
-
-**预期效果**：
-- 用户可查看每一条提醒是否成功投递
-- 调试推送问题时有关键数据
-
----
-
-### 8. 环境驱动的 Today/Mine 建议
+### 5. 环境驱动的 Today/Mine 建议
 
 **现状**：Today 建议是固定规则生成，不感知外部环境。
 
@@ -346,30 +215,7 @@
 
 ---
 
-### 9. 条码 / OCR / 拍照识别
-
-**现状**：仅 UI 入口占位（快捷操作中的"扫药盒"、"拍处方"），无实际实现。
-
-**方案**：
-1. 条码扫描
-   - 引入 `mobile_scanner`，扫描药品条码（EAN-13 / GS1）
-   - 匹配后端药品数据库（CN 药品批准文号或 EAN 码）
-   - 匹配成功 → 跳转药品详情；失败 → 提示手动搜索
-2. OCR 处方识别
-   - 引入 `google_mlkit_text_recognition`
-   - 拍照 → OCR 提取文字 → 正则匹配药品名、用法用量
-   - 匹配到的药品 → 自动填入加药表单
-3. 仅支持移动端，桌面端隐藏入口
-
-**引入依赖**：`mobile_scanner`、`google_mlkit_text_recognition`
-
-**预期效果**：
-- 扫药盒直接查看药品安全和相互作用
-- 拍处方自动解析药品名，减少手动输入
-
----
-
-### 10. 语音 / 截图记录录入
+### 6. 语音 / 截图记录录入
 
 **现状**：无。
 
@@ -390,7 +236,7 @@
 
 ---
 
-### 11. 隐私保护诊所摘要
+### 7. 隐私保护诊所摘要
 
 **现状**：无。
 
@@ -411,7 +257,7 @@
 
 ---
 
-### 12. 真实认证 Web 报告预览
+### 8. 真实认证 Web 报告预览
 
 **现状**：`Luminous-site/` 是 Nuxt 竞赛/营销主页，无登录态。
 
@@ -433,15 +279,10 @@
 
 | 优先级 | 归属 | 项 | 理由 |
 |--------|------|-----|------|
-| **P0** | Lucent | Auth 2FA | 安全升级，范围可控（3-4 天），依赖仅 `otplib` + `qrcode` |
-| **P0** | Luminous | Report 收尾清理 | 纯前端（1-2 天），无风险，打磨上线体验 |
-| **P1** | Lucent | Report Worker | 已有 BullMQ 基础设施（2-3 天），工程价值高 |
-| **P1** | Luminous | 条码/OCR | 用户感知强（3-4 天），有成熟 Flutter 包 |
 | **P1** | Luminous | 药品规则扩展 | 纯规则数据（1-2 天），直接提升安全覆盖 |
 | **P2** | Lucent | Assistant RAG pgvector | pgvector 扩展（PostgreSQL），embedding 配置已有，工具接口不变 |
 | **P2** | Luminous | 交叉数据源归一化 | 需手工标注映射表（2-3 天），后续持续维护 |
 | **P2** | Luminous | 语音/截图录入 | 依赖包成熟（3-4 天），但 NLP 准确性待验证 |
-| **P3** | Lucent | Report 图表 | 需引入 `chart.js`（3-4 天），依赖 P1 Worker |
 | **P3** | Lucent | OAuth Provider 扩展 | 需第三方开发者账号配置（2-3 天/平台） |
 | **P3** | Luminous | Agent 就医发现 | 需地图 API key 和位置权限（3-4 天） |
 | **P3** | Luminous | 环境驱动建议 | 需天气 API key（2-3 天） |

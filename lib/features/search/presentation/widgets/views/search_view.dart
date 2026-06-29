@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -10,6 +13,21 @@ import 'package:luminous/features/search/presentation/providers/search_provider.
 import 'package:luminous/features/search/presentation/widgets/search_header_widgets.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/search_result_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
+    ? <MedicineSearchQuickAction>[
+        const MedicineSearchQuickAction(
+          type: MedicineSearchActionType.barcode,
+          icon: Icons.qr_code_scanner_rounded,
+          accent: AppColorTokens.cyanDeep,
+        ),
+        const MedicineSearchQuickAction(
+          type: MedicineSearchActionType.photo,
+          icon: Icons.photo_camera_outlined,
+          accent: AppColorTokens.gradientDevelopStart,
+        ),
+      ]
+    : <MedicineSearchQuickAction>[];
 
 class MedicineSearchView extends StatelessWidget {
   const MedicineSearchView({
@@ -198,7 +216,7 @@ class _MobileSearchLayout extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacingTokens.lg),
           QuickActions(
-            actions: const <MedicineSearchQuickAction>[],
+            actions: _scanQuickActions,
             l10n: l10n,
             typography: typography,
             surface: surface,

@@ -10,6 +10,7 @@ lib/src/api/auth_api.dart
 lib/src/api/daily_records_api.dart
 lib/src/api/data_export_api.dart
 lib/src/api/environment_api.dart
+lib/src/api/files_api.dart
 lib/src/api/health_api.dart
 lib/src/api/medicine_dose_logs_api.dart
 lib/src/api/medicine_reminders_api.dart
@@ -52,12 +53,14 @@ lib/src/model/assistant_tool_capability_dto.dart
 lib/src/model/change_email_dto.dart
 lib/src/model/change_password_dto.dart
 lib/src/model/cn_medicine_detail_dto.dart
+lib/src/model/confirm_two_factor_dto.dart
 lib/src/model/cooldown_message_dto.dart
 lib/src/model/create_current_medicine_dto.dart
 lib/src/model/create_daily_record_dto.dart
 lib/src/model/create_daily_record_image_upload_dto.dart
 lib/src/model/create_data_export_request_dto.dart
 lib/src/model/create_dose_log_dto.dart
+lib/src/model/create_file_upload_dto.dart
 lib/src/model/create_health_context_allergy_dto.dart
 lib/src/model/create_health_context_condition_dto.dart
 lib/src/model/create_medicine_reminder_dto.dart
@@ -140,6 +143,7 @@ lib/src/model/o_auth_callback_dto.dart
 lib/src/model/o_auth_code_callback_dto.dart
 lib/src/model/pollen_indicator_dto.dart
 lib/src/model/pollen_level.dart
+lib/src/model/recognize_medicine_dto.dart
 lib/src/model/refresh_dto.dart
 lib/src/model/refresh_response_dto.dart
 lib/src/model/register_data_dto.dart
@@ -208,4 +212,5 @@ lib/src/model/uv_level.dart
 lib/src/model/verify_email_data_dto.dart
 lib/src/model/verify_email_dto.dart
 lib/src/model/verify_email_response_dto.dart
+lib/src/model/verify_two_factor_dto.dart
 pubspec.yaml

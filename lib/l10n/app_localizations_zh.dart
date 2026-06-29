@@ -3462,6 +3462,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineExportStatusUnavailable => '暂不可用';
 
   @override
+  String get mineExportDownloadButton => '下载报告';
+
+  @override
+  String get mineExportRegenerateButton => '重新生成';
+
+  @override
   String get mineExportRequested => '导出请求已提交';
 
   @override
