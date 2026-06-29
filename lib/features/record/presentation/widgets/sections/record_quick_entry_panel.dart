@@ -4,9 +4,9 @@ import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
-import 'package:luminous/features/record/presentation/widgets/record_dashboard_tokens.dart';
-import 'package:luminous/features/record/presentation/widgets/record_shared_widgets.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_shared_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------------------

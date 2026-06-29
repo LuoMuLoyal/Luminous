@@ -500,7 +500,7 @@ void main() {
       medicines: [
         MedicineRiskMedicineDetail(
           item: snapshot.currentMedicines[0],
-          detail: _detail(id: 'cn-1', name: '药品', pregnancyLactation: '孕妇禁用'),
+          detail: _detail(id: 'cn-1', name: '药品', pregnancy: '孕妇禁用'),
         ),
       ],
     );
@@ -533,7 +533,7 @@ void main() {
       medicines: [
         MedicineRiskMedicineDetail(
           item: snapshot.currentMedicines[0],
-          detail: _detail(id: 'cn-1', name: '药品', pregnancyLactation: '哺乳期禁用'),
+          detail: _detail(id: 'cn-1', name: '药品', lactation: '哺乳期禁用'),
         ),
       ],
     );
@@ -571,7 +571,8 @@ void main() {
           detail: _detail(
             id: 'cn-1',
             name: '药品',
-            pregnancyLactation: '孕妇及哺乳期禁用',
+            pregnancy: '孕妇及哺乳期禁用',
+            lactation: '孕妇及哺乳期禁用',
           ),
         ),
       ],
@@ -607,7 +608,7 @@ void main() {
       medicines: [
         MedicineRiskMedicineDetail(
           item: snapshot.currentMedicines[0],
-          detail: _detail(id: 'cn-1', name: '药品', pregnancyLactation: '孕妇禁用'),
+          detail: _detail(id: 'cn-1', name: '药品', pregnancy: '孕妇禁用'),
         ),
       ],
     );
@@ -692,7 +693,8 @@ void main() {
             detail: _detail(
               id: 'cn-1',
               name: '药品',
-              pregnancyLactation: '孕妇及哺乳期禁用',
+              pregnancy: '孕妇及哺乳期禁用',
+              lactation: '孕妇及哺乳期禁用',
             ),
           ),
         ],
@@ -730,11 +732,7 @@ void main() {
       medicines: [
         MedicineRiskMedicineDetail(
           item: snapshot.currentMedicines[0],
-          detail: _detail(
-            id: 'cn-1',
-            name: '药品',
-            pregnancyLactation: '孕妇应避免使用',
-          ),
+          detail: _detail(id: 'cn-1', name: '药品', pregnancy: '孕妇应避免使用'),
         ),
       ],
     );
@@ -840,11 +838,7 @@ void main() {
         medicines: [
           MedicineRiskMedicineDetail(
             item: snapshot.currentMedicines[0],
-            detail: _detail(
-              id: 'cn-1',
-              name: '药品',
-              pregnancyLactation: '慎用，严重者禁用',
-            ),
+            detail: _detail(id: 'cn-1', name: '药品', pregnancy: '慎用，严重者禁用'),
           ),
         ],
       );
@@ -1707,7 +1701,6 @@ MedicineDetailDataDto _detail({
   List<String>? drugbankIds,
   String? pediatricUse,
   String? geriatricUse,
-  String? pregnancyLactation,
   String? pregnancy,
   String? lactation,
 }) {
@@ -1730,7 +1723,6 @@ MedicineDetailDataDto _detail({
       ingredients: ingredients,
       pediatricUse: pediatricUse,
       geriatricUse: geriatricUse,
-      pregnancyLactation: pregnancyLactation,
       pregnancy: pregnancy,
       lactation: lactation,
     ),

@@ -3,7 +3,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
-import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/daily_record_form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/record_nlp_candidate_editor.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

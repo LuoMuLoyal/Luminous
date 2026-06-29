@@ -4,7 +4,7 @@ import 'package:luminous/core/widgets/app_text_action.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordMonthCalendarPanel extends StatelessWidget {

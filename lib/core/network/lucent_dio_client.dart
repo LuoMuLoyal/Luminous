@@ -244,7 +244,7 @@ class LucentDioClient {
 
       final json = coerceToStringMap(response.data);
       if (json == null) {
-        throw const LucentApiException(message: '刷新登录状态失败：响应为空。');
+        return null;
       }
 
       final envelope = LucentEnvelope<LucentSessionTokens>.fromJson(
@@ -262,19 +262,13 @@ class LucentDioClient {
       );
 
       if (!envelope.isSuccess || envelope.data == null) {
-        throw LucentApiException(
-          message: envelope.message.isNotEmpty
-              ? envelope.message
-              : 'Lucent refresh failed.',
-          code: envelope.code,
-          statusCode: response.statusCode,
-        );
+        return null;
       }
 
       await _sessionStore.write(envelope.data!);
       return envelope.data;
-    } on DioException catch (error) {
-      throw _mapToApiException(error);
+    } on DioException {
+      return null;
     }
   }
 

@@ -5,14 +5,14 @@ import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_date_bar.dart';
-import 'package:luminous/features/record/presentation/widgets/record_dashboard_tokens.dart';
-import 'package:luminous/features/record/presentation/widgets/record_mobile_filter.dart';
-import 'package:luminous/features/record/presentation/widgets/record_mobile_timeline.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/record_date_bar.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/record_mobile_filter.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/record_mobile_timeline.dart';
 import 'package:luminous/features/record/presentation/widgets/record_overview.dart';
-import 'package:luminous/features/record/presentation/widgets/record_quick_entry_panel.dart';
-import 'package:luminous/features/record/presentation/widgets/record_sidebar.dart';
-import 'package:luminous/features/record/presentation/widgets/record_timeline.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/record_quick_entry_panel.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/record_sidebar.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/record_timeline.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordDashboardView extends StatelessWidget {

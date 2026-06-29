@@ -1,4 +1,4 @@
-part of 'medicine_mobile_dashboard_view.dart';
+part of '../views/medicine_mobile_dashboard_view.dart';
 
 class _MedicationAvatar extends StatelessWidget {
   const _MedicationAvatar({required this.item, required this.size});

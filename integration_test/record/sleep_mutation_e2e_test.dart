@@ -1,4 +1,4 @@
-import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 
 import '../support/e2e_test_helpers.dart';
 

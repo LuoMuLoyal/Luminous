@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
-import 'package:luminous/features/record/presentation/widgets/daily_record_form_fields.dart';
-import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/daily_record_form_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordNlpCandidateEditor extends StatefulWidget {
@@ -285,9 +285,7 @@ class _SleepCandidateFields extends StatelessWidget {
           key: Key('record-nlp-candidate-sleep-duration-$index'),
           enabled: enabled,
           initialValue: _durationValue(payload['durationMinutes']),
-          decoration: InputDecoration(
-            labelText: l10n.recordSleepDurationLabel,
-          ),
+          decoration: InputDecoration(labelText: l10n.recordSleepDurationLabel),
           keyboardType: TextInputType.number,
           onChanged: (value) {
             final minutes = int.tryParse(value.trim());
@@ -304,9 +302,7 @@ class _SleepCandidateFields extends StatelessWidget {
         DropdownButtonFormField<String>(
           key: Key('record-nlp-candidate-sleep-quality-$index'),
           initialValue: quality,
-          decoration: InputDecoration(
-            labelText: l10n.recordSleepQualityLabel,
-          ),
+          decoration: InputDecoration(labelText: l10n.recordSleepQualityLabel),
           items: sleepQualityOptions(l10n)
               .map(
                 (option) => DropdownMenuItem<String>(

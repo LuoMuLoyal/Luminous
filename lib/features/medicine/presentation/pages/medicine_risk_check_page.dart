@@ -10,11 +10,11 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_risk_coverage_issue_tile.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_risk_finding_tile.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_risk_metric_chip.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_risk_red_flag.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_risk_check_loading.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_coverage_issue_tile.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_finding_tile.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_metric_chip.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_red_flag.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_check_loading.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';

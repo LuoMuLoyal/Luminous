@@ -29,8 +29,8 @@ import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/providers/record_time_provider.dart';
 import 'package:luminous/features/record/presentation/pages/record_page.dart';
-import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
-import 'package:luminous/features/record/presentation/widgets/record_skeleton_view.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
+import 'package:luminous/features/record/presentation/widgets/views/record_skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {

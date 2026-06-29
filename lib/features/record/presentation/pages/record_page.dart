@@ -16,11 +16,11 @@ import 'package:luminous/features/record/presentation/controllers/record_nlp_con
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/providers/record_time_provider.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
-import 'package:luminous/features/record/presentation/widgets/record_components.dart';
-import 'package:luminous/features/record/presentation/widgets/record_dashboard_view.dart';
-import 'package:luminous/features/record/presentation/widgets/record_fast_entry_dialog.dart';
-import 'package:luminous/features/record/presentation/widgets/record_nlp_dialog.dart';
-import 'package:luminous/features/record/presentation/widgets/record_skeleton_view.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_components.dart';
+import 'package:luminous/features/record/presentation/widgets/views/record_dashboard_view.dart';
+import 'package:luminous/features/record/presentation/widgets/dialogs/record_fast_entry_dialog.dart';
+import 'package:luminous/features/record/presentation/widgets/dialogs/record_nlp_dialog.dart';
+import 'package:luminous/features/record/presentation/widgets/views/record_skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordPage extends ConsumerStatefulWidget {
