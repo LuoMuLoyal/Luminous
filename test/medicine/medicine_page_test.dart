@@ -18,10 +18,10 @@ import 'package:luminous/features/medicine/domain/entities/medicine_workspace.da
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_risk_check_page.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_skeleton_view.dart';
+import 'package:luminous/features/medicine/presentation/widgets/views/medicine_skeleton_view.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';

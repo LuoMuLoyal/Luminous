@@ -15,7 +15,7 @@ import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
-import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/core/widgets/app_back_button.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskCoverageIssueTile extends StatelessWidget {

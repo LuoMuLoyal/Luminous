@@ -9,10 +9,10 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_mobile_dashboard_view.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_skeleton_view.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_view.dart';
+import 'package:luminous/features/medicine/presentation/widgets/views/medicine_mobile_dashboard_view.dart';
+import 'package:luminous/features/medicine/presentation/widgets/views/medicine_skeleton_view.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_workspace_parts.dart';
+import 'package:luminous/features/medicine/presentation/widgets/views/medicine_workspace_view.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';

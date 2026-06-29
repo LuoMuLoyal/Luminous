@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_dashboard_tokens.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordMobileFilter extends StatelessWidget {

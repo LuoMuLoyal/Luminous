@@ -1,4 +1,4 @@
-part of 'medicine_mobile_dashboard_view.dart';
+part of '../views/medicine_mobile_dashboard_view.dart';
 
 class _DrugBoxSection extends StatelessWidget {
   const _DrugBoxSection({

@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/record/presentation/widgets/sleep_structured_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 
 void main() {
   group('computeSleepDurationMinutes', () {
     test('returns null when either time is null', () {
-      expect(computeSleepDurationMinutes(null, const TimeOfDay(hour: 7, minute: 0)), isNull);
-      expect(computeSleepDurationMinutes(const TimeOfDay(hour: 23, minute: 0), null), isNull);
+      expect(
+        computeSleepDurationMinutes(null, const TimeOfDay(hour: 7, minute: 0)),
+        isNull,
+      );
+      expect(
+        computeSleepDurationMinutes(const TimeOfDay(hour: 23, minute: 0), null),
+        isNull,
+      );
       expect(computeSleepDurationMinutes(null, null), isNull);
     });
 

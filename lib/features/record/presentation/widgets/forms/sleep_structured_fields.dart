@@ -101,16 +101,9 @@ class SleepStructuredFields extends StatelessWidget {
         DropdownButtonFormField<String>(
           key: const Key('sleep-quality-field'),
           initialValue: quality,
-          decoration: InputDecoration(
-            labelText: l10n.recordSleepQualityLabel,
-          ),
+          decoration: InputDecoration(labelText: l10n.recordSleepQualityLabel),
           items: sleepQualityOptions(l10n)
-              .map(
-                (q) => DropdownMenuItem(
-                  value: q.key,
-                  child: Text(q.label),
-                ),
-              )
+              .map((q) => DropdownMenuItem(value: q.key, child: Text(q.label)))
               .toList(),
           onChanged: onQualityChanged,
         ),

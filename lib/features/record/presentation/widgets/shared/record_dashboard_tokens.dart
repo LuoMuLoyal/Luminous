@@ -1,5 +1,5 @@
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/record_copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------------------

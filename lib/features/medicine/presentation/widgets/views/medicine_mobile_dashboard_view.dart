@@ -16,16 +16,16 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/medicine/domain/entities/medicine_safety_tip.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_safety_tips_provider.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_copy.dart';
-import 'package:luminous/features/medicine/presentation/widgets/medicine_workspace_parts.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-part 'medicine_mobile_drugbox_section.dart';
-part 'medicine_mobile_quick_operations_section.dart';
-part 'medicine_mobile_records_section.dart';
-part 'medicine_mobile_reference_section.dart';
-part 'medicine_mobile_safety_section.dart';
-part 'medicine_mobile_shared.dart';
+part '../sections/medicine_mobile_drugbox_section.dart';
+part '../sections/medicine_mobile_quick_operations_section.dart';
+part '../sections/medicine_mobile_records_section.dart';
+part '../sections/medicine_mobile_reference_section.dart';
+part '../sections/medicine_mobile_safety_section.dart';
+part '../shared/medicine_mobile_shared.dart';
 
 class MedicineMobileDashboardView extends StatelessWidget {
   const MedicineMobileDashboardView({
