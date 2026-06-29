@@ -28,7 +28,6 @@ This file records work that is still missing or intentionally gated. Current fac
 
 ## MVP Gated But Not Blocking Right Now
 
-- Lightweight assistant with user-controlled context permissions, bounded tool use, and streaming markdown output.
 - Additional reviewed medicine rule expansion beyond the frozen current boundary.
 - Cross-source medicine normalization and unreviewed interaction expansion.
 - Fixed red-flag rules, audited offline-care escalation copy, and campus/help resource completeness.

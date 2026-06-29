@@ -615,7 +615,7 @@ as List<String>,
 /// @nodoc
 mixin _$HealthProfile {
 
- String? get birthDate; String? get sexAtBirth; double? get heightCm; String? get pregnancyState; String? get lactationState; String? get bloodType; String? get locale; String? get timezone; String? get unitSystem; String? get onboardingCompletedAt; Map<String, dynamic> get extras;
+ String? get birthDate; String? get sexAtBirth; double? get heightCm; String? get bloodType; String? get locale; String? get timezone; String? get unitSystem; String? get onboardingCompletedAt; Map<String, dynamic> get extras;
 /// Create a copy of HealthProfile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -626,16 +626,16 @@ $HealthProfileCopyWith<HealthProfile> get copyWith => _$HealthProfileCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthProfile&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.sexAtBirth, sexAtBirth) || other.sexAtBirth == sexAtBirth)&&(identical(other.heightCm, heightCm) || other.heightCm == heightCm)&&(identical(other.pregnancyState, pregnancyState) || other.pregnancyState == pregnancyState)&&(identical(other.lactationState, lactationState) || other.lactationState == lactationState)&&(identical(other.bloodType, bloodType) || other.bloodType == bloodType)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.unitSystem, unitSystem) || other.unitSystem == unitSystem)&&(identical(other.onboardingCompletedAt, onboardingCompletedAt) || other.onboardingCompletedAt == onboardingCompletedAt)&&const DeepCollectionEquality().equals(other.extras, extras));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthProfile&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.sexAtBirth, sexAtBirth) || other.sexAtBirth == sexAtBirth)&&(identical(other.heightCm, heightCm) || other.heightCm == heightCm)&&(identical(other.bloodType, bloodType) || other.bloodType == bloodType)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.unitSystem, unitSystem) || other.unitSystem == unitSystem)&&(identical(other.onboardingCompletedAt, onboardingCompletedAt) || other.onboardingCompletedAt == onboardingCompletedAt)&&const DeepCollectionEquality().equals(other.extras, extras));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,birthDate,sexAtBirth,heightCm,pregnancyState,lactationState,bloodType,locale,timezone,unitSystem,onboardingCompletedAt,const DeepCollectionEquality().hash(extras));
+int get hashCode => Object.hash(runtimeType,birthDate,sexAtBirth,heightCm,bloodType,locale,timezone,unitSystem,onboardingCompletedAt,const DeepCollectionEquality().hash(extras));
 
 @override
 String toString() {
-  return 'HealthProfile(birthDate: $birthDate, sexAtBirth: $sexAtBirth, heightCm: $heightCm, pregnancyState: $pregnancyState, lactationState: $lactationState, bloodType: $bloodType, locale: $locale, timezone: $timezone, unitSystem: $unitSystem, onboardingCompletedAt: $onboardingCompletedAt, extras: $extras)';
+  return 'HealthProfile(birthDate: $birthDate, sexAtBirth: $sexAtBirth, heightCm: $heightCm, bloodType: $bloodType, locale: $locale, timezone: $timezone, unitSystem: $unitSystem, onboardingCompletedAt: $onboardingCompletedAt, extras: $extras)';
 }
 
 
@@ -646,7 +646,7 @@ abstract mixin class $HealthProfileCopyWith<$Res>  {
   factory $HealthProfileCopyWith(HealthProfile value, $Res Function(HealthProfile) _then) = _$HealthProfileCopyWithImpl;
 @useResult
 $Res call({
- String? birthDate, String? sexAtBirth, double? heightCm, String? pregnancyState, String? lactationState, String? bloodType, String? locale, String? timezone, String? unitSystem, String? onboardingCompletedAt, Map<String, dynamic> extras
+ String? birthDate, String? sexAtBirth, double? heightCm, String? bloodType, String? locale, String? timezone, String? unitSystem, String? onboardingCompletedAt, Map<String, dynamic> extras
 });
 
 
@@ -663,14 +663,12 @@ class _$HealthProfileCopyWithImpl<$Res>
 
 /// Create a copy of HealthProfile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? birthDate = freezed,Object? sexAtBirth = freezed,Object? heightCm = freezed,Object? pregnancyState = freezed,Object? lactationState = freezed,Object? bloodType = freezed,Object? locale = freezed,Object? timezone = freezed,Object? unitSystem = freezed,Object? onboardingCompletedAt = freezed,Object? extras = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? birthDate = freezed,Object? sexAtBirth = freezed,Object? heightCm = freezed,Object? bloodType = freezed,Object? locale = freezed,Object? timezone = freezed,Object? unitSystem = freezed,Object? onboardingCompletedAt = freezed,Object? extras = null,}) {
   return _then(_self.copyWith(
 birthDate: freezed == birthDate ? _self.birthDate : birthDate // ignore: cast_nullable_to_non_nullable
 as String?,sexAtBirth: freezed == sexAtBirth ? _self.sexAtBirth : sexAtBirth // ignore: cast_nullable_to_non_nullable
 as String?,heightCm: freezed == heightCm ? _self.heightCm : heightCm // ignore: cast_nullable_to_non_nullable
-as double?,pregnancyState: freezed == pregnancyState ? _self.pregnancyState : pregnancyState // ignore: cast_nullable_to_non_nullable
-as String?,lactationState: freezed == lactationState ? _self.lactationState : lactationState // ignore: cast_nullable_to_non_nullable
-as String?,bloodType: freezed == bloodType ? _self.bloodType : bloodType // ignore: cast_nullable_to_non_nullable
+as double?,bloodType: freezed == bloodType ? _self.bloodType : bloodType // ignore: cast_nullable_to_non_nullable
 as String?,locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,timezone: freezed == timezone ? _self.timezone : timezone // ignore: cast_nullable_to_non_nullable
 as String?,unitSystem: freezed == unitSystem ? _self.unitSystem : unitSystem // ignore: cast_nullable_to_non_nullable
@@ -761,10 +759,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? birthDate,  String? sexAtBirth,  double? heightCm,  String? pregnancyState,  String? lactationState,  String? bloodType,  String? locale,  String? timezone,  String? unitSystem,  String? onboardingCompletedAt,  Map<String, dynamic> extras)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? birthDate,  String? sexAtBirth,  double? heightCm,  String? bloodType,  String? locale,  String? timezone,  String? unitSystem,  String? onboardingCompletedAt,  Map<String, dynamic> extras)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HealthProfile() when $default != null:
-return $default(_that.birthDate,_that.sexAtBirth,_that.heightCm,_that.pregnancyState,_that.lactationState,_that.bloodType,_that.locale,_that.timezone,_that.unitSystem,_that.onboardingCompletedAt,_that.extras);case _:
+return $default(_that.birthDate,_that.sexAtBirth,_that.heightCm,_that.bloodType,_that.locale,_that.timezone,_that.unitSystem,_that.onboardingCompletedAt,_that.extras);case _:
   return orElse();
 
 }
@@ -782,10 +780,10 @@ return $default(_that.birthDate,_that.sexAtBirth,_that.heightCm,_that.pregnancyS
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? birthDate,  String? sexAtBirth,  double? heightCm,  String? pregnancyState,  String? lactationState,  String? bloodType,  String? locale,  String? timezone,  String? unitSystem,  String? onboardingCompletedAt,  Map<String, dynamic> extras)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? birthDate,  String? sexAtBirth,  double? heightCm,  String? bloodType,  String? locale,  String? timezone,  String? unitSystem,  String? onboardingCompletedAt,  Map<String, dynamic> extras)  $default,) {final _that = this;
 switch (_that) {
 case _HealthProfile():
-return $default(_that.birthDate,_that.sexAtBirth,_that.heightCm,_that.pregnancyState,_that.lactationState,_that.bloodType,_that.locale,_that.timezone,_that.unitSystem,_that.onboardingCompletedAt,_that.extras);case _:
+return $default(_that.birthDate,_that.sexAtBirth,_that.heightCm,_that.bloodType,_that.locale,_that.timezone,_that.unitSystem,_that.onboardingCompletedAt,_that.extras);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -802,10 +800,10 @@ return $default(_that.birthDate,_that.sexAtBirth,_that.heightCm,_that.pregnancyS
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? birthDate,  String? sexAtBirth,  double? heightCm,  String? pregnancyState,  String? lactationState,  String? bloodType,  String? locale,  String? timezone,  String? unitSystem,  String? onboardingCompletedAt,  Map<String, dynamic> extras)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? birthDate,  String? sexAtBirth,  double? heightCm,  String? bloodType,  String? locale,  String? timezone,  String? unitSystem,  String? onboardingCompletedAt,  Map<String, dynamic> extras)?  $default,) {final _that = this;
 switch (_that) {
 case _HealthProfile() when $default != null:
-return $default(_that.birthDate,_that.sexAtBirth,_that.heightCm,_that.pregnancyState,_that.lactationState,_that.bloodType,_that.locale,_that.timezone,_that.unitSystem,_that.onboardingCompletedAt,_that.extras);case _:
+return $default(_that.birthDate,_that.sexAtBirth,_that.heightCm,_that.bloodType,_that.locale,_that.timezone,_that.unitSystem,_that.onboardingCompletedAt,_that.extras);case _:
   return null;
 
 }
@@ -817,14 +815,12 @@ return $default(_that.birthDate,_that.sexAtBirth,_that.heightCm,_that.pregnancyS
 
 
 class _HealthProfile implements HealthProfile {
-  const _HealthProfile({required this.birthDate, required this.sexAtBirth, required this.heightCm, required this.pregnancyState, required this.lactationState, required this.bloodType, required this.locale, required this.timezone, required this.unitSystem, required this.onboardingCompletedAt, required final  Map<String, dynamic> extras}): _extras = extras;
+  const _HealthProfile({required this.birthDate, required this.sexAtBirth, required this.heightCm, required this.bloodType, required this.locale, required this.timezone, required this.unitSystem, required this.onboardingCompletedAt, required final  Map<String, dynamic> extras}): _extras = extras;
   
 
 @override final  String? birthDate;
 @override final  String? sexAtBirth;
 @override final  double? heightCm;
-@override final  String? pregnancyState;
-@override final  String? lactationState;
 @override final  String? bloodType;
 @override final  String? locale;
 @override final  String? timezone;
@@ -848,16 +844,16 @@ _$HealthProfileCopyWith<_HealthProfile> get copyWith => __$HealthProfileCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HealthProfile&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.sexAtBirth, sexAtBirth) || other.sexAtBirth == sexAtBirth)&&(identical(other.heightCm, heightCm) || other.heightCm == heightCm)&&(identical(other.pregnancyState, pregnancyState) || other.pregnancyState == pregnancyState)&&(identical(other.lactationState, lactationState) || other.lactationState == lactationState)&&(identical(other.bloodType, bloodType) || other.bloodType == bloodType)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.unitSystem, unitSystem) || other.unitSystem == unitSystem)&&(identical(other.onboardingCompletedAt, onboardingCompletedAt) || other.onboardingCompletedAt == onboardingCompletedAt)&&const DeepCollectionEquality().equals(other._extras, _extras));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HealthProfile&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.sexAtBirth, sexAtBirth) || other.sexAtBirth == sexAtBirth)&&(identical(other.heightCm, heightCm) || other.heightCm == heightCm)&&(identical(other.bloodType, bloodType) || other.bloodType == bloodType)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.unitSystem, unitSystem) || other.unitSystem == unitSystem)&&(identical(other.onboardingCompletedAt, onboardingCompletedAt) || other.onboardingCompletedAt == onboardingCompletedAt)&&const DeepCollectionEquality().equals(other._extras, _extras));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,birthDate,sexAtBirth,heightCm,pregnancyState,lactationState,bloodType,locale,timezone,unitSystem,onboardingCompletedAt,const DeepCollectionEquality().hash(_extras));
+int get hashCode => Object.hash(runtimeType,birthDate,sexAtBirth,heightCm,bloodType,locale,timezone,unitSystem,onboardingCompletedAt,const DeepCollectionEquality().hash(_extras));
 
 @override
 String toString() {
-  return 'HealthProfile(birthDate: $birthDate, sexAtBirth: $sexAtBirth, heightCm: $heightCm, pregnancyState: $pregnancyState, lactationState: $lactationState, bloodType: $bloodType, locale: $locale, timezone: $timezone, unitSystem: $unitSystem, onboardingCompletedAt: $onboardingCompletedAt, extras: $extras)';
+  return 'HealthProfile(birthDate: $birthDate, sexAtBirth: $sexAtBirth, heightCm: $heightCm, bloodType: $bloodType, locale: $locale, timezone: $timezone, unitSystem: $unitSystem, onboardingCompletedAt: $onboardingCompletedAt, extras: $extras)';
 }
 
 
@@ -868,7 +864,7 @@ abstract mixin class _$HealthProfileCopyWith<$Res> implements $HealthProfileCopy
   factory _$HealthProfileCopyWith(_HealthProfile value, $Res Function(_HealthProfile) _then) = __$HealthProfileCopyWithImpl;
 @override @useResult
 $Res call({
- String? birthDate, String? sexAtBirth, double? heightCm, String? pregnancyState, String? lactationState, String? bloodType, String? locale, String? timezone, String? unitSystem, String? onboardingCompletedAt, Map<String, dynamic> extras
+ String? birthDate, String? sexAtBirth, double? heightCm, String? bloodType, String? locale, String? timezone, String? unitSystem, String? onboardingCompletedAt, Map<String, dynamic> extras
 });
 
 
@@ -885,14 +881,12 @@ class __$HealthProfileCopyWithImpl<$Res>
 
 /// Create a copy of HealthProfile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? birthDate = freezed,Object? sexAtBirth = freezed,Object? heightCm = freezed,Object? pregnancyState = freezed,Object? lactationState = freezed,Object? bloodType = freezed,Object? locale = freezed,Object? timezone = freezed,Object? unitSystem = freezed,Object? onboardingCompletedAt = freezed,Object? extras = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? birthDate = freezed,Object? sexAtBirth = freezed,Object? heightCm = freezed,Object? bloodType = freezed,Object? locale = freezed,Object? timezone = freezed,Object? unitSystem = freezed,Object? onboardingCompletedAt = freezed,Object? extras = null,}) {
   return _then(_HealthProfile(
 birthDate: freezed == birthDate ? _self.birthDate : birthDate // ignore: cast_nullable_to_non_nullable
 as String?,sexAtBirth: freezed == sexAtBirth ? _self.sexAtBirth : sexAtBirth // ignore: cast_nullable_to_non_nullable
 as String?,heightCm: freezed == heightCm ? _self.heightCm : heightCm // ignore: cast_nullable_to_non_nullable
-as double?,pregnancyState: freezed == pregnancyState ? _self.pregnancyState : pregnancyState // ignore: cast_nullable_to_non_nullable
-as String?,lactationState: freezed == lactationState ? _self.lactationState : lactationState // ignore: cast_nullable_to_non_nullable
-as String?,bloodType: freezed == bloodType ? _self.bloodType : bloodType // ignore: cast_nullable_to_non_nullable
+as double?,bloodType: freezed == bloodType ? _self.bloodType : bloodType // ignore: cast_nullable_to_non_nullable
 as String?,locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,timezone: freezed == timezone ? _self.timezone : timezone // ignore: cast_nullable_to_non_nullable
 as String?,unitSystem: freezed == unitSystem ? _self.unitSystem : unitSystem // ignore: cast_nullable_to_non_nullable

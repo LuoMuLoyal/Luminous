@@ -295,11 +295,7 @@ as String,
 /// @nodoc
 mixin _$MedicineRiskFinding {
 
- MedicineRiskFindingType get type; MedicineRiskSeverity get severity; MedicineRiskFindingContext get context; String get primaryMedicineName; String? get secondaryMedicineName; String? get relatedLabel; String? get evidence;/// Non-null only when [type] is [MedicineRiskFindingType.specialGroup]
-/// and the source text was classified into a structured conclusion.
-/// Carries the classified risk level for UI two-layer display
-/// (conclusion label + evidence source text).
- SpecialPopulationConclusion? get specialPopulationConclusion;
+ MedicineRiskFindingType get type; MedicineRiskSeverity get severity; MedicineRiskFindingContext get context; String get primaryMedicineName; String? get secondaryMedicineName; String? get relatedLabel; String? get evidence;
 /// Create a copy of MedicineRiskFinding
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -310,16 +306,16 @@ $MedicineRiskFindingCopyWith<MedicineRiskFinding> get copyWith => _$MedicineRisk
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicineRiskFinding&&(identical(other.type, type) || other.type == type)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.context, context) || other.context == context)&&(identical(other.primaryMedicineName, primaryMedicineName) || other.primaryMedicineName == primaryMedicineName)&&(identical(other.secondaryMedicineName, secondaryMedicineName) || other.secondaryMedicineName == secondaryMedicineName)&&(identical(other.relatedLabel, relatedLabel) || other.relatedLabel == relatedLabel)&&(identical(other.evidence, evidence) || other.evidence == evidence)&&(identical(other.specialPopulationConclusion, specialPopulationConclusion) || other.specialPopulationConclusion == specialPopulationConclusion));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicineRiskFinding&&(identical(other.type, type) || other.type == type)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.context, context) || other.context == context)&&(identical(other.primaryMedicineName, primaryMedicineName) || other.primaryMedicineName == primaryMedicineName)&&(identical(other.secondaryMedicineName, secondaryMedicineName) || other.secondaryMedicineName == secondaryMedicineName)&&(identical(other.relatedLabel, relatedLabel) || other.relatedLabel == relatedLabel)&&(identical(other.evidence, evidence) || other.evidence == evidence));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,severity,context,primaryMedicineName,secondaryMedicineName,relatedLabel,evidence,specialPopulationConclusion);
+int get hashCode => Object.hash(runtimeType,type,severity,context,primaryMedicineName,secondaryMedicineName,relatedLabel,evidence);
 
 @override
 String toString() {
-  return 'MedicineRiskFinding(type: $type, severity: $severity, context: $context, primaryMedicineName: $primaryMedicineName, secondaryMedicineName: $secondaryMedicineName, relatedLabel: $relatedLabel, evidence: $evidence, specialPopulationConclusion: $specialPopulationConclusion)';
+  return 'MedicineRiskFinding(type: $type, severity: $severity, context: $context, primaryMedicineName: $primaryMedicineName, secondaryMedicineName: $secondaryMedicineName, relatedLabel: $relatedLabel, evidence: $evidence)';
 }
 
 
@@ -330,7 +326,7 @@ abstract mixin class $MedicineRiskFindingCopyWith<$Res>  {
   factory $MedicineRiskFindingCopyWith(MedicineRiskFinding value, $Res Function(MedicineRiskFinding) _then) = _$MedicineRiskFindingCopyWithImpl;
 @useResult
 $Res call({
- MedicineRiskFindingType type, MedicineRiskSeverity severity, MedicineRiskFindingContext context, String primaryMedicineName, String? secondaryMedicineName, String? relatedLabel, String? evidence, SpecialPopulationConclusion? specialPopulationConclusion
+ MedicineRiskFindingType type, MedicineRiskSeverity severity, MedicineRiskFindingContext context, String primaryMedicineName, String? secondaryMedicineName, String? relatedLabel, String? evidence
 });
 
 
@@ -347,7 +343,7 @@ class _$MedicineRiskFindingCopyWithImpl<$Res>
 
 /// Create a copy of MedicineRiskFinding
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? severity = null,Object? context = null,Object? primaryMedicineName = null,Object? secondaryMedicineName = freezed,Object? relatedLabel = freezed,Object? evidence = freezed,Object? specialPopulationConclusion = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? severity = null,Object? context = null,Object? primaryMedicineName = null,Object? secondaryMedicineName = freezed,Object? relatedLabel = freezed,Object? evidence = freezed,}) {
   return _then(_self.copyWith(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as MedicineRiskFindingType,severity: null == severity ? _self.severity : severity // ignore: cast_nullable_to_non_nullable
@@ -356,8 +352,7 @@ as MedicineRiskFindingContext,primaryMedicineName: null == primaryMedicineName ?
 as String,secondaryMedicineName: freezed == secondaryMedicineName ? _self.secondaryMedicineName : secondaryMedicineName // ignore: cast_nullable_to_non_nullable
 as String?,relatedLabel: freezed == relatedLabel ? _self.relatedLabel : relatedLabel // ignore: cast_nullable_to_non_nullable
 as String?,evidence: freezed == evidence ? _self.evidence : evidence // ignore: cast_nullable_to_non_nullable
-as String?,specialPopulationConclusion: freezed == specialPopulationConclusion ? _self.specialPopulationConclusion : specialPopulationConclusion // ignore: cast_nullable_to_non_nullable
-as SpecialPopulationConclusion?,
+as String?,
   ));
 }
 
@@ -442,10 +437,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MedicineRiskFindingType type,  MedicineRiskSeverity severity,  MedicineRiskFindingContext context,  String primaryMedicineName,  String? secondaryMedicineName,  String? relatedLabel,  String? evidence,  SpecialPopulationConclusion? specialPopulationConclusion)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MedicineRiskFindingType type,  MedicineRiskSeverity severity,  MedicineRiskFindingContext context,  String primaryMedicineName,  String? secondaryMedicineName,  String? relatedLabel,  String? evidence)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MedicineRiskFinding() when $default != null:
-return $default(_that.type,_that.severity,_that.context,_that.primaryMedicineName,_that.secondaryMedicineName,_that.relatedLabel,_that.evidence,_that.specialPopulationConclusion);case _:
+return $default(_that.type,_that.severity,_that.context,_that.primaryMedicineName,_that.secondaryMedicineName,_that.relatedLabel,_that.evidence);case _:
   return orElse();
 
 }
@@ -463,10 +458,10 @@ return $default(_that.type,_that.severity,_that.context,_that.primaryMedicineNam
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MedicineRiskFindingType type,  MedicineRiskSeverity severity,  MedicineRiskFindingContext context,  String primaryMedicineName,  String? secondaryMedicineName,  String? relatedLabel,  String? evidence,  SpecialPopulationConclusion? specialPopulationConclusion)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MedicineRiskFindingType type,  MedicineRiskSeverity severity,  MedicineRiskFindingContext context,  String primaryMedicineName,  String? secondaryMedicineName,  String? relatedLabel,  String? evidence)  $default,) {final _that = this;
 switch (_that) {
 case _MedicineRiskFinding():
-return $default(_that.type,_that.severity,_that.context,_that.primaryMedicineName,_that.secondaryMedicineName,_that.relatedLabel,_that.evidence,_that.specialPopulationConclusion);case _:
+return $default(_that.type,_that.severity,_that.context,_that.primaryMedicineName,_that.secondaryMedicineName,_that.relatedLabel,_that.evidence);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -483,10 +478,10 @@ return $default(_that.type,_that.severity,_that.context,_that.primaryMedicineNam
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MedicineRiskFindingType type,  MedicineRiskSeverity severity,  MedicineRiskFindingContext context,  String primaryMedicineName,  String? secondaryMedicineName,  String? relatedLabel,  String? evidence,  SpecialPopulationConclusion? specialPopulationConclusion)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MedicineRiskFindingType type,  MedicineRiskSeverity severity,  MedicineRiskFindingContext context,  String primaryMedicineName,  String? secondaryMedicineName,  String? relatedLabel,  String? evidence)?  $default,) {final _that = this;
 switch (_that) {
 case _MedicineRiskFinding() when $default != null:
-return $default(_that.type,_that.severity,_that.context,_that.primaryMedicineName,_that.secondaryMedicineName,_that.relatedLabel,_that.evidence,_that.specialPopulationConclusion);case _:
+return $default(_that.type,_that.severity,_that.context,_that.primaryMedicineName,_that.secondaryMedicineName,_that.relatedLabel,_that.evidence);case _:
   return null;
 
 }
@@ -498,7 +493,7 @@ return $default(_that.type,_that.severity,_that.context,_that.primaryMedicineNam
 
 
 class _MedicineRiskFinding implements MedicineRiskFinding {
-  const _MedicineRiskFinding({required this.type, required this.severity, required this.context, required this.primaryMedicineName, this.secondaryMedicineName, this.relatedLabel, this.evidence, this.specialPopulationConclusion});
+  const _MedicineRiskFinding({required this.type, required this.severity, required this.context, required this.primaryMedicineName, this.secondaryMedicineName, this.relatedLabel, this.evidence});
   
 
 @override final  MedicineRiskFindingType type;
@@ -508,11 +503,6 @@ class _MedicineRiskFinding implements MedicineRiskFinding {
 @override final  String? secondaryMedicineName;
 @override final  String? relatedLabel;
 @override final  String? evidence;
-/// Non-null only when [type] is [MedicineRiskFindingType.specialGroup]
-/// and the source text was classified into a structured conclusion.
-/// Carries the classified risk level for UI two-layer display
-/// (conclusion label + evidence source text).
-@override final  SpecialPopulationConclusion? specialPopulationConclusion;
 
 /// Create a copy of MedicineRiskFinding
 /// with the given fields replaced by the non-null parameter values.
@@ -524,16 +514,16 @@ _$MedicineRiskFindingCopyWith<_MedicineRiskFinding> get copyWith => __$MedicineR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MedicineRiskFinding&&(identical(other.type, type) || other.type == type)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.context, context) || other.context == context)&&(identical(other.primaryMedicineName, primaryMedicineName) || other.primaryMedicineName == primaryMedicineName)&&(identical(other.secondaryMedicineName, secondaryMedicineName) || other.secondaryMedicineName == secondaryMedicineName)&&(identical(other.relatedLabel, relatedLabel) || other.relatedLabel == relatedLabel)&&(identical(other.evidence, evidence) || other.evidence == evidence)&&(identical(other.specialPopulationConclusion, specialPopulationConclusion) || other.specialPopulationConclusion == specialPopulationConclusion));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MedicineRiskFinding&&(identical(other.type, type) || other.type == type)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.context, context) || other.context == context)&&(identical(other.primaryMedicineName, primaryMedicineName) || other.primaryMedicineName == primaryMedicineName)&&(identical(other.secondaryMedicineName, secondaryMedicineName) || other.secondaryMedicineName == secondaryMedicineName)&&(identical(other.relatedLabel, relatedLabel) || other.relatedLabel == relatedLabel)&&(identical(other.evidence, evidence) || other.evidence == evidence));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,severity,context,primaryMedicineName,secondaryMedicineName,relatedLabel,evidence,specialPopulationConclusion);
+int get hashCode => Object.hash(runtimeType,type,severity,context,primaryMedicineName,secondaryMedicineName,relatedLabel,evidence);
 
 @override
 String toString() {
-  return 'MedicineRiskFinding(type: $type, severity: $severity, context: $context, primaryMedicineName: $primaryMedicineName, secondaryMedicineName: $secondaryMedicineName, relatedLabel: $relatedLabel, evidence: $evidence, specialPopulationConclusion: $specialPopulationConclusion)';
+  return 'MedicineRiskFinding(type: $type, severity: $severity, context: $context, primaryMedicineName: $primaryMedicineName, secondaryMedicineName: $secondaryMedicineName, relatedLabel: $relatedLabel, evidence: $evidence)';
 }
 
 
@@ -544,7 +534,7 @@ abstract mixin class _$MedicineRiskFindingCopyWith<$Res> implements $MedicineRis
   factory _$MedicineRiskFindingCopyWith(_MedicineRiskFinding value, $Res Function(_MedicineRiskFinding) _then) = __$MedicineRiskFindingCopyWithImpl;
 @override @useResult
 $Res call({
- MedicineRiskFindingType type, MedicineRiskSeverity severity, MedicineRiskFindingContext context, String primaryMedicineName, String? secondaryMedicineName, String? relatedLabel, String? evidence, SpecialPopulationConclusion? specialPopulationConclusion
+ MedicineRiskFindingType type, MedicineRiskSeverity severity, MedicineRiskFindingContext context, String primaryMedicineName, String? secondaryMedicineName, String? relatedLabel, String? evidence
 });
 
 
@@ -561,7 +551,7 @@ class __$MedicineRiskFindingCopyWithImpl<$Res>
 
 /// Create a copy of MedicineRiskFinding
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? severity = null,Object? context = null,Object? primaryMedicineName = null,Object? secondaryMedicineName = freezed,Object? relatedLabel = freezed,Object? evidence = freezed,Object? specialPopulationConclusion = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? severity = null,Object? context = null,Object? primaryMedicineName = null,Object? secondaryMedicineName = freezed,Object? relatedLabel = freezed,Object? evidence = freezed,}) {
   return _then(_MedicineRiskFinding(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as MedicineRiskFindingType,severity: null == severity ? _self.severity : severity // ignore: cast_nullable_to_non_nullable
@@ -570,8 +560,7 @@ as MedicineRiskFindingContext,primaryMedicineName: null == primaryMedicineName ?
 as String,secondaryMedicineName: freezed == secondaryMedicineName ? _self.secondaryMedicineName : secondaryMedicineName // ignore: cast_nullable_to_non_nullable
 as String?,relatedLabel: freezed == relatedLabel ? _self.relatedLabel : relatedLabel // ignore: cast_nullable_to_non_nullable
 as String?,evidence: freezed == evidence ? _self.evidence : evidence // ignore: cast_nullable_to_non_nullable
-as String?,specialPopulationConclusion: freezed == specialPopulationConclusion ? _self.specialPopulationConclusion : specialPopulationConclusion // ignore: cast_nullable_to_non_nullable
-as SpecialPopulationConclusion?,
+as String?,
   ));
 }
 

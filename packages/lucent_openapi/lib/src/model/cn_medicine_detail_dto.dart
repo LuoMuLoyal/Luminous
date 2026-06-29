@@ -40,16 +40,6 @@ class CnMedicineDetailDto {
 
     this.precautions,
 
-    this.pediatricUse,
-
-    this.geriatricUse,
-
-    this.pregnancyLactation,
-
-    this.pregnancy,
-
-    this.lactation,
-
     this.pharmacologyToxicology,
 
     this.drugInteractions,
@@ -109,23 +99,6 @@ class CnMedicineDetailDto {
   @JsonKey(name: r'precautions', required: false, includeIfNull: false)
   final Object? precautions;
 
-  @JsonKey(name: r'pediatricUse', required: false, includeIfNull: false)
-  final Object? pediatricUse;
-
-  @JsonKey(name: r'geriatricUse', required: false, includeIfNull: false)
-  final Object? geriatricUse;
-
-  /// Deprecated: use pregnancy and lactation fields. Kept for backward compatibility.
-  @Deprecated('pregnancyLactation has been deprecated')
-  @JsonKey(name: r'pregnancyLactation', required: false, includeIfNull: false)
-  final Object? pregnancyLactation;
-
-  @JsonKey(name: r'pregnancy', required: false, includeIfNull: false)
-  final Object? pregnancy;
-
-  @JsonKey(name: r'lactation', required: false, includeIfNull: false)
-  final Object? lactation;
-
   @JsonKey(
     name: r'pharmacologyToxicology',
     required: false,
@@ -180,11 +153,6 @@ class CnMedicineDetailDto {
           other.adverseReactions == adverseReactions &&
           other.contraindications == contraindications &&
           other.precautions == precautions &&
-          other.pediatricUse == pediatricUse &&
-          other.geriatricUse == geriatricUse &&
-          other.pregnancyLactation == pregnancyLactation &&
-          other.pregnancy == pregnancy &&
-          other.lactation == lactation &&
           other.pharmacologyToxicology == pharmacologyToxicology &&
           other.drugInteractions == drugInteractions &&
           other.pharmacokinetics == pharmacokinetics &&
@@ -211,11 +179,6 @@ class CnMedicineDetailDto {
       (adverseReactions == null ? 0 : adverseReactions.hashCode) +
       (contraindications == null ? 0 : contraindications.hashCode) +
       (precautions == null ? 0 : precautions.hashCode) +
-      (pediatricUse == null ? 0 : pediatricUse.hashCode) +
-      (geriatricUse == null ? 0 : geriatricUse.hashCode) +
-      (pregnancyLactation == null ? 0 : pregnancyLactation.hashCode) +
-      (pregnancy == null ? 0 : pregnancy.hashCode) +
-      (lactation == null ? 0 : lactation.hashCode) +
       (pharmacologyToxicology == null ? 0 : pharmacologyToxicology.hashCode) +
       (drugInteractions == null ? 0 : drugInteractions.hashCode) +
       (pharmacokinetics == null ? 0 : pharmacokinetics.hashCode) +

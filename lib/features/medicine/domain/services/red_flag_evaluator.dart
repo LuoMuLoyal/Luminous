@@ -12,7 +12,6 @@ class RedFlagEvaluator {
     final alerts = <RedFlagAlert>[];
 
     alerts.addAll(_severeAllergyAlerts(snapshot, result));
-    alerts.addAll(_pregnancyContraindicationAlerts(result));
     alerts.addAll(_informationGapAlerts(snapshot, result));
 
     return alerts;
@@ -50,37 +49,6 @@ class RedFlagEvaluator {
   }
 
   // ── Rule 2: Pregnancy / lactation contraindication ────────
-  List<RedFlagAlert> _pregnancyContraindicationAlerts(
-    MedicineRiskCheckResult result,
-  ) {
-    const contraindicationKeywords = ['禁用', 'contraindicated', '禁忌'];
-
-    return result.findings
-        .where((f) {
-          if (f.type != MedicineRiskFindingType.specialGroup) return false;
-          if (f.context != MedicineRiskFindingContext.pregnancy &&
-              f.context != MedicineRiskFindingContext.lactation) {
-            return false;
-          }
-          if (f.specialPopulationConclusion ==
-              SpecialPopulationConclusion.contraindicated) {
-            return true;
-          }
-          final evidence = f.evidence?.toLowerCase() ?? '';
-          return contraindicationKeywords.any(
-            (kw) => evidence.contains(kw.toLowerCase()),
-          );
-        })
-        .map(
-          (f) => RedFlagAlert(
-            rule: RedFlagRule.pregnancyContraindication,
-            primaryMedicineName: f.primaryMedicineName,
-            resourceId: 'campus-hospital',
-          ),
-        )
-        .toList(growable: false);
-  }
-
   // ── Rule 3: Information gap for high-risk profiles ────────
   List<RedFlagAlert> _informationGapAlerts(
     HealthContextSnapshot snapshot,
@@ -88,10 +56,9 @@ class RedFlagEvaluator {
   ) {
     if (result.coverageIssues.isEmpty) return const [];
 
-    final hasHighRiskProfile =
-        snapshot.allergies.any((a) => a.isActive && isSevereAllergy(a)) ||
-        snapshot.profile.pregnancyState == 'pregnant' ||
-        snapshot.profile.lactationState == 'yes';
+    final hasHighRiskProfile = snapshot.allergies.any(
+      (a) => a.isActive && isSevereAllergy(a),
+    );
 
     if (!hasHighRiskProfile) return const [];
 

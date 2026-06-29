@@ -29,8 +29,6 @@ class HealthContextMapper {
       birthDate: p.birthDate?.toString(),
       sexAtBirth: p.sexAtBirth?.name,
       heightCm: p.heightCm is num ? (p.heightCm as num).toDouble() : null,
-      pregnancyState: p.pregnancyState?.name,
-      lactationState: p.lactationState?.name,
       bloodType: p.bloodType?.toString(),
       locale: p.locale?.toString(),
       timezone: p.timezone?.toString(),

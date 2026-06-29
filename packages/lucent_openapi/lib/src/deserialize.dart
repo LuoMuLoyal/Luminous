@@ -444,7 +444,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'HumidityIndicatorDto':
       return HumidityIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'LactationState':
     case 'LoginDataDto':
       return LoginDataDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'LoginDto':
@@ -528,7 +527,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return PollenIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'PollenLevel':
-    case 'PregnancyState':
     case 'RefreshDto':
       return RefreshDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'RefreshResponseDto':

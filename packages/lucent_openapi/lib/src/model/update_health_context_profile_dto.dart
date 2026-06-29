@@ -4,9 +4,7 @@
 
 // ignore_for_file: unused_element
 import 'package:lucent_openapi/src/model/sex_at_birth.dart';
-import 'package:lucent_openapi/src/model/lactation_state.dart';
 import 'package:lucent_openapi/src/model/unit_system.dart';
-import 'package:lucent_openapi/src/model/pregnancy_state.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'update_health_context_profile_dto.g.dart';
@@ -31,10 +29,6 @@ class UpdateHealthContextProfileDto {
     this.sexAtBirth,
 
     this.heightCm,
-
-    this.pregnancyState,
-
-    this.lactationState,
 
     this.bloodType,
 
@@ -75,24 +69,6 @@ class UpdateHealthContextProfileDto {
   @JsonKey(name: r'heightCm', required: false, includeIfNull: false)
   final Object? heightCm;
 
-  /// Pregnancy state for personalized medical guidance. Use null to clear.
-  @JsonKey(
-    name: r'pregnancyState',
-    required: false,
-    includeIfNull: false,
-    unknownEnumValue: PregnancyState.unknownDefaultOpenApi,
-  )
-  final PregnancyState? pregnancyState;
-
-  /// Lactation state for personalized medical guidance. Use null to clear.
-  @JsonKey(
-    name: r'lactationState',
-    required: false,
-    includeIfNull: false,
-    unknownEnumValue: LactationState.unknownDefaultOpenApi,
-  )
-  final LactationState? lactationState;
-
   /// Blood type. Use null to clear.
   @JsonKey(name: r'bloodType', required: false, includeIfNull: false)
   final Object? bloodType;
@@ -111,8 +87,6 @@ class UpdateHealthContextProfileDto {
           other.birthDate == birthDate &&
           other.sexAtBirth == sexAtBirth &&
           other.heightCm == heightCm &&
-          other.pregnancyState == pregnancyState &&
-          other.lactationState == lactationState &&
           other.bloodType == bloodType &&
           other.onboardingCompleted == onboardingCompleted;
 
@@ -124,8 +98,6 @@ class UpdateHealthContextProfileDto {
       (birthDate == null ? 0 : birthDate.hashCode) +
       (sexAtBirth == null ? 0 : sexAtBirth.hashCode) +
       (heightCm == null ? 0 : heightCm.hashCode) +
-      (pregnancyState == null ? 0 : pregnancyState.hashCode) +
-      (lactationState == null ? 0 : lactationState.hashCode) +
       (bloodType == null ? 0 : bloodType.hashCode) +
       onboardingCompleted.hashCode;
 

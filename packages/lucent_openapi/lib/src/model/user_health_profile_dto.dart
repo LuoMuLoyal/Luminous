@@ -4,9 +4,7 @@
 
 // ignore_for_file: unused_element
 import 'package:lucent_openapi/src/model/sex_at_birth.dart';
-import 'package:lucent_openapi/src/model/lactation_state.dart';
 import 'package:lucent_openapi/src/model/unit_system.dart';
-import 'package:lucent_openapi/src/model/pregnancy_state.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_health_profile_dto.g.dart';
@@ -25,10 +23,6 @@ class UserHealthProfileDto {
     required this.sexAtBirth,
 
     required this.heightCm,
-
-    required this.pregnancyState,
-
-    required this.lactationState,
 
     required this.bloodType,
 
@@ -59,24 +53,6 @@ class UserHealthProfileDto {
   /// Height in centimeters.
   @JsonKey(name: r'heightCm', required: true, includeIfNull: true)
   final Object? heightCm;
-
-  /// Pregnancy state for personalized medical guidance.
-  @JsonKey(
-    name: r'pregnancyState',
-    required: true,
-    includeIfNull: true,
-    unknownEnumValue: PregnancyState.unknownDefaultOpenApi,
-  )
-  final PregnancyState? pregnancyState;
-
-  /// Lactation state for personalized medical guidance.
-  @JsonKey(
-    name: r'lactationState',
-    required: true,
-    includeIfNull: true,
-    unknownEnumValue: LactationState.unknownDefaultOpenApi,
-  )
-  final LactationState? lactationState;
 
   /// Blood type.
   @JsonKey(name: r'bloodType', required: true, includeIfNull: true)
@@ -114,8 +90,6 @@ class UserHealthProfileDto {
           other.birthDate == birthDate &&
           other.sexAtBirth == sexAtBirth &&
           other.heightCm == heightCm &&
-          other.pregnancyState == pregnancyState &&
-          other.lactationState == lactationState &&
           other.bloodType == bloodType &&
           other.locale == locale &&
           other.timezone == timezone &&
@@ -128,8 +102,6 @@ class UserHealthProfileDto {
       (birthDate == null ? 0 : birthDate.hashCode) +
       (sexAtBirth == null ? 0 : sexAtBirth.hashCode) +
       (heightCm == null ? 0 : heightCm.hashCode) +
-      (pregnancyState == null ? 0 : pregnancyState.hashCode) +
-      (lactationState == null ? 0 : lactationState.hashCode) +
       (bloodType == null ? 0 : bloodType.hashCode) +
       (locale == null ? 0 : locale.hashCode) +
       (timezone == null ? 0 : timezone.hashCode) +

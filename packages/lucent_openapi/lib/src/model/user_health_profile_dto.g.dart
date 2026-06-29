@@ -15,8 +15,6 @@ UserHealthProfileDto _$UserHealthProfileDtoFromJson(
       'birthDate',
       'sexAtBirth',
       'heightCm',
-      'pregnancyState',
-      'lactationState',
       'bloodType',
       'locale',
       'timezone',
@@ -36,22 +34,6 @@ UserHealthProfileDto _$UserHealthProfileDtoFromJson(
       ),
     ),
     heightCm: $checkedConvert('heightCm', (v) => v),
-    pregnancyState: $checkedConvert(
-      'pregnancyState',
-      (v) => $enumDecodeNullable(
-        _$PregnancyStateEnumMap,
-        v,
-        unknownValue: PregnancyState.unknownDefaultOpenApi,
-      ),
-    ),
-    lactationState: $checkedConvert(
-      'lactationState',
-      (v) => $enumDecodeNullable(
-        _$LactationStateEnumMap,
-        v,
-        unknownValue: LactationState.unknownDefaultOpenApi,
-      ),
-    ),
     bloodType: $checkedConvert('bloodType', (v) => v),
     locale: $checkedConvert('locale', (v) => v),
     timezone: $checkedConvert('timezone', (v) => v),
@@ -79,8 +61,6 @@ Map<String, dynamic> _$UserHealthProfileDtoToJson(
   'birthDate': instance.birthDate,
   'sexAtBirth': _$SexAtBirthEnumMap[instance.sexAtBirth],
   'heightCm': instance.heightCm,
-  'pregnancyState': _$PregnancyStateEnumMap[instance.pregnancyState],
-  'lactationState': _$LactationStateEnumMap[instance.lactationState],
   'bloodType': instance.bloodType,
   'locale': instance.locale,
   'timezone': instance.timezone,
@@ -95,24 +75,6 @@ const _$SexAtBirthEnumMap = {
   SexAtBirth.intersex: 'intersex',
   SexAtBirth.unknown: 'unknown',
   SexAtBirth.unknownDefaultOpenApi: 'unknown_default_open_api',
-};
-
-const _$PregnancyStateEnumMap = {
-  PregnancyState.notApplicable: 'not_applicable',
-  PregnancyState.unknown: 'unknown',
-  PregnancyState.notPregnant: 'not_pregnant',
-  PregnancyState.pregnant: 'pregnant',
-  PregnancyState.trying: 'trying',
-  PregnancyState.postpartum: 'postpartum',
-  PregnancyState.unknownDefaultOpenApi: 'unknown_default_open_api',
-};
-
-const _$LactationStateEnumMap = {
-  LactationState.notApplicable: 'not_applicable',
-  LactationState.unknown: 'unknown',
-  LactationState.no: 'no',
-  LactationState.yes: 'yes',
-  LactationState.unknownDefaultOpenApi: 'unknown_default_open_api',
 };
 
 const _$UnitSystemEnumMap = {

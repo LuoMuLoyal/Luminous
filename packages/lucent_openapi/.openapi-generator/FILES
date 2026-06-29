@@ -112,7 +112,6 @@ lib/src/model/health_probe_type.dart
 lib/src/model/health_response_dto.dart
 lib/src/model/health_summary_dto.dart
 lib/src/model/humidity_indicator_dto.dart
-lib/src/model/lactation_state.dart
 lib/src/model/login_data_dto.dart
 lib/src/model/login_dto.dart
 lib/src/model/login_response_dto.dart
@@ -141,7 +140,6 @@ lib/src/model/o_auth_callback_dto.dart
 lib/src/model/o_auth_code_callback_dto.dart
 lib/src/model/pollen_indicator_dto.dart
 lib/src/model/pollen_level.dart
-lib/src/model/pregnancy_state.dart
 lib/src/model/refresh_dto.dart
 lib/src/model/refresh_response_dto.dart
 lib/src/model/register_data_dto.dart

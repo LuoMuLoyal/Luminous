@@ -222,38 +222,10 @@ Color medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
   };
 }
 
-String medicineRiskConclusionLabel(
-  AppLocalizations l10n,
-  SpecialPopulationConclusion? conclusion,
-) {
-  if (conclusion == null) {
-    return l10n.medicineRiskConclusionInsufficientInformation;
-  }
-  return switch (conclusion) {
-    SpecialPopulationConclusion.contraindicated =>
-      l10n.medicineRiskConclusionContraindicated,
-    SpecialPopulationConclusion.avoid => l10n.medicineRiskConclusionAvoid,
-    SpecialPopulationConclusion.caution => l10n.medicineRiskConclusionCaution,
-    SpecialPopulationConclusion.consultClinician =>
-      l10n.medicineRiskConclusionConsultClinician,
-    SpecialPopulationConclusion.insufficientInformation =>
-      l10n.medicineRiskConclusionInsufficientInformation,
-  };
-}
-
 String medicineRiskFindingTitle(
   AppLocalizations l10n,
   MedicineRiskFinding finding,
 ) {
-  // For special-group findings, use the structured conclusion label
-  // when available — otherwise fall back to the generic title.
-  if (finding.type == MedicineRiskFindingType.specialGroup &&
-      finding.specialPopulationConclusion != null) {
-    return medicineRiskConclusionLabel(
-      l10n,
-      finding.specialPopulationConclusion,
-    );
-  }
   return switch (finding.type) {
     MedicineRiskFindingType.interaction =>
       l10n.medicineRiskCheckFindingTitleInteraction,
@@ -261,10 +233,10 @@ String medicineRiskFindingTitle(
       l10n.medicineRiskCheckFindingTitleDuplicate,
     MedicineRiskFindingType.allergy =>
       l10n.medicineRiskCheckFindingTitleAllergy,
-    MedicineRiskFindingType.specialGroup =>
-      l10n.medicineRiskCheckFindingTitleSpecialGroup,
     MedicineRiskFindingType.foodInteraction =>
       l10n.medicineRiskCheckFindingTitleFoodInteraction,
+    MedicineRiskFindingType.specialGroup =>
+      l10n.medicineRiskCheckFindingTitleSpecialGroup,
   };
 }
 
@@ -329,14 +301,6 @@ String medicineRiskContextLabel(
 ) {
   return switch (context) {
     MedicineRiskFindingContext.none => '',
-    MedicineRiskFindingContext.pregnancy =>
-      l10n.medicineRiskCheckContextPregnancy,
-    MedicineRiskFindingContext.lactation =>
-      l10n.medicineRiskCheckContextLactation,
-    MedicineRiskFindingContext.pediatric =>
-      l10n.medicineRiskCheckContextPediatric,
-    MedicineRiskFindingContext.geriatric =>
-      l10n.medicineRiskCheckContextGeriatric,
     MedicineRiskFindingContext.alcohol => l10n.medicineRiskCheckContextAlcohol,
     MedicineRiskFindingContext.caffeine =>
       l10n.medicineRiskCheckContextCaffeine,
@@ -369,8 +333,6 @@ String redFlagAlertCopy(AppLocalizations l10n, RedFlagAlert alert) {
       allergen != null && allergen.isNotEmpty
           ? l10n.medicineRiskCheckRedFlagSevereAllergy(drug, allergen)
           : l10n.medicineRiskCheckRedFlagSevereAllergyGeneric(drug),
-    RedFlagRule.pregnancyContraindication =>
-      l10n.medicineRiskCheckRedFlagPregnancyContraindication(drug),
     RedFlagRule.informationGap => l10n.medicineRiskCheckRedFlagInformationGap(
       drug,
     ),
@@ -381,8 +343,6 @@ String redFlagActionCopy(AppLocalizations l10n, RedFlagAlert alert) {
   return switch (alert.rule) {
     RedFlagRule.severeAllergy =>
       l10n.medicineRiskCheckRedFlagActionSevereAllergy,
-    RedFlagRule.pregnancyContraindication =>
-      l10n.medicineRiskCheckRedFlagActionPregnancyContraindication,
     RedFlagRule.informationGap =>
       l10n.medicineRiskCheckRedFlagActionInformationGap,
   };

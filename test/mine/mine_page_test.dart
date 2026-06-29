@@ -541,8 +541,6 @@ final _mockSnapshot = HealthContextSnapshot(
     birthDate: '1999-01-15',
     sexAtBirth: null,
     heightCm: null,
-    pregnancyState: null,
-    lactationState: null,
     bloodType: null,
     locale: null,
     timezone: null,

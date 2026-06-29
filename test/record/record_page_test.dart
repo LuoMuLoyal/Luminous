@@ -2207,8 +2207,6 @@ HealthContextSnapshot _healthSnapshot({String? sexAtBirth = 'male'}) {
       birthDate: '1999-01-15',
       sexAtBirth: sexAtBirth,
       heightCm: 165,
-      pregnancyState: null,
-      lactationState: null,
       bloodType: null,
       locale: null,
       timezone: null,

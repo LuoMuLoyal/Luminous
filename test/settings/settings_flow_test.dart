@@ -362,8 +362,6 @@ class _FakeSettingsProfileRemoteDataSource
         birthDate: null,
         sexAtBirth: null,
         heightCm: null,
-        pregnancyState: null,
-        lactationState: null,
         bloodType: null,
         locale: identical(locale, settingsProfileNoChange) ? null : locale,
         timezone: identical(timezone, settingsProfileNoChange)

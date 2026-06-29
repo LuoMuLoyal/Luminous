@@ -24,8 +24,6 @@ UserHealthProfileDto _p({Object? h, Object? bd, SexAtBirth? sx}) {
     heightCm: h,
     birthDate: bd,
     sexAtBirth: sx,
-    pregnancyState: null,
-    lactationState: null,
     bloodType: null,
     locale: null,
     timezone: null,
