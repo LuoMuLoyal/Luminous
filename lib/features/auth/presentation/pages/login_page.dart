@@ -10,17 +10,22 @@ import 'package:luminous/features/auth/presentation/providers/forms/login_form_p
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({
     super.key,
     this.wechatCode,
     this.wechatState,
+    this.qqCode,
+    this.qqState,
     this.returnTo,
   });
 
   final String? wechatCode;
   final String? wechatState;
+  final String? qqCode;
+  final String? qqState;
   final String? returnTo;
 
   @override
@@ -32,6 +37,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   late final TextEditingController _passwordController;
   late final TextEditingController _codeController;
   late final TextEditingController _wechatCallbackController;
+  late final TextEditingController _qqCallbackController;
 
   @override
   void initState() {
@@ -40,6 +46,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     _passwordController = TextEditingController();
     _codeController = TextEditingController();
     _wechatCallbackController = TextEditingController();
+    _qqCallbackController = TextEditingController();
 
     if ((widget.wechatCode?.isNotEmpty ?? false) &&
         (widget.wechatState?.isNotEmpty ?? false)) {
@@ -50,6 +57,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         _completeWechatLogin(widget.wechatCode!, widget.wechatState!);
       });
     }
+
+    if ((widget.qqCode?.isNotEmpty ?? false) &&
+        (widget.qqState?.isNotEmpty ?? false)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _completeQqLogin(widget.qqCode!, widget.qqState!);
+      });
+    }
   }
 
   @override
@@ -58,6 +75,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     _passwordController.dispose();
     _codeController.dispose();
     _wechatCallbackController.dispose();
+    _qqCallbackController.dispose();
     super.dispose();
   }
 
@@ -250,6 +268,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             onStart: () => _startWechatLogin(context, l10n),
             onComplete: () => _completeWechatLoginFromInput(context, l10n),
           ),
+          _QqOAuthPanel(
+            callbackController: _qqCallbackController,
+            isStarting: state.isStartingQqLogin,
+            isCompleting: state.isCompletingQqLogin,
+            authorizeUrl: state.qqAuthorizeUrl,
+            onStart: () => _startQqLogin(context, l10n),
+            onComplete: () => _completeQqLoginFromInput(context, l10n),
+          ),
+          _AppleOAuthPanel(
+            isLoading: state.isStartingAppleLogin,
+            onSignIn: _startAppleLogin,
+          ),
         ],
       ),
     );
@@ -359,6 +389,121 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       return;
     }
     _goAfterLogin(fallbackHome: true);
+  }
+
+  Future<void> _startQqLogin(
+    BuildContext context,
+    AppLocalizations? l10n,
+  ) async {
+    final notifier = ref.read(loginFormProvider.notifier);
+    final authorize = await notifier.createQqAuthorizeUrl(
+      callbackUri: _webQqCallbackUri(),
+    );
+    if (authorize == null || !context.mounted) {
+      return;
+    }
+
+    final opened = await ref
+        .read(externalUrlLauncherProvider)
+        .open(Uri.parse(authorize.authorizeUrl));
+    if (!context.mounted) {
+      return;
+    }
+    if (!opened) {
+      await AppToast.show(
+        context,
+        l10n?.authWechatBrowserOpenFailed ??
+            'Could not open the QQ authorization page.',
+      );
+      return;
+    }
+    await AppToast.show(context, 'QQ authorization opened in your browser.');
+  }
+
+  String? _webQqCallbackUri() {
+    if (!kIsWeb) {
+      return null;
+    }
+
+    final base = Uri.base;
+    final returnTo = _safeReturnTo(widget.returnTo);
+    return Uri(
+      scheme: base.scheme,
+      host: base.host,
+      port: base.hasPort ? base.port : null,
+      path: '/login/oauth/qq',
+      queryParameters: returnTo == null ? null : {'returnTo': returnTo},
+    ).toString();
+  }
+
+  Future<void> _completeQqLoginFromInput(
+    BuildContext context,
+    AppLocalizations? l10n,
+  ) async {
+    final notifier = ref.read(loginFormProvider.notifier);
+    notifier.updateQqCallbackInput(_qqCallbackController.text);
+    final state = ref.read(loginFormProvider);
+    final callback = _parseWechatCallback(
+      _qqCallbackController.text,
+      state.qqState,
+    );
+    if (callback == null) {
+      final message = _qqCallbackController.text.trim().isEmpty
+          ? 'Please paste the QQ callback link first.'
+          : 'The QQ callback link is missing code or state.';
+      await AppToast.show(context, message);
+      return;
+    }
+    await _completeQqLogin(callback.code, callback.state);
+  }
+
+  Future<void> _completeQqLogin(String code, String state) async {
+    final session = await ref
+        .read(loginFormProvider.notifier)
+        .completeQqLogin(code: code, state: state);
+    if (session == null || !mounted) {
+      return;
+    }
+    _goAfterLogin(fallbackHome: true);
+  }
+
+  Future<void> _startAppleLogin() async {
+    if (!mounted) {
+      return;
+    }
+    final l10n = AppLocalizations.of(context);
+    final failMessage =
+        l10n?.authWechatBrowserOpenFailed ?? 'Apple Sign In failed.';
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      final session = await ref
+          .read(loginFormProvider.notifier)
+          .loginWithApple(
+            identityToken: credential.identityToken ?? '',
+            authorizationCode: credential.authorizationCode,
+            givenName: credential.givenName,
+            familyName: credential.familyName,
+          );
+
+      if (session == null || !mounted) {
+        return;
+      }
+      _goAfterLogin(fallbackHome: true);
+    } catch (e) {
+      if (mounted) {
+        await AppToast.show(context, failMessage);
+      }
+    }
   }
 
   void _goAfterLogin({bool fallbackHome = false}) {
@@ -497,4 +642,103 @@ class _WechatCallback {
 
   final String code;
   final String state;
+}
+
+class _QqOAuthPanel extends StatelessWidget {
+  const _QqOAuthPanel({
+    required this.callbackController,
+    required this.isStarting,
+    required this.isCompleting,
+    required this.authorizeUrl,
+    required this.onStart,
+    required this.onComplete,
+  });
+
+  final TextEditingController callbackController;
+  final bool isStarting;
+  final bool isCompleting;
+  final String? authorizeUrl;
+  final VoidCallback onStart;
+  final VoidCallback onComplete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: AppSpacingTokens.md),
+        OutlinedButton.icon(
+          key: const Key('qq-login-start-button'),
+          onPressed: isStarting || isCompleting ? null : onStart,
+          icon: isStarting
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.qr_code_rounded, size: 18),
+          label: const Text('Sign in with QQ'),
+        ),
+        if (authorizeUrl?.isNotEmpty == true) ...[
+          const SizedBox(height: AppSpacingTokens.md),
+          AuthTextField(
+            key: const Key('qq-callback-input'),
+            controller: callbackController,
+            label: 'QQ callback link / code',
+            hint: 'Paste the callback URL after authorization',
+            keyboardType: TextInputType.url,
+            prefix: const Icon(Icons.link),
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          AuthPrimaryButton(
+            label: 'Complete QQ sign-in',
+            isLoading: isCompleting,
+            onPressed: onComplete,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _AppleOAuthPanel extends StatefulWidget {
+  const _AppleOAuthPanel({required this.isLoading, required this.onSignIn});
+
+  final bool isLoading;
+  final VoidCallback onSignIn;
+
+  @override
+  State<_AppleOAuthPanel> createState() => _AppleOAuthPanelState();
+}
+
+class _AppleOAuthPanelState extends State<_AppleOAuthPanel> {
+  bool _isAvailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAvailability();
+  }
+
+  Future<void> _checkAvailability() async {
+    final available = await SignInWithApple.isAvailable();
+    if (mounted) {
+      setState(() => _isAvailable = available);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isAvailable) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacingTokens.md),
+      child: AbsorbPointer(
+        absorbing: widget.isLoading,
+        child: SignInWithAppleButton(onPressed: widget.onSignIn),
+      ),
+    );
+  }
 }
