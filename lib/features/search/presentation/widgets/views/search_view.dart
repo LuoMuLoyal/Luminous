@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/responsive_content_frame.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/features/search/presentation/providers/search_provider.dart';
 import 'package:luminous/features/search/presentation/widgets/search_header_widgets.dart';
-import 'package:luminous/features/search/presentation/widgets/search_result_widgets.dart';
+import 'package:luminous/features/search/presentation/widgets/shared/search_result_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineSearchView extends StatelessWidget {

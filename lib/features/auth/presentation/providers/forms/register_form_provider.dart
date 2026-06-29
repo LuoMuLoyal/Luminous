@@ -4,7 +4,7 @@ import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 
-import 'auth_form_mixin.dart';
+import '../shared/auth_form_mixin.dart';
 
 part 'register_form_provider.freezed.dart';
 
