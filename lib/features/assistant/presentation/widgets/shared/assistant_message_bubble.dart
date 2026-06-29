@@ -4,8 +4,8 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
-import 'package:luminous/features/assistant/presentation/widgets/assistant_chips.dart';
-import 'package:luminous/features/assistant/presentation/widgets/assistant_proposal_card.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_chips.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_proposal_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantMessageBubble extends StatelessWidget {
@@ -61,28 +61,25 @@ class AssistantMessageBubble extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (isUser)
-                  Text(
-                    content,
-                    style: assistantTypography(context).bodyMd,
-                  )
+                  Text(content, style: assistantTypography(context).bodyMd)
                 else
                   MarkdownBody(
                     data: content,
                     selectable: true,
                     styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
                       p: assistantTypography(context).bodyMd,
-                      blockquote: assistantTypography(context).bodySm.copyWith(
-                        color: surface.body,
-                      ),
+                      blockquote: assistantTypography(
+                        context,
+                      ).bodySm.copyWith(color: surface.body),
                     ),
                   ),
                 if (isStreaming) ...[
                   const SizedBox(height: AppSpacingTokens.sm),
                   Text(
                     AppLocalizations.of(context)!.assistantStreamingLabel,
-                    style: assistantTypography(context).bodySm.copyWith(
-                      color: surface.mute,
-                    ),
+                    style: assistantTypography(
+                      context,
+                    ).bodySm.copyWith(color: surface.mute),
                   ),
                 ],
                 if (!isStreaming && usedTools.isNotEmpty) ...[

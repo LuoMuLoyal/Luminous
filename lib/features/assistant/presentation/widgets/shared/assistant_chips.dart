@@ -26,8 +26,9 @@ class AssistantToolChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style:
-              assistantTypography(context).bodySm.copyWith(color: surface.body),
+          style: assistantTypography(
+            context,
+          ).bodySm.copyWith(color: surface.body),
         ),
       ),
     );

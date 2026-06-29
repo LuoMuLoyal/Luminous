@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
-import 'package:luminous/features/assistant/presentation/widgets/assistant_chips.dart';
-import 'package:luminous/features/assistant/presentation/widgets/assistant_conversation_drawer.dart';
-import 'package:luminous/features/assistant/presentation/widgets/assistant_loading_view.dart';
-import 'package:luminous/features/assistant/presentation/widgets/assistant_state_card.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_chips.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/assistant_conversation_drawer.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_loading_view.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_state_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 Widget _shell(Widget child) {
