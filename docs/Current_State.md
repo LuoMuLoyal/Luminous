@@ -31,7 +31,7 @@ This file records current implementation facts only. Product direction lives in 
 - API base: `/api/v1`.
 - Response envelope: `{ code, message, data }`.
 - Generated API contract: `Lucent/docs/openapi.json`.
-- Current generated client baseline after business scope cleanup: 70 paths / 178 schemas.
+- Current generated client baseline after business scope cleanup: 79 paths / 185 schemas.
 - Implemented backend areas used by Luminous: auth/account, user-scoped health context, medicine search/detail, current medicines, dose logs, medicine reminders, daily records with single-image attachment metadata, environment snapshot, user settings, support resources, app info, and data export requests.
 - User-scoped business data is served under `/api/v1/user/*`; account profile/security actions remain under `/api/v1/account/*`.
 
@@ -39,6 +39,7 @@ This file records current implementation facts only. Product direction lives in 
 
 - UI/UX pass and freezed migration are complete.
 - Record fast-entry UX is in place: quick actions open a lightweight fast-entry surface first, common values save with the current time, and `more` opens the full form.
+- **OAuth Provider 扩展**（2026-06-29）：Apple Sign In + QQ 互联完成。后端 4 个 Provider（WeChat Web / WeChat Mobile / Apple / QQ）统一实现 `OAuthProvider` 接口，WeChat 共用 `WechatBaseOAuthProvider` 基类。`AuthOAuthStateService` 按 provider 隔离缓存 key，避免 state 碰撞。Apple 使用 `jsonwebtoken` 校验 identityToken（JWKS→PEM→jwt.verify），QQ 使用标准 OAuth 2.0 三步式流程。前端 `login_page.dart` 增加了 Apple（`sign_in_with_apple`）/ QQ 登录面板，`router.dart` 新增 `/login/oauth/qq` 路由。
 
 ## UX Audit HIGH Remediation (Completed Phases)
 
