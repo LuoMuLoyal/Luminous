@@ -83,11 +83,14 @@ Class | Method | HTTP request | Description
 [*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerOpenConversationV1**](doc/AssistantApi.md#assistantcontrolleropenconversationv1) | **POST** /api/v1/user/assistant/conversations/{conversationId}/open | Activate one persisted assistant conversation and return its full history
 [*AssistantApi*](doc/AssistantApi.md) | [**assistantControllerStreamMessagesV1**](doc/AssistantApi.md#assistantcontrollerstreammessagesv1) | **POST** /api/v1/user/assistant/messages/stream | Stream authenticated user assistant response
 [*AuthApi*](doc/AuthApi.md) | [**authControllerConfirmTwoFactorV1**](doc/AuthApi.md#authcontrollerconfirmtwofactorv1) | **POST** /api/v1/auth/2fa/confirm | 确认 2FA 绑定（校验 TOTP）
+[*AuthApi*](doc/AuthApi.md) | [**authControllerCreateQqAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreateqqauthorizeurlv1) | **POST** /api/v1/auth/oauth/qq/authorize | 创建 QQ 登录授权地址
 [*AuthApi*](doc/AuthApi.md) | [**authControllerCreateWechatWebAuthorizeUrlV1**](doc/AuthApi.md#authcontrollercreatewechatwebauthorizeurlv1) | **POST** /api/v1/auth/oauth/wechat-web/authorize | 创建微信网页登录授权地址
 [*AuthApi*](doc/AuthApi.md) | [**authControllerDisableTwoFactorV1**](doc/AuthApi.md#authcontrollerdisabletwofactorv1) | **DELETE** /api/v1/auth/2fa | 禁用 2FA
 [*AuthApi*](doc/AuthApi.md) | [**authControllerForgotPasswordV1**](doc/AuthApi.md#authcontrollerforgotpasswordv1) | **POST** /api/v1/auth/forgot-password | 忘记密码
 [*AuthApi*](doc/AuthApi.md) | [**authControllerListSessionsV1**](doc/AuthApi.md#authcontrollerlistsessionsv1) | **GET** /api/v1/auth/sessions | 列出当前用户的活跃会话
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginV1**](doc/AuthApi.md#authcontrollerloginv1) | **POST** /api/v1/auth/login | 用户登录
+[*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithAppleV1**](doc/AuthApi.md#authcontrollerloginwithapplev1) | **POST** /api/v1/auth/oauth/apple/callback | Apple 登录回调
+[*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithQqV1**](doc/AuthApi.md#authcontrollerloginwithqqv1) | **POST** /api/v1/auth/oauth/qq/callback | QQ 登录回调
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatMobileV1**](doc/AuthApi.md#authcontrollerloginwithwechatmobilev1) | **POST** /api/v1/auth/oauth/wechat-mobile/callback | 微信移动端登录回调
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLoginWithWechatWebV1**](doc/AuthApi.md#authcontrollerloginwithwechatwebv1) | **POST** /api/v1/auth/oauth/wechat-web/callback | 微信网页登录回调登录
 [*AuthApi*](doc/AuthApi.md) | [**authControllerLogoutV1**](doc/AuthApi.md#authcontrollerlogoutv1) | **POST** /api/v1/auth/logout | 用户登出
@@ -171,6 +174,7 @@ Class | Method | HTTP request | Description
  - [AirQualityLevel](doc/AirQualityLevel.md)
  - [AppInfoDataDto](doc/AppInfoDataDto.md)
  - [AppInfoResponseDto](doc/AppInfoResponseDto.md)
+ - [AppleOAuthCallbackDto](doc/AppleOAuthCallbackDto.md)
  - [AssistantCapabilitiesDataDto](doc/AssistantCapabilitiesDataDto.md)
  - [AssistantCapabilitiesResponseDto](doc/AssistantCapabilitiesResponseDto.md)
  - [AssistantContextSettingsDto](doc/AssistantContextSettingsDto.md)
@@ -277,6 +281,8 @@ Class | Method | HTTP request | Description
  - [OAuthCodeCallbackDto](doc/OAuthCodeCallbackDto.md)
  - [PollenIndicatorDto](doc/PollenIndicatorDto.md)
  - [PollenLevel](doc/PollenLevel.md)
+ - [QqOAuthAuthorizeDto](doc/QqOAuthAuthorizeDto.md)
+ - [QqOAuthCallbackDto](doc/QqOAuthCallbackDto.md)
  - [RecognizeMedicineDto](doc/RecognizeMedicineDto.md)
  - [RefreshDto](doc/RefreshDto.md)
  - [RefreshResponseDto](doc/RefreshResponseDto.md)

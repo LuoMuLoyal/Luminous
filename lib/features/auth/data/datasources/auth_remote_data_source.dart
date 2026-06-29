@@ -135,6 +135,75 @@ class AuthRemoteDataSource {
     return session;
   }
 
+  Future<AuthSession> loginWithApple({
+    required String identityToken,
+    String? authorizationCode,
+    String? givenName,
+    String? familyName,
+  }) async {
+    final response = await _client.authApi.authControllerLoginWithAppleV1(
+      appleOAuthCallbackDto: AppleOAuthCallbackDto(
+        identityToken: identityToken,
+        authorizationCode: authorizationCode,
+        givenName: givenName,
+        familyName: familyName,
+      ),
+    );
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(message: 'Apple login response is empty.');
+    }
+    final session = AuthMapper.toSessionFromLogin(body);
+    await _client.writeSession(
+      LucentSessionTokens(
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+      ),
+    );
+    return session;
+  }
+
+  Future<OAuthAuthorizeDataDto> createQqAuthorizeUrl({
+    String? callbackUri,
+  }) async {
+    final response = await _client.authApi.authControllerCreateQqAuthorizeUrlV1(
+      qqOAuthAuthorizeDto: callbackUri?.trim().isEmpty ?? true
+          ? null
+          : QqOAuthAuthorizeDto(callbackUri: callbackUri!.trim()),
+    );
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(
+        message: 'QQ authorize response is empty.',
+      );
+    }
+    return body.data;
+  }
+
+  Future<AuthSession> loginWithQq({
+    required String code,
+    required String state,
+  }) async {
+    final response = await _client.authApi.authControllerLoginWithQqV1(
+      qqOAuthCallbackDto: QqOAuthCallbackDto(
+        code: code.trim(),
+        state: state.trim(),
+      ),
+    );
+    final body = response.data;
+    if (body == null) {
+      throw const LucentApiException(message: 'QQ login response is empty.');
+    }
+    final session = AuthMapper.toSessionFromLogin(body);
+    await _client.writeSession(
+      LucentSessionTokens(
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+      ),
+    );
+    return session;
+  }
+
   Future<AuthUser> linkWechatWebIdentity({
     required String code,
     required String state,

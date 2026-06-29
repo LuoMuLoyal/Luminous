@@ -6,6 +6,7 @@ import 'package:lucent_openapi/src/model/account_response_dto.dart';
 import 'package:lucent_openapi/src/model/air_quality_indicator_dto.dart';
 import 'package:lucent_openapi/src/model/app_info_data_dto.dart';
 import 'package:lucent_openapi/src/model/app_info_response_dto.dart';
+import 'package:lucent_openapi/src/model/apple_o_auth_callback_dto.dart';
 import 'package:lucent_openapi/src/model/assistant_capabilities_data_dto.dart';
 import 'package:lucent_openapi/src/model/assistant_capabilities_response_dto.dart';
 import 'package:lucent_openapi/src/model/assistant_context_settings_dto.dart';
@@ -98,6 +99,8 @@ import 'package:lucent_openapi/src/model/o_auth_authorize_response_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_callback_dto.dart';
 import 'package:lucent_openapi/src/model/o_auth_code_callback_dto.dart';
 import 'package:lucent_openapi/src/model/pollen_indicator_dto.dart';
+import 'package:lucent_openapi/src/model/qq_o_auth_authorize_dto.dart';
+import 'package:lucent_openapi/src/model/qq_o_auth_callback_dto.dart';
 import 'package:lucent_openapi/src/model/recognize_medicine_dto.dart';
 import 'package:lucent_openapi/src/model/refresh_dto.dart';
 import 'package:lucent_openapi/src/model/refresh_response_dto.dart';
@@ -205,6 +208,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'AppInfoResponseDto':
       return AppInfoResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AppleOAuthCallbackDto':
+      return AppleOAuthCallbackDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'AssistantCapabilitiesDataDto':
       return AssistantCapabilitiesDataDto.fromJson(
@@ -537,6 +543,12 @@ ReturnType deserialize<ReturnType, BaseType>(
       return PollenIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'PollenLevel':
+    case 'QqOAuthAuthorizeDto':
+      return QqOAuthAuthorizeDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'QqOAuthCallbackDto':
+      return QqOAuthCallbackDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'RecognizeMedicineDto':
       return RecognizeMedicineDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;

@@ -367,6 +367,17 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/login/oauth/qq',
+      pageBuilder: (context, state) => _fadePage(
+        key: state.pageKey,
+        child: LoginPage(
+          qqCode: state.uri.queryParameters['code'],
+          qqState: state.uri.queryParameters['state'],
+          returnTo: state.uri.queryParameters['returnTo'],
+        ),
+      ),
+    ),
+    GoRoute(
       path: '/forgot-password',
       pageBuilder: (context, state) =>
           _fadePage(key: state.pageKey, child: const ForgotPasswordPage()),

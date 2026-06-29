@@ -21,17 +21,23 @@ abstract class LoginFormState with _$LoginFormState {
     @Default('') String password,
     @Default('') String code,
     @Default('') String wechatCallbackInput,
+    @Default('') String qqCallbackInput,
     @Default(AuthLoginMode.password) AuthLoginMode mode,
     @Default(false) bool isSubmitting,
     @Default(false) bool isSendingCode,
     @Default(false) bool isStartingWechatLogin,
     @Default(false) bool isCompletingWechatLogin,
+    @Default(false) bool isStartingQqLogin,
+    @Default(false) bool isCompletingQqLogin,
+    @Default(false) bool isStartingAppleLogin,
     int? cooldownSeconds,
     String? emailError,
     String? passwordError,
     String? codeError,
     String? wechatAuthorizeUrl,
     String? wechatState,
+    String? qqAuthorizeUrl,
+    String? qqState,
     String? errorMessage,
   }) = _LoginFormState;
 }
@@ -312,6 +318,88 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
       final apiError = LucentErrorMapper.fromObject(error);
       this.state = this.state.copyWith(
         isCompletingWechatLogin: false,
+        errorMessage: apiError.message,
+      );
+      return null;
+    }
+  }
+
+  void updateQqCallbackInput(String value) {
+    state = state.copyWith(qqCallbackInput: value, errorMessage: null);
+  }
+
+  Future<OAuthAuthorizeDataDto?> createQqAuthorizeUrl({
+    String? callbackUri,
+  }) async {
+    state = state.copyWith(isStartingQqLogin: true, errorMessage: null);
+    try {
+      final result = await ref
+          .read(authRemoteDataSourceProvider)
+          .createQqAuthorizeUrl(callbackUri: callbackUri);
+      state = state.copyWith(
+        isStartingQqLogin: false,
+        qqAuthorizeUrl: result.authorizeUrl,
+        qqState: result.state,
+      );
+      return result;
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
+      state = state.copyWith(
+        isStartingQqLogin: false,
+        errorMessage: apiError.message,
+      );
+      return null;
+    }
+  }
+
+  Future<AuthSession?> completeQqLogin({
+    required String code,
+    required String state,
+  }) async {
+    this.state = this.state.copyWith(
+      isCompletingQqLogin: true,
+      errorMessage: null,
+    );
+    try {
+      final session = await ref
+          .read(authRemoteDataSourceProvider)
+          .loginWithQq(code: code, state: state);
+      await ref.read(authSessionProvider.notifier).applySession(session);
+      this.state = this.state.copyWith(isCompletingQqLogin: false);
+      return session;
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
+      this.state = this.state.copyWith(
+        isCompletingQqLogin: false,
+        errorMessage: apiError.message,
+      );
+      return null;
+    }
+  }
+
+  Future<AuthSession?> loginWithApple({
+    required String identityToken,
+    String? authorizationCode,
+    String? givenName,
+    String? familyName,
+  }) async {
+    state = state.copyWith(isStartingAppleLogin: true, errorMessage: null);
+    try {
+      final session = await ref
+          .read(authRemoteDataSourceProvider)
+          .loginWithApple(
+            identityToken: identityToken,
+            authorizationCode: authorizationCode,
+            givenName: givenName,
+            familyName: familyName,
+          );
+      await ref.read(authSessionProvider.notifier).applySession(session);
+      state = state.copyWith(isStartingAppleLogin: false);
+      return session;
+    } catch (error) {
+      final apiError = LucentErrorMapper.fromObject(error);
+      state = state.copyWith(
+        isStartingAppleLogin: false,
         errorMessage: apiError.message,
       );
       return null;

@@ -37,6 +37,7 @@ lib/src/model/air_quality_indicator_dto.dart
 lib/src/model/air_quality_level.dart
 lib/src/model/app_info_data_dto.dart
 lib/src/model/app_info_response_dto.dart
+lib/src/model/apple_o_auth_callback_dto.dart
 lib/src/model/assistant_capabilities_data_dto.dart
 lib/src/model/assistant_capabilities_response_dto.dart
 lib/src/model/assistant_context_settings_dto.dart
@@ -143,6 +144,8 @@ lib/src/model/o_auth_callback_dto.dart
 lib/src/model/o_auth_code_callback_dto.dart
 lib/src/model/pollen_indicator_dto.dart
 lib/src/model/pollen_level.dart
+lib/src/model/qq_o_auth_authorize_dto.dart
+lib/src/model/qq_o_auth_callback_dto.dart
 lib/src/model/recognize_medicine_dto.dart
 lib/src/model/refresh_dto.dart
 lib/src/model/refresh_response_dto.dart
