@@ -1,36 +1,33 @@
+import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
   group('reportStatusColor', () {
     test('good maps to green', () {
-      expect(reportStatusColor(ReportStatus.good), ReportPalette.green);
+      expect(reportStatusColor(ReportStatus.good), AppColorTokens.cyanDeep);
     });
     test('stable maps to previewScore', () {
-      expect(
-        reportStatusColor(ReportStatus.stable),
-        ReportPalette.previewScore,
-      );
+      expect(reportStatusColor(ReportStatus.stable), AppColorTokens.health);
     });
     test('needsAttention maps to orange', () {
       expect(
         reportStatusColor(ReportStatus.needsAttention),
-        ReportPalette.orange,
+        AppColorTokens.warning,
       );
     });
     test('insufficientData maps to blue', () {
       expect(
         reportStatusColor(ReportStatus.insufficientData),
-        ReportPalette.blue,
+        AppColorTokens.link,
       );
     });
     test('unknown maps to blue', () {
-      expect(reportStatusColor(ReportStatus.unknown), ReportPalette.blue);
+      expect(reportStatusColor(ReportStatus.unknown), AppColorTokens.link);
     });
   });
 

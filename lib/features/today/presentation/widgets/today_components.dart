@@ -1,31 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 
-abstract final class TodayPalette {
-  static const Color ink = AppColorTokens.ink;
-  static const Color body = AppColorTokens.body;
-  static const Color mute = AppColorTokens.mute;
-  static const Color panel = AppColorTokens.canvas;
-  static const Color panelSoft = AppColorTokens.canvasSoft;
-  static const Color line = AppColorTokens.hairline;
-  static const Color lineStrong = AppColorTokens.hairlineStrong;
-  static const Color healthGreen = AppColorTokens.health;
-  static const Color teal = AppColorTokens.cyanDeep;
-  static const Color tealDeep = AppColorTokens.cyanDeep;
-  static const Color tealSoft = AppColorTokens.cyanSoft;
-  static const Color blue = AppColorTokens.link;
-  static const Color blueDeep = AppColorTokens.linkDeep;
-  static const Color blueSoft = AppColorTokens.linkSoft;
-  static const Color violet = AppColorTokens.violet;
-  static const Color violetSoft = AppColorTokens.violetSoft;
-  static const Color pink = AppColorTokens.highlightMagenta;
-  static const Color pinkSoft = AppColorTokens.errorSoft;
-  static const Color amber = AppColorTokens.warning;
-  static const Color amberSoft = AppColorTokens.warningSoft;
-  static const Color green = AppColorTokens.cyanDeep;
-  static const Color greenSoft = AppColorTokens.cyanSoft;
-}
-
 class TodayGlyphTile extends StatelessWidget {
   const TodayGlyphTile({
     super.key,
@@ -94,7 +69,7 @@ class TodayLinearProgress extends StatelessWidget {
       child: Stack(
         children: [
           DecoratedBox(
-            decoration: const BoxDecoration(color: TodayPalette.line),
+            decoration: const BoxDecoration(color: AppColorTokens.hairline),
             child: SizedBox(height: height, width: double.infinity),
           ),
           FractionallySizedBox(
@@ -159,7 +134,9 @@ class TodayMiniTrendChart extends StatelessWidget {
                     Expanded(
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: index == 3 ? color : TodayPalette.lineStrong,
+                          color: index == 3
+                              ? color
+                              : AppColorTokens.hairlineStrong,
                           borderRadius: BorderRadius.circular(
                             AppRadiusTokens.pill,
                           ),

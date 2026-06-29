@@ -8,7 +8,6 @@ import 'package:luminous/features/auth/presentation/providers/auth_session_provi
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -92,7 +91,7 @@ class _AssistantEntryButton extends ConsumerWidget {
           },
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: TodayPalette.tealSoft,
+              color: AppColorTokens.cyanSoft,
               borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
               border: Border.all(color: surface.hairline),
             ),
@@ -107,13 +106,13 @@ class _AssistantEntryButton extends ConsumerWidget {
                   const Icon(
                     Icons.auto_awesome_outlined,
                     size: AppSpacingTokens.md,
-                    color: TodayPalette.tealDeep,
+                    color: AppColorTokens.cyanDeep,
                   ),
                   const SizedBox(width: AppSpacingTokens.xxs),
                   Text(
                     l10n.assistantEntryTitle,
                     style: typography.bodySmStrong.copyWith(
-                      color: TodayPalette.tealDeep,
+                      color: AppColorTokens.cyanDeep,
                       fontWeight: FontWeight.w700,
                     ),
                   ),

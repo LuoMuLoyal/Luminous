@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:luminous/features/report/presentation/widgets/report_range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -78,10 +77,11 @@ class ReportTopBar extends StatelessWidget {
                 key: const Key('report-generate-action'),
                 onPressed: isGenerating ? null : onGenerate,
                 style: FilledButton.styleFrom(
-                  backgroundColor: ReportPalette.previewScore,
+                  backgroundColor: AppColorTokens.health,
                   foregroundColor: AppColorTokens.onPrimary,
-                  disabledBackgroundColor: ReportPalette.previewScore
-                      .withValues(alpha: 0.38),
+                  disabledBackgroundColor: AppColorTokens.health.withValues(
+                    alpha: 0.38,
+                  ),
                   disabledForegroundColor: AppColorTokens.onPrimary.withValues(
                     alpha: 0.7,
                   ),
@@ -155,7 +155,7 @@ class _ReportSnapshotStatus extends StatelessWidget {
             children: [
               const Icon(
                 Icons.history_rounded,
-                color: ReportPalette.blue,
+                color: AppColorTokens.link,
                 size: AppSpacingTokens.lg,
               ),
               const SizedBox(width: AppSpacingTokens.sm),

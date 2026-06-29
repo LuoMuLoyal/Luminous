@@ -1,6 +1,6 @@
 # Luminous Docs
 
-Last updated: 2026-06-25
+Last updated: 2026-06-29
 
 This directory keeps the authoritative current product, frontend, and workflow documentation for the Luminous Flutter client. Historical execution plans are not active docs. If a complex task needs a live execution plan, put it under `../plans/` instead of `docs/`.
 

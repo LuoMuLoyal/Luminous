@@ -1,8 +1,8 @@
+import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -61,11 +61,11 @@ String reportStatusLabel(AppLocalizations l10n, ReportStatus status) {
 
 Color reportStatusColor(ReportStatus status) {
   return switch (status) {
-    ReportStatus.good => ReportPalette.green,
-    ReportStatus.stable => ReportPalette.previewScore,
-    ReportStatus.needsAttention => ReportPalette.orange,
-    ReportStatus.insufficientData => ReportPalette.blue,
-    ReportStatus.unknown => ReportPalette.blue,
+    ReportStatus.good => AppColorTokens.cyanDeep,
+    ReportStatus.stable => AppColorTokens.health,
+    ReportStatus.needsAttention => AppColorTokens.warning,
+    ReportStatus.insufficientData => AppColorTokens.link,
+    ReportStatus.unknown => AppColorTokens.link,
   };
 }
 
@@ -132,7 +132,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: ReportPalette.orange,
+          color: AppColorTokens.warning,
           text: l10n.authLoginRequiredPrompt,
         ),
       ],
@@ -145,7 +145,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: ReportPalette.blue,
+          color: AppColorTokens.link,
           text: l10n.reportAiSummaryDisabledHint,
         ),
       ],
@@ -173,7 +173,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: reportAiSummarySubtitle(l10n, selectedRange),
       bullets: [
         ReportAiSummaryItem(
-          color: ReportPalette.orange,
+          color: AppColorTokens.warning,
           text: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
         ),
         ...reportAiSummaryFallbackBullets(dashboard),
@@ -189,7 +189,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       summaryText: aiState.streamingSummary,
       bullets: [
         ReportAiSummaryItem(
-          color: ReportPalette.green,
+          color: AppColorTokens.cyanDeep,
           text: reportAiSummaryGeneratingLabel(l10n, selectedRange),
         ),
         ...reportAiSummaryFallbackBullets(dashboard),

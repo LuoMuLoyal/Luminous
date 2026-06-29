@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/features/report/presentation/widgets/report_components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportReferenceNotice extends StatelessWidget {
@@ -21,12 +20,12 @@ class ReportReferenceNotice extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Color.alphaBlend(
-          ReportPalette.orange.withValues(alpha: 0.1),
+          AppColorTokens.warning.withValues(alpha: 0.1),
           surface.canvas,
         ),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         border: Border.all(
-          color: ReportPalette.orange.withValues(alpha: 0.18),
+          color: AppColorTokens.warning.withValues(alpha: 0.18),
         ),
       ),
       child: Padding(
@@ -35,7 +34,7 @@ class ReportReferenceNotice extends StatelessWidget {
           children: [
             const Icon(
               Icons.warning_amber_rounded,
-              color: ReportPalette.orange,
+              color: AppColorTokens.warning,
               size: AppSpacingTokens.lg,
             ),
             const SizedBox(width: AppSpacingTokens.sm),
@@ -43,7 +42,7 @@ class ReportReferenceNotice extends StatelessWidget {
               child: Text(
                 l10n.reportReferenceNotice,
                 style: typography.bodySm.copyWith(
-                  color: ReportPalette.orange,
+                  color: AppColorTokens.warning,
                   letterSpacing: 0,
                 ),
               ),
