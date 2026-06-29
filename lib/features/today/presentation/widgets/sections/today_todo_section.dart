@@ -7,8 +7,8 @@ import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/today_section.dart';
-import 'package:luminous/features/today/presentation/widgets/today_view_models.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayTodoSection extends ConsumerWidget {

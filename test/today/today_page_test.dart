@@ -17,8 +17,8 @@ import 'package:luminous/features/today/domain/entities/today_recommendation.dar
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
-import 'package:luminous/features/today/presentation/widgets/today_dashboard_view.dart';
-import 'package:luminous/features/today/presentation/widgets/today_skeleton_view.dart';
+import 'package:luminous/features/today/presentation/widgets/views/today_dashboard_view.dart';
+import 'package:luminous/features/today/presentation/widgets/views/today_skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'today_test_helpers.dart';

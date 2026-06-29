@@ -7,7 +7,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportScoreHero extends StatelessWidget {

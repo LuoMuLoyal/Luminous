@@ -7,7 +7,7 @@ import 'package:luminous/core/widgets/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/report_section_models.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
