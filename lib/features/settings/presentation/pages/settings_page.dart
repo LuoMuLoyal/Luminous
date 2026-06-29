@@ -9,16 +9,16 @@ import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_section_surface.dart';
-import 'package:luminous/core/widgets/app_settings_navigation_row.dart';
-import 'package:luminous/core/widgets/app_settings_section.dart';
-import 'package:luminous/core/widgets/app_settings_switch_row.dart';
-import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
+import 'package:luminous/core/widgets/settings/app_settings_section.dart';
+import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
-import 'package:luminous/core/widgets/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SettingsPage extends ConsumerWidget {

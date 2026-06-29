@@ -3,7 +3,7 @@ import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/record_date_bar.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';

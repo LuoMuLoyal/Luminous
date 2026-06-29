@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_section_surface.dart';
-import 'package:luminous/core/widgets/app_settings_navigation_row.dart';
+import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/widgets/app_settings_master_toggle_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';

@@ -1,4 +1,4 @@
-import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/presentation/providers/report_ai_summary_provider.dart';
 import 'package:luminous/features/shell/presentation/shell_tab.dart';
@@ -54,10 +54,9 @@ void main() {
       addTearDown(todaySubscription.close);
 
       final todayCard = find.byKey(const Key('today-ai-summary-card'));
-      final todayGenerateButton = find.descendant(
-        of: todayCard,
-        matching: find.byType(TextButton),
-      ).first;
+      final todayGenerateButton = find
+          .descendant(of: todayCard, matching: find.byType(TextButton))
+          .first;
       await tester.ensureVisible(todayGenerateButton);
       await settleE2e(tester, frames: 4);
       await tester.tap(todayGenerateButton);

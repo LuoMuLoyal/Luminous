@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_settings_switch_row.dart';
-import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/core/widgets/app_back_button.dart';
+import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
 
 /// A reusable settings page template with a master toggle at the top and a
 /// list of child settings below.

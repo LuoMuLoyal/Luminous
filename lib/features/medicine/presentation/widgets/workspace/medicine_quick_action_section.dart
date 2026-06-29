@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/app_section_surface.dart';
+import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';

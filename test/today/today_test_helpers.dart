@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/features/today/data/repositories/lucent_today_ai_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';

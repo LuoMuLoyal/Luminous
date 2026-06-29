@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/widgets/app_setting_row.dart';
-import 'package:luminous/core/widgets/app_section_surface.dart';
+import 'package:luminous/core/widgets/settings/app_setting_row.dart';
+import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';

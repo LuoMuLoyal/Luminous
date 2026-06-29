@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 
 /// Defers building [child] until after the current frame.
 ///

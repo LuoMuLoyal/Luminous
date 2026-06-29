@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/network/lucent_result_code.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/report/data/repositories/lucent_report_ai_summary_repository.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';

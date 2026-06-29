@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/core/widgets/responsive_content_frame.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 
 Widget _appShell(Widget child) {
   return MaterialApp(

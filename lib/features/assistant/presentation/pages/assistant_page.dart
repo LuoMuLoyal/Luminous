@@ -7,8 +7,8 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
-import 'package:luminous/core/widgets/page_scaffold_shell.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/assistant_controls_panel.dart';
@@ -17,10 +17,10 @@ import 'package:luminous/features/assistant/presentation/widgets/sections/assist
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/assistant_conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_state_card.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
-import 'package:luminous/core/widgets/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantPage extends ConsumerStatefulWidget {

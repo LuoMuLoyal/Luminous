@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_dialog.dart';
+import 'package:luminous/core/widgets/common/app_dialog.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/record_nlp_candidate_review.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/record_nlp_retry_panel.dart';

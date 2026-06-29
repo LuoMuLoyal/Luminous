@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/app_section_surface.dart';
-import 'package:luminous/core/widgets/app_status_pill.dart';
-import 'package:luminous/core/widgets/app_icon_badge.dart';
+import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:luminous/core/widgets/common/app_status_pill.dart';
+import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/app_state_views.dart';
-import 'package:luminous/core/widgets/page_scaffold_shell.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
@@ -19,7 +19,7 @@ import 'package:luminous/features/medicine/presentation/widgets/reminder/medicin
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_log_panels.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
-import 'package:luminous/core/widgets/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderDetailPage extends ConsumerWidget {

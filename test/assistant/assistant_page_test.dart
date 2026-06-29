@@ -17,7 +17,7 @@ import 'package:luminous/features/assistant/data/repositories/lucent_assistant_r
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/pages/assistant_page.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';

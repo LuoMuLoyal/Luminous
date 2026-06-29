@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent_assistant_repository.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../auth/auth_test_helpers.dart';
 

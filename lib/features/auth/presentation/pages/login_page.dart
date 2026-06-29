@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/presentation/providers/login_form_provider.dart';
-import 'package:luminous/core/widgets/app_back_button.dart';
+import 'package:luminous/features/auth/presentation/providers/forms/login_form_provider.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
