@@ -1,4 +1,4 @@
-import 'package:luminous/features/auth/data/datasources/wechat_mobile_auth_client_base.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client_base.dart';
 
 class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
   const DefaultWechatMobileAuthClient();

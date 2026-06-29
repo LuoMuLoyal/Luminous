@@ -5,10 +5,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:luminous/features/auth/data/datasources/wechat_desktop_oauth_callback_server.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_server.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 
 part 'login_form_provider.freezed.dart';
 

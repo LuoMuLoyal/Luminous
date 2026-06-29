@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 
-import 'auth_form_mixin.dart';
+import '../shared/auth_form_mixin.dart';
 
 part 'password_reset_provider.freezed.dart';
 
