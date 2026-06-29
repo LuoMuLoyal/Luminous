@@ -32,8 +32,6 @@ abstract class HealthProfile with _$HealthProfile {
     required String? birthDate,
     required String? sexAtBirth,
     required double? heightCm,
-    required String? pregnancyState,
-    required String? lactationState,
     required String? bloodType,
     required String? locale,
     required String? timezone,

@@ -70,8 +70,6 @@ void main() {
         birthDate: null,
         sexAtBirth: null,
         heightCm: null,
-        pregnancyState: null,
-        lactationState: null,
         bloodType: null,
         locale: 'zh-CN',
         timezone: null,

@@ -404,8 +404,6 @@ const _snapshot = HealthContextSnapshot(
     birthDate: null,
     sexAtBirth: null,
     heightCm: null,
-    pregnancyState: null,
-    lactationState: null,
     bloodType: null,
     locale: null,
     timezone: null,

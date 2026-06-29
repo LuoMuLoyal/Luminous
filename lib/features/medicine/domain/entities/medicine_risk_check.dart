@@ -12,40 +12,12 @@ enum MedicineRiskFindingType {
   foodInteraction,
 }
 
-enum MedicineRiskFindingContext {
-  none,
-  pregnancy,
-  lactation,
-  pediatric,
-  geriatric,
-  alcohol,
-  caffeine,
-}
+enum MedicineRiskFindingContext { none, alcohol, caffeine }
 
 enum MedicineRiskCoverageReason {
   manualEntry,
   missingSourceRef,
   detailUnavailable,
-}
-
-/// Conservative structured conclusion for special-population risk text.
-/// Classified via keyword matching — never via NLP.
-/// Falls back to [insufficientInformation] when no confident keyword is found.
-enum SpecialPopulationConclusion {
-  /// Explicit contraindication (禁用 / contraindicated / 禁忌).
-  contraindicated,
-
-  /// Should avoid (避免使用 / avoid / not recommended).
-  avoid,
-
-  /// Use with caution (慎用 / caution / use with care).
-  caution,
-
-  /// Consult a clinician or pharmacist (咨询医生 / consult).
-  consultClinician,
-
-  /// Text exists but no keyword matched — cannot classify confidently.
-  insufficientInformation,
 }
 
 @freezed
@@ -61,11 +33,8 @@ abstract class MedicineRiskCheckResult with _$MedicineRiskCheckResult {
   }) = _MedicineRiskCheckResult;
 
   int get findingCount => findings.length;
-
   int get coverageCount => coverageIssues.length;
-
   bool get hasFindings => findings.isNotEmpty;
-
   bool get hasCoverageGaps => coverageIssues.isNotEmpty;
 }
 
@@ -79,12 +48,6 @@ abstract class MedicineRiskFinding with _$MedicineRiskFinding {
     String? secondaryMedicineName,
     String? relatedLabel,
     String? evidence,
-
-    /// Non-null only when [type] is [MedicineRiskFindingType.specialGroup]
-    /// and the source text was classified into a structured conclusion.
-    /// Carries the classified risk level for UI two-layer display
-    /// (conclusion label + evidence source text).
-    SpecialPopulationConclusion? specialPopulationConclusion,
   }) = _MedicineRiskFinding;
 }
 
@@ -96,7 +59,7 @@ abstract class MedicineRiskCoverageIssue with _$MedicineRiskCoverageIssue {
   }) = _MedicineRiskCoverageIssue;
 }
 
-enum RedFlagRule { severeAllergy, pregnancyContraindication, informationGap }
+enum RedFlagRule { severeAllergy, informationGap }
 
 @freezed
 abstract class RedFlagAlert with _$RedFlagAlert {

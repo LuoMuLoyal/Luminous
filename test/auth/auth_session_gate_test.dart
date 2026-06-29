@@ -296,8 +296,6 @@ final _snapshot = HealthContextSnapshot(
     birthDate: '1999-01-15',
     sexAtBirth: 'female',
     heightCm: 165,
-    pregnancyState: null,
-    lactationState: null,
     bloodType: null,
     locale: null,
     timezone: null,
