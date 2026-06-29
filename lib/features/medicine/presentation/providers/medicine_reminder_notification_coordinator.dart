@@ -106,19 +106,25 @@ final medicineReminderNotificationNowProvider = Provider<DateTime Function()>((
   return DateTime.now;
 });
 
-final medicineReminderNotificationSyncProvider = FutureProvider<void>((ref) async {
+final medicineReminderNotificationSyncProvider = FutureProvider<void>((
+  ref,
+) async {
   final auth = ref.watch(authSessionProvider);
   if (auth.isLoading) {
     return;
   }
 
-  final settings =
-      ref.watch(notificationSettingsControllerProvider).asData?.value;
+  final settings = ref
+      .watch(notificationSettingsControllerProvider)
+      .asData
+      ?.value;
   if (settings == null) {
     return;
   }
 
-  final coordinator = ref.watch(medicineReminderNotificationCoordinatorProvider);
+  final coordinator = ref.watch(
+    medicineReminderNotificationCoordinatorProvider,
+  );
   final texts = _notificationTexts(ref);
   final now = ref.watch(medicineReminderNotificationNowProvider)();
 
@@ -170,7 +176,8 @@ final medicineReminderNotificationSyncProvider = FutureProvider<void>((ref) asyn
 MedicineReminderNotificationTexts _notificationTexts(Ref ref) {
   final currentLocale =
       ref.watch(appLocaleControllerProvider).asData?.value ?? AppLocale.system;
-  final locale = currentLocale.flutterLocale ?? ui.PlatformDispatcher.instance.locale;
+  final locale =
+      currentLocale.flutterLocale ?? ui.PlatformDispatcher.instance.locale;
   final l10n = lookupAppLocalizations(locale);
 
   return MedicineReminderNotificationTexts(

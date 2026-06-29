@@ -45,9 +45,8 @@ class TodayAiAnalysisController extends Notifier<TodayAiAnalysisCardState> {
     );
 
     try {
-      await for (final event in ref
-          .read(todayAiRepositoryProvider)
-          .generateStream()) {
+      await for (final event
+          in ref.read(todayAiRepositoryProvider).generateStream()) {
         switch (event) {
           case TodayAiGenerationSummaryEvent():
             state = TodayAiAnalysisCardState.loading(

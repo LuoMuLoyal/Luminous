@@ -12,10 +12,7 @@ String formatRecordTimeLabel(String? value) {
   return trimmed;
 }
 
-String formatRecordDateTimeLabel(
-  String occurredAt, {
-  String? occurredTime,
-}) {
+String formatRecordDateTimeLabel(String occurredAt, {String? occurredTime}) {
   final parsed = DateTime.tryParse(occurredAt);
   final timeText = occurredTime?.trim();
   if (parsed == null) {
@@ -51,19 +48,10 @@ DateTime? parseRecordDate(String? value) {
 DateTime? applyRecordTimeToDate(DateTime date, String? occurredTime) {
   final time = parseRecordTime(occurredTime);
   if (time == null) return null;
-  return DateTime(
-    date.year,
-    date.month,
-    date.day,
-    time.hour,
-    time.minute,
-  );
+  return DateTime(date.year, date.month, date.day, time.hour, time.minute);
 }
 
-DateTime? parseRecordDateTime(
-  String occurredAt, {
-  String? occurredTime,
-}) {
+DateTime? parseRecordDateTime(String occurredAt, {String? occurredTime}) {
   final date = parseRecordDate(occurredAt);
   if (date == null) return null;
   return applyRecordTimeToDate(date, occurredTime) ?? date;

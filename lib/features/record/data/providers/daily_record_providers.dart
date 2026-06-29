@@ -25,6 +25,6 @@ final dailyRecordDetailProvider =
           .get(id)
           .timeout(
             const Duration(seconds: 5),
-            onTimeout: () => throw TimeoutException("请求超时，请检查网络后重试。"),
+            onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
           );
     });

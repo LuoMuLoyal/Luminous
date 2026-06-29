@@ -1,9 +1,12 @@
 include:
   package:flutter_lints/flutter.yaml
-  # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+linter:
+  rules:
+    - unawaited_futures
+    - prefer_single_quotes
+    - avoid_dynamic_calls
+    - require_trailing_commas
 
 analyzer:
   exclude:

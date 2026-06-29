@@ -40,10 +40,7 @@ class MedicineRiskCheckRepository {
           continue;
         }
         details.add(
-          MedicineRiskMedicineDetail(
-            item: item,
-            detail: response.data,
-          ),
+          MedicineRiskMedicineDetail(item: item, detail: response.data),
         );
       } catch (_) {
         // The page and workspace surface missing coverage explicitly later.
@@ -54,9 +51,10 @@ class MedicineRiskCheckRepository {
   }
 }
 
-final medicineRiskCheckRepositoryProvider = Provider<MedicineRiskCheckRepository>(
-  (ref) {
-    final remoteDataSource = ref.watch(medicineSearchRemoteDataSourceProvider);
-    return MedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
-  },
-);
+final medicineRiskCheckRepositoryProvider =
+    Provider<MedicineRiskCheckRepository>((ref) {
+      final remoteDataSource = ref.watch(
+        medicineSearchRemoteDataSourceProvider,
+      );
+      return MedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
+    });

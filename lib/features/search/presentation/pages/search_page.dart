@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -104,11 +106,16 @@ class SearchPage extends ConsumerWidget {
       ref.invalidate(todayDashboardProvider);
 
       if (context.mounted) {
-        AppToast.show(context, l10n.mineEditSavedToast);
+        unawaited(AppToast.show(context, l10n.mineEditSavedToast));
       }
     } catch (e) {
       if (context.mounted) {
-        AppToast.show(context, '${l10n.medicineSearchPrecheckFailedToast}: $e');
+        unawaited(
+          AppToast.show(
+            context,
+            '${l10n.medicineSearchPrecheckFailedToast}: $e',
+          ),
+        );
       }
     }
   }

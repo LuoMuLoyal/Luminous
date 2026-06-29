@@ -159,7 +159,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
       }
     }
 
-    final desktopListener = ref.read(wechatDesktopOAuthCallbackListenerProvider);
+    final desktopListener = ref.read(
+      wechatDesktopOAuthCallbackListenerProvider,
+    );
     if (desktopListener.isSupported) {
       return _startWechatDesktopIdentityLink(desktopListener);
     }
@@ -172,9 +174,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
     try {
       final authorize = await ref
           .read(authRemoteDataSourceProvider)
-          .createWechatWebIdentityLinkAuthorizeUrl(
-            callbackUri: webCallbackUri,
-          );
+          .createWechatWebIdentityLinkAuthorizeUrl(callbackUri: webCallbackUri);
       final opened = await ref
           .read(externalUrlLauncherProvider)
           .open(Uri.parse(authorize.authorizeUrl));

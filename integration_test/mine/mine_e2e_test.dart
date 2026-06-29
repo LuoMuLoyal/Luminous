@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../support/e2e_test_helpers.dart';
 
 void main() {
@@ -93,7 +95,7 @@ void main() {
     );
 
     await openTab(tester, '我的');
-    router.push('/mine/condition/new');
+    unawaited(router.push('/mine/condition/new'));
     await settleE2e(tester);
 
     expect(find.text('新增疾病'), findsOneWidget);

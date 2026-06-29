@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,7 +89,7 @@ void main() {
 
     await _pumpSettingsPage(tester, router: router);
 
-    router.push('/settings');
+    unawaited(router.push('/settings'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byType(BackButton).first);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +43,7 @@ Future<void> pushAuthRequiredRoute(BuildContext context, String route) async {
   final container = ProviderScope.containerOf(context, listen: false);
   final session = container.read(authSessionProvider);
   if (session.canAccessProtectedData) {
-    context.push(route);
+    unawaited(context.push(route));
     return;
   }
 

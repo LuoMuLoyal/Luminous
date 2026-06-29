@@ -11,56 +11,59 @@ import 'package:luminous/features/record/domain/repositories/daily_record_reposi
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
 
 void main() {
-  test('RecordNlpController saveSelected keeps failed selected items only', () async {
-    final repo = _ControllerFakeDailyRecordRepository(
-      generatedCandidates: DailyRecordCandidateResult(
-        locale: 'zh-CN',
-        generatedAt: '2026-06-14T00:00:00.000Z',
-        confirmationHint: '确认后再保存。',
-        items: const [
-          DailyRecordCandidateItem(
-            kind: DailyRecordKind.water,
-            occurredAt: '2026-06-14',
-            value: '500',
-            unit: 'ml',
-            rationale: '识别到饮水。',
-          ),
-          DailyRecordCandidateItem(
-            kind: DailyRecordKind.note,
-            occurredAt: '2026-06-14',
-            title: '午后状态',
-            note: '有点累',
-            rationale: '识别到备注。',
-          ),
+  test(
+    'RecordNlpController saveSelected keeps failed selected items only',
+    () async {
+      final repo = _ControllerFakeDailyRecordRepository(
+        generatedCandidates: DailyRecordCandidateResult(
+          locale: 'zh-CN',
+          generatedAt: '2026-06-14T00:00:00.000Z',
+          confirmationHint: '确认后再保存。',
+          items: const [
+            DailyRecordCandidateItem(
+              kind: DailyRecordKind.water,
+              occurredAt: '2026-06-14',
+              value: '500',
+              unit: 'ml',
+              rationale: '识别到饮水。',
+            ),
+            DailyRecordCandidateItem(
+              kind: DailyRecordKind.note,
+              occurredAt: '2026-06-14',
+              title: '午后状态',
+              note: '有点累',
+              rationale: '识别到备注。',
+            ),
+          ],
+        ),
+        failCreateAtIndexes: {1},
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
         ],
-      ),
-      failCreateAtIndexes: {1},
-    );
+      );
+      addTearDown(container.dispose);
 
-    final container = ProviderContainer(
-      overrides: [
-        dailyRecordRepositoryProvider.overrideWithValue(repo),
-        authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-      ],
-    );
-    addTearDown(container.dispose);
+      final controller = container.read(recordNlpControllerProvider.notifier);
 
-    final controller = container.read(recordNlpControllerProvider.notifier);
+      controller.updateDraft('喝了水，下午有点累');
+      await controller.generate(occurredAt: '2026-06-14');
+      final outcome = await controller.saveSelected();
+      final state = container.read(recordNlpControllerProvider);
 
-    controller.updateDraft('喝了水，下午有点累');
-    await controller.generate(occurredAt: '2026-06-14');
-    final outcome = await controller.saveSelected();
-    final state = container.read(recordNlpControllerProvider);
-
-    expect(outcome.kind, RecordNlpSaveOutcomeKind.partial);
-    expect(outcome.savedCount, 1);
-    expect(outcome.failedCount, 1);
-    expect(repo.createdInputs, hasLength(2));
-    expect(state.candidates, hasLength(1));
-    expect(state.candidates.single.kind, DailyRecordKind.note);
-    expect(state.candidates.single.selected, isTrue);
-    expect(state.candidates.single.lastErrorMessage, 'Create failed.');
-  });
+      expect(outcome.kind, RecordNlpSaveOutcomeKind.partial);
+      expect(outcome.savedCount, 1);
+      expect(outcome.failedCount, 1);
+      expect(repo.createdInputs, hasLength(2));
+      expect(state.candidates, hasLength(1));
+      expect(state.candidates.single.kind, DailyRecordKind.note);
+      expect(state.candidates.single.selected, isTrue);
+      expect(state.candidates.single.lastErrorMessage, 'Create failed.');
+    },
+  );
 
   test('RecordNlpController retryFailed only retries failed items', () async {
     final repo = _ControllerFakeDailyRecordRepository(

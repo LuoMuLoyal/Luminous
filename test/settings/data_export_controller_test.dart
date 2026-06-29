@@ -157,9 +157,7 @@ void main() {
 
       final future = container
           .read(dataExportControllerProvider.notifier)
-          .requestExport(
-            reportMonthlyPdfExportRequest,
-          );
+          .requestExport(reportMonthlyPdfExportRequest);
 
       await Future<void>.delayed(const Duration(milliseconds: 10));
 
@@ -169,7 +167,10 @@ void main() {
 
       await future;
 
-      expect(container.read(dataExportRequestInFlightProvider).inFlight, isFalse);
+      expect(
+        container.read(dataExportRequestInFlightProvider).inFlight,
+        isFalse,
+      );
     });
 
     test('propagates DioException when POST fails', () async {
@@ -342,23 +343,26 @@ void main() {
   });
 
   group('dataExportUiStatusForRequest', () {
-    test('maps completed request without download url to completedLinkMissing', () {
-      final request = DataExportRequestDataDto(
-        id: 'req-link-missing',
-        kind: DataExportKind.hospital,
-        format: DataExportFormat.pdf,
-        range: DataExportRange.last7Days,
-        status: DataExportStatus.completed,
-        requestedAt: '2026-06-12T00:00:00.000Z',
-        completedAt: '2026-06-12T00:01:00.000Z',
-        downloadUrl: '',
-      );
+    test(
+      'maps completed request without download url to completedLinkMissing',
+      () {
+        final request = DataExportRequestDataDto(
+          id: 'req-link-missing',
+          kind: DataExportKind.hospital,
+          format: DataExportFormat.pdf,
+          range: DataExportRange.last7Days,
+          status: DataExportStatus.completed,
+          requestedAt: '2026-06-12T00:00:00.000Z',
+          completedAt: '2026-06-12T00:01:00.000Z',
+          downloadUrl: '',
+        );
 
-      expect(
-        dataExportUiStatusForRequest(request),
-        DataExportUiStatus.completedLinkMissing,
-      );
-    });
+        expect(
+          dataExportUiStatusForRequest(request),
+          DataExportUiStatus.completedLinkMissing,
+        );
+      },
+    );
   });
 }
 

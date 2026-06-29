@@ -50,59 +50,65 @@ void main() {
     expect(planned.first.scheduledAt, DateTime(2026, 6, 10, 21, 30));
   });
 
-  test('days of week and start end dates filter reminders with inclusive bounds', () {
-    const planner = MedicineReminderNotificationPlanner();
+  test(
+    'days of week and start end dates filter reminders with inclusive bounds',
+    () {
+      const planner = MedicineReminderNotificationPlanner();
 
-    final planned = planner.plan(
-      reminders: <MedicineReminderItem>[
-        _reminder(
-          id: 'weekly',
-          hour: 10,
-          minute: 15,
-          daysOfWeek: const <int>[3, 5],
-          startDate: '2026-06-10',
-          endDate: '2026-06-12',
-        ),
-      ],
-      remindersEnabled: true,
-      sound: MedicineReminderSoundPreference.defaultTone,
-      texts: texts,
-      now: now,
-    );
-
-    expect(planned.map((item) => item.scheduledAt).toList(), <DateTime>[
-      DateTime(2026, 6, 10, 10, 15),
-      DateTime(2026, 6, 12, 10, 15),
-    ]);
-  });
-
-  test('inactive reminders or disabled scheduling produce no notifications', () {
-    const planner = MedicineReminderNotificationPlanner();
-
-    expect(
-      planner.plan(
+      final planned = planner.plan(
         reminders: <MedicineReminderItem>[
-          _reminder(id: 'inactive', isActive: false),
+          _reminder(
+            id: 'weekly',
+            hour: 10,
+            minute: 15,
+            daysOfWeek: const <int>[3, 5],
+            startDate: '2026-06-10',
+            endDate: '2026-06-12',
+          ),
         ],
         remindersEnabled: true,
         sound: MedicineReminderSoundPreference.defaultTone,
         texts: texts,
         now: now,
-      ),
-      isEmpty,
-    );
+      );
 
-    expect(
-      planner.plan(
-        reminders: <MedicineReminderItem>[_reminder(id: 'active')],
-        remindersEnabled: false,
-        sound: MedicineReminderSoundPreference.defaultTone,
-        texts: texts,
-        now: now,
-      ),
-      isEmpty,
-    );
-  });
+      expect(planned.map((item) => item.scheduledAt).toList(), <DateTime>[
+        DateTime(2026, 6, 10, 10, 15),
+        DateTime(2026, 6, 12, 10, 15),
+      ]);
+    },
+  );
+
+  test(
+    'inactive reminders or disabled scheduling produce no notifications',
+    () {
+      const planner = MedicineReminderNotificationPlanner();
+
+      expect(
+        planner.plan(
+          reminders: <MedicineReminderItem>[
+            _reminder(id: 'inactive', isActive: false),
+          ],
+          remindersEnabled: true,
+          sound: MedicineReminderSoundPreference.defaultTone,
+          texts: texts,
+          now: now,
+        ),
+        isEmpty,
+      );
+
+      expect(
+        planner.plan(
+          reminders: <MedicineReminderItem>[_reminder(id: 'active')],
+          remindersEnabled: false,
+          sound: MedicineReminderSoundPreference.defaultTone,
+          texts: texts,
+          now: now,
+        ),
+        isEmpty,
+      );
+    },
+  );
 
   test('planner truncates to the earliest sixty notifications', () {
     const planner = MedicineReminderNotificationPlanner();
@@ -129,37 +135,40 @@ void main() {
     expect(planned.last.scheduledAt, DateTime(2026, 6, 16, 11, 20));
   });
 
-  test('notification ids are deterministic, positive, and resolve collisions', () {
-    final planner = MedicineReminderNotificationPlanner(
-      horizonDays: 1,
-      hashValue: (_) => 42,
-    );
+  test(
+    'notification ids are deterministic, positive, and resolve collisions',
+    () {
+      final planner = MedicineReminderNotificationPlanner(
+        horizonDays: 1,
+        hashValue: (_) => 42,
+      );
 
-    final once = planner.plan(
-      reminders: <MedicineReminderItem>[
-        _reminder(id: 'alpha', hour: 10),
-        _reminder(id: 'beta', hour: 10),
-      ],
-      remindersEnabled: true,
-      sound: MedicineReminderSoundPreference.defaultTone,
-      texts: texts,
-      now: now,
-    );
-    final twice = planner.plan(
-      reminders: <MedicineReminderItem>[
-        _reminder(id: 'alpha', hour: 10),
-        _reminder(id: 'beta', hour: 10),
-      ],
-      remindersEnabled: true,
-      sound: MedicineReminderSoundPreference.defaultTone,
-      texts: texts,
-      now: now,
-    );
+      final once = planner.plan(
+        reminders: <MedicineReminderItem>[
+          _reminder(id: 'alpha', hour: 10),
+          _reminder(id: 'beta', hour: 10),
+        ],
+        remindersEnabled: true,
+        sound: MedicineReminderSoundPreference.defaultTone,
+        texts: texts,
+        now: now,
+      );
+      final twice = planner.plan(
+        reminders: <MedicineReminderItem>[
+          _reminder(id: 'alpha', hour: 10),
+          _reminder(id: 'beta', hour: 10),
+        ],
+        remindersEnabled: true,
+        sound: MedicineReminderSoundPreference.defaultTone,
+        texts: texts,
+        now: now,
+      );
 
-    expect(once.map((item) => item.id).toList(), <int>[42, 43]);
-    expect(twice.map((item) => item.id).toList(), <int>[42, 43]);
-    expect(once.every((item) => item.id > 0), isTrue);
-  });
+      expect(once.map((item) => item.id).toList(), <int>[42, 43]);
+      expect(twice.map((item) => item.id).toList(), <int>[42, 43]);
+      expect(once.every((item) => item.id > 0), isTrue);
+    },
+  );
 
   test('sound preference and label note fallbacks are applied', () {
     const planner = MedicineReminderNotificationPlanner(horizonDays: 1);

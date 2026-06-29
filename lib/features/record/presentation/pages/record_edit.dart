@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
@@ -109,9 +110,11 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
       });
     } catch (_) {
       if (mounted) {
-        AppToast.show(
-          context,
-          AppLocalizations.of(context)!.recordCreateFailedToast,
+        unawaited(
+          AppToast.show(
+            context,
+            AppLocalizations.of(context)!.recordCreateFailedToast,
+          ),
         );
         context.pop();
       }
@@ -249,9 +252,11 @@ class _RecordEditPageState extends ConsumerState<RecordEditPage> {
 
   Future<void> _onSave() async {
     if (_kind == DailyRecordKind.sleep && !_isValidSleepValue()) {
-      AppToast.show(
-        context,
-        AppLocalizations.of(context)!.recordSleepInvalidValueToast,
+      unawaited(
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.recordSleepInvalidValueToast,
+        ),
       );
       return;
     }

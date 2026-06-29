@@ -61,10 +61,7 @@ void main() {
     test('update omits attachments to keep existing metadata', () async {
       await dataSource.update(
         'record-1',
-        const DailyRecordUpdateInput(
-          title: 'Updated',
-          occurredTime: '10:20',
-        ),
+        const DailyRecordUpdateInput(title: 'Updated', occurredTime: '10:20'),
       );
 
       final request = adapter.requestAt(

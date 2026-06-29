@@ -6,24 +6,12 @@ abstract final class AppShadowTokens {
   ];
 
   static const List<BoxShadow> level2 = <BoxShadow>[
-    BoxShadow(
-      color: Color(0x0D000000),
-      offset: Offset(0, 1),
-      blurRadius: 1,
-    ),
-    BoxShadow(
-      color: Color(0x1A000000),
-      offset: Offset(0, 2),
-      blurRadius: 2,
-    ),
+    BoxShadow(color: Color(0x0D000000), offset: Offset(0, 1), blurRadius: 1),
+    BoxShadow(color: Color(0x1A000000), offset: Offset(0, 2), blurRadius: 2),
   ];
 
   static const List<BoxShadow> level3 = <BoxShadow>[
-    BoxShadow(
-      color: Color(0x1A000000),
-      offset: Offset(0, 2),
-      blurRadius: 2,
-    ),
+    BoxShadow(color: Color(0x1A000000), offset: Offset(0, 2), blurRadius: 2),
     BoxShadow(
       color: Color(0x1A000000),
       offset: Offset(0, 8),
@@ -33,11 +21,7 @@ abstract final class AppShadowTokens {
   ];
 
   static const List<BoxShadow> level4 = <BoxShadow>[
-    BoxShadow(
-      color: Color(0x1A000000),
-      offset: Offset(0, 2),
-      blurRadius: 2,
-    ),
+    BoxShadow(color: Color(0x1A000000), offset: Offset(0, 2), blurRadius: 2),
     BoxShadow(
       color: Color(0x1A000000),
       offset: Offset(0, 8),
@@ -47,11 +31,7 @@ abstract final class AppShadowTokens {
   ];
 
   static const List<BoxShadow> level5 = <BoxShadow>[
-    BoxShadow(
-      color: Color(0x0D000000),
-      offset: Offset(0, 1),
-      blurRadius: 1,
-    ),
+    BoxShadow(color: Color(0x0D000000), offset: Offset(0, 1), blurRadius: 1),
     BoxShadow(
       color: Color(0x1A000000),
       offset: Offset(0, 8),

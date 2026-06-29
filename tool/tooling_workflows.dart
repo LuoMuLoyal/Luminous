@@ -28,10 +28,18 @@ Future<void> runDailyChecks(ToolContext context) async {
   stdout.writeln('');
 
   await runLoggedCommand(
-    'flutter',
-    ['test'],
+    'dart',
+    ['format', '--set-exit-if-changed', 'lib/', 'test/', 'tool/'],
     workingDirectory: context.repoRoot,
-    stepName: 'flutter test',
+    stepName: 'dart format --set-exit-if-changed',
+  );
+  stdout.writeln('');
+
+  await runLoggedCommand(
+    'flutter',
+    ['test', '--coverage'],
+    workingDirectory: context.repoRoot,
+    stepName: 'flutter test --coverage',
   );
 }
 

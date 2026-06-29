@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -127,7 +129,9 @@ class _DetailBody extends ConsumerWidget {
             ref.invalidate(notificationUnreadCountProvider);
             ref.invalidate(notificationListControllerProvider);
             if (context.mounted) {
-              AppToast.show(context, l10n.notificationMarkUnreadSuccess);
+              unawaited(
+                AppToast.show(context, l10n.notificationMarkUnreadSuccess),
+              );
               context.pop();
             }
           },
@@ -137,7 +141,7 @@ class _DetailBody extends ConsumerWidget {
             );
             await controller.deleteNotification(detail.id);
             if (context.mounted) {
-              AppToast.show(context, l10n.notificationDeleteSuccess);
+              unawaited(AppToast.show(context, l10n.notificationDeleteSuccess));
               context.pop();
             }
           },

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -113,7 +115,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                           }
 
                           if (aiSummariesEnabled == false) {
-                            context.push('/settings');
+                            unawaited(context.push('/settings'));
                             return;
                           }
 

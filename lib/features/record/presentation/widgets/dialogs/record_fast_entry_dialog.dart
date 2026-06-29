@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -90,7 +92,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
   Future<void> _openMore() async {
     if (!mounted) return;
     Navigator.of(context).pop();
-    context.push(widget.moreRoute);
+    unawaited(context.push(widget.moreRoute));
   }
 
   Future<void> _saveChoice(_QuickChoice choice) async {
@@ -116,13 +118,20 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
       ref.invalidate(reportDashboardProvider);
 
       if (!mounted) return;
-      AppToast.show(context, AppLocalizations.of(context)!.mineEditSavedToast);
+      unawaited(
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.mineEditSavedToast,
+        ),
+      );
       Navigator.of(context).pop();
     } catch (_) {
       if (!mounted) return;
-      AppToast.show(
-        context,
-        AppLocalizations.of(context)!.recordCreateFailedToast,
+      unawaited(
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.recordCreateFailedToast,
+        ),
       );
       setState(() => _saving = false);
     }

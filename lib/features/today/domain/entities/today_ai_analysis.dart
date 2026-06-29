@@ -17,10 +17,7 @@ class TodayAiAnalysis {
 }
 
 class TodayAiAnalysisBullet {
-  const TodayAiAnalysisBullet({
-    required this.kind,
-    required this.text,
-  });
+  const TodayAiAnalysisBullet({required this.kind, required this.text});
 
   final TodayAiAnalysisBulletKind kind;
   final String text;
@@ -51,10 +48,7 @@ class TodayAiAnalysisCardState {
        );
 
   const TodayAiAnalysisCardState.success(TodayAiAnalysis analysis)
-    : this(
-        status: TodayAiAnalysisCardStatus.success,
-        analysis: analysis,
-      );
+    : this(status: TodayAiAnalysisCardStatus.success, analysis: analysis);
 
   const TodayAiAnalysisCardState.error({
     required String message,

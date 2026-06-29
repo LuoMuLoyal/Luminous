@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -99,11 +101,11 @@ Future<void> _markDose(
     ref.invalidate(medicineWorkspaceProvider);
     ref.invalidate(todayDashboardProvider);
     if (context.mounted) {
-      AppToast.show(context, l10n.medicineDoseActionSavedToast);
+      unawaited(AppToast.show(context, l10n.medicineDoseActionSavedToast));
     }
   } catch (error) {
     if (context.mounted) {
-      AppToast.show(context, l10n.medicineDoseActionFailedToast);
+      unawaited(AppToast.show(context, l10n.medicineDoseActionFailedToast));
     }
   }
 }
@@ -129,10 +131,14 @@ Future<void> _openReminder(
 
   if (!context.mounted) return;
   if (currentMedicineId == null) {
-    context.push('/medicine/reminders/new');
+    unawaited(context.push('/medicine/reminders/new'));
     return;
   }
-  context.push('/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}');
+  unawaited(
+    context.push(
+      '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}',
+    ),
+  );
 }
 
 class _MedicineMobileShell extends StatelessWidget {

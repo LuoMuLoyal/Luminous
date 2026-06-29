@@ -101,9 +101,10 @@ void main() {
     );
   });
 
-  test('Today AI provider exposes streaming summary before final result', () async {
-    final repository = _StreamingTodayAiRepository(
-      [
+  test(
+    'Today AI provider exposes streaming summary before final result',
+    () async {
+      final repository = _StreamingTodayAiRepository([
         const TodayAiGenerationSummaryEvent(
           'Hydration summary is still streaming.',
         ),
@@ -122,45 +123,41 @@ void main() {
             confidenceNote: 'Generated from today records only.',
           ),
         ),
-      ],
-    );
+      ]);
 
-    final container = ProviderContainer(
-      overrides: [
-        authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-        userSettingsControllerProvider.overrideWith(
-          EnabledUserSettingsController.new,
-        ),
-        todayAiRepositoryProvider.overrideWithValue(repository),
-      ],
-    );
-    addTearDown(container.dispose);
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          todayAiRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
 
-    await container.read(userSettingsControllerProvider.future);
+      await container.read(userSettingsControllerProvider.future);
 
-    final states = <TodayAiAnalysisCardState>[];
-    container.listen(
-      todayAiAnalysisControllerProvider,
-      (previous, next) {
+      final states = <TodayAiAnalysisCardState>[];
+      container.listen(todayAiAnalysisControllerProvider, (previous, next) {
         states.add(next);
-      },
-      fireImmediately: true,
-    );
+      }, fireImmediately: true);
 
-    final result = await container
-        .read(todayAiAnalysisControllerProvider.notifier)
-        .generate();
+      final result = await container
+          .read(todayAiAnalysisControllerProvider.notifier)
+          .generate();
 
-    expect(result.status, TodayAiAnalysisCardStatus.success);
-    expect(
-      states.any(
-        (state) =>
-            state.status == TodayAiAnalysisCardStatus.loading &&
-            state.streamingSummary == 'Hydration summary is still streaming.',
-      ),
-      isTrue,
-    );
-  });
+      expect(result.status, TodayAiAnalysisCardStatus.success);
+      expect(
+        states.any(
+          (state) =>
+              state.status == TodayAiAnalysisCardStatus.loading &&
+              state.streamingSummary == 'Hydration summary is still streaming.',
+        ),
+        isTrue,
+      );
+    },
+  );
 
   test('Today AI provider maps forbidden error to disabled state', () async {
     final repository = _ThrowingTodayAiRepository(

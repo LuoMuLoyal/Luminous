@@ -108,16 +108,8 @@ abstract final class AppTypographyTokens {
         height: 14 / 11,
         weight: FontWeight.w400,
       ),
-      captionMono: _mono(
-        color: color,
-        fontSize: 11,
-        height: 14 / 11,
-      ),
-      code: _mono(
-        color: color,
-        fontSize: 12,
-        height: 18 / 12,
-      ),
+      captionMono: _mono(color: color, fontSize: 11, height: 14 / 11),
+      code: _mono(color: color, fontSize: 12, height: 18 / 12),
       buttonMd: _sans(
         color: color,
         fontSize: 13,
@@ -201,16 +193,8 @@ abstract final class AppTypographyTokens {
         height: 16 / 12,
         weight: FontWeight.w400,
       ),
-      captionMono: _mono(
-        color: color,
-        fontSize: 12,
-        height: 16 / 12,
-      ),
-      code: _mono(
-        color: color,
-        fontSize: 13,
-        height: 20 / 13,
-      ),
+      captionMono: _mono(color: color, fontSize: 12, height: 16 / 12),
+      code: _mono(color: color, fontSize: 13, height: 20 / 13),
       buttonMd: _sans(
         color: color,
         fontSize: 14,

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -51,10 +52,7 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
       return;
     }
 
-    final item = snapshot.conditions.cast<dynamic>().firstWhere(
-      (c) => c.id == id,
-      orElse: () => null,
-    );
+    final item = snapshot.conditions.firstWhereOrNull((c) => c.id == id);
     if (item == null) {
       _notFound = true;
       _prefilled = true;
@@ -62,7 +60,7 @@ class _ConditionEditPageState extends ConsumerState<ConditionEditPage> {
     }
 
     _prefilled = true;
-    _labelController.text = item.label ?? '';
+    _labelController.text = item.label;
     _diagnosedAtController.text = item.diagnosedAt ?? '';
     _noteController.text = item.note ?? '';
     setState(() {

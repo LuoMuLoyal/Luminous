@@ -55,49 +55,50 @@ void main() {
     );
   });
 
-  testWidgets('Today AI card shows settings action when AI summaries are disabled', (
-    tester,
-  ) async {
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+  testWidgets(
+    'Today AI card shows settings action when AI summaries are disabled',
+    (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-          userSettingsControllerProvider.overrideWith(
-            DisabledUserSettingsController.new,
-          ),
-        ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+            todayRepositoryProvider.overrideWithValue(
+              const MockTodayRepository(),
+            ),
+            userSettingsControllerProvider.overrideWith(
+              DisabledUserSettingsController.new,
+            ),
           ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
+          child: MaterialApp(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            locale: const Locale('zh'),
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const TodayPage(),
+          ),
         ),
-      ),
-    );
+      );
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    expect(
-      find.text(l10n.todayAiSummaryDisabledHint),
-      findsAtLeastNWidgets(1),
-    );
-    expect(
-      find.widgetWithText(TextButton, l10n.todayAiSummaryOpenSettingsAction),
-      findsOneWidget,
-    );
-  });
+      expect(
+        find.text(l10n.todayAiSummaryDisabledHint),
+        findsAtLeastNWidgets(1),
+      );
+      expect(
+        find.widgetWithText(TextButton, l10n.todayAiSummaryOpenSettingsAction),
+        findsOneWidget,
+      );
+    },
+  );
 
   testWidgets('Today AI card renders generated summary after manual action', (
     tester,
@@ -172,22 +173,10 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('今天的节奏基本稳定，先把剩余饮水和待确认用药处理掉。'),
-      findsOneWidget,
-    );
-    expect(
-      find.text('还有 1 项今日用药待确认，先核对是否已经服用。'),
-      findsOneWidget,
-    );
-    expect(
-      find.text('饮水距离目标还差 2 次，下午和晚间各补一次。'),
-      findsOneWidget,
-    );
-    expect(
-      find.text('仅基于今日已记录数据生成，不构成诊断或治疗建议。'),
-      findsOneWidget,
-    );
+    expect(find.text('今天的节奏基本稳定，先把剩余饮水和待确认用药处理掉。'), findsOneWidget);
+    expect(find.text('还有 1 项今日用药待确认，先核对是否已经服用。'), findsOneWidget);
+    expect(find.text('饮水距离目标还差 2 次，下午和晚间各补一次。'), findsOneWidget);
+    expect(find.text('仅基于今日已记录数据生成，不构成诊断或治疗建议。'), findsOneWidget);
     expect(
       find.widgetWithText(TextButton, l10n.todayAiSummaryGenerateAction),
       findsOneWidget,

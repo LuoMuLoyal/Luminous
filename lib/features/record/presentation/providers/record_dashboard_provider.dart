@@ -48,13 +48,10 @@ final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) async {
 
   return ref
       .watch(recordRepositoryProvider)
-      .fetchDashboard(
-        selectedDate,
-        filterType: selectedFilter,
-      )
+      .fetchDashboard(selectedDate, filterType: selectedFilter)
       .timeout(
         const Duration(seconds: 5),
-        onTimeout: () => throw TimeoutException("请求超时，请检查网络后重试。"),
+        onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
       );
 });
 

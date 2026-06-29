@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -78,7 +80,7 @@ class _AssistantEntryButton extends ConsumerWidget {
           borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
           onTap: () async {
             if (session.canAccessProtectedData) {
-              context.push('/assistant');
+              unawaited(context.push('/assistant'));
               return;
             }
             if (session.isLoading) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:luminous/core/widgets/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -231,7 +233,7 @@ class _ServiceRow extends StatelessWidget {
     if (target == null || entry.actionType == null) return;
     switch (entry.actionType!) {
       case MineActionTargetType.internal:
-        pushAuthRequiredRoute(context, target);
+        unawaited(pushAuthRequiredRoute(context, target));
       case MineActionTargetType.url:
       case MineActionTargetType.phone:
         final uri = Uri.tryParse(target);

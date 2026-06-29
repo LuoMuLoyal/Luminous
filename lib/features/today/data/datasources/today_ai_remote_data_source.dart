@@ -46,9 +46,7 @@ class TodayAiRemoteDataSource {
 
     await for (final event in sse.postJson(
       '/api/v1/user/today-analysis/generate/stream',
-      body: <String, Object?>{
-        if (date != null) 'date': date,
-      },
+      body: <String, Object?>{if (date != null) 'date': date},
     )) {
       switch (event.event) {
         case 'summary':
@@ -79,9 +77,7 @@ class TodayAiRemoteDataSource {
       return data;
     }
     if (data is Map) {
-      return data.map(
-        (key, value) => MapEntry(key.toString(), value),
-      );
+      return data.map((key, value) => MapEntry(key.toString(), value));
     }
     throw const LucentApiException(message: 'Lucent SSE payload is invalid.');
   }
