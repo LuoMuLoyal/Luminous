@@ -454,8 +454,6 @@ Map<String, Object?> _healthContextBody(List<Map<String, Object?>> items) {
       'birthDate': null,
       'sexAtBirth': null,
       'heightCm': null,
-      'pregnancyState': null,
-      'lactationState': null,
       'bloodType': null,
       'locale': null,
       'timezone': null,

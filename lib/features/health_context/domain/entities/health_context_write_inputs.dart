@@ -20,40 +20,6 @@ enum HealthSexAtBirth implements HealthContextWireEnum {
   }
 }
 
-enum HealthPregnancyState implements HealthContextWireEnum {
-  notApplicable('not_applicable'),
-  unknown('unknown'),
-  notPregnant('not_pregnant'),
-  pregnant('pregnant'),
-  trying('trying'),
-  postpartum('postpartum');
-
-  const HealthPregnancyState(this.value);
-
-  @override
-  final String value;
-
-  static HealthPregnancyState? fromValue(String? value) {
-    return _fromValue(values, value);
-  }
-}
-
-enum HealthLactationState implements HealthContextWireEnum {
-  notApplicable('not_applicable'),
-  unknown('unknown'),
-  no('no'),
-  yes('yes');
-
-  const HealthLactationState(this.value);
-
-  @override
-  final String value;
-
-  static HealthLactationState? fromValue(String? value) {
-    return _fromValue(values, value);
-  }
-}
-
 enum HealthUnitSystem implements HealthContextWireEnum {
   metric('metric'),
   imperial('imperial');
@@ -147,8 +113,6 @@ class HealthProfileUpdateInput {
     this.birthDate = healthContextNoChange,
     this.sexAtBirth = healthContextNoChange,
     this.heightCm = healthContextNoChange,
-    this.pregnancyState = healthContextNoChange,
-    this.lactationState = healthContextNoChange,
     this.bloodType = healthContextNoChange,
     this.onboardingCompleted = healthContextNoChange,
   });
@@ -159,8 +123,6 @@ class HealthProfileUpdateInput {
   final Object? birthDate;
   final Object? sexAtBirth;
   final Object? heightCm;
-  final Object? pregnancyState;
-  final Object? lactationState;
   final Object? bloodType;
   final Object? onboardingCompleted;
 }

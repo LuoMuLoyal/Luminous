@@ -40,6 +40,25 @@ abstract class ReportDashboard with _$ReportDashboard {
     required List<ReportPatternCard> patterns,
     required bool aiSummaryEnabled,
   }) = _ReportDashboard;
+
+  /// A minimal dashboard for signed-out users with no real or mock data.
+  static ReportDashboard signedOut() => ReportDashboard(
+    range: ReportDashboardRange.last7Days,
+    startDate: '----.--.--',
+    endDate: '----.--.--',
+    score: const ReportHealthScore(
+      value: 0,
+      maxValue: 100,
+      status: ReportStatus.insufficientData,
+      summary: '',
+    ),
+    metrics: const <ReportMetric>[],
+    trends: const <ReportTrendSeries>[],
+    findings: const <ReportFinding>[],
+    exportActions: const <ReportExportAction>[],
+    patterns: const <ReportPatternCard>[],
+    aiSummaryEnabled: false,
+  );
 }
 
 @freezed

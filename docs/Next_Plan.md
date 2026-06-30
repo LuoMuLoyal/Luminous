@@ -1,6 +1,6 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-28
+Last updated: 2026-06-30
 
 This file records the next implementation order only. Completed work belongs in `migration-log/YYYY-MM-DD.md`; current facts belong in `Current_State.md`.
 
@@ -13,7 +13,6 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 1. **Finish v4.0.0 release prep**
    - Resolve or defer the B/C-class placeholder items listed below.
    - Run the full validation gate before tagging 4.0.0.
-   - Consider unifying `AuthBackButton` with `AppBackButton` as the final back-button cleanup.
 
 2. **Keep assistant evolution bounded to concrete new scenarios**
    - Only extend assistant tools/proposals when a specific missing user task is chosen.

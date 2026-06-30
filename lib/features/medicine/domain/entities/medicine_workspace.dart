@@ -14,6 +14,26 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
     required List<MedicinePromisePoint> promisePoints,
     MedicineRiskCheckResult? riskCheckResult,
   }) = _MedicineWorkspace;
+
+  /// A minimal workspace for signed-out users with no real or mock data.
+  static MedicineWorkspace signedOut() => MedicineWorkspace(
+    hero: const MedicineHero(
+      metricDosesToday: '0',
+      metricAdherence: '--',
+      metricNextDose: '--',
+    ),
+    quickActions: const <MedicineQuickAction>[
+      MedicineQuickAction(
+        icon: Icons.search_rounded,
+        titleKey: MedicineCopyKey.quickActionSearchTitle,
+        subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
+        accent: Color(0xFF00838F),
+      ),
+    ],
+    plan: const MedicinePlanSurface(items: <MedicinePlanItem>[]),
+    alerts: const <MedicineAlert>[],
+    promisePoints: const <MedicinePromisePoint>[],
+  );
 }
 
 @freezed

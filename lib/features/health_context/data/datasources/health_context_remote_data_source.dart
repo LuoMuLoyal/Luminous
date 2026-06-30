@@ -158,8 +158,6 @@ Map<String, dynamic> healthProfileUpdatePayload(
   _putIfChanged(payload, 'birthDate', input.birthDate);
   _putIfChanged(payload, 'sexAtBirth', input.sexAtBirth);
   _putIfChanged(payload, 'heightCm', input.heightCm);
-  _putIfChanged(payload, 'pregnancyState', input.pregnancyState);
-  _putIfChanged(payload, 'lactationState', input.lactationState);
   _putIfChanged(payload, 'bloodType', input.bloodType);
   _putIfChanged(payload, 'onboardingCompleted', input.onboardingCompleted);
   return payload;
