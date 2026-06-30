@@ -51,36 +51,39 @@ class RecordNewEntryPanel extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.md),
           Material(
             color: Colors.transparent,
-            child: InkWell(
-              onTap: onNewEntry,
-              borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: surface.canvasSoft,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-                  border: Border.all(color: surface.hairline),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.md),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.mic_none_rounded,
-                        color: AppColorTokens.accent,
-                        size: 20,
-                      ),
-                      const SizedBox(width: AppSpacingTokens.sm),
-                      Flexible(
-                        child: Text(
-                          l10n.recordVoiceAction,
-                          style: typography.bodySmStrong.copyWith(
-                            color: AppColorTokens.accent,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+            child: Opacity(
+              opacity: onNewEntry == null ? 0.5 : 1.0,
+              child: InkWell(
+                onTap: onNewEntry,
+                borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: surface.canvasSoft,
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                    border: Border.all(color: surface.hairline),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacingTokens.md),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.mic_none_rounded,
+                          color: AppColorTokens.accent,
+                          size: 20,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: AppSpacingTokens.sm),
+                        Flexible(
+                          child: Text(
+                            l10n.recordVoiceAction,
+                            style: typography.bodySmStrong.copyWith(
+                              color: AppColorTokens.accent,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

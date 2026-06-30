@@ -25,6 +25,8 @@ class AppTextAction extends StatelessWidget {
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
     final foreground = color ?? surface.body;
 
+    final disabled = onTap == null;
+
     final text = Text(
       label,
       style: typography.bodySmStrong.copyWith(
@@ -36,22 +38,25 @@ class AppTextAction extends StatelessWidget {
       overflow: TextOverflow.ellipsis,
     );
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xxs),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (flexible) Flexible(child: text) else text,
-              if (icon != null) ...[
-                const SizedBox(width: AppSpacingTokens.xxs),
-                Icon(icon, size: AppSpacingTokens.md, color: foreground),
+    return Opacity(
+      opacity: disabled ? 0.5 : 1.0,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xxs),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (flexible) Flexible(child: text) else text,
+                if (icon != null) ...[
+                  const SizedBox(width: AppSpacingTokens.xxs),
+                  Icon(icon, size: AppSpacingTokens.md, color: foreground),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
