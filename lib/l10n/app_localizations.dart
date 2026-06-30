@@ -944,6 +944,60 @@ abstract class AppLocalizations {
   /// **'语音记录（长按说话）'**
   String get recordVoiceAction;
 
+  /// No description provided for @recordVoiceEntryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'语音录入'**
+  String get recordVoiceEntryTitle;
+
+  /// No description provided for @recordVoiceListeningHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在聆听...'**
+  String get recordVoiceListeningHint;
+
+  /// No description provided for @recordVoiceTapToStart.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击说话'**
+  String get recordVoiceTapToStart;
+
+  /// No description provided for @recordVoiceUseText.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用此文本'**
+  String get recordVoiceUseText;
+
+  /// No description provided for @recordOcrEntryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照识别'**
+  String get recordOcrEntryTitle;
+
+  /// No description provided for @recordOcrCameraAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'拍照'**
+  String get recordOcrCameraAction;
+
+  /// No description provided for @recordOcrGalleryAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'从相册选择'**
+  String get recordOcrGalleryAction;
+
+  /// No description provided for @recordOcrRecognizingHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在识别文字...'**
+  String get recordOcrRecognizingHint;
+
+  /// No description provided for @recordMicPermissionDenied.
+  ///
+  /// In zh, this message translates to:
+  /// **'麦克风权限未授权，请在系统设置中开启。'**
+  String get recordMicPermissionDenied;
+
   /// No description provided for @recordErrorTitle.
   ///
   /// In zh, this message translates to:

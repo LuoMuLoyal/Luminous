@@ -22,6 +22,8 @@ class RecordDashboardView extends StatelessWidget {
     this.isLoading = false,
     this.onQuickAction,
     this.onAiInputTap,
+    this.onMicTap,
+    this.onCameraTap,
     this.onNewEntry,
     this.onFilterSelected,
     this.onDateSelected,
@@ -32,6 +34,8 @@ class RecordDashboardView extends StatelessWidget {
   final bool isLoading;
   final ValueChanged<RecordQuickAction>? onQuickAction;
   final VoidCallback? onAiInputTap;
+  final VoidCallback? onMicTap;
+  final VoidCallback? onCameraTap;
   final VoidCallback? onNewEntry;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
@@ -66,6 +70,8 @@ class RecordDashboardView extends StatelessWidget {
             surface: surface,
             onQuickAction: onQuickAction,
             onAiInputTap: onAiInputTap,
+            onMicTap: onMicTap,
+            onCameraTap: onCameraTap,
             onFilterSelected: onFilterSelected,
             onDateSelected: onDateSelected,
             onPickDate: onPickDate,
@@ -83,6 +89,8 @@ class _MobileRecordDashboard extends StatelessWidget {
     required this.surface,
     this.onQuickAction,
     this.onAiInputTap,
+    this.onMicTap,
+    this.onCameraTap,
     this.onFilterSelected,
     this.onDateSelected,
     this.onPickDate,
@@ -94,6 +102,8 @@ class _MobileRecordDashboard extends StatelessWidget {
   final AppThemeSurface surface;
   final ValueChanged<RecordQuickAction>? onQuickAction;
   final VoidCallback? onAiInputTap;
+  final VoidCallback? onMicTap;
+  final VoidCallback? onCameraTap;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
   final VoidCallback? onPickDate;
@@ -121,6 +131,8 @@ class _MobileRecordDashboard extends StatelessWidget {
           typography: typography,
           surface: surface,
           onTap: onAiInputTap,
+          onMicTap: onMicTap,
+          onCameraTap: onCameraTap,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         RecordQuickEntryPanel(

@@ -458,6 +458,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordVoiceAction => '语音记录（长按说话）';
 
   @override
+  String get recordVoiceEntryTitle => '语音录入';
+
+  @override
+  String get recordVoiceListeningHint => '正在聆听...';
+
+  @override
+  String get recordVoiceTapToStart => '点击说话';
+
+  @override
+  String get recordVoiceUseText => '使用此文本';
+
+  @override
+  String get recordOcrEntryTitle => '拍照识别';
+
+  @override
+  String get recordOcrCameraAction => '拍照';
+
+  @override
+  String get recordOcrGalleryAction => '从相册选择';
+
+  @override
+  String get recordOcrRecognizingHint => '正在识别文字...';
+
+  @override
+  String get recordMicPermissionDenied => '麦克风权限未授权，请在系统设置中开启。';
+
+  @override
   String get recordErrorTitle => '记录页暂时没有加载出来';
 
   @override

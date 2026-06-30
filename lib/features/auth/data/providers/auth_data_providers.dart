@@ -14,5 +14,8 @@ final wechatDesktopOAuthCallbackListenerProvider =
     });
 
 final wechatMobileAuthClientProvider = Provider<WechatMobileAuthClient>((ref) {
-  return const DefaultWechatMobileAuthClient();
+  // 有 dart.library.io 的平台（Android/iOS） → 导出 wechat_mobile_auth_client_fluwx.dart，它的构造函数不是 const（因为有可变字段 _fluwx）
+  // 其他平台 → 导出 wechat_mobile_auth_client_stub.dart，它的构造函数是 const
+  // ignore: prefer_const_constructors
+  return DefaultWechatMobileAuthClient();
 });

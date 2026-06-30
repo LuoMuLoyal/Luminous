@@ -515,6 +515,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordVoiceAction => 'Voice record (hold to talk)';
 
   @override
+  String get recordVoiceEntryTitle => 'Voice input';
+
+  @override
+  String get recordVoiceListeningHint => 'Listening...';
+
+  @override
+  String get recordVoiceTapToStart => 'Tap to speak';
+
+  @override
+  String get recordVoiceUseText => 'Use this text';
+
+  @override
+  String get recordOcrEntryTitle => 'Photo recognition';
+
+  @override
+  String get recordOcrCameraAction => 'Take photo';
+
+  @override
+  String get recordOcrGalleryAction => 'Choose from gallery';
+
+  @override
+  String get recordOcrRecognizingHint => 'Recognizing text...';
+
+  @override
+  String get recordMicPermissionDenied =>
+      'Microphone permission denied. Please enable it in system settings.';
+
+  @override
   String get recordErrorTitle => 'Record did not load this time';
 
   @override
