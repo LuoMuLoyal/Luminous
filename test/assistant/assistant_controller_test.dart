@@ -5,7 +5,7 @@ import 'package:luminous/features/assistant/domain/entities/assistant_models.dar
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../auth/auth_test_helpers.dart';
+import '../auth/auth_test_helpers.dart';
 
 /// A fake repository with canned responses.
 class _FakeAssistantRepository implements AssistantRepository {

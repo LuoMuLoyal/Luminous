@@ -23,7 +23,7 @@ dart run tool/regenerate_lucent_openapi.dart
 
 ## Guardrails
 
-- New code goes under `lib/features/`, `lib/core/`, or `lib/shared/`.
+- New code goes under `lib/features/` or `lib/core/`.
 - Do not add code to legacy `lib/pages/`, `lib/stores/`, `lib/viewmodels/`, `lib/components/`.
 - API contract: Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`.
 - Network code belongs in `lib/core/network/`.

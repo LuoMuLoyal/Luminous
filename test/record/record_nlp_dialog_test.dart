@@ -6,7 +6,7 @@ import 'package:luminous/features/auth/presentation/providers/session/auth_sessi
 import 'package:luminous/features/record/presentation/widgets/dialogs/record_nlp_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../auth/auth_test_helpers.dart';
+import '../auth/auth_test_helpers.dart';
 
 void main() {
   testWidgets('RecordNlpDialog renders', (tester) async {

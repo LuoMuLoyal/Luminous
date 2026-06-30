@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
 import 'package:luminous/features/scan/domain/services/ocr_service.dart';
 import 'package:luminous/features/scan/domain/services/medicine_text_matcher.dart';
@@ -58,9 +59,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   } catch (e) {
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).pop();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('识别失败: $e')));
+      unawaited(AppToast.show(context, '识别失败: $e'));
     }
   }
 }

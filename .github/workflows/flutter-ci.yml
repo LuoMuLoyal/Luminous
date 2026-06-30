@@ -32,5 +32,17 @@ jobs:
           flutter-version: 3.44.0
           cache: true
 
-      - name: Run repo-safe daily checks
-        run: dart run tool/run_daily_checks.dart
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate l10n
+        run: flutter gen-l10n
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Format check
+        run: dart format --set-exit-if-changed lib/ test/ tool/
+
+      - name: Run tests
+        run: flutter test --coverage

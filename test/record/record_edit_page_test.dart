@@ -9,20 +9,21 @@ import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
-import 'package:luminous/features/record/presentation/pages/record_detail.dart';
+import 'package:luminous/features/record/presentation/pages/record_edit.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../auth/auth_test_helpers.dart';
+import '../auth/auth_test_helpers.dart';
 
-class _FakeRepo extends DailyRecordRepository {
+/// Fake repository that returns a canned record.
+class _FakeRecordRepo extends DailyRecordRepository {
   @override
   Future<DailyRecordItem> get(String id) async {
     return DailyRecordItem(
       id: id,
       kind: DailyRecordKind.note,
       occurredAt: '2026-06-10',
-      title: 'My Note',
-      value: 'Note content',
+      title: 'Test Record',
+      value: 'Some content',
       note: 'A note',
       attachments: const <DailyRecordAttachment>[],
       createdAt: '2026-06-10T08:00:00.000Z',
@@ -36,42 +37,59 @@ class _FakeRepo extends DailyRecordRepository {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async => throw UnimplementedError();
+  }) async {
+    throw UnimplementedError();
+  }
+
   @override
-  Future<DailyRecordSummaryData> fetchSummary(String date) async =>
-      throw UnimplementedError();
+  Future<DailyRecordSummaryData> fetchSummary(String date) async {
+    throw UnimplementedError();
+  }
+
   @override
   Future<DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
-  ) async => throw UnimplementedError();
+  ) async {
+    throw UnimplementedError();
+  }
+
   @override
   Future<DailyRecordCandidateResult> generateCandidates({
     required String text,
     required String occurredAt,
-  }) async => throw UnimplementedError();
+  }) async {
+    throw UnimplementedError();
+  }
+
   @override
-  Future<DailyRecordItem> create(DailyRecordCreateInput input) async =>
-      throw UnimplementedError();
+  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
+    throw UnimplementedError();
+  }
+
   @override
   Future<DailyRecordItem> update(
     String id,
     DailyRecordUpdateInput input,
-  ) async => throw UnimplementedError();
+  ) async {
+    throw UnimplementedError();
+  }
+
   @override
   Future<void> delete(String id) async {}
 }
 
 void main() {
-  testWidgets('RecordDetailPage loads and displays record when authenticated', (
+  testWidgets('RecordEditPage loads and displays record when authenticated', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
-          dailyRecordRepositoryProvider.overrideWithValue(_FakeRepo()),
+          dailyRecordRepositoryProvider.overrideWithValue(_FakeRecordRepo()),
         ],
         child: MaterialApp.router(
           locale: const Locale('zh'),
@@ -85,7 +103,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (_, __) => const RecordDetailPage(recordId: 'test-id'),
+                builder: (_, __) => const RecordEditPage(recordId: 'test-id'),
               ),
               GoRoute(
                 path: '/home',
@@ -96,9 +114,12 @@ void main() {
         ),
       ),
     );
+
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump();
-    expect(find.byType(RecordDetailPage), findsOneWidget);
+
+    expect(find.byType(RecordEditPage), findsOneWidget);
+    expect(find.text(l10n.recordEditAction), findsWidgets);
   });
 }

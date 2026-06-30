@@ -6,7 +6,7 @@ import 'package:luminous/features/auth/presentation/providers/session/auth_sessi
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../auth/auth_test_helpers.dart';
+import '../auth/auth_test_helpers.dart';
 
 class _SignedOut extends AuthSessionNotifier {
   @override
