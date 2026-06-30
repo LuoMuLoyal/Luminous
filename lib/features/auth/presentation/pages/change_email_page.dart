@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -10,33 +11,14 @@ import 'package:luminous/features/auth/presentation/providers/session/auth_sessi
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class ChangeEmailPage extends ConsumerStatefulWidget {
+class ChangeEmailPage extends HookConsumerWidget {
   const ChangeEmailPage({super.key});
 
   @override
-  ConsumerState<ChangeEmailPage> createState() => _ChangeEmailPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final emailController = useTextEditingController();
+    final codeController = useTextEditingController();
 
-class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
-  late final TextEditingController _emailController;
-  late final TextEditingController _codeController;
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController = TextEditingController();
-    _codeController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _codeController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final accountState = ref.watch(authAccountProvider);
     final accountNotifier = ref.read(authAccountProvider.notifier);
     final session = ref.watch(authSessionProvider);
@@ -45,6 +27,23 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
     final success = accountState.successMessage?.isNotEmpty == true
         ? accountState.successMessage
         : null;
+
+    bool validateSubmit() {
+      final message = switch ((
+        emailController.text.trim().isEmpty,
+        codeController.text.trim().isEmpty,
+      )) {
+        (true, _) => l10n?.authEmailRequiredToast ?? 'Please enter your email.',
+        (_, true) =>
+          l10n?.authCodeRequiredToast ?? 'Please enter the verification code.',
+        _ => null,
+      };
+      if (message == null) {
+        return true;
+      }
+      AppToast.show(context, message);
+      return false;
+    }
 
     return AuthShell(
       title: l10n?.authChangeEmailFormTitle ?? 'Change email',
@@ -57,14 +56,14 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AuthTextField(
-                  controller: _emailController,
+                  controller: emailController,
                   label: l10n?.authNewEmailLabel ?? 'New email',
                   hint: l10n?.authEmailHint ?? 'name@example.com',
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: AppSpacingTokens.md),
                 AuthCodeFieldRow(
-                  controller: _codeController,
+                  controller: codeController,
                   label: l10n?.authCodeLabel ?? 'Verification code',
                   buttonLabel: accountState.lastCooldownSeconds == null
                       ? l10n?.authSendCode ?? 'Send code'
@@ -76,7 +75,7 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
                   onSendCode: !isSignedIn
                       ? null
                       : () async {
-                          if (_emailController.text.trim().isEmpty) {
+                          if (emailController.text.trim().isEmpty) {
                             await AppToast.show(
                               context,
                               l10n?.authEmailRequiredToast ??
@@ -85,7 +84,7 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
                             return;
                           }
                           await accountNotifier.sendVerificationCode(
-                            email: _emailController.text,
+                            email: emailController.text,
                             scene: AuthVerificationScene.changeEmail,
                           );
                         },
@@ -105,12 +104,12 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
                   onPressed: !isSignedIn
                       ? null
                       : () async {
-                          if (!_validateSubmit(context, l10n)) {
+                          if (!validateSubmit()) {
                             return;
                           }
                           final ok = await accountNotifier.changeEmail(
-                            newEmail: _emailController.text,
-                            code: _codeController.text,
+                            newEmail: emailController.text,
+                            code: codeController.text,
                           );
                           if (ok && context.mounted) {
                             await AppToast.show(
@@ -133,23 +132,6 @@ class _ChangeEmailPageState extends ConsumerState<ChangeEmailPage> {
               ],
             ),
     );
-  }
-
-  bool _validateSubmit(BuildContext context, AppLocalizations? l10n) {
-    final message = switch ((
-      _emailController.text.trim().isEmpty,
-      _codeController.text.trim().isEmpty,
-    )) {
-      (true, _) => l10n?.authEmailRequiredToast ?? 'Please enter your email.',
-      (_, true) =>
-        l10n?.authCodeRequiredToast ?? 'Please enter the verification code.',
-      _ => null,
-    };
-    if (message == null) {
-      return true;
-    }
-    AppToast.show(context, message);
-    return false;
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -8,42 +9,17 @@ import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class RegisterPage extends ConsumerStatefulWidget {
+class RegisterPage extends HookConsumerWidget {
   const RegisterPage({super.key});
 
   @override
-  ConsumerState<RegisterPage> createState() => _RegisterPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final emailController = useTextEditingController();
+    final codeController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final confirmPasswordController = useTextEditingController();
+    final nicknameController = useTextEditingController();
 
-class _RegisterPageState extends ConsumerState<RegisterPage> {
-  late final TextEditingController _emailController;
-  late final TextEditingController _codeController;
-  late final TextEditingController _passwordController;
-  late final TextEditingController _confirmPasswordController;
-  late final TextEditingController _nicknameController;
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController = TextEditingController();
-    _codeController = TextEditingController();
-    _passwordController = TextEditingController();
-    _confirmPasswordController = TextEditingController();
-    _nicknameController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _codeController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _nicknameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final state = ref.watch(registerFormProvider);
     final notifier = ref.read(registerFormProvider.notifier);
     final l10n = AppLocalizations.of(context);
@@ -63,7 +39,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AuthTextField(
-                controller: _emailController,
+                controller: emailController,
                 label: l10n?.authEmailLabel ?? 'Email',
                 hint: l10n?.authEmailHint ?? 'name@example.com',
                 keyboardType: TextInputType.emailAddress,
@@ -78,7 +54,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AuthCodeFieldRow(
-                controller: _codeController,
+                controller: codeController,
                 label: l10n?.authCodeLabel ?? 'Verification code',
                 buttonLabel: state.cooldownSeconds == null
                     ? l10n?.authSendCode ?? 'Send code'
@@ -86,7 +62,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           'Send again (${state.cooldownSeconds}s)',
                 isLoading: state.isSendingCode,
                 onSendCode: () async {
-                  notifier.updateEmail(_emailController.text);
+                  notifier.updateEmail(emailController.text);
                   if (!notifier.validateEmailOnly(
                     emailRequired:
                         l10n?.authEmailRequiredError ??
@@ -115,7 +91,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AuthTextField(
-                controller: _passwordController,
+                controller: passwordController,
                 label: l10n?.authPasswordLabel ?? 'Password',
                 hint:
                     l10n?.authPasswordHint ??
@@ -132,7 +108,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AuthTextField(
-                controller: _confirmPasswordController,
+                controller: confirmPasswordController,
                 label: l10n?.authConfirmPasswordLabel ?? 'Confirm password',
                 hint:
                     l10n?.authPasswordHint ??
@@ -145,7 +121,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           ),
           const SizedBox(height: AppSpacingTokens.md),
           AuthTextField(
-            controller: _nicknameController,
+            controller: nicknameController,
             label: l10n?.authNicknameLabel ?? 'Nickname',
             hint: l10n?.authNicknameHint ?? 'Optional',
             prefix: const Icon(Icons.person_outline),
@@ -163,11 +139,11 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             label: l10n?.authCreateAccountAction ?? 'Create account',
             isLoading: state.isSubmitting,
             onPressed: () async {
-              notifier.updateEmail(_emailController.text);
-              notifier.updateCode(_codeController.text);
-              notifier.updatePassword(_passwordController.text);
-              notifier.updateConfirmPassword(_confirmPasswordController.text);
-              notifier.updateNickname(_nicknameController.text);
+              notifier.updateEmail(emailController.text);
+              notifier.updateCode(codeController.text);
+              notifier.updatePassword(passwordController.text);
+              notifier.updateConfirmPassword(confirmPasswordController.text);
+              notifier.updateNickname(nicknameController.text);
               final isValid = notifier.validate(
                 emailRequired:
                     l10n?.authEmailRequiredError ?? 'Please enter your email.',

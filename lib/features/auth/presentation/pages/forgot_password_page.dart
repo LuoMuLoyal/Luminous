@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -8,39 +9,16 @@ import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class ForgotPasswordPage extends ConsumerStatefulWidget {
+class ForgotPasswordPage extends HookConsumerWidget {
   const ForgotPasswordPage({super.key});
 
   @override
-  ConsumerState<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final emailController = useTextEditingController();
+    final codeController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final confirmPasswordController = useTextEditingController();
 
-class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
-  late final TextEditingController _emailController;
-  late final TextEditingController _codeController;
-  late final TextEditingController _passwordController;
-  late final TextEditingController _confirmPasswordController;
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController = TextEditingController();
-    _codeController = TextEditingController();
-    _passwordController = TextEditingController();
-    _confirmPasswordController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _codeController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final state = ref.watch(passwordResetProvider);
     final notifier = ref.read(passwordResetProvider.notifier);
     final l10n = AppLocalizations.of(context);
@@ -63,7 +41,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AuthTextField(
-                controller: _emailController,
+                controller: emailController,
                 label: l10n?.authEmailLabel ?? 'Email',
                 hint: l10n?.authEmailHint ?? 'name@example.com',
                 keyboardType: TextInputType.emailAddress,
@@ -78,7 +56,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AuthCodeFieldRow(
-                controller: _codeController,
+                controller: codeController,
                 label: l10n?.authCodeLabel ?? 'Verification code',
                 buttonLabel: state.cooldownSeconds == null
                     ? l10n?.authSendCode ?? 'Send code'
@@ -86,7 +64,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                           'Send again (${state.cooldownSeconds}s)',
                 isLoading: state.isSendingCode,
                 onSendCode: () async {
-                  notifier.updateEmail(_emailController.text);
+                  notifier.updateEmail(emailController.text);
                   if (!notifier.validateEmailOnly(
                     emailRequired:
                         l10n?.authEmailRequiredError ??
@@ -115,7 +93,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AuthTextField(
-                controller: _passwordController,
+                controller: passwordController,
                 label: l10n?.authNewPasswordLabel ?? 'New password',
                 hint:
                     l10n?.authPasswordHint ??
@@ -132,7 +110,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AuthTextField(
-                controller: _confirmPasswordController,
+                controller: confirmPasswordController,
                 label: l10n?.authConfirmPasswordLabel ?? 'Confirm password',
                 hint:
                     l10n?.authPasswordHint ??
@@ -152,10 +130,10 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
             label: l10n?.authResetPasswordAction ?? 'Reset password',
             isLoading: state.isSubmitting,
             onPressed: () async {
-              notifier.updateEmail(_emailController.text);
-              notifier.updateCode(_codeController.text);
-              notifier.updatePassword(_passwordController.text);
-              notifier.updateConfirmPassword(_confirmPasswordController.text);
+              notifier.updateEmail(emailController.text);
+              notifier.updateCode(codeController.text);
+              notifier.updatePassword(passwordController.text);
+              notifier.updateConfirmPassword(confirmPasswordController.text);
               final isValid = notifier.validate(
                 emailRequired:
                     l10n?.authEmailRequiredError ?? 'Please enter your email.',
