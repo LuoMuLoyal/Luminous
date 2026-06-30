@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/features/today/data/repositories/lucent_today_ai_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
@@ -17,32 +15,6 @@ class StaticTodayRepository implements TodayRepository {
   @override
   Future<TodayDashboard> fetchDashboard() async {
     return dashboard;
-  }
-}
-
-class SignedInAuthSessionNotifier extends AuthSessionNotifier {
-  @override
-  AuthSessionState build() {
-    return AuthSessionState(
-      isAuthenticated: true,
-      isLoading: false,
-      user: AuthUser(
-        id: 'user-1',
-        email: 'user@example.com',
-        nickname: 'Lumi',
-        avatar: null,
-        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
-        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
-        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
-      ),
-    );
-  }
-}
-
-class SignedOutAuthSessionNotifier extends AuthSessionNotifier {
-  @override
-  AuthSessionState build() {
-    return const AuthSessionState(isAuthenticated: false, isLoading: false);
   }
 }
 

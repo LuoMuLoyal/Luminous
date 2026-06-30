@@ -1132,22 +1132,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineTodayPlanInspectAction => 'View all';
 
   @override
-  String get medicineMockNameMetformin => '[DEMO] Example medicine A';
+  String get medicineGenericName => 'Medicine';
 
   @override
-  String get medicineMockDoseMetformin => '0.5 g';
+  String get medicineGenericDosage => 'Dosage';
 
   @override
-  String get medicineMockScheduleMorningEvening => 'Twice daily';
-
-  @override
-  String get medicineMockTime0800 => '08:00';
-
-  @override
-  String get medicineMockTime1200 => '12:00';
-
-  @override
-  String get medicineMockTime2000 => '20:00';
+  String get medicineGenericSchedule => 'Schedule';
 
   @override
   String get medicineDoseStatusTaken => 'Taken';
@@ -1407,22 +1398,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicineStatusStable => 'Stable routine';
 
   @override
-  String get medicineMockNameAtorvastatin => '[DEMO] Example medicine B';
-
-  @override
-  String get medicineMockDoseAtorvastatin => '20 mg';
-
-  @override
-  String get medicineMockScheduleDailyOnce => 'Once daily';
-
-  @override
   String get medicineStatusNeedsCheckin => 'Stable routine';
-
-  @override
-  String get medicineMockNameOmeprazole => '[DEMO] Example medicine C';
-
-  @override
-  String get medicineMockDoseOmeprazole => '20 mg';
 
   @override
   String get medicineSafetyPanelTitle => 'Medication safety';

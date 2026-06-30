@@ -443,87 +443,83 @@ class _DrugBoxMedicationRow extends StatelessWidget {
     final state = _itemState(l10n, item);
     final currentMedicineId = item.currentMedicineId;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          if (currentMedicineId == null) {
-            AppToast.show(context, l10n.medicineOpenPlanItemToast);
-            return;
-          }
-          if (onOpenReminder != null) {
-            onOpenReminder!(currentMedicineId);
-            return;
-          }
-          context.push(
-            '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}',
-          );
-        },
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.xs,
-            vertical: AppSpacingTokens.sm,
-          ),
-          child: Row(
-            children: [
-              _MedicationAvatar(item: item, size: AppSpacingTokens.x2l),
-              const SizedBox(width: AppSpacingTokens.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppSkeletonText(
-                      text: name,
-                      style: typography.bodyMdStrong.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
+    return AppInkWell(
+      onTap: () {
+        if (currentMedicineId == null) {
+          AppToast.show(context, l10n.medicineOpenPlanItemToast);
+          return;
+        }
+        if (onOpenReminder != null) {
+          onOpenReminder!(currentMedicineId);
+          return;
+        }
+        context.push(
+          '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}',
+        );
+      },
+      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.xs,
+          vertical: AppSpacingTokens.sm,
+        ),
+        child: Row(
+          children: [
+            _MedicationAvatar(item: item, size: AppSpacingTokens.x2l),
+            const SizedBox(width: AppSpacingTokens.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppSkeletonText(
+                    text: name,
+                    style: typography.bodyMdStrong.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    widthFactor: 0.72,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.xxs),
+                  Wrap(
+                    spacing: AppSpacingTokens.xs,
+                    runSpacing: AppSpacingTokens.xxs,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      AppSkeletonText(
+                        text: '$dosage · ${_compactRouteOrSchedule(schedule)}',
+                        style: typography.bodySm.copyWith(
+                          color: surface.body,
+                          letterSpacing: 0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        widthFactor: 0.66,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      widthFactor: 0.72,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.xxs),
-                    Wrap(
-                      spacing: AppSpacingTokens.xs,
-                      runSpacing: AppSpacingTokens.xxs,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        AppSkeletonText(
-                          text:
-                              '$dosage · ${_compactRouteOrSchedule(schedule)}',
-                          style: typography.bodySm.copyWith(
-                            color: surface.body,
-                            letterSpacing: 0,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          widthFactor: 0.66,
+                      AppSkeletonSlot(
+                        skeleton: const AppInlineSkeletonBlock(
+                          height: 22,
+                          width: 54,
+                          radius: AppRadiusTokens.pill,
                         ),
-                        AppSkeletonSlot(
-                          skeleton: const AppInlineSkeletonBlock(
-                            height: 22,
-                            width: 54,
-                            radius: AppRadiusTokens.pill,
-                          ),
-                          child: AppStatusPill(
-                            label: state,
-                            color: item.stateColor,
-                          ),
+                        child: AppStatusPill(
+                          label: state,
+                          color: item.stateColor,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              const SizedBox(width: AppSpacingTokens.xs),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: surface.mute,
-                size: AppSpacingTokens.lg,
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(width: AppSpacingTokens.xs),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: surface.mute,
+              size: AppSpacingTokens.lg,
+            ),
+          ],
         ),
       ),
     );

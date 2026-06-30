@@ -69,7 +69,7 @@ void main() {
     expect(find.text(l10n.tabMedicine), findsOneWidget);
     expect(find.text(l10n.medicineHomeSearchHint), findsOneWidget);
     expect(find.text(l10n.medicineDrugboxTitle), findsOneWidget);
-    expect(find.text(l10n.medicineMockNameMetformin), findsAtLeastNWidgets(1));
+    expect(find.text('Metformin'), findsAtLeastNWidgets(1));
 
     final scrollable = find.byType(Scrollable);
     final keys = <String>[
@@ -651,12 +651,15 @@ const _completedWorkspace = MedicineWorkspace(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
         color: AppColorTokens.cyanDeep,
-        nameKey: MedicineCopyKey.mockNameMetformin,
-        dosageKey: MedicineCopyKey.mockDoseMetformin,
-        scheduleKey: MedicineCopyKey.mockScheduleDailyOnce,
+        nameKey: MedicineCopyKey.genericName,
+        dosageKey: MedicineCopyKey.genericDosage,
+        scheduleKey: MedicineCopyKey.genericSchedule,
+        rawName: 'Metformin',
+        rawDosage: '0.5 g',
+        rawSchedule: 'Once daily',
         slots: <MedicineDoseSlot>[
           MedicineDoseSlot(
-            timeKey: MedicineCopyKey.mockTime2000,
+            rawTime: '20:00',
             statusKey: MedicineCopyKey.doseStatusSkipped,
             status: MedicineDoseStatus.skipped,
           ),

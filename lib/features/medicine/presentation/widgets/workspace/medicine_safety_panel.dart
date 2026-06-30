@@ -1,3 +1,4 @@
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/app_section_surface.dart';
@@ -161,33 +162,30 @@ class _AlertActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
+    return AppInkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: emphasized
+              ? MedicineWorkspacePalette.green
+              : color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+          border: Border.all(
             color: emphasized
                 ? MedicineWorkspacePalette.green
-                : color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
-            border: Border.all(
-              color: emphasized
-                  ? MedicineWorkspacePalette.green
-                  : color.withValues(alpha: 0.28),
-            ),
+                : color.withValues(alpha: 0.28),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.sm,
-            ),
-            child: Text(
-              label,
-              style: typography.bodySmStrong.copyWith(
-                color: emphasized ? Colors.white : color,
-              ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
+          child: Text(
+            label,
+            style: typography.bodySmStrong.copyWith(
+              color: emphasized ? Colors.white : color,
             ),
           ),
         ),
@@ -211,75 +209,72 @@ class _PromisePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => showPlannedAction(
-          context,
-          l10n.medicinePromiseTitle,
-          l10n.medicineOpenPromiseToast,
+    return AppInkWell(
+      onTap: () => showPlannedAction(
+        context,
+        l10n.medicinePromiseTitle,
+        l10n.medicineOpenPromiseToast,
+      ),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: MedicineWorkspacePalette.greenSoft,
+          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          border: Border.all(color: MedicineWorkspacePalette.greenLine),
         ),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: MedicineWorkspacePalette.greenSoft,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: MedicineWorkspacePalette.greenLine),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.gpp_good_outlined,
-                      color: MedicineWorkspacePalette.green,
-                      size: 22,
-                    ),
-                    const SizedBox(width: AppSpacingTokens.sm),
-                    Expanded(
-                      child: Text(
-                        l10n.medicinePromiseTitle,
-                        style: typography.bodyMdStrong.copyWith(
-                          color: MedicineWorkspacePalette.green,
-                          fontWeight: FontWeight.w600,
-                        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.gpp_good_outlined,
+                    color: MedicineWorkspacePalette.green,
+                    size: 22,
+                  ),
+                  const SizedBox(width: AppSpacingTokens.sm),
+                  Expanded(
+                    child: Text(
+                      l10n.medicinePromiseTitle,
+                      style: typography.bodyMdStrong.copyWith(
+                        color: MedicineWorkspacePalette.green,
+                        fontWeight: FontWeight.w600,
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacingTokens.md),
-                ...workspace.promisePoints.map(
-                  (point) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
-                    child: _PromisePoint(
-                      label: medicineCopy(l10n, point.copyKey),
-                      typography: typography,
-                      surface: surface,
                     ),
                   ),
+                ],
+              ),
+              const SizedBox(height: AppSpacingTokens.md),
+              ...workspace.promisePoints.map(
+                (point) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
+                  child: _PromisePoint(
+                    label: medicineCopy(l10n, point.copyKey),
+                    typography: typography,
+                    surface: surface,
+                  ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xs),
-                Row(
-                  children: [
-                    Text(
-                      l10n.medicinePromiseAction,
-                      style: typography.bodySmStrong.copyWith(
-                        color: MedicineWorkspacePalette.green,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacingTokens.xs),
-                    const Icon(
-                      Icons.chevron_right_rounded,
+              ),
+              const SizedBox(height: AppSpacingTokens.xs),
+              Row(
+                children: [
+                  Text(
+                    l10n.medicinePromiseAction,
+                    style: typography.bodySmStrong.copyWith(
                       color: MedicineWorkspacePalette.green,
-                      size: 18,
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(width: AppSpacingTokens.xs),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    color: MedicineWorkspacePalette.green,
+                    size: 18,
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

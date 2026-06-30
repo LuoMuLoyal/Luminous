@@ -2036,41 +2036,23 @@ abstract class AppLocalizations {
   /// **'查看全部'**
   String get medicineTodayPlanInspectAction;
 
-  /// No description provided for @medicineMockNameMetformin.
+  /// No description provided for @medicineGenericName.
   ///
   /// In zh, this message translates to:
-  /// **'[DEMO] 示例药品 A'**
-  String get medicineMockNameMetformin;
+  /// **'药品'**
+  String get medicineGenericName;
 
-  /// No description provided for @medicineMockDoseMetformin.
+  /// No description provided for @medicineGenericDosage.
   ///
   /// In zh, this message translates to:
-  /// **'0.5 g'**
-  String get medicineMockDoseMetformin;
+  /// **'剂量'**
+  String get medicineGenericDosage;
 
-  /// No description provided for @medicineMockScheduleMorningEvening.
+  /// No description provided for @medicineGenericSchedule.
   ///
   /// In zh, this message translates to:
-  /// **'每日 2 次'**
-  String get medicineMockScheduleMorningEvening;
-
-  /// No description provided for @medicineMockTime0800.
-  ///
-  /// In zh, this message translates to:
-  /// **'08:00'**
-  String get medicineMockTime0800;
-
-  /// No description provided for @medicineMockTime1200.
-  ///
-  /// In zh, this message translates to:
-  /// **'12:00'**
-  String get medicineMockTime1200;
-
-  /// No description provided for @medicineMockTime2000.
-  ///
-  /// In zh, this message translates to:
-  /// **'20:00'**
-  String get medicineMockTime2000;
+  /// **'用法'**
+  String get medicineGenericSchedule;
 
   /// No description provided for @medicineDoseStatusTaken.
   ///
@@ -2564,41 +2546,11 @@ abstract class AppLocalizations {
   /// **'稳定服用'**
   String get medicineStatusStable;
 
-  /// No description provided for @medicineMockNameAtorvastatin.
-  ///
-  /// In zh, this message translates to:
-  /// **'[DEMO] 示例药品 B'**
-  String get medicineMockNameAtorvastatin;
-
-  /// No description provided for @medicineMockDoseAtorvastatin.
-  ///
-  /// In zh, this message translates to:
-  /// **'20 mg'**
-  String get medicineMockDoseAtorvastatin;
-
-  /// No description provided for @medicineMockScheduleDailyOnce.
-  ///
-  /// In zh, this message translates to:
-  /// **'每日 1 次'**
-  String get medicineMockScheduleDailyOnce;
-
   /// No description provided for @medicineStatusNeedsCheckin.
   ///
   /// In zh, this message translates to:
   /// **'稳定服用'**
   String get medicineStatusNeedsCheckin;
-
-  /// No description provided for @medicineMockNameOmeprazole.
-  ///
-  /// In zh, this message translates to:
-  /// **'[DEMO] 示例药品 C'**
-  String get medicineMockNameOmeprazole;
-
-  /// No description provided for @medicineMockDoseOmeprazole.
-  ///
-  /// In zh, this message translates to:
-  /// **'20 mg'**
-  String get medicineMockDoseOmeprazole;
 
   /// No description provided for @medicineSafetyPanelTitle.
   ///

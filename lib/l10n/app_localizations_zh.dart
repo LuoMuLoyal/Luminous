@@ -1044,22 +1044,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineTodayPlanInspectAction => '查看全部';
 
   @override
-  String get medicineMockNameMetformin => '[DEMO] 示例药品 A';
+  String get medicineGenericName => '药品';
 
   @override
-  String get medicineMockDoseMetformin => '0.5 g';
+  String get medicineGenericDosage => '剂量';
 
   @override
-  String get medicineMockScheduleMorningEvening => '每日 2 次';
-
-  @override
-  String get medicineMockTime0800 => '08:00';
-
-  @override
-  String get medicineMockTime1200 => '12:00';
-
-  @override
-  String get medicineMockTime2000 => '20:00';
+  String get medicineGenericSchedule => '用法';
 
   @override
   String get medicineDoseStatusTaken => '已服用';
@@ -1308,22 +1299,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get medicineStatusStable => '稳定服用';
 
   @override
-  String get medicineMockNameAtorvastatin => '[DEMO] 示例药品 B';
-
-  @override
-  String get medicineMockDoseAtorvastatin => '20 mg';
-
-  @override
-  String get medicineMockScheduleDailyOnce => '每日 1 次';
-
-  @override
   String get medicineStatusNeedsCheckin => '稳定服用';
-
-  @override
-  String get medicineMockNameOmeprazole => '[DEMO] 示例药品 C';
-
-  @override
-  String get medicineMockDoseOmeprazole => '20 mg';
 
   @override
   String get medicineSafetyPanelTitle => '用药安全';

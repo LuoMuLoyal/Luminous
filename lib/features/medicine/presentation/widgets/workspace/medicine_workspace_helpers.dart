@@ -1,3 +1,4 @@
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -29,18 +30,15 @@ class SectionTextAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.xxs),
-          child: Text(
-            label,
-            style: typography.bodySm.copyWith(
-              color: MedicineWorkspacePalette.green,
-            ),
+    return AppInkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.xxs),
+        child: Text(
+          label,
+          style: typography.bodySm.copyWith(
+            color: MedicineWorkspacePalette.green,
           ),
         ),
       ),

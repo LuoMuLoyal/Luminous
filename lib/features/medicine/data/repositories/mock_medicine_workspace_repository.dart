@@ -80,17 +80,20 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       items: <MedicinePlanItem>[
         MedicinePlanItem(
           color: AppColorTokens.link,
-          nameKey: MedicineCopyKey.mockNameMetformin,
-          dosageKey: MedicineCopyKey.mockDoseMetformin,
-          scheduleKey: MedicineCopyKey.mockScheduleMorningEvening,
+          nameKey: MedicineCopyKey.genericName,
+          dosageKey: MedicineCopyKey.genericDosage,
+          scheduleKey: MedicineCopyKey.genericSchedule,
+          rawName: 'Metformin',
+          rawDosage: '0.5 g',
+          rawSchedule: 'Twice daily',
           slots: <MedicineDoseSlot>[
             MedicineDoseSlot(
-              timeKey: MedicineCopyKey.mockTime0800,
+              rawTime: '08:00',
               statusKey: MedicineCopyKey.doseStatusTaken,
               status: MedicineDoseStatus.taken,
             ),
             MedicineDoseSlot(
-              timeKey: MedicineCopyKey.mockTime2000,
+              rawTime: '20:00',
               statusKey: MedicineCopyKey.doseStatusPending,
               status: MedicineDoseStatus.pending,
             ),
@@ -100,12 +103,15 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         ),
         MedicinePlanItem(
           color: AppColorTokens.warning,
-          nameKey: MedicineCopyKey.mockNameAtorvastatin,
-          dosageKey: MedicineCopyKey.mockDoseAtorvastatin,
-          scheduleKey: MedicineCopyKey.mockScheduleDailyOnce,
+          nameKey: MedicineCopyKey.genericName,
+          dosageKey: MedicineCopyKey.genericDosage,
+          scheduleKey: MedicineCopyKey.genericSchedule,
+          rawName: 'Atorvastatin',
+          rawDosage: '20 mg',
+          rawSchedule: 'Once daily',
           slots: <MedicineDoseSlot>[
             MedicineDoseSlot(
-              timeKey: MedicineCopyKey.mockTime1200,
+              rawTime: '12:00',
               statusKey: MedicineCopyKey.doseStatusTaken,
               status: MedicineDoseStatus.taken,
             ),
@@ -115,12 +121,15 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         ),
         MedicinePlanItem(
           color: AppColorTokens.highlightMagenta,
-          nameKey: MedicineCopyKey.mockNameOmeprazole,
-          dosageKey: MedicineCopyKey.mockDoseOmeprazole,
-          scheduleKey: MedicineCopyKey.mockScheduleDailyOnce,
+          nameKey: MedicineCopyKey.genericName,
+          dosageKey: MedicineCopyKey.genericDosage,
+          scheduleKey: MedicineCopyKey.genericSchedule,
+          rawName: 'Omeprazole',
+          rawDosage: '20 mg',
+          rawSchedule: 'Once daily',
           slots: <MedicineDoseSlot>[
             MedicineDoseSlot(
-              timeKey: MedicineCopyKey.mockTime0800,
+              rawTime: '08:00',
               statusKey: MedicineCopyKey.doseStatusPending,
               status: MedicineDoseStatus.pending,
             ),

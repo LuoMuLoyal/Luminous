@@ -1,3 +1,4 @@
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -29,40 +30,33 @@ class MedicineHeaderActionChip extends StatelessWidget {
     final foreground = emphasized
         ? Colors.white
         : Theme.of(context).colorScheme.onSurface;
-    final disabled = onTap == null;
 
-    return Opacity(
-      opacity: disabled ? 0.5 : 1.0,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
+    return AppInkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: background,
           borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-              border: Border.all(
-                color: emphasized ? emphasisColor : surface.hairline,
+          border: Border.all(
+            color: emphasized ? emphasisColor : surface.hairline,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 18, color: foreground),
+              const SizedBox(width: AppSpacingTokens.xs),
+              Text(
+                label,
+                style: typography.buttonMd.copyWith(color: foreground),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.md,
-                vertical: AppSpacingTokens.sm,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 18, color: foreground),
-                  const SizedBox(width: AppSpacingTokens.xs),
-                  Text(
-                    label,
-                    style: typography.buttonMd.copyWith(color: foreground),
-                  ),
-                ],
-              ),
-            ),
+            ],
           ),
         ),
       ),
