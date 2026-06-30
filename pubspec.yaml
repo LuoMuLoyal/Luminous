@@ -83,7 +83,6 @@ dev_dependencies:
   json_serializable: ^6.9.5
   freezed: ^3.2.5
   melos: ^7.8.1
-
 flutter_launcher_icons:
   android: true
   ios: true

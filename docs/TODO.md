@@ -1,6 +1,6 @@
 # Luminous TODO
 
-Last updated: 2026-06-29
+Last updated: 2026-06-30
 
 This file records work that is still missing or intentionally gated. Current facts belong in `Current_State.md`; implementation order belongs in `Next_Plan.md`.
 

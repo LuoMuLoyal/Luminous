@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +19,7 @@ import 'package:luminous/features/medicine/presentation/providers/medicine_works
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/search/data/repositories/mock/mock_repository.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
+import 'package:luminous/features/search/presentation/widgets/views/search_view.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/features/search/domain/repositories/search_repository.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -293,6 +296,43 @@ void main() {
     expect(find.text('添加前风险检查'), findsNothing);
     expect(fakeRepo.createdCurrentMedicine, isNotNull);
   });
+
+  testWidgets('search shows loading skeleton while results load', (
+    tester,
+  ) async {
+    final pending = Completer<List<MedicineSearchResult>>();
+    final hangingRepo = _HangingSearchRepository(pending);
+
+    await _pumpSearchApp(tester, medicineSearchRepository: hangingRepo);
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.enterText(find.byType(TextField), '布洛芬');
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Loading skeleton should appear while search is pending
+    expect(find.byType(MedicineSearchLoadingView), findsOneWidget);
+    // Real results should NOT be visible
+    expect(find.text('[DEMO] 布洛芬片'), findsNothing);
+
+    // Complete the search
+    pending.complete(const [
+      MedicineSearchResult(
+        id: 'ibuprofen',
+        source: MedicineSearchSource.cn,
+        name: '[DEMO] 布洛芬片',
+        subtitle: '',
+        summary: '',
+        tags: [],
+        matchType: MedicineSearchMatchType.name,
+      ),
+    ]);
+    await tester.pumpAndSettle();
+
+    // After loading completes, skeleton gone and results appear
+    expect(find.byType(MedicineSearchLoadingView), findsNothing);
+    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
+  });
 }
 
 Future<void> _pumpSearchApp(
@@ -550,6 +590,28 @@ class _FakeMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// Repository that hangs on [search] until the completer finishes.
+/// Used to test the loading skeleton state.
+class _HangingSearchRepository implements MedicineSearchRepository {
+  _HangingSearchRepository(this._pending);
+
+  final Completer<List<MedicineSearchResult>> _pending;
+
+  @override
+  Future<List<MedicineSearchResult>> search({
+    required String query,
+    required MedicineSearchSource source,
+    int page = 1,
+    int pageSize = 20,
+  }) => _pending.future;
+
+  @override
+  Future<MedicineSearchSafetyPreview?> fetchDetail(
+    String id,
+    MedicineSearchSource source,
+  ) async => null;
 }
 
 const _clearRiskCheckResult = MedicineRiskCheckResult(

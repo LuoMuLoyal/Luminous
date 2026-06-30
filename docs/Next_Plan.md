@@ -2,43 +2,27 @@
 
 Last updated: 2026-06-30
 
-This file records the next implementation order only. Completed work belongs in `migration-log/YYYY-MM-DD.md`; current facts belong in `Current_State.md`.
+This file records the next implementation order only. Current facts belong in `Current_State.md`; change history belongs in `migration-log/YYYY-MM-DD.md`.
 
 ## Current Goal
 
-The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder interactions (reachable with existing routes/providers) are wired; the remaining B/C-class items are recorded below and require backend/API work or product decisions before implementation.
+**Shipping Luminous v4.0.0**. The A-class placeholder interactions are wired; remaining B/C-class items require backend/API work or product decisions.
 
-## Immediate Work Order
+## Immediate Next
 
-1. **Finish v4.0.0 release prep**
-   - Resolve or defer the B/C-class placeholder items listed below.
-   - Run the full validation gate before tagging 4.0.0.
+1. **Run full v4.0.0 validation gate**
+   - `dart run tool/run_daily_checks.dart` (repo-safe)
+   - `dart run tool/run_fullstack_checks.dart` (Android emulator + Lucent test runtime)
 
-2. **Keep assistant evolution bounded to concrete new scenarios**
-   - Only extend assistant tools/proposals when a specific missing user task is chosen.
-   - Do not reopen broad tool refactors without a new capability target.
-   - Keep memory optional, explicit, and user-controlled.
+2. **Tag v4.0.0** after gate passes
 
-3. **Keep Web as a deliberate decision**
-   - `Luminous-site` is still a competition/marketing surface, not a signed-in product shell.
-   - If authenticated Web report preview becomes the chosen next slice later, open a dedicated plan.
+3. **Keep assistant evolution bounded to concrete scenarios**
+   - Only extend tools/proposals when a specific missing user task is chosen.
+   - Memory stays optional, explicit, and user-controlled.
 
-4. **Keep the local validation discipline**
-   - Repo-safe daily: `dart run tool/run_daily_checks.dart`.
-   - Full-stack gate: `dart run tool/run_fullstack_checks.dart` before changes touching auth/session, Today/Report protected loading, daily-records API, generated clients, or E2E helpers.
-
-## Recently Completed
-
-- **Backend notification module + Luminous notification inbox** (`Lucent`/`Luminous` commits around 2026-06-26): `UserNotification` Prisma model and enum, NestJS CRUD API with unread count and batch read, inline notification generation after AI summary, report export, and password change events; Flutter notification list/detail pages, unread red-dot badge driven by real backend unread count, grouped list with paginated load-more, swipe-to-delete and batch mark-all-read, action routing from detail page, and full ARB localization.
-- **Backend assistant leaflet RAG** (`Lucent` commit `6f165e3`): `get_medicine_leaflet_context` tool, leaflet index rebuild script, dynamic `ragEnabled` capabilities truth, and updated assistant contract.
-- **Luminous Record/Report responsive pass** (`Luminous` commit `0a57312`): removed Record "Today overview", widened Report finding cards, added `AppResponsiveSizing`, and replaced the highest-impact fixed layout dimensions.
-- **Luminous v4.0.0 placeholder wiring** (`Luminous` commit `64c6a27`): replaced Today/Record/Medicine/Mine/Search/Report metric placeholder toasts with real navigation, provider invalidation, or filtering behavior.
-- **Luminous settings page refactor** (2026-06-28): reorganized Settings into Account & Security / Notifications / Privacy / General / About groups, moved dialogs/inline actions to sub-pages, introduced reusable settings row widgets, and implemented master-toggle sleep reminder page.
-- **Luminous UX audit HIGH Phase 1** (2026-06-28): unified back button with `AppBackButton`, added back button to `SearchPage`, wired `TodayEmptyView` and recommendation category navigation, replaced reminder quick-action fallback with create-page navigation plus no-medicine selector prompt. Tests: 489/489 passing.
-- **Luminous UX audit HIGH Phase 2** (2026-06-28): moved `/settings/*`, `/assistant`, `/notifications/*`, and all `/record/*`, `/medicine/*`, `/mine/*` create/detail/edit sub-pages out of the `StatefulShellRoute` to top-level full-screen routes; reduced `ShellBranch` to the five visible tab branches; updated desktop sidebar settings/help actions to `context.push`. Tests: 495/495 passing.
-- **Luminous UX audit HIGH wrap-up** (2026-06-28): unified `AuthBackButton` into `AppBackButton`; marked all mock repository user-facing values with `[DEMO]`/placeholder values and search mock IDs with `__mock_*__` to close HIGH-1 and HIGH-2. Tests: 495/495 passing.
-- **Luminous UX audit Medium/Low remediation** (2026-06-28): filtered disabled support resources, enriched About page with backend URLs/email/build date, added confirmation dialog to data-sharing consent, unified export to `/settings/export`, fixed FAB/Today safe-area insets, hid null-medicine drugbox rows and empty-reminder delete buttons, verified login return-route encoding, confirmed unique `PageStorageKey`s, and converted Report metric filtering from provider-only to `/record?filter=<kind>` deep-link. Tests: 506/506 passing.
-- **Luminous UX audit MED-8 / LOW-4 decision** (2026-06-28): retained `MedicineWorkspace.quickActions` and scan/OCR-related entities/enums; they are deferred, not deleted, and remain hidden from the MVP UI.
+4. **Keep Web as a deliberate decision**
+   - `Luminous-site` is a competition/marketing surface, not a signed-in product shell.
+   - If authenticated Web report preview is needed later, open a dedicated plan.
 
 ## Deferred But Useful
 
@@ -49,7 +33,7 @@ The next active slice is **shipping Luminous v4.0.0**. The A-class placeholder i
 - real authenticated Web report preview beyond the competition site
 - system health app bridging through Apple Health / Health Connect
 
-## Medicine Safety Follow-Up Directions
+## Medicine Safety Follow-Up
 
 1. **Allergy severity null-handling** — `severity == null` with `reaction == 'anaphylaxis'`
 2. **CN medicine interaction gap** — CN-sourced medicines invisible to interaction checker

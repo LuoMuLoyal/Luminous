@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/network/lucent_session_store.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -143,4 +145,39 @@ class CaptureAdapter implements HttpClientAdapter {
 
   @override
   void close({bool force = false}) {}
+}
+
+// ── Screen Size Helpers ─────────────────────────────────────────
+
+/// Sets the test device to a mobile screen size (iPhone 14-like: 390×844).
+/// Resets automatically via [addTearDown].
+void setMobileScreenSize(WidgetTester tester) {
+  tester.view.devicePixelRatio = 1.0;
+  tester.view.physicalSize = const Size(390, 844);
+  addTearDown(() {
+    tester.view.resetDevicePixelRatio();
+    tester.view.resetPhysicalSize();
+  });
+}
+
+/// Sets the test device to a desktop screen size (1440×1000).
+/// Resets automatically via [addTearDown].
+void setDesktopScreenSize(WidgetTester tester) {
+  tester.view.devicePixelRatio = 1.0;
+  tester.view.physicalSize = const Size(1440, 1000);
+  addTearDown(() {
+    tester.view.resetDevicePixelRatio();
+    tester.view.resetPhysicalSize();
+  });
+}
+
+/// Sets the test device to a tablet screen size (768×1024, iPad-like).
+/// Resets automatically via [addTearDown].
+void setTabletScreenSize(WidgetTester tester) {
+  tester.view.devicePixelRatio = 1.0;
+  tester.view.physicalSize = const Size(768, 1024);
+  addTearDown(() {
+    tester.view.resetDevicePixelRatio();
+    tester.view.resetPhysicalSize();
+  });
 }

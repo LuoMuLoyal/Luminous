@@ -478,6 +478,30 @@ void main() {
     expect(find.text(l10n.mineErrorDescription), findsOneWidget);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
   });
+
+  testWidgets('Mine page desktop layout uses desktop scroll key', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1440, 1000);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await _pumpMinePage(tester);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // Desktop layout uses a PageStorageKey for scroll position
+    expect(
+      find.byKey(const PageStorageKey<String>('mine-desktop-scroll')),
+      findsOneWidget,
+    );
+    // Core sections still visible on desktop
+    expect(find.text(l10n.mineAccountDisplayName), findsOneWidget);
+  });
 }
 
 Future<void> _pumpMinePage(WidgetTester tester) async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
@@ -46,48 +47,45 @@ class RecordDateBar extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacingTokens.xs),
         Expanded(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onPickDate,
-              borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: surface.canvas,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-                  border: Border.all(color: surface.hairline),
+          child: AppInkWell(
+            onTap: onPickDate,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: surface.canvas,
+                borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                border: Border.all(color: surface.hairline),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacingTokens.md,
+                  vertical: AppSpacingTokens.sm,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.md,
-                    vertical: AppSpacingTokens.sm,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_month_outlined,
-                        color: surface.body,
-                        size: AppSpacingTokens.lg,
-                      ),
-                      const SizedBox(width: AppSpacingTokens.xs),
-                      Expanded(
-                        child: Text(
-                          dateLabel,
-                          style: typography.bodyMdStrong.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_month_outlined,
+                      color: surface.body,
+                      size: AppSpacingTokens.lg,
+                    ),
+                    const SizedBox(width: AppSpacingTokens.xs),
+                    Expanded(
+                      child: Text(
+                        dateLabel,
+                        style: typography.bodyMdStrong.copyWith(
+                          fontWeight: FontWeight.w700,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(width: AppSpacingTokens.xs),
-                      Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: surface.mute,
-                        size: AppSpacingTokens.lg,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: AppSpacingTokens.xs),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: surface.mute,
+                      size: AppSpacingTokens.lg,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -123,21 +121,18 @@ class _DateStepButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-            border: Border.all(color: surface.hairline),
-          ),
-          child: SizedBox.square(
-            dimension: 44,
-            child: Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
-          ),
+    return AppInkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: surface.canvas,
+          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+          border: Border.all(color: surface.hairline),
+        ),
+        child: SizedBox.square(
+          dimension: 44,
+          child: Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
         ),
       ),
     );
