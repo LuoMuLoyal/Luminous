@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
@@ -72,88 +73,83 @@ class _TodoRow extends StatelessWidget {
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
+    return AppInkWell(
+      onTap: onTap,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.md,
+        vertical: AppSpacingTokens.sm,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            item.completed
+                ? Icons.check_circle_rounded
+                : Icons.check_circle_outline_rounded,
+            color: item.completed ? item.color : surface.mute,
+            size: AppSpacingTokens.x2l,
           ),
-          child: Row(
-            children: [
-              Icon(
-                item.completed
-                    ? Icons.check_circle_rounded
-                    : Icons.check_circle_outline_rounded,
-                color: item.completed ? item.color : surface.mute,
-                size: AppSpacingTokens.x2l,
-              ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppSkeletonText(
-                      text: item.title,
-                      style: typography.bodyMdStrong.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      widthFactor: 0.84,
-                      isLoading: item.subtitleIsDynamic ? null : false,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.xs),
-                    AppSkeletonText(
-                      text: item.subtitle,
-                      style: typography.bodySm.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      widthFactor: 0.84,
-                      isLoading: item.subtitleIsDynamic ? null : false,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: item.color.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-                  border: Border.all(color: item.color.withValues(alpha: 0.12)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.sm,
-                    vertical: AppSpacingTokens.xxs,
+          const SizedBox(width: AppSpacingTokens.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppSkeletonText(
+                  text: item.title,
+                  style: typography.bodyMdStrong.copyWith(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0,
                   ),
-                  child: Text(
-                    item.source,
-                    style: typography.caption.copyWith(
-                      color: item.color,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  widthFactor: 0.84,
+                  isLoading: item.subtitleIsDynamic ? null : false,
                 ),
-              ),
-              const SizedBox(width: AppSpacingTokens.xs),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: surface.mute,
-                size: AppSpacingTokens.lg,
-              ),
-            ],
+                const SizedBox(height: AppSpacingTokens.xs),
+                AppSkeletonText(
+                  text: item.subtitle,
+                  style: typography.bodySm.copyWith(
+                    color: surface.body,
+                    letterSpacing: 0,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  widthFactor: 0.84,
+                  isLoading: item.subtitleIsDynamic ? null : false,
+                ),
+              ],
+            ),
           ),
-        ),
+          const SizedBox(width: AppSpacingTokens.sm),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: item.color.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+              border: Border.all(color: item.color.withValues(alpha: 0.12)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacingTokens.sm,
+                vertical: AppSpacingTokens.xxs,
+              ),
+              child: Text(
+                item.source,
+                style: typography.caption.copyWith(
+                  color: item.color,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacingTokens.xs),
+          Icon(
+            Icons.chevron_right_rounded,
+            color: surface.mute,
+            size: AppSpacingTokens.lg,
+          ),
+        ],
       ),
     );
   }

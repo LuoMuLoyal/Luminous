@@ -7,6 +7,7 @@ import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
@@ -244,35 +245,30 @@ class _MedicineSafeGuardPill extends StatelessWidget {
 
     return Tooltip(
       message: l10n.medicineSafetyGuardLabel,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => context.push('/medicine/risk-check'),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.xs,
-              vertical: AppSpacingTokens.xs,
+      child: AppInkWell(
+        onTap: () => context.push('/medicine/risk-check'),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.xs,
+          vertical: AppSpacingTokens.xs,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.gpp_good_outlined,
+              color: AppColorTokens.cyanDeep,
+              size: AppSpacingTokens.lg,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.gpp_good_outlined,
-                  color: AppColorTokens.cyanDeep,
-                  size: AppSpacingTokens.lg,
-                ),
-                const SizedBox(width: AppSpacingTokens.xs),
-                Text(
-                  l10n.medicineSafetyGuardLabel,
-                  style: typography.bodySmStrong.copyWith(
-                    color: Theme.of(context).extension<AppThemeSurface>()!.body,
-                    letterSpacing: 0,
-                  ),
-                ),
-              ],
+            const SizedBox(width: AppSpacingTokens.xs),
+            Text(
+              l10n.medicineSafetyGuardLabel,
+              style: typography.bodySmStrong.copyWith(
+                color: Theme.of(context).extension<AppThemeSurface>()!.body,
+                letterSpacing: 0,
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -329,43 +325,40 @@ class _MedicineMobileSearchBar extends StatelessWidget {
     final surface = theme.extension<AppThemeSurface>()!;
     final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => context.push('/medicine/search'),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: surface.hairline),
+    return AppInkWell(
+      onTap: () => context.push('/medicine/search'),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: surface.canvas,
+          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          border: Border.all(color: surface.hairline),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.sm,
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.search_rounded,
-                  color: surface.mute,
-                  size: AppSpacingTokens.lg,
-                ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                Expanded(
-                  child: Text(
-                    l10n.medicineHomeSearchHint,
-                    style: typography.bodyMd.copyWith(
-                      color: surface.mute,
-                      letterSpacing: 0,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+          child: Row(
+            children: [
+              Icon(
+                Icons.search_rounded,
+                color: surface.mute,
+                size: AppSpacingTokens.lg,
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              Expanded(
+                child: Text(
+                  l10n.medicineHomeSearchHint,
+                  style: typography.bodyMd.copyWith(
+                    color: surface.mute,
+                    letterSpacing: 0,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

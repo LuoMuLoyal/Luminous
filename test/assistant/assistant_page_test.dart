@@ -16,6 +16,7 @@ import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent_assistant_repository.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/pages/assistant_page.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_loading_view.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
@@ -467,6 +468,59 @@ void main() {
     expect(repository.openedConversationIds, <String>['conversation-headache']);
     expect(find.text('今天头痛还在继续'), findsOneWidget);
     expect(find.text('先看一下你最近记录里的触发因素。'), findsOneWidget);
+  });
+
+  testWidgets('AI chat page renders on mobile screen size', (tester) async {
+    tester.view.physicalSize = const Size(390, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repository = _FakeAssistantRepository();
+
+    await tester.pumpWidget(_buildTestApp(repository: repository));
+    await tester.pumpAndSettle();
+
+    // Input field should be visible on mobile
+    expect(find.byKey(const Key('assistant-input')), findsOneWidget);
+  });
+
+  testWidgets('AI chat page shows loading skeleton while capabilities load', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    final pendingCapabilities = Completer<AssistantCapabilities>();
+    final pendingConversation = Completer<AssistantConversation?>();
+    final repository = _FullyHangingAssistantRepository(
+      pendingCapabilities,
+      pendingConversation,
+    );
+
+    await tester.pumpWidget(_buildTestApp(repository: repository));
+    await tester.pump();
+
+    // Loading skeleton should appear while capabilities and conversation load
+    expect(find.byType(AssistantLoadingView), findsOneWidget);
+    // Input field should NOT be visible during loading
+    expect(find.byKey(const Key('assistant-input')), findsNothing);
+
+    // Complete loading
+    pendingConversation.complete(null);
+    pendingCapabilities.complete(_FakeAssistantRepository._capabilities);
+    await tester.pumpAndSettle();
+
+    // After loading, skeleton disappears and input appears
+    expect(find.byType(AssistantLoadingView), findsNothing);
+    expect(find.byKey(const Key('assistant-input')), findsOneWidget);
   });
 }
 
@@ -1235,5 +1289,44 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   @override
   Future<DailyRecordItem> update(String id, DailyRecordUpdateInput input) {
     throw UnimplementedError();
+  }
+}
+
+/// Repository that hangs on both [getCapabilities] and [getLatestConversation]
+/// until the completers finish. Used to test the loading skeleton state.
+class _FullyHangingAssistantRepository implements AssistantRepository {
+  _FullyHangingAssistantRepository(
+    this._pendingCapabilities,
+    this._pendingConversation,
+  );
+
+  final Completer<AssistantCapabilities> _pendingCapabilities;
+  final Completer<AssistantConversation?> _pendingConversation;
+
+  @override
+  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
+      const <AssistantConversationSummary>[];
+
+  @override
+  Future<AssistantConversation?> getLatestConversation() =>
+      _pendingConversation.future;
+
+  @override
+  Future<AssistantConversation> openConversation(String conversationId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> clearLatestConversation() async => false;
+
+  @override
+  Future<AssistantCapabilities> getCapabilities() =>
+      _pendingCapabilities.future;
+
+  @override
+  Stream<AssistantGenerationEvent> streamMessages(
+    List<AssistantMessage> messages,
+  ) {
+    return const Stream<AssistantGenerationEvent>.empty();
   }
 }

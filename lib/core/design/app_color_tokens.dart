@@ -43,5 +43,14 @@ abstract final class AppColorTokens {
   static const Color selectionBackground = Color(0xFF171717);
   static const Color selectionForeground = Color(0xFFF2F2F2);
 
+  /// 点击水波纹颜色（叠加在 canvas 之上），用于 [AppInkWell]。
+  static const Color inkSplash = Color(0x14000000);
+
+  /// 点击高亮颜色（长按或 hover），用于 [AppInkWell]。
+  static const Color inkHighlight = Color(0x0A000000);
+
+  /// 禁用态不透明度，用于 [AppInkWell.onTap] 为 null 时。
+  static const double inkDisabledOpacity = 0.5;
+
   static const seed = primary;
 }

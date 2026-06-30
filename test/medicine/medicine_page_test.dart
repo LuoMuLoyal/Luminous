@@ -560,6 +560,48 @@ void main() {
     expect(find.text(l10n.medicineErrorDescription), findsOneWidget);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
   });
+
+  testWidgets('Medicine page desktop layout uses desktop scroll key', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1440, 1000);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const MedicinePage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Desktop layout uses a PageStorageKey for scroll position
+    expect(
+      find.byKey(const PageStorageKey<String>('medicine-desktop-scroll')),
+      findsOneWidget,
+    );
+  });
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
