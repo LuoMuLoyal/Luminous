@@ -44,8 +44,12 @@ Work inside `Luminous/` for pure frontend changes. When operating from the works
 ## Docs
 
 - Read `docs/README.md` before editing docs.
+- Read `docs/architecture.md` for the unified Flutter architecture overview.
+- Read `docs/adr/` for historical architecture decisions.
 - Active multi-step task plans belong in `plans/*.md`, not in `docs/` and not in the workspace root.
 - Frontend code changed: append the entry to today's `docs/migration-log/YYYY-MM-DD.md`; keep `docs/MigrationLog.md` as the index only.
+- Significant architectural decision made: create an ADR in `docs/adr/NNNN-title.md` following the template in `docs/adr/README.md`.
+- Architecture, state management, routing, or design system changed: update `docs/architecture.md`.
 - Network / OpenAPI / auth client changed: update `docs/OpenApi_Client.md`.
 - Visible text or l10n flow changed: update `docs/Localization.md`.
 - UI/page state or project state changed: update `docs/Current_State.md`.

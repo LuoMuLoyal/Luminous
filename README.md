@@ -4,6 +4,8 @@
 
 Flutter personal health copilot. Current mainline is the reset five-tab shell backed by Lucent.
 
+Current version: **v4.0.0-dev**
+
 ## Baseline
 
 - Tabs: `today / record / medicine / report / mine`
@@ -73,9 +75,13 @@ Key shared backend contract docs live in `../Lucent/docs/public/`:
 - [reminder-contract](../Lucent/docs/public/reminder-contract.md)
 - [environment-contract](../Lucent/docs/public/environment-contract.md)
 - [data-sources](../Lucent/docs/public/data-sources.md)
+- [assistant-contract](../Lucent/docs/public/assistant-contract.md)
+- [mine-settings-contract](../Lucent/docs/public/mine-settings-contract.md)
 
 Key frontend docs:
 
+- [docs/architecture.md](docs/architecture.md) — Unified Flutter architecture
+- [docs/adr/](docs/adr/) — Architecture Decision Records
 - [docs/Product_Vision.md](docs/Product_Vision.md)
 - [docs/Current_State.md](docs/Current_State.md)
 - [docs/MigrationLog.md](docs/MigrationLog.md)

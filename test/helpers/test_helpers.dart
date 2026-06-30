@@ -13,20 +13,42 @@ import 'package:luminous/features/auth/presentation/providers/session/auth_sessi
 /// In-memory implementation of [LucentSessionStore] for unit tests.
 /// Use this instead of the SharedPreferences-backed store to avoid
 /// platform channel dependencies.
+///
+/// Set [delay] to a non-zero duration to simulate network latency
+/// and allow loading states to be tested.
 class MemorySessionStore implements LucentSessionStore {
+  MemorySessionStore({this.delay = Duration.zero});
+
+  /// Simulated network delay. Defaults to [Duration.zero].
+  final Duration delay;
+
   LucentSessionTokens? tokens;
 
-  @override
-  Future<LucentSessionTokens?> read() async => tokens;
+  Future<void> _wait() async {
+    if (delay != Duration.zero) await Future.delayed(delay);
+  }
 
   @override
-  Future<String?> readAccessToken() async => tokens?.accessToken;
+  Future<LucentSessionTokens?> read() async {
+    await _wait();
+    return tokens;
+  }
 
   @override
-  Future<String?> readRefreshToken() async => tokens?.refreshToken;
+  Future<String?> readAccessToken() async {
+    await _wait();
+    return tokens?.accessToken;
+  }
+
+  @override
+  Future<String?> readRefreshToken() async {
+    await _wait();
+    return tokens?.refreshToken;
+  }
 
   @override
   Future<void> write(LucentSessionTokens tokens) async {
+    await _wait();
     this.tokens = LucentSessionTokens(
       accessToken: tokens.accessToken.trim(),
       refreshToken: tokens.refreshToken.trim(),
@@ -35,6 +57,7 @@ class MemorySessionStore implements LucentSessionStore {
 
   @override
   Future<void> clear() async {
+    await _wait();
     tokens = null;
   }
 }
