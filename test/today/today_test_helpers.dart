@@ -8,12 +8,16 @@ import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/today_repository.dart';
 
 class StaticTodayRepository implements TodayRepository {
-  const StaticTodayRepository(this.dashboard);
+  const StaticTodayRepository(this.dashboard, {this.delay = Duration.zero});
 
   final TodayDashboard dashboard;
 
+  /// Simulated network delay for testing loading states.
+  final Duration delay;
+
   @override
   Future<TodayDashboard> fetchDashboard() async {
+    if (delay != Duration.zero) await Future.delayed(delay);
     return dashboard;
   }
 }

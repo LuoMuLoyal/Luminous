@@ -11,6 +11,8 @@ This directory keeps the authoritative current product, frontend, and workflow d
 | `Product_Vision.md` | Product positioning, MVP scope, tab responsibilities, AI/safety boundaries | Current implementation status or task logs |
 | `Current_State.md` | What is implemented or intentionally deferred right now | Future plans, long rationale, or change history |
 | `Next_Plan.md` | The next implementation order and explicit non-start items | Completed work details, current-state facts, or historical plans |
+| `architecture.md` | Unified Flutter architecture: directory structure, state management, routing, design system, data layer, conventions | Product scope or change history |
+| `adr/` | Architecture Decision Records for significant technical choices | Implementation details or task logs |
 | `TODO.md` | Remaining MVP gaps and gated backlog that still needs delivery | Current-state facts or historical change logs |
 | `MigrationLog.md` + `migration-log/YYYY-MM-DD.md` | Date-based change history only | Source-of-truth product rules |
 | `Project_Guardrails.md` | Reusable project-specific mistakes to avoid | One-off task notes |
@@ -27,6 +29,8 @@ This directory keeps the authoritative current product, frontend, and workflow d
 | Current UI/data/auth/runtime facts | `Current_State.md` |
 | Next implementation order | `Next_Plan.md` |
 | Remaining MVP gaps or gated backlog | `TODO.md` |
+| Flutter architecture, state management, routing, design system | `architecture.md` |
+| Significant architectural decision | Create an ADR in `adr/NNNN-title.md` |
 | Visible text or l10n mechanics | `Localization.md` |
 | Lucent OpenAPI/client generation flow | `OpenApi_Client.md` |
 | Reusable guardrail | `Project_Guardrails.md` |

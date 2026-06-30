@@ -111,6 +111,7 @@ Mock data in 5 dashboard/workspace providers now gated behind `kDebugMode`:
 - 3 dead `InkWell(onTap: null)` removed (record guide row, report findings/patterns)
 - `app_text_action.dart` + `MedicineHeaderActionChip` + voice entry button: `Opacity(0.5)` when `onTap == null`
 - `notification_list_page.dart`: added `AppBackButton`
+- **2026-06-30 follow-up**: All 11 raw `InkWell` usages in `lib/features/medicine/` migrated to shared `AppInkWell` wrapper (auto splash/highlight + disabled opacity). `AppInkWell` now consistently used across today + medicine modules.
 
 ### Auth Form Validation
 
@@ -193,6 +194,9 @@ Account, basic health archive, allergies, current medicines, contract-backed sup
 - Environment contextual wiring for Today or Mine.
 - Medicine scan/OCR/photo/barcode/prescription recognition. The underlying `MedicineWorkspace.quickActions` and related enums/entities are kept but not surfaced in the UI.
 - Mock repositories (`mock_*_repository.dart`) retained for dev preview and testing. Release builds use domain `signedOut()` factories via `kDebugMode` gating. `MockMedicineSearchRepository` is test-only.
+- **2026-06-30**: Removed 11 `medicineMock*` ARB keys containing `[DEMO]` hardcoded drug names from `app_en.arb`/`app_zh.arb`. Replaced with 3 generic fallback keys (`medicineGenericName`/`medicineGenericDosage`/`medicineGenericSchedule`). Corresponding `MedicineCopyKey` enum values updated, mock repository `MedicinePlanItem` data switched to `rawName`/`rawDosage`/`rawSchedule` pattern.
+- **2026-06-30**: `MemorySessionStore` and `StaticTodayRepository` now support configurable `delay` parameter (default `Duration.zero`) for testing loading states with simulated network latency.
+- **2026-06-30**: `test/today/today_test_helpers.dart` duplicated `SignedInAuthSessionNotifier` / `SignedOutAuthSessionNotifier` removed; all test files now import from shared `test/helpers/test_helpers.dart`.
 
 Deferred code that remains useful should be marked with:
 
