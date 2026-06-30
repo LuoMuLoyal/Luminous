@@ -9,14 +9,27 @@ import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
-import 'package:luminous/features/record/presentation/pages/record_create.dart';
+import 'package:luminous/features/record/presentation/pages/record_detail.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../auth/auth_test_helpers.dart';
+import '../auth/auth_test_helpers.dart';
 
 class _FakeRepo extends DailyRecordRepository {
   @override
-  Future<DailyRecordItem> get(String id) async => throw UnimplementedError();
+  Future<DailyRecordItem> get(String id) async {
+    return DailyRecordItem(
+      id: id,
+      kind: DailyRecordKind.note,
+      occurredAt: '2026-06-10',
+      title: 'My Note',
+      value: 'Note content',
+      note: 'A note',
+      attachments: const <DailyRecordAttachment>[],
+      createdAt: '2026-06-10T08:00:00.000Z',
+      updatedAt: '2026-06-10T08:00:00.000Z',
+    );
+  }
+
   @override
   Future<DailyRecordListData> fetchRecords(
     String date, {
@@ -49,7 +62,9 @@ class _FakeRepo extends DailyRecordRepository {
 }
 
 void main() {
-  testWidgets('RecordCreatePage renders when authenticated', (tester) async {
+  testWidgets('RecordDetailPage loads and displays record when authenticated', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
 
     await tester.pumpWidget(
@@ -68,7 +83,10 @@ void main() {
           routerConfig: GoRouter(
             initialLocation: '/',
             routes: [
-              GoRoute(path: '/', builder: (_, __) => const RecordCreatePage()),
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const RecordDetailPage(recordId: 'test-id'),
+              ),
               GoRoute(
                 path: '/home',
                 builder: (_, __) => const Scaffold(body: Text('Home')),
@@ -78,7 +96,9 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
-    expect(find.byType(RecordCreatePage), findsOneWidget);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump();
+    expect(find.byType(RecordDetailPage), findsOneWidget);
   });
 }

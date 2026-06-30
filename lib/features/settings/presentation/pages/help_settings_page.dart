@@ -7,6 +7,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
@@ -49,7 +50,13 @@ class HelpSettingsPage extends ConsumerWidget {
               ),
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const AppInlineSkeleton(
+            children: [
+              AppInlineSkeletonBlock(height: 56),
+              AppInlineSkeletonBlock(height: 56),
+              AppInlineSkeletonBlock(height: 56),
+            ],
+          ),
           error: (error, _) => _EmptyState(message: l10n.settingsHelpError),
         ),
       ],
