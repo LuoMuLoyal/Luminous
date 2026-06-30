@@ -186,25 +186,28 @@ class _TimePickerField extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = time == null ? null : _fmt(time!);
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-      onTap: () async {
-        if (SleepStructuredFields.forcedPickedTimes.isNotEmpty) {
-          onPicked(SleepStructuredFields.forcedPickedTimes.removeAt(0));
-          return;
-        }
-        final picked = await showTimePicker(
-          context: context,
-          initialTime: time ?? const TimeOfDay(hour: 23, minute: 0),
-          initialEntryMode: SleepStructuredFields.forceInputTimePicker
-              ? TimePickerEntryMode.input
-              : TimePickerEntryMode.dial,
-        );
-        onPicked(picked);
-      },
-      child: InputDecorator(
-        decoration: InputDecoration(labelText: label),
-        child: Text(text ?? '', style: const TextStyle(fontSize: 14)),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        onTap: () async {
+          if (SleepStructuredFields.forcedPickedTimes.isNotEmpty) {
+            onPicked(SleepStructuredFields.forcedPickedTimes.removeAt(0));
+            return;
+          }
+          final picked = await showTimePicker(
+            context: context,
+            initialTime: time ?? const TimeOfDay(hour: 23, minute: 0),
+            initialEntryMode: SleepStructuredFields.forceInputTimePicker
+                ? TimePickerEntryMode.input
+                : TimePickerEntryMode.dial,
+          );
+          onPicked(picked);
+        },
+        child: InputDecorator(
+          decoration: InputDecoration(labelText: label),
+          child: Text(text ?? '', style: const TextStyle(fontSize: 14)),
+        ),
       ),
     );
   }

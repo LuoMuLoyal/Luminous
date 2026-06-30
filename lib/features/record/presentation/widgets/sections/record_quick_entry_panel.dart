@@ -299,7 +299,9 @@ class _QuickRecordTile extends StatelessWidget {
       key: Key('record-quick-${action.type.name}'),
       color: Colors.transparent,
       child: InkWell(
-        onTap: onQuickAction == null ? null : () => onQuickAction!(action),
+        onTap: (onQuickAction == null || isLocked)
+            ? null
+            : () => onQuickAction!(action),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         child: Semantics(
           button: true,
@@ -380,43 +382,40 @@ class RecordGuideRow extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
-          onTap: null,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.sm,
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.lightbulb_outline_rounded,
-                  color: AppColorTokens.warning,
-                  size: AppSpacingTokens.lg,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.lightbulb_outline_rounded,
+                color: AppColorTokens.warning,
+                size: AppSpacingTokens.lg,
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              Expanded(
+                child: Text(
+                  l10n.recordGuideHint,
+                  style: typography.bodySm.copyWith(color: surface.body),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                Expanded(
-                  child: Text(
-                    l10n.recordGuideHint,
-                    style: typography.bodySm.copyWith(color: surface.body),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                Text(
-                  l10n.recordGuideAction,
-                  style: typography.bodySmStrong.copyWith(
-                    color: AppColorTokens.link,
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right_rounded,
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              Text(
+                l10n.recordGuideAction,
+                style: typography.bodySmStrong.copyWith(
                   color: AppColorTokens.link,
-                  size: AppSpacingTokens.lg,
                 ),
-              ],
-            ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: AppColorTokens.link,
+                size: AppSpacingTokens.lg,
+              ),
+            ],
           ),
         ),
       ),

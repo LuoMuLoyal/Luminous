@@ -70,81 +70,77 @@ class _FindingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: null,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: finding.color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: finding.color.withValues(alpha: 0.18)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    AppIconBadge(
-                      icon: finding.icon,
-                      color: finding.color,
-                      size: AppResponsiveSizing.scaleByWidth(
-                        context,
-                        fraction: 0.1,
-                        minValue: 36,
-                        maxValue: 44,
-                      ),
-                      iconSize: AppResponsiveSizing.scaleByWidth(
-                        context,
-                        fraction: 0.052,
-                        minValue: 18,
-                        maxValue: 24,
-                      ),
-                      shape: BoxShape.circle,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: finding.color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          border: Border.all(color: finding.color.withValues(alpha: 0.18)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  AppIconBadge(
+                    icon: finding.icon,
+                    color: finding.color,
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.1,
+                      minValue: 36,
+                      maxValue: 44,
                     ),
-                    const Spacer(),
-                    AppIconBadge(
-                      icon: Icons.chevron_right_rounded,
-                      color: surface.body,
-                      size: AppResponsiveSizing.scaleByWidth(
-                        context,
-                        fraction: 0.068,
-                        minValue: 24,
-                        maxValue: 30,
-                      ),
-                      iconSize: AppResponsiveSizing.scaleByWidth(
-                        context,
-                        fraction: 0.042,
-                        minValue: 16,
-                        maxValue: 20,
-                      ),
-                      shape: BoxShape.circle,
+                    iconSize: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.052,
+                      minValue: 18,
+                      maxValue: 24,
                     ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacingTokens.md),
-                AppSkeletonText(
-                  text: finding.title,
-                  style: typography.bodyMdStrong.copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
+                    shape: BoxShape.circle,
                   ),
-                  widthFactor: 0.7,
-                ),
-                const SizedBox(height: AppSpacingTokens.sm),
-                AppSkeletonText(
-                  text: finding.body,
-                  style: typography.bodySm.copyWith(
+                  const Spacer(),
+                  AppIconBadge(
+                    icon: Icons.chevron_right_rounded,
                     color: surface.body,
-                    letterSpacing: 0,
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.068,
+                      minValue: 24,
+                      maxValue: 30,
+                    ),
+                    iconSize: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.042,
+                      minValue: 16,
+                      maxValue: 20,
+                    ),
+                    shape: BoxShape.circle,
                   ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  widthFactor: 0.9,
+                ],
+              ),
+              const SizedBox(height: AppSpacingTokens.md),
+              AppSkeletonText(
+                text: finding.title,
+                style: typography.bodyMdStrong.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0,
                 ),
-              ],
-            ),
+                widthFactor: 0.7,
+              ),
+              const SizedBox(height: AppSpacingTokens.sm),
+              AppSkeletonText(
+                text: finding.body,
+                style: typography.bodySm.copyWith(
+                  color: surface.body,
+                  letterSpacing: 0,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                widthFactor: 0.9,
+              ),
+            ],
           ),
         ),
       ),

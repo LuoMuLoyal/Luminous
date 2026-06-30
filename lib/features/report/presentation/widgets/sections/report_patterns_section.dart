@@ -81,104 +81,100 @@ class _PatternCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: null,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: AppSectionSurface(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  AppIconBadge(
-                    icon: pattern.icon,
-                    color: pattern.color,
-                    size: AppResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.088,
-                      minValue: 30,
-                      maxValue: 38,
-                    ),
-                    iconSize: AppResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.048,
-                      minValue: 16,
-                      maxValue: 22,
-                    ),
-                    shape: BoxShape.circle,
+      child: AppSectionSurface(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                AppIconBadge(
+                  icon: pattern.icon,
+                  color: pattern.color,
+                  size: AppResponsiveSizing.scaleByWidth(
+                    context,
+                    fraction: 0.088,
+                    minValue: 30,
+                    maxValue: 38,
                   ),
-                  const SizedBox(width: AppSpacingTokens.xs),
-                  Expanded(
-                    child: Text(
-                      pattern.title,
-                      style: typography.bodySmStrong.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  iconSize: AppResponsiveSizing.scaleByWidth(
+                    context,
+                    fraction: 0.048,
+                    minValue: 16,
+                    maxValue: 22,
                   ),
-                ],
-              ),
-              const SizedBox(height: AppSpacingTokens.md),
-              AppSkeletonText(
-                text: reportStatusLabel(l10n, pattern.status),
-                style: typography.bodyMdStrong.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
+                  shape: BoxShape.circle,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                widthFactor: 0.74,
+                const SizedBox(width: AppSpacingTokens.xs),
+                Expanded(
+                  child: Text(
+                    pattern.title,
+                    style: typography.bodySmStrong.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            AppSkeletonText(
+              text: reportStatusLabel(l10n, pattern.status),
+              style: typography.bodyMdStrong.copyWith(
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0,
               ),
-              const SizedBox(height: AppSpacingTokens.xxs),
-              AppSkeletonText(
-                text: pattern.body,
-                style: typography.bodySm.copyWith(
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              widthFactor: 0.74,
+            ),
+            const SizedBox(height: AppSpacingTokens.xxs),
+            AppSkeletonText(
+              text: pattern.body,
+              style: typography.bodySm.copyWith(
+                color: surface.body,
+                letterSpacing: 0,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              widthFactor: 0.88,
+            ),
+            const Spacer(),
+            Row(
+              children: [
+                Expanded(
+                  child: AppSkeletonSlot(
+                    skeleton: AppInlineSkeletonBlock(
+                      height: AppResponsiveSizing.scaleByHeight(
+                        context,
+                        fraction: 0.034,
+                        minValue: 22,
+                        maxValue: 30,
+                      ),
+                      radius: AppRadiusTokens.sm,
+                    ),
+                    child: ReportMetricTrack(
+                      values: pattern.sparkline,
+                      color: pattern.color,
+                      height: AppResponsiveSizing.scaleByHeight(
+                        context,
+                        fraction: 0.034,
+                        minValue: 22,
+                        maxValue: 30,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                Icon(
+                  Icons.chevron_right_rounded,
                   color: surface.body,
-                  letterSpacing: 0,
+                  size: AppSpacingTokens.lg,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                widthFactor: 0.88,
-              ),
-              const Spacer(),
-              Row(
-                children: [
-                  Expanded(
-                    child: AppSkeletonSlot(
-                      skeleton: AppInlineSkeletonBlock(
-                        height: AppResponsiveSizing.scaleByHeight(
-                          context,
-                          fraction: 0.034,
-                          minValue: 22,
-                          maxValue: 30,
-                        ),
-                        radius: AppRadiusTokens.sm,
-                      ),
-                      child: ReportMetricTrack(
-                        values: pattern.sparkline,
-                        color: pattern.color,
-                        height: AppResponsiveSizing.scaleByHeight(
-                          context,
-                          fraction: 0.034,
-                          minValue: 22,
-                          maxValue: 30,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacingTokens.sm),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    color: surface.body,
-                    size: AppSpacingTokens.lg,
-                  ),
-                ],
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
     );
