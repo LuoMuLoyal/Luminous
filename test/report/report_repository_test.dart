@@ -126,6 +126,7 @@ void main() {
           ReportExportKind.hospital,
           ReportExportKind.monthly,
           ReportExportKind.print,
+          ReportExportKind.clinicShare,
         ],
       );
       expect(dashboard.metrics.single.status, ReportStatus.good);

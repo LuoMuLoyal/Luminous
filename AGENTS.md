@@ -1,5 +1,19 @@
 # AGENTS.md - Luminous
 
+## Documentation Rules
+
+After every code change, the following docs **MUST** be updated:
+
+| Change type | Update target | Action |
+|-------------|---------------|--------|
+| Any frontend code change | `docs/migration-log/YYYY-MM-DD.md` | Append change entry |
+| Current UI/data/runtime state change | `docs/Current_State.md` | Add/update completed item |
+| Closing a TODO item | `docs/TODO.md` | Delete the line |
+| Finishing a plan section | `plans/*.md` | Delete the entire section |
+| Visible text or l10n change | `docs/Localization.md` | Sync update |
+
+- Completed items are **deleted** outright — no `✅`, `DONE`, strikethrough, or any other marker.
+
 ## Stack
 
 - Flutter
@@ -9,50 +23,59 @@
 
 ## Commands
 
-```bash
-flutter pub get
+```powershell
 flutter analyze
 flutter test
 ```
 
-Regenerate Lucent client:
+## Architecture
 
-```bash
-dart run tool/regenerate_lucent_openapi.dart
-```
+- `lib/core/` — shared design system, theme, feedback, network, widgets
+- `lib/features/{feature}/` — per-feature vertical slices
+  - `data/` — repositories, data sources, providers
+  - `domain/` — entities, repository interfaces, services
+  - `presentation/` — pages, widgets, controllers, providers
 
-## Guardrails
+## State Management
 
-- New code goes under `lib/features/` or `lib/core/`.
-- Do not add code to legacy `lib/pages/`, `lib/stores/`, `lib/viewmodels/`, `lib/components/`.
-- API contract: Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`.
-- Network code belongs in `lib/core/network/`.
-- Do not regenerate `packages/lucent_openapi` with ad-hoc `npx` / `build_runner` commands. Always use `dart run tool/regenerate_lucent_openapi.dart` so generated pubspec constraints and broken nullable `*.g.dart` map entries are normalized automatically.
-- User-visible text goes through ARB + `flutter gen-l10n`.
-- Token storage prefers secure storage, with desktop/web fallback.
-- For lightweight frontend feedback, use shared `lib/core/feedback/app_toast.dart`; do not introduce page-local `SnackBar` prompts for routine click hints.
-- All page-level error states must use `AppStateErrorView` (from `lib/core/widgets/app_state_views.dart`) instead of hand-written error views. This ensures centered, scrollable layout with consistent icon/tone/action patterns.
-- All page loading states must use shimmer skeleton screens (`Shimmer.fromColors` from `shimmer` package) instead of `CircularProgressIndicator` or plain colored blocks. Reuse `AppStateSkeletonView` when the loading view is not nested inside another scrollable, or `AppInlineSkeletonBlock` (from `lib/core/widgets/app_state_views.dart`) when it is. Do not define feature-local `_SkeletonBlock` duplicates.
-- When refining app UI, prefer flatter surfaces over nested boxes, and align high-level layout/metrics with the approved concept images instead of adding explanatory placeholder copy.
-- Do not add explanatory, narrative, onboarding, or marketing-style copy to normal app pages by default. Keep user-visible text limited to necessary titles, labels, values, statuses, and actions.
-- Child pages reached from settings, mine, or other in-app navigation should default to a standard app header: left back arrow and centered title. Avoid hero-style headers or extra descriptive paragraphs unless the task explicitly requires them.
+- Riverpod `Notifier` + `NotifierProvider` for mutable state
+- `@freezed` for immutable state classes
+- `ref.watch()` for reading, `ref.read()` for callbacks
 
-## Working Directory
+## Routing
 
-Work inside `Luminous/` for pure frontend changes. When operating from the workspace root, use `git -C Luminous ...` and absolute paths so commands run against this repo, not the workspace root or `Lucent`.
+- `GoRouter` with `StatefulShellRoute` for bottom tabs
+- Tab roots: `/`, `/record`, `/medicine`, `/report`, `/mine`
+- All create/detail/edit sub-pages are top-level full-screen routes outside the shell
 
-## Docs
+## Design System
 
-- Read `docs/README.md` before editing docs.
-- Read `docs/architecture.md` for the unified Flutter architecture overview.
-- Read `docs/adr/` for historical architecture decisions.
-- Active multi-step task plans belong in `plans/*.md`, not in `docs/` and not in the workspace root.
-- Frontend code changed: append the entry to today's `docs/migration-log/YYYY-MM-DD.md`; keep `docs/MigrationLog.md` as the index only.
-- Significant architectural decision made: create an ADR in `docs/adr/NNNN-title.md` following the template in `docs/adr/README.md`.
-- Architecture, state management, routing, or design system changed: update `docs/architecture.md`.
-- Network / OpenAPI / auth client changed: update `docs/OpenApi_Client.md`.
-- Visible text or l10n flow changed: update `docs/Localization.md`.
-- UI/page state or project state changed: update `docs/Current_State.md`.
-- Next work changed: update `docs/Next_Plan.md`.
-- Recurring mistakes or rules changed: update `docs/Project_Guardrails.md`.
-- Frontend tooling scripts under `tool/` should default to Dart; do not add new PowerShell-only validation or hook wrappers.
+- `AppTypographyScale` — `displayXl` through `buttonLg`
+- `AppThemeSurface` — semantic color tokens (canvas, hairline, body, mute, link, accent, etc.)
+- `AppSpacingTokens`, `AppRadiusTokens`, `AppColorTokens` — spacing, radius, color constants
+
+## Testing
+
+- Unit tests: `flutter test`
+- Widget tests: `flutter test` with `WidgetTester`
+- Integration tests: `integration_test/`
+- Mock repositories follow `Mock*Repository` naming
+- Test helpers in `test/helpers/`
+
+## Data Layer
+
+- Repository pattern: `domain/repositories/` defines interfaces, `data/repositories/` implements
+- Generated API client: `lib/generated/lucent_openapi/`
+- Mock repositories for development/demo: suffix `Mock*Repository`
+
+## L10n
+
+- ARB files: `lib/l10n/app_en.arb`, `app_zh.arb`
+- Generated: `lib/l10n/app_localizations*.dart`
+- Run `flutter gen-l10n` after changing ARB files
+
+## OpenAPI Client
+
+- Source: `Lucent/docs/openapi.json`
+- Regenerate: `dart run tool/regenerate_lucent_openapi.dart`
+- Generated output: `lib/generated/lucent_openapi/`
