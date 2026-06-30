@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -14,81 +15,134 @@ import 'package:luminous/features/mine/presentation/providers/health_edit_forms.
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class CurrentMedicineEditPage extends ConsumerStatefulWidget {
+class CurrentMedicineEditPage extends HookConsumerWidget {
   const CurrentMedicineEditPage({super.key, this.medicineId});
 
   final String? medicineId;
 
   @override
-  ConsumerState<CurrentMedicineEditPage> createState() =>
-      _CurrentMedicineEditPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final isNew = medicineId == null;
+    final isEdit = !isNew;
 
-class _CurrentMedicineEditPageState
-    extends ConsumerState<CurrentMedicineEditPage> {
-  final _sourceRefIdController = TextEditingController();
-  final _displayNameController = TextEditingController();
-  final _strengthTextController = TextEditingController();
-  final _doseTextController = TextEditingController();
-  final _routeController = TextEditingController();
-  final _startedAtController = TextEditingController();
-  final _noteController = TextEditingController();
+    final sourceRefIdController = useTextEditingController();
+    final displayNameController = useTextEditingController();
+    final strengthTextController = useTextEditingController();
+    final doseTextController = useTextEditingController();
+    final routeController = useTextEditingController();
+    final startedAtController = useTextEditingController();
+    final noteController = useTextEditingController();
+    final source = useState(HealthMedicineSource.manual);
+    final prefilled = useState(false);
+    final notFound = useState(false);
 
-  HealthMedicineSource _source = HealthMedicineSource.manual;
+    void tryPrefill() {
+      if (prefilled.value) return;
+      final snapshot = ref.read(healthContextSnapshotProvider).asData?.value;
+      if (snapshot == null) return;
 
-  bool _prefilled = false;
-  bool _notFound = false;
+      final id = medicineId;
+      if (id == null) {
+        prefilled.value = true;
+        return;
+      }
 
-  @override
-  void dispose() {
-    _sourceRefIdController.dispose();
-    _displayNameController.dispose();
-    _strengthTextController.dispose();
-    _doseTextController.dispose();
-    _routeController.dispose();
-    _startedAtController.dispose();
-    _noteController.dispose();
-    super.dispose();
-  }
+      final item = snapshot.currentMedicines.firstWhereOrNull(
+        (m) => m.id == id,
+      );
+      if (item == null) {
+        notFound.value = true;
+        prefilled.value = true;
+        return;
+      }
 
-  void _tryPrefill() {
-    if (_prefilled) return;
-    final snapshot = ref.read(healthContextSnapshotProvider).asData?.value;
-    if (snapshot == null) return;
-
-    final id = widget.medicineId;
-    if (id == null) {
-      _prefilled = true;
-      return;
-    }
-
-    final item = snapshot.currentMedicines.firstWhereOrNull((m) => m.id == id);
-    if (item == null) {
-      _notFound = true;
-      _prefilled = true;
-      return;
-    }
-
-    _prefilled = true;
-    _displayNameController.text = item.displayName;
-    _sourceRefIdController.text = item.sourceRefId ?? '';
-    _strengthTextController.text = item.strengthText ?? '';
-    _doseTextController.text = item.doseText ?? '';
-    _routeController.text = item.route ?? '';
-    _startedAtController.text = item.startedAt ?? '';
-    _noteController.text = item.note ?? '';
-    setState(() {
-      _source =
+      prefilled.value = true;
+      displayNameController.text = item.displayName;
+      sourceRefIdController.text = item.sourceRefId ?? '';
+      strengthTextController.text = item.strengthText ?? '';
+      doseTextController.text = item.doseText ?? '';
+      routeController.text = item.route ?? '';
+      startedAtController.text = item.startedAt ?? '';
+      noteController.text = item.note ?? '';
+      source.value =
           HealthMedicineSource.fromValue(item.source) ??
           HealthMedicineSource.manual;
-    });
-  }
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final isNew = widget.medicineId == null;
-    final isEdit = !isNew;
+    void onSave() {
+      if (displayNameController.text.trim().isEmpty) {
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.authCodeRequiredToast,
+        );
+        return;
+      }
+
+      if (medicineId != null) {
+        ref
+            .read(currentMedicineFormProvider.notifier)
+            .save(
+              create: CurrentMedicineWriteInput(
+                source: HealthMedicineSource.manual,
+                displayName: '',
+              ),
+              id: medicineId,
+              update: CurrentMedicineUpdateInput(
+                source: source.value,
+                sourceRefId: sourceRefIdController.text.isEmpty
+                    ? null
+                    : sourceRefIdController.text,
+                displayName: displayNameController.text,
+                strengthText: strengthTextController.text.isEmpty
+                    ? null
+                    : strengthTextController.text,
+                doseText: doseTextController.text.isEmpty
+                    ? null
+                    : doseTextController.text,
+                route: routeController.text.isEmpty
+                    ? null
+                    : routeController.text,
+                startedAt: startedAtController.text.isEmpty
+                    ? null
+                    : startedAtController.text,
+                note: noteController.text.isEmpty ? null : noteController.text,
+              ),
+            );
+      } else {
+        ref
+            .read(currentMedicineFormProvider.notifier)
+            .save(
+              create: CurrentMedicineWriteInput(
+                source: source.value,
+                sourceRefId: sourceRefIdController.text.isEmpty
+                    ? null
+                    : sourceRefIdController.text,
+                displayName: displayNameController.text,
+                strengthText: strengthTextController.text.isEmpty
+                    ? null
+                    : strengthTextController.text,
+                doseText: doseTextController.text.isEmpty
+                    ? null
+                    : doseTextController.text,
+                route: routeController.text.isEmpty
+                    ? null
+                    : routeController.text,
+                startedAt: startedAtController.text.isEmpty
+                    ? null
+                    : startedAtController.text,
+                note: noteController.text.isEmpty ? null : noteController.text,
+              ),
+            );
+      }
+    }
+
+    void onDelete() {
+      if (medicineId != null) {
+        ref.read(currentMedicineFormProvider.notifier).delete(medicineId!);
+      }
+    }
+
     final session = ref.watch(authSessionProvider);
 
     ref.listen<CurrentMedicineFormState>(currentMedicineFormProvider, (
@@ -120,9 +174,9 @@ class _CurrentMedicineEditPageState
     }
 
     final snapshot = ref.watch(healthContextSnapshotProvider);
-    snapshot.whenOrNull(data: (_) => _tryPrefill());
+    snapshot.whenOrNull(data: (_) => tryPrefill());
 
-    if (_notFound) {
+    if (notFound.value) {
       return PageScaffoldShell(
         title: l10n.mineEditMedicineTitle,
         centerTitle: true,
@@ -139,7 +193,7 @@ class _CurrentMedicineEditPageState
       );
     }
 
-    if (isEdit && !_prefilled && !snapshot.hasError) {
+    if (isEdit && !prefilled.value && !snapshot.hasError) {
       return PageScaffoldShell(
         title: l10n.mineEditMedicineTitle,
         centerTitle: true,
@@ -160,13 +214,13 @@ class _CurrentMedicineEditPageState
             children: [
               _enumDropdown<HealthMedicineSource>(
                 label: l10n.mineEditFieldSource,
-                value: _source,
+                value: source.value,
                 values: HealthMedicineSource.values,
-                onChanged: (v) => setState(() => _source = v),
+                onChanged: (v) => source.value = v,
               ),
               const SizedBox(height: AppSpacingTokens.sm),
               TextField(
-                controller: _sourceRefIdController,
+                controller: sourceRefIdController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldSourceRefId,
                 ),
@@ -174,54 +228,54 @@ class _CurrentMedicineEditPageState
               const SizedBox(height: AppSpacingTokens.sm),
               TextField(
                 key: const Key('medicine-displayname-field'),
-                controller: _displayNameController,
+                controller: displayNameController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldDisplayName,
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.sm),
               TextField(
-                controller: _strengthTextController,
+                controller: strengthTextController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldStrengthText,
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.sm),
               TextField(
-                controller: _doseTextController,
+                controller: doseTextController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldDoseText,
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.sm),
               TextField(
-                controller: _routeController,
+                controller: routeController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldRoute),
               ),
               const SizedBox(height: AppSpacingTokens.sm),
               TextField(
-                controller: _startedAtController,
+                controller: startedAtController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldStartedAt,
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.sm),
               TextField(
-                controller: _noteController,
+                controller: noteController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
                 maxLines: 3,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               ElevatedButton(
                 key: const Key('medicine-save-button'),
-                onPressed: _onSave,
+                onPressed: onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
               if (!isNew) ...[
                 const SizedBox(height: AppSpacingTokens.sm),
                 OutlinedButton(
                   key: const Key('medicine-delete-button'),
-                  onPressed: _onDelete,
+                  onPressed: onDelete,
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.error,
                   ),
@@ -233,79 +287,6 @@ class _CurrentMedicineEditPageState
         ),
       ],
     );
-  }
-
-  void _onSave() {
-    if (_displayNameController.text.trim().isEmpty) {
-      AppToast.show(
-        context,
-        AppLocalizations.of(context)!.authCodeRequiredToast,
-      );
-      return;
-    }
-
-    if (widget.medicineId != null) {
-      ref
-          .read(currentMedicineFormProvider.notifier)
-          .save(
-            create: CurrentMedicineWriteInput(
-              source: HealthMedicineSource.manual,
-              displayName: '',
-            ),
-            id: widget.medicineId,
-            update: CurrentMedicineUpdateInput(
-              source: _source,
-              sourceRefId: _sourceRefIdController.text.isEmpty
-                  ? null
-                  : _sourceRefIdController.text,
-              displayName: _displayNameController.text,
-              strengthText: _strengthTextController.text.isEmpty
-                  ? null
-                  : _strengthTextController.text,
-              doseText: _doseTextController.text.isEmpty
-                  ? null
-                  : _doseTextController.text,
-              route: _routeController.text.isEmpty
-                  ? null
-                  : _routeController.text,
-              startedAt: _startedAtController.text.isEmpty
-                  ? null
-                  : _startedAtController.text,
-              note: _noteController.text.isEmpty ? null : _noteController.text,
-            ),
-          );
-    } else {
-      ref
-          .read(currentMedicineFormProvider.notifier)
-          .save(
-            create: CurrentMedicineWriteInput(
-              source: _source,
-              sourceRefId: _sourceRefIdController.text.isEmpty
-                  ? null
-                  : _sourceRefIdController.text,
-              displayName: _displayNameController.text,
-              strengthText: _strengthTextController.text.isEmpty
-                  ? null
-                  : _strengthTextController.text,
-              doseText: _doseTextController.text.isEmpty
-                  ? null
-                  : _doseTextController.text,
-              route: _routeController.text.isEmpty
-                  ? null
-                  : _routeController.text,
-              startedAt: _startedAtController.text.isEmpty
-                  ? null
-                  : _startedAtController.text,
-              note: _noteController.text.isEmpty ? null : _noteController.text,
-            ),
-          );
-    }
-  }
-
-  void _onDelete() {
-    if (widget.medicineId != null) {
-      ref.read(currentMedicineFormProvider.notifier).delete(widget.medicineId!);
-    }
   }
 }
 

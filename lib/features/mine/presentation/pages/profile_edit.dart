@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -14,49 +15,47 @@ import 'package:luminous/features/mine/presentation/providers/health_edit_forms.
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class ProfileEditPage extends ConsumerStatefulWidget {
+class ProfileEditPage extends HookConsumerWidget {
   const ProfileEditPage({super.key});
 
   @override
-  ConsumerState<ProfileEditPage> createState() => _ProfileEditPageState();
-}
-
-class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
-  final _birthDateController = TextEditingController();
-  final _heightCmController = TextEditingController();
-  final _bloodTypeController = TextEditingController();
-
-  HealthUnitSystem? _unitSystem;
-  bool? _onboardingCompleted;
-
-  bool _initialized = false;
-
-  @override
-  void dispose() {
-    _birthDateController.dispose();
-    _heightCmController.dispose();
-    _bloodTypeController.dispose();
-    super.dispose();
-  }
-
-  void _initFromSnapshot(HealthProfile profile) {
-    if (_initialized) return;
-    _initialized = true;
-
-    _birthDateController.text = profile.birthDate ?? '';
-    _heightCmController.text = profile.heightCm?.toString() ?? '';
-    _bloodTypeController.text = profile.bloodType ?? '';
-    // Deferred by Product_Vision MVP: pregnancy, lactation, and other
-    // special-group fields remain in health context for medication safety, but
-    // Mine should not surface them as standalone profile collection yet.
-    _unitSystem = HealthUnitSystem.fromValue(profile.unitSystem);
-    _onboardingCompleted = profile.onboardingCompletedAt != null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
+
+    final birthDateController = useTextEditingController();
+    final heightCmController = useTextEditingController();
+    final bloodTypeController = useTextEditingController();
+    final unitSystem = useState<HealthUnitSystem?>(null);
+    final onboardingCompleted = useState<bool?>(null);
+    final initialized = useRef(false);
+
+    void initFromSnapshot(HealthProfile profile) {
+      if (initialized.value) return;
+      initialized.value = true;
+
+      birthDateController.text = profile.birthDate ?? '';
+      heightCmController.text = profile.heightCm?.toString() ?? '';
+      bloodTypeController.text = profile.bloodType ?? '';
+      unitSystem.value = HealthUnitSystem.fromValue(profile.unitSystem);
+      onboardingCompleted.value = profile.onboardingCompletedAt != null;
+    }
+
+    void onSave() {
+      final input = HealthProfileUpdateInput(
+        birthDate: birthDateController.text.isEmpty
+            ? null
+            : birthDateController.text,
+        heightCm: int.tryParse(heightCmController.text),
+        bloodType: bloodTypeController.text.isEmpty
+            ? null
+            : bloodTypeController.text,
+        unitSystem: unitSystem.value,
+        onboardingCompleted: onboardingCompleted.value,
+      );
+
+      ref.read(healthProfileFormProvider.notifier).save(input);
+    }
 
     if (!session.canAccessProtectedData) {
       return PageScaffoldShell(
@@ -90,8 +89,54 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       children: [
         snapshot.when(
           data: (ctx) {
-            _initFromSnapshot(ctx.profile);
-            return _buildForm(context, l10n);
+            initFromSnapshot(ctx.profile);
+            return Padding(
+              padding: const EdgeInsets.all(AppSpacingTokens.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(
+                    controller: birthDateController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldBirthDate,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  TextField(
+                    controller: heightCmController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldHeightCm,
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  TextField(
+                    controller: bloodTypeController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldBloodType,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  _enumDropdown<HealthUnitSystem>(
+                    label: l10n.mineEditFieldUnitSystem,
+                    value: unitSystem.value,
+                    values: HealthUnitSystem.values,
+                    onChanged: (v) => unitSystem.value = v,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  SwitchListTile(
+                    title: Text(l10n.mineEditFieldOnboardingCompleted),
+                    value: onboardingCompleted.value ?? false,
+                    onChanged: (v) => onboardingCompleted.value = v,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.lg),
+                  ElevatedButton(
+                    onPressed: onSave,
+                    child: Text(l10n.mineEditSaveAction),
+                  ),
+                ],
+              ),
+            );
           },
           loading: () => const _MineEditFormLoading(),
           error: (_, __) => AppStateErrorView(
@@ -105,66 +150,6 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
         ),
       ],
     );
-  }
-
-  Widget _buildForm(BuildContext context, AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextField(
-            controller: _birthDateController,
-            decoration: InputDecoration(labelText: l10n.mineEditFieldBirthDate),
-          ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          TextField(
-            controller: _heightCmController,
-            decoration: InputDecoration(labelText: l10n.mineEditFieldHeightCm),
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          TextField(
-            controller: _bloodTypeController,
-            decoration: InputDecoration(labelText: l10n.mineEditFieldBloodType),
-          ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          _enumDropdown<HealthUnitSystem>(
-            label: l10n.mineEditFieldUnitSystem,
-            value: _unitSystem,
-            values: HealthUnitSystem.values,
-            onChanged: (v) => setState(() => _unitSystem = v),
-          ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          SwitchListTile(
-            title: Text(l10n.mineEditFieldOnboardingCompleted),
-            value: _onboardingCompleted ?? false,
-            onChanged: (v) => setState(() => _onboardingCompleted = v),
-          ),
-          const SizedBox(height: AppSpacingTokens.lg),
-          ElevatedButton(
-            onPressed: _onSave,
-            child: Text(l10n.mineEditSaveAction),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _onSave() {
-    final input = HealthProfileUpdateInput(
-      birthDate: _birthDateController.text.isEmpty
-          ? null
-          : _birthDateController.text,
-      heightCm: int.tryParse(_heightCmController.text),
-      bloodType: _bloodTypeController.text.isEmpty
-          ? null
-          : _bloodTypeController.text,
-      unitSystem: _unitSystem,
-      onboardingCompleted: _onboardingCompleted,
-    );
-
-    ref.read(healthProfileFormProvider.notifier).save(input);
   }
 }
 
