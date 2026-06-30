@@ -42,6 +42,33 @@ abstract class TodayDashboard with _$TodayDashboard {
     required TodayLumiSuggestion lumiSuggestion,
     required List<TodayPriorityItem> priorityItems,
   }) = _TodayDashboard;
+
+  /// A minimal dashboard for signed-out users with no real or mock data.
+  static TodayDashboard signedOut() => TodayDashboard(
+    user: const TodayUserSnapshot(
+      moment: TodayDayMoment.morning,
+      hasUnreadNotifications: false,
+      updatedAtLabel: '--',
+    ),
+    water: const TodayWaterSummary(completedCount: 0, targetCount: 8),
+    medication: const TodayMedicationSummary(
+      medicineCount: 0,
+      pendingCount: 0,
+      nextDoseTimeLabel: '--',
+      nextMedicine: TodayMedicationKind.atorvastatin,
+    ),
+    vitals: const <TodayVitalSummary>[],
+    mealSuggestion: const TodayMealSuggestion(
+      type: TodayMealSuggestionType.highProteinBalancedLunch,
+    ),
+    environment: const TodayEnvironmentSummary(
+      signals: <TodayEnvironmentSignal>[],
+    ),
+    lumiSuggestion: const TodayLumiSuggestion(
+      type: TodayLumiSuggestionType.pollenProtection,
+    ),
+    priorityItems: const <TodayPriorityItem>[],
+  );
 }
 
 @freezed

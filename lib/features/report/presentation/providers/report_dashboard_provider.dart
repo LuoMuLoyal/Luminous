@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
@@ -11,13 +12,16 @@ final reportDashboardProvider =
     FutureProvider.family<ReportDashboard, ReportDashboardQuery>((ref, query) {
       final session = ref.watch(authSessionProvider);
       if (session.isConfirmedSignedOut) {
-        return Future.value(
-          MockReportRepository.signedOutDashboard.copyWith(
-            range: query.range,
-            startDate: _dateOnly(query.startDate ?? DateTime(2026, 6, 6)),
-            endDate: _dateOnly(query.endDate ?? DateTime(2026, 6, 12)),
-          ),
-        );
+        if (kDebugMode) {
+          return Future.value(
+            MockReportRepository.signedOutDashboard.copyWith(
+              range: query.range,
+              startDate: _dateOnly(query.startDate ?? DateTime(2026, 6, 6)),
+              endDate: _dateOnly(query.endDate ?? DateTime(2026, 6, 12)),
+            ),
+          );
+        }
+        return Future.value(ReportDashboard.signedOut());
       }
       if (session.isLoading) {
         return pendingAuthSessionResolution<ReportDashboard>();

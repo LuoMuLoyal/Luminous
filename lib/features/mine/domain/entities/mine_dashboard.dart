@@ -14,6 +14,38 @@ abstract class MineDashboard with _$MineDashboard {
     required List<MineActionEntry> campusServices,
     required MinePrivacyNotice privacyNotice,
   }) = _MineDashboard;
+
+  /// A minimal dashboard for signed-out users with no real or mock data.
+  static MineDashboard signedOut() => MineDashboard(
+    account: const MineAccount(
+      isAuthenticated: false,
+      displayNameKey: MineCopyKey.accountGuestDisplayName,
+      email: '',
+      statusKey: MineCopyKey.accountSignedOut,
+      roleKey: MineCopyKey.accountStudentRole,
+    ),
+    completion: const MineCompletion(
+      progress: 0,
+      percentLabel: '0%',
+      titleKey: MineCopyKey.completionTitle,
+    ),
+    profile: const MineProfileSnapshot(
+      age: null,
+      heightCm: null,
+      allergyCount: 0,
+      conditionCount: 0,
+      currentMedicineCount: 0,
+      basicInfoCompleted: false,
+    ),
+    alerts: const <MineStatusCard>[],
+    archiveEntries: const <MineArchiveEntry>[],
+    campusServices: const <MineActionEntry>[],
+    privacyNotice: const MinePrivacyNotice(
+      icon: Icons.shield_rounded,
+      titleKey: MineCopyKey.privacyNoticeTitle,
+      actionKey: MineCopyKey.privacyNoticeAction,
+    ),
+  );
 }
 
 @freezed

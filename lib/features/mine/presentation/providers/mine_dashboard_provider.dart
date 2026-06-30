@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import 'package:luminous/features/mine/data/repositories/lucent_mine_repository.dart';
@@ -13,7 +14,10 @@ final mineRepositoryProvider = Provider<MineRepository>((ref) {
 final mineDashboardProvider = FutureProvider<MineDashboard>((ref) {
   final authSession = ref.watch(authSessionProvider);
   if (authSession.isConfirmedSignedOut) {
-    return Future.value(MockMineRepository.signedOutDashboard);
+    if (kDebugMode) {
+      return Future.value(MockMineRepository.signedOutDashboard);
+    }
+    return Future.value(MineDashboard.signedOut());
   }
   if (!authSession.canAccessProtectedData) {
     return pendingAuthSessionResolution();

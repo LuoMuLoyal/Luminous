@@ -16,6 +16,134 @@ abstract class RecordDashboard with _$RecordDashboard {
     required List<RecordTimelineEntry> timeline,
     required List<RecordTrend> trends,
   }) = _RecordDashboard;
+
+  /// A minimal dashboard for signed-out users with no real or mock data.
+  /// Includes standard quick-actions and filters (UI structure only).
+  static RecordDashboard signedOut(DateTime selectedDate) {
+    return RecordDashboard(
+      selectedDate: selectedDate,
+      selectedDay: selectedDate.day,
+      weekDays: _emptyWeekDays(selectedDate),
+      monthDays: const <RecordCalendarDay>[],
+      quickActions: _defaultQuickActions,
+      summary: const RecordDaySummary(items: <RecordSummaryItem>[]),
+      filters: _defaultFilters,
+      timeline: const <RecordTimelineEntry>[],
+      trends: const <RecordTrend>[],
+    );
+  }
+
+  static List<RecordWeekDay> _emptyWeekDays(DateTime selectedDate) {
+    final date = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+    );
+    final monday = date.subtract(Duration(days: date.weekday - 1));
+    const weekdayKeys = <RecordCopyKey>[
+      RecordCopyKey.weekdayMon,
+      RecordCopyKey.weekdayTue,
+      RecordCopyKey.weekdayWed,
+      RecordCopyKey.weekdayThu,
+      RecordCopyKey.weekdayFri,
+      RecordCopyKey.weekdaySat,
+      RecordCopyKey.weekdaySun,
+    ];
+    return List.generate(7, (i) {
+      final day = monday.add(Duration(days: i));
+      return RecordWeekDay(
+        date: day,
+        day: day.day,
+        weekdayKey: weekdayKeys[i],
+        selected:
+            day.day == date.day &&
+            day.month == date.month &&
+            day.year == date.year,
+        markers: const <Color>[],
+      );
+    });
+  }
+
+  static const _defaultQuickActions = <RecordQuickAction>[
+    RecordQuickAction(
+      type: RecordEntryType.meal,
+      icon: Icons.restaurant_menu_rounded,
+      titleKey: RecordCopyKey.typeMeal,
+      subtitleKey: RecordCopyKey.summaryTimesUnit,
+      accent: Color(0xFFE67E22),
+      softColor: Color(0x33E67E22),
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.water,
+      icon: Icons.local_drink_rounded,
+      titleKey: RecordCopyKey.typeWater,
+      subtitleKey: RecordCopyKey.summaryCupsUnit,
+      accent: Color(0xFF2196F3),
+      softColor: Color(0x332196F3),
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.symptom,
+      icon: Icons.healing_rounded,
+      titleKey: RecordCopyKey.typeSymptom,
+      subtitleKey: RecordCopyKey.summaryRecorded,
+      accent: Color(0xFFE91E63),
+      softColor: Color(0x33E91E63),
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.note,
+      icon: Icons.notes_rounded,
+      titleKey: RecordCopyKey.typeNote,
+      subtitleKey: RecordCopyKey.summaryRecorded,
+      accent: Color(0xFF607D8B),
+      softColor: Color(0x33607D8B),
+    ),
+    RecordQuickAction(
+      type: RecordEntryType.sleep,
+      icon: Icons.nightlight_round,
+      titleKey: RecordCopyKey.typeSleep,
+      subtitleKey: RecordCopyKey.summaryRecorded,
+      accent: Color(0xFF7C4DFF),
+      softColor: Color(0x337C4DFF),
+    ),
+  ];
+
+  static const _defaultFilters = <RecordFilter>[
+    RecordFilter(
+      type: RecordEntryType.water,
+      titleKey: RecordCopyKey.typeWater,
+      icon: Icons.local_drink_rounded,
+      accent: Color(0xFF2196F3),
+      selected: false,
+    ),
+    RecordFilter(
+      type: RecordEntryType.meal,
+      titleKey: RecordCopyKey.typeMeal,
+      icon: Icons.restaurant_menu_rounded,
+      accent: Color(0xFFE67E22),
+      selected: false,
+    ),
+    RecordFilter(
+      type: RecordEntryType.symptom,
+      titleKey: RecordCopyKey.typeSymptom,
+      icon: Icons.healing_rounded,
+      accent: Color(0xFFE91E63),
+      selected: false,
+    ),
+    RecordFilter(
+      type: RecordEntryType.sleep,
+      titleKey: RecordCopyKey.typeSleep,
+      icon: Icons.nightlight_round,
+      accent: Color(0xFF7C4DFF),
+      selected: false,
+    ),
+    RecordFilter(
+      type: RecordEntryType.note,
+      titleKey: RecordCopyKey.typeNote,
+      icon: Icons.notes_rounded,
+      accent: Color(0xFF607D8B),
+      selected: false,
+    ),
+  ];
 }
 
 @freezed
