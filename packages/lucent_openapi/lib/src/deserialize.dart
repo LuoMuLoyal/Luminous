@@ -22,6 +22,9 @@ import 'package:lucent_openapi/src/model/assistant_stream_result_dto.dart';
 import 'package:lucent_openapi/src/model/assistant_tool_capability_dto.dart';
 import 'package:lucent_openapi/src/model/change_email_dto.dart';
 import 'package:lucent_openapi/src/model/change_password_dto.dart';
+import 'package:lucent_openapi/src/model/clinic_summary_dto.dart';
+import 'package:lucent_openapi/src/model/clinic_summary_profile_dto.dart';
+import 'package:lucent_openapi/src/model/clinic_summary_share_response_dto.dart';
 import 'package:lucent_openapi/src/model/cn_medicine_detail_dto.dart';
 import 'package:lucent_openapi/src/model/confirm_two_factor_dto.dart';
 import 'package:lucent_openapi/src/model/cooldown_message_dto.dart';
@@ -274,6 +277,17 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ChangePasswordDto':
       return ChangePasswordDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ClinicSummaryDto':
+      return ClinicSummaryDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ClinicSummaryProfileDto':
+      return ClinicSummaryProfileDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ClinicSummaryShareResponseDto':
+      return ClinicSummaryShareResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'CnMedicineDetailDto':
       return CnMedicineDetailDto.fromJson(value as Map<String, dynamic>)

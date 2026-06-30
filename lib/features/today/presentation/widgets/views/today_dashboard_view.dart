@@ -163,10 +163,10 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacingTokens.xl),
-              Expanded(
+              const Expanded(
                 flex: 5,
                 child: Column(
-                  children: [const TodayRecommendationSection(compact: true)],
+                  children: [TodayRecommendationSection(compact: true)],
                 ),
               ),
             ],

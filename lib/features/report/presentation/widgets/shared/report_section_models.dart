@@ -10,11 +10,12 @@ import 'package:luminous/l10n/app_localizations.dart';
 // Data export input helper
 // ---------------------------------------------------------------------------
 
-DataExportRequestInput reportExportInputForKind(ReportExportKind kind) {
+DataExportRequestInput? reportExportInputForKind(ReportExportKind kind) {
   return switch (kind) {
     ReportExportKind.monthly => reportMonthlyPdfExportRequest,
     ReportExportKind.print => reportPrintPdfExportRequest,
     ReportExportKind.hospital => reportHospitalPdfLast7DaysExportRequest,
+    ReportExportKind.clinicShare => null,
   };
 }
 
@@ -83,6 +84,7 @@ String reportExportTitle(AppLocalizations l10n, ReportExportKind kind) {
     ReportExportKind.hospital => l10n.reportExportHospitalTitle,
     ReportExportKind.monthly => l10n.reportExportMonthlyTitle,
     ReportExportKind.print => l10n.reportExportPrintTitle,
+    ReportExportKind.clinicShare => l10n.reportExportClinicShareTitle,
   };
 }
 
@@ -91,6 +93,7 @@ String reportExportSubtitle(AppLocalizations l10n, ReportExportKind kind) {
     ReportExportKind.hospital => l10n.reportExportHospitalSubtitle,
     ReportExportKind.monthly => l10n.reportExportMonthlySubtitle,
     ReportExportKind.print => l10n.reportExportPrintSubtitle,
+    ReportExportKind.clinicShare => l10n.reportExportClinicShareSubtitle,
   };
 }
 
@@ -100,6 +103,9 @@ String reportExportCardSubtitle(
   DataExportRequestDataDto? latestRequest,
 ) {
   final input = reportExportInputForKind(kind);
+  if (input == null) {
+    return reportExportSubtitle(l10n, kind);
+  }
   if (input.matches(latestRequest)) {
     return switch (dataExportUiStatusForRequest(latestRequest)) {
       DataExportUiStatus.idle => reportExportSubtitle(l10n, kind),

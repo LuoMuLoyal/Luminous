@@ -18,8 +18,8 @@ AssistantProposedAction _p(AssistantProposalExecutionState s) {
     constraints: const [],
     expiresAt: null,
     payloadVersion: 1,
-    payload: AssistantCreateDailyRecordProposalPayload(
-      draft: const AssistantCreateDailyRecordDraft(
+    payload: const AssistantCreateDailyRecordProposalPayload(
+      draft: AssistantCreateDailyRecordDraft(
         kind: 'meal',
         occurredAt: '2026-06-15',
         title: null,

@@ -353,7 +353,7 @@ void main() {
         available: true,
       );
 
-      final severeAllergyAlert = RedFlagAlert(
+      final severeAllergyAlert = const RedFlagAlert(
         rule: RedFlagRule.severeAllergy,
         primaryMedicineName: '阿莫西林',
         relatedLabel: '青霉素',
@@ -425,7 +425,7 @@ void main() {
         tester.view.resetPhysicalSize();
       });
 
-      final severeAllergyAlert = RedFlagAlert(
+      final severeAllergyAlert = const RedFlagAlert(
         rule: RedFlagRule.severeAllergy,
         primaryMedicineName: '阿莫西林',
         relatedLabel: '青霉素',

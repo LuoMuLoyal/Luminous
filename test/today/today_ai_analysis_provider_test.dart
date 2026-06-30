@@ -161,8 +161,8 @@ void main() {
   );
 
   test('Today AI provider maps forbidden error to disabled state', () async {
-    final repository = _ThrowingTodayAiRepository(
-      const LucentApiException(
+    final repository = const _ThrowingTodayAiRepository(
+      LucentApiException(
         message: 'AI summaries are disabled for this user',
         code: LucentResultCode.forbidden,
       ),
@@ -189,8 +189,8 @@ void main() {
   });
 
   test('Today AI provider maps generic error to error state', () async {
-    final repository = _ThrowingTodayAiRepository(
-      const LucentApiException(message: 'Network request failed.'),
+    final repository = const _ThrowingTodayAiRepository(
+      LucentApiException(message: 'Network request failed.'),
     );
 
     final container = ProviderContainer(

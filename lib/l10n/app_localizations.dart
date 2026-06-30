@@ -6470,6 +6470,18 @@ abstract class AppLocalizations {
   /// **'纸质版预览'**
   String get reportExportPrintSubtitle;
 
+  /// No description provided for @reportExportClinicShareTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享给医生'**
+  String get reportExportClinicShareTitle;
+
+  /// No description provided for @reportExportClinicShareSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'脱敏健康摘要'**
+  String get reportExportClinicShareSubtitle;
+
   /// No description provided for @reportExportRequestedToast.
   ///
   /// In zh, this message translates to:

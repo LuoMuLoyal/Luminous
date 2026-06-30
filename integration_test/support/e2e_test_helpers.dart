@@ -799,7 +799,7 @@ class E2eDailyRecordRepository implements DailyRecordRepository {
     deleteCalledWith = id;
   }
 
-  static final _record = DailyRecordItem(
+  static final _record = const DailyRecordItem(
     id: 'e2e-record-1',
     kind: DailyRecordKind.vital,
     occurredAt: '2026-06-06T09:45:00',

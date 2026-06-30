@@ -56,10 +56,10 @@ class _DefaultTabPlaceholder extends StatelessWidget {
 
     return ColoredBox(
       color: surface.canvasSoft,
-      child: SafeArea(
+      child: const SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.lg),
+          padding: EdgeInsets.all(AppSpacingTokens.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -68,19 +68,19 @@ class _DefaultTabPlaceholder extends StatelessWidget {
                 widthFactor: 0.45,
                 radius: AppRadiusTokens.lg,
               ),
-              const SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.md),
               AppInlineSkeletonBlock(
                 height: AppSpacingTokens.x4l,
                 widthFactor: 1,
                 radius: AppRadiusTokens.lg,
               ),
-              const SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.md),
               AppInlineSkeletonBlock(
                 height: AppSpacingTokens.x4l,
                 widthFactor: 1,
                 radius: AppRadiusTokens.lg,
               ),
-              const SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.md),
               AppInlineSkeletonBlock(
                 height: AppSpacingTokens.x4l,
                 widthFactor: 0.72,

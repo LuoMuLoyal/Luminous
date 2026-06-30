@@ -125,29 +125,29 @@ void main() {
   testWidgets('Today page shows zero water and medicines without crashing', (
     tester,
   ) async {
-    final emptyDashboard = TodayDashboard(
-      user: const TodayUserSnapshot(
+    final emptyDashboard = const TodayDashboard(
+      user: TodayUserSnapshot(
         moment: TodayDayMoment.morning,
         hasUnreadNotifications: false,
         updatedAtLabel: '--:--',
       ),
-      water: const TodayWaterSummary(completedCount: 0, targetCount: 8),
-      medication: const TodayMedicationSummary(
+      water: TodayWaterSummary(completedCount: 0, targetCount: 8),
+      medication: TodayMedicationSummary(
         medicineCount: 0,
         pendingCount: 0,
         nextDoseTimeLabel: '--',
         nextMedicine: TodayMedicationKind.atorvastatin,
       ),
-      vitals: const <TodayVitalSummary>[
+      vitals: <TodayVitalSummary>[
         TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
       ],
-      mealSuggestion: const TodayMealSuggestion(
+      mealSuggestion: TodayMealSuggestion(
         type: TodayMealSuggestionType.highProteinBalancedLunch,
       ),
-      environment: const TodayEnvironmentSummary(
+      environment: TodayEnvironmentSummary(
         signals: <TodayEnvironmentSignal>[
           TodayEnvironmentSignal(
             type: TodayEnvironmentSignalType.pollen,
@@ -159,10 +159,10 @@ void main() {
           ),
         ],
       ),
-      lumiSuggestion: const TodayLumiSuggestion(
+      lumiSuggestion: TodayLumiSuggestion(
         type: TodayLumiSuggestionType.pollenProtection,
       ),
-      priorityItems: const <TodayPriorityItem>[],
+      priorityItems: <TodayPriorityItem>[],
     );
 
     await tester.pumpWidget(

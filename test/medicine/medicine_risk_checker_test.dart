@@ -7,7 +7,7 @@ import 'package:luminous/features/medicine/domain/services/medicine_risk_checker
 void main() {
   test('detects interaction and coverage issues (DB-DB)', () {
     final snapshot = HealthContextSnapshot(
-      summary: HealthSummary(
+      summary: const HealthSummary(
         age: 30,
         onboardingCompleted: true,
         activeAllergyCount: 1,
@@ -15,7 +15,7 @@ void main() {
         currentMedicineCount: 3,
         missingCoreProfileFields: [],
       ),
-      profile: HealthProfile(
+      profile: const HealthProfile(
         birthDate: null,
         sexAtBirth: null,
         heightCm: null,
@@ -27,7 +27,7 @@ void main() {
         extras: {},
       ),
       allergies: [
-        AllergyItem(
+        const AllergyItem(
           id: 'allergy-1',
           kind: 'drug',
           label: 'penicillin',
@@ -191,7 +191,7 @@ void main() {
   test('detects allergy via ingredient token match (CN)', () {
     final snapshot = _basicSnapshot(age: 30, medicineCount: 1).copyWith(
       allergies: [
-        AllergyItem(
+        const AllergyItem(
           id: 'allergy-1',
           kind: 'drug',
           label: '对乙酰氨基酚',
@@ -228,7 +228,7 @@ void main() {
   test('detects allergy via cross-language mapping (penicillin ↔ 青霉素)', () {
     final snapshot = _basicSnapshot(age: 30, medicineCount: 1).copyWith(
       allergies: [
-        AllergyItem(
+        const AllergyItem(
           id: 'allergy-1',
           kind: 'drug',
           label: 'penicillin',
@@ -262,7 +262,7 @@ void main() {
   test('allergy does NOT fire for unrelated drugs', () {
     final snapshot = _basicSnapshot(age: 30, medicineCount: 1).copyWith(
       allergies: [
-        AllergyItem(
+        const AllergyItem(
           id: 'allergy-1',
           kind: 'drug',
           label: 'penicillin',
@@ -328,7 +328,7 @@ void main() {
   test('allergy detects via DrugBank synonym tokens', () {
     final snapshot = _dbSnapshot(medicineCount: 1).copyWith(
       allergies: [
-        AllergyItem(
+        const AllergyItem(
           id: 'allergy-1',
           kind: 'drug',
           label: 'ibuprofen',
@@ -370,7 +370,7 @@ void main() {
       // aspirin ≠ acetaminophen: distinct map groups
       final snapshot1 = _basicSnapshot(age: 30, medicineCount: 1).copyWith(
         allergies: [
-          AllergyItem(
+          const AllergyItem(
             id: 'allergy-1',
             kind: 'drug',
             label: 'aspirin',
@@ -401,7 +401,7 @@ void main() {
       // cephalosporin ≠ penicillin: distinct map groups
       final snapshot2 = _basicSnapshot(age: 30, medicineCount: 1).copyWith(
         allergies: [
-          AllergyItem(
+          const AllergyItem(
             id: 'allergy-1',
             kind: 'drug',
             label: 'cephalosporin',
@@ -439,7 +439,7 @@ void main() {
     // directly via string-normalized token intersection
     final snapshot = _basicSnapshot(age: 30, medicineCount: 1).copyWith(
       allergies: [
-        AllergyItem(
+        const AllergyItem(
           id: 'allergy-1',
           kind: 'drug',
           label: 'erythromycin',
@@ -546,7 +546,7 @@ void main() {
     'coverage summary stays explicit when no medicine detail could be checked',
     () {
       final snapshot = HealthContextSnapshot(
-        summary: HealthSummary(
+        summary: const HealthSummary(
           age: 30,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -554,7 +554,7 @@ void main() {
           currentMedicineCount: 2,
           missingCoreProfileFields: [],
         ),
-        profile: HealthProfile(
+        profile: const HealthProfile(
           birthDate: null,
           sexAtBirth: null,
           heightCm: null,
@@ -599,7 +599,7 @@ void main() {
     'findings and coverage coexist: summary non-empty, both lists populated',
     () {
       final snapshot = HealthContextSnapshot(
-        summary: HealthSummary(
+        summary: const HealthSummary(
           age: 28,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -607,7 +607,7 @@ void main() {
           currentMedicineCount: 3,
           missingCoreProfileFields: [],
         ),
-        profile: HealthProfile(
+        profile: const HealthProfile(
           birthDate: null,
           sexAtBirth: null,
           heightCm: null,
@@ -713,7 +713,7 @@ void main() {
 
   test('coverageSummary combines mixed reason counts correctly', () {
     final snapshot = HealthContextSnapshot(
-      summary: HealthSummary(
+      summary: const HealthSummary(
         age: 30,
         onboardingCompleted: true,
         activeAllergyCount: 0,
@@ -721,7 +721,7 @@ void main() {
         currentMedicineCount: 3,
         missingCoreProfileFields: [],
       ),
-      profile: HealthProfile(
+      profile: const HealthProfile(
         birthDate: null,
         sexAtBirth: null,
         heightCm: null,
@@ -781,7 +781,7 @@ HealthContextSnapshot _dbSnapshot({required int medicineCount}) {
       currentMedicineCount: medicineCount,
       missingCoreProfileFields: [],
     ),
-    profile: HealthProfile(
+    profile: const HealthProfile(
       birthDate: null,
       sexAtBirth: null,
       heightCm: null,
@@ -821,7 +821,7 @@ HealthContextSnapshot _basicSnapshot({
       currentMedicineCount: medicineCount,
       missingCoreProfileFields: [],
     ),
-    profile: HealthProfile(
+    profile: const HealthProfile(
       birthDate: null,
       sexAtBirth: null,
       heightCm: null,

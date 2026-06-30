@@ -138,13 +138,13 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light,
-        home: Scaffold(
+        home: const Scaffold(
           body: AuthShell(
             title: 'Sign in',
             subtitle: 'My subtitle',
-            logo: const AuthBrandLogo(),
+            logo: AuthBrandLogo(),
             enableFormAnimation: false,
-            form: const Column(children: [Text('form body')]),
+            form: Column(children: [Text('form body')]),
           ),
         ),
       ),

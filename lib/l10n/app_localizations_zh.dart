@@ -3336,6 +3336,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reportExportPrintSubtitle => '纸质版预览';
 
   @override
+  String get reportExportClinicShareTitle => '分享给医生';
+
+  @override
+  String get reportExportClinicShareSubtitle => '脱敏健康摘要';
+
+  @override
   String get reportExportRequestedToast => '导出请求已提交。';
 
   @override

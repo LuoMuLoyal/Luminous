@@ -1530,6 +1530,8 @@
   "reportExportMonthlySubtitle": "PDF format",
   "reportExportPrintTitle": "Print preview",
   "reportExportPrintSubtitle": "Paper preview",
+  "reportExportClinicShareTitle": "Share with doctor",
+  "reportExportClinicShareSubtitle": "De-identified health summary",
   "reportExportRequestedToast": "Export request submitted.",
   "reportExportProcessingToast": "Export is still processing.",
   "reportExportUnavailableToast": "This export is temporarily unavailable in the current environment.",

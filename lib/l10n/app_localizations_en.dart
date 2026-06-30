@@ -3569,6 +3569,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportExportPrintSubtitle => 'Paper preview';
 
   @override
+  String get reportExportClinicShareTitle => 'Share with doctor';
+
+  @override
+  String get reportExportClinicShareSubtitle => 'De-identified health summary';
+
+  @override
   String get reportExportRequestedToast => 'Export request submitted.';
 
   @override

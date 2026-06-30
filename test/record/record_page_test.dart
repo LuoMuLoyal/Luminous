@@ -168,11 +168,11 @@ void main() {
       });
 
       final repo = _FakeDailyRecordRepository(
-        generatedCandidates: DailyRecordCandidateResult(
+        generatedCandidates: const DailyRecordCandidateResult(
           locale: 'zh-CN',
           generatedAt: '2026-06-14T00:00:00.000Z',
           confirmationHint: '确认后再保存。',
-          items: const [
+          items: [
             DailyRecordCandidateItem(
               kind: DailyRecordKind.meal,
               occurredAt: '2026-06-14',

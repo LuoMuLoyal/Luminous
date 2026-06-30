@@ -57,8 +57,8 @@ void main() {
       'app.locale': 'en',
     });
 
-    final snapshot = HealthContextSnapshot(
-      summary: const HealthSummary(
+    final snapshot = const HealthContextSnapshot(
+      summary: HealthSummary(
         age: null,
         onboardingCompleted: false,
         activeAllergyCount: 0,
@@ -66,7 +66,7 @@ void main() {
         currentMedicineCount: 0,
         missingCoreProfileFields: <String>[],
       ),
-      profile: const HealthProfile(
+      profile: HealthProfile(
         birthDate: null,
         sexAtBirth: null,
         heightCm: null,
@@ -77,9 +77,9 @@ void main() {
         onboardingCompletedAt: null,
         extras: <String, dynamic>{},
       ),
-      allergies: const <AllergyItem>[],
-      conditions: const <ConditionItem>[],
-      currentMedicines: const <CurrentMedicineItem>[],
+      allergies: <AllergyItem>[],
+      conditions: <ConditionItem>[],
+      currentMedicines: <CurrentMedicineItem>[],
     );
 
     final container = ProviderContainer(

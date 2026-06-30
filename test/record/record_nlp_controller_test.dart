@@ -15,11 +15,11 @@ void main() {
     'RecordNlpController saveSelected keeps failed selected items only',
     () async {
       final repo = _ControllerFakeDailyRecordRepository(
-        generatedCandidates: DailyRecordCandidateResult(
+        generatedCandidates: const DailyRecordCandidateResult(
           locale: 'zh-CN',
           generatedAt: '2026-06-14T00:00:00.000Z',
           confirmationHint: '确认后再保存。',
-          items: const [
+          items: [
             DailyRecordCandidateItem(
               kind: DailyRecordKind.water,
               occurredAt: '2026-06-14',
@@ -67,11 +67,11 @@ void main() {
 
   test('RecordNlpController retryFailed only retries failed items', () async {
     final repo = _ControllerFakeDailyRecordRepository(
-      generatedCandidates: DailyRecordCandidateResult(
+      generatedCandidates: const DailyRecordCandidateResult(
         locale: 'zh-CN',
         generatedAt: '2026-06-14T00:00:00.000Z',
         confirmationHint: '确认后再保存。',
-        items: const [
+        items: [
           DailyRecordCandidateItem(
             kind: DailyRecordKind.water,
             occurredAt: '2026-06-14',

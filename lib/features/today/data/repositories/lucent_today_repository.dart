@@ -100,7 +100,10 @@ class LucentTodayRepository implements TodayRepository {
           type: TodayVitalType.heartRate,
           valueLabel: recordLatest['vital'] ?? '--',
         ),
-        TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
+        const TodayVitalSummary(
+          type: TodayVitalType.bloodPressure,
+          valueLabel: '--',
+        ),
         TodayVitalSummary(
           type: TodayVitalType.sleep,
           valueLabel: _formatSleepLabel(sleepPayload),

@@ -1530,6 +1530,8 @@
   "reportExportMonthlySubtitle": "PDF 格式",
   "reportExportPrintTitle": "打印预览",
   "reportExportPrintSubtitle": "纸质版预览",
+  "reportExportClinicShareTitle": "分享给医生",
+  "reportExportClinicShareSubtitle": "脱敏健康摘要",
   "reportExportRequestedToast": "导出请求已提交。",
   "reportExportProcessingToast": "导出正在处理中。",
   "reportExportUnavailableToast": "当前环境暂时无法生成这个导出文件。",

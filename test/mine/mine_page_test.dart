@@ -595,8 +595,8 @@ class _EmailSignedInAuthSessionNotifier extends AuthSessionNotifier {
   }
 }
 
-final _mockSnapshot = HealthContextSnapshot(
-  summary: const HealthSummary(
+final _mockSnapshot = const HealthContextSnapshot(
+  summary: HealthSummary(
     age: 27,
     onboardingCompleted: true,
     activeAllergyCount: 2,
@@ -604,7 +604,7 @@ final _mockSnapshot = HealthContextSnapshot(
     currentMedicineCount: 3,
     missingCoreProfileFields: ['bloodType'],
   ),
-  profile: const HealthProfile(
+  profile: HealthProfile(
     birthDate: '1999-01-15',
     sexAtBirth: null,
     heightCm: null,
@@ -615,7 +615,7 @@ final _mockSnapshot = HealthContextSnapshot(
     onboardingCompletedAt: '2026-01-01T00:00:00Z',
     extras: {},
   ),
-  allergies: const [],
-  conditions: const [],
-  currentMedicines: const [],
+  allergies: [],
+  conditions: [],
+  currentMedicines: [],
 );

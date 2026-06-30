@@ -82,6 +82,8 @@ const _$AssistantToolCapabilityDtoNameEnumEnumMap = {
       'get_sleep_summary_by_range',
   AssistantToolCapabilityDtoNameEnum.getMedicineLeafletContext:
       'get_medicine_leaflet_context',
+  AssistantToolCapabilityDtoNameEnum.getMedicalKnowledge:
+      'get_medical_knowledge',
   AssistantToolCapabilityDtoNameEnum.proposeCreateDailyRecord:
       'propose_create_daily_record',
   AssistantToolCapabilityDtoNameEnum.proposeUpdateDailyRecord:

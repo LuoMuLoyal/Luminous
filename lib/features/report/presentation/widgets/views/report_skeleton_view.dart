@@ -104,31 +104,31 @@ class _ScoreHeroPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return const AppInlineSkeletonSection(
       children: [
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             AppInlineSkeletonBlock(height: 20, widthFactor: 0.45),
             AppInlineSkeletonCircle(size: 24),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        SizedBox(height: AppSpacingTokens.md),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const AppInlineSkeletonBlock(
+            AppInlineSkeletonBlock(
               height: 56,
               width: 80,
               radius: AppRadiusTokens.md,
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            SizedBox(width: AppSpacingTokens.sm),
             Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacingTokens.xs),
+              padding: EdgeInsets.only(bottom: AppSpacingTokens.xs),
               child: AppInlineSkeletonBlock(height: 18, width: 48),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
-            const AppInlineSkeletonBlock(
+            SizedBox(width: AppSpacingTokens.sm),
+            AppInlineSkeletonBlock(
               height: 24,
               width: 64,
               radius: AppRadiusTokens.pill,

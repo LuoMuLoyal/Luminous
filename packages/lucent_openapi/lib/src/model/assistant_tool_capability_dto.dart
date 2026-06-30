@@ -150,6 +150,10 @@ enum AssistantToolCapabilityDtoNameEnum {
   getMedicineLeafletContext(r'get_medicine_leaflet_context'),
 
   /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_medical_knowledge')
+  getMedicalKnowledge(r'get_medical_knowledge'),
+
+  /// Stable tool identifier exposed to the client.
   @JsonValue(r'propose_create_daily_record')
   proposeCreateDailyRecord(r'propose_create_daily_record'),
 

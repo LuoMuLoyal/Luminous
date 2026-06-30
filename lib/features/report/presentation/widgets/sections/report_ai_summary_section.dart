@@ -55,7 +55,7 @@ class ReportAiSummarySection extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppIconBadge(
+            const AppIconBadge(
               icon: Icons.auto_awesome_rounded,
               color: AppColorTokens.cyanDeep,
               size: AppSpacingTokens.x3l,

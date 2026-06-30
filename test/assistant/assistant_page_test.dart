@@ -795,9 +795,12 @@ class _ProposalAssistantRepository implements AssistantRepository {
               summary: '准备保存一条 2026-06-18 的 water 记录。',
               reason: 'Detected water intake.',
               previewFields: <AssistantProposalPreviewField>[
-                AssistantProposalPreviewField(label: '类型', value: 'water'),
+                const AssistantProposalPreviewField(
+                  label: '类型',
+                  value: 'water',
+                ),
               ],
-              target: AssistantProposalTarget(
+              target: const AssistantProposalTarget(
                 kind: 'daily_record_draft',
                 label: '2026-06-18 water 300 ml',
                 matchedBy: <String>['relative_today'],
@@ -805,7 +808,7 @@ class _ProposalAssistantRepository implements AssistantRepository {
               constraints: <String>['必须先经过你确认，后端不会直接写入。'],
               expiresAt: DateTime.now().add(const Duration(minutes: 15)),
               payloadVersion: 1,
-              payload: AssistantCreateDailyRecordProposalPayload(
+              payload: const AssistantCreateDailyRecordProposalPayload(
                 draft: AssistantCreateDailyRecordDraft(
                   kind: 'water',
                   occurredAt: '2026-06-18',
@@ -863,9 +866,12 @@ class _SettingsProposalAssistantRepository implements AssistantRepository {
               summary: '我整理出了一组设置变更，确认后才会真正写入。',
               reason: null,
               previewFields: <AssistantProposalPreviewField>[
-                AssistantProposalPreviewField(label: '持久化记忆', value: '关闭'),
+                const AssistantProposalPreviewField(
+                  label: '持久化记忆',
+                  value: '关闭',
+                ),
               ],
-              target: AssistantProposalTarget(
+              target: const AssistantProposalTarget(
                 kind: 'user_settings',
                 label: '助手设置',
                 settingKeys: <String>['assistantMemoryEnabled'],
@@ -873,7 +879,7 @@ class _SettingsProposalAssistantRepository implements AssistantRepository {
               constraints: <String>['必须先经过你确认，后端不会直接写入。'],
               expiresAt: DateTime.now().add(const Duration(minutes: 15)),
               payloadVersion: 1,
-              payload: AssistantUpdateUserSettingsProposalPayload(
+              payload: const AssistantUpdateUserSettingsProposalPayload(
                 draft: AssistantUpdateUserSettingsDraft(
                   assistantMemoryEnabled: false,
                 ),
@@ -925,9 +931,12 @@ class _ExpiredProposalAssistantRepository implements AssistantRepository {
               summary: '这条建议已经过期。',
               reason: 'Expired test fixture.',
               previewFields: <AssistantProposalPreviewField>[
-                AssistantProposalPreviewField(label: '类型', value: 'water'),
+                const AssistantProposalPreviewField(
+                  label: '类型',
+                  value: 'water',
+                ),
               ],
-              target: AssistantProposalTarget(
+              target: const AssistantProposalTarget(
                 kind: 'daily_record_draft',
                 label: '2026-06-18 water 300 ml',
                 matchedBy: <String>['relative_today'],
@@ -935,7 +944,7 @@ class _ExpiredProposalAssistantRepository implements AssistantRepository {
               constraints: <String>['必须先经过你确认，后端不会直接写入。'],
               expiresAt: DateTime.now().subtract(const Duration(minutes: 5)),
               payloadVersion: 1,
-              payload: AssistantCreateDailyRecordProposalPayload(
+              payload: const AssistantCreateDailyRecordProposalPayload(
                 draft: AssistantCreateDailyRecordDraft(
                   kind: 'water',
                   occurredAt: '2026-06-18',

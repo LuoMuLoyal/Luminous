@@ -14,5 +14,5 @@ final wechatDesktopOAuthCallbackListenerProvider =
     });
 
 final wechatMobileAuthClientProvider = Provider<WechatMobileAuthClient>((ref) {
-  return DefaultWechatMobileAuthClient();
+  return const DefaultWechatMobileAuthClient();
 });

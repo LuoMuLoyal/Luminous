@@ -16,13 +16,13 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
   }) = _MedicineWorkspace;
 
   /// A minimal workspace for signed-out users with no real or mock data.
-  static MedicineWorkspace signedOut() => MedicineWorkspace(
-    hero: const MedicineHero(
+  static MedicineWorkspace signedOut() => const MedicineWorkspace(
+    hero: MedicineHero(
       metricDosesToday: '0',
       metricAdherence: '--',
       metricNextDose: '--',
     ),
-    quickActions: const <MedicineQuickAction>[
+    quickActions: <MedicineQuickAction>[
       MedicineQuickAction(
         icon: Icons.search_rounded,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
@@ -30,9 +30,9 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
         accent: Color(0xFF00838F),
       ),
     ],
-    plan: const MedicinePlanSurface(items: <MedicinePlanItem>[]),
-    alerts: const <MedicineAlert>[],
-    promisePoints: const <MedicinePromisePoint>[],
+    plan: MedicinePlanSurface(items: <MedicinePlanItem>[]),
+    alerts: <MedicineAlert>[],
+    promisePoints: <MedicinePromisePoint>[],
   );
 }
 

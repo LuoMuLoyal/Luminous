@@ -202,7 +202,7 @@ MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
 
 List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
   return [
-    MineStatusCard(
+    const MineStatusCard(
       icon: Icons.warning_rounded,
       accent: _red,
       titleKey: MineCopyKey.alertAllergyTitle,
@@ -252,7 +252,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
           : MineCopyKey.archiveNeedsFill,
       route: '/mine/allergy/new',
     ),
-    MineArchiveEntry(
+    const MineArchiveEntry(
       icon: Icons.medication_rounded,
       accent: _blue,
       titleKey: MineCopyKey.archiveMedicineTitle,

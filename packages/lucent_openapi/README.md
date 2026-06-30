@@ -140,9 +140,14 @@ Class | Method | HTTP request | Description
 [*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerMarkAsUnreadV1**](doc/NotificationsApi.md#notificationscontrollermarkasunreadv1) | **PATCH** /api/v1/user/notifications/{id}/unread | Mark a notification as unread
 [*NotificationsApi*](doc/NotificationsApi.md) | [**notificationsControllerRemoveV1**](doc/NotificationsApi.md#notificationscontrollerremovev1) | **DELETE** /api/v1/user/notifications/{id} | Delete a notification
 [*ReminderDeliveriesApi*](doc/ReminderDeliveriesApi.md) | [**reminderDeliveriesControllerListV1**](doc/ReminderDeliveriesApi.md#reminderdeliveriescontrollerlistv1) | **GET** /api/v1/user/reminder-deliveries | List reminder delivery audit logs
+[*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerDownloadClinicSummaryPdfV1**](doc/ReportsApi.md#reportscontrollerdownloadclinicsummarypdfv1) | **GET** /api/v1/user/reports/clinic-summary/preview/pdf | Download a de-identified clinic summary as PDF (auth required)
+[*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerDownloadSharedClinicSummaryPdfV1**](doc/ReportsApi.md#reportscontrollerdownloadsharedclinicsummarypdfv1) | **GET** /api/v1/user/reports/clinic-summary/shared/{token}/pdf | Download a shared clinic summary as PDF (no auth required)
 [*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGenerateSummaryStreamV1**](doc/ReportsApi.md#reportscontrollergeneratesummarystreamv1) | **POST** /api/v1/user/reports/summary/generate/stream | Stream authenticated user AI summary generation for report
 [*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGenerateSummaryV1**](doc/ReportsApi.md#reportscontrollergeneratesummaryv1) | **POST** /api/v1/user/reports/summary/generate | Generate authenticated user AI summary for report
 [*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGetDashboardV1**](doc/ReportsApi.md#reportscontrollergetdashboardv1) | **GET** /api/v1/user/reports/dashboard | Get authenticated user report dashboard
+[*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerGetSharedClinicSummaryV1**](doc/ReportsApi.md#reportscontrollergetsharedclinicsummaryv1) | **GET** /api/v1/user/reports/clinic-summary/shared/{token} | Access a shared clinic summary by token (no auth required)
+[*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerPreviewClinicSummaryV1**](doc/ReportsApi.md#reportscontrollerpreviewclinicsummaryv1) | **POST** /api/v1/user/reports/clinic-summary/preview | Generate a de-identified clinic summary for sharing with a doctor
+[*ReportsApi*](doc/ReportsApi.md) | [**reportsControllerShareClinicSummaryV1**](doc/ReportsApi.md#reportscontrollershareclinicsummaryv1) | **POST** /api/v1/user/reports/clinic-summary/share | Create a shareable link for the clinic summary (24h expiry)
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetAppInfoV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetappinfov1) | **GET** /api/v1/public/app-info | Get application metadata
 [*SupportResourcesApi*](doc/SupportResourcesApi.md) | [**supportResourcesControllerGetResourcesV1**](doc/SupportResourcesApi.md#supportresourcescontrollergetresourcesv1) | **GET** /api/v1/public/support-resources | Get static support resource entries
 [*TodayAnalysisApi*](doc/TodayAnalysisApi.md) | [**todayAnalysisControllerGenerateStreamV1**](doc/TodayAnalysisApi.md#todayanalysiscontrollergeneratestreamv1) | **POST** /api/v1/user/today-analysis/generate/stream | Stream authenticated user today AI analysis generation
@@ -190,6 +195,9 @@ Class | Method | HTTP request | Description
  - [AssistantToolCapabilityDto](doc/AssistantToolCapabilityDto.md)
  - [ChangeEmailDto](doc/ChangeEmailDto.md)
  - [ChangePasswordDto](doc/ChangePasswordDto.md)
+ - [ClinicSummaryDto](doc/ClinicSummaryDto.md)
+ - [ClinicSummaryProfileDto](doc/ClinicSummaryProfileDto.md)
+ - [ClinicSummaryShareResponseDto](doc/ClinicSummaryShareResponseDto.md)
  - [CnMedicineDetailDto](doc/CnMedicineDetailDto.md)
  - [ConfirmTwoFactorDto](doc/ConfirmTwoFactorDto.md)
  - [CooldownMessageDto](doc/CooldownMessageDto.md)

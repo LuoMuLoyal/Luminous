@@ -121,7 +121,7 @@ class ReportScoreHero extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacingTokens.md),
           DecoratedBox(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColorTokens.healthSoft,
               shape: BoxShape.circle,
             ),

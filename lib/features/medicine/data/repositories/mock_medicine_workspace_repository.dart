@@ -25,13 +25,13 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   }
 
   static final signedOutWorkspace = MedicineWorkspace(
-    hero: MedicineHero(
+    hero: const MedicineHero(
       metricDosesToday: '0',
       metricAdherence: '--',
       metricNextDose: '--',
     ),
     quickActions: previewWorkspace.quickActions,
-    plan: MedicinePlanSurface(items: <MedicinePlanItem>[]),
+    plan: const MedicinePlanSurface(items: <MedicinePlanItem>[]),
     alerts: previewWorkspace.alerts,
     promisePoints: previewWorkspace.promisePoints,
   );
@@ -76,7 +76,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
         ...deferredScanQuickActions,
     ],
-    plan: MedicinePlanSurface(
+    plan: const MedicinePlanSurface(
       items: <MedicinePlanItem>[
         MedicinePlanItem(
           color: AppColorTokens.link,
@@ -140,7 +140,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       ],
     ),
     alerts: <MedicineAlert>[
-      MedicineAlert(
+      const MedicineAlert(
         icon: Icons.wine_bar_rounded,
         titleKey: MedicineCopyKey.alertAlcoholRiskTitle,
         bodyKey: MedicineCopyKey.alertAlcoholRiskBody,
@@ -149,7 +149,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         color: AppColorTokens.warningDeep,
         softColor: AppColorTokens.warningSoft,
       ),
-      MedicineAlert(
+      const MedicineAlert(
         icon: Icons.coffee_rounded,
         titleKey: MedicineCopyKey.alertCoffeeReminderTitle,
         bodyKey: MedicineCopyKey.alertCoffeeReminderBody,
@@ -158,7 +158,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         color: AppColorTokens.warningDeep,
         softColor: AppColorTokens.warningSoft,
       ),
-      MedicineAlert(
+      const MedicineAlert(
         icon: Icons.content_copy_rounded,
         titleKey: MedicineCopyKey.alertDuplicateCheckTitle,
         bodyKey: MedicineCopyKey.alertDuplicateCheckBody,
@@ -167,7 +167,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         color: AppColorTokens.cyanDeep,
         softColor: AppColorTokens.cyanSoft,
       ),
-      MedicineAlert(
+      const MedicineAlert(
         icon: Icons.water_drop_rounded,
         titleKey: MedicineCopyKey.alertSpecialGroupSafetyTitle,
         bodyKey: MedicineCopyKey.alertSpecialGroupSafetyBody,
@@ -178,10 +178,14 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       ),
     ],
     promisePoints: <MedicinePromisePoint>[
-      MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointBoundary),
-      MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointSpecialGroup),
-      MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointPrivacy),
-      MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointDiagnosis),
+      const MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointBoundary),
+      const MedicinePromisePoint(
+        copyKey: MedicineCopyKey.promisePointSpecialGroup,
+      ),
+      const MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointPrivacy),
+      const MedicinePromisePoint(
+        copyKey: MedicineCopyKey.promisePointDiagnosis,
+      ),
     ],
   );
 }

@@ -38,5 +38,4 @@ This file records work that is still missing or intentionally gated. Current fac
 - Environment-driven Today or Mine suggestions.
 - Real barcode / OCR / photo / prescription recognition flow.
 - Voice or screenshot-based natural-language record intake.
-- Privacy-preserving clinic summary / doctor-facing summary generation and preview flow.
 - Real authenticated Web report preview beyond the competition/marketing homepage.

@@ -244,7 +244,7 @@ void main() {
           AppSettingRow(
             title: 'With trailing',
             onTap: () {},
-            trailing: Icon(Icons.star),
+            trailing: const Icon(Icons.star),
           ),
         ),
       );

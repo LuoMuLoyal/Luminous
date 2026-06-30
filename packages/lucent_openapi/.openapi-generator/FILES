@@ -53,6 +53,9 @@ lib/src/model/assistant_stream_result_dto.dart
 lib/src/model/assistant_tool_capability_dto.dart
 lib/src/model/change_email_dto.dart
 lib/src/model/change_password_dto.dart
+lib/src/model/clinic_summary_dto.dart
+lib/src/model/clinic_summary_profile_dto.dart
+lib/src/model/clinic_summary_share_response_dto.dart
 lib/src/model/cn_medicine_detail_dto.dart
 lib/src/model/confirm_two_factor_dto.dart
 lib/src/model/cooldown_message_dto.dart

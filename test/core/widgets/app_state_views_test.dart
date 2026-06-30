@@ -86,8 +86,8 @@ void main() {
     testWidgets('AppStateSkeletonView renders shimmer blocks', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppStateSkeletonView(
-            blocks: const [
+          const AppStateSkeletonView(
+            blocks: [
               AppStateSkeletonBlock(height: 80),
               AppStateSkeletonBlock(height: 40),
             ],

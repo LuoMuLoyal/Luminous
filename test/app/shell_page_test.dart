@@ -29,8 +29,8 @@ void main() {
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final mockSnapshot = HealthContextSnapshot(
-      summary: const HealthSummary(
+    final mockSnapshot = const HealthContextSnapshot(
+      summary: HealthSummary(
         age: 27,
         onboardingCompleted: true,
         activeAllergyCount: 2,
@@ -38,7 +38,7 @@ void main() {
         currentMedicineCount: 3,
         missingCoreProfileFields: [],
       ),
-      profile: const HealthProfile(
+      profile: HealthProfile(
         birthDate: null,
         sexAtBirth: null,
         heightCm: null,
@@ -49,9 +49,9 @@ void main() {
         onboardingCompletedAt: null,
         extras: {},
       ),
-      allergies: const [],
-      conditions: const [],
-      currentMedicines: const [],
+      allergies: [],
+      conditions: [],
+      currentMedicines: [],
     );
 
     tester.view.devicePixelRatio = 1;
@@ -126,8 +126,8 @@ void main() {
   testWidgets('Desktop sidebar can be collapsed and expanded', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final mockSnapshot = HealthContextSnapshot(
-      summary: const HealthSummary(
+    final mockSnapshot = const HealthContextSnapshot(
+      summary: HealthSummary(
         age: 27,
         onboardingCompleted: true,
         activeAllergyCount: 2,
@@ -135,7 +135,7 @@ void main() {
         currentMedicineCount: 3,
         missingCoreProfileFields: [],
       ),
-      profile: const HealthProfile(
+      profile: HealthProfile(
         birthDate: null,
         sexAtBirth: null,
         heightCm: null,
@@ -146,9 +146,9 @@ void main() {
         onboardingCompletedAt: null,
         extras: {},
       ),
-      allergies: const [],
-      conditions: const [],
-      currentMedicines: const [],
+      allergies: [],
+      conditions: [],
+      currentMedicines: [],
     );
 
     tester.view.devicePixelRatio = 1;
@@ -295,8 +295,8 @@ void main() {
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final mockSnapshot = HealthContextSnapshot(
-      summary: const HealthSummary(
+    final mockSnapshot = const HealthContextSnapshot(
+      summary: HealthSummary(
         age: 27,
         onboardingCompleted: true,
         activeAllergyCount: 2,
@@ -304,7 +304,7 @@ void main() {
         currentMedicineCount: 3,
         missingCoreProfileFields: [],
       ),
-      profile: const HealthProfile(
+      profile: HealthProfile(
         birthDate: null,
         sexAtBirth: null,
         heightCm: null,
@@ -315,9 +315,9 @@ void main() {
         onboardingCompletedAt: null,
         extras: {},
       ),
-      allergies: const [],
-      conditions: const [],
-      currentMedicines: const [],
+      allergies: [],
+      conditions: [],
+      currentMedicines: [],
     );
 
     tester.view.devicePixelRatio = 1;
@@ -389,8 +389,8 @@ void main() {
 
   testWidgets('Mine page shows status badges', (tester) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final mockSnapshot = HealthContextSnapshot(
-      summary: const HealthSummary(
+    final mockSnapshot = const HealthContextSnapshot(
+      summary: HealthSummary(
         age: 27,
         onboardingCompleted: true,
         activeAllergyCount: 2,
@@ -398,7 +398,7 @@ void main() {
         currentMedicineCount: 3,
         missingCoreProfileFields: [],
       ),
-      profile: const HealthProfile(
+      profile: HealthProfile(
         birthDate: null,
         sexAtBirth: null,
         heightCm: null,
@@ -409,9 +409,9 @@ void main() {
         onboardingCompletedAt: null,
         extras: {},
       ),
-      allergies: const [],
-      conditions: const [],
-      currentMedicines: const [],
+      allergies: [],
+      conditions: [],
+      currentMedicines: [],
     );
 
     tester.view.devicePixelRatio = 1;
@@ -477,8 +477,8 @@ void main() {
 }
 
 Future<void> _pumpShell(WidgetTester tester) async {
-  final mockSnapshot = HealthContextSnapshot(
-    summary: const HealthSummary(
+  final mockSnapshot = const HealthContextSnapshot(
+    summary: HealthSummary(
       age: 27,
       onboardingCompleted: true,
       activeAllergyCount: 0,
@@ -486,7 +486,7 @@ Future<void> _pumpShell(WidgetTester tester) async {
       currentMedicineCount: 0,
       missingCoreProfileFields: [],
     ),
-    profile: const HealthProfile(
+    profile: HealthProfile(
       birthDate: null,
       sexAtBirth: null,
       heightCm: null,
@@ -497,9 +497,9 @@ Future<void> _pumpShell(WidgetTester tester) async {
       onboardingCompletedAt: null,
       extras: {},
     ),
-    allergies: const [],
-    conditions: const [],
-    currentMedicines: const [],
+    allergies: [],
+    conditions: [],
+    currentMedicines: [],
   );
 
   await tester.pumpWidget(
