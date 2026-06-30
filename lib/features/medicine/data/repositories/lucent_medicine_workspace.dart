@@ -88,9 +88,9 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       };
       return MedicinePlanItem(
         color: AppColorTokens.link,
-        nameKey: MedicineCopyKey.mockNameMetformin,
-        dosageKey: MedicineCopyKey.mockDoseMetformin,
-        scheduleKey: MedicineCopyKey.mockScheduleMorningEvening,
+        nameKey: MedicineCopyKey.genericName,
+        dosageKey: MedicineCopyKey.genericDosage,
+        scheduleKey: MedicineCopyKey.genericSchedule,
         stateKey: stateKey,
         stateColor: stateColor,
         slots: (remindersByMedicine[m.id] ?? const <MedicineReminderItem>[])

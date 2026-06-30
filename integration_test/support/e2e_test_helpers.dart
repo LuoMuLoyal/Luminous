@@ -824,12 +824,12 @@ class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         items: [
           MedicinePlanItem(
             color: AppColorTokens.cyanDeep,
-            nameKey: MedicineCopyKey.mockNameMetformin,
-            dosageKey: MedicineCopyKey.mockDoseMetformin,
-            scheduleKey: MedicineCopyKey.mockScheduleMorningEvening,
+            nameKey: MedicineCopyKey.genericName,
+            dosageKey: MedicineCopyKey.genericDosage,
+            scheduleKey: MedicineCopyKey.genericSchedule,
             slots: [
               MedicineDoseSlot(
-                timeKey: MedicineCopyKey.mockTime0800,
+                rawTime: '08:00',
                 statusKey: MedicineCopyKey.doseStatusPending,
                 status: MedicineDoseStatus.pending,
               ),

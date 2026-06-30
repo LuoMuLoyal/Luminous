@@ -1,3 +1,4 @@
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
@@ -91,120 +92,110 @@ class _MedicationPlanTile extends StatelessWidget {
     final stateText = item.rawState ?? medicineCopy(l10n, item.stateKey);
     final currentMedicineId = item.currentMedicineId;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => showPlannedAction(
-          context,
-          nameText,
-          l10n.medicineOpenPlanItemToast,
+    return AppInkWell(
+      onTap: () =>
+          showPlannedAction(context, nameText, l10n.medicineOpenPlanItemToast),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: surface.canvas,
+          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          border: Border.all(color: surface.hairline),
         ),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: surface.hairline),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          nameText,
+                          style: typography.bodyMdStrong.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacingTokens.xs),
+                        Text(
+                          '$dosageText · $scheduleText',
+                          style: typography.bodySm.copyWith(
+                            color: surface.body,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacingTokens.sm),
+                  AppStatusPill(
+                    label: stateText,
+                    color: item.stateColor,
+                    typography: typography,
+                    radius: AppRadiusTokens.pill,
+                    large: true,
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacingTokens.md),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: surface.canvasSoft,
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                  border: Border.all(color: surface.hairline),
+                ),
+                child: Column(
+                  children: [
+                    if (item.slots.isEmpty)
+                      _DosePlaceholderRow(typography: typography, l10n: l10n)
+                    else
+                      for (var index = 0; index < item.slots.length; index += 1)
+                        _DoseSlotRow(
+                          slot: item.slots[index],
+                          typography: typography,
+                          surface: surface,
+                          l10n: l10n,
+                          showDivider: index < item.slots.length - 1,
+                        ),
+                  ],
+                ),
+              ),
+              if (currentMedicineId != null && onMarkDose != null) ...[
+                const SizedBox(height: AppSpacingTokens.sm),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            nameText,
-                            style: typography.bodyMdStrong.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacingTokens.xs),
-                          Text(
-                            '$dosageText · $scheduleText',
-                            style: typography.bodySm.copyWith(
-                              color: surface.body,
-                            ),
-                          ),
-                        ],
+                      child: _DoseActionButton(
+                        label: l10n.medicineDoseActionTaken,
+                        icon: Icons.check_rounded,
+                        color: MedicineWorkspacePalette.green,
+                        typography: typography,
+                        onTap: () => onMarkDose!(
+                          currentMedicineId,
+                          MedicineDoseAction.taken,
+                        ),
                       ),
                     ),
                     const SizedBox(width: AppSpacingTokens.sm),
-                    AppStatusPill(
-                      label: stateText,
-                      color: item.stateColor,
-                      typography: typography,
-                      radius: AppRadiusTokens.pill,
-                      large: true,
+                    Expanded(
+                      child: _DoseActionButton(
+                        label: l10n.medicineDoseActionSkipped,
+                        icon: Icons.remove_done_rounded,
+                        color: MedicineWorkspacePalette.orange,
+                        typography: typography,
+                        onTap: () => onMarkDose!(
+                          currentMedicineId,
+                          MedicineDoseAction.skipped,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.md),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: surface.canvasSoft,
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-                    border: Border.all(color: surface.hairline),
-                  ),
-                  child: Column(
-                    children: [
-                      if (item.slots.isEmpty)
-                        _DosePlaceholderRow(typography: typography, l10n: l10n)
-                      else
-                        for (
-                          var index = 0;
-                          index < item.slots.length;
-                          index += 1
-                        )
-                          _DoseSlotRow(
-                            slot: item.slots[index],
-                            typography: typography,
-                            surface: surface,
-                            l10n: l10n,
-                            showDivider: index < item.slots.length - 1,
-                          ),
-                    ],
-                  ),
-                ),
-                if (currentMedicineId != null && onMarkDose != null) ...[
-                  const SizedBox(height: AppSpacingTokens.sm),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _DoseActionButton(
-                          label: l10n.medicineDoseActionTaken,
-                          icon: Icons.check_rounded,
-                          color: MedicineWorkspacePalette.green,
-                          typography: typography,
-                          onTap: () => onMarkDose!(
-                            currentMedicineId,
-                            MedicineDoseAction.taken,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacingTokens.sm),
-                      Expanded(
-                        child: _DoseActionButton(
-                          label: l10n.medicineDoseActionSkipped,
-                          icon: Icons.remove_done_rounded,
-                          color: MedicineWorkspacePalette.orange,
-                          typography: typography,
-                          onTap: () => onMarkDose!(
-                            currentMedicineId,
-                            MedicineDoseAction.skipped,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ],
-            ),
+            ],
           ),
         ),
       ),

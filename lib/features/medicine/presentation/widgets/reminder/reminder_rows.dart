@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -100,56 +101,53 @@ class ValueActionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
-          ),
-          child: Row(
-            children: [
-              Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
-              const SizedBox(width: AppSpacingTokens.md),
-              Expanded(
-                child: Text(
-                  title,
-                  style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+    return AppInkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.md,
+          vertical: AppSpacingTokens.sm,
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
+            const SizedBox(width: AppSpacingTokens.md),
+            Expanded(
+              child: Text(
+                title,
+                style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            Flexible(
+              child: Text(
+                value,
+                textAlign: TextAlign.right,
+                style: typography.bodySm.copyWith(
+                  color: surface.body,
+                  letterSpacing: 0,
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              Flexible(
-                child: Text(
-                  value,
-                  textAlign: TextAlign.right,
-                  style: typography.bodySm.copyWith(
-                    color: surface.body,
-                    letterSpacing: 0,
-                  ),
-                ),
+            ),
+            if (onClear != null) ...[
+              const SizedBox(width: AppSpacingTokens.xs),
+              IconButton(
+                tooltip: AppLocalizations.of(
+                  context,
+                )!.medicineReminderClearDateAction,
+                visualDensity: VisualDensity.compact,
+                onPressed: onClear,
+                icon: const Icon(Icons.close_rounded, size: 18),
               ),
-              if (onClear != null) ...[
-                const SizedBox(width: AppSpacingTokens.xs),
-                IconButton(
-                  tooltip: AppLocalizations.of(
-                    context,
-                  )!.medicineReminderClearDateAction,
-                  visualDensity: VisualDensity.compact,
-                  onPressed: onClear,
-                  icon: const Icon(Icons.close_rounded, size: 18),
-                ),
-              ] else ...[
-                const SizedBox(width: AppSpacingTokens.xs),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: surface.mute,
-                  size: AppSpacingTokens.lg,
-                ),
-              ],
+            ] else ...[
+              const SizedBox(width: AppSpacingTokens.xs),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: surface.mute,
+                size: AppSpacingTokens.lg,
+              ),
             ],
-          ),
+          ],
         ),
       ),
     );

@@ -74,77 +74,74 @@ class _SafetyAlertRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => context.push('/medicine/risk-check'),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
-          ),
-          child: Row(
-            children: [
-              AppIconBadge(
-                icon: alert.icon,
+    return AppInkWell(
+      onTap: () => context.push('/medicine/risk-check'),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.md,
+          vertical: AppSpacingTokens.sm,
+        ),
+        child: Row(
+          children: [
+            AppIconBadge(
+              icon: alert.icon,
+              color: alert.color,
+              backgroundColor: Color.alphaBlend(
+                alert.softColor.withValues(alpha: 0.18),
+                surface.canvas,
+              ),
+              shape: BoxShape.circle,
+              size: AppSpacingTokens.x3l,
+              iconSize: AppSpacingTokens.lg,
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppSkeletonText(
+                    text: medicineAlertTitle(l10n, alert),
+                    style: typography.bodyMdStrong.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    widthFactor: 0.74,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.xxs),
+                  AppSkeletonText(
+                    text: medicineAlertBody(l10n, alert),
+                    style: typography.bodySm.copyWith(
+                      color: surface.body,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    widthFactor: 0.92,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            AppSkeletonSlot(
+              skeleton: const AppInlineSkeletonBlock(
+                height: 22,
+                width: 54,
+                radius: AppRadiusTokens.pill,
+              ),
+              child: AppStatusPill(
+                label: medicineAlertAction(l10n, alert),
                 color: alert.color,
-                backgroundColor: Color.alphaBlend(
-                  alert.softColor.withValues(alpha: 0.18),
-                  surface.canvas,
-                ),
-                shape: BoxShape.circle,
-                size: AppSpacingTokens.x3l,
-                iconSize: AppSpacingTokens.lg,
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppSkeletonText(
-                      text: medicineAlertTitle(l10n, alert),
-                      style: typography.bodyMdStrong.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      widthFactor: 0.74,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.xxs),
-                    AppSkeletonText(
-                      text: medicineAlertBody(l10n, alert),
-                      style: typography.bodySm.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      widthFactor: 0.92,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              AppSkeletonSlot(
-                skeleton: const AppInlineSkeletonBlock(
-                  height: 22,
-                  width: 54,
-                  radius: AppRadiusTokens.pill,
-                ),
-                child: AppStatusPill(
-                  label: medicineAlertAction(l10n, alert),
-                  color: alert.color,
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: surface.mute,
-                size: AppSpacingTokens.lg,
-              ),
-            ],
-          ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: surface.mute,
+              size: AppSpacingTokens.lg,
+            ),
+          ],
         ),
       ),
     );

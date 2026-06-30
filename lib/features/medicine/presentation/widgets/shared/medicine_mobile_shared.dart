@@ -49,40 +49,37 @@ class _DoseActionButton extends StatelessWidget {
     );
     final foreground = filled ? AppColorTokens.onPrimary : color;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: filled ? color : color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-            border: Border.all(color: color.withValues(alpha: 0.32)),
+    return AppInkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: filled ? color : color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+          border: Border.all(color: color.withValues(alpha: 0.32)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.sm,
+            vertical: AppSpacingTokens.xs,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.sm,
-              vertical: AppSpacingTokens.xs,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, color: foreground, size: AppSpacingTokens.md),
-                const SizedBox(width: AppSpacingTokens.xxs),
-                Flexible(
-                  child: Text(
-                    label,
-                    style: typography.bodySmStrong.copyWith(
-                      color: foreground,
-                      letterSpacing: 0,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: foreground, size: AppSpacingTokens.md),
+              const SizedBox(width: AppSpacingTokens.xxs),
+              Flexible(
+                child: Text(
+                  label,
+                  style: typography.bodySmStrong.copyWith(
+                    color: foreground,
+                    letterSpacing: 0,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

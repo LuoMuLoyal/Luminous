@@ -1,3 +1,4 @@
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -70,52 +71,48 @@ class _QuickActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          // Navigate to scan based on action type
-          if (action.titleKey == MedicineCopyKey.quickActionCameraTitle ||
-              action.titleKey == MedicineCopyKey.quickActionPrescriptionTitle) {
-            unawaited(showMedicineBoxScanSheet(context));
-          } else if (action.titleKey ==
-              MedicineCopyKey.quickActionBarcodeTitle) {
-            context.push('/scan/barcode');
-          } else {
-            showPlannedAction(
-              context,
-              medicineCopy(l10n, action.titleKey),
-              quickActionResult(action.titleKey, l10n),
-            );
-          }
-        },
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
-          child: Column(
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: action.accent.withValues(alpha: 0.11),
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-                  border: Border.all(
-                    color: action.accent.withValues(alpha: 0.12),
-                  ),
+    return AppInkWell(
+      onTap: () {
+        // Navigate to scan based on action type
+        if (action.titleKey == MedicineCopyKey.quickActionCameraTitle ||
+            action.titleKey == MedicineCopyKey.quickActionPrescriptionTitle) {
+          unawaited(showMedicineBoxScanSheet(context));
+        } else if (action.titleKey == MedicineCopyKey.quickActionBarcodeTitle) {
+          context.push('/scan/barcode');
+        } else {
+          showPlannedAction(
+            context,
+            medicineCopy(l10n, action.titleKey),
+            quickActionResult(action.titleKey, l10n),
+          );
+        }
+      },
+      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+        child: Column(
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: action.accent.withValues(alpha: 0.11),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+                border: Border.all(
+                  color: action.accent.withValues(alpha: 0.12),
                 ),
-                child: Icon(action.icon, color: action.accent, size: 32),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
-              Text(
-                medicineCopy(l10n, action.titleKey),
-                style: typography.bodySmStrong,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
+              child: Icon(action.icon, color: action.accent, size: 32),
+            ),
+            const SizedBox(height: AppSpacingTokens.sm),
+            Text(
+              medicineCopy(l10n, action.titleKey),
+              style: typography.bodySmStrong,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
       ),
     );

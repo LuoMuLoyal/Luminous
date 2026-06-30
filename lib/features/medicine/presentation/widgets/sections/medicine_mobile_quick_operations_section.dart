@@ -95,59 +95,56 @@ class _QuickOperationRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: operation.onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
-          ),
-          child: Row(
-            children: [
-              AppIconBadge(
-                icon: operation.icon,
-                color: operation.color,
-                backgroundColor: operation.color.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-                size: AppSpacingTokens.x3l,
-                iconSize: AppSpacingTokens.lg,
-              ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      operation.title,
-                      style: typography.bodyMdStrong.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+    return AppInkWell(
+      onTap: operation.onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.md,
+          vertical: AppSpacingTokens.sm,
+        ),
+        child: Row(
+          children: [
+            AppIconBadge(
+              icon: operation.icon,
+              color: operation.color,
+              backgroundColor: operation.color.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+              size: AppSpacingTokens.x3l,
+              iconSize: AppSpacingTokens.lg,
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    operation.title,
+                    style: typography.bodyMdStrong.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
                     ),
-                    const SizedBox(height: AppSpacingTokens.xxs),
-                    Text(
-                      operation.subtitle,
-                      style: typography.bodySm.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.xxs),
+                  Text(
+                    operation.subtitle,
+                    style: typography.bodySm.copyWith(
+                      color: surface.body,
+                      letterSpacing: 0,
                     ),
-                  ],
-                ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: surface.mute,
-                size: AppSpacingTokens.lg,
-              ),
-            ],
-          ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: surface.mute,
+              size: AppSpacingTokens.lg,
+            ),
+          ],
         ),
       ),
     );
