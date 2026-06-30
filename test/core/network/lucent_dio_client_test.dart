@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/network/lucent_dio_client.dart';
+import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/core/network/lucent_session_store.dart';
 
 /// A session store that stores tokens in memory.
@@ -101,6 +102,36 @@ const Map<String, dynamic> _unauthorizedBody = <String, dynamic>{
   'message': 'unauthorized',
   'data': null,
 };
+
+/// Adapter that throws a DioException with a configurable type.
+class _FailingAdapter implements HttpClientAdapter {
+  _FailingAdapter({required this.exceptionType, this.responseData});
+
+  final DioExceptionType exceptionType;
+  final Object? responseData;
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<dynamic>? cancelFuture,
+  ) async {
+    throw DioException(
+      requestOptions: options,
+      type: exceptionType,
+      response: responseData != null
+          ? Response(
+              requestOptions: options,
+              statusCode: 500,
+              data: responseData,
+            )
+          : null,
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
 
 void main() {
   group('LucentDioClient request interceptor', () {
@@ -572,4 +603,140 @@ void main() {
       expect(client.assistantApi, isNotNull);
     });
   });
+
+  group(
+    'LucentDioClient error mapping (_mapToApiException / _fallbackMessage)',
+    () {
+      Future<void> expectFallbackMessage(
+        DioExceptionType type,
+        String expectedMessage,
+      ) async {
+        final store = _MemorySessionStore();
+        final adapter = _FailingAdapter(exceptionType: type);
+
+        final client = LucentDioClient(
+          baseUrl: 'http://localhost:3000',
+          sessionStore: store,
+          httpClientAdapter: adapter,
+        );
+
+        try {
+          await client.dio.get('/api/v1/test');
+          fail('Expected DioException');
+        } catch (error) {
+          expect(error, isA<DioException>());
+          final mapped = (error as DioException).error;
+          expect(mapped, isA<LucentApiException>());
+          expect((mapped as LucentApiException).message, expectedMessage);
+        }
+      }
+
+      test('maps connectionTimeout to Chinese message', () async {
+        await expectFallbackMessage(
+          DioExceptionType.connectionTimeout,
+          '连接超时，请稍后再试。',
+        );
+      });
+
+      test('maps sendTimeout to Chinese message', () async {
+        await expectFallbackMessage(
+          DioExceptionType.sendTimeout,
+          '请求发送超时，请稍后再试。',
+        );
+      });
+
+      test('maps receiveTimeout to Chinese message', () async {
+        await expectFallbackMessage(
+          DioExceptionType.receiveTimeout,
+          '响应接收超时，请稍后再试。',
+        );
+      });
+
+      test('maps badCertificate to Chinese message', () async {
+        await expectFallbackMessage(
+          DioExceptionType.badCertificate,
+          '服务器证书校验失败。',
+        );
+      });
+
+      test('maps connectionError to Chinese message', () async {
+        await expectFallbackMessage(
+          DioExceptionType.connectionError,
+          '网络请求失败，请检查当前连接。',
+        );
+      });
+
+      test('maps cancel to Chinese message', () async {
+        await expectFallbackMessage(DioExceptionType.cancel, '请求已取消。');
+      });
+
+      test('maps badResponse to Chinese message', () async {
+        await expectFallbackMessage(
+          DioExceptionType.badResponse,
+          '请求失败，请稍后再试。',
+        );
+      });
+
+      test('maps unknown to Chinese message', () async {
+        await expectFallbackMessage(DioExceptionType.unknown, '发生了未预期的网络错误。');
+      });
+
+      test(
+        'uses envelope message when response body has valid Lucent envelope',
+        () async {
+          final store = _MemorySessionStore();
+          final responseData = <String, dynamic>{
+            'code': 500001,
+            'message': 'custom-server-error',
+            'data': null,
+          };
+          final adapter = _FailingAdapter(
+            exceptionType: DioExceptionType.badResponse,
+            responseData: responseData,
+          );
+
+          final client = LucentDioClient(
+            baseUrl: 'http://localhost:3000',
+            sessionStore: store,
+            httpClientAdapter: adapter,
+          );
+
+          try {
+            await client.dio.get('/api/v1/test');
+            fail('Expected DioException');
+          } catch (error) {
+            expect(error, isA<DioException>());
+            final mapped = (error as DioException).error;
+            expect(mapped, isA<LucentApiException>());
+            final apiEx = mapped as LucentApiException;
+            expect(apiEx.message, 'custom-server-error');
+            expect(apiEx.code, 500001);
+          }
+        },
+      );
+
+      test('maps error without response data gracefully', () async {
+        final store = _MemorySessionStore();
+        final adapter = _FailingAdapter(
+          exceptionType: DioExceptionType.connectionError,
+        );
+
+        final client = LucentDioClient(
+          baseUrl: 'http://localhost:3000',
+          sessionStore: store,
+          httpClientAdapter: adapter,
+        );
+
+        try {
+          await client.dio.get('/api/v1/test');
+          fail('Expected DioException');
+        } catch (error) {
+          expect(error, isA<DioException>());
+          final mapped = (error as DioException).error;
+          expect(mapped, isA<LucentApiException>());
+          expect((mapped as LucentApiException).message, '网络请求失败，请检查当前连接。');
+        }
+      });
+    },
+  );
 }

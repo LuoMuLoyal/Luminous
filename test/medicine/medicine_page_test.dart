@@ -19,6 +19,7 @@ import 'package:luminous/features/medicine/domain/repositories/medicine_workspac
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_risk_check_page.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/medicine_skeleton_view.dart';
+import 'package:luminous/features/medicine/presentation/widgets/views/medicine_workspace_view.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
@@ -515,6 +516,50 @@ void main() {
       );
     },
   );
+
+  testWidgets('Medicine error state shows MedicineErrorView with retry', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          medicineWorkspaceProvider.overrideWith(
+            (ref) => Future<MedicineWorkspace>.error(Exception('test error')),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const MedicinePage(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(MedicineErrorView), findsOneWidget);
+    expect(find.text(l10n.medicineErrorTitle), findsOneWidget);
+    expect(find.text(l10n.medicineErrorDescription), findsOneWidget);
+    expect(find.text(l10n.todayRetryAction), findsOneWidget);
+  });
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {

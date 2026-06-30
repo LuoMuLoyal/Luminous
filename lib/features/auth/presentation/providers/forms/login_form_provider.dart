@@ -9,6 +9,7 @@ import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oa
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/shared/auth_form_mixin.dart';
 
 part 'login_form_provider.freezed.dart';
 
@@ -42,14 +43,11 @@ abstract class LoginFormState with _$LoginFormState {
   }) = _LoginFormState;
 }
 
-class LoginFormNotifier extends Notifier<LoginFormState> {
-  Timer? _cooldownTimer;
-
+class LoginFormNotifier extends Notifier<LoginFormState>
+    with AuthValidationMixin, CooldownTimerMixin<LoginFormState> {
   @override
   LoginFormState build() {
-    ref.onDispose(() {
-      _cooldownTimer?.cancel();
-    });
+    ref.onDispose(disposeCooldown);
     return const LoginFormState();
   }
 
@@ -87,21 +85,23 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
     required String passwordRequired,
     required String codeRequired,
   }) {
-    final email = state.email.trim();
-    final emailError = email.isEmpty
-        ? emailRequired
-        : _isValidEmail(email)
-        ? null
-        : emailInvalid;
+    final emailError = validateEmail(
+      state.email,
+      emailRequired: emailRequired,
+      emailInvalid: emailInvalid,
+    );
 
     final String? passwordError;
     final String? codeError;
     if (state.mode == AuthLoginMode.password) {
-      passwordError = state.password.trim().isEmpty ? passwordRequired : null;
+      passwordError = validatePassword(
+        state.password,
+        passwordRequired: passwordRequired,
+      );
       codeError = null;
     } else {
       passwordError = null;
-      codeError = state.code.trim().isEmpty ? codeRequired : null;
+      codeError = validateCode(state.code, codeRequired: codeRequired);
     }
 
     state = state.copyWith(
@@ -119,10 +119,6 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
     final emailError = email.isEmpty ? emailRequired : null;
     state = state.copyWith(emailError: emailError, errorMessage: null);
     return emailError == null;
-  }
-
-  static bool _isValidEmail(String value) {
-    return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value);
   }
 
   Future<AuthSession?> submit() async {
@@ -161,7 +157,11 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
           );
       final cooldown = result.cooldown.toInt();
       state = state.copyWith(isSendingCode: false, cooldownSeconds: cooldown);
-      _startCooldownTimer(cooldown);
+      startCooldown(
+        cooldown,
+        getCooldownSeconds: () => state.cooldownSeconds,
+        setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
+      );
       return true;
     } catch (error) {
       final apiError = LucentErrorMapper.fromObject(error);
@@ -171,20 +171,6 @@ class LoginFormNotifier extends Notifier<LoginFormState> {
       );
       return false;
     }
-  }
-
-  void _startCooldownTimer(int seconds) {
-    _cooldownTimer?.cancel();
-    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final current = state.cooldownSeconds;
-      if (current == null || current <= 1) {
-        timer.cancel();
-        _cooldownTimer = null;
-        state = state.copyWith(cooldownSeconds: null);
-      } else {
-        state = state.copyWith(cooldownSeconds: current - 1);
-      }
-    });
   }
 
   Future<OAuthAuthorizeDataDto?> createWechatWebAuthorizeUrl({

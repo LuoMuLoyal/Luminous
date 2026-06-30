@@ -1781,6 +1781,49 @@ void main() {
     expect(find.byKey(const Key('record-new-entry-panel')), findsOneWidget);
     expect(find.byKey(const Key('record-timeline')), findsOneWidget);
   });
+  testWidgets('Record error state shows AppStateErrorView with retry', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          recordDashboardProvider.overrideWith(
+            (ref) => Future<RecordDashboard>.error(Exception('test error')),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const RecordPage(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AppStateErrorView), findsOneWidget);
+    expect(find.text(l10n.recordErrorTitle), findsOneWidget);
+    expect(find.text(l10n.recordErrorDescription), findsOneWidget);
+    expect(find.text(l10n.todayRetryAction), findsOneWidget);
+  });
 }
 
 Future<void> _pumpRecordRouter(
@@ -2193,33 +2236,6 @@ class _FakeRecordRepository implements RecordRepository {
   }
 }
 
-HealthContextSnapshot _healthSnapshot({String? sexAtBirth = 'male'}) {
-  return HealthContextSnapshot(
-    summary: const HealthSummary(
-      age: 27,
-      onboardingCompleted: true,
-      activeAllergyCount: 0,
-      conditionCount: 0,
-      currentMedicineCount: 0,
-      missingCoreProfileFields: <String>[],
-    ),
-    profile: HealthProfile(
-      birthDate: '1999-01-15',
-      sexAtBirth: sexAtBirth,
-      heightCm: 165,
-      bloodType: null,
-      locale: null,
-      timezone: null,
-      unitSystem: null,
-      onboardingCompletedAt: '2026-01-01T00:00:00Z',
-      extras: const <String, dynamic>{},
-    ),
-    allergies: const <AllergyItem>[],
-    conditions: const <ConditionItem>[],
-    currentMedicines: const <CurrentMedicineItem>[],
-  );
-}
-
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   @override
   AuthSessionState build() {
@@ -2244,4 +2260,31 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   AuthSessionState build() {
     return const AuthSessionState(isAuthenticated: false, isLoading: false);
   }
+}
+
+HealthContextSnapshot _healthSnapshot({String? sexAtBirth = 'male'}) {
+  return HealthContextSnapshot(
+    summary: const HealthSummary(
+      age: 27,
+      onboardingCompleted: true,
+      activeAllergyCount: 2,
+      conditionCount: 1,
+      currentMedicineCount: 3,
+      missingCoreProfileFields: ['bloodType'],
+    ),
+    profile: HealthProfile(
+      birthDate: '1999-01-15',
+      sexAtBirth: sexAtBirth,
+      heightCm: null,
+      bloodType: null,
+      locale: null,
+      timezone: null,
+      unitSystem: null,
+      onboardingCompletedAt: '2026-01-01T00:00:00Z',
+      extras: {},
+    ),
+    allergies: const <AllergyItem>[],
+    conditions: const <ConditionItem>[],
+    currentMedicines: const <CurrentMedicineItem>[],
+  );
 }

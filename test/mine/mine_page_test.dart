@@ -435,6 +435,49 @@ void main() {
       expect(tester.widget<InkWell>(campusRow).onTap, isNull);
     },
   );
+  testWidgets('Mine error state shows AppStateErrorView with retry', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          mineDashboardProvider.overrideWith(
+            (ref) => Future<MineDashboard>.error(Exception('test error')),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('zh'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const MinePage(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AppStateErrorView), findsOneWidget);
+    expect(find.text(l10n.mineErrorTitle), findsOneWidget);
+    expect(find.text(l10n.mineErrorDescription), findsOneWidget);
+    expect(find.text(l10n.todayRetryAction), findsOneWidget);
+  });
 }
 
 Future<void> _pumpMinePage(WidgetTester tester) async {
