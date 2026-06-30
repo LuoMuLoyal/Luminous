@@ -25,12 +25,12 @@ void main() {
 
     test('create sends attachment metadata without leaking DTOs', () async {
       await dataSource.create(
-        DailyRecordCreateInput(
+        const DailyRecordCreateInput(
           kind: DailyRecordKind.meal,
           occurredAt: '2026-06-06',
           occurredTime: '09:45',
           title: 'Breakfast',
-          attachments: const <DailyRecordAttachmentInput>[
+          attachments: <DailyRecordAttachmentInput>[
             DailyRecordAttachmentInput(
               objectKey: 'daily-records/u1/photo.jpg',
               bucket: 'bucket-1',

@@ -70,7 +70,7 @@ class TodayAiSummarySection extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                TodayGlyphTile(
+                const TodayGlyphTile(
                   icon: Icons.auto_awesome_rounded,
                   color: AppColorTokens.cyanDeep,
                   size: AppSpacingTokens.x2l,

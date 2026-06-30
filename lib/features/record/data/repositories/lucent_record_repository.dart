@@ -199,7 +199,12 @@ class LucentRecordRepository implements RecordRepository {
     final days = <RecordCalendarDay>[];
     for (var i = 0; i < startOffset; i++) {
       days.add(
-        RecordCalendarDay(day: 0, inMonth: false, selected: false, markers: []),
+        const RecordCalendarDay(
+          day: 0,
+          inMonth: false,
+          selected: false,
+          markers: [],
+        ),
       );
     }
     for (var d = 1; d <= last.day; d++) {
@@ -232,7 +237,7 @@ class LucentRecordRepository implements RecordRepository {
   }
 
   static final _staticQuickActions = <RecordQuickAction>[
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.symptom,
       icon: Icons.medical_services_outlined,
       titleKey: RecordCopyKey.typeSymptom,
@@ -240,7 +245,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.warning,
       softColor: AppColorTokens.warningSoft,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.medication,
       icon: Icons.medication_rounded,
       titleKey: RecordCopyKey.typeMedication,
@@ -249,7 +254,7 @@ class LucentRecordRepository implements RecordRepository {
       softColor: AppColorTokens.cyanSoft,
     ),
     // Lightweight mood self-check-in quick action.
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.mood,
       icon: Icons.sentiment_satisfied_rounded,
       titleKey: RecordCopyKey.typeMood,
@@ -257,7 +262,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.violet,
       softColor: AppColorTokens.violetSoft,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.meal,
       icon: Icons.restaurant_rounded,
       titleKey: RecordCopyKey.typeMeal,
@@ -265,7 +270,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.cyanDeep,
       softColor: AppColorTokens.cyanSoft,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.water,
       icon: Icons.water_drop_rounded,
       titleKey: RecordCopyKey.typeWater,
@@ -273,7 +278,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.link,
       softColor: AppColorTokens.linkSoft,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.vitals,
       icon: Icons.favorite_rounded,
       titleKey: RecordCopyKey.typeVitals,
@@ -281,7 +286,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.error,
       softColor: AppColorTokens.errorSoft,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: Icons.dark_mode_rounded,
       titleKey: RecordCopyKey.typeSleep,
@@ -289,7 +294,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColorTokens.violet,
       softColor: AppColorTokens.violetSoft,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.note,
       icon: Icons.notes_rounded,
       titleKey: RecordCopyKey.typeNote,

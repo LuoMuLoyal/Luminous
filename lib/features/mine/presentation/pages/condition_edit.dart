@@ -73,7 +73,7 @@ class ConditionEditPage extends HookConsumerWidget {
         ref
             .read(conditionFormProvider.notifier)
             .save(
-              create: HealthConditionWriteInput(label: ''),
+              create: const HealthConditionWriteInput(label: ''),
               id: conditionId,
               update: HealthConditionUpdateInput(
                 label: labelController.text,

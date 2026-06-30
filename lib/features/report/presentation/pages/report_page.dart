@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
+import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -27,7 +29,7 @@ import 'package:luminous/features/settings/presentation/providers/data_export_co
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-DataExportRequestInput _exportInputForKind(ReportExportKind kind) {
+DataExportRequestInput? _exportInputForKind(ReportExportKind kind) {
   return reportExportInputForKind(kind);
 }
 
@@ -71,11 +73,19 @@ class ReportPage extends ConsumerWidget {
       return;
     }
 
+    // Clinic share: generate a Redis share link and open native share sheet
+    if (kind == ReportExportKind.clinicShare) {
+      await _handleClinicShare(context, ref, l10n);
+      return;
+    }
+
     final controller = ref.read(dataExportControllerProvider.notifier);
     final launcher = ref.read(externalUrlLauncherProvider);
 
     try {
-      final request = await controller.requestExport(_exportInputForKind(kind));
+      final request = await controller.requestExport(
+        _exportInputForKind(kind)!,
+      );
       if (!context.mounted) {
         return;
       }
@@ -89,6 +99,32 @@ class ReportPage extends ConsumerWidget {
       if (!context.mounted) {
         return;
       }
+      final message = LucentErrorMapper.fromObject(error).message;
+      await AppToast.show(context, '${l10n.reportExportFailedToast}: $message');
+    }
+  }
+
+  Future<void> _handleClinicShare(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
+    try {
+      final reportsApi = ref.read(lucentReportsApiProvider);
+      final response = await reportsApi.reportsControllerShareClinicSummaryV1();
+      if (!context.mounted) return;
+
+      final shareUrl = response.data?.shareUrl;
+      if (shareUrl == null || shareUrl.isEmpty) {
+        await AppToast.show(context, l10n.reportExportFailedToast);
+        return;
+      }
+
+      await SharePlus.instance.share(
+        ShareParams(text: shareUrl, subject: l10n.reportExportClinicShareTitle),
+      );
+    } catch (error) {
+      if (!context.mounted) return;
       final message = LucentErrorMapper.fromObject(error).message;
       await AppToast.show(context, '${l10n.reportExportFailedToast}: $message');
     }

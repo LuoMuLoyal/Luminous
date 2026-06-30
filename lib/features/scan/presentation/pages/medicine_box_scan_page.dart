@@ -156,7 +156,7 @@ class _MethodSelector extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          const Icon(
             Icons.photo_camera_outlined,
             size: 48,
             color: AppColorTokens.cyanDeep,

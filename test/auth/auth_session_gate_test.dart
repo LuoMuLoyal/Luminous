@@ -283,8 +283,8 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   }
 }
 
-final _snapshot = HealthContextSnapshot(
-  summary: const HealthSummary(
+final _snapshot = const HealthContextSnapshot(
+  summary: HealthSummary(
     age: 27,
     onboardingCompleted: true,
     activeAllergyCount: 0,
@@ -292,7 +292,7 @@ final _snapshot = HealthContextSnapshot(
     currentMedicineCount: 0,
     missingCoreProfileFields: <String>[],
   ),
-  profile: const HealthProfile(
+  profile: HealthProfile(
     birthDate: '1999-01-15',
     sexAtBirth: 'female',
     heightCm: 165,
@@ -303,7 +303,7 @@ final _snapshot = HealthContextSnapshot(
     onboardingCompletedAt: '2026-01-01T00:00:00Z',
     extras: <String, dynamic>{},
   ),
-  allergies: const <AllergyItem>[],
-  conditions: const <ConditionItem>[],
-  currentMedicines: const <CurrentMedicineItem>[],
+  allergies: <AllergyItem>[],
+  conditions: <ConditionItem>[],
+  currentMedicines: <CurrentMedicineItem>[],
 );

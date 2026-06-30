@@ -50,7 +50,7 @@ class RecordAiInputBar extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.auto_awesome_rounded,
                   color: AppColorTokens.gradientPreviewStart,
                   size: AppSpacingTokens.xl,
@@ -389,7 +389,7 @@ class RecordGuideRow extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.lightbulb_outline_rounded,
                 color: AppColorTokens.warning,
                 size: AppSpacingTokens.lg,
@@ -410,7 +410,7 @@ class RecordGuideRow extends StatelessWidget {
                   color: AppColorTokens.link,
                 ),
               ),
-              Icon(
+              const Icon(
                 Icons.chevron_right_rounded,
                 color: AppColorTokens.link,
                 size: AppSpacingTokens.lg,

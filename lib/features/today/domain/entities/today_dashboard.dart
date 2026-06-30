@@ -44,30 +44,28 @@ abstract class TodayDashboard with _$TodayDashboard {
   }) = _TodayDashboard;
 
   /// A minimal dashboard for signed-out users with no real or mock data.
-  static TodayDashboard signedOut() => TodayDashboard(
-    user: const TodayUserSnapshot(
+  static TodayDashboard signedOut() => const TodayDashboard(
+    user: TodayUserSnapshot(
       moment: TodayDayMoment.morning,
       hasUnreadNotifications: false,
       updatedAtLabel: '--',
     ),
-    water: const TodayWaterSummary(completedCount: 0, targetCount: 8),
-    medication: const TodayMedicationSummary(
+    water: TodayWaterSummary(completedCount: 0, targetCount: 8),
+    medication: TodayMedicationSummary(
       medicineCount: 0,
       pendingCount: 0,
       nextDoseTimeLabel: '--',
       nextMedicine: TodayMedicationKind.atorvastatin,
     ),
-    vitals: const <TodayVitalSummary>[],
-    mealSuggestion: const TodayMealSuggestion(
+    vitals: <TodayVitalSummary>[],
+    mealSuggestion: TodayMealSuggestion(
       type: TodayMealSuggestionType.highProteinBalancedLunch,
     ),
-    environment: const TodayEnvironmentSummary(
-      signals: <TodayEnvironmentSignal>[],
-    ),
-    lumiSuggestion: const TodayLumiSuggestion(
+    environment: TodayEnvironmentSummary(signals: <TodayEnvironmentSignal>[]),
+    lumiSuggestion: TodayLumiSuggestion(
       type: TodayLumiSuggestionType.pollenProtection,
     ),
-    priorityItems: const <TodayPriorityItem>[],
+    priorityItems: <TodayPriorityItem>[],
   );
 }
 

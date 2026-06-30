@@ -6,9 +6,9 @@ import 'package:luminous/features/assistant/presentation/utils/assistant_ui_form
 void main() {
   group('AssistantModels', () {
     test('AssistantToolCapability creates with required fields', () {
-      final capability = AssistantToolCapability(
+      final capability = const AssistantToolCapability(
         id: 'get_today_records',
-        requiredContextSources: const <String>['daily_records'],
+        requiredContextSources: <String>['daily_records'],
         permittedByUser: true,
         enabled: true,
         implemented: true,

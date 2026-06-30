@@ -41,7 +41,7 @@ class FullstackE2eConfig {
       defaultValue: 'E2E Record Lane',
     );
 
-    final config = FullstackE2eConfig(
+    final config = const FullstackE2eConfig(
       baseUrl: baseUrl,
       email: email,
       password: password,

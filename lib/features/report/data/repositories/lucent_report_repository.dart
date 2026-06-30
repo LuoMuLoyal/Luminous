@@ -189,4 +189,9 @@ const _exportActions = <ReportExportAction>[
     icon: Icons.print_rounded,
     color: AppColorTokens.warning,
   ),
+  ReportExportAction(
+    kind: ReportExportKind.clinicShare,
+    icon: Icons.share_rounded,
+    color: AppColorTokens.success,
+  ),
 ];

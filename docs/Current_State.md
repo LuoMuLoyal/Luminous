@@ -178,7 +178,19 @@ Active current-medicine drugbox, reminder-derived next dose, Lucent schedule-onl
 
 ### Report
 
-Lucent-backed report dashboard with real medication/water/sleep aggregates and user-selectable `last_7_days`/`last_30_days`/`custom` range via a platform date-range picker, contract-driven findings/patterns text, manual AI summary generation with real incremental summary streaming through `/api/v1/user/reports/summary/generate/stream`, local signed-out/disabled/loading/success/error AI-summary states, in-card `近 7 天 / 近 30 天` AI summary switching with per-range cached state, a mobile-safe wrapped header layout for the AI summary controls, mobile pull-to-refresh plus explicit sync action, a tightened mobile report layout with a balanced 2x2 metric grid, a real derived fourth metric card for overall report status based on the report score, and a lighter signed-out inline notice instead of a large warning block. Three real PDF export actions are wired: `给校医院` uses `hospital + pdf + last_7_days`, `月度报告` uses `monthly + pdf + last_30_days`, and `打印预览` uses `print + pdf + last_7_days`. Report export cards now show active in-flight progress and bounded status wording for requesting, processing, completed-but-link-missing, failed, and unavailable states. Mine/Settings still uses the same real data-export request flow and request status. Privacy settings are owned by Mine/Settings.
+Lucent-backed report dashboard with real medication/water/sleep aggregates and user-selectable `last_7_days`/`last_30_days`/`custom` range via a platform date-range picker, contract-driven findings/patterns text, manual AI summary generation with real incremental summary streaming through `/api/v1/user/reports/summary/generate/stream`, local signed-out/disabled/loading/success/error AI-summary states, in-card `近 7 天 / 近 30 天` AI summary switching with per-range cached state, a mobile-safe wrapped header layout for the AI summary controls, mobile pull-to-refresh plus explicit sync action, a tightened mobile report layout with a balanced 2x2 metric grid, a real derived fourth metric card for overall report status based on the report score, and a lighter signed-out inline notice instead of a large warning block. Four export actions are wired: `给校医院` (hospital PDF), `月度报告` (monthly PDF), `打印预览` (print PDF), and `分享给医生` (clinic share link via Redis 24h TTL + native OS share sheet). Report export cards show active in-flight progress and bounded status wording. Mine/Settings still uses the same real data-export request flow. Privacy settings are owned by Mine/Settings.
+
+### Clinic Summary (New — 2026-06-30)
+
+Backend-side privacy-preserving clinic summary for doctor sharing:
+
+- `POST /reports/clinic-summary/preview` — de-identified summary with masked name (张**), age (not birthDate), diagnosis year only
+- `POST /reports/clinic-summary/share` — Redis-backed share link with 24h TTL
+- `GET /reports/clinic-summary/shared/:token` — public access (no auth), returns 410 when expired
+- `GET /reports/clinic-summary/preview/pdf` — PDF download (auth required), A4 formatted with profile/allergies/conditions/medicines/disclaimer sections, CJK font rendering
+- `GET /reports/clinic-summary/shared/:token/pdf` — public PDF download of shared summary
+- `@Public()` decorator + updated `JwtAuthGuard` with `Reflector` support for mixed auth/public routes
+- Frontend share button in Report export section: `Share.share(url)` via `share_plus`
 
 ### Mine / Settings
 
@@ -187,8 +199,7 @@ Account, basic health archive, allergies, current medicines, contract-backed sup
 ## Mock Or Deferred
 
 - Assistant Phase 1 mobile surface now exists as a standalone `/assistant` workspace reachable from the Today top bar and Settings: authenticated users can view real backend capabilities, choose whether the assistant is enabled, choose whether persistent memory is enabled across new conversations, choose whether health profile / recent records / sleep data / current medicines may be used as assistant context, restore the latest persisted conversation, open a recent conversation list, switch to one persisted conversation, start a new conversation from the top-right add action, and send real SSE streaming assistant requests with Markdown rendering. The current Lucent backend tool inventory has now moved past the original 4-tool foundation and includes explicit read tools for today/date/range records, exact-date Today summary lookup, exact-range Report summary lookup, recent Today/Report historical AI summaries, user profile/settings, current medicines, and sleep-by-range reads, but it is still a controlled server-side pre-generation tool layer rather than free-form function calling.
-- Additional report export kinds beyond the current `hospital` / `monthly` / `print` PDF set.
-- Export lifecycle polish is still intentionally lightweight: there is no in-page request history list, no explicit retry queue, and no share-link workflow beyond opening the latest signed download URL.
+- Export lifecycle polish is still intentionally lightweight: there is no in-page request history list, no explicit retry queue, and the clinic share link has no in-app link management beyond regenerating a new one.
 - Worker-populated reminder delivery history; the UI can read audit rows, but no local/push/SMS worker writes them yet.
 - Lightweight mood record wiring.
 - Environment contextual wiring for Today or Mine.

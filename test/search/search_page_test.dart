@@ -231,8 +231,8 @@ void main() {
         authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         healthContextRepositoryProvider.overrideWithValue(fakeRepo),
         medicineRiskCheckRepositoryProvider.overrideWithValue(
-          _FakeMedicineRiskCheckRepository(
-            const MedicineRiskCheckResult(
+          const _FakeMedicineRiskCheckRepository(
+            MedicineRiskCheckResult(
               currentMedicineCount: 1,
               checkedMedicineCount: 1,
               findings: [
@@ -276,8 +276,8 @@ void main() {
         authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         healthContextRepositoryProvider.overrideWithValue(fakeRepo),
         medicineRiskCheckRepositoryProvider.overrideWithValue(
-          _FakeMedicineRiskCheckRepository(
-            const MedicineRiskCheckResult(
+          const _FakeMedicineRiskCheckRepository(
+            MedicineRiskCheckResult(
               currentMedicineCount: 1,
               checkedMedicineCount: 1,
               findings: [],

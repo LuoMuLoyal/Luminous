@@ -87,9 +87,9 @@ class _AccountHeroPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return const AppInlineSkeletonSection(
       children: [
-        const Row(
+        Row(
           children: [
             AppInlineSkeletonCircle(size: 64),
             SizedBox(width: AppSpacingTokens.lg),
@@ -115,8 +115,8 @@ class _AccountHeroPlaceholder extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.md),
-        const AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
+        SizedBox(height: AppSpacingTokens.md),
+        AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
       ],
     );
   }

@@ -126,10 +126,10 @@ Future<List<String>> captureCommandLines(
   final stderrBuffer = StringBuffer();
   await Future.wait([
     process.stdout
-        .transform(SystemEncoding().decoder)
+        .transform(const SystemEncoding().decoder)
         .forEach(stdoutBuffer.write),
     process.stderr
-        .transform(SystemEncoding().decoder)
+        .transform(const SystemEncoding().decoder)
         .forEach(stderrBuffer.write),
   ]);
 

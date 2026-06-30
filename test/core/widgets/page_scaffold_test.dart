@@ -74,10 +74,10 @@ void main() {
     testWidgets('renders leading widget', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          PageScaffoldShell(
+          const PageScaffoldShell(
             title: 'Detail',
-            leading: const Icon(Icons.arrow_back),
-            children: const <Widget>[Text('Content')],
+            leading: Icon(Icons.arrow_back),
+            children: <Widget>[Text('Content')],
           ),
         ),
       );
@@ -120,10 +120,10 @@ void main() {
           theme: ThemeData.light().copyWith(
             extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
           ),
-          home: PageScaffoldShell(
+          home: const PageScaffoldShell(
             title: 'With Drawer',
-            drawer: const Drawer(child: Text('Drawer content')),
-            children: const <Widget>[Text('Page')],
+            drawer: Drawer(child: Text('Drawer content')),
+            children: <Widget>[Text('Page')],
           ),
         ),
       );

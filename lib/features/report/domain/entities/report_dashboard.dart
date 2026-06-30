@@ -42,21 +42,21 @@ abstract class ReportDashboard with _$ReportDashboard {
   }) = _ReportDashboard;
 
   /// A minimal dashboard for signed-out users with no real or mock data.
-  static ReportDashboard signedOut() => ReportDashboard(
+  static ReportDashboard signedOut() => const ReportDashboard(
     range: ReportDashboardRange.last7Days,
     startDate: '----.--.--',
     endDate: '----.--.--',
-    score: const ReportHealthScore(
+    score: ReportHealthScore(
       value: 0,
       maxValue: 100,
       status: ReportStatus.insufficientData,
       summary: '',
     ),
-    metrics: const <ReportMetric>[],
-    trends: const <ReportTrendSeries>[],
-    findings: const <ReportFinding>[],
-    exportActions: const <ReportExportAction>[],
-    patterns: const <ReportPatternCard>[],
+    metrics: <ReportMetric>[],
+    trends: <ReportTrendSeries>[],
+    findings: <ReportFinding>[],
+    exportActions: <ReportExportAction>[],
+    patterns: <ReportPatternCard>[],
     aiSummaryEnabled: false,
   );
 }
@@ -138,4 +138,4 @@ enum ReportDataKind { medication, water, sleep, general }
 
 enum ReportInsightKind { medication, hydration, sleep, general }
 
-enum ReportExportKind { hospital, monthly, print }
+enum ReportExportKind { hospital, monthly, print, clinicShare }

@@ -253,19 +253,19 @@ List<_QuickChoice> _choicesFor(DailyRecordKind kind, AppLocalizations l10n) {
       ),
     ],
     DailyRecordKind.sleep => [
-      _QuickChoice(
+      const _QuickChoice(
         label: '6h',
         payload: <String, dynamic>{'durationMinutes': 360},
       ),
-      _QuickChoice(
+      const _QuickChoice(
         label: '7h',
         payload: <String, dynamic>{'durationMinutes': 420},
       ),
-      _QuickChoice(
+      const _QuickChoice(
         label: '8h',
         payload: <String, dynamic>{'durationMinutes': 480},
       ),
-      _QuickChoice(
+      const _QuickChoice(
         label: '9h',
         payload: <String, dynamic>{'durationMinutes': 540},
       ),

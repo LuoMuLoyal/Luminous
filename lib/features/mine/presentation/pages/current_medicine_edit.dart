@@ -83,7 +83,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
         ref
             .read(currentMedicineFormProvider.notifier)
             .save(
-              create: CurrentMedicineWriteInput(
+              create: const CurrentMedicineWriteInput(
                 source: HealthMedicineSource.manual,
                 displayName: '',
               ),

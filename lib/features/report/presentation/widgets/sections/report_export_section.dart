@@ -96,9 +96,9 @@ class _ExportCard extends StatelessWidget {
     final title = reportExportTitle(l10n, action.kind);
     final subtitle = reportExportCardSubtitle(l10n, action.kind, latestRequest);
     final enabled = onTap != null;
-    final showProgress = requestInFlight.matches(
-      reportExportInputForKind(action.kind),
-    );
+    final exportInput = reportExportInputForKind(action.kind);
+    final showProgress =
+        exportInput != null && requestInFlight.matches(exportInput);
 
     return Material(
       color: Colors.transparent,

@@ -184,7 +184,7 @@ class _TimelinePlaceholder extends StatelessWidget {
             children: [
               const AppInlineSkeletonBlock(height: 14, width: 40),
               const SizedBox(width: AppSpacingTokens.md),
-              AppInlineSkeletonCircle(size: AppSpacingTokens.sm),
+              const AppInlineSkeletonCircle(size: AppSpacingTokens.sm),
               const SizedBox(width: AppSpacingTokens.md),
               Expanded(
                 child: Column(

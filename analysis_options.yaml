@@ -7,6 +7,9 @@ linter:
     - prefer_single_quotes
     - avoid_dynamic_calls
     - require_trailing_commas
+    - avoid_print
+    - prefer_const_constructors
+    - type_annotate_public_apis
 
 analyzer:
   exclude:

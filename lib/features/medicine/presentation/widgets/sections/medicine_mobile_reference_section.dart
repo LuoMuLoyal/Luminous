@@ -183,7 +183,7 @@ class _SafetyTipsSection extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacingTokens.md),
-                Expanded(
+                const Expanded(
                   child: AppInlineSkeletonBlock(height: AppSpacingTokens.lg),
                 ),
               ],
