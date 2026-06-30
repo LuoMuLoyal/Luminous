@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -213,7 +214,7 @@ class _TimePickerField extends StatelessWidget {
   }
 }
 
-class _NumberField extends StatefulWidget {
+class _NumberField extends HookWidget {
   const _NumberField({
     super.key,
     required this.label,
@@ -226,43 +227,23 @@ class _NumberField extends StatefulWidget {
   final ValueChanged<int?> onChanged;
 
   @override
-  State<_NumberField> createState() => _NumberFieldState();
-}
-
-class _NumberFieldState extends State<_NumberField> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.value?.toString() ?? '');
-  }
-
-  @override
-  void didUpdateWidget(_NumberField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.value != widget.value) {
-      final newText = widget.value?.toString() ?? '';
-      if (_controller.text != newText) {
-        _controller.text = newText;
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = useTextEditingController(text: value?.toString() ?? '');
+
+    useEffect(() {
+      final newText = value?.toString() ?? '';
+      if (controller.text != newText) {
+        controller.text = newText;
+      }
+      return null;
+    }, [value]);
+
     return TextField(
-      decoration: InputDecoration(labelText: widget.label),
+      decoration: InputDecoration(labelText: label),
       keyboardType: TextInputType.number,
-      controller: _controller,
+      controller: controller,
       onChanged: (text) {
-        widget.onChanged(int.tryParse(text.trim()));
+        onChanged(int.tryParse(text.trim()));
       },
     );
   }
