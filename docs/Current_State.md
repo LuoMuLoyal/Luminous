@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-06-29
+Last updated: 2026-06-30
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -108,7 +108,11 @@ This file records current implementation facts only. Product direction lives in 
 - Shared support-resource reads now live under a dedicated `features/support/` frontend boundary instead of staying nested under `settings`, because the same contract-backed resource set is consumed by Mine, Medicine, and Settings.
 - Protected providers do not call Lucent while auth is restoring or confirmed signed out.
 - Protected entry taps show a modal login prompt on the current page; direct/deep-link protected pages keep destination guards as fallback.
+- Mock data is gated behind `kDebugMode`: debug builds show rich placeholder data for signed-out preview, release builds show clean empty states via each domain model's `signedOut()` factory. All 5 dashboard/workspace providers (`today`, `record`, `medicine`, `report`, `mine`) follow this pattern.
 - Skeleton loading is section-scoped: stable chrome and local/mock/static sections render immediately, backend-backed fields shimmer locally.
+- Frontend test count: 910 passing tests (unit + widget). Page-level error states are covered for all 5 tabs. Dio interceptor error mapping covers all 8 `DioExceptionType` fallback messages plus envelope extraction.
+- InkWell click feedback: all clickable areas have proper `Material` ancestors; `onTap: null` disabled states show `Opacity(0.5)` via `app_text_action.dart`, `MedicineHeaderActionChip`, and voice entry button. Dead `InkWell(onTap: null)` wrappers removed from record guide row and report finding/pattern cards.
+- Locked record quick actions (`action.locked`) are now properly non-interactive (`isLocked` guard added to onTap).
 - Report now fetches the Lucent report dashboard on page entry for signed-in users, keeps section-level shimmer loading, shows explicit signed-out gating, and now wires all three export cards to Lucent data-export request flows (`hospital + pdf + last_7_days`, `monthly + pdf + last_30_days`, `print + pdf + last_7_days`).
 
 ## Active Mobile UI
@@ -128,6 +132,8 @@ This file records current implementation facts only. Product direction lives in 
 - Lightweight mood record wiring.
 - Environment contextual wiring for Today or Mine.
 - Medicine scan/OCR/photo/barcode/prescription recognition. The underlying `MedicineWorkspace.quickActions` and related enums/entities are kept but not surfaced in the UI.
+- Mock repositories (`mock_*_repository.dart`) are retained for development preview and testing. In release builds, signed-out mock data is replaced by each domain model's `signedOut()` factory via `kDebugMode` gating in all 5 dashboard/workspace providers. The `MockMedicineSearchRepository` is test-only (no provider references it in production code paths).
+- Notification list page (`notification_list_page.dart`) now has `AppBackButton` in its `PageScaffoldShell` header (the only genuinely missing back button from the 2026-06-29 audit).
 
 Deferred code that remains useful should be marked with:
 
@@ -153,9 +159,9 @@ Deferred code that remains useful should be marked with:
 - Freezed is applied to 74 classes across presentation state and domain entities; all hand-written data classes have been migrated.
 - Golden screenshot tests live in `test/golden/` using Flutter's built-in `matchesGoldenFile()` (zero extra deps). Baseline images generated with `flutter test --update-goldens test/golden/`.
 - Shared dialog shell `AppDialog` (`lib/core/widgets/app_dialog.dart`) is the default for new dialogs; `RecordNlpDialog` and `MedicineAddPrecheckDialog` already use it.
-- Auth form providers share `AuthValidationMixin` and `CooldownTimerMixin` (`lib/features/auth/presentation/providers/auth_form_mixin.dart`) so email/code/password validation and cooldown timers are not duplicated.
+- Auth form validation is shared through `AuthValidationMixin` and `CooldownTimerMixin` (`lib/features/auth/presentation/providers/shared/auth_form_mixin.dart`). `RegisterFormNotifier`, `PasswordResetNotifier`, and `LoginFormNotifier` all use both mixins. Email validation delegates to the `email_validator` package — no hand-written email regexes remain in any auth provider.
 - `email_validator` replaces the hand-written email regex in auth validation.
-- `flutter_hooks` / `hooks_riverpod` are available; `RecordNlpDialog` uses `useTextEditingController` instead of manual `initState`/`dispose`.
+- `flutter_hooks` / `hooks_riverpod` are used project-wide: all 16 files that previously managed `TextEditingController` lifecycle manually (`late final` + `initState` + `dispose`) have been migrated to `HookConsumerWidget` / `HookWidget` with `useTextEditingController()`. Zero manual `initState`/`dispose` controller boilerplate remains.
 - Shared utility `coerceToStringMap` in `lib/core/network/map_utils.dart` deduplicates 5 copies of the same `_coerceToMap` helper.
 - `compareReminderTime` deduplicated from 3 copies to 1 public version in `medicine_reminder_formatters.dart`.
 - Login page password/code mode switch uses `flutter_animate`'s `.fadeIn().slideX()` instead of `AnimatedSwitcher`, matching the project-wide entrance animation pattern.

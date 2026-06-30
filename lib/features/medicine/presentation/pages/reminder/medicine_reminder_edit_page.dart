@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -22,7 +23,7 @@ import 'package:luminous/features/medicine/presentation/widgets/reminder/reminde
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class MedicineReminderEditPage extends ConsumerStatefulWidget {
+class MedicineReminderEditPage extends HookConsumerWidget {
   const MedicineReminderEditPage({
     super.key,
     this.currentMedicineId,
@@ -33,39 +34,25 @@ class MedicineReminderEditPage extends ConsumerStatefulWidget {
   final String? initialMedicineId;
 
   @override
-  ConsumerState<MedicineReminderEditPage> createState() =>
-      _MedicineReminderEditPageState();
-}
-
-class _MedicineReminderEditPageState
-    extends ConsumerState<MedicineReminderEditPage> {
-  final _noteController = TextEditingController();
-  final _selectedWeekdays = <int>{};
-  final _times = <MedicineReminderTimeInput>[];
-
-  ReminderFrequency _frequency = ReminderFrequency.daily;
-  String? _selectedMedicineId;
-  DateTime? _startDate;
-  DateTime? _endDate;
-  bool _isActive = true;
-  bool _prefilled = false;
-
-  bool get _isEdit => widget.currentMedicineId != null;
-
-  @override
-  void dispose() {
-    _noteController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
     final formState = ref.watch(medicineReminderFormProvider);
     final soundPreference =
         ref.watch(medicineReminderSoundProvider).asData?.value ??
         MedicineReminderSoundPreference.defaultTone;
+
+    final isEdit = currentMedicineId != null;
+
+    final noteController = useTextEditingController();
+    final selectedWeekdays = useState(<int>{});
+    final times = useState(<MedicineReminderTimeInput>[]);
+    final frequency = useState(ReminderFrequency.daily);
+    final selectedMedicineId = useState<String?>(null);
+    final startDate = useState<DateTime?>(null);
+    final endDate = useState<DateTime?>(null);
+    final isActive = useState(true);
+    final prefilled = useState(false);
 
     ref.listen<MedicineReminderFormState>(medicineReminderFormProvider, (
       previous,
@@ -84,9 +71,196 @@ class _MedicineReminderEditPageState
       }
     });
 
+    void applyReminderState(List<MedicineReminderItem> existing) {
+      if (existing.isNotEmpty) {
+        isActive.value = existing.any((item) => item.isActive);
+        startDate.value = parseDateOnly(existing.first.startDate);
+        endDate.value = parseDateOnly(existing.first.endDate);
+        noteController.text = existing.first.note ?? '';
+        times.value = existing
+            .map(
+              (item) => MedicineReminderTimeInput(
+                hour: item.scheduledHour,
+                minute: item.scheduledMinute,
+              ),
+            )
+            .toList();
+        final days = existing.first.daysOfWeek;
+        if (days == null) {
+          frequency.value = ReminderFrequency.daily;
+          selectedWeekdays.value = <int>{};
+        } else {
+          frequency.value = days.length == 1
+              ? ReminderFrequency.weekly
+              : ReminderFrequency.custom;
+          selectedWeekdays.value = days.toSet();
+        }
+      } else {
+        isActive.value = true;
+        startDate.value = dateOnly(DateTime.now());
+        endDate.value = null;
+        frequency.value = ReminderFrequency.daily;
+        selectedWeekdays.value = <int>{};
+        times.value = const [
+          MedicineReminderTimeInput(hour: 8, minute: 0),
+          MedicineReminderTimeInput(hour: 20, minute: 0),
+        ];
+      }
+    }
+
+    void tryPrefill(
+      HealthContextSnapshot snapshot,
+      List<MedicineReminderItem> reminders,
+    ) {
+      if (prefilled.value) return;
+
+      if (currentMedicineId == null && initialMedicineId == null) {
+        prefilled.value = true;
+        return;
+      }
+
+      final activeMedicines = snapshot.currentMedicines
+          .where((item) => item.isCurrent)
+          .toList(growable: false);
+      if (activeMedicines.isEmpty) {
+        prefilled.value = true;
+        return;
+      }
+
+      final theId =
+          currentMedicineId ?? initialMedicineId ?? activeMedicines.first.id;
+      final medicine = activeMedicines
+          .where((item) => item.id == theId)
+          .firstOrNull;
+      selectedMedicineId.value = medicine?.id ?? activeMedicines.first.id;
+
+      final existing = remindersFor(reminders, selectedMedicineId.value!);
+      applyReminderState(existing);
+      prefilled.value = true;
+    }
+
+    Future<void> pickStartDate() async {
+      final now = dateOnly(DateTime.now());
+      final picked = await showDatePicker(
+        context: context,
+        initialDate: startDate.value ?? now,
+        firstDate: DateTime(now.year - 5),
+        lastDate: DateTime(now.year + 10, 12, 31),
+      );
+      if (picked == null) return;
+      final next = dateOnly(picked);
+      startDate.value = next;
+      if (endDate.value != null && endDate.value!.isBefore(next)) {
+        endDate.value = null;
+      }
+    }
+
+    Future<void> pickEndDate() async {
+      final now = dateOnly(DateTime.now());
+      final first = startDate.value ?? DateTime(now.year - 5);
+      final picked = await showDatePicker(
+        context: context,
+        initialDate: endDate.value ?? startDate.value ?? now,
+        firstDate: first,
+        lastDate: DateTime(now.year + 10, 12, 31),
+      );
+      if (picked == null) return;
+      endDate.value = dateOnly(picked);
+    }
+
+    Future<void> addTime() async {
+      final latest = times.value.isEmpty ? null : times.value.last;
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay(
+          hour: latest?.hour ?? 8,
+          minute: latest?.minute ?? 0,
+        ),
+      );
+      if (picked == null) return;
+      final updated = [
+        ...times.value,
+        MedicineReminderTimeInput.fromTimeOfDay(picked),
+      ];
+      updated.sort((left, right) {
+        final hour = left.hour.compareTo(right.hour);
+        if (hour != 0) return hour;
+        return left.minute.compareTo(right.minute);
+      });
+      times.value = updated;
+    }
+
+    void onSave(
+      HealthContextSnapshot? snapshot,
+      List<MedicineReminderItem>? reminders,
+    ) {
+      final medId = selectedMedicineId.value;
+      if (snapshot == null || reminders == null || medId == null) {
+        AppToast.show(context, l10n.medicineReminderMedicineRequiredToast);
+        return;
+      }
+      if (times.value.isEmpty) {
+        AppToast.show(context, l10n.medicineReminderTimeRequiredToast);
+        return;
+      }
+
+      final medicine = snapshot.currentMedicines
+          .where((item) => item.id == medId)
+          .firstOrNull;
+      if (medicine == null) {
+        AppToast.show(context, l10n.medicineReminderMedicineRequiredToast);
+        return;
+      }
+
+      final daysOfWeek = frequency.value == ReminderFrequency.daily
+          ? null
+          : (selectedWeekdays.value.toList()..sort());
+      if (frequency.value != ReminderFrequency.daily && daysOfWeek!.isEmpty) {
+        AppToast.show(context, l10n.medicineReminderWeekdayRequiredToast);
+        return;
+      }
+      if (startDate.value != null &&
+          endDate.value != null &&
+          endDate.value!.isBefore(startDate.value!)) {
+        AppToast.show(context, l10n.medicineReminderDateRangeInvalidToast);
+        return;
+      }
+
+      ref
+          .read(medicineReminderFormProvider.notifier)
+          .saveGroup(
+            existingReminders: remindersFor(reminders, medId),
+            input: MedicineReminderGroupWriteInput(
+              currentMedicineId: medId,
+              label: medicine.displayName,
+              times: times.value,
+              daysOfWeek: daysOfWeek,
+              startDate: formatDateInput(startDate.value),
+              endDate: formatDateInput(endDate.value),
+              isActive: isActive.value,
+              note: trimmedOrNull(noteController.text),
+            ),
+          );
+    }
+
+    Future<void> confirmDelete(List<MedicineReminderItem> reminders) async {
+      final medId = selectedMedicineId.value;
+      if (medId == null) return;
+      final existing = remindersFor(reminders, medId);
+      if (existing.isEmpty) {
+        if (context.mounted) context.pop();
+        return;
+      }
+      final confirmed = await showMedicineReminderDeleteDialog(context);
+      if (confirmed != true) return;
+      unawaited(
+        ref.read(medicineReminderFormProvider.notifier).deleteGroup(existing),
+      );
+    }
+
     if (!session.canAccessProtectedData) {
       return PageScaffoldShell(
-        title: _isEdit
+        title: isEdit
             ? l10n.medicineReminderEditTitle
             : l10n.medicineReminderNewTitle,
         centerTitle: true,
@@ -107,12 +281,13 @@ class _MedicineReminderEditPageState
 
     snapshot.whenOrNull(
       data: (data) =>
-          reminders.whenOrNull(data: (items) => _tryPrefill(data, items)),
+          reminders.whenOrNull(data: (items) => tryPrefill(data, items)),
     );
 
-    final isLoading = snapshot.isLoading || reminders.isLoading || !_prefilled;
+    final isLoading =
+        snapshot.isLoading || reminders.isLoading || !prefilled.value;
     final hasError = snapshot.hasError || reminders.hasError;
-    final title = _isEdit
+    final title = isEdit
         ? l10n.medicineReminderEditTitle
         : l10n.medicineReminderNewTitle;
 
@@ -124,7 +299,7 @@ class _MedicineReminderEditPageState
         TextButton(
           onPressed: formState.isSaving || isLoading
               ? null
-              : () => _onSave(snapshot.asData?.value, reminders.asData?.value),
+              : () => onSave(snapshot.asData?.value, reminders.asData?.value),
           child: Text(l10n.mineEditSaveAction),
         ),
       ],
@@ -142,279 +317,80 @@ class _MedicineReminderEditPageState
           )
         else if (isLoading)
           const ReminderLoading()
-        else if (!_isEdit && _selectedMedicineId == null)
+        else if (!isEdit && selectedMedicineId.value == null)
           _MedicineSelectorPrompt(
             onSelect: () => context.push('/medicine/search'),
           )
         else
           Builder(
-            builder: (context) {
+            builder: (ctx) {
               final snapshotData = snapshot.requireValue;
               final reminderItems = reminders.requireValue;
 
               return ReminderFormBody(
                 snapshot: snapshotData,
                 reminders: reminderItems,
-                selectedMedicineId: _selectedMedicineId,
-                frequency: _frequency,
-                selectedWeekdays: _selectedWeekdays,
-                times: _times,
-                startDate: _startDate,
-                endDate: _endDate,
-                isActive: _isActive,
+                selectedMedicineId: selectedMedicineId.value,
+                frequency: frequency.value,
+                selectedWeekdays: selectedWeekdays.value,
+                times: times.value,
+                startDate: startDate.value,
+                endDate: endDate.value,
+                isActive: isActive.value,
                 soundPreference: soundPreference,
-                noteController: _noteController,
+                noteController: noteController,
                 isSaving: formState.isSaving,
-                isEdit: _isEdit,
-                onMedicineChanged: _isEdit
+                isEdit: isEdit,
+                onMedicineChanged: isEdit
                     ? null
                     : (value) {
                         if (value == null) return;
-                        setState(() {
-                          _selectedMedicineId = value;
-                          _applyReminderState(
-                            remindersFor(reminderItems, value),
-                          );
-                        });
+                        selectedMedicineId.value = value;
+                        applyReminderState(remindersFor(reminderItems, value));
                       },
-                onFrequencyChanged: (value) => setState(() {
-                  _frequency = value;
+                onFrequencyChanged: (value) {
+                  frequency.value = value;
                   if (value == ReminderFrequency.daily) {
-                    _selectedWeekdays.clear();
-                  } else if (_selectedWeekdays.isEmpty) {
-                    _selectedWeekdays.add(DateTime.now().weekday % 7);
+                    selectedWeekdays.value = <int>{};
+                  } else if (selectedWeekdays.value.isEmpty) {
+                    selectedWeekdays.value = {DateTime.now().weekday % 7};
                   }
-                }),
-                onWeekdayToggled: (day) => setState(() {
-                  if (_selectedWeekdays.contains(day)) {
-                    _selectedWeekdays.remove(day);
+                },
+                onWeekdayToggled: (day) {
+                  final updated = selectedWeekdays.value.toSet();
+                  if (updated.contains(day)) {
+                    updated.remove(day);
                   } else {
-                    _selectedWeekdays.add(day);
+                    updated.add(day);
                   }
-                  if (_selectedWeekdays.isEmpty) {
-                    _frequency = ReminderFrequency.daily;
+                  selectedWeekdays.value = updated;
+                  if (updated.isEmpty) {
+                    frequency.value = ReminderFrequency.daily;
                   }
-                }),
-                onAddTime: _addTime,
-                onRemoveTime: (index) => setState(() {
-                  if (_times.length > 1) {
-                    _times.removeAt(index);
+                },
+                onAddTime: addTime,
+                onRemoveTime: (index) {
+                  if (times.value.length > 1) {
+                    final updated = [...times.value];
+                    updated.removeAt(index);
+                    times.value = updated;
                   }
-                }),
-                onStartDateTap: _pickStartDate,
-                onEndDateTap: _pickEndDate,
-                onClearEndDate: _endDate == null
+                },
+                onStartDateTap: pickStartDate,
+                onEndDateTap: pickEndDate,
+                onClearEndDate: endDate.value == null
                     ? null
-                    : () => setState(() => _endDate = null),
-                onActiveChanged: (value) => setState(() => _isActive = value),
+                    : () => endDate.value = null,
+                onActiveChanged: (value) => isActive.value = value,
                 onSoundChanged: (value) => ref
                     .read(medicineReminderSoundProvider.notifier)
                     .setSound(value),
-                onSave: () => _onSave(snapshotData, reminderItems),
-                onDelete: _isEdit ? () => _confirmDelete(reminderItems) : null,
+                onSave: () => onSave(snapshotData, reminderItems),
+                onDelete: isEdit ? () => confirmDelete(reminderItems) : null,
               );
             },
           ),
       ],
-    );
-  }
-
-  void _tryPrefill(
-    HealthContextSnapshot snapshot,
-    List<MedicineReminderItem> reminders,
-  ) {
-    if (_prefilled) return;
-
-    // When creating a new reminder without a specific medicine context,
-    // do not auto-select the first medicine. Instead, show a prompt so the
-    // user explicitly chooses a medicine first.
-    if (widget.currentMedicineId == null && widget.initialMedicineId == null) {
-      _prefilled = true;
-      return;
-    }
-
-    final activeMedicines = snapshot.currentMedicines
-        .where((item) => item.isCurrent)
-        .toList(growable: false);
-    if (activeMedicines.isEmpty) {
-      _prefilled = true;
-      return;
-    }
-
-    final selectedId =
-        widget.currentMedicineId ??
-        widget.initialMedicineId ??
-        activeMedicines.first.id;
-    final medicine = activeMedicines
-        .where((item) => item.id == selectedId)
-        .firstOrNull;
-    _selectedMedicineId = medicine?.id ?? activeMedicines.first.id;
-
-    final existing = remindersFor(reminders, _selectedMedicineId!);
-    _applyReminderState(existing);
-    _prefilled = true;
-  }
-
-  void _applyReminderState(List<MedicineReminderItem> existing) {
-    if (existing.isNotEmpty) {
-      _isActive = existing.any((item) => item.isActive);
-      _startDate = parseDateOnly(existing.first.startDate);
-      _endDate = parseDateOnly(existing.first.endDate);
-      _noteController.text = existing.first.note ?? '';
-      _times
-        ..clear()
-        ..addAll(
-          existing.map(
-            (item) => MedicineReminderTimeInput(
-              hour: item.scheduledHour,
-              minute: item.scheduledMinute,
-            ),
-          ),
-        );
-      final days = existing.first.daysOfWeek;
-      if (days == null) {
-        _frequency = ReminderFrequency.daily;
-        _selectedWeekdays.clear();
-      } else {
-        _frequency = days.length == 1
-            ? ReminderFrequency.weekly
-            : ReminderFrequency.custom;
-        _selectedWeekdays
-          ..clear()
-          ..addAll(days);
-      }
-    } else {
-      _isActive = true;
-      _startDate = dateOnly(DateTime.now());
-      _endDate = null;
-      _frequency = ReminderFrequency.daily;
-      _selectedWeekdays.clear();
-      _times
-        ..clear()
-        ..addAll(const [
-          MedicineReminderTimeInput(hour: 8, minute: 0),
-          MedicineReminderTimeInput(hour: 20, minute: 0),
-        ]);
-    }
-  }
-
-  Future<void> _pickStartDate() async {
-    final now = dateOnly(DateTime.now());
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _startDate ?? now,
-      firstDate: DateTime(now.year - 5),
-      lastDate: DateTime(now.year + 10, 12, 31),
-    );
-    if (picked == null) return;
-    final next = dateOnly(picked);
-    setState(() {
-      _startDate = next;
-      if (_endDate != null && _endDate!.isBefore(next)) {
-        _endDate = null;
-      }
-    });
-  }
-
-  Future<void> _pickEndDate() async {
-    final now = dateOnly(DateTime.now());
-    final firstDate = _startDate ?? DateTime(now.year - 5);
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _endDate ?? _startDate ?? now,
-      firstDate: firstDate,
-      lastDate: DateTime(now.year + 10, 12, 31),
-    );
-    if (picked == null) return;
-    setState(() => _endDate = dateOnly(picked));
-  }
-
-  Future<void> _addTime() async {
-    final latest = _times.isEmpty ? null : _times.last;
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay(
-        hour: latest?.hour ?? 8,
-        minute: latest?.minute ?? 0,
-      ),
-    );
-    if (picked == null) return;
-    setState(() {
-      _times.add(MedicineReminderTimeInput.fromTimeOfDay(picked));
-      _times.sort((left, right) {
-        final hour = left.hour.compareTo(right.hour);
-        if (hour != 0) return hour;
-        return left.minute.compareTo(right.minute);
-      });
-    });
-  }
-
-  void _onSave(
-    HealthContextSnapshot? snapshot,
-    List<MedicineReminderItem>? reminders,
-  ) {
-    final l10n = AppLocalizations.of(context)!;
-    final medicineId = _selectedMedicineId;
-    if (snapshot == null || reminders == null || medicineId == null) {
-      AppToast.show(context, l10n.medicineReminderMedicineRequiredToast);
-      return;
-    }
-    if (_times.isEmpty) {
-      AppToast.show(context, l10n.medicineReminderTimeRequiredToast);
-      return;
-    }
-
-    final medicine = snapshot.currentMedicines
-        .where((item) => item.id == medicineId)
-        .firstOrNull;
-    if (medicine == null) {
-      AppToast.show(context, l10n.medicineReminderMedicineRequiredToast);
-      return;
-    }
-
-    final daysOfWeek = _frequency == ReminderFrequency.daily
-        ? null
-        : (_selectedWeekdays.toList()..sort());
-    if (_frequency != ReminderFrequency.daily && daysOfWeek!.isEmpty) {
-      AppToast.show(context, l10n.medicineReminderWeekdayRequiredToast);
-      return;
-    }
-    if (_startDate != null &&
-        _endDate != null &&
-        _endDate!.isBefore(_startDate!)) {
-      AppToast.show(context, l10n.medicineReminderDateRangeInvalidToast);
-      return;
-    }
-
-    ref
-        .read(medicineReminderFormProvider.notifier)
-        .saveGroup(
-          existingReminders: remindersFor(reminders, medicineId),
-          input: MedicineReminderGroupWriteInput(
-            currentMedicineId: medicineId,
-            label: medicine.displayName,
-            times: _times,
-            daysOfWeek: daysOfWeek,
-            startDate: formatDateInput(_startDate),
-            endDate: formatDateInput(_endDate),
-            isActive: _isActive,
-            note: trimmedOrNull(_noteController.text),
-          ),
-        );
-  }
-
-  Future<void> _confirmDelete(List<MedicineReminderItem> reminders) async {
-    final medicineId = _selectedMedicineId;
-    if (medicineId == null) return;
-    final existing = remindersFor(reminders, medicineId);
-    if (existing.isEmpty) {
-      if (mounted) context.pop();
-      return;
-    }
-    final confirmed = await showMedicineReminderDeleteDialog(context);
-    if (confirmed != true) return;
-    unawaited(
-      ref.read(medicineReminderFormProvider.notifier).deleteGroup(existing),
     );
   }
 }

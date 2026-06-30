@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
@@ -23,36 +24,11 @@ import 'package:luminous/features/settings/presentation/providers/user_settings_
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class AssistantPage extends ConsumerStatefulWidget {
+class AssistantPage extends HookConsumerWidget {
   const AssistantPage({super.key});
 
   @override
-  ConsumerState<AssistantPage> createState() => _AssistantPageState();
-}
-
-class _AssistantPageState extends ConsumerState<AssistantPage> {
-  final TextEditingController _inputController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  final GlobalKey<ScaffoldState> _drawerScaffoldKey =
-      GlobalKey<ScaffoldState>();
-
-  @override
-  void initState() {
-    super.initState();
-    ref.listenManual<AssistantState>(assistantControllerProvider, (_, __) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-    });
-  }
-
-  @override
-  void dispose() {
-    _inputController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
@@ -76,10 +52,153 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
           )
         : null;
 
+    final inputController = useTextEditingController();
+    final scrollController = useMemoized(() => ScrollController());
+    final drawerScaffoldKey = useMemoized(() => GlobalKey<ScaffoldState>());
+
+    void scrollToBottom() {
+      if (!scrollController.hasClients) return;
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+      );
+    }
+
+    // Auto-scroll to bottom on new messages
+    ref.listen<AssistantState>(assistantControllerProvider, (_, __) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => scrollToBottom());
+    });
+
+    String statusSummaryText(AppLocalizations l, AssistantCapabilities caps) {
+      if (!caps.assistantEnabled) return l.assistantStatusDisabled;
+      if (!caps.chatModelConfigured) return l.assistantStatusModelMissing;
+      if (!caps.interactiveChatReady) return l.assistantStatusNotReady;
+      return l.assistantStatusReady;
+    }
+
+    Future<void> toggleAssistantEnabled(
+      BuildContext ctx,
+      bool nextValue,
+    ) async {
+      try {
+        await ref
+            .read(userSettingsControllerProvider.notifier)
+            .setAssistantEnabled(nextValue);
+        await ref.read(assistantControllerProvider.notifier).loadCapabilities();
+      } catch (error) {
+        if (!ctx.mounted) return;
+        await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
+      }
+    }
+
+    Future<void> toggleAssistantMemoryEnabled(
+      BuildContext ctx,
+      bool nextValue,
+    ) async {
+      try {
+        await ref
+            .read(userSettingsControllerProvider.notifier)
+            .setAssistantMemoryEnabled(nextValue);
+        await ref.read(assistantControllerProvider.notifier).loadCapabilities();
+      } catch (error) {
+        if (!ctx.mounted) return;
+        await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
+      }
+    }
+
+    Future<void> toggleContextSetting(
+      BuildContext ctx, {
+      required UserSettingsDataDto? settings,
+      required UpdateAssistantContextSettingsDto? fallbackContext,
+      bool? healthProfile,
+      bool? dailyRecords,
+      bool? sleepRecords,
+      bool? currentMedicines,
+    }) async {
+      final current = settings?.assistantContext;
+      if (current == null) {
+        if (fallbackContext == null) return;
+        try {
+          await ref
+              .read(userSettingsControllerProvider.notifier)
+              .setAssistantContext(
+                UpdateAssistantContextSettingsDto(
+                  healthProfile: healthProfile ?? fallbackContext.healthProfile,
+                  dailyRecords: dailyRecords ?? fallbackContext.dailyRecords,
+                  sleepRecords: sleepRecords ?? fallbackContext.sleepRecords,
+                  currentMedicines:
+                      currentMedicines ?? fallbackContext.currentMedicines,
+                ),
+              );
+          await ref
+              .read(assistantControllerProvider.notifier)
+              .loadCapabilities();
+        } catch (error) {
+          if (!ctx.mounted) return;
+          await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
+        }
+        return;
+      }
+      try {
+        await ref
+            .read(userSettingsControllerProvider.notifier)
+            .setAssistantContext(
+              UpdateAssistantContextSettingsDto(
+                healthProfile: healthProfile ?? current.healthProfile,
+                dailyRecords: dailyRecords ?? current.dailyRecords,
+                sleepRecords: sleepRecords ?? current.sleepRecords,
+                currentMedicines: currentMedicines ?? current.currentMedicines,
+              ),
+            );
+        await ref.read(assistantControllerProvider.notifier).loadCapabilities();
+      } catch (error) {
+        if (!ctx.mounted) return;
+        await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
+      }
+    }
+
+    Future<void> handleSend() async {
+      final input = inputController.text;
+      if (input.trim().isEmpty) return;
+      inputController.clear();
+      await ref.read(assistantControllerProvider.notifier).sendMessage(input);
+    }
+
+    Future<void> handleStartNewConversation() async {
+      inputController.clear();
+      await ref.read(assistantControllerProvider.notifier).clearConversation();
+    }
+
+    Future<void> handleConfirmProposal(
+      BuildContext ctx, {
+      required String messageId,
+      required String proposalId,
+    }) async {
+      final l = AppLocalizations.of(ctx)!;
+      try {
+        await ref
+            .read(assistantControllerProvider.notifier)
+            .confirmProposedAction(
+              messageId: messageId,
+              proposalId: proposalId,
+            );
+        if (!ctx.mounted) return;
+        await AppToast.show(ctx, l.assistantProposalConfirmedToast);
+      } catch (error) {
+        if (!ctx.mounted) return;
+        await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
+      }
+    }
+
+    void openRecentConversationsDrawer() {
+      drawerScaffoldKey.currentState?.openEndDrawer();
+    }
+
     return Material(
       color: surface.canvasSoft,
       child: PageScaffoldShell(
-        scaffoldKey: _drawerScaffoldKey,
+        scaffoldKey: drawerScaffoldKey,
         title: l10n.assistantPageTitle,
         centerTitle: true,
         scrollable: false,
@@ -110,7 +229,7 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
                     chatState.isLoadingRecentConversations ||
                     chatState.isOpeningConversation
                 ? null
-                : _openRecentConversationsDrawer,
+                : openRecentConversationsDrawer,
             icon: const Icon(Icons.history_rounded),
           ),
           IconButton(
@@ -122,7 +241,7 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
                     chatState.isSending ||
                     chatState.isOpeningConversation
                 ? null
-                : _handleStartNewConversation,
+                : handleStartNewConversation,
             icon: const Icon(Icons.add_rounded),
           ),
         ],
@@ -160,7 +279,7 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
           ] else ...[
             AssistantHero(
               capabilities: capabilities,
-              statusSummary: _statusSummaryText(l10n, capabilities),
+              statusSummary: statusSummaryText(l10n, capabilities),
             ),
             if (chatState.conversationError != null) ...[
               const SizedBox(height: AppSpacingTokens.md),
@@ -180,9 +299,9 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
               child: AssistantConversationSurface(
                 state: chatState,
                 capabilities: capabilities,
-                scrollController: _scrollController,
-                controller: _inputController,
-                onSend: _handleSend,
+                scrollController: scrollController,
+                controller: inputController,
+                onSend: handleSend,
                 onRetry: chatState.lastFailedInput != null
                     ? () => ref
                           .read(assistantControllerProvider.notifier)
@@ -190,7 +309,7 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
                     : null,
                 onConfirmProposal:
                     ({required messageId, required proposalId}) =>
-                        _handleConfirmProposal(
+                        handleConfirmProposal(
                           context,
                           messageId: messageId,
                           proposalId: proposalId,
@@ -226,16 +345,16 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
               fallbackContext: effectiveContext,
               capabilities: capabilities,
               onToggleEnabled: (nextValue) =>
-                  _toggleAssistantEnabled(context, nextValue),
+                  toggleAssistantEnabled(context, nextValue),
               onToggleMemoryEnabled: (nextValue) =>
-                  _toggleAssistantMemoryEnabled(context, nextValue),
+                  toggleAssistantMemoryEnabled(context, nextValue),
               onToggleContext:
                   ({
                     bool? healthProfile,
                     bool? dailyRecords,
                     bool? sleepRecords,
                     bool? currentMedicines,
-                  }) => _toggleContextSetting(
+                  }) => toggleContextSetting(
                     context,
                     settings: settings,
                     fallbackContext: effectiveContext,
@@ -249,166 +368,5 @@ class _AssistantPageState extends ConsumerState<AssistantPage> {
         ],
       ),
     );
-  }
-
-  Future<void> _toggleAssistantEnabled(
-    BuildContext context,
-    bool nextValue,
-  ) async {
-    try {
-      await ref
-          .read(userSettingsControllerProvider.notifier)
-          .setAssistantEnabled(nextValue);
-      await ref.read(assistantControllerProvider.notifier).loadCapabilities();
-    } catch (error) {
-      if (!context.mounted) {
-        return;
-      }
-      await AppToast.show(context, LucentErrorMapper.fromObject(error).message);
-    }
-  }
-
-  Future<void> _toggleContextSetting(
-    BuildContext context, {
-    required UserSettingsDataDto? settings,
-    required UpdateAssistantContextSettingsDto? fallbackContext,
-    bool? healthProfile,
-    bool? dailyRecords,
-    bool? sleepRecords,
-    bool? currentMedicines,
-  }) async {
-    final current = settings?.assistantContext;
-    if (current == null) {
-      if (fallbackContext == null) {
-        return;
-      }
-
-      try {
-        await ref
-            .read(userSettingsControllerProvider.notifier)
-            .setAssistantContext(
-              UpdateAssistantContextSettingsDto(
-                healthProfile: healthProfile ?? fallbackContext.healthProfile,
-                dailyRecords: dailyRecords ?? fallbackContext.dailyRecords,
-                sleepRecords: sleepRecords ?? fallbackContext.sleepRecords,
-                currentMedicines:
-                    currentMedicines ?? fallbackContext.currentMedicines,
-              ),
-            );
-        await ref.read(assistantControllerProvider.notifier).loadCapabilities();
-      } catch (error) {
-        if (!context.mounted) {
-          return;
-        }
-        await AppToast.show(
-          context,
-          LucentErrorMapper.fromObject(error).message,
-        );
-      }
-      return;
-    }
-
-    try {
-      await ref
-          .read(userSettingsControllerProvider.notifier)
-          .setAssistantContext(
-            UpdateAssistantContextSettingsDto(
-              healthProfile: healthProfile ?? current.healthProfile,
-              dailyRecords: dailyRecords ?? current.dailyRecords,
-              sleepRecords: sleepRecords ?? current.sleepRecords,
-              currentMedicines: currentMedicines ?? current.currentMedicines,
-            ),
-          );
-      await ref.read(assistantControllerProvider.notifier).loadCapabilities();
-    } catch (error) {
-      if (!context.mounted) {
-        return;
-      }
-      await AppToast.show(context, LucentErrorMapper.fromObject(error).message);
-    }
-  }
-
-  Future<void> _toggleAssistantMemoryEnabled(
-    BuildContext context,
-    bool nextValue,
-  ) async {
-    try {
-      await ref
-          .read(userSettingsControllerProvider.notifier)
-          .setAssistantMemoryEnabled(nextValue);
-      await ref.read(assistantControllerProvider.notifier).loadCapabilities();
-    } catch (error) {
-      if (!context.mounted) {
-        return;
-      }
-      await AppToast.show(context, LucentErrorMapper.fromObject(error).message);
-    }
-  }
-
-  Future<void> _handleSend() async {
-    final input = _inputController.text;
-    if (input.trim().isEmpty) {
-      return;
-    }
-    _inputController.clear();
-    await ref.read(assistantControllerProvider.notifier).sendMessage(input);
-  }
-
-  Future<void> _handleStartNewConversation() async {
-    _inputController.clear();
-    await ref.read(assistantControllerProvider.notifier).clearConversation();
-  }
-
-  Future<void> _handleConfirmProposal(
-    BuildContext context, {
-    required String messageId,
-    required String proposalId,
-  }) async {
-    final l10n = AppLocalizations.of(context)!;
-    try {
-      await ref
-          .read(assistantControllerProvider.notifier)
-          .confirmProposedAction(messageId: messageId, proposalId: proposalId);
-      if (!context.mounted) {
-        return;
-      }
-      await AppToast.show(context, l10n.assistantProposalConfirmedToast);
-    } catch (error) {
-      if (!context.mounted) {
-        return;
-      }
-      await AppToast.show(context, LucentErrorMapper.fromObject(error).message);
-    }
-  }
-
-  void _openRecentConversationsDrawer() {
-    _drawerScaffoldKey.currentState?.openEndDrawer();
-  }
-
-  void _scrollToBottom() {
-    if (!_scrollController.hasClients) {
-      return;
-    }
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 180),
-      curve: Curves.easeOut,
-    );
-  }
-
-  String _statusSummaryText(
-    AppLocalizations l10n,
-    AssistantCapabilities capabilities,
-  ) {
-    if (!capabilities.assistantEnabled) {
-      return l10n.assistantStatusDisabled;
-    }
-    if (!capabilities.chatModelConfigured) {
-      return l10n.assistantStatusModelMissing;
-    }
-    if (!capabilities.interactiveChatReady) {
-      return l10n.assistantStatusNotReady;
-    }
-    return l10n.assistantStatusReady;
   }
 }

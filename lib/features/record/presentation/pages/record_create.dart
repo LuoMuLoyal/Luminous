@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -25,7 +26,7 @@ import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class RecordCreatePage extends ConsumerStatefulWidget {
+class RecordCreatePage extends HookConsumerWidget {
   const RecordCreatePage({
     super.key,
     this.initialKind,
@@ -38,51 +39,268 @@ class RecordCreatePage extends ConsumerStatefulWidget {
   final String? initialTime;
 
   @override
-  ConsumerState<RecordCreatePage> createState() => _RecordCreatePageState();
-}
-
-class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
-  late DailyRecordKind _kind;
-  final _valueController = TextEditingController();
-  final _unitController = TextEditingController();
-  final _noteController = TextEditingController();
-  final _titleController = TextEditingController();
-  final _imagePicker = ImagePicker();
-
-  bool _saving = false;
-  _PendingDailyRecordImage? _selectedImage;
-  late DateTime _recordDate;
-  String? _recordTime;
-
-  TimeOfDay? _sleepBedtime;
-  TimeOfDay? _sleepWakeTime;
-  String? _sleepQuality;
-  int? _sleepDeepMinutes;
-  int? _sleepLightMinutes;
-  int? _sleepRemMinutes;
-
-  @override
-  void initState() {
-    super.initState();
-    _kind = widget.initialKind ?? DailyRecordKind.water;
-    final seedDate = widget.initialDate ?? DateTime.now();
-    _recordDate = DateTime(seedDate.year, seedDate.month, seedDate.day);
-    _recordTime = widget.initialTime?.trim();
-    _applyKindDefaults(_kind);
-  }
-
-  @override
-  void dispose() {
-    _valueController.dispose();
-    _unitController.dispose();
-    _noteController.dispose();
-    _titleController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+
+    final valueController = useTextEditingController();
+    final unitController = useTextEditingController();
+    final noteController = useTextEditingController();
+    final titleController = useTextEditingController();
+    final imagePicker = useMemoized(() => ImagePicker());
+
+    final kind = useState(initialKind ?? DailyRecordKind.water);
+    final saving = useState(false);
+    final selectedImage = useState<_PendingDailyRecordImage?>(null);
+    final seedDate = initialDate ?? DateTime.now();
+    final recordDate = useState(
+      DateTime(seedDate.year, seedDate.month, seedDate.day),
+    );
+    final recordTime = useState(initialTime?.trim());
+    final sleepBedtime = useState<TimeOfDay?>(null);
+    final sleepWakeTime = useState<TimeOfDay?>(null);
+    final sleepQuality = useState<String?>(null);
+    final sleepDeepMinutes = useState<int?>(null);
+    final sleepLightMinutes = useState<int?>(null);
+    final sleepRemMinutes = useState<int?>(null);
+
+    // Apply kind defaults (initState equivalent)
+    useEffect(() {
+      if (kind.value == DailyRecordKind.water &&
+          unitController.text.trim().isEmpty) {
+        unitController.text = dailyRecordWaterDefaultUnit;
+      }
+      return null;
+    }, []);
+
+    void applyKindDefaults(DailyRecordKind k) {
+      if (k == DailyRecordKind.water && unitController.text.trim().isEmpty) {
+        unitController.text = dailyRecordWaterDefaultUnit;
+      }
+    }
+
+    String? optionalText(TextEditingController controller) {
+      final value = controller.text.trim();
+      return value.isEmpty ? null : value;
+    }
+
+    String? normalizedValueForKind(DailyRecordKind k) {
+      if (k == DailyRecordKind.sleep) return null;
+      return optionalText(valueController);
+    }
+
+    String? unitTextForKind(DailyRecordKind k) {
+      final value = unitController.text.trim();
+      if (value.isNotEmpty) return value;
+      if (k == DailyRecordKind.water) return dailyRecordWaterDefaultUnit;
+      return null;
+    }
+
+    Map<String, dynamic>? buildSleepPayload(DailyRecordKind k) {
+      if (k != DailyRecordKind.sleep) return null;
+      final minutes = computeSleepDurationMinutes(
+        sleepBedtime.value,
+        sleepWakeTime.value,
+      );
+      if (minutes == null || minutes <= 0) return null;
+      final payload = <String, dynamic>{'durationMinutes': minutes};
+      if (sleepBedtime.value != null && sleepWakeTime.value != null) {
+        final date = recordDate.value;
+        final wake = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          sleepWakeTime.value!.hour,
+          sleepWakeTime.value!.minute,
+        );
+        var bed = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          sleepBedtime.value!.hour,
+          sleepBedtime.value!.minute,
+        );
+        if (!bed.isBefore(wake)) bed = bed.subtract(const Duration(days: 1));
+        payload['startAt'] = bed.toUtc().toIso8601String();
+        payload['endAt'] = wake.toUtc().toIso8601String();
+      }
+      if (sleepQuality.value != null) payload['quality'] = sleepQuality.value;
+      if (sleepDeepMinutes.value != null && sleepDeepMinutes.value! > 0) {
+        payload['deepMinutes'] = sleepDeepMinutes.value;
+      }
+      if (sleepLightMinutes.value != null && sleepLightMinutes.value! > 0) {
+        payload['lightMinutes'] = sleepLightMinutes.value;
+      }
+      if (sleepRemMinutes.value != null && sleepRemMinutes.value! > 0) {
+        payload['remMinutes'] = sleepRemMinutes.value;
+      }
+      return payload;
+    }
+
+    bool isValidSleepValue() {
+      if (kind.value != DailyRecordKind.sleep) return true;
+      final minutes = computeSleepDurationMinutes(
+        sleepBedtime.value,
+        sleepWakeTime.value,
+      );
+      return minutes != null && minutes > 0;
+    }
+
+    void onKindChanged(DailyRecordKind newKind) {
+      final wasWater = kind.value == DailyRecordKind.water;
+      kind.value = newKind;
+      if (newKind != DailyRecordKind.water &&
+          wasWater &&
+          unitController.text.trim() == dailyRecordWaterDefaultUnit) {
+        unitController.clear();
+      }
+      if (newKind != DailyRecordKind.sleep) {
+        sleepBedtime.value = null;
+        sleepWakeTime.value = null;
+        sleepQuality.value = null;
+        sleepDeepMinutes.value = null;
+        sleepLightMinutes.value = null;
+        sleepRemMinutes.value = null;
+      }
+      applyKindDefaults(newKind);
+    }
+
+    Future<void> pickRecordDate() async {
+      final picked = await showDatePicker(
+        context: context,
+        initialDate: recordDate.value,
+        firstDate: DateTime(2000),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
+      );
+      if (picked == null) return;
+      recordDate.value = DateTime(picked.year, picked.month, picked.day);
+    }
+
+    Future<void> pickRecordTime() async {
+      final parsed = parseRecordTime(recordTime.value);
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay(
+          hour: parsed?.hour ?? DateTime.now().hour,
+          minute: parsed?.minute ?? DateTime.now().minute,
+        ),
+      );
+      if (picked == null) return;
+      recordTime.value = formatRecordTimeValue(
+        DateTime(2000, 1, 1, picked.hour, picked.minute),
+      );
+    }
+
+    Future<void> onPickImage() async {
+      try {
+        final image = await imagePicker.pickImage(
+          source: ImageSource.gallery,
+          requestFullMetadata: false,
+        );
+        if (image == null) return;
+
+        final contentType = resolveImageContentType(image);
+        if (contentType == null) {
+          if (context.mounted) {
+            await AppToast.show(
+              context,
+              AppLocalizations.of(context)!.recordImageUnsupportedToast,
+            );
+          }
+          return;
+        }
+
+        final bytes = await image.readAsBytes();
+        if (!context.mounted) return;
+        selectedImage.value = _PendingDailyRecordImage(
+          bytes: bytes,
+          fileName: image.name,
+          contentType: contentType,
+        );
+      } catch (_) {
+        if (context.mounted) {
+          await AppToast.show(
+            context,
+            AppLocalizations.of(context)!.recordImagePickFailedToast,
+          );
+        }
+      }
+    }
+
+    void onRemoveImage() {
+      selectedImage.value = null;
+    }
+
+    Future<List<DailyRecordAttachmentInput>> uploadSelectedImage() async {
+      final image = selectedImage.value;
+      if (image == null) return const <DailyRecordAttachmentInput>[];
+
+      final repo = ref.read(dailyRecordRepositoryProvider);
+      final attachment = await repo.uploadImage(
+        DailyRecordImageUploadInput(
+          bytes: image.bytes,
+          contentType: image.contentType,
+          sizeBytes: image.bytes.length,
+          fileName: image.fileName,
+        ),
+      );
+      return <DailyRecordAttachmentInput>[attachment];
+    }
+
+    Future<void> onSave(String dateStr) async {
+      if (kind.value == DailyRecordKind.sleep && !isValidSleepValue()) {
+        unawaited(
+          AppToast.show(
+            context,
+            AppLocalizations.of(context)!.recordSleepInvalidValueToast,
+          ),
+        );
+        return;
+      }
+
+      saving.value = true;
+      try {
+        final repo = ref.read(dailyRecordRepositoryProvider);
+        final attachments = await uploadSelectedImage();
+        final rules = dailyRecordFormRules(kind.value);
+        await repo.create(
+          DailyRecordCreateInput(
+            kind: kind.value,
+            occurredAt: dateStr,
+            occurredTime: recordTime.value,
+            title: rules.showTitle ? optionalText(titleController) : null,
+            value: rules.showValue ? normalizedValueForKind(kind.value) : null,
+            unit: rules.showUnit ? unitTextForKind(kind.value) : null,
+            note: optionalText(noteController),
+            payload: buildSleepPayload(kind.value),
+            attachments: attachments,
+          ),
+        );
+        ref.invalidate(recordDashboardProvider);
+        ref.invalidate(todayDashboardProvider);
+        ref.invalidate(reportDashboardProvider);
+        if (context.mounted) {
+          unawaited(
+            AppToast.show(
+              context,
+              AppLocalizations.of(context)!.mineEditSavedToast,
+            ),
+          );
+          context.pop();
+        }
+      } catch (e) {
+        if (context.mounted) {
+          unawaited(
+            AppToast.show(
+              context,
+              AppLocalizations.of(context)!.recordCreateFailedToast,
+            ),
+          );
+        }
+      } finally {
+        if (context.mounted) saving.value = false;
+      }
+    }
+
     final session = ref.watch(authSessionProvider);
 
     if (!session.canAccessProtectedData) {
@@ -101,7 +319,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
       );
     }
 
-    final dateStr = formatRecordDate(_recordDate);
+    final dateStr = formatRecordDate(recordDate.value);
 
     return PageScaffoldShell(
       title: l10n.recordAddAction,
@@ -114,55 +332,52 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               RecordOccurredAtFields(
-                date: _recordDate,
-                time: _recordTime,
-                onDateTap: _pickRecordDate,
-                onTimeTap: _pickRecordTime,
+                date: recordDate.value,
+                time: recordTime.value,
+                onDateTap: pickRecordDate,
+                onTimeTap: pickRecordTime,
               ),
               const SizedBox(height: AppSpacingTokens.sm),
               DailyRecordFormFields(
-                kind: _kind,
-                onKindChanged: _onKindChanged,
-                valueController: _valueController,
-                unitController: _unitController,
-                titleController: _titleController,
-                noteController: _noteController,
+                kind: kind.value,
+                onKindChanged: onKindChanged,
+                valueController: valueController,
+                unitController: unitController,
+                titleController: titleController,
+                noteController: noteController,
               ),
-              if (_kind == DailyRecordKind.sleep) ...[
+              if (kind.value == DailyRecordKind.sleep) ...[
                 const SizedBox(height: AppSpacingTokens.sm),
                 SleepStructuredFields(
                   l10n: l10n,
-                  bedtime: _sleepBedtime,
-                  wakeTime: _sleepWakeTime,
-                  quality: _sleepQuality,
-                  deepMinutes: _sleepDeepMinutes,
-                  lightMinutes: _sleepLightMinutes,
-                  remMinutes: _sleepRemMinutes,
-                  onBedtimeChanged: (v) => setState(() => _sleepBedtime = v),
-                  onWakeTimeChanged: (v) => setState(() => _sleepWakeTime = v),
-                  onQualityChanged: (v) => setState(() => _sleepQuality = v),
-                  onDeepMinutesChanged: (v) =>
-                      setState(() => _sleepDeepMinutes = v),
-                  onLightMinutesChanged: (v) =>
-                      setState(() => _sleepLightMinutes = v),
-                  onRemMinutesChanged: (v) =>
-                      setState(() => _sleepRemMinutes = v),
+                  bedtime: sleepBedtime.value,
+                  wakeTime: sleepWakeTime.value,
+                  quality: sleepQuality.value,
+                  deepMinutes: sleepDeepMinutes.value,
+                  lightMinutes: sleepLightMinutes.value,
+                  remMinutes: sleepRemMinutes.value,
+                  onBedtimeChanged: (v) => sleepBedtime.value = v,
+                  onWakeTimeChanged: (v) => sleepWakeTime.value = v,
+                  onQualityChanged: (v) => sleepQuality.value = v,
+                  onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
+                  onLightMinutesChanged: (v) => sleepLightMinutes.value = v,
+                  onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
                 ),
               ],
               const SizedBox(height: AppSpacingTokens.sm),
               DailyRecordImageAttachmentField(
                 l10n: l10n,
-                selectedBytes: _selectedImage?.bytes,
-                selectedFileName: _selectedImage?.fileName,
+                selectedBytes: selectedImage.value?.bytes,
+                selectedFileName: selectedImage.value?.fileName,
                 existingAttachment: null,
-                onPick: _onPickImage,
-                onRemove: _onRemoveImage,
-                enabled: !_saving,
+                onPick: onPickImage,
+                onRemove: onRemoveImage,
+                enabled: !saving.value,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               ElevatedButton(
                 key: const Key('record-create-save-action'),
-                onPressed: _saving ? null : () => _onSave(dateStr),
+                onPressed: saving.value ? null : () => onSave(dateStr),
                 child: Text(l10n.mineEditSaveAction),
               ),
             ],
@@ -172,241 +387,7 @@ class _RecordCreatePageState extends ConsumerState<RecordCreatePage> {
     );
   }
 
-  Future<void> _onSave(String dateStr) async {
-    if (_kind == DailyRecordKind.sleep && !_isValidSleepValue()) {
-      unawaited(
-        AppToast.show(
-          context,
-          AppLocalizations.of(context)!.recordSleepInvalidValueToast,
-        ),
-      );
-      return;
-    }
-
-    setState(() => _saving = true);
-    try {
-      final repo = ref.read(dailyRecordRepositoryProvider);
-      final attachments = await _uploadSelectedImage();
-      final rules = dailyRecordFormRules(_kind);
-      await repo.create(
-        DailyRecordCreateInput(
-          kind: _kind,
-          occurredAt: dateStr,
-          occurredTime: _recordTime,
-          title: rules.showTitle ? _optionalText(_titleController) : null,
-          value: rules.showValue ? _normalizedValueForKind(_kind) : null,
-          unit: rules.showUnit ? _unitTextForKind(_kind) : null,
-          note: _optionalText(_noteController),
-          payload: _buildSleepPayload(_kind),
-          attachments: attachments,
-        ),
-      );
-      ref.invalidate(recordDashboardProvider);
-      ref.invalidate(todayDashboardProvider);
-      ref.invalidate(reportDashboardProvider);
-      if (mounted) {
-        unawaited(
-          AppToast.show(
-            context,
-            AppLocalizations.of(context)!.mineEditSavedToast,
-          ),
-        );
-        context.pop();
-      }
-    } catch (e) {
-      if (mounted) {
-        unawaited(
-          AppToast.show(
-            context,
-            AppLocalizations.of(context)!.recordCreateFailedToast,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _saving = false);
-    }
-  }
-
-  void _onKindChanged(DailyRecordKind kind) {
-    setState(() {
-      final wasWater = _kind == DailyRecordKind.water;
-      _kind = kind;
-      if (kind != DailyRecordKind.water &&
-          wasWater &&
-          _unitController.text.trim() == dailyRecordWaterDefaultUnit) {
-        _unitController.clear();
-      }
-      if (kind != DailyRecordKind.sleep) {
-        _sleepBedtime = null;
-        _sleepWakeTime = null;
-        _sleepQuality = null;
-        _sleepDeepMinutes = null;
-        _sleepLightMinutes = null;
-        _sleepRemMinutes = null;
-      }
-      _applyKindDefaults(kind);
-    });
-  }
-
-  void _applyKindDefaults(DailyRecordKind kind) {
-    if (kind == DailyRecordKind.water && _unitController.text.trim().isEmpty) {
-      _unitController.text = dailyRecordWaterDefaultUnit;
-    }
-  }
-
-  String? _optionalText(TextEditingController controller) {
-    final value = controller.text.trim();
-    return value.isEmpty ? null : value;
-  }
-
-  String? _normalizedValueForKind(DailyRecordKind kind) {
-    if (kind == DailyRecordKind.sleep) return null;
-    return _optionalText(_valueController);
-  }
-
-  String? _unitTextForKind(DailyRecordKind kind) {
-    final value = _unitController.text.trim();
-    if (value.isNotEmpty) return value;
-    if (kind == DailyRecordKind.water) return dailyRecordWaterDefaultUnit;
-    return null;
-  }
-
-  Map<String, dynamic>? _buildSleepPayload(DailyRecordKind kind) {
-    if (kind != DailyRecordKind.sleep) return null;
-    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
-    if (minutes == null || minutes <= 0) return null;
-    final payload = <String, dynamic>{'durationMinutes': minutes};
-    if (_sleepBedtime != null && _sleepWakeTime != null) {
-      // Sleep date convention: occurredAt is the wake date.
-      // endAt falls on the wake date; startAt is the evening before
-      // (or the same day for short naps that don't cross midnight).
-      final recordDate = _recordDate;
-      final wake = DateTime(
-        recordDate.year,
-        recordDate.month,
-        recordDate.day,
-        _sleepWakeTime!.hour,
-        _sleepWakeTime!.minute,
-      );
-      var bed = DateTime(
-        recordDate.year,
-        recordDate.month,
-        recordDate.day,
-        _sleepBedtime!.hour,
-        _sleepBedtime!.minute,
-      );
-      if (!bed.isBefore(wake)) bed = bed.subtract(const Duration(days: 1));
-      payload['startAt'] = bed.toUtc().toIso8601String();
-      payload['endAt'] = wake.toUtc().toIso8601String();
-    }
-    if (_sleepQuality != null) payload['quality'] = _sleepQuality;
-    if (_sleepDeepMinutes != null && _sleepDeepMinutes! > 0) {
-      payload['deepMinutes'] = _sleepDeepMinutes;
-    }
-    if (_sleepLightMinutes != null && _sleepLightMinutes! > 0) {
-      payload['lightMinutes'] = _sleepLightMinutes;
-    }
-    if (_sleepRemMinutes != null && _sleepRemMinutes! > 0) {
-      payload['remMinutes'] = _sleepRemMinutes;
-    }
-    return payload;
-  }
-
-  bool _isValidSleepValue() {
-    if (_kind != DailyRecordKind.sleep) return true;
-    final minutes = computeSleepDurationMinutes(_sleepBedtime, _sleepWakeTime);
-    return minutes != null && minutes > 0;
-  }
-
-  Future<void> _pickRecordDate() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _recordDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
-    );
-    if (picked == null) return;
-    setState(() {
-      _recordDate = DateTime(picked.year, picked.month, picked.day);
-    });
-  }
-
-  Future<void> _pickRecordTime() async {
-    final parsed = parseRecordTime(_recordTime);
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay(
-        hour: parsed?.hour ?? DateTime.now().hour,
-        minute: parsed?.minute ?? DateTime.now().minute,
-      ),
-    );
-    if (picked == null) return;
-    setState(() {
-      _recordTime = formatRecordTimeValue(
-        DateTime(2000, 1, 1, picked.hour, picked.minute),
-      );
-    });
-  }
-
-  Future<void> _onPickImage() async {
-    try {
-      final image = await _imagePicker.pickImage(
-        source: ImageSource.gallery,
-        requestFullMetadata: false,
-      );
-      if (image == null) return;
-
-      final contentType = _resolveImageContentType(image);
-      if (contentType == null) {
-        if (mounted) {
-          await AppToast.show(
-            context,
-            AppLocalizations.of(context)!.recordImageUnsupportedToast,
-          );
-        }
-        return;
-      }
-
-      final bytes = await image.readAsBytes();
-      if (!mounted) return;
-      setState(() {
-        _selectedImage = _PendingDailyRecordImage(
-          bytes: bytes,
-          fileName: image.name,
-          contentType: contentType,
-        );
-      });
-    } catch (_) {
-      if (mounted) {
-        await AppToast.show(
-          context,
-          AppLocalizations.of(context)!.recordImagePickFailedToast,
-        );
-      }
-    }
-  }
-
-  void _onRemoveImage() {
-    setState(() => _selectedImage = null);
-  }
-
-  Future<List<DailyRecordAttachmentInput>> _uploadSelectedImage() async {
-    final image = _selectedImage;
-    if (image == null) return const <DailyRecordAttachmentInput>[];
-
-    final repo = ref.read(dailyRecordRepositoryProvider);
-    final attachment = await repo.uploadImage(
-      DailyRecordImageUploadInput(
-        bytes: image.bytes,
-        contentType: image.contentType,
-        sizeBytes: image.bytes.length,
-        fileName: image.fileName,
-      ),
-    );
-    return <DailyRecordAttachmentInput>[attachment];
-  }
-
-  String? _resolveImageContentType(XFile image) {
+  static String? resolveImageContentType(XFile image) {
     final mimeType = image.mimeType?.trim().toLowerCase();
     if (_allowedImageContentTypes.contains(mimeType)) return mimeType;
 

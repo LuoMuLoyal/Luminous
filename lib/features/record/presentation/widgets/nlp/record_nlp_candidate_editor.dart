@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
@@ -6,7 +7,7 @@ import 'package:luminous/features/record/presentation/widgets/forms/daily_record
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class RecordNlpCandidateEditor extends StatefulWidget {
+class RecordNlpCandidateEditor extends HookWidget {
   const RecordNlpCandidateEditor({
     super.key,
     required this.index,
@@ -21,88 +22,148 @@ class RecordNlpCandidateEditor extends StatefulWidget {
   final ValueChanged<RecordNlpCandidateDraft> onChanged;
 
   @override
-  State<RecordNlpCandidateEditor> createState() =>
-      _RecordNlpCandidateEditorState();
-}
-
-class _RecordNlpCandidateEditorState extends State<RecordNlpCandidateEditor> {
-  late final TextEditingController _titleController;
-  late final TextEditingController _valueController;
-  late final TextEditingController _noteController;
-
-  @override
-  void initState() {
-    super.initState();
-    _titleController = TextEditingController(text: widget.item.title ?? '');
-    _valueController = TextEditingController(text: widget.item.value ?? '');
-    _noteController = TextEditingController(text: widget.item.note ?? '');
-  }
-
-  @override
-  void didUpdateWidget(covariant RecordNlpCandidateEditor oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.item.title != widget.item.title) {
-      _titleController.text = widget.item.title ?? '';
-    }
-    if (oldWidget.item.value != widget.item.value) {
-      _valueController.text = widget.item.value ?? '';
-    }
-    if (oldWidget.item.note != widget.item.note) {
-      _noteController.text = widget.item.note ?? '';
-    }
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _valueController.dispose();
-    _noteController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final kind = widget.item.kind;
+    final kind = item.kind;
+
+    final titleController = useTextEditingController(text: item.title ?? '');
+    final valueController = useTextEditingController(text: item.value ?? '');
+    final noteController = useTextEditingController(text: item.note ?? '');
+
+    // Sync controller text when parent changes the item
+    useEffect(() {
+      titleController.text = item.title ?? '';
+      return null;
+    }, [item.title]);
+    useEffect(() {
+      valueController.text = item.value ?? '';
+      return null;
+    }, [item.value]);
+    useEffect(() {
+      noteController.text = item.note ?? '';
+      return null;
+    }, [item.note]);
+
+    void emit({String? title, String? value, String? unit, String? note}) {
+      onChanged(
+        item.copyWith(
+          title: title ?? item.title,
+          value: value ?? item.value,
+          unit: unit ?? item.unit,
+          note: note ?? item.note,
+        ),
+      );
+    }
+
+    bool shouldShowTitle(DailyRecordKind k) {
+      return switch (k) {
+        DailyRecordKind.water => false,
+        DailyRecordKind.sleep => false,
+        _ => true,
+      };
+    }
+
+    bool shouldShowValue(DailyRecordKind k) {
+      return switch (k) {
+        DailyRecordKind.note => false,
+        DailyRecordKind.sleep => false,
+        _ => true,
+      };
+    }
+
+    bool shouldShowUnit(DailyRecordKind k) {
+      return k == DailyRecordKind.water;
+    }
+
+    bool shouldShowValueOrUnit(DailyRecordKind k) {
+      return shouldShowValue(k) || shouldShowUnit(k);
+    }
+
+    String valueLabel(AppLocalizations l, DailyRecordKind k) {
+      return switch (k) {
+        DailyRecordKind.water => l.recordCreateValueWater,
+        DailyRecordKind.meal => l.recordCreateValueMeal,
+        DailyRecordKind.symptom => l.recordCreateValueSymptom,
+        _ => l.recordCreateValueVital,
+      };
+    }
+
+    String titleLabel(AppLocalizations l, DailyRecordKind k) {
+      return switch (k) {
+        DailyRecordKind.meal => l.recordNlpMealTitleOptional,
+        DailyRecordKind.symptom => l.recordNlpSymptomTitleLabel,
+        _ => l.recordCreateFieldTitleOptional,
+      };
+    }
+
+    String noteLabel(AppLocalizations l, DailyRecordKind k) {
+      return switch (k) {
+        DailyRecordKind.note => l.recordNlpNoteBodyLabel,
+        _ => l.recordNlpDetailsLabel,
+      };
+    }
+
+    TextInputType? valueKeyboardType(DailyRecordKind k) {
+      return switch (k) {
+        DailyRecordKind.water => const TextInputType.numberWithOptions(
+          decimal: true,
+        ),
+        _ => null,
+      };
+    }
+
+    int noteMinLines(DailyRecordKind k) {
+      return switch (k) {
+        DailyRecordKind.note => 3,
+        _ => 2,
+      };
+    }
+
+    int noteMaxLines(DailyRecordKind k) {
+      return switch (k) {
+        DailyRecordKind.note => 5,
+        _ => 3,
+      };
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (_shouldShowTitle(kind)) ...[
+        if (shouldShowTitle(kind)) ...[
           TextField(
-            key: Key('record-nlp-candidate-title-${widget.index}'),
-            controller: _titleController,
-            enabled: widget.enabled,
-            decoration: InputDecoration(labelText: _titleLabel(l10n, kind)),
-            onChanged: (value) => _emit(title: value),
+            key: Key('record-nlp-candidate-title-$index'),
+            controller: titleController,
+            enabled: enabled,
+            decoration: InputDecoration(labelText: titleLabel(l10n, kind)),
+            onChanged: (value) => emit(title: value),
           ),
           const SizedBox(height: AppSpacingTokens.sm),
         ],
-        if (_shouldShowValueOrUnit(kind)) ...[
+        if (shouldShowValueOrUnit(kind)) ...[
           Row(
             children: [
-              if (_shouldShowValue(kind))
+              if (shouldShowValue(kind))
                 Expanded(
                   child: TextField(
-                    key: Key('record-nlp-candidate-value-${widget.index}'),
-                    controller: _valueController,
-                    enabled: widget.enabled,
-                    keyboardType: _valueKeyboardType(kind),
+                    key: Key('record-nlp-candidate-value-$index'),
+                    controller: valueController,
+                    enabled: enabled,
+                    keyboardType: valueKeyboardType(kind),
                     decoration: InputDecoration(
-                      labelText: _valueLabel(l10n, kind),
+                      labelText: valueLabel(l10n, kind),
                     ),
-                    onChanged: (value) => _emit(value: value),
+                    onChanged: (value) => emit(value: value),
                   ),
                 ),
-              if (_shouldShowValue(kind) && _shouldShowUnit(kind))
+              if (shouldShowValue(kind) && shouldShowUnit(kind))
                 const SizedBox(width: AppSpacingTokens.sm),
-              if (_shouldShowUnit(kind))
+              if (shouldShowUnit(kind))
                 Expanded(
                   child: _WaterUnitField(
-                    index: widget.index,
-                    enabled: widget.enabled,
-                    value: widget.item.unit,
-                    onChanged: (value) => _emit(unit: value),
+                    index: index,
+                    enabled: enabled,
+                    value: item.unit,
+                    onChanged: (value) => emit(unit: value),
                   ),
                 ),
             ],
@@ -111,105 +172,23 @@ class _RecordNlpCandidateEditorState extends State<RecordNlpCandidateEditor> {
         ],
         if (kind == DailyRecordKind.sleep) ...[
           _SleepCandidateFields(
-            index: widget.index,
-            item: widget.item,
-            enabled: widget.enabled,
-            onChanged: widget.onChanged,
+            index: index,
+            item: item,
+            enabled: enabled,
+            onChanged: onChanged,
           ),
           const SizedBox(height: AppSpacingTokens.sm),
         ],
         TextField(
-          key: Key('record-nlp-candidate-note-${widget.index}'),
-          controller: _noteController,
-          enabled: widget.enabled,
-          minLines: _noteMinLines(kind),
-          maxLines: _noteMaxLines(kind),
-          decoration: InputDecoration(labelText: _noteLabel(l10n, kind)),
-          onChanged: (value) => _emit(note: value),
+          key: Key('record-nlp-candidate-note-$index'),
+          controller: noteController,
+          enabled: enabled,
+          minLines: noteMinLines(kind),
+          maxLines: noteMaxLines(kind),
+          decoration: InputDecoration(labelText: noteLabel(l10n, kind)),
+          onChanged: (value) => emit(note: value),
         ),
       ],
-    );
-  }
-
-  bool _shouldShowTitle(DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.water => false,
-      DailyRecordKind.sleep => false,
-      _ => true,
-    };
-  }
-
-  bool _shouldShowValue(DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.note => false,
-      DailyRecordKind.sleep => false,
-      _ => true,
-    };
-  }
-
-  bool _shouldShowUnit(DailyRecordKind kind) {
-    return kind == DailyRecordKind.water;
-  }
-
-  bool _shouldShowValueOrUnit(DailyRecordKind kind) {
-    return _shouldShowValue(kind) || _shouldShowUnit(kind);
-  }
-
-  String _valueLabel(AppLocalizations l10n, DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.water => l10n.recordCreateValueWater,
-      DailyRecordKind.meal => l10n.recordCreateValueMeal,
-      DailyRecordKind.symptom => l10n.recordCreateValueSymptom,
-      _ => l10n.recordCreateValueVital,
-    };
-  }
-
-  String _titleLabel(AppLocalizations l10n, DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.meal => l10n.recordNlpMealTitleOptional,
-      DailyRecordKind.symptom => l10n.recordNlpSymptomTitleLabel,
-      _ => l10n.recordCreateFieldTitleOptional,
-    };
-  }
-
-  String _noteLabel(AppLocalizations l10n, DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.note => l10n.recordNlpNoteBodyLabel,
-      _ => l10n.recordNlpDetailsLabel,
-    };
-  }
-
-  TextInputType? _valueKeyboardType(DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.water => const TextInputType.numberWithOptions(
-        decimal: true,
-      ),
-      _ => null,
-    };
-  }
-
-  int _noteMinLines(DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.note => 3,
-      _ => 2,
-    };
-  }
-
-  int _noteMaxLines(DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.note => 5,
-      _ => 3,
-    };
-  }
-
-  void _emit({String? title, String? value, String? unit, String? note}) {
-    widget.onChanged(
-      widget.item.copyWith(
-        title: title ?? widget.item.title,
-        value: value ?? widget.item.value,
-        unit: unit ?? widget.item.unit,
-        note: note ?? widget.item.note,
-      ),
     );
   }
 }

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -13,7 +14,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class AccountSettingsPage extends ConsumerStatefulWidget {
+class AccountSettingsPage extends HookConsumerWidget {
   const AccountSettingsPage({
     super.key,
     this.enableFormAnimation = true,
@@ -23,53 +24,9 @@ class AccountSettingsPage extends ConsumerStatefulWidget {
   final bool enableFormAnimation;
   final String? wechatCode;
   final String? wechatState;
-  @override
-  ConsumerState<AccountSettingsPage> createState() =>
-      _AccountSettingsPageState();
-}
-
-class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
-  late final TextEditingController _emailController,
-      _nicknameController,
-      _avatarController;
-  late final TextEditingController _oldPasswordController,
-      _newPasswordController,
-      _deletePasswordController;
-  String? _formUserId;
-  bool _wechatIdentityLinkStarted = false;
 
   @override
-  void initState() {
-    super.initState();
-    final user = ref.read(authSessionProvider).user;
-    _emailController = TextEditingController(text: user?.email ?? '');
-    _nicknameController = TextEditingController(text: user?.nickname ?? '');
-    _avatarController = TextEditingController(text: user?.avatar ?? '');
-    _oldPasswordController = TextEditingController();
-    _newPasswordController = TextEditingController();
-    _deletePasswordController = TextEditingController();
-    _formUserId = user?.id;
-    if ((widget.wechatCode?.isNotEmpty ?? false) &&
-        (widget.wechatState?.isNotEmpty ?? false)) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _maybeCompleteWechatIdentityLink();
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _nicknameController.dispose();
-    _avatarController.dispose();
-    _oldPasswordController.dispose();
-    _newPasswordController.dispose();
-    _deletePasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
     final accountState = ref.watch(authAccountProvider);
     final accountNotifier = ref.read(authAccountProvider.notifier);
@@ -80,14 +37,73 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
     final success = accountState.successMessage?.isNotEmpty == true
         ? accountState.successMessage
         : null;
-    _syncControllersFromUser(user);
 
-    if ((widget.wechatCode?.isNotEmpty ?? false) &&
-        (widget.wechatState?.isNotEmpty ?? false) &&
-        !_wechatIdentityLinkStarted &&
+    final emailController = useTextEditingController(text: user?.email ?? '');
+    final nicknameController = useTextEditingController(
+      text: user?.nickname ?? '',
+    );
+    final avatarController = useTextEditingController(text: user?.avatar ?? '');
+    final oldPasswordController = useTextEditingController();
+    final newPasswordController = useTextEditingController();
+    final deletePasswordController = useTextEditingController();
+    final formUserId = useRef<String?>(null);
+    final wechatIdentityLinkStarted = useRef(false);
+
+    // Sync controllers when user changes
+    useEffect(() {
+      if (user == null || formUserId.value == user.id) return null;
+      formUserId.value = user.id;
+      emailController.text = user.email ?? '';
+      nicknameController.text = user.nickname ?? '';
+      avatarController.text = user.avatar ?? '';
+      return null;
+    }, [user?.id]);
+
+    Future<void> completeWechatIdentityLink(String code, String state) async {
+      final ok = await ref
+          .read(authAccountProvider.notifier)
+          .completeWechatWebIdentityLink(code: code, state: state);
+      if (!context.mounted) return;
+      if (ok) {
+        await AppToast.show(context, l10n.authIdentityLinkSuccess);
+        if (context.mounted) context.go('/account');
+      }
+    }
+
+    void maybeCompleteWechatIdentityLink() {
+      if (wechatIdentityLinkStarted.value ||
+          wechatCode?.isNotEmpty != true ||
+          wechatState?.isNotEmpty != true) {
+        return;
+      }
+      final s = ref.read(authSessionProvider);
+      if (s.isLoading) return;
+      wechatIdentityLinkStarted.value = true;
+      if (!s.canAccessProtectedData) {
+        context.go(loginRouteForReturnTo('/account'));
+        return;
+      }
+      unawaited(completeWechatIdentityLink(wechatCode!, wechatState!));
+    }
+
+    // Handle OAuth callback on first build
+    useEffect(() {
+      if ((wechatCode?.isNotEmpty ?? false) &&
+          (wechatState?.isNotEmpty ?? false)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          maybeCompleteWechatIdentityLink();
+        });
+      }
+      return null;
+    }, []);
+
+    // Handle OAuth in subsequent builds
+    if ((wechatCode?.isNotEmpty ?? false) &&
+        (wechatState?.isNotEmpty ?? false) &&
+        !wechatIdentityLinkStarted.value &&
         !session.isLoading) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _maybeCompleteWechatIdentityLink();
+        maybeCompleteWechatIdentityLink();
       });
     }
 
@@ -95,7 +111,7 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
       title: l10n.authAccountSettingsFormTitle,
       leading: BackButton(onPressed: () => context.pop()),
       centerTitle: true,
-      enableFormAnimation: widget.enableFormAnimation,
+      enableFormAnimation: enableFormAnimation,
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -122,13 +138,13 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
                   ),
                   const SizedBox(height: AppSpacingTokens.lg),
                   AuthTextField(
-                    controller: _nicknameController,
+                    controller: nicknameController,
                     label: l10n.authNicknameLabel,
                     hint: l10n.authNicknameHint,
                   ),
                   const SizedBox(height: AppSpacingTokens.md),
                   AuthTextField(
-                    controller: _avatarController,
+                    controller: avatarController,
                     label: l10n.authAvatarLabel,
                     hint: l10n.authAvatarHint,
                     keyboardType: TextInputType.url,
@@ -139,8 +155,8 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
                     isLoading: accountState.isSubmitting,
                     onPressed: () async {
                       final ok = await accountNotifier.updateProfile(
-                        nickname: _nicknameController.text,
-                        avatar: _avatarController.text,
+                        nickname: nicknameController.text,
+                        avatar: avatarController.text,
                       );
                       if (ok && context.mounted) {
                         await AppToast.show(
@@ -157,7 +173,7 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
             AuthSectionCard(
               child: EmailSection(
                 user: user,
-                emailController: _emailController,
+                emailController: emailController,
                 onChangeEmail: () => context.push('/account/change-email'),
               ),
             ),
@@ -166,7 +182,8 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
               child: LinkedIdentitiesSection(
                 user: user,
                 isSubmitting: accountState.isSubmitting,
-                onLinkWechat: () => _startWechatIdentityLink(context, l10n),
+                onLinkWechat: () =>
+                    _startWechatIdentityLink(context, l10n, ref),
                 onUnlink: (identity) async {
                   final confirmed = await _confirmUnlinkIdentity(
                     context,
@@ -190,26 +207,26 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
             AuthSectionCard(
               child: PasswordSection(
                 user: user,
-                oldPasswordController: _oldPasswordController,
-                newPasswordController: _newPasswordController,
+                oldPasswordController: oldPasswordController,
+                newPasswordController: newPasswordController,
                 isSubmitting: accountState.isSubmitting,
                 onChangePassword: () async {
                   final ctx = context;
                   final router = GoRouter.of(ctx);
-                  if (_oldPasswordController.text.trim().isEmpty) {
+                  if (oldPasswordController.text.trim().isEmpty) {
                     await AppToast.show(
                       ctx,
                       l10n.authCurrentPasswordRequiredToast,
                     );
                     return;
                   }
-                  if (_newPasswordController.text.trim().isEmpty) {
+                  if (newPasswordController.text.trim().isEmpty) {
                     await AppToast.show(ctx, l10n.authNewPasswordRequiredToast);
                     return;
                   }
                   final ok = await accountNotifier.changePassword(
-                    oldPassword: _oldPasswordController.text,
-                    newPassword: _newPasswordController.text,
+                    oldPassword: oldPasswordController.text,
+                    newPassword: newPasswordController.text,
                   );
                   if (!ok || !ctx.mounted) return;
                   await AppToast.show(ctx, l10n.authChangePasswordSuccess);
@@ -221,12 +238,12 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
             AuthSectionCard(
               child: DeleteAccountSection(
                 user: user,
-                deletePasswordController: _deletePasswordController,
+                deletePasswordController: deletePasswordController,
                 isSubmitting: accountState.isSubmitting,
                 onDelete: () async {
                   final ctx = context;
                   final router = GoRouter.of(ctx);
-                  if (_deletePasswordController.text.trim().isEmpty) {
+                  if (deletePasswordController.text.trim().isEmpty) {
                     await AppToast.show(
                       ctx,
                       l10n.authCurrentPasswordRequiredToast,
@@ -234,7 +251,7 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
                     return;
                   }
                   final ok = await accountNotifier.deleteAccount(
-                    password: _deletePasswordController.text,
+                    password: deletePasswordController.text,
                   );
                   if (!ok || !ctx.mounted) return;
                   await AppToast.show(ctx, l10n.authDeleteAccountSuccess);
@@ -255,52 +272,14 @@ class _AccountSettingsPageState extends ConsumerState<AccountSettingsPage> {
       ),
     );
   }
-
-  void _syncControllersFromUser(AuthUser? user) {
-    if (user == null || _formUserId == user.id) return;
-    _formUserId = user.id;
-    _emailController.text = user.email ?? '';
-    _nicknameController.text = user.nickname ?? '';
-    _avatarController.text = user.avatar ?? '';
-  }
-
-  void _maybeCompleteWechatIdentityLink() {
-    if (_wechatIdentityLinkStarted ||
-        widget.wechatCode?.isNotEmpty != true ||
-        widget.wechatState?.isNotEmpty != true) {
-      return;
-    }
-    final session = ref.read(authSessionProvider);
-    if (session.isLoading) return;
-    _wechatIdentityLinkStarted = true;
-    if (!session.canAccessProtectedData) {
-      context.go(loginRouteForReturnTo('/account'));
-      return;
-    }
-    unawaited(
-      _completeWechatIdentityLink(widget.wechatCode!, widget.wechatState!),
-    );
-  }
-
-  Future<void> _completeWechatIdentityLink(String code, String state) async {
-    final l10n = AppLocalizations.of(context)!;
-    final ok = await ref
-        .read(authAccountProvider.notifier)
-        .completeWechatWebIdentityLink(code: code, state: state);
-    if (!mounted) return;
-    if (ok) {
-      await AppToast.show(context, l10n.authIdentityLinkSuccess);
-      if (mounted) context.go('/account');
-    }
-  }
 }
 
 Future<void> _startWechatIdentityLink(
   BuildContext context,
   AppLocalizations l10n,
+  WidgetRef ref,
 ) async {
-  final container = ProviderScope.containerOf(context, listen: false);
-  final result = await container
+  final result = await ref
       .read(authAccountProvider.notifier)
       .startWechatIdentityLink(webCallbackUri: _webWechatLinkCallbackUri());
   if (!context.mounted || result == null) return;
