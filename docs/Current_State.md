@@ -39,6 +39,7 @@ This file records current implementation facts only. Product direction lives in 
 
 - UI/UX pass and freezed migration are complete.
 - Record fast-entry UX is in place: quick actions open a lightweight fast-entry surface first, common values save with the current time, and `more` opens the full form.
+- **语音 / 截图记录录入**（2026-06-30）：Record 页面 AI 输入栏新增可交互麦克风（`speech_to_text`）和相机（`google_mlkit_text_recognition` OCR）图标。语音录入和拍照识别分别弹出底部面板，识别/听写完成后将文本传入现有的 `record_nlp_controller` NLP pipeline（解析→候选预览→确认保存），无需额外后端改动。
 - **OAuth Provider 扩展**（2026-06-29）：Apple Sign In + QQ 互联完成。后端 4 个 Provider（WeChat Web / WeChat Mobile / Apple / QQ）统一实现 `OAuthProvider` 接口，WeChat 共用 `WechatBaseOAuthProvider` 基类。`AuthOAuthStateService` 按 provider 隔离缓存 key，避免 state 碰撞。Apple 使用 `jsonwebtoken` 校验 identityToken（JWKS→PEM→jwt.verify），QQ 使用标准 OAuth 2.0 三步式流程。前端 `login_page.dart` 增加了 Apple（`sign_in_with_apple`）/ QQ 登录面板，`router.dart` 新增 `/login/oauth/qq` 路由。
 
 ## UX Audit Remediation (Completed)

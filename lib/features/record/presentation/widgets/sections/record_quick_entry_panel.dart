@@ -20,81 +20,119 @@ class RecordAiInputBar extends StatelessWidget {
     required this.typography,
     required this.surface,
     this.onTap,
+    this.onMicTap,
+    this.onCameraTap,
   });
 
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
   final VoidCallback? onTap;
+  final VoidCallback? onMicTap;
+  final VoidCallback? onCameraTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
       key: const Key('record-ai-input'),
       color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(
-              color: AppColorTokens.cyanDeep.withValues(alpha: 0.32),
-            ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: surface.canvas,
+          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          border: Border.all(
+            color: AppColorTokens.cyanDeep.withValues(alpha: 0.32),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.sm,
-            ),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.auto_awesome_rounded,
-                  color: AppColorTokens.gradientPreviewStart,
-                  size: AppSpacingTokens.xl,
-                ),
-                const SizedBox(width: AppSpacingTokens.md),
-                Expanded(
-                  child: Text(
-                    l10n.recordAiInputHint,
-                    style: typography.bodyMd.copyWith(color: surface.mute),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: AppColorTokens.cyanDeep.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-                  ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.md,
+            vertical: AppSpacingTokens.sm,
+          ),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.auto_awesome_rounded,
+                color: AppColorTokens.gradientPreviewStart,
+                size: AppSpacingTokens.xl,
+              ),
+              const SizedBox(width: AppSpacingTokens.md),
+              Expanded(
+                child: InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacingTokens.sm,
                       vertical: AppSpacingTokens.xxs,
                     ),
                     child: Text(
-                      l10n.recordAiBadge,
-                      style: typography.caption.copyWith(
-                        color: AppColorTokens.cyanDeep,
-                        fontWeight: FontWeight.w800,
-                      ),
+                      l10n.recordAiInputHint,
+                      style: typography.bodyMd.copyWith(color: surface.mute),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                Tooltip(
-                  message: l10n.recordVoiceInputTitle,
-                  child: Icon(
-                    Icons.mic_none_rounded,
-                    color: Theme.of(context).colorScheme.onSurface,
-                    size: AppSpacingTokens.lg,
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: AppColorTokens.cyanDeep.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacingTokens.sm,
+                    vertical: AppSpacingTokens.xxs,
+                  ),
+                  child: Text(
+                    l10n.recordAiBadge,
+                    style: typography.caption.copyWith(
+                      color: AppColorTokens.cyanDeep,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: AppSpacingTokens.xxs),
+              _IconButton(
+                tooltip: l10n.recordVoiceInputTitle,
+                icon: Icons.mic_none_rounded,
+                onTap: onMicTap,
+              ),
+              _IconButton(
+                tooltip: l10n.recordOcrEntryTitle,
+                icon: Icons.camera_alt_outlined,
+                onTap: onCameraTap,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _IconButton extends StatelessWidget {
+  const _IconButton({required this.tooltip, required this.icon, this.onTap});
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.xxs),
+          child: Icon(
+            icon,
+            color: Theme.of(context).colorScheme.onSurface,
+            size: AppSpacingTokens.lg,
           ),
         ),
       ),

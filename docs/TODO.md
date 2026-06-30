@@ -37,5 +37,4 @@ This file records work that is still missing or intentionally gated. Current fac
 - Worker-written reminder delivery history for local/push/SMS channels.
 - Environment-driven Today or Mine suggestions.
 - Real barcode / OCR / photo / prescription recognition flow.
-- Voice or screenshot-based natural-language record intake.
 - Real authenticated Web report preview beyond the competition/marketing homepage.
