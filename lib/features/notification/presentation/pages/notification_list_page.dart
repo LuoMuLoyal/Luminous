@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
@@ -21,6 +22,7 @@ class NotificationListPage extends ConsumerWidget {
     final listAsync = ref.watch(notificationListControllerProvider);
 
     return PageScaffoldShell(
+      leading: const AppBackButton(),
       title: l10n.notificationListTitle,
       actions: [
         _MarkAllReadButton(
