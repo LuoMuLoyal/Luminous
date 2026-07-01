@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-06-30
+Last updated: 2026-07-01
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -39,7 +39,7 @@ This file records current implementation facts only. Product direction lives in 
 
 - UI/UX pass and freezed migration are complete.
 - Record fast-entry UX is in place: quick actions open a lightweight fast-entry surface first, common values save with the current time, and `more` opens the full form.
-- **语音 / 截图记录录入**（2026-06-30）：Record 页面 AI 输入栏新增可交互麦克风（`speech_to_text`）和相机（`google_mlkit_text_recognition` OCR）图标。语音录入和拍照识别分别弹出底部面板，识别/听写完成后将文本传入现有的 `record_nlp_controller` NLP pipeline（解析→候选预览→确认保存），无需额外后端改动。
+- **语音 / 拍照 OCR 记录录入**（2026-07-01）：Record 页面 AI 输入栏提供麦克风（`speech_to_text`）和相机（`google_mlkit_text_recognition` OCR）入口。语音录入会按当前 app locale 选择识别 locale（中文优先 `zh_CN`，英文优先 `en_US`，并回退到同语种可用变体），拍照识别会按当前 app locale 选择 OCR script（中文 `chinese`，其他 `latin`）。语音听写和拍照识别完成后都会把文本送入现有 `record_nlp_controller` NLP pipeline（解析→候选预览→确认保存），OCR 失败时使用专用失败 toast，而不是复用 NLP 输入提示。
 - **OAuth Provider 扩展**（2026-06-29）：Apple Sign In + QQ 互联完成。后端 4 个 Provider（WeChat Web / WeChat Mobile / Apple / QQ）统一实现 `OAuthProvider` 接口，WeChat 共用 `WechatBaseOAuthProvider` 基类。`AuthOAuthStateService` 按 provider 隔离缓存 key，避免 state 碰撞。Apple 使用 `jsonwebtoken` 校验 identityToken（JWKS→PEM→jwt.verify），QQ 使用标准 OAuth 2.0 三步式流程。前端 `login_page.dart` 增加了 Apple（`sign_in_with_apple`）/ QQ 登录面板，`router.dart` 新增 `/login/oauth/qq` 路由。
 
 ## UX Audit Remediation (Completed)
@@ -145,6 +145,7 @@ All 16 files with manual `TextEditingController` lifecycle (`late final` + `init
 ## Luminous Runtime Snapshot
 
 - Stack: Flutter + Riverpod + GoRouter + `hooks_riverpod` + `flutter_hooks`.
+- Android app module now follows Flutter-managed default `minSdk` instead of pinning Android 12+ only in Gradle; Android 12 splash behavior remains handled by the existing `values-v31/` resource split rather than by artificially raising the compatibility floor.
 - Generated Lucent client: `packages/lucent_openapi`.
 - Auth/session state is split into restoring, confirmed signed-out, and signed-in.
 - Integration coverage now includes four real Android-emulator full-stack lanes against Lucent test runtime:
@@ -204,7 +205,7 @@ Account, basic health archive, allergies, current medicines, contract-backed sup
 - Worker-populated reminder delivery history; the UI can read audit rows, but no local/push/SMS worker writes them yet.
 - Lightweight mood record wiring.
 - Environment contextual wiring for Today or Mine.
-- Medicine scan/OCR/photo/barcode/prescription recognition. The underlying `MedicineWorkspace.quickActions` and related enums/entities are kept but not surfaced in the UI.
+- Medicine-side scan/OCR/photo/barcode/prescription recognition. The underlying `MedicineWorkspace.quickActions` and related enums/entities are kept but not surfaced in the UI.
 - Mock repositories (`mock_*_repository.dart`) retained for dev preview and testing. Release builds use domain `signedOut()` factories via `kDebugMode` gating. `MockMedicineSearchRepository` is test-only.
 - **2026-06-30**: Removed 11 `medicineMock*` ARB keys containing `[DEMO]` hardcoded drug names from `app_en.arb`/`app_zh.arb`. Replaced with 3 generic fallback keys (`medicineGenericName`/`medicineGenericDosage`/`medicineGenericSchedule`). Corresponding `MedicineCopyKey` enum values updated, mock repository `MedicinePlanItem` data switched to `rawName`/`rawDosage`/`rawSchedule` pattern.
 - **2026-06-30**: `MemorySessionStore` and `StaticTodayRepository` now support configurable `delay` parameter (default `Duration.zero`) for testing loading states with simulated network latency.

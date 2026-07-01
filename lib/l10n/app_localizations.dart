@@ -992,6 +992,12 @@ abstract class AppLocalizations {
   /// **'正在识别文字...'**
   String get recordOcrRecognizingHint;
 
+  /// No description provided for @recordOcrRecognitionFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'文字识别失败了，换一张更清晰的图片再试。'**
+  String get recordOcrRecognitionFailed;
+
   /// No description provided for @recordMicPermissionDenied.
   ///
   /// In zh, this message translates to:

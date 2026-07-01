@@ -1,6 +1,6 @@
 # Luminous Next Plan
 
-Last updated: 2026-06-30
+Last updated: 2026-07-01
 
 This file records the next implementation order only. Current facts belong in `Current_State.md`; change history belongs in `migration-log/YYYY-MM-DD.md`.
 
@@ -29,7 +29,7 @@ This file records the next implementation order only. Current facts belong in `C
 - agent-assisted support discovery and map-backed nearby-care lookup
 - environment signals for contextual Today/Mine use
 - Report score/finding/pattern/trend/AI action card drill-down (needs product decision: detail page vs filter Record tab)
-- voice input, photo/scan/OCR/barcode/prescription action shapes (need native plugins + backend contracts)
+- medicine-side scan/OCR/barcode/prescription action shapes (need product scope + backend contracts)
 - real authenticated Web report preview beyond the competition site
 - system health app bridging through Apple Health / Health Connect
 
@@ -49,7 +49,7 @@ This file records the next implementation order only. Current facts belong in `C
 - specialist health packs
 - smart devices or family profiles
 - skin recognition or report photo import
-- OCR/barcode/photo/prescription recognition UI or contracts
+- medicine-side OCR/barcode/photo/prescription recognition UI or contracts
 - real push delivery through FCM/APNs
 - real SMS delivery
 - backend reminder delivery workers

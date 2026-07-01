@@ -14,7 +14,15 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// recognized text.
 ///
 /// Returns `null` if the user cancels or no text was recognized.
-Future<String?> showRecordOcrEntrySheet(BuildContext context) {
+typedef RecordOcrImagePicker = Future<XFile?> Function(ImageSource source);
+typedef RecordOcrRecognizer =
+    Future<String> Function(XFile image, Locale locale);
+
+Future<String?> showRecordOcrEntrySheet(
+  BuildContext context, {
+  RecordOcrImagePicker? pickImage,
+  RecordOcrRecognizer? recognizeText,
+}) {
   return showModalBottomSheet<String>(
     context: context,
     isScrollControlled: true,
@@ -24,11 +32,28 @@ Future<String?> showRecordOcrEntrySheet(BuildContext context) {
         top: Radius.circular(AppRadiusTokens.xl),
       ),
     ),
-    builder: (dialogContext) => _RecordOcrEntrySheet(),
+    builder: (dialogContext) => _RecordOcrEntrySheet(
+      pickImage:
+          pickImage ??
+          ((source) =>
+              ImagePicker().pickImage(source: source, imageQuality: 90)),
+      recognizeText:
+          recognizeText ??
+          ((image, locale) =>
+              const OcrService().recognizeText(image, locale: locale)),
+    ),
   );
 }
 
 class _RecordOcrEntrySheet extends HookConsumerWidget {
+  const _RecordOcrEntrySheet({
+    required this.pickImage,
+    required this.recognizeText,
+  });
+
+  final RecordOcrImagePicker pickImage;
+  final RecordOcrRecognizer recognizeText;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -42,8 +67,8 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
     final imagePath = useState<String?>(null);
 
     Future<void> pickAndRecognize(ImageSource source) async {
-      final picker = ImagePicker();
-      final photo = await picker.pickImage(source: source, imageQuality: 90);
+      final locale = Localizations.localeOf(context);
+      final photo = await pickImage(source);
       if (photo == null) return;
 
       imagePath.value = photo.path;
@@ -51,15 +76,11 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
       isRecognizing.value = true;
 
       try {
-        const ocr = OcrService();
-        final text = await ocr.recognizeText(photo);
+        final text = await recognizeText(photo, locale);
         recognizedText.value = text;
       } catch (e) {
         if (context.mounted) {
-          await AppToast.show(
-            context,
-            l10n.recordNlpInputRequiredToast, // fallback for now
-          );
+          await AppToast.show(context, l10n.recordOcrRecognitionFailed);
         }
       } finally {
         isRecognizing.value = false;

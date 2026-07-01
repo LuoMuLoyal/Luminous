@@ -482,6 +482,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordOcrRecognizingHint => '正在识别文字...';
 
   @override
+  String get recordOcrRecognitionFailed => '文字识别失败了，换一张更清晰的图片再试。';
+
+  @override
   String get recordMicPermissionDenied => '麦克风权限未授权，请在系统设置中开启。';
 
   @override

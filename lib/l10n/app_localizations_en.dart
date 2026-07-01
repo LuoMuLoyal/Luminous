@@ -539,6 +539,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordOcrRecognizingHint => 'Recognizing text...';
 
   @override
+  String get recordOcrRecognitionFailed =>
+      'Text recognition failed. Try another photo.';
+
+  @override
   String get recordMicPermissionDenied =>
       'Microphone permission denied. Please enable it in system settings.';
 
