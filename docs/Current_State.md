@@ -156,7 +156,9 @@ All 16 files with manual `TextEditingController` lifecycle (`late final` + `init
 - Repo-local validation entrypoints are now split into:
   - `tool/run_daily_checks.dart` for repo-safe checks (`flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`)
   - `tool/run_fullstack_checks.dart` for Android emulator + Lucent test-runtime lanes
+- `tool/verify_lucent_openapi_sync.dart` is the lightweight contract gate for local workflows; it fails when Lucent `docs/openapi.json` or Luminous `packages/lucent_openapi/` still carry uncommitted drift.
 - Frontend tests are now grouped by feature under nested `test/` and `integration_test/` directories instead of one flat root.
+- `integration_test/` is intentionally split between offline/mock-driven app flows and Android-emulator full-stack lanes; only the latter require a locally started Lucent test runtime.
 - Full-stack mobile E2E is intentionally local/manual right now. It is not part of the current GitHub Actions pipeline.
 - Shared support-resource reads now live under a dedicated `features/support/` frontend boundary instead of staying nested under `settings`.
 - Protected providers do not call Lucent while auth is restoring or confirmed signed out.
