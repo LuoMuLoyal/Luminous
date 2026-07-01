@@ -49,11 +49,16 @@ its built-in default test account values.
 - GitHub Actions workflow: `.github/workflows/flutter-ci.yml`
 - Current CI scope: `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`
 - Current CI is validation-only. It does not build or publish Android, iOS, desktop, or web artifacts.
+- `integration_test/` currently contains two different lanes:
+  - offline/mock-driven integration flows that exercise the real app shell and feature pages without a Lucent runtime
+  - full-stack mobile lanes that require an Android emulator plus a locally reachable Lucent test runtime
 - Device/emulator E2E is split by module and scenario under `integration_test/`; run all with `flutter test integration_test` or one scenario with `flutter test integration_test/settings_preferences_e2e_test.dart`.
 - Local daily validation entry:
   `dart run tool/run_daily_checks.dart`
 - Local full-stack gate entry:
   `dart run tool/run_fullstack_checks.dart`
+- Local contract-sync gate:
+  `dart run tool/verify_lucent_openapi_sync.dart`
 - Shared git hooks installer:
   `dart run tool/install_git_hooks.dart`
 - Short script-style entries:
@@ -64,7 +69,8 @@ its built-in default test account values.
 - `tool/run_fullstack_checks.dart` now prefers `.env.fullstack-e2e` via `--dart-define-from-file` when that file exists.
 - Shared repo hooks live in `.githooks/`. After cloning, run `dart run tool/install_git_hooks.dart` once to point `core.hooksPath` at that folder. Hook entrypoints now call Dart directly instead of delegating through PowerShell wrappers.
 - Current hook scope: `pre-commit` runs `flutter gen-l10n`, `dart format --output=none --set-exit-if-changed` on staged Dart files, and `flutter analyze`; `pre-push` runs `tool/run_daily_checks.dart`.
-- Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a separate Lucent test runtime, test database state, and Android emulator orchestration across two repositories.
+- Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a local Android emulator plus a Lucent test runtime started from `../Lucent`, including test database state and cross-repo orchestration.
+- OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, regenerate `Lucent/docs/openapi.json` first, then run `dart run tool/regenerate_lucent_openapi.dart` in Luminous before merging. `dart run tool/verify_lucent_openapi_sync.dart` is the lightweight gate that fails when either side still has uncommitted contract/client drift.
 
 ## Docs
 

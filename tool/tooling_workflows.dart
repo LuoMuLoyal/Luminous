@@ -41,6 +41,14 @@ Future<void> runDailyChecks(ToolContext context) async {
     workingDirectory: context.repoRoot,
     stepName: 'flutter test --coverage',
   );
+  stdout.writeln('');
+
+  await runLoggedCommand(
+    'dart',
+    ['run', 'tool/verify_lucent_openapi_sync.dart'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart run tool/verify_lucent_openapi_sync.dart',
+  );
 }
 
 Future<void> runPreCommitChecks(ToolContext context) async {
