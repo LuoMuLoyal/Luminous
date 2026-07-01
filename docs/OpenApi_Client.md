@@ -11,6 +11,7 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 - Network wrapper: `lib/core/network/lucent_dio_client.dart`
 - Public Flutter API exports: `lib/core/network/lucent_api.dart`
 - Regeneration wrapper: `tool/regenerate_lucent_openapi.dart`
+- Contract drift verifier: `tool/verify_lucent_openapi_sync.dart`
 
 ## Current Generated Baseline
 
@@ -44,6 +45,12 @@ From `Luminous`:
 dart run tool/regenerate_lucent_openapi.dart
 ```
 
+Hosted CI can also point the workflow at an explicitly checked-out Lucent contract file:
+
+```bash
+dart run tool/verify_lucent_openapi_sync.dart --openapi /absolute/path/to/Lucent/docs/openapi.json
+```
+
 The wrapper exports Lucent OpenAPI, deletes stale legacy assistant generated files (`ai_chat_*`, `stream_ai_chat_*`, `update_ai_chat_*`) before regeneration, regenerates the Dart client, disables generated Markdown doc stubs and generated package test stubs, restores the generated package constraints, patches broken enum defaults before serializer build, rebuilds serializers, patches post-build enum decode fallback bugs plus known nullable-map generator output, restores missing generated API exports/getters when the generator drops them, formats generated model files, analyzes the generated package, and refreshes root Flutter dependencies.
 
 Do not run ad-hoc `npx @openapitools/openapi-generator-cli generate` or manual `build_runner` steps for normal work.
@@ -54,6 +61,12 @@ After regeneration, run:
 git -C Luminous diff --check
 flutter analyze
 flutter test
+```
+
+For CI-only drift verification without re-exporting from a sibling workspace layout, run:
+
+```bash
+dart run tool/verify_lucent_openapi_sync.dart --openapi /absolute/path/to/Lucent/docs/openapi.json
 ```
 
 Generated OpenAPI client paths are covered by `.gitattributes` whitespace rules, so `git diff --check` will not block on generated trailing spaces there.

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'tooling_support.dart';
 
-Future<void> runDailyChecks(ToolContext context) async {
+Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   await runLoggedCommand(
     'flutter',
     ['pub', 'get'],
@@ -45,7 +45,11 @@ Future<void> runDailyChecks(ToolContext context) async {
 
   await runLoggedCommand(
     'dart',
-    ['run', 'tool/verify_lucent_openapi_sync.dart'],
+    [
+      'run',
+      'tool/verify_lucent_openapi_sync.dart',
+      if (openApiPath != null) '--openapi=$openApiPath',
+    ],
     workingDirectory: context.repoRoot,
     stepName: 'dart run tool/verify_lucent_openapi_sync.dart',
   );

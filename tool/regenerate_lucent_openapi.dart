@@ -16,11 +16,11 @@ const _openApiGeneratorGlobalProperties =
     'apiTests=false,'
     'modelTests=false';
 
-Future<void> main() async {
+Future<void> main(List<String> args) async {
   final scriptFile = File.fromUri(Platform.script);
   final luminousRoot = scriptFile.parent.parent;
   final lumosRoot = luminousRoot.parent;
-  final lucentRoot = Directory(
+  final defaultLucentRoot = Directory(
     '${lumosRoot.path}${Platform.pathSeparator}Lucent',
   );
   final generatedPackageRoot = Directory(
@@ -28,21 +28,29 @@ Future<void> main() async {
     '${Platform.pathSeparator}lucent_openapi',
   );
 
-  if (!lucentRoot.existsSync()) {
-    stderr.writeln('Lucent directory not found: ${lucentRoot.path}');
-    exitCode = 1;
-    return;
-  }
-
-  if (!generatedPackageRoot.existsSync()) {
-    stderr.writeln(
-      'Generated package directory not found: ${generatedPackageRoot.path}',
-    );
-    exitCode = 1;
-    return;
-  }
-
   try {
+    final parsed = _parseNamedArgs(args);
+    if (parsed.showHelp) {
+      stdout.writeln(_usage);
+      return;
+    }
+
+    final explicitOpenApiFile = _resolveExplicitOpenApiFile(
+      parsed.openApiPath,
+      luminousRoot: luminousRoot,
+    );
+    final lucentRoot = explicitOpenApiFile == null ? defaultLucentRoot : null;
+
+    if (lucentRoot != null && !lucentRoot.existsSync()) {
+      throw StateError('Lucent directory not found: ${lucentRoot.path}');
+    }
+
+    if (!generatedPackageRoot.existsSync()) {
+      throw StateError(
+        'Generated package directory not found: ${generatedPackageRoot.path}',
+      );
+    }
+
     final deletedStaleAssistantArtifacts = _deleteStaleAssistantArtifacts(
       generatedPackageRoot,
     );
@@ -52,12 +60,9 @@ Future<void> main() async {
           : 'Removed $deletedStaleAssistantArtifacts stale assistant generated artifacts before regeneration.',
     );
 
-    await _runCommand(
-      'pnpm',
-      ['export:openapi'],
-      workingDirectory: lucentRoot.path,
-      stepName: 'Export Lucent OpenAPI',
-    );
+    final openApiFile =
+        explicitOpenApiFile ??
+        await _exportOpenApiAndResolveFile(lucentRoot: lucentRoot!);
 
     await _runCommand(
       'npx',
@@ -67,8 +72,7 @@ Future<void> main() async {
         '-g',
         'dart-dio',
         '-i',
-        '${lucentRoot.path}${Platform.pathSeparator}docs'
-            '${Platform.pathSeparator}openapi.json',
+        openApiFile.path,
         '-o',
         generatedPackageRoot.path,
         '--global-property=$_openApiGeneratorGlobalProperties',
@@ -199,11 +203,106 @@ Future<void> main() async {
 
     stdout.writeln('');
     stdout.writeln('Lucent OpenAPI regeneration finished.');
+  } on FormatException catch (error) {
+    stderr.writeln(error.message);
+    stderr.writeln('');
+    stderr.writeln(_usage);
+    exitCode = 64;
+  } on StateError catch (error) {
+    stderr.writeln(error.message);
+    exitCode = 1;
   } on ProcessException catch (error) {
     stderr.writeln(error.message);
     exitCode = error.errorCode;
   }
 }
+
+Future<File> _exportOpenApiAndResolveFile({
+  required Directory lucentRoot,
+}) async {
+  await _runCommand(
+    'pnpm',
+    ['export:openapi'],
+    workingDirectory: lucentRoot.path,
+    stepName: 'Export Lucent OpenAPI',
+  );
+
+  return File(
+    '${lucentRoot.path}${Platform.pathSeparator}docs'
+    '${Platform.pathSeparator}openapi.json',
+  );
+}
+
+_ParsedArgs _parseNamedArgs(List<String> args) {
+  String? openApiPath;
+  var showHelp = false;
+
+  for (var index = 0; index < args.length; index += 1) {
+    final argument = args[index];
+    if (argument == '--help' || argument == '-h') {
+      showHelp = true;
+      continue;
+    }
+
+    if (argument == '--openapi') {
+      if (index + 1 >= args.length) {
+        throw const FormatException('Missing value for argument: --openapi');
+      }
+      openApiPath = args[index + 1];
+      index += 1;
+      continue;
+    }
+
+    if (argument.startsWith('--openapi=')) {
+      final value = argument.substring('--openapi='.length);
+      if (value.isEmpty) {
+        throw const FormatException('Missing value for argument: --openapi');
+      }
+      openApiPath = value;
+      continue;
+    }
+
+    throw FormatException('Unexpected argument: $argument');
+  }
+
+  return _ParsedArgs(openApiPath: openApiPath, showHelp: showHelp);
+}
+
+File? _resolveExplicitOpenApiFile(
+  String? input, {
+  required Directory luminousRoot,
+}) {
+  final trimmed = input?.trim();
+  if (trimmed == null || trimmed.isEmpty) {
+    return null;
+  }
+
+  final directFile = File(trimmed);
+  final file = directFile.isAbsolute
+      ? directFile
+      : File('${luminousRoot.path}${Platform.pathSeparator}$trimmed');
+  final resolved = file.absolute;
+  if (!resolved.existsSync()) {
+    throw StateError('OpenAPI file not found: ${resolved.path}');
+  }
+
+  return resolved;
+}
+
+class _ParsedArgs {
+  const _ParsedArgs({required this.openApiPath, required this.showHelp});
+
+  final String? openApiPath;
+  final bool showHelp;
+}
+
+const _usage = '''
+Usage: dart run tool/regenerate_lucent_openapi.dart [options]
+
+Options:
+  --openapi <path>   Use an explicit OpenAPI file instead of exporting from ../Lucent.
+  --help             Show this help text.
+''';
 
 Future<void> _runCommand(
   String executable,

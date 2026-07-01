@@ -110,6 +110,29 @@ File resolveExistingFile(String input, {Directory? repoRoot}) {
   return directFile.absolute;
 }
 
+File resolveRequiredOpenApiFile(
+  String? explicitPath, {
+  required Directory defaultLucentRoot,
+  Directory? repoRoot,
+}) {
+  if (explicitPath != null && explicitPath.trim().isNotEmpty) {
+    final file = resolveExistingFile(explicitPath.trim(), repoRoot: repoRoot);
+    if (!file.existsSync()) {
+      throw StateError('Lucent OpenAPI file not found: ${file.path}');
+    }
+    return file;
+  }
+
+  final defaultFile = File(
+    '${defaultLucentRoot.path}${Platform.pathSeparator}docs'
+    '${Platform.pathSeparator}openapi.json',
+  ).absolute;
+  if (!defaultFile.existsSync()) {
+    throw StateError('Lucent OpenAPI file not found: ${defaultFile.path}');
+  }
+  return defaultFile;
+}
+
 Future<List<String>> captureCommandLines(
   String executable,
   List<String> arguments, {
