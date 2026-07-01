@@ -249,6 +249,7 @@
   "recordOcrCameraAction": "拍照",
   "recordOcrGalleryAction": "从相册选择",
   "recordOcrRecognizingHint": "正在识别文字...",
+  "recordOcrRecognitionFailed": "文字识别失败了，换一张更清晰的图片再试。",
   "recordMicPermissionDenied": "麦克风权限未授权，请在系统设置中开启。",
   "recordErrorTitle": "记录页暂时没有加载出来",
   "recordErrorDescription": "数据边界已经接好，可以重新拉取一次。",

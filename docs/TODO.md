@@ -36,5 +36,5 @@ This file records work that is still missing or intentionally gated. Current fac
 - Report/export finish-pass cleanup in the client only: final status wording consistency, expired-link handling, and one real-environment acceptance run. Do not reopen backend/export scope unless a real bug is found.
 - Worker-written reminder delivery history for local/push/SMS channels.
 - Environment-driven Today or Mine suggestions.
-- Real barcode / OCR / photo / prescription recognition flow.
+- Real medicine barcode / OCR / photo / prescription recognition flow.
 - Real authenticated Web report preview beyond the competition/marketing homepage.

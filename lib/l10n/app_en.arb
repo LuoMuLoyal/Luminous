@@ -249,6 +249,7 @@
   "recordOcrCameraAction": "Take photo",
   "recordOcrGalleryAction": "Choose from gallery",
   "recordOcrRecognizingHint": "Recognizing text...",
+  "recordOcrRecognitionFailed": "Text recognition failed. Try another photo.",
   "recordMicPermissionDenied": "Microphone permission denied. Please enable it in system settings.",
   "recordErrorTitle": "Record did not load this time",
   "recordErrorDescription": "The data boundary is wired, so try fetching it again.",

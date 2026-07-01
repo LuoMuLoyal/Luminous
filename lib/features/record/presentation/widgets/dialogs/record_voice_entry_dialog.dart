@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/i18n/speech_locale_resolver.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/services/voice_recording_service.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -49,6 +50,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
     final soundLevel = useState(0.0);
     final errorMessage = useState<String?>(null);
     final hasPermission = useState<bool?>(null);
+    final locale = Localizations.localeOf(context);
 
     // Stream subscriptions
     useEffect(() {
@@ -83,7 +85,11 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
 
     // Initialize
     Future<void> init() async {
-      final ok = await service.initialize(localeId: 'zh_CN');
+      final available = await service.initialize(
+        localeId: speechLocaleIdForAppLocale(locale),
+      );
+      final resolvedLocaleId = await _resolveSpeechLocaleId(service, locale);
+      final ok = available && resolvedLocaleId != null;
       isInitialized.value = ok;
       if (!ok) {
         try {
@@ -115,7 +121,14 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
       } else {
         errorMessage.value = null;
         recognizedText.value = '';
-        await service.startListening(localeId: 'zh_CN');
+        final localeId = await _resolveSpeechLocaleId(service, locale);
+        if (localeId == null) {
+          if (context.mounted) {
+            await AppToast.show(context, l10n.recordMicPermissionDenied);
+          }
+          return;
+        }
+        await service.startListening(localeId: localeId);
       }
     }
 
@@ -293,4 +306,12 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
       ),
     );
   }
+}
+
+Future<String?> _resolveSpeechLocaleId(
+  VoiceRecordingService service,
+  Locale locale,
+) async {
+  final locales = await service.locales();
+  return resolveSpeechLocaleId(locale, locales.map((entry) => entry.localeId));
 }

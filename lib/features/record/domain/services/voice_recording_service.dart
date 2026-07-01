@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
+double normalizeSpeechSoundLevel(double level) {
+  return (level.clamp(-2.0, 10.0) + 2.0) / 12.0;
+}
+
 /// Wraps [stt.SpeechToText] with stream-based reactive state so UI can
 /// observe recognition text, listening status, and sound level changes
 /// without managing the low-level callback API directly.
@@ -54,6 +58,9 @@ class VoiceRecordingService {
   /// Can be called before [initialize].
   Future<bool> get hasPermission => _speech.hasPermission;
 
+  /// Available recognition locales reported by the platform layer.
+  Future<List<stt.LocaleName>> locales() => _speech.locales();
+
   // ---------------------------------------------------------------------------
   // Lifecycle
   // ---------------------------------------------------------------------------
@@ -84,10 +91,10 @@ class VoiceRecordingService {
 
     if (!ok) return false;
 
-    // Optionally check if the requested locale is available.
-    final locales = await _speech.locales();
-    final hasLocale = locales.any((l) => l.localeId == localeId);
-    return hasLocale;
+    // Locale resolution happens at the call site so we can gracefully
+    // fall back from exact ids like `en_US` to available variants such as
+    // `en_GB` instead of treating initialization as a failure.
+    return true;
   }
 
   /// Start listening and transcribing speech.
@@ -110,8 +117,8 @@ class VoiceRecordingService {
         }
       },
       onSoundLevelChange: (level) {
-        // Normalize to 0.0-1.0 range (typical range is -2.0 to 10.0).
-        final normalized = (level.clamp(-2.0, 10.0) + 2.0) / 12.0;
+        // Keep the pulse animation inside a bounded 0.0-1.0 range.
+        final normalized = normalizeSpeechSoundLevel(level);
         if (!_soundLevelController.isClosed) {
           _soundLevelController.add(normalized);
         }
