@@ -94,9 +94,9 @@ class _TimelineRow extends StatelessWidget {
     final unit = entry.unitKey == null
         ? null
         : recordCopy(l10n, entry.unitKey!);
-    final detail = entry.detailKey == null
-        ? null
-        : recordCopy(l10n, entry.detailKey!);
+    final detail =
+        entry.rawDetail ??
+        (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
     final subtitle = [
       if (value != null && value.isNotEmpty)
         unit == null ? value : '$value $unit',

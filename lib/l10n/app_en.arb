@@ -234,6 +234,34 @@
   "recordDetailValueLabel": "Value",
   "recordDetailSourceLabel": "Source",
   "recordDetailUpdatedAtLabel": "Updated at",
+  "recordMealAnalysisSectionTitle": "Meal analysis",
+  "recordMealAnalysisStatusAnalyzing": "Analyzing",
+  "recordMealAnalysisStatusUnconfirmed": "Needs confirmation",
+  "recordMealAnalysisStatusConfirmed": "Confirmed",
+  "recordMealAnalysisStatusFailed": "Analysis failed",
+  "recordMealAnalysisCoveragePartial": "Partial coverage",
+  "recordMealAnalysisCoverageComplete": "Complete coverage",
+  "recordMealAnalysisCoverageNone": "No coverage",
+  "recordMealAnalysisRecognizedDishes": "Recognized dishes",
+  "recordMealAnalysisResolvedIngredients": "Resolved ingredients",
+  "recordMealAnalysisCompositionMatches": "Composition matches",
+  "recordMealAnalysisNutritionEstimate": "Nutrition estimate",
+  "recordMealAnalysisNutritionEnergy": "Energy",
+  "recordMealAnalysisNutritionProtein": "Protein",
+  "recordMealAnalysisEstimateDisclaimer": "This result is a conservative estimate and may not fully match the actual meal.",
+  "recordMealConfirmAction": "Confirm current dish result",
+  "recordMealConfirmActionSelected": "Will confirm current dish result on save",
+  "recordMealDishEditorHelperText": "Only edit dishes here. Ingredients and nutrition will be re-estimated by the system.",
+  "recordMealDishAddAction": "Add dish",
+  "recordMealDishRemoveAction": "Remove dish",
+  "recordMealDishFieldLabel": "Dish {index}",
+  "@recordMealDishFieldLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
   "recordEditAction": "Edit",
   "recordDeleteAction": "Delete",
   "recordDeleteConfirmMessage": "Delete this record? This action cannot be undone.",

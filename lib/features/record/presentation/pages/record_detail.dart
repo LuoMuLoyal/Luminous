@@ -14,7 +14,10 @@ import 'package:luminous/features/record/data/providers/daily_record_providers.d
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
+import 'package:luminous/features/record/presentation/widgets/meal/meal_analysis_status_badge.dart';
+import 'package:luminous/features/record/presentation/widgets/meal/meal_analysis_summary_card.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -93,6 +96,9 @@ class _RecordDetailBody extends ConsumerWidget {
     final imageAttachment = record.attachments
         .where((item) => item.kind == DailyRecordAttachmentKind.image)
         .firstOrNull;
+    final mealAnalysis = record.kind == DailyRecordKind.meal
+        ? parseMealAnalysisViewData(record.payload)
+        : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -158,6 +164,52 @@ class _RecordDetailBody extends ConsumerWidget {
             ],
           ),
         ),
+        if (record.kind == DailyRecordKind.meal && mealAnalysis != null) ...[
+          const SizedBox(height: AppSpacingTokens.md),
+          if (mealAnalysis.status == 'analyzing')
+            _DetailSurface(
+              child: Row(
+                children: [
+                  MealAnalysisStatusBadge(
+                    status: mealAnalysis.status,
+                    coverage: mealAnalysis.coverage,
+                    typography: typography,
+                    large: true,
+                  ),
+                  const SizedBox(width: AppSpacingTokens.sm),
+                  Expanded(
+                    child: Text(
+                      l10n.recordMealAnalysisStatusAnalyzing,
+                      style: typography.bodySm.copyWith(color: surface.body),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else if (mealAnalysis.status == 'analysis_failed')
+            _DetailSurface(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MealAnalysisStatusBadge(
+                    status: mealAnalysis.status,
+                    coverage: mealAnalysis.coverage,
+                    typography: typography,
+                    large: true,
+                  ),
+                  if (_nonEmpty(mealAnalysis.failureReason) != null) ...[
+                    const SizedBox(height: AppSpacingTokens.sm),
+                    Text(
+                      mealAnalysis.failureReason!,
+                      style: typography.bodySm.copyWith(color: surface.body),
+                    ),
+                  ],
+                ],
+              ),
+            )
+          else
+            MealAnalysisSummaryCard(data: mealAnalysis),
+        ],
         if (imageAttachment != null) ...[
           const SizedBox(height: AppSpacingTokens.md),
           _DetailSurface(

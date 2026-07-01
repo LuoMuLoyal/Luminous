@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-06-25
+Last updated: 2026-07-01
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 
@@ -14,7 +14,7 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 62 paths / 171 schemas.
+- Last known Lucent export: 84 paths / 188 schemas.
 - Generated package includes auth/account, user-scoped health context, daily records with persisted `occurredTime`, AI daily-record candidate parsing, medicine search/detail, current medicines, dose logs, environment snapshot, schedule-only medicine reminders with optional date windows, read-only reminder delivery history, user settings, assistant capability discovery plus recent-conversation list/open and latest-conversation restore/archive DTOs, report dashboard with `last_7_days`/`last_30_days`/`custom` range support, Today AI analysis, range-based report AI summary (`last_7_days` / `last_30_days` / `custom`), public support resources/app info, data export request status plus explicit create-request DTOs/enums, and the new Today/Report AI stream response DTOs.
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay under `/api/v1/account/*`.
 
@@ -22,6 +22,7 @@ This file records the supported Flutter client workflow. API shape comes from Lu
 
 - Business and presentation code use `LucentDioClient` or feature repositories, not generated internals directly.
 - Generated DTOs stay in data-layer response mapping.
+- Read-side contract drift must be fixed at the Lucent OpenAPI export first. Do not bypass an existing generated read API with handwritten Dio GET parsing unless `../Lucent/docs/openapi.json` has been verified, `dart run tool/regenerate_lucent_openapi.dart` has been attempted, and the exported contract still lacks the required fields.
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps instead of generated write DTOs.
 - Medicine reminder create/update writes use a local write input plus raw Dio JSON so `daysOfWeek: null`, `startDate`, and `endDate` are sent with the intended nullable behavior; generated reminder DTOs remain the read-side mapper.
 - Reminder delivery history is read through the feature data source and maps generated/raw response fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain code should still depend on the feature repository boundary.

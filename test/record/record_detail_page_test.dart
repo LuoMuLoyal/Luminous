@@ -19,11 +19,47 @@ class _FakeRepo extends DailyRecordRepository {
   Future<DailyRecordItem> get(String id) async {
     return DailyRecordItem(
       id: id,
-      kind: DailyRecordKind.note,
+      kind: DailyRecordKind.meal,
       occurredAt: '2026-06-10',
-      title: 'My Note',
-      value: 'Note content',
-      note: 'A note',
+      title: '午餐',
+      payload: const {
+        'mealInput': {
+          'recognizedDishes': [
+            {'rawName': '西红柿炒鸡蛋'},
+            {'rawName': '米饭'},
+          ],
+        },
+        'mealAnalysis': {
+          'analysisStatus': 'unconfirmed',
+          'coverage': 'partial',
+          'mealDescription': '一份米饭配西红柿炒鸡蛋',
+          'recognizedDishes': [
+            {
+              'dishKey': 'dish-1',
+              'rawName': '西红柿炒鸡蛋',
+              'normalizedDishName': '西红柿炒鸡蛋',
+            },
+            {'dishKey': 'dish-2', 'rawName': '米饭', 'normalizedDishName': '米饭'},
+          ],
+          'resolvedIngredients': [
+            {
+              'dishKey': 'dish-1',
+              'ingredientName': '西红柿',
+              'matchedFoodName': '西红柿',
+            },
+          ],
+          'compositionMatches': [
+            {
+              'dishKey': 'dish-1',
+              'ingredientName': '西红柿',
+              'matchedFoodName': '西红柿',
+              'matchMethod': 'exact',
+            },
+          ],
+          'nutritionEstimate': {'energyKcal': 320, 'proteinG': 16.2},
+          'mealCommentary': '这一餐营养结果为保守估算。',
+        },
+      },
       attachments: const <DailyRecordAttachment>[],
       createdAt: '2026-06-10T08:00:00.000Z',
       updatedAt: '2026-06-10T08:00:00.000Z',
@@ -100,5 +136,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump();
     expect(find.byType(RecordDetailPage), findsOneWidget);
+    expect(find.textContaining('确认'), findsWidgets);
+    expect(find.text('餐食分析'), findsOneWidget);
+    expect(find.textContaining('西红柿炒鸡蛋'), findsWidgets);
+    expect(find.textContaining('西红柿'), findsWidgets);
+    expect(find.textContaining('热量'), findsOneWidget);
+    expect(find.textContaining('保守估算'), findsWidgets);
   });
 }

@@ -151,6 +151,53 @@ void main() {
       expect(attachment.provider, 'tencent-cos');
       expect(attachment.publicUrl, 'https://cdn.example.test/photo.jpg');
     });
+
+    test(
+      'fetchRecords maps meal analysis hot fields from generated DTOs',
+      () async {
+        final result = await dataSource.fetchRecords('2026-06-06');
+
+        expect(result.total, 1);
+        final item = result.items.single;
+        expect(item.mealAnalysisStatus, 'unconfirmed');
+        expect(item.mealAnalysisCoverage, 'partial');
+        expect(item.mealAnalysisUpdatedAt, '2026-07-01T10:00:00.000Z');
+        expect(item.mealAnalysisFailureReason, isNull);
+        expect(item.mealShortDescription, '一份米饭配鸡胸肉');
+        expect(item.mealTopFoods, <String>['米饭', '鸡胸肉']);
+      },
+    );
+
+    test(
+      'fetchSummary maps latest meal analysis hot fields from generated DTOs',
+      () async {
+        final result = await dataSource.fetchSummary('2026-06-06');
+
+        expect(result.summaries, hasLength(1));
+        final latest = result.summaries.single.latest;
+        expect(latest, isNotNull);
+        expect(latest!.mealAnalysisStatus, 'unconfirmed');
+        expect(latest.mealAnalysisCoverage, 'partial');
+        expect(latest.mealAnalysisUpdatedAt, '2026-07-01T10:00:00.000Z');
+        expect(latest.mealAnalysisFailureReason, isNull);
+        expect(latest.mealShortDescription, '一份米饭配鸡胸肉');
+        expect(latest.mealTopFoods, <String>['米饭', '鸡胸肉']);
+      },
+    );
+
+    test(
+      'get preserves meal analysis hot fields from generated DTOs',
+      () async {
+        final item = await dataSource.get('record-1');
+
+        expect(item.mealAnalysisStatus, 'unconfirmed');
+        expect(item.mealAnalysisCoverage, 'partial');
+        expect(item.mealAnalysisUpdatedAt, '2026-07-01T10:00:00.000Z');
+        expect(item.mealAnalysisFailureReason, isNull);
+        expect(item.mealShortDescription, '一份米饭配鸡胸肉');
+        expect(item.mealTopFoods, <String>['米饭', '鸡胸肉']);
+      },
+    );
   });
 }
 
@@ -212,6 +259,38 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
       });
     }
 
+    if (options.path == '/api/v1/user/daily-records/summary') {
+      return _jsonResponse(<String, Object?>{
+        'code': 0,
+        'message': '',
+        'data': <String, Object?>{
+          'summaries': <Object?>[
+            <String, Object?>{
+              'kind': 'meal',
+              'count': 1,
+              'latest': _recordJson(attachments: const <Object?>[]),
+            },
+          ],
+        },
+      });
+    }
+
+    if (options.method == 'GET' &&
+        options.path == '/api/v1/user/daily-records') {
+      return _jsonResponse(<String, Object?>{
+        'code': 0,
+        'message': '',
+        'data': <String, Object?>{
+          'items': <Object?>[
+            _recordJson(
+              attachments: _lastJsonAttachments() ?? const <Object?>[],
+            ),
+          ],
+          'total': 1,
+        },
+      });
+    }
+
     return _jsonResponse(<String, Object?>{
       'code': 0,
       'message': '',
@@ -251,6 +330,18 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
       'unit': null,
       'note': null,
       'source': 'manual',
+      'payload': <String, Object?>{
+        'mealAnalysis': <String, Object?>{
+          'analysisStatus': 'unconfirmed',
+          'coverage': 'partial',
+        },
+      },
+      'mealAnalysisStatus': 'unconfirmed',
+      'mealAnalysisCoverage': 'partial',
+      'mealAnalysisUpdatedAt': '2026-07-01T10:00:00.000Z',
+      'mealAnalysisFailureReason': null,
+      'mealShortDescription': '一份米饭配鸡胸肉',
+      'mealTopFoods': <String>['米饭', '鸡胸肉'],
       'attachments': attachments.map((raw) {
         final attachment = raw as Map<String, Object?>;
         return <String, Object?>{

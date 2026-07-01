@@ -7,6 +7,7 @@ import 'package:luminous/features/record/domain/entities/record_type_mapping.dar
 import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/record/domain/repositories/record_repository.dart';
+import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 
 /// Lucent-backed implementation of [RecordRepository] that maps real daily
@@ -90,6 +91,9 @@ class LucentRecordRepository implements RecordRepository {
     // Mood records created through the fast-entry dialog store the level in
     // the payload, so expose a readable subtitle such as "情绪 · 不错".
     final moodValueKey = _moodValueKey(kind, record.payload);
+    final mealView = kind == DailyRecordKind.meal
+        ? parseMealAnalysisViewData(record.payload)
+        : null;
 
     final titleKey = switch (kind) {
       DailyRecordKind.water => RecordCopyKey.typeWater,
@@ -109,11 +113,26 @@ class LucentRecordRepository implements RecordRepository {
     final String? rawTitle;
     if (record.title != null) {
       rawTitle = record.title;
+    } else if (kind == DailyRecordKind.meal &&
+        record.mealShortDescription != null) {
+      rawTitle = record.mealShortDescription;
     } else if (kind == DailyRecordKind.note || kind == DailyRecordKind.mood) {
       rawTitle = null;
     } else {
       rawTitle = '${kind.name} ${record.value ?? ''}'.trim();
     }
+
+    final mealDetail =
+        kind == DailyRecordKind.meal && record.mealTopFoods.isNotEmpty
+        ? '识别菜品：${record.mealTopFoods.join('、')}'
+        : null;
+
+    final mealValue = kind == DailyRecordKind.meal
+        ? (record.mealShortDescription ??
+              record.value ??
+              mealView?.mealDescription ??
+              record.note)
+        : null;
 
     return RecordTimelineEntry(
       time: timeStr,
@@ -123,11 +142,15 @@ class LucentRecordRepository implements RecordRepository {
       softColor: soft,
       titleKey: titleKey,
       rawTitle: rawTitle,
-      value: record.value != null
+      value: kind == DailyRecordKind.meal
+          ? mealValue
+          : record.value != null
           ? '${record.value}${record.unit != null ? ' ${record.unit}' : ''}'
           : _sleepPayloadValue(kind, record.payload) ?? record.note,
       valueKey: moodValueKey,
+      rawDetail: mealDetail,
       detailKey: record.note != null && record.value != null ? null : null,
+      badgeKey: _mealBadgeKey(record),
       imageUrl: record.attachments
           .where(
             (attachment) => attachment.kind == DailyRecordAttachmentKind.image,
@@ -173,6 +196,16 @@ class LucentRecordRepository implements RecordRepository {
       'bad' => RecordCopyKey.timelineMoodBad,
       'terrible' => RecordCopyKey.timelineMoodTerrible,
       _ => null,
+    };
+  }
+
+  static RecordCopyKey? _mealBadgeKey(DailyRecordItem record) {
+    if (record.kind != DailyRecordKind.meal) return null;
+    return switch (record.mealAnalysisStatus) {
+      'confirmed' => RecordCopyKey.timelineMealConfirmedBadge,
+      'analysis_failed' => RecordCopyKey.timelineMealFailedBadge,
+      'analyzing' => RecordCopyKey.timelineMealAnalyzingBadge,
+      _ => RecordCopyKey.timelineMealEstimateBadge,
     };
   }
 
