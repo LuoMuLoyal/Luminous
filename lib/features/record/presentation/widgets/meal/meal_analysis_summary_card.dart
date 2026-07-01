@@ -1,0 +1,162 @@
+import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
+import 'package:luminous/features/record/presentation/widgets/meal/meal_analysis_status_badge.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+class MealAnalysisSummaryCard extends StatelessWidget {
+  const MealAnalysisSummaryCard({super.key, required this.data});
+
+  final MealAnalysisViewData data;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final surface = theme.extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surface.canvas,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: surface.hairline),
+        boxShadow: AppShadowTokens.level1,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.recordMealAnalysisSectionTitle,
+                    style: typography.bodyMdStrong,
+                  ),
+                ),
+                MealAnalysisStatusBadge(
+                  status: data.status,
+                  coverage: data.coverage,
+                  typography: typography,
+                  large: true,
+                ),
+              ],
+            ),
+            if (_nonEmpty(data.mealDescription) != null) ...[
+              const SizedBox(height: AppSpacingTokens.sm),
+              Text(
+                data.mealDescription!,
+                style: typography.bodySm.copyWith(color: surface.body),
+              ),
+            ],
+            if (data.recognizedDishes.isNotEmpty) ...[
+              const SizedBox(height: AppSpacingTokens.lg),
+              _SectionTitle(title: l10n.recordMealAnalysisRecognizedDishes),
+              const SizedBox(height: AppSpacingTokens.xs),
+              ...data.recognizedDishes.map(
+                (dish) => _BulletText(text: dish.displayName),
+              ),
+            ],
+            if (data.resolvedIngredients.isNotEmpty) ...[
+              const SizedBox(height: AppSpacingTokens.md),
+              _SectionTitle(title: l10n.recordMealAnalysisResolvedIngredients),
+              const SizedBox(height: AppSpacingTokens.xs),
+              ...data.resolvedIngredients.map(
+                (item) => _BulletText(
+                  text: item.matchedFoodName == null
+                      ? item.ingredientName
+                      : '${item.ingredientName} -> ${item.matchedFoodName}',
+                ),
+              ),
+            ],
+            if (data.compositionMatches.isNotEmpty) ...[
+              const SizedBox(height: AppSpacingTokens.md),
+              _SectionTitle(title: l10n.recordMealAnalysisCompositionMatches),
+              const SizedBox(height: AppSpacingTokens.xs),
+              ...data.compositionMatches.map(
+                (item) => _BulletText(
+                  text: item.matchedFoodName == null
+                      ? item.ingredientName
+                      : '${item.ingredientName} -> ${item.matchedFoodName}',
+                ),
+              ),
+            ],
+            if (data.nutritionEstimate != null) ...[
+              const SizedBox(height: AppSpacingTokens.md),
+              _SectionTitle(title: l10n.recordMealAnalysisNutritionEstimate),
+              const SizedBox(height: AppSpacingTokens.xs),
+              if (data.nutritionEstimate!.energyKcal != null)
+                _BulletText(
+                  text:
+                      '${l10n.recordMealAnalysisNutritionEnergy}: ${data.nutritionEstimate!.energyKcal}',
+                ),
+              if (data.nutritionEstimate!.proteinG != null)
+                _BulletText(
+                  text:
+                      '${l10n.recordMealAnalysisNutritionProtein}: ${data.nutritionEstimate!.proteinG}g',
+                ),
+            ],
+            if (_nonEmpty(data.mealCommentary) != null) ...[
+              const SizedBox(height: AppSpacingTokens.md),
+              Text(
+                data.mealCommentary!,
+                style: typography.bodySm.copyWith(color: surface.body),
+              ),
+            ],
+            if (data.isEstimate) ...[
+              const SizedBox(height: AppSpacingTokens.md),
+              Text(
+                l10n.recordMealAnalysisEstimateDisclaimer,
+                style: typography.caption.copyWith(color: surface.warningDeep),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = AppTypographyTokens.mobile(
+      Theme.of(context).colorScheme.onSurface,
+    );
+    return Text(title, style: typography.bodySmStrong);
+  }
+}
+
+class _BulletText extends StatelessWidget {
+  const _BulletText({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final typography = AppTypographyTokens.mobile(
+      Theme.of(context).colorScheme.onSurface,
+    );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacingTokens.xxs),
+      child: Text(
+        '• $text',
+        style: typography.bodySm.copyWith(color: surface.body),
+      ),
+    );
+  }
+}
+
+String? _nonEmpty(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) return null;
+  return trimmed;
+}

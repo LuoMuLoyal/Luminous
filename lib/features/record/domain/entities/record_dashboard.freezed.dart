@@ -1990,7 +1990,7 @@ as bool,
 /// @nodoc
 mixin _$RecordTimelineEntry {
 
- String get time; RecordEntryType get type; IconData get icon; Color get accent; Color get softColor; RecordCopyKey get titleKey; String? get value; RecordCopyKey? get valueKey; RecordCopyKey? get unitKey; RecordCopyKey? get detailKey; RecordCopyKey? get badgeKey; RecordCopyKey? get imagePlaceholderKey; String? get imageUrl; IconData? get trailingIcon;/// When non-null, the view should use this raw string instead of resolving
+ String get time; RecordEntryType get type; IconData get icon; Color get accent; Color get softColor; RecordCopyKey get titleKey; String? get value; RecordCopyKey? get valueKey; RecordCopyKey? get unitKey; RecordCopyKey? get detailKey; String? get rawDetail; RecordCopyKey? get badgeKey; RecordCopyKey? get imagePlaceholderKey; String? get imageUrl; IconData? get trailingIcon;/// When non-null, the view should use this raw string instead of resolving
 /// [titleKey] through [recordCopy].
  String? get rawTitle;/// When non-null, this timeline entry represents a real daily record
 /// that can be edited or deleted via the daily-record API.
@@ -2005,16 +2005,16 @@ $RecordTimelineEntryCopyWith<RecordTimelineEntry> get copyWith => _$RecordTimeli
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordTimelineEntry&&(identical(other.time, time) || other.time == time)&&(identical(other.type, type) || other.type == type)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.softColor, softColor) || other.softColor == softColor)&&(identical(other.titleKey, titleKey) || other.titleKey == titleKey)&&(identical(other.value, value) || other.value == value)&&(identical(other.valueKey, valueKey) || other.valueKey == valueKey)&&(identical(other.unitKey, unitKey) || other.unitKey == unitKey)&&(identical(other.detailKey, detailKey) || other.detailKey == detailKey)&&(identical(other.badgeKey, badgeKey) || other.badgeKey == badgeKey)&&(identical(other.imagePlaceholderKey, imagePlaceholderKey) || other.imagePlaceholderKey == imagePlaceholderKey)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.trailingIcon, trailingIcon) || other.trailingIcon == trailingIcon)&&(identical(other.rawTitle, rawTitle) || other.rawTitle == rawTitle)&&(identical(other.recordId, recordId) || other.recordId == recordId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordTimelineEntry&&(identical(other.time, time) || other.time == time)&&(identical(other.type, type) || other.type == type)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.softColor, softColor) || other.softColor == softColor)&&(identical(other.titleKey, titleKey) || other.titleKey == titleKey)&&(identical(other.value, value) || other.value == value)&&(identical(other.valueKey, valueKey) || other.valueKey == valueKey)&&(identical(other.unitKey, unitKey) || other.unitKey == unitKey)&&(identical(other.detailKey, detailKey) || other.detailKey == detailKey)&&(identical(other.rawDetail, rawDetail) || other.rawDetail == rawDetail)&&(identical(other.badgeKey, badgeKey) || other.badgeKey == badgeKey)&&(identical(other.imagePlaceholderKey, imagePlaceholderKey) || other.imagePlaceholderKey == imagePlaceholderKey)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.trailingIcon, trailingIcon) || other.trailingIcon == trailingIcon)&&(identical(other.rawTitle, rawTitle) || other.rawTitle == rawTitle)&&(identical(other.recordId, recordId) || other.recordId == recordId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,time,type,icon,accent,softColor,titleKey,value,valueKey,unitKey,detailKey,badgeKey,imagePlaceholderKey,imageUrl,trailingIcon,rawTitle,recordId);
+int get hashCode => Object.hash(runtimeType,time,type,icon,accent,softColor,titleKey,value,valueKey,unitKey,detailKey,rawDetail,badgeKey,imagePlaceholderKey,imageUrl,trailingIcon,rawTitle,recordId);
 
 @override
 String toString() {
-  return 'RecordTimelineEntry(time: $time, type: $type, icon: $icon, accent: $accent, softColor: $softColor, titleKey: $titleKey, value: $value, valueKey: $valueKey, unitKey: $unitKey, detailKey: $detailKey, badgeKey: $badgeKey, imagePlaceholderKey: $imagePlaceholderKey, imageUrl: $imageUrl, trailingIcon: $trailingIcon, rawTitle: $rawTitle, recordId: $recordId)';
+  return 'RecordTimelineEntry(time: $time, type: $type, icon: $icon, accent: $accent, softColor: $softColor, titleKey: $titleKey, value: $value, valueKey: $valueKey, unitKey: $unitKey, detailKey: $detailKey, rawDetail: $rawDetail, badgeKey: $badgeKey, imagePlaceholderKey: $imagePlaceholderKey, imageUrl: $imageUrl, trailingIcon: $trailingIcon, rawTitle: $rawTitle, recordId: $recordId)';
 }
 
 
@@ -2025,7 +2025,7 @@ abstract mixin class $RecordTimelineEntryCopyWith<$Res>  {
   factory $RecordTimelineEntryCopyWith(RecordTimelineEntry value, $Res Function(RecordTimelineEntry) _then) = _$RecordTimelineEntryCopyWithImpl;
 @useResult
 $Res call({
- String time, RecordEntryType type, IconData icon, Color accent, Color softColor, RecordCopyKey titleKey, String? value, RecordCopyKey? valueKey, RecordCopyKey? unitKey, RecordCopyKey? detailKey, RecordCopyKey? badgeKey, RecordCopyKey? imagePlaceholderKey, String? imageUrl, IconData? trailingIcon, String? rawTitle, String? recordId
+ String time, RecordEntryType type, IconData icon, Color accent, Color softColor, RecordCopyKey titleKey, String? value, RecordCopyKey? valueKey, RecordCopyKey? unitKey, RecordCopyKey? detailKey, String? rawDetail, RecordCopyKey? badgeKey, RecordCopyKey? imagePlaceholderKey, String? imageUrl, IconData? trailingIcon, String? rawTitle, String? recordId
 });
 
 
@@ -2042,7 +2042,7 @@ class _$RecordTimelineEntryCopyWithImpl<$Res>
 
 /// Create a copy of RecordTimelineEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? time = null,Object? type = null,Object? icon = null,Object? accent = null,Object? softColor = null,Object? titleKey = null,Object? value = freezed,Object? valueKey = freezed,Object? unitKey = freezed,Object? detailKey = freezed,Object? badgeKey = freezed,Object? imagePlaceholderKey = freezed,Object? imageUrl = freezed,Object? trailingIcon = freezed,Object? rawTitle = freezed,Object? recordId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? time = null,Object? type = null,Object? icon = null,Object? accent = null,Object? softColor = null,Object? titleKey = null,Object? value = freezed,Object? valueKey = freezed,Object? unitKey = freezed,Object? detailKey = freezed,Object? rawDetail = freezed,Object? badgeKey = freezed,Object? imagePlaceholderKey = freezed,Object? imageUrl = freezed,Object? trailingIcon = freezed,Object? rawTitle = freezed,Object? recordId = freezed,}) {
   return _then(_self.copyWith(
 time: null == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -2054,7 +2054,8 @@ as RecordCopyKey,value: freezed == value ? _self.value : value // ignore: cast_n
 as String?,valueKey: freezed == valueKey ? _self.valueKey : valueKey // ignore: cast_nullable_to_non_nullable
 as RecordCopyKey?,unitKey: freezed == unitKey ? _self.unitKey : unitKey // ignore: cast_nullable_to_non_nullable
 as RecordCopyKey?,detailKey: freezed == detailKey ? _self.detailKey : detailKey // ignore: cast_nullable_to_non_nullable
-as RecordCopyKey?,badgeKey: freezed == badgeKey ? _self.badgeKey : badgeKey // ignore: cast_nullable_to_non_nullable
+as RecordCopyKey?,rawDetail: freezed == rawDetail ? _self.rawDetail : rawDetail // ignore: cast_nullable_to_non_nullable
+as String?,badgeKey: freezed == badgeKey ? _self.badgeKey : badgeKey // ignore: cast_nullable_to_non_nullable
 as RecordCopyKey?,imagePlaceholderKey: freezed == imagePlaceholderKey ? _self.imagePlaceholderKey : imagePlaceholderKey // ignore: cast_nullable_to_non_nullable
 as RecordCopyKey?,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,trailingIcon: freezed == trailingIcon ? _self.trailingIcon : trailingIcon // ignore: cast_nullable_to_non_nullable
@@ -2145,10 +2146,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String time,  RecordEntryType type,  IconData icon,  Color accent,  Color softColor,  RecordCopyKey titleKey,  String? value,  RecordCopyKey? valueKey,  RecordCopyKey? unitKey,  RecordCopyKey? detailKey,  RecordCopyKey? badgeKey,  RecordCopyKey? imagePlaceholderKey,  String? imageUrl,  IconData? trailingIcon,  String? rawTitle,  String? recordId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String time,  RecordEntryType type,  IconData icon,  Color accent,  Color softColor,  RecordCopyKey titleKey,  String? value,  RecordCopyKey? valueKey,  RecordCopyKey? unitKey,  RecordCopyKey? detailKey,  String? rawDetail,  RecordCopyKey? badgeKey,  RecordCopyKey? imagePlaceholderKey,  String? imageUrl,  IconData? trailingIcon,  String? rawTitle,  String? recordId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RecordTimelineEntry() when $default != null:
-return $default(_that.time,_that.type,_that.icon,_that.accent,_that.softColor,_that.titleKey,_that.value,_that.valueKey,_that.unitKey,_that.detailKey,_that.badgeKey,_that.imagePlaceholderKey,_that.imageUrl,_that.trailingIcon,_that.rawTitle,_that.recordId);case _:
+return $default(_that.time,_that.type,_that.icon,_that.accent,_that.softColor,_that.titleKey,_that.value,_that.valueKey,_that.unitKey,_that.detailKey,_that.rawDetail,_that.badgeKey,_that.imagePlaceholderKey,_that.imageUrl,_that.trailingIcon,_that.rawTitle,_that.recordId);case _:
   return orElse();
 
 }
@@ -2166,10 +2167,10 @@ return $default(_that.time,_that.type,_that.icon,_that.accent,_that.softColor,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String time,  RecordEntryType type,  IconData icon,  Color accent,  Color softColor,  RecordCopyKey titleKey,  String? value,  RecordCopyKey? valueKey,  RecordCopyKey? unitKey,  RecordCopyKey? detailKey,  RecordCopyKey? badgeKey,  RecordCopyKey? imagePlaceholderKey,  String? imageUrl,  IconData? trailingIcon,  String? rawTitle,  String? recordId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String time,  RecordEntryType type,  IconData icon,  Color accent,  Color softColor,  RecordCopyKey titleKey,  String? value,  RecordCopyKey? valueKey,  RecordCopyKey? unitKey,  RecordCopyKey? detailKey,  String? rawDetail,  RecordCopyKey? badgeKey,  RecordCopyKey? imagePlaceholderKey,  String? imageUrl,  IconData? trailingIcon,  String? rawTitle,  String? recordId)  $default,) {final _that = this;
 switch (_that) {
 case _RecordTimelineEntry():
-return $default(_that.time,_that.type,_that.icon,_that.accent,_that.softColor,_that.titleKey,_that.value,_that.valueKey,_that.unitKey,_that.detailKey,_that.badgeKey,_that.imagePlaceholderKey,_that.imageUrl,_that.trailingIcon,_that.rawTitle,_that.recordId);case _:
+return $default(_that.time,_that.type,_that.icon,_that.accent,_that.softColor,_that.titleKey,_that.value,_that.valueKey,_that.unitKey,_that.detailKey,_that.rawDetail,_that.badgeKey,_that.imagePlaceholderKey,_that.imageUrl,_that.trailingIcon,_that.rawTitle,_that.recordId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2186,10 +2187,10 @@ return $default(_that.time,_that.type,_that.icon,_that.accent,_that.softColor,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String time,  RecordEntryType type,  IconData icon,  Color accent,  Color softColor,  RecordCopyKey titleKey,  String? value,  RecordCopyKey? valueKey,  RecordCopyKey? unitKey,  RecordCopyKey? detailKey,  RecordCopyKey? badgeKey,  RecordCopyKey? imagePlaceholderKey,  String? imageUrl,  IconData? trailingIcon,  String? rawTitle,  String? recordId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String time,  RecordEntryType type,  IconData icon,  Color accent,  Color softColor,  RecordCopyKey titleKey,  String? value,  RecordCopyKey? valueKey,  RecordCopyKey? unitKey,  RecordCopyKey? detailKey,  String? rawDetail,  RecordCopyKey? badgeKey,  RecordCopyKey? imagePlaceholderKey,  String? imageUrl,  IconData? trailingIcon,  String? rawTitle,  String? recordId)?  $default,) {final _that = this;
 switch (_that) {
 case _RecordTimelineEntry() when $default != null:
-return $default(_that.time,_that.type,_that.icon,_that.accent,_that.softColor,_that.titleKey,_that.value,_that.valueKey,_that.unitKey,_that.detailKey,_that.badgeKey,_that.imagePlaceholderKey,_that.imageUrl,_that.trailingIcon,_that.rawTitle,_that.recordId);case _:
+return $default(_that.time,_that.type,_that.icon,_that.accent,_that.softColor,_that.titleKey,_that.value,_that.valueKey,_that.unitKey,_that.detailKey,_that.rawDetail,_that.badgeKey,_that.imagePlaceholderKey,_that.imageUrl,_that.trailingIcon,_that.rawTitle,_that.recordId);case _:
   return null;
 
 }
@@ -2201,7 +2202,7 @@ return $default(_that.time,_that.type,_that.icon,_that.accent,_that.softColor,_t
 
 
 class _RecordTimelineEntry implements RecordTimelineEntry {
-  const _RecordTimelineEntry({required this.time, required this.type, required this.icon, required this.accent, required this.softColor, required this.titleKey, this.value, this.valueKey, this.unitKey, this.detailKey, this.badgeKey, this.imagePlaceholderKey, this.imageUrl, this.trailingIcon, this.rawTitle, this.recordId});
+  const _RecordTimelineEntry({required this.time, required this.type, required this.icon, required this.accent, required this.softColor, required this.titleKey, this.value, this.valueKey, this.unitKey, this.detailKey, this.rawDetail, this.badgeKey, this.imagePlaceholderKey, this.imageUrl, this.trailingIcon, this.rawTitle, this.recordId});
   
 
 @override final  String time;
@@ -2214,6 +2215,7 @@ class _RecordTimelineEntry implements RecordTimelineEntry {
 @override final  RecordCopyKey? valueKey;
 @override final  RecordCopyKey? unitKey;
 @override final  RecordCopyKey? detailKey;
+@override final  String? rawDetail;
 @override final  RecordCopyKey? badgeKey;
 @override final  RecordCopyKey? imagePlaceholderKey;
 @override final  String? imageUrl;
@@ -2235,16 +2237,16 @@ _$RecordTimelineEntryCopyWith<_RecordTimelineEntry> get copyWith => __$RecordTim
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecordTimelineEntry&&(identical(other.time, time) || other.time == time)&&(identical(other.type, type) || other.type == type)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.softColor, softColor) || other.softColor == softColor)&&(identical(other.titleKey, titleKey) || other.titleKey == titleKey)&&(identical(other.value, value) || other.value == value)&&(identical(other.valueKey, valueKey) || other.valueKey == valueKey)&&(identical(other.unitKey, unitKey) || other.unitKey == unitKey)&&(identical(other.detailKey, detailKey) || other.detailKey == detailKey)&&(identical(other.badgeKey, badgeKey) || other.badgeKey == badgeKey)&&(identical(other.imagePlaceholderKey, imagePlaceholderKey) || other.imagePlaceholderKey == imagePlaceholderKey)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.trailingIcon, trailingIcon) || other.trailingIcon == trailingIcon)&&(identical(other.rawTitle, rawTitle) || other.rawTitle == rawTitle)&&(identical(other.recordId, recordId) || other.recordId == recordId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecordTimelineEntry&&(identical(other.time, time) || other.time == time)&&(identical(other.type, type) || other.type == type)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.softColor, softColor) || other.softColor == softColor)&&(identical(other.titleKey, titleKey) || other.titleKey == titleKey)&&(identical(other.value, value) || other.value == value)&&(identical(other.valueKey, valueKey) || other.valueKey == valueKey)&&(identical(other.unitKey, unitKey) || other.unitKey == unitKey)&&(identical(other.detailKey, detailKey) || other.detailKey == detailKey)&&(identical(other.rawDetail, rawDetail) || other.rawDetail == rawDetail)&&(identical(other.badgeKey, badgeKey) || other.badgeKey == badgeKey)&&(identical(other.imagePlaceholderKey, imagePlaceholderKey) || other.imagePlaceholderKey == imagePlaceholderKey)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.trailingIcon, trailingIcon) || other.trailingIcon == trailingIcon)&&(identical(other.rawTitle, rawTitle) || other.rawTitle == rawTitle)&&(identical(other.recordId, recordId) || other.recordId == recordId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,time,type,icon,accent,softColor,titleKey,value,valueKey,unitKey,detailKey,badgeKey,imagePlaceholderKey,imageUrl,trailingIcon,rawTitle,recordId);
+int get hashCode => Object.hash(runtimeType,time,type,icon,accent,softColor,titleKey,value,valueKey,unitKey,detailKey,rawDetail,badgeKey,imagePlaceholderKey,imageUrl,trailingIcon,rawTitle,recordId);
 
 @override
 String toString() {
-  return 'RecordTimelineEntry(time: $time, type: $type, icon: $icon, accent: $accent, softColor: $softColor, titleKey: $titleKey, value: $value, valueKey: $valueKey, unitKey: $unitKey, detailKey: $detailKey, badgeKey: $badgeKey, imagePlaceholderKey: $imagePlaceholderKey, imageUrl: $imageUrl, trailingIcon: $trailingIcon, rawTitle: $rawTitle, recordId: $recordId)';
+  return 'RecordTimelineEntry(time: $time, type: $type, icon: $icon, accent: $accent, softColor: $softColor, titleKey: $titleKey, value: $value, valueKey: $valueKey, unitKey: $unitKey, detailKey: $detailKey, rawDetail: $rawDetail, badgeKey: $badgeKey, imagePlaceholderKey: $imagePlaceholderKey, imageUrl: $imageUrl, trailingIcon: $trailingIcon, rawTitle: $rawTitle, recordId: $recordId)';
 }
 
 
@@ -2255,7 +2257,7 @@ abstract mixin class _$RecordTimelineEntryCopyWith<$Res> implements $RecordTimel
   factory _$RecordTimelineEntryCopyWith(_RecordTimelineEntry value, $Res Function(_RecordTimelineEntry) _then) = __$RecordTimelineEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String time, RecordEntryType type, IconData icon, Color accent, Color softColor, RecordCopyKey titleKey, String? value, RecordCopyKey? valueKey, RecordCopyKey? unitKey, RecordCopyKey? detailKey, RecordCopyKey? badgeKey, RecordCopyKey? imagePlaceholderKey, String? imageUrl, IconData? trailingIcon, String? rawTitle, String? recordId
+ String time, RecordEntryType type, IconData icon, Color accent, Color softColor, RecordCopyKey titleKey, String? value, RecordCopyKey? valueKey, RecordCopyKey? unitKey, RecordCopyKey? detailKey, String? rawDetail, RecordCopyKey? badgeKey, RecordCopyKey? imagePlaceholderKey, String? imageUrl, IconData? trailingIcon, String? rawTitle, String? recordId
 });
 
 
@@ -2272,7 +2274,7 @@ class __$RecordTimelineEntryCopyWithImpl<$Res>
 
 /// Create a copy of RecordTimelineEntry
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? time = null,Object? type = null,Object? icon = null,Object? accent = null,Object? softColor = null,Object? titleKey = null,Object? value = freezed,Object? valueKey = freezed,Object? unitKey = freezed,Object? detailKey = freezed,Object? badgeKey = freezed,Object? imagePlaceholderKey = freezed,Object? imageUrl = freezed,Object? trailingIcon = freezed,Object? rawTitle = freezed,Object? recordId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? time = null,Object? type = null,Object? icon = null,Object? accent = null,Object? softColor = null,Object? titleKey = null,Object? value = freezed,Object? valueKey = freezed,Object? unitKey = freezed,Object? detailKey = freezed,Object? rawDetail = freezed,Object? badgeKey = freezed,Object? imagePlaceholderKey = freezed,Object? imageUrl = freezed,Object? trailingIcon = freezed,Object? rawTitle = freezed,Object? recordId = freezed,}) {
   return _then(_RecordTimelineEntry(
 time: null == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -2284,7 +2286,8 @@ as RecordCopyKey,value: freezed == value ? _self.value : value // ignore: cast_n
 as String?,valueKey: freezed == valueKey ? _self.valueKey : valueKey // ignore: cast_nullable_to_non_nullable
 as RecordCopyKey?,unitKey: freezed == unitKey ? _self.unitKey : unitKey // ignore: cast_nullable_to_non_nullable
 as RecordCopyKey?,detailKey: freezed == detailKey ? _self.detailKey : detailKey // ignore: cast_nullable_to_non_nullable
-as RecordCopyKey?,badgeKey: freezed == badgeKey ? _self.badgeKey : badgeKey // ignore: cast_nullable_to_non_nullable
+as RecordCopyKey?,rawDetail: freezed == rawDetail ? _self.rawDetail : rawDetail // ignore: cast_nullable_to_non_nullable
+as String?,badgeKey: freezed == badgeKey ? _self.badgeKey : badgeKey // ignore: cast_nullable_to_non_nullable
 as RecordCopyKey?,imagePlaceholderKey: freezed == imagePlaceholderKey ? _self.imagePlaceholderKey : imagePlaceholderKey // ignore: cast_nullable_to_non_nullable
 as RecordCopyKey?,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,trailingIcon: freezed == trailingIcon ? _self.trailingIcon : trailingIcon // ignore: cast_nullable_to_non_nullable

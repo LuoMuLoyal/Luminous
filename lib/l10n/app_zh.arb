@@ -234,6 +234,34 @@
   "recordDetailValueLabel": "数值",
   "recordDetailSourceLabel": "来源",
   "recordDetailUpdatedAtLabel": "更新于",
+  "recordMealAnalysisSectionTitle": "餐食分析",
+  "recordMealAnalysisStatusAnalyzing": "分析中",
+  "recordMealAnalysisStatusUnconfirmed": "待确认",
+  "recordMealAnalysisStatusConfirmed": "已确认",
+  "recordMealAnalysisStatusFailed": "分析失败",
+  "recordMealAnalysisCoveragePartial": "部分覆盖",
+  "recordMealAnalysisCoverageComplete": "完整覆盖",
+  "recordMealAnalysisCoverageNone": "未覆盖",
+  "recordMealAnalysisRecognizedDishes": "识别菜品",
+  "recordMealAnalysisResolvedIngredients": "拆解食材",
+  "recordMealAnalysisCompositionMatches": "成分表命中",
+  "recordMealAnalysisNutritionEstimate": "营养估算",
+  "recordMealAnalysisNutritionEnergy": "热量",
+  "recordMealAnalysisNutritionProtein": "蛋白质",
+  "recordMealAnalysisEstimateDisclaimer": "当前结果仅作保守估算，请以实际情况为准。",
+  "recordMealConfirmAction": "确认当前菜品结果",
+  "recordMealConfirmActionSelected": "保存时确认当前菜品结果",
+  "recordMealDishEditorHelperText": "仅编辑菜品层，食材和营养将由系统重新估算。",
+  "recordMealDishAddAction": "添加菜品",
+  "recordMealDishRemoveAction": "删除菜品",
+  "recordMealDishFieldLabel": "菜品 {index}",
+  "@recordMealDishFieldLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
   "recordEditAction": "编辑",
   "recordDeleteAction": "删除",
   "recordDeleteConfirmMessage": "确定删除此记录？此操作不可撤销。",

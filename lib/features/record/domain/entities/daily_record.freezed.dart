@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DailyRecordItem {
 
- String get id; DailyRecordKind get kind; String get occurredAt; String? get occurredTime; String? get title; String? get value; String? get unit; String? get note; String? get source; Map<String, dynamic>? get payload; List<DailyRecordAttachment> get attachments; String get createdAt; String get updatedAt;
+ String get id; DailyRecordKind get kind; String get occurredAt; String? get occurredTime; String? get title; String? get value; String? get unit; String? get note; String? get source; Map<String, dynamic>? get payload; String? get mealAnalysisStatus; String? get mealAnalysisCoverage; String? get mealAnalysisUpdatedAt; String? get mealAnalysisFailureReason; String? get mealShortDescription; List<String> get mealTopFoods; List<DailyRecordAttachment> get attachments; String get createdAt; String get updatedAt;
 /// Create a copy of DailyRecordItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $DailyRecordItemCopyWith<DailyRecordItem> get copyWith => _$DailyRecordItemCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyRecordItem&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.occurredTime, occurredTime) || other.occurredTime == occurredTime)&&(identical(other.title, title) || other.title == title)&&(identical(other.value, value) || other.value == value)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.note, note) || other.note == note)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other.payload, payload)&&const DeepCollectionEquality().equals(other.attachments, attachments)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyRecordItem&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.occurredTime, occurredTime) || other.occurredTime == occurredTime)&&(identical(other.title, title) || other.title == title)&&(identical(other.value, value) || other.value == value)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.note, note) || other.note == note)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other.payload, payload)&&(identical(other.mealAnalysisStatus, mealAnalysisStatus) || other.mealAnalysisStatus == mealAnalysisStatus)&&(identical(other.mealAnalysisCoverage, mealAnalysisCoverage) || other.mealAnalysisCoverage == mealAnalysisCoverage)&&(identical(other.mealAnalysisUpdatedAt, mealAnalysisUpdatedAt) || other.mealAnalysisUpdatedAt == mealAnalysisUpdatedAt)&&(identical(other.mealAnalysisFailureReason, mealAnalysisFailureReason) || other.mealAnalysisFailureReason == mealAnalysisFailureReason)&&(identical(other.mealShortDescription, mealShortDescription) || other.mealShortDescription == mealShortDescription)&&const DeepCollectionEquality().equals(other.mealTopFoods, mealTopFoods)&&const DeepCollectionEquality().equals(other.attachments, attachments)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,kind,occurredAt,occurredTime,title,value,unit,note,source,const DeepCollectionEquality().hash(payload),const DeepCollectionEquality().hash(attachments),createdAt,updatedAt);
+int get hashCode => Object.hashAll([runtimeType,id,kind,occurredAt,occurredTime,title,value,unit,note,source,const DeepCollectionEquality().hash(payload),mealAnalysisStatus,mealAnalysisCoverage,mealAnalysisUpdatedAt,mealAnalysisFailureReason,mealShortDescription,const DeepCollectionEquality().hash(mealTopFoods),const DeepCollectionEquality().hash(attachments),createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'DailyRecordItem(id: $id, kind: $kind, occurredAt: $occurredAt, occurredTime: $occurredTime, title: $title, value: $value, unit: $unit, note: $note, source: $source, payload: $payload, attachments: $attachments, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'DailyRecordItem(id: $id, kind: $kind, occurredAt: $occurredAt, occurredTime: $occurredTime, title: $title, value: $value, unit: $unit, note: $note, source: $source, payload: $payload, mealAnalysisStatus: $mealAnalysisStatus, mealAnalysisCoverage: $mealAnalysisCoverage, mealAnalysisUpdatedAt: $mealAnalysisUpdatedAt, mealAnalysisFailureReason: $mealAnalysisFailureReason, mealShortDescription: $mealShortDescription, mealTopFoods: $mealTopFoods, attachments: $attachments, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $DailyRecordItemCopyWith<$Res>  {
   factory $DailyRecordItemCopyWith(DailyRecordItem value, $Res Function(DailyRecordItem) _then) = _$DailyRecordItemCopyWithImpl;
 @useResult
 $Res call({
- String id, DailyRecordKind kind, String occurredAt, String? occurredTime, String? title, String? value, String? unit, String? note, String? source, Map<String, dynamic>? payload, List<DailyRecordAttachment> attachments, String createdAt, String updatedAt
+ String id, DailyRecordKind kind, String occurredAt, String? occurredTime, String? title, String? value, String? unit, String? note, String? source, Map<String, dynamic>? payload, String? mealAnalysisStatus, String? mealAnalysisCoverage, String? mealAnalysisUpdatedAt, String? mealAnalysisFailureReason, String? mealShortDescription, List<String> mealTopFoods, List<DailyRecordAttachment> attachments, String createdAt, String updatedAt
 });
 
 
@@ -62,7 +62,7 @@ class _$DailyRecordItemCopyWithImpl<$Res>
 
 /// Create a copy of DailyRecordItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? occurredAt = null,Object? occurredTime = freezed,Object? title = freezed,Object? value = freezed,Object? unit = freezed,Object? note = freezed,Object? source = freezed,Object? payload = freezed,Object? attachments = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? occurredAt = null,Object? occurredTime = freezed,Object? title = freezed,Object? value = freezed,Object? unit = freezed,Object? note = freezed,Object? source = freezed,Object? payload = freezed,Object? mealAnalysisStatus = freezed,Object? mealAnalysisCoverage = freezed,Object? mealAnalysisUpdatedAt = freezed,Object? mealAnalysisFailureReason = freezed,Object? mealShortDescription = freezed,Object? mealTopFoods = null,Object? attachments = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,13 @@ as String?,unit: freezed == unit ? _self.unit : unit // ignore: cast_nullable_to
 as String?,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as String?,payload: freezed == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,attachments: null == attachments ? _self.attachments : attachments // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,mealAnalysisStatus: freezed == mealAnalysisStatus ? _self.mealAnalysisStatus : mealAnalysisStatus // ignore: cast_nullable_to_non_nullable
+as String?,mealAnalysisCoverage: freezed == mealAnalysisCoverage ? _self.mealAnalysisCoverage : mealAnalysisCoverage // ignore: cast_nullable_to_non_nullable
+as String?,mealAnalysisUpdatedAt: freezed == mealAnalysisUpdatedAt ? _self.mealAnalysisUpdatedAt : mealAnalysisUpdatedAt // ignore: cast_nullable_to_non_nullable
+as String?,mealAnalysisFailureReason: freezed == mealAnalysisFailureReason ? _self.mealAnalysisFailureReason : mealAnalysisFailureReason // ignore: cast_nullable_to_non_nullable
+as String?,mealShortDescription: freezed == mealShortDescription ? _self.mealShortDescription : mealShortDescription // ignore: cast_nullable_to_non_nullable
+as String?,mealTopFoods: null == mealTopFoods ? _self.mealTopFoods : mealTopFoods // ignore: cast_nullable_to_non_nullable
+as List<String>,attachments: null == attachments ? _self.attachments : attachments // ignore: cast_nullable_to_non_nullable
 as List<DailyRecordAttachment>,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String,
@@ -162,10 +168,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  DailyRecordKind kind,  String occurredAt,  String? occurredTime,  String? title,  String? value,  String? unit,  String? note,  String? source,  Map<String, dynamic>? payload,  List<DailyRecordAttachment> attachments,  String createdAt,  String updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  DailyRecordKind kind,  String occurredAt,  String? occurredTime,  String? title,  String? value,  String? unit,  String? note,  String? source,  Map<String, dynamic>? payload,  String? mealAnalysisStatus,  String? mealAnalysisCoverage,  String? mealAnalysisUpdatedAt,  String? mealAnalysisFailureReason,  String? mealShortDescription,  List<String> mealTopFoods,  List<DailyRecordAttachment> attachments,  String createdAt,  String updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DailyRecordItem() when $default != null:
-return $default(_that.id,_that.kind,_that.occurredAt,_that.occurredTime,_that.title,_that.value,_that.unit,_that.note,_that.source,_that.payload,_that.attachments,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.kind,_that.occurredAt,_that.occurredTime,_that.title,_that.value,_that.unit,_that.note,_that.source,_that.payload,_that.mealAnalysisStatus,_that.mealAnalysisCoverage,_that.mealAnalysisUpdatedAt,_that.mealAnalysisFailureReason,_that.mealShortDescription,_that.mealTopFoods,_that.attachments,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -183,10 +189,10 @@ return $default(_that.id,_that.kind,_that.occurredAt,_that.occurredTime,_that.ti
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  DailyRecordKind kind,  String occurredAt,  String? occurredTime,  String? title,  String? value,  String? unit,  String? note,  String? source,  Map<String, dynamic>? payload,  List<DailyRecordAttachment> attachments,  String createdAt,  String updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  DailyRecordKind kind,  String occurredAt,  String? occurredTime,  String? title,  String? value,  String? unit,  String? note,  String? source,  Map<String, dynamic>? payload,  String? mealAnalysisStatus,  String? mealAnalysisCoverage,  String? mealAnalysisUpdatedAt,  String? mealAnalysisFailureReason,  String? mealShortDescription,  List<String> mealTopFoods,  List<DailyRecordAttachment> attachments,  String createdAt,  String updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _DailyRecordItem():
-return $default(_that.id,_that.kind,_that.occurredAt,_that.occurredTime,_that.title,_that.value,_that.unit,_that.note,_that.source,_that.payload,_that.attachments,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.kind,_that.occurredAt,_that.occurredTime,_that.title,_that.value,_that.unit,_that.note,_that.source,_that.payload,_that.mealAnalysisStatus,_that.mealAnalysisCoverage,_that.mealAnalysisUpdatedAt,_that.mealAnalysisFailureReason,_that.mealShortDescription,_that.mealTopFoods,_that.attachments,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +209,10 @@ return $default(_that.id,_that.kind,_that.occurredAt,_that.occurredTime,_that.ti
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  DailyRecordKind kind,  String occurredAt,  String? occurredTime,  String? title,  String? value,  String? unit,  String? note,  String? source,  Map<String, dynamic>? payload,  List<DailyRecordAttachment> attachments,  String createdAt,  String updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  DailyRecordKind kind,  String occurredAt,  String? occurredTime,  String? title,  String? value,  String? unit,  String? note,  String? source,  Map<String, dynamic>? payload,  String? mealAnalysisStatus,  String? mealAnalysisCoverage,  String? mealAnalysisUpdatedAt,  String? mealAnalysisFailureReason,  String? mealShortDescription,  List<String> mealTopFoods,  List<DailyRecordAttachment> attachments,  String createdAt,  String updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _DailyRecordItem() when $default != null:
-return $default(_that.id,_that.kind,_that.occurredAt,_that.occurredTime,_that.title,_that.value,_that.unit,_that.note,_that.source,_that.payload,_that.attachments,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.kind,_that.occurredAt,_that.occurredTime,_that.title,_that.value,_that.unit,_that.note,_that.source,_that.payload,_that.mealAnalysisStatus,_that.mealAnalysisCoverage,_that.mealAnalysisUpdatedAt,_that.mealAnalysisFailureReason,_that.mealShortDescription,_that.mealTopFoods,_that.attachments,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -218,7 +224,7 @@ return $default(_that.id,_that.kind,_that.occurredAt,_that.occurredTime,_that.ti
 
 
 class _DailyRecordItem implements DailyRecordItem {
-  const _DailyRecordItem({required this.id, required this.kind, required this.occurredAt, this.occurredTime, this.title, this.value, this.unit, this.note, this.source, final  Map<String, dynamic>? payload, final  List<DailyRecordAttachment> attachments = const [], required this.createdAt, required this.updatedAt}): _payload = payload,_attachments = attachments;
+  const _DailyRecordItem({required this.id, required this.kind, required this.occurredAt, this.occurredTime, this.title, this.value, this.unit, this.note, this.source, final  Map<String, dynamic>? payload, this.mealAnalysisStatus, this.mealAnalysisCoverage, this.mealAnalysisUpdatedAt, this.mealAnalysisFailureReason, this.mealShortDescription, final  List<String> mealTopFoods = const <String>[], final  List<DailyRecordAttachment> attachments = const [], required this.createdAt, required this.updatedAt}): _payload = payload,_mealTopFoods = mealTopFoods,_attachments = attachments;
   
 
 @override final  String id;
@@ -237,6 +243,18 @@ class _DailyRecordItem implements DailyRecordItem {
   if (_payload is EqualUnmodifiableMapView) return _payload;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(value);
+}
+
+@override final  String? mealAnalysisStatus;
+@override final  String? mealAnalysisCoverage;
+@override final  String? mealAnalysisUpdatedAt;
+@override final  String? mealAnalysisFailureReason;
+@override final  String? mealShortDescription;
+ final  List<String> _mealTopFoods;
+@override@JsonKey() List<String> get mealTopFoods {
+  if (_mealTopFoods is EqualUnmodifiableListView) return _mealTopFoods;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_mealTopFoods);
 }
 
  final  List<DailyRecordAttachment> _attachments;
@@ -259,16 +277,16 @@ _$DailyRecordItemCopyWith<_DailyRecordItem> get copyWith => __$DailyRecordItemCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyRecordItem&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.occurredTime, occurredTime) || other.occurredTime == occurredTime)&&(identical(other.title, title) || other.title == title)&&(identical(other.value, value) || other.value == value)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.note, note) || other.note == note)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other._payload, _payload)&&const DeepCollectionEquality().equals(other._attachments, _attachments)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyRecordItem&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.occurredTime, occurredTime) || other.occurredTime == occurredTime)&&(identical(other.title, title) || other.title == title)&&(identical(other.value, value) || other.value == value)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.note, note) || other.note == note)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other._payload, _payload)&&(identical(other.mealAnalysisStatus, mealAnalysisStatus) || other.mealAnalysisStatus == mealAnalysisStatus)&&(identical(other.mealAnalysisCoverage, mealAnalysisCoverage) || other.mealAnalysisCoverage == mealAnalysisCoverage)&&(identical(other.mealAnalysisUpdatedAt, mealAnalysisUpdatedAt) || other.mealAnalysisUpdatedAt == mealAnalysisUpdatedAt)&&(identical(other.mealAnalysisFailureReason, mealAnalysisFailureReason) || other.mealAnalysisFailureReason == mealAnalysisFailureReason)&&(identical(other.mealShortDescription, mealShortDescription) || other.mealShortDescription == mealShortDescription)&&const DeepCollectionEquality().equals(other._mealTopFoods, _mealTopFoods)&&const DeepCollectionEquality().equals(other._attachments, _attachments)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,kind,occurredAt,occurredTime,title,value,unit,note,source,const DeepCollectionEquality().hash(_payload),const DeepCollectionEquality().hash(_attachments),createdAt,updatedAt);
+int get hashCode => Object.hashAll([runtimeType,id,kind,occurredAt,occurredTime,title,value,unit,note,source,const DeepCollectionEquality().hash(_payload),mealAnalysisStatus,mealAnalysisCoverage,mealAnalysisUpdatedAt,mealAnalysisFailureReason,mealShortDescription,const DeepCollectionEquality().hash(_mealTopFoods),const DeepCollectionEquality().hash(_attachments),createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'DailyRecordItem(id: $id, kind: $kind, occurredAt: $occurredAt, occurredTime: $occurredTime, title: $title, value: $value, unit: $unit, note: $note, source: $source, payload: $payload, attachments: $attachments, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'DailyRecordItem(id: $id, kind: $kind, occurredAt: $occurredAt, occurredTime: $occurredTime, title: $title, value: $value, unit: $unit, note: $note, source: $source, payload: $payload, mealAnalysisStatus: $mealAnalysisStatus, mealAnalysisCoverage: $mealAnalysisCoverage, mealAnalysisUpdatedAt: $mealAnalysisUpdatedAt, mealAnalysisFailureReason: $mealAnalysisFailureReason, mealShortDescription: $mealShortDescription, mealTopFoods: $mealTopFoods, attachments: $attachments, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -279,7 +297,7 @@ abstract mixin class _$DailyRecordItemCopyWith<$Res> implements $DailyRecordItem
   factory _$DailyRecordItemCopyWith(_DailyRecordItem value, $Res Function(_DailyRecordItem) _then) = __$DailyRecordItemCopyWithImpl;
 @override @useResult
 $Res call({
- String id, DailyRecordKind kind, String occurredAt, String? occurredTime, String? title, String? value, String? unit, String? note, String? source, Map<String, dynamic>? payload, List<DailyRecordAttachment> attachments, String createdAt, String updatedAt
+ String id, DailyRecordKind kind, String occurredAt, String? occurredTime, String? title, String? value, String? unit, String? note, String? source, Map<String, dynamic>? payload, String? mealAnalysisStatus, String? mealAnalysisCoverage, String? mealAnalysisUpdatedAt, String? mealAnalysisFailureReason, String? mealShortDescription, List<String> mealTopFoods, List<DailyRecordAttachment> attachments, String createdAt, String updatedAt
 });
 
 
@@ -296,7 +314,7 @@ class __$DailyRecordItemCopyWithImpl<$Res>
 
 /// Create a copy of DailyRecordItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? occurredAt = null,Object? occurredTime = freezed,Object? title = freezed,Object? value = freezed,Object? unit = freezed,Object? note = freezed,Object? source = freezed,Object? payload = freezed,Object? attachments = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? occurredAt = null,Object? occurredTime = freezed,Object? title = freezed,Object? value = freezed,Object? unit = freezed,Object? note = freezed,Object? source = freezed,Object? payload = freezed,Object? mealAnalysisStatus = freezed,Object? mealAnalysisCoverage = freezed,Object? mealAnalysisUpdatedAt = freezed,Object? mealAnalysisFailureReason = freezed,Object? mealShortDescription = freezed,Object? mealTopFoods = null,Object? attachments = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_DailyRecordItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -308,7 +326,13 @@ as String?,unit: freezed == unit ? _self.unit : unit // ignore: cast_nullable_to
 as String?,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as String?,payload: freezed == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,attachments: null == attachments ? _self._attachments : attachments // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,mealAnalysisStatus: freezed == mealAnalysisStatus ? _self.mealAnalysisStatus : mealAnalysisStatus // ignore: cast_nullable_to_non_nullable
+as String?,mealAnalysisCoverage: freezed == mealAnalysisCoverage ? _self.mealAnalysisCoverage : mealAnalysisCoverage // ignore: cast_nullable_to_non_nullable
+as String?,mealAnalysisUpdatedAt: freezed == mealAnalysisUpdatedAt ? _self.mealAnalysisUpdatedAt : mealAnalysisUpdatedAt // ignore: cast_nullable_to_non_nullable
+as String?,mealAnalysisFailureReason: freezed == mealAnalysisFailureReason ? _self.mealAnalysisFailureReason : mealAnalysisFailureReason // ignore: cast_nullable_to_non_nullable
+as String?,mealShortDescription: freezed == mealShortDescription ? _self.mealShortDescription : mealShortDescription // ignore: cast_nullable_to_non_nullable
+as String?,mealTopFoods: null == mealTopFoods ? _self._mealTopFoods : mealTopFoods // ignore: cast_nullable_to_non_nullable
+as List<String>,attachments: null == attachments ? _self._attachments : attachments // ignore: cast_nullable_to_non_nullable
 as List<DailyRecordAttachment>,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String,

@@ -16,15 +16,30 @@ import '../auth/auth_test_helpers.dart';
 
 /// Fake repository that returns a canned record.
 class _FakeRecordRepo extends DailyRecordRepository {
+  DailyRecordUpdateInput? lastUpdateInput;
+
   @override
   Future<DailyRecordItem> get(String id) async {
     return DailyRecordItem(
       id: id,
-      kind: DailyRecordKind.note,
+      kind: DailyRecordKind.meal,
       occurredAt: '2026-06-10',
-      title: 'Test Record',
-      value: 'Some content',
-      note: 'A note',
+      title: 'Test Meal',
+      payload: const {
+        'mealInput': {
+          'recognizedDishes': [
+            {'rawName': '西红柿炒鸡蛋'},
+            {'rawName': '米饭'},
+          ],
+        },
+        'mealAnalysis': {
+          'analysisStatus': 'unconfirmed',
+          'recognizedDishes': [
+            {'rawName': '西红柿炒鸡蛋'},
+            {'rawName': '米饭'},
+          ],
+        },
+      },
       attachments: const <DailyRecordAttachment>[],
       createdAt: '2026-06-10T08:00:00.000Z',
       updatedAt: '2026-06-10T08:00:00.000Z',
@@ -71,7 +86,8 @@ class _FakeRecordRepo extends DailyRecordRepository {
     String id,
     DailyRecordUpdateInput input,
   ) async {
-    throw UnimplementedError();
+    lastUpdateInput = input;
+    return get(id);
   }
 
   @override
@@ -84,12 +100,13 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final repo = _FakeRecordRepo();
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
-          dailyRecordRepositoryProvider.overrideWithValue(_FakeRecordRepo()),
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
         ],
         child: MaterialApp.router(
           locale: const Locale('zh'),
@@ -121,5 +138,40 @@ void main() {
 
     expect(find.byType(RecordEditPage), findsOneWidget);
     expect(find.text(l10n.recordEditAction), findsWidgets);
+    expect(find.text('西红柿炒鸡蛋'), findsOneWidget);
+    expect(find.text('米饭'), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key('meal-dish-field-0')), '番茄炒蛋');
+    await tester.ensureVisible(find.byKey(const Key('meal-dish-remove-1')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('meal-dish-remove-1')));
+    await tester.pump();
+    await tester.ensureVisible(find.byKey(const Key('meal-dish-add-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('meal-dish-add-action')));
+    await tester.pump();
+    await tester.enterText(find.byKey(const Key('meal-dish-field-1')), '青菜');
+    await tester.ensureVisible(find.byKey(const Key('meal-confirm-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('meal-confirm-action')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.byKey(const Key('record-edit-save-action')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('record-edit-save-action')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    final payload = repo.lastUpdateInput?.payload as Map<String, dynamic>?;
+    final mealInput = payload?['mealInput'] as Map<String, dynamic>?;
+    final dishes = mealInput?['recognizedDishes'] as List<dynamic>?;
+    expect(dishes, [
+      {'rawName': '番茄炒蛋'},
+      {'rawName': '青菜'},
+    ]);
+    expect(payload?['mealAnalysis'], <String, dynamic>{
+      'analysisStatus': 'confirmed',
+    });
   });
 }

@@ -32,6 +32,14 @@ String recordCopy(AppLocalizations l10n, RecordCopyKey key) {
     RecordCopyKey.timelineMealLunch => l10n.recordTimelineMealLunch,
     RecordCopyKey.timelineMealName => l10n.recordTimelineMealName,
     RecordCopyKey.timelineMealNutrition => l10n.recordTimelineMealNutrition,
+    RecordCopyKey.timelineMealEstimateBadge =>
+      l10n.recordMealAnalysisStatusUnconfirmed,
+    RecordCopyKey.timelineMealAnalyzingBadge =>
+      l10n.recordMealAnalysisStatusAnalyzing,
+    RecordCopyKey.timelineMealConfirmedBadge =>
+      l10n.recordMealAnalysisStatusConfirmed,
+    RecordCopyKey.timelineMealFailedBadge =>
+      l10n.recordMealAnalysisStatusFailed,
     RecordCopyKey.timelineAiBadge => l10n.recordTimelineAiBadge,
     RecordCopyKey.timelineBloodPressure => l10n.recordTimelineBloodPressure,
     RecordCopyKey.timelineBloodPressureDetail =>

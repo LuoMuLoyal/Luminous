@@ -38,6 +38,18 @@ class DailyRecordItemDto {
 
     this.payload,
 
+    this.mealAnalysisStatus,
+
+    this.mealAnalysisCoverage,
+
+    this.mealAnalysisUpdatedAt,
+
+    this.mealAnalysisFailureReason,
+
+    this.mealShortDescription,
+
+    this.mealTopFoods,
+
     required this.attachments,
 
     required this.createdAt,
@@ -89,6 +101,38 @@ class DailyRecordItemDto {
   @JsonKey(name: r'payload', required: false, includeIfNull: false)
   final Object? payload;
 
+  /// Meal analysis status for meal records.
+  @JsonKey(name: r'mealAnalysisStatus', required: false, includeIfNull: false)
+  final Object? mealAnalysisStatus;
+
+  /// Meal analysis coverage for meal records.
+  @JsonKey(name: r'mealAnalysisCoverage', required: false, includeIfNull: false)
+  final Object? mealAnalysisCoverage;
+
+  /// Meal analysis updated timestamp (ISO 8601).
+  @JsonKey(
+    name: r'mealAnalysisUpdatedAt',
+    required: false,
+    includeIfNull: false,
+  )
+  final Object? mealAnalysisUpdatedAt;
+
+  /// Display-safe meal analysis failure reason.
+  @JsonKey(
+    name: r'mealAnalysisFailureReason',
+    required: false,
+    includeIfNull: false,
+  )
+  final Object? mealAnalysisFailureReason;
+
+  /// Short meal description for list reads.
+  @JsonKey(name: r'mealShortDescription', required: false, includeIfNull: false)
+  final Object? mealShortDescription;
+
+  /// Top recognized foods for list reads.
+  @JsonKey(name: r'mealTopFoods', required: false, includeIfNull: false)
+  final List<String>? mealTopFoods;
+
   @JsonKey(name: r'attachments', required: true, includeIfNull: false)
   final List<DailyRecordAttachmentDto> attachments;
 
@@ -114,6 +158,12 @@ class DailyRecordItemDto {
           other.note == note &&
           other.source_ == source_ &&
           other.payload == payload &&
+          other.mealAnalysisStatus == mealAnalysisStatus &&
+          other.mealAnalysisCoverage == mealAnalysisCoverage &&
+          other.mealAnalysisUpdatedAt == mealAnalysisUpdatedAt &&
+          other.mealAnalysisFailureReason == mealAnalysisFailureReason &&
+          other.mealShortDescription == mealShortDescription &&
+          other.mealTopFoods == mealTopFoods &&
           other.attachments == attachments &&
           other.createdAt == createdAt &&
           other.updatedAt == updatedAt;
@@ -130,6 +180,14 @@ class DailyRecordItemDto {
       note.hashCode +
       source_.hashCode +
       payload.hashCode +
+      (mealAnalysisStatus == null ? 0 : mealAnalysisStatus.hashCode) +
+      (mealAnalysisCoverage == null ? 0 : mealAnalysisCoverage.hashCode) +
+      (mealAnalysisUpdatedAt == null ? 0 : mealAnalysisUpdatedAt.hashCode) +
+      (mealAnalysisFailureReason == null
+          ? 0
+          : mealAnalysisFailureReason.hashCode) +
+      (mealShortDescription == null ? 0 : mealShortDescription.hashCode) +
+      mealTopFoods.hashCode +
       attachments.hashCode +
       createdAt.hashCode +
       updatedAt.hashCode;

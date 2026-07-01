@@ -902,6 +902,132 @@ abstract class AppLocalizations {
   /// **'更新于'**
   String get recordDetailUpdatedAtLabel;
 
+  /// No description provided for @recordMealAnalysisSectionTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'餐食分析'**
+  String get recordMealAnalysisSectionTitle;
+
+  /// No description provided for @recordMealAnalysisStatusAnalyzing.
+  ///
+  /// In zh, this message translates to:
+  /// **'分析中'**
+  String get recordMealAnalysisStatusAnalyzing;
+
+  /// No description provided for @recordMealAnalysisStatusUnconfirmed.
+  ///
+  /// In zh, this message translates to:
+  /// **'待确认'**
+  String get recordMealAnalysisStatusUnconfirmed;
+
+  /// No description provided for @recordMealAnalysisStatusConfirmed.
+  ///
+  /// In zh, this message translates to:
+  /// **'已确认'**
+  String get recordMealAnalysisStatusConfirmed;
+
+  /// No description provided for @recordMealAnalysisStatusFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'分析失败'**
+  String get recordMealAnalysisStatusFailed;
+
+  /// No description provided for @recordMealAnalysisCoveragePartial.
+  ///
+  /// In zh, this message translates to:
+  /// **'部分覆盖'**
+  String get recordMealAnalysisCoveragePartial;
+
+  /// No description provided for @recordMealAnalysisCoverageComplete.
+  ///
+  /// In zh, this message translates to:
+  /// **'完整覆盖'**
+  String get recordMealAnalysisCoverageComplete;
+
+  /// No description provided for @recordMealAnalysisCoverageNone.
+  ///
+  /// In zh, this message translates to:
+  /// **'未覆盖'**
+  String get recordMealAnalysisCoverageNone;
+
+  /// No description provided for @recordMealAnalysisRecognizedDishes.
+  ///
+  /// In zh, this message translates to:
+  /// **'识别菜品'**
+  String get recordMealAnalysisRecognizedDishes;
+
+  /// No description provided for @recordMealAnalysisResolvedIngredients.
+  ///
+  /// In zh, this message translates to:
+  /// **'拆解食材'**
+  String get recordMealAnalysisResolvedIngredients;
+
+  /// No description provided for @recordMealAnalysisCompositionMatches.
+  ///
+  /// In zh, this message translates to:
+  /// **'成分表命中'**
+  String get recordMealAnalysisCompositionMatches;
+
+  /// No description provided for @recordMealAnalysisNutritionEstimate.
+  ///
+  /// In zh, this message translates to:
+  /// **'营养估算'**
+  String get recordMealAnalysisNutritionEstimate;
+
+  /// No description provided for @recordMealAnalysisNutritionEnergy.
+  ///
+  /// In zh, this message translates to:
+  /// **'热量'**
+  String get recordMealAnalysisNutritionEnergy;
+
+  /// No description provided for @recordMealAnalysisNutritionProtein.
+  ///
+  /// In zh, this message translates to:
+  /// **'蛋白质'**
+  String get recordMealAnalysisNutritionProtein;
+
+  /// No description provided for @recordMealAnalysisEstimateDisclaimer.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前结果仅作保守估算，请以实际情况为准。'**
+  String get recordMealAnalysisEstimateDisclaimer;
+
+  /// No description provided for @recordMealConfirmAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认当前菜品结果'**
+  String get recordMealConfirmAction;
+
+  /// No description provided for @recordMealConfirmActionSelected.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存时确认当前菜品结果'**
+  String get recordMealConfirmActionSelected;
+
+  /// No description provided for @recordMealDishEditorHelperText.
+  ///
+  /// In zh, this message translates to:
+  /// **'仅编辑菜品层，食材和营养将由系统重新估算。'**
+  String get recordMealDishEditorHelperText;
+
+  /// No description provided for @recordMealDishAddAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加菜品'**
+  String get recordMealDishAddAction;
+
+  /// No description provided for @recordMealDishRemoveAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除菜品'**
+  String get recordMealDishRemoveAction;
+
+  /// No description provided for @recordMealDishFieldLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'菜品 {index}'**
+  String recordMealDishFieldLabel(int index);
+
   /// No description provided for @recordEditAction.
   ///
   /// In zh, this message translates to:

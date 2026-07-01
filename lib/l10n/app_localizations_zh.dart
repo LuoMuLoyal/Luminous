@@ -437,6 +437,71 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recordDetailUpdatedAtLabel => '更新于';
 
   @override
+  String get recordMealAnalysisSectionTitle => '餐食分析';
+
+  @override
+  String get recordMealAnalysisStatusAnalyzing => '分析中';
+
+  @override
+  String get recordMealAnalysisStatusUnconfirmed => '待确认';
+
+  @override
+  String get recordMealAnalysisStatusConfirmed => '已确认';
+
+  @override
+  String get recordMealAnalysisStatusFailed => '分析失败';
+
+  @override
+  String get recordMealAnalysisCoveragePartial => '部分覆盖';
+
+  @override
+  String get recordMealAnalysisCoverageComplete => '完整覆盖';
+
+  @override
+  String get recordMealAnalysisCoverageNone => '未覆盖';
+
+  @override
+  String get recordMealAnalysisRecognizedDishes => '识别菜品';
+
+  @override
+  String get recordMealAnalysisResolvedIngredients => '拆解食材';
+
+  @override
+  String get recordMealAnalysisCompositionMatches => '成分表命中';
+
+  @override
+  String get recordMealAnalysisNutritionEstimate => '营养估算';
+
+  @override
+  String get recordMealAnalysisNutritionEnergy => '热量';
+
+  @override
+  String get recordMealAnalysisNutritionProtein => '蛋白质';
+
+  @override
+  String get recordMealAnalysisEstimateDisclaimer => '当前结果仅作保守估算，请以实际情况为准。';
+
+  @override
+  String get recordMealConfirmAction => '确认当前菜品结果';
+
+  @override
+  String get recordMealConfirmActionSelected => '保存时确认当前菜品结果';
+
+  @override
+  String get recordMealDishEditorHelperText => '仅编辑菜品层，食材和营养将由系统重新估算。';
+
+  @override
+  String get recordMealDishAddAction => '添加菜品';
+
+  @override
+  String get recordMealDishRemoveAction => '删除菜品';
+
+  @override
+  String recordMealDishFieldLabel(int index) {
+    return '菜品 $index';
+  }
+
+  @override
   String get recordEditAction => '编辑';
 
   @override

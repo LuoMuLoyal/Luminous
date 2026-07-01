@@ -493,6 +493,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordDetailUpdatedAtLabel => 'Updated at';
 
   @override
+  String get recordMealAnalysisSectionTitle => 'Meal analysis';
+
+  @override
+  String get recordMealAnalysisStatusAnalyzing => 'Analyzing';
+
+  @override
+  String get recordMealAnalysisStatusUnconfirmed => 'Needs confirmation';
+
+  @override
+  String get recordMealAnalysisStatusConfirmed => 'Confirmed';
+
+  @override
+  String get recordMealAnalysisStatusFailed => 'Analysis failed';
+
+  @override
+  String get recordMealAnalysisCoveragePartial => 'Partial coverage';
+
+  @override
+  String get recordMealAnalysisCoverageComplete => 'Complete coverage';
+
+  @override
+  String get recordMealAnalysisCoverageNone => 'No coverage';
+
+  @override
+  String get recordMealAnalysisRecognizedDishes => 'Recognized dishes';
+
+  @override
+  String get recordMealAnalysisResolvedIngredients => 'Resolved ingredients';
+
+  @override
+  String get recordMealAnalysisCompositionMatches => 'Composition matches';
+
+  @override
+  String get recordMealAnalysisNutritionEstimate => 'Nutrition estimate';
+
+  @override
+  String get recordMealAnalysisNutritionEnergy => 'Energy';
+
+  @override
+  String get recordMealAnalysisNutritionProtein => 'Protein';
+
+  @override
+  String get recordMealAnalysisEstimateDisclaimer =>
+      'This result is a conservative estimate and may not fully match the actual meal.';
+
+  @override
+  String get recordMealConfirmAction => 'Confirm current dish result';
+
+  @override
+  String get recordMealConfirmActionSelected =>
+      'Will confirm current dish result on save';
+
+  @override
+  String get recordMealDishEditorHelperText =>
+      'Only edit dishes here. Ingredients and nutrition will be re-estimated by the system.';
+
+  @override
+  String get recordMealDishAddAction => 'Add dish';
+
+  @override
+  String get recordMealDishRemoveAction => 'Remove dish';
+
+  @override
+  String recordMealDishFieldLabel(int index) {
+    return 'Dish $index';
+  }
+
+  @override
   String get recordEditAction => 'Edit';
 
   @override

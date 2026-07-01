@@ -1675,6 +1675,40 @@ void main() {
     },
   );
 
+  test(
+    'Lucent record repository surfaces meal analysis summary and badge',
+    () async {
+      final dailyRepo = _FakeDailyRecordRepository(
+        itemKind: DailyRecordKind.meal,
+        itemTitle: null,
+        itemValue: null,
+        itemUnit: null,
+        itemNote: null,
+        itemPayload: const {
+          'mealAnalysis': {
+            'analysisStatus': 'unconfirmed',
+            'coverage': 'partial',
+            'mealDescription': '一份米饭配鸡胸肉',
+          },
+        },
+        itemMealAnalysisStatus: 'unconfirmed',
+        itemMealAnalysisCoverage: 'partial',
+        itemMealShortDescription: '一份米饭配鸡胸肉',
+        itemMealTopFoods: const ['米饭', '鸡胸肉'],
+      );
+      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 6, 6));
+
+      expect(dashboard.timeline.single.rawTitle, '一份米饭配鸡胸肉');
+      expect(dashboard.timeline.single.rawDetail, '识别菜品：米饭、鸡胸肉');
+      expect(
+        dashboard.timeline.single.badgeKey,
+        RecordCopyKey.timelineMealEstimateBadge,
+      );
+    },
+  );
+
   test('recordEntryTypeForDailyRecordKind maps note to note type', () {
     expect(
       recordEntryTypeForDailyRecordKind(DailyRecordKind.note),
@@ -2007,6 +2041,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     this.itemUnit = 'mmHg',
     this.itemNote = 'This is a note',
     this.itemPayload,
+    this.itemMealAnalysisStatus,
+    this.itemMealAnalysisCoverage,
+    this.itemMealShortDescription,
+    this.itemMealTopFoods = const <String>[],
     this.withAttachment = false,
     this.fetchThrows = false,
     this.generatedCandidates,
@@ -2021,6 +2059,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   final String? itemUnit;
   final String? itemNote;
   final Map<String, dynamic>? itemPayload;
+  final String? itemMealAnalysisStatus;
+  final String? itemMealAnalysisCoverage;
+  final String? itemMealShortDescription;
+  final List<String> itemMealTopFoods;
   final bool withAttachment;
   final bool fetchThrows;
   final DailyRecordCandidateResult? generatedCandidates;
@@ -2056,6 +2098,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
           unit: itemUnit,
           note: itemNote,
           payload: itemPayload,
+          mealAnalysisStatus: itemMealAnalysisStatus,
+          mealAnalysisCoverage: itemMealAnalysisCoverage,
+          mealShortDescription: itemMealShortDescription,
+          mealTopFoods: itemMealTopFoods,
           source: 'manual',
           createdAt: DateTime.now().toIso8601String(),
           updatedAt: DateTime.now().toIso8601String(),
@@ -2092,6 +2138,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
       unit: itemUnit,
       note: itemNote,
       payload: itemPayload,
+      mealAnalysisStatus: itemMealAnalysisStatus,
+      mealAnalysisCoverage: itemMealAnalysisCoverage,
+      mealShortDescription: itemMealShortDescription,
+      mealTopFoods: itemMealTopFoods,
       source: 'manual',
       attachments: withAttachment
           ? [
@@ -2149,6 +2199,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
       value: input.value,
       unit: input.unit,
       note: input.note,
+      mealAnalysisStatus: itemMealAnalysisStatus,
+      mealAnalysisCoverage: itemMealAnalysisCoverage,
+      mealShortDescription: itemMealShortDescription,
+      mealTopFoods: itemMealTopFoods,
       source: 'manual',
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),

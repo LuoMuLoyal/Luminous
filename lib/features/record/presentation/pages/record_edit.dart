@@ -22,10 +22,12 @@ import 'package:luminous/features/record/domain/entities/daily_record_inputs.dar
         DailyRecordUpdateInput,
         dailyRecordNoChange;
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/daily_record_form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/daily_record_image_attachment_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/record_occurred_at_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/meal/meal_dish_editor_section.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -64,6 +66,9 @@ class RecordEditPage extends HookConsumerWidget {
     final sleepDeepMinutes = useState<int?>(null);
     final sleepLightMinutes = useState<int?>(null);
     final sleepRemMinutes = useState<int?>(null);
+    final mealDishNames = useState<List<String>>(<String>[]);
+    final canConfirmMealAnalysis = useState(false);
+    final confirmMealAnalysis = useState(false);
 
     void invalidateProviders() {
       ref.invalidate(dailyRecordDetailProvider(recordId));
@@ -132,6 +137,13 @@ class RecordEditPage extends HookConsumerWidget {
         selectedImage.value = null;
         attachmentsChanged.value = false;
         loadSleepPayloadData(record.payload);
+        mealDishNames.value = parseMealDishDraftNames(record.payload);
+        final mealAnalysis = parseMealAnalysisViewData(record.payload);
+        canConfirmMealAnalysis.value =
+            mealAnalysis != null &&
+            (mealAnalysis.status == 'unconfirmed' ||
+                mealAnalysis.status == 'confirmed');
+        confirmMealAnalysis.value = false;
         recordOccurredAt.value = parseRecordDate(record.occurredAt);
         recordOccurredTime.value = record.occurredTime?.trim();
         loaded.value = true;
@@ -214,6 +226,32 @@ class RecordEditPage extends HookConsumerWidget {
       return payload;
     }
 
+    Map<String, dynamic>? buildMealPayload(DailyRecordKind k) {
+      if (k != DailyRecordKind.meal) return null;
+      final dishes = mealDishNames.value
+          .map((item) => item.trim())
+          .where((item) => item.isNotEmpty)
+          .map((item) => <String, dynamic>{'rawName': item})
+          .toList(growable: false);
+      final payload = <String, dynamic>{
+        'mealInput': <String, dynamic>{'recognizedDishes': dishes},
+      };
+      if (confirmMealAnalysis.value) {
+        payload['mealAnalysis'] = <String, dynamic>{
+          'analysisStatus': 'confirmed',
+        };
+      }
+      return payload;
+    }
+
+    Map<String, dynamic>? buildPayload(DailyRecordKind k) {
+      return switch (k) {
+        DailyRecordKind.sleep => buildSleepPayload(k),
+        DailyRecordKind.meal => buildMealPayload(k),
+        _ => null,
+      };
+    }
+
     bool isValidSleepValue() {
       if (kind.value != DailyRecordKind.sleep) return true;
       final minutes = resolvedSleepDurationMinutes();
@@ -280,7 +318,7 @@ class RecordEditPage extends HookConsumerWidget {
             value: rules.showValue ? normalizedValueForKind(kind.value) : null,
             unit: rules.showUnit ? unitTextForKind(kind.value) : null,
             note: optionalText(noteController),
-            payload: buildSleepPayload(kind.value),
+            payload: buildPayload(kind.value),
             attachments: attachmentPatch,
           ),
         );
@@ -480,6 +518,42 @@ class RecordEditPage extends HookConsumerWidget {
                   onLightMinutesChanged: (v) => sleepLightMinutes.value = v,
                   onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
                 ),
+              ],
+              if (kind.value == DailyRecordKind.meal) ...[
+                const SizedBox(height: AppSpacingTokens.sm),
+                MealDishEditorSection(
+                  dishNames: mealDishNames.value,
+                  enabled: !saving.value && !deleting.value,
+                  onDishChanged: (index, value) {
+                    final next = [...mealDishNames.value];
+                    if (index >= 0 && index < next.length) {
+                      next[index] = value;
+                      mealDishNames.value = next;
+                    }
+                  },
+                  onDishRemoved: (index) {
+                    final next = [...mealDishNames.value]..removeAt(index);
+                    mealDishNames.value = next;
+                  },
+                  onDishAdded: () {
+                    mealDishNames.value = [...mealDishNames.value, ''];
+                  },
+                ),
+                if (canConfirmMealAnalysis.value) ...[
+                  const SizedBox(height: AppSpacingTokens.sm),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: OutlinedButton(
+                      key: const Key('meal-confirm-action'),
+                      onPressed: () => confirmMealAnalysis.value = true,
+                      child: Text(
+                        confirmMealAnalysis.value
+                            ? l10n.recordMealConfirmActionSelected
+                            : l10n.recordMealConfirmAction,
+                      ),
+                    ),
+                  ),
+                ],
               ],
               const SizedBox(height: AppSpacingTokens.sm),
               DailyRecordImageAttachmentField(

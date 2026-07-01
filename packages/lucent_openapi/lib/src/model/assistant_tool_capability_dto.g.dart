@@ -80,10 +80,14 @@ const _$AssistantToolCapabilityDtoNameEnumEnumMap = {
       'get_current_medicines',
   AssistantToolCapabilityDtoNameEnum.getSleepSummaryByRange:
       'get_sleep_summary_by_range',
-  AssistantToolCapabilityDtoNameEnum.getMedicineLeafletContext:
-      'get_medicine_leaflet_context',
-  AssistantToolCapabilityDtoNameEnum.getMedicalKnowledge:
-      'get_medical_knowledge',
+  AssistantToolCapabilityDtoNameEnum.searchMedicineLeaflets:
+      'search_medicine_leaflets',
+  AssistantToolCapabilityDtoNameEnum.searchMedicalQaCorpus:
+      'search_medical_qa_corpus',
+  AssistantToolCapabilityDtoNameEnum.resolveDrugbankEntity:
+      'resolve_drugbank_entity',
+  AssistantToolCapabilityDtoNameEnum.searchDrugbankPassages:
+      'search_drugbank_passages',
   AssistantToolCapabilityDtoNameEnum.proposeCreateDailyRecord:
       'propose_create_daily_record',
   AssistantToolCapabilityDtoNameEnum.proposeUpdateDailyRecord:

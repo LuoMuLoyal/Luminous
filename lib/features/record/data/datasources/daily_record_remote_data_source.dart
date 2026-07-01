@@ -1,9 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
-import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/core/network/map_utils.dart';
+import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 
@@ -25,20 +26,34 @@ class DailyRecordRemoteDataSource {
       page: page.toString(),
       pageSize: pageSize.toString(),
     );
-    final dto = response.data!.data;
+    final dto = response.data?.data;
+    if (dto == null) {
+      throw _emptyResponse(
+        response.requestOptions,
+        response,
+        'Daily record list response is empty.',
+      );
+    }
     return DailyRecordListData(
-      items: dto.items.map(_toItem).toList(),
+      items: dto.items.map(_toItem).toList(growable: false),
       total: dto.total,
     );
   }
 
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
     final response = await api.dailyRecordsControllerSummaryV1(date: date);
-    final dto = response.data!.data;
+    final dto = response.data?.data;
+    if (dto == null) {
+      throw _emptyResponse(
+        response.requestOptions,
+        response,
+        'Daily record summary response is empty.',
+      );
+    }
     return DailyRecordSummaryData(
       summaries: dto.summaries
-          .map(
-            (s) => DailyRecordSummary(
+          .mapIndexed(
+            (_, s) => DailyRecordSummary(
               kind: _parseKind(s.kind.value),
               count: s.count,
               latest: s.latest != null ? _toItem(s.latest!) : null,
@@ -50,7 +65,15 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordItem> get(String id) async {
     final response = await api.dailyRecordsControllerGetV1(id: id);
-    return _toItem(response.data!.data);
+    final dto = response.data?.data;
+    if (dto == null) {
+      throw _emptyResponse(
+        response.requestOptions,
+        response,
+        'Daily record detail response is empty.',
+      );
+    }
+    return _toItem(dto);
   }
 
   Future<DailyRecordAttachmentInput> uploadImage(
@@ -241,6 +264,14 @@ class DailyRecordRemoteDataSource {
       note: item.note as String?,
       source: item.source_ as String?,
       payload: _parsePayload(item.payload),
+      mealAnalysisStatus: _asStringOrNull(item.mealAnalysisStatus),
+      mealAnalysisCoverage: _asStringOrNull(item.mealAnalysisCoverage),
+      mealAnalysisUpdatedAt: _asStringOrNull(item.mealAnalysisUpdatedAt),
+      mealAnalysisFailureReason: _asStringOrNull(
+        item.mealAnalysisFailureReason,
+      ),
+      mealShortDescription: _asStringOrNull(item.mealShortDescription),
+      mealTopFoods: item.mealTopFoods ?? const <String>[],
       attachments: item.attachments.map(_toAttachment).toList(),
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
@@ -343,5 +374,18 @@ class DailyRecordRemoteDataSource {
     if (value is int) return value;
     if (value is num) return value.toInt();
     return int.tryParse(value?.toString() ?? '');
+  }
+
+  DioException _emptyResponse(
+    RequestOptions requestOptions,
+    Response response,
+    String message,
+  ) {
+    return DioException(
+      requestOptions: requestOptions,
+      response: response,
+      type: DioExceptionType.badResponse,
+      error: message,
+    );
   }
 }

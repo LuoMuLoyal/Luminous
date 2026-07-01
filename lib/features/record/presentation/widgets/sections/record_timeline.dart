@@ -162,9 +162,9 @@ class _TimelineCard extends StatelessWidget {
     final unit = entry.unitKey == null
         ? null
         : recordCopy(l10n, entry.unitKey!);
-    final detail = entry.detailKey == null
-        ? null
-        : recordCopy(l10n, entry.detailKey!);
+    final detail =
+        entry.rawDetail ??
+        (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
 
     return Material(
       key: entry.recordId == null
