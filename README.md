@@ -47,7 +47,7 @@ its built-in default test account values.
 ## CI
 
 - GitHub Actions workflow: `.github/workflows/flutter-ci.yml`
-- Current CI scope: `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `flutter test`
+- Current CI scope: `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `dart format --set-exit-if-changed`, `flutter test`, hosted Lucent OpenAPI contract-sync verification, and `flutter build apk --release`
 - Current CI is validation-only. It does not build or publish Android, iOS, desktop, or web artifacts.
 - `integration_test/` currently contains two different lanes:
   - offline/mock-driven integration flows that exercise the real app shell and feature pages without a Lucent runtime
@@ -71,6 +71,7 @@ its built-in default test account values.
 - Current hook scope: `pre-commit` runs `flutter gen-l10n`, `dart format --output=none --set-exit-if-changed` on staged Dart files, and `flutter analyze`; `pre-push` runs `tool/run_daily_checks.dart`.
 - Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a local Android emulator plus a Lucent test runtime started from `../Lucent`, including test database state and cross-repo orchestration.
 - OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, regenerate `Lucent/docs/openapi.json` first, then run `dart run tool/regenerate_lucent_openapi.dart` in Luminous before merging. `dart run tool/verify_lucent_openapi_sync.dart` is the lightweight gate that fails when either side still has uncommitted contract/client drift.
+- Hosted CI now also enforces that gate by checking out `Lucent`, pointing `tool/verify_lucent_openapi_sync.dart` at the checked-out `docs/openapi.json`, and failing when regeneration would change `packages/lucent_openapi/`.
 
 ## Docs
 
