@@ -73,6 +73,7 @@ dependencies:
   speech_to_text: ^7.3.0
   sign_in_with_apple: ^6.1.4
   share_plus: ^13.2.0
+  forui: ^0.23.0
 
 dev_dependencies:
   flutter_test:

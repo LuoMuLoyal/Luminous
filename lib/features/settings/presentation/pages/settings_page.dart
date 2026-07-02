@@ -300,9 +300,6 @@ class _GeneralSection extends ConsumerWidget {
     final currentTheme =
         ref.watch(appThemeControllerProvider).value ??
         AppThemeModePreference.system;
-    final currentPalette =
-        ref.watch(appThemePaletteControllerProvider).value ??
-        AppThemePalettePreference.classic;
     final currentLocale =
         ref.watch(appLocaleControllerProvider).asData?.value ??
         AppLocale.system;
@@ -315,7 +312,7 @@ class _GeneralSection extends ConsumerWidget {
           AppSettingsNavigationRow(
             key: const Key('settings-row-theme'),
             title: l10n.mineSettingsThemeTitle,
-            value: _themeSettingsLabel(l10n, currentTheme, currentPalette),
+            value: _themeModeLabel(l10n, currentTheme),
             onTap: () => context.push('/settings/theme'),
             showDivider: true,
           ),
@@ -347,32 +344,12 @@ class _GeneralSection extends ConsumerWidget {
     };
   }
 
-  String _themePaletteLabel(
-    AppLocalizations l10n,
-    AppThemePalettePreference preference,
-  ) {
-    return switch (preference) {
-      AppThemePalettePreference.classic => l10n.settingsThemePaletteClassic,
-      AppThemePalettePreference.bluePink => l10n.settingsThemePaletteBluePink,
-      AppThemePalettePreference.yellowGreen =>
-        l10n.settingsThemePaletteYellowGreen,
-    };
-  }
-
   String _languageLabel(AppLocalizations l10n, AppLocale locale) {
     return switch (locale) {
       AppLocale.system => l10n.settingsLanguageSystemLabel,
       AppLocale.en => l10n.settingsLanguageEnglishLabel,
       AppLocale.zhCn => l10n.settingsLanguageChineseLabel,
     };
-  }
-
-  String _themeSettingsLabel(
-    AppLocalizations l10n,
-    AppThemeModePreference mode,
-    AppThemePalettePreference palette,
-  ) {
-    return '${_themeModeLabel(l10n, mode)} · ${_themePaletteLabel(l10n, palette)}';
   }
 }
 

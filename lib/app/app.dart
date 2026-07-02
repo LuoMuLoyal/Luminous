@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
@@ -70,21 +71,23 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
           data: (preference) => preference.themeMode,
           orElse: () => ThemeMode.system,
         );
-    final themePalette =
-        ref.watch(appThemePaletteControllerProvider).asData?.value ??
-        AppThemePalettePreference.classic;
     final locale = ref.watch(appLocaleControllerProvider).asData?.value;
 
     return MaterialApp.router(
       onGenerateTitle: (context) =>
           AppLocalizations.of(context)?.appTitle ?? 'Luminous',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightFor(themePalette),
-      darkTheme: AppTheme.darkFor(themePalette),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       themeMode: themeMode,
       locale: locale?.flutterLocale,
+      builder: (context, child) => FTheme(
+        data: AppTheme.forBrightness(Theme.of(context).brightness),
+        child: child ?? const SizedBox.shrink(),
+      ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
+        FLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

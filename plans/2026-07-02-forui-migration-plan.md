@@ -125,25 +125,6 @@
 **Expected observable result:**
 - The executor has a concrete kill list and keep list for the handcrafted UI system before touching app bootstrapping.
 
-### Task 2: Introduce Forui as the app-level primitive foundation
-
-**Files:**
-- Modify: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\pubspec.yaml`
-- Modify: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\lib\app\app.dart`
-- Modify or replace: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\lib\core\theme\app_theme.dart`
-- Modify or replace: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\lib\core\theme\app_theme_extensions.dart`
-- Review: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\lib\core\theme\app_theme_controller.dart`
-
-- [ ] Add `forui: ^0.23.0` to `pubspec.yaml`.
-- [ ] Run `flutter pub get` and verify dependency resolution succeeds on Flutter 3.44.0.
-- [ ] Replace the current handcrafted app theme bootstrap so `MaterialApp.router` is driven by a Forui-led theme setup instead of the old `AppThemeSurface` extension set.
-- [ ] Decide whether `app_theme_controller.dart` still controls only `ThemeMode`, or whether palette switching is removed/simplified because visual reset is accepted.
-- [ ] Remove or deprecate old palette variants (`classic / bluePink / yellowGreen`) if they no longer map to the new visual system.
-- [ ] Validate that app startup, localization delegates, and router boot still work after the theme bootstrap change.
-
-**Expected observable result:**
-- The app boots under a new Forui-led theme foundation, even before every page is fully migrated.
-
 ### Task 3: Rewrite shared shells, not shared aliases
 
 **Files:**

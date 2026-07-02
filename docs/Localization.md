@@ -20,7 +20,6 @@ Persisted preference keys:
 
 - Locale: `app.locale`
 - Theme mode: `theme.mode`
-- Theme palette: `theme.palette`
 
 ## Rules
 
@@ -36,6 +35,7 @@ Persisted preference keys:
 - Medicine add-before-save risk precheck strings such as confirmation sheet title, warning description, confirm action, and failure toast are owned by the Medicine/Search ARB entries.
 - Sleep structured-record strings such as bedtime/wake-time labels, duration, quality, and sleep-stage labels are owned by the Record feature ARB entries.
 - Mine no longer owns any campus-service strings; support-resource copy is limited to settings help/about surfaces plus backend-provided titles when present.
+- Theme settings are mode-only right now. Do not add palette-specific ARB keys unless the product explicitly reintroduces multi-palette theming.
 - Assistant tool inventory strings are owned by the Assistant ARB entries, including medicine retrieval tools such as leaflet search, DrugBank entity resolution, DrugBank passage search, and medical-QA search.
 - Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.

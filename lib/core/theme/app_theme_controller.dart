@@ -27,25 +27,6 @@ enum AppThemeModePreference {
   }
 }
 
-enum AppThemePalettePreference {
-  classic('classic'),
-  bluePink('blue-pink'),
-  yellowGreen('yellow-green');
-
-  const AppThemePalettePreference(this.storageValue);
-
-  final String storageValue;
-
-  static AppThemePalettePreference fromStorage(String? value) {
-    for (final preference in AppThemePalettePreference.values) {
-      if (preference.storageValue == value) {
-        return preference;
-      }
-    }
-    return AppThemePalettePreference.classic;
-  }
-}
-
 class AppThemeController extends AsyncNotifier<AppThemeModePreference> {
   static const _storageKey = 'theme.mode';
 
@@ -67,28 +48,4 @@ class AppThemeController extends AsyncNotifier<AppThemeModePreference> {
 final appThemeControllerProvider =
     AsyncNotifierProvider<AppThemeController, AppThemeModePreference>(
       AppThemeController.new,
-    );
-
-class AppThemePaletteController
-    extends AsyncNotifier<AppThemePalettePreference> {
-  static const _storageKey = 'theme.palette';
-
-  @override
-  Future<AppThemePalettePreference> build() async {
-    final preferences = await SharedPreferences.getInstance();
-    return AppThemePalettePreference.fromStorage(
-      preferences.getString(_storageKey),
-    );
-  }
-
-  Future<void> setPalette(AppThemePalettePreference preference) async {
-    state = AsyncData(preference);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_storageKey, preference.storageValue);
-  }
-}
-
-final appThemePaletteControllerProvider =
-    AsyncNotifierProvider<AppThemePaletteController, AppThemePalettePreference>(
-      AppThemePaletteController.new,
     );

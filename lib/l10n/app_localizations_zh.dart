@@ -1968,18 +1968,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsThemeAppearanceTitle => '外观';
 
   @override
-  String get settingsThemePaletteTitle => '配色';
-
-  @override
-  String get settingsThemePaletteClassic => '默认';
-
-  @override
-  String get settingsThemePaletteBluePink => '蓝粉';
-
-  @override
-  String get settingsThemePaletteYellowGreen => '黄绿';
-
-  @override
   String get settingsSyncFailed => '同步设置失败';
 
   @override

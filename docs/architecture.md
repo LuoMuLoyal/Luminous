@@ -1,6 +1,6 @@
 # Luminous Architecture
 
-Last updated: 2026-06-30
+Last updated: 2026-07-02
 
 This document describes the Flutter client architecture for Luminous. For backend architecture, see `../Lucent/docs/architecture.md`.
 
@@ -166,16 +166,14 @@ See [ADR-0002: GoRouter Navigation](adr/0002-gorouter-navigation.md).
 
 ## 4. Design System
 
-Design tokens are defined in `lib/core/theme/` and enforced across all feature widgets:
+The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at the app root and derives `MaterialApp` light/dark themes from Forui `FThemeData` through `toApproximateMaterialTheme()`.
 
-| Token Group | Location | Examples |
-|-------------|----------|----------|
-| Colors | `app_colors.dart` | Primary, surface, text, semantic (error/success/warning) |
-| Typography | `app_typography.dart` | Text styles for headings, body, captions |
-| Spacing | `app_spacing.dart` | 4px grid-based spacing scale |
-| Radius | `app_radius.dart` | Border radius tokens |
-| Shadows | `app_shadows.dart` | Elevation shadow presets |
-| Breakpoints | `app_breakpoints.dart` | Mobile (< 600), Tablet (600-900), Desktop (> 900) |
+| Layer | Location | Responsibility |
+|-------|----------|----------------|
+| Root theme | `lib/core/theme/app_theme.dart` | Owns the app-level Forui light/dark theme bootstrap |
+| Compatibility bridge | `lib/core/theme/app_theme_extensions.dart` | Maps Forui `FColors` into `AppThemeSurface` for legacy pages still reading semantic surface fields |
+| Legacy layout tokens | `lib/core/design/` | Existing spacing/radius/typography helpers that still support pages not yet migrated off the old system |
+| Theme preference | `lib/core/theme/app_theme_controller.dart` | Persists only `ThemeMode` (`system / light / dark`) |
 
 ### UI Guidelines
 
@@ -185,6 +183,7 @@ Design tokens are defined in `lib/core/theme/` and enforced across all feature w
 - All page-level loading states use shimmer skeleton screens.
 - Child pages default to a standard header: left back arrow + centered title.
 - Mock data is gated behind `kDebugMode`; release builds show empty states.
+- During the Forui migration, touched pages should move toward Forui primitives directly instead of adding new handcrafted wrapper aliases.
 
 ---
 

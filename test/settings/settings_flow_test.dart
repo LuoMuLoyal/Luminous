@@ -180,7 +180,7 @@ void main() {
     expect(find.text('设置'), findsOneWidget);
   });
 
-  testWidgets('Theme settings updates mode and palette preferences', (
+  testWidgets('Theme settings updates mode without palette selection', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{
@@ -193,29 +193,21 @@ void main() {
 
     expect(find.text('主题模式'), findsOneWidget);
     expect(find.byKey(const Key('theme-row-dark')), findsOneWidget);
-    expect(
-      find.byKey(const Key('theme-palette-row-blue-pink')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('theme-palette-row-blue-pink')), findsNothing);
 
     await tester.tap(find.byKey(const Key('theme-row-dark')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('theme-palette-row-blue-pink')));
     await tester.pumpAndSettle();
 
     final preferences = await SharedPreferences.getInstance();
     expect(preferences.getString('theme.mode'), 'dark');
-    expect(preferences.getString('theme.palette'), 'blue-pink');
 
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.themeMode, ThemeMode.dark);
-    expect(app.theme?.colorScheme.primary, const Color(0xFF47A0C9));
-    expect(app.darkTheme?.colorScheme.primary, const Color(0xFF95CEE8));
 
     await tester.tap(find.byType(BackButton).first);
     await tester.pumpAndSettle();
 
-    expect(find.text('深色 · 蓝粉'), findsOneWidget);
+    expect(find.text('深色'), findsOneWidget);
 
     final snapshot = _snapshotPreferences(preferences);
     await tester.pumpWidget(const SizedBox.shrink());
@@ -226,8 +218,7 @@ void main() {
 
     final restoredApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(restoredApp.themeMode, ThemeMode.dark);
-    expect(restoredApp.theme?.colorScheme.primary, const Color(0xFF47A0C9));
-    expect(find.text('深色 · 蓝粉'), findsOneWidget);
+    expect(find.text('深色'), findsOneWidget);
   });
 }
 
