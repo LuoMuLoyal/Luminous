@@ -112,7 +112,7 @@ class _CandidateTile extends StatelessWidget {
                       Text(
                         _kindLabel(l10n, item.kind),
                         style: textTheme.labelLarge?.copyWith(
-                          color: AppColorTokens.cyanDeep,
+                          color: Color(0xFF0F766E),
                           fontWeight: FontWeight.w800,
                         ),
                       ),

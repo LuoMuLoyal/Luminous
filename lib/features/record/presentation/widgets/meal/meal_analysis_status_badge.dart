@@ -35,12 +35,12 @@ class MealAnalysisStatusBadge extends StatelessWidget {
     return switch (currentStatus) {
       'analyzing' => (
         l10n.recordMealAnalysisStatusAnalyzing,
-        AppColorTokens.gradientDevelopStart,
+        Color(0xFF16A34A),
         FLucideIcons.clock3,
       ),
       'confirmed' => (
         l10n.recordMealAnalysisStatusConfirmed,
-        AppColorTokens.cyanDeep,
+        Color(0xFF0F766E),
         FLucideIcons.badgeCheck,
       ),
       'analysis_failed' => (
@@ -50,7 +50,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
       ),
       _ => (
         l10n.recordMealAnalysisStatusUnconfirmed,
-        AppColorTokens.warningDeep,
+        Color(0xFFB45309),
         FLucideIcons.badgeHelp,
       ),
     };

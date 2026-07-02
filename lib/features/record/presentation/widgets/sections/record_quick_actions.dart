@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -85,9 +84,8 @@ class _QuickActionTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final label = recordCopy(l10n, action.titleKey);
 
-    return AppInkWell(
-      onTap: onTap == null ? null : () => onTap!(action),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+    return FTappable(
+      onPress: onTap == null ? null : () => onTap!(action),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,

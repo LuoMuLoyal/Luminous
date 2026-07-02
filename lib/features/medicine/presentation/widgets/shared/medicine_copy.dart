@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -143,8 +142,8 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
         : null;
     final coverageAlert = MedicineAlert(
       icon: Icons.info_outline_rounded,
-      color: AppColorTokens.warningDeep,
-      softColor: AppColorTokens.warningSoft,
+      color: Color(0xFFB45309),
+      softColor: Color(0xFFFEF3C7),
       rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
       rawBody: l10n.medicineRiskCheckCoverageAlertBody(
         result.coverageIssues.length,
@@ -177,8 +176,8 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
   return [
     MedicineAlert(
       icon: Icons.verified_outlined,
-      color: AppColorTokens.success,
-      softColor: AppColorTokens.linkSoft,
+      color: Color(0xFF16A34A),
+      softColor: Color(0xFFDCFCE7),
       rawTitle: l10n.medicineRiskCheckAllClearAlertTitle,
       rawBody: l10n.medicineRiskCheckAllClearAlertBody,
       rawDetail: l10n.medicineRiskCheckAllClearAlertDetail,
@@ -199,17 +198,17 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
 
 Color medicineRiskSeverityColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => AppColorTokens.error,
-    MedicineRiskSeverity.medium => AppColorTokens.warningDeep,
-    MedicineRiskSeverity.info => AppColorTokens.cyanDeep,
+    MedicineRiskSeverity.high => Color(0xFFDC2626),
+    MedicineRiskSeverity.medium => Color(0xFFB45309),
+    MedicineRiskSeverity.info => Color(0xFF0F766E),
   };
 }
 
 Color medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => AppColorTokens.errorSoft,
-    MedicineRiskSeverity.medium => AppColorTokens.warningSoft,
-    MedicineRiskSeverity.info => AppColorTokens.cyanSoft,
+    MedicineRiskSeverity.high => Color(0xFFFEE2E2),
+    MedicineRiskSeverity.medium => Color(0xFFFEF3C7),
+    MedicineRiskSeverity.info => Color(0xFFCCFBF1),
   };
 }
 

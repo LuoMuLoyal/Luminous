@@ -57,7 +57,7 @@ class ReportMetricsGrid extends StatelessWidget {
         ReportMetric(
           kind: ReportDataKind.general,
           icon: FLucideIcons.heartPulse,
-          color: AppColorTokens.health,
+          color: Color(0xFF15803D),
           value: _deriveOverallValue(),
           unit: _deriveOverallUnit(),
           status: dashboard.score.status,
@@ -142,7 +142,7 @@ class _MetricCard extends StatelessWidget {
     };
     final directionColor = switch (metric.direction) {
       ReportMetricDirection.down => colors.destructive,
-      _ => AppColorTokens.cyanDeep,
+      _ => Color(0xFF0F766E),
     };
 
     return Material(

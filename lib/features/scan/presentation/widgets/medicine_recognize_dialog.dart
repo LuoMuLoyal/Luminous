@@ -74,7 +74,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                         Text(
                           '来源: ${widget.methodLabel}',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: AppColorTokens.cyanDeep,
+                            color: Color(0xFF0F766E),
                           ),
                         ),
                       ],
@@ -103,7 +103,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       Text(
                         '置信度: ${(top.confidence * 100).toInt()}%',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: AppColorTokens.cyanDeep,
+                          color: Color(0xFF0F766E),
                         ),
                       ),
                     ],

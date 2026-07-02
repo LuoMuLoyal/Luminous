@@ -22,9 +22,9 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       decoration: BoxDecoration(
-        color: AppColorTokens.error.withValues(alpha: 0.08),
+        color: Color(0xFFDC2626).withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-        border: Border.all(color: AppColorTokens.error.withValues(alpha: 0.22)),
+        border: Border.all(color: Color(0xFFDC2626).withValues(alpha: 0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,14 +33,14 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
             children: [
               const Icon(
                 FLucideIcons.triangleAlert,
-                color: AppColorTokens.error,
+                color: Color(0xFFDC2626),
                 size: 20,
               ),
               const SizedBox(width: AppSpacingTokens.sm),
               Text(
                 redFlagBannerTitle(l10n),
                 style: textTheme.labelLarge?.copyWith(
-                  color: AppColorTokens.error,
+                  color: Color(0xFFDC2626),
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -97,7 +97,7 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                   children: [
                     const Icon(
                       FLucideIcons.siren,
-                      color: AppColorTokens.error,
+                      color: Color(0xFFDC2626),
                       size: 16,
                     ),
                     const SizedBox(width: AppSpacingTokens.xs),
@@ -105,7 +105,7 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                       child: Text(
                         redFlagActionCopy(l10n, alert),
                         style: textTheme.bodySmall?.copyWith(
-                          color: AppColorTokens.error,
+                          color: Color(0xFFDC2626),
                           fontWeight: FontWeight.w700,
                         ),
                       ),

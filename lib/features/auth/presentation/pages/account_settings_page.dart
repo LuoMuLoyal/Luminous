@@ -8,7 +8,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
-import 'package:luminous/core/widgets/common/app_dialog.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_sections.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_account_provider.dart';
@@ -325,50 +325,49 @@ Future<bool> _confirmUnlinkIdentity(
   AuthLinkedIdentity identity,
   AppLocalizations l10n,
 ) async {
-  final result = await showFDialog<bool>(
+  final result = await showAppDialog<bool>(
     context: context,
-    builder: (context, style, animation) => AppDialog(
-      maxWidth: 420,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.authIdentityUnlinkConfirmTitle,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+    maxWidth: 420,
+    scrollable: false,
+    builder: (context) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.authIdentityUnlinkConfirmTitle,
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        Text(
+          l10n.authIdentityUnlinkConfirmMessage(
+            identityProviderLabel(identity.provider, l10n),
           ),
-          const SizedBox(height: AppSpacingTokens.md),
-          Text(
-            l10n.authIdentityUnlinkConfirmMessage(
-              identityProviderLabel(identity.provider, l10n),
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: AppSpacingTokens.xl),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              variant: FButtonVariant.outline,
+              size: FButtonSizeVariant.sm,
+              mainAxisSize: MainAxisSize.min,
+              onPress: () => Navigator.of(context).pop(false),
+              child: Text(l10n.authCancelAction),
             ),
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: AppSpacingTokens.xl),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FButton(
-                variant: FButtonVariant.outline,
-                size: FButtonSizeVariant.sm,
-                mainAxisSize: MainAxisSize.min,
-                onPress: () => Navigator.of(context).pop(false),
-                child: Text(l10n.authCancelAction),
-              ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              FButton(
-                variant: FButtonVariant.destructive,
-                size: FButtonSizeVariant.sm,
-                mainAxisSize: MainAxisSize.min,
-                onPress: () => Navigator.of(context).pop(true),
-                child: Text(l10n.authIdentityUnlinkAction),
-              ),
-            ],
-          ),
-        ],
-      ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            FButton(
+              variant: FButtonVariant.destructive,
+              size: FButtonSizeVariant.sm,
+              mainAxisSize: MainAxisSize.min,
+              onPress: () => Navigator.of(context).pop(true),
+              child: Text(l10n.authIdentityUnlinkAction),
+            ),
+          ],
+        ),
+      ],
     ),
   );
   return result ?? false;

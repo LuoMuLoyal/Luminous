@@ -62,11 +62,11 @@ String reportStatusLabel(AppLocalizations l10n, ReportStatus status) {
 
 Color reportStatusColor(ReportStatus status) {
   return switch (status) {
-    ReportStatus.good => AppColorTokens.cyanDeep,
-    ReportStatus.stable => AppColorTokens.health,
-    ReportStatus.needsAttention => AppColorTokens.warning,
-    ReportStatus.insufficientData => AppColorTokens.link,
-    ReportStatus.unknown => AppColorTokens.link,
+    ReportStatus.good => Color(0xFF0F766E),
+    ReportStatus.stable => Color(0xFF15803D),
+    ReportStatus.needsAttention => Color(0xFFF59E0B),
+    ReportStatus.insufficientData => Color(0xFF16A34A),
+    ReportStatus.unknown => Color(0xFF16A34A),
   };
 }
 
@@ -138,7 +138,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: AppColorTokens.warning,
+          color: Color(0xFFF59E0B),
           text: l10n.authLoginRequiredPrompt,
         ),
       ],
@@ -151,7 +151,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: AppColorTokens.link,
+          color: Color(0xFF16A34A),
           text: l10n.reportAiSummaryDisabledHint,
         ),
       ],
@@ -179,7 +179,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: reportAiSummarySubtitle(l10n, selectedRange),
       bullets: [
         ReportAiSummaryItem(
-          color: AppColorTokens.warning,
+          color: Color(0xFFF59E0B),
           text: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
         ),
         ...reportAiSummaryFallbackBullets(dashboard),
@@ -195,7 +195,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       summaryText: aiState.streamingSummary,
       bullets: [
         ReportAiSummaryItem(
-          color: AppColorTokens.cyanDeep,
+          color: Color(0xFF0F766E),
           text: reportAiSummaryGeneratingLabel(l10n, selectedRange),
         ),
         ...reportAiSummaryFallbackBullets(dashboard),

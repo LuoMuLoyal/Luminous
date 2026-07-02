@@ -118,17 +118,17 @@ Color deliveryStatusColor(String value, Object palette) {
   final destructive = switch (palette) {
     FColors colors => colors.destructive,
     Color color => color,
-    _ => AppColorTokens.warningDeep,
+    _ => Color(0xFFB45309),
   };
   final muted = switch (palette) {
     FColors colors => colors.mutedForeground,
     Color color => color,
-    _ => AppColorTokens.warningDeep,
+    _ => Color(0xFFB45309),
   };
   return switch (value) {
-    'delivered' => AppColorTokens.cyanDeep,
+    'delivered' => Color(0xFF0F766E),
     'failed' => destructive,
-    'scheduled' => AppColorTokens.warningDeep,
+    'scheduled' => Color(0xFFB45309),
     _ => muted,
   };
 }

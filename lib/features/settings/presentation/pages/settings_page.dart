@@ -7,13 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
-import 'package:luminous/core/widgets/common/app_dialog.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -25,65 +25,86 @@ class SettingsPage extends ConsumerWidget {
     final session = ref.watch(authSessionProvider);
     final signedIn = session.canAccessProtectedData;
 
-    return PageScaffoldShell(
-      title: l10n.desktopSidebarSettings,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        _AccountHeader(
-          session: session,
-          signedIn: signedIn,
-          onTap: () => pushAuthRequiredRoute(context, '/account'),
+    return FScaffold(
+      childPad: false,
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.desktopSidebarSettings),
+          titleAlignment: Alignment.center,
+          prefixes: const [AppBackButton()],
         ),
-        const SizedBox(height: 24),
-        _SettingsGroup(
-          label: l10n.settingsAccountSecuritySectionTitle,
-          children: [
-            _SettingsNavigationTile(
-              tileKey: const Key('settings-row-account-security'),
-              title: l10n.mineSettingsAccountTitle,
-              onTap: () => pushAuthRequiredRoute(context, '/account'),
+      ),
+      child: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          child: ResponsiveContentFrame(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _AccountHeader(
+                    session: session,
+                    signedIn: signedIn,
+                    onTap: () => pushAuthRequiredRoute(context, '/account'),
+                  ),
+                  const SizedBox(height: 24),
+                  _SettingsGroup(
+                    label: l10n.settingsAccountSecuritySectionTitle,
+                    children: [
+                      _SettingsNavigationTile(
+                        tileKey: const Key('settings-row-account-security'),
+                        title: l10n.mineSettingsAccountTitle,
+                        onTap: () => pushAuthRequiredRoute(context, '/account'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  _SettingsGroup(
+                    label: l10n.settingsNotificationsSectionTitle,
+                    children: [
+                      _SettingsNavigationTile(
+                        tileKey: const Key('settings-row-notifications'),
+                        title: l10n.mineSettingsNotificationsTitle,
+                        value: _notificationSummary(l10n, ref),
+                        onTap: () => context.push('/settings/notifications'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  _PrivacySection(signedIn: signedIn),
+                  const SizedBox(height: 20),
+                  const _GeneralSection(),
+                  const SizedBox(height: 20),
+                  _AboutSection(signedIn: signedIn),
+                  const SizedBox(height: 28),
+                  _FooterAction(
+                    buttonKey: const Key('settings-footer-action'),
+                    label: signedIn ? l10n.authSignOut : l10n.authGoLogin,
+                    destructive: signedIn,
+                    onPress: session.isLoading
+                        ? null
+                        : () async {
+                            if (!session.canAccessProtectedData) {
+                              context.go(loginRouteForCurrentLocation(context));
+                              return;
+                            }
+                            await ref
+                                .read(authSessionProvider.notifier)
+                                .logout();
+                            if (!context.mounted) {
+                              return;
+                            }
+                            context.go('/login');
+                          },
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
-        const SizedBox(height: 20),
-        _SettingsGroup(
-          label: l10n.settingsNotificationsSectionTitle,
-          children: [
-            _SettingsNavigationTile(
-              tileKey: const Key('settings-row-notifications'),
-              title: l10n.mineSettingsNotificationsTitle,
-              value: _notificationSummary(l10n, ref),
-              onTap: () => context.push('/settings/notifications'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        _PrivacySection(signedIn: signedIn),
-        const SizedBox(height: 20),
-        const _GeneralSection(),
-        const SizedBox(height: 20),
-        _AboutSection(signedIn: signedIn),
-        const SizedBox(height: 28),
-        _FooterAction(
-          buttonKey: const Key('settings-footer-action'),
-          label: signedIn ? l10n.authSignOut : l10n.authGoLogin,
-          destructive: signedIn,
-          onPress: session.isLoading
-              ? null
-              : () async {
-                  if (!session.canAccessProtectedData) {
-                    context.go(loginRouteForCurrentLocation(context));
-                    return;
-                  }
-                  await ref.read(authSessionProvider.notifier).logout();
-                  if (!context.mounted) {
-                    return;
-                  }
-                  context.go('/login');
-                },
-        ),
-      ],
+      ),
     );
   }
 
@@ -198,41 +219,40 @@ class _PrivacySection extends ConsumerWidget {
     bool value,
   ) async {
     final l10n = AppLocalizations.of(context)!;
-    return await showDialog<bool>(
+    return await showAppDialog<bool>(
           context: context,
-          builder: (context) => AppDialog(
-            maxWidth: 440,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.settingsDataSharingConfirmTitle,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  l10n.settingsDataSharingConfirmDescription,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    FButton(
-                      variant: FButtonVariant.ghost,
-                      onPress: () => Navigator.of(context).pop(false),
-                      child: Text(l10n.settingsDataSharingCancelAction),
-                    ),
-                    const SizedBox(width: 8),
-                    FButton(
-                      onPress: () => Navigator.of(context).pop(true),
-                      child: Text(l10n.settingsDataSharingConfirmAction),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          maxWidth: 440,
+          scrollable: false,
+          builder: (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.settingsDataSharingConfirmTitle,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                l10n.settingsDataSharingConfirmDescription,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FButton(
+                    variant: FButtonVariant.ghost,
+                    onPress: () => Navigator.of(context).pop(false),
+                    child: Text(l10n.settingsDataSharingCancelAction),
+                  ),
+                  const SizedBox(width: 8),
+                  FButton(
+                    onPress: () => Navigator.of(context).pop(true),
+                    child: Text(l10n.settingsDataSharingConfirmAction),
+                  ),
+                ],
+              ),
+            ],
           ),
         ) ??
         false;

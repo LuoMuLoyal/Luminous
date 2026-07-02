@@ -108,9 +108,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.md),
               Text(
                 l10n.recordMealAnalysisEstimateDisclaimer,
-                style: textTheme.labelSmall?.copyWith(
-                  color: AppColorTokens.warningDeep,
-                ),
+                style: textTheme.labelSmall?.copyWith(color: Color(0xFFB45309)),
               ),
             ],
           ],

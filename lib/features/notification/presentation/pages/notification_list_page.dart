@@ -9,7 +9,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/features/notification/presentation/widgets/notification_list_item.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -22,131 +22,148 @@ class NotificationListPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final listAsync = ref.watch(notificationListControllerProvider);
 
-    return PageScaffoldShell(
-      leading: const AppBackButton(),
-      title: l10n.notificationListTitle,
-      actions: [
-        _MarkAllReadButton(
-          onPressed: () async {
-            final controller = ref.read(
-              notificationListControllerProvider.notifier,
-            );
-            await controller.markAllAsRead();
-            if (context.mounted) {
-              unawaited(
-                AppToast.show(context, l10n.notificationMarkAllReadSuccess),
-              );
-            }
-          },
+    return FScaffold(
+      childPad: false,
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.notificationListTitle),
+          prefixes: const [AppBackButton()],
+          suffixes: [
+            _MarkAllReadButton(
+              onPressed: () async {
+                final controller = ref.read(
+                  notificationListControllerProvider.notifier,
+                );
+                await controller.markAllAsRead();
+                if (context.mounted) {
+                  unawaited(
+                    AppToast.show(context, l10n.notificationMarkAllReadSuccess),
+                  );
+                }
+              },
+            ),
+          ],
         ),
-      ],
-      children: [
-        listAsync.when(
-          data: (response) {
-            final items = response.items;
-            if (items.isEmpty) {
-              return const _EmptyView();
-            }
-            final groups = _groupByRelativeDate(items);
-            final controller = ref.read(
-              notificationListControllerProvider.notifier,
-            );
-            final isLoadingMore = ref.watch(
-              notificationListLoadingMoreProvider,
-            );
-            final hasMore = controller.hasMore;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final entry in groups.entries) ...[
-                  _SectionHeader(title: entry.key),
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  Column(
+      ),
+      child: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          child: ResponsiveContentFrame(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: listAsync.when(
+                data: (response) {
+                  final items = response.items;
+                  if (items.isEmpty) {
+                    return const _EmptyView();
+                  }
+                  final groups = _groupByRelativeDate(items);
+                  final controller = ref.read(
+                    notificationListControllerProvider.notifier,
+                  );
+                  final isLoadingMore = ref.watch(
+                    notificationListLoadingMoreProvider,
+                  );
+                  final hasMore = controller.hasMore;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (
-                        var index = 0;
-                        index < entry.value.length;
-                        index++
-                      ) ...[
-                        NotificationListItemWidget(
-                          item: entry.value[index],
-                          onTap: () => context.push(
-                            '/notifications/${entry.value[index].id}',
-                          ),
-                          onDismiss: () async {
-                            final controller = ref.read(
-                              notificationListControllerProvider.notifier,
-                            );
-                            await controller.deleteNotification(
-                              entry.value[index].id,
-                            );
-                            if (context.mounted) {
-                              unawaited(
-                                AppToast.show(
-                                  context,
-                                  l10n.notificationDeleteSuccess,
+                      for (final entry in groups.entries) ...[
+                        _SectionHeader(title: entry.key),
+                        const SizedBox(height: AppSpacingTokens.xs),
+                        Column(
+                          children: [
+                            for (
+                              var index = 0;
+                              index < entry.value.length;
+                              index++
+                            ) ...[
+                              NotificationListItemWidget(
+                                item: entry.value[index],
+                                onTap: () => context.push(
+                                  '/notifications/${entry.value[index].id}',
                                 ),
-                              );
-                            }
-                          },
+                                onDismiss: () async {
+                                  final controller = ref.read(
+                                    notificationListControllerProvider.notifier,
+                                  );
+                                  await controller.deleteNotification(
+                                    entry.value[index].id,
+                                  );
+                                  if (context.mounted) {
+                                    unawaited(
+                                      AppToast.show(
+                                        context,
+                                        l10n.notificationDeleteSuccess,
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                              if (index < entry.value.length - 1)
+                                const SizedBox(height: AppSpacingTokens.sm),
+                            ],
+                          ],
                         ),
-                        if (index < entry.value.length - 1)
-                          const SizedBox(height: AppSpacingTokens.sm),
+                        const SizedBox(height: AppSpacingTokens.md),
+                      ],
+                      if (hasMore) ...[
+                        const SizedBox(height: AppSpacingTokens.md),
+                        Center(
+                          child: isLoadingMore
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : FButton(
+                                  variant: FButtonVariant.outline,
+                                  onPress: () => controller.loadMore(),
+                                  child: Text(l10n.notificationLoadMore),
+                                ),
+                        ),
                       ],
                     ],
+                  );
+                },
+                loading: () => const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(AppSpacingTokens.x5l),
+                    child: AppSkeletonShimmer(
+                      child: Column(
+                        children: [
+                          AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                          SizedBox(height: AppSpacingTokens.md),
+                          AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                          SizedBox(height: AppSpacingTokens.md),
+                          AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                          SizedBox(height: AppSpacingTokens.md),
+                          AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                          SizedBox(height: AppSpacingTokens.md),
+                          AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                          SizedBox(height: AppSpacingTokens.md),
+                          AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.md),
-                ],
-                if (hasMore) ...[
-                  const SizedBox(height: AppSpacingTokens.md),
-                  Center(
-                    child: isLoadingMore
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : FButton(
-                            variant: FButtonVariant.outline,
-                            onPress: () => controller.loadMore(),
-                            child: Text(l10n.notificationLoadMore),
-                          ),
-                  ),
-                ],
-              ],
-            );
-          },
-          loading: () => const Center(
-            child: Padding(
-              padding: EdgeInsets.all(AppSpacingTokens.x5l),
-              child: AppSkeletonShimmer(
-                child: Column(
-                  children: [
-                    AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                    SizedBox(height: AppSpacingTokens.md),
-                    AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                    SizedBox(height: AppSpacingTokens.md),
-                    AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                    SizedBox(height: AppSpacingTokens.md),
-                    AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                    SizedBox(height: AppSpacingTokens.md),
-                    AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                    SizedBox(height: AppSpacingTokens.md),
-                    AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                  ],
+                ),
+                error: (error, _) => AppStateErrorView(
+                  title: l10n.notificationErrorTitle,
+                  description: error.toString(),
+                  icon: FLucideIcons.circleAlert,
+                  actionLabel: l10n.notificationRetryAction,
+                  onAction: () =>
+                      ref.invalidate(notificationListControllerProvider),
                 ),
               ),
             ),
           ),
-          error: (error, _) => AppStateErrorView(
-            title: l10n.notificationErrorTitle,
-            description: error.toString(),
-            icon: FLucideIcons.circleAlert,
-            actionLabel: l10n.notificationRetryAction,
-            onAction: () => ref.invalidate(notificationListControllerProvider),
-          ),
         ),
-      ],
+      ),
     );
   }
 

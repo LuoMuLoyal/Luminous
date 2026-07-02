@@ -10,7 +10,7 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
-import 'package:luminous/core/widgets/common/app_dialog.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
@@ -245,45 +245,44 @@ class _ActionBar extends StatelessWidget {
 
   void _showDeleteConfirm(BuildContext context, VoidCallback onDelete) {
     final l10n = AppLocalizations.of(context)!;
-    showDialog<void>(
+    showAppDialog<void>(
       context: context,
-      builder: (context) => AppDialog(
-        maxWidth: 420,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.notificationDeleteConfirmTitle,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: AppSpacingTokens.sm),
-            Text(
-              l10n.notificationDeleteConfirmDescription,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: AppSpacingTokens.lg),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
-                  variant: FButtonVariant.ghost,
-                  onPress: () => Navigator.of(context).pop(),
-                  child: Text(l10n.notificationDeleteConfirmCancel),
-                ),
-                const SizedBox(width: AppSpacingTokens.sm),
-                FButton(
-                  variant: FButtonVariant.destructive,
-                  onPress: () {
-                    Navigator.of(context).pop();
-                    onDelete();
-                  },
-                  child: Text(l10n.notificationDeleteConfirmConfirm),
-                ),
-              ],
-            ),
-          ],
-        ),
+      maxWidth: 420,
+      scrollable: false,
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.notificationDeleteConfirmTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: AppSpacingTokens.sm),
+          Text(
+            l10n.notificationDeleteConfirmDescription,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: AppSpacingTokens.lg),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FButton(
+                variant: FButtonVariant.ghost,
+                onPress: () => Navigator.of(context).pop(),
+                child: Text(l10n.notificationDeleteConfirmCancel),
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              FButton(
+                variant: FButtonVariant.destructive,
+                onPress: () {
+                  Navigator.of(context).pop();
+                  onDelete();
+                },
+                child: Text(l10n.notificationDeleteConfirmConfirm),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

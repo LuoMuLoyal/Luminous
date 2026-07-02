@@ -64,7 +64,7 @@ class ReportScoreHero extends StatelessWidget {
                         child: Text(
                           score.value.toString(),
                           style: textTheme.displayMedium?.copyWith(
-                            color: AppColorTokens.health,
+                            color: Color(0xFF15803D),
                             fontSize: AppResponsiveSizing.scaleByWidth(
                               context,
                               fraction: 0.128,
@@ -109,7 +109,7 @@ class ReportScoreHero extends StatelessWidget {
             const SizedBox(width: AppSpacingTokens.md),
             DecoratedBox(
               decoration: const BoxDecoration(
-                color: AppColorTokens.healthSoft,
+                color: Color(0xFFDCFCE7),
                 shape: BoxShape.circle,
               ),
               child: SizedBox.square(
@@ -121,7 +121,7 @@ class ReportScoreHero extends StatelessWidget {
                 ),
                 child: Icon(
                   FLucideIcons.badgeCheck,
-                  color: AppColorTokens.health,
+                  color: Color(0xFF15803D),
                   size: AppResponsiveSizing.scaleByWidth(
                     context,
                     fraction: 0.16,

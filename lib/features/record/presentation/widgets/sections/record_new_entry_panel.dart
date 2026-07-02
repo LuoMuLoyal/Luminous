@@ -72,7 +72,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                         children: [
                           const Icon(
                             FLucideIcons.mic,
-                            color: AppColorTokens.accent,
+                            color: Color(0xFF16A34A),
                             size: 20,
                           ),
                           const SizedBox(width: AppSpacingTokens.sm),
@@ -80,7 +80,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                             child: Text(
                               l10n.recordVoiceAction,
                               style: textTheme.labelLarge?.copyWith(
-                                color: AppColorTokens.accent,
+                                color: Color(0xFF16A34A),
                                 fontWeight: FontWeight.w700,
                               ),
                               overflow: TextOverflow.ellipsis,

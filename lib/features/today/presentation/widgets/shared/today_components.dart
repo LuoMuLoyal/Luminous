@@ -40,7 +40,7 @@ class TodayGlyphTile extends StatelessWidget {
         dimension: size,
         child: Icon(
           icon,
-          color: gradient ? AppColorTokens.onPrimary : color,
+          color: gradient ? Color(0xFFFFFFFF) : color,
           size: size * 0.5,
         ),
       ),
@@ -69,7 +69,7 @@ class TodayLinearProgress extends StatelessWidget {
       child: Stack(
         children: [
           DecoratedBox(
-            decoration: const BoxDecoration(color: AppColorTokens.hairline),
+            decoration: const BoxDecoration(color: Color(0xFFE5E7EB)),
             child: SizedBox(height: height, width: double.infinity),
           ),
           FractionallySizedBox(
@@ -134,9 +134,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                     Expanded(
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: index == 3
-                              ? color
-                              : AppColorTokens.hairlineStrong,
+                          color: index == 3 ? color : Color(0xFFD1D5DB),
                           borderRadius: BorderRadius.circular(
                             AppRadiusTokens.pill,
                           ),

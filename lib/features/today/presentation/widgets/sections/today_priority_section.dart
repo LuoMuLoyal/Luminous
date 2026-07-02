@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
@@ -73,80 +72,82 @@ class _PriorityRow extends ConsumerWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return AppInkWell(
+    return FTappable(
       key: item.key,
-      onTap: onTap,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          TodayGlyphTile(
-            icon: item.icon,
-            color: item.color,
-            size: AppSpacingTokens.x2l,
-            radius: AppRadiusTokens.md,
-            gradient: false,
-          ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+      onPress: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.md,
+          vertical: AppSpacingTokens.sm,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TodayGlyphTile(
+              icon: item.icon,
+              color: item.color,
+              size: AppSpacingTokens.x2l,
+              radius: AppRadiusTokens.md,
+              gradient: false,
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppSpacingTokens.xxs),
-                Text(
-                  item.subtitle,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
+                  const SizedBox(height: AppSpacingTokens.xxs),
+                  Text(
+                    item.subtitle,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (item.progress != null) ...[
-                  const SizedBox(height: AppSpacingTokens.xs),
-                  TodayLinearProgress(
-                    progress: item.progress!,
-                    color: item.color,
-                    height: 5,
-                  ),
+                  if (item.progress != null) ...[
+                    const SizedBox(height: AppSpacingTokens.xs),
+                    TodayLinearProgress(
+                      progress: item.progress!,
+                      color: item.color,
+                      height: 5,
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          SizedBox(
-            width: 82,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                AppSkeletonText(
-                  text: item.detail,
-                  style: textTheme.labelMedium?.copyWith(
-                    color: colors.mutedForeground,
-                    fontWeight: FontWeight.w800,
+            const SizedBox(width: AppSpacingTokens.sm),
+            SizedBox(
+              width: 82,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  AppSkeletonText(
+                    text: item.detail,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: colors.mutedForeground,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    textAlign: TextAlign.end,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    widthFactor: 0.76,
                   ),
-                  textAlign: TextAlign.end,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  widthFactor: 0.76,
-                ),
-                const SizedBox(height: AppSpacingTokens.xs),
-                _PriorityActionPill(item: item, onTap: onTap),
-              ],
+                  const SizedBox(height: AppSpacingTokens.xs),
+                  _PriorityActionPill(item: item, onTap: onTap),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -162,9 +163,8 @@ class _PriorityActionPill extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
 
-    return AppInkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+    return FTappable(
+      onPress: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: item.color,
@@ -178,7 +178,7 @@ class _PriorityActionPill extends ConsumerWidget {
           child: Text(
             item.action,
             style: textTheme.labelMedium?.copyWith(
-              color: AppColorTokens.onPrimary,
+              color: const Color(0xFFFFFFFF),
               fontWeight: FontWeight.w800,
             ),
             maxLines: 1,

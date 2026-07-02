@@ -55,7 +55,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
             l10n.recordFastEntryDateHint(widget.occurredAt),
             style: Theme.of(
               context,
-            ).textTheme.bodySmall?.copyWith(color: AppColorTokens.mute),
+            ).textTheme.bodySmall?.copyWith(color: Color(0xFF6B7280)),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           Wrap(

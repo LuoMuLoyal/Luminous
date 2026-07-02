@@ -359,7 +359,7 @@ class SelectedMedicineRow extends StatelessWidget {
         children: [
           const AppIconBadge(
             icon: FLucideIcons.pill,
-            color: AppColorTokens.cyanDeep,
+            color: Color(0xFF0F766E),
             shape: BoxShape.circle,
           ),
           const SizedBox(width: AppSpacingTokens.md),

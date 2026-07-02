@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
@@ -70,80 +69,82 @@ class _TodoRow extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return AppInkWell(
-      onTap: onTap,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
-      ),
-      child: Row(
-        children: [
-          Icon(
-            item.completed
-                ? FLucideIcons.circleCheckBig
-                : FLucideIcons.circleCheck,
-            color: item.completed ? item.color : colors.mutedForeground,
-            size: AppSpacingTokens.x2l,
-          ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppSkeletonText(
-                  text: item.title,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+    return FTappable(
+      onPress: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.md,
+          vertical: AppSpacingTokens.sm,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              item.completed
+                  ? FLucideIcons.circleCheckBig
+                  : FLucideIcons.circleCheck,
+              color: item.completed ? item.color : colors.mutedForeground,
+              size: AppSpacingTokens.x2l,
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppSkeletonText(
+                    text: item.title,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    widthFactor: 0.84,
+                    isLoading: item.subtitleIsDynamic ? null : false,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.xs),
+                  AppSkeletonText(
+                    text: item.subtitle,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    widthFactor: 0.84,
+                    isLoading: item.subtitleIsDynamic ? null : false,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: item.color.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                border: Border.all(color: item.color.withValues(alpha: 0.12)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacingTokens.sm,
+                  vertical: AppSpacingTokens.xxs,
+                ),
+                child: Text(
+                  item.source,
+                  style: textTheme.labelSmall?.copyWith(
+                    color: item.color,
+                    fontWeight: FontWeight.w700,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  widthFactor: 0.84,
-                  isLoading: item.subtitleIsDynamic ? null : false,
                 ),
-                const SizedBox(height: AppSpacingTokens.xs),
-                AppSkeletonText(
-                  text: item.subtitle,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  widthFactor: 0.84,
-                  isLoading: item.subtitleIsDynamic ? null : false,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: item.color.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-              border: Border.all(color: item.color.withValues(alpha: 0.12)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.sm,
-                vertical: AppSpacingTokens.xxs,
-              ),
-              child: Text(
-                item.source,
-                style: textTheme.labelSmall?.copyWith(
-                  color: item.color,
-                  fontWeight: FontWeight.w700,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
             ),
-          ),
-          const SizedBox(width: AppSpacingTokens.xs),
-          Icon(
-            FLucideIcons.chevronRight,
-            color: colors.mutedForeground,
-            size: AppSpacingTokens.lg,
-          ),
-        ],
+            const SizedBox(width: AppSpacingTokens.xs),
+            Icon(
+              FLucideIcons.chevronRight,
+              color: colors.mutedForeground,
+              size: AppSpacingTokens.lg,
+            ),
+          ],
+        ),
       ),
     );
   }

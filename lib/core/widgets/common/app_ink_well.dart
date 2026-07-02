@@ -5,7 +5,7 @@ import 'package:luminous/core/design/app_design.dart';
 ///
 /// 相比裸 [InkWell]：
 /// - 自动从 [AppColorTokens] 推导 [splashColor] 和 [highlightColor]。
-/// - [onTap] 为 `null` 时自动应用 [AppColorTokens.inkDisabledOpacity] 降低不透明度。
+/// - [onTap] 为 `null` 时自动应用 [Color(0xFF111827)DisabledOpacity] 降低不透明度。
 /// - 内置 `Material(color: Colors.transparent)`，省去手动包裹。
 ///
 /// 示例：
@@ -42,8 +42,8 @@ class AppInkWell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveSplash = AppColorTokens.inkSplash;
-    final effectiveHighlight = AppColorTokens.inkHighlight;
+    final effectiveSplash = Color(0xFF111827);
+    final effectiveHighlight = Color(0xFF111827);
     final effectiveBorderRadius =
         borderRadius ?? BorderRadius.circular(AppRadiusTokens.md);
 
@@ -62,7 +62,7 @@ class AppInkWell extends StatelessWidget {
 
     if (onTap == null) {
       content = Opacity(
-        opacity: AppColorTokens.inkDisabledOpacity,
+        opacity: 1, // TODO 替换
         child: content,
       );
     }

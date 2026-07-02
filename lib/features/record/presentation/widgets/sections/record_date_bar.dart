@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
@@ -44,9 +43,8 @@ class RecordDateBar extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacingTokens.xs),
         Expanded(
-          child: AppInkWell(
-            onTap: onPickDate,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+          child: FTappable(
+            onPress: onPickDate,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: colors.background,
@@ -112,9 +110,8 @@ class _DateStepButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    return AppInkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+    return FTappable(
+      onPress: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,

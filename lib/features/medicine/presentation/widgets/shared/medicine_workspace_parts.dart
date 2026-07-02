@@ -1,4 +1,3 @@
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -21,7 +20,7 @@ class MedicineHeaderActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const emphasisColor = AppColorTokens.cyanDeep;
+    const emphasisColor = Color(0xFF0F766E);
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     final background = emphasized ? emphasisColor : colors.background;
@@ -29,9 +28,8 @@ class MedicineHeaderActionChip extends StatelessWidget {
         ? Colors.white
         : Theme.of(context).colorScheme.onSurface;
 
-    return AppInkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+    return FTappable(
+      onPress: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: background,

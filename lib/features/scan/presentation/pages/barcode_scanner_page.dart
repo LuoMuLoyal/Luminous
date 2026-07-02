@@ -130,10 +130,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
                     width: 280,
                     height: 120,
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: AppColorTokens.cyanDeep,
-                        width: 2,
-                      ),
+                      border: Border.all(color: Color(0xFF0F766E), width: 2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),

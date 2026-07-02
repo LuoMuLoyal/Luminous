@@ -125,7 +125,7 @@ class _ArchiveRow extends StatelessWidget {
                     mineCopy(l10n, entry.statusKey!),
                     style: textTheme.labelSmall?.copyWith(
                       color: entry.statusKey == MineCopyKey.archiveNeedsFill
-                          ? AppColorTokens.warning
+                          ? Color(0xFFF59E0B)
                           : mineGreen,
                       fontWeight: FontWeight.w700,
                     ),
