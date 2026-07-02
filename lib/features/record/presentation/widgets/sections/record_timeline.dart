@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/common/app_text_action.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_image_placeholder.dart';
+import 'package:luminous/core/widgets/common/app_status_pill.dart';
+import 'package:luminous/core/widgets/common/app_text_action.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
@@ -17,46 +16,57 @@ class RecordTimelinePanel extends StatelessWidget {
     super.key,
     required this.entries,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.dense = false,
     this.onClearFilter,
   });
 
   final List<RecordTimelineEntry> entries;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final bool dense;
   final VoidCallback? onClearFilter;
 
   @override
   Widget build(BuildContext context) {
-    return AppSectionSurface(
+    return FCard.raw(
       key: const Key('record-timeline'),
-      title: l10n.recordTimelineSectionTitle,
-      trailing: onClearFilter == null
-          ? null
-          : AppTextAction(
-              label: l10n.recordAllTypesAction,
-              icon: Icons.keyboard_arrow_down_rounded,
-              onTap: onClearFilter!,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.recordTimelineSectionTitle,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (onClearFilter != null)
+                  AppTextAction(
+                    label: l10n.recordAllTypesAction,
+                    icon: FLucideIcons.chevronDown,
+                    onTap: onClearFilter!,
+                  ),
+              ],
             ),
-      typography: typography,
-      surface: surface,
-      child: Column(
-        children: [
-          for (var index = 0; index < entries.length; index += 1)
-            _TimelineEntryRow(
-              index: index,
-              entry: entries[index],
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-              isLast: index == entries.length - 1,
-              dense: dense,
+            const SizedBox(height: AppSpacingTokens.md),
+            Column(
+              children: [
+                for (var index = 0; index < entries.length; index += 1)
+                  _TimelineEntryRow(
+                    index: index,
+                    entry: entries[index],
+                    l10n: l10n,
+                    isLast: index == entries.length - 1,
+                    dense: dense,
+                  ),
+              ],
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -67,8 +77,6 @@ class _TimelineEntryRow extends StatelessWidget {
     required this.index,
     required this.entry,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.isLast,
     required this.dense,
   });
@@ -76,13 +84,13 @@ class _TimelineEntryRow extends StatelessWidget {
   final int index;
   final RecordTimelineEntry entry;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final bool isLast;
   final bool dense;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -90,7 +98,7 @@ class _TimelineEntryRow extends StatelessWidget {
           width: dense ? 44 : 56,
           child: Text(
             entry.time,
-            style: typography.bodySm.copyWith(color: surface.body),
+            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
         ),
         SizedBox(
@@ -101,7 +109,7 @@ class _TimelineEntryRow extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: entry.accent,
                   shape: BoxShape.circle,
-                  border: Border.all(color: surface.canvas, width: 3),
+                  border: Border.all(color: colors.background, width: 3),
                 ),
                 child: const SizedBox.square(dimension: 10),
               ),
@@ -111,7 +119,7 @@ class _TimelineEntryRow extends StatelessWidget {
                   child: VerticalDivider(
                     width: 1,
                     thickness: 1,
-                    color: surface.hairline,
+                    color: colors.border,
                   ),
                 ),
             ],
@@ -125,8 +133,6 @@ class _TimelineEntryRow extends StatelessWidget {
               entry: entry,
               index: index,
               l10n: l10n,
-              typography: typography,
-              surface: surface,
               dense: dense,
             ),
           ),
@@ -141,20 +147,18 @@ class _TimelineCard extends StatelessWidget {
     required this.entry,
     required this.index,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.dense,
   });
 
   final RecordTimelineEntry entry;
   final int index;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final bool dense;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final label = entry.rawTitle ?? recordCopy(l10n, entry.titleKey);
     final value = entry.valueKey == null
         ? entry.value
@@ -179,9 +183,9 @@ class _TimelineCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: surface.canvas,
+            color: colors.background,
             borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: surface.hairline),
+            border: Border.all(color: colors.border),
           ),
           child: Padding(
             padding: EdgeInsets.all(
@@ -207,8 +211,8 @@ class _TimelineCard extends StatelessWidget {
                           Flexible(
                             child: Text(
                               label,
-                              style: typography.bodySm.copyWith(
-                                color: surface.body,
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colors.mutedForeground,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -218,7 +222,6 @@ class _TimelineCard extends StatelessWidget {
                             AppStatusPill(
                               label: recordCopy(l10n, entry.badgeKey!),
                               color: entry.accent,
-                              typography: typography,
                             ),
                           ],
                         ],
@@ -227,16 +230,17 @@ class _TimelineCard extends StatelessWidget {
                         const SizedBox(height: AppSpacingTokens.xs),
                         Text.rich(
                           TextSpan(
-                            style: typography.bodyMdStrong.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface,
+                            style: textTheme.titleSmall?.copyWith(
+                              color: colors.foreground,
+                              fontWeight: FontWeight.w700,
                             ),
                             children: [
                               TextSpan(text: value),
                               if (unit != null)
                                 TextSpan(
                                   text: ' $unit',
-                                  style: typography.bodySm.copyWith(
-                                    color: surface.body,
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: colors.mutedForeground,
                                   ),
                                 ),
                             ],
@@ -247,8 +251,8 @@ class _TimelineCard extends StatelessWidget {
                         const SizedBox(height: AppSpacingTokens.xs),
                         Text(
                           detail,
-                          style: typography.bodySm.copyWith(
-                            color: surface.body,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colors.mutedForeground,
                           ),
                         ),
                       ],
@@ -260,7 +264,6 @@ class _TimelineCard extends StatelessWidget {
                   _TimelineImageThumbnail(
                     imageUrl: entry.imageUrl!,
                     label: label,
-                    surface: surface,
                   ),
                 ] else if (entry.imagePlaceholderKey != null && !dense) ...[
                   const SizedBox(width: AppSpacingTokens.md),
@@ -268,15 +271,11 @@ class _TimelineCard extends StatelessWidget {
                     label: recordCopy(l10n, entry.imagePlaceholderKey!),
                     width: 96,
                     height: 72,
-                    icon: Icons.restaurant_outlined,
+                    icon: FLucideIcons.utensils,
                   ),
                 ],
                 const SizedBox(width: AppSpacingTokens.sm),
-                Icon(
-                  entry.trailingIcon ?? Icons.chevron_right_rounded,
-                  color: _trailingColor(surface),
-                  size: 18,
-                ),
+                Icon(_trailingIcon(), color: _trailingColor(colors), size: 18),
               ],
             ),
           ),
@@ -285,24 +284,30 @@ class _TimelineCard extends StatelessWidget {
     );
   }
 
-  Color _trailingColor(AppThemeSurface surface) {
+  IconData _trailingIcon() {
     if (entry.trailingIcon == Icons.check_circle_outline_rounded) {
-      return surface.accent;
+      return FLucideIcons.badgeCheck;
     }
-    return surface.mute;
+    if (entry.trailingIcon == Icons.chevron_right_rounded ||
+        entry.trailingIcon == null) {
+      return FLucideIcons.chevronRight;
+    }
+    return entry.trailingIcon!;
+  }
+
+  Color _trailingColor(FColors colors) {
+    if (entry.trailingIcon == Icons.check_circle_outline_rounded) {
+      return colors.foreground;
+    }
+    return colors.mutedForeground;
   }
 }
 
 class _TimelineImageThumbnail extends StatelessWidget {
-  const _TimelineImageThumbnail({
-    required this.imageUrl,
-    required this.label,
-    required this.surface,
-  });
+  const _TimelineImageThumbnail({required this.imageUrl, required this.label});
 
   final String imageUrl;
   final String label;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
@@ -314,14 +319,10 @@ class _TimelineImageThumbnail extends StatelessWidget {
         child: CachedNetworkImage(
           imageUrl: imageUrl,
           fit: BoxFit.cover,
-          placeholder: (context, url) => _TimelineImageFallback(
-            surface: surface,
-            icon: Icons.image_outlined,
-          ),
-          errorWidget: (context, url, error) => _TimelineImageFallback(
-            surface: surface,
-            icon: Icons.broken_image_outlined,
-          ),
+          placeholder: (context, url) =>
+              const _TimelineImageFallback(icon: FLucideIcons.image),
+          errorWidget: (context, url, error) =>
+              const _TimelineImageFallback(icon: FLucideIcons.imageOff),
           imageBuilder: (context, provider) => Semantics(
             label: label,
             image: true,
@@ -334,19 +335,19 @@ class _TimelineImageThumbnail extends StatelessWidget {
 }
 
 class _TimelineImageFallback extends StatelessWidget {
-  const _TimelineImageFallback({required this.surface, required this.icon});
+  const _TimelineImageFallback({required this.icon});
 
-  final AppThemeSurface surface;
   final IconData icon;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: surface.canvasSoft2,
-        border: Border.all(color: surface.hairline),
+        color: colors.secondary.withValues(alpha: 0.2),
+        border: Border.all(color: colors.border),
       ),
-      child: Center(child: Icon(icon, color: surface.mute, size: 22)),
+      child: Center(child: Icon(icon, color: colors.mutedForeground, size: 22)),
     );
   }
 }
