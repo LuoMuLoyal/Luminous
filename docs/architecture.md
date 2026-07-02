@@ -172,12 +172,12 @@ The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at 
 |-------|----------|----------------|
 | Root theme | `lib/core/theme/app_theme.dart` | Owns the app-level Forui light/dark theme bootstrap |
 | Compatibility bridge | `lib/core/theme/app_theme_extensions.dart` | Maps Forui `FColors` into `AppThemeSurface` for legacy pages still reading semantic surface fields |
-| Legacy layout tokens | `lib/core/design/` | Existing spacing/radius/typography helpers that still support pages not yet migrated off the old system |
+| Legacy token bridge | `lib/core/design/` | Compatibility token names that now point at Forui-aligned color/spacing/radius/shadow/type values for still-unmigrated pages |
 | Theme preference | `lib/core/theme/app_theme_controller.dart` | Persists only `ThemeMode` (`system / light / dark`) |
 
 Shared page chrome has started moving with the same strategy: `PageScaffoldShell` now composes `FScaffold` and `FHeader`, `AppBackButton` is a Forui icon button, `AppDialog` uses `FDialog.raw`, and shared state surfaces use `FCard`/`FButton`. `PageScaffoldShell` intentionally keeps a transparent `Material` wrapper around its content area so legacy Material descendants can survive until their owning pages finish migration.
 
-The settings surface is now also splitting along that boundary. The top-level `SettingsPage` renders directly with page-local Forui tiles/cards/switches/buttons instead of reusing `AppSectionSurface` or `AppSettings*` wrappers. `lib/core/widgets/settings/` is therefore no longer the preferred path for new work; it is temporary migration debt for the remaining secondary settings pages that have not been rewritten yet.
+The settings surface is now also splitting along that boundary. The top-level `SettingsPage` renders directly with page-local Forui tile groups/tiles/switches/buttons instead of reusing `AppSectionSurface` or `AppSettings*` wrappers. The remaining shared wrappers under `lib/core/widgets/settings/` are no longer preserving the old Material implementation either; they now render through `FTile` / `FSwitch` as an aggressive migration bridge for the still-unrewritten secondary settings pages.
 
 ### UI Guidelines
 

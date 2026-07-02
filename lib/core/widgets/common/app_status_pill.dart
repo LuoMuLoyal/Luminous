@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 class AppStatusPill extends StatelessWidget {
@@ -33,36 +34,40 @@ class AppStatusPill extends StatelessWidget {
         AppTypographyTokens.mobile(Theme.of(context).colorScheme.onSurface);
     final foreground = backgroundAlpha > 0.5 ? Colors.white : color;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: backgroundAlpha),
-        borderRadius: BorderRadius.circular(radius),
-      ),
-      child: Padding(
-        padding: padding,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, color: foreground, size: AppSpacingTokens.sm),
-              const SizedBox(width: AppSpacingTokens.xxs),
+    return FBadge.raw(
+      builder: (context, style) => DecoratedBox(
+        decoration: ShapeDecoration(
+          color: color.withValues(alpha: backgroundAlpha),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(radius),
+          ),
+        ),
+        child: Padding(
+          padding: padding,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, color: foreground, size: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.xxs),
+              ],
+              Text(
+                label,
+                style: large
+                    ? effectiveTypography.bodySmStrong.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w600,
+                      )
+                    : effectiveTypography.caption.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0,
+                      ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ],
-            Text(
-              label,
-              style: large
-                  ? effectiveTypography.bodySmStrong.copyWith(
-                      color: foreground,
-                      fontWeight: FontWeight.w600,
-                    )
-                  : effectiveTypography.caption.copyWith(
-                      color: foreground,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0,
-                    ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+          ),
         ),
       ),
     );

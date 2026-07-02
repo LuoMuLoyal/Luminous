@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class AppTextAction extends StatelessWidget {
   const AppTextAction({
     super.key,
     required this.label,
     required this.onTap,
-    this.icon = Icons.chevron_right_rounded,
+    this.icon = FLucideIcons.chevronRight,
     this.color,
     this.flexible = false,
   });
@@ -20,12 +20,10 @@ class AppTextAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-    final foreground = color ?? surface.body;
-
-    final disabled = onTap == null;
+    final typography = AppTypographyTokens.mobile(
+      Theme.of(context).colorScheme.onSurface,
+    );
+    final foreground = color ?? context.theme.colors.foreground;
 
     final text = Text(
       label,
@@ -38,27 +36,20 @@ class AppTextAction extends StatelessWidget {
       overflow: TextOverflow.ellipsis,
     );
 
-    return Opacity(
-      opacity: disabled ? 0.5 : 1.0,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xxs),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (flexible) Flexible(child: text) else text,
-                if (icon != null) ...[
-                  const SizedBox(width: AppSpacingTokens.xxs),
-                  Icon(icon, size: AppSpacingTokens.md, color: foreground),
-                ],
-              ],
-            ),
-          ),
-        ),
+    return FButton(
+      variant: FButtonVariant.ghost,
+      size: FButtonSizeVariant.xs,
+      onPress: onTap,
+      mainAxisSize: MainAxisSize.min,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (flexible) Flexible(child: text) else text,
+          if (icon != null) ...[
+            const SizedBox(width: AppSpacingTokens.xxs),
+            Icon(icon, size: AppSpacingTokens.md, color: foreground),
+          ],
+        ],
       ),
     );
   }
