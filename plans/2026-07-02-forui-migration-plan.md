@@ -14,18 +14,6 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 
 ## Remaining Phases
 
-### Today
-
-- Files:
-  - `lib/features/today/presentation/widgets/today_top_bar.dart`
-  - `lib/features/today/presentation/widgets/sections/today_overview_section.dart`
-  - `lib/features/today/presentation/widgets/sections/today_priority_section.dart`
-  - `lib/features/today/presentation/widgets/sections/today_recommendation_section.dart`
-  - `lib/features/today/presentation/widgets/sections/today_todo_section.dart`
-- Action:
-  - Replace `AppSectionSurface` with Forui card/group composition.
-  - Remove major old-homepage design-system remnants.
-
 ### Mine
 
 - Files:

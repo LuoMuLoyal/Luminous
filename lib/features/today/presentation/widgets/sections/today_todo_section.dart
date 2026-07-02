@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
@@ -31,14 +30,13 @@ class TodayTodoSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     final items = buildTodoItems(l10n, dashboard);
 
     return TodaySection(
       title: l10n.todayTodoSectionTitle,
-      child: AppSectionSurface(
+      child: FCard.raw(
         key: const Key('today-todo-card'),
-        padding: EdgeInsets.zero,
         child: Column(
           children: [
             for (var index = 0; index < items.length; index += 1) ...[
@@ -51,7 +49,7 @@ class TodayTodoSection extends ConsumerWidget {
                   height: 1,
                   thickness: 1,
                   indent: AppSpacingTokens.x4l + AppSpacingTokens.sm,
-                  color: surface.hairline.withValues(alpha: 0.62),
+                  color: colors.border,
                 ),
             ],
           ],
@@ -69,9 +67,8 @@ class _TodoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return AppInkWell(
       onTap: onTap,
@@ -83,9 +80,9 @@ class _TodoRow extends StatelessWidget {
         children: [
           Icon(
             item.completed
-                ? Icons.check_circle_rounded
-                : Icons.check_circle_outline_rounded,
-            color: item.completed ? item.color : surface.mute,
+                ? FLucideIcons.circleCheckBig
+                : FLucideIcons.circleCheck,
+            color: item.completed ? item.color : colors.mutedForeground,
             size: AppSpacingTokens.x2l,
           ),
           const SizedBox(width: AppSpacingTokens.sm),
@@ -95,9 +92,8 @@ class _TodoRow extends StatelessWidget {
               children: [
                 AppSkeletonText(
                   text: item.title,
-                  style: typography.bodyMdStrong.copyWith(
+                  style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -107,9 +103,8 @@ class _TodoRow extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.xs),
                 AppSkeletonText(
                   text: item.subtitle,
-                  style: typography.bodySm.copyWith(
-                    color: surface.body,
-                    letterSpacing: 0,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -133,10 +128,9 @@ class _TodoRow extends StatelessWidget {
               ),
               child: Text(
                 item.source,
-                style: typography.caption.copyWith(
+                style: textTheme.labelSmall?.copyWith(
                   color: item.color,
                   fontWeight: FontWeight.w700,
-                  letterSpacing: 0,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -145,8 +139,8 @@ class _TodoRow extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacingTokens.xs),
           Icon(
-            Icons.chevron_right_rounded,
-            color: surface.mute,
+            FLucideIcons.chevronRight,
+            color: colors.mutedForeground,
             size: AppSpacingTokens.lg,
           ),
         ],

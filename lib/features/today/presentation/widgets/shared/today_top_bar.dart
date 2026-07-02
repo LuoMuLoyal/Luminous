@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
@@ -21,8 +21,8 @@ class TodayTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,18 +33,15 @@ class TodayTopBar extends StatelessWidget {
             children: [
               Text(
                 l10n.todayHeroTitle,
-                style: typography.displayXl.copyWith(
-                  color: theme.colorScheme.onSurface,
+                style: textTheme.headlineLarge?.copyWith(
                   fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.xxs),
               AppSkeletonText(
                 text: greetingSubtitle(l10n, moment),
-                style: typography.bodyMd.copyWith(
-                  color: Theme.of(context).extension<AppThemeSurface>()!.body,
-                  letterSpacing: 0,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colors.mutedForeground,
                 ),
                 widthFactor: 0.64,
               ),
@@ -66,10 +63,9 @@ class _AssistantEntryButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final session = ref.watch(authSessionProvider);
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
 
     return Tooltip(
       message: l10n.assistantEntryTitle,
@@ -93,9 +89,9 @@ class _AssistantEntryButton extends ConsumerWidget {
           },
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColorTokens.cyanSoft,
+              color: colors.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-              border: Border.all(color: surface.hairline),
+              border: Border.all(color: colors.border),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -105,16 +101,16 @@ class _AssistantEntryButton extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.auto_awesome_outlined,
+                  Icon(
+                    FLucideIcons.sparkles,
                     size: AppSpacingTokens.md,
-                    color: AppColorTokens.cyanDeep,
+                    color: colors.primary,
                   ),
                   const SizedBox(width: AppSpacingTokens.xxs),
                   Text(
                     l10n.assistantEntryTitle,
-                    style: typography.bodySmStrong.copyWith(
-                      color: AppColorTokens.cyanDeep,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: colors.primary,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -134,7 +130,7 @@ class _NotificationButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
+    final colors = context.theme.colors;
     final unreadAsync = ref.watch(notificationUnreadCountProvider);
     final hasUnread =
         unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
@@ -144,16 +140,14 @@ class _NotificationButton extends ConsumerWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          IconButton(
-            onPressed: () => context.push('/notifications'),
-            icon: const Icon(
-              Icons.notifications_none_rounded,
+          FButton(
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.sm,
+            onPress: () => context.push('/notifications'),
+            child: Icon(
+              FLucideIcons.bell,
               size: AppSpacingTokens.lg + AppSpacingTokens.xxs,
-            ),
-            color: theme.colorScheme.onSurface,
-            visualDensity: VisualDensity.compact,
-            style: const ButtonStyle(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              color: colors.foreground,
             ),
           ),
           if (hasUnread)
@@ -162,7 +156,7 @@ class _NotificationButton extends ConsumerWidget {
               top: AppSpacingTokens.xs,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.error,
+                  color: colors.destructive,
                   shape: BoxShape.circle,
                 ),
                 child: const SizedBox.square(dimension: AppSpacingTokens.xs),

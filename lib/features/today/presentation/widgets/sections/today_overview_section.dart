@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/common/app_text_action.dart';
-import 'package:luminous/core/widgets/common/app_section_header.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
@@ -19,56 +16,79 @@ class TodayOverviewSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final items = buildOverviewItems(l10n, dashboard);
 
-    return AppSectionSurface(
+    return FCard.raw(
       key: const Key('today-health-summary-card'),
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacingTokens.md,
-        AppSpacingTokens.sm,
-        AppSpacingTokens.md,
-        AppSpacingTokens.sm,
-      ),
-      radius: AppRadiusTokens.lg,
-      shadow: const <BoxShadow>[],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppSectionHeader(
-            title: l10n.todayHealthSummaryCardTitle,
-            leading: const Icon(
-              Icons.check_circle_outline_rounded,
-              color: AppColorTokens.cyanDeep,
-              size: AppSpacingTokens.lg,
-            ),
-            compact: true,
-            trailing: AppSkeletonSlot(
-              skeleton: const AppInlineSkeletonBlock(
-                height: 22,
-                width: 96,
-                radius: AppRadiusTokens.pill,
-              ),
-              child: Consumer(
-                builder: (context, ref, child) => AppTextAction(
-                  label: l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
-                  icon: Icons.refresh_rounded,
-                  onTap: () => ref.invalidate(todayDashboardProvider),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacingTokens.md,
+          AppSpacingTokens.sm,
+          AppSpacingTokens.md,
+          AppSpacingTokens.sm,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(
+                  FLucideIcons.badgeCheck,
+                  color: AppColorTokens.cyanDeep,
+                  size: AppSpacingTokens.lg,
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              for (var index = 0; index < items.length; index += 1) ...[
-                Expanded(child: _OverviewMetric(item: items[index])),
-                if (index < items.length - 1)
-                  const _VerticalMetricDivider(height: AppSpacingTokens.x3l),
+                const SizedBox(width: AppSpacingTokens.xs),
+                Expanded(
+                  child: Text(
+                    l10n.todayHealthSummaryCardTitle,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                AppSkeletonSlot(
+                  skeleton: const AppInlineSkeletonBlock(
+                    height: 22,
+                    width: 96,
+                    radius: AppRadiusTokens.pill,
+                  ),
+                  child: Consumer(
+                    builder: (context, ref, child) => FButton(
+                      variant: FButtonVariant.ghost,
+                      size: FButtonSizeVariant.xs,
+                      onPress: () => ref.invalidate(todayDashboardProvider),
+                      prefix: Icon(
+                        FLucideIcons.refreshCw,
+                        size: 14,
+                        color: colors.primary,
+                      ),
+                      child: Text(
+                        l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
+                        style: textTheme.labelSmall?.copyWith(
+                          color: colors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(height: AppSpacingTokens.sm),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                for (var index = 0; index < items.length; index += 1) ...[
+                  Expanded(child: _OverviewMetric(item: items[index])),
+                  if (index < items.length - 1)
+                    const _VerticalMetricDivider(height: AppSpacingTokens.x3l),
+                ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -81,9 +101,8 @@ class _OverviewMetric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
@@ -99,10 +118,9 @@ class _OverviewMetric extends StatelessWidget {
               children: [
                 Text(
                   item.label,
-                  style: typography.caption.copyWith(
-                    color: Theme.of(context).extension<AppThemeSurface>()!.body,
+                  style: textTheme.labelSmall?.copyWith(
+                    color: colors.mutedForeground,
                     fontWeight: FontWeight.w600,
-                    letterSpacing: 0,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -118,9 +136,8 @@ class _OverviewMetric extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     child: Text(
                       item.value,
-                      style: typography.bodyMdStrong.copyWith(
+                      style: textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
                       ),
                       maxLines: 1,
                     ),
@@ -142,11 +159,11 @@ class _VerticalMetricDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return SizedBox(
       height: height,
-      child: VerticalDivider(width: 1, thickness: 1, color: surface.hairline),
+      child: VerticalDivider(width: 1, thickness: 1, color: colors.border),
     );
   }
 }

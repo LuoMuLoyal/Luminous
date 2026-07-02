@@ -1,13 +1,12 @@
-import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -33,15 +32,14 @@ class TodayPrioritySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
     final items = buildPriorityItems(l10n, dashboard);
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
 
     return TodaySection(
       title: l10n.todayPrioritySectionTitle,
       actionLabel: l10n.todayManageAction,
       onAction: () => context.go('/record'),
-      child: AppSectionSurface(
-        padding: EdgeInsets.zero,
+      child: FCard.raw(
         child: Column(
           children: [
             for (var index = 0; index < items.length; index += 1) ...[
@@ -54,7 +52,7 @@ class TodayPrioritySection extends ConsumerWidget {
                   height: 1,
                   thickness: 1,
                   indent: AppSpacingTokens.x5l,
-                  color: surface.hairline.withValues(alpha: 0.62),
+                  color: colors.border,
                 ),
             ],
           ],
@@ -72,9 +70,8 @@ class _PriorityRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return AppInkWell(
       key: item.key,
@@ -100,9 +97,8 @@ class _PriorityRow extends ConsumerWidget {
               children: [
                 Text(
                   item.title,
-                  style: typography.bodyMdStrong.copyWith(
+                  style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -110,9 +106,8 @@ class _PriorityRow extends ConsumerWidget {
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   item.subtitle,
-                  style: typography.bodySm.copyWith(
-                    color: surface.body,
-                    letterSpacing: 0,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -137,10 +132,9 @@ class _PriorityRow extends ConsumerWidget {
               children: [
                 AppSkeletonText(
                   text: item.detail,
-                  style: typography.bodySmStrong.copyWith(
-                    color: surface.body,
+                  style: textTheme.labelMedium?.copyWith(
+                    color: colors.mutedForeground,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
                   ),
                   textAlign: TextAlign.end,
                   maxLines: 1,
@@ -166,9 +160,7 @@ class _PriorityActionPill extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
+    final textTheme = Theme.of(context).textTheme;
 
     return AppInkWell(
       onTap: onTap,
@@ -185,10 +177,9 @@ class _PriorityActionPill extends ConsumerWidget {
           ),
           child: Text(
             item.action,
-            style: typography.bodySmStrong.copyWith(
+            style: textTheme.labelMedium?.copyWith(
               color: AppColorTokens.onPrimary,
               fontWeight: FontWeight.w800,
-              letterSpacing: 0,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
