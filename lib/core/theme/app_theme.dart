@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
 abstract final class AppTheme {
-  static final FThemeData foruiLight = FThemes.green.light.touch;
-  static final FThemeData foruiDark = FThemes.green.dark.touch;
+  static final FThemeData foruiLight = FThemes.neutral.light.touch;
+  static final FThemeData foruiDark = FThemes.neutral.dark.touch;
 
   static final ThemeData light = _materialTheme(foruiLight);
   static final ThemeData dark = _materialTheme(foruiDark);
