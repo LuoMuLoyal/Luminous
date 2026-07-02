@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -238,13 +239,15 @@ class _NumberField extends HookWidget {
       return null;
     }, [value]);
 
-    return TextField(
-      decoration: InputDecoration(labelText: label),
+    return FTextField(
+      control: FTextFieldControl.managed(
+        controller: controller,
+        onChange: (value) {
+          onChanged(int.tryParse(value.text.trim()));
+        },
+      ),
+      label: Text(label),
       keyboardType: TextInputType.number,
-      controller: controller,
-      onChanged: (text) {
-        onChanged(int.tryParse(text.trim()));
-      },
     );
   }
 }

@@ -149,19 +149,18 @@ class RecordNlpDialog extends HookConsumerWidget {
             style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
           const SizedBox(height: AppSpacingTokens.level4),
-          TextField(
+          FTextField(
             key: const Key('record-nlp-input-field'),
-            controller: controller,
+            control: FTextFieldControl.managed(
+              controller: controller,
+              onChange: (value) => ref
+                  .read(recordNlpControllerProvider.notifier)
+                  .updateDraft(value.text),
+            ),
             minLines: 4,
             maxLines: 6,
             enabled: !state.isGenerating && !state.isSaving,
-            onChanged: ref
-                .read(recordNlpControllerProvider.notifier)
-                .updateDraft,
-            decoration: InputDecoration(
-              hintText: l10n.recordNlpInputHint,
-              border: const OutlineInputBorder(),
-            ),
+            hint: l10n.recordNlpInputHint,
           ),
           const SizedBox(height: AppSpacingTokens.level4),
           Row(

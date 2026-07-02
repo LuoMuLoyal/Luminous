@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/datasources/health_context_remote_data_source.dart';
@@ -30,7 +30,7 @@ void main() {
     await tester.tap(find.text('open-profile-edit'));
     await tester.pumpAndSettle();
 
-    final fields = find.byType(TextField);
+    final fields = find.byType(FTextField);
     await tester.enterText(fields.at(0), '1999-02-03');
     await tester.enterText(fields.at(1), '170');
     await tester.enterText(fields.at(2), '');
@@ -135,10 +135,10 @@ void main() {
     // Should prefill the label
     expect(find.text('Penicillin'), findsOneWidget);
     // Verify text field has the value
-    final field = tester.widget<TextField>(
+    final field = tester.widget<FTextField>(
       find.byKey(const Key('allergy-label-field')),
     );
-    expect(field.controller?.text, 'Penicillin');
+    expect((field.control as FTextFieldManagedControl).controller?.text, 'Penicillin');
   });
 
   testWidgets('Allergy edit delete calls soft-delete', (tester) async {
@@ -303,10 +303,12 @@ Widget _app(
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),
       healthContextRepositoryProvider.overrideWithValue(fakeRepo),
     ],
-    child: MaterialApp.router(
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      locale: const Locale('zh'),
+    child: FTheme(
+      data: FThemes.neutral.light.touch,
+      child: MaterialApp.router(
+        theme: FThemes.neutral.light.touch.toApproximateMaterialTheme(),
+        darkTheme: FThemes.neutral.dark.touch.toApproximateMaterialTheme(),
+        locale: const Locale('zh'),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -333,6 +335,7 @@ Widget _app(
                 const Scaffold(body: Text('login-page')),
           ),
         ],
+      ),
       ),
     ),
   );

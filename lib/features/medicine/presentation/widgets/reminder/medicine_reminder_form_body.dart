@@ -217,15 +217,12 @@ class ReminderFormBody extends StatelessWidget {
           _FormCard(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacingTokens.level4),
-              child: TextField(
-                controller: noteController,
+              child: FTextField(
+                control: FTextFieldControl.managed(controller: noteController),
+                label: Text(l10n.medicineReminderNoteOptionalLabel),
+                hint: l10n.medicineReminderNoteHint,
                 maxLength: 100,
                 maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: l10n.medicineReminderNoteOptionalLabel,
-                  hintText: l10n.medicineReminderNoteHint,
-                  border: const OutlineInputBorder(),
-                ),
               ),
             ),
           ),

@@ -221,38 +221,17 @@ class _InputComposer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(
-          child: TextField(
+          child: FTextField(
             key: const Key('assistant-input'),
-            controller: controller,
+            control: FTextFieldControl.managed(controller: controller),
             minLines: 2,
             maxLines: 6,
-            decoration: InputDecoration(
-              hintText: l10n.assistantInputHint,
-              filled: true,
-              fillColor: colors.secondary,
-              hintStyle: textTheme.bodyMedium?.copyWith(
-                color: colors.mutedForeground,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-                borderSide: BorderSide(color: colors.border),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-                borderSide: BorderSide(color: colors.border),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-                borderSide: BorderSide(color: colors.primary),
-              ),
-            ),
+            hint: l10n.assistantInputHint,
           ),
         ),
         const SizedBox(width: AppSpacingTokens.level3),
