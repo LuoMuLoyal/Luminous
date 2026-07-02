@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
@@ -8,6 +8,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 class AccountSettingsLoading extends StatelessWidget {
   const AccountSettingsLoading({super.key});
+
   @override
   Widget build(BuildContext context) => const AppInlineSkeleton(
     children: [
@@ -25,37 +26,37 @@ class AccountStatusSection extends StatelessWidget {
     required this.user,
     required this.l10n,
   });
+
   final AuthUser user;
   final AppLocalizations l10n;
+
   @override
   Widget build(BuildContext context) => _SectionColumn(
     title: l10n.authAccountOverviewTitle,
     children: [
       _InfoRow(
-        icon: Icons.mail_outline_rounded,
+        icon: FLucideIcons.mail,
         label: l10n.authAccountOverviewEmail,
         value: user.email ?? l10n.authEmailMissing,
       ),
       _InfoRow(
         icon: user.emailVerified
-            ? Icons.mark_email_read_outlined
-            : Icons.mark_email_unread_outlined,
+            ? FLucideIcons.mailCheck
+            : FLucideIcons.mailWarning,
         label: l10n.authAccountOverviewEmailVerified,
         value: user.emailVerifiedAt == null
             ? l10n.authEmailUnverifiedStatus
             : l10n.authEmailVerifiedAt(formatDateTime(user.emailVerifiedAt!)),
       ),
       _InfoRow(
-        icon: user.hasPassword
-            ? Icons.lock_outline_rounded
-            : Icons.lock_open_outlined,
+        icon: user.hasPassword ? FLucideIcons.lock : FLucideIcons.lockOpen,
         label: l10n.authAccountOverviewPassword,
         value: user.hasPassword
             ? l10n.authPasswordSetStatus
             : l10n.authPasswordUnsetStatus,
       ),
       _InfoRow(
-        icon: Icons.schedule_rounded,
+        icon: FLucideIcons.clock3,
         label: l10n.authAccountOverviewLastLogin,
         value: user.lastLoginAt == null
             ? l10n.authLastLoginUnknown
@@ -72,9 +73,11 @@ class EmailSection extends StatelessWidget {
     required this.emailController,
     required this.onChangeEmail,
   });
+
   final AuthUser user;
   final TextEditingController emailController;
   final VoidCallback onChangeEmail;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -105,10 +108,12 @@ class LinkedIdentitiesSection extends StatelessWidget {
     required this.onLinkWechat,
     required this.onUnlink,
   });
+
   final AuthUser user;
   final bool isSubmitting;
   final Future<void> Function() onLinkWechat;
   final Future<void> Function(AuthLinkedIdentity identity) onUnlink;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -135,7 +140,7 @@ class LinkedIdentitiesSection extends StatelessWidget {
                   height: 18,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Icon(Icons.add_link_rounded, size: 18),
+              : const Icon(FLucideIcons.link, size: 18),
           label: Text(l10n.authIdentityLinkWechatAction),
         ),
       ],
@@ -150,27 +155,29 @@ class _LinkedIdentityTile extends StatelessWidget {
     required this.isSubmitting,
     required this.onUnlink,
   });
+
   final AuthUser user;
   final AuthLinkedIdentity identity;
   final bool isSubmitting;
   final Future<void> Function() onUnlink;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final canUnlink = user.hasPassword || user.linkedIdentities.length > 1;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = accountTypography(context);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: surface.hairline),
+        border: Border.all(color: colors.border),
         borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.md),
         child: Row(
           children: [
-            Icon(Icons.link_rounded, color: surface.link, size: 20),
+            Icon(FLucideIcons.link, color: colors.primary, size: 20),
             const SizedBox(width: AppSpacingTokens.sm),
             Expanded(
               child: Column(
@@ -178,7 +185,7 @@ class _LinkedIdentityTile extends StatelessWidget {
                 children: [
                   Text(
                     identityProviderLabel(identity.provider, l10n),
-                    style: typography.bodyMd.copyWith(
+                    style: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -190,7 +197,9 @@ class _LinkedIdentityTile extends StatelessWidget {
                         formatDate(identity.linkedAt),
                       ),
                     ].join(' · '),
-                    style: typography.caption.copyWith(color: surface.mute),
+                    style: textTheme.labelSmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ],
               ),
@@ -219,11 +228,13 @@ class PasswordSection extends StatelessWidget {
     required this.isSubmitting,
     required this.onChangePassword,
   });
+
   final AuthUser user;
   final TextEditingController oldPasswordController;
   final TextEditingController newPasswordController;
   final bool isSubmitting;
   final Future<void> Function() onChangePassword;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -264,10 +275,12 @@ class DeleteAccountSection extends StatelessWidget {
     required this.isSubmitting,
     required this.onDelete,
   });
+
   final AuthUser user;
   final TextEditingController deletePasswordController;
   final bool isSubmitting;
   final Future<void> Function() onDelete;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -296,8 +309,10 @@ class DeleteAccountSection extends StatelessWidget {
 
 class _SectionColumn extends StatelessWidget {
   const _SectionColumn({required this.title, required this.children});
+
   final String title;
   final List<Widget> children;
+
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,21 +333,23 @@ class _InfoRow extends StatelessWidget {
     required this.label,
     required this.value,
   });
+
   final IconData icon;
   final String label;
   final String value;
+
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final typography = accountTypography(context);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     return Row(
       children: [
-        Icon(icon, size: 18, color: surface.mute),
+        Icon(icon, size: 18, color: colors.mutedForeground),
         const SizedBox(width: AppSpacingTokens.sm),
         Expanded(
           child: Text(
             label,
-            style: typography.bodySm.copyWith(color: surface.mute),
+            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.md),
@@ -341,7 +358,7 @@ class _InfoRow extends StatelessWidget {
             value,
             textAlign: TextAlign.right,
             overflow: TextOverflow.ellipsis,
-            style: typography.bodySm.copyWith(color: surface.body),
+            style: textTheme.bodySmall?.copyWith(color: colors.foreground),
           ),
         ),
       ],
@@ -351,25 +368,28 @@ class _InfoRow extends StatelessWidget {
 
 class _MutedText extends StatelessWidget {
   const _MutedText(this.text);
+
   final String text;
+
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     return Text(
       text,
-      style: accountTypography(context).bodySm.copyWith(color: surface.mute),
+      style: Theme.of(
+        context,
+      ).textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
     );
   }
 }
 
-AppTypographyScale accountTypography(BuildContext context) =>
-    AppTypographyTokens.mobile(Theme.of(context).colorScheme.onSurface);
 String identityProviderLabel(String provider, AppLocalizations l10n) =>
     switch (provider) {
       'wechat_web' => l10n.authIdentityProviderWechatWeb,
       'wechat_mobile' => l10n.authIdentityProviderWechatMobile,
       _ => provider,
     };
+
 String formatDate(DateTime value) {
   final local = value.toLocal();
   return '${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
