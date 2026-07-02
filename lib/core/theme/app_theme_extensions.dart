@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 
 @immutable
@@ -85,90 +86,6 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
     violet: AppColorTokens.violet,
   );
 
-  static const AppThemeSurface bluePinkLight = AppThemeSurface(
-    canvas: Color(0xFFF8FAFC),
-    canvasSoft: Color(0xFFEEF4F7),
-    canvasSoft2: Color(0xFFDEE4E9),
-    hairline: Color(0xFFD8E2E8),
-    hairlineStrong: Color(0xFFAAB9C4),
-    body: Color(0xFF485A64),
-    mute: Color(0xFF83929A),
-    link: Color(0xFF47A0C9),
-    linkSoft: Color(0xFFDCEFF7),
-    accent: Color(0xFF47A0C9),
-    teal: Color(0xFF47A0C9),
-    tealSoft: Color(0xFFDCEFF7),
-    success: Color(0xFF47A0C9),
-    error: Color(0xFFD65F7F),
-    warning: Color(0xFFB9894B),
-    warningDeep: Color(0xFF8A5E2E),
-    warningSoft: Color(0xFFF5E6D2),
-    violet: Color(0xFF8B6BC0),
-  );
-
-  static const AppThemeSurface bluePinkDark = AppThemeSurface(
-    canvas: Color(0xFF101315),
-    canvasSoft: Color(0xFF171C1F),
-    canvasSoft2: Color(0xFF222A2F),
-    hairline: Color(0xFF2E393F),
-    hairlineStrong: Color(0xFF53646D),
-    body: Color(0xFFD0D8DC),
-    mute: Color(0xFF95A4AA),
-    link: Color(0xFF95CEE8),
-    linkSoft: Color(0xFF223946),
-    accent: Color(0xFF95CEE8),
-    teal: Color(0xFF95CEE8),
-    tealSoft: Color(0xFF223946),
-    success: Color(0xFF95CEE8),
-    error: Color(0xFFFF7A98),
-    warning: Color(0xFFE6BE77),
-    warningDeep: Color(0xFFC49A3D),
-    warningSoft: Color(0xFF3A2E18),
-    violet: Color(0xFFB8A0E0),
-  );
-
-  static const AppThemeSurface yellowGreenLight = AppThemeSurface(
-    canvas: Color(0xFFFAFBF6),
-    canvasSoft: Color(0xFFF1F5EA),
-    canvasSoft2: Color(0xFFE7F0D6),
-    hairline: Color(0xFFDDE5D4),
-    hairlineStrong: Color(0xFFAEB9A6),
-    body: Color(0xFF53604C),
-    mute: Color(0xFF899280),
-    link: Color(0xFF4AA112),
-    linkSoft: Color(0xFFE5F1D8),
-    accent: Color(0xFF4AA112),
-    teal: Color(0xFF4AA112),
-    tealSoft: Color(0xFFE5F1D8),
-    success: Color(0xFF4AA112),
-    error: Color(0xFFD15F55),
-    warning: Color(0xFFD4B01D),
-    warningDeep: Color(0xFF8A6E12),
-    warningSoft: Color(0xFFF5EAD0),
-    violet: Color(0xFF8B6BC0),
-  );
-
-  static const AppThemeSurface yellowGreenDark = AppThemeSurface(
-    canvas: Color(0xFF121512),
-    canvasSoft: Color(0xFF1A1F19),
-    canvasSoft2: Color(0xFF252D22),
-    hairline: Color(0xFF323B2E),
-    hairlineStrong: Color(0xFF5B684F),
-    body: Color(0xFFD6DCCE),
-    mute: Color(0xFFA2AA98),
-    link: Color(0xFFE7F0D6),
-    linkSoft: Color(0xFF314024),
-    accent: Color(0xFFA7D66F),
-    teal: Color(0xFFA7D66F),
-    tealSoft: Color(0xFF314024),
-    success: Color(0xFFA7D66F),
-    error: Color(0xFFFF7B70),
-    warning: Color(0xFFE4C844),
-    warningDeep: Color(0xFFC4A82E),
-    warningSoft: Color(0xFF3A3420),
-    violet: Color(0xFFB8A0E0),
-  );
-
   @override
   AppThemeSurface copyWith({
     Color? canvas,
@@ -238,6 +155,29 @@ class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
       warningDeep: Color.lerp(warningDeep, other.warningDeep, t) ?? warningDeep,
       warningSoft: Color.lerp(warningSoft, other.warningSoft, t) ?? warningSoft,
       violet: Color.lerp(violet, other.violet, t) ?? violet,
+    );
+  }
+
+  factory AppThemeSurface.fromForuiColors(FColors colors) {
+    return AppThemeSurface(
+      canvas: colors.card,
+      canvasSoft: colors.background,
+      canvasSoft2: colors.secondary,
+      hairline: colors.border,
+      hairlineStrong: colors.border.withValues(alpha: 0.9),
+      body: colors.foreground,
+      mute: colors.mutedForeground,
+      link: colors.primary,
+      linkSoft: colors.secondary,
+      accent: colors.primary,
+      teal: colors.primary,
+      tealSoft: colors.secondary,
+      success: AppColorTokens.success,
+      error: colors.error,
+      warning: AppColorTokens.warning,
+      warningDeep: AppColorTokens.warningDeep,
+      warningSoft: AppColorTokens.warningSoft,
+      violet: AppColorTokens.violet,
     );
   }
 }

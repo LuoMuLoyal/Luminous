@@ -58,9 +58,6 @@ class AdvancedSettingsPage extends ConsumerWidget {
                   await ref
                       .read(appThemeControllerProvider.notifier)
                       .setMode(AppThemeModePreference.system);
-                  await ref
-                      .read(appThemePaletteControllerProvider.notifier)
-                      .setPalette(AppThemePalettePreference.classic);
                   try {
                     await ref
                         .read(settingsProfileSyncProvider.notifier)
