@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -13,8 +12,9 @@ import 'package:lucent_openapi/lucent_openapi.dart'
         UpdateUserSettingsDto,
         UserSettingsDataDto;
 import 'package:luminous/core/network/lucent_api_exception.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent_assistant_repository.dart';
+
+import '../helpers/test_forui_app.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/pages/assistant_page.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_loading_view.dart';
@@ -42,17 +42,7 @@ void main() {
             () => _SignedOutAuthSessionNotifier(),
           ),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
+        child: TestForuiRouterApp(
           routerConfig: GoRouter(
             initialLocation: '/assistant',
             routes: [
@@ -98,17 +88,7 @@ void main() {
               () => settingsController,
             ),
           ],
-          child: MaterialApp.router(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
+          child: TestForuiRouterApp(
             routerConfig: GoRouter(
               initialLocation: '/assistant',
               routes: [
@@ -631,17 +611,7 @@ Widget _buildTestApp({
         () => settingsController ?? _ReadyUserSettingsController(),
       ),
     ],
-    child: MaterialApp.router(
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      locale: const Locale('zh'),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
+    child: TestForuiRouterApp(
       routerConfig: GoRouter(
         initialLocation: '/assistant',
         routes: [

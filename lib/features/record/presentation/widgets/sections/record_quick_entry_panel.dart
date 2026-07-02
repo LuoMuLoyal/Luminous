@@ -52,9 +52,9 @@ class RecordAiInputBar extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacingTokens.level4),
               Expanded(
-                child: InkWell(
-                  onTap: onTap,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                child:                 FTappable(
+
+                  onPress: onTap,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: AppSpacingTokens.level1,
@@ -68,6 +68,7 @@ class RecordAiInputBar extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                
                 ),
               ),
               const SizedBox(width: AppSpacingTokens.level3),
@@ -120,9 +121,9 @@ class _IconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: tooltip,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+      child:       FTappable(
+
+        onPress: onTap,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.level1),
           child: Icon(
@@ -131,6 +132,7 @@ class _IconButton extends StatelessWidget {
             size: AppSpacingTokens.level5,
           ),
         ),
+      
       ),
     );
   }
@@ -318,11 +320,11 @@ class _QuickRecordTile extends StatelessWidget {
     return Material(
       key: Key('record-quick-${action.type.name}'),
       color: Colors.transparent,
-      child: InkWell(
-        onTap: (onQuickAction == null || isLocked)
+      child:       FTappable(
+
+        onPress: (onQuickAction == null || isLocked)
             ? null
             : () => onQuickAction!(action),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         child: Semantics(
           button: true,
           label: isLocked
@@ -372,6 +374,7 @@ class _QuickRecordTile extends StatelessWidget {
             ),
           ),
         ),
+      
       ),
     );
   }

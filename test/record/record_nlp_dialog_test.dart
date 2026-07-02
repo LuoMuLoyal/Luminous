@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/record_nlp_dialog.dart';
-import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../auth/auth_test_helpers.dart';
+import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('RecordNlpDialog renders', (tester) async {
@@ -16,13 +15,7 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         ],
-        child: MaterialApp(
-          locale: const Locale('zh'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          theme: ThemeData.light().copyWith(
-            extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-          ),
+        child: TestForuiApp(
           home: Scaffold(
             body: Builder(
               builder: (context) => ElevatedButton(

@@ -108,20 +108,24 @@ class ReminderFormBody extends StatelessWidget {
                       horizontal: AppSpacingTokens.level4,
                       vertical: AppSpacingTokens.level3,
                     ),
-                    child: DropdownButtonFormField<String>(
-                      initialValue: selectedMedicineId,
-                      decoration: InputDecoration(
-                        labelText: l10n.medicineReminderMedicineLabel,
+                    child: FSelect<String>.rich(
+                      label: Text(l10n.medicineReminderMedicineLabel),
+                      hint: l10n.medicineReminderMedicineLabel,
+                      format: (value) => medicines
+                          .firstWhere((m) => m.id == value)
+                          .displayName,
+                      control: FSelectControl.lifted(
+                        value: selectedMedicineId,
+                        onChange: (value) => onMedicineChanged?.call(value),
                       ),
-                      items: medicines
+                      children: medicines
                           .map(
-                            (item) => DropdownMenuItem(
+                            (item) => FSelectItem.item(
+                              title: Text(item.displayName),
                               value: item.id,
-                              child: Text(item.displayName),
                             ),
                           )
                           .toList(growable: false),
-                      onChanged: onMedicineChanged,
                     ),
                   ),
               ],
@@ -234,16 +238,10 @@ class ReminderFormBody extends StatelessWidget {
           ),
           if (onDelete != null) ...[
             const SizedBox(height: AppSpacingTokens.level3),
-            OutlinedButton(
+            FButton(
               key: const Key('medicine-reminder-form-delete-button'),
-              onPressed: isSaving ? null : onDelete,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: colors.destructive,
-                side: BorderSide(color: colors.destructive),
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppSpacingTokens.level4,
-                ),
-              ),
+              variant: FButtonVariant.destructive,
+              onPress: isSaving ? null : onDelete,
               child: Text(l10n.medicineReminderDeleteAction),
             ),
           ],

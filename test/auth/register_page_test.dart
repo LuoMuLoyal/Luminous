@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -76,7 +77,11 @@ void main() {
     await tester.enterText(inputs.at(2), 'Password123');
     await tester.enterText(inputs.at(3), 'Password123');
     await tester.enterText(inputs.at(4), 'Lumi');
-    final submitButton = find.widgetWithText(FilledButton, '创建账号');
+    final termsCheckbox = find.byType(FCheckbox);
+    await tester.ensureVisible(termsCheckbox);
+    await tester.tap(termsCheckbox);
+    await tester.pumpAndSettle();
+    final submitButton = find.widgetWithText(FButton, '创建账号');
     await tester.ensureVisible(submitButton);
     await tester.tap(submitButton);
     await tester.pumpAndSettle();

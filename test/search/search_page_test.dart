@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -47,7 +46,7 @@ void main() {
     expect(find.text('搜索药品'), findsOneWidget);
     expect(find.text('搜索药品、成分、疾病、症状...'), findsOneWidget);
 
-    await tester.enterText(find.byType(TextField), '布洛芬');
+    await tester.enterText(find.byType(FTextField), '布洛芬');
     await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
@@ -137,7 +136,7 @@ void main() {
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
-    await tester.enterText(find.byType(TextField), 'empty');
+    await tester.enterText(find.byType(FTextField), 'empty');
     await tester.pump(const Duration(seconds: 1));
 
     // No results — show the "no result" suggestions
@@ -151,7 +150,7 @@ void main() {
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
-    await tester.enterText(find.byType(TextField), '布洛芬');
+    await tester.enterText(find.byType(FTextField), '布洛芬');
     await tester.pump(const Duration(seconds: 1));
 
     // CN result should show approval number
@@ -172,7 +171,7 @@ void main() {
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
-    await tester.enterText(find.byType(TextField), 'error test');
+    await tester.enterText(find.byType(FTextField), 'error test');
     await tester.pump(const Duration(seconds: 2));
 
     // Error view should appear
@@ -307,7 +306,7 @@ void main() {
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
-    await tester.enterText(find.byType(TextField), '布洛芬');
+    await tester.enterText(find.byType(FTextField), '布洛芬');
     await tester.pump(const Duration(milliseconds: 500));
 
     // Loading skeleton should appear while search is pending
@@ -350,19 +349,7 @@ Future<void> _pumpSearchApp(
         ),
         ...overrides,
       ],
-      child: MaterialApp.router(
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        locale: const Locale('zh'),
-        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: router ?? _searchRouter(),
-      ),
+      child: TestAuthApp(router: router ?? _searchRouter()),
     ),
   );
 }
@@ -400,7 +387,7 @@ GoRouter _searchRouter({bool watchWorkspace = false}) {
 Future<void> _searchForIbuprofen(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 400));
-  await tester.enterText(find.byType(TextField), '布洛芬');
+  await tester.enterText(find.byType(FTextField), '布洛芬');
   await tester.pump(const Duration(milliseconds: 500));
   expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
 }

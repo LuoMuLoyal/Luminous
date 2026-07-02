@@ -121,13 +121,7 @@ class RecordDetailPage extends ConsumerWidget {
           ],
         ),
       ),
-      child: SafeArea(
-        top: false,
-        child: Material(
-          color: Colors.transparent,
-          child: SingleChildScrollView(child: content),
-        ),
-      ),
+      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
     );
   }
 }
@@ -292,20 +286,20 @@ class _RecordDetailBody extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: AppSpacingTokens.level4),
-        FilledButton.icon(
+        FButton(
           key: const Key('record-detail-edit-action'),
-          onPressed: () =>
+          onPress: () =>
               pushAuthRequiredRoute(context, '/record/${record.id}/edit'),
-          icon: const Icon(FLucideIcons.pencil, size: 18),
-          label: Text(l10n.recordEditAction),
+          prefix: const Icon(FLucideIcons.pencil, size: 18),
+          child: Text(l10n.recordEditAction),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
-        OutlinedButton.icon(
+        FButton(
           key: const Key('record-detail-delete-action'),
-          onPressed: () => _deleteRecord(context, ref, record.id),
-          icon: const Icon(FLucideIcons.trash2, size: 18),
-          label: Text(l10n.recordDeleteAction),
-          style: OutlinedButton.styleFrom(foregroundColor: colors.destructive),
+          variant: FButtonVariant.destructive,
+          onPress: () => _deleteRecord(context, ref, record.id),
+          prefix: const Icon(FLucideIcons.trash2, size: 18),
+          child: Text(l10n.recordDeleteAction),
         ),
       ],
     );

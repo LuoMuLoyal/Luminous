@@ -1,13 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
 import 'package:luminous/core/widgets/settings/app_settings_section.dart';
@@ -21,6 +18,8 @@ import 'package:luminous/features/settings/presentation/providers/user_settings_
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('Settings page renders grouped settings sections', (
@@ -133,7 +132,6 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.byType(AppSectionSurface), findsNothing);
       expect(find.byType(AppSettingsSection), findsNothing);
       expect(find.byType(AppSettingsNavigationRow), findsNothing);
       expect(find.byType(AppSettingsSwitchRow), findsNothing);
@@ -182,17 +180,7 @@ void main() {
             () => _SignedOutAuthSessionNotifier(),
           ),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
+        child: TestForuiRouterApp(
           routerConfig: GoRouter(
             initialLocation: '/settings',
             routes: [
@@ -424,17 +412,7 @@ void main() {
             () => _SignedInAuthSessionNotifier(),
           ),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
+        child: TestForuiRouterApp(
           routerConfig: GoRouter(
             initialLocation: '/settings',
             routes: [
@@ -483,17 +461,7 @@ void main() {
             _FakeNotificationPermissionService(),
           ),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
+        child: TestForuiRouterApp(
           routerConfig: GoRouter(
             initialLocation: '/settings',
             routes: [
@@ -558,17 +526,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
+        child: TestForuiRouterApp(
           routerConfig: GoRouter(
             initialLocation: '/settings',
             routes: [
@@ -616,19 +574,7 @@ Future<void> _pumpSettingsPage(
           _FakeNotificationPermissionService(),
         ),
       ],
-      child: MaterialApp.router(
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        locale: const Locale('zh'),
-        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: router,
-      ),
+      child: TestForuiRouterApp(routerConfig: router),
     ),
   );
 }

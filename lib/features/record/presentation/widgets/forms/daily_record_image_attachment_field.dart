@@ -85,20 +85,22 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         spacing: AppSpacingTokens.level3,
                         runSpacing: AppSpacingTokens.level2,
                         children: [
-                          OutlinedButton.icon(
-                            onPressed: enabled ? onPick : null,
-                            icon: const Icon(FLucideIcons.image, size: 18),
-                            label: Text(
+                          FButton(
+                            variant: FButtonVariant.outline,
+                            onPress: enabled ? onPick : null,
+                            prefix: const Icon(FLucideIcons.image, size: 18),
+                            child: Text(
                               hasAttachment
                                   ? l10n.recordImageReplaceAction
                                   : l10n.recordImagePickAction,
                             ),
                           ),
                           if (hasAttachment)
-                            TextButton.icon(
-                              onPressed: enabled ? onRemove : null,
-                              icon: const Icon(FLucideIcons.x, size: 18),
-                              label: Text(l10n.recordImageRemoveAction),
+                            FButton(
+                              variant: FButtonVariant.ghost,
+                              onPress: enabled ? onRemove : null,
+                              prefix: const Icon(FLucideIcons.x, size: 18),
+                              child: Text(l10n.recordImageRemoveAction),
                             ),
                         ],
                       ),

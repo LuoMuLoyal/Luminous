@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/search/presentation/pages/search_page.dart';
 import 'package:luminous/features/search/presentation/providers/search_provider.dart';
-import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/test_forui_app.dart';
 
 String _joinPath(String parent, String child) {
   if (child.startsWith('/')) return child;
@@ -100,19 +99,7 @@ Widget _testableRouter({
         () => _FakeMedicineSearchNotifier(),
       ),
     ],
-    child: MaterialApp.router(
-      routerConfig: testRouter,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      locale: const Locale('zh'),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-    ),
+    child: TestForuiRouterApp(routerConfig: testRouter),
   );
 }
 

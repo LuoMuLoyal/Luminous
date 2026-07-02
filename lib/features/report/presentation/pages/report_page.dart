@@ -508,9 +508,10 @@ class _ReportSignedOutNotice extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacingTokens.level3),
-          OutlinedButton(
+          FButton(
+            variant: FButtonVariant.outline,
             key: const Key('report-signed-out-login-action'),
-            onPressed: () => pushAuthRequiredRoute(context, '/report'),
+            onPress: () => pushAuthRequiredRoute(context, '/report'),
             child: Text(l10n.authGoLogin),
           ),
         ],

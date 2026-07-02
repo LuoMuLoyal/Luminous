@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password_page.dart';
@@ -63,7 +64,7 @@ void main() {
     await tester.enterText(inputs.at(1), '654321');
     await tester.enterText(inputs.at(2), 'Password123');
     await tester.enterText(inputs.at(3), 'Password123');
-    final submitButton = find.widgetWithText(FilledButton, '重置密码');
+    final submitButton = find.widgetWithText(FButton, '重置密码');
     await tester.ensureVisible(submitButton);
     await tester.tap(submitButton);
     await tester.pumpAndSettle();

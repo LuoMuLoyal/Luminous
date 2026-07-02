@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
@@ -108,14 +107,8 @@ void main() {
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
           dailyRecordRepositoryProvider.overrideWithValue(repo),
         ],
-        child: MaterialApp.router(
-          locale: const Locale('zh'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          theme: ThemeData.light().copyWith(
-            extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-          ),
-          routerConfig: GoRouter(
+        child: TestAuthApp(
+          router: GoRouter(
             initialLocation: '/',
             routes: [
               GoRoute(

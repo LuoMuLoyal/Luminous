@@ -128,7 +128,9 @@ class _TimelineEntryRow extends StatelessWidget {
         const SizedBox(width: AppSpacingTokens.level3),
         Expanded(
           child: Padding(
-            padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacingTokens.level4),
+            padding: EdgeInsets.only(
+              bottom: isLast ? 0 : AppSpacingTokens.level4,
+            ),
             child: _TimelineCard(
               entry: entry,
               index: index,
@@ -170,114 +172,109 @@ class _TimelineCard extends StatelessWidget {
         entry.rawDetail ??
         (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
 
-    return Material(
+    return FTappable(
       key: entry.recordId == null
           ? null
           : Key('record-timeline-entry-${entry.recordId}'),
-      color: Colors.transparent,
-      child: InkWell(
-        key: Key('record-timeline-entry-index-$index'),
-        onTap: entry.recordId != null
-            ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
-            : null,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-            border: Border.all(color: colors.border),
+      onPress: entry.recordId != null
+          ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
+          : null,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.background,
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+          border: Border.all(color: colors.border),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(
+            dense ? AppSpacingTokens.level4 : AppSpacingTokens.level5,
           ),
-          child: Padding(
-            padding: EdgeInsets.all(
-              dense ? AppSpacingTokens.level4 : AppSpacingTokens.level5,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppIconBadge(
-                  icon: entry.icon,
-                  color: entry.accent,
-                  backgroundColor: entry.softColor,
-                  size: 38,
-                  iconSize: 19,
-                ),
-                const SizedBox(width: AppSpacingTokens.level4),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              label,
-                              style: textTheme.bodySmall?.copyWith(
-                                color: colors.mutedForeground,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppIconBadge(
+                icon: entry.icon,
+                color: entry.accent,
+                backgroundColor: entry.softColor,
+                size: 38,
+                iconSize: 19,
+              ),
+              const SizedBox(width: AppSpacingTokens.level4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            label,
+                            style: textTheme.bodySmall?.copyWith(
+                              color: colors.mutedForeground,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          if (entry.badgeKey != null) ...[
-                            const SizedBox(width: AppSpacingTokens.level3),
-                            AppStatusPill(
-                              label: recordCopy(l10n, entry.badgeKey!),
-                              color: entry.accent,
-                            ),
-                          ],
+                        ),
+                        if (entry.badgeKey != null) ...[
+                          const SizedBox(width: AppSpacingTokens.level3),
+                          AppStatusPill(
+                            label: recordCopy(l10n, entry.badgeKey!),
+                            color: entry.accent,
+                          ),
                         ],
-                      ),
-                      if (value != null && value.isNotEmpty) ...[
-                        const SizedBox(height: AppSpacingTokens.level2),
-                        Text.rich(
-                          TextSpan(
-                            style: textTheme.titleSmall?.copyWith(
-                              color: colors.foreground,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            children: [
-                              TextSpan(text: value),
-                              if (unit != null)
-                                TextSpan(
-                                  text: ' $unit',
-                                  style: textTheme.bodySmall?.copyWith(
-                                    color: colors.mutedForeground,
-                                  ),
+                      ],
+                    ),
+                    if (value != null && value.isNotEmpty) ...[
+                      const SizedBox(height: AppSpacingTokens.level2),
+                      Text.rich(
+                        TextSpan(
+                          style: textTheme.titleSmall?.copyWith(
+                            color: colors.foreground,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          children: [
+                            TextSpan(text: value),
+                            if (unit != null)
+                              TextSpan(
+                                text: ' $unit',
+                                style: textTheme.bodySmall?.copyWith(
+                                  color: colors.mutedForeground,
                                 ),
-                            ],
-                          ),
+                              ),
+                          ],
                         ),
-                      ],
-                      if (detail != null) ...[
-                        const SizedBox(height: AppSpacingTokens.level2),
-                        Text(
-                          detail,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
-                        ),
-                      ],
+                      ),
                     ],
-                  ),
+                    if (detail != null) ...[
+                      const SizedBox(height: AppSpacingTokens.level2),
+                      Text(
+                        detail,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.mutedForeground,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-                if (entry.imageUrl != null && !dense) ...[
-                  const SizedBox(width: AppSpacingTokens.level4),
-                  _TimelineImageThumbnail(
-                    imageUrl: entry.imageUrl!,
-                    label: label,
-                  ),
-                ] else if (entry.imagePlaceholderKey != null && !dense) ...[
-                  const SizedBox(width: AppSpacingTokens.level4),
-                  AppImagePlaceholder(
-                    label: recordCopy(l10n, entry.imagePlaceholderKey!),
-                    width: 96,
-                    height: 72,
-                    icon: FLucideIcons.utensils,
-                  ),
-                ],
-                const SizedBox(width: AppSpacingTokens.level3),
-                Icon(_trailingIcon(), color: _trailingColor(colors), size: 18),
+              ),
+              if (entry.imageUrl != null && !dense) ...[
+                const SizedBox(width: AppSpacingTokens.level4),
+                _TimelineImageThumbnail(
+                  imageUrl: entry.imageUrl!,
+                  label: label,
+                ),
+              ] else if (entry.imagePlaceholderKey != null && !dense) ...[
+                const SizedBox(width: AppSpacingTokens.level4),
+                AppImagePlaceholder(
+                  label: recordCopy(l10n, entry.imagePlaceholderKey!),
+                  width: 96,
+                  height: 72,
+                  icon: FLucideIcons.utensils,
+                ),
               ],
-            ),
+              const SizedBox(width: AppSpacingTokens.level3),
+              Icon(_trailingIcon(), color: _trailingColor(colors), size: 18),
+            ],
           ),
         ),
       ),

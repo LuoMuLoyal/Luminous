@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -74,8 +75,8 @@ void main() {
 
     await tester.enterText(find.byType(EditableText).at(0), 'next@example.com');
     await tester.enterText(find.byType(EditableText).at(1), '123456');
-    await tester.tap(find.widgetWithText(FilledButton, '更新邮箱'));
-    await tester.pump();
+    await tester.tap(find.widgetWithText(FButton, '更新邮箱'));
+    await tester.pumpAndSettle();
 
     expect(remote.changeEmailNewEmail, 'next@example.com');
     expect(remote.changeEmailCode, '123456');

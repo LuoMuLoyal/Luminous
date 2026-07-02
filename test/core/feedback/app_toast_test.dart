@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
-/// Builds a MaterialApp with AppThemeSurface registered so the toast widget
-/// can resolve its theme extension without throwing.
+import '../../helpers/test_forui_app.dart';
+
+/// Builds a Forui-aware test shell so the toast widget can resolve its theme.
 Widget _appShell(Widget child) {
-  return MaterialApp(
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-    ),
-    home: Scaffold(body: child),
-  );
+  return TestForuiApp(home: Scaffold(body: child));
 }
 
 /// Pumps past the 1800ms auto-dismiss timer + a small frame delay.
@@ -41,7 +37,7 @@ void main() {
       await tester.pump();
 
       expect(find.text('Test message'), findsOneWidget);
-      expect(find.byIcon(Icons.close), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.x), findsOneWidget);
 
       await _drainToastTimer(tester);
     });
@@ -89,7 +85,7 @@ void main() {
 
       expect(find.text('Close me'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.close));
+      await tester.tap(find.byIcon(FLucideIcons.x));
       await tester.pump();
 
       expect(find.text('Close me'), findsNothing);

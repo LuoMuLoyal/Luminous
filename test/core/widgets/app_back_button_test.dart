@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 
-/// Wraps widget tree with MaterialApp + GoRouter + AppThemeSurface.
+import '../../helpers/test_forui_app.dart';
+
+/// Wraps widget tree with Forui-aware MaterialApp + GoRouter.
 Widget _appShell(Widget child) {
   final router = GoRouter(
     initialLocation: '/test',
@@ -24,7 +25,7 @@ Widget _appShell(Widget child) {
       ),
     ],
   );
-  return MaterialApp.router(routerConfig: router, theme: AppTheme.light);
+  return TestForuiRouterApp(routerConfig: router);
 }
 
 void main() {

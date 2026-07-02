@@ -1,9 +1,9 @@
 import '../helpers/test_helpers.dart';
+import '../helpers/test_forui_app.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/theme/app_theme.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/features/today/data/repositories/lucent_today_ai_repository.dart';
@@ -28,19 +28,7 @@ void main() {
             const MockTodayRepository(),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -51,7 +39,7 @@ void main() {
       findsAtLeastNWidgets(1),
     );
     expect(
-      find.widgetWithText(TextButton, l10n.todayAiSummaryGenerateAction),
+      find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
       findsOneWidget,
     );
   });
@@ -72,19 +60,7 @@ void main() {
               DisabledUserSettingsController.new,
             ),
           ],
-          child: MaterialApp(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const TodayPage(),
-          ),
+          child: const TestForuiApp(home: TodayPage()),
         ),
       );
 
@@ -95,7 +71,7 @@ void main() {
         findsAtLeastNWidgets(1),
       );
       expect(
-        find.widgetWithText(TextButton, l10n.todayAiSummaryOpenSettingsAction),
+        find.widgetWithText(FButton, l10n.todayAiSummaryOpenSettingsAction),
         findsOneWidget,
       );
     },
@@ -119,36 +95,24 @@ void main() {
           ),
           todayAiRepositoryProvider.overrideWithValue(repository),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
     await tester.pumpAndSettle();
 
     expect(
-      find.widgetWithText(TextButton, l10n.todayAiSummaryGenerateAction),
+      find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
       findsOneWidget,
     );
 
     await tester.tap(
-      find.widgetWithText(TextButton, l10n.todayAiSummaryGenerateAction),
+      find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
     );
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(
-      find.widgetWithText(TextButton, l10n.todayAiSummaryGeneratingAction),
+      find.widgetWithText(FButton, l10n.todayAiSummaryGeneratingAction),
       findsOneWidget,
     );
 
@@ -179,7 +143,7 @@ void main() {
     expect(find.text('饮水距离目标还差 2 次，下午和晚间各补一次。'), findsOneWidget);
     expect(find.text('仅基于今日已记录数据生成，不构成诊断或治疗建议。'), findsOneWidget);
     expect(
-      find.widgetWithText(TextButton, l10n.todayAiSummaryGenerateAction),
+      find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
       findsOneWidget,
     );
   });

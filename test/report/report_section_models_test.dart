@@ -1,4 +1,3 @@
-import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
@@ -9,25 +8,25 @@ import 'package:luminous/l10n/app_localizations.dart';
 void main() {
   group('reportStatusColor', () {
     test('good maps to green', () {
-      expect(reportStatusColor(ReportStatus.good), AppColorTokens.cyanDeep);
+      expect(reportStatusColor(ReportStatus.good), const Color(0xFF0F766E));
     });
     test('stable maps to previewScore', () {
-      expect(reportStatusColor(ReportStatus.stable), AppColorTokens.health);
+      expect(reportStatusColor(ReportStatus.stable), const Color(0xFF15803D));
     });
     test('needsAttention maps to orange', () {
       expect(
         reportStatusColor(ReportStatus.needsAttention),
-        AppColorTokens.warning,
+        const Color(0xFFF59E0B),
       );
     });
     test('insufficientData maps to blue', () {
       expect(
         reportStatusColor(ReportStatus.insufficientData),
-        AppColorTokens.link,
+        const Color(0xFF16A34A),
       );
     });
     test('unknown maps to blue', () {
-      expect(reportStatusColor(ReportStatus.unknown), AppColorTokens.link);
+      expect(reportStatusColor(ReportStatus.unknown), const Color(0xFF16A34A));
     });
   });
 

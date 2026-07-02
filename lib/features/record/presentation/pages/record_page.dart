@@ -139,9 +139,8 @@ class _RecordPageState extends ConsumerState<RecordPage> {
 
     final scaffoldBody = SafeArea(
       top: false,
-      child: Material(
-        color: Colors.transparent,
-        child: ResponsiveContentFrame(
+      child: ResponsiveContentFrame(
+        child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: isCompact ? 24 : 32),
             child: Column(

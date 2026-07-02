@@ -1,13 +1,12 @@
 import '../helpers/test_helpers.dart';
+import '../helpers/test_forui_app.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' show TodayAnalysisApi;
@@ -43,18 +42,7 @@ void main() {
             const MockTodayRepository(),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -98,19 +86,7 @@ void main() {
         overrides: [
           todayDashboardProvider.overrideWith((ref) => pending.future),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -173,19 +149,7 @@ void main() {
             StaticTodayRepository(emptyDashboard),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: const Locale('zh'),
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -236,18 +200,7 @@ void main() {
             const MockTodayRepository(),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -282,16 +235,7 @@ void main() {
             const MockTodayRepository(),
           ),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
+        child: TestForuiRouterApp(
           routerConfig: GoRouter(
             initialLocation: '/',
             routes: [
@@ -332,18 +276,7 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -372,19 +305,7 @@ void main() {
             (ref) => Future<TodayDashboard>.error(Exception('test error')),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -418,19 +339,7 @@ void main() {
             _FailingTodayRecommendationsDataSource(),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -468,18 +377,7 @@ void main() {
             const MockTodayRepository(),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -507,19 +405,7 @@ void main() {
             const MockTodayRepository(),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
@@ -556,19 +442,7 @@ void main() {
             const MockTodayRepository(),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const TodayPage(),
-        ),
+        child: const TestForuiApp(home: TodayPage()),
       ),
     );
 

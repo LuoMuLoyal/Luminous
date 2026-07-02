@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/settings/presentation/pages/about_settings_page.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('About page renders app info and legal rows', (tester) async {
@@ -27,18 +27,8 @@ void main() {
             ),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const AboutSettingsPage(),
+        child: const TestForuiApp(
+          home: AboutSettingsPage(),
         ),
       ),
     );
@@ -68,18 +58,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [appInfoProvider.overrideWith((ref) async => null)],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const AboutSettingsPage(),
+        child: const TestForuiApp(
+          home: AboutSettingsPage(),
         ),
       ),
     );

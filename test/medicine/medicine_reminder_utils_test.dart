@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
 
@@ -16,30 +16,30 @@ void main() {
   });
 
   group('deliveryStatusIcon', () {
-    test('delivered returns check_circle', () {
-      expect(
-        deliveryStatusIcon('delivered'),
-        Icons.check_circle_outline_rounded,
-      );
+    test('delivered returns badgeCheck', () {
+      expect(deliveryStatusIcon('delivered'), FLucideIcons.badgeCheck);
     });
-    test('failed returns error', () {
-      expect(deliveryStatusIcon('failed'), Icons.error_outline_rounded);
+    test('failed returns circleAlert', () {
+      expect(deliveryStatusIcon('failed'), FLucideIcons.circleAlert);
     });
-    test('default returns schedule', () {
-      expect(deliveryStatusIcon('unknown'), Icons.schedule_rounded);
+    test('default returns clock3', () {
+      expect(deliveryStatusIcon('unknown'), FLucideIcons.clock3);
     });
   });
 
   group('deliveryStatusColor', () {
-    final surface = AppThemeSurface.light;
+    final colors = FThemes.neutral.light.touch.colors;
     test('delivered returns teal', () {
-      expect(deliveryStatusColor('delivered', surface), surface.teal);
+      expect(
+        deliveryStatusColor('delivered', colors),
+        const Color(0xFF0F766E),
+      );
     });
     test('failed returns error', () {
-      expect(deliveryStatusColor('failed', surface), surface.error);
+      expect(deliveryStatusColor('failed', colors), colors.destructive);
     });
     test('default returns mute', () {
-      expect(deliveryStatusColor('unknown', surface), surface.mute);
+      expect(deliveryStatusColor('unknown', colors), colors.mutedForeground);
     });
   });
 

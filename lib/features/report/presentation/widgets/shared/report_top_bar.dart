@@ -190,39 +190,34 @@ class ReportPeriodPill extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-            border: Border.all(color: colors.border),
+    return FTappable(
+      onPress: onTap,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.background,
+          border: Border.all(color: colors.border),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.level4,
+            vertical: AppSpacingTokens.level3,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level4,
-              vertical: AppSpacingTokens.level3,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  _label(l10n),
-                  style: textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _label(l10n),
+                style: textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
                 ),
-                const SizedBox(width: AppSpacingTokens.level1),
-                Icon(
-                  FLucideIcons.chevronDown,
-                  size: 16,
-                  color: colors.mutedForeground,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(width: AppSpacingTokens.level1),
+              Icon(
+                FLucideIcons.chevronDown,
+                size: 16,
+                color: colors.mutedForeground,
+              ),
+            ],
           ),
         ),
       ),

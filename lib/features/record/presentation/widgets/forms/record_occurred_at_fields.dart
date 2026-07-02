@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -24,9 +25,10 @@ class RecordOccurredAtFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        OutlinedButton(
+        FButton(
+          variant: FButtonVariant.outline,
           key: const Key('record-date-field'),
-          onPressed: onDateTap,
+          onPress: onDateTap,
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -35,9 +37,10 @@ class RecordOccurredAtFields extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
-        OutlinedButton(
+        FButton(
+          variant: FButtonVariant.outline,
           key: const Key('record-time-field'),
-          onPressed: onTimeTap,
+          onPress: onTimeTap,
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(

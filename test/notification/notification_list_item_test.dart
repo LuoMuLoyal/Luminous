@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/notification/presentation/widgets/notification_list_item.dart';
 
+import '../helpers/test_forui_app.dart';
+
 Widget _appShell(Widget child) {
-  return MaterialApp(
-    theme: AppTheme.light,
-    home: Scaffold(body: child),
-  );
+  return TestForuiApp(home: Scaffold(body: child));
 }
 
 NotificationListItemDto _item({
@@ -57,7 +55,15 @@ void main() {
       );
 
       // Unread indicator is a small circle
-      expect(find.byType(Container), findsWidgets);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is DecoratedBox &&
+              widget.decoration is BoxDecoration &&
+              (widget.decoration as BoxDecoration).shape == BoxShape.circle,
+        ),
+        findsWidgets,
+      );
     });
 
     testWidgets('triggers onTap when tapped', (tester) async {
@@ -73,6 +79,7 @@ void main() {
       );
 
       await tester.tap(find.text('Title'));
+      await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
 

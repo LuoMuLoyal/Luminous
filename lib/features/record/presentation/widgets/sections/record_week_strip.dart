@@ -56,44 +56,40 @@ class _WeekDayCell extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final foreground = day.selected ? colors.background : colors.foreground;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap == null ? null : () => onTap!(day.date),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
-          child: Column(
-            children: [
-              Text(
-                recordCopy(l10n, day.weekdayKey),
-                style: textTheme.labelSmall?.copyWith(
-                  color: colors.mutedForeground,
-                ),
+    return FTappable(
+      onPress: onTap == null ? null : () => onTap!(day.date),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
+        child: Column(
+          children: [
+            Text(
+              recordCopy(l10n, day.weekdayKey),
+              style: textTheme.labelSmall?.copyWith(
+                color: colors.mutedForeground,
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: day.selected ? colors.foreground : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                child: SizedBox.square(
-                  dimension: 30,
-                  child: Center(
-                    child: Text(
-                      '${day.day}',
-                      style: textTheme.labelLarge?.copyWith(
-                        color: foreground,
-                        fontWeight: FontWeight.w700,
-                      ),
+            ),
+            const SizedBox(height: AppSpacingTokens.level2),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: day.selected ? colors.foreground : Colors.transparent,
+                shape: BoxShape.circle,
+              ),
+              child: SizedBox.square(
+                dimension: 30,
+                child: Center(
+                  child: Text(
+                    '${day.day}',
+                    style: textTheme.labelLarge?.copyWith(
+                      color: foreground,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
-              _MarkerDots(colors: day.markers, hasAlert: day.hasAlert),
-            ],
-          ),
+            ),
+            const SizedBox(height: AppSpacingTokens.level2),
+            _MarkerDots(colors: day.markers, hasAlert: day.hasAlert),
+          ],
         ),
       ),
     );

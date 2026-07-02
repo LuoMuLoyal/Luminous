@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/test_forui_app.dart';
 
 class _SignedOut extends AuthSessionNotifier {
   @override
@@ -20,14 +22,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [authSessionProvider.overrideWith(() => _SignedOut())],
-        child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          theme: ThemeData.light().copyWith(
-            extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-          ),
-          home: const ProfileEditPage(),
-        ),
+        child: const TestForuiApp(home: ProfileEditPage()),
       ),
     );
     await tester.pumpAndSettle();
