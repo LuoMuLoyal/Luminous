@@ -146,6 +146,20 @@ enum AssistantToolCapabilityDtoNameEnum {
   getSleepSummaryByRange(r'get_sleep_summary_by_range'),
 
   /// Stable tool identifier exposed to the client.
+  @JsonValue(r'search_cn_medicine_products')
+  searchCnMedicineProducts(r'search_cn_medicine_products'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_cn_medicine_detail')
+  getCnMedicineDetail(r'get_cn_medicine_detail'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'match_cn_product_to_drugbank_candidates')
+  matchCnProductToDrugbankCandidates(
+    r'match_cn_product_to_drugbank_candidates',
+  ),
+
+  /// Stable tool identifier exposed to the client.
   @JsonValue(r'search_medicine_leaflets')
   searchMedicineLeaflets(r'search_medicine_leaflets'),
 
@@ -156,6 +170,10 @@ enum AssistantToolCapabilityDtoNameEnum {
   /// Stable tool identifier exposed to the client.
   @JsonValue(r'resolve_drugbank_entity')
   resolveDrugbankEntity(r'resolve_drugbank_entity'),
+
+  /// Stable tool identifier exposed to the client.
+  @JsonValue(r'get_drugbank_detail')
+  getDrugbankDetail(r'get_drugbank_detail'),
 
   /// Stable tool identifier exposed to the client.
   @JsonValue(r'search_drugbank_passages')
