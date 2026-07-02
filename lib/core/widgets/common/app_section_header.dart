@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 class AppSectionHeader extends StatelessWidget {
@@ -18,11 +17,7 @@ class AppSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       children: [
@@ -33,12 +28,8 @@ class AppSectionHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: (compact ? typography.bodyMdStrong : typography.displaySm)
-                .copyWith(
-                  color: theme.colorScheme.onSurface,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
-                ),
+            style: (compact ? textTheme.titleMedium : textTheme.headlineSmall)
+                ?.copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

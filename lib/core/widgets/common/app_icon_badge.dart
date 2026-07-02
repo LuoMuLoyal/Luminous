@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 class AppIconBadge extends StatelessWidget {
@@ -21,6 +22,13 @@ class AppIconBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (shape == BoxShape.circle) {
+      return FAvatar.raw(
+        size: size,
+        child: Icon(icon, color: color, size: iconSize),
+      );
+    }
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: backgroundColor ?? color.withValues(alpha: 0.1),

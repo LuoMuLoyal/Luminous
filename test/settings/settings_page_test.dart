@@ -75,6 +75,8 @@ void main() {
     expect(find.text(l10n.mineSettingAboutTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsAdvancedTitle), findsOneWidget);
     expect(find.text(l10n.authSignOut), findsOneWidget);
+    expect(find.byType(FTileGroup), findsNWidgets(5));
+    expect(find.byType(FCard), findsNothing);
   });
 
   testWidgets('Settings back button routes to previous page', (tester) async {

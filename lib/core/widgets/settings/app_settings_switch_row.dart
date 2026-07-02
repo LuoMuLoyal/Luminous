@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:forui/forui.dart';
 
 /// A standard settings row with a title, optional subtitle, and a trailing
 /// [Switch]. The whole row is tappable to toggle the switch.
@@ -27,56 +25,16 @@ class AppSettingsSwitchRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = _typography(context);
-    final foreground = enabled
-        ? surface.body
-        : surface.body.withValues(alpha: 0.45);
-    final mutedForeground = enabled
-        ? surface.mute
-        : surface.mute.withValues(alpha: 0.45);
-
-    final row = Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: enabled ? () => onChanged(!value) : null,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.md,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: typography.bodyMd.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: foreground,
-                      ),
-                    ),
-                    if (subtitle != null && subtitle!.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacingTokens.xxs),
-                      Text(
-                        subtitle!,
-                        style: typography.bodySm.copyWith(
-                          color: mutedForeground,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.md),
-              Switch(value: value, onChanged: enabled ? onChanged : null),
-            ],
-          ),
-        ),
+    final colors = context.theme.colors;
+    final row = FTile(
+      enabled: enabled,
+      onPress: enabled ? () => onChanged(!value) : null,
+      title: Text(title),
+      subtitle: subtitle == null || subtitle!.isEmpty ? null : Text(subtitle!),
+      suffix: FSwitch(
+        value: value,
+        enabled: enabled,
+        onChange: enabled ? onChanged : null,
       ),
     );
 
@@ -84,16 +42,8 @@ class AppSettingsSwitchRow extends StatelessWidget {
     return Column(
       children: [
         row,
-        Divider(height: 1, color: surface.hairline),
+        Divider(height: 1, color: colors.border),
       ],
     );
-  }
-
-  AppTypographyScale _typography(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
-    return width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class AppSectionSurface extends StatelessWidget {
   const AppSectionSurface({
@@ -36,70 +35,57 @@ class AppSectionSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final appSurface = theme.extension<AppThemeSurface>()!;
-    final isDark = theme.brightness == Brightness.dark;
-    final width = MediaQuery.sizeOf(context).width;
-    final effectiveTypography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
-
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final effectivePadding =
         padding ?? const EdgeInsets.all(AppSpacingTokens.md);
-    final effectiveBg = backgroundColor ?? color ?? appSurface.canvas;
-    final effectiveBorder = borderColor ?? appSurface.hairline;
-    final effectiveShadow = shadow ?? AppShadowTokens.level1;
     final hasHeader = (title != null && title!.isNotEmpty) || trailing != null;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: effectiveBg,
-        borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: effectiveBorder),
-        boxShadow: isDark ? AppShadowTokens.level1 : effectiveShadow,
-      ),
-      child: Padding(
-        padding: effectivePadding,
-        child: hasHeader
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (title != null && title!.isNotEmpty)
-                              Text(
-                                title!,
-                                style: effectiveTypography.displaySm,
+    final content = Padding(
+      padding: effectivePadding,
+      child: hasHeader
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (title != null && title!.isNotEmpty)
+                            Text(
+                              title!,
+                              style: textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w600,
                               ),
-                            if (subtitle != null && subtitle!.isNotEmpty) ...[
-                              const SizedBox(height: AppSpacingTokens.xs),
-                              Text(
-                                subtitle!,
-                                style: effectiveTypography.bodySm.copyWith(
-                                  color: appSurface.body,
-                                ),
+                            ),
+                          if (subtitle != null && subtitle!.isNotEmpty) ...[
+                            const SizedBox(height: AppSpacingTokens.xs),
+                            Text(
+                              subtitle!,
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colors.mutedForeground,
                               ),
-                            ],
+                            ),
                           ],
-                        ),
+                        ],
                       ),
-                      if (trailing != null) ...[
-                        const SizedBox(width: AppSpacingTokens.md),
-                        trailing!,
-                      ],
+                    ),
+                    if (trailing != null) ...[
+                      const SizedBox(width: AppSpacingTokens.md),
+                      trailing!,
                     ],
-                  ),
-                  const SizedBox(height: AppSpacingTokens.lg),
-                  child,
-                ],
-              )
-            : child,
-      ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.lg),
+                child,
+              ],
+            )
+          : child,
     );
+
+    return FCard.raw(child: content);
   }
 }

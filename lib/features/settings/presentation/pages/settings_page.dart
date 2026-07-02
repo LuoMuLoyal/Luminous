@@ -338,7 +338,7 @@ class _SettingsGroup extends StatelessWidget {
   const _SettingsGroup({required this.label, required this.children});
 
   final String label;
-  final List<Widget> children;
+  final List<FTileMixin> children;
 
   @override
   Widget build(BuildContext context) {
@@ -358,23 +358,17 @@ class _SettingsGroup extends StatelessWidget {
             ),
           ),
         ),
-        FCard.raw(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var index = 0; index < children.length; index += 1) ...[
-                children[index],
-                if (index < children.length - 1) const FDivider(),
-              ],
-            ],
-          ),
+        FTileGroup(
+          physics: const NeverScrollableScrollPhysics(),
+          divider: FItemDivider.full,
+          children: children,
         ),
       ],
     );
   }
 }
 
-class _SettingsNavigationTile extends StatelessWidget {
+class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
   const _SettingsNavigationTile({
     required this.title,
     this.subtitle,
@@ -402,7 +396,7 @@ class _SettingsNavigationTile extends StatelessWidget {
   }
 }
 
-class _SettingsSwitchTile extends StatelessWidget {
+class _SettingsSwitchTile extends StatelessWidget with FTileMixin {
   const _SettingsSwitchTile({
     required this.title,
     this.subtitle,

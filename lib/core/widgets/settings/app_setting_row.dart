@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class AppSettingRow extends StatelessWidget {
   const AppSettingRow({
@@ -27,84 +26,45 @@ class AppSettingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final appSurface = theme.extension<AppThemeSurface>()!;
-    final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
-
-    final row = Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.md,
-          ),
-          child: Row(
-            children: [
-              if (icon != null) ...[
-                Icon(icon, size: 18, color: appSurface.body),
-                const SizedBox(width: AppSpacingTokens.md),
-              ],
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: typography.bodyMd.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    if (subtitle != null) ...[
-                      const SizedBox(height: AppSpacingTokens.xxs),
-                      Text(
-                        subtitle!,
-                        style: typography.bodySm.copyWith(
-                          color: appSurface.mute,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              if (trailing != null) ...[
-                const SizedBox(width: AppSpacingTokens.md),
-                trailing!,
-              ] else if (value != null) ...[
-                const SizedBox(width: AppSpacingTokens.sm),
-                Flexible(
-                  child: Text(
-                    value!,
-                    style: typography.bodySm.copyWith(color: appSurface.body),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ],
-              if (showChevron) ...[
-                const SizedBox(width: AppSpacingTokens.xs),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  size: 18,
-                  color: appSurface.mute,
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
+    final colors = context.theme.colors;
+    final row = FTile(
+      onPress: onTap,
+      prefix: icon == null ? null : Icon(icon),
+      title: Text(title),
+      subtitle: subtitle == null ? null : Text(subtitle!),
+      details: trailing == null || value == null || value!.isEmpty
+          ? null
+          : Text(
+              value!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.right,
+            ),
+      suffix: _buildSuffix(),
     );
+
     if (!showDivider) return row;
     return Column(
       children: [
         row,
-        Divider(height: 1, color: appSurface.hairline),
+        Divider(height: 1, color: colors.border),
+      ],
+    );
+  }
+
+  Widget? _buildSuffix() {
+    if (trailing == null && !showChevron) {
+      return null;
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (trailing != null) trailing!,
+        if (showChevron) ...[
+          if (trailing != null) const SizedBox(width: AppSpacingTokens.xs),
+          const Icon(FLucideIcons.chevronRight),
+        ],
       ],
     );
   }

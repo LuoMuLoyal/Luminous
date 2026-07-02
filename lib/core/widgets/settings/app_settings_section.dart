@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_spacing_tokens.dart';
 
 /// A section label used above grouped settings rows.
 ///
@@ -14,8 +13,8 @@ class AppSettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final typography = _typography(context);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -25,19 +24,11 @@ class AppSettingsSection extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: typography.caption.copyWith(
-          color: surface.mute,
+        style: textTheme.labelSmall?.copyWith(
+          color: colors.mutedForeground,
           fontWeight: FontWeight.w600,
         ),
       ),
     );
-  }
-
-  AppTypographyScale _typography(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
-    return width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
   }
 }
