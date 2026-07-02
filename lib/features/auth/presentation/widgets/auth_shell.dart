@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 export 'auth_action_row.dart';
 
@@ -33,23 +33,22 @@ class AuthShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final width = MediaQuery.sizeOf(context).width;
     final layout = AppLayoutTokens.resolve(width);
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(scheme.onSurface)
-        : AppTypographyTokens.desktop(scheme.onSurface);
 
     return Scaffold(
-      backgroundColor: surface.canvasSoft,
+      backgroundColor: colors.secondary.withValues(alpha: 0.32),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: <Color>[AppColorTokens.canvas, surface.canvasSoft],
+            colors: <Color>[
+              colors.background,
+              colors.secondary.withValues(alpha: 0.55),
+            ],
           ),
         ),
         child: SafeArea(
@@ -70,14 +69,14 @@ class AuthShell extends StatelessWidget {
                       title: title,
                       leading: leading,
                       centerTitle: centerTitle,
-                      typography: typography,
+                      textTheme: textTheme,
+                      colors: colors,
                       logo: logo,
                       subtitle: subtitle,
                     ),
                     const SizedBox(height: AppSpacingTokens.lg),
                     _AuthFormPanel(
                       form: form,
-                      surface: surface,
                       enableAnimation: enableFormAnimation,
                     ),
                   ],
@@ -96,7 +95,8 @@ class _AuthPageHeader extends StatelessWidget {
     required this.title,
     required this.leading,
     required this.centerTitle,
-    required this.typography,
+    required this.textTheme,
+    required this.colors,
     this.logo,
     this.subtitle,
   });
@@ -104,7 +104,8 @@ class _AuthPageHeader extends StatelessWidget {
   final String title;
   final Widget? leading;
   final bool centerTitle;
-  final AppTypographyScale typography;
+  final TextTheme textTheme;
+  final FColors colors;
   final Widget? logo;
   final String? subtitle;
 
@@ -123,7 +124,9 @@ class _AuthPageHeader extends StatelessWidget {
             child: Text(
               title,
               textAlign: centerTitle ? TextAlign.center : TextAlign.left,
-              style: typography.displaySm,
+              style: textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
           const SizedBox(width: 48),
@@ -140,15 +143,17 @@ class _AuthPageHeader extends StatelessWidget {
           Center(child: logo),
           const SizedBox(height: AppSpacingTokens.md),
         ],
-        Text(title, textAlign: TextAlign.center, style: typography.displaySm),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+        ),
         if (subtitle != null) ...[
           const SizedBox(height: AppSpacingTokens.xs),
           Text(
             subtitle!,
             textAlign: TextAlign.center,
-            style: typography.bodySm.copyWith(
-              color: Theme.of(context).extension<AppThemeSurface>()!.mute,
-            ),
+            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
         ],
       ],
@@ -163,15 +168,7 @@ class AuthSectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvasSoft,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-        boxShadow: AppShadowTokens.level1,
-      ),
+    return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.lg),
         child: child,
@@ -181,25 +178,14 @@ class AuthSectionCard extends StatelessWidget {
 }
 
 class _AuthFormPanel extends StatelessWidget {
-  const _AuthFormPanel({
-    required this.form,
-    required this.surface,
-    required this.enableAnimation,
-  });
+  const _AuthFormPanel({required this.form, required this.enableAnimation});
 
   final Widget form;
-  final AppThemeSurface surface;
   final bool enableAnimation;
 
   @override
   Widget build(BuildContext context) {
-    final panel = DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-        border: Border.all(color: surface.hairline),
-        boxShadow: AppShadowTokens.level4,
-      ),
+    final panel = FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.xl),
         child: form,

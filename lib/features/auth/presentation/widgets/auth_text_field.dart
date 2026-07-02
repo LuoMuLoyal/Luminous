@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 const double _authControlHeight = 56;
 
@@ -69,19 +68,17 @@ class _AuthTextFieldState extends State<AuthTextField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = MediaQuery.sizeOf(context).width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = theme.textTheme;
     final borderColor = _focusNode.hasFocus
         ? theme.colorScheme.primary
-        : surface.hairline;
+        : colors.border;
     final contentColor = widget.enabled
         ? theme.colorScheme.onSurface
-        : surface.mute;
+        : colors.mutedForeground;
     final iconColor = _focusNode.hasFocus
         ? theme.colorScheme.primary
-        : surface.mute;
+        : colors.mutedForeground;
 
     // 密码字段: 若外部未自定义 suffix,自动注入可见性切换按钮。
     final Widget? effectiveSuffix =
@@ -90,9 +87,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
             ? IconButton(
                 onPressed: _toggleObscure,
                 icon: Icon(
-                  _obscured
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
+                  _obscured ? FLucideIcons.eye : FLucideIcons.eyeOff,
                   size: 20,
                 ),
                 color: iconColor,
@@ -103,7 +98,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
             : null);
 
     return _AuthControlFrame(
-      backgroundColor: widget.enabled ? surface.canvas : surface.canvasSoft,
+      backgroundColor: widget.enabled
+          ? colors.background
+          : colors.secondary.withValues(alpha: 0.42),
       borderColor: borderColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md),
@@ -126,11 +123,13 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   keyboardType: widget.keyboardType,
                   obscureText: _obscured,
                   maxLines: 1,
-                  style: typography.bodyMd.copyWith(color: contentColor),
+                  style: textTheme.bodyMedium?.copyWith(color: contentColor),
                   cursorColor: theme.colorScheme.primary,
                   decoration: InputDecoration.collapsed(
                     hintText: widget.label,
-                    hintStyle: typography.bodySm.copyWith(color: surface.mute),
+                    hintStyle: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ),
               ),
@@ -195,11 +194,8 @@ class AuthCodeFieldRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = MediaQuery.sizeOf(context).width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final isEnabled = onSendCode != null && !isLoading;
 
     return SizedBox(
@@ -220,8 +216,8 @@ class AuthCodeFieldRow extends StatelessWidget {
             key: const ValueKey('auth-code-field-button'),
             width: 132,
             child: _AuthControlFrame(
-              backgroundColor: surface.canvas,
-              borderColor: surface.hairline,
+              backgroundColor: colors.background,
+              borderColor: colors.border,
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -237,8 +233,11 @@ class AuthCodeFieldRow extends StatelessWidget {
                             buttonLabel,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: typography.buttonLg.copyWith(
-                              color: isEnabled ? surface.link : surface.mute,
+                            style: textTheme.labelLarge?.copyWith(
+                              color: isEnabled
+                                  ? colors.primary
+                                  : colors.mutedForeground,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                   ),

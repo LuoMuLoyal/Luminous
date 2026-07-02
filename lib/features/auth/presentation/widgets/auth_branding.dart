@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Auth 页面品牌 Logo。用浅灰圆角渐变容器包裹白色 app icon,
@@ -15,7 +14,7 @@ class AuthBrandLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     final theme = Theme.of(context);
 
     return Container(
@@ -26,7 +25,10 @@ class AuthBrandLogo extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: <Color>[surface.canvasSoft, surface.canvasSoft2],
+          colors: <Color>[
+            colors.secondary.withValues(alpha: 0.5),
+            colors.secondary.withValues(alpha: 0.85),
+          ],
         ),
         boxShadow: AppShadowTokens.level1,
       ),
@@ -37,7 +39,7 @@ class AuthBrandLogo extends StatelessWidget {
           _assetPath,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) => Icon(
-            Icons.health_and_safety_rounded,
+            FLucideIcons.shieldPlus,
             color: theme.colorScheme.primary,
             size: size - AppSpacingTokens.sm * 2,
           ),
@@ -60,15 +62,12 @@ class AuthTermsNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = MediaQuery.sizeOf(context).width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final l10n = AppLocalizations.of(context);
 
-    final linkStyle = typography.bodySm.copyWith(
-      color: surface.link,
+    final linkStyle = textTheme.bodySmall?.copyWith(
+      color: colors.primary,
       fontWeight: FontWeight.w600,
     );
     final linkButtonStyle = TextButton.styleFrom(
@@ -101,7 +100,9 @@ class AuthTermsNotice extends StatelessWidget {
           children: [
             Text(
               trimmedLead,
-              style: typography.bodySm.copyWith(color: surface.body),
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             TextButton(
               onPressed: onTerms,
@@ -110,7 +111,9 @@ class AuthTermsNotice extends StatelessWidget {
             ),
             Text(
               connector,
-              style: typography.bodySm.copyWith(color: surface.body),
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             TextButton(
               onPressed: onPrivacy,

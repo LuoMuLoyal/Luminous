@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class AuthStatusMessage extends StatelessWidget {
   const AuthStatusMessage({super.key, this.error, this.success});
@@ -21,13 +18,10 @@ class AuthStatusMessage extends StatelessWidget {
     }
 
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = MediaQuery.sizeOf(context).width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+    final textTheme = theme.textTheme;
     final isError = error?.isNotEmpty == true;
-    final color = isError ? theme.colorScheme.error : surface.success;
+    final color = isError ? theme.colorScheme.error : const Color(0xFF16A34A);
 
-    return Text(message, style: typography.bodySm.copyWith(color: color));
+    return Text(message, style: textTheme.bodySmall?.copyWith(color: color));
   }
 }
