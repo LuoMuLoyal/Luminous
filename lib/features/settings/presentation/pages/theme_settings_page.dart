@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/settings/app_setting_row.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
@@ -17,9 +14,6 @@ class ThemeSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = _typography(context);
     final currentTheme =
         ref.watch(appThemeControllerProvider).asData?.value ??
         AppThemeModePreference.system;
@@ -31,44 +25,34 @@ class ThemeSettingsPage extends ConsumerWidget {
       children: [
         _SectionLabel(label: l10n.settingsThemeAppearanceTitle),
         const SizedBox(height: AppSpacingTokens.sm),
-        AppSectionSurface(
-          typography: typography,
-          surface: surface,
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              AppSettingRow(
-                key: const Key('theme-row-system'),
-                title: l10n.mineThemeModeSystem,
-                icon: Icons.settings_brightness_rounded,
-                trailing: SettingsSelectionIcon(
-                  selected: currentTheme == AppThemeModePreference.system,
-                ),
-                onTap: () =>
-                    _handleThemeTap(ref, AppThemeModePreference.system),
-                showDivider: true,
+        FTileGroup(
+          children: [
+            FTile(
+              key: const Key('theme-row-system'),
+              title: Text(l10n.mineThemeModeSystem),
+              suffix: SettingsSelectionIcon(
+                selected: currentTheme == AppThemeModePreference.system,
               ),
-              AppSettingRow(
-                key: const Key('theme-row-light'),
-                title: l10n.mineThemeModeLight,
-                icon: Icons.light_mode_rounded,
-                trailing: SettingsSelectionIcon(
-                  selected: currentTheme == AppThemeModePreference.light,
-                ),
-                onTap: () => _handleThemeTap(ref, AppThemeModePreference.light),
-                showDivider: true,
+              onPress: () =>
+                  _handleThemeTap(ref, AppThemeModePreference.system),
+            ),
+            FTile(
+              key: const Key('theme-row-light'),
+              title: Text(l10n.mineThemeModeLight),
+              suffix: SettingsSelectionIcon(
+                selected: currentTheme == AppThemeModePreference.light,
               ),
-              AppSettingRow(
-                key: const Key('theme-row-dark'),
-                title: l10n.mineThemeModeDark,
-                icon: Icons.dark_mode_rounded,
-                trailing: SettingsSelectionIcon(
-                  selected: currentTheme == AppThemeModePreference.dark,
-                ),
-                onTap: () => _handleThemeTap(ref, AppThemeModePreference.dark),
+              onPress: () => _handleThemeTap(ref, AppThemeModePreference.light),
+            ),
+            FTile(
+              key: const Key('theme-row-dark'),
+              title: Text(l10n.mineThemeModeDark),
+              suffix: SettingsSelectionIcon(
+                selected: currentTheme == AppThemeModePreference.dark,
               ),
-            ],
-          ),
+              onPress: () => _handleThemeTap(ref, AppThemeModePreference.dark),
+            ),
+          ],
         ),
       ],
     );
@@ -89,26 +73,18 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final typography = _typography(context);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xs),
       child: Text(
         label,
-        style: typography.caption.copyWith(
-          color: surface.mute,
-          fontWeight: FontWeight.w700,
+        style: textTheme.labelSmall?.copyWith(
+          color: colors.mutedForeground,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
   }
-}
-
-AppTypographyScale _typography(BuildContext context) {
-  final theme = Theme.of(context);
-  final width = MediaQuery.sizeOf(context).width;
-  return width < AppBreakpoints.mobile
-      ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-      : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
 }

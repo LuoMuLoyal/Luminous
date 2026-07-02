@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -19,9 +17,8 @@ class DataExportPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = _typography(context);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final exportAsync = ref.watch(dataExportControllerProvider);
     final export = exportAsync.asData?.value;
 
@@ -30,21 +27,18 @@ class DataExportPage extends ConsumerWidget {
       centerTitle: true,
       leading: const AppBackButton(),
       children: [
-        AppSectionSurface(
-          surface: surface,
+        FCard.raw(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 l10n.settingsExportDescription,
-                style: typography.bodyMd.copyWith(color: surface.body),
+                style: textTheme.bodyMedium?.copyWith(color: colors.foreground),
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               _StatusRow(
                 label: l10n.mineSettingExportValue,
                 value: _statusLabel(l10n, export),
-                surface: surface,
-                typography: typography,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               _buildActionButton(context, ref, export, l10n),
@@ -77,13 +71,19 @@ class DataExportPage extends ConsumerWidget {
     if (status == DataExportUiStatus.completed && hasDownloadLink) {
       return SizedBox(
         width: double.infinity,
-        child: FilledButton.icon(
-          onPressed: () => launchUrl(
+        child: FButton(
+          onPress: () => launchUrl(
             Uri.parse(downloadUrl),
             mode: LaunchMode.externalApplication,
           ),
-          icon: const Icon(Icons.download_rounded, size: 18),
-          label: Text(l10n.mineExportDownloadButton),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(FLucideIcons.chevronDown, size: 18),
+              const SizedBox(width: AppSpacingTokens.xs),
+              Text(l10n.mineExportDownloadButton),
+            ],
+          ),
         ),
       );
     }
@@ -92,18 +92,25 @@ class DataExportPage extends ConsumerWidget {
         status == DataExportUiStatus.failed) {
       return SizedBox(
         width: double.infinity,
-        child: OutlinedButton.icon(
-          onPressed: () => _requestExport(context, ref),
-          icon: const Icon(Icons.refresh_rounded, size: 18),
-          label: Text(l10n.mineExportRegenerateButton),
+        child: FButton(
+          variant: FButtonVariant.outline,
+          onPress: () => _requestExport(context, ref),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(FLucideIcons.chevronsUpDown, size: 18),
+              const SizedBox(width: AppSpacingTokens.xs),
+              Text(l10n.mineExportRegenerateButton),
+            ],
+          ),
         ),
       );
     }
 
     return SizedBox(
       width: double.infinity,
-      child: FilledButton(
-        onPressed:
+      child: FButton(
+        onPress:
             status == DataExportUiStatus.idle ||
                 status == DataExportUiStatus.unavailable
             ? () => _requestExport(context, ref)
@@ -171,38 +178,31 @@ class DataExportPage extends ConsumerWidget {
       await AppToast.show(context, '${l10n.mineExportStatusFailed}: $message');
     }
   }
-
-  AppTypographyScale _typography(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
-    return width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
-  }
 }
 
 class _StatusRow extends StatelessWidget {
-  const _StatusRow({
-    required this.label,
-    required this.value,
-    required this.surface,
-    required this.typography,
-  });
+  const _StatusRow({required this.label, required this.value});
 
   final String label;
   final String value;
-  final AppThemeSurface surface;
-  final AppTypographyScale typography;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     return Row(
       children: [
-        Text(label, style: typography.bodyMd.copyWith(color: surface.body)),
+        Text(
+          label,
+          style: textTheme.bodyMedium?.copyWith(color: colors.foreground),
+        ),
         const Spacer(),
         Text(
           value,
-          style: typography.bodyMdStrong.copyWith(color: surface.body),
+          style: textTheme.bodyMedium?.copyWith(
+            color: colors.foreground,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );

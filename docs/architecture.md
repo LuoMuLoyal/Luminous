@@ -177,7 +177,7 @@ The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at 
 
 Shared page chrome has started moving with the same strategy: `PageScaffoldShell` now composes `FScaffold` and `FHeader`, `AppBackButton` is a Forui icon button, `AppDialog` uses `FDialog.raw`, and shared state surfaces use `FCard`/`FButton`. `PageScaffoldShell` intentionally keeps a transparent `Material` wrapper around its content area so legacy Material descendants can survive until their owning pages finish migration.
 
-The settings surface is now also splitting along that boundary. The top-level `SettingsPage` renders directly with page-local Forui tile groups/tiles/switches/buttons instead of reusing `AppSectionSurface` or `AppSettings*` wrappers. The remaining shared wrappers under `lib/core/widgets/settings/` are no longer preserving the old Material implementation either; they now render through `FTile` / `FSwitch` as an aggressive migration bridge for the still-unrewritten secondary settings pages.
+The settings surface is now also splitting along that boundary. The top-level `SettingsPage` and the main secondary settings sub-pages (`theme`, `language`, `advanced`, `notification`, `sleep reminder`, `AI`, `help`, `about`, `data export`) render directly with page-local Forui tile groups/tiles/switches/cards/buttons instead of reusing `AppSectionSurface` or `AppSettings*` wrappers. The remaining shared wrappers under `lib/core/widgets/settings/` are no longer preserving the old Material implementation either; they now render through `FTile` / `FSwitch` as an aggressive migration bridge for any still-unrewritten settings surfaces.
 
 ### UI Guidelines
 

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/settings/app_setting_row.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/network/lucent_api.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -21,9 +17,6 @@ class LanguageSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = _typography(context);
     final currentLocale =
         ref.watch(appLocaleControllerProvider).asData?.value ??
         AppLocale.system;
@@ -33,42 +26,35 @@ class LanguageSettingsPage extends ConsumerWidget {
       centerTitle: true,
       leading: const AppBackButton(),
       children: [
-        AppSectionSurface(
-          typography: typography,
-          surface: surface,
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              AppSettingRow(
-                key: const Key('language-row-system'),
-                title: l10n.settingsLanguageSystemLabel,
-                trailing: SettingsSelectionIcon(
-                  selected: currentLocale == AppLocale.system,
-                ),
-                onTap: () =>
-                    _handleLocaleTap(context, ref, l10n, AppLocale.system),
-                showDivider: true,
+        FTileGroup(
+          children: [
+            FTile(
+              key: const Key('language-row-system'),
+              title: Text(l10n.settingsLanguageSystemLabel),
+              suffix: SettingsSelectionIcon(
+                selected: currentLocale == AppLocale.system,
               ),
-              AppSettingRow(
-                key: const Key('language-row-zh'),
-                title: l10n.settingsLanguageChineseLabel,
-                trailing: SettingsSelectionIcon(
-                  selected: currentLocale == AppLocale.zhCn,
-                ),
-                onTap: () =>
-                    _handleLocaleTap(context, ref, l10n, AppLocale.zhCn),
-                showDivider: true,
+              onPress: () =>
+                  _handleLocaleTap(context, ref, l10n, AppLocale.system),
+            ),
+            FTile(
+              key: const Key('language-row-zh'),
+              title: Text(l10n.settingsLanguageChineseLabel),
+              suffix: SettingsSelectionIcon(
+                selected: currentLocale == AppLocale.zhCn,
               ),
-              AppSettingRow(
-                key: const Key('language-row-en'),
-                title: l10n.settingsLanguageEnglishLabel,
-                trailing: SettingsSelectionIcon(
-                  selected: currentLocale == AppLocale.en,
-                ),
-                onTap: () => _handleLocaleTap(context, ref, l10n, AppLocale.en),
+              onPress: () =>
+                  _handleLocaleTap(context, ref, l10n, AppLocale.zhCn),
+            ),
+            FTile(
+              key: const Key('language-row-en'),
+              title: Text(l10n.settingsLanguageEnglishLabel),
+              suffix: SettingsSelectionIcon(
+                selected: currentLocale == AppLocale.en,
               ),
-            ],
-          ),
+              onPress: () => _handleLocaleTap(context, ref, l10n, AppLocale.en),
+            ),
+          ],
         ),
       ],
     );
@@ -93,12 +79,4 @@ Future<void> _handleLocaleTap(
       message.isNotEmpty ? message : l10n.settingsSyncFailed,
     );
   }
-}
-
-AppTypographyScale _typography(BuildContext context) {
-  final theme = Theme.of(context);
-  final width = MediaQuery.sizeOf(context).width;
-  return width < AppBreakpoints.mobile
-      ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-      : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
 }
