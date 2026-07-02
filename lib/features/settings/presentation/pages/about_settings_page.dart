@@ -6,6 +6,7 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
+import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -78,6 +79,7 @@ class AboutSettingsPage extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacingTokens.lg),
         FTileGroup(
+          style: settingsSubpageTileGroupStyle(context.theme),
           children: [
             FTile(
               title: Text(l10n.settingsAboutPrivacyPolicy),

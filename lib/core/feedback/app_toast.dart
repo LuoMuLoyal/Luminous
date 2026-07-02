@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_radius_tokens.dart';
 import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/design/app_shadow_tokens.dart';
-import 'package:luminous/core/design/app_typography_tokens.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class AppToast {
   const AppToast._();
@@ -20,10 +19,11 @@ class AppToast {
       return false;
     }
 
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>();
-    final backgroundColor = surface?.canvas ?? Colors.white;
-    final textColor = theme.colorScheme.onSurface;
+    final colors = FTheme.of(context).colors;
+    final backgroundColor = colors.card;
+    final borderColor = colors.border;
+    final textColor = colors.foreground;
+    final iconColor = colors.mutedForeground;
     // 放在状态栏 / 刘海 / 灵动岛安全区下方，避免与摄像头区域重叠。
     final topOffset =
         MediaQuery.viewPaddingOf(context).top + AppSpacingTokens.x4l;
@@ -50,8 +50,9 @@ class AppToast {
           child: _AppToastSurface(
             message: message,
             backgroundColor: backgroundColor,
-            borderColor: surface?.hairline ?? const Color(0xFFE8E8E8),
+            borderColor: borderColor,
             textColor: textColor,
+            iconColor: iconColor,
             onClose: _removeCurrentToast,
           ),
         );
@@ -85,6 +86,7 @@ class _AppToastSurface extends StatelessWidget {
     required this.backgroundColor,
     required this.borderColor,
     required this.textColor,
+    required this.iconColor,
     required this.onClose,
   });
 
@@ -92,11 +94,12 @@ class _AppToastSurface extends StatelessWidget {
   final Color backgroundColor;
   final Color borderColor;
   final Color textColor;
+  final Color iconColor;
   final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final textTheme = Theme.of(context).textTheme;
 
     return Center(
       child: DecoratedBox(
@@ -122,17 +125,17 @@ class _AppToastSurface extends StatelessWidget {
                   child: Text(
                     message,
                     textAlign: TextAlign.center,
-                    style: AppTypographyTokens.mobile(textColor).bodySmStrong
-                        .copyWith(
-                          decoration: TextDecoration.none,
-                          color: textColor,
-                        ),
+                    style: textTheme.bodySmall?.copyWith(
+                      decoration: TextDecoration.none,
+                      color: textColor,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 const SizedBox(width: AppSpacingTokens.xs),
                 IconButton(
                   onPressed: onClose,
-                  icon: Icon(Icons.close, size: 16, color: surface.body),
+                  icon: Icon(FLucideIcons.x, size: 16, color: iconColor),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
                     minWidth: 32,

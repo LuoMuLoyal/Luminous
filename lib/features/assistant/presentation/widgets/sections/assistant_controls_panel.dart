@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/widgets/settings/app_setting_row.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantControlsPanel extends StatelessWidget {
   const AssistantControlsPanel({
     super.key,
-    required this.surface,
-    required this.typography,
     required this.settings,
     required this.fallbackContext,
     required this.capabilities,
@@ -20,8 +16,6 @@ class AssistantControlsPanel extends StatelessWidget {
     required this.onToggleContext,
   });
 
-  final AppThemeSurface surface;
-  final AppTypographyScale typography;
   final UserSettingsDataDto? settings;
   final UpdateAssistantContextSettingsDto? fallbackContext;
   final AssistantCapabilities capabilities;
@@ -38,135 +32,105 @@ class AssistantControlsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
-    return AppSectionSurface(
-      surface: surface,
+    return FCard.raw(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             l10n.assistantStatusSectionTitle,
-            style: typography.bodyMdStrong,
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: AppSpacingTokens.sm),
           Text(
             l10n.assistantEntrySubtitle,
-            style: typography.bodySm.copyWith(color: surface.body),
+            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AppSettingRow(
-            key: const Key('assistant-row-enabled'),
-            title: l10n.assistantSettingsEnableTitle,
-            subtitle: l10n.assistantSettingsEnableSubtitle,
-            icon: Icons.auto_awesome_outlined,
-            trailing: IgnorePointer(
-              child: Switch(
+          FTileGroup(
+            children: [
+              _SwitchTile(
+                tileKey: const Key('assistant-row-enabled'),
+                title: l10n.assistantSettingsEnableTitle,
+                subtitle: l10n.assistantSettingsEnableSubtitle,
                 value:
                     settings?.assistantEnabled ?? capabilities.assistantEnabled,
-                onChanged: (_) {},
+                onChanged: (value) => onToggleEnabled(value),
               ),
-            ),
-            onTap: () => onToggleEnabled(
-              !(settings?.assistantEnabled ?? capabilities.assistantEnabled),
-            ),
-            showDivider: true,
-          ),
-          AppSettingRow(
-            key: const Key('assistant-row-memory-enabled'),
-            title: l10n.assistantSettingsMemoryTitle,
-            subtitle: l10n.assistantSettingsMemorySubtitle,
-            icon: Icons.psychology_alt_outlined,
-            trailing: IgnorePointer(
-              child: Switch(
+              _SwitchTile(
+                tileKey: const Key('assistant-row-memory-enabled'),
+                title: l10n.assistantSettingsMemoryTitle,
+                subtitle: l10n.assistantSettingsMemorySubtitle,
                 value:
                     settings?.assistantMemoryEnabled ??
                     capabilities.assistantMemoryEnabled,
-                onChanged: (_) {},
+                onChanged: (value) => onToggleMemoryEnabled(value),
               ),
-            ),
-            onTap: () => onToggleMemoryEnabled(
-              !(settings?.assistantMemoryEnabled ??
-                  capabilities.assistantMemoryEnabled),
-            ),
-            showDivider: true,
-          ),
-          AppSettingRow(
-            key: const Key('assistant-row-context-health-profile'),
-            title: l10n.assistantContextHealthProfile,
-            icon: Icons.badge_outlined,
-            trailing: IgnorePointer(
-              child: Switch(
+              _SwitchTile(
+                tileKey: const Key('assistant-row-context-health-profile'),
+                title: l10n.assistantContextHealthProfile,
                 value:
                     settings?.assistantContext.healthProfile ??
                     capabilities.assistantContext.healthProfile,
-                onChanged: (_) {},
+                onChanged: (value) => onToggleContext(healthProfile: value),
               ),
-            ),
-            onTap: () => onToggleContext(
-              healthProfile:
-                  !(settings?.assistantContext.healthProfile ??
-                      capabilities.assistantContext.healthProfile),
-            ),
-            showDivider: true,
-          ),
-          AppSettingRow(
-            key: const Key('assistant-row-context-daily-records'),
-            title: l10n.assistantContextDailyRecords,
-            icon: Icons.event_note_outlined,
-            trailing: IgnorePointer(
-              child: Switch(
+              _SwitchTile(
+                tileKey: const Key('assistant-row-context-daily-records'),
+                title: l10n.assistantContextDailyRecords,
                 value:
                     settings?.assistantContext.dailyRecords ??
                     capabilities.assistantContext.dailyRecords,
-                onChanged: (_) {},
+                onChanged: (value) => onToggleContext(dailyRecords: value),
               ),
-            ),
-            onTap: () => onToggleContext(
-              dailyRecords:
-                  !(settings?.assistantContext.dailyRecords ??
-                      capabilities.assistantContext.dailyRecords),
-            ),
-            showDivider: true,
-          ),
-          AppSettingRow(
-            key: const Key('assistant-row-context-sleep-records'),
-            title: l10n.assistantContextSleepRecords,
-            icon: Icons.bedtime_outlined,
-            trailing: IgnorePointer(
-              child: Switch(
+              _SwitchTile(
+                tileKey: const Key('assistant-row-context-sleep-records'),
+                title: l10n.assistantContextSleepRecords,
                 value:
                     settings?.assistantContext.sleepRecords ??
                     capabilities.assistantContext.sleepRecords,
-                onChanged: (_) {},
+                onChanged: (value) => onToggleContext(sleepRecords: value),
               ),
-            ),
-            onTap: () => onToggleContext(
-              sleepRecords:
-                  !(settings?.assistantContext.sleepRecords ??
-                      capabilities.assistantContext.sleepRecords),
-            ),
-            showDivider: true,
-          ),
-          AppSettingRow(
-            key: const Key('assistant-row-context-current-medicines'),
-            title: l10n.assistantContextCurrentMedicines,
-            icon: Icons.medication_outlined,
-            trailing: IgnorePointer(
-              child: Switch(
+              _SwitchTile(
+                tileKey: const Key('assistant-row-context-current-medicines'),
+                title: l10n.assistantContextCurrentMedicines,
                 value:
                     settings?.assistantContext.currentMedicines ??
                     capabilities.assistantContext.currentMedicines,
-                onChanged: (_) {},
+                onChanged: (value) => onToggleContext(currentMedicines: value),
               ),
-            ),
-            onTap: () => onToggleContext(
-              currentMedicines:
-                  !(settings?.assistantContext.currentMedicines ??
-                      capabilities.assistantContext.currentMedicines),
-            ),
+            ],
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SwitchTile extends StatelessWidget with FTileMixin {
+  const _SwitchTile({
+    required this.tileKey,
+    required this.title,
+    this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final Key tileKey;
+  final String title;
+  final String? subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return FTile(
+      key: tileKey,
+      title: Text(title),
+      subtitle: subtitle == null || subtitle!.isEmpty ? null : Text(subtitle!),
+      suffix: FSwitch(value: value, onChange: onChanged),
+      onPress: () => onChanged(!value),
     );
   }
 }

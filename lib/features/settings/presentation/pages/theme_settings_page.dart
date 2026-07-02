@@ -6,6 +6,7 @@ import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
+import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ThemeSettingsPage extends ConsumerWidget {
@@ -26,6 +27,7 @@ class ThemeSettingsPage extends ConsumerWidget {
         _SectionLabel(label: l10n.settingsThemeAppearanceTitle),
         const SizedBox(height: AppSpacingTokens.sm),
         FTileGroup(
+          style: settingsSubpageTileGroupStyle(context.theme),
           children: [
             FTile(
               key: const Key('theme-row-system'),
