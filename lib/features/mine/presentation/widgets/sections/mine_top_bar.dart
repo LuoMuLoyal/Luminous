@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -18,8 +18,7 @@ class MineTopBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final textTheme = Theme.of(context).textTheme;
     final unreadAsync = ref.watch(notificationUnreadCountProvider);
     final hasUnread =
         unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
@@ -29,16 +28,15 @@ class MineTopBar extends ConsumerWidget {
         Expanded(
           child: Text(
             l10n.tabMine,
-            style: typography.displayXl.copyWith(
+            style: textTheme.headlineLarge?.copyWith(
               fontWeight: FontWeight.w800,
-              letterSpacing: 0,
             ),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.md),
         _IconActionButton(
           tooltip: l10n.mineHeaderNotifications,
-          icon: Icons.notifications_none_rounded,
+          icon: FLucideIcons.bell,
           onTap: onNotificationsTap,
           showBadge: hasUnread,
         ),
@@ -46,7 +44,7 @@ class MineTopBar extends ConsumerWidget {
         _IconActionButton(
           key: const Key('mine-settings-action'),
           tooltip: l10n.mineHeaderSettings,
-          icon: Icons.settings_outlined,
+          icon: FLucideIcons.settings,
           onTap: onSettingsTap,
         ),
       ],
@@ -62,6 +60,7 @@ class _IconActionButton extends StatelessWidget {
     required this.onTap,
     this.showBadge = false,
   });
+
   final String tooltip;
   final IconData icon;
   final VoidCallback onTap;
@@ -69,41 +68,33 @@ class _IconActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+
     return Tooltip(
       message: tooltip,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-          child: SizedBox.square(
-            dimension: 44,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Icon(
-                  icon,
-                  size: 28,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                if (showBadge)
-                  Positioned(
-                    right: AppSpacingTokens.xs,
-                    top: AppSpacingTokens.xs,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.error,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: surface.canvas, width: 2),
-                      ),
-                      child: const SizedBox.square(dimension: 10),
-                    ),
-                  ),
-              ],
-            ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          FButton(
+            onPress: onTap,
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.sm,
+            child: Icon(icon, size: 22, color: colors.foreground),
           ),
-        ),
+          if (showBadge)
+            Positioned(
+              right: 6,
+              top: 6,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colors.destructive,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: colors.background, width: 2),
+                ),
+                child: const SizedBox.square(dimension: 10),
+              ),
+            ),
+        ],
       ),
     );
   }
