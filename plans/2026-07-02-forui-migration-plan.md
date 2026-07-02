@@ -11,20 +11,9 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 - This run is speed-first.
 - Broad test coverage is intentionally deferred until the final cleanup stage.
 - Each completed phase still updates repo docs before commit.
+- When Forui already provides the needed component/style, prefer the official widget or CLI-generated style over maintaining another local wrapper.
 
 ## Remaining Phases
-
-### Shared Common Widgets
-
-- Files:
-  - `lib/core/widgets/common/app_state_views.dart`
-  - `lib/core/widgets/common/app_text_action.dart`
-  - `lib/core/widgets/common/app_status_pill.dart`
-  - `lib/core/widgets/common/app_image_placeholder.dart`
-  - `lib/core/widgets/common/app_header_action_chip.dart`
-- Action:
-  - Remove remaining `AppThemeSurface` / `AppTypographyTokens` dependencies.
-  - Keep only Forui colors and Material `textTheme` where the components still need to exist.
 
 ### Root Removal Layer
 
@@ -34,6 +23,7 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
   - `lib/core/widgets/common/app_section_surface.dart`
   - `lib/core/widgets/settings/*`
 - Action:
+  - Replace the remaining wrapper/bridge surfaces with official Forui components where possible, and use `dart run forui style create ...` only when a generated style file is genuinely needed.
   - Once call sites are low enough, delete the bridge layer or shrink it into a minimal compatibility shell.
   - Sweep references after the reduction.
 

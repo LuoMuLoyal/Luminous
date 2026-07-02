@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_header_action_chip.dart';
 import 'package:luminous/core/widgets/common/app_image_placeholder.dart';
 import 'package:luminous/core/widgets/common/app_section_surface.dart';
@@ -12,15 +10,10 @@ import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
 
 Widget _appShell(Widget child) {
   return MaterialApp(
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-    ),
+    theme: ThemeData.light(),
     home: Scaffold(body: child),
   );
 }
-
-/// Shared typography instance for AppHeaderActionChip tests.
-final _testTypography = AppTypographyTokens.mobile(Colors.black);
 
 void main() {
   group('AppHeaderActionChip', () {
@@ -30,8 +23,6 @@ void main() {
           AppHeaderActionChip(
             label: 'Search',
             icon: Icons.search,
-            typography: _testTypography,
-            surface: AppThemeSurface.light,
             onTap: () {},
           ),
         ),
@@ -48,8 +39,6 @@ void main() {
           AppHeaderActionChip(
             label: 'Tap me',
             icon: Icons.touch_app,
-            typography: _testTypography,
-            surface: AppThemeSurface.light,
             onTap: () => tapped = true,
           ),
         ),

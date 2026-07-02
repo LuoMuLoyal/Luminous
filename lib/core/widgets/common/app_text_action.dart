@@ -20,14 +20,12 @@ class AppTextAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
+    final textTheme = Theme.of(context).textTheme;
     final foreground = color ?? context.theme.colors.foreground;
 
     final text = Text(
       label,
-      style: typography.bodySmStrong.copyWith(
+      style: textTheme.labelMedium?.copyWith(
         color: foreground,
         fontWeight: FontWeight.w600,
         letterSpacing: 0,

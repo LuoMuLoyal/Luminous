@@ -25,13 +25,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
     final coverageLabel = _coverageLabel(l10n, coverage);
     final text = coverageLabel == null ? label : '$label · $coverageLabel';
 
-    return AppStatusPill(
-      label: text,
-      color: color,
-      icon: icon,
-      typography: typography,
-      large: large,
-    );
+    return AppStatusPill(label: text, color: color, icon: icon, large: large);
   }
 
   (String, Color, IconData) _statusSpec(

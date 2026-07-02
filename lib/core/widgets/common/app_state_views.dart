@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 enum AppStateTone { neutral, success, warning, danger }
@@ -31,10 +30,9 @@ class AppStateMessageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
     final textTheme = theme.textTheme;
     final colors = context.theme.colors;
-    final accent = _accentFor(surface);
+    final accent = _accentFor(colors);
 
     return FCard.raw(
       child: Padding(
@@ -85,12 +83,12 @@ class AppStateMessageView extends StatelessWidget {
     );
   }
 
-  Color _accentFor(AppThemeSurface surface) {
+  Color _accentFor(FColors colors) {
     return switch (tone) {
-      AppStateTone.neutral => surface.link,
-      AppStateTone.success => surface.accent,
-      AppStateTone.warning => surface.warning,
-      AppStateTone.danger => surface.error,
+      AppStateTone.neutral => colors.primary,
+      AppStateTone.success => const Color(0xFF16A34A),
+      AppStateTone.warning => const Color(0xFFF59E0B),
+      AppStateTone.danger => colors.destructive,
     };
   }
 }
@@ -108,13 +106,13 @@ class AppStateSkeletonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return Shimmer.fromColors(
-      baseColor: surface.canvas.withValues(
+      baseColor: colors.background.withValues(
         alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
       ),
-      highlightColor: surface.canvasSoft2,
+      highlightColor: colors.secondary.withValues(alpha: 0.55),
       child: ListView.separated(
         padding: padding,
         itemBuilder: (context, index) => _SkeletonBlock(data: blocks[index]),
@@ -260,13 +258,13 @@ class AppSkeletonShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return Shimmer.fromColors(
-      baseColor: surface.canvas.withValues(
+      baseColor: colors.background.withValues(
         alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
       ),
-      highlightColor: surface.canvasSoft2,
+      highlightColor: colors.secondary.withValues(alpha: 0.55),
       child: child,
     );
   }
@@ -291,11 +289,11 @@ class AppInlineSkeletonBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     final block = DecoratedBox(
       decoration: BoxDecoration(
-        color: surface.canvas,
+        color: colors.background,
         borderRadius: BorderRadius.circular(radius),
       ),
       child: SizedBox(height: height, width: width),
@@ -328,10 +326,13 @@ class AppInlineSkeletonCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvas, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        color: colors.background,
+        shape: BoxShape.circle,
+      ),
       child: SizedBox.square(dimension: size),
     );
   }
@@ -349,13 +350,13 @@ class AppInlineSkeletonSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: surface.canvas,
+        color: colors.background,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
+        border: Border.all(color: colors.border),
         boxShadow: AppShadowTokens.level1,
       ),
       child: Padding(
@@ -388,14 +389,14 @@ class _SkeletonBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return FractionallySizedBox(
       widthFactor: data.widthFactor,
       alignment: Alignment.centerLeft,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: surface.canvas,
+          color: colors.background,
           borderRadius: BorderRadius.circular(data.radius),
         ),
         child: SizedBox(height: data.height),

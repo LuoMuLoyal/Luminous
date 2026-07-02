@@ -19,9 +19,7 @@ class AppImagePlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
+    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: SizedBox(
@@ -40,7 +38,9 @@ class AppImagePlaceholder extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   label,
-                  style: typography.caption.copyWith(color: colors.foreground),
+                  style: textTheme.labelSmall?.copyWith(
+                    color: colors.foreground,
+                  ),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
