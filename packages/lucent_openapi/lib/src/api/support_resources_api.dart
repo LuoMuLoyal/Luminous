@@ -13,13 +13,12 @@ import 'package:lucent_openapi/src/model/app_info_response_dto.dart';
 import 'package:lucent_openapi/src/model/support_resource_list_response_dto.dart';
 
 class SupportResourcesApi {
-
   final Dio _dio;
 
   const SupportResourcesApi(this._dio);
 
   /// Get application metadata
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -31,7 +30,7 @@ class SupportResourcesApi {
   ///
   /// Returns a [Future] containing a [Response] with a [AppInfoResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<AppInfoResponseDto>> supportResourcesControllerGetAppInfoV1({ 
+  Future<Response<AppInfoResponseDto>> supportResourcesControllerGetAppInfoV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -42,13 +41,8 @@ class SupportResourcesApi {
     final _path = r'/api/v1/public/app-info';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
@@ -63,9 +57,14 @@ class SupportResourcesApi {
     AppInfoResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<AppInfoResponseDto, AppInfoResponseDto>(rawData, 'AppInfoResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<AppInfoResponseDto, AppInfoResponseDto>(
+              rawData,
+              'AppInfoResponseDto',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -89,10 +88,10 @@ _responseData = rawData == null ? null : deserialize<AppInfoResponseDto, AppInfo
   }
 
   /// Get static support resource entries
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [scope] - Filter by scope: 'campus', 'help', 'about'. Default: all.
+  /// * [scope] - Filter by scope: 'help', 'about'. Default: all.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -102,7 +101,8 @@ _responseData = rawData == null ? null : deserialize<AppInfoResponseDto, AppInfo
   ///
   /// Returns a [Future] containing a [Response] with a [SupportResourceListResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SupportResourceListResponseDto>> supportResourcesControllerGetResourcesV1({ 
+  Future<Response<SupportResourceListResponseDto>>
+  supportResourcesControllerGetResourcesV1({
     String? scope,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -114,13 +114,8 @@ _responseData = rawData == null ? null : deserialize<AppInfoResponseDto, AppInfo
     final _path = r'/api/v1/public/support-resources';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );
 
@@ -140,9 +135,13 @@ _responseData = rawData == null ? null : deserialize<AppInfoResponseDto, AppInfo
     SupportResourceListResponseDto? _responseData;
 
     try {
-final rawData = _response.data;
-_responseData = rawData == null ? null : deserialize<SupportResourceListResponseDto, SupportResourceListResponseDto>(rawData, 'SupportResourceListResponseDto', growable: true);
-
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              SupportResourceListResponseDto,
+              SupportResourceListResponseDto
+            >(rawData, 'SupportResourceListResponseDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -164,5 +163,4 @@ _responseData = rawData == null ? null : deserialize<SupportResourceListResponse
       extra: _response.extra,
     );
   }
-
 }

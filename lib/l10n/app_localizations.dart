@@ -3506,60 +3506,6 @@ abstract class AppLocalizations {
   /// **'待补充'**
   String get mineArchiveNeedsFill;
 
-  /// No description provided for @mineCampusSectionTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'校园服务'**
-  String get mineCampusSectionTitle;
-
-  /// No description provided for @mineCampusHospitalTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'校医院'**
-  String get mineCampusHospitalTitle;
-
-  /// No description provided for @mineCampusHospitalSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'在线预约挂号'**
-  String get mineCampusHospitalSubtitle;
-
-  /// No description provided for @mineCampusSupportTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'学生支持'**
-  String get mineCampusSupportTitle;
-
-  /// No description provided for @mineCampusSupportSubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'校内支持资源'**
-  String get mineCampusSupportSubtitle;
-
-  /// No description provided for @mineCampusPharmacyTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'校园药房'**
-  String get mineCampusPharmacyTitle;
-
-  /// No description provided for @mineCampusPharmacySubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'校内药品查询'**
-  String get mineCampusPharmacySubtitle;
-
-  /// No description provided for @mineCampusEmergencyTitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'紧急帮助'**
-  String get mineCampusEmergencyTitle;
-
-  /// No description provided for @mineCampusEmergencySubtitle.
-  ///
-  /// In zh, this message translates to:
-  /// **'紧急电话与指南'**
-  String get mineCampusEmergencySubtitle;
-
   /// No description provided for @minePrivacyReportTitle.
   ///
   /// In zh, this message translates to:
@@ -5582,6 +5528,30 @@ abstract class AppLocalizations {
   /// **'睡眠概况'**
   String get assistantToolSleepByRange;
 
+  /// No description provided for @assistantToolSearchMedicineLeaflets.
+  ///
+  /// In zh, this message translates to:
+  /// **'中文说明书检索'**
+  String get assistantToolSearchMedicineLeaflets;
+
+  /// No description provided for @assistantToolSearchMedicalQaCorpus.
+  ///
+  /// In zh, this message translates to:
+  /// **'医学问答检索'**
+  String get assistantToolSearchMedicalQaCorpus;
+
+  /// No description provided for @assistantToolResolveDrugbankEntity.
+  ///
+  /// In zh, this message translates to:
+  /// **'DrugBank 实体定位'**
+  String get assistantToolResolveDrugbankEntity;
+
+  /// No description provided for @assistantToolSearchDrugbankPassages.
+  ///
+  /// In zh, this message translates to:
+  /// **'DrugBank 片段检索'**
+  String get assistantToolSearchDrugbankPassages;
+
   /// No description provided for @assistantToolProposeCreateRecord.
   ///
   /// In zh, this message translates to:
@@ -6919,24 +6889,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'无法确认 {drug} 的安全性，建议线下核对药品说明书或咨询药师。'**
   String medicineRiskCheckRedFlagInformationGap(Object drug);
-
-  /// No description provided for @medicineRiskCheckRedFlagResourceEmergency.
-  ///
-  /// In zh, this message translates to:
-  /// **'急救资源'**
-  String get medicineRiskCheckRedFlagResourceEmergency;
-
-  /// No description provided for @medicineRiskCheckRedFlagResourceHospital.
-  ///
-  /// In zh, this message translates to:
-  /// **'校医院'**
-  String get medicineRiskCheckRedFlagResourceHospital;
-
-  /// No description provided for @medicineRiskCheckRedFlagResourcePharmacy.
-  ///
-  /// In zh, this message translates to:
-  /// **'校园药房'**
-  String get medicineRiskCheckRedFlagResourcePharmacy;
 
   /// No description provided for @medicineRiskCheckRedFlagActionSevereAllergy.
   ///

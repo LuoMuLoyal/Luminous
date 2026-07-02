@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -11,13 +9,11 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
   const MedicineRiskRedFlagBanner({
     super.key,
     required this.alerts,
-    required this.campusResources,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
   final List<RedFlagAlert> alerts;
-  final List<SupportResourceDto> campusResources;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
@@ -56,7 +52,6 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
             if (i > 0) const SizedBox(height: AppSpacingTokens.sm),
             MedicineRiskRedFlagAlertRow(
               alert: alerts[i],
-              campusResources: campusResources,
               l10n: l10n,
               typography: typography,
               surface: surface,
@@ -72,32 +67,18 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
   const MedicineRiskRedFlagAlertRow({
     super.key,
     required this.alert,
-    required this.campusResources,
     required this.l10n,
     required this.typography,
     required this.surface,
   });
   final RedFlagAlert alert;
-  final List<SupportResourceDto> campusResources;
   final AppLocalizations l10n;
   final AppTypographyScale typography;
   final AppThemeSurface surface;
 
-  SupportResourceDto? get matchedResource {
-    final id = alert.resourceId;
-    if (id == null) return null;
-    return campusResources.where((r) => r.id == id).firstOrNull;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final resource = matchedResource;
-    final hasRealAction =
-        resource != null &&
-        resource.actionUrl != null &&
-        resource.actionUrl!.isNotEmpty &&
-        resource.actionType != null;
     return Container(
       padding: const EdgeInsets.all(AppSpacingTokens.sm),
       decoration: BoxDecoration(
@@ -139,54 +120,8 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
               ],
             ),
           ),
-          if (alert.resourceId != null) ...[
-            const SizedBox(width: AppSpacingTokens.sm),
-            TextButton.icon(
-              onPressed: hasRealAction
-                  ? () => openResource(context, alert.resourceId!)
-                  : null,
-              icon: Icon(
-                Icons.open_in_new_rounded,
-                size: 16,
-                color: hasRealAction ? AppColorTokens.error : surface.mute,
-              ),
-              label: Text(
-                redFlagResourceLabel(l10n, alert.resourceId!),
-                style: typography.caption.copyWith(
-                  color: hasRealAction ? AppColorTokens.error : surface.mute,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.sm,
-                ),
-                visualDensity: VisualDensity.compact,
-              ),
-            ),
-          ],
         ],
       ),
     );
-  }
-
-  Future<void> openResource(BuildContext context, String resourceId) async {
-    final resource = campusResources
-        .where((r) => r.id == resourceId)
-        .firstOrNull;
-    if (resource == null ||
-        resource.actionUrl == null ||
-        resource.actionType == null) {
-      return;
-    }
-    final target = resource.actionUrl!;
-    if (target.isEmpty) {
-      return;
-    }
-    final uri = Uri.tryParse(target);
-    if (uri == null) {
-      return;
-    }
-    await const ExternalUrlLauncher().open(uri);
   }
 }

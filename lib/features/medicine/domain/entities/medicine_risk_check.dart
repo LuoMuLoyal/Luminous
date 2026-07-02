@@ -67,8 +67,5 @@ abstract class RedFlagAlert with _$RedFlagAlert {
     required RedFlagRule rule,
     required String primaryMedicineName,
     String? relatedLabel,
-
-    /// Matches a support-resource id (e.g. 'campus-emergency', 'campus-hospital').
-    String? resourceId,
   }) = _RedFlagAlert;
 }

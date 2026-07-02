@@ -338,12 +338,3 @@ String redFlagActionCopy(AppLocalizations l10n, RedFlagAlert alert) {
       l10n.medicineRiskCheckRedFlagActionInformationGap,
   };
 }
-
-String redFlagResourceLabel(AppLocalizations l10n, String resourceId) {
-  return switch (resourceId) {
-    'campus-emergency' => l10n.medicineRiskCheckRedFlagResourceEmergency,
-    'campus-hospital' => l10n.medicineRiskCheckRedFlagResourceHospital,
-    'campus-pharmacy' => l10n.medicineRiskCheckRedFlagResourcePharmacy,
-    _ => l10n.medicineRiskCheckRedFlagResourceHospital,
-  };
-}

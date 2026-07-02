@@ -830,8 +830,7 @@ as MedicineRiskCoverageReason,
 /// @nodoc
 mixin _$RedFlagAlert {
 
- RedFlagRule get rule; String get primaryMedicineName; String? get relatedLabel;/// Matches a support-resource id (e.g. 'campus-emergency', 'campus-hospital').
- String? get resourceId;
+ RedFlagRule get rule; String get primaryMedicineName; String? get relatedLabel;
 /// Create a copy of RedFlagAlert
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -842,16 +841,16 @@ $RedFlagAlertCopyWith<RedFlagAlert> get copyWith => _$RedFlagAlertCopyWithImpl<R
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RedFlagAlert&&(identical(other.rule, rule) || other.rule == rule)&&(identical(other.primaryMedicineName, primaryMedicineName) || other.primaryMedicineName == primaryMedicineName)&&(identical(other.relatedLabel, relatedLabel) || other.relatedLabel == relatedLabel)&&(identical(other.resourceId, resourceId) || other.resourceId == resourceId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RedFlagAlert&&(identical(other.rule, rule) || other.rule == rule)&&(identical(other.primaryMedicineName, primaryMedicineName) || other.primaryMedicineName == primaryMedicineName)&&(identical(other.relatedLabel, relatedLabel) || other.relatedLabel == relatedLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rule,primaryMedicineName,relatedLabel,resourceId);
+int get hashCode => Object.hash(runtimeType,rule,primaryMedicineName,relatedLabel);
 
 @override
 String toString() {
-  return 'RedFlagAlert(rule: $rule, primaryMedicineName: $primaryMedicineName, relatedLabel: $relatedLabel, resourceId: $resourceId)';
+  return 'RedFlagAlert(rule: $rule, primaryMedicineName: $primaryMedicineName, relatedLabel: $relatedLabel)';
 }
 
 
@@ -862,7 +861,7 @@ abstract mixin class $RedFlagAlertCopyWith<$Res>  {
   factory $RedFlagAlertCopyWith(RedFlagAlert value, $Res Function(RedFlagAlert) _then) = _$RedFlagAlertCopyWithImpl;
 @useResult
 $Res call({
- RedFlagRule rule, String primaryMedicineName, String? relatedLabel, String? resourceId
+ RedFlagRule rule, String primaryMedicineName, String? relatedLabel
 });
 
 
@@ -879,12 +878,11 @@ class _$RedFlagAlertCopyWithImpl<$Res>
 
 /// Create a copy of RedFlagAlert
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? rule = null,Object? primaryMedicineName = null,Object? relatedLabel = freezed,Object? resourceId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? rule = null,Object? primaryMedicineName = null,Object? relatedLabel = freezed,}) {
   return _then(_self.copyWith(
 rule: null == rule ? _self.rule : rule // ignore: cast_nullable_to_non_nullable
 as RedFlagRule,primaryMedicineName: null == primaryMedicineName ? _self.primaryMedicineName : primaryMedicineName // ignore: cast_nullable_to_non_nullable
 as String,relatedLabel: freezed == relatedLabel ? _self.relatedLabel : relatedLabel // ignore: cast_nullable_to_non_nullable
-as String?,resourceId: freezed == resourceId ? _self.resourceId : resourceId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -970,10 +968,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( RedFlagRule rule,  String primaryMedicineName,  String? relatedLabel,  String? resourceId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( RedFlagRule rule,  String primaryMedicineName,  String? relatedLabel)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RedFlagAlert() when $default != null:
-return $default(_that.rule,_that.primaryMedicineName,_that.relatedLabel,_that.resourceId);case _:
+return $default(_that.rule,_that.primaryMedicineName,_that.relatedLabel);case _:
   return orElse();
 
 }
@@ -991,10 +989,10 @@ return $default(_that.rule,_that.primaryMedicineName,_that.relatedLabel,_that.re
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( RedFlagRule rule,  String primaryMedicineName,  String? relatedLabel,  String? resourceId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( RedFlagRule rule,  String primaryMedicineName,  String? relatedLabel)  $default,) {final _that = this;
 switch (_that) {
 case _RedFlagAlert():
-return $default(_that.rule,_that.primaryMedicineName,_that.relatedLabel,_that.resourceId);case _:
+return $default(_that.rule,_that.primaryMedicineName,_that.relatedLabel);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1011,10 +1009,10 @@ return $default(_that.rule,_that.primaryMedicineName,_that.relatedLabel,_that.re
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( RedFlagRule rule,  String primaryMedicineName,  String? relatedLabel,  String? resourceId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( RedFlagRule rule,  String primaryMedicineName,  String? relatedLabel)?  $default,) {final _that = this;
 switch (_that) {
 case _RedFlagAlert() when $default != null:
-return $default(_that.rule,_that.primaryMedicineName,_that.relatedLabel,_that.resourceId);case _:
+return $default(_that.rule,_that.primaryMedicineName,_that.relatedLabel);case _:
   return null;
 
 }
@@ -1026,14 +1024,12 @@ return $default(_that.rule,_that.primaryMedicineName,_that.relatedLabel,_that.re
 
 
 class _RedFlagAlert implements RedFlagAlert {
-  const _RedFlagAlert({required this.rule, required this.primaryMedicineName, this.relatedLabel, this.resourceId});
+  const _RedFlagAlert({required this.rule, required this.primaryMedicineName, this.relatedLabel});
   
 
 @override final  RedFlagRule rule;
 @override final  String primaryMedicineName;
 @override final  String? relatedLabel;
-/// Matches a support-resource id (e.g. 'campus-emergency', 'campus-hospital').
-@override final  String? resourceId;
 
 /// Create a copy of RedFlagAlert
 /// with the given fields replaced by the non-null parameter values.
@@ -1045,16 +1041,16 @@ _$RedFlagAlertCopyWith<_RedFlagAlert> get copyWith => __$RedFlagAlertCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RedFlagAlert&&(identical(other.rule, rule) || other.rule == rule)&&(identical(other.primaryMedicineName, primaryMedicineName) || other.primaryMedicineName == primaryMedicineName)&&(identical(other.relatedLabel, relatedLabel) || other.relatedLabel == relatedLabel)&&(identical(other.resourceId, resourceId) || other.resourceId == resourceId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RedFlagAlert&&(identical(other.rule, rule) || other.rule == rule)&&(identical(other.primaryMedicineName, primaryMedicineName) || other.primaryMedicineName == primaryMedicineName)&&(identical(other.relatedLabel, relatedLabel) || other.relatedLabel == relatedLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rule,primaryMedicineName,relatedLabel,resourceId);
+int get hashCode => Object.hash(runtimeType,rule,primaryMedicineName,relatedLabel);
 
 @override
 String toString() {
-  return 'RedFlagAlert(rule: $rule, primaryMedicineName: $primaryMedicineName, relatedLabel: $relatedLabel, resourceId: $resourceId)';
+  return 'RedFlagAlert(rule: $rule, primaryMedicineName: $primaryMedicineName, relatedLabel: $relatedLabel)';
 }
 
 
@@ -1065,7 +1061,7 @@ abstract mixin class _$RedFlagAlertCopyWith<$Res> implements $RedFlagAlertCopyWi
   factory _$RedFlagAlertCopyWith(_RedFlagAlert value, $Res Function(_RedFlagAlert) _then) = __$RedFlagAlertCopyWithImpl;
 @override @useResult
 $Res call({
- RedFlagRule rule, String primaryMedicineName, String? relatedLabel, String? resourceId
+ RedFlagRule rule, String primaryMedicineName, String? relatedLabel
 });
 
 
@@ -1082,12 +1078,11 @@ class __$RedFlagAlertCopyWithImpl<$Res>
 
 /// Create a copy of RedFlagAlert
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? rule = null,Object? primaryMedicineName = null,Object? relatedLabel = freezed,Object? resourceId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? rule = null,Object? primaryMedicineName = null,Object? relatedLabel = freezed,}) {
   return _then(_RedFlagAlert(
 rule: null == rule ? _self.rule : rule // ignore: cast_nullable_to_non_nullable
 as RedFlagRule,primaryMedicineName: null == primaryMedicineName ? _self.primaryMedicineName : primaryMedicineName // ignore: cast_nullable_to_non_nullable
 as String,relatedLabel: freezed == relatedLabel ? _self.relatedLabel : relatedLabel // ignore: cast_nullable_to_non_nullable
-as String?,resourceId: freezed == resourceId ? _self.resourceId : resourceId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

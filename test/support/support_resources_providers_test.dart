@@ -120,9 +120,9 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      await container.read(supportResourcesProvider('campus').future);
+      await container.read(supportResourcesProvider('help').future);
 
-      expect(capturedScope, equals('campus'));
+      expect(capturedScope, equals('help'));
     });
   });
 

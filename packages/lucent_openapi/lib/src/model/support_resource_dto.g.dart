@@ -57,7 +57,6 @@ Map<String, dynamic> _$SupportResourceDtoToJson(SupportResourceDto instance) =>
     };
 
 const _$SupportResourceScopeEnumMap = {
-  SupportResourceScope.campus: 'campus',
   SupportResourceScope.help: 'help',
   SupportResourceScope.about: 'about',
   SupportResourceScope.unknownDefaultOpenApi: 'unknown_default_open_api',

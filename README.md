@@ -70,7 +70,7 @@ its built-in default test account values.
 - Shared repo hooks live in `.githooks/`. After cloning, run `dart run tool/install_git_hooks.dart` once to point `core.hooksPath` at that folder. Hook entrypoints now call Dart directly instead of delegating through PowerShell wrappers.
 - Current hook scope: `pre-commit` runs `flutter gen-l10n`, `dart format --output=none --set-exit-if-changed` on staged Dart files, and `flutter analyze`; `pre-push` runs `tool/run_daily_checks.dart`.
 - Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a local Android emulator plus a Lucent test runtime started from `../Lucent`, including test database state and cross-repo orchestration.
-- OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, regenerate `Lucent/docs/openapi.json` first, then run `dart run tool/regenerate_lucent_openapi.dart` in Luminous before merging. `dart run tool/verify_lucent_openapi_sync.dart` is the lightweight gate that fails when either side still has uncommitted contract/client drift.
+- OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, regenerate `Lucent/docs/openapi.json` first, then run `dart run tool/regenerate_lucent_openapi.dart` in Luminous before merging. `dart run tool/verify_lucent_openapi_sync.dart` is the lightweight gate for verifying the target OpenAPI path and generated-client layout without requiring a clean git working tree.
 - Hosted CI now also enforces that gate by checking out `Lucent`, pointing `tool/verify_lucent_openapi_sync.dart` at the checked-out `docs/openapi.json`, and failing when regeneration would change `packages/lucent_openapi/`.
 
 ## Docs

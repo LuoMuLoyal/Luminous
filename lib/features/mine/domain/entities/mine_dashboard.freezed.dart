@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MineDashboard {
 
- MineAccount get account; MineCompletion get completion; MineProfileSnapshot get profile; List<MineStatusCard> get alerts; List<MineArchiveEntry> get archiveEntries; List<MineActionEntry> get campusServices; MinePrivacyNotice get privacyNotice;
+ MineAccount get account; MineCompletion get completion; MineProfileSnapshot get profile; List<MineStatusCard> get alerts; List<MineArchiveEntry> get archiveEntries; MinePrivacyNotice get privacyNotice;
 /// Create a copy of MineDashboard
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MineDashboardCopyWith<MineDashboard> get copyWith => _$MineDashboardCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MineDashboard&&(identical(other.account, account) || other.account == account)&&(identical(other.completion, completion) || other.completion == completion)&&(identical(other.profile, profile) || other.profile == profile)&&const DeepCollectionEquality().equals(other.alerts, alerts)&&const DeepCollectionEquality().equals(other.archiveEntries, archiveEntries)&&const DeepCollectionEquality().equals(other.campusServices, campusServices)&&(identical(other.privacyNotice, privacyNotice) || other.privacyNotice == privacyNotice));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MineDashboard&&(identical(other.account, account) || other.account == account)&&(identical(other.completion, completion) || other.completion == completion)&&(identical(other.profile, profile) || other.profile == profile)&&const DeepCollectionEquality().equals(other.alerts, alerts)&&const DeepCollectionEquality().equals(other.archiveEntries, archiveEntries)&&(identical(other.privacyNotice, privacyNotice) || other.privacyNotice == privacyNotice));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,account,completion,profile,const DeepCollectionEquality().hash(alerts),const DeepCollectionEquality().hash(archiveEntries),const DeepCollectionEquality().hash(campusServices),privacyNotice);
+int get hashCode => Object.hash(runtimeType,account,completion,profile,const DeepCollectionEquality().hash(alerts),const DeepCollectionEquality().hash(archiveEntries),privacyNotice);
 
 @override
 String toString() {
-  return 'MineDashboard(account: $account, completion: $completion, profile: $profile, alerts: $alerts, archiveEntries: $archiveEntries, campusServices: $campusServices, privacyNotice: $privacyNotice)';
+  return 'MineDashboard(account: $account, completion: $completion, profile: $profile, alerts: $alerts, archiveEntries: $archiveEntries, privacyNotice: $privacyNotice)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MineDashboardCopyWith<$Res>  {
   factory $MineDashboardCopyWith(MineDashboard value, $Res Function(MineDashboard) _then) = _$MineDashboardCopyWithImpl;
 @useResult
 $Res call({
- MineAccount account, MineCompletion completion, MineProfileSnapshot profile, List<MineStatusCard> alerts, List<MineArchiveEntry> archiveEntries, List<MineActionEntry> campusServices, MinePrivacyNotice privacyNotice
+ MineAccount account, MineCompletion completion, MineProfileSnapshot profile, List<MineStatusCard> alerts, List<MineArchiveEntry> archiveEntries, MinePrivacyNotice privacyNotice
 });
 
 
@@ -62,15 +62,14 @@ class _$MineDashboardCopyWithImpl<$Res>
 
 /// Create a copy of MineDashboard
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? account = null,Object? completion = null,Object? profile = null,Object? alerts = null,Object? archiveEntries = null,Object? campusServices = null,Object? privacyNotice = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? account = null,Object? completion = null,Object? profile = null,Object? alerts = null,Object? archiveEntries = null,Object? privacyNotice = null,}) {
   return _then(_self.copyWith(
 account: null == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as MineAccount,completion: null == completion ? _self.completion : completion // ignore: cast_nullable_to_non_nullable
 as MineCompletion,profile: null == profile ? _self.profile : profile // ignore: cast_nullable_to_non_nullable
 as MineProfileSnapshot,alerts: null == alerts ? _self.alerts : alerts // ignore: cast_nullable_to_non_nullable
 as List<MineStatusCard>,archiveEntries: null == archiveEntries ? _self.archiveEntries : archiveEntries // ignore: cast_nullable_to_non_nullable
-as List<MineArchiveEntry>,campusServices: null == campusServices ? _self.campusServices : campusServices // ignore: cast_nullable_to_non_nullable
-as List<MineActionEntry>,privacyNotice: null == privacyNotice ? _self.privacyNotice : privacyNotice // ignore: cast_nullable_to_non_nullable
+as List<MineArchiveEntry>,privacyNotice: null == privacyNotice ? _self.privacyNotice : privacyNotice // ignore: cast_nullable_to_non_nullable
 as MinePrivacyNotice,
   ));
 }
@@ -192,10 +191,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MineAccount account,  MineCompletion completion,  MineProfileSnapshot profile,  List<MineStatusCard> alerts,  List<MineArchiveEntry> archiveEntries,  List<MineActionEntry> campusServices,  MinePrivacyNotice privacyNotice)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MineAccount account,  MineCompletion completion,  MineProfileSnapshot profile,  List<MineStatusCard> alerts,  List<MineArchiveEntry> archiveEntries,  MinePrivacyNotice privacyNotice)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MineDashboard() when $default != null:
-return $default(_that.account,_that.completion,_that.profile,_that.alerts,_that.archiveEntries,_that.campusServices,_that.privacyNotice);case _:
+return $default(_that.account,_that.completion,_that.profile,_that.alerts,_that.archiveEntries,_that.privacyNotice);case _:
   return orElse();
 
 }
@@ -213,10 +212,10 @@ return $default(_that.account,_that.completion,_that.profile,_that.alerts,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MineAccount account,  MineCompletion completion,  MineProfileSnapshot profile,  List<MineStatusCard> alerts,  List<MineArchiveEntry> archiveEntries,  List<MineActionEntry> campusServices,  MinePrivacyNotice privacyNotice)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MineAccount account,  MineCompletion completion,  MineProfileSnapshot profile,  List<MineStatusCard> alerts,  List<MineArchiveEntry> archiveEntries,  MinePrivacyNotice privacyNotice)  $default,) {final _that = this;
 switch (_that) {
 case _MineDashboard():
-return $default(_that.account,_that.completion,_that.profile,_that.alerts,_that.archiveEntries,_that.campusServices,_that.privacyNotice);case _:
+return $default(_that.account,_that.completion,_that.profile,_that.alerts,_that.archiveEntries,_that.privacyNotice);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -233,10 +232,10 @@ return $default(_that.account,_that.completion,_that.profile,_that.alerts,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MineAccount account,  MineCompletion completion,  MineProfileSnapshot profile,  List<MineStatusCard> alerts,  List<MineArchiveEntry> archiveEntries,  List<MineActionEntry> campusServices,  MinePrivacyNotice privacyNotice)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MineAccount account,  MineCompletion completion,  MineProfileSnapshot profile,  List<MineStatusCard> alerts,  List<MineArchiveEntry> archiveEntries,  MinePrivacyNotice privacyNotice)?  $default,) {final _that = this;
 switch (_that) {
 case _MineDashboard() when $default != null:
-return $default(_that.account,_that.completion,_that.profile,_that.alerts,_that.archiveEntries,_that.campusServices,_that.privacyNotice);case _:
+return $default(_that.account,_that.completion,_that.profile,_that.alerts,_that.archiveEntries,_that.privacyNotice);case _:
   return null;
 
 }
@@ -248,7 +247,7 @@ return $default(_that.account,_that.completion,_that.profile,_that.alerts,_that.
 
 
 class _MineDashboard implements MineDashboard {
-  const _MineDashboard({required this.account, required this.completion, required this.profile, required final  List<MineStatusCard> alerts, required final  List<MineArchiveEntry> archiveEntries, required final  List<MineActionEntry> campusServices, required this.privacyNotice}): _alerts = alerts,_archiveEntries = archiveEntries,_campusServices = campusServices;
+  const _MineDashboard({required this.account, required this.completion, required this.profile, required final  List<MineStatusCard> alerts, required final  List<MineArchiveEntry> archiveEntries, required this.privacyNotice}): _alerts = alerts,_archiveEntries = archiveEntries;
   
 
 @override final  MineAccount account;
@@ -268,13 +267,6 @@ class _MineDashboard implements MineDashboard {
   return EqualUnmodifiableListView(_archiveEntries);
 }
 
- final  List<MineActionEntry> _campusServices;
-@override List<MineActionEntry> get campusServices {
-  if (_campusServices is EqualUnmodifiableListView) return _campusServices;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_campusServices);
-}
-
 @override final  MinePrivacyNotice privacyNotice;
 
 /// Create a copy of MineDashboard
@@ -287,16 +279,16 @@ _$MineDashboardCopyWith<_MineDashboard> get copyWith => __$MineDashboardCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MineDashboard&&(identical(other.account, account) || other.account == account)&&(identical(other.completion, completion) || other.completion == completion)&&(identical(other.profile, profile) || other.profile == profile)&&const DeepCollectionEquality().equals(other._alerts, _alerts)&&const DeepCollectionEquality().equals(other._archiveEntries, _archiveEntries)&&const DeepCollectionEquality().equals(other._campusServices, _campusServices)&&(identical(other.privacyNotice, privacyNotice) || other.privacyNotice == privacyNotice));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MineDashboard&&(identical(other.account, account) || other.account == account)&&(identical(other.completion, completion) || other.completion == completion)&&(identical(other.profile, profile) || other.profile == profile)&&const DeepCollectionEquality().equals(other._alerts, _alerts)&&const DeepCollectionEquality().equals(other._archiveEntries, _archiveEntries)&&(identical(other.privacyNotice, privacyNotice) || other.privacyNotice == privacyNotice));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,account,completion,profile,const DeepCollectionEquality().hash(_alerts),const DeepCollectionEquality().hash(_archiveEntries),const DeepCollectionEquality().hash(_campusServices),privacyNotice);
+int get hashCode => Object.hash(runtimeType,account,completion,profile,const DeepCollectionEquality().hash(_alerts),const DeepCollectionEquality().hash(_archiveEntries),privacyNotice);
 
 @override
 String toString() {
-  return 'MineDashboard(account: $account, completion: $completion, profile: $profile, alerts: $alerts, archiveEntries: $archiveEntries, campusServices: $campusServices, privacyNotice: $privacyNotice)';
+  return 'MineDashboard(account: $account, completion: $completion, profile: $profile, alerts: $alerts, archiveEntries: $archiveEntries, privacyNotice: $privacyNotice)';
 }
 
 
@@ -307,7 +299,7 @@ abstract mixin class _$MineDashboardCopyWith<$Res> implements $MineDashboardCopy
   factory _$MineDashboardCopyWith(_MineDashboard value, $Res Function(_MineDashboard) _then) = __$MineDashboardCopyWithImpl;
 @override @useResult
 $Res call({
- MineAccount account, MineCompletion completion, MineProfileSnapshot profile, List<MineStatusCard> alerts, List<MineArchiveEntry> archiveEntries, List<MineActionEntry> campusServices, MinePrivacyNotice privacyNotice
+ MineAccount account, MineCompletion completion, MineProfileSnapshot profile, List<MineStatusCard> alerts, List<MineArchiveEntry> archiveEntries, MinePrivacyNotice privacyNotice
 });
 
 
@@ -324,15 +316,14 @@ class __$MineDashboardCopyWithImpl<$Res>
 
 /// Create a copy of MineDashboard
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? account = null,Object? completion = null,Object? profile = null,Object? alerts = null,Object? archiveEntries = null,Object? campusServices = null,Object? privacyNotice = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? account = null,Object? completion = null,Object? profile = null,Object? alerts = null,Object? archiveEntries = null,Object? privacyNotice = null,}) {
   return _then(_MineDashboard(
 account: null == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as MineAccount,completion: null == completion ? _self.completion : completion // ignore: cast_nullable_to_non_nullable
 as MineCompletion,profile: null == profile ? _self.profile : profile // ignore: cast_nullable_to_non_nullable
 as MineProfileSnapshot,alerts: null == alerts ? _self._alerts : alerts // ignore: cast_nullable_to_non_nullable
 as List<MineStatusCard>,archiveEntries: null == archiveEntries ? _self._archiveEntries : archiveEntries // ignore: cast_nullable_to_non_nullable
-as List<MineArchiveEntry>,campusServices: null == campusServices ? _self._campusServices : campusServices // ignore: cast_nullable_to_non_nullable
-as List<MineActionEntry>,privacyNotice: null == privacyNotice ? _self.privacyNotice : privacyNotice // ignore: cast_nullable_to_non_nullable
+as List<MineArchiveEntry>,privacyNotice: null == privacyNotice ? _self.privacyNotice : privacyNotice // ignore: cast_nullable_to_non_nullable
 as MinePrivacyNotice,
   ));
 }
@@ -1729,288 +1720,6 @@ as Color,titleKey: null == titleKey ? _self.titleKey : titleKey // ignore: cast_
 as MineCopyKey,subtitleKey: null == subtitleKey ? _self.subtitleKey : subtitleKey // ignore: cast_nullable_to_non_nullable
 as MineCopyKey,statusKey: freezed == statusKey ? _self.statusKey : statusKey // ignore: cast_nullable_to_non_nullable
 as MineCopyKey?,route: freezed == route ? _self.route : route // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-
-}
-
-/// @nodoc
-mixin _$MineActionEntry {
-
- IconData get icon; Color get accent; MineCopyKey get titleKey; MineCopyKey get subtitleKey;/// Server-provided display title; takes precedence over [titleKey] when set.
- String? get rawTitle;/// Server-provided display subtitle; takes precedence over [subtitleKey].
- String? get rawSubtitle; MineActionTargetType? get actionType; String? get actionTarget;
-/// Create a copy of MineActionEntry
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$MineActionEntryCopyWith<MineActionEntry> get copyWith => _$MineActionEntryCopyWithImpl<MineActionEntry>(this as MineActionEntry, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MineActionEntry&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.titleKey, titleKey) || other.titleKey == titleKey)&&(identical(other.subtitleKey, subtitleKey) || other.subtitleKey == subtitleKey)&&(identical(other.rawTitle, rawTitle) || other.rawTitle == rawTitle)&&(identical(other.rawSubtitle, rawSubtitle) || other.rawSubtitle == rawSubtitle)&&(identical(other.actionType, actionType) || other.actionType == actionType)&&(identical(other.actionTarget, actionTarget) || other.actionTarget == actionTarget));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,icon,accent,titleKey,subtitleKey,rawTitle,rawSubtitle,actionType,actionTarget);
-
-@override
-String toString() {
-  return 'MineActionEntry(icon: $icon, accent: $accent, titleKey: $titleKey, subtitleKey: $subtitleKey, rawTitle: $rawTitle, rawSubtitle: $rawSubtitle, actionType: $actionType, actionTarget: $actionTarget)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $MineActionEntryCopyWith<$Res>  {
-  factory $MineActionEntryCopyWith(MineActionEntry value, $Res Function(MineActionEntry) _then) = _$MineActionEntryCopyWithImpl;
-@useResult
-$Res call({
- IconData icon, Color accent, MineCopyKey titleKey, MineCopyKey subtitleKey, String? rawTitle, String? rawSubtitle, MineActionTargetType? actionType, String? actionTarget
-});
-
-
-
-
-}
-/// @nodoc
-class _$MineActionEntryCopyWithImpl<$Res>
-    implements $MineActionEntryCopyWith<$Res> {
-  _$MineActionEntryCopyWithImpl(this._self, this._then);
-
-  final MineActionEntry _self;
-  final $Res Function(MineActionEntry) _then;
-
-/// Create a copy of MineActionEntry
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? icon = null,Object? accent = null,Object? titleKey = null,Object? subtitleKey = null,Object? rawTitle = freezed,Object? rawSubtitle = freezed,Object? actionType = freezed,Object? actionTarget = freezed,}) {
-  return _then(_self.copyWith(
-icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
-as IconData,accent: null == accent ? _self.accent : accent // ignore: cast_nullable_to_non_nullable
-as Color,titleKey: null == titleKey ? _self.titleKey : titleKey // ignore: cast_nullable_to_non_nullable
-as MineCopyKey,subtitleKey: null == subtitleKey ? _self.subtitleKey : subtitleKey // ignore: cast_nullable_to_non_nullable
-as MineCopyKey,rawTitle: freezed == rawTitle ? _self.rawTitle : rawTitle // ignore: cast_nullable_to_non_nullable
-as String?,rawSubtitle: freezed == rawSubtitle ? _self.rawSubtitle : rawSubtitle // ignore: cast_nullable_to_non_nullable
-as String?,actionType: freezed == actionType ? _self.actionType : actionType // ignore: cast_nullable_to_non_nullable
-as MineActionTargetType?,actionTarget: freezed == actionTarget ? _self.actionTarget : actionTarget // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [MineActionEntry].
-extension MineActionEntryPatterns on MineActionEntry {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MineActionEntry value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _MineActionEntry() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MineActionEntry value)  $default,){
-final _that = this;
-switch (_that) {
-case _MineActionEntry():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MineActionEntry value)?  $default,){
-final _that = this;
-switch (_that) {
-case _MineActionEntry() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( IconData icon,  Color accent,  MineCopyKey titleKey,  MineCopyKey subtitleKey,  String? rawTitle,  String? rawSubtitle,  MineActionTargetType? actionType,  String? actionTarget)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _MineActionEntry() when $default != null:
-return $default(_that.icon,_that.accent,_that.titleKey,_that.subtitleKey,_that.rawTitle,_that.rawSubtitle,_that.actionType,_that.actionTarget);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( IconData icon,  Color accent,  MineCopyKey titleKey,  MineCopyKey subtitleKey,  String? rawTitle,  String? rawSubtitle,  MineActionTargetType? actionType,  String? actionTarget)  $default,) {final _that = this;
-switch (_that) {
-case _MineActionEntry():
-return $default(_that.icon,_that.accent,_that.titleKey,_that.subtitleKey,_that.rawTitle,_that.rawSubtitle,_that.actionType,_that.actionTarget);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( IconData icon,  Color accent,  MineCopyKey titleKey,  MineCopyKey subtitleKey,  String? rawTitle,  String? rawSubtitle,  MineActionTargetType? actionType,  String? actionTarget)?  $default,) {final _that = this;
-switch (_that) {
-case _MineActionEntry() when $default != null:
-return $default(_that.icon,_that.accent,_that.titleKey,_that.subtitleKey,_that.rawTitle,_that.rawSubtitle,_that.actionType,_that.actionTarget);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-
-
-class _MineActionEntry implements MineActionEntry {
-  const _MineActionEntry({required this.icon, required this.accent, required this.titleKey, required this.subtitleKey, this.rawTitle, this.rawSubtitle, this.actionType, this.actionTarget});
-  
-
-@override final  IconData icon;
-@override final  Color accent;
-@override final  MineCopyKey titleKey;
-@override final  MineCopyKey subtitleKey;
-/// Server-provided display title; takes precedence over [titleKey] when set.
-@override final  String? rawTitle;
-/// Server-provided display subtitle; takes precedence over [subtitleKey].
-@override final  String? rawSubtitle;
-@override final  MineActionTargetType? actionType;
-@override final  String? actionTarget;
-
-/// Create a copy of MineActionEntry
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$MineActionEntryCopyWith<_MineActionEntry> get copyWith => __$MineActionEntryCopyWithImpl<_MineActionEntry>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MineActionEntry&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.accent, accent) || other.accent == accent)&&(identical(other.titleKey, titleKey) || other.titleKey == titleKey)&&(identical(other.subtitleKey, subtitleKey) || other.subtitleKey == subtitleKey)&&(identical(other.rawTitle, rawTitle) || other.rawTitle == rawTitle)&&(identical(other.rawSubtitle, rawSubtitle) || other.rawSubtitle == rawSubtitle)&&(identical(other.actionType, actionType) || other.actionType == actionType)&&(identical(other.actionTarget, actionTarget) || other.actionTarget == actionTarget));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,icon,accent,titleKey,subtitleKey,rawTitle,rawSubtitle,actionType,actionTarget);
-
-@override
-String toString() {
-  return 'MineActionEntry(icon: $icon, accent: $accent, titleKey: $titleKey, subtitleKey: $subtitleKey, rawTitle: $rawTitle, rawSubtitle: $rawSubtitle, actionType: $actionType, actionTarget: $actionTarget)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$MineActionEntryCopyWith<$Res> implements $MineActionEntryCopyWith<$Res> {
-  factory _$MineActionEntryCopyWith(_MineActionEntry value, $Res Function(_MineActionEntry) _then) = __$MineActionEntryCopyWithImpl;
-@override @useResult
-$Res call({
- IconData icon, Color accent, MineCopyKey titleKey, MineCopyKey subtitleKey, String? rawTitle, String? rawSubtitle, MineActionTargetType? actionType, String? actionTarget
-});
-
-
-
-
-}
-/// @nodoc
-class __$MineActionEntryCopyWithImpl<$Res>
-    implements _$MineActionEntryCopyWith<$Res> {
-  __$MineActionEntryCopyWithImpl(this._self, this._then);
-
-  final _MineActionEntry _self;
-  final $Res Function(_MineActionEntry) _then;
-
-/// Create a copy of MineActionEntry
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? icon = null,Object? accent = null,Object? titleKey = null,Object? subtitleKey = null,Object? rawTitle = freezed,Object? rawSubtitle = freezed,Object? actionType = freezed,Object? actionTarget = freezed,}) {
-  return _then(_MineActionEntry(
-icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
-as IconData,accent: null == accent ? _self.accent : accent // ignore: cast_nullable_to_non_nullable
-as Color,titleKey: null == titleKey ? _self.titleKey : titleKey // ignore: cast_nullable_to_non_nullable
-as MineCopyKey,subtitleKey: null == subtitleKey ? _self.subtitleKey : subtitleKey // ignore: cast_nullable_to_non_nullable
-as MineCopyKey,rawTitle: freezed == rawTitle ? _self.rawTitle : rawTitle // ignore: cast_nullable_to_non_nullable
-as String?,rawSubtitle: freezed == rawSubtitle ? _self.rawSubtitle : rawSubtitle // ignore: cast_nullable_to_non_nullable
-as String?,actionType: freezed == actionType ? _self.actionType : actionType // ignore: cast_nullable_to_non_nullable
-as MineActionTargetType?,actionTarget: freezed == actionTarget ? _self.actionTarget : actionTarget // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

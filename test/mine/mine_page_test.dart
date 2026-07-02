@@ -11,14 +11,12 @@ import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/mine_skeleton_view.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
-import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
@@ -46,7 +44,6 @@ void main() {
       'mine-account-header',
       'mine-status-overview',
       'mine-archive-section',
-      'mine-campus-section',
       'mine-privacy-notice',
     ];
 
@@ -57,8 +54,7 @@ void main() {
       expect(finder, findsOneWidget);
     }
 
-    expect(find.text(l10n.mineCampusSectionTitle), findsOneWidget);
-    expect(find.byKey(const Key('mine-campus-surface')), findsOneWidget);
+    expect(find.byKey(const Key('mine-campus-surface')), findsNothing);
     expect(find.byType(IntrinsicHeight), findsNothing);
     expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
     expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
@@ -363,9 +359,6 @@ void main() {
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(_mockSnapshot),
         ),
-        supportResourcesProvider(
-          'campus',
-        ).overrideWith((ref) async => const []),
       ],
     );
     addTearDown(container.dispose);
@@ -386,55 +379,29 @@ void main() {
     );
   });
 
-  testWidgets(
-    'Mine campus services stay visible but inactive without targets',
-    (tester) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+  testWidgets('Mine page does not render campus services section', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _EmailSignedInAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(_mockSnapshot),
+          ),
+        ],
+        child: _materialApp(const MinePage()),
+      ),
+    );
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authSessionProvider.overrideWith(
-              () => _EmailSignedInAuthSessionNotifier(),
-            ),
-            healthContextSnapshotProvider.overrideWith(
-              (ref) => Future.value(_mockSnapshot),
-            ),
-            supportResourcesProvider('campus').overrideWith(
-              (ref) async => [
-                SupportResourceDto(
-                  id: 'campus-hospital',
-                  scope: SupportResourceScope.campus,
-                  title: 'Campus Hospital',
-                  titleKey: null,
-                  subtitle: 'On-campus medical services',
-                  subtitleKey: null,
-                  icon: 'local_hospital',
-                  actionUrl: null,
-                  actionType: null,
-                  available: false,
-                ),
-              ],
-            ),
-          ],
-          child: _materialApp(const MinePage()),
-        ),
-      );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
 
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-
-      expect(find.text(l10n.mineCampusSectionTitle), findsOneWidget);
-      expect(find.text('Campus Hospital'), findsOneWidget);
-
-      final campusRow = find.ancestor(
-        of: find.text('Campus Hospital'),
-        matching: find.byType(InkWell),
-      );
-      expect(campusRow, findsOneWidget);
-      expect(tester.widget<InkWell>(campusRow).onTap, isNull);
-    },
-  );
+    expect(find.byKey(const Key('mine-campus-section')), findsNothing);
+    expect(find.byKey(const Key('mine-campus-surface')), findsNothing);
+  });
   testWidgets('Mine error state shows AppStateErrorView with retry', (
     tester,
   ) async {

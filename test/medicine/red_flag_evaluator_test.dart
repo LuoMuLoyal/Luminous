@@ -91,7 +91,6 @@ void main() {
     expect(alerts, hasLength(1));
     expect(alerts.first.rule, RedFlagRule.severeAllergy);
     expect(alerts.first.primaryMedicineName, '阿莫西林');
-    expect(alerts.first.resourceId, 'campus-emergency');
   });
 
   test('Rule 1: mild allergy does NOT trigger red flag', () {
@@ -336,7 +335,6 @@ void main() {
 
     expect(alerts, hasLength(1));
     expect(alerts.first.rule, RedFlagRule.informationGap);
-    expect(alerts.first.resourceId, isNull);
   });
 
   test('Rule 3: no red flag for low-risk user with coverage gaps', () {

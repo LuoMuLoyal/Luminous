@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-07-01
+Last updated: 2026-07-02
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO code plus generated `../Lucent/docs/openapi.json`, not from prose.
 
@@ -63,10 +63,12 @@ flutter analyze
 flutter test
 ```
 
-For CI-only drift verification without re-exporting from a sibling workspace layout, run:
+For CI-only contract-path verification without re-exporting from a sibling workspace layout, run:
 
 ```bash
 dart run tool/verify_lucent_openapi_sync.dart --openapi /absolute/path/to/Lucent/docs/openapi.json
+
+`verify_lucent_openapi_sync.dart` no longer checks whether `docs/openapi.json` or `packages/lucent_openapi/` are already committed/clean in git. It only verifies that the target OpenAPI file is readable JSON and that the generated client layout exists, so it can run safely before commit inside a dirty working tree.
 ```
 
 Generated OpenAPI client paths are covered by `.gitattributes` whitespace rules, so `git diff --check` will not block on generated trailing spaces there.

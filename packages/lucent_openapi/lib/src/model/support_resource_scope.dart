@@ -6,8 +6,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
 enum SupportResourceScope {
-  @JsonValue(r'campus')
-  campus(r'campus'),
   @JsonValue(r'help')
   help(r'help'),
   @JsonValue(r'about')

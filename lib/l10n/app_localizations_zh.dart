@@ -1789,33 +1789,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mineArchiveNeedsFill => '待补充';
 
   @override
-  String get mineCampusSectionTitle => '校园服务';
-
-  @override
-  String get mineCampusHospitalTitle => '校医院';
-
-  @override
-  String get mineCampusHospitalSubtitle => '在线预约挂号';
-
-  @override
-  String get mineCampusSupportTitle => '学生支持';
-
-  @override
-  String get mineCampusSupportSubtitle => '校内支持资源';
-
-  @override
-  String get mineCampusPharmacyTitle => '校园药房';
-
-  @override
-  String get mineCampusPharmacySubtitle => '校内药品查询';
-
-  @override
-  String get mineCampusEmergencyTitle => '紧急帮助';
-
-  @override
-  String get mineCampusEmergencySubtitle => '紧急电话与指南';
-
-  @override
   String get minePrivacyReportTitle => '报告分享';
 
   @override
@@ -2871,6 +2844,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get assistantToolSleepByRange => '睡眠概况';
 
   @override
+  String get assistantToolSearchMedicineLeaflets => '中文说明书检索';
+
+  @override
+  String get assistantToolSearchMedicalQaCorpus => '医学问答检索';
+
+  @override
+  String get assistantToolResolveDrugbankEntity => 'DrugBank 实体定位';
+
+  @override
+  String get assistantToolSearchDrugbankPassages => 'DrugBank 片段检索';
+
+  @override
   String get assistantToolProposeCreateRecord => '保存建议';
 
   @override
@@ -3569,15 +3554,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String medicineRiskCheckRedFlagInformationGap(Object drug) {
     return '无法确认 $drug 的安全性，建议线下核对药品说明书或咨询药师。';
   }
-
-  @override
-  String get medicineRiskCheckRedFlagResourceEmergency => '急救资源';
-
-  @override
-  String get medicineRiskCheckRedFlagResourceHospital => '校医院';
-
-  @override
-  String get medicineRiskCheckRedFlagResourcePharmacy => '校园药房';
 
   @override
   String get medicineRiskCheckRedFlagActionSevereAllergy =>

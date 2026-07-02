@@ -1938,33 +1938,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineArchiveNeedsFill => 'Needs info';
 
   @override
-  String get mineCampusSectionTitle => 'Campus services';
-
-  @override
-  String get mineCampusHospitalTitle => 'Campus clinic';
-
-  @override
-  String get mineCampusHospitalSubtitle => 'Book an appointment';
-
-  @override
-  String get mineCampusSupportTitle => 'Student support';
-
-  @override
-  String get mineCampusSupportSubtitle => 'Campus support resources';
-
-  @override
-  String get mineCampusPharmacyTitle => 'Campus pharmacy';
-
-  @override
-  String get mineCampusPharmacySubtitle => 'Search campus medicines';
-
-  @override
-  String get mineCampusEmergencyTitle => 'Emergency help';
-
-  @override
-  String get mineCampusEmergencySubtitle => 'Hotlines and guides';
-
-  @override
   String get minePrivacyReportTitle => 'Report sharing';
 
   @override
@@ -3077,6 +3050,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get assistantToolSleepByRange => 'Sleep summary';
 
   @override
+  String get assistantToolSearchMedicineLeaflets => 'Chinese leaflet search';
+
+  @override
+  String get assistantToolSearchMedicalQaCorpus => 'Medical QA search';
+
+  @override
+  String get assistantToolResolveDrugbankEntity => 'DrugBank entity resolve';
+
+  @override
+  String get assistantToolSearchDrugbankPassages => 'DrugBank passage search';
+
+  @override
   String get assistantToolProposeCreateRecord => 'Save proposal';
 
   @override
@@ -3817,15 +3802,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String medicineRiskCheckRedFlagInformationGap(Object drug) {
     return 'Unable to confirm safety of $drug. Check the drug label or consult a pharmacist.';
   }
-
-  @override
-  String get medicineRiskCheckRedFlagResourceEmergency => 'Emergency';
-
-  @override
-  String get medicineRiskCheckRedFlagResourceHospital => 'Campus clinic';
-
-  @override
-  String get medicineRiskCheckRedFlagResourcePharmacy => 'Campus pharmacy';
 
   @override
   String get medicineRiskCheckRedFlagActionSevereAllergy =>
