@@ -1,9 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
@@ -72,9 +71,7 @@ class ReminderFormBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
     final medicines = snapshot.currentMedicines
         .where((item) => item.isCurrent)
         .toList(growable: false);
@@ -86,7 +83,7 @@ class ReminderFormBody extends StatelessWidget {
       return AppStateErrorView(
         title: l10n.medicineNoMedicineTitle,
         description: l10n.medicineNoMedicineBody,
-        icon: Icons.medication_outlined,
+        icon: FLucideIcons.pill,
         actionLabel: l10n.medicineQuickAddTitle,
         onAction: () => context.push('/medicine/search'),
       );
@@ -97,33 +94,14 @@ class ReminderFormBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppSectionSurface(
-            padding: EdgeInsets.zero,
+          _FormCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.sm,
-                  ),
-                  child: Text(
-                    l10n.medicineReminderMedicineSectionTitle,
-                    style: typography.bodyMdStrong.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ),
-                Divider(height: 1, thickness: 1, color: surface.hairline),
+                _SectionTitle(label: l10n.medicineReminderMedicineSectionTitle),
+                Divider(height: 1, thickness: 1, color: colors.border),
                 if (isEdit && selectedMedicine != null)
-                  SelectedMedicineRow(
-                    medicine: selectedMedicine,
-                    typography: typography,
-                    surface: surface,
-                  )
+                  SelectedMedicineRow(medicine: selectedMedicine)
                 else
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -150,26 +128,11 @@ class ReminderFormBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AppSectionSurface(
-            padding: EdgeInsets.zero,
+          _FormCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.xs,
-                  ),
-                  child: Text(
-                    l10n.medicineReminderSettingsSectionTitle,
-                    style: typography.bodyMdStrong.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ),
+                _SectionTitle(label: l10n.medicineReminderSettingsSectionTitle),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacingTokens.md,
@@ -181,7 +144,7 @@ class ReminderFormBody extends StatelessWidget {
                   ),
                 ),
                 if (frequency != ReminderFrequency.daily) ...[
-                  Divider(height: 1, thickness: 1, color: surface.hairline),
+                  Divider(height: 1, thickness: 1, color: colors.border),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacingTokens.md,
@@ -193,7 +156,7 @@ class ReminderFormBody extends StatelessWidget {
                     ),
                   ),
                 ],
-                Divider(height: 1, thickness: 1, color: surface.hairline),
+                Divider(height: 1, thickness: 1, color: colors.border),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacingTokens.md,
@@ -205,124 +168,124 @@ class ReminderFormBody extends StatelessWidget {
                     onRemoveTime: onRemoveTime,
                   ),
                 ),
-                Divider(height: 1, thickness: 1, color: surface.hairline),
+                Divider(height: 1, thickness: 1, color: colors.border),
                 ValueActionRow(
-                  icon: Icons.calendar_today_rounded,
+                  icon: FLucideIcons.calendar,
                   title: l10n.medicineReminderStartDateLabel,
                   value: dateLabel(l10n, startDate),
                   onTap: onStartDateTap,
-                  typography: typography,
-                  surface: surface,
                 ),
-                Divider(height: 1, thickness: 1, color: surface.hairline),
+                Divider(height: 1, thickness: 1, color: colors.border),
                 ValueActionRow(
-                  icon: Icons.event_busy_rounded,
+                  icon: FLucideIcons.calendarX2,
                   title: l10n.medicineReminderEndDateLabel,
                   value: dateLabel(l10n, endDate),
                   onTap: onEndDateTap,
                   onClear: onClearEndDate,
-                  typography: typography,
-                  surface: surface,
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AppSectionSurface(
-            padding: EdgeInsets.zero,
+          _FormCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.md,
-                    AppSpacingTokens.xs,
-                  ),
-                  child: Text(
-                    l10n.medicineReminderMethodLabel,
-                    style: typography.bodyMdStrong.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ),
+                _SectionTitle(label: l10n.medicineReminderMethodLabel),
                 SwitchRow(
                   title: l10n.medicineReminderNotificationOn,
                   subtitle: l10n.medicineReminderDeviceLocalHint,
                   value: isActive,
                   onChanged: onActiveChanged,
-                  typography: typography,
-                  surface: surface,
                 ),
-                Divider(height: 1, thickness: 1, color: surface.hairline),
+                Divider(height: 1, thickness: 1, color: colors.border),
                 UnavailableMethodRow(
-                  icon: Icons.sms_outlined,
+                  icon: FLucideIcons.messageSquare,
                   title: l10n.medicineReminderSmsLabel,
                   subtitle: l10n.medicineReminderSmsUnavailableHint,
                   status: l10n.medicineReminderUnavailableStatus,
-                  typography: typography,
-                  surface: surface,
                 ),
-                Divider(height: 1, thickness: 1, color: surface.hairline),
+                Divider(height: 1, thickness: 1, color: colors.border),
                 SoundPreferenceRow(
                   value: soundPreference,
                   onChanged: onSoundChanged,
-                  typography: typography,
-                  surface: surface,
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AppSectionSurface(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
-            child: TextField(
-              controller: noteController,
-              maxLength: 100,
-              maxLines: 3,
-              decoration: InputDecoration(
-                labelText: l10n.medicineReminderNoteOptionalLabel,
-                hintText: l10n.medicineReminderNoteHint,
-                border: const OutlineInputBorder(),
+          _FormCard(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacingTokens.md),
+              child: TextField(
+                controller: noteController,
+                maxLength: 100,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: l10n.medicineReminderNoteOptionalLabel,
+                  hintText: l10n.medicineReminderNoteHint,
+                  border: const OutlineInputBorder(),
+                ),
               ),
             ),
           ),
           const SizedBox(height: AppSpacingTokens.lg),
-          FilledButton(
+          FButton(
             key: const Key('medicine-reminder-save-button'),
-            onPressed: isSaving ? null : onSave,
-            style: FilledButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-              ),
-              padding: const EdgeInsets.symmetric(
-                vertical: AppSpacingTokens.md,
-              ),
-            ),
+            onPress: isSaving ? null : onSave,
             child: Text(l10n.mineEditSaveAction),
           ),
           if (onDelete != null) ...[
             const SizedBox(height: AppSpacingTokens.sm),
-            FilledButton.icon(
+            OutlinedButton(
               key: const Key('medicine-reminder-form-delete-button'),
               onPressed: isSaving ? null : onDelete,
-              style: FilledButton.styleFrom(
-                backgroundColor: surface.error,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-                ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: colors.destructive,
+                side: BorderSide(color: colors.destructive),
                 padding: const EdgeInsets.symmetric(
                   vertical: AppSpacingTokens.md,
                 ),
               ),
-              icon: const Icon(Icons.delete_outline_rounded),
-              label: Text(l10n.medicineReminderDeleteAction),
+              child: Text(l10n.medicineReminderDeleteAction),
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _FormCard extends StatelessWidget {
+  const _FormCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return FCard.raw(child: child);
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacingTokens.md,
+        AppSpacingTokens.md,
+        AppSpacingTokens.md,
+        AppSpacingTokens.sm,
+      ),
+      child: Text(
+        label,
+        style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
       ),
     );
   }

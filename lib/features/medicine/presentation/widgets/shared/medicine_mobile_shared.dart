@@ -17,7 +17,7 @@ class _MedicationAvatar extends StatelessWidget {
       child: SizedBox.square(
         dimension: size,
         child: Icon(
-          Icons.medication_rounded,
+          FLucideIcons.pillBottle,
           color: item.color,
           size: size * 0.52,
         ),
@@ -44,9 +44,7 @@ class _DoseActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
+    final textTheme = Theme.of(context).textTheme;
     final foreground = filled ? AppColorTokens.onPrimary : color;
 
     return AppInkWell(
@@ -71,9 +69,9 @@ class _DoseActionButton extends StatelessWidget {
               Flexible(
                 child: Text(
                   label,
-                  style: typography.bodySmStrong.copyWith(
+                  style: textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
                     color: foreground,
-                    letterSpacing: 0,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -94,24 +92,20 @@ class _FilterText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           label,
-          style: typography.bodySm.copyWith(
-            color: surface.body,
-            letterSpacing: 0,
-          ),
+          style: textTheme.bodySmall?.copyWith(color: colors.foreground),
         ),
         const SizedBox(width: AppSpacingTokens.xxs),
         Icon(
-          Icons.keyboard_arrow_down_rounded,
-          color: surface.body,
+          FLucideIcons.chevronDown,
+          color: colors.foreground,
           size: AppSpacingTokens.md,
         ),
       ],
@@ -195,7 +189,6 @@ _NextDose? _nextDoseFor(MedicineWorkspace workspace) {
 List<_RecordRow> _recordRowsFor(
   AppLocalizations l10n,
   List<MedicinePlanItem> items,
-  AppThemeSurface surface,
 ) {
   final rows = <_RecordRow>[];
   for (final item in items) {
@@ -207,14 +200,13 @@ List<_RecordRow> _recordRowsFor(
           null,
           rows.length,
           l10n.medicineRecordScheduledStatus,
-          surface,
         ),
       );
       continue;
     }
 
     for (final slot in item.slots) {
-      rows.add(_rowFromItem(l10n, item, slot, rows.length, null, surface));
+      rows.add(_rowFromItem(l10n, item, slot, rows.length, null));
     }
   }
   return rows;
@@ -226,18 +218,17 @@ _RecordRow _rowFromItem(
   MedicineDoseSlot? slot,
   int index,
   String? fallbackStatus,
-  AppThemeSurface surface,
 ) {
   final status = slot?.status ?? MedicineDoseStatus.pending;
   final statusColor = switch (status) {
-    MedicineDoseStatus.taken => surface.teal,
-    MedicineDoseStatus.skipped => surface.warningDeep,
-    MedicineDoseStatus.pending => surface.link,
+    MedicineDoseStatus.taken => AppColorTokens.cyanDeep,
+    MedicineDoseStatus.skipped => AppColorTokens.warningDeep,
+    MedicineDoseStatus.pending => AppColorTokens.gradientDevelopStart,
   };
   final statusIcon = switch (status) {
-    MedicineDoseStatus.taken => Icons.check_rounded,
-    MedicineDoseStatus.skipped => Icons.remove_done_rounded,
-    MedicineDoseStatus.pending => Icons.hourglass_top_rounded,
+    MedicineDoseStatus.taken => FLucideIcons.check,
+    MedicineDoseStatus.skipped => FLucideIcons.ban,
+    MedicineDoseStatus.pending => FLucideIcons.clock3,
   };
   final statusLabel =
       fallbackStatus ??

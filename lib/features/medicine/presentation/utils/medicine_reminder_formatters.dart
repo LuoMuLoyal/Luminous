@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
@@ -107,18 +109,28 @@ String deliveryStatusLabel(AppLocalizations l10n, String value) {
 
 IconData deliveryStatusIcon(String value) {
   return switch (value) {
-    'delivered' => Icons.check_circle_outline_rounded,
-    'failed' => Icons.error_outline_rounded,
-    _ => Icons.schedule_rounded,
+    'delivered' => FLucideIcons.badgeCheck,
+    'failed' => FLucideIcons.circleAlert,
+    _ => FLucideIcons.clock3,
   };
 }
 
-Color deliveryStatusColor(String value, AppThemeSurface surface) {
+Color deliveryStatusColor(String value, Object palette) {
+  final destructive = switch (palette) {
+    FColors colors => colors.destructive,
+    AppThemeSurface surface => surface.error,
+    _ => AppColorTokens.warningDeep,
+  };
+  final muted = switch (palette) {
+    FColors colors => colors.mutedForeground,
+    AppThemeSurface surface => surface.mute,
+    _ => AppColorTokens.warningDeep,
+  };
   return switch (value) {
-    'delivered' => surface.teal,
-    'failed' => surface.error,
-    'scheduled' => surface.warningDeep,
-    _ => surface.mute,
+    'delivered' => AppColorTokens.cyanDeep,
+    'failed' => destructive,
+    'scheduled' => AppColorTokens.warningDeep,
+    _ => muted,
   };
 }
 

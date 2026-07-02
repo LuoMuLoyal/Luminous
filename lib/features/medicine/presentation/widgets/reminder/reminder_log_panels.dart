@@ -1,28 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReminderTodayLogPanel extends StatelessWidget {
-  const ReminderTodayLogPanel({
-    super.key,
-    required this.logs,
-    required this.typography,
-    required this.surface,
-  });
+  const ReminderTodayLogPanel({super.key, required this.logs});
 
   final List<DoseLogItem> logs;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final visibleLogs = logs.isEmpty
         ? <DoseLogItem>[]
         : logs.take(3).toList(growable: false);
@@ -34,32 +28,27 @@ class ReminderTodayLogPanel extends StatelessWidget {
           padding: const EdgeInsets.only(left: AppSpacingTokens.xs),
           child: Text(
             l10n.medicineReminderTodayLogsTitle,
-            style: typography.bodyMdStrong.copyWith(
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-            ),
+            style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        AppSectionSurface(
-          padding: EdgeInsets.zero,
+        FCard.raw(
           child: visibleLogs.isEmpty
               ? Padding(
                   padding: const EdgeInsets.all(AppSpacingTokens.md),
                   child: Row(
                     children: [
                       Icon(
-                        Icons.pending_actions_rounded,
-                        color: surface.mute,
+                        FLucideIcons.clipboardList,
+                        color: colors.mutedForeground,
                         size: AppSpacingTokens.lg,
                       ),
                       const SizedBox(width: AppSpacingTokens.sm),
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoTodayLogs,
-                          style: typography.bodySm.copyWith(
-                            color: surface.body,
-                            letterSpacing: 0,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colors.mutedForeground,
                           ),
                         ),
                       ),
@@ -72,8 +61,6 @@ class ReminderTodayLogPanel extends StatelessWidget {
                       _TodayLogRow(
                         log: visibleLogs[index],
                         isLast: index == visibleLogs.length - 1,
-                        typography: typography,
-                        surface: surface,
                       ),
                   ],
                 ),
@@ -84,20 +71,15 @@ class ReminderTodayLogPanel extends StatelessWidget {
 }
 
 class ReminderDeliveryLogPanel extends StatelessWidget {
-  const ReminderDeliveryLogPanel({
-    super.key,
-    required this.logs,
-    required this.typography,
-    required this.surface,
-  });
+  const ReminderDeliveryLogPanel({super.key, required this.logs});
 
   final List<ReminderDeliveryItem> logs;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final visibleLogs = logs.take(5).toList(growable: false);
 
     return Column(
@@ -107,32 +89,27 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
           padding: const EdgeInsets.only(left: AppSpacingTokens.xs),
           child: Text(
             l10n.medicineReminderDeliveryLogsTitle,
-            style: typography.bodyMdStrong.copyWith(
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-            ),
+            style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        AppSectionSurface(
-          padding: EdgeInsets.zero,
+        FCard.raw(
           child: visibleLogs.isEmpty
               ? Padding(
                   padding: const EdgeInsets.all(AppSpacingTokens.md),
                   child: Row(
                     children: [
                       Icon(
-                        Icons.receipt_long_outlined,
-                        color: surface.mute,
+                        FLucideIcons.receiptText,
+                        color: colors.mutedForeground,
                         size: AppSpacingTokens.lg,
                       ),
                       const SizedBox(width: AppSpacingTokens.sm),
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoDeliveryLogs,
-                          style: typography.bodySm.copyWith(
-                            color: surface.body,
-                            letterSpacing: 0,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colors.mutedForeground,
                           ),
                         ),
                       ),
@@ -145,8 +122,6 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
                       _DeliveryLogRow(
                         log: visibleLogs[index],
                         isLast: index == visibleLogs.length - 1,
-                        typography: typography,
-                        surface: surface,
                       ),
                   ],
                 ),
@@ -157,22 +132,21 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
 }
 
 class _DeliveryLogRow extends StatelessWidget {
-  const _DeliveryLogRow({
-    required this.log,
-    required this.isLast,
-    required this.typography,
-    required this.surface,
-  });
+  const _DeliveryLogRow({required this.log, required this.isLast});
 
   final ReminderDeliveryItem log;
   final bool isLast;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final color = deliveryStatusColor(log.status, surface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+    final color = _deliveryStatusColor(
+      log.status,
+      destructive: colors.destructive,
+      mutedForeground: colors.mutedForeground,
+    );
     final row = Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacingTokens.md,
@@ -188,14 +162,15 @@ class _DeliveryLogRow extends StatelessWidget {
               children: [
                 Text(
                   dateTimeShortLabel(l10n, log.scheduledFor),
-                  style: typography.bodySmStrong.copyWith(letterSpacing: 0),
+                  style: textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   deliveryChannelLabel(l10n, log.channel),
-                  style: typography.caption.copyWith(
-                    color: surface.mute,
-                    letterSpacing: 0,
+                  style: textTheme.labelSmall?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                 ),
               ],
@@ -217,7 +192,7 @@ class _DeliveryLogRow extends StatelessWidget {
           height: 1,
           thickness: 1,
           indent: AppSpacingTokens.md + AppSpacingTokens.lg,
-          color: surface.hairline,
+          color: colors.border,
         ),
       ],
     );
@@ -225,26 +200,21 @@ class _DeliveryLogRow extends StatelessWidget {
 }
 
 class _TodayLogRow extends StatelessWidget {
-  const _TodayLogRow({
-    required this.log,
-    required this.isLast,
-    required this.typography,
-    required this.surface,
-  });
+  const _TodayLogRow({required this.log, required this.isLast});
 
   final DoseLogItem log;
   final bool isLast;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final color = switch (log.status) {
-      DoseLogStatus.taken => surface.teal,
-      DoseLogStatus.skipped => surface.warningDeep,
-      DoseLogStatus.missed => surface.error,
-      DoseLogStatus.planned => surface.link,
+      DoseLogStatus.taken => AppColorTokens.cyanDeep,
+      DoseLogStatus.skipped => AppColorTokens.warningDeep,
+      DoseLogStatus.missed => colors.destructive,
+      DoseLogStatus.planned => colors.primary,
     };
     final label = switch (log.status) {
       DoseLogStatus.taken => l10n.medicineDoseStatusTaken,
@@ -260,14 +230,13 @@ class _TodayLogRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.check_circle_outline_rounded, color: color, size: 18),
+          Icon(FLucideIcons.badgeCheck, color: color, size: 18),
           const SizedBox(width: AppSpacingTokens.sm),
           Expanded(
             child: Text(
               dateTimeTimeLabel(log.scheduledFor),
-              style: typography.bodySm.copyWith(
-                color: surface.body,
-                letterSpacing: 0,
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.mutedForeground,
               ),
             ),
           ),
@@ -283,9 +252,22 @@ class _TodayLogRow extends StatelessWidget {
           height: 1,
           thickness: 1,
           indent: AppSpacingTokens.md + AppSpacingTokens.lg,
-          color: surface.hairline,
+          color: colors.border,
         ),
       ],
     );
   }
+}
+
+Color _deliveryStatusColor(
+  String value, {
+  required Color destructive,
+  required Color mutedForeground,
+}) {
+  return switch (value) {
+    'delivered' => AppColorTokens.cyanDeep,
+    'failed' => destructive,
+    'scheduled' => AppColorTokens.warningDeep,
+    _ => mutedForeground,
+  };
 }

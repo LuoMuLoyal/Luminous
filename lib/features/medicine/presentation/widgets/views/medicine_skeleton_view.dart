@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 
 /// Skeleton placeholder for the Medicine tab loading state.
@@ -113,11 +113,7 @@ class _DrugBoxPlaceholder extends StatelessWidget {
           children: [
             const AppInlineSkeletonBlock(height: 64, width: 64),
             const SizedBox(width: AppSpacingTokens.sm),
-            Container(
-              width: 1,
-              height: 64,
-              color: Theme.of(context).extension<AppThemeSurface>()!.hairline,
-            ),
+            Container(width: 1, height: 64, color: context.theme.colors.border),
             const SizedBox(width: AppSpacingTokens.sm),
             const Expanded(
               child: Column(

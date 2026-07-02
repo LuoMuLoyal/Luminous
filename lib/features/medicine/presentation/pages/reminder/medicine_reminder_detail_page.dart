@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -79,7 +78,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
               description: isNotFound
                   ? l10n.medicineReminderNotFoundDescription
                   : l10n.medicineReminderGenericErrorDescription,
-              icon: Icons.error_outline_rounded,
+              icon: FLucideIcons.circleAlert,
               actionLabel: l10n.todayRetryAction,
               onAction: () => ref.invalidate(
                 medicineReminderDetailProvider(currentMedicineId),
@@ -100,9 +99,8 @@ class _ReminderDetailBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final reminders = [...data.reminders]..sort(compareReminderTime);
     final isActive = reminders.any((item) => item.isActive);
     final firstReminder = reminders.firstOrNull;
@@ -120,18 +118,12 @@ class _ReminderDetailBody extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppSectionSurface(
-            color: Color.alphaBlend(
-              surface.tealSoft.withValues(alpha: 0.38),
-              surface.canvas,
-            ),
-            borderColor: surface.teal.withValues(alpha: 0.14),
-            shadow: const <BoxShadow>[],
+          FCard.raw(
             child: Row(
               children: [
-                AppIconBadge(
-                  icon: Icons.medication_rounded,
-                  color: surface.warningDeep,
+                const AppIconBadge(
+                  icon: FLucideIcons.pillBottle,
+                  color: AppColorTokens.warningDeep,
                   backgroundColor: AppColorTokens.warningSoft,
                   shape: BoxShape.circle,
                   size: AppSpacingTokens.x4l,
@@ -144,9 +136,8 @@ class _ReminderDetailBody extends ConsumerWidget {
                     children: [
                       Text(
                         data.medicine.displayName,
-                        style: typography.bodyLg.copyWith(
+                        style: textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w800,
-                          letterSpacing: 0,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -154,9 +145,8 @@ class _ReminderDetailBody extends ConsumerWidget {
                       const SizedBox(height: AppSpacingTokens.xxs),
                       Text(
                         medicineDoseText(l10n, data.medicine),
-                        style: typography.bodySm.copyWith(
-                          color: surface.body,
-                          letterSpacing: 0,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.mutedForeground,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -169,102 +159,81 @@ class _ReminderDetailBody extends ConsumerWidget {
                   label: isActive
                       ? l10n.medicineReminderEnabledStatus
                       : l10n.medicineReminderDisabledStatus,
-                  color: isActive ? surface.teal : surface.mute,
+                  color: isActive
+                      ? AppColorTokens.cyanDeep
+                      : colors.mutedForeground,
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AppSectionSurface(
-            padding: EdgeInsets.zero,
+          FCard.raw(
             child: Column(
               children: [
                 ReminderInfoRow(
-                  icon: Icons.repeat_rounded,
+                  icon: FLucideIcons.repeat2,
                   label: l10n.medicineReminderFrequencyLabel,
                   value: frequencyLabel(l10n, reminders),
-                  typography: typography,
-                  surface: surface,
                   showDivider: true,
                 ),
                 ReminderInfoRow(
-                  icon: Icons.schedule_rounded,
+                  icon: FLucideIcons.clock3,
                   label: l10n.medicineReminderTimesLabel,
                   value: reminders.isEmpty
                       ? l10n.medicineScheduleNotSet
                       : reminders.map((item) => item.timeLabel).join(' · '),
-                  typography: typography,
-                  surface: surface,
                   showDivider: true,
                 ),
                 ReminderInfoRow(
-                  icon: Icons.medication_liquid_outlined,
+                  icon: FLucideIcons.pillBottle,
                   label: l10n.medicineReminderDoseLabel,
                   value: medicineDoseText(l10n, data.medicine),
-                  typography: typography,
-                  surface: surface,
                   showDivider: true,
                 ),
                 ReminderInfoRow(
-                  icon: Icons.calendar_today_rounded,
+                  icon: FLucideIcons.calendar,
                   label: l10n.medicineReminderStartDateLabel,
                   value:
                       firstReminder?.startDate ??
                       l10n.medicineReminderDateNotSet,
-                  typography: typography,
-                  surface: surface,
                   showDivider: true,
                 ),
                 ReminderInfoRow(
-                  icon: Icons.event_busy_rounded,
+                  icon: FLucideIcons.calendarX2,
                   label: l10n.medicineReminderEndDateLabel,
                   value:
                       firstReminder?.endDate ?? l10n.medicineReminderDateNotSet,
-                  typography: typography,
-                  surface: surface,
                   showDivider: true,
                 ),
                 ReminderInfoRow(
-                  icon: Icons.notifications_none_rounded,
+                  icon: FLucideIcons.bell,
                   label: l10n.medicineReminderMethodLabel,
                   value: methodValue,
-                  typography: typography,
-                  surface: surface,
                   showDivider: hasNote,
                 ),
                 if (hasNote)
                   ReminderInfoRow(
-                    icon: Icons.notes_rounded,
+                    icon: FLucideIcons.notebookPen,
                     label: l10n.medicineReminderNoteLabel,
                     value: data.reminders
                         .map((item) => item.note?.trim())
                         .whereType<String>()
                         .where((item) => item.isNotEmpty)
                         .first,
-                    typography: typography,
-                    surface: surface,
                   ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          ReminderTodayLogPanel(
-            logs: data.todayLogs,
-            typography: typography,
-            surface: surface,
-          ),
+          ReminderTodayLogPanel(logs: data.todayLogs),
           const SizedBox(height: AppSpacingTokens.md),
-          ReminderDeliveryLogPanel(
-            logs: data.deliveryLogs,
-            typography: typography,
-            surface: surface,
-          ),
+          ReminderDeliveryLogPanel(logs: data.deliveryLogs),
           if (reminders.isNotEmpty) ...[
             const SizedBox(height: AppSpacingTokens.lg),
             FilledButton.icon(
               key: const Key('medicine-reminder-delete-button'),
               style: FilledButton.styleFrom(
-                backgroundColor: surface.error,
+                backgroundColor: colors.destructive,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadiusTokens.md),
@@ -290,7 +259,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   unawaited(AppToast.show(context, l10n.settingsSyncFailed));
                 }
               },
-              icon: const Icon(Icons.delete_outline_rounded),
+              icon: const Icon(FLucideIcons.trash2),
               label: Text(l10n.medicineReminderDeleteAction),
             ),
           ],

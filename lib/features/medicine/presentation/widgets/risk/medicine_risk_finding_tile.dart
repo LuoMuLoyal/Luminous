@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskFindingTile extends StatelessWidget {
@@ -11,19 +11,17 @@ class MedicineRiskFindingTile extends StatelessWidget {
     super.key,
     required this.finding,
     required this.isLast,
-    required this.typography,
-    required this.surface,
     required this.l10n,
   });
 
   final MedicineRiskFinding finding;
   final bool isLast;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final color = medicineRiskSeverityColor(finding.severity);
     final contextLabel = medicineRiskContextLabel(l10n, finding.context);
 
@@ -55,19 +53,23 @@ class MedicineRiskFindingTile extends StatelessWidget {
               children: [
                 Text(
                   medicineRiskFindingTitle(l10n, finding),
-                  style: typography.bodyMdStrong.copyWith(
+                  style: textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   medicineRiskFindingBody(l10n, finding),
-                  style: typography.bodySm.copyWith(color: surface.body),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   medicineRiskFindingEvidence(l10n, finding),
-                  style: typography.caption.copyWith(color: surface.mute),
+                  style: textTheme.labelSmall?.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -86,7 +88,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.xxs),
                 AppStatusPill(
                   label: contextLabel,
-                  color: surface.mute,
+                  color: colors.mutedForeground,
                   radius: AppRadiusTokens.pill,
                   backgroundAlpha: 0.08,
                 ),
@@ -101,7 +103,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
     return Column(
       children: [
         tile,
-        Divider(height: 1, color: surface.hairline),
+        Divider(height: 1, color: colors.border),
       ],
     );
   }

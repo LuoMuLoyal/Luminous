@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -308,7 +308,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
           AppStateErrorView(
             title: l10n.medicineReminderNotFoundTitle,
             description: '',
-            icon: Icons.error_outline_rounded,
+            icon: FLucideIcons.circleAlert,
             actionLabel: l10n.todayRetryAction,
             onAction: () {
               ref.invalidate(healthContextSnapshotProvider);
@@ -403,24 +403,26 @@ class _MedicineSelectorPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final textTheme = Theme.of(context).textTheme;
 
-    return AppSectionSurface(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l10n.medicineReminderSelectMedicineHint,
-            style: typography.bodyMd,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacingTokens.md),
-          FilledButton(
-            onPressed: onSelect,
-            child: Text(l10n.medicineReminderSelectMedicineAction),
-          ),
-        ],
+    return FCard.raw(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              l10n.medicineReminderSelectMedicineHint,
+              style: textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            FilledButton(
+              onPressed: onSelect,
+              child: Text(l10n.medicineReminderSelectMedicineAction),
+            ),
+          ],
+        ),
       ),
     );
   }

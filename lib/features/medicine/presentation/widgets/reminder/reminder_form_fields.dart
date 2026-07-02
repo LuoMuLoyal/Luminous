@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
@@ -94,15 +95,14 @@ class TimePickerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.medicineReminderTimesLabel,
-          style: AppTypographyTokens.mobile(
-            Theme.of(context).colorScheme.onSurface,
-          ).bodySmStrong.copyWith(letterSpacing: 0),
+          style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
         Wrap(
@@ -114,12 +114,12 @@ class TimePickerRow extends StatelessWidget {
               InputChip(
                 key: Key('medicine-reminder-time-$index'),
                 label: Text(times[index].label),
-                avatar: const Icon(Icons.schedule_rounded, size: 16),
+                avatar: const Icon(FLucideIcons.clock3, size: 16),
                 onDeleted: times.length > 1 ? () => onRemoveTime(index) : null,
               ),
             ActionChip(
               key: const Key('medicine-reminder-add-time'),
-              avatar: const Icon(Icons.add_rounded, size: 16),
+              avatar: const Icon(FLucideIcons.plus, size: 16),
               label: Text(l10n.medicineReminderAddTimeAction),
               onPressed: onAddTime,
             ),

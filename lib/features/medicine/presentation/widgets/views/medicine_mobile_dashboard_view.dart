@@ -1,9 +1,9 @@
 import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/widgets/common/app_text_action.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/core/widgets/common/app_section_header.dart';
@@ -11,7 +11,6 @@ import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_safety_tip.dart';
@@ -48,37 +47,20 @@ class MedicineMobileDashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
     final nextDose = _nextDoseFor(workspace);
     final alerts = medicineAlertsFromRiskCheck(l10n, workspace.riskCheckResult);
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
     final content = isDesktop
-        ? _buildDesktopLayout(
-            l10n: l10n,
-            surface: surface,
-            typography: typography,
-            nextDose: nextDose,
-            alerts: alerts,
-          )
-        : _buildMobileLayout(
-            l10n: l10n,
-            surface: surface,
-            typography: typography,
-            nextDose: nextDose,
-            alerts: alerts,
-          );
+        ? _buildDesktopLayout(l10n: l10n, nextDose: nextDose, alerts: alerts)
+        : _buildMobileLayout(l10n: l10n, nextDose: nextDose, alerts: alerts);
 
     return AppSkeletonScope(isLoading: isLoading, child: content);
   }
 
   Widget _buildMobileLayout({
     required AppLocalizations l10n,
-    required AppThemeSurface surface,
-    required AppTypographyScale typography,
     required _NextDose? nextDose,
     required List<MedicineAlert> alerts,
   }) {
@@ -89,8 +71,6 @@ class MedicineMobileDashboardView extends StatelessWidget {
           workspace: workspace,
           nextDose: nextDose,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
           onMarkDose: onMarkDose,
           onOpenReminder: onOpenReminder,
         ),
@@ -98,40 +78,25 @@ class MedicineMobileDashboardView extends StatelessWidget {
         _SafetyEngineSection(
           alerts: alerts.take(4).toList(growable: false),
           l10n: l10n,
-          typography: typography,
-          surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _QuickOperationSection(
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-          onCreateReminder: onCreateReminder,
-        ),
+        _QuickOperationSection(l10n: l10n, onCreateReminder: onCreateReminder),
         const SizedBox(height: AppSpacingTokens.md),
         _MedicineRecordsSection(
           items: workspace.plan.items,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
           onMarkDose: onMarkDose,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _ReferenceNotice(l10n: l10n, typography: typography, surface: surface),
+        _ReferenceNotice(l10n: l10n),
         const SizedBox(height: AppSpacingTokens.md),
-        _SafetyTipsSection(
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
+        _SafetyTipsSection(l10n: l10n),
       ],
     );
   }
 
   Widget _buildDesktopLayout({
     required AppLocalizations l10n,
-    required AppThemeSurface surface,
-    required AppTypographyScale typography,
     required _NextDose? nextDose,
     required List<MedicineAlert> alerts,
   }) {
@@ -147,8 +112,6 @@ class MedicineMobileDashboardView extends StatelessWidget {
                 workspace: workspace,
                 nextDose: nextDose,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onMarkDose: onMarkDose,
                 onOpenReminder: onOpenReminder,
               ),
@@ -156,15 +119,11 @@ class MedicineMobileDashboardView extends StatelessWidget {
               _SafetyEngineSection(
                 alerts: alerts.take(4).toList(growable: false),
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               _MedicineRecordsSection(
                 items: workspace.plan.items,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onMarkDose: onMarkDose,
               ),
             ],
@@ -176,24 +135,14 @@ class MedicineMobileDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _ReferenceNotice(
-                l10n: l10n,
-                typography: typography,
-                surface: surface,
-              ),
+              _ReferenceNotice(l10n: l10n),
               const SizedBox(height: AppSpacingTokens.lg),
               _QuickOperationSection(
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onCreateReminder: onCreateReminder,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
-              _SafetyTipsSection(
-                l10n: l10n,
-                typography: typography,
-                surface: surface,
-              ),
+              _SafetyTipsSection(l10n: l10n),
             ],
           ),
         ),

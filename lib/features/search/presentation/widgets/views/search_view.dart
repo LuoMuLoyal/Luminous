@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/features/search/presentation/providers/search_provider.dart';
 import 'package:luminous/features/search/presentation/widgets/search_header_widgets.dart';
@@ -18,12 +18,12 @@ final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
     ? <MedicineSearchQuickAction>[
         const MedicineSearchQuickAction(
           type: MedicineSearchActionType.barcode,
-          icon: Icons.qr_code_scanner_rounded,
+          icon: FLucideIcons.scanLine,
           accent: AppColorTokens.cyanDeep,
         ),
         const MedicineSearchQuickAction(
           type: MedicineSearchActionType.photo,
-          icon: Icons.photo_camera_outlined,
+          icon: FLucideIcons.camera,
           accent: AppColorTokens.gradientDevelopStart,
         ),
       ]
@@ -50,17 +50,12 @@ class MedicineSearchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(scheme.onSurface)
-        : AppTypographyTokens.desktop(scheme.onSurface);
     final isDesktop = width >= AppBreakpoints.desktop;
 
     return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
+      decoration: BoxDecoration(color: colors.background),
       child: SafeArea(
         child: ResponsiveContentFrame(
           expand: true,
@@ -72,8 +67,6 @@ class MedicineSearchView extends StatelessWidget {
                 ? _DesktopSearchLayout(
                     state: state,
                     l10n: l10n,
-                    typography: typography,
-                    surface: surface,
                     onQueryChanged: onQueryChanged,
                     onSourceSwitched: onSourceSwitched,
                     onResultSelected: onResultSelected,
@@ -83,8 +76,6 @@ class MedicineSearchView extends StatelessWidget {
                 : _MobileSearchLayout(
                     state: state,
                     l10n: l10n,
-                    typography: typography,
-                    surface: surface,
                     onQueryChanged: onQueryChanged,
                     onSourceSwitched: onSourceSwitched,
                     onResultSelected: onResultSelected,
@@ -103,14 +94,11 @@ class MedicineSearchLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return Shimmer.fromColors(
-      baseColor: surface.canvas.withValues(
-        alpha: theme.brightness == Brightness.dark ? 0.42 : 1,
-      ),
-      highlightColor: surface.canvasSoft2,
+      baseColor: colors.secondary.withValues(alpha: 0.35),
+      highlightColor: colors.background,
       child: const Padding(
         padding: EdgeInsets.all(AppSpacingTokens.md),
         child: SingleChildScrollView(
@@ -143,7 +131,7 @@ class MedicineSearchErrorView extends StatelessWidget {
     return AppStateErrorView(
       title: l10n.medicineSearchErrorTitle,
       description: l10n.medicineSearchErrorDescription,
-      icon: Icons.search_off_rounded,
+      icon: FLucideIcons.searchX,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: AppStateTone.warning,
@@ -155,8 +143,6 @@ class _MobileSearchLayout extends StatelessWidget {
   const _MobileSearchLayout({
     required this.state,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.onQueryChanged,
     required this.onSourceSwitched,
     required this.onResultSelected,
@@ -166,8 +152,6 @@ class _MobileSearchLayout extends StatelessWidget {
 
   final MedicineSearchState state;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<String> onQueryChanged;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
@@ -176,6 +160,9 @@ class _MobileSearchLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     if (state.isSearching) {
       return const MedicineSearchLoadingView();
     }
@@ -188,21 +175,13 @@ class _MobileSearchLayout extends StatelessWidget {
       key: const PageStorageKey<String>('medicine-search-scroll'),
       padding: const EdgeInsets.only(bottom: AppSpacingTokens.xl),
       children: [
-        SearchTopBar(l10n: l10n, typography: typography, surface: surface),
+        SearchTopBar(l10n: l10n),
         const SizedBox(height: AppSpacingTokens.lg),
-        SearchInput(
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-          query: state.query,
-          onChanged: onQueryChanged,
-        ),
+        SearchInput(l10n: l10n, query: state.query, onChanged: onQueryChanged),
         const SizedBox(height: AppSpacingTokens.md),
         SourceSwitch(
           selectedSource: state.source,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
           onChanged: onSourceSwitched,
         ),
         const SizedBox(height: AppSpacingTokens.lg),
@@ -210,22 +189,14 @@ class _MobileSearchLayout extends StatelessWidget {
           RecentSearches(
             keywords: const <String>[],
             l10n: l10n,
-            typography: typography,
-            surface: surface,
             onKeywordSelected: onQueryChanged,
           ),
           const SizedBox(height: AppSpacingTokens.lg),
-          QuickActions(
-            actions: _scanQuickActions,
-            l10n: l10n,
-            typography: typography,
-            surface: surface,
-          ),
+          QuickActions(actions: _scanQuickActions, l10n: l10n),
           const SizedBox(height: AppSpacingTokens.xl),
           Categories(
             categories: const <MedicineSearchCategory>[],
             l10n: l10n,
-            typography: typography,
             onCategorySelected: (category) =>
                 onQueryChanged(categoryLabel(l10n, category.type)),
           ),
@@ -233,7 +204,9 @@ class _MobileSearchLayout extends StatelessWidget {
         if (state.query.trim().isNotEmpty) ...[
           Text(
             l10n.medicineSearchResultCount(state.results.length),
-            style: typography.bodySmStrong.copyWith(color: surface.mute),
+            style: textTheme.labelLarge?.copyWith(
+              color: colors.mutedForeground,
+            ),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           ...state.results.map(
@@ -242,8 +215,6 @@ class _MobileSearchLayout extends StatelessWidget {
               child: SearchResultTile(
                 result: result,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 expandedAction: true,
                 onTap: () => onResultSelected(result.id),
                 onAddToCurrentMedicines: onAddToCurrentMedicines != null
@@ -252,8 +223,7 @@ class _MobileSearchLayout extends StatelessWidget {
               ),
             ),
           ),
-          if (state.results.isEmpty)
-            NoResultTools(l10n: l10n, typography: typography, surface: surface),
+          if (state.results.isEmpty) NoResultTools(l10n: l10n),
         ],
       ],
     );
@@ -264,8 +234,6 @@ class _DesktopSearchLayout extends StatelessWidget {
   const _DesktopSearchLayout({
     required this.state,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.onQueryChanged,
     required this.onSourceSwitched,
     required this.onResultSelected,
@@ -275,8 +243,6 @@ class _DesktopSearchLayout extends StatelessWidget {
 
   final MedicineSearchState state;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<String> onQueryChanged;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
@@ -300,24 +266,16 @@ class _DesktopSearchLayout extends StatelessWidget {
           child: _DesktopSearchPanel(
             state: state,
             l10n: l10n,
-            typography: typography,
-            surface: surface,
             onQueryChanged: onQueryChanged,
             onSourceSwitched: onSourceSwitched,
             onResultSelected: onResultSelected,
-            onRetry: onRetry,
             onAddToCurrentMedicines: onAddToCurrentMedicines,
           ),
         ),
         const SizedBox(width: AppSpacingTokens.lg),
         Expanded(
           flex: 3,
-          child: PreviewPanel(
-            state: state,
-            l10n: l10n,
-            typography: typography,
-            surface: surface,
-          ),
+          child: PreviewPanel(state: state, l10n: l10n),
         ),
       ],
     );
@@ -328,41 +286,40 @@ class _DesktopSearchPanel extends StatelessWidget {
   const _DesktopSearchPanel({
     required this.state,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.onQueryChanged,
     required this.onSourceSwitched,
     required this.onResultSelected,
-    required this.onRetry,
     this.onAddToCurrentMedicines,
   });
 
   final MedicineSearchState state;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<String> onQueryChanged;
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
-  final VoidCallback onRetry;
   final void Function(MedicineSearchResult result)? onAddToCurrentMedicines;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: panelDecoration(surface),
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
+    return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.xl),
         child: ListView(
           children: [
-            DesktopTabs(l10n: l10n, typography: typography, surface: surface),
+            DesktopTabs(l10n: l10n),
             const SizedBox(height: AppSpacingTokens.xl),
-            Text(l10n.medicineSearchPageTitle, style: typography.displaySm),
+            Text(
+              l10n.medicineSearchPageTitle,
+              style: textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
             const SizedBox(height: AppSpacingTokens.md),
             SearchInput(
               l10n: l10n,
-              typography: typography,
-              surface: surface,
               query: state.query,
               onChanged: onQueryChanged,
             ),
@@ -370,36 +327,28 @@ class _DesktopSearchPanel extends StatelessWidget {
             SourceSwitch(
               selectedSource: state.source,
               l10n: l10n,
-              typography: typography,
-              surface: surface,
               onChanged: onSourceSwitched,
             ),
             const SizedBox(height: AppSpacingTokens.lg),
             if (state.query.trim().isEmpty) ...[
-              RecentSearches(
-                keywords: const <String>[],
-                l10n: l10n,
-                typography: typography,
-                surface: surface,
-              ),
+              RecentSearches(keywords: const <String>[], l10n: l10n),
               const SizedBox(height: AppSpacingTokens.lg),
               QuickActions(
                 actions: const <MedicineSearchQuickAction>[],
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
               ),
               const SizedBox(height: AppSpacingTokens.xl),
               Categories(
                 categories: const <MedicineSearchCategory>[],
                 l10n: l10n,
-                typography: typography,
               ),
             ],
             if (state.query.trim().isNotEmpty) ...[
               Text(
                 l10n.medicineSearchResultCount(state.results.length),
-                style: typography.bodySmStrong.copyWith(color: surface.mute),
+                style: textTheme.labelLarge?.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
               const SizedBox(height: AppSpacingTokens.md),
               ...state.results.map(
@@ -408,8 +357,6 @@ class _DesktopSearchPanel extends StatelessWidget {
                   child: SearchResultTile(
                     result: result,
                     l10n: l10n,
-                    typography: typography,
-                    surface: surface,
                     onTap: () => onResultSelected(result.id),
                     onAddToCurrentMedicines: onAddToCurrentMedicines != null
                         ? () => onAddToCurrentMedicines!(result)
@@ -417,12 +364,7 @@ class _DesktopSearchPanel extends StatelessWidget {
                   ),
                 ),
               ),
-              if (state.results.isEmpty)
-                NoResultTools(
-                  l10n: l10n,
-                  typography: typography,
-                  surface: surface,
-                ),
+              if (state.results.isEmpty) NoResultTools(l10n: l10n),
             ],
           ],
         ),

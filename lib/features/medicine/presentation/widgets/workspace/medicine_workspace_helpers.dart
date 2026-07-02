@@ -2,7 +2,6 @@ import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -18,18 +17,15 @@ class SectionTextAction extends StatelessWidget {
   const SectionTextAction({
     super.key,
     required this.label,
-    required this.typography,
-    required this.surface,
     required this.onTap,
   });
 
   final String label;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return AppInkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
@@ -37,7 +33,7 @@ class SectionTextAction extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacingTokens.xxs),
         child: Text(
           label,
-          style: typography.bodySm.copyWith(
+          style: textTheme.bodySmall?.copyWith(
             color: MedicineWorkspacePalette.green,
           ),
         ),

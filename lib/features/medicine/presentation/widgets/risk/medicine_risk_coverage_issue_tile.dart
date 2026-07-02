@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -10,26 +10,25 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
     super.key,
     required this.issue,
     required this.isLast,
-    required this.typography,
-    required this.surface,
     required this.l10n,
   });
 
   final MedicineRiskCoverageIssue issue;
   final bool isLast;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     final tile = Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Icon(
-            Icons.info_outline_rounded,
+            FLucideIcons.circleAlert,
             color: AppColorTokens.warningDeep,
             size: AppSpacingTokens.lg,
           ),
@@ -40,14 +39,16 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
               children: [
                 Text(
                   issue.medicineName,
-                  style: typography.bodyMdStrong.copyWith(
+                  style: textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   medicineRiskCoverageReasonLabel(l10n, issue.reason),
-                  style: typography.bodySm.copyWith(color: surface.body),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -59,7 +60,7 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
     return Column(
       children: [
         tile,
-        Divider(height: 1, color: surface.hairline),
+        Divider(height: 1, color: colors.border),
       ],
     );
   }

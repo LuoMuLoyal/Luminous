@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -60,7 +60,7 @@ class MedicineRiskCheckPage extends ConsumerWidget {
           error: (_, __) => AppStateErrorView(
             title: l10n.medicineErrorTitle,
             description: l10n.medicineErrorDescription,
-            icon: Icons.health_and_safety_outlined,
+            icon: FLucideIcons.shieldAlert,
             actionLabel: l10n.todayRetryAction,
             onAction: () => ref.invalidate(medicineRiskCheckProvider),
             tone: AppStateTone.warning,
@@ -83,9 +83,8 @@ class _MedicineRiskCheckBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md),
@@ -93,12 +92,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (redFlagAlerts.isNotEmpty) ...[
-            MedicineRiskRedFlagBanner(
-              alerts: redFlagAlerts,
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-            ),
+            MedicineRiskRedFlagBanner(alerts: redFlagAlerts, l10n: l10n),
             const SizedBox(height: AppSpacingTokens.md),
           ],
           PageSectionCard(
@@ -138,7 +132,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Icon(
-                    Icons.info_outline_rounded,
+                    FLucideIcons.circleAlert,
                     color: AppColorTokens.warningDeep,
                     size: AppSpacingTokens.lg,
                   ),
@@ -146,7 +140,9 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                   Expanded(
                     child: Text(
                       result.coverageSummary,
-                      style: typography.bodySm.copyWith(color: surface.body),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ),
                 ],
@@ -158,7 +154,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             AppStateMessageView(
               title: l10n.medicineRiskCheckNoFindingsTitle,
               description: l10n.medicineRiskCheckNoFindingsBody,
-              icon: Icons.verified_outlined,
+              icon: FLucideIcons.badgeCheck,
               tone: AppStateTone.success,
               padding: const EdgeInsets.all(AppSpacingTokens.lg),
             )
@@ -175,8 +171,6 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                     MedicineRiskFindingTile(
                       finding: result.findings[index],
                       isLast: index == result.findings.length - 1,
-                      typography: typography,
-                      surface: surface,
                       l10n: l10n,
                     ),
                 ],
@@ -196,8 +190,6 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                     MedicineRiskCoverageIssueTile(
                       issue: result.coverageIssues[index],
                       isLast: index == result.coverageIssues.length - 1,
-                      typography: typography,
-                      surface: surface,
                       l10n: l10n,
                     ),
                 ],

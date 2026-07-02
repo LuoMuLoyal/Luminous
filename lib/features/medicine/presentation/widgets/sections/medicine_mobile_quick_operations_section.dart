@@ -3,44 +3,41 @@ part of '../views/medicine_mobile_dashboard_view.dart';
 class _QuickOperationSection extends StatelessWidget {
   const _QuickOperationSection({
     required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.onCreateReminder,
   });
 
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final VoidCallback? onCreateReminder;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final operations = [
       _QuickOperation(
-        icon: Icons.add_rounded,
-        color: surface.teal,
+        icon: FLucideIcons.plus,
+        color: AppColorTokens.cyanDeep,
         title: l10n.medicineQuickAddTitle,
         subtitle: l10n.medicineQuickAddSubtitle,
         onTap: () => context.push('/medicine/search'),
       ),
       _QuickOperation(
-        icon: Icons.fact_check_rounded,
-        color: surface.violet,
+        icon: FLucideIcons.clipboardCheck,
+        color: AppColorTokens.gradientDevelopEnd,
         title: l10n.medicineQuickRecordTitle,
         subtitle: l10n.medicineQuickRecordSubtitle,
         onTap: () => context.push('/record/create'),
       ),
       _QuickOperation(
-        icon: Icons.notifications_none_rounded,
-        color: surface.link,
+        icon: FLucideIcons.bell,
+        color: AppColorTokens.gradientDevelopStart,
         title: l10n.medicineReminderQuickTitle,
         subtitle: l10n.medicineReminderQuickSubtitle,
         onTap:
             onCreateReminder ?? () => context.push('/medicine/reminders/new'),
       ),
       _QuickOperation(
-        icon: Icons.health_and_safety_rounded,
-        color: surface.warningDeep,
+        icon: FLucideIcons.shieldAlert,
+        color: AppColorTokens.warningDeep,
         title: l10n.medicineQuickSafetyCheckTitle,
         subtitle: l10n.medicineQuickSafetyCheckSubtitle,
         onTap: () => pushAuthRequiredRoute(context, '/medicine/risk-check'),
@@ -53,16 +50,11 @@ class _QuickOperationSection extends StatelessWidget {
       children: [
         AppSectionHeader(title: l10n.medicineQuickOperationTitle),
         const SizedBox(height: AppSpacingTokens.sm),
-        AppSectionSurface(
-          padding: EdgeInsets.zero,
+        FCard.raw(
           child: Column(
             children: [
               for (var index = 0; index < operations.length; index += 1) ...[
-                _QuickOperationRow(
-                  operation: operations[index],
-                  typography: typography,
-                  surface: surface,
-                ),
+                _QuickOperationRow(operation: operations[index]),
                 if (index < operations.length - 1)
                   Divider(
                     height: 1,
@@ -71,7 +63,7 @@ class _QuickOperationSection extends StatelessWidget {
                         AppSpacingTokens.md +
                         AppSpacingTokens.x3l +
                         AppSpacingTokens.sm,
-                    color: surface.hairline,
+                    color: colors.border,
                   ),
               ],
             ],
@@ -83,18 +75,14 @@ class _QuickOperationSection extends StatelessWidget {
 }
 
 class _QuickOperationRow extends StatelessWidget {
-  const _QuickOperationRow({
-    required this.operation,
-    required this.typography,
-    required this.surface,
-  });
+  const _QuickOperationRow({required this.operation});
 
   final _QuickOperation operation;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     return AppInkWell(
       onTap: operation.onTap,
       child: Padding(
@@ -119,9 +107,8 @@ class _QuickOperationRow extends StatelessWidget {
                 children: [
                   Text(
                     operation.title,
-                    style: typography.bodyMdStrong.copyWith(
+                    style: textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -129,9 +116,8 @@ class _QuickOperationRow extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.xxs),
                   Text(
                     operation.subtitle,
-                    style: typography.bodySm.copyWith(
-                      color: surface.body,
-                      letterSpacing: 0,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -140,8 +126,8 @@ class _QuickOperationRow extends StatelessWidget {
               ),
             ),
             Icon(
-              Icons.chevron_right_rounded,
-              color: surface.mute,
+              FLucideIcons.chevronRight,
+              color: colors.mutedForeground,
               size: AppSpacingTokens.lg,
             ),
           ],
