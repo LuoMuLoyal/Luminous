@@ -16,6 +16,7 @@ This directory keeps the authoritative current product, frontend, and workflow d
 | `TODO.md` | Remaining MVP gaps and gated backlog that still needs delivery | Current-state facts or historical change logs |
 | `MigrationLog.md` + `migration-log/YYYY-MM-DD.md` | Date-based change history only | Source-of-truth product rules |
 | `Project_Guardrails.md` | Reusable project-specific mistakes to avoid | One-off task notes |
+| `Auth_Forui_Migration_Pattern.md` | Reusable auth-to-Forui migration pattern and anti-pattern notes for later UI migrations | Product scope, backlog, or change history |
 | `OpenApi_Client.md` | Flutter client regeneration workflow and current generated-client boundary | Endpoint prose or old regeneration history |
 | `Localization.md` | Flutter l10n workflow and locale ownership | Lists of every current string |
 | `MVP_Demo_Baseline.md` | Repeatable deployed-MVP demo baseline: deploy smoke, demo account/data, pre-demo checks | Product scope or long change history |
@@ -34,6 +35,7 @@ This directory keeps the authoritative current product, frontend, and workflow d
 | Visible text or l10n mechanics | `Localization.md` |
 | Lucent OpenAPI/client generation flow | `OpenApi_Client.md` |
 | Reusable guardrail | `Project_Guardrails.md` |
+| Reusable feature-migration pattern | `Auth_Forui_Migration_Pattern.md` |
 | Demo baseline / rehearsal prerequisites | `MVP_Demo_Baseline.md` |
 | Demo/defense operator walkthrough | `MVP_Demo_Script.md` |
 | Any frontend-visible change | Today's `migration-log/YYYY-MM-DD.md` |

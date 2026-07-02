@@ -4,18 +4,14 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 
-export 'auth_action_row.dart';
-
 export 'auth_branding.dart';
-export 'auth_field_error.dart';
-export 'auth_status_message.dart';
-export 'auth_text_field.dart';
 
 class AuthShell extends StatelessWidget {
   const AuthShell({
     super.key,
     required this.title,
     required this.form,
+    this.formModeSelector,
     this.enableFormAnimation = true,
     this.leading,
     this.centerTitle = false,
@@ -25,6 +21,7 @@ class AuthShell extends StatelessWidget {
 
   final String title;
   final Widget form;
+  final Widget? formModeSelector;
   final bool enableFormAnimation;
   final Widget? leading;
   final bool centerTitle;
@@ -33,54 +30,43 @@ class AuthShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     final width = MediaQuery.sizeOf(context).width;
     final layout = AppLayoutTokens.resolve(width);
 
-    return Scaffold(
-      backgroundColor: colors.secondary.withValues(alpha: 0.32),
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: <Color>[
-              colors.background,
-              colors.secondary.withValues(alpha: 0.55),
-            ],
+    return FScaffold(
+      child: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: layout.pageHorizontalPadding,
+            vertical: width < AppBreakpoints.mobile
+                ? AppSpacingTokens.lg
+                : AppSpacingTokens.xl,
           ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: layout.pageHorizontalPadding,
-              vertical: width < AppBreakpoints.mobile
-                  ? AppSpacingTokens.lg
-                  : AppSpacingTokens.xl,
-            ),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: layout.maxContentWidth),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _AuthPageHeader(
-                      title: title,
-                      leading: leading,
-                      centerTitle: centerTitle,
-                      textTheme: textTheme,
-                      colors: colors,
-                      logo: logo,
-                      subtitle: subtitle,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.lg),
-                    _AuthFormPanel(
-                      form: form,
-                      enableAnimation: enableFormAnimation,
-                    ),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _AuthPageHeader(
+                    title: title,
+                    leading: leading,
+                    centerTitle: centerTitle,
+                    textTheme: textTheme,
+                    logo: logo,
+                    subtitle: subtitle,
+                  ),
+                  if (formModeSelector != null) ...[
+                    const SizedBox(height: AppSpacingTokens.xl),
+                    formModeSelector!,
                   ],
-                ),
+                  const SizedBox(height: AppSpacingTokens.xl),
+                  _AuthFormPanel(
+                    form: form,
+                    enableAnimation: enableFormAnimation,
+                  ),
+                ],
               ),
             ),
           ),
@@ -96,7 +82,6 @@ class _AuthPageHeader extends StatelessWidget {
     required this.leading,
     required this.centerTitle,
     required this.textTheme,
-    required this.colors,
     this.logo,
     this.subtitle,
   });
@@ -105,7 +90,6 @@ class _AuthPageHeader extends StatelessWidget {
   final Widget? leading;
   final bool centerTitle;
   final TextTheme textTheme;
-  final FColors colors;
   final Widget? logo;
   final String? subtitle;
 
@@ -153,7 +137,9 @@ class _AuthPageHeader extends StatelessWidget {
           Text(
             subtitle!,
             textAlign: TextAlign.center,
-            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+            style: textTheme.bodyMedium?.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
           ),
         ],
       ],

@@ -3,8 +3,6 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Auth 页面品牌 Logo。用浅灰圆角渐变容器包裹白色 app icon,
-/// 解决白底图标与白色卡片背景融合的问题,并增加层次感。
 class AuthBrandLogo extends StatelessWidget {
   const AuthBrandLogo({super.key, this.size = 64});
 
@@ -14,36 +12,17 @@ class AuthBrandLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final theme = Theme.of(context);
 
-    return Container(
+    return Image.asset(
+      _assetPath,
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            colors.secondary.withValues(alpha: 0.5),
-            colors.secondary.withValues(alpha: 0.85),
-          ],
-        ),
-        boxShadow: AppShadowTokens.level1,
-      ),
-      padding: const EdgeInsets.all(AppSpacingTokens.sm),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: Image.asset(
-          _assetPath,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) => Icon(
-            FLucideIcons.shieldPlus,
-            color: theme.colorScheme.primary,
-            size: size - AppSpacingTokens.sm * 2,
-          ),
-        ),
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) => Icon(
+        FLucideIcons.shieldPlus,
+        color: theme.colorScheme.primary,
+        size: size,
       ),
     );
   }

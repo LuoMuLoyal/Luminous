@@ -4,8 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_dialog.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_sections.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_account_provider.dart';
@@ -109,7 +112,7 @@ class AccountSettingsPage extends HookConsumerWidget {
 
     return AuthShell(
       title: l10n.authAccountSettingsFormTitle,
-      leading: BackButton(onPressed: () => context.pop()),
+      leading: const AppBackButton(),
       centerTitle: true,
       enableFormAnimation: enableFormAnimation,
       form: Column(
@@ -124,147 +127,160 @@ class AccountSettingsPage extends HookConsumerWidget {
                   context.push(loginRouteForCurrentLocation(context)),
             ),
           ] else ...[
-            AuthSectionCard(
-              child: AccountStatusSection(user: user, l10n: l10n),
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            AuthSectionCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.authProfileSectionTitle,
-                    style: Theme.of(context).textTheme.titleMedium,
+            FTabs(
+              children: [
+                FTabEntry(
+                  label: Text(l10n.authAccountOverviewTitle),
+                  child: FCard.raw(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacingTokens.xl),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AccountStatusSection(user: user, l10n: l10n),
+                          const SizedBox(height: AppSpacingTokens.xl),
+                          _ProfileSection(
+                            nicknameController: nicknameController,
+                            avatarController: avatarController,
+                            isSubmitting: accountState.isSubmitting,
+                            onSave: () async {
+                              final ok = await accountNotifier.updateProfile(
+                                nickname: nicknameController.text,
+                                avatar: avatarController.text,
+                              );
+                              if (ok && context.mounted) {
+                                await AppToast.show(
+                                  context,
+                                  l10n.authProfileSaveSuccess,
+                                );
+                              }
+                            },
+                          ),
+                          const SizedBox(height: AppSpacingTokens.xl),
+                          EmailSection(
+                            user: user,
+                            emailController: emailController,
+                            onChangeEmail: () =>
+                                context.push('/account/change-email'),
+                          ),
+                          const SizedBox(height: AppSpacingTokens.xl),
+                          LinkedIdentitiesSection(
+                            user: user,
+                            isSubmitting: accountState.isSubmitting,
+                            onLinkWechat: () =>
+                                _startWechatIdentityLink(context, l10n, ref),
+                            onUnlink: (identity) async {
+                              final confirmed = await _confirmUnlinkIdentity(
+                                context,
+                                identity,
+                                l10n,
+                              );
+                              if (!confirmed || !context.mounted) return;
+                              final ok = await accountNotifier.unlinkIdentity(
+                                identityId: identity.id,
+                              );
+                              if (ok && context.mounted) {
+                                await AppToast.show(
+                                  context,
+                                  l10n.authIdentityUnlinkSuccess,
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.lg),
-                  AuthTextField(
-                    controller: nicknameController,
-                    label: l10n.authNicknameLabel,
-                    hint: l10n.authNicknameHint,
+                ),
+                FTabEntry(
+                  label: Text(l10n.authPasswordSectionTitle),
+                  child: FCard.raw(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacingTokens.xl),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          PasswordSection(
+                            user: user,
+                            oldPasswordController: oldPasswordController,
+                            newPasswordController: newPasswordController,
+                            isSubmitting: accountState.isSubmitting,
+                            onChangePassword: () async {
+                              final ctx = context;
+                              final router = GoRouter.of(ctx);
+                              if (oldPasswordController.text.trim().isEmpty) {
+                                await AppToast.show(
+                                  ctx,
+                                  l10n.authCurrentPasswordRequiredToast,
+                                );
+                                return;
+                              }
+                              if (newPasswordController.text.trim().isEmpty) {
+                                await AppToast.show(
+                                  ctx,
+                                  l10n.authNewPasswordRequiredToast,
+                                );
+                                return;
+                              }
+                              final ok = await accountNotifier.changePassword(
+                                oldPassword: oldPasswordController.text,
+                                newPassword: newPasswordController.text,
+                              );
+                              if (!ok || !ctx.mounted) return;
+                              await AppToast.show(
+                                ctx,
+                                l10n.authChangePasswordSuccess,
+                              );
+                              if (ctx.mounted) router.go('/login');
+                            },
+                          ),
+                          const SizedBox(height: AppSpacingTokens.xl),
+                          DeleteAccountSection(
+                            user: user,
+                            deletePasswordController: deletePasswordController,
+                            isSubmitting: accountState.isSubmitting,
+                            onDelete: () async {
+                              final ctx = context;
+                              final router = GoRouter.of(ctx);
+                              if (deletePasswordController.text
+                                  .trim()
+                                  .isEmpty) {
+                                await AppToast.show(
+                                  ctx,
+                                  l10n.authCurrentPasswordRequiredToast,
+                                );
+                                return;
+                              }
+                              final ok = await accountNotifier.deleteAccount(
+                                password: deletePasswordController.text,
+                              );
+                              if (!ok || !ctx.mounted) return;
+                              await AppToast.show(
+                                ctx,
+                                l10n.authDeleteAccountSuccess,
+                              );
+                              if (ctx.mounted) router.go('/login');
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.md),
-                  AuthTextField(
-                    controller: avatarController,
-                    label: l10n.authAvatarLabel,
-                    hint: l10n.authAvatarHint,
-                    keyboardType: TextInputType.url,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.md),
-                  AuthPrimaryButton(
-                    label: l10n.authProfileSaveAction,
-                    isLoading: accountState.isSubmitting,
-                    onPressed: () async {
-                      final ok = await accountNotifier.updateProfile(
-                        nickname: nicknameController.text,
-                        avatar: avatarController.text,
-                      );
-                      if (ok && context.mounted) {
-                        await AppToast.show(
-                          context,
-                          l10n.authProfileSaveSuccess,
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            AuthSectionCard(
-              child: EmailSection(
-                user: user,
-                emailController: emailController,
-                onChangeEmail: () => context.push('/account/change-email'),
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            AuthSectionCard(
-              child: LinkedIdentitiesSection(
-                user: user,
-                isSubmitting: accountState.isSubmitting,
-                onLinkWechat: () =>
-                    _startWechatIdentityLink(context, l10n, ref),
-                onUnlink: (identity) async {
-                  final confirmed = await _confirmUnlinkIdentity(
-                    context,
-                    identity,
-                    l10n,
-                  );
-                  if (!confirmed || !context.mounted) return;
-                  final ok = await accountNotifier.unlinkIdentity(
-                    identityId: identity.id,
-                  );
-                  if (ok && context.mounted) {
-                    await AppToast.show(
-                      context,
-                      l10n.authIdentityUnlinkSuccess,
-                    );
-                  }
-                },
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            AuthSectionCard(
-              child: PasswordSection(
-                user: user,
-                oldPasswordController: oldPasswordController,
-                newPasswordController: newPasswordController,
-                isSubmitting: accountState.isSubmitting,
-                onChangePassword: () async {
-                  final ctx = context;
-                  final router = GoRouter.of(ctx);
-                  if (oldPasswordController.text.trim().isEmpty) {
-                    await AppToast.show(
-                      ctx,
-                      l10n.authCurrentPasswordRequiredToast,
-                    );
-                    return;
-                  }
-                  if (newPasswordController.text.trim().isEmpty) {
-                    await AppToast.show(ctx, l10n.authNewPasswordRequiredToast);
-                    return;
-                  }
-                  final ok = await accountNotifier.changePassword(
-                    oldPassword: oldPasswordController.text,
-                    newPassword: newPasswordController.text,
-                  );
-                  if (!ok || !ctx.mounted) return;
-                  await AppToast.show(ctx, l10n.authChangePasswordSuccess);
-                  if (ctx.mounted) router.go('/login');
-                },
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            AuthSectionCard(
-              child: DeleteAccountSection(
-                user: user,
-                deletePasswordController: deletePasswordController,
-                isSubmitting: accountState.isSubmitting,
-                onDelete: () async {
-                  final ctx = context;
-                  final router = GoRouter.of(ctx);
-                  if (deletePasswordController.text.trim().isEmpty) {
-                    await AppToast.show(
-                      ctx,
-                      l10n.authCurrentPasswordRequiredToast,
-                    );
-                    return;
-                  }
-                  final ok = await accountNotifier.deleteAccount(
-                    password: deletePasswordController.text,
-                  );
-                  if (!ok || !ctx.mounted) return;
-                  await AppToast.show(ctx, l10n.authDeleteAccountSuccess);
-                  if (ctx.mounted) router.go('/login');
-                },
-              ),
+                ),
+              ],
             ),
             if ((accountState.errorMessage?.isNotEmpty ?? false) ||
                 success != null) ...[
               const SizedBox(height: AppSpacingTokens.md),
-              AuthStatusMessage(
-                error: accountState.errorMessage,
-                success: success,
+              FToast(
+                variant: accountState.errorMessage?.isNotEmpty == true
+                    ? FToastVariant.destructive
+                    : FToastVariant.primary,
+                title: Text(
+                  accountState.errorMessage?.isNotEmpty == true
+                      ? accountState.errorMessage!
+                      : success!,
+                ),
               ),
             ],
           ],
@@ -309,26 +325,108 @@ Future<bool> _confirmUnlinkIdentity(
   AuthLinkedIdentity identity,
   AppLocalizations l10n,
 ) async {
-  final result = await showDialog<bool>(
+  final result = await showFDialog<bool>(
     context: context,
-    builder: (context) => AlertDialog(
-      title: Text(l10n.authIdentityUnlinkConfirmTitle),
-      content: Text(
-        l10n.authIdentityUnlinkConfirmMessage(
-          identityProviderLabel(identity.provider, l10n),
-        ),
+    builder: (context, style, animation) => AppDialog(
+      maxWidth: 420,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.authIdentityUnlinkConfirmTitle,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: AppSpacingTokens.md),
+          Text(
+            l10n.authIdentityUnlinkConfirmMessage(
+              identityProviderLabel(identity.provider, l10n),
+            ),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: AppSpacingTokens.xl),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FButton(
+                variant: FButtonVariant.outline,
+                size: FButtonSizeVariant.sm,
+                mainAxisSize: MainAxisSize.min,
+                onPress: () => Navigator.of(context).pop(false),
+                child: Text(l10n.authCancelAction),
+              ),
+              const SizedBox(width: AppSpacingTokens.sm),
+              FButton(
+                variant: FButtonVariant.destructive,
+                size: FButtonSizeVariant.sm,
+                mainAxisSize: MainAxisSize.min,
+                onPress: () => Navigator.of(context).pop(true),
+                child: Text(l10n.authIdentityUnlinkAction),
+              ),
+            ],
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: Text(l10n.authCancelAction),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(l10n.authIdentityUnlinkAction),
-        ),
-      ],
     ),
   );
   return result ?? false;
+}
+
+class _ProfileSection extends StatelessWidget {
+  const _ProfileSection({
+    required this.nicknameController,
+    required this.avatarController,
+    required this.isSubmitting,
+    required this.onSave,
+  });
+
+  final TextEditingController nicknameController;
+  final TextEditingController avatarController;
+  final bool isSubmitting;
+  final Future<void> Function() onSave;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.authProfileSectionTitle,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: AppSpacingTokens.lg),
+        FTextField(
+          control: FTextFieldControl.managed(controller: nicknameController),
+          label: Text(l10n.authNicknameLabel),
+          hint: l10n.authNicknameHint,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        FTextField(
+          control: FTextFieldControl.managed(controller: avatarController),
+          label: Text(l10n.authAvatarLabel),
+          hint: l10n.authAvatarHint,
+          keyboardType: TextInputType.url,
+        ),
+        const SizedBox(height: AppSpacingTokens.md),
+        SizedBox(
+          width: double.infinity,
+          child: FButton(
+            onPress: isSubmitting ? null : () => onSave(),
+            child: isSubmitting
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(l10n.authProfileSaveAction),
+          ),
+        ),
+      ],
+    );
+  }
 }

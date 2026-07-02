@@ -3,7 +3,6 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AccountSettingsLoading extends StatelessWidget {
@@ -84,16 +83,21 @@ class EmailSection extends StatelessWidget {
     return _SectionColumn(
       title: l10n.authEmailSectionTitle,
       children: [
-        AuthTextField(
-          controller: emailController,
-          label: l10n.authEmailLabel,
+        FTextField.email(
+          control: FTextFieldControl.managed(controller: emailController),
+          label: Text(l10n.authEmailLabel),
           enabled: false,
         ),
-        AuthPrimaryButton(
-          label: user.email == null
-              ? l10n.authEmailAddAction
-              : l10n.authEmailChangeAction,
-          onPressed: onChangeEmail,
+        SizedBox(
+          width: double.infinity,
+          child: FButton(
+            onPress: onChangeEmail,
+            child: Text(
+              user.email == null
+                  ? l10n.authEmailAddAction
+                  : l10n.authEmailChangeAction,
+            ),
+          ),
         ),
       ],
     );
@@ -131,17 +135,17 @@ class LinkedIdentitiesSection extends StatelessWidget {
               onUnlink: () => onUnlink(identity),
             ),
           ),
-        OutlinedButton.icon(
+        FButton(
           key: const Key('wechat-identity-link-button'),
-          onPressed: isSubmitting ? null : onLinkWechat,
-          icon: isSubmitting
+          variant: FButtonVariant.outline,
+          onPress: isSubmitting ? null : () => onLinkWechat(),
+          child: isSubmitting
               ? const SizedBox(
                   width: 18,
                   height: 18,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Icon(FLucideIcons.link, size: 18),
-          label: Text(l10n.authIdentityLinkWechatAction),
+              : Text(l10n.authIdentityLinkWechatAction),
         ),
       ],
     );
@@ -204,8 +208,11 @@ class _LinkedIdentityTile extends StatelessWidget {
                 ],
               ),
             ),
-            TextButton(
-              onPressed: canUnlink && !isSubmitting ? onUnlink : null,
+            FButton(
+              variant: FButtonVariant.ghost,
+              size: FButtonSizeVariant.sm,
+              mainAxisSize: MainAxisSize.min,
+              onPress: canUnlink && !isSubmitting ? () => onUnlink() : null,
               child: Text(
                 canUnlink
                     ? l10n.authIdentityUnlinkAction
@@ -244,22 +251,32 @@ class PasswordSection extends StatelessWidget {
         if (!user.hasPassword)
           _MutedText(l10n.authPasswordUnsetManagementHint)
         else ...[
-          AuthTextField(
-            controller: oldPasswordController,
-            label: l10n.authCurrentPasswordLabel,
+          FTextField.password(
+            control: FTextFieldControl.managed(
+              controller: oldPasswordController,
+            ),
+            label: Text(l10n.authCurrentPasswordLabel),
             hint: l10n.authPasswordHint,
-            obscureText: true,
           ),
-          AuthTextField(
-            controller: newPasswordController,
-            label: l10n.authNewPasswordLabel,
+          FTextField.password(
+            control: FTextFieldControl.managed(
+              controller: newPasswordController,
+            ),
+            label: Text(l10n.authNewPasswordLabel),
             hint: l10n.authPasswordHint,
-            obscureText: true,
           ),
-          AuthPrimaryButton(
-            label: l10n.authChangePasswordAction,
-            isLoading: isSubmitting,
-            onPressed: onChangePassword,
+          SizedBox(
+            width: double.infinity,
+            child: FButton(
+              onPress: isSubmitting ? null : () => onChangePassword(),
+              child: isSubmitting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(l10n.authChangePasswordAction),
+            ),
           ),
         ],
       ],
@@ -290,16 +307,26 @@ class DeleteAccountSection extends StatelessWidget {
         if (!user.hasPassword)
           _MutedText(l10n.authDeleteAccountPasswordRequiredHint)
         else ...[
-          AuthTextField(
-            controller: deletePasswordController,
-            label: l10n.authCurrentPasswordLabel,
+          FTextField.password(
+            control: FTextFieldControl.managed(
+              controller: deletePasswordController,
+            ),
+            label: Text(l10n.authCurrentPasswordLabel),
             hint: l10n.authDeleteAccountHint,
-            obscureText: true,
           ),
-          AuthPrimaryButton(
-            label: l10n.authDeleteAccountAction,
-            isLoading: isSubmitting,
-            onPressed: onDelete,
+          SizedBox(
+            width: double.infinity,
+            child: FButton(
+              variant: FButtonVariant.destructive,
+              onPress: isSubmitting ? null : () => onDelete(),
+              child: isSubmitting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(l10n.authDeleteAccountAction),
+            ),
           ),
         ],
       ],
@@ -317,7 +344,12 @@ class _SectionColumn extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title, style: Theme.of(context).textTheme.titleMedium),
+      Text(
+        title,
+        style: Theme.of(
+          context,
+        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+      ),
       const SizedBox(height: AppSpacingTokens.lg),
       for (final child in children) ...[
         child,

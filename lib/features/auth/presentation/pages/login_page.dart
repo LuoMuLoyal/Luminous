@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
@@ -31,6 +31,7 @@ class LoginPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final formKey = useMemoized(GlobalKey<FormState>.new);
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     final codeController = useTextEditingController();
@@ -306,192 +307,196 @@ class LoginPage extends HookConsumerWidget {
       logo: const AuthBrandLogo(),
       leading: const AppBackButton(fallbackRoute: '/'),
       centerTitle: true,
-      form: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+      formModeSelector: FTabs(
+        key: const ValueKey('auth-login-mode-tabs'),
+        control: FTabControl.lifted(
+          index: state.mode.index,
+          onChange: (index) => notifier.updateMode(AuthLoginMode.values[index]),
+        ),
         children: [
-          SizedBox(
-            width: double.infinity,
-            child: SegmentedButton<AuthLoginMode>(
-              segments: <ButtonSegment<AuthLoginMode>>[
-                ButtonSegment<AuthLoginMode>(
-                  value: AuthLoginMode.password,
-                  label: SizedBox(
-                    width: 96,
-                    child: Text(
-                      l10n?.authModePassword ?? 'Password',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-                ButtonSegment<AuthLoginMode>(
-                  value: AuthLoginMode.code,
-                  label: SizedBox(
-                    width: 96,
-                    child: Text(
-                      l10n?.authModeCode ?? 'Code',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
-              selected: <AuthLoginMode>{state.mode},
-              onSelectionChanged: (next) {
-                notifier.updateMode(next.first);
-              },
-            ),
+          FTabEntry(
+            label: Text(l10n?.authModePassword ?? 'Password'),
+            child: const SizedBox.shrink(),
           ),
-          const SizedBox(height: AppSpacingTokens.lg),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AuthTextField(
-                key: const Key('auth-login-email-field'),
-                controller: emailController,
-                label: l10n?.authEmailLabel ?? 'Email',
-                hint: l10n?.authEmailHint ?? 'name@example.com',
-                keyboardType: TextInputType.emailAddress,
-                prefix: const Icon(Icons.mail_outline),
-              ),
-              AuthFieldError(state.emailError),
-            ],
-          ),
-          const SizedBox(height: AppSpacingTokens.md),
-          if (state.mode == AuthLoginMode.password)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AuthTextField(
-                      key: const ValueKey('password-login-field'),
-                      controller: passwordController,
-                      label: l10n?.authPasswordLabel ?? 'Password',
-                      hint:
-                          l10n?.authPasswordHint ??
-                          'At least 8 characters, ideally with mixed case and numbers',
-                      obscureText: true,
-                      prefix: const Icon(Icons.lock_outline),
-                    )
-                    .animate(key: const ValueKey('password-field-anim'))
-                    .fadeIn(duration: 160.ms, curve: Curves.easeOutCubic)
-                    .slideX(
-                      begin: 0.02,
-                      end: 0,
-                      duration: 160.ms,
-                      curve: Curves.easeOutCubic,
-                    ),
-                AuthFieldError(state.passwordError),
-              ],
-            )
-          else
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AuthCodeFieldRow(
-                      key: const ValueKey('auth-login-code-field'),
-                      controller: codeController,
-                      label: l10n?.authCodeLabel ?? 'Verification code',
-                      buttonLabel: state.cooldownSeconds == null
-                          ? l10n?.authSendCode ?? 'Send code'
-                          : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
-                                'Send again (${state.cooldownSeconds}s)',
-                      isLoading: state.isSendingCode,
-                      onSendCode: () async {
-                        notifier.updateEmail(emailController.text);
-                        if (!notifier.validateEmailOnly(
-                          emailRequired:
-                              l10n?.authEmailRequiredError ??
-                              'Please enter your email.',
-                        )) {
-                          return;
-                        }
-                        if (state.cooldownSeconds != null &&
-                            state.cooldownSeconds! > 0) {
-                          await AppToast.show(
-                            context,
-                            l10n?.authCodeResendWait(state.cooldownSeconds!) ??
-                                'Please wait ${state.cooldownSeconds}s before resending.',
-                          );
-                          return;
-                        }
-                        await notifier.sendCode();
-                      },
-                    )
-                    .animate(key: const ValueKey('code-field-anim'))
-                    .fadeIn(duration: 160.ms, curve: Curves.easeOutCubic)
-                    .slideX(
-                      begin: 0.02,
-                      end: 0,
-                      duration: 160.ms,
-                      curve: Curves.easeOutCubic,
-                    ),
-                AuthFieldError(state.codeError),
-              ],
-            ),
-          if (state.errorMessage != null && state.errorMessage!.isNotEmpty) ...[
-            const SizedBox(height: AppSpacingTokens.md),
-            AuthStatusMessage(error: state.errorMessage),
-          ],
-          const SizedBox(height: AppSpacingTokens.xl),
-          AuthPrimaryButton(
-            key: const Key('auth-login-submit-action'),
-            label: l10n?.authSignIn ?? 'Sign in',
-            isLoading: state.isSubmitting,
-            onPressed: () async {
-              notifier.updateEmail(emailController.text);
-              notifier.updatePassword(passwordController.text);
-              notifier.updateCode(codeController.text);
-              final isValid = notifier.validate(
-                emailRequired:
-                    l10n?.authEmailRequiredError ?? 'Please enter your email.',
-                emailInvalid:
-                    l10n?.authEmailInvalidError ??
-                    'Please enter a valid email address.',
-                passwordRequired:
-                    l10n?.authPasswordRequiredError ??
-                    'Please enter your password.',
-                codeRequired:
-                    l10n?.authCodeRequiredError ??
-                    'Please enter the verification code.',
-              );
-              if (!isValid) return;
-              final session = await notifier.submit();
-              if (session != null && context.mounted) goAfterLogin();
-            },
-          ),
-          const SizedBox(height: AppSpacingTokens.sm),
-          AuthLoginActionRow(
-            registerPrompt: l10n?.authNeedAccountPrompt ?? 'Need an account?',
-            registerLabel: l10n?.authRegisterNowAction ?? 'Register now',
-            onRegister: () => context.push('/register'),
-            forgotPasswordLabel:
-                l10n?.authForgotPasswordPrompt ?? 'Forgot your password?',
-            onForgotPassword: () => context.push('/forgot-password'),
-          ),
-          const SizedBox(height: AppSpacingTokens.lg),
-          _WechatOAuthPanel(
-            callbackController: wechatCallbackController,
-            isStarting: state.isStartingWechatLogin,
-            isCompleting: state.isCompletingWechatLogin,
-            authorizeUrl: state.wechatAuthorizeUrl,
-            onStart: () => startWechatLogin(context, l10n),
-            onComplete: () => completeWechatLoginFromInput(context, l10n),
-          ),
-          _QqOAuthPanel(
-            callbackController: qqCallbackController,
-            isStarting: state.isStartingQqLogin,
-            isCompleting: state.isCompletingQqLogin,
-            authorizeUrl: state.qqAuthorizeUrl,
-            onStart: () => startQqLogin(context, l10n),
-            onComplete: () => completeQqLoginFromInput(context, l10n),
-          ),
-          _AppleOAuthPanel(
-            isLoading: state.isStartingAppleLogin,
-            onSignIn: startAppleLogin,
+          FTabEntry(
+            label: Text(l10n?.authModeCode ?? 'Code'),
+            child: const SizedBox.shrink(),
           ),
         ],
+      ),
+      form: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FTextFormField.email(
+              key: const Key('auth-login-email-field'),
+              control: FTextFieldControl.managed(controller: emailController),
+              label: Text(l10n?.authEmailLabel ?? 'Email'),
+              hint: l10n?.authEmailHint ?? 'name@example.com',
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) => _validateEmail(
+                value,
+                requiredMessage:
+                    l10n?.authEmailRequiredError ?? 'Please enter your email.',
+                invalidMessage:
+                    l10n?.authEmailInvalidError ??
+                    'Please enter a valid email address.',
+              ),
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            if (state.mode == AuthLoginMode.password)
+              FTextFormField.password(
+                key: const ValueKey('password-login-field'),
+                control: FTextFieldControl.managed(
+                  controller: passwordController,
+                ),
+                label: Text(l10n?.authPasswordLabel ?? 'Password'),
+                hint:
+                    l10n?.authPasswordHint ??
+                    'At least 8 characters, ideally with mixed case and numbers',
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => _validateRequired(
+                  value,
+                  l10n?.authPasswordRequiredError ??
+                      'Please enter your password.',
+                ),
+              )
+            else
+              _VerificationCodeField(
+                controller: codeController,
+                label: l10n?.authCodeLabel ?? 'Verification code',
+                hint: l10n?.authCodeLabel ?? 'Verification code',
+                buttonLabel: state.cooldownSeconds == null
+                    ? l10n?.authSendCode ?? 'Send code'
+                    : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
+                          'Send again (${state.cooldownSeconds}s)',
+                isLoading: state.isSendingCode,
+                validator: (value) => _validateRequired(
+                  value,
+                  l10n?.authCodeRequiredError ??
+                      'Please enter the verification code.',
+                ),
+                onSendCode: () async {
+                  final emailError = _validateEmail(
+                    emailController.text,
+                    requiredMessage:
+                        l10n?.authEmailRequiredError ??
+                        'Please enter your email.',
+                    invalidMessage:
+                        l10n?.authEmailInvalidError ??
+                        'Please enter a valid email address.',
+                  );
+                  if (emailError != null) {
+                    formKey.currentState?.validate();
+                    return;
+                  }
+                  if (state.cooldownSeconds != null &&
+                      state.cooldownSeconds! > 0) {
+                    await AppToast.show(
+                      context,
+                      l10n?.authCodeResendWait(state.cooldownSeconds!) ??
+                          'Please wait ${state.cooldownSeconds}s before resending.',
+                    );
+                    return;
+                  }
+                  notifier.updateEmail(emailController.text);
+                  await notifier.sendCode();
+                },
+              ),
+            if (state.errorMessage != null &&
+                state.errorMessage!.isNotEmpty) ...[
+              const SizedBox(height: AppSpacingTokens.md),
+              FToast(
+                variant: FToastVariant.destructive,
+                title: Text(state.errorMessage!),
+              ),
+            ],
+            const SizedBox(height: AppSpacingTokens.xl),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FButton(
+                  key: const Key('auth-login-submit-action'),
+                  size: FButtonSizeVariant.sm,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: state.isSubmitting
+                      ? null
+                      : () async {
+                          if (!(formKey.currentState?.validate() ?? false)) {
+                            return;
+                          }
+                          notifier.updateEmail(emailController.text);
+                          notifier.updatePassword(passwordController.text);
+                          notifier.updateCode(codeController.text);
+                          final session = await notifier.submit();
+                          if (session != null && context.mounted) {
+                            goAfterLogin();
+                          }
+                        },
+                  child: state.isSubmitting
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(l10n?.authSignIn ?? 'Sign in'),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n?.authNeedAccountPrompt ?? 'Need an account?',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: context.theme.colors.mutedForeground,
+                    ),
+                  ),
+                ),
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.sm,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: () => context.push('/register'),
+                  child: Text(l10n?.authRegisterNowAction ?? 'Register now'),
+                ),
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.sm,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: () => context.push('/forgot-password'),
+                  child: Text(
+                    l10n?.authForgotPasswordPrompt ?? 'Forgot your password?',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacingTokens.lg),
+            _WechatOAuthPanel(
+              callbackController: wechatCallbackController,
+              isStarting: state.isStartingWechatLogin,
+              isCompleting: state.isCompletingWechatLogin,
+              authorizeUrl: state.wechatAuthorizeUrl,
+              onStart: () => startWechatLogin(context, l10n),
+              onComplete: () => completeWechatLoginFromInput(context, l10n),
+            ),
+            _QqOAuthPanel(
+              callbackController: qqCallbackController,
+              isStarting: state.isStartingQqLogin,
+              isCompleting: state.isCompletingQqLogin,
+              authorizeUrl: state.qqAuthorizeUrl,
+              onStart: () => startQqLogin(context, l10n),
+              onComplete: () => completeQqLoginFromInput(context, l10n),
+            ),
+            _AppleOAuthPanel(
+              isLoading: state.isStartingAppleLogin,
+              onSignIn: startAppleLogin,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -521,36 +526,47 @@ class _WechatOAuthPanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        OutlinedButton.icon(
+        FButton(
           key: const Key('wechat-login-start-button'),
-          onPressed: isStarting || isCompleting ? null : onStart,
-          icon: isStarting
+          variant: FButtonVariant.outline,
+          onPress: isStarting || isCompleting ? null : onStart,
+          child: isStarting
               ? const SizedBox(
                   width: 18,
                   height: 18,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Icon(Icons.qr_code_rounded, size: 18),
-          label: Text(l10n?.authWechatSignIn ?? 'Sign in with WeChat'),
+              : Text(l10n?.authWechatSignIn ?? 'Sign in with WeChat'),
         ),
         if (authorizeUrl?.isNotEmpty == true) ...[
           const SizedBox(height: AppSpacingTokens.md),
-          AuthTextField(
+          FTextField(
             key: const Key('wechat-callback-input'),
-            controller: callbackController,
-            label:
-                l10n?.authWechatCallbackLabel ?? 'WeChat callback link / code',
+            control: FTextFieldControl.managed(controller: callbackController),
+            label: Text(
+              l10n?.authWechatCallbackLabel ?? 'WeChat callback link / code',
+            ),
             hint:
                 l10n?.authWechatCallbackHint ??
                 'Paste the callback URL after scanning',
             keyboardType: TextInputType.url,
-            prefix: const Icon(Icons.link),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AuthPrimaryButton(
-            label: l10n?.authWechatCompleteAction ?? 'Complete WeChat sign-in',
-            isLoading: isCompleting,
-            onPressed: onComplete,
+          SizedBox(
+            width: double.infinity,
+            child: FButton(
+              onPress: isCompleting ? null : onComplete,
+              child: isCompleting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(
+                      l10n?.authWechatCompleteAction ??
+                          'Complete WeChat sign-in',
+                    ),
+            ),
           ),
         ],
       ],
@@ -588,38 +604,130 @@ class _QqOAuthPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: AppSpacingTokens.md),
-        OutlinedButton.icon(
+        FButton(
           key: const Key('qq-login-start-button'),
-          onPressed: isStarting || isCompleting ? null : onStart,
-          icon: isStarting
+          variant: FButtonVariant.outline,
+          onPress: isStarting || isCompleting ? null : onStart,
+          child: isStarting
               ? const SizedBox(
                   width: 18,
                   height: 18,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Icon(Icons.qr_code_rounded, size: 18),
-          label: const Text('Sign in with QQ'),
+              : const Text('Sign in with QQ'),
         ),
         if (authorizeUrl?.isNotEmpty == true) ...[
           const SizedBox(height: AppSpacingTokens.md),
-          AuthTextField(
+          FTextField(
             key: const Key('qq-callback-input'),
-            controller: callbackController,
-            label: 'QQ callback link / code',
+            control: FTextFieldControl.managed(controller: callbackController),
+            label: const Text('QQ callback link / code'),
             hint: 'Paste the callback URL after authorization',
             keyboardType: TextInputType.url,
-            prefix: const Icon(Icons.link),
           ),
           const SizedBox(height: AppSpacingTokens.md),
-          AuthPrimaryButton(
-            label: 'Complete QQ sign-in',
-            isLoading: isCompleting,
-            onPressed: onComplete,
+          SizedBox(
+            width: double.infinity,
+            child: FButton(
+              onPress: isCompleting ? null : onComplete,
+              child: isCompleting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Complete QQ sign-in'),
+            ),
           ),
         ],
       ],
     );
   }
+}
+
+class _VerificationCodeField extends StatelessWidget {
+  const _VerificationCodeField({
+    required this.controller,
+    required this.label,
+    required this.hint,
+    required this.validator,
+    required this.buttonLabel,
+    required this.isLoading,
+    required this.onSendCode,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final String hint;
+  final String buttonLabel;
+  final bool isLoading;
+  final FormFieldValidator<String>? validator;
+  final VoidCallback onSendCode;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: FTextFormField(
+                key: const ValueKey('auth-login-code-field'),
+                control: FTextFieldControl.managed(controller: controller),
+                label: Text(label),
+                hint: hint,
+                keyboardType: TextInputType.number,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: validator,
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.sm),
+            SizedBox(
+              width: 148,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 26),
+                child: FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: isLoading ? null : onSendCode,
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(buttonLabel),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+String? _validateRequired(String? value, String message) {
+  if ((value ?? '').trim().isEmpty) {
+    return message;
+  }
+  return null;
+}
+
+String? _validateEmail(
+  String? value, {
+  required String requiredMessage,
+  required String invalidMessage,
+}) {
+  final trimmed = (value ?? '').trim();
+  if (trimmed.isEmpty) {
+    return requiredMessage;
+  }
+  if (!trimmed.contains('@')) {
+    return invalidMessage;
+  }
+  return null;
 }
 
 class _AppleOAuthPanel extends StatefulWidget {
