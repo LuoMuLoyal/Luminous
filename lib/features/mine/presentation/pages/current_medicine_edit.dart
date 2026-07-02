@@ -1,12 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -156,20 +158,46 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
     });
 
     if (!session.canAccessProtectedData) {
-      return PageScaffoldShell(
-        title: isNew
-            ? l10n.mineEditMedicineNewTitle
-            : l10n.mineEditMedicineTitle,
-        centerTitle: true,
-        leading: const AppBackButton(),
-        children: [
-          session.isLoading
-              ? const _MineEditFormLoading()
-              : AuthRequiredDialogGate(
-                  onLogin: () =>
-                      context.push(loginRouteForCurrentLocation(context)),
-                ),
-        ],
+      final width = MediaQuery.sizeOf(context).width;
+      final content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              session.isLoading
+                  ? const _MineEditFormLoading()
+                  : AuthRequiredDialogGate(
+                      onLogin: () =>
+                          context.push(loginRouteForCurrentLocation(context)),
+                    ),
+            ],
+          ),
+        ),
+      );
+
+      return FScaffold(
+        header: SafeArea(
+          bottom: false,
+          child: FHeader.nested(
+            title: Text(
+              isNew
+                  ? l10n.mineEditMedicineNewTitle
+                  : l10n.mineEditMedicineTitle,
+            ),
+            titleAlignment: Alignment.center,
+            prefixes: [const AppBackButton()],
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Material(
+            color: Colors.transparent,
+            child: SingleChildScrollView(child: content),
+          ),
+        ),
       );
     }
 
@@ -177,115 +205,193 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
     snapshot.whenOrNull(data: (_) => tryPrefill());
 
     if (notFound.value) {
-      return PageScaffoldShell(
-        title: l10n.mineEditMedicineTitle,
-        centerTitle: true,
-        leading: const AppBackButton(),
-        children: [
-          AppStateErrorView(
-            title: l10n.mineErrorDescription,
-            description: '',
-            icon: Icons.error_outline_rounded,
-            actionLabel: l10n.todayRetryAction,
-            onAction: () => context.pop(),
+      final width = MediaQuery.sizeOf(context).width;
+      final content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
           ),
-        ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppStateErrorView(
+                title: l10n.mineErrorDescription,
+                description: '',
+                icon: Icons.error_outline_rounded,
+                actionLabel: l10n.todayRetryAction,
+                onAction: () => context.pop(),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      return FScaffold(
+        header: SafeArea(
+          bottom: false,
+          child: FHeader.nested(
+            title: Text(l10n.mineEditMedicineTitle),
+            titleAlignment: Alignment.center,
+            prefixes: [const AppBackButton()],
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Material(
+            color: Colors.transparent,
+            child: SingleChildScrollView(child: content),
+          ),
+        ),
       );
     }
 
     if (isEdit && !prefilled.value && !snapshot.hasError) {
-      return PageScaffoldShell(
-        title: l10n.mineEditMedicineTitle,
-        centerTitle: true,
-        leading: const AppBackButton(),
-        children: const [_MineEditFormLoading()],
+      final width = MediaQuery.sizeOf(context).width;
+      final content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [_MineEditFormLoading()],
+          ),
+        ),
+      );
+
+      return FScaffold(
+        header: SafeArea(
+          bottom: false,
+          child: FHeader.nested(
+            title: Text(l10n.mineEditMedicineTitle),
+            titleAlignment: Alignment.center,
+            prefixes: [const AppBackButton()],
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Material(
+            color: Colors.transparent,
+            child: SingleChildScrollView(child: content),
+          ),
+        ),
       );
     }
 
-    return PageScaffoldShell(
-      title: isNew ? l10n.mineEditMedicineNewTitle : l10n.mineEditMedicineTitle,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _enumDropdown<HealthMedicineSource>(
-                label: l10n.mineEditFieldSource,
-                value: source.value,
-                values: HealthMedicineSource.values,
-                onChanged: (v) => source.value = v,
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              TextField(
-                controller: sourceRefIdController,
-                decoration: InputDecoration(
-                  labelText: l10n.mineEditFieldSourceRefId,
-                ),
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              TextField(
-                key: const Key('medicine-displayname-field'),
-                controller: displayNameController,
-                decoration: InputDecoration(
-                  labelText: l10n.mineEditFieldDisplayName,
-                ),
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              TextField(
-                controller: strengthTextController,
-                decoration: InputDecoration(
-                  labelText: l10n.mineEditFieldStrengthText,
-                ),
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              TextField(
-                controller: doseTextController,
-                decoration: InputDecoration(
-                  labelText: l10n.mineEditFieldDoseText,
-                ),
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              TextField(
-                controller: routeController,
-                decoration: InputDecoration(labelText: l10n.mineEditFieldRoute),
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              TextField(
-                controller: startedAtController,
-                decoration: InputDecoration(
-                  labelText: l10n.mineEditFieldStartedAt,
-                ),
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              TextField(
-                controller: noteController,
-                decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
-                maxLines: 3,
-              ),
-              const SizedBox(height: AppSpacingTokens.level5),
-              ElevatedButton(
-                key: const Key('medicine-save-button'),
-                onPressed: onSave,
-                child: Text(l10n.mineEditSaveAction),
-              ),
-              if (!isNew) ...[
-                const SizedBox(height: AppSpacingTokens.level3),
-                OutlinedButton(
-                  key: const Key('medicine-delete-button'),
-                  onPressed: onDelete,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.error,
-                  ),
-                  child: Text(l10n.mineEditDeleteAction),
-                ),
-              ],
-            ],
-          ),
+    final width = MediaQuery.sizeOf(context).width;
+    final content = ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: width < AppBreakpoints.mobile ? 24 : 32,
         ),
-      ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSpacingTokens.level4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _enumDropdown<HealthMedicineSource>(
+                    label: l10n.mineEditFieldSource,
+                    value: source.value,
+                    values: HealthMedicineSource.values,
+                    onChanged: (v) => source.value = v,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  TextField(
+                    controller: sourceRefIdController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldSourceRefId,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  TextField(
+                    key: const Key('medicine-displayname-field'),
+                    controller: displayNameController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldDisplayName,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  TextField(
+                    controller: strengthTextController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldStrengthText,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  TextField(
+                    controller: doseTextController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldDoseText,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  TextField(
+                    controller: routeController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldRoute,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  TextField(
+                    controller: startedAtController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldStartedAt,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  TextField(
+                    controller: noteController,
+                    decoration: InputDecoration(
+                      labelText: l10n.mineEditFieldNote,
+                    ),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level5),
+                  ElevatedButton(
+                    key: const Key('medicine-save-button'),
+                    onPressed: onSave,
+                    child: Text(l10n.mineEditSaveAction),
+                  ),
+                  if (!isNew) ...[
+                    const SizedBox(height: AppSpacingTokens.level3),
+                    OutlinedButton(
+                      key: const Key('medicine-delete-button'),
+                      onPressed: onDelete,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.error,
+                      ),
+                      child: Text(l10n.mineEditDeleteAction),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(
+            isNew ? l10n.mineEditMedicineNewTitle : l10n.mineEditMedicineTitle,
+          ),
+          titleAlignment: Alignment.center,
+          prefixes: [const AppBackButton()],
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(child: content),
+        ),
+      ),
     );
   }
 }

@@ -12,7 +12,8 @@ import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -26,40 +27,65 @@ class NotificationDetailPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final detailAsync = ref.watch(notificationDetailProvider(notificationId));
 
-    return PageScaffoldShell(
-      title: l10n.notificationDetailTitle,
-      leading: const AppBackButton(),
-      children: [
-        detailAsync.when(
-          data: (detail) {
-            if (detail == null) {
-              return AppStateMessageView(
-                title: l10n.notificationNotFoundTitle,
-                description: l10n.notificationNotFoundDescription,
-                icon: FLucideIcons.bellOff,
-                tone: AppStateTone.neutral,
-              );
-            }
-            return _DetailBody(detail: detail);
-          },
-          loading: () => const Center(
-            child: Padding(
-              padding: EdgeInsets.all(AppSpacingTokens.level10),
-              child: AppSkeletonShimmer(
-                child: AppInlineSkeletonBlock(height: 120, widthFactor: 1),
+    final width = MediaQuery.sizeOf(context).width;
+    final content = ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            detailAsync.when(
+              data: (detail) {
+                if (detail == null) {
+                  return AppStateMessageView(
+                    title: l10n.notificationNotFoundTitle,
+                    description: l10n.notificationNotFoundDescription,
+                    icon: FLucideIcons.bellOff,
+                    tone: AppStateTone.neutral,
+                  );
+                }
+                return _DetailBody(detail: detail);
+              },
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(AppSpacingTokens.level10),
+                  child: AppSkeletonShimmer(
+                    child: AppInlineSkeletonBlock(height: 120, widthFactor: 1),
+                  ),
+                ),
+              ),
+              error: (error, _) => AppStateErrorView(
+                title: l10n.notificationErrorTitle,
+                description: error.toString(),
+                icon: FLucideIcons.circleAlert,
+                actionLabel: l10n.notificationRetryAction,
+                onAction: () =>
+                    ref.invalidate(notificationDetailProvider(notificationId)),
               ),
             ),
-          ),
-          error: (error, _) => AppStateErrorView(
-            title: l10n.notificationErrorTitle,
-            description: error.toString(),
-            icon: FLucideIcons.circleAlert,
-            actionLabel: l10n.notificationRetryAction,
-            onAction: () =>
-                ref.invalidate(notificationDetailProvider(notificationId)),
-          ),
+          ],
         ),
-      ],
+      ),
+    );
+
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.notificationDetailTitle),
+          titleAlignment: Alignment.centerLeft,
+          prefixes: [const AppBackButton()],
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(child: content),
+        ),
+      ),
     );
   }
 }

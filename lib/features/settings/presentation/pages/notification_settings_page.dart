@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_spacing_tokens.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -23,108 +24,136 @@ class NotificationSettingsPage extends ConsumerWidget {
       notificationSettingsControllerProvider.notifier,
     );
 
-    return PageScaffoldShell(
-      title: l10n.mineSettingsNotificationsTitle,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        if (settings.permissionState != NotificationPermissionState.unsupported)
-          _PermissionCard(
-            key: const Key('notification-permission-card'),
-            state: settings.permissionState,
-            onTap: () async {
-              if (settings.permissionState ==
-                  NotificationPermissionState.granted) {
-                return;
-              }
-              await controller.requestPermission();
-            },
-          ),
-        const SizedBox(height: AppSpacingTokens.level5),
-        _SectionLabel(label: l10n.settingsNotificationsGeneralGroup),
-        const SizedBox(height: AppSpacingTokens.level3),
-        FTileGroup(
-          style: settingsSubpageTileGroupStyle(context.theme),
+    final width = MediaQuery.sizeOf(context).width;
+    final content = ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FTile(
-              key: const Key('notification-switch-health-alerts'),
-              title: Text(l10n.settingsNotificationsHealthAlerts),
-              enabled: !settingsAsync.isLoading,
-              onPress: !settingsAsync.isLoading
-                  ? () => controller.setHealthAlerts(!settings.healthAlerts)
-                  : null,
-              suffix: FSwitch(
-                value: settings.healthAlerts,
-                enabled: !settingsAsync.isLoading,
-                onChange: settingsAsync.isLoading
-                    ? null
-                    : (value) => controller.setHealthAlerts(value),
+            if (settings.permissionState !=
+                NotificationPermissionState.unsupported)
+              _PermissionCard(
+                key: const Key('notification-permission-card'),
+                state: settings.permissionState,
+                onTap: () async {
+                  if (settings.permissionState ==
+                      NotificationPermissionState.granted) {
+                    return;
+                  }
+                  await controller.requestPermission();
+                },
               ),
+            const SizedBox(height: AppSpacingTokens.level5),
+            _SectionLabel(label: l10n.settingsNotificationsGeneralGroup),
+            const SizedBox(height: AppSpacingTokens.level3),
+            FTileGroup(
+              style: settingsSubpageTileGroupStyle(context.theme),
+              children: [
+                FTile(
+                  key: const Key('notification-switch-health-alerts'),
+                  title: Text(l10n.settingsNotificationsHealthAlerts),
+                  enabled: !settingsAsync.isLoading,
+                  onPress: !settingsAsync.isLoading
+                      ? () => controller.setHealthAlerts(!settings.healthAlerts)
+                      : null,
+                  suffix: FSwitch(
+                    value: settings.healthAlerts,
+                    enabled: !settingsAsync.isLoading,
+                    onChange: settingsAsync.isLoading
+                        ? null
+                        : (value) => controller.setHealthAlerts(value),
+                  ),
+                ),
+                FTile(
+                  key: const Key('notification-switch-weekly-summary'),
+                  title: Text(l10n.settingsNotificationsWeeklySummary),
+                  enabled: !settingsAsync.isLoading,
+                  onPress: !settingsAsync.isLoading
+                      ? () =>
+                            controller.setWeeklySummary(!settings.weeklySummary)
+                      : null,
+                  suffix: FSwitch(
+                    value: settings.weeklySummary,
+                    enabled: !settingsAsync.isLoading,
+                    onChange: settingsAsync.isLoading
+                        ? null
+                        : (value) => controller.setWeeklySummary(value),
+                  ),
+                ),
+              ],
             ),
-            FTile(
-              key: const Key('notification-switch-weekly-summary'),
-              title: Text(l10n.settingsNotificationsWeeklySummary),
-              enabled: !settingsAsync.isLoading,
-              onPress: !settingsAsync.isLoading
-                  ? () => controller.setWeeklySummary(!settings.weeklySummary)
-                  : null,
-              suffix: FSwitch(
-                value: settings.weeklySummary,
-                enabled: !settingsAsync.isLoading,
-                onChange: settingsAsync.isLoading
-                    ? null
-                    : (value) => controller.setWeeklySummary(value),
-              ),
+            const SizedBox(height: AppSpacingTokens.level5),
+            _SectionLabel(label: l10n.settingsNotificationsReminderGroup),
+            const SizedBox(height: AppSpacingTokens.level3),
+            FTileGroup(
+              style: settingsSubpageTileGroupStyle(context.theme),
+              children: [
+                FTile(
+                  key: const Key('notification-switch-medication'),
+                  title: Text(l10n.settingsNotificationsMedicationReminders),
+                  enabled: !settingsAsync.isLoading,
+                  onPress: !settingsAsync.isLoading
+                      ? () => controller.setMedicationReminders(
+                          !settings.medicationReminders,
+                        )
+                      : null,
+                  suffix: FSwitch(
+                    value: settings.medicationReminders,
+                    enabled: !settingsAsync.isLoading,
+                    onChange: settingsAsync.isLoading
+                        ? null
+                        : (value) => controller.setMedicationReminders(value),
+                  ),
+                ),
+                FTile(
+                  key: const Key('notification-switch-water'),
+                  title: Text(l10n.mineReminderWaterTitle),
+                  enabled: !settingsAsync.isLoading,
+                  onPress: !settingsAsync.isLoading
+                      ? () => controller.setWaterReminders(
+                          !settings.waterReminders,
+                        )
+                      : null,
+                  suffix: FSwitch(
+                    value: settings.waterReminders,
+                    enabled: !settingsAsync.isLoading,
+                    onChange: settingsAsync.isLoading
+                        ? null
+                        : (value) => controller.setWaterReminders(value),
+                  ),
+                ),
+                FTile(
+                  title: Text(l10n.settingsNotificationsSleepReminderTitle),
+                  details: Text(_sleepReminderSummary(l10n, settings)),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () => context.push('/settings/notifications/sleep'),
+                ),
+              ],
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level5),
-        _SectionLabel(label: l10n.settingsNotificationsReminderGroup),
-        const SizedBox(height: AppSpacingTokens.level3),
-        FTileGroup(
-          style: settingsSubpageTileGroupStyle(context.theme),
-          children: [
-            FTile(
-              key: const Key('notification-switch-medication'),
-              title: Text(l10n.settingsNotificationsMedicationReminders),
-              enabled: !settingsAsync.isLoading,
-              onPress: !settingsAsync.isLoading
-                  ? () => controller.setMedicationReminders(
-                      !settings.medicationReminders,
-                    )
-                  : null,
-              suffix: FSwitch(
-                value: settings.medicationReminders,
-                enabled: !settingsAsync.isLoading,
-                onChange: settingsAsync.isLoading
-                    ? null
-                    : (value) => controller.setMedicationReminders(value),
-              ),
-            ),
-            FTile(
-              key: const Key('notification-switch-water'),
-              title: Text(l10n.mineReminderWaterTitle),
-              enabled: !settingsAsync.isLoading,
-              onPress: !settingsAsync.isLoading
-                  ? () => controller.setWaterReminders(!settings.waterReminders)
-                  : null,
-              suffix: FSwitch(
-                value: settings.waterReminders,
-                enabled: !settingsAsync.isLoading,
-                onChange: settingsAsync.isLoading
-                    ? null
-                    : (value) => controller.setWaterReminders(value),
-              ),
-            ),
-            FTile(
-              title: Text(l10n.settingsNotificationsSleepReminderTitle),
-              details: Text(_sleepReminderSummary(l10n, settings)),
-              suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () => context.push('/settings/notifications/sleep'),
-            ),
-          ],
+      ),
+    );
+
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.mineSettingsNotificationsTitle),
+          titleAlignment: Alignment.center,
+          prefixes: [const AppBackButton()],
         ),
-      ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(child: content),
+        ),
+      ),
     );
   }
 

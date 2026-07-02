@@ -4,7 +4,8 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
@@ -24,49 +25,90 @@ class MedicineRiskCheckPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
+    final width = MediaQuery.sizeOf(context).width;
 
+    final Widget bodyContent;
     if (!session.canAccessProtectedData) {
-      return PageScaffoldShell(
-        title: l10n.medicineRiskCheckPageTitle,
-        centerTitle: true,
-        leading: const AppBackButton(),
-        children: [
-          session.isLoading
-              ? const MedicineRiskCheckLoading()
-              : AuthRequiredDialogGate(
-                  onLogin: () =>
-                      context.push(loginRouteForCurrentLocation(context)),
-                ),
-        ],
+      bodyContent = session.isLoading
+          ? const MedicineRiskCheckLoading()
+          : AuthRequiredDialogGate(
+              onLogin: () =>
+                  context.push(loginRouteForCurrentLocation(context)),
+            );
+    } else {
+      final resultAsync = ref.watch(medicineRiskCheckProvider);
+      final redFlagAlertsAsync = ref.watch(redFlagAlertsProvider);
+      bodyContent = resultAsync.when(
+        data: (result) {
+          final alerts = redFlagAlertsAsync.asData?.value ?? const [];
+          return _MedicineRiskCheckBody(result: result, redFlagAlerts: alerts);
+        },
+        loading: () => const MedicineRiskCheckLoading(),
+        error: (_, __) => AppStateErrorView(
+          title: l10n.medicineErrorTitle,
+          description: l10n.medicineErrorDescription,
+          icon: FLucideIcons.shieldAlert,
+          actionLabel: l10n.todayRetryAction,
+          onAction: () => ref.invalidate(medicineRiskCheckProvider),
+          tone: AppStateTone.warning,
+        ),
       );
     }
 
-    final resultAsync = ref.watch(medicineRiskCheckProvider);
-    final redFlagAlertsAsync = ref.watch(redFlagAlertsProvider);
-    return PageScaffoldShell(
-      title: l10n.medicineRiskCheckPageTitle,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        resultAsync.when(
-          data: (result) {
-            final alerts = redFlagAlertsAsync.asData?.value ?? const [];
-            return _MedicineRiskCheckBody(
-              result: result,
-              redFlagAlerts: alerts,
-            );
-          },
-          loading: () => const MedicineRiskCheckLoading(),
-          error: (_, __) => AppStateErrorView(
-            title: l10n.medicineErrorTitle,
-            description: l10n.medicineErrorDescription,
-            icon: FLucideIcons.shieldAlert,
-            actionLabel: l10n.todayRetryAction,
-            onAction: () => ref.invalidate(medicineRiskCheckProvider),
-            tone: AppStateTone.warning,
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.medicineRiskCheckPageTitle),
+          titleAlignment: Alignment.center,
+          prefixes: const [AppBackButton()],
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(
+            child: ResponsiveContentFrame(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: width < AppBreakpoints.mobile ? 24 : 32,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [bodyContent],
+                ),
+              ),
+            ),
           ),
         ),
-      ],
+      ),
+    );
+  }
+}
+
+class _RiskCheckSectionCard extends StatelessWidget {
+  const _RiskCheckSectionCard({required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return FCard.raw(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: textTheme.titleLarge),
+            const SizedBox(height: 20),
+            child,
+          ],
+        ),
+      ),
     );
   }
 }
@@ -95,7 +137,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             MedicineRiskRedFlagBanner(alerts: redFlagAlerts, l10n: l10n),
             const SizedBox(height: AppSpacingTokens.level4),
           ],
-          PageSectionCard(
+          _RiskCheckSectionCard(
             title: l10n.medicineRiskCheckSummaryTitle,
             child: Wrap(
               spacing: AppSpacingTokens.level3,
@@ -159,7 +201,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
               padding: const EdgeInsets.all(AppSpacingTokens.level5),
             )
           else
-            PageSectionCard(
+            _RiskCheckSectionCard(
               title: l10n.medicineRiskCheckFindingsTitle,
               child: Column(
                 children: [
@@ -178,7 +220,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             ),
           const SizedBox(height: AppSpacingTokens.level4),
           if (result.coverageIssues.isNotEmpty)
-            PageSectionCard(
+            _RiskCheckSectionCard(
               title: l10n.medicineRiskCheckCoverageTitle,
               child: Column(
                 children: [

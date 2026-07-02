@@ -5,7 +5,8 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/network/lucent_api.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
@@ -22,43 +23,68 @@ class LanguageSettingsPage extends ConsumerWidget {
         ref.watch(appLocaleControllerProvider).asData?.value ??
         AppLocale.system;
 
-    return PageScaffoldShell(
-      title: l10n.mineSettingsLanguageTitle,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        FTileGroup(
-          style: settingsSubpageTileGroupStyle(context.theme),
+    final width = MediaQuery.sizeOf(context).width;
+    final content = ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FTile(
-              key: const Key('language-row-system'),
-              title: Text(l10n.settingsLanguageSystemLabel),
-              suffix: SettingsSelectionIcon(
-                selected: currentLocale == AppLocale.system,
-              ),
-              onPress: () =>
-                  _handleLocaleTap(context, ref, l10n, AppLocale.system),
-            ),
-            FTile(
-              key: const Key('language-row-zh'),
-              title: Text(l10n.settingsLanguageChineseLabel),
-              suffix: SettingsSelectionIcon(
-                selected: currentLocale == AppLocale.zhCn,
-              ),
-              onPress: () =>
-                  _handleLocaleTap(context, ref, l10n, AppLocale.zhCn),
-            ),
-            FTile(
-              key: const Key('language-row-en'),
-              title: Text(l10n.settingsLanguageEnglishLabel),
-              suffix: SettingsSelectionIcon(
-                selected: currentLocale == AppLocale.en,
-              ),
-              onPress: () => _handleLocaleTap(context, ref, l10n, AppLocale.en),
+            FTileGroup(
+              style: settingsSubpageTileGroupStyle(context.theme),
+              children: [
+                FTile(
+                  key: const Key('language-row-system'),
+                  title: Text(l10n.settingsLanguageSystemLabel),
+                  suffix: SettingsSelectionIcon(
+                    selected: currentLocale == AppLocale.system,
+                  ),
+                  onPress: () =>
+                      _handleLocaleTap(context, ref, l10n, AppLocale.system),
+                ),
+                FTile(
+                  key: const Key('language-row-zh'),
+                  title: Text(l10n.settingsLanguageChineseLabel),
+                  suffix: SettingsSelectionIcon(
+                    selected: currentLocale == AppLocale.zhCn,
+                  ),
+                  onPress: () =>
+                      _handleLocaleTap(context, ref, l10n, AppLocale.zhCn),
+                ),
+                FTile(
+                  key: const Key('language-row-en'),
+                  title: Text(l10n.settingsLanguageEnglishLabel),
+                  suffix: SettingsSelectionIcon(
+                    selected: currentLocale == AppLocale.en,
+                  ),
+                  onPress: () =>
+                      _handleLocaleTap(context, ref, l10n, AppLocale.en),
+                ),
+              ],
             ),
           ],
         ),
-      ],
+      ),
+    );
+
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.mineSettingsLanguageTitle),
+          titleAlignment: Alignment.center,
+          prefixes: [const AppBackButton()],
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(child: content),
+        ),
+      ),
     );
   }
 }

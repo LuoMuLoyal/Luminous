@@ -6,7 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
@@ -63,124 +63,155 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final isCompact = width < AppBreakpoints.mobile;
     final isMobileLayout = width < AppBreakpoints.desktop;
 
-    return ShellDeferredContent(
-      child: PageScaffoldShell(
-        title: l10n.tabRecord,
-        floatingActionButton: isMobileLayout
-            ? FloatingActionButton.extended(
-                key: const Key('record-nlp-fab'),
-                onPressed: () => _openNlpDialog(
-                  context,
-                  canAccessProtectedData: canAccessProtectedData,
-                  isAuthLoading: isAuthLoading,
-                  selectedDate: selectedDate,
-                ),
-                icon: const Icon(FLucideIcons.sparkles),
-                label: Text(l10n.recordNlpFabAction),
-              )
-            : null,
-        actions: isMobileLayout
-            ? [
-                RecordHeaderActionChip(
-                  key: const Key('record-add-action'),
-                  label: isCompact
-                      ? l10n.recordAddCompactAction
-                      : l10n.recordAddAction,
-                  icon: FLucideIcons.plus,
-                  emphasized: true,
-                  onTap: () => pushAuthRequiredRoute(
-                    context,
-                    '/record/create?date=${formatRecordDate(selectedDate)}',
+    final fab = isMobileLayout
+        ? FloatingActionButton.extended(
+            key: const Key('record-nlp-fab'),
+            onPressed: () => _openNlpDialog(
+              context,
+              canAccessProtectedData: canAccessProtectedData,
+              isAuthLoading: isAuthLoading,
+              selectedDate: selectedDate,
+            ),
+            icon: const Icon(FLucideIcons.sparkles),
+            label: Text(l10n.recordNlpFabAction),
+          )
+        : null;
+    final headerActions = isMobileLayout
+        ? [
+            RecordHeaderActionChip(
+              key: const Key('record-add-action'),
+              label: isCompact
+                  ? l10n.recordAddCompactAction
+                  : l10n.recordAddAction,
+              icon: FLucideIcons.plus,
+              emphasized: true,
+              onTap: () => pushAuthRequiredRoute(
+                context,
+                '/record/create?date=${formatRecordDate(selectedDate)}',
+              ),
+              iconOnly: true,
+            ),
+          ]
+        : [
+            RecordHeaderActionChip(
+              key: const Key('record-date-today-action'),
+              label: l10n.recordTodayAction,
+              icon: FLucideIcons.calendarDays,
+              onTap: () => _setSelectedDate(DateTime.now()),
+              iconOnly: isCompact,
+            ),
+            RecordHeaderActionChip(
+              key: const Key('record-date-previous-action'),
+              label: l10n.recordPreviousDayAction,
+              icon: FLucideIcons.chevronLeft,
+              onTap: () => _setSelectedDate(
+                selectedDate.subtract(const Duration(days: 1)),
+              ),
+              iconOnly: true,
+            ),
+            RecordHeaderActionChip(
+              key: const Key('record-date-next-action'),
+              label: l10n.recordNextDayAction,
+              icon: FLucideIcons.chevronRight,
+              onTap: () =>
+                  _setSelectedDate(selectedDate.add(const Duration(days: 1))),
+              iconOnly: true,
+            ),
+            RecordHeaderActionChip(
+              label: l10n.recordPickDateAction,
+              icon: FLucideIcons.calendarDays,
+              onTap: () => _pickSelectedDate(context, selectedDate),
+              iconOnly: true,
+            ),
+            RecordHeaderActionChip(
+              key: const Key('record-add-action'),
+              label: isCompact
+                  ? l10n.recordAddCompactAction
+                  : l10n.recordAddAction,
+              icon: FLucideIcons.plus,
+              emphasized: true,
+              onTap: () => pushAuthRequiredRoute(
+                context,
+                '/record/create?date=${formatRecordDate(selectedDate)}',
+              ),
+            ),
+          ];
+
+    final scaffoldBody = SafeArea(
+      top: false,
+      child: Material(
+        color: Colors.transparent,
+        child: ResponsiveContentFrame(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: isCompact ? 24 : 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                dashboardAsync.when(
+                  data: (dashboard) => RecordDashboardView(
+                    dashboard: dashboard,
+                    onFilterSelected: (type) => ref
+                        .read(selectedRecordFilterProvider.notifier)
+                        .setFilter(type),
+                    onDateSelected: (date) => _setSelectedDate(date),
+                    onPickDate: () => _pickSelectedDate(context, selectedDate),
+                    onQuickAction: (action) =>
+                        _handleQuickAction(context, action),
+                    onAiInputTap: () => _openNlpDialog(
+                      context,
+                      canAccessProtectedData: canAccessProtectedData,
+                      isAuthLoading: isAuthLoading,
+                      selectedDate: selectedDate,
+                    ),
+                    onMicTap: () => _openVoiceEntry(
+                      context,
+                      canAccessProtectedData: canAccessProtectedData,
+                      isAuthLoading: isAuthLoading,
+                      selectedDate: selectedDate,
+                    ),
+                    onCameraTap: () => _openOcrEntry(
+                      context,
+                      canAccessProtectedData: canAccessProtectedData,
+                      isAuthLoading: isAuthLoading,
+                      selectedDate: selectedDate,
+                    ),
+                    onNewEntry: () => _openRecordCreate(context),
                   ),
-                  iconOnly: true,
-                ),
-              ]
-            : [
-                RecordHeaderActionChip(
-                  key: const Key('record-date-today-action'),
-                  label: l10n.recordTodayAction,
-                  icon: FLucideIcons.calendarDays,
-                  onTap: () => _setSelectedDate(DateTime.now()),
-                  iconOnly: isCompact,
-                ),
-                RecordHeaderActionChip(
-                  key: const Key('record-date-previous-action'),
-                  label: l10n.recordPreviousDayAction,
-                  icon: FLucideIcons.chevronLeft,
-                  onTap: () => _setSelectedDate(
-                    selectedDate.subtract(const Duration(days: 1)),
-                  ),
-                  iconOnly: true,
-                ),
-                RecordHeaderActionChip(
-                  key: const Key('record-date-next-action'),
-                  label: l10n.recordNextDayAction,
-                  icon: FLucideIcons.chevronRight,
-                  onTap: () => _setSelectedDate(
-                    selectedDate.add(const Duration(days: 1)),
-                  ),
-                  iconOnly: true,
-                ),
-                RecordHeaderActionChip(
-                  label: l10n.recordPickDateAction,
-                  icon: FLucideIcons.calendarDays,
-                  onTap: () => _pickSelectedDate(context, selectedDate),
-                  iconOnly: true,
-                ),
-                RecordHeaderActionChip(
-                  key: const Key('record-add-action'),
-                  label: isCompact
-                      ? l10n.recordAddCompactAction
-                      : l10n.recordAddAction,
-                  icon: FLucideIcons.plus,
-                  emphasized: true,
-                  onTap: () => pushAuthRequiredRoute(
-                    context,
-                    '/record/create?date=${formatRecordDate(selectedDate)}',
+                  loading: () => const RecordSkeletonView(),
+                  error: (_, __) => AppStateErrorView(
+                    title: l10n.recordErrorTitle,
+                    description: l10n.recordErrorDescription,
+                    icon: FLucideIcons.notebookPen,
+                    actionLabel: l10n.todayRetryAction,
+                    onAction: () => ref.invalidate(recordDashboardProvider),
+                    tone: AppStateTone.warning,
                   ),
                 ),
               ],
-        children: [
-          dashboardAsync.when(
-            data: (dashboard) => RecordDashboardView(
-              dashboard: dashboard,
-              onFilterSelected: (type) => ref
-                  .read(selectedRecordFilterProvider.notifier)
-                  .setFilter(type),
-              onDateSelected: (date) => _setSelectedDate(date),
-              onPickDate: () => _pickSelectedDate(context, selectedDate),
-              onQuickAction: (action) => _handleQuickAction(context, action),
-              onAiInputTap: () => _openNlpDialog(
-                context,
-                canAccessProtectedData: canAccessProtectedData,
-                isAuthLoading: isAuthLoading,
-                selectedDate: selectedDate,
-              ),
-              onMicTap: () => _openVoiceEntry(
-                context,
-                canAccessProtectedData: canAccessProtectedData,
-                isAuthLoading: isAuthLoading,
-                selectedDate: selectedDate,
-              ),
-              onCameraTap: () => _openOcrEntry(
-                context,
-                canAccessProtectedData: canAccessProtectedData,
-                isAuthLoading: isAuthLoading,
-                selectedDate: selectedDate,
-              ),
-              onNewEntry: () => _openRecordCreate(context),
-            ),
-            loading: () => const RecordSkeletonView(),
-            error: (_, __) => AppStateErrorView(
-              title: l10n.recordErrorTitle,
-              description: l10n.recordErrorDescription,
-              icon: FLucideIcons.notebookPen,
-              actionLabel: l10n.todayRetryAction,
-              onAction: () => ref.invalidate(recordDashboardProvider),
-              tone: AppStateTone.warning,
             ),
           ),
-        ],
+        ),
+      ),
+    );
+
+    return ShellDeferredContent(
+      child: FScaffold(
+        header: SafeArea(
+          bottom: false,
+          child: FHeader(title: Text(l10n.tabRecord), suffixes: headerActions),
+        ),
+        child: fab == null
+            ? scaffoldBody
+            : Stack(
+                children: [
+                  Positioned.fill(child: scaffoldBody),
+                  Positioned(
+                    right: 24,
+                    bottom: 24 + MediaQuery.paddingOf(context).bottom,
+                    child: fab,
+                  ),
+                ],
+              ),
       ),
     );
   }
