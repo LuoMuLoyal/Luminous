@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +11,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
@@ -452,147 +454,219 @@ class RecordEditPage extends HookConsumerWidget {
     }, [session.canAccessProtectedData]);
 
     if (!session.canAccessProtectedData) {
-      return PageScaffoldShell(
-        title: l10n.recordEditAction,
-        centerTitle: true,
-        leading: const AppBackButton(),
-        children: [
-          session.isLoading
-              ? const _RecordEditLoading()
-              : AuthRequiredDialogGate(
-                  onLogin: () =>
-                      context.push(loginRouteForCurrentLocation(context)),
-                ),
-        ],
+      final width = MediaQuery.sizeOf(context).width;
+      final content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              session.isLoading
+                  ? const _RecordEditLoading()
+                  : AuthRequiredDialogGate(
+                      onLogin: () =>
+                          context.push(loginRouteForCurrentLocation(context)),
+                    ),
+            ],
+          ),
+        ),
+      );
+
+      return FScaffold(
+        header: SafeArea(
+          bottom: false,
+          child: FHeader.nested(
+            title: Text(l10n.recordEditAction),
+            titleAlignment: Alignment.center,
+            prefixes: [const AppBackButton()],
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Material(
+            color: Colors.transparent,
+            child: SingleChildScrollView(child: content),
+          ),
+        ),
       );
     }
 
     if (!loaded.value) {
-      return PageScaffoldShell(
-        title: l10n.recordEditAction,
-        centerTitle: true,
-        leading: const AppBackButton(),
-        children: const [_RecordEditLoading()],
+      final width = MediaQuery.sizeOf(context).width;
+      final content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [_RecordEditLoading()],
+          ),
+        ),
+      );
+
+      return FScaffold(
+        header: SafeArea(
+          bottom: false,
+          child: FHeader.nested(
+            title: Text(l10n.recordEditAction),
+            titleAlignment: Alignment.center,
+            prefixes: [const AppBackButton()],
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Material(
+            color: Colors.transparent,
+            child: SingleChildScrollView(child: content),
+          ),
+        ),
       );
     }
 
-    return PageScaffoldShell(
-      title: l10n.recordEditAction,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              RecordOccurredAtFields(
-                date: recordOccurredAt.value ?? DateTime.now(),
-                time: recordOccurredTime.value,
-                onDateTap: pickRecordDate,
-                onTimeTap: pickRecordTime,
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              DailyRecordFormFields(
-                kind: kind.value,
-                onKindChanged: onKindChanged,
-                valueController: valueController,
-                unitController: unitController,
-                titleController: titleController,
-                noteController: noteController,
-              ),
-              if (kind.value == DailyRecordKind.sleep) ...[
-                const SizedBox(height: AppSpacingTokens.level3),
-                SleepStructuredFields(
-                  l10n: l10n,
-                  bedtime: sleepBedtime.value,
-                  wakeTime: sleepWakeTime.value,
-                  quality: sleepQuality.value,
-                  deepMinutes: sleepDeepMinutes.value,
-                  lightMinutes: sleepLightMinutes.value,
-                  remMinutes: sleepRemMinutes.value,
-                  onBedtimeChanged: (v) => sleepBedtime.value = v,
-                  onWakeTimeChanged: (v) => sleepWakeTime.value = v,
-                  onQualityChanged: (v) => sleepQuality.value = v,
-                  onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
-                  onLightMinutesChanged: (v) => sleepLightMinutes.value = v,
-                  onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
-                ),
-              ],
-              if (kind.value == DailyRecordKind.meal) ...[
-                const SizedBox(height: AppSpacingTokens.level3),
-                MealDishEditorSection(
-                  dishNames: mealDishNames.value,
-                  enabled: !saving.value && !deleting.value,
-                  onDishChanged: (index, value) {
-                    final next = [...mealDishNames.value];
-                    if (index >= 0 && index < next.length) {
-                      next[index] = value;
-                      mealDishNames.value = next;
-                    }
-                  },
-                  onDishRemoved: (index) {
-                    final next = [...mealDishNames.value]..removeAt(index);
-                    mealDishNames.value = next;
-                  },
-                  onDishAdded: () {
-                    mealDishNames.value = [...mealDishNames.value, ''];
-                  },
-                ),
-                if (canConfirmMealAnalysis.value) ...[
+    final width = MediaQuery.sizeOf(context).width;
+    final content = ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSpacingTokens.level4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  RecordOccurredAtFields(
+                    date: recordOccurredAt.value ?? DateTime.now(),
+                    time: recordOccurredTime.value,
+                    onDateTap: pickRecordDate,
+                    onTimeTap: pickRecordTime,
+                  ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: OutlinedButton(
-                      key: const Key('meal-confirm-action'),
-                      onPressed: () => confirmMealAnalysis.value = true,
-                      child: Text(
-                        confirmMealAnalysis.value
-                            ? l10n.recordMealConfirmActionSelected
-                            : l10n.recordMealConfirmAction,
+                  DailyRecordFormFields(
+                    kind: kind.value,
+                    onKindChanged: onKindChanged,
+                    valueController: valueController,
+                    unitController: unitController,
+                    titleController: titleController,
+                    noteController: noteController,
+                  ),
+                  if (kind.value == DailyRecordKind.sleep) ...[
+                    const SizedBox(height: AppSpacingTokens.level3),
+                    SleepStructuredFields(
+                      l10n: l10n,
+                      bedtime: sleepBedtime.value,
+                      wakeTime: sleepWakeTime.value,
+                      quality: sleepQuality.value,
+                      deepMinutes: sleepDeepMinutes.value,
+                      lightMinutes: sleepLightMinutes.value,
+                      remMinutes: sleepRemMinutes.value,
+                      onBedtimeChanged: (v) => sleepBedtime.value = v,
+                      onWakeTimeChanged: (v) => sleepWakeTime.value = v,
+                      onQualityChanged: (v) => sleepQuality.value = v,
+                      onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
+                      onLightMinutesChanged: (v) => sleepLightMinutes.value = v,
+                      onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
+                    ),
+                  ],
+                  if (kind.value == DailyRecordKind.meal) ...[
+                    const SizedBox(height: AppSpacingTokens.level3),
+                    MealDishEditorSection(
+                      dishNames: mealDishNames.value,
+                      enabled: !saving.value && !deleting.value,
+                      onDishChanged: (index, value) {
+                        final next = [...mealDishNames.value];
+                        if (index >= 0 && index < next.length) {
+                          next[index] = value;
+                          mealDishNames.value = next;
+                        }
+                      },
+                      onDishRemoved: (index) {
+                        final next = [...mealDishNames.value]..removeAt(index);
+                        mealDishNames.value = next;
+                      },
+                      onDishAdded: () {
+                        mealDishNames.value = [...mealDishNames.value, ''];
+                      },
+                    ),
+                    if (canConfirmMealAnalysis.value) ...[
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: OutlinedButton(
+                          key: const Key('meal-confirm-action'),
+                          onPressed: () => confirmMealAnalysis.value = true,
+                          child: Text(
+                            confirmMealAnalysis.value
+                                ? l10n.recordMealConfirmActionSelected
+                                : l10n.recordMealConfirmAction,
+                          ),
+                        ),
                       ),
+                    ],
+                  ],
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  DailyRecordImageAttachmentField(
+                    l10n: l10n,
+                    selectedBytes: selectedImage.value?.bytes,
+                    selectedFileName: selectedImage.value?.fileName,
+                    existingAttachment: attachmentsChanged.value
+                        ? null
+                        : existingImageAttachment.value,
+                    onPick: onPickImage,
+                    onRemove: onRemoveImage,
+                    enabled: !saving.value && !deleting.value,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level5),
+                  ElevatedButton(
+                    key: const Key('record-edit-save-action'),
+                    onPressed: saving.value ? null : onSave,
+                    child: Text(l10n.mineEditSaveAction),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  OutlinedButton.icon(
+                    key: const Key('record-edit-delete-action'),
+                    onPressed: deleting.value || saving.value ? null : onDelete,
+                    icon: deleting.value
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.delete_outline_rounded, size: 18),
+                    label: Text(l10n.recordDeleteAction),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.error,
                     ),
                   ),
                 ],
-              ],
-              const SizedBox(height: AppSpacingTokens.level3),
-              DailyRecordImageAttachmentField(
-                l10n: l10n,
-                selectedBytes: selectedImage.value?.bytes,
-                selectedFileName: selectedImage.value?.fileName,
-                existingAttachment: attachmentsChanged.value
-                    ? null
-                    : existingImageAttachment.value,
-                onPick: onPickImage,
-                onRemove: onRemoveImage,
-                enabled: !saving.value && !deleting.value,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
-              ElevatedButton(
-                key: const Key('record-edit-save-action'),
-                onPressed: saving.value ? null : onSave,
-                child: Text(l10n.mineEditSaveAction),
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              OutlinedButton.icon(
-                key: const Key('record-edit-delete-action'),
-                onPressed: deleting.value || saving.value ? null : onDelete,
-                icon: deleting.value
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.delete_outline_rounded, size: 18),
-                label: Text(l10n.recordDeleteAction),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
+    );
+
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.recordEditAction),
+          titleAlignment: Alignment.center,
+          prefixes: [const AppBackButton()],
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(child: content),
+        ),
+      ),
     );
   }
 

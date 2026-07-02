@@ -150,9 +150,10 @@ All 16 files with manual `TextEditingController` lifecycle (`late final` + `init
 
 - Stack: Flutter + Riverpod + GoRouter + `hooks_riverpod` + `flutter_hooks`.
 - `LuminousApp` now boots a fully Forui-led root theme: `MaterialApp.router` uses Forui-derived light/dark `ThemeData`, wraps the tree with `FTheme`, and runtime `lib/` no longer carries the old `AppThemeSurface` bridge.
-- The root Forui migration has now moved past the old theme/dialog/color bridge files: runtime `lib/` no longer uses `AppTheme`, `AppDialog`, or `AppColorTokens`, and the remaining old root wrappers are currently narrowed to `PageScaffoldShell` and `AppInkWell` while their call sites are being cut over page-by-page.
+- The root Forui migration has now moved past the old theme/dialog/color bridge files: runtime `lib/` no longer uses `AppTheme`, `AppDialog`, or `AppColorTokens`, and the remaining old root wrappers are currently narrowed to `AppInkWell` while their call sites are being cut over page-by-page.
 - `AppSpacingTokens` now exposes only the `level1..level12` numeric scale; the old semantic aliases (`xxs`, `xs`, `sm`, `md`, `lg`, `xl`, `x2l`, `x3l`, `x4l`, `x5l`, `x6l`, `section`) have been removed, and all call sites across `lib/` have been migrated to the level tokens.
 - `AppRadiusTokens` now exposes only the `level0..level5` plus `levelFull` numeric scale; the old semantic aliases (`none`, `xs`, `sm`, `md`, `lg`, `xl`, `pillSm`, `pill`, `full`) have been removed, and all call sites across `lib/` have been migrated to the level tokens.
+- `PageScaffoldShell` has been removed: all child pages now compose `FScaffold` + `FHeader` + `ResponsiveContentFrame` directly, with drawer/FAB cases handled locally. No `PageScaffoldShell` references remain in runtime code or tests.
 - Android app module now follows Flutter-managed default `minSdk` instead of pinning Android 12+ only in Gradle; Android 12 splash behavior remains handled by the existing `values-v31/` resource split rather than by artificially raising the compatibility floor.
 - Generated Lucent client: `packages/lucent_openapi`.
 - Auth/session state is split into restoring, confirmed signed-out, and signed-in.

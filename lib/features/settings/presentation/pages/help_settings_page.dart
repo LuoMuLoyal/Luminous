@@ -6,7 +6,8 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
@@ -22,43 +23,68 @@ class HelpSettingsPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final resourcesAsync = ref.watch(supportResourcesProvider('help'));
 
-    return PageScaffoldShell(
-      title: l10n.mineSettingHelpTitle,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        resourcesAsync.when(
-          data: (resources) {
-            final actionable = resources.where(_isActionable).toList();
-            if (actionable.isEmpty) {
-              return _EmptyState(message: l10n.settingsHelpEmpty);
-            }
-            return FTileGroup(
-              style: settingsSubpageTileGroupStyle(context.theme),
-              children: [
-                for (final resource in actionable)
-                  FTile(
-                    title: Text(resource.title),
-                    subtitle:
-                        resource.subtitle == null || resource.subtitle!.isEmpty
-                        ? null
-                        : Text(resource.subtitle!),
-                    suffix: const Icon(FLucideIcons.chevronRight),
-                    onPress: () => _openResource(context, resource),
-                  ),
-              ],
-            );
-          },
-          loading: () => const AppInlineSkeleton(
-            children: [
-              AppInlineSkeletonBlock(height: 56),
-              AppInlineSkeletonBlock(height: 56),
-              AppInlineSkeletonBlock(height: 56),
-            ],
-          ),
-          error: (error, _) => _EmptyState(message: l10n.settingsHelpError),
+    final width = MediaQuery.sizeOf(context).width;
+    final content = ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: width < AppBreakpoints.mobile ? 24 : 32,
         ),
-      ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            resourcesAsync.when(
+              data: (resources) {
+                final actionable = resources.where(_isActionable).toList();
+                if (actionable.isEmpty) {
+                  return _EmptyState(message: l10n.settingsHelpEmpty);
+                }
+                return FTileGroup(
+                  style: settingsSubpageTileGroupStyle(context.theme),
+                  children: [
+                    for (final resource in actionable)
+                      FTile(
+                        title: Text(resource.title),
+                        subtitle:
+                            resource.subtitle == null ||
+                                resource.subtitle!.isEmpty
+                            ? null
+                            : Text(resource.subtitle!),
+                        suffix: const Icon(FLucideIcons.chevronRight),
+                        onPress: () => _openResource(context, resource),
+                      ),
+                  ],
+                );
+              },
+              loading: () => const AppInlineSkeleton(
+                children: [
+                  AppInlineSkeletonBlock(height: 56),
+                  AppInlineSkeletonBlock(height: 56),
+                  AppInlineSkeletonBlock(height: 56),
+                ],
+              ),
+              error: (error, _) => _EmptyState(message: l10n.settingsHelpError),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.mineSettingHelpTitle),
+          titleAlignment: Alignment.center,
+          prefixes: [const AppBackButton()],
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(child: content),
+        ),
+      ),
     );
   }
 

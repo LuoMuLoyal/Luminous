@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 
 /// A reusable settings page template with a master toggle at the top and a
@@ -33,28 +34,52 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return PageScaffoldShell(
-      title: title,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        AppSettingsSwitchRow(
-          title: masterTitle,
-          subtitle: masterSubtitle,
-          value: masterValue,
-          onChanged: onMasterChanged,
+    final width = MediaQuery.sizeOf(context).width;
+    final content = ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: width < AppBreakpoints.mobile ? 24 : 32,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
-        Divider(height: 1, color: colors.border),
-        const SizedBox(height: AppSpacingTokens.level4),
-        _DisabledScope(
-          disabled: !masterValue,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSettingsSwitchRow(
+              title: masterTitle,
+              subtitle: masterSubtitle,
+              value: masterValue,
+              onChanged: onMasterChanged,
+            ),
+            const SizedBox(height: AppSpacingTokens.level4),
+            Divider(height: 1, color: colors.border),
+            const SizedBox(height: AppSpacingTokens.level4),
+            _DisabledScope(
+              disabled: !masterValue,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: children,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
+    );
+
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(title),
+          titleAlignment: Alignment.center,
+          prefixes: [const AppBackButton()],
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(child: content),
+        ),
+      ),
     );
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -58,18 +60,42 @@ class ProfileEditPage extends HookConsumerWidget {
     }
 
     if (!session.canAccessProtectedData) {
-      return PageScaffoldShell(
-        title: l10n.mineEditProfileTitle,
-        centerTitle: true,
-        leading: const AppBackButton(),
-        children: [
-          session.isLoading
-              ? const _MineEditFormLoading()
-              : AuthRequiredDialogGate(
-                  onLogin: () =>
-                      context.push(loginRouteForCurrentLocation(context)),
-                ),
-        ],
+      final width = MediaQuery.sizeOf(context).width;
+      final content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              session.isLoading
+                  ? const _MineEditFormLoading()
+                  : AuthRequiredDialogGate(
+                      onLogin: () =>
+                          context.push(loginRouteForCurrentLocation(context)),
+                    ),
+            ],
+          ),
+        ),
+      );
+
+      return FScaffold(
+        header: SafeArea(
+          bottom: false,
+          child: FHeader.nested(
+            title: Text(l10n.mineEditProfileTitle),
+            titleAlignment: Alignment.center,
+            prefixes: [const AppBackButton()],
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Material(
+            color: Colors.transparent,
+            child: SingleChildScrollView(child: content),
+          ),
+        ),
       );
     }
 
@@ -82,73 +108,97 @@ class ProfileEditPage extends HookConsumerWidget {
 
     final snapshot = ref.watch(healthContextSnapshotProvider);
 
-    return PageScaffoldShell(
-      title: l10n.mineEditProfileTitle,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        snapshot.when(
-          data: (ctx) {
-            initFromSnapshot(ctx.profile);
-            return Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.level4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextField(
-                    controller: birthDateController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldBirthDate,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: heightCmController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldHeightCm,
-                    ),
-                    keyboardType: TextInputType.number,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: bloodTypeController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldBloodType,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  _enumDropdown<HealthUnitSystem>(
-                    label: l10n.mineEditFieldUnitSystem,
-                    value: unitSystem.value,
-                    values: HealthUnitSystem.values,
-                    onChanged: (v) => unitSystem.value = v,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  SwitchListTile(
-                    title: Text(l10n.mineEditFieldOnboardingCompleted),
-                    value: onboardingCompleted.value ?? false,
-                    onChanged: (v) => onboardingCompleted.value = v,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level5),
-                  ElevatedButton(
-                    onPressed: onSave,
-                    child: Text(l10n.mineEditSaveAction),
-                  ),
-                ],
-              ),
-            );
-          },
-          loading: () => const _MineEditFormLoading(),
-          error: (_, __) => AppStateErrorView(
-            title: l10n.mineErrorTitle,
-            description: l10n.mineErrorDescription,
-            icon: Icons.badge_outlined,
-            actionLabel: l10n.todayRetryAction,
-            onAction: () => ref.invalidate(healthContextSnapshotProvider),
-            tone: AppStateTone.warning,
-          ),
+    final width = MediaQuery.sizeOf(context).width;
+    final content = ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: width < AppBreakpoints.mobile ? 24 : 32,
         ),
-      ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            snapshot.when(
+              data: (ctx) {
+                initFromSnapshot(ctx.profile);
+                return Padding(
+                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextField(
+                        controller: birthDateController,
+                        decoration: InputDecoration(
+                          labelText: l10n.mineEditFieldBirthDate,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      TextField(
+                        controller: heightCmController,
+                        decoration: InputDecoration(
+                          labelText: l10n.mineEditFieldHeightCm,
+                        ),
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      TextField(
+                        controller: bloodTypeController,
+                        decoration: InputDecoration(
+                          labelText: l10n.mineEditFieldBloodType,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      _enumDropdown<HealthUnitSystem>(
+                        label: l10n.mineEditFieldUnitSystem,
+                        value: unitSystem.value,
+                        values: HealthUnitSystem.values,
+                        onChanged: (v) => unitSystem.value = v,
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      SwitchListTile(
+                        title: Text(l10n.mineEditFieldOnboardingCompleted),
+                        value: onboardingCompleted.value ?? false,
+                        onChanged: (v) => onboardingCompleted.value = v,
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level5),
+                      ElevatedButton(
+                        onPressed: onSave,
+                        child: Text(l10n.mineEditSaveAction),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              loading: () => const _MineEditFormLoading(),
+              error: (_, __) => AppStateErrorView(
+                title: l10n.mineErrorTitle,
+                description: l10n.mineErrorDescription,
+                icon: Icons.badge_outlined,
+                actionLabel: l10n.todayRetryAction,
+                onAction: () => ref.invalidate(healthContextSnapshotProvider),
+                tone: AppStateTone.warning,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.mineEditProfileTitle),
+          titleAlignment: Alignment.center,
+          prefixes: [const AppBackButton()],
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(child: content),
+        ),
+      ),
     );
   }
 }

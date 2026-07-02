@@ -7,7 +7,8 @@ import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
+import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -22,30 +23,56 @@ class DataExportPage extends ConsumerWidget {
     final exportAsync = ref.watch(dataExportControllerProvider);
     final export = exportAsync.asData?.value;
 
-    return PageScaffoldShell(
-      title: l10n.mineSettingExportTitle,
-      centerTitle: true,
-      leading: const AppBackButton(),
-      children: [
-        FCard.raw(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.settingsExportDescription,
-                style: textTheme.bodyMedium?.copyWith(color: colors.foreground),
-              ),
-              const SizedBox(height: AppSpacingTokens.level5),
-              _StatusRow(
-                label: l10n.mineSettingExportValue,
-                value: _statusLabel(l10n, export),
-              ),
-              const SizedBox(height: AppSpacingTokens.level5),
-              _buildActionButton(context, ref, export, l10n),
-            ],
-          ),
+    final width = MediaQuery.sizeOf(context).width;
+    final content = ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: width < AppBreakpoints.mobile ? 24 : 32,
         ),
-      ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            FCard.raw(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.settingsExportDescription,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colors.foreground,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level5),
+                  _StatusRow(
+                    label: l10n.mineSettingExportValue,
+                    value: _statusLabel(l10n, export),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level5),
+                  _buildActionButton(context, ref, export, l10n),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: Text(l10n.mineSettingExportTitle),
+          titleAlignment: Alignment.center,
+          prefixes: [const AppBackButton()],
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(child: content),
+        ),
+      ),
     );
   }
 
