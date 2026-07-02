@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 
 /// Defers building [child] until after the current frame.
@@ -52,10 +52,10 @@ class _DefaultTabPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return ColoredBox(
-      color: surface.canvasSoft,
+      color: colors.secondary.withValues(alpha: 0.32),
       child: const SafeArea(
         bottom: false,
         child: Padding(

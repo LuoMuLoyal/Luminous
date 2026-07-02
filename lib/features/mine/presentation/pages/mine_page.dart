@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/mine_dashboard_view.dart';
@@ -23,7 +23,7 @@ class MinePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardAsync = ref.watch(mineDashboardProvider);
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
@@ -45,7 +45,9 @@ class MinePage extends ConsumerWidget {
               child: body,
             )
           : DecoratedBox(
-              decoration: BoxDecoration(color: surface.canvasSoft),
+              decoration: BoxDecoration(
+                color: colors.secondary.withValues(alpha: 0.32),
+              ),
               child: SafeArea(
                 bottom: false,
                 child: RefreshIndicator(
@@ -88,7 +90,7 @@ class MineErrorView extends StatelessWidget {
     return AppStateErrorView(
       title: l10n.mineErrorTitle,
       description: l10n.mineErrorDescription,
-      icon: Icons.person_search_rounded,
+      icon: FLucideIcons.searchX,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: AppStateTone.warning,
@@ -109,10 +111,12 @@ class _MineDesktopShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
+      decoration: BoxDecoration(
+        color: colors.secondary.withValues(alpha: 0.32),
+      ),
       child: SafeArea(
         bottom: false,
         child: RefreshIndicator(

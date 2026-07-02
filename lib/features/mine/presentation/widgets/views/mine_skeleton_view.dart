@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 
 /// Skeleton placeholder for the Mine tab loading state.
@@ -127,6 +127,7 @@ class _StatusOverviewPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     return AppInlineSkeletonSection(
       children: [
         Row(
@@ -139,9 +140,7 @@ class _StatusOverviewPlaceholder extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(
                     horizontal: AppSpacingTokens.xs,
                   ),
-                  color: Theme.of(
-                    context,
-                  ).extension<AppThemeSurface>()!.hairline,
+                  color: colors.border,
                 ),
               ],
               const Expanded(
@@ -192,7 +191,7 @@ class _ArchivePlaceholder extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    Icons.chevron_right_rounded,
+                    FLucideIcons.chevronRight,
                     color: Colors.transparent,
                     size: AppSpacingTokens.lg,
                   ),
@@ -235,7 +234,7 @@ class _CampusServicePlaceholder extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    Icons.chevron_right_rounded,
+                    FLucideIcons.chevronRight,
                     color: Colors.transparent,
                     size: AppSpacingTokens.lg,
                   ),
@@ -254,13 +253,13 @@ class _PrivacyNoticePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: surface.canvas,
+        color: colors.background,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
+        border: Border.all(color: colors.border),
       ),
       child: const Padding(
         padding: EdgeInsets.all(AppSpacingTokens.md),
@@ -272,7 +271,7 @@ class _PrivacyNoticePlaceholder extends StatelessWidget {
             SizedBox(width: AppSpacingTokens.sm),
             AppInlineSkeletonBlock(height: 14, width: 56),
             Icon(
-              Icons.chevron_right_rounded,
+              FLucideIcons.chevronRight,
               color: Colors.transparent,
               size: AppSpacingTokens.lg,
             ),

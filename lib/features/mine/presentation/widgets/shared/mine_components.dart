@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MineHeaderActionChip extends StatelessWidget {
@@ -9,19 +9,16 @@ class MineHeaderActionChip extends StatelessWidget {
     super.key,
     required this.label,
     required this.icon,
-    required this.typography,
-    required this.surface,
     this.onTap,
   });
 
   final String label;
   final IconData icon;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     return Tooltip(
       message: label,
       child: Material(
@@ -32,10 +29,10 @@ class MineHeaderActionChip extends StatelessWidget {
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: onTap == null
-                  ? surface.canvas.withValues(alpha: 0.72)
-                  : surface.canvas,
+                  ? colors.background.withValues(alpha: 0.72)
+                  : colors.background,
               borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-              border: Border.all(color: surface.hairline),
+              border: Border.all(color: colors.border),
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacingTokens.sm),
@@ -43,8 +40,8 @@ class MineHeaderActionChip extends StatelessWidget {
                 icon,
                 size: 18,
                 color: onTap == null
-                    ? surface.body.withValues(alpha: 0.5)
-                    : surface.body,
+                    ? colors.mutedForeground.withValues(alpha: 0.5)
+                    : colors.foreground,
               ),
             ),
           ),
@@ -59,8 +56,6 @@ class MineSettingRow extends StatelessWidget {
     super.key,
     required this.icon,
     required this.title,
-    required this.typography,
-    required this.surface,
     this.value,
     required this.onTap,
     this.showDivider = false,
@@ -69,13 +64,13 @@ class MineSettingRow extends StatelessWidget {
   final IconData icon;
   final String title;
   final String? value;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final VoidCallback onTap;
   final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final row = Material(
       color: Colors.transparent,
       child: InkWell(
@@ -88,12 +83,12 @@ class MineSettingRow extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, size: 18, color: surface.body),
+              Icon(icon, size: 18, color: colors.foreground),
               const SizedBox(width: AppSpacingTokens.md),
               Expanded(
                 child: Text(
                   title,
-                  style: typography.bodyMd.copyWith(
+                  style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -102,11 +97,17 @@ class MineSettingRow extends StatelessWidget {
                 const SizedBox(width: AppSpacingTokens.sm),
                 Text(
                   value!,
-                  style: typography.bodySm.copyWith(color: surface.body),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
               const SizedBox(width: AppSpacingTokens.xs),
-              Icon(Icons.chevron_right_rounded, size: 18, color: surface.mute),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: 18,
+                color: colors.mutedForeground,
+              ),
             ],
           ),
         ),
@@ -120,7 +121,7 @@ class MineSettingRow extends StatelessWidget {
     return Column(
       children: [
         row,
-        Divider(height: 1, color: surface.hairline),
+        Divider(height: 1, color: colors.border),
       ],
     );
   }
@@ -131,7 +132,7 @@ class MineProgressRing extends StatelessWidget {
     super.key,
     required this.progress,
     required this.color,
-    this.icon = Icons.verified_user_outlined,
+    this.icon = FLucideIcons.badgeCheck,
     this.size = 54,
   });
 
