@@ -2,15 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/network/lucent_network_providers.dart';
+import 'package:luminous/core/router/action_route_mapper.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_dialog.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
-import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -22,17 +24,11 @@ class NotificationDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
     final detailAsync = ref.watch(notificationDetailProvider(notificationId));
 
     return PageScaffoldShell(
       title: l10n.notificationDetailTitle,
-      leading: IconButton(
-        onPressed: () => context.pop(),
-        icon: const Icon(Icons.arrow_back_rounded),
-      ),
+      leading: const AppBackButton(),
       children: [
         detailAsync.when(
           data: (detail) {
@@ -40,16 +36,11 @@ class NotificationDetailPage extends ConsumerWidget {
               return AppStateMessageView(
                 title: l10n.notificationNotFoundTitle,
                 description: l10n.notificationNotFoundDescription,
-                icon: Icons.notifications_off_outlined,
+                icon: FLucideIcons.bellOff,
                 tone: AppStateTone.neutral,
               );
             }
-            return _DetailBody(
-              detail: detail,
-              typography: typography,
-              surface: surface,
-              theme: theme,
-            );
+            return _DetailBody(detail: detail);
           },
           loading: () => const Center(
             child: Padding(
@@ -62,7 +53,7 @@ class NotificationDetailPage extends ConsumerWidget {
           error: (error, _) => AppStateErrorView(
             title: l10n.notificationErrorTitle,
             description: error.toString(),
-            icon: Icons.error_outline_rounded,
+            icon: FLucideIcons.circleAlert,
             actionLabel: l10n.notificationRetryAction,
             onAction: () =>
                 ref.invalidate(notificationDetailProvider(notificationId)),
@@ -74,21 +65,15 @@ class NotificationDetailPage extends ConsumerWidget {
 }
 
 class _DetailBody extends ConsumerWidget {
-  const _DetailBody({
-    required this.detail,
-    required this.typography,
-    required this.surface,
-    required this.theme,
-  });
+  const _DetailBody({required this.detail});
 
   final NotificationDetailDto detail;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
-  final ThemeData theme;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,26 +82,21 @@ class _DetailBody extends ConsumerWidget {
         const SizedBox(height: AppSpacingTokens.md),
         Text(
           detail.title,
-          style: typography.displaySm.copyWith(fontWeight: FontWeight.w700),
+          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
         Text(
           _formatTime(detail.createdAt),
-          style: typography.caption.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+          style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
         ),
         const SizedBox(height: AppSpacingTokens.lg),
-        Container(
-          padding: const EdgeInsets.all(AppSpacingTokens.md),
-          decoration: BoxDecoration(
-            color: surface.canvasSoft,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-            border: Border.all(color: surface.hairline),
-          ),
-          child: Text(
-            detail.content,
-            style: typography.bodyMd.copyWith(height: 1.6),
+        FCard.raw(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            child: Text(
+              detail.content,
+              style: textTheme.bodyLarge?.copyWith(height: 1.6),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacingTokens.x2l),
@@ -172,9 +152,7 @@ class _TypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
-
+    final textTheme = Theme.of(context).textTheme;
     final (label, color) = switch (type) {
       UserNotificationType.aiTodaySummary => ('AI 总结', Colors.teal),
       UserNotificationType.reportGenerated => ('报告', Colors.blue),
@@ -186,20 +164,22 @@ class _TypeChip extends StatelessWidget {
       UserNotificationType.unknownDefaultOpenApi => ('通知', Colors.grey),
     };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.sm,
-        vertical: AppSpacingTokens.xxs,
-      ),
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
       ),
-      child: Text(
-        label,
-        style: typography.caption.copyWith(
-          color: color,
-          fontWeight: FontWeight.w600,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.sm,
+          vertical: AppSpacingTokens.xxs,
+        ),
+        child: Text(
+          label,
+          style: textTheme.labelMedium?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -222,113 +202,88 @@ class _ActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
-    final children = <Widget>[
+    final actions = <Widget>[
       if (detail.action != null && detail.action!.isNotEmpty)
         Expanded(
-          child: FilledButton.icon(
-            onPressed: onNavigate,
-            icon: const Icon(Icons.open_in_new_rounded, size: 18),
-            label: Text(l10n.notificationActionNavigate),
+          child: FButton(
+            onPress: onNavigate,
+            prefix: const Icon(FLucideIcons.externalLink, size: 18),
+            child: Text(l10n.notificationActionNavigate),
           ),
         ),
       if (detail.action != null && detail.action!.isNotEmpty)
         const SizedBox(width: AppSpacingTokens.sm),
       Expanded(
-        child: OutlinedButton.icon(
-          onPressed: onMarkUnread,
-          icon: Icon(
-            detail.isRead ? Icons.mark_email_unread_outlined : Icons.done_all,
+        child: FButton(
+          variant: FButtonVariant.outline,
+          onPress: onMarkUnread,
+          prefix: Icon(
+            detail.isRead ? FLucideIcons.mailMinus : FLucideIcons.checkCheck,
             size: 18,
           ),
-          label: Text(
+          child: Text(
             detail.isRead
                 ? l10n.notificationActionMarkUnread
                 : l10n.notificationActionMarkRead,
-          ),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: theme.colorScheme.onSurface,
-            side: BorderSide(color: theme.colorScheme.outline),
           ),
         ),
       ),
       const SizedBox(width: AppSpacingTokens.sm),
       Expanded(
-        child: OutlinedButton.icon(
-          onPressed: () => _showDeleteConfirm(context, onDelete),
-          icon: const Icon(Icons.delete_outline, size: 18),
-          label: Text(l10n.notificationActionDelete),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: theme.colorScheme.error,
-            side: BorderSide(color: theme.colorScheme.error),
-          ),
+        child: FButton(
+          variant: FButtonVariant.destructive,
+          onPress: () => _showDeleteConfirm(context, onDelete),
+          prefix: const Icon(FLucideIcons.trash2, size: 18),
+          child: Text(l10n.notificationActionDelete),
         ),
       ),
     ];
 
-    if (detail.action == null || detail.action!.isEmpty) {
-      return Row(
-        children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: onMarkUnread,
-              icon: Icon(
-                detail.isRead
-                    ? Icons.mark_email_unread_outlined
-                    : Icons.done_all,
-                size: 18,
-              ),
-              label: Text(
-                detail.isRead
-                    ? l10n.notificationActionMarkUnread
-                    : l10n.notificationActionMarkRead,
-              ),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: theme.colorScheme.onSurface,
-                side: BorderSide(color: theme.colorScheme.outline),
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () => _showDeleteConfirm(context, onDelete),
-              icon: const Icon(Icons.delete_outline, size: 18),
-              label: Text(l10n.notificationActionDelete),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: theme.colorScheme.error,
-                side: BorderSide(color: theme.colorScheme.error),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    return Row(children: children);
+    return Row(children: actions);
   }
 
   void _showDeleteConfirm(BuildContext context, VoidCallback onDelete) {
     final l10n = AppLocalizations.of(context)!;
-    showDialog(
+    showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.notificationDeleteConfirmTitle),
-        content: Text(l10n.notificationDeleteConfirmDescription),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.notificationDeleteConfirmCancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              onDelete();
-            },
-            child: Text(l10n.notificationDeleteConfirmConfirm),
-          ),
-        ],
+      builder: (context) => AppDialog(
+        maxWidth: 420,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.notificationDeleteConfirmTitle,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: AppSpacingTokens.sm),
+            Text(
+              l10n.notificationDeleteConfirmDescription,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: AppSpacingTokens.lg),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: () => Navigator.of(context).pop(),
+                  child: Text(l10n.notificationDeleteConfirmCancel),
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                FButton(
+                  variant: FButtonVariant.destructive,
+                  onPress: () {
+                    Navigator.of(context).pop();
+                    onDelete();
+                  },
+                  child: Text(l10n.notificationDeleteConfirmConfirm),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

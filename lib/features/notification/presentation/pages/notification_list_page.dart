@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -44,7 +45,7 @@ class NotificationListPage extends ConsumerWidget {
           data: (response) {
             final items = response.items;
             if (items.isEmpty) {
-              return _EmptyView();
+              return const _EmptyView();
             }
             final groups = _groupByRelativeDate(items);
             final controller = ref.read(
@@ -60,26 +61,40 @@ class NotificationListPage extends ConsumerWidget {
                 for (final entry in groups.entries) ...[
                   _SectionHeader(title: entry.key),
                   const SizedBox(height: AppSpacingTokens.xs),
-                  ...entry.value.map((item) {
-                    return NotificationListItemWidget(
-                      item: item,
-                      onTap: () => context.push('/notifications/${item.id}'),
-                      onDismiss: () async {
-                        final controller = ref.read(
-                          notificationListControllerProvider.notifier,
-                        );
-                        await controller.deleteNotification(item.id);
-                        if (context.mounted) {
-                          unawaited(
-                            AppToast.show(
-                              context,
-                              l10n.notificationDeleteSuccess,
-                            ),
-                          );
-                        }
-                      },
-                    );
-                  }),
+                  Column(
+                    children: [
+                      for (
+                        var index = 0;
+                        index < entry.value.length;
+                        index++
+                      ) ...[
+                        NotificationListItemWidget(
+                          item: entry.value[index],
+                          onTap: () => context.push(
+                            '/notifications/${entry.value[index].id}',
+                          ),
+                          onDismiss: () async {
+                            final controller = ref.read(
+                              notificationListControllerProvider.notifier,
+                            );
+                            await controller.deleteNotification(
+                              entry.value[index].id,
+                            );
+                            if (context.mounted) {
+                              unawaited(
+                                AppToast.show(
+                                  context,
+                                  l10n.notificationDeleteSuccess,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        if (index < entry.value.length - 1)
+                          const SizedBox(height: AppSpacingTokens.sm),
+                      ],
+                    ],
+                  ),
                   const SizedBox(height: AppSpacingTokens.md),
                 ],
                 if (hasMore) ...[
@@ -91,8 +106,9 @@ class NotificationListPage extends ConsumerWidget {
                             height: 24,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : TextButton(
-                            onPressed: () => controller.loadMore(),
+                        : FButton(
+                            variant: FButtonVariant.outline,
+                            onPress: () => controller.loadMore(),
                             child: Text(l10n.notificationLoadMore),
                           ),
                   ),
@@ -125,7 +141,7 @@ class NotificationListPage extends ConsumerWidget {
           error: (error, _) => AppStateErrorView(
             title: l10n.notificationErrorTitle,
             description: error.toString(),
-            icon: Icons.error_outline_rounded,
+            icon: FLucideIcons.circleAlert,
             actionLabel: l10n.notificationRetryAction,
             onAction: () => ref.invalidate(notificationListControllerProvider),
           ),
@@ -160,7 +176,6 @@ class NotificationListPage extends ConsumerWidget {
       groups.putIfAbsent(key, () => []).add(item);
     }
 
-    // Sort keys: today first, then yesterday, then older
     final orderedKeys = <String>[];
     if (groups.containsKey('今天')) orderedKeys.add('今天');
     if (groups.containsKey('昨天')) orderedKeys.add('昨天');
@@ -178,17 +193,12 @@ class _MarkAllReadButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
-    return TextButton(
-      onPressed: onPressed,
-      child: Text(
-        l10n.notificationMarkAllRead,
-        style: TextStyle(
-          color: theme.colorScheme.primary,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+    return FButton(
+      variant: FButtonVariant.ghost,
+      size: FButtonSizeVariant.sm,
+      onPress: onPressed,
+      child: Text(l10n.notificationMarkAllRead),
     );
   }
 }
@@ -200,8 +210,8 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -210,8 +220,9 @@ class _SectionHeader extends StatelessWidget {
       ),
       child: Text(
         title,
-        style: typography.bodySmStrong.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
+        style: textTheme.labelMedium?.copyWith(
+          color: colors.mutedForeground,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -219,6 +230,8 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _EmptyView extends StatelessWidget {
+  const _EmptyView();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -227,7 +240,7 @@ class _EmptyView extends StatelessWidget {
       child: AppStateMessageView(
         title: l10n.notificationEmptyTitle,
         description: l10n.notificationEmptyDescription,
-        icon: Icons.notifications_none_rounded,
+        icon: FLucideIcons.messageSquareMore,
         tone: AppStateTone.neutral,
       ),
     );

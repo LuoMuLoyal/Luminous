@@ -14,16 +14,6 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 
 ## Remaining Phases
 
-### Notification
-
-- Files:
-  - `lib/features/notification/presentation/pages/notification_list_page.dart`
-  - `lib/features/notification/presentation/pages/notification_detail_page.dart`
-  - `lib/features/notification/presentation/widgets/notification_list_item.dart`
-- Action:
-  - Move the notification surface to Forui tile/card/list semantics.
-  - Remove handwritten old `surface/body/mute/hairline` styling.
-
 ### Today
 
 - Files:

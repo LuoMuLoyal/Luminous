@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class NotificationListItemWidget extends StatelessWidget {
   const NotificationListItemWidget({
@@ -17,40 +17,45 @@ class NotificationListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Dismissible(
       key: ValueKey(item.id),
       direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: AppSpacingTokens.md),
+      background: DecoratedBox(
         decoration: BoxDecoration(
-          color: theme.colorScheme.error,
+          color: colors.destructive,
           borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         ),
-        child: Icon(Icons.delete, color: theme.colorScheme.onError),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: AppSpacingTokens.md),
+            child: Icon(
+              FLucideIcons.trash2,
+              color: colors.destructiveForeground,
+            ),
+          ),
+        ),
       ),
       onDismissed: (_) => onDismiss(),
-      child: Material(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: item.isRead
+              ? colors.background
+              : colors.primary.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+          border: Border.all(
+            color: item.isRead ? colors.border : colors.primary,
+            width: item.isRead ? 1 : 1.2,
+          ),
+        ),
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-          child: Container(
+          child: Padding(
             padding: const EdgeInsets.all(AppSpacingTokens.md),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-              border: Border.all(
-                color: item.isRead
-                    ? surface.hairline
-                    : theme.colorScheme.primary,
-                width: item.isRead ? 1 : 1.5,
-              ),
-            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -59,17 +64,15 @@ class NotificationListItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: Text(
                               item.title,
-                              style: typography.bodyMdStrong.copyWith(
+                              style: textTheme.titleMedium?.copyWith(
                                 fontWeight: item.isRead
                                     ? FontWeight.w500
                                     : FontWeight.w700,
-                                color: item.isRead
-                                    ? theme.colorScheme.onSurfaceVariant
-                                    : theme.colorScheme.onSurface,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -78,8 +81,8 @@ class NotificationListItemWidget extends StatelessWidget {
                           const SizedBox(width: AppSpacingTokens.xs),
                           Text(
                             _formatTime(item.createdAt),
-                            style: typography.caption.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
+                            style: textTheme.bodySmall?.copyWith(
+                              color: colors.mutedForeground,
                             ),
                           ),
                         ],
@@ -87,8 +90,8 @@ class NotificationListItemWidget extends StatelessWidget {
                       const SizedBox(height: AppSpacingTokens.xxs),
                       Text(
                         item.content,
-                        style: typography.bodySm.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colors.mutedForeground,
                           height: 1.4,
                         ),
                         maxLines: 2,
@@ -99,13 +102,12 @@ class NotificationListItemWidget extends StatelessWidget {
                 ),
                 if (!item.isRead) ...[
                   const SizedBox(width: AppSpacingTokens.sm),
-                  Container(
-                    width: 8,
-                    height: 8,
+                  DecoratedBox(
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
+                      color: colors.primary,
                       shape: BoxShape.circle,
                     ),
+                    child: const SizedBox(width: 8, height: 8),
                   ),
                 ],
               ],

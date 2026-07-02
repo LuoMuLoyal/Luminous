@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/notification/presentation/widgets/notification_list_item.dart';
 
 Widget _appShell(Widget child) {
   return MaterialApp(
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-    ),
+    theme: AppTheme.light,
     home: Scaffold(body: child),
   );
 }
