@@ -122,24 +122,26 @@ class _MedicationPlanTile extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => onMarkDose!(
+                      child: FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: () => onMarkDose!(
                           currentMedicineId,
                           MedicineDoseAction.taken,
                         ),
-                        icon: const Icon(FLucideIcons.check, size: 16),
-                        label: Text(l10n.medicineDoseActionTaken),
+                        prefix: const Icon(FLucideIcons.check, size: 16),
+                        child: Text(l10n.medicineDoseActionTaken),
                       ),
                     ),
                     const SizedBox(width: AppSpacingTokens.level3),
                     Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => onMarkDose!(
+                      child: FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: () => onMarkDose!(
                           currentMedicineId,
                           MedicineDoseAction.skipped,
                         ),
-                        icon: const Icon(FLucideIcons.ban, size: 16),
-                        label: Text(l10n.medicineDoseActionSkipped),
+                        prefix: const Icon(FLucideIcons.ban, size: 16),
+                        child: Text(l10n.medicineDoseActionSkipped),
                       ),
                     ),
                   ],

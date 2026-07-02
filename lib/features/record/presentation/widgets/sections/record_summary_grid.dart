@@ -76,94 +76,89 @@ class _SummaryTile extends StatelessWidget {
         ? null
         : recordCopy(l10n, item.detailKey!);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap == null ? null : () => onTap!(item.type),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-            border: Border.all(color: colors.border),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    AppIconBadge(
-                      icon: item.icon,
-                      color: item.accent,
-                      backgroundColor: item.softColor,
-                      size: AppResponsiveSizing.scaleByWidth(
-                        context,
-                        fraction: 0.072,
-                        minValue: 24,
-                        maxValue: 32,
-                      ),
-                      iconSize: AppResponsiveSizing.scaleByWidth(
-                        context,
-                        fraction: 0.042,
-                        minValue: 14,
-                        maxValue: 18,
-                      ),
+    return FTappable(
+      onPress: onTap == null ? null : () => onTap!(item.type),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.background,
+          border: Border.all(color: colors.border),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  AppIconBadge(
+                    icon: item.icon,
+                    color: item.accent,
+                    backgroundColor: item.softColor,
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.072,
+                      minValue: 24,
+                      maxValue: 32,
                     ),
-                    const SizedBox(width: AppSpacingTokens.level3),
-                    Expanded(
-                      child: Text(
-                        recordCopy(l10n, item.titleKey),
-                        style: textTheme.labelSmall?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
-                        maxLines: 2,
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacingTokens.level3),
-                if (item.value.isNotEmpty)
-                  RichText(
-                    text: TextSpan(
-                      style: textTheme.headlineSmall?.copyWith(
-                        color: colors.foreground,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      children: [
-                        TextSpan(text: item.value),
-                        if (unit != null)
-                          TextSpan(
-                            text: ' $unit',
-                            style: textTheme.labelSmall?.copyWith(
-                              color: colors.mutedForeground,
-                            ),
-                          ),
-                      ],
-                    ),
-                  )
-                else
-                  Text(
-                    detail ?? '',
-                    style: textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
+                    iconSize: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.042,
+                      minValue: 14,
+                      maxValue: 18,
                     ),
                   ),
-                if (detail != null && item.value.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacingTokens.level1),
-                  Text(
-                    detail,
-                    style: textTheme.labelSmall?.copyWith(color: item.accent),
-                    maxLines: 2,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
+                  const SizedBox(width: AppSpacingTokens.level3),
+                  Expanded(
+                    child: Text(
+                      recordCopy(l10n, item.titleKey),
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colors.mutedForeground,
+                      ),
+                      maxLines: 2,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
+              ),
+              const SizedBox(height: AppSpacingTokens.level3),
+              if (item.value.isNotEmpty)
+                RichText(
+                  text: TextSpan(
+                    style: textTheme.headlineSmall?.copyWith(
+                      color: colors.foreground,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    children: [
+                      TextSpan(text: item.value),
+                      if (unit != null)
+                        TextSpan(
+                          text: ' $unit',
+                          style: textTheme.labelSmall?.copyWith(
+                            color: colors.mutedForeground,
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              else
+                Text(
+                  detail ?? '',
+                  style: textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              if (detail != null && item.value.isNotEmpty) ...[
+                const SizedBox(height: AppSpacingTokens.level1),
+                Text(
+                  detail,
+                  style: textTheme.labelSmall?.copyWith(color: item.accent),
+                  maxLines: 2,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
-            ),
+            ],
           ),
         ),
       ),

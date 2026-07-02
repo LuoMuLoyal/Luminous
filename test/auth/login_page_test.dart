@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
@@ -40,7 +41,7 @@ void main() {
 
     await tester.enterText(find.byType(EditableText).at(0), 'user@example.com');
     await tester.enterText(find.byType(EditableText).at(1), 'Password123');
-    await tester.tap(find.widgetWithText(FilledButton, '登录'));
+    await tester.tap(find.widgetWithText(FButton, '登录'));
     await tester.pumpAndSettle();
 
     expect(remote.loginEmail, 'user@example.com');
@@ -84,7 +85,7 @@ void main() {
 
     await tester.enterText(find.byType(EditableText).at(0), 'user@example.com');
     await tester.enterText(find.byType(EditableText).at(1), 'Password123');
-    await tester.tap(find.widgetWithText(FilledButton, '登录'));
+    await tester.tap(find.widgetWithText(FButton, '登录'));
     await tester.pumpAndSettle();
 
     expect(remote.loginEmail, 'user@example.com');
@@ -251,7 +252,7 @@ void main() {
       find.byKey(const Key('wechat-callback-input')),
       'https://app.example.com/oauth/wechat/callback?code=wechat-code&state=state-1',
     );
-    final completeButton = find.widgetWithText(FilledButton, '完成微信登录');
+    final completeButton = find.widgetWithText(FButton, '完成微信登录');
     await tester.ensureVisible(completeButton);
     await tester.tap(completeButton);
     await tester.pumpAndSettle();

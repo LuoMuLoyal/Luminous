@@ -178,7 +178,9 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                       const SizedBox(height: AppSpacingTokens.level3),
                       // Image thumbnail
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+                        borderRadius: BorderRadius.circular(
+                          AppRadiusTokens.level4,
+                        ),
                         child: Image.file(
                           File(imagePath.value!),
                           height: 140,
@@ -213,7 +215,9 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           !isRecognizing.value) ...[
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                          padding: const EdgeInsets.all(
+                            AppSpacingTokens.level4,
+                          ),
                           decoration: BoxDecoration(
                             color: colors.background,
                             borderRadius: BorderRadius.circular(
@@ -282,29 +286,24 @@ class _OptionCard extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = theme.textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level6),
-          decoration: BoxDecoration(
-            color: colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-            border: Border.all(color: colors.border),
-          ),
-          child: Column(
-            children: [
-              Icon(icon, size: 36, color: theme.colorScheme.primary),
-              const SizedBox(height: AppSpacingTokens.level3),
-              Text(
-                label,
-                style: textTheme.bodySmall,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+    return FTappable(
+      onPress: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level6),
+        decoration: BoxDecoration(
+          color: colors.background,
+          border: Border.all(color: colors.border),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 36, color: theme.colorScheme.primary),
+            const SizedBox(height: AppSpacingTokens.level3),
+            Text(
+              label,
+              style: textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

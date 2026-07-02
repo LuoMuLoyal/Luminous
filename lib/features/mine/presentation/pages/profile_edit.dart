@@ -91,10 +91,7 @@ class ProfileEditPage extends HookConsumerWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Material(
-            color: Colors.transparent,
-            child: SingleChildScrollView(child: content),
-          ),
+          child: SingleChildScrollView(child: content),
         ),
       );
     }
@@ -154,14 +151,14 @@ class ProfileEditPage extends HookConsumerWidget {
                         onChanged: (v) => unitSystem.value = v,
                       ),
                       const SizedBox(height: AppSpacingTokens.level3),
-                      SwitchListTile(
-                        title: Text(l10n.mineEditFieldOnboardingCompleted),
+                      FSwitch(
+                        label: Text(l10n.mineEditFieldOnboardingCompleted),
                         value: onboardingCompleted.value ?? false,
-                        onChanged: (v) => onboardingCompleted.value = v,
+                        onChange: (v) => onboardingCompleted.value = v,
                       ),
                       const SizedBox(height: AppSpacingTokens.level5),
-                      ElevatedButton(
-                        onPressed: onSave,
+                      FButton(
+                        onPress: onSave,
                         child: Text(l10n.mineEditSaveAction),
                       ),
                     ],
@@ -192,13 +189,7 @@ class ProfileEditPage extends HookConsumerWidget {
           prefixes: [const AppBackButton()],
         ),
       ),
-      child: SafeArea(
-        top: false,
-        child: Material(
-          color: Colors.transparent,
-          child: SingleChildScrollView(child: content),
-        ),
-      ),
+      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
     );
   }
 }
@@ -227,12 +218,13 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   required List<T> values,
   required ValueChanged<T?> onChanged,
 }) {
-  return DropdownButtonFormField<T>(
-    initialValue: value,
-    decoration: InputDecoration(labelText: label),
-    items: values
-        .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
+  return FSelect<T>.rich(
+    label: Text(label),
+    hint: label,
+    format: (value) => value.value,
+    control: FSelectControl.lifted(value: value, onChange: onChanged),
+    children: values
+        .map((v) => FSelectItem.item(title: Text(v.value), value: v))
         .toList(),
-    onChanged: onChanged,
   );
 }

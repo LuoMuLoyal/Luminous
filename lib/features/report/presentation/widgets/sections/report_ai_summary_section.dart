@@ -113,8 +113,9 @@ class ReportAiSummarySection extends StatelessWidget {
                                   },
                           ),
                           if (actionLabel != null && action != null)
-                            OutlinedButton(
-                              onPressed: () => _handleAction(context, action),
+                            FButton(
+                              variant: FButtonVariant.outline,
+                              onPress: () => _handleAction(context, action),
                               child: Text(actionLabel),
                             ),
                         ],
@@ -151,7 +152,9 @@ class ReportAiSummarySection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: AppSpacingTokens.level2),
+                      padding: const EdgeInsets.only(
+                        top: AppSpacingTokens.level2,
+                      ),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: content.bullets[index].color,

@@ -145,120 +145,116 @@ class _MetricCard extends StatelessWidget {
       _ => Color(0xFF0F766E),
     };
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap == null ? null : () => onTap!(metric.kind),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        child: FCard.raw(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    AppIconBadge(
-                      icon: metric.icon,
+    return FTappable(
+      onPress: onTap == null ? null : () => onTap!(metric.kind),
+      child: FCard.raw(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  AppIconBadge(
+                    icon: metric.icon,
+                    color: metric.color,
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.084,
+                      minValue: 28,
+                      maxValue: 36,
+                    ),
+                    iconSize: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.046,
+                      minValue: 16,
+                      maxValue: 20,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  const SizedBox(width: AppSpacingTokens.level2),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacingTokens.level3),
+              Wrap(
+                spacing: AppSpacingTokens.level1,
+                crossAxisAlignment: WrapCrossAlignment.end,
+                children: [
+                  AppSkeletonText(
+                    text: metric.value,
+                    style: textTheme.headlineMedium?.copyWith(
                       color: metric.color,
-                      size: AppResponsiveSizing.scaleByWidth(
-                        context,
-                        fraction: 0.084,
-                        minValue: 28,
-                        maxValue: 36,
-                      ),
-                      iconSize: AppResponsiveSizing.scaleByWidth(
-                        context,
-                        fraction: 0.046,
-                        minValue: 16,
-                        maxValue: 20,
-                      ),
-                      shape: BoxShape.circle,
+                      fontWeight: FontWeight.w800,
                     ),
-                    const SizedBox(width: AppSpacingTokens.level2),
-                    Expanded(
+                    widthFactor: 0.32,
+                  ),
+                  if (metric.unit.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: AppSpacingTokens.level1,
+                      ),
                       child: Text(
-                        title,
-                        style: textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacingTokens.level3),
-                Wrap(
-                  spacing: AppSpacingTokens.level1,
-                  crossAxisAlignment: WrapCrossAlignment.end,
-                  children: [
-                    AppSkeletonText(
-                      text: metric.value,
-                      style: textTheme.headlineMedium?.copyWith(
-                        color: metric.color,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      widthFactor: 0.32,
-                    ),
-                    if (metric.unit.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: AppSpacingTokens.level1,
-                        ),
-                        child: Text(
-                          metric.unit,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacingTokens.level1),
-                Row(
-                  children: [
-                    AppSkeletonSlot(
-                      skeleton: const AppInlineSkeletonBlock(
-                        height: 20,
-                        widthFactor: 0.36,
-                        radius: AppRadiusTokens.level2,
-                      ),
-                      child: _MetricBadge(
-                        label: reportStatusLabel(l10n, metric.status),
-                        color: reportStatusColor(metric.status),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacingTokens.level2),
-                    Icon(directionIcon, size: 14, color: directionColor),
-                    const SizedBox(width: AppSpacingTokens.level1),
-                    Expanded(
-                      child: AppSkeletonText(
-                        text: metric.delta,
-                        style: textTheme.labelSmall?.copyWith(
+                        metric.unit,
+                        style: textTheme.bodySmall?.copyWith(
                           color: colors.mutedForeground,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        widthFactor: 0.82,
                       ),
                     ),
-                  ],
-                ),
-                const Spacer(),
-                AppSkeletonSlot(
-                  skeleton: const AppInlineSkeletonBlock(
-                    height: 22,
-                    radius: AppRadiusTokens.level2,
+                ],
+              ),
+              const SizedBox(height: AppSpacingTokens.level1),
+              Row(
+                children: [
+                  AppSkeletonSlot(
+                    skeleton: const AppInlineSkeletonBlock(
+                      height: 20,
+                      widthFactor: 0.36,
+                      radius: AppRadiusTokens.level2,
+                    ),
+                    child: _MetricBadge(
+                      label: reportStatusLabel(l10n, metric.status),
+                      color: reportStatusColor(metric.status),
+                    ),
                   ),
-                  child: ReportMetricTrack(
-                    values: metric.sparkline,
-                    color: metric.color,
-                    height: 22,
+                  const SizedBox(width: AppSpacingTokens.level2),
+                  Icon(directionIcon, size: 14, color: directionColor),
+                  const SizedBox(width: AppSpacingTokens.level1),
+                  Expanded(
+                    child: AppSkeletonText(
+                      text: metric.delta,
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colors.mutedForeground,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      widthFactor: 0.82,
+                    ),
                   ),
+                ],
+              ),
+              const Spacer(),
+              AppSkeletonSlot(
+                skeleton: const AppInlineSkeletonBlock(
+                  height: 22,
+                  radius: AppRadiusTokens.level2,
                 ),
-              ],
-            ),
+                child: ReportMetricTrack(
+                  values: metric.sparkline,
+                  color: metric.color,
+                  height: 22,
+                ),
+              ),
+            ],
           ),
         ),
       ),

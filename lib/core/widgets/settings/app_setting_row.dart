@@ -32,7 +32,7 @@ class AppSettingRow extends StatelessWidget {
       prefix: icon == null ? null : Icon(icon),
       title: Text(title),
       subtitle: subtitle == null ? null : Text(subtitle!),
-      details: trailing == null || value == null || value!.isEmpty
+      details: value == null || value!.isEmpty
           ? null
           : Text(
               value!,

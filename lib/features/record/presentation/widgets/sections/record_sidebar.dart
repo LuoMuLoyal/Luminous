@@ -197,62 +197,58 @@ class _MonthDayCell extends StatelessWidget {
         ? [...day.markers, const Color(0xFFFF4D57)]
         : day.markers;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap == null
-            ? null
-            : () => onTap!(_dateForDay(day, selectedDate)),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox.square(
-              dimension: 30,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: day.selected ? colors.foreground : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '${day.day}',
-                    style: textTheme.labelMedium?.copyWith(
-                      color: day.selected ? colors.background : color,
-                      fontWeight: day.selected
-                          ? FontWeight.w700
-                          : FontWeight.w400,
-                    ),
+    return FTappable(
+      onPress: onTap == null
+          ? null
+          : () => onTap!(_dateForDay(day, selectedDate)),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          SizedBox.square(
+            dimension: 30,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: day.selected ? colors.foreground : Colors.transparent,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  '${day.day}',
+                  style: textTheme.labelMedium?.copyWith(
+                    color: day.selected ? colors.background : color,
+                    fontWeight: day.selected
+                        ? FontWeight.w700
+                        : FontWeight.w400,
                   ),
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 4,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: markerColors
-                      .take(3)
-                      .map(
-                        (marker) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 1),
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: marker,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const SizedBox.square(dimension: 3),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SizedBox(
+              height: 4,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: markerColors
+                    .take(3)
+                    .map(
+                      (marker) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 1),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: marker,
+                            shape: BoxShape.circle,
                           ),
+                          child: const SizedBox.square(dimension: 3),
                         ),
-                      )
-                      .toList(),
-                ),
+                      ),
+                    )
+                    .toList(),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -271,57 +267,52 @@ class _FilterRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final label = recordCopy(l10n, filter.titleKey);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
-          child: Row(
-            children: [
-              Icon(
-                filter.selected
-                    ? FLucideIcons.squareCheckBig
-                    : FLucideIcons.square,
-                color: filter.selected
-                    ? colors.foreground
-                    : colors.mutedForeground,
-                size: 18,
-              ),
-              const SizedBox(width: AppSpacingTokens.level3),
-              Icon(filter.icon, color: filter.accent, size: 18),
-              const SizedBox(width: AppSpacingTokens.level3),
-              Expanded(
-                child: Text(
-                  label,
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+    return FTappable(
+      onPress: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
+        child: Row(
+          children: [
+            Icon(
+              filter.selected
+                  ? FLucideIcons.squareCheckBig
+                  : FLucideIcons.square,
+              color: filter.selected
+                  ? colors.foreground
+                  : colors.mutedForeground,
+              size: 18,
+            ),
+            const SizedBox(width: AppSpacingTokens.level3),
+            Icon(filter.icon, color: filter.accent, size: 18),
+            const SizedBox(width: AppSpacingTokens.level3),
+            Expanded(
+              child: Text(
+                label,
+                style: textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
-              if (filter.locked)
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.secondary.withValues(alpha: 0.22),
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+            ),
+            if (filter.locked)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colors.secondary.withValues(alpha: 0.22),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacingTokens.level3,
+                    vertical: AppSpacingTokens.level2,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacingTokens.level3,
-                      vertical: AppSpacingTokens.level2,
-                    ),
-                    child: Text(
-                      l10n.recordNotEnabledLabel,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: colors.foreground,
-                      ),
+                  child: Text(
+                    l10n.recordNotEnabledLabel,
+                    style: textTheme.labelSmall?.copyWith(
+                      color: colors.foreground,
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );

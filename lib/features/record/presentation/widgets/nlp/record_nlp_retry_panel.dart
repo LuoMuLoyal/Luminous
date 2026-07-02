@@ -35,9 +35,10 @@ class RecordNlpRetryPanel extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacingTokens.level3),
-            OutlinedButton(
+            FButton(
+              variant: FButtonVariant.outline,
               key: const Key('record-nlp-retry-failed-action'),
-              onPressed: enabled ? onRetry : null,
+              onPress: enabled ? onRetry : null,
               child: Text(l10n.recordNlpRetryFailedAction),
             ),
           ],

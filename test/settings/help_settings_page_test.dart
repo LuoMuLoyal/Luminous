@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/settings/presentation/pages/help_settings_page.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('Help page renders only actionable, available resources', (
@@ -54,18 +54,8 @@ void main() {
             ],
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const HelpSettingsPage(),
+        child: const TestForuiApp(
+          home: HelpSettingsPage(),
         ),
       ),
     );
@@ -90,18 +80,8 @@ void main() {
         overrides: [
           supportResourcesProvider('help').overrideWith((ref) async => []),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const HelpSettingsPage(),
+        child: const TestForuiApp(
+          home: HelpSettingsPage(),
         ),
       ),
     );

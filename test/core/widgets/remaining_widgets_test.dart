@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/app_header_action_chip.dart';
 import 'package:luminous/core/widgets/common/app_image_placeholder.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/widgets/settings/app_setting_row.dart';
 import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
 import 'package:luminous/core/widgets/settings/app_settings_section.dart';
 import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
 
+import '../../helpers/test_forui_app.dart';
+
 Widget _appShell(Widget child) {
-  return MaterialApp(
-    theme: ThemeData.light(),
-    home: Scaffold(body: child),
-  );
+  return TestForuiApp(home: Scaffold(body: child));
 }
 
 void main() {
@@ -45,6 +44,7 @@ void main() {
       );
 
       await tester.tap(find.text('Tap me'));
+      await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
   });
@@ -81,47 +81,6 @@ void main() {
     });
   });
 
-  group('AppSectionSurface', () {
-    testWidgets('renders child widget', (tester) async {
-      await tester.pumpWidget(
-        _appShell(const AppSectionSurface(child: Text('Content'))),
-      );
-
-      expect(find.text('Content'), findsOneWidget);
-    });
-
-    testWidgets('renders title and subtite when provided', (tester) async {
-      await tester.pumpWidget(
-        _appShell(
-          const AppSectionSurface(
-            title: 'Section Title',
-            subtitle: 'Section description',
-            child: Text('Body'),
-          ),
-        ),
-      );
-
-      expect(find.text('Section Title'), findsOneWidget);
-      expect(find.text('Section description'), findsOneWidget);
-      expect(find.text('Body'), findsOneWidget);
-    });
-
-    testWidgets('renders trailing widget', (tester) async {
-      await tester.pumpWidget(
-        _appShell(
-          const AppSectionSurface(
-            title: 'With trailing',
-            trailing: Text('Edit'),
-            child: Text('Body'),
-          ),
-        ),
-      );
-
-      expect(find.text('With trailing'), findsOneWidget);
-      expect(find.text('Edit'), findsOneWidget);
-    });
-  });
-
   group('AppSettingsSwitchRow', () {
     testWidgets('renders title and switch', (tester) async {
       await tester.pumpWidget(
@@ -135,7 +94,7 @@ void main() {
       );
 
       expect(find.text('Enable feature'), findsOneWidget);
-      expect(find.byType(Switch), findsOneWidget);
+      expect(find.byType(FSwitch), findsOneWidget);
     });
 
     testWidgets('renders subtitle when provided', (tester) async {
@@ -167,6 +126,7 @@ void main() {
       );
 
       await tester.tap(find.text('Toggle me'));
+      await tester.pumpAndSettle();
       expect(toggled, isTrue);
     });
 
@@ -197,6 +157,7 @@ void main() {
       );
 
       await tester.tap(find.text('Open settings'));
+      await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
 
@@ -207,7 +168,7 @@ void main() {
         ),
       );
 
-      expect(find.byIcon(Icons.chevron_right_rounded), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
     });
 
     testWidgets('shows subtitle and value', (tester) async {
@@ -259,7 +220,7 @@ void main() {
       );
 
       expect(find.text('Go to page'), findsOneWidget);
-      expect(find.byIcon(Icons.chevron_right_rounded), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
     });
 
     testWidgets('renders subtitle and value', (tester) async {
@@ -291,6 +252,7 @@ void main() {
       );
 
       await tester.tap(find.text('Navigate'));
+      await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
 

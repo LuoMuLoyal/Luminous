@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/daily_record_form_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('DailyRecordFormFields shows water fields', (tester) async {
@@ -73,17 +73,7 @@ void main() {
 
 Future<void> _pumpForm(WidgetTester tester, DailyRecordKind kind) async {
   await tester.pumpWidget(
-    MaterialApp(
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      locale: const Locale('zh'),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
+    TestForuiApp(
       home: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(16),

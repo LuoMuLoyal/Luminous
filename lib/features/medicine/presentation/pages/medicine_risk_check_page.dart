@@ -66,18 +66,15 @@ class MedicineRiskCheckPage extends ConsumerWidget {
       ),
       child: SafeArea(
         top: false,
-        child: Material(
-          color: Colors.transparent,
-          child: SingleChildScrollView(
-            child: ResponsiveContentFrame(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: width < AppBreakpoints.mobile ? 24 : 32,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [bodyContent],
-                ),
+        child: SingleChildScrollView(
+          child: ResponsiveContentFrame(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [bodyContent],
               ),
             ),
           ),

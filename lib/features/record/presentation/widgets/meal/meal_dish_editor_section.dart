@@ -61,11 +61,12 @@ class MealDishEditorSection extends StatelessWidget {
         ],
         Align(
           alignment: Alignment.centerLeft,
-          child: OutlinedButton.icon(
+          child: FButton(
+            variant: FButtonVariant.outline,
             key: const Key('meal-dish-add-action'),
-            onPressed: enabled ? onDishAdded : null,
-            icon: const Icon(FLucideIcons.plus),
-            label: Text(l10n.recordMealDishAddAction),
+            onPress: enabled ? onDishAdded : null,
+            prefix: const Icon(FLucideIcons.plus),
+            child: Text(l10n.recordMealDishAddAction),
           ),
         ),
       ],

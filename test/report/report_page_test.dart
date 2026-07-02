@@ -9,7 +9,6 @@ import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -20,6 +19,7 @@ import 'package:luminous/features/report/presentation/pages/report_page.dart';
 import 'package:luminous/features/report/presentation/widgets/views/report_skeleton_view.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import '../helpers/test_forui_app.dart';
 import '../today/today_test_helpers.dart';
 
 void main() {
@@ -45,18 +45,8 @@ void main() {
               EnabledUserSettingsController.new,
             ),
           ],
-          child: MaterialApp(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const ReportPage(),
+          child: const TestForuiApp(
+            home: ReportPage(),
           ),
         ),
       );
@@ -129,18 +119,8 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ReportPage(),
+        child: const TestForuiApp(
+          home: ReportPage(),
         ),
       ),
     );
@@ -174,18 +154,8 @@ void main() {
             DisabledUserSettingsController.new,
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ReportPage(),
+        child: const TestForuiApp(
+          home: ReportPage(),
         ),
       ),
     );
@@ -237,18 +207,8 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ReportPage(),
+        child: const TestForuiApp(
+          home: ReportPage(),
         ),
       ),
     );
@@ -292,18 +252,8 @@ void main() {
           lucentDataExportApiProvider.overrideWithValue(exportApi),
           externalUrlLauncherProvider.overrideWithValue(launcher),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ReportPage(),
+        child: const TestForuiApp(
+          home: ReportPage(),
         ),
       ),
     );
@@ -364,18 +314,8 @@ void main() {
             ),
             lucentDataExportApiProvider.overrideWithValue(exportApi),
           ],
-          child: MaterialApp(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: const ReportPage(),
+          child: const TestForuiApp(
+            home: ReportPage(),
           ),
         ),
       );
@@ -417,18 +357,8 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ReportPage(),
+        child: const TestForuiApp(
+          home: ReportPage(),
         ),
       ),
     );
@@ -465,18 +395,8 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ReportPage(),
+        child: const TestForuiApp(
+          home: ReportPage(),
         ),
       ),
     );
@@ -506,18 +426,8 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ReportPage(),
+        child: const TestForuiApp(
+          home: ReportPage(),
         ),
       ),
     );
@@ -548,18 +458,8 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const ReportPage(),
+        child: const TestForuiApp(
+          home: ReportPage(),
         ),
       ),
     );

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+
+import '../../helpers/test_forui_app.dart';
 
 Widget _appShell(Widget child) {
-  return MaterialApp(
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-    ),
-    home: Scaffold(body: child),
-  );
+  return TestForuiApp(home: Scaffold(body: child));
 }
 
 void main() {

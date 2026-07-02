@@ -56,13 +56,12 @@ class RecordNewEntryPanel extends StatelessWidget {
               color: Colors.transparent,
               child: Opacity(
                 opacity: onNewEntry == null ? 0.5 : 1.0,
-                child: InkWell(
-                  onTap: onNewEntry,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+                child:                 FTappable(
+
+                  onPress: onNewEntry,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.secondary.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                       border: Border.all(color: colors.border),
                     ),
                     child: Padding(
@@ -90,6 +89,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                       ),
                     ),
                   ),
+                
                 ),
               ),
             ),
@@ -114,14 +114,13 @@ class _NewEntryChip extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap == null ? null : () => onTap!(action),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+      child:       FTappable(
+
+        onPress: onTap == null ? null : () => onTap!(action),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: action.softColor.withValues(alpha: 0.68),
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          ),
+            ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacingTokens.level3,
@@ -143,6 +142,7 @@ class _NewEntryChip extends StatelessWidget {
             ),
           ),
         ),
+      
       ),
     );
   }

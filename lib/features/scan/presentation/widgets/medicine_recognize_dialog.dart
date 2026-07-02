@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:luminous/core/design/app_design.dart';
@@ -176,8 +177,9 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: widget.onRetake,
+                    child: FButton(
+                      variant: FButtonVariant.outline,
+                      onPress: widget.onRetake,
                       child: const Text('重新拍照'),
                     ),
                   ),

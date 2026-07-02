@@ -88,8 +88,9 @@ class _AlertTile extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level4),
             Align(
               alignment: Alignment.centerLeft,
-              child: OutlinedButton(
-                onPressed: () => context.push('/medicine/risk-check'),
+              child: FButton(
+                variant: FButtonVariant.outline,
+                onPress: () => context.push('/medicine/risk-check'),
                 child: Text(medicineAlertAction(l10n, alert)),
               ),
             ),

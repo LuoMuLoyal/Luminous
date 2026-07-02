@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
@@ -17,6 +16,7 @@ void main() {
   testWidgets('Account settings page renders auth account sections', (
     tester,
   ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     await _pumpAccountSettingsPage(
       tester,
       router: GoRouter(
@@ -33,16 +33,22 @@ void main() {
 
     await tester.pump();
 
-    expect(find.text('账号与安全'), findsAtLeastNWidgets(1));
-    expect(find.text('资料信息'), findsOneWidget);
-    expect(find.text('登录邮箱'), findsOneWidget);
-    expect(find.text('修改密码'), findsOneWidget);
-    expect(find.text('注销账号'), findsAtLeastNWidgets(1));
+    expect(find.text(l10n.authAccountOverviewTitle), findsAtLeastNWidgets(1));
+    expect(find.text(l10n.authProfileSectionTitle), findsOneWidget);
+    expect(find.text(l10n.authEmailSectionTitle), findsOneWidget);
+    expect(find.text(l10n.authPasswordSectionTitle), findsOneWidget);
+
+    await tester.tap(find.text(l10n.authPasswordSectionTitle));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.authChangePasswordAction), findsOneWidget);
+    expect(find.text(l10n.authDeleteAccountAction), findsAtLeastNWidgets(1));
   });
 
   testWidgets(
     'Account settings change-email action routes to change-email page',
     (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await _pumpAccountSettingsPage(
         tester,
         router: GoRouter(
@@ -64,7 +70,7 @@ void main() {
 
       await tester.pump();
 
-      final changeEmailButton = find.text('更换邮箱');
+      final changeEmailButton = find.widgetWithText(FButton, l10n.authEmailChangeAction);
       await tester.scrollUntilVisible(
         changeEmailButton,
         240,
@@ -92,18 +98,8 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
+        child: TestAuthApp(
+          router: GoRouter(
             initialLocation: '/account',
             routes: [
               GoRoute(
@@ -122,10 +118,10 @@ void main() {
       find.byType(EditableText).at(1),
       'https://example.com/avatar.png',
     );
-    final saveProfileButton = find.widgetWithText(FilledButton, '保存资料');
+    final saveProfileButton = find.widgetWithText(FButton, '保存资料');
     await tester.ensureVisible(saveProfileButton);
     await tester.tap(saveProfileButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(remote.updateProfileNickname, 'NewNick');
     expect(remote.updateProfileAvatar, 'https://example.com/avatar.png');
@@ -136,6 +132,7 @@ void main() {
   testWidgets('Account settings changes password and routes to login', (
     tester,
   ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final remote = FakeAuthRemoteDataSource();
 
     await tester.pumpWidget(
@@ -146,18 +143,8 @@ void main() {
             () => _SignedInAuthSessionNotifier(),
           ),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
+        child: TestAuthApp(
+          router: GoRouter(
             initialLocation: '/account',
             routes: [
               GoRoute(
@@ -176,13 +163,18 @@ void main() {
       ),
     );
 
-    final oldPasswordField = find.byType(EditableText).at(3);
+    await tester.pump();
+    await tester.tap(find.text(l10n.authPasswordSectionTitle));
+    await tester.pumpAndSettle();
+
+    final passwordFields = find.byType(EditableText).hitTestable();
+    final oldPasswordField = passwordFields.at(0);
     await tester.ensureVisible(oldPasswordField);
     await tester.enterText(oldPasswordField, 'old-password');
-    await tester.enterText(find.byType(EditableText).at(4), 'new-password');
-    final changePasswordButton = find.text('更新密码');
+    await tester.enterText(passwordFields.at(1), 'new-password');
+    final changePasswordButton = find.widgetWithText(FButton, l10n.authChangePasswordAction);
     await tester.ensureVisible(changePasswordButton);
-    await tester.tap(find.widgetWithText(FilledButton, '更新密码'));
+    await tester.tap(changePasswordButton);
     await tester.pumpAndSettle();
 
     expect(remote.changePasswordOldPassword, 'old-password');
@@ -194,6 +186,7 @@ void main() {
   testWidgets('Account settings deletes account and routes to login', (
     tester,
   ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final remote = FakeAuthRemoteDataSource();
 
     await tester.pumpWidget(
@@ -204,18 +197,8 @@ void main() {
             () => _SignedInAuthSessionNotifier(),
           ),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
+        child: TestAuthApp(
+          router: GoRouter(
             initialLocation: '/account',
             routes: [
               GoRoute(
@@ -234,12 +217,17 @@ void main() {
       ),
     );
 
-    final deletePasswordField = find.byType(EditableText).at(5);
+    await tester.pump();
+    await tester.tap(find.text(l10n.authPasswordSectionTitle));
+    await tester.pumpAndSettle();
+
+    final passwordFields = find.byType(EditableText).hitTestable();
+    final deletePasswordField = passwordFields.last;
     await tester.ensureVisible(deletePasswordField);
     await tester.enterText(deletePasswordField, 'delete-password');
-    final deleteButton = find.text('注销账号');
-    await tester.ensureVisible(deleteButton.last);
-    await tester.tap(find.widgetWithText(FilledButton, '注销账号'));
+    final deleteButton = find.widgetWithText(FButton, l10n.authDeleteAccountAction);
+    await tester.ensureVisible(deleteButton);
+    await tester.tap(deleteButton);
     await tester.pumpAndSettle();
 
     expect(remote.deleteAccountPassword, 'delete-password');
@@ -250,6 +238,7 @@ void main() {
   testWidgets('Account settings unlinks a linked identity after confirmation', (
     tester,
   ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final remote = FakeAuthRemoteDataSource();
     final container = ProviderContainer(
       overrides: [
@@ -274,18 +263,8 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
+        child: TestAuthApp(
+          router: GoRouter(
             initialLocation: '/account',
             routes: [
               GoRoute(
@@ -299,7 +278,9 @@ void main() {
       ),
     );
 
-    final unlinkButton = find.widgetWithText(TextButton, '解绑');
+    await tester.pump();
+
+    final unlinkButton = find.widgetWithText(FButton, l10n.authIdentityUnlinkAction).first;
     await tester.scrollUntilVisible(
       unlinkButton,
       240,
@@ -307,8 +288,9 @@ void main() {
     );
     await tester.tap(unlinkButton);
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, '解绑'));
-    await tester.pump();
+    final confirmUnlinkButton = find.widgetWithText(FButton, l10n.authIdentityUnlinkAction).last;
+    await tester.tap(confirmUnlinkButton);
+    await tester.pumpAndSettle();
 
     expect(remote.unlinkIdentityId, 'identity-1');
     expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);
@@ -332,18 +314,8 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: GoRouter(
+        child: TestAuthApp(
+          router: GoRouter(
             initialLocation: '/account',
             routes: [
               GoRoute(
@@ -364,7 +336,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(linkButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(mobileClient.authorizeCalled, isTrue);
     expect(remote.wechatMobileIdentityLinkCallbackCode, 'mobile-link-code');
@@ -383,6 +355,7 @@ void main() {
   testWidgets('Account settings protects OAuth-only last sign-in method', (
     tester,
   ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     await _pumpAccountSettingsPage(
       tester,
       router: GoRouter(
@@ -411,11 +384,21 @@ void main() {
 
     await tester.pump();
 
-    expect(find.text('当前账号还没有本地密码。'), findsOneWidget);
-    expect(find.text('当前账号暂不能在这里注销。'), findsOneWidget);
-    expect(find.widgetWithText(TextButton, '保留'), findsOneWidget);
-    expect(find.widgetWithText(FilledButton, '更新密码'), findsNothing);
-    expect(find.widgetWithText(FilledButton, '注销账号'), findsNothing);
+    expect(
+      find.widgetWithText(FButton, l10n.authIdentityUnlinkDisabledAction),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text(l10n.authPasswordSectionTitle));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.authPasswordUnsetManagementHint), findsOneWidget);
+    expect(
+      find.text(l10n.authDeleteAccountPasswordRequiredHint),
+      findsOneWidget,
+    );
+    expect(find.widgetWithText(FButton, l10n.authChangePasswordAction), findsNothing);
+    expect(find.widgetWithText(FButton, l10n.authDeleteAccountAction), findsNothing);
   });
 }
 
@@ -447,19 +430,7 @@ Future<void> _pumpAccountSettingsPage(
           () => sessionNotifier ?? _SignedInAuthSessionNotifier(),
         ),
       ],
-      child: MaterialApp.router(
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        locale: const Locale('zh'),
-        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: router,
-      ),
+      child: TestAuthApp(router: router),
     ),
   );
 }

@@ -156,10 +156,7 @@ class AllergyEditPage extends HookConsumerWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Material(
-            color: Colors.transparent,
-            child: SingleChildScrollView(child: content),
-          ),
+          child: SingleChildScrollView(child: content),
         ),
       );
     }
@@ -200,10 +197,7 @@ class AllergyEditPage extends HookConsumerWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Material(
-            color: Colors.transparent,
-            child: SingleChildScrollView(child: content),
-          ),
+          child: SingleChildScrollView(child: content),
         ),
       );
     }
@@ -233,10 +227,7 @@ class AllergyEditPage extends HookConsumerWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Material(
-            color: Colors.transparent,
-            child: SingleChildScrollView(child: content),
-          ),
+          child: SingleChildScrollView(child: content),
         ),
       );
     }
@@ -277,20 +268,22 @@ class AllergyEditPage extends HookConsumerWidget {
                     label: Text(l10n.mineEditFieldReaction),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  DropdownButtonFormField<HealthAllergySeverity>(
-                    initialValue: severity.value,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldSeverity,
+                  FSelect<HealthAllergySeverity>.rich(
+                    label: Text(l10n.mineEditFieldSeverity),
+                    hint: l10n.mineEditFieldSeverity,
+                    format: (value) => value.value,
+                    control: FSelectControl.lifted(
+                      value: severity.value,
+                      onChange: (v) {
+                        if (v != null) severity.value = v;
+                      },
                     ),
-                    items: HealthAllergySeverity.values
+                    children: HealthAllergySeverity.values
                         .map(
                           (v) =>
-                              DropdownMenuItem(value: v, child: Text(v.value)),
+                              FSelectItem.item(title: Text(v.value), value: v),
                         )
                         .toList(),
-                    onChanged: (v) {
-                      if (v != null) severity.value = v;
-                    },
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
                   FTextField(
@@ -301,19 +294,17 @@ class AllergyEditPage extends HookConsumerWidget {
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacingTokens.level5),
-                  ElevatedButton(
+                  FButton(
                     key: const Key('allergy-save-button'),
-                    onPressed: onSave,
+                    onPress: onSave,
                     child: Text(l10n.mineEditSaveAction),
                   ),
                   if (!isNew) ...[
                     const SizedBox(height: AppSpacingTokens.level3),
-                    OutlinedButton(
+                    FButton(
                       key: const Key('allergy-delete-button'),
-                      onPressed: onDelete,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Theme.of(context).colorScheme.error,
-                      ),
+                      variant: FButtonVariant.destructive,
+                      onPress: onDelete,
                       child: Text(l10n.mineEditDeleteAction),
                     ),
                   ],
@@ -336,13 +327,7 @@ class AllergyEditPage extends HookConsumerWidget {
           prefixes: [const AppBackButton()],
         ),
       ),
-      child: SafeArea(
-        top: false,
-        child: Material(
-          color: Colors.transparent,
-          child: SingleChildScrollView(child: content),
-        ),
-      ),
+      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
     );
   }
 }
@@ -370,14 +355,18 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   required List<T> values,
   required ValueChanged<T> onChanged,
 }) {
-  return DropdownButtonFormField<T>(
-    initialValue: value,
-    decoration: InputDecoration(labelText: label),
-    items: values
-        .map((v) => DropdownMenuItem(value: v, child: Text(v.value)))
+  return FSelect<T>.rich(
+    label: Text(label),
+    hint: label,
+    format: (value) => value.value,
+    control: FSelectControl.lifted(
+      value: value,
+      onChange: (v) {
+        if (v != null) onChanged(v);
+      },
+    ),
+    children: values
+        .map((v) => FSelectItem.item(title: Text(v.value), value: v))
         .toList(),
-    onChanged: (v) {
-      if (v != null) onChanged(v);
-    },
   );
 }

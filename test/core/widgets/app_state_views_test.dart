@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 
+import '../../helpers/test_forui_app.dart';
+
 Widget _appShell(Widget child) {
-  return MaterialApp(
-    theme: AppTheme.light,
-    home: Scaffold(body: Center(child: child)),
-  );
+  return TestForuiApp(home: Scaffold(body: Center(child: child)));
 }
 
 void main() {

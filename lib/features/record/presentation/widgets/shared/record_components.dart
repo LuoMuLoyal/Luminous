@@ -30,40 +30,35 @@ class RecordHeaderActionChip extends StatelessWidget {
 
     return Tooltip(
       message: label,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: emphasized ? accent : colors.background,
-              borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-              border: Border.all(color: emphasized ? accent : colors.border),
+      child: FTappable(
+        onPress: onTap,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: emphasized ? accent : colors.background,
+            border: Border.all(color: emphasized ? accent : colors.border),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: iconOnly
+                  ? AppSpacingTokens.level3
+                  : AppSpacingTokens.level4,
+              vertical: AppSpacingTokens.level3,
             ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: iconOnly
-                    ? AppSpacingTokens.level3
-                    : AppSpacingTokens.level4,
-                vertical: AppSpacingTokens.level3,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 18, color: foreground),
-                  if (!iconOnly) ...[
-                    const SizedBox(width: AppSpacingTokens.level2),
-                    Text(
-                      label,
-                      style: textTheme.labelLarge?.copyWith(
-                        color: foreground,
-                        fontWeight: FontWeight.w700,
-                      ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 18, color: foreground),
+                if (!iconOnly) ...[
+                  const SizedBox(width: AppSpacingTokens.level2),
+                  Text(
+                    label,
+                    style: textTheme.labelLarge?.copyWith(
+                      color: foreground,
+                      fontWeight: FontWeight.w700,
                     ),
-                  ],
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),

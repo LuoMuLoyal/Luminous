@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/theme/app_theme.dart';
-import 'package:luminous/core/widgets/common/app_dialog.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
+
+import '../../helpers/test_forui_app.dart';
 
 Widget _appShell(Widget child) {
-  return MaterialApp(theme: AppTheme.light, home: child);
+  return TestForuiApp(home: child);
 }
 
 void main() {
-  group('AppDialog', () {
+  group('AppDialogShell', () {
     testWidgets('renders dialog with child content', (tester) async {
       await tester.pumpWidget(
         _appShell(
           Builder(
             builder: (context) {
               return ElevatedButton(
-                onPressed: () => showDialog(
+                onPressed: () => showAppDialog(
                   context: context,
-                  builder: (_) =>
-                      const AppDialog(child: Text('Dialog content')),
+                  builder: (_) => const Text('Dialog content'),
                 ),
                 child: const Text('Open'),
               );
@@ -41,12 +41,10 @@ void main() {
           Builder(
             builder: (context) {
               return ElevatedButton(
-                onPressed: () => showDialog(
+                onPressed: () => showAppDialog(
                   context: context,
-                  builder: (_) => const AppDialog(
-                    maxWidth: 100,
-                    child: Text('Narrow dialog'),
-                  ),
+                  maxWidth: 100,
+                  builder: (_) => const Text('Narrow dialog'),
                 ),
                 child: const Text('Open'),
               );
@@ -68,9 +66,9 @@ void main() {
           Builder(
             builder: (context) {
               return ElevatedButton(
-                onPressed: () => showDialog(
+                onPressed: () => showAppDialog(
                   context: context,
-                  builder: (_) => const AppDialog(child: Text('Scroll me')),
+                  builder: (_) => const Text('Scroll me'),
                 ),
                 child: const Text('Open'),
               );
@@ -92,10 +90,10 @@ void main() {
           Builder(
             builder: (context) {
               return ElevatedButton(
-                onPressed: () => showDialog(
+                onPressed: () => showAppDialog(
                   context: context,
-                  builder: (_) =>
-                      const AppDialog(scrollable: false, child: Text('Fixed')),
+                  scrollable: false,
+                  builder: (_) => const Text('Fixed'),
                 ),
                 child: const Text('Open'),
               );
@@ -107,8 +105,8 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pump();
 
-      // Should have no SingleChildScrollView (the outer dialog wrapper may have one)
-      // But the AppDialog itself shouldn't wrap with scrollable content
+      // Should have no SingleChildScrollView when scrollable is false.
+      expect(find.byType(SingleChildScrollView), findsNothing);
       expect(find.text('Fixed'), findsOneWidget);
     });
   });

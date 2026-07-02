@@ -1,68 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_safety_tip_style.dart';
 
 void main() {
   group('medicineSafetyTipIcon', () {
-    test('returns alcohol icon for alcohol', () {
-      expect(medicineSafetyTipIcon('alcohol'), Icons.local_drink_outlined);
+    test('returns wine for alcohol', () {
+      expect(medicineSafetyTipIcon('alcohol'), FLucideIcons.wine);
     });
     test('returns coffee for caffeine', () {
-      expect(medicineSafetyTipIcon('caffeine'), Icons.coffee_rounded);
+      expect(medicineSafetyTipIcon('caffeine'), FLucideIcons.coffee);
     });
-    test('returns schedule for timing', () {
-      expect(medicineSafetyTipIcon('timing'), Icons.schedule_rounded);
+    test('returns clock3 for timing', () {
+      expect(medicineSafetyTipIcon('timing'), FLucideIcons.clock3);
     });
-    test('returns thermostat for storage', () {
-      expect(medicineSafetyTipIcon('storage'), Icons.thermostat_rounded);
+    test('returns thermometer for storage', () {
+      expect(medicineSafetyTipIcon('storage'), FLucideIcons.thermometer);
     });
-    test('returns restaurant for food', () {
-      expect(medicineSafetyTipIcon('food'), Icons.restaurant_rounded);
+    test('returns utensils for food', () {
+      expect(medicineSafetyTipIcon('food'), FLucideIcons.utensils);
     });
-    test('returns pregnant for pregnancy', () {
-      expect(medicineSafetyTipIcon('pregnancy'), Icons.pregnant_woman_rounded);
+    test('returns heartPulse for pregnancy', () {
+      expect(medicineSafetyTipIcon('pregnancy'), FLucideIcons.heartPulse);
     });
-    test('returns healing for allergy', () {
-      expect(medicineSafetyTipIcon('allergy'), Icons.healing_rounded);
+    test('returns syringe for allergy', () {
+      expect(medicineSafetyTipIcon('allergy'), FLucideIcons.syringe);
     });
-    test('returns drive_eta for driving', () {
-      expect(medicineSafetyTipIcon('driving'), Icons.drive_eta_rounded);
+    test('returns car for driving', () {
+      expect(medicineSafetyTipIcon('driving'), FLucideIcons.car);
     });
     test('returns lightbulb as default', () {
-      expect(medicineSafetyTipIcon('unknown'), Icons.lightbulb_outline_rounded);
+      expect(medicineSafetyTipIcon('unknown'), FLucideIcons.lightbulb);
     });
   });
 
   group('medicineSafetyTipColor', () {
-    final surface = AppThemeSurface.light;
+    final colors = FThemes.neutral.light.touch.colors;
 
-    test('returns link for alcohol', () {
-      expect(medicineSafetyTipColor('alcohol', surface), surface.link);
+    test('returns green for alcohol', () {
+      expect(
+        medicineSafetyTipColor('alcohol', colors),
+        const Color(0xFF16A34A),
+      );
     });
-    test('returns warningDeep for caffeine', () {
-      expect(medicineSafetyTipColor('caffeine', surface), surface.warningDeep);
+    test('returns amber for caffeine', () {
+      expect(
+        medicineSafetyTipColor('caffeine', colors),
+        const Color(0xFFB45309),
+      );
     });
-    test('returns link for timing', () {
-      expect(medicineSafetyTipColor('timing', surface), surface.link);
+    test('returns green for timing', () {
+      expect(
+        medicineSafetyTipColor('timing', colors),
+        const Color(0xFF16A34A),
+      );
     });
     test('returns teal for storage', () {
-      expect(medicineSafetyTipColor('storage', surface), surface.teal);
+      expect(
+        medicineSafetyTipColor('storage', colors),
+        const Color(0xFF0F766E),
+      );
     });
-    test('returns success for food', () {
-      expect(medicineSafetyTipColor('food', surface), surface.success);
+    test('returns primary for food', () {
+      expect(medicineSafetyTipColor('food', colors), colors.primary);
     });
-    test('returns warning for pregnancy', () {
-      expect(medicineSafetyTipColor('pregnancy', surface), surface.warning);
+    test('returns primaryForeground for pregnancy', () {
+      expect(
+        medicineSafetyTipColor('pregnancy', colors),
+        colors.primaryForeground,
+      );
     });
-    test('returns error for allergy', () {
-      expect(medicineSafetyTipColor('allergy', surface), surface.error);
+    test('returns destructive for allergy', () {
+      expect(medicineSafetyTipColor('allergy', colors), colors.destructive);
     });
-    test('returns accent for driving', () {
-      expect(medicineSafetyTipColor('driving', surface), surface.accent);
+    test('returns teal for driving', () {
+      expect(
+        medicineSafetyTipColor('driving', colors),
+        const Color(0xFF14B8A6),
+      );
     });
-    test('returns link as default', () {
-      expect(medicineSafetyTipColor('unknown', surface), surface.link);
+    test('returns green as default', () {
+      expect(
+        medicineSafetyTipColor('unknown', colors),
+        const Color(0xFF16A34A),
+      );
     });
   });
 }

@@ -86,60 +86,55 @@ class _FilterChip extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final foreground = selected ? color : colors.foreground;
 
-    return Material(
+    return FTappable(
       key: chipKey,
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: selected ? color.withValues(alpha: 0.1) : colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-            border: Border.all(color: selected ? color : colors.border),
+
+      onPress: onTap,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: selected ? color.withValues(alpha: 0.1) : colors.background,
+          border: Border.all(color: selected ? color : colors.border),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.level4,
+            vertical: AppSpacingTokens.level2,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level4,
-              vertical: AppSpacingTokens.level2,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  style: textTheme.labelLarge?.copyWith(
-                    color: foreground,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: textTheme.labelLarge?.copyWith(
+                  color: foreground,
+                  fontWeight: FontWeight.w700,
                 ),
-                if (locked) ...[
-                  const SizedBox(width: AppSpacingTokens.level2),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: colors.secondary.withValues(alpha: 0.22),
-                      borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              if (locked) ...[
+                const SizedBox(width: AppSpacingTokens.level2),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: colors.secondary.withValues(alpha: 0.22),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacingTokens.level2,
+                      vertical: 2,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacingTokens.level2,
-                        vertical: 2,
+                    child: Text(
+                      AppLocalizations.of(context)!.recordNotEnabledLabel,
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colors.foreground,
                       ),
-                      child: Text(
-                        AppLocalizations.of(context)!.recordNotEnabledLabel,
-                        style: textTheme.labelSmall?.copyWith(
-                          color: colors.foreground,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ],
+                ),
               ],
-            ),
+            ],
           ),
         ),
       ),

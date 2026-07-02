@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -19,6 +17,8 @@ import 'package:luminous/features/mine/presentation/widgets/views/mine_skeleton_
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('Mine page renders mobile north-star sections', (tester) async {
@@ -40,7 +40,7 @@ void main() {
     expect(find.text(l10n.mineAlertAllergyTitle), findsWidgets);
     expect(find.text(l10n.mineProfileTitle), findsOneWidget);
 
-    final scrollable = find.byType(Scrollable).first;
+    final scrollable = find.byType(Scrollable).hitTestable().first;
     final keys = <String>[
       'mine-account-header',
       'mine-status-overview',
@@ -86,7 +86,7 @@ void main() {
             (ref) async => throw Exception('should not fetch when signed out'),
           ),
         ],
-        child: _materialApp(const MinePage()),
+        child: const TestForuiApp(home: MinePage()),
       ),
     );
 
@@ -131,7 +131,7 @@ void main() {
           mineDashboardProvider.overrideWith((ref) => pending.future),
           notificationUnreadCountProvider.overrideWith((ref) => 0),
         ],
-        child: _materialApp(const MinePage()),
+        child: const TestForuiApp(home: MinePage()),
       ),
     );
 
@@ -163,14 +163,19 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: _routerApp([
-          GoRoute(path: '/', builder: (context, state) => const MinePage()),
-          GoRoute(
-            path: '/settings',
-            builder: (context, state) =>
-                const Scaffold(body: Text('settings-page')),
+        child: TestForuiRouterApp(
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const MinePage()),
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('settings-page')),
+              ),
+            ],
           ),
-        ]),
+        ),
       ),
     );
 
@@ -206,14 +211,19 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: _routerApp([
-          GoRoute(path: '/', builder: (context, state) => const MinePage()),
-          GoRoute(
-            path: '/account',
-            builder: (context, state) =>
-                const Scaffold(body: Text('account-page')),
+        child: TestForuiRouterApp(
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const MinePage()),
+              GoRoute(
+                path: '/account',
+                builder: (context, state) =>
+                    const Scaffold(body: Text('account-page')),
+              ),
+            ],
           ),
-        ]),
+        ),
       ),
     );
 
@@ -252,13 +262,18 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: _routerApp([
-          GoRoute(path: '/', builder: (context, state) => const MinePage()),
-          GoRoute(
-            path: '/mine/profile/edit',
-            builder: (context, state) => const ProfileEditPage(),
+        child: TestForuiRouterApp(
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const MinePage()),
+              GoRoute(
+                path: '/mine/profile/edit',
+                builder: (context, state) => const ProfileEditPage(),
+              ),
+            ],
           ),
-        ]),
+        ),
       ),
     );
 
@@ -300,19 +315,24 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: _routerApp([
-          GoRoute(path: '/', builder: (context, state) => const MinePage()),
-          GoRoute(
-            path: '/mine/profile/edit',
-            builder: (context, state) => const ProfileEditPage(),
+        child: TestForuiRouterApp(
+          routerConfig: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (context, state) => const MinePage()),
+              GoRoute(
+                path: '/mine/profile/edit',
+                builder: (context, state) => const ProfileEditPage(),
+              ),
+              GoRoute(
+                path: '/login',
+                builder: (context, state) => Scaffold(
+                  body: Text("login-page:${state.uri.queryParameters['returnTo']}"),
+                ),
+              ),
+            ],
           ),
-          GoRoute(
-            path: '/login',
-            builder: (context, state) => Scaffold(
-              body: Text("login-page:${state.uri.queryParameters['returnTo']}"),
-            ),
-          ),
-        ]),
+        ),
       ),
     );
 
@@ -393,7 +413,7 @@ void main() {
             (ref) => Future.value(_mockSnapshot),
           ),
         ],
-        child: _materialApp(const MinePage()),
+        child: const TestForuiApp(home: MinePage()),
       ),
     );
 
@@ -423,19 +443,7 @@ void main() {
             (ref) => Future<MineDashboard>.error(Exception('test error')),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const MinePage(),
-        ),
+        child: const TestForuiApp(home: MinePage()),
       ),
     );
 
@@ -482,40 +490,8 @@ Future<void> _pumpMinePage(WidgetTester tester) async {
         ),
         notificationUnreadCountProvider.overrideWith((ref) => 0),
       ],
-      child: _materialApp(const MinePage()),
+      child: const TestForuiApp(home: MinePage()),
     ),
-  );
-}
-
-Widget _materialApp(Widget home) {
-  return MaterialApp(
-    theme: AppTheme.light,
-    darkTheme: AppTheme.dark,
-    locale: const Locale('zh'),
-    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-      AppLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: AppLocalizations.supportedLocales,
-    home: home,
-  );
-}
-
-Widget _routerApp(List<RouteBase> routes) {
-  return MaterialApp.router(
-    theme: AppTheme.light,
-    darkTheme: AppTheme.dark,
-    locale: const Locale('zh'),
-    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-      AppLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: AppLocalizations.supportedLocales,
-    routerConfig: GoRouter(initialLocation: '/', routes: routes),
   );
 }
 

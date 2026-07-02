@@ -33,27 +33,36 @@ class RecordNlpCandidateEditor extends HookWidget {
 
     // Sync controller text when parent changes the item
     useEffect(() {
-      titleController.text = item.title ?? '';
+      final text = item.title ?? '';
+      if (titleController.text != text) {
+        titleController.text = text;
+      }
       return null;
     }, [item.title]);
     useEffect(() {
-      valueController.text = item.value ?? '';
+      final text = item.value ?? '';
+      if (valueController.text != text) {
+        valueController.text = text;
+      }
       return null;
     }, [item.value]);
     useEffect(() {
-      noteController.text = item.note ?? '';
+      final text = item.note ?? '';
+      if (noteController.text != text) {
+        noteController.text = text;
+      }
       return null;
     }, [item.note]);
 
     void emit({String? title, String? value, String? unit, String? note}) {
-      onChanged(
-        item.copyWith(
-          title: title ?? item.title,
-          value: value ?? item.value,
-          unit: unit ?? item.unit,
-          note: note ?? item.note,
-        ),
+      final next = item.copyWith(
+        title: title ?? item.title,
+        value: value ?? item.value,
+        unit: unit ?? item.unit,
+        note: note ?? item.note,
       );
+      if (next == item) return;
+      onChanged(next);
     }
 
     bool shouldShowTitle(DailyRecordKind k) {
@@ -216,27 +225,34 @@ class _WaterUnitField extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final normalizedUnit = normalizedWaterUnit(value);
 
-    return DropdownButtonFormField<String>(
+    return FSelect<String>.rich(
       key: Key('record-nlp-candidate-unit-$index-$normalizedUnit'),
-      initialValue: normalizedUnit,
-      decoration: InputDecoration(labelText: l10n.recordCreateFieldUnit),
-      items: [
-        DropdownMenuItem(
+      label: Text(l10n.recordCreateFieldUnit),
+      hint: l10n.recordCreateFieldUnit,
+      format: (value) => switch (value) {
+        dailyRecordWaterCupUnit => l10n.recordWaterUnitCup,
+        dailyRecordWaterTimesUnit => l10n.recordWaterUnitTimes,
+        _ => l10n.recordWaterUnitMl,
+      },
+      control: FSelectControl.lifted(
+        value: normalizedUnit,
+        onChange: (nextValue) => onChanged(nextValue ?? dailyRecordWaterDefaultUnit),
+      ),
+      enabled: enabled,
+      children: [
+        FSelectItem.item(
+          title: Text(l10n.recordWaterUnitMl),
           value: dailyRecordWaterDefaultUnit,
-          child: Text(l10n.recordWaterUnitMl),
         ),
-        DropdownMenuItem(
+        FSelectItem.item(
+          title: Text(l10n.recordWaterUnitCup),
           value: dailyRecordWaterCupUnit,
-          child: Text(l10n.recordWaterUnitCup),
         ),
-        DropdownMenuItem(
+        FSelectItem.item(
+          title: Text(l10n.recordWaterUnitTimes),
           value: dailyRecordWaterTimesUnit,
-          child: Text(l10n.recordWaterUnitTimes),
         ),
       ],
-      onChanged: enabled
-          ? (nextValue) => onChanged(nextValue ?? dailyRecordWaterDefaultUnit)
-          : null,
     );
   }
 }
@@ -265,47 +281,56 @@ class _SleepCandidateFields extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextFormField(
+        FTextField(
           key: Key('record-nlp-candidate-sleep-duration-$index'),
+          control: FTextFieldControl.managed(
+            initial: TextEditingValue(
+              text: _durationValue(payload['durationMinutes']),
+            ),
+            onChange: (value) {
+              final minutes = int.tryParse(value.text.trim());
+              final nextPayload = Map<String, dynamic>.from(payload);
+              if (minutes == null || minutes <= 0) {
+                nextPayload.remove('durationMinutes');
+              } else {
+                nextPayload['durationMinutes'] = minutes;
+              }
+              onChanged(item.copyWith(payload: nextPayload));
+            },
+          ),
           enabled: enabled,
-          initialValue: _durationValue(payload['durationMinutes']),
-          decoration: InputDecoration(labelText: l10n.recordSleepDurationLabel),
+          label: Text(l10n.recordSleepDurationLabel),
           keyboardType: TextInputType.number,
-          onChanged: (value) {
-            final minutes = int.tryParse(value.trim());
-            final nextPayload = Map<String, dynamic>.from(payload);
-            if (minutes == null || minutes <= 0) {
-              nextPayload.remove('durationMinutes');
-            } else {
-              nextPayload['durationMinutes'] = minutes;
-            }
-            onChanged(item.copyWith(payload: nextPayload));
-          },
         ),
         const SizedBox(height: AppSpacingTokens.level3),
-        DropdownButtonFormField<String>(
+        FSelect<String>.rich(
           key: Key('record-nlp-candidate-sleep-quality-$index'),
-          initialValue: quality,
-          decoration: InputDecoration(labelText: l10n.recordSleepQualityLabel),
-          items: sleepQualityOptions(l10n)
+          label: Text(l10n.recordSleepQualityLabel),
+          hint: l10n.recordSleepQualityLabel,
+          format: (value) => sleepQualityOptions(l10n)
+              .firstWhere((q) => q.key == value)
+              .label,
+          control: FSelectControl.lifted(
+            value: quality,
+            onChange: (value) {
+              final nextPayload = Map<String, dynamic>.from(payload);
+              if (value == null || value.isEmpty) {
+                nextPayload.remove('quality');
+              } else {
+                nextPayload['quality'] = value;
+              }
+              onChanged(item.copyWith(payload: nextPayload));
+            },
+          ),
+          enabled: enabled,
+          children: sleepQualityOptions(l10n)
               .map(
-                (option) => DropdownMenuItem<String>(
+                (option) => FSelectItem.item(
+                  title: Text(option.label),
                   value: option.key,
-                  child: Text(option.label),
                 ),
               )
               .toList(),
-          onChanged: enabled
-              ? (value) {
-                  final nextPayload = Map<String, dynamic>.from(payload);
-                  if (value == null || value.isEmpty) {
-                    nextPayload.remove('quality');
-                  } else {
-                    nextPayload['quality'] = value;
-                  }
-                  onChanged(item.copyWith(payload: nextPayload));
-                }
-              : null,
         ),
       ],
     );

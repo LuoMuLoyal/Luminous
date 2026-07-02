@@ -37,21 +37,25 @@ class DailyRecordFormFields extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (showKindField) ...[
-          DropdownButtonFormField<DailyRecordKind>(
+          FSelect<DailyRecordKind>.rich(
             key: ValueKey('daily-record-kind-${kind.name}'),
-            initialValue: kind,
-            decoration: InputDecoration(labelText: l10n.recordCreateFieldKind),
-            items: _visibleDailyRecordKinds(kind)
+            label: Text(l10n.recordCreateFieldKind),
+            hint: l10n.recordCreateFieldKind,
+            format: (value) => dailyRecordKindLabel(l10n, value),
+            control: FSelectControl.lifted(
+              value: kind,
+              onChange: (value) {
+                if (value != null) onKindChanged(value);
+              },
+            ),
+            children: _visibleDailyRecordKinds(kind)
                 .map(
-                  (k) => DropdownMenuItem(
+                  (k) => FSelectItem.item(
+                    title: Text(dailyRecordKindLabel(l10n, k)),
                     value: k,
-                    child: Text(dailyRecordKindLabel(l10n, k)),
                   ),
                 )
                 .toList(),
-            onChanged: (value) {
-              if (value != null) onKindChanged(value);
-            },
           ),
           const SizedBox(height: AppSpacingTokens.level3),
         ],
@@ -65,29 +69,35 @@ class DailyRecordFormFields extends StatelessWidget {
         ],
         if (rules.showUnit) ...[
           if (kind == DailyRecordKind.water)
-            DropdownButtonFormField<String>(
+            FSelect<String>.rich(
               key: const Key('daily-record-unit-field'),
-              initialValue: _normalizedWaterUnit(unitController.text),
-              decoration: InputDecoration(
-                labelText: l10n.recordCreateFieldUnit,
+              label: Text(l10n.recordCreateFieldUnit),
+              hint: l10n.recordCreateFieldUnit,
+              format: (value) => switch (value) {
+                dailyRecordWaterCupUnit => l10n.recordWaterUnitCup,
+                dailyRecordWaterTimesUnit => l10n.recordWaterUnitTimes,
+                _ => l10n.recordWaterUnitMl,
+              },
+              control: FSelectControl.lifted(
+                value: _normalizedWaterUnit(unitController.text),
+                onChange: (value) {
+                  unitController.text = value ?? dailyRecordWaterDefaultUnit;
+                },
               ),
-              items: [
-                DropdownMenuItem(
+              children: [
+                FSelectItem.item(
+                  title: Text(l10n.recordWaterUnitMl),
                   value: dailyRecordWaterDefaultUnit,
-                  child: Text(l10n.recordWaterUnitMl),
                 ),
-                DropdownMenuItem(
+                FSelectItem.item(
+                  title: Text(l10n.recordWaterUnitCup),
                   value: dailyRecordWaterCupUnit,
-                  child: Text(l10n.recordWaterUnitCup),
                 ),
-                DropdownMenuItem(
+                FSelectItem.item(
+                  title: Text(l10n.recordWaterUnitTimes),
                   value: dailyRecordWaterTimesUnit,
-                  child: Text(l10n.recordWaterUnitTimes),
                 ),
               ],
-              onChanged: (value) {
-                unitController.text = value ?? dailyRecordWaterDefaultUnit;
-              },
             )
           else
             FTextField(

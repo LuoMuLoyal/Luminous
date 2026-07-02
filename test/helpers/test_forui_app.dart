@@ -32,12 +32,12 @@ class TestForuiApp extends StatelessWidget {
     super.key,
     this.themeMode = ThemeMode.light,
     this.locale = const Locale('zh'),
-    required this.child,
+    this.home,
   });
 
   final ThemeMode themeMode;
   final Locale locale;
-  final Widget child;
+  final Widget? home;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +46,13 @@ class TestForuiApp extends StatelessWidget {
       darkTheme: _materialTheme(_foruiDark),
       themeMode: themeMode,
       locale: locale,
+      debugShowCheckedModeBanner: false,
+      builder: (context, child) => FTheme(
+        data: Theme.of(context).brightness == Brightness.dark
+            ? _foruiDark
+            : _foruiLight,
+        child: child ?? const SizedBox.shrink(),
+      ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
@@ -54,7 +61,7 @@ class TestForuiApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: child,
+      home: home,
     );
   }
 }
@@ -80,6 +87,13 @@ class TestForuiRouterApp extends StatelessWidget {
       darkTheme: _materialTheme(_foruiDark),
       themeMode: themeMode,
       locale: locale,
+      debugShowCheckedModeBanner: false,
+      builder: (context, child) => FTheme(
+        data: Theme.of(context).brightness == Brightness.dark
+            ? _foruiDark
+            : _foruiLight,
+        child: child ?? const SizedBox.shrink(),
+      ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,

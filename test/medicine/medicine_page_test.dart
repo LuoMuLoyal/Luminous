@@ -2,13 +2,10 @@ import 'package:luminous/core/design/app_design.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/design/app_color_tokens.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -18,12 +15,15 @@ import 'package:luminous/features/medicine/domain/entities/medicine_workspace.da
 import 'package:luminous/features/medicine/domain/repositories/medicine_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_risk_check_page.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_red_flag.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/medicine_skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/medicine_workspace_view.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('Medicine page renders mobile north-star sections', (
@@ -45,19 +45,7 @@ void main() {
             const MockMedicineWorkspaceRepository(),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const MedicinePage(),
-        ),
+        child: const TestForuiApp(home: MedicinePage()),
       ),
     );
 
@@ -98,9 +86,9 @@ void main() {
       expect(
         find.descendant(
           of: find.byKey(Key(key)),
-          matching: find.byType(AppSectionSurface),
+          matching: find.byType(FCard),
         ),
-        findsOneWidget,
+        findsAtLeastNWidgets(1),
       );
     }
     expect(find.text(l10n.medicineSafetyTipsTitle), findsOneWidget);
@@ -123,19 +111,7 @@ void main() {
         overrides: [
           medicineWorkspaceProvider.overrideWith((ref) => pending.future),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const MedicinePage(),
-        ),
+        child: const TestForuiApp(home: MedicinePage()),
       ),
     );
 
@@ -167,19 +143,7 @@ void main() {
             const _StaticMedicineWorkspaceRepository(_completedWorkspace),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const MedicinePage(),
-        ),
+        child: const TestForuiApp(home: MedicinePage()),
       ),
     );
 
@@ -213,17 +177,7 @@ void main() {
           medicineRiskCheckProvider.overrideWith((ref) async => _riskResult),
           redFlagAlertsProvider.overrideWith((ref) async => const []),
         ],
-        child: MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
+        child: TestForuiRouterApp(
           routerConfig: GoRouter(
             initialLocation: '/',
             routes: [
@@ -246,19 +200,18 @@ void main() {
       ),
     );
 
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final riskTitle = find.text('风险检查').first;
-    await tester.ensureVisible(riskTitle);
+    final riskRow = find.text(l10n.medicineQuickSafetyCheckTitle);
+    await tester.ensureVisible(riskRow);
     await tester.pumpAndSettle();
-    final riskRow = find
-        .ancestor(of: riskTitle, matching: find.byType(InkWell))
-        .first;
     await tester.tap(riskRow);
     await tester.pumpAndSettle();
 
-    expect(find.text('检查概览'), findsOneWidget);
+    expect(find.text(l10n.medicineRiskCheckPageTitle), findsOneWidget);
   });
 
   testWidgets(
@@ -279,17 +232,7 @@ void main() {
               const MockMedicineWorkspaceRepository(),
             ),
           ],
-          child: MaterialApp.router(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
+          child: TestForuiRouterApp(
             routerConfig: GoRouter(
               initialLocation: '/',
               routes: [
@@ -312,15 +255,14 @@ void main() {
         ),
       );
 
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 
-      final riskTitle = find.text('风险检查').first;
-      await tester.ensureVisible(riskTitle);
+      final riskRow = find.text(l10n.medicineQuickSafetyCheckTitle);
+      await tester.ensureVisible(riskRow);
       await tester.pumpAndSettle();
-      final riskRow = find
-          .ancestor(of: riskTitle, matching: find.byType(InkWell))
-          .first;
       await tester.tap(riskRow);
       await tester.pumpAndSettle();
 
@@ -353,17 +295,7 @@ void main() {
               (ref) async => [severeAllergyAlert],
             ),
           ],
-          child: MaterialApp.router(
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            locale: const Locale('zh'),
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
+          child: TestForuiRouterApp(
             routerConfig: GoRouter(
               initialLocation: '/medicine/risk-check',
               routes: [
@@ -383,7 +315,13 @@ void main() {
 
       // Red-flag banner title visible
       expect(find.text('红旗警告'), findsOneWidget);
-      expect(find.byType(TextButton), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(MedicineRiskRedFlagBanner),
+          matching: find.byType(FButton),
+        ),
+        findsNothing,
+      );
     },
   );
 
@@ -442,19 +380,7 @@ void main() {
             (ref) => Future<MedicineWorkspace>.error(Exception('test error')),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const MedicinePage(),
-        ),
+        child: const TestForuiApp(home: MedicinePage()),
       ),
     );
 
@@ -484,19 +410,7 @@ void main() {
             const MockMedicineWorkspaceRepository(),
           ),
         ],
-        child: MaterialApp(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          locale: const Locale('zh'),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const MedicinePage(),
-        ),
+        child: const TestForuiApp(home: MedicinePage()),
       ),
     );
     await tester.pumpAndSettle();
@@ -555,7 +469,7 @@ const _completedWorkspace = MedicineWorkspace(
   plan: MedicinePlanSurface(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
-        color: AppColorTokens.cyanDeep,
+        color: const Color(0xFF0891B2),
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -570,7 +484,7 @@ const _completedWorkspace = MedicineWorkspace(
           ),
         ],
         stateKey: MedicineCopyKey.doseStatusSkipped,
-        stateColor: AppColorTokens.warningDeep,
+        stateColor: const Color(0xFFD97706),
         todayStatus: MedicineDoseStatus.skipped,
         currentMedicineId: 'med-1',
       ),

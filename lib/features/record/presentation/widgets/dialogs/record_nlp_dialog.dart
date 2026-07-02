@@ -166,9 +166,10 @@ class RecordNlpDialog extends HookConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: OutlinedButton(
+                child: FButton(
+                  variant: FButtonVariant.outline,
                   key: const Key('record-nlp-reset-action'),
-                  onPressed: state.isGenerating || state.isSaving
+                  onPress: state.isGenerating || state.isSaving
                       ? null
                       : handleReset,
                   child: Text(l10n.recordNlpResetAction),

@@ -100,50 +100,46 @@ class _ExportCard extends StatelessWidget {
         ? FLucideIcons.chevronRight
         : FLucideIcons.lock;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: !enabled || requestInFlight.inFlight
-            ? null
-            : () async {
-                await onTap!(action.kind);
-              },
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        child: FCard.raw(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
-            child: Row(
-              children: [
-                AppIconBadge(icon: action.icon, color: action.color),
-                const SizedBox(width: AppSpacingTokens.level4),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+    return FTappable(
+      onPress: !enabled || requestInFlight.inFlight
+          ? null
+          : () async {
+              await onTap!(action.kind);
+            },
+      child: FCard.raw(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          child: Row(
+            children: [
+              AppIconBadge(icon: action.icon, color: action.color),
+              const SizedBox(width: AppSpacingTokens.level4),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
                       ),
-                      const SizedBox(height: AppSpacingTokens.level1),
-                      Text(
-                        subtitle,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.level1),
+                    Text(
+                      subtitle,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.mutedForeground,
                       ),
-                    ],
-                  ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                Icon(trailingIcon, color: colors.mutedForeground, size: 18),
-              ],
-            ),
+              ),
+              Icon(trailingIcon, color: colors.mutedForeground, size: 18),
+            ],
           ),
         ),
       ),

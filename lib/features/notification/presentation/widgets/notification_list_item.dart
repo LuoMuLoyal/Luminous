@@ -51,9 +51,8 @@ class NotificationListItemWidget extends StatelessWidget {
             width: item.isRead ? 1 : 1.2,
           ),
         ),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+        child: FTappable(
+          onPress: onTap,
           child: Padding(
             padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Row(

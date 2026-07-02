@@ -405,9 +405,9 @@ class RecordCreatePage extends HookConsumerWidget {
                     enabled: !saving.value,
                   ),
                   const SizedBox(height: AppSpacingTokens.level5),
-                  ElevatedButton(
+                  FButton(
                     key: const Key('record-create-save-action'),
-                    onPressed: saving.value ? null : () => onSave(dateStr),
+                    onPress: saving.value ? null : () => onSave(dateStr),
                     child: Text(l10n.mineEditSaveAction),
                   ),
                 ],
@@ -427,13 +427,7 @@ class RecordCreatePage extends HookConsumerWidget {
           prefixes: [const AppBackButton()],
         ),
       ),
-      child: SafeArea(
-        top: false,
-        child: Material(
-          color: Colors.transparent,
-          child: SingleChildScrollView(child: content),
-        ),
-      ),
+      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
     );
   }
 

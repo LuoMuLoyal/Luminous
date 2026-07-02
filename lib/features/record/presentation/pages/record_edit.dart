@@ -485,10 +485,7 @@ class RecordEditPage extends HookConsumerWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Material(
-            color: Colors.transparent,
-            child: SingleChildScrollView(child: content),
-          ),
+          child: SingleChildScrollView(child: content),
         ),
       );
     }
@@ -518,10 +515,7 @@ class RecordEditPage extends HookConsumerWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Material(
-            color: Colors.transparent,
-            child: SingleChildScrollView(child: content),
-          ),
+          child: SingleChildScrollView(child: content),
         ),
       );
     }
@@ -597,9 +591,10 @@ class RecordEditPage extends HookConsumerWidget {
                       const SizedBox(height: AppSpacingTokens.level3),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: OutlinedButton(
+                        child: FButton(
+                          variant: FButtonVariant.outline,
                           key: const Key('meal-confirm-action'),
-                          onPressed: () => confirmMealAnalysis.value = true,
+                          onPress: () => confirmMealAnalysis.value = true,
                           child: Text(
                             confirmMealAnalysis.value
                                 ? l10n.recordMealConfirmActionSelected
@@ -622,26 +617,24 @@ class RecordEditPage extends HookConsumerWidget {
                     enabled: !saving.value && !deleting.value,
                   ),
                   const SizedBox(height: AppSpacingTokens.level5),
-                  ElevatedButton(
+                  FButton(
                     key: const Key('record-edit-save-action'),
-                    onPressed: saving.value ? null : onSave,
+                    onPress: saving.value ? null : onSave,
                     child: Text(l10n.mineEditSaveAction),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  OutlinedButton.icon(
+                  FButton(
                     key: const Key('record-edit-delete-action'),
-                    onPressed: deleting.value || saving.value ? null : onDelete,
-                    icon: deleting.value
+                    variant: FButtonVariant.destructive,
+                    onPress: deleting.value || saving.value ? null : onDelete,
+                    prefix: deleting.value
                         ? const SizedBox(
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Icon(Icons.delete_outline_rounded, size: 18),
-                    label: Text(l10n.recordDeleteAction),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.error,
-                    ),
+                        : const Icon(FLucideIcons.trash2, size: 18),
+                    child: Text(l10n.recordDeleteAction),
                   ),
                 ],
               ),
@@ -660,13 +653,7 @@ class RecordEditPage extends HookConsumerWidget {
           prefixes: [const AppBackButton()],
         ),
       ),
-      child: SafeArea(
-        top: false,
-        child: Material(
-          color: Colors.transparent,
-          child: SingleChildScrollView(child: content),
-        ),
-      ),
+      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
     );
   }
 

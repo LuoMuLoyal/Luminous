@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_section_header.dart';
 import 'package:luminous/core/widgets/common/app_text_action.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+
+import '../../helpers/test_forui_app.dart';
 
 Widget _appShell(Widget child) {
-  return MaterialApp(
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-    ),
-    home: Scaffold(body: child),
-  );
+  return TestForuiApp(home: Scaffold(body: child));
 }
 
 void main() {
@@ -101,7 +98,7 @@ void main() {
         _appShell(const AppTextAction(label: 'More', onTap: null)),
       );
 
-      expect(find.byIcon(Icons.chevron_right_rounded), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
     });
 
     testWidgets('triggers callback on tap', (tester) async {
@@ -111,6 +108,7 @@ void main() {
       );
 
       await tester.tap(find.text('Tap me'));
+      await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
   });

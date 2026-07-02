@@ -1,5 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
 
@@ -67,18 +68,21 @@ void main() {
   });
 
   group('deliveryStatusColor', () {
-    final s = AppThemeSurface.light;
+    final colors = FThemes.neutral.light.touch.colors;
     test('delivered → teal', () {
-      expect(deliveryStatusColor('delivered', s), s.teal);
+      expect(deliveryStatusColor('delivered', colors), const Color(0xFF0F766E));
     });
     test('failed → error', () {
-      expect(deliveryStatusColor('failed', s), s.error);
+      expect(deliveryStatusColor('failed', colors), colors.destructive);
     });
     test('scheduled → warningDeep', () {
-      expect(deliveryStatusColor('scheduled', s), s.warningDeep);
+      expect(
+        deliveryStatusColor('scheduled', colors),
+        const Color(0xFFB45309),
+      );
     });
     test('unknown → mute', () {
-      expect(deliveryStatusColor('?', s), s.mute);
+      expect(deliveryStatusColor('?', colors), colors.mutedForeground);
     });
   });
 
