@@ -125,26 +125,26 @@ class ProfileEditPage extends HookConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      TextField(
-                        controller: birthDateController,
-                        decoration: InputDecoration(
-                          labelText: l10n.mineEditFieldBirthDate,
+                      FTextField(
+                        control: FTextFieldControl.managed(
+                          controller: birthDateController,
                         ),
+                        label: Text(l10n.mineEditFieldBirthDate),
                       ),
                       const SizedBox(height: AppSpacingTokens.level3),
-                      TextField(
-                        controller: heightCmController,
-                        decoration: InputDecoration(
-                          labelText: l10n.mineEditFieldHeightCm,
+                      FTextField(
+                        control: FTextFieldControl.managed(
+                          controller: heightCmController,
                         ),
+                        label: Text(l10n.mineEditFieldHeightCm),
                         keyboardType: TextInputType.number,
                       ),
                       const SizedBox(height: AppSpacingTokens.level3),
-                      TextField(
-                        controller: bloodTypeController,
-                        decoration: InputDecoration(
-                          labelText: l10n.mineEditFieldBloodType,
+                      FTextField(
+                        control: FTextFieldControl.managed(
+                          controller: bloodTypeController,
                         ),
+                        label: Text(l10n.mineEditFieldBloodType),
                       ),
                       const SizedBox(height: AppSpacingTokens.level3),
                       _enumDropdown<HealthUnitSystem>(

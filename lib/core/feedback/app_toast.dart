@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_radius_tokens.dart';
 import 'package:luminous/core/design/app_spacing_tokens.dart';
-import 'package:luminous/core/design/app_shadow_tokens.dart';
 
 class AppToast {
   const AppToast._();
@@ -107,7 +106,7 @@ class _AppToastSurface extends StatelessWidget {
           color: backgroundColor,
           border: Border.all(color: borderColor),
           borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-          boxShadow: AppShadowTokens.level2,
+
         ),
         child: Padding(
           padding: const EdgeInsets.only(

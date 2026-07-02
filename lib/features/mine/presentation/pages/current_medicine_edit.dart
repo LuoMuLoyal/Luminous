@@ -299,54 +299,54 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                     onChanged: (v) => source.value = v,
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: sourceRefIdController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldSourceRefId,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: sourceRefIdController,
                     ),
+                    label: Text(l10n.mineEditFieldSourceRefId),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
+                  FTextField(
                     key: const Key('medicine-displayname-field'),
-                    controller: displayNameController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldDisplayName,
+                    control: FTextFieldControl.managed(
+                      controller: displayNameController,
                     ),
+                    label: Text(l10n.mineEditFieldDisplayName),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: strengthTextController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldStrengthText,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: strengthTextController,
                     ),
+                    label: Text(l10n.mineEditFieldStrengthText),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: doseTextController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldDoseText,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: doseTextController,
                     ),
+                    label: Text(l10n.mineEditFieldDoseText),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: routeController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldRoute,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: routeController,
                     ),
+                    label: Text(l10n.mineEditFieldRoute),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: startedAtController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldStartedAt,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: startedAtController,
                     ),
+                    label: Text(l10n.mineEditFieldStartedAt),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: noteController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldNote,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: noteController,
                     ),
+                    label: Text(l10n.mineEditFieldNote),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacingTokens.level5),

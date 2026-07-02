@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SearchInput extends HookWidget {
@@ -20,7 +19,6 @@ class SearchInput extends HookWidget {
   Widget build(BuildContext context) {
     final controller = useTextEditingController(text: query);
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     useEffect(() {
       if (query != controller.text) {
@@ -29,54 +27,29 @@ class SearchInput extends HookWidget {
       return null;
     }, [query]);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        border: Border.all(color: colors.border),
+    return FTextField(
+      control: FTextFieldControl.managed(
+        controller: controller,
+        onChange: (value) => onChanged(value.text),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level3,
-        ),
-        child: Row(
-          children: [
-            Icon(FLucideIcons.search, color: colors.mutedForeground, size: 18),
-            const SizedBox(width: AppSpacingTokens.level3),
-            Expanded(
-              child: TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  hintText: l10n.medicineSearchFieldHint,
-                  hintStyle: textTheme.bodyMedium?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                style: textTheme.bodyMedium,
-                onChanged: onChanged,
-                textInputAction: TextInputAction.search,
-                onSubmitted: onChanged,
-              ),
-            ),
-            if (controller.text.isNotEmpty)
-              GestureDetector(
+      hint: l10n.medicineSearchFieldHint,
+      textInputAction: TextInputAction.search,
+      onSubmit: onChanged,
+      prefixBuilder: (context, style, variants) => FTextField.prefixIconBuilder(
+        context,
+        style,
+        variants,
+        Icon(FLucideIcons.search, color: colors.mutedForeground),
+      ),
+      suffixBuilder: controller.text.isEmpty
+          ? null
+          : (context, style, variants) => GestureDetector(
                 onTap: () {
                   controller.clear();
                   onChanged('');
                 },
-                child: Icon(
-                  FLucideIcons.circleX,
-                  color: colors.mutedForeground,
-                  size: 18,
-                ),
+                child: Icon(FLucideIcons.circleX, color: colors.mutedForeground),
               ),
-          ],
-        ),
-      ),
     );
   }
 }

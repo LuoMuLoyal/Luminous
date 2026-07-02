@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -55,12 +56,10 @@ class DailyRecordFormFields extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.level3),
         ],
         if (rules.showValue) ...[
-          TextField(
+          FTextField(
             key: const Key('daily-record-value-field'),
-            controller: valueController,
-            decoration: InputDecoration(
-              labelText: dailyRecordValueLabel(l10n, kind),
-            ),
+            control: FTextFieldControl.managed(controller: valueController),
+            label: Text(dailyRecordValueLabel(l10n, kind)),
           ),
           const SizedBox(height: AppSpacingTokens.level3),
         ],
@@ -91,29 +90,25 @@ class DailyRecordFormFields extends StatelessWidget {
               },
             )
           else
-            TextField(
+            FTextField(
               key: const Key('daily-record-unit-field'),
-              controller: unitController,
-              decoration: InputDecoration(
-                labelText: l10n.recordCreateFieldUnit,
-              ),
+              control: FTextFieldControl.managed(controller: unitController),
+              label: Text(l10n.recordCreateFieldUnit),
             ),
           const SizedBox(height: AppSpacingTokens.level3),
         ],
         if (rules.showTitle) ...[
-          TextField(
+          FTextField(
             key: const Key('daily-record-title-field'),
-            controller: titleController,
-            decoration: InputDecoration(
-              labelText: l10n.recordCreateFieldTitleOptional,
-            ),
+            control: FTextFieldControl.managed(controller: titleController),
+            label: Text(l10n.recordCreateFieldTitleOptional),
           ),
           const SizedBox(height: AppSpacingTokens.level3),
         ],
-        TextField(
+        FTextField(
           key: const Key('daily-record-note-field'),
-          controller: noteController,
-          decoration: InputDecoration(labelText: l10n.recordCreateFieldNote),
+          control: FTextFieldControl.managed(controller: noteController),
+          label: Text(l10n.recordCreateFieldNote),
           maxLines: 3,
         ),
       ],

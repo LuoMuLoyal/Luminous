@@ -252,12 +252,12 @@ class ConditionEditPage extends HookConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextField(
+                  FTextField(
                     key: const Key('condition-label-field'),
-                    controller: labelController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldLabel,
+                    control: FTextFieldControl.managed(
+                      controller: labelController,
                     ),
+                    label: Text(l10n.mineEditFieldLabel),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
                   _enumDropdown<HealthConditionStatus>(
@@ -267,18 +267,18 @@ class ConditionEditPage extends HookConsumerWidget {
                     onChanged: (v) => status.value = v,
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: diagnosedAtController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldDiagnosedAt,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: diagnosedAtController,
                     ),
+                    label: Text(l10n.mineEditFieldDiagnosedAt),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: noteController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldNote,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: noteController,
                     ),
+                    label: Text(l10n.mineEditFieldNote),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacingTokens.level5),

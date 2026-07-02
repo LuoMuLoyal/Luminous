@@ -262,19 +262,19 @@ class AllergyEditPage extends HookConsumerWidget {
                     onChanged: (v) => kind.value = v,
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
+                  FTextField(
                     key: const Key('allergy-label-field'),
-                    controller: labelController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldLabel,
+                    control: FTextFieldControl.managed(
+                      controller: labelController,
                     ),
+                    label: Text(l10n.mineEditFieldLabel),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: reactionController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldReaction,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: reactionController,
                     ),
+                    label: Text(l10n.mineEditFieldReaction),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
                   DropdownButtonFormField<HealthAllergySeverity>(
@@ -293,11 +293,11 @@ class AllergyEditPage extends HookConsumerWidget {
                     },
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
-                  TextField(
-                    controller: noteController,
-                    decoration: InputDecoration(
-                      labelText: l10n.mineEditFieldNote,
+                  FTextField(
+                    control: FTextFieldControl.managed(
+                      controller: noteController,
                     ),
+                    label: Text(l10n.mineEditFieldNote),
                     maxLines: 3,
                   ),
                   const SizedBox(height: AppSpacingTokens.level5),

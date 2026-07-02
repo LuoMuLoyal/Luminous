@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
@@ -130,12 +131,14 @@ class RecordNlpCandidateEditor extends HookWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (shouldShowTitle(kind)) ...[
-          TextField(
+          FTextField(
             key: Key('record-nlp-candidate-title-$index'),
-            controller: titleController,
+            control: FTextFieldControl.managed(
+              controller: titleController,
+              onChange: (value) => emit(title: value.text),
+            ),
             enabled: enabled,
-            decoration: InputDecoration(labelText: titleLabel(l10n, kind)),
-            onChanged: (value) => emit(title: value),
+            label: Text(titleLabel(l10n, kind)),
           ),
           const SizedBox(height: AppSpacingTokens.level3),
         ],
@@ -144,15 +147,15 @@ class RecordNlpCandidateEditor extends HookWidget {
             children: [
               if (shouldShowValue(kind))
                 Expanded(
-                  child: TextField(
+                  child: FTextField(
                     key: Key('record-nlp-candidate-value-$index'),
-                    controller: valueController,
+                    control: FTextFieldControl.managed(
+                      controller: valueController,
+                      onChange: (value) => emit(value: value.text),
+                    ),
                     enabled: enabled,
                     keyboardType: valueKeyboardType(kind),
-                    decoration: InputDecoration(
-                      labelText: valueLabel(l10n, kind),
-                    ),
-                    onChanged: (value) => emit(value: value),
+                    label: Text(valueLabel(l10n, kind)),
                   ),
                 ),
               if (shouldShowValue(kind) && shouldShowUnit(kind))
@@ -179,14 +182,16 @@ class RecordNlpCandidateEditor extends HookWidget {
           ),
           const SizedBox(height: AppSpacingTokens.level3),
         ],
-        TextField(
+        FTextField(
           key: Key('record-nlp-candidate-note-$index'),
-          controller: noteController,
+          control: FTextFieldControl.managed(
+            controller: noteController,
+            onChange: (value) => emit(note: value.text),
+          ),
           enabled: enabled,
           minLines: noteMinLines(kind),
           maxLines: noteMaxLines(kind),
-          decoration: InputDecoration(labelText: noteLabel(l10n, kind)),
-          onChanged: (value) => emit(note: value),
+          label: Text(noteLabel(l10n, kind)),
         ),
       ],
     );
