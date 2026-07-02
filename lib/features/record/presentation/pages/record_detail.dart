@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -61,7 +61,7 @@ class RecordDetailPage extends ConsumerWidget {
           tooltip: l10n.recordEditAction,
           onPressed: () =>
               pushAuthRequiredRoute(context, '/record/$recordId/edit'),
-          icon: const Icon(Icons.edit_outlined),
+          icon: const Icon(FLucideIcons.pencil),
         ),
       ],
       children: [
@@ -71,7 +71,7 @@ class RecordDetailPage extends ConsumerWidget {
           error: (_, __) => AppStateErrorView(
             title: l10n.recordDetailErrorTitle,
             description: l10n.recordErrorDescription,
-            icon: Icons.edit_calendar_outlined,
+            icon: FLucideIcons.notebookPen,
             actionLabel: l10n.todayRetryAction,
             onAction: () => ref.invalidate(dailyRecordDetailProvider(recordId)),
             tone: AppStateTone.warning,
@@ -90,9 +90,8 @@ class _RecordDetailBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final imageAttachment = record.attachments
         .where((item) => item.kind == DailyRecordAttachmentKind.image)
         .firstOrNull;
@@ -118,7 +117,9 @@ class _RecordDetailBody extends ConsumerWidget {
                       children: [
                         Text(
                           record.title ?? _kindLabel(l10n, record.kind),
-                          style: typography.displaySm,
+                          style: textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                         const SizedBox(height: AppSpacingTokens.xs),
                         Text(
@@ -126,8 +127,8 @@ class _RecordDetailBody extends ConsumerWidget {
                             record.occurredAt,
                             occurredTime: record.occurredTime,
                           ),
-                          style: typography.bodySm.copyWith(
-                            color: surface.body,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colors.mutedForeground,
                           ),
                         ),
                       ],
@@ -173,14 +174,15 @@ class _RecordDetailBody extends ConsumerWidget {
                   MealAnalysisStatusBadge(
                     status: mealAnalysis.status,
                     coverage: mealAnalysis.coverage,
-                    typography: typography,
                     large: true,
                   ),
                   const SizedBox(width: AppSpacingTokens.sm),
                   Expanded(
                     child: Text(
                       l10n.recordMealAnalysisStatusAnalyzing,
-                      style: typography.bodySm.copyWith(color: surface.body),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ),
                 ],
@@ -194,14 +196,15 @@ class _RecordDetailBody extends ConsumerWidget {
                   MealAnalysisStatusBadge(
                     status: mealAnalysis.status,
                     coverage: mealAnalysis.coverage,
-                    typography: typography,
                     large: true,
                   ),
                   if (_nonEmpty(mealAnalysis.failureReason) != null) ...[
                     const SizedBox(height: AppSpacingTokens.sm),
                     Text(
                       mealAnalysis.failureReason!,
-                      style: typography.bodySm.copyWith(color: surface.body),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                     ),
                   ],
                 ],
@@ -218,7 +221,9 @@ class _RecordDetailBody extends ConsumerWidget {
               children: [
                 Text(
                   l10n.recordImageSectionTitle,
-                  style: typography.bodyMdStrong,
+                  style: textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: AppSpacingTokens.md),
                 _RecordDetailImage(attachment: imageAttachment),
@@ -226,7 +231,9 @@ class _RecordDetailBody extends ConsumerWidget {
                   const SizedBox(height: AppSpacingTokens.sm),
                   Text(
                     imageAttachment.fileName!,
-                    style: typography.caption.copyWith(color: surface.body),
+                    style: textTheme.labelSmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -239,18 +246,16 @@ class _RecordDetailBody extends ConsumerWidget {
           key: const Key('record-detail-edit-action'),
           onPressed: () =>
               pushAuthRequiredRoute(context, '/record/${record.id}/edit'),
-          icon: const Icon(Icons.edit_outlined, size: 18),
+          icon: const Icon(FLucideIcons.pencil, size: 18),
           label: Text(l10n.recordEditAction),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
         OutlinedButton.icon(
           key: const Key('record-detail-delete-action'),
           onPressed: () => _deleteRecord(context, ref, record.id),
-          icon: const Icon(Icons.delete_outline_rounded, size: 18),
+          icon: const Icon(FLucideIcons.trash2, size: 18),
           label: Text(l10n.recordDeleteAction),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: theme.colorScheme.error,
-          ),
+          style: OutlinedButton.styleFrom(foregroundColor: colors.destructive),
         ),
       ],
     );
@@ -394,9 +399,8 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,14 +409,14 @@ class _DetailRow extends StatelessWidget {
           width: 88,
           child: Text(
             data.label,
-            style: typography.bodySm.copyWith(color: surface.body),
+            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.md),
         Expanded(
           child: Text(
             data.value,
-            style: typography.bodySmStrong,
+            style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
             overflow: TextOverflow.visible,
           ),
         ),
@@ -435,15 +439,7 @@ class _DetailSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-        boxShadow: AppShadowTokens.level1,
-      ),
+    return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.lg),
         child: child,
@@ -462,14 +458,14 @@ class _KindIcon extends StatelessWidget {
     final (color, background) = RecordTypeColors.forKind(kind);
 
     final icon = switch (kind) {
-      DailyRecordKind.water => Icons.water_drop_rounded,
-      DailyRecordKind.meal => Icons.restaurant_rounded,
-      DailyRecordKind.vital => Icons.favorite_rounded,
-      DailyRecordKind.mood => Icons.sentiment_satisfied_rounded,
-      DailyRecordKind.symptom => Icons.healing_rounded,
-      DailyRecordKind.activity => Icons.directions_run_rounded,
-      DailyRecordKind.note => Icons.notes_rounded,
-      DailyRecordKind.sleep => Icons.dark_mode_rounded,
+      DailyRecordKind.water => FLucideIcons.droplets,
+      DailyRecordKind.meal => FLucideIcons.utensils,
+      DailyRecordKind.vital => FLucideIcons.heartPulse,
+      DailyRecordKind.mood => FLucideIcons.smile,
+      DailyRecordKind.symptom => FLucideIcons.cross,
+      DailyRecordKind.activity => FLucideIcons.personStanding,
+      DailyRecordKind.note => FLucideIcons.notebookPen,
+      DailyRecordKind.sleep => FLucideIcons.moonStar,
     };
 
     return DecoratedBox(
@@ -492,7 +488,7 @@ class _RecordDetailImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     final imageUrl = attachment.displayUrl;
 
     return ClipRRect(
@@ -500,12 +496,14 @@ class _RecordDetailImage extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 16 / 9,
         child: DecoratedBox(
-          decoration: BoxDecoration(color: surface.canvasSoft2),
+          decoration: BoxDecoration(
+            color: colors.secondary.withValues(alpha: 0.2),
+          ),
           child: imageUrl == null
               ? Center(
                   child: Icon(
-                    Icons.image_outlined,
-                    color: surface.mute,
+                    FLucideIcons.image,
+                    color: colors.mutedForeground,
                     size: 28,
                   ),
                 )
@@ -514,15 +512,15 @@ class _RecordDetailImage extends StatelessWidget {
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Center(
                     child: Icon(
-                      Icons.image_outlined,
-                      color: surface.mute,
+                      FLucideIcons.image,
+                      color: colors.mutedForeground,
                       size: 28,
                     ),
                   ),
                   errorWidget: (context, url, error) => Center(
                     child: Icon(
-                      Icons.broken_image_outlined,
-                      color: surface.mute,
+                      FLucideIcons.imageOff,
+                      color: colors.mutedForeground,
                       size: 28,
                     ),
                   ),

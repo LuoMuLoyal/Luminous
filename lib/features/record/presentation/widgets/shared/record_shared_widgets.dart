@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class RecordIndentedDivider extends StatelessWidget {
   const RecordIndentedDivider({
     super.key,
-    required this.surface,
+    required this.color,
     required this.indent,
     this.endIndent = 0,
   });
 
-  final AppThemeSurface surface;
+  final Color color;
   final double indent;
   final double endIndent;
 
@@ -20,7 +19,7 @@ class RecordIndentedDivider extends StatelessWidget {
       thickness: 1,
       indent: indent,
       endIndent: endIndent,
-      color: surface.hairline,
+      color: color,
     );
   }
 }
@@ -28,11 +27,11 @@ class RecordIndentedDivider extends StatelessWidget {
 class RecordShortVerticalDivider extends StatelessWidget {
   const RecordShortVerticalDivider({
     super.key,
-    required this.surface,
+    required this.color,
     required this.height,
   });
 
-  final AppThemeSurface surface;
+  final Color color;
   final double height;
 
   @override
@@ -40,7 +39,7 @@ class RecordShortVerticalDivider extends StatelessWidget {
     return Center(
       child: SizedBox(
         height: height,
-        child: VerticalDivider(width: 1, thickness: 1, color: surface.hairline),
+        child: VerticalDivider(width: 1, thickness: 1, color: color),
       ),
     );
   }

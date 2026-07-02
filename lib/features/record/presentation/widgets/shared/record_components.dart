@@ -1,15 +1,13 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class RecordHeaderActionChip extends StatelessWidget {
   const RecordHeaderActionChip({
     super.key,
     required this.label,
     required this.icon,
-    required this.typography,
-    required this.surface,
     required this.onTap,
     this.emphasized = false,
     this.iconOnly = false,
@@ -17,8 +15,6 @@ class RecordHeaderActionChip extends StatelessWidget {
 
   final String label;
   final IconData icon;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final VoidCallback onTap;
   final bool emphasized;
   final bool iconOnly;
@@ -26,6 +22,8 @@ class RecordHeaderActionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const accent = AppColorTokens.cyanDeep;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final foreground = emphasized
         ? Theme.of(context).colorScheme.onPrimary
         : Theme.of(context).colorScheme.onSurface;
@@ -39,9 +37,9 @@ class RecordHeaderActionChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: emphasized ? accent : surface.canvas,
+              color: emphasized ? accent : colors.background,
               borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-              border: Border.all(color: emphasized ? accent : surface.hairline),
+              border: Border.all(color: emphasized ? accent : colors.border),
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -58,7 +56,10 @@ class RecordHeaderActionChip extends StatelessWidget {
                     const SizedBox(width: AppSpacingTokens.xs),
                     Text(
                       label,
-                      style: typography.buttonMd.copyWith(color: foreground),
+                      style: textTheme.labelLarge?.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ],
                 ],
@@ -76,7 +77,7 @@ class RecordLineChart extends StatelessWidget {
     super.key,
     required this.points,
     required this.color,
-    required this.surface,
+    required this.gridColor,
     this.secondaryPoints = const <double>[],
     this.secondaryColor,
     this.height = 104,
@@ -84,7 +85,7 @@ class RecordLineChart extends StatelessWidget {
 
   final List<double> points;
   final Color color;
-  final AppThemeSurface surface;
+  final Color gridColor;
   final List<double> secondaryPoints;
   final Color? secondaryColor;
   final double height;
@@ -154,7 +155,7 @@ class RecordLineChart extends StatelessWidget {
               show: true,
               drawVerticalLine: false,
               getDrawingHorizontalLine: (_) =>
-                  FlLine(color: surface.hairline, strokeWidth: 1),
+                  FlLine(color: gridColor, strokeWidth: 1),
               horizontalInterval: (maxY - minY + span * 0.2) / 4,
             ),
             borderData: FlBorderData(show: false),
@@ -173,13 +174,13 @@ class RecordBarChart extends StatelessWidget {
     super.key,
     required this.values,
     required this.color,
-    required this.surface,
+    required this.gridColor,
     this.height = 104,
   });
 
   final List<double> values;
   final Color color;
-  final AppThemeSurface surface;
+  final Color gridColor;
   final double height;
 
   @override
@@ -195,7 +196,7 @@ class RecordBarChart extends StatelessWidget {
             show: true,
             drawVerticalLine: false,
             getDrawingHorizontalLine: (_) =>
-                FlLine(color: surface.hairline, strokeWidth: 1),
+                FlLine(color: gridColor, strokeWidth: 1),
             horizontalInterval: 1.0 / 3,
           ),
           borderData: FlBorderData(show: false),
