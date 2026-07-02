@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
+import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/app.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
@@ -60,7 +62,7 @@ void main() {
       expect(preferences.getString('app.locale'), 'en');
       expect(_fakeSettingsProfileRemote.lastLocale, 'en');
 
-      await tester.tap(find.byType(BackButton).first);
+      await tester.tap(_settingsBackButton());
       await tester.pumpAndSettle();
 
       expect(find.text('Settings'), findsOneWidget);
@@ -175,7 +177,7 @@ void main() {
     expect(find.text('开源许可'), findsOneWidget);
 
     // Back navigation returns to settings
-    await tester.tap(find.byType(BackButton).first);
+    await tester.tap(_settingsBackButton());
     await tester.pumpAndSettle();
     expect(find.text('设置'), findsOneWidget);
   });
@@ -204,7 +206,7 @@ void main() {
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.themeMode, ThemeMode.dark);
 
-    await tester.tap(find.byType(BackButton).first);
+    await tester.tap(_settingsBackButton());
     await tester.pumpAndSettle();
 
     expect(find.text('深色'), findsOneWidget);
@@ -263,10 +265,23 @@ bool _readSwitchValue(WidgetTester tester, Finder finder) {
 
 Future<void> _tapSettingsRow(WidgetTester tester, String key) async {
   final finder = find.byKey(Key(key));
-  await tester.ensureVisible(finder);
+  await tester.scrollUntilVisible(
+    finder,
+    240,
+    scrollable: _settingsPageScrollable(),
+  );
   await tester.pumpAndSettle();
   await tester.tap(finder);
   await tester.pumpAndSettle();
+}
+
+Finder _settingsPageScrollable() => find.byType(Scrollable).first;
+
+Finder _settingsBackButton() {
+  return find.descendant(
+    of: find.byType(AppBackButton).first,
+    matching: find.byType(FButton),
+  );
 }
 
 Map<String, Object> _snapshotPreferences(SharedPreferences preferences) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:shimmer/shimmer.dart';
@@ -31,61 +32,54 @@ class AppStateMessageView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final textTheme = theme.textTheme;
+    final colors = context.theme.colors;
     final accent = _accentFor(surface);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: _backgroundFor(surface, accent),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-        border: Border.all(color: accent.withValues(alpha: 0.18)),
-        boxShadow: AppShadowTokens.level1,
-      ),
+    return FCard.raw(
       child: Padding(
         padding: padding,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: accent.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacingTokens.md),
-                child: Icon(icon, color: accent, size: 28),
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.md),
-            Text(
-              title,
-              style: typography.bodyMdStrong.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacingTokens.xs),
-            Text(
-              description,
-              style: typography.bodySm.copyWith(color: surface.body),
-              textAlign: TextAlign.center,
-            ),
-            if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: AppSpacingTokens.lg),
-              OutlinedButton(
-                key: actionKey,
-                onPressed: onAction,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: accent,
-                  side: BorderSide(color: accent.withValues(alpha: 0.45)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-                  ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
                 ),
-                child: Text(actionLabel!),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacingTokens.md),
+                  child: Icon(icon, color: accent, size: 28),
+                ),
               ),
+              const SizedBox(height: AppSpacingTokens.md),
+              Text(
+                title,
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacingTokens.xs),
+              Text(
+                description,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colors.mutedForeground,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              if (actionLabel != null && onAction != null) ...[
+                const SizedBox(height: AppSpacingTokens.lg),
+                FButton(
+                  key: actionKey,
+                  onPress: onAction,
+                  variant: FButtonVariant.outline,
+                  child: Text(actionLabel!),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -98,13 +92,6 @@ class AppStateMessageView extends StatelessWidget {
       AppStateTone.warning => surface.warning,
       AppStateTone.danger => surface.error,
     };
-  }
-
-  Color _backgroundFor(AppThemeSurface surface, Color accent) {
-    if (tone == AppStateTone.neutral) {
-      return surface.canvas;
-    }
-    return Color.alphaBlend(accent.withValues(alpha: 0.08), surface.canvas);
   }
 }
 

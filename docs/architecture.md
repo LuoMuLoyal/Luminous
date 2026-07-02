@@ -29,7 +29,7 @@ lib/
 │   └── widgets/           # Shared UI components
 │       ├── common/        # AppBackButton, AppDialog, AppStateErrorView, AppInkWell, etc.
 │       ├── layout/        # PageScaffoldShell, ResponsiveContentFrame
-│       └── settings/      # AppSettingRow, AppSettingsSection, etc.
+│       └── settings/      # Legacy settings-row wrappers still used by untouched /settings/* sub-pages
 │
 ├── features/              # Business feature modules (Clean Architecture)
 │   ├── assistant/         # AI health assistant chat
@@ -175,6 +175,10 @@ The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at 
 | Legacy layout tokens | `lib/core/design/` | Existing spacing/radius/typography helpers that still support pages not yet migrated off the old system |
 | Theme preference | `lib/core/theme/app_theme_controller.dart` | Persists only `ThemeMode` (`system / light / dark`) |
 
+Shared page chrome has started moving with the same strategy: `PageScaffoldShell` now composes `FScaffold` and `FHeader`, `AppBackButton` is a Forui icon button, `AppDialog` uses `FDialog.raw`, and shared state surfaces use `FCard`/`FButton`. `PageScaffoldShell` intentionally keeps a transparent `Material` wrapper around its content area so legacy Material descendants can survive until their owning pages finish migration.
+
+The settings surface is now also splitting along that boundary. The top-level `SettingsPage` renders directly with page-local Forui tiles/cards/switches/buttons instead of reusing `AppSectionSurface` or `AppSettings*` wrappers. `lib/core/widgets/settings/` is therefore no longer the preferred path for new work; it is temporary migration debt for the remaining secondary settings pages that have not been rewritten yet.
+
 ### UI Guidelines
 
 - Prefer flat surfaces over nested boxes (aligned with concept images).
@@ -185,6 +189,7 @@ The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at 
 - Mock data is gated behind `kDebugMode`; release builds show empty states.
 - During the Forui migration, touched pages should move toward Forui primitives directly instead of adding new handcrafted wrapper aliases.
 - The root shell is already on Forui primitives: `ShellPage` uses `FScaffold`, `FBottomNavigationBar`, and `FSidebar` while keeping the existing GoRouter `StatefulShellRoute` structure, and its navigation/action iconography now comes from Forui's bundled Lucide set instead of Material icons.
+- The shared child-page shell is now also on Forui primitives, but the repo is still in an intentional compatibility phase where shared scaffolding can host both Forui widgets and unmigrated Material descendants in the same page tree.
 
 ---
 

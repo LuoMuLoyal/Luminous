@@ -103,27 +103,39 @@
 
 ---
 
-### Task 1: Lock the migration boundary and inventory old UI dependencies
+## Working Inventory
 
-**Files:**
-- Modify: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\plans\2026-07-02-forui-migration-plan.md`
-- Review: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\lib\core\design\*.dart`
-- Review: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\lib\core\theme\*.dart`
-- Review: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\lib\core\widgets\common\*.dart`
-- Review: `D:\25080\Documents\VSCodeProject\Lumos\Luminous\lib\core\widgets\settings\*.dart`
+Freeze rule recorded for execution: during this migration window, no new frontend feature work and no new additions to the old handcrafted UI system are allowed. Any touched UI must move toward Forui primitives.
 
-- [ ] Record the freeze rule in the active task log or handoff notes used during execution: no new frontend features and no new old-system widget additions during the migration window.
-- [ ] Generate a dependency inventory with:
-  - `rg -n "AppThemeSurface|AppTypographyTokens|AppSpacingTokens|AppRadiusTokens|PageScaffoldShell|PageSectionCard|AppSettingRow|AppSettingsSection" lib`
-  - `rg -n "AlertDialog|Dialog\\(|showModalBottomSheet|showDialog" lib`
-- [ ] Classify each old shared file as one of:
-  - `keep as product shell`
-  - `rewrite on Forui`
-  - `delete after call-sites move`
-- [ ] Write the resulting inventory into a working note inside this plan before implementation starts so execution never reopens the scope question midway.
+Dependency inventory snapshot:
 
-**Expected observable result:**
-- The executor has a concrete kill list and keep list for the handcrafted UI system before touching app bootstrapping.
+- Old token usage (`AppThemeSurface`, `AppTypographyTokens`, `AppSpacingTokens`, `AppRadiusTokens`) still spans shared infrastructure plus high-traffic feature surfaces such as `record`, `report`, `search`, `auth`, `today`, and `settings`.
+- `PageScaffoldShell` remains a critical shared wrapper with many inbound callers across record, medicine, mine, assistant, and settings pages, so it must be rewritten rather than removed first.
+- `AppStateErrorView` is also a critical shared state surface used across today, report, mine, medicine, search, and record paths, so it should stay but be visually rewritten on Forui.
+- Dialog usage is still mixed: shared `AppDialog` exists, but several flows still call raw `AlertDialog`, `Dialog`, and `showDialog` directly. The migration should move shared dialog structure to Forui first, then clean call sites.
+- Modal bottom sheets are still present in record/scan flows; those are in-scope later, but they do not block the shared-shell rewrite.
+
+Shared UI classification:
+
+- `keep as product shell`:
+  - `PageScaffoldShell`
+  - `PageSectionCard`
+  - `AppBackButton`
+  - `AppStateErrorView`
+  - `AppDialog`
+- `rewrite on Forui`:
+  - `AppTextAction` if still needed after page rewrites
+  - `AppHeaderActionChip` if still needed after page rewrites
+- `delete after call-sites move`:
+  - `AppSectionSurface`
+  - `AppSettingRow`
+  - `AppSettingsSection`
+  - `AppSettingsNavigationRow`
+  - `AppSettingsSwitchRow`
+
+Execution note:
+
+- Shared-shell work should land before broad page rewrites so the remaining page migrations can consume the new Forui-based structure instead of entrenching more old token usage.
 
 ### Task 3: Rewrite shared shells, not shared aliases
 

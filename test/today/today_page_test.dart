@@ -61,7 +61,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final scrollable = find.byType(Scrollable);
+    final scrollable = _todayDashboardScrollable();
     final keys = <String>[
       'today-health-summary-card',
       'today-ai-summary-card',
@@ -198,13 +198,21 @@ void main() {
     final recommendationCard = find.byKey(
       const Key('today-recommendation-card'),
     );
-    await tester.scrollUntilVisible(recommendationCard, 240);
+    await tester.scrollUntilVisible(
+      recommendationCard,
+      240,
+      scrollable: _todayDashboardScrollable(),
+    );
     await tester.pump(const Duration(milliseconds: 200));
     final l10n = AppLocalizations.of(tester.element(find.byType(TodayPage)))!;
     expect(find.text(l10n.todayRecommendationSectionTitle), findsOneWidget);
 
     final todoCard = find.byKey(const Key('today-todo-card'));
-    await tester.scrollUntilVisible(todoCard, 240);
+    await tester.scrollUntilVisible(
+      todoCard,
+      240,
+      scrollable: _todayDashboardScrollable(),
+    );
     await tester.pump(const Duration(milliseconds: 200));
     expect(todoCard, findsOneWidget);
     expect(find.text(l10n.todayTodoCustomTitle), findsOneWidget);
@@ -432,7 +440,11 @@ void main() {
     final recommendationCard = find.byKey(
       const Key('today-recommendation-card'),
     );
-    await tester.scrollUntilVisible(recommendationCard, 240);
+    await tester.scrollUntilVisible(
+      recommendationCard,
+      240,
+      scrollable: _todayDashboardScrollable(),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.todayRecommendationErrorTitle), findsOneWidget);
@@ -515,7 +527,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     final waterCard = find.byKey(const Key('today-water-card'));
-    await tester.scrollUntilVisible(waterCard, 240);
+    await tester.scrollUntilVisible(
+      waterCard,
+      240,
+      scrollable: _todayDashboardScrollable(),
+    );
     await tester.pump(const Duration(milliseconds: 200));
 
     expect(waterCard, findsOneWidget);
@@ -560,7 +576,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     final medicationCard = find.byKey(const Key('today-medication-card'));
-    await tester.scrollUntilVisible(medicationCard, 240);
+    await tester.scrollUntilVisible(
+      medicationCard,
+      240,
+      scrollable: _todayDashboardScrollable(),
+    );
     await tester.pump(const Duration(milliseconds: 200));
 
     expect(medicationCard, findsOneWidget);
@@ -579,4 +599,13 @@ class _FailingTodayRecommendationsDataSource
   }) async {
     throw Exception('test error');
   }
+}
+
+Finder _todayDashboardScrollable() {
+  return find
+      .descendant(
+        of: find.byKey(const PageStorageKey<String>('today-dashboard-scroll')),
+        matching: find.byType(Scrollable),
+      )
+      .first;
 }

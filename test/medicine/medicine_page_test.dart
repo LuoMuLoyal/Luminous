@@ -69,7 +69,7 @@ void main() {
     expect(find.text(l10n.medicineDrugboxTitle), findsOneWidget);
     expect(find.text('Metformin'), findsAtLeastNWidgets(1));
 
-    final scrollable = find.byType(Scrollable);
+    final scrollable = _medicineMobileScrollable();
     final keys = <String>[
       'medicine-hero',
       'medicine-next-reminder',
@@ -599,3 +599,12 @@ const _riskResult = MedicineRiskCheckResult(
     ),
   ],
 );
+
+Finder _medicineMobileScrollable() {
+  return find
+      .descendant(
+        of: find.byKey(const PageStorageKey<String>('medicine-mobile-scroll')),
+        matching: find.byType(Scrollable),
+      )
+      .first;
+}

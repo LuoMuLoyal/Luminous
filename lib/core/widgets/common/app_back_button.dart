@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 /// 统一返回按钮。
 ///
@@ -20,11 +20,11 @@ class AppBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-
-    return BackButton(
-      color: surface.body,
-      onPressed: onPressed ?? () => _handleBack(context),
+    return FButton.icon(
+      onPress: onPressed ?? () => _handleBack(context),
+      variant: FButtonVariant.ghost,
+      size: FButtonSizeVariant.sm,
+      child: const Icon(FLucideIcons.chevronLeft),
     );
   }
 

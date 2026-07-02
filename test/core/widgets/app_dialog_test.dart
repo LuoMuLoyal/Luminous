@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_dialog.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 Widget _appShell(Widget child) {
-  return MaterialApp(
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-    ),
-    home: child,
-  );
+  return MaterialApp(theme: AppTheme.light, home: child);
 }
 
 void main() {
@@ -35,6 +31,7 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pump();
 
+      expect(find.byType(FDialog), findsOneWidget);
       expect(find.text('Dialog content'), findsOneWidget);
     });
 
