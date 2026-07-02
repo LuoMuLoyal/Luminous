@@ -42,7 +42,6 @@ class RedFlagEvaluator {
             rule: RedFlagRule.severeAllergy,
             primaryMedicineName: f.primaryMedicineName,
             relatedLabel: f.relatedLabel,
-            resourceId: 'campus-emergency',
           ),
         )
         .toList(growable: false);
@@ -68,9 +67,6 @@ class RedFlagEvaluator {
           (issue) => RedFlagAlert(
             rule: RedFlagRule.informationGap,
             primaryMedicineName: issue.medicineName,
-            // No resourceId — we cannot promise a verified resource loop
-            // for information gaps. The action copy tells the user to
-            // verify offline but does not link to a fake action.
           ),
         )
         .toList(growable: false);

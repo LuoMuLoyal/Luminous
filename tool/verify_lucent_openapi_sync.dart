@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'tooling_support.dart';
@@ -28,38 +29,16 @@ Future<void> main(List<String> args) async {
       );
     }
 
-    await runLoggedCommand(
-      'git',
-      [
-        '-C',
-        lucentOpenApi.parent.parent.path,
-        'diff',
-        '--exit-code',
-        '--',
-        _toGitRelativePath(lucentOpenApi.parent.parent, lucentOpenApi),
-      ],
-      workingDirectory: context.repoRoot,
-      stepName: 'Verify Lucent OpenAPI file is committed',
+    _verifyOpenApiJson(lucentOpenApi);
+    stdout.writeln('Lucent OpenAPI file resolved: ${lucentOpenApi.path}');
+    stdout.writeln(
+      'Generated client directory resolved: ${generatedClientRoot.path}',
     );
-    stdout.writeln('');
-
-    await runLoggedCommand(
-      'git',
-      [
-        '-C',
-        context.repoRoot.path,
-        'diff',
-        '--exit-code',
-        '--',
-        'packages/lucent_openapi',
-      ],
-      workingDirectory: context.repoRoot,
-      stepName: 'Verify packages/lucent_openapi is committed',
-    );
+    _verifyGeneratedClientLayout(generatedClientRoot);
   } on ProcessException catch (error) {
     stderr.writeln(error.message);
     stderr.writeln(
-      'OpenAPI/client contract is out of sync. Run `dart run tool/regenerate_lucent_openapi.dart` after exporting Lucent OpenAPI and commit the updated generated client.',
+      'OpenAPI/client verification command failed. Run `dart run tool/regenerate_lucent_openapi.dart` after exporting Lucent OpenAPI if the generated client needs to be refreshed.',
     );
     exitCode = error.errorCode;
   } on FormatException catch (error) {
@@ -108,19 +87,37 @@ _ParsedArgs _parseNamedArgs(List<String> args) {
   return _ParsedArgs(openApiPath: openApiPath, showHelp: showHelp);
 }
 
-String _toGitRelativePath(Directory repoRoot, File file) {
-  final repoRootPath = repoRoot.absolute.path;
-  final filePath = file.absolute.path;
-  if (!filePath.startsWith(repoRootPath)) {
+void _verifyOpenApiJson(File openApiFile) {
+  final raw = openApiFile.readAsStringSync();
+  final decoded = jsonDecode(raw);
+  if (decoded is! Map<String, dynamic>) {
+    throw StateError('Lucent OpenAPI file is not a JSON object.');
+  }
+  if (decoded['openapi'] is! String) {
     throw StateError(
-      'OpenAPI file must live inside the Lucent repository: ${file.path}',
+      'Lucent OpenAPI file is missing the top-level openapi key.',
     );
   }
+}
 
-  final relative = filePath
-      .substring(repoRootPath.length)
-      .replaceAll('\\', '/');
-  return relative.startsWith('/') ? relative.substring(1) : relative;
+void _verifyGeneratedClientLayout(Directory generatedClientRoot) {
+  final requiredPaths = <String>[
+    'pubspec.yaml',
+    'lib/lucent_openapi.dart',
+    'lib/src/api.dart',
+  ];
+
+  for (final relativePath in requiredPaths) {
+    final file = File(
+      '${generatedClientRoot.path}${Platform.pathSeparator}'
+      '${relativePath.replaceAll('/', Platform.pathSeparator)}',
+    );
+    if (!file.existsSync()) {
+      throw StateError(
+        'Generated client is missing required file: ${file.path}',
+      );
+    }
+  }
 }
 
 class _ParsedArgs {

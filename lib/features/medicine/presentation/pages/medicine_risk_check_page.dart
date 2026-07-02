@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -15,7 +14,6 @@ import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_ri
 import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_metric_chip.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_red_flag.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_check_loading.dart';
-import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -45,7 +43,6 @@ class MedicineRiskCheckPage extends ConsumerWidget {
 
     final resultAsync = ref.watch(medicineRiskCheckProvider);
     final redFlagAlertsAsync = ref.watch(redFlagAlertsProvider);
-    final campusResourcesAsync = ref.watch(supportResourcesProvider('campus'));
     return PageScaffoldShell(
       title: l10n.medicineRiskCheckPageTitle,
       centerTitle: true,
@@ -54,11 +51,9 @@ class MedicineRiskCheckPage extends ConsumerWidget {
         resultAsync.when(
           data: (result) {
             final alerts = redFlagAlertsAsync.asData?.value ?? const [];
-            final resources = campusResourcesAsync.asData?.value ?? const [];
             return _MedicineRiskCheckBody(
               result: result,
               redFlagAlerts: alerts,
-              campusResources: resources,
             );
           },
           loading: () => const MedicineRiskCheckLoading(),
@@ -80,12 +75,10 @@ class _MedicineRiskCheckBody extends StatelessWidget {
   const _MedicineRiskCheckBody({
     required this.result,
     this.redFlagAlerts = const [],
-    this.campusResources = const [],
   });
 
   final MedicineRiskCheckResult result;
   final List<RedFlagAlert> redFlagAlerts;
-  final List<SupportResourceDto> campusResources;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +95,6 @@ class _MedicineRiskCheckBody extends StatelessWidget {
           if (redFlagAlerts.isNotEmpty) ...[
             MedicineRiskRedFlagBanner(
               alerts: redFlagAlerts,
-              campusResources: campusResources,
               l10n: l10n,
               typography: typography,
               surface: surface,

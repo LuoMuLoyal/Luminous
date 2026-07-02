@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
-import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
@@ -15,7 +13,6 @@ import 'package:luminous/features/mine/domain/repositories/mine_repository.dart'
 /// composes the Mine dashboard from existing data sources:
 /// - user profile / health archive / current medicines / allergies / conditions
 ///   come from [healthContextSnapshotProvider].
-/// - campus service resources come from [supportResourcesProvider].
 ///
 /// Mine is therefore a presentation-facing aggregation layer rather than a
 /// standalone data owner.
@@ -27,97 +24,13 @@ class LucentMineRepository implements MineRepository {
   @override
   Future<MineDashboard> fetchDashboard() async {
     final snapshot = await _ref.watch(healthContextSnapshotProvider.future);
-    final campusServices = await _fetchCampusServices();
     return buildDashboard(
       account: _buildAccount(),
       profile: _buildProfile(snapshot),
       completion: _buildCompletion(snapshot),
       alerts: _buildAlerts(snapshot),
       archiveEntries: _buildArchiveEntries(snapshot),
-      campusServices: campusServices,
     );
-  }
-
-  Future<List<MineActionEntry>> _fetchCampusServices() async {
-    try {
-      final resources = await _ref.watch(
-        supportResourcesProvider('campus').future,
-      );
-      return resources.map(_mapSupportResource).toList();
-    } catch (_) {
-      return _fallbackCampusServices;
-    }
-  }
-
-  MineActionEntry _mapSupportResource(SupportResourceDto resource) {
-    final (titleKey, subtitleKey) = _parseCopyKey(resource.icon);
-    final actionType = _parseActionType(resource.actionType);
-    return MineActionEntry(
-      icon: _parseIcon(resource.icon),
-      accent: _parseColor(resource.icon),
-      titleKey: titleKey,
-      subtitleKey: subtitleKey,
-      rawTitle: resource.title,
-      rawSubtitle: resource.subtitle,
-      actionType: actionType,
-      actionTarget: resource.actionUrl,
-    );
-  }
-
-  MineActionTargetType? _parseActionType(SupportResourceActionType? value) {
-    return switch (value) {
-      SupportResourceActionType.internal => MineActionTargetType.internal,
-      SupportResourceActionType.url => MineActionTargetType.url,
-      SupportResourceActionType.phone => MineActionTargetType.phone,
-      SupportResourceActionType.unknownDefaultOpenApi => null,
-      null => null,
-    };
-  }
-
-  (MineCopyKey, MineCopyKey) _parseCopyKey(String? name) {
-    return switch (name) {
-      'favorite' || 'heart' || 'support' || 'help' => (
-        MineCopyKey.campusSupportTitle,
-        MineCopyKey.campusSupportSubtitle,
-      ),
-      'medical_services' || 'pharmacy' => (
-        MineCopyKey.campusPharmacyTitle,
-        MineCopyKey.campusPharmacySubtitle,
-      ),
-      'emergency' => (
-        MineCopyKey.campusEmergencyTitle,
-        MineCopyKey.campusEmergencySubtitle,
-      ),
-      _ => (
-        MineCopyKey.campusHospitalTitle,
-        MineCopyKey.campusHospitalSubtitle,
-      ),
-    };
-  }
-
-  IconData _parseIcon(String? name) {
-    return switch (name) {
-      'local_hospital' || 'hospital' => Icons.local_hospital_rounded,
-      'favorite' || 'heart' => Icons.favorite_rounded,
-      'medical_services' || 'pharmacy' => Icons.medical_services_rounded,
-      'emergency' => Icons.emergency_rounded,
-      'school' || 'campus' => Icons.school_rounded,
-      'support' || 'help' => Icons.support_agent_rounded,
-      'phone' => Icons.phone_rounded,
-      _ => Icons.help_outline_rounded,
-    };
-  }
-
-  Color _parseColor(String? name) {
-    return switch (name) {
-      'local_hospital' || 'hospital' => _blue,
-      'favorite' || 'heart' => _purple,
-      'medical_services' || 'pharmacy' => _green,
-      'emergency' => _red,
-      'school' || 'campus' => _blue,
-      'support' || 'help' => _purple,
-      _ => _blue,
-    };
   }
 
   MineAccount _buildAccount() {
@@ -147,7 +60,6 @@ MineDashboard buildDashboard({
   required MineCompletion completion,
   required List<MineStatusCard> alerts,
   required List<MineArchiveEntry> archiveEntries,
-  List<MineActionEntry>? campusServices,
 }) {
   return MineDashboard(
     account: account,
@@ -155,7 +67,6 @@ MineDashboard buildDashboard({
     profile: profile,
     alerts: alerts,
     archiveEntries: archiveEntries,
-    campusServices: campusServices ?? _fallbackCampusServices,
     privacyNotice: const MinePrivacyNotice(
       icon: Icons.shield_rounded,
       titleKey: MineCopyKey.privacyNoticeTitle,
@@ -262,35 +173,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
   ];
 }
 
-const _fallbackCampusServices = [
-  MineActionEntry(
-    icon: Icons.local_hospital_rounded,
-    accent: _blue,
-    titleKey: MineCopyKey.campusHospitalTitle,
-    subtitleKey: MineCopyKey.campusHospitalSubtitle,
-  ),
-  MineActionEntry(
-    icon: Icons.favorite_rounded,
-    accent: _purple,
-    titleKey: MineCopyKey.campusSupportTitle,
-    subtitleKey: MineCopyKey.campusSupportSubtitle,
-  ),
-  MineActionEntry(
-    icon: Icons.medical_services_rounded,
-    accent: _green,
-    titleKey: MineCopyKey.campusPharmacyTitle,
-    subtitleKey: MineCopyKey.campusPharmacySubtitle,
-  ),
-  MineActionEntry(
-    icon: Icons.emergency_rounded,
-    accent: _red,
-    titleKey: MineCopyKey.campusEmergencyTitle,
-    subtitleKey: MineCopyKey.campusEmergencySubtitle,
-  ),
-];
-
 const _green = AppColorTokens.cyanDeep;
-const _blue = AppColorTokens.link;
-const _red = AppColorTokens.gradientShipStart;
 const _pink = AppColorTokens.highlightMagenta;
-const _purple = AppColorTokens.violet;
+const _red = AppColorTokens.error;
+const _blue = AppColorTokens.accent;

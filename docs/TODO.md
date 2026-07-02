@@ -30,7 +30,7 @@ This file records work that is still missing or intentionally gated. Current fac
 
 - Additional reviewed medicine rule expansion beyond the frozen current boundary.
 - Cross-source medicine normalization and unreviewed interaction expansion.
-- Fixed red-flag rules, audited offline-care escalation copy, and campus/help resource completeness.
+- Fixed red-flag rules, audited offline-care escalation copy, and help-resource completeness.
 - Agent-assisted support discovery or map-backed nearby-care lookup.
 - Deeper medicine safety rule coverage and clearer unsupported / low-confidence wording beyond the frozen current boundary.
 - Report/export finish-pass cleanup in the client only: final status wording consistency, expired-link handling, and one real-environment acceptance run. Do not reopen backend/export scope unless a real bug is found.

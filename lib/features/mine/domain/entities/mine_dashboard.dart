@@ -11,7 +11,6 @@ abstract class MineDashboard with _$MineDashboard {
     required MineProfileSnapshot profile,
     required List<MineStatusCard> alerts,
     required List<MineArchiveEntry> archiveEntries,
-    required List<MineActionEntry> campusServices,
     required MinePrivacyNotice privacyNotice,
   }) = _MineDashboard;
 
@@ -39,7 +38,6 @@ abstract class MineDashboard with _$MineDashboard {
     ),
     alerts: <MineStatusCard>[],
     archiveEntries: <MineArchiveEntry>[],
-    campusServices: <MineActionEntry>[],
     privacyNotice: MinePrivacyNotice(
       icon: Icons.shield_rounded,
       titleKey: MineCopyKey.privacyNoticeTitle,
@@ -109,26 +107,6 @@ abstract class MineArchiveEntry with _$MineArchiveEntry {
 }
 
 @freezed
-abstract class MineActionEntry with _$MineActionEntry {
-  const factory MineActionEntry({
-    required IconData icon,
-    required Color accent,
-    required MineCopyKey titleKey,
-    required MineCopyKey subtitleKey,
-
-    /// Server-provided display title; takes precedence over [titleKey] when set.
-    String? rawTitle,
-
-    /// Server-provided display subtitle; takes precedence over [subtitleKey].
-    String? rawSubtitle,
-    MineActionTargetType? actionType,
-    String? actionTarget,
-  }) = _MineActionEntry;
-}
-
-enum MineActionTargetType { internal, url, phone }
-
-@freezed
 abstract class MinePrivacyNotice with _$MinePrivacyNotice {
   const factory MinePrivacyNotice({
     required IconData icon,
@@ -165,14 +143,6 @@ enum MineCopyKey {
   archiveEmergencySubtitle,
   archiveCompleted,
   archiveNeedsFill,
-  campusHospitalTitle,
-  campusHospitalSubtitle,
-  campusSupportTitle,
-  campusSupportSubtitle,
-  campusPharmacyTitle,
-  campusPharmacySubtitle,
-  campusEmergencyTitle,
-  campusEmergencySubtitle,
   privacyNoticeTitle,
   privacyNoticeAction,
 }

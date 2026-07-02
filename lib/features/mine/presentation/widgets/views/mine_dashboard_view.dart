@@ -99,14 +99,6 @@ class MineDashboardView extends StatelessWidget {
           typography: typography,
           surface: surface,
         ),
-        const SizedBox(height: AppSpacingTokens.lg),
-        MineCampusServiceSection(
-          key: const Key('mine-campus-section'),
-          dashboard: dashboard,
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
         const SizedBox(height: AppSpacingTokens.md),
         MinePrivacyNoticeSection(
           key: const Key('mine-privacy-notice'),
@@ -174,14 +166,6 @@ class MineDashboardView extends StatelessWidget {
             children: [
               MineStatusOverview(
                 key: const Key('mine-status-overview'),
-                dashboard: dashboard,
-                l10n: l10n,
-                typography: typography,
-                surface: surface,
-              ),
-              const SizedBox(height: AppSpacingTokens.lg),
-              MineCampusServiceSection(
-                key: const Key('mine-campus-section'),
                 dashboard: dashboard,
                 l10n: l10n,
                 typography: typography,
