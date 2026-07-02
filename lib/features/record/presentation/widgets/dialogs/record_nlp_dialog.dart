@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_dialog.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/record_nlp_candidate_review.dart';
@@ -18,9 +18,8 @@ class RecordNlpDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final state = ref.watch(recordNlpControllerProvider);
     final controller = useTextEditingController(
       text: ref.read(recordNlpControllerProvider).draft,
@@ -135,19 +134,21 @@ class RecordNlpDialog extends HookConsumerWidget {
               Expanded(
                 child: Text(
                   l10n.recordNlpSheetTitle,
-                  style: typography.displaySm,
+                  style: textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close_rounded),
+                icon: const Icon(FLucideIcons.x),
               ),
             ],
           ),
           const SizedBox(height: AppSpacingTokens.xs),
           Text(
             l10n.recordNlpSheetSubtitle,
-            style: typography.bodySm.copyWith(color: surface.body),
+            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           TextField(

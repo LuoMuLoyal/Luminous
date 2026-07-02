@@ -14,18 +14,6 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 
 ## Remaining Phases
 
-### Record
-
-- Files:
-  - remaining smaller record shells after the desktop dashboard section pass:
-    `lib/features/record/presentation/widgets/sections/record_quick_actions.dart`
-    `lib/features/record/presentation/widgets/sections/record_week_strip.dart`
-    `lib/features/record/presentation/widgets/dialogs/record_nlp_dialog.dart`
-    `lib/features/record/presentation/widgets/dialogs/record_voice_entry_dialog.dart`
-    `lib/features/record/presentation/widgets/dialogs/record_ocr_entry_dialog.dart`
-- Action:
-  - Finish the remaining record dialogs and helper sections so `lib/features/record/` no longer carries visible old-theme/token shells.
-
 ### Shared Common Widgets
 
 - Files:

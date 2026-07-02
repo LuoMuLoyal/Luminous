@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/scan/domain/services/ocr_service.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -58,8 +58,8 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = theme.textTheme;
 
     // State
     final recognizedText = useState<String?>(null);
@@ -109,7 +109,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: surface.mute,
+                color: colors.border,
                 borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
               ),
             ),
@@ -125,11 +125,13 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                   Expanded(
                     child: Text(
                       l10n.recordOcrEntryTitle,
-                      style: typography.displaySm,
+                      style: textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(FLucideIcons.x),
                     onPressed: () => Navigator.of(context).pop(),
                     visualDensity: VisualDensity.compact,
                   ),
@@ -153,7 +155,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                         children: [
                           Expanded(
                             child: _OptionCard(
-                              icon: Icons.camera_alt_outlined,
+                              icon: FLucideIcons.camera,
                               label: l10n.recordOcrCameraAction,
                               onTap: () => pickAndRecognize(ImageSource.camera),
                             ),
@@ -161,7 +163,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           const SizedBox(width: AppSpacingTokens.md),
                           Expanded(
                             child: _OptionCard(
-                              icon: Icons.photo_library_outlined,
+                              icon: FLucideIcons.images,
                               label: l10n.recordOcrGalleryAction,
                               onTap: () =>
                                   pickAndRecognize(ImageSource.gallery),
@@ -200,8 +202,8 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                         const SizedBox(height: AppSpacingTokens.sm),
                         Text(
                           l10n.recordOcrRecognizingHint,
-                          style: typography.caption.copyWith(
-                            color: surface.mute,
+                          style: textTheme.labelSmall?.copyWith(
+                            color: colors.mutedForeground,
                           ),
                         ),
                       ],
@@ -213,21 +215,21 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           width: double.infinity,
                           padding: const EdgeInsets.all(AppSpacingTokens.md),
                           decoration: BoxDecoration(
-                            color: surface.canvas,
+                            color: colors.background,
                             borderRadius: BorderRadius.circular(
                               AppRadiusTokens.lg,
                             ),
-                            border: Border.all(color: surface.hairline),
+                            border: Border.all(color: colors.border),
                           ),
                           child: Text(
                             recognizedText.value!.isEmpty
                                 ? l10n.recordNlpEmptyCandidatesToast
                                 : recognizedText.value!,
                             style: recognizedText.value!.isEmpty
-                                ? typography.bodyMd.copyWith(
-                                    color: surface.mute,
+                                ? textTheme.bodyMedium?.copyWith(
+                                    color: colors.mutedForeground,
                                   )
-                                : typography.bodyMd,
+                                : textTheme.bodyMedium,
                           ),
                         ),
                       ],
@@ -277,8 +279,8 @@ class _OptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = theme.textTheme;
 
     return Material(
       color: Colors.transparent,
@@ -288,9 +290,9 @@ class _OptionCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xl),
           decoration: BoxDecoration(
-            color: surface.canvas,
+            color: colors.background,
             borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: surface.hairline),
+            border: Border.all(color: colors.border),
           ),
           child: Column(
             children: [
@@ -298,7 +300,7 @@ class _OptionCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.sm),
               Text(
                 label,
-                style: typography.bodySm,
+                style: textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),
             ],
