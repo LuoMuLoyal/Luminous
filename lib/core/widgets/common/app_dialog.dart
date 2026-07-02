@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 /// Shared dialog shell used across the app.
@@ -39,13 +40,17 @@ class AppDialog extends StatelessWidget {
       content = SingleChildScrollView(child: content);
     }
 
-    return Dialog(
-      insetPadding: insetPadding,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: maxWidth,
-          maxHeight: maxHeight ?? double.infinity,
-        ),
+    return FDialog.raw(
+      constraints: BoxConstraints(
+        minWidth: 0,
+        maxWidth: maxWidth,
+        maxHeight: maxHeight ?? double.infinity,
+      ),
+      style: FDialogStyleDelta.delta(
+        insetPadding: EdgeInsetsGeometryDelta.value(insetPadding),
+      ),
+      builder: (context, style) => Material(
+        type: MaterialType.transparency,
         child: SafeArea(child: content),
       ),
     );

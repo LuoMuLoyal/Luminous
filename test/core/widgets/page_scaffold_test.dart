@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 
 Widget _appShell(Widget child) {
   return MaterialApp(
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-    ),
+    theme: AppTheme.light,
     home: Scaffold(body: child),
   );
 }
@@ -35,6 +34,11 @@ void main() {
         ),
       );
 
+      expect(find.byType(FScaffold), findsOneWidget);
+      expect(
+        find.byWidgetPredicate((widget) => widget is FHeader),
+        findsOneWidget,
+      );
       expect(find.text('Page Title'), findsOneWidget);
       expect(find.text('Body'), findsOneWidget);
     });
@@ -117,9 +121,7 @@ void main() {
     testWidgets('renders with drawer', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.light().copyWith(
-            extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-          ),
+          theme: AppTheme.light,
           home: const PageScaffoldShell(
             title: 'With Drawer',
             drawer: Drawer(child: Text('Drawer content')),
@@ -149,6 +151,7 @@ void main() {
         ),
       );
 
+      expect(find.byType(FCard), findsOneWidget);
       expect(find.text('Cards'), findsOneWidget);
       expect(find.text('Card Title'), findsOneWidget);
       expect(find.text('Card subtitle'), findsOneWidget);

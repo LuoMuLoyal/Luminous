@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 /// Wraps widget tree with MaterialApp + GoRouter + AppThemeSurface.
 Widget _appShell(Widget child) {
@@ -23,21 +24,17 @@ Widget _appShell(Widget child) {
       ),
     ],
   );
-  return MaterialApp.router(
-    routerConfig: router,
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-    ),
-  );
+  return MaterialApp.router(routerConfig: router, theme: AppTheme.light);
 }
 
 void main() {
   group('AppBackButton', () {
-    testWidgets('renders a BackButton', (tester) async {
+    testWidgets('renders a Forui icon button', (tester) async {
       await tester.pumpWidget(_appShell(const AppBackButton()));
       await tester.pump();
 
-      expect(find.byType(BackButton), findsOneWidget);
+      expect(find.byType(FButton), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.chevronLeft), findsOneWidget);
     });
 
     testWidgets('calls custom onPressed when provided', (tester) async {
@@ -47,7 +44,8 @@ void main() {
       );
       await tester.pump();
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byType(FButton));
+      await tester.pumpAndSettle();
       expect(pressed, isTrue);
     });
 
@@ -55,7 +53,7 @@ void main() {
       await tester.pumpWidget(_appShell(const AppBackButton()));
       await tester.pump();
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byType(FButton));
       await tester.pumpAndSettle();
 
       expect(find.text('Today fallback'), findsOneWidget);

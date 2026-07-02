@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/theme/app_theme.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
+import 'package:luminous/core/widgets/settings/app_settings_section.dart';
+import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
@@ -56,7 +62,8 @@ void main() {
     expect(find.byKey(const Key('settings-row-about')), findsOneWidget);
     expect(find.byKey(const Key('settings-row-export')), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
-    expect(find.byType(BackButton), findsOneWidget);
+    expect(find.byType(AppBackButton), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.chevronLeft), findsOneWidget);
     expect(find.text(l10n.mineSettingsAccountTitle), findsWidgets);
     expect(find.text(l10n.mineSettingsThemeTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsLanguageTitle), findsOneWidget);
@@ -92,11 +99,44 @@ void main() {
     unawaited(router.push('/settings'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(BackButton).first);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AppBackButton).first,
+        matching: find.byType(FButton),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('mine-page'), findsOneWidget);
   });
+
+  testWidgets(
+    'Settings page no longer depends on legacy shared settings wrappers',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+      await _pumpSettingsPage(
+        tester,
+        router: GoRouter(
+          initialLocation: '/settings',
+          routes: [
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) => const SettingsPage(),
+            ),
+          ],
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byType(AppSectionSurface), findsNothing);
+      expect(find.byType(AppSettingsSection), findsNothing);
+      expect(find.byType(AppSettingsNavigationRow), findsNothing);
+      expect(find.byType(AppSettingsSwitchRow), findsNothing);
+    },
+  );
 
   testWidgets('Settings account row routes to account settings page', (
     tester,
@@ -223,6 +263,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('settings-row-language')),
       240,
+      scrollable: _settingsPageScrollable(),
     );
     await tester.tap(find.byKey(const Key('settings-row-language')));
     await tester.pumpAndSettle();
@@ -257,6 +298,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('settings-row-theme')),
       240,
+      scrollable: _settingsPageScrollable(),
     );
     await tester.tap(find.byKey(const Key('settings-row-theme')));
     await tester.pumpAndSettle();
@@ -291,6 +333,7 @@ void main() {
       await tester.scrollUntilVisible(
         find.byKey(const Key('settings-row-notifications')),
         240,
+        scrollable: _settingsPageScrollable(),
       );
       await tester.tap(find.byKey(const Key('settings-row-notifications')));
       await tester.pumpAndSettle();
@@ -326,6 +369,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('settings-row-advanced')),
       240,
+      scrollable: _settingsPageScrollable(),
     );
     await tester.tap(find.byKey(const Key('settings-row-advanced')));
     await tester.pumpAndSettle();
@@ -360,6 +404,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('settings-row-ai')),
       240,
+      scrollable: _settingsPageScrollable(),
     );
     await tester.tap(find.byKey(const Key('settings-row-ai')));
     await tester.pumpAndSettle();
@@ -410,6 +455,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('settings-row-export')),
       240,
+      scrollable: _settingsPageScrollable(),
     );
     await tester.tap(find.byKey(const Key('settings-row-export')));
     await tester.pumpAndSettle();
@@ -463,14 +509,19 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('settings-row-privacy-report')),
       240,
+      scrollable: _settingsPageScrollable(),
     );
 
     final switchFinder = find.descendant(
       of: find.byKey(const Key('settings-row-privacy-report')),
-      matching: find.byType(Switch),
+      matching: find.byType(FSwitch),
     );
+    final privacyRowFinder = find.byKey(
+      const Key('settings-row-privacy-report'),
+    );
+    expect(switchFinder, findsOneWidget);
 
-    await tester.tap(switchFinder);
+    await tester.tap(privacyRowFinder);
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.settingsDataSharingConfirmTitle), findsOneWidget);
@@ -480,7 +531,7 @@ void main() {
 
     expect(fakeController.lastDataSharingConsent, isNull);
 
-    await tester.tap(switchFinder);
+    await tester.tap(privacyRowFinder);
     await tester.pumpAndSettle();
 
     await tester.tap(find.text(l10n.settingsDataSharingConfirmAction));
@@ -538,6 +589,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('settings-footer-action')),
       240,
+      scrollable: _settingsPageScrollable(),
     );
     await tester.tap(find.byKey(const Key('settings-footer-action')));
     await tester.pumpAndSettle();
@@ -578,6 +630,8 @@ Future<void> _pumpSettingsPage(
     ),
   );
 }
+
+Finder _settingsPageScrollable() => find.byType(Scrollable).first;
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   @override

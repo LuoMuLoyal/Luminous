@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 Widget _appShell(Widget child) {
   return MaterialApp(
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-    ),
+    theme: AppTheme.light,
     home: Scaffold(body: Center(child: child)),
   );
 }
@@ -25,6 +24,7 @@ void main() {
         ),
       );
 
+      expect(find.byType(FCard), findsOneWidget);
       expect(find.text('Something went wrong'), findsOneWidget);
       expect(find.text('Please try again later.'), findsOneWidget);
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
@@ -44,7 +44,7 @@ void main() {
       );
 
       expect(find.text('Retry'), findsOneWidget);
-      expect(find.byType(OutlinedButton), findsOneWidget);
+      expect(find.byType(FButton), findsOneWidget);
     });
 
     testWidgets('action button triggers callback when tapped', (tester) async {
@@ -62,6 +62,7 @@ void main() {
       );
 
       await tester.tap(find.text('Retry'));
+      await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
 
@@ -79,6 +80,27 @@ void main() {
 
       expect(find.text('Compact'), findsOneWidget);
       expect(find.text('Small error view'), findsOneWidget);
+    });
+
+    testWidgets('AppStateMessageView does not overflow in tight height', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _appShell(
+          const SizedBox(
+            width: 320,
+            height: 72,
+            child: AppStateMessageView(
+              title: 'Need retry',
+              description: 'The response did not finish.',
+              icon: Icons.warning_amber_rounded,
+              actionLabel: 'Retry',
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
     });
   });
 

@@ -46,7 +46,7 @@ This file records current implementation facts only. Product direction lives in 
 
 ### Phase 1: Interactions and Back Button Unification
 
-- `lib/core/widgets/app_back_button.dart` is the single back-button component for non-auth child pages. It prefers `context.pop()` when the route can pop, otherwise falls back to `/today` (or a caller-supplied route).
+- `lib/core/widgets/common/app_back_button.dart` is the single back-button component for non-auth child pages. It prefers `context.pop()` when the route can pop, otherwise falls back to `/today` (or a caller-supplied route), and its active UI is now a Forui ghost icon button with `FLucideIcons.chevronLeft`.
 - `AppBackButton` is wired into: all `/settings/*` sub-pages, `/record/create`, `/record/:id`, `/record/:id/edit`, medicine reminder detail/edit, medicine risk-check, `/mine/*` edit pages, `/assistant`, `/notifications/list`, `/login`, `/register`, and `/forgot-password`.
 - `lib/features/settings/presentation/widgets/settings_components.dart` (the old `SettingsBackButton`) and `lib/features/auth/presentation/widgets/auth_back_button.dart` have been removed.
 - `SearchPage` is now wrapped in `PageScaffoldShell` with an `AppBar` and `AppBackButton` so it no longer traps the user.
@@ -75,6 +75,7 @@ This file records current implementation facts only. Product direction lives in 
 - `TodayRecommendationSection` error state renders `AppStateErrorView` in compact mode with localized title, description, and retry action.
 - `MedicineReminderDetailPage` distinguishes a missing reminder (404) from a generic load failure and surfaces localized copy for each.
 - `AppStateErrorView` supports a `compact` flag and uses `LayoutBuilder` to avoid infinite-height issues inside scrollable parents.
+- Shared child-page infrastructure is now partially Forui-based: `PageScaffoldShell` renders through `FScaffold` / `FHeader`, `AppDialog` uses `FDialog.raw`, and `AppStateMessageView` / `AppStateErrorView` use `FCard` / `FButton`. `PageScaffoldShell` still includes a transparent `Material` compatibility wrapper around page content because several migrated flows still embed raw Material descendants such as `TextField`.
 
 ### Medium/Low Remediation
 
@@ -82,6 +83,7 @@ This file records current implementation facts only. Product direction lives in 
 - `AboutSettingsPage` reads `privacyPolicyUrl`, `termsOfServiceUrl`, and `supportEmail` from `AppInfoDataDto` with hard-coded fallbacks; it displays the backend `buildDate` below the version and uses `mailto:` when a support email is present.
 - `SettingsPage` data-sharing consent toggle now shows a confirmation dialog before calling `setDataSharingConsent`.
 - `SettingsPage` data-export row routes to `/settings/export` consistently with the dedicated `DataExportPage`.
+- The top-level `SettingsPage` itself is now rendered directly with Forui primitives (`FTile`, `FSwitch`, `FCard`, `FButton`, `FAvatar`) and no longer depends on the old shared settings wrappers (`AppSectionSurface`, `AppSettingsSection`, `AppSettingsNavigationRow`, `AppSettingsSwitchRow`). The remaining `/settings/*` sub-pages still use those legacy wrappers until their own migration slices land.
 - `PageScaffoldShell` FAB bottom inset adds `MediaQuery.paddingOf(context).bottom` to avoid system gesture overlaps.
 - `TodayDashboardView` mobile bottom padding now combines the existing clearance token with `MediaQuery.paddingOf(context).bottom`.
 - `MedicineMobileDrugboxSection` filters out plan items whose `currentMedicineId` is null before rendering rows.
@@ -240,6 +242,8 @@ Deferred code that remains useful should be marked with:
 
 - Root theming is now Forui-led: `lib/core/theme/app_theme.dart` derives the app's light/dark `ThemeData` from Forui themes and injects `FTheme` at the app root.
 - `ShellPage` now uses Forui shell primitives directly: `FScaffold` as the page frame, `FBottomNavigationBar` for the mobile tab bar, and `FSidebar` for the desktop rail while preserving the existing tab/routing state model. The shell's tab icons, desktop settings/help actions, collapse toggle, and sidebar brand mark now also use Forui-bundled Lucide icons instead of Material icons.
+- Shared child-page chrome is also moving onto Forui primitives: `PageScaffoldShell` now uses `FScaffold`/`FHeader`, `AppBackButton` uses a Forui icon button, and shared state/dialog shells use `FCard`/`FButton`/`FDialog`. The old `AppThemeSurface` and spacing/radius tokens still exist as migration bridges for pages that have not yet been fully rewritten.
+- Dense settings-page UI has also started moving page-by-page instead of through new wrappers: the top-level `SettingsPage` now uses page-local Forui tiles/switch rows directly, while `core/widgets/settings/` remains temporary migration debt for the untouched settings sub-pages.
 - `AppColorTokens` provides 40+ semantic color constants including `accent` (`#159B55`), `accentSoft`, `health`, `errorDark`, `cyanDeep`, `warningDeep`, `violet` etc.
 - `AppThemeSurface` (ThemeExtension) still exposes 17 semantic surface fields: `canvas`, `canvasSoft`, `canvasSoft2`, `hairline`, `hairlineStrong`, `body`, `mute`, `link`, `linkSoft`, `accent`, `teal`, `tealSoft`, `success`, `error`, `warning`, `warningDeep`, `warningSoft`, `violet`, but it is now a compatibility bridge mapped from Forui `FColors` rather than the long-term source of truth.
 - The old theme palette variants (`classic / bluePink / yellowGreen`) and `theme.palette` preference are removed from active UI/state. Current theme preference is mode-only (`theme.mode`).
