@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_chips.dart';
@@ -29,14 +29,15 @@ class AssistantProposalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = theme.textTheme;
     final l10n = AppLocalizations.of(context)!;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: colors.background,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
+        border: Border.all(color: colors.border),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.md),
@@ -54,26 +55,29 @@ class AssistantProposalCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     proposal.title,
-                    style: assistantTypography(context).bodyMdStrong,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 Text(
                   proposalStateText(l10n, proposal),
-                  style: assistantTypography(
-                    context,
-                  ).bodySm.copyWith(color: proposalStateColor(theme, proposal)),
+                  style: textTheme.labelMedium?.copyWith(
+                    color: proposalStateColor(theme, proposal),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacingTokens.xs),
-            Text(proposal.summary, style: assistantTypography(context).bodySm),
+            Text(proposal.summary, style: textTheme.bodyMedium),
             if (proposal.reason case final reason?) ...[
               const SizedBox(height: AppSpacingTokens.xs),
               Text(
                 reason,
-                style: assistantTypography(
-                  context,
-                ).bodySm.copyWith(color: surface.body),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             if (proposal.previewFields.isNotEmpty) ...[
@@ -93,17 +97,17 @@ class AssistantProposalCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.sm),
               Text(
                 error,
-                style: assistantTypography(
-                  context,
-                ).bodySm.copyWith(color: theme.colorScheme.error),
+                style: textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
               ),
             ],
             const SizedBox(height: AppSpacingTokens.sm),
             Row(
               children: [
-                FilledButton(
+                FButton(
                   key: Key('assistant-proposal-confirm-${proposal.id}'),
-                  onPressed:
+                  onPress:
                       proposal.executionState ==
                               AssistantProposalExecutionState.executing ||
                           proposal.isExpired ||
@@ -116,9 +120,10 @@ class AssistantProposalCard extends StatelessWidget {
                   child: Text(proposalConfirmLabel(l10n, proposal.type)),
                 ),
                 const SizedBox(width: AppSpacingTokens.sm),
-                TextButton(
+                FButton(
                   key: Key('assistant-proposal-dismiss-${proposal.id}'),
-                  onPressed:
+                  variant: FButtonVariant.ghost,
+                  onPress:
                       proposal.executionState ==
                           AssistantProposalExecutionState.executing
                       ? null
@@ -145,7 +150,8 @@ class _ProposalMetaSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = theme.textTheme;
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
     final metaRows = <String>[
@@ -160,9 +166,7 @@ class _ProposalMetaSection extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(
-          alpha: 0.65,
-        ),
+        color: colors.secondary,
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
       ),
       child: Padding(
@@ -175,16 +179,18 @@ class _ProposalMetaSection extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 2),
                 child: Text(
                   row,
-                  style: assistantTypography(
-                    context,
-                  ).bodySm.copyWith(color: surface.body),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ),
             if (proposal.constraints.isNotEmpty) ...[
               const SizedBox(height: AppSpacingTokens.xs),
               Text(
                 l10n.assistantProposalConstraintsLabel,
-                style: assistantTypography(context).bodySmStrong,
+                style: textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 2),
               for (final constraint in proposal.constraints)
@@ -192,9 +198,9 @@ class _ProposalMetaSection extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 2),
                   child: Text(
                     '• $constraint',
-                    style: assistantTypography(
-                      context,
-                    ).bodySm.copyWith(color: surface.body),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ),
             ],
@@ -202,9 +208,9 @@ class _ProposalMetaSection extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.xs),
               Text(
                 l10n.assistantProposalExpiredHint,
-                style: assistantTypography(
-                  context,
-                ).bodySm.copyWith(color: theme.colorScheme.error),
+                style: textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
               ),
             ],
           ],

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart'
     show
@@ -174,7 +175,7 @@ void main() {
     expect(find.text('这次回复没有完成'), findsOneWidget);
     expect(find.byKey(const Key('assistant-retry-action')), findsOneWidget);
     // Server error icon
-    expect(find.byIcon(Icons.cloud_off_rounded), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.cloudOff), findsOneWidget);
   });
 
   testWidgets('assistant message shows usedTools as localized chips', (
@@ -326,12 +327,12 @@ void main() {
     expect(find.text('这条建议已经过期，请重新生成后再确认。'), findsOneWidget);
     expect(
       tester
-          .widget<FilledButton>(
+          .widget<FButton>(
             find.byKey(
               const Key('assistant-proposal-confirm-proposal-create-expired'),
             ),
           )
-          .onPressed,
+          .onPress,
       isNull,
     );
     expect(dailyRecordRepository.createdInputs, isEmpty);

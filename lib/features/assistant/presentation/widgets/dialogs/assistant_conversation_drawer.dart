@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
@@ -26,8 +26,8 @@ class AssistantConversationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final items = state.recentConversations;
     final width = MediaQuery.sizeOf(context).width < 600
         ? MediaQuery.sizeOf(context).width * 0.8
@@ -43,15 +43,10 @@ class AssistantConversationDrawer extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: assistantTypography(context).displaySm,
-                    ),
-                  ),
+                  Expanded(child: Text(title, style: textTheme.headlineSmall)),
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close_rounded),
+                    icon: const Icon(FLucideIcons.x),
                   ),
                 ],
               ),
@@ -73,7 +68,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                       return AppStateMessageView(
                         title: title,
                         description: state.recentConversationError!,
-                        icon: Icons.history_toggle_off_rounded,
+                        icon: FLucideIcons.clock4,
                         tone: AppStateTone.warning,
                         actionLabel: AppLocalizations.of(
                           context,
@@ -85,7 +80,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                       return AppStateMessageView(
                         title: emptyTitle,
                         description: emptyDescription,
-                        icon: Icons.chat_bubble_outline_rounded,
+                        icon: FLucideIcons.messageSquareMore,
                       );
                     }
 
@@ -95,8 +90,21 @@ class AssistantConversationDrawer extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final item = items[index];
                         final selected = item.id == state.conversationId;
-                        return Material(
-                          color: Colors.transparent,
+                        final borderColor = selected
+                            ? colors.primary
+                            : colors.border;
+                        final backgroundColor = selected
+                            ? colors.primary.withValues(alpha: 0.1)
+                            : colors.background;
+
+                        return DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: backgroundColor,
+                            borderRadius: BorderRadius.circular(
+                              AppRadiusTokens.lg,
+                            ),
+                            border: Border.all(color: borderColor),
+                          ),
                           child: InkWell(
                             key: Key(
                               'assistant-recent-conversation-${item.id}',
@@ -107,63 +115,49 @@ class AssistantConversationDrawer extends StatelessWidget {
                             onTap: state.isOpeningConversation
                                 ? null
                                 : () => onSelect(item.id),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: selected
-                                    ? theme.colorScheme.primary.withValues(
-                                        alpha: 0.12,
-                                      )
-                                    : surface.canvas,
-                                borderRadius: BorderRadius.circular(
-                                  AppRadiusTokens.lg,
-                                ),
-                                border: Border.all(color: surface.hairline),
+                            child: Padding(
+                              padding: const EdgeInsets.all(
+                                AppSpacingTokens.md,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(
-                                  AppSpacingTokens.md,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      conversationTitle(context, item),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: assistantTypography(
-                                        context,
-                                      ).bodyMdStrong,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    conversationTitle(context, item),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    const SizedBox(height: AppSpacingTokens.xs),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            conversationTimestampLabel(
-                                              context,
-                                              item,
-                                            ),
-                                            style: assistantTypography(context)
-                                                .bodySm
-                                                .copyWith(color: surface.body),
+                                  ),
+                                  const SizedBox(height: AppSpacingTokens.xs),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          conversationTimestampLabel(
+                                            context,
+                                            item,
+                                          ),
+                                          style: textTheme.bodySmall?.copyWith(
+                                            color: colors.mutedForeground,
                                           ),
                                         ),
-                                        if (selected)
-                                          Text(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.assistantRecentConversationCurrentLabel,
-                                            style: assistantTypography(context)
-                                                .bodySm
-                                                .copyWith(
-                                                  color:
-                                                      theme.colorScheme.primary,
-                                                ),
-                                          ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                      if (selected)
+                                        Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.assistantRecentConversationCurrentLabel,
+                                          style: textTheme.labelMedium
+                                              ?.copyWith(
+                                                color: colors.primary,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),

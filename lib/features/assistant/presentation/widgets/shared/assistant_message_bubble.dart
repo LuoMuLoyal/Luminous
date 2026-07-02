@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_chips.dart';
@@ -37,13 +37,14 @@ class AssistantMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final isUser = role == AssistantMessageRole.user;
     final align = isUser ? Alignment.centerRight : Alignment.centerLeft;
     final background = isUser
-        ? theme.colorScheme.primary.withValues(alpha: 0.14)
-        : surface.canvasSoft2;
+        ? colors.primary.withValues(alpha: 0.12)
+        : colors.secondary;
+    final foreground = isUser ? colors.primaryForeground : colors.foreground;
 
     return Align(
       alignment: align,
@@ -53,7 +54,7 @@ class AssistantMessageBubble extends StatelessWidget {
           decoration: BoxDecoration(
             color: background,
             borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-            border: Border.all(color: surface.hairline),
+            border: Border.all(color: colors.border),
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacingTokens.md),
@@ -61,25 +62,29 @@ class AssistantMessageBubble extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (isUser)
-                  Text(content, style: assistantTypography(context).bodyMd)
+                  Text(
+                    content,
+                    style: textTheme.bodyMedium?.copyWith(color: foreground),
+                  )
                 else
                   MarkdownBody(
                     data: content,
                     selectable: true,
-                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                      p: assistantTypography(context).bodyMd,
-                      blockquote: assistantTypography(
-                        context,
-                      ).bodySm.copyWith(color: surface.body),
-                    ),
+                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+                        .copyWith(
+                          p: textTheme.bodyMedium?.copyWith(color: foreground),
+                          blockquote: textTheme.bodySmall?.copyWith(
+                            color: colors.mutedForeground,
+                          ),
+                        ),
                   ),
                 if (isStreaming) ...[
                   const SizedBox(height: AppSpacingTokens.sm),
                   Text(
                     AppLocalizations.of(context)!.assistantStreamingLabel,
-                    style: assistantTypography(
-                      context,
-                    ).bodySm.copyWith(color: surface.mute),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ],
                 if (!isStreaming && usedTools.isNotEmpty) ...[

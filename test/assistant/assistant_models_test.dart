@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
 
@@ -38,31 +38,31 @@ void main() {
   });
 
   group('proposalIcon', () {
-    test('returns add_task_rounded for createDailyRecord', () {
+    test('returns squarePlus for createDailyRecord', () {
       expect(
         proposalIcon(AssistantProposedActionType.createDailyRecord),
-        Icons.add_task_rounded,
+        FLucideIcons.squarePlus,
       );
     });
 
-    test('returns edit_note_rounded for updateDailyRecord', () {
+    test('returns squarePen for updateDailyRecord', () {
       expect(
         proposalIcon(AssistantProposedActionType.updateDailyRecord),
-        Icons.edit_note_rounded,
+        FLucideIcons.squarePen,
       );
     });
 
-    test('returns delete_outline_rounded for deleteDailyRecord', () {
+    test('returns trash2 for deleteDailyRecord', () {
       expect(
         proposalIcon(AssistantProposedActionType.deleteDailyRecord),
-        Icons.delete_outline_rounded,
+        FLucideIcons.trash2,
       );
     });
 
-    test('returns tune_rounded for updateUserSettings', () {
+    test('returns settings2 for updateUserSettings', () {
       expect(
         proposalIcon(AssistantProposedActionType.updateUserSettings),
-        Icons.tune_rounded,
+        FLucideIcons.settings2,
       );
     });
   });

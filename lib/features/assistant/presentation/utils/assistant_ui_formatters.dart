@@ -1,19 +1,9 @@
+import 'package:forui/forui.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_color_tokens.dart';
-import 'package:luminous/core/design/app_typography_tokens.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-
-AppTypographyScale assistantTypography(BuildContext context) {
-  final theme = Theme.of(context);
-  final width = MediaQuery.sizeOf(context).width;
-  return width < AppBreakpoints.mobile
-      ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-      : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
-}
 
 String localizeToolName(String toolId, BuildContext context) {
   final l10n = AppLocalizations.of(context)!;
@@ -47,11 +37,10 @@ String messageIdFor(AssistantMessage message) {
 
 IconData proposalIcon(AssistantProposedActionType type) {
   return switch (type) {
-    AssistantProposedActionType.createDailyRecord => Icons.add_task_rounded,
-    AssistantProposedActionType.updateDailyRecord => Icons.edit_note_rounded,
-    AssistantProposedActionType.deleteDailyRecord =>
-      Icons.delete_outline_rounded,
-    AssistantProposedActionType.updateUserSettings => Icons.tune_rounded,
+    AssistantProposedActionType.createDailyRecord => FLucideIcons.squarePlus,
+    AssistantProposedActionType.updateDailyRecord => FLucideIcons.squarePen,
+    AssistantProposedActionType.deleteDailyRecord => FLucideIcons.trash2,
+    AssistantProposedActionType.updateUserSettings => FLucideIcons.settings2,
   };
 }
 
@@ -92,7 +81,7 @@ Color proposalStateColor(ThemeData theme, AssistantProposedAction proposal) {
   return switch (proposal.executionState) {
     AssistantProposalExecutionState.pending => theme.colorScheme.primary,
     AssistantProposalExecutionState.executing => theme.colorScheme.primary,
-    AssistantProposalExecutionState.confirmed => AppColorTokens.accent,
+    AssistantProposalExecutionState.confirmed => theme.colorScheme.tertiary,
     AssistantProposalExecutionState.dismissed => theme.colorScheme.outline,
     AssistantProposalExecutionState.failed => theme.colorScheme.error,
   };
@@ -114,10 +103,10 @@ String sendErrorDescription(
 
 IconData sendErrorIcon(AssistantSendErrorType? errorType) {
   return switch (errorType) {
-    AssistantSendErrorType.streamInterrupted => Icons.wifi_off_rounded,
-    AssistantSendErrorType.emptyResult => Icons.hourglass_empty_rounded,
-    AssistantSendErrorType.server => Icons.cloud_off_rounded,
-    AssistantSendErrorType.unknown || null => Icons.error_outline_rounded,
+    AssistantSendErrorType.streamInterrupted => FLucideIcons.wifiOff,
+    AssistantSendErrorType.emptyResult => FLucideIcons.hourglass,
+    AssistantSendErrorType.server => FLucideIcons.cloudOff,
+    AssistantSendErrorType.unknown || null => FLucideIcons.circleAlert,
   };
 }
 

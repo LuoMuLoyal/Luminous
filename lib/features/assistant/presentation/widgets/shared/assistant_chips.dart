@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
 
 class AssistantToolChip extends StatelessWidget {
   const AssistantToolChip({super.key, required this.label});
@@ -10,14 +9,14 @@ class AssistantToolChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withValues(alpha: 0.08),
+        color: colors.secondary,
         borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-        border: Border.all(color: surface.hairline),
+        border: Border.all(color: colors.border),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -26,9 +25,10 @@ class AssistantToolChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: assistantTypography(
-            context,
-          ).bodySm.copyWith(color: surface.body),
+          style: textTheme.labelSmall?.copyWith(
+            color: colors.mutedForeground,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
