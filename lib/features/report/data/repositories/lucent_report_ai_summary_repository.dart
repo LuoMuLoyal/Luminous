@@ -2,7 +2,6 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
-import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/features/report/data/datasources/report_ai_summary_remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
@@ -135,10 +134,10 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
 
   Color _bulletColor(ReportAiSummaryBulletKind kind) {
     return switch (kind) {
-      ReportAiSummaryBulletKind.medication => AppColorTokens.cyanDeep,
-      ReportAiSummaryBulletKind.hydration => AppColorTokens.link,
-      ReportAiSummaryBulletKind.sleep => AppColorTokens.violet,
-      ReportAiSummaryBulletKind.general => AppColorTokens.health,
+      ReportAiSummaryBulletKind.medication => Color(0xFF0F766E),
+      ReportAiSummaryBulletKind.hydration => Color(0xFF16A34A),
+      ReportAiSummaryBulletKind.sleep => Color(0xFF7C3AED),
+      ReportAiSummaryBulletKind.general => Color(0xFF15803D),
     };
   }
 

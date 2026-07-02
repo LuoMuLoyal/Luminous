@@ -45,7 +45,7 @@ class _DoseActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final foreground = filled ? AppColorTokens.onPrimary : color;
+    final foreground = filled ? Color(0xFFFFFFFF) : color;
 
     return AppInkWell(
       onTap: onTap,
@@ -221,9 +221,9 @@ _RecordRow _rowFromItem(
 ) {
   final status = slot?.status ?? MedicineDoseStatus.pending;
   final statusColor = switch (status) {
-    MedicineDoseStatus.taken => AppColorTokens.cyanDeep,
-    MedicineDoseStatus.skipped => AppColorTokens.warningDeep,
-    MedicineDoseStatus.pending => AppColorTokens.gradientDevelopStart,
+    MedicineDoseStatus.taken => Color(0xFF0F766E),
+    MedicineDoseStatus.skipped => Color(0xFFB45309),
+    MedicineDoseStatus.pending => Color(0xFF16A34A),
   };
   final statusIcon = switch (status) {
     MedicineDoseStatus.taken => FLucideIcons.check,

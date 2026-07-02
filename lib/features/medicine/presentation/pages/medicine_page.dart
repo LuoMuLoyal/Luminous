@@ -255,7 +255,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
           children: [
             const Icon(
               FLucideIcons.shieldCheck,
-              color: AppColorTokens.cyanDeep,
+              color: Color(0xFF0F766E),
               size: AppSpacingTokens.lg,
             ),
             const SizedBox(width: AppSpacingTokens.xs),

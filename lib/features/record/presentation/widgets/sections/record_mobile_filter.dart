@@ -38,7 +38,7 @@ class RecordMobileFilter extends StatelessWidget {
             _FilterChip(
               chipKey: const Key('record-filter-all'),
               label: l10n.recordFilterAllAction,
-              color: AppColorTokens.cyanDeep,
+              color: Color(0xFF0F766E),
               selected: allSelected,
               locked: false,
               onTap: onFilterSelected == null

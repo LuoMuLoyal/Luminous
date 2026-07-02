@@ -58,7 +58,7 @@ class ReportAiSummarySection extends StatelessWidget {
               children: [
                 const AppIconBadge(
                   icon: FLucideIcons.sparkles,
-                  color: AppColorTokens.cyanDeep,
+                  color: Color(0xFF0F766E),
                   size: AppSpacingTokens.x3l,
                   iconSize: AppSpacingTokens.lg,
                   shape: BoxShape.circle,

@@ -123,8 +123,8 @@ class _ReminderDetailBody extends ConsumerWidget {
               children: [
                 const AppIconBadge(
                   icon: FLucideIcons.pillBottle,
-                  color: AppColorTokens.warningDeep,
-                  backgroundColor: AppColorTokens.warningSoft,
+                  color: Color(0xFFB45309),
+                  backgroundColor: Color(0xFFFEF3C7),
                   shape: BoxShape.circle,
                   size: AppSpacingTokens.x4l,
                   iconSize: AppSpacingTokens.xl,
@@ -159,9 +159,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   label: isActive
                       ? l10n.medicineReminderEnabledStatus
                       : l10n.medicineReminderDisabledStatus,
-                  color: isActive
-                      ? AppColorTokens.cyanDeep
-                      : colors.mutedForeground,
+                  color: isActive ? Color(0xFF0F766E) : colors.mutedForeground,
                 ),
               ],
             ),

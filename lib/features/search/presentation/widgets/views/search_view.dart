@@ -19,12 +19,12 @@ final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
         const MedicineSearchQuickAction(
           type: MedicineSearchActionType.barcode,
           icon: FLucideIcons.scanLine,
-          accent: AppColorTokens.cyanDeep,
+          accent: Color(0xFF0F766E),
         ),
         const MedicineSearchQuickAction(
           type: MedicineSearchActionType.photo,
           icon: FLucideIcons.camera,
-          accent: AppColorTokens.gradientDevelopStart,
+          accent: Color(0xFF16A34A),
         ),
       ]
     : <MedicineSearchQuickAction>[];

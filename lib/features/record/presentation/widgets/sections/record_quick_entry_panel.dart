@@ -36,9 +36,7 @@ class RecordAiInputBar extends StatelessWidget {
         decoration: BoxDecoration(
           color: colors.background,
           borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-          border: Border.all(
-            color: AppColorTokens.cyanDeep.withValues(alpha: 0.32),
-          ),
+          border: Border.all(color: Color(0xFF0F766E).withValues(alpha: 0.32)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -49,7 +47,7 @@ class RecordAiInputBar extends StatelessWidget {
             children: [
               const Icon(
                 FLucideIcons.sparkles,
-                color: AppColorTokens.gradientPreviewStart,
+                color: Color(0xFF7C3AED),
                 size: AppSpacingTokens.xl,
               ),
               const SizedBox(width: AppSpacingTokens.md),
@@ -75,7 +73,7 @@ class RecordAiInputBar extends StatelessWidget {
               const SizedBox(width: AppSpacingTokens.sm),
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: AppColorTokens.cyanDeep.withValues(alpha: 0.12),
+                  color: Color(0xFF0F766E).withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
                 ),
                 child: Padding(
@@ -86,7 +84,7 @@ class RecordAiInputBar extends StatelessWidget {
                   child: Text(
                     l10n.recordAiBadge,
                     style: textTheme.labelSmall?.copyWith(
-                      color: AppColorTokens.cyanDeep,
+                      color: Color(0xFF0F766E),
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -405,7 +403,7 @@ class RecordGuideRow extends StatelessWidget {
             children: [
               const Icon(
                 FLucideIcons.lightbulb,
-                color: AppColorTokens.warning,
+                color: Color(0xFFF59E0B),
                 size: AppSpacingTokens.lg,
               ),
               const SizedBox(width: AppSpacingTokens.sm),
@@ -423,13 +421,13 @@ class RecordGuideRow extends StatelessWidget {
               Text(
                 l10n.recordGuideAction,
                 style: textTheme.labelLarge?.copyWith(
-                  color: AppColorTokens.link,
+                  color: Color(0xFF16A34A),
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const Icon(
                 FLucideIcons.chevronRight,
-                color: AppColorTokens.link,
+                color: Color(0xFF16A34A),
                 size: AppSpacingTokens.lg,
               ),
             ],

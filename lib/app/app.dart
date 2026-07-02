@@ -7,7 +7,6 @@ import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
-import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -24,6 +23,9 @@ class LuminousApp extends ConsumerStatefulWidget {
 }
 
 class _LuminousAppState extends ConsumerState<LuminousApp> {
+  static final FThemeData _foruiLight = FThemes.neutral.light.touch;
+  static final FThemeData _foruiDark = FThemes.neutral.dark.touch;
+
   @override
   void initState() {
     super.initState();
@@ -77,12 +79,14 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       onGenerateTitle: (context) =>
           AppLocalizations.of(context)?.appTitle ?? 'Luminous',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
+      theme: _materialTheme(_foruiLight),
+      darkTheme: _materialTheme(_foruiDark),
       themeMode: themeMode,
       locale: locale?.flutterLocale,
       builder: (context, child) => FTheme(
-        data: AppTheme.forBrightness(Theme.of(context).brightness),
+        data: Theme.of(context).brightness == Brightness.dark
+            ? _foruiDark
+            : _foruiLight,
         child: child ?? const SizedBox.shrink(),
       ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
@@ -114,5 +118,18 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
     } catch (_) {
       // Locale backfill is best-effort and should not block app startup.
     }
+  }
+
+  ThemeData _materialTheme(FThemeData theme) {
+    final material = theme.toApproximateMaterialTheme();
+    return material.copyWith(
+      scaffoldBackgroundColor: theme.colors.background,
+      canvasColor: theme.colors.background,
+      cardColor: theme.colors.card,
+      dividerColor: theme.colors.border,
+      shadowColor: Colors.black.withValues(
+        alpha: theme.colors.brightness == Brightness.dark ? 0.16 : 0.06,
+      ),
+    );
   }
 }

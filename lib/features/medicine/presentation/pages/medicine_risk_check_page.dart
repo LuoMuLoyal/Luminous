@@ -125,7 +125,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacingTokens.md),
               decoration: BoxDecoration(
-                color: AppColorTokens.warningSoft.withValues(alpha: 0.42),
+                color: Color(0xFFFEF3C7).withValues(alpha: 0.42),
                 borderRadius: BorderRadius.circular(AppRadiusTokens.md),
               ),
               child: Row(
@@ -133,7 +133,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                 children: [
                   const Icon(
                     FLucideIcons.circleAlert,
-                    color: AppColorTokens.warningDeep,
+                    color: Color(0xFFB45309),
                     size: AppSpacingTokens.lg,
                   ),
                   const SizedBox(width: AppSpacingTokens.sm),

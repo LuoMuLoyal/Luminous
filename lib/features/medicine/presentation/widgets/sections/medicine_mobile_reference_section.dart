@@ -16,7 +16,7 @@ class _ReferenceNotice extends StatelessWidget {
           children: [
             const Icon(
               FLucideIcons.triangleAlert,
-              color: AppColorTokens.warningDeep,
+              color: Color(0xFFB45309),
               size: AppSpacingTokens.xl,
             ),
             const SizedBox(width: AppSpacingTokens.sm),
@@ -27,7 +27,7 @@ class _ReferenceNotice extends StatelessWidget {
                   Text(
                     l10n.medicineReferenceNoticeTitle,
                     style: textTheme.titleSmall?.copyWith(
-                      color: AppColorTokens.warningDeep,
+                      color: Color(0xFFB45309),
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -43,7 +43,7 @@ class _ReferenceNotice extends StatelessWidget {
             ),
             const Icon(
               FLucideIcons.chevronRight,
-              color: AppColorTokens.warningDeep,
+              color: Color(0xFFB45309),
               size: AppSpacingTokens.lg,
             ),
           ],
@@ -70,14 +70,14 @@ class _SafetyTipsSection extends ConsumerWidget {
           title: l10n.medicineSafetyTipsTitle,
           leading: const Icon(
             FLucideIcons.lightbulb,
-            color: AppColorTokens.warningDeep,
+            color: Color(0xFFB45309),
             size: AppSpacingTokens.lg,
           ),
           compact: true,
           trailing: AppTextAction(
             label: l10n.medicineSafetyTipsRefreshAction,
             icon: FLucideIcons.refreshCw,
-            color: AppColorTokens.gradientDevelopStart,
+            color: Color(0xFF16A34A),
             onTap: tipsAsync.isLoading
                 ? () {}
                 : () => ref

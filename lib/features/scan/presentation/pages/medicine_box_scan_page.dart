@@ -159,7 +159,7 @@ class _MethodSelector extends StatelessWidget {
           const Icon(
             Icons.photo_camera_outlined,
             size: 48,
-            color: AppColorTokens.cyanDeep,
+            color: Color(0xFF0F766E),
           ),
           const SizedBox(height: AppSpacingTokens.md),
           Text('选择识别方式', style: theme.textTheme.titleMedium),
@@ -200,7 +200,7 @@ class _MethodTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: AppColorTokens.cyanDeep, size: 32),
+      leading: Icon(icon, color: Color(0xFF0F766E), size: 32),
       title: Text(title),
       subtitle: Text(subtitle),
       trailing: const Icon(Icons.chevron_right),

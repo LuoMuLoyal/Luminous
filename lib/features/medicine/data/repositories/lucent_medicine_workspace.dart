@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
     show DoseLogRemoteDataSource, DoseLogStatus;
@@ -82,12 +81,12 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         _ => MedicineCopyKey.doseStatusPending,
       };
       final stateColor = switch (doseStatus) {
-        DoseLogStatus.taken => AppColorTokens.success,
-        DoseLogStatus.skipped => AppColorTokens.warningDeep,
-        _ => AppColorTokens.warning,
+        DoseLogStatus.taken => Color(0xFF16A34A),
+        DoseLogStatus.skipped => Color(0xFFB45309),
+        _ => Color(0xFFF59E0B),
       };
       return MedicinePlanItem(
-        color: AppColorTokens.link,
+        color: Color(0xFF16A34A),
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -150,7 +149,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       icon: Icons.search_rounded,
       titleKey: MedicineCopyKey.quickActionSearchTitle,
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-      accent: AppColorTokens.cyanDeep,
+      accent: Color(0xFF0F766E),
     ),
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
       ...deferredScanQuickActions,
@@ -164,19 +163,19 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       icon: Icons.photo_camera_outlined,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-      accent: AppColorTokens.gradientDevelopStart,
+      accent: Color(0xFF16A34A),
     ),
     MedicineQuickAction(
       icon: Icons.qr_code_scanner_rounded,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-      accent: AppColorTokens.cyanDeep,
+      accent: Color(0xFF0F766E),
     ),
     MedicineQuickAction(
       icon: Icons.receipt_long_outlined,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
-      accent: AppColorTokens.warningDeep,
+      accent: Color(0xFFB45309),
     ),
   ];
 

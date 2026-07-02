@@ -211,8 +211,8 @@ class _TodayLogRow extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     final color = switch (log.status) {
-      DoseLogStatus.taken => AppColorTokens.cyanDeep,
-      DoseLogStatus.skipped => AppColorTokens.warningDeep,
+      DoseLogStatus.taken => Color(0xFF0F766E),
+      DoseLogStatus.skipped => Color(0xFFB45309),
       DoseLogStatus.missed => colors.destructive,
       DoseLogStatus.planned => colors.primary,
     };
@@ -265,9 +265,9 @@ Color _deliveryStatusColor(
   required Color mutedForeground,
 }) {
   return switch (value) {
-    'delivered' => AppColorTokens.cyanDeep,
+    'delivered' => Color(0xFF0F766E),
     'failed' => destructive,
-    'scheduled' => AppColorTokens.warningDeep,
+    'scheduled' => Color(0xFFB45309),
     _ => mutedForeground,
   };
 }

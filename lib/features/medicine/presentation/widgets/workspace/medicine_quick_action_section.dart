@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
@@ -63,8 +62,8 @@ class _QuickActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return AppInkWell(
-      onTap: () {
+    return FTappable(
+      onPress: () {
         if (action.titleKey == MedicineCopyKey.quickActionCameraTitle ||
             action.titleKey == MedicineCopyKey.quickActionPrescriptionTitle) {
           unawaited(showMedicineBoxScanSheet(context));
@@ -78,7 +77,6 @@ class _QuickActionTile extends StatelessWidget {
           );
         }
       },
-      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
         child: Column(

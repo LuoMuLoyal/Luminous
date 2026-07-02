@@ -166,7 +166,7 @@ List<TodayOverviewItem> buildOverviewItems(
       icon: FLucideIcons.pill,
       label: l10n.todayMedicationOverviewLabel,
       value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
-      color: AppColorTokens.cyanDeep,
+      color: Color(0xFF0F766E),
     ),
     TodayOverviewItem(
       icon: FLucideIcons.droplets,
@@ -175,13 +175,13 @@ List<TodayOverviewItem> buildOverviewItems(
         dashboard.water.completedCount,
         dashboard.water.targetCount,
       ),
-      color: AppColorTokens.cyanDeep,
+      color: Color(0xFF0F766E),
     ),
     TodayOverviewItem(
       icon: FLucideIcons.moonStar,
       label: l10n.todayVitalSleepLabel,
       value: '$sleep ${l10n.todayVitalSleepUnit}',
-      color: AppColorTokens.link,
+      color: Color(0xFF16A34A),
     ),
   ];
 }
@@ -204,7 +204,7 @@ List<TodayViewPriorityItem> buildPriorityItems(
           key: const Key('today-medication-card'),
           type: TodayPriorityItemType.medication,
           icon: FLucideIcons.pill,
-          color: AppColorTokens.health,
+          color: Color(0xFF15803D),
           title: l10n.todayMedicationCardTitle,
           subtitle: l10n.todayMedicationPrioritySubtitle(
             item.count ?? dashboard.medication.pendingCount,
@@ -219,7 +219,7 @@ List<TodayViewPriorityItem> buildPriorityItems(
           key: const Key('today-water-card'),
           type: TodayPriorityItemType.water,
           icon: FLucideIcons.droplets,
-          color: AppColorTokens.cyanDeep,
+          color: Color(0xFF0F766E),
           title: l10n.todayWaterPriorityTitle,
           subtitle: l10n.todayWaterGoalCount(
             item.targetCount ?? dashboard.water.targetCount,
@@ -260,21 +260,21 @@ List<TodayRecommendationItem> buildRecommendationItems(
   return [
     TodayRecommendationItem(
       icon: FLucideIcons.shieldPlus,
-      color: AppColorTokens.cyanDeep,
+      color: Color(0xFF0F766E),
       title: l10n.todayRecommendationMedicineSafetyTitle,
       subtitle: l10n.todayRecommendationMedicineSafetyBody,
       action: l10n.todayLearnMoreAction,
     ),
     TodayRecommendationItem(
       icon: FLucideIcons.moonStar,
-      color: AppColorTokens.link,
+      color: Color(0xFF16A34A),
       title: l10n.todayRecommendationSleepTitle,
       subtitle: l10n.todayRecommendationSleepBody,
       action: l10n.todayLearnMoreAction,
     ),
     TodayRecommendationItem(
       icon: FLucideIcons.droplets,
-      color: AppColorTokens.cyanDeep,
+      color: Color(0xFF0F766E),
       title: l10n.todayRecommendationWaterTitle,
       subtitle: l10n.todayRecommendationWaterBody,
       action: dashboard.water.progress >= 1
@@ -294,7 +294,7 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
   return [
     TodayAiSummaryItem(
       icon: Icons.medication_liquid_outlined,
-      color: AppColorTokens.health,
+      color: Color(0xFF15803D),
       text: hasMedicationRisk
           ? l10n.todayAiSummaryMedicationPending(
               dashboard.medication.pendingCount,
@@ -303,16 +303,14 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
     ),
     TodayAiSummaryItem(
       icon: Icons.local_drink_outlined,
-      color: waterRemaining == 0
-          ? AppColorTokens.cyanDeep
-          : AppColorTokens.warning,
+      color: waterRemaining == 0 ? Color(0xFF0F766E) : Color(0xFFF59E0B),
       text: waterRemaining == 0
           ? l10n.todayAiSummaryWaterDone
           : l10n.todayAiSummaryWaterRemaining(waterRemaining),
     ),
     TodayAiSummaryItem(
       icon: Icons.bedtime_outlined,
-      color: AppColorTokens.violet,
+      color: Color(0xFF7C3AED),
       text: l10n.todayAiSummarySleepPlaceholder,
     ),
   ];
@@ -330,7 +328,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.badgeAlert,
-          color: AppColorTokens.warning,
+          color: Color(0xFFF59E0B),
           text: l10n.todayAiSummarySignedOutHint,
         ),
       ],
@@ -343,7 +341,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.brain,
-          color: AppColorTokens.link,
+          color: Color(0xFF16A34A),
           text: l10n.todayAiSummaryDisabledHint,
         ),
       ],
@@ -365,7 +363,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.badgeAlert,
-          color: AppColorTokens.warning,
+          color: Color(0xFFF59E0B),
           text: l10n.todayAiSummaryErrorHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
@@ -380,7 +378,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.refreshCw,
-          color: AppColorTokens.cyanDeep,
+          color: Color(0xFF0F766E),
           text: l10n.todayAiSummaryGeneratingHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
@@ -404,10 +402,10 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
   };
 
   final color = switch (bullet.kind) {
-    TodayAiAnalysisBulletKind.medication => AppColorTokens.health,
-    TodayAiAnalysisBulletKind.hydration => AppColorTokens.cyanDeep,
-    TodayAiAnalysisBulletKind.sleep => AppColorTokens.violet,
-    TodayAiAnalysisBulletKind.general => AppColorTokens.link,
+    TodayAiAnalysisBulletKind.medication => Color(0xFF15803D),
+    TodayAiAnalysisBulletKind.hydration => Color(0xFF0F766E),
+    TodayAiAnalysisBulletKind.sleep => Color(0xFF7C3AED),
+    TodayAiAnalysisBulletKind.general => Color(0xFF16A34A),
   };
 
   return TodayAiSummaryItem(icon: icon, color: color, text: bullet.text);
@@ -434,7 +432,7 @@ List<TodayTodoItem> buildTodoItems(
       action: dashboard.medication.pendingCount == 0
           ? l10n.todayStatusCompleted
           : l10n.todayMedicationTakeAction,
-      color: AppColorTokens.health,
+      color: Color(0xFF15803D),
       completed: dashboard.medication.pendingCount == 0,
       statusIsDynamic: true,
       subtitleIsDynamic: true,
@@ -447,7 +445,7 @@ List<TodayTodoItem> buildTodoItems(
       action: dashboard.water.progress >= 1
           ? l10n.todayStatusCompleted
           : l10n.todayDrinkWaterAction,
-      color: AppColorTokens.cyanDeep,
+      color: Color(0xFF0F766E),
       completed: dashboard.water.progress >= 1,
       statusIsDynamic: true,
       subtitleIsDynamic: true,
@@ -458,7 +456,7 @@ List<TodayTodoItem> buildTodoItems(
       subtitle: l10n.todayTodoCustomSubtitle,
       source: l10n.todayTodoSourceUser,
       action: l10n.todayTodoAddAction,
-      color: AppColorTokens.warning,
+      color: Color(0xFFF59E0B),
       completed: false,
       statusIsDynamic: false,
       subtitleIsDynamic: false,

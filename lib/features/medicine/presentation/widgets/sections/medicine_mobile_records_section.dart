@@ -63,7 +63,7 @@ class _MedicineRecordsSection extends ConsumerWidget {
                     child: Center(
                       child: AppTextAction(
                         label: l10n.medicineViewMoreRecordsAction,
-                        color: AppColorTokens.gradientDevelopStart,
+                        color: Color(0xFF16A34A),
                         onTap: () => context.go('/record'),
                       ),
                     ),
@@ -203,7 +203,7 @@ class _MedicineRecordRow extends StatelessWidget {
                           key: const Key('medicine-record-dose-action-taken'),
                           label: l10n.medicineDoseActionTaken,
                           icon: FLucideIcons.check,
-                          color: AppColorTokens.cyanDeep,
+                          color: Color(0xFF0F766E),
                           filled: true,
                           onTap: () => onMarkDose!(
                             row.item.currentMedicineId!,
@@ -217,7 +217,7 @@ class _MedicineRecordRow extends StatelessWidget {
                           key: const Key('medicine-record-dose-action-skipped'),
                           label: l10n.medicineDoseActionSkipped,
                           icon: FLucideIcons.ban,
-                          color: AppColorTokens.warningDeep,
+                          color: Color(0xFFB45309),
                           onTap: () => onMarkDose!(
                             row.item.currentMedicineId!,
                             MedicineDoseAction.skipped,

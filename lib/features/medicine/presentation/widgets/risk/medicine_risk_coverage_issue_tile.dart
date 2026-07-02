@@ -29,7 +29,7 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
         children: [
           const Icon(
             FLucideIcons.circleAlert,
-            color: AppColorTokens.warningDeep,
+            color: Color(0xFFB45309),
             size: AppSpacingTokens.lg,
           ),
           const SizedBox(width: AppSpacingTokens.sm),

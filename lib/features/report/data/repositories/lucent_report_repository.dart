@@ -1,7 +1,6 @@
 import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
-import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/features/report/data/datasources/report_remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report_repository.dart';
@@ -147,10 +146,10 @@ class LucentReportRepository implements ReportRepository {
 
   Color _metricColor(ReportDataKind kind) {
     return switch (kind) {
-      ReportDataKind.medication => AppColorTokens.cyanDeep,
-      ReportDataKind.water => AppColorTokens.link,
-      ReportDataKind.sleep => AppColorTokens.violet,
-      ReportDataKind.general => AppColorTokens.health,
+      ReportDataKind.medication => Color(0xFF0F766E),
+      ReportDataKind.water => Color(0xFF16A34A),
+      ReportDataKind.sleep => Color(0xFF7C3AED),
+      ReportDataKind.general => Color(0xFF15803D),
     };
   }
 
@@ -165,10 +164,10 @@ class LucentReportRepository implements ReportRepository {
 
   Color _insightColor(ReportInsightKind kind) {
     return switch (kind) {
-      ReportInsightKind.medication => AppColorTokens.cyanDeep,
-      ReportInsightKind.hydration => AppColorTokens.link,
-      ReportInsightKind.sleep => AppColorTokens.violet,
-      ReportInsightKind.general => AppColorTokens.warning,
+      ReportInsightKind.medication => Color(0xFF0F766E),
+      ReportInsightKind.hydration => Color(0xFF16A34A),
+      ReportInsightKind.sleep => Color(0xFF7C3AED),
+      ReportInsightKind.general => Color(0xFFF59E0B),
     };
   }
 }
@@ -177,21 +176,21 @@ const _exportActions = <ReportExportAction>[
   ReportExportAction(
     kind: ReportExportKind.hospital,
     icon: Icons.local_hospital_rounded,
-    color: AppColorTokens.link,
+    color: Color(0xFF16A34A),
   ),
   ReportExportAction(
     kind: ReportExportKind.monthly,
     icon: Icons.bar_chart_rounded,
-    color: AppColorTokens.link,
+    color: Color(0xFF16A34A),
   ),
   ReportExportAction(
     kind: ReportExportKind.print,
     icon: Icons.print_rounded,
-    color: AppColorTokens.warning,
+    color: Color(0xFFF59E0B),
   ),
   ReportExportAction(
     kind: ReportExportKind.clinicShare,
     icon: Icons.share_rounded,
-    color: AppColorTokens.success,
+    color: Color(0xFF16A34A),
   ),
 ];

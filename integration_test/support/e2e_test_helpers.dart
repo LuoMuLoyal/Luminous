@@ -7,7 +7,6 @@ import 'package:lucent_openapi/lucent_openapi.dart'
     show CooldownMessageDto, MedicineDoseLogsApi;
 import 'package:luminous/app/app.dart';
 import 'package:luminous/app/router.dart' show router;
-import 'package:luminous/core/design/app_color_tokens.dart';
 import 'package:luminous/core/network/lucent_dio_client.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart'
     show lucentBaseUrlProvider, lucentSessionStoreProvider;
@@ -823,7 +822,7 @@ class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       plan: const MedicinePlanSurface(
         items: [
           MedicinePlanItem(
-            color: AppColorTokens.cyanDeep,
+            color: Color(0xFF00B8D9),
             nameKey: MedicineCopyKey.genericName,
             dosageKey: MedicineCopyKey.genericDosage,
             scheduleKey: MedicineCopyKey.genericSchedule,
@@ -835,7 +834,7 @@ class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
               ),
             ],
             stateKey: MedicineCopyKey.statusStable,
-            stateColor: AppColorTokens.cyanDeep,
+            stateColor: Color(0xFF00B8D9),
             rawName: 'E2E medicine',
             rawDosage: '1 tablet',
             rawSchedule: 'morning',

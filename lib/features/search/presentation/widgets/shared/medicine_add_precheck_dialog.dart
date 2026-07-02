@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_dialog.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -12,11 +12,10 @@ Future<bool?> showMedicineAddPrecheckDialog(
 }) {
   final l10n = AppLocalizations.of(context)!;
 
-  return showDialog<bool>(
+  return showFDialog<bool>(
     context: context,
-    builder: (dialogContext) {
-      return _MedicineAddPrecheckDialog(l10n: l10n, result: result);
-    },
+    builder: (dialogContext, style, animation) =>
+        _MedicineAddPrecheckDialog(l10n: l10n, result: result),
   );
 }
 
@@ -31,12 +30,12 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return AppDialog(
+    return AppDialogShell(
       maxWidth: 480,
       maxHeight: 640,
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       scrollable: false,
-      child: Column(
+      builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -65,9 +64,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(AppSpacingTokens.sm),
                       decoration: BoxDecoration(
-                        color: AppColorTokens.warningSoft.withValues(
-                          alpha: 0.42,
-                        ),
+                        color: const Color(0xFFFEF3C7).withValues(alpha: 0.42),
                         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
                       ),
                       child: Row(
@@ -75,7 +72,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                         children: [
                           const Icon(
                             FLucideIcons.circleAlert,
-                            color: AppColorTokens.warningDeep,
+                            color: Color(0xFFB45309),
                             size: 18,
                           ),
                           const SizedBox(width: AppSpacingTokens.sm),
@@ -219,10 +216,10 @@ class _PrecheckCoverageRow extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColorTokens.warningSoft.withValues(alpha: 0.42),
+        color: const Color(0xFFFEF3C7).withValues(alpha: 0.42),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
         border: Border.all(
-          color: AppColorTokens.warningDeep.withValues(alpha: 0.18),
+          color: const Color(0xFFB45309).withValues(alpha: 0.18),
         ),
       ),
       child: Padding(
@@ -232,7 +229,7 @@ class _PrecheckCoverageRow extends StatelessWidget {
           children: [
             const Icon(
               FLucideIcons.circleAlert,
-              color: AppColorTokens.warningDeep,
+              color: Color(0xFFB45309),
               size: 18,
             ),
             const SizedBox(width: AppSpacingTokens.sm),

@@ -1,5 +1,5 @@
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
@@ -7,10 +7,10 @@ import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_
 import 'package:luminous/l10n/app_localizations.dart';
 
 abstract final class MedicineWorkspacePalette {
-  static const Color green = AppColorTokens.cyanDeep;
-  static const Color greenSoft = AppColorTokens.cyanSoft;
-  static const Color greenLine = AppColorTokens.cyanSoft;
-  static const Color orange = AppColorTokens.warning;
+  static const Color green = Color(0xFF0F766E);
+  static const Color greenSoft = Color(0xFFCCFBF1);
+  static const Color greenLine = Color(0xFFCCFBF1);
+  static const Color orange = Color(0xFFF59E0B);
 }
 
 class SectionTextAction extends StatelessWidget {
@@ -26,9 +26,8 @@ class SectionTextAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return AppInkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+    return FTappable(
+      onPress: onTap,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.xxs),
         child: Text(

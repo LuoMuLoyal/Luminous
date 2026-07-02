@@ -4,7 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/widgets/common/app_dialog.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/record_nlp_candidate_review.dart';
 import 'package:luminous/features/record/presentation/widgets/nlp/record_nlp_retry_panel.dart';
@@ -34,22 +34,20 @@ class RecordNlpDialog extends HookConsumerWidget {
     });
 
     Future<void> handleGenerate() async {
-      final l10n = AppLocalizations.of(context)!;
       if (controller.text.trim().isEmpty) {
         await AppToast.show(context, l10n.recordNlpInputRequiredToast);
         return;
       }
-      final state = await ref
+      final nextState = await ref
           .read(recordNlpControllerProvider.notifier)
           .generate(occurredAt: occurredAt);
       if (!context.mounted) return;
-      if (state.hasResult && state.candidates.isEmpty) {
+      if (nextState.hasResult && nextState.candidates.isEmpty) {
         await AppToast.show(context, l10n.recordNlpEmptyCandidatesToast);
       }
     }
 
     Future<void> handleSaveSelected() async {
-      final l10n = AppLocalizations.of(context)!;
       final outcome = await ref
           .read(recordNlpControllerProvider.notifier)
           .saveSelected();
@@ -83,7 +81,6 @@ class RecordNlpDialog extends HookConsumerWidget {
     }
 
     Future<void> handleRetryFailed() async {
-      final l10n = AppLocalizations.of(context)!;
       final outcome = await ref
           .read(recordNlpControllerProvider.notifier)
           .retryFailed();
@@ -124,8 +121,9 @@ class RecordNlpDialog extends HookConsumerWidget {
       ref.read(recordNlpControllerProvider.notifier).reset();
     }
 
-    return AppDialog(
-      child: Column(
+    return AppDialogShell(
+      scrollable: false,
+      builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
