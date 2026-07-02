@@ -1,13 +1,12 @@
-import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
 import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -20,16 +19,15 @@ class TodayRecommendationSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     final recommendationsAsync = ref.watch(todayRecommendationsProvider);
 
     return TodaySection(
       title: l10n.todayRecommendationSectionTitle,
       actionLabel: l10n.todayRecommendationRefreshAction,
       onAction: () => _refresh(ref),
-      child: AppSectionSurface(
+      child: FCard.raw(
         key: const Key('today-recommendation-card'),
-        padding: EdgeInsets.zero,
         child: recommendationsAsync.when(
           data: (recommendations) {
             final rows = <Widget>[];
@@ -50,7 +48,7 @@ class TodayRecommendationSection extends ConsumerWidget {
                     height: 1,
                     thickness: 1,
                     indent: AppSpacingTokens.x4l + AppSpacingTokens.xs,
-                    color: surface.hairline.withValues(alpha: 0.62),
+                    color: colors.border,
                   ),
                 );
               }
@@ -67,7 +65,7 @@ class TodayRecommendationSection extends ConsumerWidget {
           error: (_, __) => AppStateErrorView(
             title: l10n.todayRecommendationErrorTitle,
             description: l10n.todayRecommendationErrorDescription,
-            icon: Icons.error_outline_rounded,
+            icon: FLucideIcons.circleAlert,
             actionLabel: l10n.todayRetryAction,
             onAction: () => _refresh(ref),
             compact: true,
@@ -99,35 +97,35 @@ class TodayRecommendationSection extends ConsumerWidget {
     final category = recommendation.category ?? 'habit';
     return switch (category) {
       'medicine' => TodayRecommendationItem(
-        icon: Icons.health_and_safety_outlined,
+        icon: FLucideIcons.shieldPlus,
         color: AppColorTokens.cyanDeep,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationMedicineSafetyBody,
         action: l10n.todayLearnMoreAction,
       ),
       'sleep' => TodayRecommendationItem(
-        icon: Icons.bedtime_rounded,
+        icon: FLucideIcons.moonStar,
         color: AppColorTokens.link,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationSleepBody,
         action: l10n.todayLearnMoreAction,
       ),
       'record' => TodayRecommendationItem(
-        icon: Icons.edit_note_rounded,
+        icon: FLucideIcons.filePenLine,
         color: AppColorTokens.warning,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationWaterBody,
         action: l10n.todayCompleteAction,
       ),
       'report' => TodayRecommendationItem(
-        icon: Icons.assessment_outlined,
+        icon: FLucideIcons.chartColumnBig,
         color: AppColorTokens.violet,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationSleepBody,
         action: l10n.todayLearnMoreAction,
       ),
       _ => TodayRecommendationItem(
-        icon: Icons.lightbulb_outline_rounded,
+        icon: FLucideIcons.lightbulb,
         color: AppColorTokens.cyanDeep,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationWaterBody,
@@ -150,66 +148,59 @@ class _RecommendationRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
-          ),
-          child: Row(
-            children: [
-              TodayGlyphTile(
-                icon: item.icon,
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.md,
+          vertical: AppSpacingTokens.sm,
+        ),
+        child: Row(
+          children: [
+            TodayGlyphTile(
+              icon: item.icon,
+              color: item.color,
+              size: AppSpacingTokens.x2l + AppSpacingTokens.xxs,
+              radius: AppRadiusTokens.md,
+              gradient: false,
+            ),
+            const SizedBox(width: AppSpacingTokens.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                    maxLines: compact ? 1 : 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.xs),
+                  Text(
+                    item.subtitle,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
+                    maxLines: compact ? 1 : 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.xs),
+            Text(
+              item.action,
+              style: textTheme.labelMedium?.copyWith(
                 color: item.color,
-                size: AppSpacingTokens.x2l + AppSpacingTokens.xxs,
-                radius: AppRadiusTokens.md,
-                gradient: false,
+                fontWeight: FontWeight.w800,
               ),
-              const SizedBox(width: AppSpacingTokens.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.title,
-                      style: typography.bodyMdStrong.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: compact ? 1 : 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.xs),
-                    Text(
-                      item.subtitle,
-                      style: typography.bodySm.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: compact ? 1 : 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.xs),
-              Text(
-                item.action,
-                style: typography.bodySmStrong.copyWith(
-                  color: item.color,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
