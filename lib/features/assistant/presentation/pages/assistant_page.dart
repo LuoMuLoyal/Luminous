@@ -7,7 +7,6 @@ import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
@@ -30,8 +29,6 @@ class AssistantPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
     final session = ref.watch(authSessionProvider);
     final chatState = ref.watch(assistantControllerProvider);
     final settingsAsync = session.canAccessProtectedData
@@ -191,176 +188,172 @@ class AssistantPage extends HookConsumerWidget {
       drawerScaffoldKey.currentState?.openEndDrawer();
     }
 
-    return Material(
-      color: surface.canvasSoft,
-      child: PageScaffoldShell(
-        scaffoldKey: drawerScaffoldKey,
-        title: l10n.assistantPageTitle,
-        centerTitle: true,
-        scrollable: false,
-        leading: AppBackButton(onPressed: () => context.pop()),
-        endDrawer: Drawer(
-          child: AssistantConversationDrawer(
-            state: chatState,
-            title: l10n.assistantRecentConversationsTitle,
-            emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
-            emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
-            onRetry: () => ref
+    return PageScaffoldShell(
+      scaffoldKey: drawerScaffoldKey,
+      title: l10n.assistantPageTitle,
+      centerTitle: true,
+      scrollable: false,
+      leading: AppBackButton(onPressed: () => context.pop()),
+      endDrawer: Drawer(
+        child: AssistantConversationDrawer(
+          state: chatState,
+          title: l10n.assistantRecentConversationsTitle,
+          emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
+          emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
+          onRetry: () => ref
+              .read(assistantControllerProvider.notifier)
+              .loadRecentConversations(),
+          onSelect: (conversationId) async {
+            Navigator.of(context).pop();
+            await ref
                 .read(assistantControllerProvider.notifier)
-                .loadRecentConversations(),
-            onSelect: (conversationId) async {
-              Navigator.of(context).pop();
-              await ref
-                  .read(assistantControllerProvider.notifier)
-                  .openConversation(conversationId);
-            },
-          ),
+                .openConversation(conversationId);
+          },
         ),
-        actions: [
-          IconButton(
-            key: const Key('assistant-recent-conversations-action'),
-            tooltip: l10n.assistantRecentConversationsAction,
-            onPressed:
-                !session.canAccessProtectedData ||
-                    chatState.isLoadingRecentConversations ||
-                    chatState.isOpeningConversation
-                ? null
-                : openRecentConversationsDrawer,
-            icon: const Icon(FLucideIcons.clock4),
+      ),
+      actions: [
+        IconButton(
+          key: const Key('assistant-recent-conversations-action'),
+          tooltip: l10n.assistantRecentConversationsAction,
+          onPressed:
+              !session.canAccessProtectedData ||
+                  chatState.isLoadingRecentConversations ||
+                  chatState.isOpeningConversation
+              ? null
+              : openRecentConversationsDrawer,
+          icon: const Icon(FLucideIcons.clock4),
+        ),
+        IconButton(
+          key: const Key('assistant-new-conversation-action'),
+          tooltip: l10n.assistantNewConversationAction,
+          onPressed:
+              !session.canAccessProtectedData ||
+                  chatState.isLoadingConversation ||
+                  chatState.isSending ||
+                  chatState.isOpeningConversation
+              ? null
+              : handleStartNewConversation,
+          icon: const Icon(FLucideIcons.plus),
+        ),
+      ],
+      children: [
+        if (session.isRestoring) ...[
+          const AssistantLoadingView(),
+        ] else if (!session.canAccessProtectedData) ...[
+          AssistantStateCard(
+            title: l10n.authNotSignedIn,
+            description: l10n.assistantSignedOutDescription,
+            icon: FLucideIcons.circleAlert,
+            actionLabel: l10n.authGoLogin,
+            onAction: () => context.go(loginRouteForReturnTo('/assistant')),
           ),
-          IconButton(
-            key: const Key('assistant-new-conversation-action'),
-            tooltip: l10n.assistantNewConversationAction,
-            onPressed:
-                !session.canAccessProtectedData ||
-                    chatState.isLoadingConversation ||
-                    chatState.isSending ||
-                    chatState.isOpeningConversation
-                ? null
-                : handleStartNewConversation,
-            icon: const Icon(FLucideIcons.ellipsis),
+        ] else if (chatState.isLoadingCapabilities &&
+            chatState.isLoadingConversation &&
+            capabilities == null &&
+            chatState.capabilityError == null) ...[
+          const AssistantLoadingView(),
+        ] else if (chatState.isLoadingConversation &&
+            !chatState.hasConversation) ...[
+          const AssistantLoadingView(),
+        ] else if (capabilities == null) ...[
+          AssistantStateCard(
+            title: l10n.assistantLoadErrorTitle,
+            description:
+                chatState.capabilityError ?? l10n.assistantLoadErrorFallback,
+            icon: FLucideIcons.circleAlert,
+            tone: AppStateTone.warning,
+            actionLabel: l10n.todayRetryAction,
+            onAction: () => ref
+                .read(assistantControllerProvider.notifier)
+                .loadCapabilities(),
           ),
-        ],
-        children: [
-          if (session.isRestoring) ...[
-            const AssistantLoadingView(),
-          ] else if (!session.canAccessProtectedData) ...[
-            AssistantStateCard(
-              title: l10n.authNotSignedIn,
-              description: l10n.assistantSignedOutDescription,
-              icon: FLucideIcons.circleAlert,
-              actionLabel: l10n.authGoLogin,
-              onAction: () => context.go(loginRouteForReturnTo('/assistant')),
-            ),
-          ] else if (chatState.isLoadingCapabilities &&
-              chatState.isLoadingConversation &&
-              capabilities == null &&
-              chatState.capabilityError == null) ...[
-            const AssistantLoadingView(),
-          ] else if (chatState.isLoadingConversation &&
-              !chatState.hasConversation) ...[
-            const AssistantLoadingView(),
-          ] else if (capabilities == null) ...[
-            AssistantStateCard(
+        ] else ...[
+          AssistantHero(
+            capabilities: capabilities,
+            statusSummary: statusSummaryText(l10n, capabilities),
+          ),
+          if (chatState.conversationError != null) ...[
+            const SizedBox(height: AppSpacingTokens.md),
+            AppStateMessageView(
               title: l10n.assistantLoadErrorTitle,
-              description:
-                  chatState.capabilityError ?? l10n.assistantLoadErrorFallback,
+              description: chatState.conversationError!,
               icon: FLucideIcons.circleAlert,
               tone: AppStateTone.warning,
               actionLabel: l10n.todayRetryAction,
               onAction: () => ref
                   .read(assistantControllerProvider.notifier)
-                  .loadCapabilities(),
-            ),
-          ] else ...[
-            AssistantHero(
-              capabilities: capabilities,
-              statusSummary: statusSummaryText(l10n, capabilities),
-            ),
-            if (chatState.conversationError != null) ...[
-              const SizedBox(height: AppSpacingTokens.md),
-              AppStateMessageView(
-                title: l10n.assistantLoadErrorTitle,
-                description: chatState.conversationError!,
-                icon: FLucideIcons.circleAlert,
-                tone: AppStateTone.warning,
-                actionLabel: l10n.todayRetryAction,
-                onAction: () => ref
-                    .read(assistantControllerProvider.notifier)
-                    .loadLatestConversation(),
-              ),
-            ],
-            const SizedBox(height: AppSpacingTokens.md),
-            Expanded(
-              child: AssistantConversationSurface(
-                state: chatState,
-                capabilities: capabilities,
-                scrollController: scrollController,
-                controller: inputController,
-                onSend: handleSend,
-                onRetry: chatState.lastFailedInput != null
-                    ? () => ref
-                          .read(assistantControllerProvider.notifier)
-                          .retryLastMessage()
-                    : null,
-                onConfirmProposal:
-                    ({required messageId, required proposalId}) =>
-                        handleConfirmProposal(
-                          context,
-                          messageId: messageId,
-                          proposalId: proposalId,
-                        ),
-                onDismissProposal: ({required messageId, required proposalId}) {
-                  ref
-                      .read(assistantControllerProvider.notifier)
-                      .dismissProposedAction(
-                        messageId: messageId,
-                        proposalId: proposalId,
-                      );
-                },
-              ),
-            ),
-            if (chatState.recentConversationError != null) ...[
-              const SizedBox(height: AppSpacingTokens.md),
-              AppStateMessageView(
-                title: l10n.assistantRecentConversationsTitle,
-                description: chatState.recentConversationError!,
-                icon: FLucideIcons.circleAlert,
-                tone: AppStateTone.warning,
-                actionLabel: l10n.todayRetryAction,
-                onAction: () => ref
-                    .read(assistantControllerProvider.notifier)
-                    .loadRecentConversations(),
-              ),
-            ],
-            const SizedBox(height: AppSpacingTokens.md),
-            AssistantControlsPanel(
-              settings: settings,
-              fallbackContext: effectiveContext,
-              capabilities: capabilities,
-              onToggleEnabled: (nextValue) =>
-                  toggleAssistantEnabled(context, nextValue),
-              onToggleMemoryEnabled: (nextValue) =>
-                  toggleAssistantMemoryEnabled(context, nextValue),
-              onToggleContext:
-                  ({
-                    bool? healthProfile,
-                    bool? dailyRecords,
-                    bool? sleepRecords,
-                    bool? currentMedicines,
-                  }) => toggleContextSetting(
-                    context,
-                    settings: settings,
-                    fallbackContext: effectiveContext,
-                    healthProfile: healthProfile,
-                    dailyRecords: dailyRecords,
-                    sleepRecords: sleepRecords,
-                    currentMedicines: currentMedicines,
-                  ),
+                  .loadLatestConversation(),
             ),
           ],
+          const SizedBox(height: AppSpacingTokens.md),
+          Expanded(
+            child: AssistantConversationSurface(
+              state: chatState,
+              capabilities: capabilities,
+              scrollController: scrollController,
+              controller: inputController,
+              onSend: handleSend,
+              onRetry: chatState.lastFailedInput != null
+                  ? () => ref
+                        .read(assistantControllerProvider.notifier)
+                        .retryLastMessage()
+                  : null,
+              onConfirmProposal: ({required messageId, required proposalId}) =>
+                  handleConfirmProposal(
+                    context,
+                    messageId: messageId,
+                    proposalId: proposalId,
+                  ),
+              onDismissProposal: ({required messageId, required proposalId}) {
+                ref
+                    .read(assistantControllerProvider.notifier)
+                    .dismissProposedAction(
+                      messageId: messageId,
+                      proposalId: proposalId,
+                    );
+              },
+            ),
+          ),
+          if (chatState.recentConversationError != null) ...[
+            const SizedBox(height: AppSpacingTokens.md),
+            AppStateMessageView(
+              title: l10n.assistantRecentConversationsTitle,
+              description: chatState.recentConversationError!,
+              icon: FLucideIcons.circleAlert,
+              tone: AppStateTone.warning,
+              actionLabel: l10n.todayRetryAction,
+              onAction: () => ref
+                  .read(assistantControllerProvider.notifier)
+                  .loadRecentConversations(),
+            ),
+          ],
+          const SizedBox(height: AppSpacingTokens.md),
+          AssistantControlsPanel(
+            settings: settings,
+            fallbackContext: effectiveContext,
+            capabilities: capabilities,
+            onToggleEnabled: (nextValue) =>
+                toggleAssistantEnabled(context, nextValue),
+            onToggleMemoryEnabled: (nextValue) =>
+                toggleAssistantMemoryEnabled(context, nextValue),
+            onToggleContext:
+                ({
+                  bool? healthProfile,
+                  bool? dailyRecords,
+                  bool? sleepRecords,
+                  bool? currentMedicines,
+                }) => toggleContextSetting(
+                  context,
+                  settings: settings,
+                  fallbackContext: effectiveContext,
+                  healthProfile: healthProfile,
+                  dailyRecords: dailyRecords,
+                  sleepRecords: sleepRecords,
+                  currentMedicines: currentMedicines,
+                ),
+          ),
         ],
-      ),
+      ],
     );
   }
 }

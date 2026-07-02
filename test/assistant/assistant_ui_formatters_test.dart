@@ -1,7 +1,6 @@
-import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/design/app_color_tokens.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
@@ -42,13 +41,13 @@ void main() {
         theme.colorScheme.primary,
       );
     });
-    test('confirmed → accent', () {
+    test('confirmed → tertiary', () {
       expect(
         proposalStateColor(
           theme,
           _p(AssistantProposalExecutionState.confirmed),
         ),
-        AppColorTokens.accent,
+        theme.colorScheme.tertiary,
       );
     });
     test('dismissed → outline', () {
@@ -74,14 +73,14 @@ void main() {
   });
 
   group('sendErrorIcon', () {
-    test('streamInterrupted → wifi_off', () {
+    test('streamInterrupted → wifiOff', () {
       expect(
         sendErrorIcon(AssistantSendErrorType.streamInterrupted),
-        Icons.wifi_off_rounded,
+        FLucideIcons.wifiOff,
       );
     });
-    test('null → error_outline', () {
-      expect(sendErrorIcon(null), Icons.error_outline_rounded);
+    test('null → circleAlert', () {
+      expect(sendErrorIcon(null), FLucideIcons.circleAlert);
     });
     test('covers all types', () {
       for (final t in AssistantSendErrorType.values) {

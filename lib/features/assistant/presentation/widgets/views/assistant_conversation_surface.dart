@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
@@ -39,58 +38,61 @@ class AssistantConversationSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
-    return AppSectionSurface(
-      surface: surface,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (state.isOpeningConversation) ...[
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
-              child: Text(
-                l10n.assistantOpeningConversationLabel,
-                style: assistantTypography(
-                  context,
-                ).bodySm.copyWith(color: surface.mute),
+    return FCard.raw(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (state.isOpeningConversation) ...[
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
+                child: Text(
+                  l10n.assistantOpeningConversationLabel,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
+                  ),
+                ),
+              ),
+            ],
+            Expanded(
+              child: _ConversationView(
+                state: state,
+                capabilities: capabilities,
+                scrollController: scrollController,
+                onConfirmProposal: onConfirmProposal,
+                onDismissProposal: onDismissProposal,
               ),
             ),
-          ],
-          Expanded(
-            child: _ConversationView(
-              state: state,
-              capabilities: capabilities,
-              scrollController: scrollController,
-              onConfirmProposal: onConfirmProposal,
-              onDismissProposal: onDismissProposal,
-            ),
-          ),
-          if (state.sendError != null) ...[
+            if (state.sendError != null) ...[
+              const SizedBox(height: AppSpacingTokens.md),
+              AppStateMessageView(
+                title: l10n.assistantSendErrorTitle,
+                description: sendErrorDescription(
+                  l10n,
+                  state.sendErrorType,
+                  state.sendError!,
+                ),
+                icon: sendErrorIcon(state.sendErrorType),
+                tone: AppStateTone.warning,
+                actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
+                onAction: onRetry,
+                actionKey: const Key('assistant-retry-action'),
+                padding: const EdgeInsets.all(AppSpacingTokens.md),
+              ),
+            ],
             const SizedBox(height: AppSpacingTokens.md),
-            AppStateMessageView(
-              title: l10n.assistantSendErrorTitle,
-              description: sendErrorDescription(
-                l10n,
-                state.sendErrorType,
-                state.sendError!,
-              ),
-              icon: sendErrorIcon(state.sendErrorType),
-              tone: AppStateTone.warning,
-              actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
-              onAction: onRetry,
-              actionKey: const Key('assistant-retry-action'),
-              padding: const EdgeInsets.all(AppSpacingTokens.md),
+            _InputComposer(
+              controller: controller,
+              canSend: capabilities.canSendMessages && !state.isSending,
+              isSending: state.isSending,
+              onSend: onSend,
             ),
           ],
-          const SizedBox(height: AppSpacingTokens.md),
-          _InputComposer(
-            controller: controller,
-            canSend: capabilities.canSendMessages && !state.isSending,
-            isSending: state.isSending,
-            onSend: onSend,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -126,7 +128,7 @@ class _ConversationView extends StatelessWidget {
       return AppStateMessageView(
         title: l10n.assistantConversationDisabledTitle,
         description: _disabledDescription(l10n, capabilities),
-        icon: Icons.pause_circle_outline_rounded,
+        icon: FLucideIcons.circlePause,
         tone: AppStateTone.warning,
       );
     }
@@ -135,7 +137,7 @@ class _ConversationView extends StatelessWidget {
       return AppStateMessageView(
         title: l10n.assistantConversationEmptyTitle,
         description: l10n.assistantConversationEmptyDescription,
-        icon: Icons.chat_bubble_outline_rounded,
+        icon: FLucideIcons.messageSquareMore,
       );
     }
 
@@ -219,8 +221,8 @@ class _InputComposer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -234,17 +236,29 @@ class _InputComposer extends StatelessWidget {
             decoration: InputDecoration(
               hintText: l10n.assistantInputHint,
               filled: true,
-              fillColor: surface.canvasSoft,
+              fillColor: colors.secondary,
+              hintStyle: textTheme.bodyMedium?.copyWith(
+                color: colors.mutedForeground,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                borderSide: BorderSide(color: colors.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                borderSide: BorderSide(color: colors.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                borderSide: BorderSide(color: colors.primary),
               ),
             ),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.sm),
-        FilledButton(
+        FButton(
           key: const Key('assistant-send-action'),
-          onPressed: canSend ? onSend : null,
+          onPress: canSend ? onSend : null,
           child: Text(
             isSending ? l10n.assistantSendingAction : l10n.assistantSendAction,
           ),

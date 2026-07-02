@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/theme/app_theme.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_chips.dart';
@@ -11,9 +12,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 Widget _shell(Widget child) {
   return MaterialApp(
-    theme: ThemeData.light().copyWith(
-      extensions: const <ThemeExtension<dynamic>>[AppThemeSurface.light],
-    ),
+    theme: AppTheme.light,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(body: child),
@@ -69,7 +68,7 @@ void main() {
           const AssistantStateCard(
             title: 'Ready',
             description: 'Assistant is active',
-            icon: Icons.check_circle,
+            icon: FLucideIcons.check,
           ),
         ),
       );
@@ -83,7 +82,7 @@ void main() {
           AssistantStateCard(
             title: 'Error',
             description: 'Something went wrong',
-            icon: Icons.error,
+            icon: FLucideIcons.circleAlert,
             actionLabel: 'Retry',
             onAction: () {},
             tone: AppStateTone.danger,

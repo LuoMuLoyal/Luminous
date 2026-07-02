@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
-import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantHero extends StatelessWidget {
@@ -18,7 +17,8 @@ class AssistantHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
+    final textTheme = theme.textTheme;
     final l10n = AppLocalizations.of(context)!;
 
     return DecoratedBox(
@@ -26,29 +26,45 @@ class AssistantHero extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            theme.colorScheme.primary.withValues(alpha: 0.12),
-            surface.canvas,
-          ],
+          colors: [colors.primary.withValues(alpha: 0.16), colors.background],
         ),
         borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-        border: Border.all(color: surface.hairline),
+        border: Border.all(color: colors.border),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.assistantPageTitle,
-              style: assistantTypography(context).displayMd,
+            Row(
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: colors.primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(AppSpacingTokens.sm),
+                    child: Icon(FLucideIcons.bot, size: 20),
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.sm),
+                Expanded(
+                  child: Text(
+                    l10n.assistantPageTitle,
+                    style: textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: AppSpacingTokens.xs),
+            const SizedBox(height: AppSpacingTokens.sm),
             Text(
               statusSummary,
-              style: assistantTypography(
-                context,
-              ).bodyMd.copyWith(color: surface.body),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             const SizedBox(height: AppSpacingTokens.md),
             Wrap(
@@ -90,21 +106,33 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
         color: enabled
-            ? theme.colorScheme.primary.withValues(alpha: 0.12)
-            : theme.colorScheme.surfaceContainerHighest,
+            ? colors.primary.withValues(alpha: 0.12)
+            : colors.secondary,
         borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        border: Border.all(
+          color: enabled
+              ? colors.primary.withValues(alpha: 0.24)
+              : colors.border,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.md,
           vertical: AppSpacingTokens.xs,
         ),
-        child: Text(label, style: assistantTypography(context).bodySm),
+        child: Text(
+          label,
+          style: textTheme.labelMedium?.copyWith(
+            color: enabled ? colors.primary : colors.mutedForeground,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }
