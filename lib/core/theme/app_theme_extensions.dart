@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_color_tokens.dart';
 
+/// Legacy compatibility shim.
+///
+/// Runtime feature code has been migrated to direct Forui colors; keep this
+/// extension only for older tests and any temporary compatibility surface that
+/// still expects semantic color fields.
 @immutable
 class AppThemeSurface extends ThemeExtension<AppThemeSurface> {
   const AppThemeSurface({

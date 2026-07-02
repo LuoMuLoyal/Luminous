@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 abstract final class AppTheme {
   static final FThemeData foruiLight = FThemes.green.light.touch;
@@ -23,9 +22,6 @@ abstract final class AppTheme {
       shadowColor: Colors.black.withValues(
         alpha: theme.colors.brightness == Brightness.dark ? 0.16 : 0.06,
       ),
-      extensions: <ThemeExtension<dynamic>>[
-        AppThemeSurface.fromForuiColors(theme.colors),
-      ],
     );
   }
 }
