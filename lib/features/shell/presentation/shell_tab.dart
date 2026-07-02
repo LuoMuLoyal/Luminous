@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 enum ShellTab {
-  today(Icons.home_outlined, Icons.home),
-  record(Icons.edit_calendar_outlined, Icons.edit_calendar),
-  medicine(Icons.medication_outlined, Icons.medication),
-  report(Icons.bar_chart_outlined, Icons.bar_chart_rounded),
-  mine(Icons.person_outline, Icons.person);
+  today(FLucideIcons.house, FLucideIcons.house),
+  record(FLucideIcons.notebookPen, FLucideIcons.notebookPen),
+  medicine(FLucideIcons.pill, FLucideIcons.pill),
+  report(FLucideIcons.chartColumn, FLucideIcons.chartColumn),
+  mine(FLucideIcons.userRound, FLucideIcons.userRound);
 
   const ShellTab(this.icon, this.activeIcon);
 

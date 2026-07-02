@@ -239,6 +239,7 @@ Deferred code that remains useful should be marked with:
 ## Design System
 
 - Root theming is now Forui-led: `lib/core/theme/app_theme.dart` derives the app's light/dark `ThemeData` from Forui themes and injects `FTheme` at the app root.
+- `ShellPage` now uses Forui shell primitives directly: `FScaffold` as the page frame, `FBottomNavigationBar` for the mobile tab bar, and `FSidebar` for the desktop rail while preserving the existing tab/routing state model. The shell's tab icons, desktop settings/help actions, collapse toggle, and sidebar brand mark now also use Forui-bundled Lucide icons instead of Material icons.
 - `AppColorTokens` provides 40+ semantic color constants including `accent` (`#159B55`), `accentSoft`, `health`, `errorDark`, `cyanDeep`, `warningDeep`, `violet` etc.
 - `AppThemeSurface` (ThemeExtension) still exposes 17 semantic surface fields: `canvas`, `canvasSoft`, `canvasSoft2`, `hairline`, `hairlineStrong`, `body`, `mute`, `link`, `linkSoft`, `accent`, `teal`, `tealSoft`, `success`, `error`, `warning`, `warningDeep`, `warningSoft`, `violet`, but it is now a compatibility bridge mapped from Forui `FColors` rather than the long-term source of truth.
 - The old theme palette variants (`classic / bluePink / yellowGreen`) and `theme.palette` preference are removed from active UI/state. Current theme preference is mode-only (`theme.mode`).

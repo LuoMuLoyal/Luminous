@@ -53,6 +53,10 @@ flutter test
 - `AppTypographyScale` — `displayXl` through `buttonLg`
 - `AppThemeSurface` — semantic color tokens (canvas, hairline, body, mute, link, accent, etc.)
 - `AppSpacingTokens`, `AppRadiusTokens`, `AppColorTokens` — spacing, radius, color constants
+- During the Forui migration, touched UI should prefer Forui primitives directly instead of adding new `App*` wrapper aliases around base components.
+- During the Forui migration, touched UI should prefer Forui-bundled Lucide icons (`FLucideIcons`) over Material icons. If a screen still uses `Icons.*`, treat that as migration debt and replace it unless Forui/Lucide truly has no reasonable equivalent.
+- When adopting Forui widgets with controllers or hook-oriented state, evaluate the companion `forui_hooks` package before writing manual controller plumbing. Do not ignore it by default when the page already uses `flutter_hooks` / `hooks_riverpod`.
+- When Forui styling needs to be customized beyond small inline overrides, check the bundled CLI first (`dart run forui --help`, `dart run forui style create --help`) and prefer generated style/theme scaffolds over hand-writing large style boilerplate. If you intentionally stay on stock Forui styling, say so explicitly.
 
 ## Testing
 

@@ -184,6 +184,7 @@ The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at 
 - Child pages default to a standard header: left back arrow + centered title.
 - Mock data is gated behind `kDebugMode`; release builds show empty states.
 - During the Forui migration, touched pages should move toward Forui primitives directly instead of adding new handcrafted wrapper aliases.
+- The root shell is already on Forui primitives: `ShellPage` uses `FScaffold`, `FBottomNavigationBar`, and `FSidebar` while keeping the existing GoRouter `StatefulShellRoute` structure, and its navigation/action iconography now comes from Forui's bundled Lucide set instead of Material icons.
 
 ---
 

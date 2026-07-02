@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
 import 'package:luminous/features/record/presentation/pages/record_page.dart';
@@ -14,11 +13,8 @@ import 'package:luminous/features/shell/providers/shell_sidebar_provider.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+const _shellInset = 16.0;
 const _sidebarAnimationDuration = Duration(milliseconds: 200);
-const _sidebarAnimationCurve = Curves.easeInOutCubic;
-const _sidebarNarrowThreshold = 120.0;
-const _sidebarBrandThreshold = 160.0;
-const _sidebarFullThreshold = 200.0;
 
 class ShellPage extends ConsumerWidget {
   const ShellPage({super.key, this.navigationShell});
@@ -41,28 +37,9 @@ class ShellPage extends ConsumerWidget {
     final legacyIndex = ref.watch(shellProvider).currentIndex;
     final legacyNotifier = ref.read(shellProvider.notifier);
     final currentIndex = navigationShell?.currentIndex ?? legacyIndex;
-    final scheme = Theme.of(context).colorScheme;
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
     final l10n = AppLocalizations.of(context);
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(scheme.onSurface)
-        : AppTypographyTokens.desktop(scheme.onSurface);
-    const selectedNavColor = AppColorTokens.health;
-    final unselectedNavColor = surface.body;
     final isDesktop = width >= AppBreakpoints.desktop;
-
-    final destinations = ShellTab.values
-        .map(
-          (tab) => NavigationDestination(
-            key: tab.testKey(),
-            icon: Icon(tab.icon),
-            selectedIcon: Icon(tab.activeIcon),
-            label: tab.label(l10n),
-          ),
-        )
-        .toList(growable: false);
-
     final content = navigationShell ?? _pages[currentIndex];
 
     void onSelectTab(int index) {
@@ -73,473 +50,307 @@ class ShellPage extends ConsumerWidget {
       }
     }
 
-    return Scaffold(
-      backgroundColor: surface.canvasSoft,
-      body: isDesktop
-          ? SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacingTokens.md),
-                child: Row(
-                  children: [
-                    _DesktopSidebar(
-                      navigationShell: navigationShell,
-                      surface: surface,
-                    ),
-                    const SizedBox(width: AppSpacingTokens.md),
-                    Expanded(
-                      child: RepaintBoundary(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: surface.canvas,
-                            borderRadius: BorderRadius.circular(
-                              AppRadiusTokens.xl,
-                            ),
-                            border: Border.all(color: surface.hairline),
-                            boxShadow: AppShadowTokens.level1,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              AppRadiusTokens.xl,
-                            ),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: surface.canvasSoft,
-                              ),
-                              child: content,
-                            ),
-                          ),
-                        ),
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: isDesktop ? 1.15 : 1.2,
+      child: FScaffold(
+        childPad: false,
+        resizeToAvoidBottomInset: false,
+        sidebar: isDesktop
+            ? SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    _shellInset,
+                    _shellInset,
+                    0,
+                    _shellInset,
+                  ),
+                  child: _DesktopSidebar(
+                    navigationShell: navigationShell,
+                    currentIndex: currentIndex,
+                    l10n: l10n,
+                  ),
+                ),
+              )
+            : null,
+        footer: isDesktop
+            ? null
+            : _MobileBottomNavigationBar(
+                currentIndex: currentIndex,
+                l10n: l10n,
+                onSelectTab: onSelectTab,
+              ),
+        child: isDesktop
+            ? SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(_shellInset),
+                  child: FCard.raw(
+                    clipBehavior: Clip.antiAlias,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: context.theme.colors.background,
                       ),
+                      child: content,
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            )
-          : content,
-      bottomNavigationBar: isDesktop
-          ? null
-          : MediaQuery.withClampedTextScaling(
-              maxScaleFactor: 1.2,
-              child: NavigationBarTheme(
-                data: NavigationBarThemeData(
-                  indicatorColor: AppColorTokens.healthSoft,
-                  iconTheme: WidgetStateProperty.resolveWith((states) {
-                    final selected = states.contains(WidgetState.selected);
-                    return IconThemeData(
-                      color: selected ? selectedNavColor : unselectedNavColor,
-                      size: 24,
-                    );
-                  }),
-                  labelTextStyle: WidgetStateProperty.resolveWith((states) {
-                    final selected = states.contains(WidgetState.selected);
-                    return typography.caption.copyWith(
-                      color: selected ? selectedNavColor : scheme.onSurface,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                      letterSpacing: 0,
-                      overflow: TextOverflow.ellipsis,
-                    );
-                  }),
-                ),
-                child: NavigationBar(
-                  backgroundColor: surface.canvas.withValues(alpha: 0.96),
-                  surfaceTintColor: Colors.transparent,
-                  height: width < AppBreakpoints.mobile ? 70 : 76,
-                  selectedIndex: currentIndex,
-                  onDestinationSelected: onSelectTab,
-                  destinations: destinations,
-                ),
-              ),
-            ),
+              )
+            : content,
+      ),
     );
   }
 }
 
-class _DesktopSidebar extends ConsumerStatefulWidget {
-  const _DesktopSidebar({required this.navigationShell, required this.surface});
+class _MobileBottomNavigationBar extends StatelessWidget {
+  const _MobileBottomNavigationBar({
+    required this.currentIndex,
+    required this.l10n,
+    required this.onSelectTab,
+  });
+
+  final int currentIndex;
+  final AppLocalizations? l10n;
+  final ValueChanged<int> onSelectTab;
+
+  @override
+  Widget build(BuildContext context) {
+    return FBottomNavigationBar(
+      index: currentIndex,
+      onChange: onSelectTab,
+      safeAreaBottom: true,
+      children: [
+        for (final tab in ShellTab.values)
+          FBottomNavigationBarItem(
+            key: tab.testKey(),
+            icon: Icon(currentIndex == tab.index ? tab.activeIcon : tab.icon),
+            label: Text(tab.label(l10n)),
+          ),
+      ],
+    );
+  }
+}
+
+class _DesktopSidebar extends ConsumerWidget {
+  const _DesktopSidebar({
+    required this.navigationShell,
+    required this.currentIndex,
+    required this.l10n,
+  });
 
   final StatefulNavigationShell? navigationShell;
-  final AppThemeSurface surface;
+  final int currentIndex;
+  final AppLocalizations? l10n;
 
   @override
-  ConsumerState<_DesktopSidebar> createState() => _DesktopSidebarState();
-}
-
-class _DesktopSidebarState extends ConsumerState<_DesktopSidebar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late Animation<double> _widthAnimation;
-  late double _targetWidth;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: _sidebarAnimationDuration,
-    );
-    _targetWidth = ShellSidebarDimensions.expandedWidth;
-    _widthAnimation = _alwaysTween(_targetWidth);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Animation<double> _alwaysTween(double value) =>
-      Tween<double>(begin: value, end: value).animate(
-        CurvedAnimation(parent: _controller, curve: _sidebarAnimationCurve),
-      );
-
-  void _onSelect(int index) {
-    if (widget.navigationShell != null) {
-      widget.navigationShell!.goBranch(index);
-    } else {
-      ref.read(shellProvider.notifier).selectTab(index);
-    }
-  }
-
-  void _onSettings() => context.push('/settings');
-
-  void _onHelp() => context.push('/assistant');
-
-  void _onToggle() => ref.read(shellSidebarProvider.notifier).toggle();
-
-  @override
-  Widget build(BuildContext context) {
-    final sidebarAsync = ref.watch(shellSidebarProvider);
-    final sidebarState = sidebarAsync.value ?? const ShellSidebarState();
-    final isCollapsed = sidebarState.collapsed;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sidebarState =
+        ref.watch(shellSidebarProvider).value ?? const ShellSidebarState();
+    final collapsed = sidebarState.collapsed;
     final targetWidth = sidebarState.width;
-    final currentIndex =
-        widget.navigationShell?.currentIndex ??
-        ref.watch(shellProvider).currentIndex;
-    final typography = AppTypographyTokens.desktop(
-      Theme.of(context).colorScheme.onSurface,
+    final theme = context.theme;
+    final sidebarStyle = FSidebarStyle(
+      decoration: BoxDecoration(
+        color: theme.colors.background,
+        border: Border.all(
+          color: theme.colors.border,
+          width: theme.style.borderWidth,
+        ),
+        borderRadius: theme.style.borderRadius.xl,
+      ),
+      backgroundFilter: theme.sidebarStyle.backgroundFilter,
+      constraints: BoxConstraints.tightFor(width: targetWidth),
+      groupStyle: theme.sidebarStyle.groupStyle,
+      headerPadding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      footerPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
     );
-    final l10n = AppLocalizations.of(context);
 
-    if (_targetWidth != targetWidth) {
-      _targetWidth = targetWidth;
-      _widthAnimation =
-          Tween<double>(begin: _widthAnimation.value, end: targetWidth).animate(
-            CurvedAnimation(parent: _controller, curve: _sidebarAnimationCurve),
-          );
-      _controller.forward(from: 0);
+    void onSelect(int index) {
+      if (navigationShell != null) {
+        navigationShell!.goBranch(index);
+      } else {
+        ref.read(shellProvider.notifier).selectTab(index);
+      }
     }
 
-    return MediaQuery.withClampedTextScaling(
-      maxScaleFactor: 1.15,
-      child: AnimatedBuilder(
-        animation: _widthAnimation,
-        builder: (context, child) =>
-            SizedBox(width: _widthAnimation.value, child: child),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: widget.surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
-            border: Border.all(color: widget.surface.hairline),
-            boxShadow: AppShadowTokens.level1,
-          ),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final width = constraints.maxWidth;
-              final isNarrow = width < _sidebarNarrowThreshold;
-              final showBrand = width >= _sidebarBrandThreshold;
-              final horizontalPadding = isNarrow
-                  ? AppSpacingTokens.xs
-                  : AppSpacingTokens.md;
-              final itemLabelOpacity = isNarrow
-                  ? 0.0
-                  : ((width - _sidebarNarrowThreshold) /
-                            (_sidebarFullThreshold - _sidebarNarrowThreshold))
-                        .clamp(0.0, 1.0);
-              final brandOpacity = !showBrand
-                  ? 0.0
-                  : ((width - _sidebarBrandThreshold) /
-                            (_sidebarFullThreshold - _sidebarBrandThreshold))
-                        .clamp(0.0, 1.0);
-              return Padding(
-                padding: EdgeInsets.fromLTRB(
-                  horizontalPadding,
-                  AppSpacingTokens.md,
-                  horizontalPadding,
-                  AppSpacingTokens.lg,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _DesktopSidebarBrand(
-                      collapsed: isCollapsed,
-                      showBrand: showBrand,
-                      brandOpacity: brandOpacity,
-                      onToggle: _onToggle,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.lg),
-                    ...ShellTab.values.map(
-                      (tab) => Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: AppSpacingTokens.xs,
-                        ),
-                        child: _DesktopSidebarItem(
-                          tab: tab,
-                          selected: currentIndex == tab.index,
-                          isNarrow: isNarrow,
-                          labelOpacity: itemLabelOpacity,
-                          label: tab.label(l10n),
-                          onTap: () => _onSelect(tab.index),
-                          typography: typography,
-                          surface: widget.surface,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    _DesktopSidebarActionItem(
-                      icon: Icons.settings_outlined,
-                      label: l10n?.desktopSidebarSettings ?? '设置',
-                      isNarrow: isNarrow,
-                      labelOpacity: itemLabelOpacity,
-                      onTap: _onSettings,
-                      typography: typography,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.xs),
-                    _DesktopSidebarActionItem(
-                      icon: Icons.help_outline_rounded,
-                      label: l10n?.desktopSidebarHelp ?? '帮助',
-                      isNarrow: isNarrow,
-                      labelOpacity: itemLabelOpacity,
-                      onTap: _onHelp,
-                      typography: typography,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+    return AnimatedContainer(
+      duration: _sidebarAnimationDuration,
+      curve: Curves.easeInOutCubic,
+      width: targetWidth,
+      child: FSidebar(
+        style: sidebarStyle,
+        header: _DesktopSidebarHeader(
+          collapsed: collapsed,
+          onToggle: () => ref.read(shellSidebarProvider.notifier).toggle(),
+          title: l10n?.appTitle ?? 'Luminous',
         ),
-      ),
-    );
-  }
-}
-
-class _DesktopSidebarActionItem extends StatelessWidget {
-  const _DesktopSidebarActionItem({
-    required this.icon,
-    required this.label,
-    required this.isNarrow,
-    required this.labelOpacity,
-    required this.onTap,
-    required this.typography,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool isNarrow;
-  final double labelOpacity;
-  final VoidCallback onTap;
-  final AppTypographyScale typography;
-
-  @override
-  Widget build(BuildContext context) {
-    final foreground = Theme.of(context).colorScheme.onSurface;
-    final child = Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: SizedBox(
-          height: 56,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isNarrow ? AppSpacingTokens.xs : AppSpacingTokens.md,
-              vertical: AppSpacingTokens.md,
+        footer: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _DesktopSidebarActionItem(
+              collapsed: collapsed,
+              icon: FLucideIcons.settings,
+              label: l10n?.desktopSidebarSettings ?? '设置',
+              onPress: () => context.push('/settings'),
             ),
-            child: isNarrow
-                ? Center(child: Icon(icon, size: 18, color: foreground))
-                : Row(
-                    children: [
-                      Icon(icon, size: 18, color: foreground),
-                      const SizedBox(width: AppSpacingTokens.md),
-                      Expanded(
-                        child: Opacity(
-                          opacity: labelOpacity,
-                          child: Text(
-                            label,
-                            style: typography.bodyMd.copyWith(
-                              color: foreground,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-          ),
-        ),
-      ),
-    );
-
-    if (isNarrow) {
-      return Tooltip(message: label, child: child);
-    }
-    return child;
-  }
-}
-
-class _DesktopSidebarBrand extends StatelessWidget {
-  const _DesktopSidebarBrand({
-    required this.collapsed,
-    required this.showBrand,
-    required this.brandOpacity,
-    required this.onToggle,
-  });
-
-  final bool collapsed;
-  final bool showBrand;
-  final double brandOpacity;
-  final VoidCallback onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final typography = AppTypographyTokens.desktop(
-      Theme.of(context).colorScheme.onSurface,
-    );
-
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: showBrand ? AppSpacingTokens.sm : 0,
-        vertical: AppSpacingTokens.xs,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.spa_rounded, size: 18, color: AppColorTokens.accent),
-          if (showBrand) ...[
-            const SizedBox(width: AppSpacingTokens.sm),
-            Expanded(
-              child: Opacity(
-                opacity: brandOpacity,
-                child: Text(
-                  'Luminous',
-                  overflow: TextOverflow.ellipsis,
-                  style: typography.bodyMdStrong.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+            const SizedBox(height: 4),
+            _DesktopSidebarActionItem(
+              collapsed: collapsed,
+              icon: FLucideIcons.circleHelp,
+              label: l10n?.desktopSidebarHelp ?? '帮助',
+              onPress: () => context.push('/assistant'),
             ),
           ],
-          Tooltip(
-            message: collapsed ? '展开侧边栏' : '收起侧边栏',
-            child: InkWell(
-              onTap: onToggle,
-              borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-              child: Container(
-                width: showBrand ? 32 : 24,
-                height: showBrand ? 32 : 24,
-                alignment: Alignment.center,
-                child: AnimatedSwitcher(
-                  duration: _sidebarAnimationDuration,
-                  transitionBuilder: (child, animation) {
-                    return FadeTransition(opacity: animation, child: child);
-                  },
-                  child: Icon(
-                    collapsed ? Icons.chevron_right : Icons.chevron_left,
-                    key: ValueKey<bool>(collapsed),
-                    size: 18,
-                  ),
-                ),
+        ),
+        children: [
+          for (final tab in ShellTab.values)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: _DesktopSidebarTabItem(
+                tab: tab,
+                collapsed: collapsed,
+                label: tab.label(l10n),
+                selected: currentIndex == tab.index,
+                onPress: () => onSelect(tab.index),
               ),
             ),
-          ),
         ],
       ),
     );
   }
 }
 
-class _DesktopSidebarItem extends StatelessWidget {
-  const _DesktopSidebarItem({
-    required this.tab,
-    required this.selected,
-    required this.isNarrow,
-    required this.labelOpacity,
-    required this.label,
-    required this.onTap,
-    required this.typography,
-    required this.surface,
+class _DesktopSidebarHeader extends StatelessWidget {
+  const _DesktopSidebarHeader({
+    required this.collapsed,
+    required this.onToggle,
+    required this.title,
   });
 
-  final ShellTab tab;
-  final bool selected;
-  final bool isNarrow;
-  final double labelOpacity;
-  final String label;
-  final VoidCallback onTap;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
+  final bool collapsed;
+  final VoidCallback onToggle;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
-    final foreground = Theme.of(context).colorScheme.onSurface;
-
-    final child = Material(
-      color: selected
-          ? AppColorTokens.healthSoft.withValues(alpha: 0.5)
-          : Colors.transparent,
-      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: SizedBox(
-          height: 56,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isNarrow ? AppSpacingTokens.xs : AppSpacingTokens.md,
-              vertical: AppSpacingTokens.md,
-            ),
-            child: isNarrow
-                ? Center(
-                    child: Icon(
-                      selected ? tab.activeIcon : tab.icon,
-                      size: 18,
-                      color: selected ? AppColorTokens.health : foreground,
-                    ),
-                  )
-                : Row(
-                    children: [
-                      Icon(
-                        selected ? tab.activeIcon : tab.icon,
-                        size: 18,
-                        color: selected ? AppColorTokens.health : foreground,
-                      ),
-                      const SizedBox(width: AppSpacingTokens.md),
-                      Expanded(
-                        child: Opacity(
-                          opacity: labelOpacity,
-                          child: Text(
-                            label,
-                            style: typography.bodyMd.copyWith(
-                              color: selected
-                                  ? AppColorTokens.health
-                                  : foreground,
-                              fontWeight: selected
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+    final toggle = Tooltip(
+      message: collapsed ? '展开侧边栏' : '收起侧边栏',
+      child: SizedBox.square(
+        dimension: 24,
+        child: FButton.icon(
+          onPress: onToggle,
+          variant: FButtonVariant.ghost,
+          size: FButtonSizeVariant.xs,
+          child: Icon(
+            collapsed ? FLucideIcons.chevronRight : FLucideIcons.chevronLeft,
+            key: ValueKey<bool>(collapsed),
+            size: 18,
           ),
         ),
       ),
     );
 
-    if (isNarrow) {
-      return Tooltip(message: label, child: child);
+    if (collapsed) {
+      return Row(
+        children: [
+          Icon(
+            FLucideIcons.heartPulse,
+            size: 18,
+            color: context.theme.colors.primary,
+          ),
+          const Spacer(),
+          toggle,
+        ],
+      );
     }
-    return child;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              FLucideIcons.heartPulse,
+              size: 18,
+              color: context.theme.colors.primary,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                title,
+                overflow: TextOverflow.ellipsis,
+                style: context.theme.typography.body.sm.copyWith(
+                  color: context.theme.colors.foreground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Align(alignment: Alignment.centerRight, child: toggle),
+      ],
+    );
+  }
+}
+
+class _DesktopSidebarTabItem extends StatelessWidget {
+  const _DesktopSidebarTabItem({
+    required this.tab,
+    required this.collapsed,
+    required this.label,
+    required this.selected,
+    required this.onPress,
+  });
+
+  final ShellTab tab;
+  final bool collapsed;
+  final String label;
+  final bool selected;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final item = FSidebarItem(
+      key: tab.testKey(),
+      selected: selected,
+      icon: Icon(selected ? tab.activeIcon : tab.icon),
+      label: collapsed ? null : Text(label),
+      onPress: onPress,
+    );
+
+    if (collapsed) {
+      return Tooltip(message: label, child: item);
+    }
+
+    return item;
+  }
+}
+
+class _DesktopSidebarActionItem extends StatelessWidget {
+  const _DesktopSidebarActionItem({
+    required this.collapsed,
+    required this.icon,
+    required this.label,
+    required this.onPress,
+  });
+
+  final bool collapsed;
+  final IconData icon;
+  final String label;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final item = FSidebarItem(
+      icon: Icon(icon),
+      label: collapsed ? null : Text(label),
+      onPress: onPress,
+    );
+
+    if (collapsed) {
+      return Tooltip(message: label, child: item);
+    }
+
+    return item;
   }
 }

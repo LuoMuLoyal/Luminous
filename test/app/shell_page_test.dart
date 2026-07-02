@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -12,6 +13,7 @@ import 'package:luminous/features/record/data/repositories/mock_record_repositor
 import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
+import 'package:luminous/features/shell/presentation/shell_tab.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -25,6 +27,19 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
 }
 
 void main() {
+  test('ShellTab uses Forui Lucide icons', () {
+    expect(ShellTab.today.icon, FLucideIcons.house);
+    expect(ShellTab.today.activeIcon, FLucideIcons.house);
+    expect(ShellTab.record.icon, FLucideIcons.notebookPen);
+    expect(ShellTab.record.activeIcon, FLucideIcons.notebookPen);
+    expect(ShellTab.medicine.icon, FLucideIcons.pill);
+    expect(ShellTab.medicine.activeIcon, FLucideIcons.pill);
+    expect(ShellTab.report.icon, FLucideIcons.chartColumn);
+    expect(ShellTab.report.activeIcon, FLucideIcons.chartColumn);
+    expect(ShellTab.mine.icon, FLucideIcons.userRound);
+    expect(ShellTab.mine.activeIcon, FLucideIcons.userRound);
+  });
+
   testWidgets('Shell page uses five desktop tabs plus settings/help actions', (
     tester,
   ) async {
@@ -103,6 +118,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
+    expect(find.byType(FSidebar), findsOneWidget);
     expect(find.text(l10n.appTitle), findsOneWidget);
     expect(find.text(l10n.tabToday), findsAtLeastNWidgets(1));
     expect(find.text(l10n.tabRecord), findsAtLeastNWidgets(1));
@@ -201,23 +217,23 @@ void main() {
     await tester.pumpAndSettle();
 
     // Initially expanded: collapse button points left and settings label shows.
-    expect(find.byIcon(Icons.chevron_left), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.chevronLeft), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
     expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.chevron_left));
+    await tester.tap(find.byIcon(FLucideIcons.chevronLeft));
     await tester.pumpAndSettle();
 
     // Collapsed: toggle icon flips and labels are hidden.
-    expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsNothing);
     expect(find.text(l10n.desktopSidebarHelp), findsNothing);
 
-    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.tap(find.byIcon(FLucideIcons.chevronRight));
     await tester.pumpAndSettle();
 
     // Expanded again.
-    expect(find.byIcon(Icons.chevron_left), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.chevronLeft), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
     expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
   });
@@ -232,8 +248,8 @@ void main() {
 
     await _pumpShell(tester);
 
-    // Mobile layout should show a NavigationBar
-    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byType(FBottomNavigationBar), findsOneWidget);
+    expect(find.byType(NavigationBar), findsNothing);
   });
 
   testWidgets(
@@ -250,7 +266,8 @@ void main() {
 
       await _pumpShell(tester);
 
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(FBottomNavigationBar), findsOneWidget);
+      expect(find.byType(NavigationBar), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
