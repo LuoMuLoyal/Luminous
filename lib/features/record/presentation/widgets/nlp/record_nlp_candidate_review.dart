@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/controllers/record_nlp_controller.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/daily_record_form_fields.dart';
@@ -25,9 +25,8 @@ class RecordNlpCandidateReview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final meta = state.resultMeta;
     if (meta == null) return const SizedBox.shrink();
 
@@ -36,17 +35,17 @@ class RecordNlpCandidateReview extends StatelessWidget {
       children: [
         Text(
           l10n.recordNlpCandidatesTitle(state.candidates.length),
-          style: typography.displaySm,
+          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppSpacingTokens.xs),
         Text(
           meta.confirmationHint,
-          style: typography.bodySm.copyWith(color: surface.body),
+          style: textTheme.bodySmall?.copyWith(color: colors.foreground),
         ),
         const SizedBox(height: AppSpacingTokens.xs),
         Text(
           l10n.recordNlpSelectedCountHint(state.selectedCount),
-          style: typography.caption.copyWith(color: surface.mute),
+          style: textTheme.labelSmall?.copyWith(color: colors.mutedForeground),
         ),
         const SizedBox(height: AppSpacingTokens.md),
         for (var index = 0; index < state.candidates.length; index += 1) ...[
@@ -86,18 +85,10 @@ class _CandidateTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(
-          color: item.selected ? AppColorTokens.cyanDeep : surface.hairline,
-        ),
-      ),
+    return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.md),
         child: Column(
@@ -120,7 +111,7 @@ class _CandidateTile extends StatelessWidget {
                     children: [
                       Text(
                         _kindLabel(l10n, item.kind),
-                        style: typography.bodySmStrong.copyWith(
+                        style: textTheme.labelLarge?.copyWith(
                           color: AppColorTokens.cyanDeep,
                           fontWeight: FontWeight.w800,
                         ),
@@ -128,7 +119,7 @@ class _CandidateTile extends StatelessWidget {
                       const SizedBox(height: AppSpacingTokens.xxs),
                       Text(
                         _candidateTitle(l10n, item),
-                        style: typography.bodyMdStrong.copyWith(
+                        style: textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -151,14 +142,16 @@ class _CandidateTile extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.xs),
             Text(
               item.rationale,
-              style: typography.caption.copyWith(color: surface.mute),
+              style: textTheme.labelSmall?.copyWith(
+                color: colors.mutedForeground,
+              ),
             ),
             if (item.lastErrorMessage != null) ...[
               const SizedBox(height: AppSpacingTokens.xs),
               Text(
                 l10n.recordNlpCandidateSaveFailedHint(item.lastErrorMessage!),
-                style: typography.caption.copyWith(
-                  color: theme.colorScheme.error,
+                style: textTheme.labelSmall?.copyWith(
+                  color: colors.destructive,
                 ),
               ),
             ],

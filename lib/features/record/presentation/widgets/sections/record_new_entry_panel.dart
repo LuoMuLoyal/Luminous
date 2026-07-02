@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -11,106 +10,107 @@ class RecordNewEntryPanel extends StatelessWidget {
     super.key,
     required this.actions,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onNewEntry,
     this.onQuickAction,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final VoidCallback? onNewEntry;
   final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
   Widget build(BuildContext context) {
-    return AppSectionSurface(
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+    return FCard.raw(
       key: const Key('record-new-entry-panel'),
-      title: l10n.recordNewEntrySectionTitle,
-      typography: typography,
-      surface: surface,
-      child: Column(
-        children: [
-          Wrap(
-            spacing: AppSpacingTokens.sm,
-            runSpacing: AppSpacingTokens.sm,
-            children: actions
-                .take(7)
-                .map(
-                  (action) => _NewEntryChip(
-                    action: action,
-                    l10n: l10n,
-                    typography: typography,
-                    onTap: onQuickAction,
-                  ),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: AppSpacingTokens.md),
-          Material(
-            color: Colors.transparent,
-            child: Opacity(
-              opacity: onNewEntry == null ? 0.5 : 1.0,
-              child: InkWell(
-                onTap: onNewEntry,
-                borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: surface.canvasSoft,
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-                    border: Border.all(color: surface.hairline),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacingTokens.md),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.mic_none_rounded,
-                          color: AppColorTokens.accent,
-                          size: 20,
-                        ),
-                        const SizedBox(width: AppSpacingTokens.sm),
-                        Flexible(
-                          child: Text(
-                            l10n.recordVoiceAction,
-                            style: typography.bodySmStrong.copyWith(
-                              color: AppColorTokens.accent,
-                            ),
-                            overflow: TextOverflow.ellipsis,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.recordNewEntrySectionTitle,
+              style: textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            Wrap(
+              spacing: AppSpacingTokens.sm,
+              runSpacing: AppSpacingTokens.sm,
+              children: actions
+                  .take(7)
+                  .map(
+                    (action) => _NewEntryChip(
+                      action: action,
+                      l10n: l10n,
+                      onTap: onQuickAction,
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            Material(
+              color: Colors.transparent,
+              child: Opacity(
+                opacity: onNewEntry == null ? 0.5 : 1.0,
+                child: InkWell(
+                  onTap: onNewEntry,
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colors.secondary.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                      border: Border.all(color: colors.border),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacingTokens.md),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            FLucideIcons.mic,
+                            color: AppColorTokens.accent,
+                            size: 20,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: AppSpacingTokens.sm),
+                          Flexible(
+                            child: Text(
+                              l10n.recordVoiceAction,
+                              style: textTheme.labelLarge?.copyWith(
+                                color: AppColorTokens.accent,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
 class _NewEntryChip extends StatelessWidget {
-  const _NewEntryChip({
-    required this.action,
-    required this.l10n,
-    required this.typography,
-    this.onTap,
-  });
+  const _NewEntryChip({required this.action, required this.l10n, this.onTap});
 
   final RecordQuickAction action;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
   final ValueChanged<RecordQuickAction>? onTap;
 
   @override
   Widget build(BuildContext context) {
     final label = recordCopy(l10n, action.titleKey);
+    final textTheme = Theme.of(context).textTheme;
 
     return Material(
       color: Colors.transparent,
@@ -134,7 +134,7 @@ class _NewEntryChip extends StatelessWidget {
                 const SizedBox(width: AppSpacingTokens.xs),
                 Text(
                   label,
-                  style: typography.caption.copyWith(
+                  style: textTheme.labelSmall?.copyWith(
                     color: action.accent,
                     fontWeight: FontWeight.w600,
                   ),

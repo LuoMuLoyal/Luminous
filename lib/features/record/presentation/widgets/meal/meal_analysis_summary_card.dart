@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/meal_analysis_status_badge.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -13,17 +13,10 @@ class MealAnalysisSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-        boxShadow: AppShadowTokens.level1,
-      ),
+    return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.lg),
         child: Column(
@@ -34,13 +27,14 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordMealAnalysisSectionTitle,
-                    style: typography.bodyMdStrong,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 MealAnalysisStatusBadge(
                   status: data.status,
                   coverage: data.coverage,
-                  typography: typography,
                   large: true,
                 ),
               ],
@@ -49,7 +43,9 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.sm),
               Text(
                 data.mealDescription!,
-                style: typography.bodySm.copyWith(color: surface.body),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             if (data.recognizedDishes.isNotEmpty) ...[
@@ -103,14 +99,18 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.md),
               Text(
                 data.mealCommentary!,
-                style: typography.bodySm.copyWith(color: surface.body),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
             if (data.isEstimate) ...[
               const SizedBox(height: AppSpacingTokens.md),
               Text(
                 l10n.recordMealAnalysisEstimateDisclaimer,
-                style: typography.caption.copyWith(color: surface.warningDeep),
+                style: textTheme.labelSmall?.copyWith(
+                  color: AppColorTokens.warningDeep,
+                ),
               ),
             ],
           ],
@@ -127,10 +127,11 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
+    final textTheme = Theme.of(context).textTheme;
+    return Text(
+      title,
+      style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
     );
-    return Text(title, style: typography.bodySmStrong);
   }
 }
 
@@ -141,15 +142,13 @@ class _BulletText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacingTokens.xxs),
       child: Text(
         '• $text',
-        style: typography.bodySm.copyWith(color: surface.body),
+        style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
       ),
     );
   }

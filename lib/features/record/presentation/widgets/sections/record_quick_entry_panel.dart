@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/record_shared_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------------------
@@ -17,28 +15,26 @@ class RecordAiInputBar extends StatelessWidget {
   const RecordAiInputBar({
     super.key,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onTap,
     this.onMicTap,
     this.onCameraTap,
   });
 
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final VoidCallback? onTap;
   final VoidCallback? onMicTap;
   final VoidCallback? onCameraTap;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     return Material(
       key: const Key('record-ai-input'),
       color: Colors.transparent,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: surface.canvas,
+          color: colors.background,
           borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
           border: Border.all(
             color: AppColorTokens.cyanDeep.withValues(alpha: 0.32),
@@ -52,7 +48,7 @@ class RecordAiInputBar extends StatelessWidget {
           child: Row(
             children: [
               const Icon(
-                Icons.auto_awesome_rounded,
+                FLucideIcons.sparkles,
                 color: AppColorTokens.gradientPreviewStart,
                 size: AppSpacingTokens.xl,
               ),
@@ -67,7 +63,9 @@ class RecordAiInputBar extends StatelessWidget {
                     ),
                     child: Text(
                       l10n.recordAiInputHint,
-                      style: typography.bodyMd.copyWith(color: surface.mute),
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colors.mutedForeground,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -87,7 +85,7 @@ class RecordAiInputBar extends StatelessWidget {
                   ),
                   child: Text(
                     l10n.recordAiBadge,
-                    style: typography.caption.copyWith(
+                    style: textTheme.labelSmall?.copyWith(
                       color: AppColorTokens.cyanDeep,
                       fontWeight: FontWeight.w800,
                     ),
@@ -97,12 +95,12 @@ class RecordAiInputBar extends StatelessWidget {
               const SizedBox(width: AppSpacingTokens.xxs),
               _IconButton(
                 tooltip: l10n.recordVoiceInputTitle,
-                icon: Icons.mic_none_rounded,
+                icon: FLucideIcons.mic,
                 onTap: onMicTap,
               ),
               _IconButton(
                 tooltip: l10n.recordOcrEntryTitle,
-                icon: Icons.camera_alt_outlined,
+                icon: FLucideIcons.camera,
                 onTap: onCameraTap,
               ),
             ],
@@ -149,19 +147,17 @@ class RecordQuickEntryPanel extends StatelessWidget {
     super.key,
     required this.actions,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onQuickAction,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     // Split into a primary 2x2 grid and a secondary 1x3 row.
     final primary = actions.take(4).toList(growable: false);
     final secondary = actions.skip(4).toList(growable: false);
@@ -170,32 +166,30 @@ class RecordQuickEntryPanel extends StatelessWidget {
       key: const Key('record-quick-actions'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.recordQuickSectionTitle, style: typography.displaySm),
+        Text(
+          l10n.recordQuickSectionTitle,
+          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+        ),
         const SizedBox(height: AppSpacingTokens.sm),
-        AppSectionSurface(
-          typography: typography,
-          surface: surface,
-          padding: EdgeInsets.zero,
+        FCard.raw(
           child: Column(
             children: [
               _QuickRecordGrid2x2(
                 actions: primary,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onQuickAction: onQuickAction,
               ),
               if (secondary.isNotEmpty) ...[
-                RecordIndentedDivider(
-                  surface: surface,
+                Divider(
+                  height: 1,
+                  thickness: 1,
                   indent: AppSpacingTokens.md,
                   endIndent: AppSpacingTokens.md,
+                  color: colors.border,
                 ),
                 _QuickRecordRow3(
                   actions: secondary,
                   l10n: l10n,
-                  typography: typography,
-                  surface: surface,
                   onQuickAction: onQuickAction,
                 ),
               ],
@@ -211,19 +205,16 @@ class _QuickRecordGrid2x2 extends StatelessWidget {
   const _QuickRecordGrid2x2({
     required this.actions,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onQuickAction,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final rows = <List<RecordQuickAction>>[];
     for (var index = 0; index < actions.length; index += 2) {
       rows.add(actions.skip(index).take(2).toList(growable: false));
@@ -243,15 +234,13 @@ class _QuickRecordGrid2x2 extends StatelessWidget {
                   child: _QuickRecordTile(
                     action: rows[rowIndex][index],
                     l10n: l10n,
-                    typography: typography,
-                    surface: surface,
                     onQuickAction: onQuickAction,
                   ),
                 ),
                 if (index < rows[rowIndex].length - 1)
-                  RecordShortVerticalDivider(
-                    surface: surface,
+                  _ShortVerticalDivider(
                     height: AppSpacingTokens.x4l,
+                    color: colors.border,
                   ),
               ],
               for (var filler = rows[rowIndex].length; filler < 2; filler += 1)
@@ -259,10 +248,12 @@ class _QuickRecordGrid2x2 extends StatelessWidget {
             ],
           ),
           if (rowIndex < rows.length - 1)
-            RecordIndentedDivider(
-              surface: surface,
+            Divider(
+              height: 1,
+              thickness: 1,
               indent: AppSpacingTokens.md,
               endIndent: AppSpacingTokens.md,
+              color: colors.border,
             ),
         ],
       ],
@@ -274,19 +265,16 @@ class _QuickRecordRow3 extends StatelessWidget {
   const _QuickRecordRow3({
     required this.actions,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onQuickAction,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     return Row(
       children: [
         for (var index = 0; index < actions.length; index += 1) ...[
@@ -294,15 +282,13 @@ class _QuickRecordRow3 extends StatelessWidget {
             child: _QuickRecordTile(
               action: actions[index],
               l10n: l10n,
-              typography: typography,
-              surface: surface,
               onQuickAction: onQuickAction,
             ),
           ),
           if (index < actions.length - 1)
-            RecordShortVerticalDivider(
-              surface: surface,
+            _ShortVerticalDivider(
               height: AppSpacingTokens.x4l,
+              color: colors.border,
             ),
         ],
         for (var filler = actions.length; filler < 3; filler += 1)
@@ -316,15 +302,11 @@ class _QuickRecordTile extends StatelessWidget {
   const _QuickRecordTile({
     required this.action,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onQuickAction,
   });
 
   final RecordQuickAction action;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
@@ -332,6 +314,8 @@ class _QuickRecordTile extends StatelessWidget {
     final actionLabel = quickRecordLabel(l10n, action);
     final displayLabel = recordCopy(l10n, action.titleKey);
     final isLocked = action.locked;
+    final textTheme = Theme.of(context).textTheme;
+    final colors = context.theme.colors;
 
     return Material(
       key: Key('record-quick-${action.type.name}'),
@@ -366,7 +350,7 @@ class _QuickRecordTile extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.xxs),
                   Text(
                     displayLabel,
-                    style: typography.bodySmStrong.copyWith(
+                    style: textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                     textAlign: TextAlign.center,
@@ -377,8 +361,8 @@ class _QuickRecordTile extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       l10n.recordNotEnabledLabel,
-                      style: typography.caption.copyWith(
-                        color: surface.mute,
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colors.mutedForeground,
                         fontWeight: FontWeight.w600,
                       ),
                       maxLines: 1,
@@ -400,24 +384,16 @@ class _QuickRecordTile extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class RecordGuideRow extends StatelessWidget {
-  const RecordGuideRow({
-    super.key,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const RecordGuideRow({super.key, required this.l10n});
 
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    return AppSectionSurface(
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+    return FCard.raw(
       key: const Key('record-guide-row'),
-      typography: typography,
-      surface: surface,
-      padding: EdgeInsets.zero,
       child: Material(
         color: Colors.transparent,
         child: Padding(
@@ -428,7 +404,7 @@ class RecordGuideRow extends StatelessWidget {
           child: Row(
             children: [
               const Icon(
-                Icons.lightbulb_outline_rounded,
+                FLucideIcons.lightbulb,
                 color: AppColorTokens.warning,
                 size: AppSpacingTokens.lg,
               ),
@@ -436,7 +412,9 @@ class RecordGuideRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   l10n.recordGuideHint,
-                  style: typography.bodySm.copyWith(color: surface.body),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.foreground,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -444,12 +422,13 @@ class RecordGuideRow extends StatelessWidget {
               const SizedBox(width: AppSpacingTokens.sm),
               Text(
                 l10n.recordGuideAction,
-                style: typography.bodySmStrong.copyWith(
+                style: textTheme.labelLarge?.copyWith(
                   color: AppColorTokens.link,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               const Icon(
-                Icons.chevron_right_rounded,
+                FLucideIcons.chevronRight,
                 color: AppColorTokens.link,
                 size: AppSpacingTokens.lg,
               ),
@@ -457,6 +436,21 @@ class RecordGuideRow extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ShortVerticalDivider extends StatelessWidget {
+  const _ShortVerticalDivider({required this.height, required this.color});
+
+  final double height;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height,
+      child: VerticalDivider(width: 1, thickness: 1, color: color),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -39,27 +39,27 @@ class MealAnalysisStatusBadge extends StatelessWidget {
     AppLocalizations l10n,
     String? currentStatus,
   ) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     return switch (currentStatus) {
       'analyzing' => (
         l10n.recordMealAnalysisStatusAnalyzing,
-        surface.link,
-        Icons.hourglass_top_rounded,
+        AppColorTokens.gradientDevelopStart,
+        FLucideIcons.clock3,
       ),
       'confirmed' => (
         l10n.recordMealAnalysisStatusConfirmed,
-        surface.accent,
-        Icons.check_circle_outline_rounded,
+        AppColorTokens.cyanDeep,
+        FLucideIcons.badgeCheck,
       ),
       'analysis_failed' => (
         l10n.recordMealAnalysisStatusFailed,
-        surface.error,
-        Icons.error_outline_rounded,
+        colors.destructive,
+        FLucideIcons.circleAlert,
       ),
       _ => (
         l10n.recordMealAnalysisStatusUnconfirmed,
-        surface.warningDeep,
-        Icons.help_outline_rounded,
+        AppColorTokens.warningDeep,
+        FLucideIcons.badgeHelp,
       ),
     };
   }

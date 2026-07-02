@@ -120,16 +120,12 @@ class _MobileRecordDashboard extends StatelessWidget {
         RecordDateBar(
           dashboard: dashboard,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
           onDateSelected: onDateSelected,
           onPickDate: onPickDate,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         RecordAiInputBar(
           l10n: l10n,
-          typography: typography,
-          surface: surface,
           onTap: onAiInputTap,
           onMicTap: onMicTap,
           onCameraTap: onCameraTap,
@@ -138,16 +134,12 @@ class _MobileRecordDashboard extends StatelessWidget {
         RecordQuickEntryPanel(
           actions: quickActions,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
           onQuickAction: onQuickAction,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         RecordMobileFilter(
           filters: mobileFilters,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
           onFilterSelected: onFilterSelected,
         ),
         const SizedBox(height: AppSpacingTokens.md),
@@ -155,11 +147,9 @@ class _MobileRecordDashboard extends StatelessWidget {
           entries: timeline,
           totalCount: dashboard.timeline.length,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        RecordGuideRow(l10n: l10n, typography: typography, surface: surface),
+        RecordGuideRow(l10n: l10n),
       ],
     );
   }
@@ -246,8 +236,6 @@ class _DesktopRecordDashboard extends StatelessWidget {
               RecordNewEntryPanel(
                 actions: dashboard.quickActions,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onNewEntry: onNewEntry,
                 onQuickAction: onQuickAction,
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -21,23 +22,17 @@ class MealDishEditorSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           l10n.recordMealAnalysisRecognizedDishes,
-          style: AppTypographyTokens.mobile(
-            Theme.of(context).colorScheme.onSurface,
-          ).bodyMdStrong,
+          style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.xs),
-        Text(
-          l10n.recordMealDishEditorHelperText,
-          style: AppTypographyTokens.mobile(
-            Theme.of(context).colorScheme.onSurface,
-          ).bodySm,
-        ),
+        Text(l10n.recordMealDishEditorHelperText, style: textTheme.bodySmall),
         const SizedBox(height: AppSpacingTokens.sm),
         for (var index = 0; index < dishNames.length; index += 1) ...[
           Row(
@@ -57,7 +52,7 @@ class MealDishEditorSection extends StatelessWidget {
               IconButton(
                 key: Key('meal-dish-remove-$index'),
                 onPressed: enabled ? () => onDishRemoved(index) : null,
-                icon: const Icon(Icons.delete_outline_rounded),
+                icon: const Icon(FLucideIcons.trash2),
                 tooltip: l10n.recordMealDishRemoveAction,
               ),
             ],
@@ -69,7 +64,7 @@ class MealDishEditorSection extends StatelessWidget {
           child: OutlinedButton.icon(
             key: const Key('meal-dish-add-action'),
             onPressed: enabled ? onDishAdded : null,
-            icon: const Icon(Icons.add_rounded),
+            icon: const Icon(FLucideIcons.plus),
             label: Text(l10n.recordMealDishAddAction),
           ),
         ),

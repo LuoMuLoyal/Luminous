@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -29,34 +29,31 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final hasAttachment =
         selectedBytes != null ||
         existingAttachment?.objectKey.isNotEmpty == true;
     final fileName = selectedFileName ?? existingAttachment?.fileName;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvas,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-      ),
+    return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.recordImageSectionTitle, style: typography.bodyMdStrong),
+            Text(
+              l10n.recordImageSectionTitle,
+              style: textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: AppSpacingTokens.sm),
             Row(
               children: [
                 _AttachmentPreview(
                   selectedBytes: selectedBytes,
                   existingAttachment: existingAttachment,
-                  surface: surface,
                   label: l10n.recordImageAttachedLabel,
                 ),
                 const SizedBox(width: AppSpacingTokens.md),
@@ -68,15 +65,17 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         hasAttachment
                             ? l10n.recordImageAttachedLabel
                             : l10n.recordImageEmptyLabel,
-                        style: typography.bodySmStrong,
+                        style: textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (fileName != null && fileName.trim().isNotEmpty) ...[
                         const SizedBox(height: AppSpacingTokens.xxs),
                         Text(
                           fileName,
-                          style: typography.caption.copyWith(
-                            color: surface.body,
+                          style: textTheme.labelSmall?.copyWith(
+                            color: colors.mutedForeground,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -88,7 +87,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         children: [
                           OutlinedButton.icon(
                             onPressed: enabled ? onPick : null,
-                            icon: const Icon(Icons.image_outlined, size: 18),
+                            icon: const Icon(FLucideIcons.image, size: 18),
                             label: Text(
                               hasAttachment
                                   ? l10n.recordImageReplaceAction
@@ -98,7 +97,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                           if (hasAttachment)
                             TextButton.icon(
                               onPressed: enabled ? onRemove : null,
-                              icon: const Icon(Icons.close_rounded, size: 18),
+                              icon: const Icon(FLucideIcons.x, size: 18),
                               label: Text(l10n.recordImageRemoveAction),
                             ),
                         ],
@@ -119,19 +118,18 @@ class _AttachmentPreview extends StatelessWidget {
   const _AttachmentPreview({
     required this.selectedBytes,
     required this.existingAttachment,
-    required this.surface,
     required this.label,
   });
 
   final Uint8List? selectedBytes;
   final DailyRecordAttachment? existingAttachment;
-  final AppThemeSurface surface;
   final String label;
 
   @override
   Widget build(BuildContext context) {
     const width = 96.0;
     const height = 72.0;
+    final colors = context.theme.colors;
     final bytes = selectedBytes;
     final imageUrl = existingAttachment?.displayUrl;
 
@@ -141,7 +139,9 @@ class _AttachmentPreview extends StatelessWidget {
         width: width,
         height: height,
         child: DecoratedBox(
-          decoration: BoxDecoration(color: surface.canvasSoft2),
+          decoration: BoxDecoration(
+            color: colors.secondary.withValues(alpha: 0.2),
+          ),
           child: switch ((bytes, imageUrl)) {
             (final Uint8List data, _) => Image.memory(
               data,
@@ -151,19 +151,12 @@ class _AttachmentPreview extends StatelessWidget {
             (_, final String url) => CachedNetworkImage(
               imageUrl: url,
               fit: BoxFit.cover,
-              placeholder: (context, url) => _PreviewFallback(
-                surface: surface,
-                icon: Icons.image_outlined,
-              ),
-              errorWidget: (context, url, error) => _PreviewFallback(
-                surface: surface,
-                icon: Icons.broken_image_outlined,
-              ),
+              placeholder: (context, url) =>
+                  const _PreviewFallback(icon: FLucideIcons.image),
+              errorWidget: (context, url, error) =>
+                  const _PreviewFallback(icon: FLucideIcons.imageOff),
             ),
-            _ => _PreviewFallback(
-              surface: surface,
-              icon: Icons.add_photo_alternate_outlined,
-            ),
+            _ => const _PreviewFallback(icon: FLucideIcons.imagePlus),
           },
         ),
       ),
@@ -172,13 +165,14 @@ class _AttachmentPreview extends StatelessWidget {
 }
 
 class _PreviewFallback extends StatelessWidget {
-  const _PreviewFallback({required this.surface, required this.icon});
+  const _PreviewFallback({required this.icon});
 
-  final AppThemeSurface surface;
   final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Icon(icon, color: surface.mute, size: 24));
+    return Center(
+      child: Icon(icon, color: context.theme.colors.mutedForeground, size: 24),
+    );
   }
 }

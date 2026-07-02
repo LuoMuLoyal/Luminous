@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordNlpRetryPanel extends StatelessWidget {
@@ -18,26 +18,23 @@ class RecordNlpRetryPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvasSoft,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.warning.withValues(alpha: 0.45)),
-      ),
+    return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.md),
         child: Row(
           children: [
-            Icon(Icons.error_outline_rounded, color: surface.warning),
+            const Icon(
+              FLucideIcons.circleAlert,
+              color: AppColorTokens.warningDeep,
+            ),
             const SizedBox(width: AppSpacingTokens.sm),
             Expanded(
               child: Text(
                 l10n.recordNlpFailedCandidatesHint(failedCount),
-                style: typography.bodySm.copyWith(color: surface.body),
+                style: textTheme.bodySmall?.copyWith(color: colors.foreground),
               ),
             ),
             const SizedBox(width: AppSpacingTokens.sm),

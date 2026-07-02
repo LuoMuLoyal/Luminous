@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
@@ -12,21 +12,19 @@ class RecordDateBar extends StatelessWidget {
     super.key,
     required this.dashboard,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onDateSelected,
     this.onPickDate,
   });
 
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<DateTime>? onDateSelected;
   final VoidCallback? onPickDate;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final dateLabel = l10n.recordDatePillLabel(
       dashboard.selectedDate.month,
       dashboard.selectedDate.day,
@@ -37,8 +35,7 @@ class RecordDateBar extends StatelessWidget {
       children: [
         _DateStepButton(
           key: const Key('record-date-previous-action'),
-          icon: Icons.chevron_left_rounded,
-          surface: surface,
+          icon: FLucideIcons.chevronLeft,
           onTap: onDateSelected == null
               ? null
               : () => onDateSelected!(
@@ -52,9 +49,9 @@ class RecordDateBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: surface.canvas,
+                color: colors.background,
                 borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-                border: Border.all(color: surface.hairline),
+                border: Border.all(color: colors.border),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -64,15 +61,15 @@ class RecordDateBar extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.calendar_month_outlined,
-                      color: surface.body,
+                      FLucideIcons.calendarDays,
+                      color: colors.foreground,
                       size: AppSpacingTokens.lg,
                     ),
                     const SizedBox(width: AppSpacingTokens.xs),
                     Expanded(
                       child: Text(
                         dateLabel,
-                        style: typography.bodyMdStrong.copyWith(
+                        style: textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                         maxLines: 1,
@@ -81,8 +78,8 @@ class RecordDateBar extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacingTokens.xs),
                     Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: surface.mute,
+                      FLucideIcons.chevronDown,
+                      color: colors.mutedForeground,
                       size: AppSpacingTokens.lg,
                     ),
                   ],
@@ -94,8 +91,7 @@ class RecordDateBar extends StatelessWidget {
         const SizedBox(width: AppSpacingTokens.xs),
         _DateStepButton(
           key: const Key('record-date-next-action'),
-          icon: Icons.chevron_right_rounded,
-          surface: surface,
+          icon: FLucideIcons.chevronRight,
           onTap: onDateSelected == null
               ? null
               : () => onDateSelected!(
@@ -108,31 +104,30 @@ class RecordDateBar extends StatelessWidget {
 }
 
 class _DateStepButton extends StatelessWidget {
-  const _DateStepButton({
-    super.key,
-    required this.icon,
-    required this.surface,
-    required this.onTap,
-  });
+  const _DateStepButton({super.key, required this.icon, required this.onTap});
 
   final IconData icon;
-  final AppThemeSurface surface;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     return AppInkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: surface.canvas,
+          color: colors.background,
           borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-          border: Border.all(color: surface.hairline),
+          border: Border.all(color: colors.border),
         ),
         child: SizedBox.square(
           dimension: 44,
-          child: Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
+          child: Icon(
+            icon,
+            color: colors.foreground,
+            size: AppSpacingTokens.lg,
+          ),
         ),
       ),
     );

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/record_shared_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordMobileTimeline extends StatelessWidget {
@@ -17,31 +15,26 @@ class RecordMobileTimeline extends StatelessWidget {
     required this.entries,
     required this.totalCount,
     required this.l10n,
-    required this.typography,
-    required this.surface,
   });
 
   final List<RecordTimelineEntry> entries;
   final int totalCount;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     return Column(
       key: const Key('record-timeline'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.recordTodayEntriesTitle(totalCount),
-          style: typography.displaySm,
+          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        AppSectionSurface(
-          typography: typography,
-          surface: surface,
-          padding: EdgeInsets.zero,
+        FCard.raw(
           child: Column(
             children: [
               for (var index = 0; index < entries.length; index += 1) ...[
@@ -49,15 +42,15 @@ class RecordMobileTimeline extends StatelessWidget {
                   index: index,
                   entry: entries[index],
                   l10n: l10n,
-                  typography: typography,
-                  surface: surface,
                   isLast: index == entries.length - 1,
                 ),
                 if (index < entries.length - 1)
-                  RecordIndentedDivider(
-                    surface: surface,
+                  Divider(
+                    height: 1,
+                    thickness: 1,
                     indent: AppSpacingTokens.x6l + AppSpacingTokens.md,
                     endIndent: AppSpacingTokens.md,
+                    color: colors.border,
                   ),
               ],
             ],
@@ -73,20 +66,18 @@ class _TimelineRow extends StatelessWidget {
     required this.index,
     required this.entry,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.isLast,
   });
 
   final int index;
   final RecordTimelineEntry entry;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final bool isLast;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final label = entry.rawTitle ?? recordCopy(l10n, entry.titleKey);
     final value = entry.valueKey == null
         ? entry.value
@@ -124,7 +115,7 @@ class _TimelineRow extends StatelessWidget {
                 width: AppSpacingTokens.x3l,
                 child: AppSkeletonText(
                   text: entry.time,
-                  style: typography.bodySm.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                   widthFactor: 0.68,
@@ -140,7 +131,7 @@ class _TimelineRow extends StatelessWidget {
                         color: entry.accent,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: surface.canvas,
+                          color: colors.background,
                           width: AppSpacingTokens.xxs,
                         ),
                       ),
@@ -154,7 +145,7 @@ class _TimelineRow extends StatelessWidget {
                         child: VerticalDivider(
                           width: 1,
                           thickness: 1,
-                          color: surface.hairline,
+                          color: colors.border,
                         ),
                       ),
                   ],
@@ -175,7 +166,7 @@ class _TimelineRow extends StatelessWidget {
                   children: [
                     AppSkeletonText(
                       text: label,
-                      style: typography.bodyMdStrong.copyWith(
+                      style: textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
@@ -186,7 +177,9 @@ class _TimelineRow extends StatelessWidget {
                       const SizedBox(height: AppSpacingTokens.xxs),
                       AppSkeletonText(
                         text: subtitle,
-                        style: typography.bodySm.copyWith(color: surface.body),
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.mutedForeground,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         widthFactor: 0.78,
@@ -199,21 +192,20 @@ class _TimelineRow extends StatelessWidget {
                 const SizedBox(width: AppSpacingTokens.xs),
                 AppSkeletonSlot(
                   skeleton: AppInlineSkeletonBlock(
-                    height: (typography.bodySm.fontSize ?? 14) + 8,
+                    height: (textTheme.bodySmall?.fontSize ?? 14) + 8,
                     widthFactor: 0.16,
                     radius: AppRadiusTokens.sm,
                   ),
                   child: AppStatusPill(
                     label: recordCopy(l10n, entry.badgeKey!),
                     color: entry.accent,
-                    typography: typography,
                   ),
                 ),
               ],
               const SizedBox(width: AppSpacingTokens.xs),
               Icon(
-                Icons.chevron_right_rounded,
-                color: surface.mute,
+                FLucideIcons.chevronRight,
+                color: colors.mutedForeground,
                 size: AppSpacingTokens.lg,
               ),
             ],
