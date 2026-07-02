@@ -402,8 +402,8 @@ class _DrugBoxMedicationRow extends StatelessWidget {
     final state = _itemState(l10n, item);
     final currentMedicineId = item.currentMedicineId;
 
-    return AppInkWell(
-      onTap: () {
+    return FTappable(
+      onPress: () {
         if (currentMedicineId == null) {
           AppToast.show(context, l10n.medicineOpenPlanItemToast);
           return;
@@ -416,7 +416,6 @@ class _DrugBoxMedicationRow extends StatelessWidget {
           '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}',
         );
       },
-      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level2,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
@@ -97,8 +96,8 @@ class ValueActionRow extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return AppInkWell(
-      onTap: onTap,
+    return FTappable(
+      onPress: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level4,

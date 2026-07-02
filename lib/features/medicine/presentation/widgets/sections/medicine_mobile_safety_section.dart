@@ -57,9 +57,8 @@ class _SafetyAlertRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
-    return AppInkWell(
-      onTap: () => context.push('/medicine/risk-check'),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+    return FTappable(
+      onPress: () => context.push('/medicine/risk-check'),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level4,
