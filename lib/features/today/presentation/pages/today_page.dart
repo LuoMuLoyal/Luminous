@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/views/today_dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/today_skeleton_view.dart';
@@ -19,14 +19,14 @@ class TodayPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardAsync = ref.watch(todayDashboardProvider);
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     final brightness = Theme.of(context).brightness;
 
     return DecoratedBox(
       decoration: BoxDecoration(
         color: brightness == Brightness.dark
-            ? surface.canvas
-            : surface.canvasSoft,
+            ? colors.background
+            : colors.secondary.withValues(alpha: 0.32),
       ),
       child: SafeArea(
         bottom: false,

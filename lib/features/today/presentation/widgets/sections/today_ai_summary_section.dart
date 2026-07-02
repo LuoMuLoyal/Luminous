@@ -1,13 +1,12 @@
 import 'dart:async';
 
+import 'package:forui/forui.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
@@ -25,9 +24,8 @@ class TodayAiSummarySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final canAccessProtectedData = ref.watch(
       authSessionProvider.select((s) => s.canAccessProtectedData),
     );
@@ -54,11 +52,8 @@ class TodayAiSummarySection extends ConsumerWidget {
         ? l10n.todayAiSummaryOpenSettingsAction
         : l10n.todayAiSummaryGenerateAction;
 
-    return AppSectionSurface(
+    return FCard.raw(
       key: const Key('today-ai-summary-card'),
-      padding: EdgeInsets.zero,
-      radius: AppRadiusTokens.lg,
-      shadow: const <BoxShadow>[],
       child: Column(
         children: [
           Padding(
@@ -71,7 +66,7 @@ class TodayAiSummarySection extends ConsumerWidget {
             child: Row(
               children: [
                 const TodayGlyphTile(
-                  icon: Icons.auto_awesome_rounded,
+                  icon: FLucideIcons.sparkles,
                   color: AppColorTokens.cyanDeep,
                   size: AppSpacingTokens.x2l,
                   radius: AppRadiusTokens.md,
@@ -84,7 +79,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                     children: [
                       Text(
                         l10n.todayAiSummaryTitle,
-                        style: typography.bodyMdStrong.copyWith(
+                        style: textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0,
                         ),
@@ -94,8 +89,8 @@ class TodayAiSummarySection extends ConsumerWidget {
                       const SizedBox(height: AppSpacingTokens.xxs),
                       Text(
                         l10n.todayAiSummarySubtitle,
-                        style: typography.bodySm.copyWith(
-                          color: surface.body,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.mutedForeground,
                           letterSpacing: 0,
                         ),
                         maxLines: 1,
@@ -105,8 +100,8 @@ class TodayAiSummarySection extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacingTokens.sm),
-                TextButton(
-                  onPressed: aiState.isLoading
+                FButton(
+                  onPress: aiState.isLoading
                       ? null
                       : () async {
                           if (!canAccessProtectedData) {
@@ -131,19 +126,14 @@ class TodayAiSummarySection extends ConsumerWidget {
                             await AppToast.show(context, result.errorMessage!);
                           }
                         },
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacingTokens.sm,
-                    ),
-                  ),
+                  size: FButtonSizeVariant.xs,
+                  variant: FButtonVariant.ghost,
                   child: Text(actionLabel),
                 ),
               ],
             ),
           ),
-          Divider(height: 1, thickness: 1, color: surface.hairline),
+          Divider(height: 1, thickness: 1, color: colors.border),
           if (content.summary != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -156,7 +146,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   content.summary!,
-                  style: typography.bodyMdStrong.copyWith(
+                  style: textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0,
                   ),
@@ -170,7 +160,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                 height: 1,
                 thickness: 1,
                 indent: AppSpacingTokens.x4l + AppSpacingTokens.sm,
-                color: surface.hairline.withValues(alpha: 0.62),
+                color: colors.border.withValues(alpha: 0.62),
               ),
           ],
           if (content.footer != null)
@@ -185,8 +175,8 @@ class TodayAiSummarySection extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   content.footer!,
-                  style: typography.caption.copyWith(
-                    color: surface.mute,
+                  style: textTheme.labelSmall?.copyWith(
+                    color: colors.mutedForeground,
                     letterSpacing: 0,
                   ),
                 ),
@@ -205,9 +195,8 @@ class _AiSummaryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -221,8 +210,8 @@ class _AiSummaryRow extends StatelessWidget {
           Expanded(
             child: Text(
               item.text,
-              style: typography.bodySm.copyWith(
-                color: surface.body,
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.mutedForeground,
                 letterSpacing: 0,
               ),
               maxLines: 2,
