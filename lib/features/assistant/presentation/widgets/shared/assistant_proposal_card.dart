@@ -36,11 +36,11 @@ class AssistantProposalCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         border: Border.all(color: colors.border),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,7 +51,7 @@ class AssistantProposalCard extends StatelessWidget {
                   size: 18,
                   color: theme.colorScheme.primary,
                 ),
-                const SizedBox(width: AppSpacingTokens.xs),
+                const SizedBox(width: AppSpacingTokens.level2),
                 Expanded(
                   child: Text(
                     proposal.title,
@@ -69,10 +69,10 @@ class AssistantProposalCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.xs),
+            const SizedBox(height: AppSpacingTokens.level2),
             Text(proposal.summary, style: textTheme.bodyMedium),
             if (proposal.reason case final reason?) ...[
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 reason,
                 style: textTheme.bodySmall?.copyWith(
@@ -81,20 +81,20 @@ class AssistantProposalCard extends StatelessWidget {
               ),
             ],
             if (proposal.previewFields.isNotEmpty) ...[
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               Wrap(
-                spacing: AppSpacingTokens.xs,
-                runSpacing: AppSpacingTokens.xs,
+                spacing: AppSpacingTokens.level2,
+                runSpacing: AppSpacingTokens.level2,
                 children: [
                   for (final field in proposal.previewFields)
                     AssistantToolChip(label: '${field.label}: ${field.value}'),
                 ],
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             _ProposalMetaSection(proposal: proposal),
             if (proposal.executionError case final error?) ...[
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 error,
                 style: textTheme.bodySmall?.copyWith(
@@ -102,7 +102,7 @@ class AssistantProposalCard extends StatelessWidget {
                 ),
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Row(
               children: [
                 FButton(
@@ -119,7 +119,7 @@ class AssistantProposalCard extends StatelessWidget {
                         ),
                   child: Text(proposalConfirmLabel(l10n, proposal.type)),
                 ),
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
                 FButton(
                   key: Key('assistant-proposal-dismiss-${proposal.id}'),
                   variant: FButtonVariant.ghost,
@@ -167,10 +167,10 @@ class _ProposalMetaSection extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.secondary,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.sm),
+        padding: const EdgeInsets.all(AppSpacingTokens.level3),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -185,7 +185,7 @@ class _ProposalMetaSection extends StatelessWidget {
                 ),
               ),
             if (proposal.constraints.isNotEmpty) ...[
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 l10n.assistantProposalConstraintsLabel,
                 style: textTheme.labelMedium?.copyWith(
@@ -205,7 +205,7 @@ class _ProposalMetaSection extends StatelessWidget {
                 ),
             ],
             if (proposal.isExpired) ...[
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 l10n.assistantProposalExpiredHint,
                 style: textTheme.bodySmall?.copyWith(

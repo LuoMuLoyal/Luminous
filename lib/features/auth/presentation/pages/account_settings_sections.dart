@@ -175,14 +175,14 @@ class _LinkedIdentityTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Row(
           children: [
             Icon(FLucideIcons.link, color: colors.primary, size: 20),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,7 +193,7 @@ class _LinkedIdentityTile extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.xxs),
+                  const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     [
                       identity.email ?? l10n.authLinkedIdentityEmailMissing,
@@ -350,10 +350,10 @@ class _SectionColumn extends StatelessWidget {
           context,
         ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
       ),
-      const SizedBox(height: AppSpacingTokens.lg),
+      const SizedBox(height: AppSpacingTokens.level5),
       for (final child in children) ...[
         child,
-        if (child != children.last) const SizedBox(height: AppSpacingTokens.md),
+        if (child != children.last) const SizedBox(height: AppSpacingTokens.level4),
       ],
     ],
   );
@@ -377,14 +377,14 @@ class _InfoRow extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 18, color: colors.mutedForeground),
-        const SizedBox(width: AppSpacingTokens.sm),
+        const SizedBox(width: AppSpacingTokens.level3),
         Expanded(
           child: Text(
             label,
             style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.md),
+        const SizedBox(width: AppSpacingTokens.level4),
         Flexible(
           child: Text(
             value,

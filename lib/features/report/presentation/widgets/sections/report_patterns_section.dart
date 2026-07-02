@@ -38,15 +38,15 @@ class ReportPatternsSection extends StatelessWidget {
           l10n.reportPatternSectionTitle,
           style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: patterns.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: AppSpacingTokens.sm,
-            mainAxisSpacing: AppSpacingTokens.sm,
+            crossAxisSpacing: AppSpacingTokens.level3,
+            mainAxisSpacing: AppSpacingTokens.level3,
             mainAxisExtent: _patternCardHeight(context),
           ),
           itemBuilder: (context, index) {
@@ -71,7 +71,7 @@ class _PatternCard extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -94,7 +94,7 @@ class _PatternCard extends StatelessWidget {
                   ),
                   shape: BoxShape.circle,
                 ),
-                const SizedBox(width: AppSpacingTokens.xs),
+                const SizedBox(width: AppSpacingTokens.level2),
                 Expanded(
                   child: Text(
                     pattern.title,
@@ -107,7 +107,7 @@ class _PatternCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             AppSkeletonText(
               text: reportStatusLabel(l10n, pattern.status),
               style: textTheme.titleSmall?.copyWith(
@@ -117,7 +117,7 @@ class _PatternCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               widthFactor: 0.74,
             ),
-            const SizedBox(height: AppSpacingTokens.xxs),
+            const SizedBox(height: AppSpacingTokens.level1),
             AppSkeletonText(
               text: pattern.body,
               style: textTheme.bodySmall?.copyWith(
@@ -134,7 +134,7 @@ class _PatternCard extends StatelessWidget {
                   child: AppSkeletonSlot(
                     skeleton: const AppInlineSkeletonBlock(
                       height: 22,
-                      radius: AppRadiusTokens.sm,
+                      radius: AppRadiusTokens.level2,
                     ),
                     child: ReportMetricTrack(
                       values: pattern.sparkline,
@@ -148,7 +148,7 @@ class _PatternCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
                 Icon(
                   FLucideIcons.chevronRight,
                   color: colors.mutedForeground,

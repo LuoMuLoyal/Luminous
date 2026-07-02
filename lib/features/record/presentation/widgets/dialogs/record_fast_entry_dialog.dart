@@ -57,10 +57,10 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
               context,
             ).textTheme.bodySmall?.copyWith(color: Color(0xFF6B7280)),
           ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           Wrap(
-            spacing: AppSpacingTokens.sm,
-            runSpacing: AppSpacingTokens.sm,
+            spacing: AppSpacingTokens.level3,
+            runSpacing: AppSpacingTokens.level3,
             children: [
               for (var index = 0; index < choices.length; index += 1)
                 _QuickChoiceChip(

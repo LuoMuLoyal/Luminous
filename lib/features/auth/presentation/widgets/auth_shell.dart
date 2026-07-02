@@ -40,8 +40,8 @@ class AuthShell extends StatelessWidget {
           padding: EdgeInsets.symmetric(
             horizontal: layout.pageHorizontalPadding,
             vertical: width < AppBreakpoints.mobile
-                ? AppSpacingTokens.lg
-                : AppSpacingTokens.xl,
+                ? AppSpacingTokens.level5
+                : AppSpacingTokens.level6,
           ),
           child: Center(
             child: ConstrainedBox(
@@ -58,10 +58,10 @@ class AuthShell extends StatelessWidget {
                     subtitle: subtitle,
                   ),
                   if (formModeSelector != null) ...[
-                    const SizedBox(height: AppSpacingTokens.xl),
+                    const SizedBox(height: AppSpacingTokens.level6),
                     formModeSelector!,
                   ],
-                  const SizedBox(height: AppSpacingTokens.xl),
+                  const SizedBox(height: AppSpacingTokens.level6),
                   _AuthFormPanel(
                     form: form,
                     enableAnimation: enableFormAnimation,
@@ -125,7 +125,7 @@ class _AuthPageHeader extends StatelessWidget {
           Align(alignment: Alignment.centerLeft, child: leading),
         if (logo != null) ...[
           Center(child: logo),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
         ],
         Text(
           title,
@@ -133,7 +133,7 @@ class _AuthPageHeader extends StatelessWidget {
           style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
         if (subtitle != null) ...[
-          const SizedBox(height: AppSpacingTokens.xs),
+          const SizedBox(height: AppSpacingTokens.level2),
           Text(
             subtitle!,
             textAlign: TextAlign.center,
@@ -156,7 +156,7 @@ class AuthSectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: child,
       ),
     );
@@ -173,7 +173,7 @@ class _AuthFormPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final panel = FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.xl),
+        padding: const EdgeInsets.all(AppSpacingTokens.level6),
         child: form,
       ),
     );

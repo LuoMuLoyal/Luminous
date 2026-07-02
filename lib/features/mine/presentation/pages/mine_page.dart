@@ -56,10 +56,10 @@ class MinePage extends ConsumerWidget {
                     key: const PageStorageKey<String>('mine-mobile-scroll'),
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.fromLTRB(
-                      AppSpacingTokens.md,
-                      AppSpacingTokens.md,
-                      AppSpacingTokens.md,
-                      AppSpacingTokens.x5l,
+                      AppSpacingTokens.level4,
+                      AppSpacingTokens.level4,
+                      AppSpacingTokens.level4,
+                      AppSpacingTokens.level10,
                     ),
                     children: [
                       MineTopBar(
@@ -67,7 +67,7 @@ class MinePage extends ConsumerWidget {
                             context.push('/notifications'),
                         onSettingsTap: () => context.push('/settings'),
                       ),
-                      const SizedBox(height: AppSpacingTokens.md),
+                      const SizedBox(height: AppSpacingTokens.level4),
                       body,
                     ],
                   ),
@@ -125,14 +125,14 @@ class _MineDesktopShell extends StatelessWidget {
             key: const PageStorageKey<String>('mine-desktop-scroll'),
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
-              AppSpacingTokens.xl,
-              AppSpacingTokens.xl,
-              AppSpacingTokens.xl,
-              AppSpacingTokens.xl,
+              AppSpacingTokens.level6,
+              AppSpacingTokens.level6,
+              AppSpacingTokens.level6,
+              AppSpacingTokens.level6,
             ),
             children: [
               topBar,
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               child,
             ],
           ),

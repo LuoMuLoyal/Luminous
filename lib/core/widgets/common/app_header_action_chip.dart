@@ -36,7 +36,7 @@ class AppHeaderActionChip extends StatelessWidget {
           children: [
             Icon(icon, size: 18, color: foreground),
             if (!iconOnly) ...[
-              const SizedBox(width: AppSpacingTokens.xs),
+              const SizedBox(width: AppSpacingTokens.level2),
               Text(
                 label,
                 style: textTheme.labelLarge?.copyWith(

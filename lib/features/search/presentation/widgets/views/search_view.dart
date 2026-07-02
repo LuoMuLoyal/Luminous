@@ -61,7 +61,7 @@ class MedicineSearchView extends StatelessWidget {
           expand: true,
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? AppSpacingTokens.lg : AppSpacingTokens.md,
+              vertical: isDesktop ? AppSpacingTokens.level5 : AppSpacingTokens.level4,
             ),
             child: isDesktop
                 ? _DesktopSearchLayout(
@@ -100,16 +100,16 @@ class MedicineSearchLoadingView extends StatelessWidget {
       baseColor: colors.secondary.withValues(alpha: 0.35),
       highlightColor: colors.background,
       child: const Padding(
-        padding: EdgeInsets.all(AppSpacingTokens.md),
+        padding: EdgeInsets.all(AppSpacingTokens.level4),
         child: SingleChildScrollView(
           child: Column(
             children: [
               AppInlineSkeletonBlock(height: 48),
-              SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.level4),
               AppInlineSkeletonBlock(height: 160),
-              SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.level4),
               AppInlineSkeletonBlock(height: 160),
-              SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.level4),
               AppInlineSkeletonBlock(height: 160),
             ],
           ),
@@ -173,27 +173,27 @@ class _MobileSearchLayout extends StatelessWidget {
 
     return ListView(
       key: const PageStorageKey<String>('medicine-search-scroll'),
-      padding: const EdgeInsets.only(bottom: AppSpacingTokens.xl),
+      padding: const EdgeInsets.only(bottom: AppSpacingTokens.level6),
       children: [
         SearchTopBar(l10n: l10n),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         SearchInput(l10n: l10n, query: state.query, onChanged: onQueryChanged),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         SourceSwitch(
           selectedSource: state.source,
           l10n: l10n,
           onChanged: onSourceSwitched,
         ),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         if (state.query.trim().isEmpty) ...[
           RecentSearches(
             keywords: const <String>[],
             l10n: l10n,
             onKeywordSelected: onQueryChanged,
           ),
-          const SizedBox(height: AppSpacingTokens.lg),
+          const SizedBox(height: AppSpacingTokens.level5),
           QuickActions(actions: _scanQuickActions, l10n: l10n),
-          const SizedBox(height: AppSpacingTokens.xl),
+          const SizedBox(height: AppSpacingTokens.level6),
           Categories(
             categories: const <MedicineSearchCategory>[],
             l10n: l10n,
@@ -208,10 +208,10 @@ class _MobileSearchLayout extends StatelessWidget {
               color: colors.mutedForeground,
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           ...state.results.map(
             (result) => Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
+              padding: const EdgeInsets.only(bottom: AppSpacingTokens.level4),
               child: SearchResultTile(
                 result: result,
                 l10n: l10n,
@@ -272,7 +272,7 @@ class _DesktopSearchLayout extends StatelessWidget {
             onAddToCurrentMedicines: onAddToCurrentMedicines,
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.lg),
+        const SizedBox(width: AppSpacingTokens.level5),
         Expanded(
           flex: 3,
           child: PreviewPanel(state: state, l10n: l10n),
@@ -306,38 +306,38 @@ class _DesktopSearchPanel extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.xl),
+        padding: const EdgeInsets.all(AppSpacingTokens.level6),
         child: ListView(
           children: [
             DesktopTabs(l10n: l10n),
-            const SizedBox(height: AppSpacingTokens.xl),
+            const SizedBox(height: AppSpacingTokens.level6),
             Text(
               l10n.medicineSearchPageTitle,
               style: textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             SearchInput(
               l10n: l10n,
               query: state.query,
               onChanged: onQueryChanged,
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             SourceSwitch(
               selectedSource: state.source,
               l10n: l10n,
               onChanged: onSourceSwitched,
             ),
-            const SizedBox(height: AppSpacingTokens.lg),
+            const SizedBox(height: AppSpacingTokens.level5),
             if (state.query.trim().isEmpty) ...[
               RecentSearches(keywords: const <String>[], l10n: l10n),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               QuickActions(
                 actions: const <MedicineSearchQuickAction>[],
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.xl),
+              const SizedBox(height: AppSpacingTokens.level6),
               Categories(
                 categories: const <MedicineSearchCategory>[],
                 l10n: l10n,
@@ -350,10 +350,10 @@ class _DesktopSearchPanel extends StatelessWidget {
                   color: colors.mutedForeground,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               ...state.results.map(
                 (result) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
+                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.level4),
                   child: SearchResultTile(
                     result: result,
                     l10n: l10n,

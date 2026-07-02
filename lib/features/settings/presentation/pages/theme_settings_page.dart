@@ -39,7 +39,7 @@ class ThemeSettingsPage extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _SectionLabel(label: l10n.settingsThemeAppearanceTitle),
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   FTileGroup(
                     style: settingsSubpageTileGroupStyle(context.theme),
                     children: [
@@ -102,7 +102,7 @@ class _SectionLabel extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xs),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
       child: Text(
         label,
         style: textTheme.labelSmall?.copyWith(

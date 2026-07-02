@@ -49,12 +49,12 @@ class ReportTrendSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         Divider(height: 1, thickness: 1, color: colors.border),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         Wrap(
-          spacing: AppSpacingTokens.md,
-          runSpacing: AppSpacingTokens.xs,
+          spacing: AppSpacingTokens.level4,
+          runSpacing: AppSpacingTokens.level2,
           children: [
             for (final series in trends)
               _LegendDot(
@@ -63,9 +63,9 @@ class ReportTrendSection extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         _TrendPlaceholder(trends: trends, l10n: l10n),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         Align(
           alignment: Alignment.centerRight,
           child: Text(
@@ -106,10 +106,10 @@ class _TrendPlaceholder extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: colors.secondary.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
           border: Border.all(color: colors.border),
         ),
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           children: [
             SizedBox(
@@ -137,13 +137,13 @@ class _TrendPlaceholder extends StatelessWidget {
                         for (final series in trends)
                           Padding(
                             padding: const EdgeInsets.only(
-                              bottom: AppSpacingTokens.xs,
+                              bottom: AppSpacingTokens.level2,
                             ),
                             child: AppSkeletonSlot(
                               skeleton: const AppInlineSkeletonBlock(
                                 height: 22,
                                 width: 46,
-                                radius: AppRadiusTokens.sm,
+                                radius: AppRadiusTokens.level2,
                               ),
                               child: _TrendValuePill(
                                 label: series.currentValue,
@@ -170,7 +170,7 @@ class _TrendPlaceholder extends StatelessWidget {
                           AppSkeletonSlot(
                             skeleton: const AppInlineSkeletonBlock(
                               height: 30,
-                              radius: AppRadiusTokens.sm,
+                              radius: AppRadiusTokens.level2,
                             ),
                             child: ReportMetricTrack(
                               values: series.values,
@@ -184,7 +184,7 @@ class _TrendPlaceholder extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Row(
               children: [
                 for (final label in l10n.reportTrendDateLabels.split('|'))
@@ -226,7 +226,7 @@ class _LegendDot extends StatelessWidget {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           child: const SizedBox.square(dimension: 8),
         ),
-        const SizedBox(width: AppSpacingTokens.xs),
+        const SizedBox(width: AppSpacingTokens.level2),
         Text(
           label,
           style: textTheme.labelSmall?.copyWith(color: colors.mutedForeground),
@@ -249,12 +249,12 @@ class _TrendValuePill extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.92),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.xs,
-          vertical: AppSpacingTokens.xxs,
+          horizontal: AppSpacingTokens.level2,
+          vertical: AppSpacingTokens.level1,
         ),
         child: Text(
           label,

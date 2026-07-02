@@ -170,7 +170,7 @@ class ConditionEditPage extends HookConsumerWidget {
       leading: const AppBackButton(),
       children: [
         Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.md),
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -179,34 +179,34 @@ class ConditionEditPage extends HookConsumerWidget {
                 controller: labelController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldLabel),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               _enumDropdown<HealthConditionStatus>(
                 label: l10n.mineEditFieldStatus,
                 value: status.value,
                 values: HealthConditionStatus.values,
                 onChanged: (v) => status.value = v,
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: diagnosedAtController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldDiagnosedAt,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: noteController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
                 maxLines: 3,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               ElevatedButton(
                 key: const Key('condition-save-button'),
                 onPressed: onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
               if (!isNew) ...[
-                const SizedBox(height: AppSpacingTokens.sm),
+                const SizedBox(height: AppSpacingTokens.level3),
                 OutlinedButton(
                   key: const Key('condition-delete-button'),
                   onPressed: onDelete,

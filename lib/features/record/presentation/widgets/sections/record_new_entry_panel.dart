@@ -26,7 +26,7 @@ class RecordNewEntryPanel extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-new-entry-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -36,10 +36,10 @@ class RecordNewEntryPanel extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Wrap(
-              spacing: AppSpacingTokens.sm,
-              runSpacing: AppSpacingTokens.sm,
+              spacing: AppSpacingTokens.level3,
+              runSpacing: AppSpacingTokens.level3,
               children: actions
                   .take(7)
                   .map(
@@ -51,22 +51,22 @@ class RecordNewEntryPanel extends StatelessWidget {
                   )
                   .toList(),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Material(
               color: Colors.transparent,
               child: Opacity(
                 opacity: onNewEntry == null ? 0.5 : 1.0,
                 child: InkWell(
                   onTap: onNewEntry,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.secondary.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                      borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                       border: Border.all(color: colors.border),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(AppSpacingTokens.md),
+                      padding: const EdgeInsets.all(AppSpacingTokens.level4),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -75,7 +75,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                             color: Color(0xFF16A34A),
                             size: 20,
                           ),
-                          const SizedBox(width: AppSpacingTokens.sm),
+                          const SizedBox(width: AppSpacingTokens.level3),
                           Flexible(
                             child: Text(
                               l10n.recordVoiceAction,
@@ -116,22 +116,22 @@ class _NewEntryChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap == null ? null : () => onTap!(action),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: action.softColor.withValues(alpha: 0.68),
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.sm,
-              vertical: AppSpacingTokens.sm,
+              horizontal: AppSpacingTokens.level3,
+              vertical: AppSpacingTokens.level3,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(action.icon, color: action.accent, size: 16),
-                const SizedBox(width: AppSpacingTokens.xs),
+                const SizedBox(width: AppSpacingTokens.level2),
                 Text(
                   label,
                   style: textTheme.labelSmall?.copyWith(

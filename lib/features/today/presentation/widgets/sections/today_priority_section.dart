@@ -50,7 +50,7 @@ class TodayPrioritySection extends ConsumerWidget {
                 Divider(
                   height: 1,
                   thickness: 1,
-                  indent: AppSpacingTokens.x5l,
+                  indent: AppSpacingTokens.level10,
                   color: colors.border,
                 ),
             ],
@@ -77,8 +77,8 @@ class _PriorityRow extends ConsumerWidget {
       onPress: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,11 +86,11 @@ class _PriorityRow extends ConsumerWidget {
             TodayGlyphTile(
               icon: item.icon,
               color: item.color,
-              size: AppSpacingTokens.x2l,
-              radius: AppRadiusTokens.md,
+              size: AppSpacingTokens.level7,
+              radius: AppRadiusTokens.level3,
               gradient: false,
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +103,7 @@ class _PriorityRow extends ConsumerWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xxs),
+                  const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     item.subtitle,
                     style: textTheme.bodySmall?.copyWith(
@@ -113,7 +113,7 @@ class _PriorityRow extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (item.progress != null) ...[
-                    const SizedBox(height: AppSpacingTokens.xs),
+                    const SizedBox(height: AppSpacingTokens.level2),
                     TodayLinearProgress(
                       progress: item.progress!,
                       color: item.color,
@@ -123,7 +123,7 @@ class _PriorityRow extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             SizedBox(
               width: 82,
               child: Column(
@@ -141,7 +141,7 @@ class _PriorityRow extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.76,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xs),
+                  const SizedBox(height: AppSpacingTokens.level2),
                   _PriorityActionPill(item: item, onTap: onTap),
                 ],
               ),
@@ -168,12 +168,12 @@ class _PriorityActionPill extends ConsumerWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: item.color,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: AppSpacingTokens.level3,
+            vertical: AppSpacingTokens.level2,
           ),
           child: Text(
             item.action,

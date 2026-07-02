@@ -96,7 +96,7 @@ class _EmptyState extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.all(AppSpacingTokens.lg),
+      padding: const EdgeInsets.all(AppSpacingTokens.level5),
       child: Text(
         message,
         style: textTheme.bodyMedium?.copyWith(color: colors.mutedForeground),

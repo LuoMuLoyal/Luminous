@@ -74,12 +74,12 @@ void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
       child: Center(
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.xl),
+            padding: const EdgeInsets.all(AppSpacingTokens.level6),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const CircularProgressIndicator(),
-                const SizedBox(height: AppSpacingTokens.md),
+                const SizedBox(height: AppSpacingTokens.level4),
                 Text(
                   method == _ScanMethod.ocr ? '正在 OCR 识别...' : '正在 AI 识别...',
                 ),
@@ -152,7 +152,7 @@ class _MethodSelector extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.all(AppSpacingTokens.lg),
+      padding: const EdgeInsets.all(AppSpacingTokens.level5),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -161,23 +161,23 @@ class _MethodSelector extends StatelessWidget {
             size: 48,
             color: Color(0xFF0F766E),
           ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           Text('选择识别方式', style: theme.textTheme.titleMedium),
-          const SizedBox(height: AppSpacingTokens.lg),
+          const SizedBox(height: AppSpacingTokens.level5),
           _MethodTile(
             icon: Icons.text_snippet_outlined,
             title: 'OCR 文字识别',
             subtitle: '设备端识别，快速离线',
             onTap: () => Navigator.pop(context, _ScanMethod.ocr),
           ),
-          const SizedBox(height: AppSpacingTokens.sm),
+          const SizedBox(height: AppSpacingTokens.level3),
           _MethodTile(
             icon: Icons.auto_awesome_outlined,
             title: 'AI 智能识别',
             subtitle: '云端大模型，更准确',
             onTap: () => Navigator.pop(context, _ScanMethod.ai),
           ),
-          const SizedBox(height: AppSpacingTokens.lg),
+          const SizedBox(height: AppSpacingTokens.level5),
         ],
       ),
     );

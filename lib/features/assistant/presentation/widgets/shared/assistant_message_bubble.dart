@@ -53,11 +53,11 @@ class AssistantMessageBubble extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
             border: Border.all(color: colors.border),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -79,7 +79,7 @@ class AssistantMessageBubble extends StatelessWidget {
                         ),
                   ),
                 if (isStreaming) ...[
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   Text(
                     AppLocalizations.of(context)!.assistantStreamingLabel,
                     style: textTheme.bodySmall?.copyWith(
@@ -88,10 +88,10 @@ class AssistantMessageBubble extends StatelessWidget {
                   ),
                 ],
                 if (!isStreaming && usedTools.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   Wrap(
-                    spacing: AppSpacingTokens.xs,
-                    runSpacing: AppSpacingTokens.xs,
+                    spacing: AppSpacingTokens.level2,
+                    runSpacing: AppSpacingTokens.level2,
                     children: [
                       for (final tool in usedTools)
                         AssistantToolChip(
@@ -103,13 +103,13 @@ class AssistantMessageBubble extends StatelessWidget {
                 if (!isStreaming &&
                     !isUser &&
                     proposedActions.any((proposal) => proposal.isVisible)) ...[
-                  const SizedBox(height: AppSpacingTokens.md),
+                  const SizedBox(height: AppSpacingTokens.level4),
                   for (final proposal in proposedActions.where(
                     (proposal) => proposal.isVisible,
                   ))
                     Padding(
                       padding: const EdgeInsets.only(
-                        bottom: AppSpacingTokens.sm,
+                        bottom: AppSpacingTokens.level3,
                       ),
                       child: AssistantProposalCard(
                         messageId: messageId,

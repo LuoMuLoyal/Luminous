@@ -22,7 +22,7 @@ class _SafetyEngineSection extends StatelessWidget {
             onTap: () => context.push('/medicine/risk-check'),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           child: Column(
             children: [
@@ -33,9 +33,9 @@ class _SafetyEngineSection extends StatelessWidget {
                     height: 1,
                     thickness: 1,
                     indent:
-                        AppSpacingTokens.md +
-                        AppSpacingTokens.x3l +
-                        AppSpacingTokens.sm,
+                        AppSpacingTokens.level4 +
+                        AppSpacingTokens.level8 +
+                        AppSpacingTokens.level3,
                     color: colors.border,
                   ),
               ],
@@ -59,11 +59,11 @@ class _SafetyAlertRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return AppInkWell(
       onTap: () => context.push('/medicine/risk-check'),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Row(
           children: [
@@ -75,10 +75,10 @@ class _SafetyAlertRow extends StatelessWidget {
                 colors.background,
               ),
               shape: BoxShape.circle,
-              size: AppSpacingTokens.x3l,
-              iconSize: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level8,
+              iconSize: AppSpacingTokens.level5,
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +92,7 @@ class _SafetyAlertRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.74,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xxs),
+                  const SizedBox(height: AppSpacingTokens.level1),
                   AppSkeletonText(
                     text: medicineAlertBody(l10n, alert),
                     style: textTheme.bodySmall?.copyWith(
@@ -105,12 +105,12 @@ class _SafetyAlertRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             AppSkeletonSlot(
               skeleton: const AppInlineSkeletonBlock(
                 height: 22,
                 width: 54,
-                radius: AppRadiusTokens.pill,
+                radius: AppRadiusTokens.levelFull,
               ),
               child: AppStatusPill(
                 label: medicineAlertAction(l10n, alert),
@@ -120,7 +120,7 @@ class _SafetyAlertRow extends StatelessWidget {
             Icon(
               FLucideIcons.chevronRight,
               color: colors.mutedForeground,
-              size: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level5,
             ),
           ],
         ),

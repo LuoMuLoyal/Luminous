@@ -41,10 +41,10 @@ class RecentSearches extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         Wrap(
-          spacing: AppSpacingTokens.sm,
-          runSpacing: AppSpacingTokens.sm,
+          spacing: AppSpacingTokens.level3,
+          runSpacing: AppSpacingTokens.level3,
           children: keywords
               .map(
                 (keyword) => FButton(

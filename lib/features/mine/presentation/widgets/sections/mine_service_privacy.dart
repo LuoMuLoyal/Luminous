@@ -22,22 +22,22 @@ class MinePrivacyNoticeSection extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () => pushAuthRequiredRoute(context, '/account'),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: Color.alphaBlend(
               mineGreen.withValues(alpha: 0.05),
               colors.background,
             ),
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
             border: Border.all(color: mineGreen.withValues(alpha: 0.14)),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Row(
               children: [
-                Icon(notice.icon, color: mineGreen, size: AppSpacingTokens.lg),
-                const SizedBox(width: AppSpacingTokens.sm),
+                Icon(notice.icon, color: mineGreen, size: AppSpacingTokens.level5),
+                const SizedBox(width: AppSpacingTokens.level3),
                 Expanded(
                   child: Text(
                     mineCopy(l10n, notice.titleKey),
@@ -46,7 +46,7 @@ class MinePrivacyNoticeSection extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
                 Text(
                   mineCopy(l10n, notice.actionKey),
                   style: textTheme.labelMedium?.copyWith(
@@ -57,7 +57,7 @@ class MinePrivacyNoticeSection extends StatelessWidget {
                 Icon(
                   FLucideIcons.chevronRight,
                   color: colors.mutedForeground,
-                  size: AppSpacingTokens.lg,
+                  size: AppSpacingTokens.level5,
                 ),
               ],
             ),

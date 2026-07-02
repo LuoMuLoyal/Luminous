@@ -39,14 +39,14 @@ class AboutSettingsPage extends ConsumerWidget {
                   color: colors.primary,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               Text(
                 infoAsync.asData?.value?.name ?? 'Luminous',
                 style: textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 '${l10n.mineSettingAboutValue} ${infoAsync.asData?.value?.version ?? ''}',
                 style: textTheme.bodySmall?.copyWith(
@@ -54,7 +54,7 @@ class AboutSettingsPage extends ConsumerWidget {
                 ),
               ),
               if (infoAsync.asData?.value?.buildDate.isNotEmpty ?? false) ...[
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   l10n.settingsAboutBuildNumberLabel(
                     infoAsync.asData!.value!.buildDate,
@@ -65,7 +65,7 @@ class AboutSettingsPage extends ConsumerWidget {
                 ),
               ],
               if (description != null && description.isNotEmpty) ...[
-                const SizedBox(height: AppSpacingTokens.sm),
+                const SizedBox(height: AppSpacingTokens.level3),
                 Text(
                   description,
                   style: textTheme.bodySmall?.copyWith(
@@ -77,7 +77,7 @@ class AboutSettingsPage extends ConsumerWidget {
             ],
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         FTileGroup(
           style: settingsSubpageTileGroupStyle(context.theme),
           children: [

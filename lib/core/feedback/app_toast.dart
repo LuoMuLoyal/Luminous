@@ -26,7 +26,7 @@ class AppToast {
     final iconColor = colors.mutedForeground;
     // 放在状态栏 / 刘海 / 灵动岛安全区下方，避免与摄像头区域重叠。
     final topOffset =
-        MediaQuery.viewPaddingOf(context).top + AppSpacingTokens.x4l;
+        MediaQuery.viewPaddingOf(context).top + AppSpacingTokens.level9;
 
     // 如果当前正在显示同一条消息，直接按最后一次触发重新计时，避免排队。
     if (_currentEntry != null && _currentMessage == message) {
@@ -45,8 +45,8 @@ class AppToast {
       builder: (context) {
         return Positioned(
           top: topOffset,
-          left: AppSpacingTokens.md,
-          right: AppSpacingTokens.md,
+          left: AppSpacingTokens.level4,
+          right: AppSpacingTokens.level4,
           child: _AppToastSurface(
             message: message,
             backgroundColor: backgroundColor,
@@ -106,15 +106,15 @@ class _AppToastSurface extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor,
           border: Border.all(color: borderColor),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.full),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
           boxShadow: AppShadowTokens.level2,
         ),
         child: Padding(
           padding: const EdgeInsets.only(
-            left: AppSpacingTokens.lg,
-            top: AppSpacingTokens.sm,
-            bottom: AppSpacingTokens.sm,
-            right: AppSpacingTokens.xs,
+            left: AppSpacingTokens.level5,
+            top: AppSpacingTokens.level3,
+            bottom: AppSpacingTokens.level3,
+            right: AppSpacingTokens.level2,
           ),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 320),
@@ -132,7 +132,7 @@ class _AppToastSurface extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.xs),
+                const SizedBox(width: AppSpacingTokens.level2),
                 IconButton(
                   onPressed: onClose,
                   icon: Icon(FLucideIcons.x, size: 16, color: iconColor),

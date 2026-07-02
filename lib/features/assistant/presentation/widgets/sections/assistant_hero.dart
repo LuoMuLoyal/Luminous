@@ -28,11 +28,11 @@ class AssistantHero extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [colors.primary.withValues(alpha: 0.16), colors.background],
         ),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level5),
         border: Border.all(color: colors.border),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -41,14 +41,14 @@ class AssistantHero extends StatelessWidget {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: colors.primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
                   ),
                   child: const Padding(
-                    padding: EdgeInsets.all(AppSpacingTokens.sm),
+                    padding: EdgeInsets.all(AppSpacingTokens.level3),
                     child: Icon(FLucideIcons.bot, size: 20),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
                 Expanded(
                   child: Text(
                     l10n.assistantPageTitle,
@@ -59,17 +59,17 @@ class AssistantHero extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Text(
               statusSummary,
               style: textTheme.bodyMedium?.copyWith(
                 color: colors.mutedForeground,
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Wrap(
-              spacing: AppSpacingTokens.sm,
-              runSpacing: AppSpacingTokens.sm,
+              spacing: AppSpacingTokens.level3,
+              runSpacing: AppSpacingTokens.level3,
               children: [
                 _StatusChip(
                   label:
@@ -114,7 +114,7 @@ class _StatusChip extends StatelessWidget {
         color: enabled
             ? colors.primary.withValues(alpha: 0.12)
             : colors.secondary,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
         border: Border.all(
           color: enabled
               ? colors.primary.withValues(alpha: 0.24)
@@ -123,8 +123,8 @@ class _StatusChip extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.xs,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level2,
         ),
         child: Text(
           label,

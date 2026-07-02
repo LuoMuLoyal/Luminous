@@ -30,10 +30,10 @@ class RecordMobileFilter extends StatelessWidget {
           l10n.recordFilterMobileTitle,
           style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         Wrap(
-          spacing: AppSpacingTokens.xs,
-          runSpacing: AppSpacingTokens.xs,
+          spacing: AppSpacingTokens.level2,
+          runSpacing: AppSpacingTokens.level2,
           children: [
             _FilterChip(
               chipKey: const Key('record-filter-all'),
@@ -91,17 +91,17 @@ class _FilterChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: selected ? color.withValues(alpha: 0.1) : colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
             border: Border.all(color: selected ? color : colors.border),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.xs,
+              horizontal: AppSpacingTokens.level4,
+              vertical: AppSpacingTokens.level2,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -116,15 +116,15 @@ class _FilterChip extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (locked) ...[
-                  const SizedBox(width: AppSpacingTokens.xs),
+                  const SizedBox(width: AppSpacingTokens.level2),
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.secondary.withValues(alpha: 0.22),
-                      borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+                      borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacingTokens.xs,
+                        horizontal: AppSpacingTokens.level2,
                         vertical: 2,
                       ),
                       child: Text(

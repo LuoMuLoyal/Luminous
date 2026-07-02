@@ -15,12 +15,12 @@ class AssistantToolChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.secondary,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
         border: Border.all(color: colors.border),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level3,
           vertical: 2,
         ),
         child: Text(

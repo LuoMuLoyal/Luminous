@@ -25,7 +25,7 @@ class RecordQuickActions extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-quick-actions'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -35,19 +35,19 @@ class RecordQuickActions extends StatelessWidget {
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             LayoutBuilder(
               builder: (context, constraints) {
                 final columns = compact || constraints.maxWidth < 520 ? 4 : 7;
                 return Wrap(
-                  spacing: AppSpacingTokens.sm,
-                  runSpacing: AppSpacingTokens.sm,
+                  spacing: AppSpacingTokens.level3,
+                  runSpacing: AppSpacingTokens.level3,
                   children: actions
                       .map(
                         (action) => SizedBox(
                           width:
                               (constraints.maxWidth -
-                                  AppSpacingTokens.sm * (columns - 1)) /
+                                  AppSpacingTokens.level3 * (columns - 1)) /
                               columns,
                           child: _QuickActionTile(
                             action: action,
@@ -89,13 +89,13 @@ class _QuickActionTile extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
           border: Border.all(color: colors.border),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.xs,
-            vertical: AppSpacingTokens.md,
+            horizontal: AppSpacingTokens.level2,
+            vertical: AppSpacingTokens.level4,
           ),
           child: Column(
             children: [
@@ -105,7 +105,7 @@ class _QuickActionTile extends StatelessWidget {
                 backgroundColor: action.softColor.withValues(alpha: 0.45),
                 size: 40,
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 label,
                 style: textTheme.labelSmall?.copyWith(

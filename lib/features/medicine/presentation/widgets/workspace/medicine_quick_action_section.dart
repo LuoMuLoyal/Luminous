@@ -24,7 +24,7 @@ class MedicineQuickActionSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Row(
           children: [
             for (
@@ -37,7 +37,7 @@ class MedicineQuickActionSection extends StatelessWidget {
                   padding: EdgeInsets.only(
                     right: index == workspace.quickActions.length - 1
                         ? 0
-                        : AppSpacingTokens.sm,
+                        : AppSpacingTokens.level3,
                   ),
                   child: _QuickActionTile(
                     action: workspace.quickActions[index],
@@ -78,7 +78,7 @@ class _QuickActionTile extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
         child: Column(
           children: [
             Container(
@@ -86,14 +86,14 @@ class _QuickActionTile extends StatelessWidget {
               height: 64,
               decoration: BoxDecoration(
                 color: action.accent.withValues(alpha: 0.11),
-                borderRadius: BorderRadius.circular(AppRadiusTokens.xl),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.level5),
                 border: Border.all(
                   color: action.accent.withValues(alpha: 0.12),
                 ),
               ),
               child: Icon(action.icon, color: action.accent, size: 32),
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Text(
               medicineCopy(l10n, action.titleKey),
               style: textTheme.labelLarge?.copyWith(

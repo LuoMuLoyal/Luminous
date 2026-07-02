@@ -55,7 +55,7 @@ class RegisterPage extends HookConsumerWidget {
                     'Please enter a valid email address.',
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             _VerificationCodeField(
               controller: codeController,
               label: l10n?.authCodeLabel ?? 'Verification code',
@@ -97,7 +97,7 @@ class RegisterPage extends HookConsumerWidget {
                 await notifier.sendCode();
               },
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: passwordController,
@@ -113,7 +113,7 @@ class RegisterPage extends HookConsumerWidget {
                     'Please enter your password.',
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: confirmPasswordController,
@@ -139,7 +139,7 @@ class RegisterPage extends HookConsumerWidget {
                 return null;
               },
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             FTextFormField(
               control: FTextFieldControl.managed(
                 controller: nicknameController,
@@ -148,7 +148,7 @@ class RegisterPage extends HookConsumerWidget {
               hint: l10n?.authNicknameHint ?? 'Optional',
               autovalidateMode: AutovalidateMode.onUserInteraction,
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             FCheckbox(
               value: acceptedTerms.value,
               onChange: (value) => acceptedTerms.value = value,
@@ -180,7 +180,7 @@ class RegisterPage extends HookConsumerWidget {
             ),
             if ((state.errorMessage?.isNotEmpty ?? false) ||
                 (state.successMessage?.isNotEmpty ?? false)) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               FToast(
                 variant: state.errorMessage?.isNotEmpty == true
                     ? FToastVariant.destructive
@@ -192,7 +192,7 @@ class RegisterPage extends HookConsumerWidget {
                 ),
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.xl),
+            const SizedBox(height: AppSpacingTokens.level6),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -235,7 +235,7 @@ class RegisterPage extends HookConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Row(
               children: [
                 Expanded(
@@ -296,7 +296,7 @@ class _VerificationCodeField extends StatelessWidget {
             validator: validator,
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.sm),
+        const SizedBox(width: AppSpacingTokens.level3),
         SizedBox(
           width: 148,
           child: Padding(
@@ -355,8 +355,8 @@ class _TermsLinks extends StatelessWidget {
     );
 
     return Wrap(
-      spacing: AppSpacingTokens.xs,
-      runSpacing: AppSpacingTokens.xxs,
+      spacing: AppSpacingTokens.level2,
+      runSpacing: AppSpacingTokens.level1,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         FButton(

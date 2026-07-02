@@ -34,7 +34,7 @@ class RecordOccurredAtFields extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         OutlinedButton(
           key: const Key('record-time-field'),
           onPressed: onTimeTap,

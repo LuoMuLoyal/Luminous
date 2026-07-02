@@ -49,7 +49,7 @@ class _QuickOperationSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppSectionHeader(title: l10n.medicineQuickOperationTitle),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           child: Column(
             children: [
@@ -60,9 +60,9 @@ class _QuickOperationSection extends StatelessWidget {
                     height: 1,
                     thickness: 1,
                     indent:
-                        AppSpacingTokens.md +
-                        AppSpacingTokens.x3l +
-                        AppSpacingTokens.sm,
+                        AppSpacingTokens.level4 +
+                        AppSpacingTokens.level8 +
+                        AppSpacingTokens.level3,
                     color: colors.border,
                   ),
               ],
@@ -87,8 +87,8 @@ class _QuickOperationRow extends StatelessWidget {
       onTap: operation.onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Row(
           children: [
@@ -97,10 +97,10 @@ class _QuickOperationRow extends StatelessWidget {
               color: operation.color,
               backgroundColor: operation.color.withValues(alpha: 0.08),
               shape: BoxShape.circle,
-              size: AppSpacingTokens.x3l,
-              iconSize: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level8,
+              iconSize: AppSpacingTokens.level5,
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +113,7 @@ class _QuickOperationRow extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xxs),
+                  const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     operation.subtitle,
                     style: textTheme.bodySmall?.copyWith(
@@ -128,7 +128,7 @@ class _QuickOperationRow extends StatelessWidget {
             Icon(
               FLucideIcons.chevronRight,
               color: colors.mutedForeground,
-              size: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level5,
             ),
           ],
         ),

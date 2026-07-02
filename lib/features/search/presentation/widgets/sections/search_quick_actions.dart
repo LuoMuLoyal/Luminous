@@ -19,7 +19,7 @@ class QuickActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.sm),
+        padding: const EdgeInsets.all(AppSpacingTokens.level3),
         child: Row(
           children: actions
               .map(
@@ -57,14 +57,14 @@ class _QuickActionButton extends StatelessWidget {
               AppToast.show(context, actionToast(l10n, action.type));
           }
         },
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.md),
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(action.icon, color: action.accent),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               Text(
                 actionLabel(l10n, action.type),
                 style: textTheme.labelLarge?.copyWith(

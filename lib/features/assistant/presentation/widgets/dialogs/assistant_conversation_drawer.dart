@@ -37,7 +37,7 @@ class AssistantConversationDrawer extends StatelessWidget {
       width: width,
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.lg),
+          padding: const EdgeInsets.all(AppSpacingTokens.level5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -50,7 +50,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               Expanded(
                 child: Builder(
                   builder: (context) {
@@ -101,7 +101,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: backgroundColor,
                             borderRadius: BorderRadius.circular(
-                              AppRadiusTokens.lg,
+                              AppRadiusTokens.level4,
                             ),
                             border: Border.all(color: borderColor),
                           ),
@@ -110,14 +110,14 @@ class AssistantConversationDrawer extends StatelessWidget {
                               'assistant-recent-conversation-${item.id}',
                             ),
                             borderRadius: BorderRadius.circular(
-                              AppRadiusTokens.lg,
+                              AppRadiusTokens.level4,
                             ),
                             onTap: state.isOpeningConversation
                                 ? null
                                 : () => onSelect(item.id),
                             child: Padding(
                               padding: const EdgeInsets.all(
-                                AppSpacingTokens.md,
+                                AppSpacingTokens.level4,
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +130,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  const SizedBox(height: AppSpacingTokens.xs),
+                                  const SizedBox(height: AppSpacingTokens.level2),
                                   Row(
                                     children: [
                                       Expanded(
@@ -164,7 +164,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                         );
                       },
                       separatorBuilder: (_, __) =>
-                          const SizedBox(height: AppSpacingTokens.sm),
+                          const SizedBox(height: AppSpacingTokens.level3),
                     );
                   },
                 ),

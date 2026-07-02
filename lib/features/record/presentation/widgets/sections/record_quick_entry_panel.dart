@@ -35,29 +35,29 @@ class RecordAiInputBar extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
           border: Border.all(color: Color(0xFF0F766E).withValues(alpha: 0.32)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
+            horizontal: AppSpacingTokens.level4,
+            vertical: AppSpacingTokens.level3,
           ),
           child: Row(
             children: [
               const Icon(
                 FLucideIcons.sparkles,
                 color: Color(0xFF7C3AED),
-                size: AppSpacingTokens.xl,
+                size: AppSpacingTokens.level6,
               ),
-              const SizedBox(width: AppSpacingTokens.md),
+              const SizedBox(width: AppSpacingTokens.level4),
               Expanded(
                 child: InkWell(
                   onTap: onTap,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacingTokens.xxs,
+                      vertical: AppSpacingTokens.level1,
                     ),
                     child: Text(
                       l10n.recordAiInputHint,
@@ -70,16 +70,16 @@ class RecordAiInputBar extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: Color(0xFF0F766E).withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.sm,
-                    vertical: AppSpacingTokens.xxs,
+                    horizontal: AppSpacingTokens.level3,
+                    vertical: AppSpacingTokens.level1,
                   ),
                   child: Text(
                     l10n.recordAiBadge,
@@ -90,7 +90,7 @@ class RecordAiInputBar extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.xxs),
+              const SizedBox(width: AppSpacingTokens.level1),
               _IconButton(
                 tooltip: l10n.recordVoiceInputTitle,
                 icon: FLucideIcons.mic,
@@ -122,13 +122,13 @@ class _IconButton extends StatelessWidget {
       message: tooltip,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.xxs),
+          padding: const EdgeInsets.all(AppSpacingTokens.level1),
           child: Icon(
             icon,
             color: Theme.of(context).colorScheme.onSurface,
-            size: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level5,
           ),
         ),
       ),
@@ -168,7 +168,7 @@ class RecordQuickEntryPanel extends StatelessWidget {
           l10n.recordQuickSectionTitle,
           style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           child: Column(
             children: [
@@ -181,8 +181,8 @@ class RecordQuickEntryPanel extends StatelessWidget {
                 Divider(
                   height: 1,
                   thickness: 1,
-                  indent: AppSpacingTokens.md,
-                  endIndent: AppSpacingTokens.md,
+                  indent: AppSpacingTokens.level4,
+                  endIndent: AppSpacingTokens.level4,
                   color: colors.border,
                 ),
                 _QuickRecordRow3(
@@ -237,7 +237,7 @@ class _QuickRecordGrid2x2 extends StatelessWidget {
                 ),
                 if (index < rows[rowIndex].length - 1)
                   _ShortVerticalDivider(
-                    height: AppSpacingTokens.x4l,
+                    height: AppSpacingTokens.level9,
                     color: colors.border,
                   ),
               ],
@@ -249,8 +249,8 @@ class _QuickRecordGrid2x2 extends StatelessWidget {
             Divider(
               height: 1,
               thickness: 1,
-              indent: AppSpacingTokens.md,
-              endIndent: AppSpacingTokens.md,
+              indent: AppSpacingTokens.level4,
+              endIndent: AppSpacingTokens.level4,
               color: colors.border,
             ),
         ],
@@ -285,7 +285,7 @@ class _QuickRecordRow3 extends StatelessWidget {
           ),
           if (index < actions.length - 1)
             _ShortVerticalDivider(
-              height: AppSpacingTokens.x4l,
+              height: AppSpacingTokens.level9,
               color: colors.border,
             ),
         ],
@@ -322,7 +322,7 @@ class _QuickRecordTile extends StatelessWidget {
         onTap: (onQuickAction == null || isLocked)
             ? null
             : () => onQuickAction!(action),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         child: Semantics(
           button: true,
           label: isLocked
@@ -332,8 +332,8 @@ class _QuickRecordTile extends StatelessWidget {
             opacity: isLocked ? 0.76 : 1,
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.xxs,
-                vertical: AppSpacingTokens.xxs,
+                horizontal: AppSpacingTokens.level1,
+                vertical: AppSpacingTokens.level1,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -342,10 +342,10 @@ class _QuickRecordTile extends StatelessWidget {
                     icon: action.icon,
                     color: action.accent,
                     backgroundColor: action.softColor,
-                    size: AppSpacingTokens.xl,
-                    iconSize: AppSpacingTokens.md,
+                    size: AppSpacingTokens.level6,
+                    iconSize: AppSpacingTokens.level4,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xxs),
+                  const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     displayLabel,
                     style: textTheme.labelLarge?.copyWith(
@@ -396,17 +396,17 @@ class RecordGuideRow extends StatelessWidget {
         color: Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
+            horizontal: AppSpacingTokens.level4,
+            vertical: AppSpacingTokens.level3,
           ),
           child: Row(
             children: [
               const Icon(
                 FLucideIcons.lightbulb,
                 color: Color(0xFFF59E0B),
-                size: AppSpacingTokens.lg,
+                size: AppSpacingTokens.level5,
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               Expanded(
                 child: Text(
                   l10n.recordGuideHint,
@@ -417,7 +417,7 @@ class RecordGuideRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               Text(
                 l10n.recordGuideAction,
                 style: textTheme.labelLarge?.copyWith(
@@ -428,7 +428,7 @@ class RecordGuideRow extends StatelessWidget {
               const Icon(
                 FLucideIcons.chevronRight,
                 color: Color(0xFF16A34A),
-                size: AppSpacingTokens.lg,
+                size: AppSpacingTokens.level5,
               ),
             ],
           ),

@@ -35,12 +35,12 @@ class DataExportPage extends ConsumerWidget {
                 l10n.settingsExportDescription,
                 style: textTheme.bodyMedium?.copyWith(color: colors.foreground),
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               _StatusRow(
                 label: l10n.mineSettingExportValue,
                 value: _statusLabel(l10n, export),
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               _buildActionButton(context, ref, export, l10n),
             ],
           ),
@@ -80,7 +80,7 @@ class DataExportPage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(FLucideIcons.chevronDown, size: 18),
-              const SizedBox(width: AppSpacingTokens.xs),
+              const SizedBox(width: AppSpacingTokens.level2),
               Text(l10n.mineExportDownloadButton),
             ],
           ),
@@ -99,7 +99,7 @@ class DataExportPage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(FLucideIcons.chevronsUpDown, size: 18),
-              const SizedBox(width: AppSpacingTokens.xs),
+              const SizedBox(width: AppSpacingTokens.level2),
               Text(l10n.mineExportRegenerateButton),
             ],
           ),

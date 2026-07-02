@@ -16,18 +16,18 @@ class ReportReferenceNotice extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Color(0xFFF59E0B).withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
           border: Border.all(color: Color(0xFFF59E0B).withValues(alpha: 0.16)),
         ),
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Row(
           children: [
             const Icon(
               FLucideIcons.triangleAlert,
               color: Color(0xFFF59E0B),
-              size: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level5,
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Text(
                 l10n.reportReferenceNotice,

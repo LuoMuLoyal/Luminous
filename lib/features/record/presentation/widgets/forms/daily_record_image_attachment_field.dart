@@ -38,7 +38,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -48,7 +48,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Row(
               children: [
                 _AttachmentPreview(
@@ -56,7 +56,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                   existingAttachment: existingAttachment,
                   label: l10n.recordImageAttachedLabel,
                 ),
-                const SizedBox(width: AppSpacingTokens.md),
+                const SizedBox(width: AppSpacingTokens.level4),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +71,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (fileName != null && fileName.trim().isNotEmpty) ...[
-                        const SizedBox(height: AppSpacingTokens.xxs),
+                        const SizedBox(height: AppSpacingTokens.level1),
                         Text(
                           fileName,
                           style: textTheme.labelSmall?.copyWith(
@@ -80,10 +80,10 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
-                      const SizedBox(height: AppSpacingTokens.sm),
+                      const SizedBox(height: AppSpacingTokens.level3),
                       Wrap(
-                        spacing: AppSpacingTokens.sm,
-                        runSpacing: AppSpacingTokens.xs,
+                        spacing: AppSpacingTokens.level3,
+                        runSpacing: AppSpacingTokens.level2,
                         children: [
                           OutlinedButton.icon(
                             onPressed: enabled ? onPick : null,
@@ -134,7 +134,7 @@ class _AttachmentPreview extends StatelessWidget {
     final imageUrl = existingAttachment?.displayUrl;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
       child: SizedBox(
         width: width,
         height: height,

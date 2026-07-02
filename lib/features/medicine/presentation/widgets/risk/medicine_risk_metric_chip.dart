@@ -20,13 +20,13 @@ class MedicineRiskMetricChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.secondary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         border: Border.all(color: colors.border),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +38,7 @@ class MedicineRiskMetricChip extends StatelessWidget {
                 color: colors.mutedForeground,
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.xxs),
+            const SizedBox(height: AppSpacingTokens.level1),
             Text(
               value,
               style: textTheme.titleMedium?.copyWith(

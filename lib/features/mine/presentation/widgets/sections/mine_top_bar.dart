@@ -33,14 +33,14 @@ class MineTopBar extends ConsumerWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.md),
+        const SizedBox(width: AppSpacingTokens.level4),
         _IconActionButton(
           tooltip: l10n.mineHeaderNotifications,
           icon: FLucideIcons.bell,
           onTap: onNotificationsTap,
           showBadge: hasUnread,
         ),
-        const SizedBox(width: AppSpacingTokens.xs),
+        const SizedBox(width: AppSpacingTokens.level2),
         _IconActionButton(
           key: const Key('mine-settings-action'),
           tooltip: l10n.mineHeaderSettings,

@@ -345,7 +345,7 @@ class LoginPage extends HookConsumerWidget {
                     'Please enter a valid email address.',
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             if (state.mode == AuthLoginMode.password)
               FTextFormField.password(
                 key: const ValueKey('password-login-field'),
@@ -407,13 +407,13 @@ class LoginPage extends HookConsumerWidget {
               ),
             if (state.errorMessage != null &&
                 state.errorMessage!.isNotEmpty) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               FToast(
                 variant: FToastVariant.destructive,
                 title: Text(state.errorMessage!),
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.xl),
+            const SizedBox(height: AppSpacingTokens.level6),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -445,7 +445,7 @@ class LoginPage extends HookConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Row(
               children: [
                 Expanded(
@@ -474,7 +474,7 @@ class LoginPage extends HookConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.lg),
+            const SizedBox(height: AppSpacingTokens.level5),
             _WechatOAuthPanel(
               callbackController: wechatCallbackController,
               isStarting: state.isStartingWechatLogin,
@@ -539,7 +539,7 @@ class _WechatOAuthPanel extends StatelessWidget {
               : Text(l10n?.authWechatSignIn ?? 'Sign in with WeChat'),
         ),
         if (authorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           FTextField(
             key: const Key('wechat-callback-input'),
             control: FTextFieldControl.managed(controller: callbackController),
@@ -551,7 +551,7 @@ class _WechatOAuthPanel extends StatelessWidget {
                 'Paste the callback URL after scanning',
             keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           SizedBox(
             width: double.infinity,
             child: FButton(
@@ -603,7 +603,7 @@ class _QqOAuthPanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         FButton(
           key: const Key('qq-login-start-button'),
           variant: FButtonVariant.outline,
@@ -617,7 +617,7 @@ class _QqOAuthPanel extends StatelessWidget {
               : const Text('Sign in with QQ'),
         ),
         if (authorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           FTextField(
             key: const Key('qq-callback-input'),
             control: FTextFieldControl.managed(controller: callbackController),
@@ -625,7 +625,7 @@ class _QqOAuthPanel extends StatelessWidget {
             hint: 'Paste the callback URL after authorization',
             keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           SizedBox(
             width: double.infinity,
             child: FButton(
@@ -683,7 +683,7 @@ class _VerificationCodeField extends StatelessWidget {
                 validator: validator,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             SizedBox(
               width: 148,
               child: Padding(
@@ -763,7 +763,7 @@ class _AppleOAuthPanelState extends State<_AppleOAuthPanel> {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(top: AppSpacingTokens.md),
+      padding: const EdgeInsets.only(top: AppSpacingTokens.level4),
       child: AbsorbPointer(
         absorbing: widget.isLoading,
         child: SignInWithAppleButton(onPressed: widget.onSignIn),

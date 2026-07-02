@@ -137,7 +137,7 @@ class RecordNlpCandidateEditor extends HookWidget {
             decoration: InputDecoration(labelText: titleLabel(l10n, kind)),
             onChanged: (value) => emit(title: value),
           ),
-          const SizedBox(height: AppSpacingTokens.sm),
+          const SizedBox(height: AppSpacingTokens.level3),
         ],
         if (shouldShowValueOrUnit(kind)) ...[
           Row(
@@ -156,7 +156,7 @@ class RecordNlpCandidateEditor extends HookWidget {
                   ),
                 ),
               if (shouldShowValue(kind) && shouldShowUnit(kind))
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
               if (shouldShowUnit(kind))
                 Expanded(
                   child: _WaterUnitField(
@@ -168,7 +168,7 @@ class RecordNlpCandidateEditor extends HookWidget {
                 ),
             ],
           ),
-          const SizedBox(height: AppSpacingTokens.sm),
+          const SizedBox(height: AppSpacingTokens.level3),
         ],
         if (kind == DailyRecordKind.sleep) ...[
           _SleepCandidateFields(
@@ -177,7 +177,7 @@ class RecordNlpCandidateEditor extends HookWidget {
             enabled: enabled,
             onChanged: onChanged,
           ),
-          const SizedBox(height: AppSpacingTokens.sm),
+          const SizedBox(height: AppSpacingTokens.level3),
         ],
         TextField(
           key: Key('record-nlp-candidate-note-$index'),
@@ -277,7 +277,7 @@ class _SleepCandidateFields extends StatelessWidget {
             onChanged(item.copyWith(payload: nextPayload));
           },
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         DropdownButtonFormField<String>(
           key: Key('record-nlp-candidate-sleep-quality-$index'),
           initialValue: quality,

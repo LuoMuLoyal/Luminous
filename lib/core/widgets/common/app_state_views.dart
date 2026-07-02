@@ -15,7 +15,7 @@ class AppStateMessageView extends StatelessWidget {
     this.onAction,
     this.actionKey,
     this.tone = AppStateTone.neutral,
-    this.padding = const EdgeInsets.all(AppSpacingTokens.lg),
+    this.padding = const EdgeInsets.all(AppSpacingTokens.level5),
   });
 
   final String title;
@@ -47,11 +47,11 @@ class AppStateMessageView extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.md),
+                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
                   child: Icon(icon, color: accent, size: 28),
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               Text(
                 title,
                 style: textTheme.titleMedium?.copyWith(
@@ -59,7 +59,7 @@ class AppStateMessageView extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 description,
                 style: textTheme.bodyMedium?.copyWith(
@@ -68,7 +68,7 @@ class AppStateMessageView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               if (actionLabel != null && onAction != null) ...[
-                const SizedBox(height: AppSpacingTokens.lg),
+                const SizedBox(height: AppSpacingTokens.level5),
                 FButton(
                   key: actionKey,
                   onPress: onAction,
@@ -97,7 +97,7 @@ class AppStateSkeletonView extends StatelessWidget {
   const AppStateSkeletonView({
     super.key,
     required this.blocks,
-    this.padding = const EdgeInsets.all(AppSpacingTokens.md),
+    this.padding = const EdgeInsets.all(AppSpacingTokens.level4),
   });
 
   final List<AppStateSkeletonBlock> blocks;
@@ -117,7 +117,7 @@ class AppStateSkeletonView extends StatelessWidget {
         padding: padding,
         itemBuilder: (context, index) => _SkeletonBlock(data: blocks[index]),
         separatorBuilder: (context, index) =>
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
         itemCount: blocks.length,
       ),
     );
@@ -128,7 +128,7 @@ class AppInlineSkeleton extends StatelessWidget {
   const AppInlineSkeleton({
     super.key,
     required this.children,
-    this.spacing = AppSpacingTokens.sm,
+    this.spacing = AppSpacingTokens.level3,
   });
 
   final List<Widget> children;
@@ -207,7 +207,7 @@ class AppSkeletonText extends StatelessWidget {
     this.width,
     this.widthFactor = 0.72,
     this.height,
-    this.radius = AppRadiusTokens.xs,
+    this.radius = AppRadiusTokens.level1,
     this.isLoading,
   }) : assert(widthFactor > 0 && widthFactor <= 1);
 
@@ -276,7 +276,7 @@ class AppInlineSkeletonBlock extends StatelessWidget {
     required this.height,
     this.width,
     this.widthFactor = 1,
-    this.radius = AppRadiusTokens.lg,
+    this.radius = AppRadiusTokens.level4,
     this.fallbackWidth = 96,
   }) : assert(widthFactor > 0 && widthFactor <= 1),
        assert(fallbackWidth > 0);
@@ -355,12 +355,12 @@ class AppInlineSkeletonSection extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         border: Border.all(color: colors.border),
         boxShadow: AppShadowTokens.level1,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: SizedBox(
           height: height,
           child: AppInlineSkeleton(children: children),
@@ -373,7 +373,7 @@ class AppInlineSkeletonSection extends StatelessWidget {
 class AppStateSkeletonBlock {
   const AppStateSkeletonBlock({
     required this.height,
-    this.radius = AppRadiusTokens.xl,
+    this.radius = AppRadiusTokens.level5,
     this.widthFactor = 1,
   }) : assert(widthFactor > 0 && widthFactor <= 1);
 
@@ -437,8 +437,8 @@ class AppStateErrorView extends StatelessWidget {
       onAction: onAction,
       tone: tone,
       padding: compact
-          ? const EdgeInsets.all(AppSpacingTokens.md)
-          : const EdgeInsets.all(AppSpacingTokens.lg),
+          ? const EdgeInsets.all(AppSpacingTokens.level4)
+          : const EdgeInsets.all(AppSpacingTokens.level5),
     );
 
     if (compact) {
@@ -458,7 +458,7 @@ class AppStateErrorView extends StatelessWidget {
           child: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.md,
+                horizontal: AppSpacingTokens.level4,
               ),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 520),

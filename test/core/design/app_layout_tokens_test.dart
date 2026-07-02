@@ -6,25 +6,25 @@ void main() {
   group('AppLayoutTokens.resolve', () {
     test('returns mobile scale for width < 600', () {
       final scale = AppLayoutTokens.resolve(320);
-      expect(scale.pageHorizontalPadding, equals(AppSpacingTokens.md));
+      expect(scale.pageHorizontalPadding, equals(AppSpacingTokens.level4));
       expect(scale.maxContentWidth, equals(560));
     });
 
     test('returns large-mobile scale for width 600-959', () {
       final scale = AppLayoutTokens.resolve(768);
-      expect(scale.pageHorizontalPadding, equals(AppSpacingTokens.lg));
+      expect(scale.pageHorizontalPadding, equals(AppSpacingTokens.level5));
       expect(scale.maxContentWidth, equals(760));
     });
 
     test('returns tablet scale for width 960-1199', () {
       final scale = AppLayoutTokens.resolve(1024);
-      expect(scale.pageHorizontalPadding, equals(AppSpacingTokens.xl));
+      expect(scale.pageHorizontalPadding, equals(AppSpacingTokens.level6));
       expect(scale.maxContentWidth, equals(1040));
     });
 
     test('returns desktop scale for width >= 1200', () {
       final scale = AppLayoutTokens.resolve(1440);
-      expect(scale.pageHorizontalPadding, equals(AppSpacingTokens.xl));
+      expect(scale.pageHorizontalPadding, equals(AppSpacingTokens.level6));
       expect(scale.maxContentWidth, equals(1400));
     });
 

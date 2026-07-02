@@ -20,7 +20,7 @@ class _MedicineRecordsSection extends ConsumerWidget {
     return FCard.raw(
       key: const Key('medicine-today-plan'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -30,12 +30,12 @@ class _MedicineRecordsSection extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _FilterText(label: l10n.medicineAllMedicinesFilter),
-                  const SizedBox(width: AppSpacingTokens.sm),
+                  const SizedBox(width: AppSpacingTokens.level3),
                   _FilterText(label: l10n.medicineLastSevenDaysFilter),
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             if (rows.isEmpty)
               _DrugBoxEmpty(l10n: l10n)
             else
@@ -52,13 +52,13 @@ class _MedicineRecordsSection extends ConsumerWidget {
                       Divider(
                         height: 1,
                         thickness: 1,
-                        indent: AppSpacingTokens.x6l + AppSpacingTokens.sm,
+                        indent: AppSpacingTokens.level11 + AppSpacingTokens.level3,
                         color: colors.border,
                       ),
                   ],
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacingTokens.md,
+                      vertical: AppSpacingTokens.level4,
                     ),
                     child: Center(
                       child: AppTextAction(
@@ -102,14 +102,14 @@ class _MedicineRecordRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: AppSpacingTokens.x3l,
+            width: AppSpacingTokens.level8,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -118,7 +118,7 @@ class _MedicineRecordRow extends StatelessWidget {
                   style: textTheme.bodySmall,
                   width: 34,
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 AppSkeletonText(
                   text: row.time,
                   style: textTheme.bodySmall,
@@ -127,9 +127,9 @@ class _MedicineRecordRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.xs),
+          const SizedBox(width: AppSpacingTokens.level2),
           SizedBox(
-            width: AppSpacingTokens.lg,
+            width: AppSpacingTokens.level5,
             child: Column(
               children: [
                 AppIconBadge(
@@ -137,12 +137,12 @@ class _MedicineRecordRow extends StatelessWidget {
                   color: row.statusColor,
                   backgroundColor: row.statusColor.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
-                  size: AppSpacingTokens.lg,
-                  iconSize: AppSpacingTokens.md,
+                  size: AppSpacingTokens.level5,
+                  iconSize: AppSpacingTokens.level4,
                 ),
                 if (!isLast)
                   SizedBox(
-                    height: AppSpacingTokens.x4l,
+                    height: AppSpacingTokens.level9,
                     child: VerticalDivider(
                       width: 1,
                       thickness: 1,
@@ -152,9 +152,9 @@ class _MedicineRecordRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          _MedicationAvatar(item: row.item, size: AppSpacingTokens.x3l),
-          const SizedBox(width: AppSpacingTokens.md),
+          const SizedBox(width: AppSpacingTokens.level3),
+          _MedicationAvatar(item: row.item, size: AppSpacingTokens.level8),
+          const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,10 +168,10 @@ class _MedicineRecordRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   widthFactor: 0.66,
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Wrap(
-                  spacing: AppSpacingTokens.xs,
-                  runSpacing: AppSpacingTokens.xxs,
+                  spacing: AppSpacingTokens.level2,
+                  runSpacing: AppSpacingTokens.level1,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     AppSkeletonText(
@@ -185,7 +185,7 @@ class _MedicineRecordRow extends StatelessWidget {
                       skeleton: const AppInlineSkeletonBlock(
                         height: 22,
                         width: 44,
-                        radius: AppRadiusTokens.pill,
+                        radius: AppRadiusTokens.levelFull,
                       ),
                       child: AppStatusPill(
                         label: row.statusLabel,
@@ -195,7 +195,7 @@ class _MedicineRecordRow extends StatelessWidget {
                   ],
                 ),
                 if (canMark) ...[
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   Row(
                     children: [
                       Expanded(
@@ -211,7 +211,7 @@ class _MedicineRecordRow extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: AppSpacingTokens.sm),
+                      const SizedBox(width: AppSpacingTokens.level3),
                       Expanded(
                         child: _DoseActionButton(
                           key: const Key('medicine-record-dose-action-skipped'),
@@ -230,11 +230,11 @@ class _MedicineRecordRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.xs),
+          const SizedBox(width: AppSpacingTokens.level2),
           Icon(
             FLucideIcons.notebookText,
             color: colors.mutedForeground,
-            size: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level5,
           ),
         ],
       ),

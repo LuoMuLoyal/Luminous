@@ -26,12 +26,12 @@ class NotificationListItemWidget extends StatelessWidget {
       background: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.destructive,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         ),
         child: Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding: const EdgeInsets.only(right: AppSpacingTokens.md),
+            padding: const EdgeInsets.only(right: AppSpacingTokens.level4),
             child: Icon(
               FLucideIcons.trash2,
               color: colors.destructiveForeground,
@@ -45,7 +45,7 @@ class NotificationListItemWidget extends StatelessWidget {
           color: item.isRead
               ? colors.background
               : colors.primary.withValues(alpha: 0.06),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
           border: Border.all(
             color: item.isRead ? colors.border : colors.primary,
             width: item.isRead ? 1 : 1.2,
@@ -53,9 +53,9 @@ class NotificationListItemWidget extends StatelessWidget {
         ),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -78,7 +78,7 @@ class NotificationListItemWidget extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: AppSpacingTokens.xs),
+                          const SizedBox(width: AppSpacingTokens.level2),
                           Text(
                             _formatTime(item.createdAt),
                             style: textTheme.bodySmall?.copyWith(
@@ -87,7 +87,7 @@ class NotificationListItemWidget extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: AppSpacingTokens.xxs),
+                      const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         item.content,
                         style: textTheme.bodyMedium?.copyWith(
@@ -101,7 +101,7 @@ class NotificationListItemWidget extends StatelessWidget {
                   ),
                 ),
                 if (!item.isRead) ...[
-                  const SizedBox(width: AppSpacingTokens.sm),
+                  const SizedBox(width: AppSpacingTokens.level3),
                   DecoratedBox(
                     decoration: BoxDecoration(
                       color: colors.primary,

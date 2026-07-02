@@ -43,13 +43,13 @@ class AssistantConversationSurface extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (state.isOpeningConversation) ...[
               Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacingTokens.sm),
+                padding: const EdgeInsets.only(bottom: AppSpacingTokens.level3),
                 child: Text(
                   l10n.assistantOpeningConversationLabel,
                   style: textTheme.bodySmall?.copyWith(
@@ -68,7 +68,7 @@ class AssistantConversationSurface extends StatelessWidget {
               ),
             ),
             if (state.sendError != null) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               AppStateMessageView(
                 title: l10n.assistantSendErrorTitle,
                 description: sendErrorDescription(
@@ -81,10 +81,10 @@ class AssistantConversationSurface extends StatelessWidget {
                 actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
                 onAction: onRetry,
                 actionKey: const Key('assistant-retry-action'),
-                padding: const EdgeInsets.all(AppSpacingTokens.md),
+                padding: const EdgeInsets.all(AppSpacingTokens.level4),
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             _InputComposer(
               controller: controller,
               canSend: capabilities.canSendMessages && !state.isSending,
@@ -173,7 +173,7 @@ class _ConversationView extends StatelessWidget {
           onDismissProposal: onDismissProposal,
         );
       },
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacingTokens.md),
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacingTokens.level4),
       itemCount: items.length,
     );
   }
@@ -241,21 +241,21 @@ class _InputComposer extends StatelessWidget {
                 color: colors.mutedForeground,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                 borderSide: BorderSide(color: colors.border),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                 borderSide: BorderSide(color: colors.border),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                 borderSide: BorderSide(color: colors.primary),
               ),
             ),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.sm),
+        const SizedBox(width: AppSpacingTokens.level3),
         FButton(
           key: const Key('assistant-send-action'),
           onPress: canSend ? onSend : null,

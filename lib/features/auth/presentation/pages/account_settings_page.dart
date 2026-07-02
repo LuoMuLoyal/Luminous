@@ -133,12 +133,12 @@ class AccountSettingsPage extends HookConsumerWidget {
                   label: Text(l10n.authAccountOverviewTitle),
                   child: FCard.raw(
                     child: Padding(
-                      padding: const EdgeInsets.all(AppSpacingTokens.xl),
+                      padding: const EdgeInsets.all(AppSpacingTokens.level6),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AccountStatusSection(user: user, l10n: l10n),
-                          const SizedBox(height: AppSpacingTokens.xl),
+                          const SizedBox(height: AppSpacingTokens.level6),
                           _ProfileSection(
                             nicknameController: nicknameController,
                             avatarController: avatarController,
@@ -156,14 +156,14 @@ class AccountSettingsPage extends HookConsumerWidget {
                               }
                             },
                           ),
-                          const SizedBox(height: AppSpacingTokens.xl),
+                          const SizedBox(height: AppSpacingTokens.level6),
                           EmailSection(
                             user: user,
                             emailController: emailController,
                             onChangeEmail: () =>
                                 context.push('/account/change-email'),
                           ),
-                          const SizedBox(height: AppSpacingTokens.xl),
+                          const SizedBox(height: AppSpacingTokens.level6),
                           LinkedIdentitiesSection(
                             user: user,
                             isSubmitting: accountState.isSubmitting,
@@ -196,7 +196,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                   label: Text(l10n.authPasswordSectionTitle),
                   child: FCard.raw(
                     child: Padding(
-                      padding: const EdgeInsets.all(AppSpacingTokens.xl),
+                      padding: const EdgeInsets.all(AppSpacingTokens.level6),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -234,7 +234,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                               if (ctx.mounted) router.go('/login');
                             },
                           ),
-                          const SizedBox(height: AppSpacingTokens.xl),
+                          const SizedBox(height: AppSpacingTokens.level6),
                           DeleteAccountSection(
                             user: user,
                             deletePasswordController: deletePasswordController,
@@ -271,7 +271,7 @@ class AccountSettingsPage extends HookConsumerWidget {
             ),
             if ((accountState.errorMessage?.isNotEmpty ?? false) ||
                 success != null) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               FToast(
                 variant: accountState.errorMessage?.isNotEmpty == true
                     ? FToastVariant.destructive
@@ -339,14 +339,14 @@ Future<bool> _confirmUnlinkIdentity(
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         Text(
           l10n.authIdentityUnlinkConfirmMessage(
             identityProviderLabel(identity.provider, l10n),
           ),
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        const SizedBox(height: AppSpacingTokens.xl),
+        const SizedBox(height: AppSpacingTokens.level6),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -357,7 +357,7 @@ Future<bool> _confirmUnlinkIdentity(
               onPress: () => Navigator.of(context).pop(false),
               child: Text(l10n.authCancelAction),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             FButton(
               variant: FButtonVariant.destructive,
               size: FButtonSizeVariant.sm,
@@ -398,20 +398,20 @@ class _ProfileSection extends StatelessWidget {
             context,
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         FTextField(
           control: FTextFieldControl.managed(controller: nicknameController),
           label: Text(l10n.authNicknameLabel),
           hint: l10n.authNicknameHint,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         FTextField(
           control: FTextFieldControl.managed(controller: avatarController),
           label: Text(l10n.authAvatarLabel),
           hint: l10n.authAvatarHint,
           keyboardType: TextInputType.url,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         SizedBox(
           width: double.infinity,
           child: FButton(

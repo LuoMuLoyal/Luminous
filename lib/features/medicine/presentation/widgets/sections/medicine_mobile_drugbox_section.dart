@@ -28,7 +28,7 @@ class _DrugBoxSection extends StatelessWidget {
     return FCard.raw(
       key: const Key('medicine-hero'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -39,8 +39,8 @@ class _DrugBoxSection extends StatelessWidget {
                 icon: FLucideIcons.briefcaseMedical,
                 color: Color(0xFF0F766E),
                 backgroundColor: Color(0xFF0F766E).withValues(alpha: 0.12),
-                size: AppSpacingTokens.x2l,
-                iconSize: AppSpacingTokens.lg,
+                size: AppSpacingTokens.level7,
+                iconSize: AppSpacingTokens.level5,
               ),
               trailing: AppTextAction(
                 label: l10n.medicineManageMedicinesAction,
@@ -48,14 +48,14 @@ class _DrugBoxSection extends StatelessWidget {
                     pushAuthRequiredRoute(context, '/mine/medicine/new'),
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.xxs),
+            const SizedBox(height: AppSpacingTokens.level1),
             Text(
               l10n.medicineDrugboxSubtitle,
               style: textTheme.bodySmall?.copyWith(
                 color: colors.mutedForeground,
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             if (items.isEmpty)
               _DrugBoxEmpty(l10n: l10n)
             else
@@ -66,16 +66,16 @@ class _DrugBoxSection extends StatelessWidget {
                     count: workspace.plan.items.length,
                     l10n: l10n,
                   ),
-                  const SizedBox(width: AppSpacingTokens.sm),
+                  const SizedBox(width: AppSpacingTokens.level3),
                   SizedBox(
-                    height: AppSpacingTokens.x5l,
+                    height: AppSpacingTokens.level10,
                     child: VerticalDivider(
                       width: 1,
                       thickness: 1,
                       color: colors.border,
                     ),
                   ),
-                  const SizedBox(width: AppSpacingTokens.sm),
+                  const SizedBox(width: AppSpacingTokens.level3),
                   Expanded(
                     child: Column(
                       children: [
@@ -94,7 +94,7 @@ class _DrugBoxSection extends StatelessWidget {
                               height: 1,
                               thickness: 1,
                               indent:
-                                  AppSpacingTokens.x2l + AppSpacingTokens.sm,
+                                  AppSpacingTokens.level7 + AppSpacingTokens.level3,
                               color: colors.border,
                             ),
                         ],
@@ -103,9 +103,9 @@ class _DrugBoxSection extends StatelessWidget {
                   ),
                 ],
               ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Divider(height: 1, thickness: 1, color: colors.border),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             _DrugBoxReminderStrip(
               key: const Key('medicine-next-reminder'),
               workspace: workspace,
@@ -131,7 +131,7 @@ class _DrugBoxCountSummary extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     return SizedBox(
-      width: AppSpacingTokens.x4l,
+      width: AppSpacingTokens.level9,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -144,7 +144,7 @@ class _DrugBoxCountSummary extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.72,
           ),
-          const SizedBox(height: AppSpacingTokens.xxs),
+          const SizedBox(height: AppSpacingTokens.level1),
           Text(
             l10n.medicineDrugboxTotalPrefix,
             style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
@@ -224,7 +224,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
           ],
         ),
         if (canMark) ...[
-          const SizedBox(height: AppSpacingTokens.sm),
+          const SizedBox(height: AppSpacingTokens.level3),
           Row(
             children: [
               _DoseActionButton(
@@ -236,7 +236,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 onTap: () =>
                     onMarkDose!(currentMedicineId, MedicineDoseAction.taken),
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               _DoseActionButton(
                 key: const Key('medicine-next-dose-action-skipped'),
                 label: l10n.medicineDoseActionSkipped,
@@ -273,14 +273,14 @@ class _DrugBoxMetricItem extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(icon, color: color.withValues(alpha: 0.78), size: 16),
-              const SizedBox(width: AppSpacingTokens.xxs),
+              const SizedBox(width: AppSpacingTokens.level1),
               Expanded(
                 child: Text(
                   label,
@@ -293,7 +293,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacingTokens.xxs),
+          const SizedBox(height: AppSpacingTokens.level1),
           AppSkeletonText(
             text: value,
             style: textTheme.titleMedium?.copyWith(
@@ -304,7 +304,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.76,
           ),
-          const SizedBox(height: AppSpacingTokens.xxs),
+          const SizedBox(height: AppSpacingTokens.level1),
           AppSkeletonText(
             text: detail,
             style: textTheme.labelSmall?.copyWith(
@@ -327,7 +327,7 @@ class _MetricDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     return SizedBox(
-      height: AppSpacingTokens.x4l,
+      height: AppSpacingTokens.level9,
       child: VerticalDivider(width: 1, thickness: 1, color: colors.border),
     );
   }
@@ -343,7 +343,7 @@ class _DrugBoxEmpty extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
       child: Row(
         children: [
           AppIconBadge(
@@ -351,10 +351,10 @@ class _DrugBoxEmpty extends StatelessWidget {
             color: Color(0xFF0F766E),
             backgroundColor: Color(0xFF0F766E).withValues(alpha: 0.12),
             shape: BoxShape.circle,
-            size: AppSpacingTokens.x3l,
-            iconSize: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level8,
+            iconSize: AppSpacingTokens.level5,
           ),
-          const SizedBox(width: AppSpacingTokens.md),
+          const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -365,7 +365,7 @@ class _DrugBoxEmpty extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   l10n.medicineNoMedicineBody,
                   style: textTheme.bodySmall?.copyWith(
@@ -416,16 +416,16 @@ class _DrugBoxMedicationRow extends StatelessWidget {
           '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}',
         );
       },
-      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.xs,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level2,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Row(
           children: [
-            _MedicationAvatar(item: item, size: AppSpacingTokens.x2l),
-            const SizedBox(width: AppSpacingTokens.sm),
+            _MedicationAvatar(item: item, size: AppSpacingTokens.level7),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -439,10 +439,10 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.72,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xxs),
+                  const SizedBox(height: AppSpacingTokens.level1),
                   Wrap(
-                    spacing: AppSpacingTokens.xs,
-                    runSpacing: AppSpacingTokens.xxs,
+                    spacing: AppSpacingTokens.level2,
+                    runSpacing: AppSpacingTokens.level1,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       AppSkeletonText(
@@ -458,7 +458,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                         skeleton: const AppInlineSkeletonBlock(
                           height: 22,
                           width: 54,
-                          radius: AppRadiusTokens.pill,
+                          radius: AppRadiusTokens.levelFull,
                         ),
                         child: AppStatusPill(
                           label: state,
@@ -470,11 +470,11 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.xs),
+            const SizedBox(width: AppSpacingTokens.level2),
             Icon(
               FLucideIcons.chevronRight,
               color: colors.mutedForeground,
-              size: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level5,
             ),
           ],
         ),

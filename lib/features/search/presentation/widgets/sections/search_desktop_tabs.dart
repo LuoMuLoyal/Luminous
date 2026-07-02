@@ -18,7 +18,7 @@ class DesktopTabs extends StatelessWidget {
         Row(
           children: [
             Icon(FLucideIcons.heartPulse, color: colors.primary, size: 18),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Text(
               l10n.medicineSearchAssistantTitle,
               style: textTheme.titleSmall?.copyWith(
@@ -30,7 +30,7 @@ class DesktopTabs extends StatelessWidget {
         const Spacer(),
         _TopTab(label: l10n.medicineSearchPageTitle, active: true),
         _TopTab(label: l10n.medicineSearchMyBoxTab, active: false),
-        const SizedBox(width: AppSpacingTokens.lg),
+        const SizedBox(width: AppSpacingTokens.level5),
         DecoratedBox(
           decoration: BoxDecoration(
             color: colors.primary.withValues(alpha: 0.1),
@@ -63,7 +63,7 @@ class _TopTab extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
       child: Column(
         children: [
           Text(
@@ -73,7 +73,7 @@ class _TopTab extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.xs),
+          const SizedBox(height: AppSpacingTokens.level2),
           Container(
             width: 42,
             height: 2,

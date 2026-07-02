@@ -43,15 +43,15 @@ class ReportExportSection extends StatelessWidget {
           l10n.reportExportSectionTitle,
           style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: actions.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: AppSpacingTokens.sm,
-            mainAxisSpacing: AppSpacingTokens.sm,
+            crossAxisSpacing: AppSpacingTokens.level3,
+            mainAxisSpacing: AppSpacingTokens.level3,
             mainAxisExtent: _exportCardHeight(context),
           ),
           itemBuilder: (context, index) {
@@ -108,14 +108,14 @@ class _ExportCard extends StatelessWidget {
             : () async {
                 await onTap!(action.kind);
               },
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Row(
               children: [
                 AppIconBadge(icon: action.icon, color: action.color),
-                const SizedBox(width: AppSpacingTokens.md),
+                const SizedBox(width: AppSpacingTokens.level4),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +129,7 @@ class _ExportCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: AppSpacingTokens.xxs),
+                      const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         subtitle,
                         style: textTheme.bodySmall?.copyWith(

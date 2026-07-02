@@ -17,14 +17,14 @@ class AssistantLoadingView extends StatelessWidget {
             AppInlineSkeletonBlock(height: 18, widthFactor: 0.74),
           ],
         ),
-        SizedBox(height: AppSpacingTokens.md),
+        SizedBox(height: AppSpacingTokens.level4),
         AppInlineSkeletonSection(
           children: [
             AppInlineSkeletonBlock(height: 240),
             AppInlineSkeletonBlock(height: 56),
           ],
         ),
-        SizedBox(height: AppSpacingTokens.md),
+        SizedBox(height: AppSpacingTokens.level4),
         AppInlineSkeletonSection(
           children: [
             AppInlineSkeletonBlock(height: 56),

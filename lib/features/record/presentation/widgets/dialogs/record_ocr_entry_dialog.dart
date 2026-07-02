@@ -29,7 +29,7 @@ Future<String?> showRecordOcrEntrySheet(
     useSafeArea: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
-        top: Radius.circular(AppRadiusTokens.xl),
+        top: Radius.circular(AppRadiusTokens.level5),
       ),
     ),
     builder: (dialogContext) => _RecordOcrEntrySheet(
@@ -104,21 +104,21 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
         child: Column(
           children: [
             // Drag handle
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Container(
               width: 36,
               height: 4,
               decoration: BoxDecoration(
                 color: colors.border,
-                borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
 
             // Title
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.lg,
+                horizontal: AppSpacingTokens.level5,
               ),
               child: Row(
                 children: [
@@ -138,19 +138,19 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
 
             // Content area
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.lg,
+                  horizontal: AppSpacingTokens.level5,
                 ),
                 child: Column(
                   children: [
                     // Image source picker (shown when no image yet)
                     if (imagePath.value == null) ...[
-                      const SizedBox(height: AppSpacingTokens.sm),
+                      const SizedBox(height: AppSpacingTokens.level3),
                       Row(
                         children: [
                           Expanded(
@@ -160,7 +160,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                               onTap: () => pickAndRecognize(ImageSource.camera),
                             ),
                           ),
-                          const SizedBox(width: AppSpacingTokens.md),
+                          const SizedBox(width: AppSpacingTokens.level4),
                           Expanded(
                             child: _OptionCard(
                               icon: FLucideIcons.images,
@@ -175,10 +175,10 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
 
                     // Image preview + result
                     if (imagePath.value != null) ...[
-                      const SizedBox(height: AppSpacingTokens.sm),
+                      const SizedBox(height: AppSpacingTokens.level3),
                       // Image thumbnail
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                         child: Image.file(
                           File(imagePath.value!),
                           height: 140,
@@ -186,11 +186,11 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      const SizedBox(height: AppSpacingTokens.md),
+                      const SizedBox(height: AppSpacingTokens.level4),
 
                       // Recognizing indicator
                       if (isRecognizing.value) ...[
-                        const SizedBox(height: AppSpacingTokens.lg),
+                        const SizedBox(height: AppSpacingTokens.level5),
                         SizedBox(
                           width: 24,
                           height: 24,
@@ -199,7 +199,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                             color: theme.colorScheme.primary,
                           ),
                         ),
-                        const SizedBox(height: AppSpacingTokens.sm),
+                        const SizedBox(height: AppSpacingTokens.level3),
                         Text(
                           l10n.recordOcrRecognizingHint,
                           style: textTheme.labelSmall?.copyWith(
@@ -213,11 +213,11 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           !isRecognizing.value) ...[
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.all(AppSpacingTokens.md),
+                          padding: const EdgeInsets.all(AppSpacingTokens.level4),
                           decoration: BoxDecoration(
                             color: colors.background,
                             borderRadius: BorderRadius.circular(
-                              AppRadiusTokens.lg,
+                              AppRadiusTokens.level4,
                             ),
                             border: Border.all(color: colors.border),
                           ),
@@ -243,7 +243,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
             if (recognizedText.value != null && !isRecognizing.value) ...[
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.lg,
+                  horizontal: AppSpacingTokens.level5,
                 ),
                 child: SizedBox(
                   width: double.infinity,
@@ -256,7 +256,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
             ],
           ],
         ),
@@ -286,18 +286,18 @@ class _OptionCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xl),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level6),
           decoration: BoxDecoration(
             color: colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
             border: Border.all(color: colors.border),
           ),
           child: Column(
             children: [
               Icon(icon, size: 36, color: theme.colorScheme.primary),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 label,
                 style: textTheme.bodySmall,

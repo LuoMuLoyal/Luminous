@@ -88,7 +88,7 @@ class ReportDashboardView extends StatelessWidget {
           dashboard: dashboard,
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         ReportMetricsGrid(
           key: const Key('report-metrics-grid'),
           dashboard: dashboard,
@@ -96,7 +96,7 @@ class ReportDashboardView extends StatelessWidget {
           l10n: l10n,
           onMetricSelected: onMetricSelected,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         ReportTrendSection(
           key: const Key('report-trend-section'),
           trends: dashboard.trends,
@@ -104,13 +104,13 @@ class ReportDashboardView extends StatelessWidget {
           onQueryChanged: onDashboardQueryChanged ?? (_) {},
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         ReportFindingsSection(
           key: const Key('report-findings-section'),
           findings: dashboard.findings,
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         ReportAiSummarySection(
           key: const Key('report-ai-summary-section'),
           dashboard: dashboard,
@@ -122,7 +122,7 @@ class ReportDashboardView extends StatelessWidget {
           onGenerate: onGenerateAiSummary,
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         ReportExportSection(
           key: const Key('report-export-section'),
           actions: dashboard.exportActions,
@@ -131,13 +131,13 @@ class ReportDashboardView extends StatelessWidget {
           onActionTap: onExportActionTap,
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         ReportPatternsSection(
           key: const Key('report-patterns-section'),
           patterns: dashboard.patterns,
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         ReportReferenceNotice(
           key: const Key('report-reference-notice'),
           l10n: l10n,
@@ -160,7 +160,7 @@ class ReportDashboardView extends StatelessWidget {
                 dashboard: dashboard,
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               ReportTrendSection(
                 key: const Key('report-trend-section'),
                 trends: dashboard.trends,
@@ -168,13 +168,13 @@ class ReportDashboardView extends StatelessWidget {
                 onQueryChanged: onDashboardQueryChanged ?? (_) {},
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               ReportFindingsSection(
                 key: const Key('report-findings-section'),
                 findings: dashboard.findings,
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               ReportAiSummarySection(
                 key: const Key('report-ai-summary-section'),
                 dashboard: dashboard,
@@ -189,7 +189,7 @@ class ReportDashboardView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.lg),
+        const SizedBox(width: AppSpacingTokens.level5),
         Expanded(
           flex: 5,
           child: Column(
@@ -202,7 +202,7 @@ class ReportDashboardView extends StatelessWidget {
                 l10n: l10n,
                 onMetricSelected: onMetricSelected,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               ReportExportSection(
                 key: const Key('report-export-section'),
                 actions: dashboard.exportActions,
@@ -211,13 +211,13 @@ class ReportDashboardView extends StatelessWidget {
                 onActionTap: onExportActionTap,
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               ReportPatternsSection(
                 key: const Key('report-patterns-section'),
                 patterns: dashboard.patterns,
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               ReportReferenceNotice(
                 key: const Key('report-reference-notice'),
                 l10n: l10n,

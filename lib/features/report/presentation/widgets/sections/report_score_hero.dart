@@ -25,7 +25,7 @@ class ReportScoreHero extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -50,16 +50,16 @@ class ReportScoreHero extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacingTokens.md),
+                  const SizedBox(height: AppSpacingTokens.level4),
                   Wrap(
-                    spacing: AppSpacingTokens.sm,
+                    spacing: AppSpacingTokens.level3,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       AppSkeletonSlot(
                         skeleton: const AppInlineSkeletonBlock(
                           height: 58,
                           width: 76,
-                          radius: AppRadiusTokens.md,
+                          radius: AppRadiusTokens.level3,
                         ),
                         child: Text(
                           score.value.toString(),
@@ -86,7 +86,7 @@ class ReportScoreHero extends StatelessWidget {
                         skeleton: const AppInlineSkeletonBlock(
                           height: 22,
                           width: 64,
-                          radius: AppRadiusTokens.sm,
+                          radius: AppRadiusTokens.level2,
                         ),
                         child: _StatusBadge(
                           label: reportStatusLabel(l10n, score.status),
@@ -95,7 +95,7 @@ class ReportScoreHero extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacingTokens.lg),
+                  const SizedBox(height: AppSpacingTokens.level5),
                   AppSkeletonText(
                     text: score.summary,
                     style: textTheme.bodyMedium?.copyWith(
@@ -106,7 +106,7 @@ class ReportScoreHero extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.md),
+            const SizedBox(width: AppSpacingTokens.level4),
             DecoratedBox(
               decoration: const BoxDecoration(
                 color: Color(0xFFDCFCE7),
@@ -151,12 +151,12 @@ class _StatusBadge extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.sm,
-          vertical: AppSpacingTokens.xxs,
+          horizontal: AppSpacingTokens.level3,
+          vertical: AppSpacingTokens.level1,
         ),
         child: Text(
           label,

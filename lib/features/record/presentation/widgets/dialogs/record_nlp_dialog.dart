@@ -143,12 +143,12 @@ class RecordNlpDialog extends HookConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacingTokens.xs),
+          const SizedBox(height: AppSpacingTokens.level2),
           Text(
             l10n.recordNlpSheetSubtitle,
             style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           TextField(
             key: const Key('record-nlp-input-field'),
             controller: controller,
@@ -163,7 +163,7 @@ class RecordNlpDialog extends HookConsumerWidget {
               border: const OutlineInputBorder(),
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           Row(
             children: [
               Expanded(
@@ -175,7 +175,7 @@ class RecordNlpDialog extends HookConsumerWidget {
                   child: Text(l10n.recordNlpResetAction),
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               Expanded(
                 child: FilledButton(
                   key: const Key('record-nlp-generate-action'),
@@ -192,7 +192,7 @@ class RecordNlpDialog extends HookConsumerWidget {
             ],
           ),
           if (state.hasResult) ...[
-            const SizedBox(height: AppSpacingTokens.lg),
+            const SizedBox(height: AppSpacingTokens.level5),
             RecordNlpCandidateReview(
               state: state,
               onToggleSelected: (index, selected) => ref
@@ -206,14 +206,14 @@ class RecordNlpDialog extends HookConsumerWidget {
                   .removeCandidateAt(index),
             ),
             if (state.hasFailedCandidates) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               RecordNlpRetryPanel(
                 failedCount: state.failedCount,
                 enabled: !state.isSaving,
                 onRetry: handleRetryFailed,
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             SizedBox(
               width: double.infinity,
               child: FilledButton(
@@ -227,7 +227,7 @@ class RecordNlpDialog extends HookConsumerWidget {
               ),
             ),
           ] else if (state.status == RecordNlpStatus.generating) ...[
-            const SizedBox(height: AppSpacingTokens.lg),
+            const SizedBox(height: AppSpacingTokens.level5),
             const LinearProgressIndicator(),
           ],
         ],

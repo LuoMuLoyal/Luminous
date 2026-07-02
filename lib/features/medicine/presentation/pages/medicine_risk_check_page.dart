@@ -87,19 +87,19 @@ class _MedicineRiskCheckBody extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (redFlagAlerts.isNotEmpty) ...[
             MedicineRiskRedFlagBanner(alerts: redFlagAlerts, l10n: l10n),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
           ],
           PageSectionCard(
             title: l10n.medicineRiskCheckSummaryTitle,
             child: Wrap(
-              spacing: AppSpacingTokens.sm,
-              runSpacing: AppSpacingTokens.sm,
+              spacing: AppSpacingTokens.level3,
+              runSpacing: AppSpacingTokens.level3,
               children: [
                 MedicineRiskMetricChip(
                   label: l10n.medicineRiskCheckCurrentMedicinesLabel,
@@ -121,12 +121,12 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             ),
           ),
           if (result.coverageSummary.isNotEmpty) ...[
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Container(
-              padding: const EdgeInsets.all(AppSpacingTokens.md),
+              padding: const EdgeInsets.all(AppSpacingTokens.level4),
               decoration: BoxDecoration(
                 color: Color(0xFFFEF3C7).withValues(alpha: 0.42),
-                borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,9 +134,9 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                   const Icon(
                     FLucideIcons.circleAlert,
                     color: Color(0xFFB45309),
-                    size: AppSpacingTokens.lg,
+                    size: AppSpacingTokens.level5,
                   ),
-                  const SizedBox(width: AppSpacingTokens.sm),
+                  const SizedBox(width: AppSpacingTokens.level3),
                   Expanded(
                     child: Text(
                       result.coverageSummary,
@@ -149,14 +149,14 @@ class _MedicineRiskCheckBody extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           if (result.findings.isEmpty)
             AppStateMessageView(
               title: l10n.medicineRiskCheckNoFindingsTitle,
               description: l10n.medicineRiskCheckNoFindingsBody,
               icon: FLucideIcons.badgeCheck,
               tone: AppStateTone.success,
-              padding: const EdgeInsets.all(AppSpacingTokens.lg),
+              padding: const EdgeInsets.all(AppSpacingTokens.level5),
             )
           else
             PageSectionCard(
@@ -176,7 +176,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                 ],
               ),
             ),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           if (result.coverageIssues.isNotEmpty)
             PageSectionCard(
               title: l10n.medicineRiskCheckCoverageTitle,

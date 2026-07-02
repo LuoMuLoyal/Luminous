@@ -26,7 +26,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
     final contextLabel = medicineRiskContextLabel(l10n, finding.context);
 
     final tile = Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,15 +38,15 @@ class MedicineRiskFindingTile extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: SizedBox.square(
-              dimension: AppSpacingTokens.x4l,
+              dimension: AppSpacingTokens.level9,
               child: Icon(
                 medicineRiskFindingIcon(finding),
                 color: color,
-                size: AppSpacingTokens.lg,
+                size: AppSpacingTokens.level5,
               ),
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,14 +57,14 @@ class MedicineRiskFindingTile extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   medicineRiskFindingBody(l10n, finding),
                   style: textTheme.bodySmall?.copyWith(
                     color: colors.mutedForeground,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   medicineRiskFindingEvidence(l10n, finding),
                   style: textTheme.labelSmall?.copyWith(
@@ -74,22 +74,22 @@ class MedicineRiskFindingTile extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               AppStatusPill(
                 label: medicineRiskSeverityLabel(l10n, finding.severity),
                 color: color,
-                radius: AppRadiusTokens.pill,
+                radius: AppRadiusTokens.levelFull,
                 backgroundAlpha: 0.08,
               ),
               if (contextLabel.isNotEmpty) ...[
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 AppStatusPill(
                   label: contextLabel,
                   color: colors.mutedForeground,
-                  radius: AppRadiusTokens.pill,
+                  radius: AppRadiusTokens.levelFull,
                   backgroundAlpha: 0.08,
                 ),
               ],

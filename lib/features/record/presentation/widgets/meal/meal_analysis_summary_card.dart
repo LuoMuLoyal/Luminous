@@ -18,7 +18,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -40,7 +40,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ],
             ),
             if (_nonEmpty(data.mealDescription) != null) ...[
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 data.mealDescription!,
                 style: textTheme.bodySmall?.copyWith(
@@ -49,17 +49,17 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.recognizedDishes.isNotEmpty) ...[
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               _SectionTitle(title: l10n.recordMealAnalysisRecognizedDishes),
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               ...data.recognizedDishes.map(
                 (dish) => _BulletText(text: dish.displayName),
               ),
             ],
             if (data.resolvedIngredients.isNotEmpty) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               _SectionTitle(title: l10n.recordMealAnalysisResolvedIngredients),
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               ...data.resolvedIngredients.map(
                 (item) => _BulletText(
                   text: item.matchedFoodName == null
@@ -69,9 +69,9 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.compositionMatches.isNotEmpty) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               _SectionTitle(title: l10n.recordMealAnalysisCompositionMatches),
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               ...data.compositionMatches.map(
                 (item) => _BulletText(
                   text: item.matchedFoodName == null
@@ -81,9 +81,9 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.nutritionEstimate != null) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               _SectionTitle(title: l10n.recordMealAnalysisNutritionEstimate),
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               if (data.nutritionEstimate!.energyKcal != null)
                 _BulletText(
                   text:
@@ -96,7 +96,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 ),
             ],
             if (_nonEmpty(data.mealCommentary) != null) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               Text(
                 data.mealCommentary!,
                 style: textTheme.bodySmall?.copyWith(
@@ -105,7 +105,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               ),
             ],
             if (data.isEstimate) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               Text(
                 l10n.recordMealAnalysisEstimateDisclaimer,
                 style: textTheme.labelSmall?.copyWith(color: Color(0xFFB45309)),
@@ -143,7 +143,7 @@ class _BulletText extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacingTokens.xxs),
+      padding: const EdgeInsets.only(bottom: AppSpacingTokens.level1),
       child: Text(
         '• $text',
         style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),

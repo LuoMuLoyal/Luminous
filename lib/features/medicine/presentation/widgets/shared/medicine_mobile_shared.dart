@@ -49,23 +49,23 @@ class _DoseActionButton extends StatelessWidget {
 
     return AppInkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: filled ? color : color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
           border: Border.all(color: color.withValues(alpha: 0.32)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.xs,
+            horizontal: AppSpacingTokens.level3,
+            vertical: AppSpacingTokens.level2,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: foreground, size: AppSpacingTokens.md),
-              const SizedBox(width: AppSpacingTokens.xxs),
+              Icon(icon, color: foreground, size: AppSpacingTokens.level4),
+              const SizedBox(width: AppSpacingTokens.level1),
               Flexible(
                 child: Text(
                   label,
@@ -102,11 +102,11 @@ class _FilterText extends StatelessWidget {
           label,
           style: textTheme.bodySmall?.copyWith(color: colors.foreground),
         ),
-        const SizedBox(width: AppSpacingTokens.xxs),
+        const SizedBox(width: AppSpacingTokens.level1),
         Icon(
           FLucideIcons.chevronDown,
           color: colors.foreground,
-          size: AppSpacingTokens.md,
+          size: AppSpacingTokens.level4,
         ),
       ],
     );

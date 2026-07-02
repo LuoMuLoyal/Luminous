@@ -18,9 +18,9 @@ class AppSettingsSection extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(
-        left: AppSpacingTokens.sm,
-        right: AppSpacingTokens.sm,
-        bottom: AppSpacingTokens.xs,
+        left: AppSpacingTokens.level3,
+        right: AppSpacingTokens.level3,
+        bottom: AppSpacingTokens.level2,
       ),
       child: Text(
         label,

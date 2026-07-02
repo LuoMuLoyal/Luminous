@@ -33,8 +33,8 @@ class ReportMetricsGrid extends StatelessWidget {
       itemCount: displayMetrics.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: AppSpacingTokens.sm,
-        mainAxisSpacing: AppSpacingTokens.sm,
+        crossAxisSpacing: AppSpacingTokens.level3,
+        mainAxisSpacing: AppSpacingTokens.level3,
         mainAxisExtent: _metricCardHeight(context),
       ),
       itemBuilder: (context, index) {
@@ -149,10 +149,10 @@ class _MetricCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap == null ? null : () => onTap!(metric.kind),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -175,7 +175,7 @@ class _MetricCard extends StatelessWidget {
                       ),
                       shape: BoxShape.circle,
                     ),
-                    const SizedBox(width: AppSpacingTokens.xs),
+                    const SizedBox(width: AppSpacingTokens.level2),
                     Expanded(
                       child: Text(
                         title,
@@ -188,9 +188,9 @@ class _MetricCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.sm),
+                const SizedBox(height: AppSpacingTokens.level3),
                 Wrap(
-                  spacing: AppSpacingTokens.xxs,
+                  spacing: AppSpacingTokens.level1,
                   crossAxisAlignment: WrapCrossAlignment.end,
                   children: [
                     AppSkeletonText(
@@ -204,7 +204,7 @@ class _MetricCard extends StatelessWidget {
                     if (metric.unit.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(
-                          bottom: AppSpacingTokens.xxs,
+                          bottom: AppSpacingTokens.level1,
                         ),
                         child: Text(
                           metric.unit,
@@ -215,23 +215,23 @@ class _MetricCard extends StatelessWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Row(
                   children: [
                     AppSkeletonSlot(
                       skeleton: const AppInlineSkeletonBlock(
                         height: 20,
                         widthFactor: 0.36,
-                        radius: AppRadiusTokens.sm,
+                        radius: AppRadiusTokens.level2,
                       ),
                       child: _MetricBadge(
                         label: reportStatusLabel(l10n, metric.status),
                         color: reportStatusColor(metric.status),
                       ),
                     ),
-                    const SizedBox(width: AppSpacingTokens.xs),
+                    const SizedBox(width: AppSpacingTokens.level2),
                     Icon(directionIcon, size: 14, color: directionColor),
-                    const SizedBox(width: AppSpacingTokens.xxs),
+                    const SizedBox(width: AppSpacingTokens.level1),
                     Expanded(
                       child: AppSkeletonText(
                         text: metric.delta,
@@ -249,7 +249,7 @@ class _MetricCard extends StatelessWidget {
                 AppSkeletonSlot(
                   skeleton: const AppInlineSkeletonBlock(
                     height: 22,
-                    radius: AppRadiusTokens.sm,
+                    radius: AppRadiusTokens.level2,
                   ),
                   child: ReportMetricTrack(
                     values: metric.sparkline,
@@ -279,12 +279,12 @@ class _MetricBadge extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.xs,
-          vertical: AppSpacingTokens.xxs,
+          horizontal: AppSpacingTokens.level2,
+          vertical: AppSpacingTokens.level1,
         ),
         child: Text(
           label,

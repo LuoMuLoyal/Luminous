@@ -23,7 +23,7 @@ class MineArchiveSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MineSectionTitle(title: l10n.mineProfileTitle),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           key: const Key('mine-archive-section'),
           child: Column(
@@ -80,13 +80,13 @@ class _ArchiveRow extends StatelessWidget {
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.lg,
-            vertical: AppSpacingTokens.md,
+            horizontal: AppSpacingTokens.level5,
+            vertical: AppSpacingTokens.level4,
           ),
           child: Row(
             children: [
               _SoftIcon(icon: entry.icon, color: entry.accent),
-              const SizedBox(width: AppSpacingTokens.md),
+              const SizedBox(width: AppSpacingTokens.level4),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +99,7 @@ class _ArchiveRow extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacingTokens.xxs),
+                    const SizedBox(height: AppSpacingTokens.level1),
                     AppSkeletonText(
                       text:
                           subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
@@ -114,12 +114,12 @@ class _ArchiveRow extends StatelessWidget {
                 ),
               ),
               if (entry.statusKey != null) ...[
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
                 AppSkeletonSlot(
                   skeleton: const AppInlineSkeletonBlock(
                     height: 18,
                     width: 46,
-                    radius: AppRadiusTokens.sm,
+                    radius: AppRadiusTokens.level2,
                   ),
                   child: Text(
                     mineCopy(l10n, entry.statusKey!),
@@ -132,11 +132,11 @@ class _ArchiveRow extends StatelessWidget {
                   ),
                 ),
               ],
-              const SizedBox(width: AppSpacingTokens.xs),
+              const SizedBox(width: AppSpacingTokens.level2),
               Icon(
                 FLucideIcons.chevronRight,
                 color: colors.mutedForeground,
-                size: AppSpacingTokens.lg,
+                size: AppSpacingTokens.level5,
               ),
             ],
           ),
@@ -168,7 +168,7 @@ class _SoftIcon extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       ),
       child: SizedBox.square(
         dimension: _defaultSize,

@@ -20,7 +20,7 @@ Future<String?> showRecordVoiceEntrySheet(BuildContext context) {
     useSafeArea: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
-        top: Radius.circular(AppRadiusTokens.xl),
+        top: Radius.circular(AppRadiusTokens.level5),
       ),
     ),
     builder: (dialogContext) => _RecordVoiceEntrySheet(),
@@ -161,21 +161,21 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
         child: Column(
           children: [
             // Drag handle
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Container(
               width: 36,
               height: 4,
               decoration: BoxDecoration(
                 color: colors.border,
-                borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
 
             // Title
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.lg,
+                horizontal: AppSpacingTokens.level5,
               ),
               child: Row(
                 children: [
@@ -195,18 +195,18 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
 
             // Recognized text display
             Expanded(
               child: Container(
                 margin: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.lg,
+                  horizontal: AppSpacingTokens.level5,
                 ),
-                padding: const EdgeInsets.all(AppSpacingTokens.md),
+                padding: const EdgeInsets.all(AppSpacingTokens.level4),
                 decoration: BoxDecoration(
                   color: colors.background,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                   border: Border.all(color: colors.border),
                 ),
                 child: SingleChildScrollView(
@@ -223,7 +223,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
 
             // Sound level indicator + mic button
             SizedBox(
@@ -291,12 +291,12 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
 
             // Use text button
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.lg,
+                horizontal: AppSpacingTokens.level5,
               ),
               child: SizedBox(
                 width: double.infinity,
@@ -308,7 +308,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.lg),
+            const SizedBox(height: AppSpacingTokens.level5),
           ],
         ),
       ),

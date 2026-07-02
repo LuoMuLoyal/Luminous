@@ -44,8 +44,8 @@ class AppTextAction extends StatelessWidget {
         children: [
           if (flexible) Flexible(child: text) else text,
           if (icon != null) ...[
-            const SizedBox(width: AppSpacingTokens.xxs),
-            Icon(icon, size: AppSpacingTokens.md, color: foreground),
+            const SizedBox(width: AppSpacingTokens.level1),
+            Icon(icon, size: AppSpacingTokens.level4, color: foreground),
           ],
         ],
       ),

@@ -47,7 +47,7 @@ class ReportTopBar extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   Text(
                     dateRangeLabel,
                     style: textTheme.bodyMedium?.copyWith(
@@ -57,16 +57,16 @@ class ReportTopBar extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.md),
+            const SizedBox(width: AppSpacingTokens.level4),
             ReportPeriodPill(
               range: selectedQuery.range,
               onTap: () => _showRangePicker(context),
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         const _ReportSnapshotStatus(),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         Row(
           children: [
             Expanded(
@@ -86,7 +86,7 @@ class ReportTopBar extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Tooltip(
               message: l10n.reportSyncAction,
               child: FButton(
@@ -130,18 +130,18 @@ class _ReportSnapshotStatus extends StatelessWidget {
     return Container(
       key: const Key('report-snapshot-status'),
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       decoration: BoxDecoration(
         color: colors.secondary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         border: Border.all(color: colors.border),
       ),
       child: Row(
         children: [
           Icon(FLucideIcons.history, color: colors.primary, size: 18),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,7 +154,7 @@ class _ReportSnapshotStatus extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   l10n.reportSnapshotHint,
                   style: textTheme.bodySmall?.copyWith(
@@ -194,17 +194,17 @@ class ReportPeriodPill extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
             border: Border.all(color: colors.border),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.sm,
+              horizontal: AppSpacingTokens.level4,
+              vertical: AppSpacingTokens.level3,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -215,7 +215,7 @@ class ReportPeriodPill extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.xxs),
+                const SizedBox(width: AppSpacingTokens.level1),
                 Icon(
                   FLucideIcons.chevronDown,
                   size: 16,
