@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
@@ -11,35 +10,28 @@ import 'package:luminous/features/mine/presentation/widgets/shared/mine_shared.d
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MineArchiveSection extends StatelessWidget {
-  const MineArchiveSection({
-    super.key,
-    required this.dashboard,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const MineArchiveSection({super.key, required this.dashboard});
+
   final MineDashboard dashboard;
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final meta = _profileMeta(l10n, dashboard.profile);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MineSectionTitle(title: l10n.mineProfileTitle, typography: typography),
+        MineSectionTitle(title: l10n.mineProfileTitle),
         const SizedBox(height: AppSpacingTokens.sm),
-        AppSectionSurface(
-          surface: surface,
-          padding: EdgeInsets.zero,
+        FCard.raw(
+          key: const Key('mine-archive-section'),
           child: Column(
             children: [
               for (
                 var index = 0;
                 index < dashboard.archiveEntries.length;
-                index += 1
+                index++
               )
                 _ArchiveRow(
                   entry: dashboard.archiveEntries[index],
@@ -48,9 +40,6 @@ class MineArchiveSection extends StatelessWidget {
                           MineCopyKey.archiveBasicTitle
                       ? meta
                       : null,
-                  l10n: l10n,
-                  typography: typography,
-                  surface: surface,
                   showDivider: index != dashboard.archiveEntries.length - 1,
                 ),
             ],
@@ -64,142 +53,129 @@ class MineArchiveSection extends StatelessWidget {
 class _ArchiveRow extends StatelessWidget {
   const _ArchiveRow({
     required this.entry,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.showDivider,
     this.subtitleOverride,
   });
+
   final MineArchiveEntry entry;
-  final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final bool showDivider;
   final String? subtitleOverride;
 
   @override
   Widget build(BuildContext context) {
-    final row = _TapRow(
-      onTap: () {
-        final route = entry.route ?? _fallbackRouteFor(entry.titleKey);
-        if (route == null) {
-          showMineToast(context, mineCopy(l10n, entry.titleKey));
-          return;
-        }
-        pushAuthRequiredRoute(context, route);
-      },
-      surface: surface,
-      child: Row(
-        children: [
-          _SoftIcon(icon: entry.icon, color: entry.accent),
-          const SizedBox(width: AppSpacingTokens.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  mineCopy(l10n, entry.titleKey),
-                  style: typography.bodyMdStrong.copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
+    final row = Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          final route = entry.route ?? _fallbackRouteFor(entry.titleKey);
+          if (route == null) {
+            showMineToast(context, mineCopy(l10n, entry.titleKey));
+            return;
+          }
+          pushAuthRequiredRoute(context, route);
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.lg,
+            vertical: AppSpacingTokens.md,
+          ),
+          child: Row(
+            children: [
+              _SoftIcon(icon: entry.icon, color: entry.accent),
+              const SizedBox(width: AppSpacingTokens.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      mineCopy(l10n, entry.titleKey),
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.xxs),
+                    AppSkeletonText(
+                      text:
+                          subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.mutedForeground,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      widthFactor: 0.74,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
-                AppSkeletonText(
-                  text: subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
-                  style: typography.bodySm.copyWith(
-                    color: surface.body,
-                    letterSpacing: 0,
+              ),
+              if (entry.statusKey != null) ...[
+                const SizedBox(width: AppSpacingTokens.sm),
+                AppSkeletonSlot(
+                  skeleton: const AppInlineSkeletonBlock(
+                    height: 18,
+                    width: 46,
+                    radius: AppRadiusTokens.sm,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  widthFactor: 0.74,
+                  child: Text(
+                    mineCopy(l10n, entry.statusKey!),
+                    style: textTheme.labelSmall?.copyWith(
+                      color: entry.statusKey == MineCopyKey.archiveNeedsFill
+                          ? AppColorTokens.warning
+                          : mineGreen,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ],
-            ),
-          ),
-          if (entry.statusKey != null) ...[
-            const SizedBox(width: AppSpacingTokens.sm),
-            AppSkeletonSlot(
-              skeleton: const AppInlineSkeletonBlock(
-                height: 18,
-                width: 46,
-                radius: AppRadiusTokens.sm,
+              const SizedBox(width: AppSpacingTokens.xs),
+              Icon(
+                FLucideIcons.chevronRight,
+                color: colors.mutedForeground,
+                size: AppSpacingTokens.lg,
               ),
-              child: Text(
-                mineCopy(l10n, entry.statusKey!),
-                style: typography.bodySmStrong.copyWith(
-                  color: entry.statusKey == MineCopyKey.archiveNeedsFill
-                      ? AppColorTokens.warning
-                      : mineGreen,
-                  letterSpacing: 0,
-                ),
-              ),
-            ),
-          ],
-          const SizedBox(width: AppSpacingTokens.xs),
-          Icon(
-            Icons.chevron_right_rounded,
-            color: surface.body,
-            size: AppSpacingTokens.lg,
+            ],
           ),
-        ],
+        ),
       ),
     );
+
     if (!showDivider) return row;
+
     return Column(
       children: [
         row,
-        Divider(height: 1, color: surface.hairline),
+        Divider(height: 1, color: colors.border),
       ],
     );
   }
 }
 
-class _TapRow extends StatelessWidget {
-  const _TapRow({
-    required this.child,
-    required this.onTap,
-    required this.surface,
-  });
-  final Widget child;
-  final VoidCallback onTap;
-  final AppThemeSurface surface;
-  @override
-  Widget build(BuildContext context) => Material(
-    color: Colors.transparent,
-    child: InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.lg,
-          vertical: AppSpacingTokens.md,
-        ),
-        child: child,
-      ),
-    ),
-  );
-}
-
 class _SoftIcon extends StatelessWidget {
   const _SoftIcon({required this.icon, required this.color});
+
   final IconData icon;
   final Color color;
   static const _defaultSize = 44.0;
   static const _defaultIconSize = 22.0;
+
   @override
-  Widget build(BuildContext context) => DecoratedBox(
-    decoration: BoxDecoration(
-      color: color.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-    ),
-    child: SizedBox.square(
-      dimension: _defaultSize,
-      child: Icon(icon, color: color, size: _defaultIconSize),
-    ),
-  );
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      ),
+      child: SizedBox.square(
+        dimension: _defaultSize,
+        child: Icon(icon, color: color, size: _defaultIconSize),
+      ),
+    );
+  }
 }
 
 String? _fallbackRouteFor(MineCopyKey titleKey) {

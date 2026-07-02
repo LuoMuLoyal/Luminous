@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:forui/forui.dart';
 
-const mineGreen = AppColorTokens.cyanDeep;
+const mineGreen = Color(0xFF0F766E);
 
 class MineSectionTitle extends StatelessWidget {
-  const MineSectionTitle({
-    super.key,
-    required this.title,
-    required this.typography,
-  });
+  const MineSectionTitle({super.key, required this.title});
 
   final String title;
-  final AppTypographyScale typography;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     return Text(
       title,
-      style: typography.displaySm.copyWith(
+      style: textTheme.titleLarge?.copyWith(
+        color: colors.foreground,
         fontWeight: FontWeight.w600,
-        letterSpacing: 0,
       ),
     );
   }

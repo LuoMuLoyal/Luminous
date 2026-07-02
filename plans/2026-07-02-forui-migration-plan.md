@@ -14,17 +14,6 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 
 ## Remaining Phases
 
-### Mine
-
-- Files:
-  - `lib/features/mine/presentation/widgets/views/mine_dashboard_view.dart`
-  - `lib/features/mine/presentation/widgets/mine_top_bar.dart`
-  - `lib/features/mine/presentation/widgets/sections/mine_account_hero.dart`
-  - `lib/features/mine/presentation/widgets/sections/mine_archive_section.dart`
-  - `lib/features/mine/presentation/widgets/sections/mine_status_overview.dart`
-- Action:
-  - Replace Mine page `surface + typography + section surface` compositions with Forui card/tile structure.
-
 ### Report
 
 - Files:

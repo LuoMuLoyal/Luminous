@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/theme/app_theme.dart';
@@ -95,7 +96,7 @@ void main() {
     expect(find.text(l10n.mineSignedOutNoticeTitle), findsOneWidget);
     expect(find.text(l10n.mineAccountGuestDisplayName), findsOneWidget);
     expect(find.text(l10n.authGoLogin), findsOneWidget);
-    expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.lock), findsOneWidget);
     expect(find.text(l10n.mineErrorTitle), findsNothing);
 
     final basicSubtitle = find.text(l10n.mineArchiveBasicSubtitle);
