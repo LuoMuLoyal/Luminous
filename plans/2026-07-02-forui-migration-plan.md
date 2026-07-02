@@ -17,9 +17,7 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 ### Record
 
 - Files:
-  - remaining larger record shells and sections after the visible-panel pass:
-    `lib/features/record/presentation/pages/record_page.dart`
-    `lib/features/record/presentation/pages/record_detail.dart`
+  - remaining larger record desktop/section shells after the visible-panel + page/detail passes:
     `lib/features/record/presentation/widgets/views/record_dashboard_view.dart`
     `lib/features/record/presentation/widgets/sections/record_sidebar.dart`
     `lib/features/record/presentation/widgets/sections/record_timeline.dart`
@@ -28,7 +26,7 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
     `lib/features/record/presentation/widgets/shared/record_components.dart`
     `lib/features/record/presentation/widgets/shared/record_shared_widgets.dart`
 - Action:
-  - Continue from the now-finished visible-panel pass and remove the old theme stack from the remaining record page/detail/section shells.
+  - Continue from the now-finished visible-panel + page/detail passes and remove the old theme stack from the remaining desktop/section shells.
 
 ### Shared Common Widgets
 

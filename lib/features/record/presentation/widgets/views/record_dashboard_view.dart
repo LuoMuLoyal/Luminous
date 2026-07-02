@@ -44,20 +44,21 @@ class RecordDashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
     final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
     final isDesktop = width >= AppBreakpoints.desktop;
 
     final content = isDesktop
         ? _DesktopRecordDashboard(
             dashboard: dashboard,
             l10n: l10n,
-            typography: typography,
-            surface: surface,
+            typography: width < AppBreakpoints.mobile
+                ? AppTypographyTokens.mobile(
+                    Theme.of(context).colorScheme.onSurface,
+                  )
+                : AppTypographyTokens.desktop(
+                    Theme.of(context).colorScheme.onSurface,
+                  ),
+            surface: Theme.of(context).extension<AppThemeSurface>()!,
             onDateSelected: onDateSelected,
             onFilterSelected: onFilterSelected,
             onQuickAction: onQuickAction,
@@ -66,8 +67,6 @@ class RecordDashboardView extends StatelessWidget {
         : _MobileRecordDashboard(
             dashboard: dashboard,
             l10n: l10n,
-            typography: typography,
-            surface: surface,
             onQuickAction: onQuickAction,
             onAiInputTap: onAiInputTap,
             onMicTap: onMicTap,
@@ -85,8 +84,6 @@ class _MobileRecordDashboard extends StatelessWidget {
   const _MobileRecordDashboard({
     required this.dashboard,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onQuickAction,
     this.onAiInputTap,
     this.onMicTap,
@@ -98,8 +95,6 @@ class _MobileRecordDashboard extends StatelessWidget {
 
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<RecordQuickAction>? onQuickAction;
   final VoidCallback? onAiInputTap;
   final VoidCallback? onMicTap;
