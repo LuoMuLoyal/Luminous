@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_spacing_tokens.dart';
-import 'package:luminous/core/design/app_typography_tokens.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class AuthFieldError extends StatelessWidget {
   const AuthFieldError(this.error, {super.key});
@@ -14,7 +12,8 @@ class AuthFieldError extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final textTheme = Theme.of(context).textTheme;
+    final errorColor = Theme.of(context).colorScheme.error;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -23,9 +22,7 @@ class AuthFieldError extends StatelessWidget {
       ),
       child: Text(
         error!,
-        style: AppTypographyTokens.mobile(
-          surface.error,
-        ).bodySm.copyWith(color: surface.error),
+        style: textTheme.bodySmall?.copyWith(color: errorColor),
       ),
     );
   }

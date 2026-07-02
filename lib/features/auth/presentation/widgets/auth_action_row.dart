@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 const double _authControlHeight = 56;
 
@@ -23,14 +22,13 @@ class AuthLoginActionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = MediaQuery.sizeOf(context).width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
-    final promptStyle = typography.bodySm.copyWith(color: surface.body);
-    final linkStyle = typography.bodySm.copyWith(
-      color: surface.link,
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+    final promptStyle = textTheme.bodySmall?.copyWith(
+      color: colors.mutedForeground,
+    );
+    final linkStyle = textTheme.bodySmall?.copyWith(
+      color: colors.primary,
       fontWeight: FontWeight.w600,
     );
 
@@ -82,17 +80,17 @@ class AuthFooterAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = MediaQuery.sizeOf(context).width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: AppSpacingTokens.xs,
       children: [
-        Text(prompt, style: typography.bodySm.copyWith(color: surface.body)),
+        Text(
+          prompt,
+          style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+        ),
         TextButton(
           onPressed: onPressed,
           style: TextButton.styleFrom(
@@ -123,9 +121,7 @@ class AuthPrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final typography = MediaQuery.sizeOf(context).width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(Theme.of(context).colorScheme.onPrimary)
-        : AppTypographyTokens.desktop(Theme.of(context).colorScheme.onPrimary);
+    final textTheme = Theme.of(context).textTheme;
 
     return SizedBox(
       width: double.infinity,
@@ -143,7 +139,18 @@ class AuthPrimaryButton extends StatelessWidget {
                 height: 18,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-            : Text(label, style: typography.buttonLg),
+            : SizedBox(
+                height: _authControlHeight,
+                child: Center(
+                  child: Text(
+                    label,
+                    style: textTheme.labelLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
       ),
     );
   }

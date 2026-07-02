@@ -22,7 +22,7 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
   - `lib/core/design/app_typography_tokens.dart`
   - `lib/core/widgets/common/app_section_surface.dart`
   - `lib/core/widgets/settings/*`
-  - remaining feature leftovers still leaning on the bridge, mainly `lib/features/auth/presentation/widgets/*` plus a few formatter/helper files that still encode `AppThemeSurface`
+  - remaining feature leftovers still leaning on the bridge, mainly `lib/features/auth/presentation/pages/*` plus a few formatter/helper files that still encode `AppThemeSurface`
 - Action:
   - Replace the remaining wrapper/bridge surfaces with official Forui components where possible, and use `dart run forui style create ...` only when a generated style file is genuinely needed.
   - Once call sites are low enough, delete the bridge layer or shrink it into a minimal compatibility shell.
