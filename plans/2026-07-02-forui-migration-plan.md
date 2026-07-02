@@ -24,7 +24,7 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
   - `lib/core/widgets/settings/*`
 - Action:
   - Replace the remaining wrapper/bridge surfaces with official Forui components where possible, and use `dart run forui style create ...` only when a generated style file is genuinely needed.
-  - Feature-level call sites are now cleared from `lib`; the remaining decision is whether to delete these three bridge files outright or keep them as ultra-thin test/compatibility shims while cleaning the matching tests.
+  - Feature-level call sites are now cleared from `lib`, and the three bridge files have been shrunk to compatibility-only shims. The remaining work is to clean matching tests and decide whether those shims can be deleted outright afterward.
   - Sweep references after the reduction.
 
 ### Final Cleanup

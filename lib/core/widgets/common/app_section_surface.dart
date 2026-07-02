@@ -10,14 +10,6 @@ class AppSectionSurface extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.padding,
-    this.backgroundColor,
-    this.borderColor,
-    this.radius = AppRadiusTokens.lg,
-    this.shadow,
-    // Legacy params — accepted but ignored (self-themed)
-    this.typography,
-    this.surface,
-    this.color,
   });
 
   final Widget child;
@@ -25,13 +17,6 @@ class AppSectionSurface extends StatelessWidget {
   final String? subtitle;
   final Widget? trailing;
   final EdgeInsetsGeometry? padding;
-  final Color? backgroundColor;
-  final Color? borderColor;
-  final double radius;
-  final List<BoxShadow>? shadow;
-  final dynamic typography;
-  final dynamic surface;
-  final Color? color;
 
   @override
   Widget build(BuildContext context) {

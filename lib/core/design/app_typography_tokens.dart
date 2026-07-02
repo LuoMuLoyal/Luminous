@@ -35,6 +35,11 @@ class AppTypographyScale {
   final TextStyle buttonLg;
 }
 
+/// Legacy compatibility shim.
+///
+/// Runtime feature code now reads Material `textTheme` directly. This file
+/// remains only so older tests and temporary compatibility code can keep
+/// resolving the historical named scale during the final cleanup phase.
 abstract final class AppTypographyTokens {
   static const String sansFamily = 'Geist';
   static const String monoFamily = 'Geist Mono';
