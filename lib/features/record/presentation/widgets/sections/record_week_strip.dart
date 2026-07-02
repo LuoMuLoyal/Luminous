@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -11,66 +10,51 @@ class RecordWeekStrip extends StatelessWidget {
     super.key,
     required this.days,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onDateSelected,
   });
 
   final List<RecordWeekDay> days;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<DateTime>? onDateSelected;
 
   @override
   Widget build(BuildContext context) {
-    return AppSectionSurface(
-      typography: typography,
-      surface: surface,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.sm,
-        vertical: AppSpacingTokens.md,
-      ),
-      child: Row(
-        children: days
-            .map(
-              (day) => Expanded(
-                child: _WeekDayCell(
-                  day: day,
-                  l10n: l10n,
-                  typography: typography,
-                  surface: surface,
-                  onTap: onDateSelected,
+    return FCard.raw(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.sm,
+          vertical: AppSpacingTokens.md,
+        ),
+        child: Row(
+          children: days
+              .map(
+                (day) => Expanded(
+                  child: _WeekDayCell(
+                    day: day,
+                    l10n: l10n,
+                    onTap: onDateSelected,
+                  ),
                 ),
-              ),
-            )
-            .toList(),
+              )
+              .toList(),
+        ),
       ),
     );
   }
 }
 
 class _WeekDayCell extends StatelessWidget {
-  const _WeekDayCell({
-    required this.day,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-    this.onTap,
-  });
+  const _WeekDayCell({required this.day, required this.l10n, this.onTap});
 
   final RecordWeekDay day;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<DateTime>? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final accent = surface.accent;
-    final foreground = day.selected
-        ? Theme.of(context).colorScheme.onPrimary
-        : Theme.of(context).colorScheme.onSurface;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+    final foreground = day.selected ? colors.background : colors.foreground;
 
     return Material(
       color: Colors.transparent,
@@ -83,12 +67,14 @@ class _WeekDayCell extends StatelessWidget {
             children: [
               Text(
                 recordCopy(l10n, day.weekdayKey),
-                style: typography.caption.copyWith(color: surface.body),
+                style: textTheme.labelSmall?.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
               const SizedBox(height: AppSpacingTokens.xs),
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: day.selected ? accent : Colors.transparent,
+                  color: day.selected ? colors.foreground : Colors.transparent,
                   shape: BoxShape.circle,
                 ),
                 child: SizedBox.square(
@@ -96,8 +82,9 @@ class _WeekDayCell extends StatelessWidget {
                   child: Center(
                     child: Text(
                       '${day.day}',
-                      style: typography.bodySmStrong.copyWith(
+                      style: textTheme.labelLarge?.copyWith(
                         color: foreground,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),

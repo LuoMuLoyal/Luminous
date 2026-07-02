@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/speech_locale_resolver.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/record/domain/services/voice_recording_service.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -32,8 +32,8 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = theme.textTheme;
 
     // Service lifecycle: create once, dispose on unmount.
     final service = useMemoized(() => VoiceRecordingService());
@@ -166,7 +166,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: surface.mute,
+                color: colors.border,
                 borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
               ),
             ),
@@ -182,11 +182,13 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                   Expanded(
                     child: Text(
                       l10n.recordVoiceEntryTitle,
-                      style: typography.displaySm,
+                      style: textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(FLucideIcons.x),
                     onPressed: () => Navigator.of(context).pop(),
                     visualDensity: VisualDensity.compact,
                   ),
@@ -203,9 +205,9 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 ),
                 padding: const EdgeInsets.all(AppSpacingTokens.md),
                 decoration: BoxDecoration(
-                  color: surface.canvas,
+                  color: colors.background,
                   borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-                  border: Border.all(color: surface.hairline),
+                  border: Border.all(color: colors.border),
                 ),
                 child: SingleChildScrollView(
                   child: Text(
@@ -213,8 +215,10 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                         ? l10n.recordVoiceTapToStart
                         : recognizedText.value,
                     style: recognizedText.value.isEmpty
-                        ? typography.bodyMd.copyWith(color: surface.mute)
-                        : typography.bodyMd,
+                        ? textTheme.bodyMedium?.copyWith(
+                            color: colors.mutedForeground,
+                          )
+                        : textTheme.bodyMedium,
                   ),
                 ),
               ),
@@ -264,7 +268,9 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                         ],
                       ),
                       child: Icon(
-                        isListening.value ? Icons.mic : Icons.mic_none,
+                        isListening.value
+                            ? FLucideIcons.mic
+                            : FLucideIcons.micOff,
                         color: isListening.value ? Colors.white : micColor,
                         size: 32,
                       ),
@@ -277,7 +283,9 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                       bottom: 0,
                       child: Text(
                         l10n.recordVoiceListeningHint,
-                        style: typography.caption.copyWith(color: primaryColor),
+                        style: textTheme.labelSmall?.copyWith(
+                          color: primaryColor,
+                        ),
                       ),
                     ),
                 ],
