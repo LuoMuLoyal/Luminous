@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/record_date_bar.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/record_mobile_filter.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/record_mobile_timeline.dart';
 import 'package:luminous/features/record/presentation/widgets/record_overview.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/record_quick_entry_panel.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/record_sidebar.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/record_timeline.dart';
@@ -51,14 +50,6 @@ class RecordDashboardView extends StatelessWidget {
         ? _DesktopRecordDashboard(
             dashboard: dashboard,
             l10n: l10n,
-            typography: width < AppBreakpoints.mobile
-                ? AppTypographyTokens.mobile(
-                    Theme.of(context).colorScheme.onSurface,
-                  )
-                : AppTypographyTokens.desktop(
-                    Theme.of(context).colorScheme.onSurface,
-                  ),
-            surface: Theme.of(context).extension<AppThemeSurface>()!,
             onDateSelected: onDateSelected,
             onFilterSelected: onFilterSelected,
             onQuickAction: onQuickAction,
@@ -154,8 +145,6 @@ class _DesktopRecordDashboard extends StatelessWidget {
   const _DesktopRecordDashboard({
     required this.dashboard,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onDateSelected,
     this.onFilterSelected,
     this.onQuickAction,
@@ -164,8 +153,6 @@ class _DesktopRecordDashboard extends StatelessWidget {
 
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<DateTime>? onDateSelected;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<RecordQuickAction>? onQuickAction;
@@ -184,8 +171,6 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 days: dashboard.monthDays,
                 selectedDate: dashboard.selectedDate,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onDateSelected: onDateSelected,
                 onMonthChanged: onDateSelected,
               ),
@@ -193,8 +178,6 @@ class _DesktopRecordDashboard extends StatelessWidget {
               RecordFilterPanel(
                 filters: dashboard.filters,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onFilterSelected: onFilterSelected,
               ),
             ],
@@ -208,16 +191,12 @@ class _DesktopRecordDashboard extends StatelessWidget {
               RecordSummaryGrid(
                 summary: dashboard.summary,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onTypeSelected: onFilterSelected,
               ),
               const SizedBox(height: AppSpacingTokens.md),
               RecordTimelinePanel(
                 entries: dashboard.timeline,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onClearFilter: () => onFilterSelected?.call(null),
               ),
             ],
