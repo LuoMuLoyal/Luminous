@@ -1,13 +1,14 @@
+import 'package:luminous/core/utils/type_conversion_utils.dart';
 import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
 
 MealAnalysisViewData? parseMealAnalysisViewData(Map<String, dynamic>? payload) {
   if (payload == null) return null;
-  final analysis = _asMap(payload['mealAnalysis']);
-  final input = _asMap(payload['mealInput']);
+  final analysis = asMap(payload['mealAnalysis']);
+  final input = asMap(payload['mealInput']);
   if (analysis == null && input == null) return null;
 
-  final status = _asString(analysis?['analysisStatus']);
-  final coverage = _asString(analysis?['coverage']);
+  final status = asString(analysis?['analysisStatus']);
+  final coverage = asString(analysis?['coverage']);
   final recognizedDishes = _parseRecognizedDishes(analysis);
   final inputDishes = _parseInputDishes(input, analysis);
   final nutritionEstimate = _parseNutritionEstimate(
@@ -17,9 +18,9 @@ MealAnalysisViewData? parseMealAnalysisViewData(Map<String, dynamic>? payload) {
   return MealAnalysisViewData(
     status: status,
     coverage: coverage,
-    mealDescription: _asString(analysis?['mealDescription']),
-    mealCommentary: _asString(analysis?['mealCommentary']),
-    failureReason: _asString(analysis?['failureReason']),
+    mealDescription: asString(analysis?['mealDescription']),
+    mealCommentary: asString(analysis?['mealCommentary']),
+    failureReason: asString(analysis?['failureReason']),
     isEstimate: status == 'unconfirmed' || coverage != 'complete',
     recognizedDishes: recognizedDishes,
     resolvedIngredients: _parseResolvedIngredients(analysis),
@@ -38,17 +39,17 @@ List<String> parseMealDishDraftNames(Map<String, dynamic>? payload) {
 }
 
 List<MealDishViewData> _parseRecognizedDishes(Map<String, dynamic>? analysis) {
-  final list = _asList(analysis?['recognizedDishes']);
+  final list = asList(analysis?['recognizedDishes']);
   return list
-      .map(_asMap)
+      .map(asMap)
       .whereType<Map<String, dynamic>>()
       .map((item) {
-        final rawName = _asString(item['rawName']);
-        final normalized = _asString(item['normalizedDishName']);
+        final rawName = asString(item['rawName']);
+        final normalized = asString(item['normalizedDishName']);
         final displayName = rawName ?? normalized;
         if (displayName == null) return null;
         return MealDishViewData(
-          dishKey: _asString(item['dishKey']),
+          dishKey: asString(item['dishKey']),
           rawName: displayName,
           normalizedDishName: normalized,
         );
@@ -61,16 +62,16 @@ List<MealDishDraftViewData> _parseInputDishes(
   Map<String, dynamic>? input,
   Map<String, dynamic>? analysis,
 ) {
-  final inputList = _asList(input?['recognizedDishes']);
+  final inputList = asList(input?['recognizedDishes']);
   final source = inputList.isNotEmpty
       ? inputList
-      : _asList(analysis?['recognizedDishes']);
+      : asList(analysis?['recognizedDishes']);
   return source
-      .map(_asMap)
+      .map(asMap)
       .whereType<Map<String, dynamic>>()
       .map((item) {
         final rawName =
-            _asString(item['rawName']) ?? _asString(item['normalizedDishName']);
+            asString(item['rawName']) ?? asString(item['normalizedDishName']);
         if (rawName == null) return null;
         return MealDishDraftViewData(rawName: rawName);
       })
@@ -81,17 +82,17 @@ List<MealDishDraftViewData> _parseInputDishes(
 List<MealIngredientViewData> _parseResolvedIngredients(
   Map<String, dynamic>? analysis,
 ) {
-  final list = _asList(analysis?['resolvedIngredients']);
+  final list = asList(analysis?['resolvedIngredients']);
   return list
-      .map(_asMap)
+      .map(asMap)
       .whereType<Map<String, dynamic>>()
       .map((item) {
-        final ingredientName = _asString(item['ingredientName']);
+        final ingredientName = asString(item['ingredientName']);
         if (ingredientName == null) return null;
         return MealIngredientViewData(
-          dishKey: _asString(item['dishKey']),
+          dishKey: asString(item['dishKey']),
           ingredientName: ingredientName,
-          matchedFoodName: _asString(item['matchedFoodName']),
+          matchedFoodName: asString(item['matchedFoodName']),
         );
       })
       .whereType<MealIngredientViewData>()
@@ -101,18 +102,18 @@ List<MealIngredientViewData> _parseResolvedIngredients(
 List<MealMatchViewData> _parseCompositionMatches(
   Map<String, dynamic>? analysis,
 ) {
-  final list = _asList(analysis?['compositionMatches']);
+  final list = asList(analysis?['compositionMatches']);
   return list
-      .map(_asMap)
+      .map(asMap)
       .whereType<Map<String, dynamic>>()
       .map((item) {
-        final ingredientName = _asString(item['ingredientName']);
+        final ingredientName = asString(item['ingredientName']);
         if (ingredientName == null) return null;
         return MealMatchViewData(
-          dishKey: _asString(item['dishKey']),
+          dishKey: asString(item['dishKey']),
           ingredientName: ingredientName,
-          matchedFoodName: _asString(item['matchedFoodName']),
-          matchMethod: _asString(item['matchMethod']),
+          matchedFoodName: asString(item['matchedFoodName']),
+          matchMethod: asString(item['matchMethod']),
         );
       })
       .whereType<MealMatchViewData>()
@@ -120,34 +121,10 @@ List<MealMatchViewData> _parseCompositionMatches(
 }
 
 MealNutritionViewData? _parseNutritionEstimate(Object? value) {
-  final data = _asMap(value);
+  final data = asMap(value);
   if (data == null) return null;
   return MealNutritionViewData(
-    energyKcal: _asNum(data['energyKcal']),
-    proteinG: _asNum(data['proteinG']),
+    energyKcal: asNum(data['energyKcal']),
+    proteinG: asNum(data['proteinG']),
   );
-}
-
-Map<String, dynamic>? _asMap(Object? value) {
-  if (value is Map<String, dynamic>) return value;
-  if (value is Map) {
-    return value.map((key, item) => MapEntry(key.toString(), item));
-  }
-  return null;
-}
-
-List<Object?> _asList(Object? value) {
-  if (value is List) return value.cast<Object?>();
-  return const <Object?>[];
-}
-
-String? _asString(Object? value) {
-  final text = value?.toString().trim();
-  if (text == null || text.isEmpty) return null;
-  return text;
-}
-
-num? _asNum(Object? value) {
-  if (value is num) return value;
-  return num.tryParse(value?.toString() ?? '');
 }

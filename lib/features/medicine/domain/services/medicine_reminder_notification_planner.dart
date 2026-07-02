@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:luminous/core/utils/clock.dart';
+import 'package:luminous/core/utils/string_utils.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_reminder_sound_preference.dart';
 
@@ -41,9 +43,14 @@ class MedicineReminderNotificationPlanner {
     this.horizonDays = 7,
     this.maxNotifications = 60,
     int Function(String value)? hashValue,
+    this._clock = const SystemClock(),
   }) : _hashValue = hashValue ?? _defaultFfnv1a32;
 
   static int _defaultFfnv1a32(String value) {
+    // FNV-1a 32-bit hash: http://www.isthe.com/chongo/tech/comp/fnv/index.html
+    // 0x811c9dc5 is the 32-bit FNV offset basis.
+    // 0x01000193 is the 32-bit FNV prime.
+    // 0xffffffff masks the result to 32 bits.
     var hash = 0x811c9dc5;
     for (final codeUnit in value.codeUnits) {
       hash ^= codeUnit;
@@ -55,6 +62,7 @@ class MedicineReminderNotificationPlanner {
   final int horizonDays;
   final int maxNotifications;
   final int Function(String value) _hashValue;
+  final Clock _clock;
 
   List<PlannedNotification> plan({
     required List<MedicineReminderItem> reminders,
@@ -67,7 +75,7 @@ class MedicineReminderNotificationPlanner {
       return const <PlannedNotification>[];
     }
 
-    final referenceNow = now ?? DateTime.now();
+    final referenceNow = now ?? _clock.now();
     final startDate = DateTime(
       referenceNow.year,
       referenceNow.month,
@@ -108,8 +116,8 @@ class MedicineReminderNotificationPlanner {
         planned.add(
           PlannedNotification(
             id: notificationId,
-            title: _nonEmptyOrNull(reminder.label) ?? texts.defaultTitle,
-            body: _nonEmptyOrNull(reminder.note) ?? texts.defaultBody,
+            title: normalizeNullableText(reminder.label) ?? texts.defaultTitle,
+            body: normalizeNullableText(reminder.note) ?? texts.defaultBody,
             scheduledAt: scheduledAt,
             playSound: playSound,
             payload: reminder.id,
@@ -137,6 +145,8 @@ class MedicineReminderNotificationPlanner {
     DateTime scheduledAt,
     Set<int> usedIds,
   ) {
+    // Android notification IDs must be positive 32-bit ints. Masking with
+    // 0x7fffffff clears the sign bit while keeping 31 bits of hash entropy.
     var candidate =
         _hashValue('$reminderId@${_notificationMomentKey(scheduledAt)}') &
         0x7fffffff;
@@ -162,13 +172,5 @@ class MedicineReminderNotificationPlanner {
     final hour = value.hour.toString().padLeft(2, '0');
     final minute = value.minute.toString().padLeft(2, '0');
     return '$year-$month-${day}T$hour:$minute';
-  }
-
-  String? _nonEmptyOrNull(String? value) {
-    final normalized = value?.trim();
-    if (normalized == null || normalized.isEmpty) {
-      return null;
-    }
-    return normalized;
   }
 }

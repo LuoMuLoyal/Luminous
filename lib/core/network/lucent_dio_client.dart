@@ -25,17 +25,18 @@ class LucentDioClient {
     Dio? dio,
     Iterable<Interceptor> interceptors = const [],
     HttpClientAdapter? httpClientAdapter,
+    Duration connectTimeout = _defaultConnectTimeout,
+    Duration receiveTimeout = _defaultReceiveTimeout,
+    Duration sendTimeout = _defaultSendTimeout,
   }) : _openapi = LucentOpenapi(
          dio:
              dio ??
              Dio(
-               BaseOptions(
+               _createBaseOptions(
                  baseUrl: baseUrl,
-                 connectTimeout: const Duration(seconds: 10),
-                 receiveTimeout: const Duration(seconds: 10),
-                 sendTimeout: const Duration(seconds: 10),
-                 contentType: Headers.jsonContentType,
-                 responseType: ResponseType.json,
+                 connectTimeout: connectTimeout,
+                 receiveTimeout: receiveTimeout,
+                 sendTimeout: sendTimeout,
                ),
              ),
          interceptors: <Interceptor>[],
@@ -48,14 +49,12 @@ class LucentDioClient {
       _openapi.dio.httpClientAdapter = httpClientAdapter;
     }
     _refreshDio = Dio(
-      BaseOptions(
+      _createBaseOptions(
         baseUrl: _baseUrl,
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-        sendTimeout: const Duration(seconds: 10),
-        contentType: Headers.jsonContentType,
-        responseType: ResponseType.json,
-        headers: const <String, String>{'Accept': 'application/json'},
+        connectTimeout: connectTimeout,
+        receiveTimeout: receiveTimeout,
+        sendTimeout: sendTimeout,
+        extraHeaders: const <String, String>{'Accept': 'application/json'},
       ),
     );
     if (httpClientAdapter != null) {
@@ -67,12 +66,35 @@ class LucentDioClient {
     ]);
   }
 
+  static const Duration _defaultConnectTimeout = Duration(seconds: 10);
+  static const Duration _defaultReceiveTimeout = Duration(seconds: 10);
+  static const Duration _defaultSendTimeout = Duration(seconds: 10);
+
   final LucentOpenapi _openapi;
   final LucentSessionStore _sessionStore;
   final String _baseUrl;
   final String Function()? _localeResolver;
   final Future<void> Function()? _onSessionExpired;
   late final Dio _refreshDio;
+
+  static BaseOptions _createBaseOptions({
+    required String baseUrl,
+    required Duration connectTimeout,
+    required Duration receiveTimeout,
+    required Duration sendTimeout,
+    Map<String, String> extraHeaders = const <String, String>{},
+  }) {
+    return BaseOptions(
+      baseUrl: baseUrl,
+      connectTimeout: connectTimeout,
+      receiveTimeout: receiveTimeout,
+      sendTimeout: sendTimeout,
+      contentType: Headers.jsonContentType,
+      responseType: ResponseType.json,
+      headers: extraHeaders,
+    );
+  }
+
   Future<LucentSessionTokens?>? _refreshFuture;
 
   List<Interceptor> _buildInterceptors() {
