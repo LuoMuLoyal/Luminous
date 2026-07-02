@@ -32,18 +32,18 @@ class SearchInput extends HookWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         border: Border.all(color: colors.border),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Row(
           children: [
             Icon(FLucideIcons.search, color: colors.mutedForeground, size: 18),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: TextField(
                 controller: controller,

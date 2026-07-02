@@ -60,7 +60,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                           'Please enter a valid email address.',
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.md),
+                  const SizedBox(height: AppSpacingTokens.level4),
                   _VerificationCodeField(
                     controller: codeController,
                     label: l10n?.authCodeLabel ?? 'Verification code',
@@ -101,7 +101,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                   ),
                   if ((accountState.errorMessage?.isNotEmpty ?? false) ||
                       success != null) ...[
-                    const SizedBox(height: AppSpacingTokens.md),
+                    const SizedBox(height: AppSpacingTokens.level4),
                     FToast(
                       variant: accountState.errorMessage?.isNotEmpty == true
                           ? FToastVariant.destructive
@@ -113,7 +113,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                       ),
                     ),
                   ],
-                  const SizedBox(height: AppSpacingTokens.xl),
+                  const SizedBox(height: AppSpacingTokens.level6),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -153,7 +153,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   Row(
                     children: [
                       Expanded(
@@ -237,7 +237,7 @@ class _VerificationCodeField extends StatelessWidget {
             validator: validator,
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.sm),
+        const SizedBox(width: AppSpacingTokens.level3),
         SizedBox(
           width: 148,
           child: Padding(

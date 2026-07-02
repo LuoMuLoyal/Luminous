@@ -47,7 +47,7 @@ class TodayRecommendationSection extends ConsumerWidget {
                   Divider(
                     height: 1,
                     thickness: 1,
-                    indent: AppSpacingTokens.x4l + AppSpacingTokens.xs,
+                    indent: AppSpacingTokens.level9 + AppSpacingTokens.level2,
                     color: colors.border,
                   ),
                 );
@@ -155,19 +155,19 @@ class _RecommendationRow extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Row(
           children: [
             TodayGlyphTile(
               icon: item.icon,
               color: item.color,
-              size: AppSpacingTokens.x2l + AppSpacingTokens.xxs,
-              radius: AppRadiusTokens.md,
+              size: AppSpacingTokens.level7 + AppSpacingTokens.level1,
+              radius: AppRadiusTokens.level3,
               gradient: false,
             ),
-            const SizedBox(width: AppSpacingTokens.md),
+            const SizedBox(width: AppSpacingTokens.level4),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +180,7 @@ class _RecommendationRow extends StatelessWidget {
                     maxLines: compact ? 1 : 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xs),
+                  const SizedBox(height: AppSpacingTokens.level2),
                   Text(
                     item.subtitle,
                     style: textTheme.bodySmall?.copyWith(
@@ -192,7 +192,7 @@ class _RecommendationRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.xs),
+            const SizedBox(width: AppSpacingTokens.level2),
             Text(
               item.action,
               style: textTheme.labelMedium?.copyWith(

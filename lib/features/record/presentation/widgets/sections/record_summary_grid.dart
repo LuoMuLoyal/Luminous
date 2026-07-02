@@ -24,11 +24,11 @@ class RecordSummaryGrid extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-summary'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: LayoutBuilder(
           builder: (context, constraints) {
             const minTileWidth = 140.0;
-            const spacing = AppSpacingTokens.sm;
+            const spacing = AppSpacingTokens.level3;
             final maxColumns =
                 ((constraints.maxWidth + spacing) / (minTileWidth + spacing))
                     .floor()
@@ -80,15 +80,15 @@ class _SummaryTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap == null ? null : () => onTap!(item.type),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
             border: Border.all(color: colors.border),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -111,7 +111,7 @@ class _SummaryTile extends StatelessWidget {
                         maxValue: 18,
                       ),
                     ),
-                    const SizedBox(width: AppSpacingTokens.sm),
+                    const SizedBox(width: AppSpacingTokens.level3),
                     Expanded(
                       child: Text(
                         recordCopy(l10n, item.titleKey),
@@ -125,7 +125,7 @@ class _SummaryTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.sm),
+                const SizedBox(height: AppSpacingTokens.level3),
                 if (item.value.isNotEmpty)
                   RichText(
                     text: TextSpan(
@@ -153,7 +153,7 @@ class _SummaryTile extends StatelessWidget {
                     ),
                   ),
                 if (detail != null && item.value.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacingTokens.xxs),
+                  const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     detail,
                     style: textTheme.labelSmall?.copyWith(color: item.accent),

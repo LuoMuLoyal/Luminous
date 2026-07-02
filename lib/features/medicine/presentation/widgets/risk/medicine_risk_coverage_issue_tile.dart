@@ -23,16 +23,16 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     final tile = Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Icon(
             FLucideIcons.circleAlert,
             color: Color(0xFFB45309),
-            size: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level5,
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +43,7 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   medicineRiskCoverageReasonLabel(l10n, issue.reason),
                   style: textTheme.bodySmall?.copyWith(

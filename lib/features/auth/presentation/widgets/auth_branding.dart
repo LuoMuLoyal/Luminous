@@ -71,7 +71,7 @@ class AuthTermsNotice extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xs),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
         child: Wrap(
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,

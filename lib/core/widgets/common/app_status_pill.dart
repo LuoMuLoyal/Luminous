@@ -9,10 +9,10 @@ class AppStatusPill extends StatelessWidget {
     required this.color,
     this.icon,
     this.backgroundAlpha = 0.12,
-    this.radius = AppRadiusTokens.sm,
+    this.radius = AppRadiusTokens.level2,
     this.padding = const EdgeInsets.symmetric(
-      horizontal: AppSpacingTokens.xs,
-      vertical: AppSpacingTokens.xxs,
+      horizontal: AppSpacingTokens.level2,
+      vertical: AppSpacingTokens.level1,
     ),
     this.large = false,
   });
@@ -44,8 +44,8 @@ class AppStatusPill extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
-                Icon(icon, color: foreground, size: AppSpacingTokens.sm),
-                const SizedBox(width: AppSpacingTokens.xxs),
+                Icon(icon, color: foreground, size: AppSpacingTokens.level3),
+                const SizedBox(width: AppSpacingTokens.level1),
               ],
               Text(
                 label,

@@ -34,26 +34,26 @@ class RecordHeaderActionChip extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: emphasized ? accent : colors.background,
-              borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+              borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
               border: Border.all(color: emphasized ? accent : colors.border),
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: iconOnly
-                    ? AppSpacingTokens.sm
-                    : AppSpacingTokens.md,
-                vertical: AppSpacingTokens.sm,
+                    ? AppSpacingTokens.level3
+                    : AppSpacingTokens.level4,
+                vertical: AppSpacingTokens.level3,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(icon, size: 18, color: foreground),
                   if (!iconOnly) ...[
-                    const SizedBox(width: AppSpacingTokens.xs),
+                    const SizedBox(width: AppSpacingTokens.level2),
                     Text(
                       label,
                       style: textTheme.labelLarge?.copyWith(
@@ -211,7 +211,7 @@ class RecordBarChart extends StatelessWidget {
                   color: color.withValues(alpha: 0.7),
                   width: 12,
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(AppRadiusTokens.xs),
+                    top: Radius.circular(AppRadiusTokens.level1),
                   ),
                 ),
               ],

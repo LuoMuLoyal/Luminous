@@ -110,7 +110,7 @@ class _RecordDetailBody extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _KindIcon(kind: record.kind),
-                  const SizedBox(width: AppSpacingTokens.md),
+                  const SizedBox(width: AppSpacingTokens.level4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +121,7 @@ class _RecordDetailBody extends ConsumerWidget {
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        const SizedBox(height: AppSpacingTokens.xs),
+                        const SizedBox(height: AppSpacingTokens.level2),
                         Text(
                           formatRecordDateTimeLabel(
                             record.occurredAt,
@@ -136,7 +136,7 @@ class _RecordDetailBody extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               _DetailRows(
                 rows: [
                   _DetailRowData(
@@ -166,7 +166,7 @@ class _RecordDetailBody extends ConsumerWidget {
           ),
         ),
         if (record.kind == DailyRecordKind.meal && mealAnalysis != null) ...[
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           if (mealAnalysis.status == 'analyzing')
             _DetailSurface(
               child: Row(
@@ -176,7 +176,7 @@ class _RecordDetailBody extends ConsumerWidget {
                     coverage: mealAnalysis.coverage,
                     large: true,
                   ),
-                  const SizedBox(width: AppSpacingTokens.sm),
+                  const SizedBox(width: AppSpacingTokens.level3),
                   Expanded(
                     child: Text(
                       l10n.recordMealAnalysisStatusAnalyzing,
@@ -199,7 +199,7 @@ class _RecordDetailBody extends ConsumerWidget {
                     large: true,
                   ),
                   if (_nonEmpty(mealAnalysis.failureReason) != null) ...[
-                    const SizedBox(height: AppSpacingTokens.sm),
+                    const SizedBox(height: AppSpacingTokens.level3),
                     Text(
                       mealAnalysis.failureReason!,
                       style: textTheme.bodySmall?.copyWith(
@@ -214,7 +214,7 @@ class _RecordDetailBody extends ConsumerWidget {
             MealAnalysisSummaryCard(data: mealAnalysis),
         ],
         if (imageAttachment != null) ...[
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           _DetailSurface(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,10 +225,10 @@ class _RecordDetailBody extends ConsumerWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.md),
+                const SizedBox(height: AppSpacingTokens.level4),
                 _RecordDetailImage(attachment: imageAttachment),
                 if (_nonEmpty(imageAttachment.fileName) != null) ...[
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   Text(
                     imageAttachment.fileName!,
                     style: textTheme.labelSmall?.copyWith(
@@ -241,7 +241,7 @@ class _RecordDetailBody extends ConsumerWidget {
             ),
           ),
         ],
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         FilledButton.icon(
           key: const Key('record-detail-edit-action'),
           onPressed: () =>
@@ -249,7 +249,7 @@ class _RecordDetailBody extends ConsumerWidget {
           icon: const Icon(FLucideIcons.pencil, size: 18),
           label: Text(l10n.recordEditAction),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         OutlinedButton.icon(
           key: const Key('record-detail-delete-action'),
           onPressed: () => _deleteRecord(context, ref, record.id),
@@ -325,7 +325,7 @@ class _RecordDetailBody extends ConsumerWidget {
     if (rows.isEmpty) return const [];
 
     return [
-      const SizedBox(height: AppSpacingTokens.lg),
+      const SizedBox(height: AppSpacingTokens.level5),
       _DetailRows(rows: rows),
     ];
   }
@@ -385,7 +385,7 @@ class _DetailRows extends StatelessWidget {
         for (var index = 0; index < rows.length; index += 1) ...[
           _DetailRow(data: rows[index]),
           if (index != rows.length - 1)
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
         ],
       ],
     );
@@ -412,7 +412,7 @@ class _DetailRow extends StatelessWidget {
             style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.md),
+        const SizedBox(width: AppSpacingTokens.level4),
         Expanded(
           child: Text(
             data.value,
@@ -441,7 +441,7 @@ class _DetailSurface extends StatelessWidget {
   Widget build(BuildContext context) {
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: child,
       ),
     );
@@ -471,7 +471,7 @@ class _KindIcon extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       ),
       child: SizedBox.square(
         dimension: 44,
@@ -492,7 +492,7 @@ class _RecordDetailImage extends StatelessWidget {
     final imageUrl = attachment.displayUrl;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
       child: AspectRatio(
         aspectRatio: 16 / 9,
         child: DecoratedBox(
@@ -546,7 +546,7 @@ class _RecordDetailLoading extends StatelessWidget {
             AppInlineSkeletonBlock(height: 18, widthFactor: 0.74),
           ],
         ),
-        SizedBox(height: AppSpacingTokens.md),
+        SizedBox(height: AppSpacingTokens.level4),
         AppInlineSkeletonSection(
           children: [
             AppInlineSkeletonBlock(height: 160),

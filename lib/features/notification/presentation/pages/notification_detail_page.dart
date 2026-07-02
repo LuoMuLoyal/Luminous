@@ -44,7 +44,7 @@ class NotificationDetailPage extends ConsumerWidget {
           },
           loading: () => const Center(
             child: Padding(
-              padding: EdgeInsets.all(AppSpacingTokens.x5l),
+              padding: EdgeInsets.all(AppSpacingTokens.level10),
               child: AppSkeletonShimmer(
                 child: AppInlineSkeletonBlock(height: 120, widthFactor: 1),
               ),
@@ -79,27 +79,27 @@ class _DetailBody extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _TypeChip(type: detail.type),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         Text(
           detail.title,
           style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         Text(
           _formatTime(detail.createdAt),
           style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
         ),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Text(
               detail.content,
               style: textTheme.bodyLarge?.copyWith(height: 1.6),
             ),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.x2l),
+        const SizedBox(height: AppSpacingTokens.level7),
         _ActionBar(
           detail: detail,
           onNavigate: () => _handleAction(context, detail.action),
@@ -167,12 +167,12 @@ class _TypeChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.sm,
-          vertical: AppSpacingTokens.xxs,
+          horizontal: AppSpacingTokens.level3,
+          vertical: AppSpacingTokens.level1,
         ),
         child: Text(
           label,
@@ -213,7 +213,7 @@ class _ActionBar extends StatelessWidget {
           ),
         ),
       if (detail.action != null && detail.action!.isNotEmpty)
-        const SizedBox(width: AppSpacingTokens.sm),
+        const SizedBox(width: AppSpacingTokens.level3),
       Expanded(
         child: FButton(
           variant: FButtonVariant.outline,
@@ -229,7 +229,7 @@ class _ActionBar extends StatelessWidget {
           ),
         ),
       ),
-      const SizedBox(width: AppSpacingTokens.sm),
+      const SizedBox(width: AppSpacingTokens.level3),
       Expanded(
         child: FButton(
           variant: FButtonVariant.destructive,
@@ -257,12 +257,12 @@ class _ActionBar extends StatelessWidget {
             l10n.notificationDeleteConfirmTitle,
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const SizedBox(height: AppSpacingTokens.sm),
+          const SizedBox(height: AppSpacingTokens.level3),
           Text(
             l10n.notificationDeleteConfirmDescription,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-          const SizedBox(height: AppSpacingTokens.lg),
+          const SizedBox(height: AppSpacingTokens.level5),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -271,7 +271,7 @@ class _ActionBar extends StatelessWidget {
                 onPress: () => Navigator.of(context).pop(),
                 child: Text(l10n.notificationDeleteConfirmCancel),
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               FButton(
                 variant: FButtonVariant.destructive,
                 onPress: () {

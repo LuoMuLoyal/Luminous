@@ -41,29 +41,29 @@ class RecordDateBar extends StatelessWidget {
                   dashboard.selectedDate.subtract(const Duration(days: 1)),
                 ),
         ),
-        const SizedBox(width: AppSpacingTokens.xs),
+        const SizedBox(width: AppSpacingTokens.level2),
         Expanded(
           child: FTappable(
             onPress: onPickDate,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: colors.background,
-                borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
                 border: Border.all(color: colors.border),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.md,
-                  vertical: AppSpacingTokens.sm,
+                  horizontal: AppSpacingTokens.level4,
+                  vertical: AppSpacingTokens.level3,
                 ),
                 child: Row(
                   children: [
                     Icon(
                       FLucideIcons.calendarDays,
                       color: colors.foreground,
-                      size: AppSpacingTokens.lg,
+                      size: AppSpacingTokens.level5,
                     ),
-                    const SizedBox(width: AppSpacingTokens.xs),
+                    const SizedBox(width: AppSpacingTokens.level2),
                     Expanded(
                       child: Text(
                         dateLabel,
@@ -74,11 +74,11 @@ class RecordDateBar extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: AppSpacingTokens.xs),
+                    const SizedBox(width: AppSpacingTokens.level2),
                     Icon(
                       FLucideIcons.chevronDown,
                       color: colors.mutedForeground,
-                      size: AppSpacingTokens.lg,
+                      size: AppSpacingTokens.level5,
                     ),
                   ],
                 ),
@@ -86,7 +86,7 @@ class RecordDateBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.xs),
+        const SizedBox(width: AppSpacingTokens.level2),
         _DateStepButton(
           key: const Key('record-date-next-action'),
           icon: FLucideIcons.chevronRight,
@@ -115,7 +115,7 @@ class _DateStepButton extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
           border: Border.all(color: colors.border),
         ),
         child: SizedBox.square(
@@ -123,7 +123,7 @@ class _DateStepButton extends StatelessWidget {
           child: Icon(
             icon,
             color: colors.foreground,
-            size: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level5,
           ),
         ),
       ),

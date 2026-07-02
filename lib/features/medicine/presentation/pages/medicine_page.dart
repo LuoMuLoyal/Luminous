@@ -158,16 +158,16 @@ class _MedicineMobileShell extends StatelessWidget {
         child: ListView(
           key: const PageStorageKey<String>('medicine-mobile-scroll'),
           padding: const EdgeInsets.fromLTRB(
-            AppSpacingTokens.md,
-            AppSpacingTokens.md,
-            AppSpacingTokens.md,
-            AppSpacingTokens.x5l,
+            AppSpacingTokens.level4,
+            AppSpacingTokens.level4,
+            AppSpacingTokens.level4,
+            AppSpacingTokens.level10,
           ),
           children: [
             const _MedicineMobileTopBar(),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             const _MedicineMobileSearchBar(),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             child,
           ],
         ),
@@ -192,10 +192,10 @@ class _MedicineDesktopShell extends StatelessWidget {
         child: ListView(
           key: const PageStorageKey<String>('medicine-desktop-scroll'),
           padding: const EdgeInsets.fromLTRB(
-            AppSpacingTokens.xl,
-            AppSpacingTokens.xl,
-            AppSpacingTokens.xl,
-            AppSpacingTokens.xl,
+            AppSpacingTokens.level6,
+            AppSpacingTokens.level6,
+            AppSpacingTokens.level6,
+            AppSpacingTokens.level6,
           ),
           children: [child],
         ),
@@ -223,9 +223,9 @@ class _MedicineMobileTopBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.sm),
+        const SizedBox(width: AppSpacingTokens.level3),
         const _MedicineSafeGuardPill(),
-        const SizedBox(width: AppSpacingTokens.xs),
+        const SizedBox(width: AppSpacingTokens.level2),
         const _MedicineNotificationButton(),
       ],
     );
@@ -245,10 +245,10 @@ class _MedicineSafeGuardPill extends StatelessWidget {
       message: l10n.medicineSafetyGuardLabel,
       child: AppInkWell(
         onTap: () => context.push('/medicine/risk-check'),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.xs,
-          vertical: AppSpacingTokens.xs,
+          horizontal: AppSpacingTokens.level2,
+          vertical: AppSpacingTokens.level2,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -256,9 +256,9 @@ class _MedicineSafeGuardPill extends StatelessWidget {
             const Icon(
               FLucideIcons.shieldCheck,
               color: Color(0xFF0F766E),
-              size: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level5,
             ),
-            const SizedBox(width: AppSpacingTokens.xs),
+            const SizedBox(width: AppSpacingTokens.level2),
             Text(
               l10n.medicineSafetyGuardLabel,
               style: textTheme.labelMedium?.copyWith(
@@ -297,14 +297,14 @@ class _MedicineNotificationButton extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: AppSpacingTokens.sm,
-            top: AppSpacingTokens.xs,
+            right: AppSpacingTokens.level3,
+            top: AppSpacingTokens.level2,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: theme.colorScheme.error,
                 shape: BoxShape.circle,
               ),
-              child: const SizedBox.square(dimension: AppSpacingTokens.xs),
+              child: const SizedBox.square(dimension: AppSpacingTokens.level2),
             ),
           ),
         ],
@@ -324,26 +324,26 @@ class _MedicineMobileSearchBar extends StatelessWidget {
 
     return AppInkWell(
       onTap: () => context.push('/medicine/search'),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
           border: Border.all(color: colors.border),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
+            horizontal: AppSpacingTokens.level4,
+            vertical: AppSpacingTokens.level3,
           ),
           child: Row(
             children: [
               Icon(
                 FLucideIcons.search,
                 color: colors.mutedForeground,
-                size: AppSpacingTokens.lg,
+                size: AppSpacingTokens.level5,
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               Expanded(
                 child: Text(
                   l10n.medicineHomeSearchHint,

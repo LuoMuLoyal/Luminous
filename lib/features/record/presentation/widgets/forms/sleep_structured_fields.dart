@@ -77,7 +77,7 @@ class SleepStructuredFields extends StatelessWidget {
                 onPicked: onBedtimeChanged,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.md),
+            const SizedBox(width: AppSpacingTokens.level4),
             Expanded(
               child: _TimePickerField(
                 key: const Key('sleep-waketime-picker'),
@@ -89,7 +89,7 @@ class SleepStructuredFields extends StatelessWidget {
           ],
         ),
         if (durationMinutes != null) ...[
-          const SizedBox(height: AppSpacingTokens.sm),
+          const SizedBox(height: AppSpacingTokens.level3),
           Text(
             '${l10n.recordSleepDurationLabel}: ${_formatDuration(durationMinutes, l10n)}',
             style: TextStyle(
@@ -98,7 +98,7 @@ class SleepStructuredFields extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         DropdownButtonFormField<String>(
           key: const Key('sleep-quality-field'),
           initialValue: quality,
@@ -108,7 +108,7 @@ class SleepStructuredFields extends StatelessWidget {
               .toList(),
           onChanged: onQualityChanged,
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         Row(
           children: [
             Expanded(
@@ -119,7 +119,7 @@ class SleepStructuredFields extends StatelessWidget {
                 onChanged: onDeepMinutesChanged,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: _NumberField(
                 key: const Key('sleep-light-minutes-field'),
@@ -128,7 +128,7 @@ class SleepStructuredFields extends StatelessWidget {
                 onChanged: onLightMinutesChanged,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: _NumberField(
                 key: const Key('sleep-rem-minutes-field'),
@@ -190,7 +190,7 @@ class _TimePickerField extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         onTap: () async {
           if (SleepStructuredFields.forcedPickedTimes.isNotEmpty) {
             onPicked(SleepStructuredFields.forcedPickedTimes.removeAt(0));

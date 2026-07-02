@@ -30,14 +30,14 @@ class ReminderInfoRow extends StatelessWidget {
 
     final row = Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: colors.mutedForeground, size: AppSpacingTokens.lg),
-          const SizedBox(width: AppSpacingTokens.md),
+          Icon(icon, color: colors.mutedForeground, size: AppSpacingTokens.level5),
+          const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Text(
               label,
@@ -46,7 +46,7 @@ class ReminderInfoRow extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           Flexible(
             child: Text(
               value,
@@ -68,7 +68,7 @@ class ReminderInfoRow extends StatelessWidget {
           height: 1,
           thickness: 1,
           indent:
-              AppSpacingTokens.md + AppSpacingTokens.lg + AppSpacingTokens.md,
+              AppSpacingTokens.level4 + AppSpacingTokens.level5 + AppSpacingTokens.level4,
           color: colors.border,
         ),
       ],
@@ -101,17 +101,17 @@ class ValueActionRow extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Row(
           children: [
             Icon(
               icon,
               color: colors.mutedForeground,
-              size: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level5,
             ),
-            const SizedBox(width: AppSpacingTokens.md),
+            const SizedBox(width: AppSpacingTokens.level4),
             Expanded(
               child: Text(
                 title,
@@ -120,7 +120,7 @@ class ValueActionRow extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Flexible(
               child: Text(
                 value,
@@ -131,7 +131,7 @@ class ValueActionRow extends StatelessWidget {
               ),
             ),
             if (onClear != null) ...[
-              const SizedBox(width: AppSpacingTokens.xs),
+              const SizedBox(width: AppSpacingTokens.level2),
               IconButton(
                 tooltip: AppLocalizations.of(
                   context,
@@ -141,11 +141,11 @@ class ValueActionRow extends StatelessWidget {
                 icon: const Icon(FLucideIcons.x, size: 18),
               ),
             ] else ...[
-              const SizedBox(width: AppSpacingTokens.xs),
+              const SizedBox(width: AppSpacingTokens.level2),
               Icon(
                 FLucideIcons.chevronRight,
                 color: colors.mutedForeground,
-                size: AppSpacingTokens.lg,
+                size: AppSpacingTokens.level5,
               ),
             ],
           ],
@@ -176,17 +176,17 @@ class SwitchRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       child: Row(
         children: [
           Icon(
             FLucideIcons.bellRing,
             color: colors.mutedForeground,
-            size: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level5,
           ),
-          const SizedBox(width: AppSpacingTokens.md),
+          const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +197,7 @@ class SwitchRow extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   subtitle,
                   style: textTheme.bodySmall?.copyWith(
@@ -235,13 +235,13 @@ class UnavailableMethodRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       child: Row(
         children: [
-          Icon(icon, color: colors.mutedForeground, size: AppSpacingTokens.lg),
-          const SizedBox(width: AppSpacingTokens.md),
+          Icon(icon, color: colors.mutedForeground, size: AppSpacingTokens.level5),
+          const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +252,7 @@ class UnavailableMethodRow extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   subtitle,
                   style: textTheme.bodySmall?.copyWith(
@@ -262,7 +262,7 @@ class UnavailableMethodRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           AppStatusPill(label: status, color: colors.mutedForeground),
         ],
       ),
@@ -288,17 +288,17 @@ class SoundPreferenceRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       child: Row(
         children: [
           Icon(
             FLucideIcons.volume2,
             color: colors.mutedForeground,
-            size: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level5,
           ),
-          const SizedBox(width: AppSpacingTokens.md),
+          const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +309,7 @@ class SoundPreferenceRow extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   l10n.medicineReminderSoundLocalHint,
                   style: textTheme.bodySmall?.copyWith(
@@ -319,7 +319,7 @@ class SoundPreferenceRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           DropdownButtonHideUnderline(
             child: DropdownButton<MedicineReminderSoundPreference>(
               value: value,
@@ -354,7 +354,7 @@ class SelectedMedicineRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
+      padding: const EdgeInsets.all(AppSpacingTokens.level4),
       child: Row(
         children: [
           const AppIconBadge(
@@ -362,7 +362,7 @@ class SelectedMedicineRow extends StatelessWidget {
             color: Color(0xFF0F766E),
             shape: BoxShape.circle,
           ),
-          const SizedBox(width: AppSpacingTokens.md),
+          const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,7 +375,7 @@ class SelectedMedicineRow extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   medicineDoseText(l10n, medicine),
                   style: textTheme.bodySmall?.copyWith(

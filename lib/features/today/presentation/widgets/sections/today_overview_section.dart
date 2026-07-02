@@ -24,10 +24,10 @@ class TodayOverviewSection extends StatelessWidget {
       key: const Key('today-health-summary-card'),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          AppSpacingTokens.md,
-          AppSpacingTokens.sm,
-          AppSpacingTokens.md,
-          AppSpacingTokens.sm,
+          AppSpacingTokens.level4,
+          AppSpacingTokens.level3,
+          AppSpacingTokens.level4,
+          AppSpacingTokens.level3,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,9 +37,9 @@ class TodayOverviewSection extends StatelessWidget {
                 const Icon(
                   FLucideIcons.badgeCheck,
                   color: Color(0xFF0F766E),
-                  size: AppSpacingTokens.lg,
+                  size: AppSpacingTokens.level5,
                 ),
-                const SizedBox(width: AppSpacingTokens.xs),
+                const SizedBox(width: AppSpacingTokens.level2),
                 Expanded(
                   child: Text(
                     l10n.todayHealthSummaryCardTitle,
@@ -52,7 +52,7 @@ class TodayOverviewSection extends StatelessWidget {
                   skeleton: const AppInlineSkeletonBlock(
                     height: 22,
                     width: 96,
-                    radius: AppRadiusTokens.pill,
+                    radius: AppRadiusTokens.levelFull,
                   ),
                   child: Consumer(
                     builder: (context, ref, child) => FButton(
@@ -76,14 +76,14 @@ class TodayOverviewSection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 for (var index = 0; index < items.length; index += 1) ...[
                   Expanded(child: _OverviewMetric(item: items[index])),
                   if (index < items.length - 1)
-                    const _VerticalMetricDivider(height: AppSpacingTokens.x3l),
+                    const _VerticalMetricDivider(height: AppSpacingTokens.level8),
                 ],
               ],
             ),
@@ -105,12 +105,12 @@ class _OverviewMetric extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(item.icon, color: item.color, size: AppSpacingTokens.md),
-          const SizedBox(width: AppSpacingTokens.xs),
+          Icon(item.icon, color: item.color, size: AppSpacingTokens.level4),
+          const SizedBox(width: AppSpacingTokens.level2),
           Flexible(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -125,12 +125,12 @@ class _OverviewMetric extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 AppSkeletonSlot(
                   skeleton: const AppInlineSkeletonBlock(
                     height: 18,
                     width: 44,
-                    radius: AppRadiusTokens.sm,
+                    radius: AppRadiusTokens.level2,
                   ),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,

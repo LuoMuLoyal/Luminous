@@ -26,7 +26,7 @@ class MedicineTodayPlanSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           children: [
             for (var index = 0; index < workspace.plan.items.length; index += 1)
@@ -34,7 +34,7 @@ class MedicineTodayPlanSection extends StatelessWidget {
                 padding: EdgeInsets.only(
                   bottom: index == workspace.plan.items.length - 1
                       ? 0
-                      : AppSpacingTokens.md,
+                      : AppSpacingTokens.level4,
                 ),
                 child: _MedicationPlanTile(
                   item: workspace.plan.items[index],
@@ -75,15 +75,15 @@ class _MedicationPlanTile extends StatelessWidget {
     return AppInkWell(
       onTap: () =>
           showPlannedAction(context, nameText, l10n.medicineOpenPlanItemToast),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
           border: Border.all(color: colors.border),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.md),
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -100,7 +100,7 @@ class _MedicationPlanTile extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const SizedBox(height: AppSpacingTokens.xs),
+                        const SizedBox(height: AppSpacingTokens.level2),
                         Text(
                           '$dosageText · $scheduleText',
                           style: textTheme.bodySmall?.copyWith(
@@ -110,17 +110,17 @@ class _MedicationPlanTile extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: AppSpacingTokens.sm),
+                  const SizedBox(width: AppSpacingTokens.level3),
                   AppStatusPill(
                     label: stateText,
                     color: item.stateColor,
-                    radius: AppRadiusTokens.pill,
+                    radius: AppRadiusTokens.levelFull,
                     large: true,
                   ),
                 ],
               ),
               if (currentMedicineId != null && onMarkDose != null) ...[
-                const SizedBox(height: AppSpacingTokens.sm),
+                const SizedBox(height: AppSpacingTokens.level3),
                 Row(
                   children: [
                     Expanded(
@@ -133,7 +133,7 @@ class _MedicationPlanTile extends StatelessWidget {
                         label: Text(l10n.medicineDoseActionTaken),
                       ),
                     ),
-                    const SizedBox(width: AppSpacingTokens.sm),
+                    const SizedBox(width: AppSpacingTokens.level3),
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () => onMarkDose!(

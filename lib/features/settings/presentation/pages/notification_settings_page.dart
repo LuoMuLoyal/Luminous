@@ -40,9 +40,9 @@ class NotificationSettingsPage extends ConsumerWidget {
               await controller.requestPermission();
             },
           ),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         _SectionLabel(label: l10n.settingsNotificationsGeneralGroup),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FTileGroup(
           style: settingsSubpageTileGroupStyle(context.theme),
           children: [
@@ -78,9 +78,9 @@ class NotificationSettingsPage extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         _SectionLabel(label: l10n.settingsNotificationsReminderGroup),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FTileGroup(
           style: settingsSubpageTileGroupStyle(context.theme),
           children: [
@@ -209,7 +209,7 @@ class _SectionLabel extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xs),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
       child: Text(
         label,
         style: textTheme.labelSmall?.copyWith(

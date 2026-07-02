@@ -26,7 +26,7 @@ class MedicineSafetyPanel extends StatelessWidget {
       children: [
         FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Column(
               children: [
                 for (var index = 0; index < alerts.length; index += 1)
@@ -34,7 +34,7 @@ class MedicineSafetyPanel extends StatelessWidget {
                     padding: EdgeInsets.only(
                       bottom: index == alerts.length - 1
                           ? 0
-                          : AppSpacingTokens.md,
+                          : AppSpacingTokens.level4,
                     ),
                     child: _AlertTile(alert: alerts[index], l10n: l10n),
                   ),
@@ -42,7 +42,7 @@ class MedicineSafetyPanel extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         _PromisePanel(workspace: workspace, l10n: l10n),
       ],
     );
@@ -62,11 +62,11 @@ class _AlertTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: alert.softColor.withValues(alpha: 0.42),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         border: Border.all(color: alert.color.withValues(alpha: 0.18)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -77,16 +77,16 @@ class _AlertTile extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             Text(medicineAlertBody(l10n, alert), style: textTheme.bodyMedium),
-            const SizedBox(height: AppSpacingTokens.xs),
+            const SizedBox(height: AppSpacingTokens.level2),
             Text(
               medicineAlertDetail(l10n, alert),
               style: textTheme.bodySmall?.copyWith(
                 color: colors.mutedForeground,
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Align(
               alignment: Alignment.centerLeft,
               child: OutlinedButton(
@@ -117,15 +117,15 @@ class _PromisePanel extends StatelessWidget {
         l10n.medicinePromiseTitle,
         l10n.medicineOpenPromiseToast,
       ),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Color(0xFFCCFBF1),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
           border: Border.all(color: Color(0xFF0F766E).withValues(alpha: 0.2)),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.lg),
+          padding: const EdgeInsets.all(AppSpacingTokens.level5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -136,10 +136,10 @@ class _PromisePanel extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               ...workspace.promisePoints.map(
                 (point) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.md),
+                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.level4),
                   child: Text(
                     medicineCopy(l10n, point.copyKey),
                     style: textTheme.bodySmall?.copyWith(

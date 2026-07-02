@@ -27,47 +27,47 @@ abstract final class AppLayoutTokens {
   static AppLayoutScale resolve(double width) {
     if (width < AppBreakpoints.mobile) {
       return const AppLayoutScale(
-        pageHorizontalPadding: AppSpacingTokens.md,
-        sectionVerticalPadding: AppSpacingTokens.x2l,
-        heroVerticalPadding: AppSpacingTokens.x4l,
-        cardPadding: AppSpacingTokens.md,
-        cardPaddingLarge: AppSpacingTokens.lg,
-        componentGap: AppSpacingTokens.sm,
+        pageHorizontalPadding: AppSpacingTokens.level4,
+        sectionVerticalPadding: AppSpacingTokens.level7,
+        heroVerticalPadding: AppSpacingTokens.level9,
+        cardPadding: AppSpacingTokens.level4,
+        cardPaddingLarge: AppSpacingTokens.level5,
+        componentGap: AppSpacingTokens.level3,
         maxContentWidth: 560,
       );
     }
 
     if (width < AppBreakpoints.tablet) {
       return const AppLayoutScale(
-        pageHorizontalPadding: AppSpacingTokens.lg,
-        sectionVerticalPadding: AppSpacingTokens.x4l,
-        heroVerticalPadding: AppSpacingTokens.x5l,
-        cardPadding: AppSpacingTokens.lg,
-        cardPaddingLarge: AppSpacingTokens.xl,
-        componentGap: AppSpacingTokens.md,
+        pageHorizontalPadding: AppSpacingTokens.level5,
+        sectionVerticalPadding: AppSpacingTokens.level9,
+        heroVerticalPadding: AppSpacingTokens.level10,
+        cardPadding: AppSpacingTokens.level5,
+        cardPaddingLarge: AppSpacingTokens.level6,
+        componentGap: AppSpacingTokens.level4,
         maxContentWidth: 760,
       );
     }
 
     if (width < AppBreakpoints.desktop) {
       return const AppLayoutScale(
-        pageHorizontalPadding: AppSpacingTokens.xl,
-        sectionVerticalPadding: AppSpacingTokens.x4l,
-        heroVerticalPadding: AppSpacingTokens.x5l,
-        cardPadding: AppSpacingTokens.lg,
-        cardPaddingLarge: AppSpacingTokens.xl,
-        componentGap: AppSpacingTokens.md,
+        pageHorizontalPadding: AppSpacingTokens.level6,
+        sectionVerticalPadding: AppSpacingTokens.level9,
+        heroVerticalPadding: AppSpacingTokens.level10,
+        cardPadding: AppSpacingTokens.level5,
+        cardPaddingLarge: AppSpacingTokens.level6,
+        componentGap: AppSpacingTokens.level4,
         maxContentWidth: 1040,
       );
     }
 
     return const AppLayoutScale(
-      pageHorizontalPadding: AppSpacingTokens.xl,
-      sectionVerticalPadding: AppSpacingTokens.x5l,
-      heroVerticalPadding: AppSpacingTokens.section,
-      cardPadding: AppSpacingTokens.lg,
-      cardPaddingLarge: AppSpacingTokens.xl,
-      componentGap: AppSpacingTokens.lg,
+      pageHorizontalPadding: AppSpacingTokens.level6,
+      sectionVerticalPadding: AppSpacingTokens.level10,
+      heroVerticalPadding: AppSpacingTokens.level12,
+      cardPadding: AppSpacingTokens.level5,
+      cardPaddingLarge: AppSpacingTokens.level6,
+      componentGap: AppSpacingTokens.level5,
       maxContentWidth: 1400,
     );
   }

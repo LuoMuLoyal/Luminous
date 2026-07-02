@@ -47,7 +47,7 @@ class TodayTodoSection extends ConsumerWidget {
                 Divider(
                   height: 1,
                   thickness: 1,
-                  indent: AppSpacingTokens.x4l + AppSpacingTokens.sm,
+                  indent: AppSpacingTokens.level9 + AppSpacingTokens.level3,
                   color: colors.border,
                 ),
             ],
@@ -73,8 +73,8 @@ class _TodoRow extends StatelessWidget {
       onPress: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.sm,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Row(
           children: [
@@ -83,9 +83,9 @@ class _TodoRow extends StatelessWidget {
                   ? FLucideIcons.circleCheckBig
                   : FLucideIcons.circleCheck,
               color: item.completed ? item.color : colors.mutedForeground,
-              size: AppSpacingTokens.x2l,
+              size: AppSpacingTokens.level7,
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +100,7 @@ class _TodoRow extends StatelessWidget {
                     widthFactor: 0.84,
                     isLoading: item.subtitleIsDynamic ? null : false,
                   ),
-                  const SizedBox(height: AppSpacingTokens.xs),
+                  const SizedBox(height: AppSpacingTokens.level2),
                   AppSkeletonText(
                     text: item.subtitle,
                     style: textTheme.bodySmall?.copyWith(
@@ -114,17 +114,17 @@ class _TodoRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             DecoratedBox(
               decoration: BoxDecoration(
                 color: item.color.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
                 border: Border.all(color: item.color.withValues(alpha: 0.12)),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.sm,
-                  vertical: AppSpacingTokens.xxs,
+                  horizontal: AppSpacingTokens.level3,
+                  vertical: AppSpacingTokens.level1,
                 ),
                 child: Text(
                   item.source,
@@ -137,11 +137,11 @@ class _TodoRow extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.xs),
+            const SizedBox(width: AppSpacingTokens.level2),
             Icon(
               FLucideIcons.chevronRight,
               color: colors.mutedForeground,
-              size: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level5,
             ),
           ],
         ),

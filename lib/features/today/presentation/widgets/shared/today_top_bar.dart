@@ -37,7 +37,7 @@ class TodayTopBar extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.xxs),
+              const SizedBox(height: AppSpacingTokens.level1),
               AppSkeletonText(
                 text: greetingSubtitle(l10n, moment),
                 style: textTheme.bodyMedium?.copyWith(
@@ -48,9 +48,9 @@ class TodayTopBar extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.md),
+        const SizedBox(width: AppSpacingTokens.level4),
         const _AssistantEntryButton(),
-        const SizedBox(width: AppSpacingTokens.xs),
+        const SizedBox(width: AppSpacingTokens.level2),
         const _NotificationButton(),
       ],
     );
@@ -73,7 +73,7 @@ class _AssistantEntryButton extends ConsumerWidget {
         color: Colors.transparent,
         child: InkWell(
           key: const Key('today-assistant-entry'),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
           onTap: () async {
             if (session.canAccessProtectedData) {
               unawaited(context.push('/assistant'));
@@ -90,23 +90,23 @@ class _AssistantEntryButton extends ConsumerWidget {
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: colors.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+              borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
               border: Border.all(color: colors.border),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.sm,
-                vertical: AppSpacingTokens.xs,
+                horizontal: AppSpacingTokens.level3,
+                vertical: AppSpacingTokens.level2,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     FLucideIcons.sparkles,
-                    size: AppSpacingTokens.md,
+                    size: AppSpacingTokens.level4,
                     color: colors.primary,
                   ),
-                  const SizedBox(width: AppSpacingTokens.xxs),
+                  const SizedBox(width: AppSpacingTokens.level1),
                   Text(
                     l10n.assistantEntryTitle,
                     style: textTheme.labelMedium?.copyWith(
@@ -146,20 +146,20 @@ class _NotificationButton extends ConsumerWidget {
             onPress: () => context.push('/notifications'),
             child: Icon(
               FLucideIcons.bell,
-              size: AppSpacingTokens.lg + AppSpacingTokens.xxs,
+              size: AppSpacingTokens.level5 + AppSpacingTokens.level1,
               color: colors.foreground,
             ),
           ),
           if (hasUnread)
             Positioned(
-              right: AppSpacingTokens.sm,
-              top: AppSpacingTokens.xs,
+              right: AppSpacingTokens.level3,
+              top: AppSpacingTokens.level2,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: colors.destructive,
                   shape: BoxShape.circle,
                 ),
-                child: const SizedBox.square(dimension: AppSpacingTokens.xs),
+                child: const SizedBox.square(dimension: AppSpacingTokens.level2),
               ),
             ),
         ],

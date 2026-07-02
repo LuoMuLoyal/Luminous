@@ -20,8 +20,8 @@ class MineStatusOverview extends StatelessWidget {
       key: const Key('mine-status-overview'),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.md,
-          vertical: AppSpacingTokens.lg,
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level5,
         ),
         child: Row(
           children: [
@@ -38,7 +38,7 @@ class MineStatusOverview extends StatelessWidget {
                   width: 1,
                   height: 58,
                   margin: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.xs,
+                    horizontal: AppSpacingTokens.level2,
                   ),
                   color: colors.border,
                 ),
@@ -66,9 +66,9 @@ class _StatusOverviewItem extends StatelessWidget {
       child: InkWell(
         onTap: () =>
             pushAuthRequiredRoute(context, _routeForStatus(entry.titleKey)),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.xxs),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level1),
           child: Column(
             children: [
               _SoftIcon(
@@ -77,7 +77,7 @@ class _StatusOverviewItem extends StatelessWidget {
                 size: 42,
                 iconSize: 23,
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 mineCopy(l10n, entry.titleKey),
                 style: textTheme.labelLarge?.copyWith(
@@ -87,7 +87,7 @@ class _StatusOverviewItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacingTokens.xxs),
+              const SizedBox(height: AppSpacingTokens.level1),
               AppSkeletonText(
                 text: mineCopy(l10n, entry.subtitleKey),
                 style: textTheme.labelSmall?.copyWith(
@@ -99,12 +99,12 @@ class _StatusOverviewItem extends StatelessWidget {
                 height: 14,
                 widthFactor: 0.72,
               ),
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               AppSkeletonSlot(
                 skeleton: const AppInlineSkeletonBlock(
                   height: 20,
                   width: 44,
-                  radius: AppRadiusTokens.sm,
+                  radius: AppRadiusTokens.level2,
                 ),
                 child: _TinyBadge(
                   label: mineCopy(l10n, entry.badgeKey),
@@ -145,7 +145,7 @@ class _SoftIcon extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       ),
       child: SizedBox.square(
         dimension: size,
@@ -167,12 +167,12 @@ class _TinyBadge extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.xs,
-          vertical: AppSpacingTokens.xxs,
+          horizontal: AppSpacingTokens.level2,
+          vertical: AppSpacingTokens.level1,
         ),
         child: Text(
           label,

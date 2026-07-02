@@ -65,8 +65,8 @@ class WeekdayPicker extends StatelessWidget {
     };
 
     return Wrap(
-      spacing: AppSpacingTokens.xs,
-      runSpacing: AppSpacingTokens.xs,
+      spacing: AppSpacingTokens.level2,
+      runSpacing: AppSpacingTokens.level2,
       children: labels.entries
           .map(
             (entry) => FilterChip(
@@ -104,10 +104,10 @@ class TimePickerRow extends StatelessWidget {
           l10n.medicineReminderTimesLabel,
           style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         Wrap(
-          spacing: AppSpacingTokens.xs,
-          runSpacing: AppSpacingTokens.xs,
+          spacing: AppSpacingTokens.level2,
+          runSpacing: AppSpacingTokens.level2,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             for (var index = 0; index < times.length; index += 1)

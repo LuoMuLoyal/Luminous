@@ -49,7 +49,7 @@ class ReportAiSummarySection extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -59,11 +59,11 @@ class ReportAiSummarySection extends StatelessWidget {
                 const AppIconBadge(
                   icon: FLucideIcons.sparkles,
                   color: Color(0xFF0F766E),
-                  size: AppSpacingTokens.x3l,
-                  iconSize: AppSpacingTokens.lg,
+                  size: AppSpacingTokens.level8,
+                  iconSize: AppSpacingTokens.level5,
                   shape: BoxShape.circle,
                 ),
-                const SizedBox(width: AppSpacingTokens.md),
+                const SizedBox(width: AppSpacingTokens.level4),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,17 +74,17 @@ class ReportAiSummarySection extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const SizedBox(height: AppSpacingTokens.xxs),
+                      const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         content.subtitle,
                         style: textTheme.bodySmall?.copyWith(
                           color: colors.mutedForeground,
                         ),
                       ),
-                      const SizedBox(height: AppSpacingTokens.sm),
+                      const SizedBox(height: AppSpacingTokens.level3),
                       Wrap(
-                        spacing: AppSpacingTokens.sm,
-                        runSpacing: AppSpacingTokens.sm,
+                        spacing: AppSpacingTokens.level3,
+                        runSpacing: AppSpacingTokens.level3,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           SegmentedButton<ReportAiSummaryRange>(
@@ -124,13 +124,13 @@ class ReportAiSummarySection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Divider(height: 1, thickness: 1, color: colors.border),
             if (content.summaryText != null) ...[
               Padding(
                 padding: const EdgeInsets.only(
-                  top: AppSpacingTokens.sm,
-                  bottom: AppSpacingTokens.sm,
+                  top: AppSpacingTokens.level3,
+                  bottom: AppSpacingTokens.level3,
                 ),
                 child: AppSkeletonText(
                   text: content.summaryText!,
@@ -145,24 +145,24 @@ class ReportAiSummarySection extends StatelessWidget {
             for (var index = 0; index < content.bullets.length; index += 1) ...[
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: AppSpacingTokens.sm,
+                  vertical: AppSpacingTokens.level3,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: AppSpacingTokens.xs),
+                      padding: const EdgeInsets.only(top: AppSpacingTokens.level2),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: content.bullets[index].color,
                           shape: BoxShape.circle,
                         ),
                         child: const SizedBox.square(
-                          dimension: AppSpacingTokens.xs,
+                          dimension: AppSpacingTokens.level2,
                         ),
                       ),
                     ),
-                    const SizedBox(width: AppSpacingTokens.sm),
+                    const SizedBox(width: AppSpacingTokens.level3),
                     Expanded(
                       child: AppSkeletonText(
                         text: content.bullets[index].text,
@@ -179,14 +179,14 @@ class ReportAiSummarySection extends StatelessWidget {
                 Divider(
                   height: 1,
                   thickness: 1,
-                  indent: AppSpacingTokens.lg,
+                  indent: AppSpacingTokens.level5,
                   color: colors.border,
                 ),
             ],
             if (content.footer != null) ...[
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               Divider(height: 1, thickness: 1, color: colors.border),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 content.footer!,
                 style: textTheme.labelSmall?.copyWith(
@@ -195,7 +195,7 @@ class ReportAiSummarySection extends StatelessWidget {
               ),
             ],
             if (content.showGenerateButton) ...[
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               Align(
                 alignment: Alignment.centerLeft,
                 child: FButton(

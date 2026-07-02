@@ -91,7 +91,7 @@ class ProfileEditPage extends HookConsumerWidget {
           data: (ctx) {
             initFromSnapshot(ctx.profile);
             return Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.md),
+              padding: const EdgeInsets.all(AppSpacingTokens.level4),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -101,7 +101,7 @@ class ProfileEditPage extends HookConsumerWidget {
                       labelText: l10n.mineEditFieldBirthDate,
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   TextField(
                     controller: heightCmController,
                     decoration: InputDecoration(
@@ -109,27 +109,27 @@ class ProfileEditPage extends HookConsumerWidget {
                     ),
                     keyboardType: TextInputType.number,
                   ),
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   TextField(
                     controller: bloodTypeController,
                     decoration: InputDecoration(
                       labelText: l10n.mineEditFieldBloodType,
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   _enumDropdown<HealthUnitSystem>(
                     label: l10n.mineEditFieldUnitSystem,
                     value: unitSystem.value,
                     values: HealthUnitSystem.values,
                     onChanged: (v) => unitSystem.value = v,
                   ),
-                  const SizedBox(height: AppSpacingTokens.sm),
+                  const SizedBox(height: AppSpacingTokens.level3),
                   SwitchListTile(
                     title: Text(l10n.mineEditFieldOnboardingCompleted),
                     value: onboardingCompleted.value ?? false,
                     onChanged: (v) => onboardingCompleted.value = v,
                   ),
-                  const SizedBox(height: AppSpacingTokens.lg),
+                  const SizedBox(height: AppSpacingTokens.level5),
                   ElevatedButton(
                     onPressed: onSave,
                     child: Text(l10n.mineEditSaveAction),

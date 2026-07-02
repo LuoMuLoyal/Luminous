@@ -44,9 +44,9 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
           value: masterValue,
           onChanged: onMasterChanged,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         Divider(height: 1, color: colors.border),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         _DisabledScope(
           disabled: !masterValue,
           child: Column(

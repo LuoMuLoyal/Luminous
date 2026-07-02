@@ -37,17 +37,17 @@ class RecordNlpCandidateReview extends StatelessWidget {
           l10n.recordNlpCandidatesTitle(state.candidates.length),
           style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: AppSpacingTokens.xs),
+        const SizedBox(height: AppSpacingTokens.level2),
         Text(
           meta.confirmationHint,
           style: textTheme.bodySmall?.copyWith(color: colors.foreground),
         ),
-        const SizedBox(height: AppSpacingTokens.xs),
+        const SizedBox(height: AppSpacingTokens.level2),
         Text(
           l10n.recordNlpSelectedCountHint(state.selectedCount),
           style: textTheme.labelSmall?.copyWith(color: colors.mutedForeground),
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         for (var index = 0; index < state.candidates.length; index += 1) ...[
           _CandidateTile(
             index: index,
@@ -58,7 +58,7 @@ class RecordNlpCandidateReview extends StatelessWidget {
             onRemove: () => onRemove(index),
           ),
           if (index < state.candidates.length - 1)
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
         ],
       ],
     );
@@ -90,7 +90,7 @@ class _CandidateTile extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -104,7 +104,7 @@ class _CandidateTile extends StatelessWidget {
                       ? (value) => onToggleSelected(value ?? false)
                       : null,
                 ),
-                const SizedBox(width: AppSpacingTokens.xs),
+                const SizedBox(width: AppSpacingTokens.level2),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +116,7 @@ class _CandidateTile extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const SizedBox(height: AppSpacingTokens.xxs),
+                      const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         _candidateTitle(l10n, item),
                         style: textTheme.titleSmall?.copyWith(
@@ -132,14 +132,14 @@ class _CandidateTile extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             RecordNlpCandidateEditor(
               index: index,
               item: item,
               enabled: enabled,
               onChanged: onUpdate,
             ),
-            const SizedBox(height: AppSpacingTokens.xs),
+            const SizedBox(height: AppSpacingTokens.level2),
             Text(
               item.rationale,
               style: textTheme.labelSmall?.copyWith(
@@ -147,7 +147,7 @@ class _CandidateTile extends StatelessWidget {
               ),
             ),
             if (item.lastErrorMessage != null) ...[
-              const SizedBox(height: AppSpacingTokens.xs),
+              const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 l10n.recordNlpCandidateSaveFailedHint(item.lastErrorMessage!),
                 style: textTheme.labelSmall?.copyWith(

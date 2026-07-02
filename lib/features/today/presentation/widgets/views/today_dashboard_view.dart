@@ -106,14 +106,14 @@ class _MobileTodayDashboard extends StatelessWidget {
         key: const PageStorageKey<String>('today-dashboard-scroll'),
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.fromLTRB(
-          AppSpacingTokens.md,
-          AppSpacingTokens.md,
-          AppSpacingTokens.md,
-          AppSpacingTokens.x5l + MediaQuery.paddingOf(context).bottom,
+          AppSpacingTokens.level4,
+          AppSpacingTokens.level4,
+          AppSpacingTokens.level4,
+          AppSpacingTokens.level10 + MediaQuery.paddingOf(context).bottom,
         ),
         itemBuilder: (context, index) => sections[index],
         separatorBuilder: (context, index) =>
-            const SizedBox(height: AppSpacingTokens.lg),
+            const SizedBox(height: AppSpacingTokens.level5),
         itemCount: sections.length,
       ),
     );
@@ -137,18 +137,18 @@ class _DesktopTodayDashboard extends StatelessWidget {
         key: const PageStorageKey<String>('today-dashboard-desktop-scroll'),
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
-          AppSpacingTokens.xl,
-          AppSpacingTokens.xl,
-          AppSpacingTokens.xl,
-          AppSpacingTokens.xl,
+          AppSpacingTokens.level6,
+          AppSpacingTokens.level6,
+          AppSpacingTokens.level6,
+          AppSpacingTokens.level6,
         ),
         children: [
           TodayTopBar(moment: dashboard.user.moment),
-          const SizedBox(height: AppSpacingTokens.xl),
+          const SizedBox(height: AppSpacingTokens.level6),
           TodayOverviewSection(dashboard: dashboard),
-          const SizedBox(height: AppSpacingTokens.xl),
+          const SizedBox(height: AppSpacingTokens.level6),
           TodayAiSummarySection(dashboard: dashboard),
-          const SizedBox(height: AppSpacingTokens.xl),
+          const SizedBox(height: AppSpacingTokens.level6),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -157,12 +157,12 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 child: Column(
                   children: [
                     TodayPrioritySection(dashboard: dashboard),
-                    const SizedBox(height: AppSpacingTokens.xl),
+                    const SizedBox(height: AppSpacingTokens.level6),
                     TodayTodoSection(dashboard: dashboard),
                   ],
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.xl),
+              const SizedBox(width: AppSpacingTokens.level6),
               const Expanded(
                 flex: 5,
                 child: Column(

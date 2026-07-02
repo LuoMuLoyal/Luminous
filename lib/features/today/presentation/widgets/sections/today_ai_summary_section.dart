@@ -58,21 +58,21 @@ class TodayAiSummarySection extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacingTokens.md,
-              AppSpacingTokens.sm,
-              AppSpacingTokens.md,
-              AppSpacingTokens.sm,
+              AppSpacingTokens.level4,
+              AppSpacingTokens.level3,
+              AppSpacingTokens.level4,
+              AppSpacingTokens.level3,
             ),
             child: Row(
               children: [
                 const TodayGlyphTile(
                   icon: FLucideIcons.sparkles,
                   color: Color(0xFF0F766E),
-                  size: AppSpacingTokens.x2l,
-                  radius: AppRadiusTokens.md,
+                  size: AppSpacingTokens.level7,
+                  radius: AppRadiusTokens.level3,
                   gradient: false,
                 ),
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +86,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: AppSpacingTokens.xxs),
+                      const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         l10n.todayAiSummarySubtitle,
                         style: textTheme.bodySmall?.copyWith(
@@ -99,7 +99,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
                 FButton(
                   onPress: aiState.isLoading
                       ? null
@@ -137,10 +137,10 @@ class TodayAiSummarySection extends ConsumerWidget {
           if (content.summary != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacingTokens.md,
-                AppSpacingTokens.sm,
-                AppSpacingTokens.md,
-                AppSpacingTokens.xs,
+                AppSpacingTokens.level4,
+                AppSpacingTokens.level3,
+                AppSpacingTokens.level4,
+                AppSpacingTokens.level2,
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
@@ -159,17 +159,17 @@ class TodayAiSummarySection extends ConsumerWidget {
               Divider(
                 height: 1,
                 thickness: 1,
-                indent: AppSpacingTokens.x4l + AppSpacingTokens.sm,
+                indent: AppSpacingTokens.level9 + AppSpacingTokens.level3,
                 color: colors.border.withValues(alpha: 0.62),
               ),
           ],
           if (content.footer != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacingTokens.md,
-                AppSpacingTokens.xs,
-                AppSpacingTokens.md,
-                AppSpacingTokens.sm,
+                AppSpacingTokens.level4,
+                AppSpacingTokens.level2,
+                AppSpacingTokens.level4,
+                AppSpacingTokens.level3,
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
@@ -200,13 +200,13 @@ class _AiSummaryRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       child: Row(
         children: [
-          Icon(item.icon, color: item.color, size: AppSpacingTokens.lg),
-          const SizedBox(width: AppSpacingTokens.md),
+          Icon(item.icon, color: item.color, size: AppSpacingTokens.level5),
+          const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Text(
               item.text,

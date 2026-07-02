@@ -29,9 +29,9 @@ class ReportFindingsSection extends StatelessWidget {
           l10n.reportFindingsSectionTitle,
           style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         Divider(height: 1, thickness: 1, color: colors.border),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -42,7 +42,7 @@ class ReportFindingsSection extends StatelessWidget {
                   child: _FindingCard(finding: findings[index]),
                 ),
                 if (index != findings.length - 1)
-                  const SizedBox(width: AppSpacingTokens.sm),
+                  const SizedBox(width: AppSpacingTokens.level3),
               ],
             ],
           ),
@@ -66,10 +66,10 @@ class _FindingCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: finding.color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
           border: Border.all(color: finding.color.withValues(alpha: 0.18)),
         ),
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -112,7 +112,7 @@ class _FindingCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             AppSkeletonText(
               text: finding.title,
               style: textTheme.labelLarge?.copyWith(
@@ -120,7 +120,7 @@ class _FindingCard extends StatelessWidget {
               ),
               widthFactor: 0.7,
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             AppSkeletonText(
               text: finding.body,
               style: textTheme.bodySmall?.copyWith(

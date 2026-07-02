@@ -30,7 +30,7 @@ class RecordTimelinePanel extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-timeline'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -52,7 +52,7 @@ class RecordTimelinePanel extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Column(
               children: [
                 for (var index = 0; index < entries.length; index += 1)
@@ -125,10 +125,10 @@ class _TimelineEntryRow extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.sm),
+        const SizedBox(width: AppSpacingTokens.level3),
         Expanded(
           child: Padding(
-            padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacingTokens.md),
+            padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacingTokens.level4),
             child: _TimelineCard(
               entry: entry,
               index: index,
@@ -180,16 +180,16 @@ class _TimelineCard extends StatelessWidget {
         onTap: entry.recordId != null
             ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
             : null,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
             border: Border.all(color: colors.border),
           ),
           child: Padding(
             padding: EdgeInsets.all(
-              dense ? AppSpacingTokens.md : AppSpacingTokens.lg,
+              dense ? AppSpacingTokens.level4 : AppSpacingTokens.level5,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +201,7 @@ class _TimelineCard extends StatelessWidget {
                   size: 38,
                   iconSize: 19,
                 ),
-                const SizedBox(width: AppSpacingTokens.md),
+                const SizedBox(width: AppSpacingTokens.level4),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,7 +218,7 @@ class _TimelineCard extends StatelessWidget {
                             ),
                           ),
                           if (entry.badgeKey != null) ...[
-                            const SizedBox(width: AppSpacingTokens.sm),
+                            const SizedBox(width: AppSpacingTokens.level3),
                             AppStatusPill(
                               label: recordCopy(l10n, entry.badgeKey!),
                               color: entry.accent,
@@ -227,7 +227,7 @@ class _TimelineCard extends StatelessWidget {
                         ],
                       ),
                       if (value != null && value.isNotEmpty) ...[
-                        const SizedBox(height: AppSpacingTokens.xs),
+                        const SizedBox(height: AppSpacingTokens.level2),
                         Text.rich(
                           TextSpan(
                             style: textTheme.titleSmall?.copyWith(
@@ -248,7 +248,7 @@ class _TimelineCard extends StatelessWidget {
                         ),
                       ],
                       if (detail != null) ...[
-                        const SizedBox(height: AppSpacingTokens.xs),
+                        const SizedBox(height: AppSpacingTokens.level2),
                         Text(
                           detail,
                           style: textTheme.bodySmall?.copyWith(
@@ -260,13 +260,13 @@ class _TimelineCard extends StatelessWidget {
                   ),
                 ),
                 if (entry.imageUrl != null && !dense) ...[
-                  const SizedBox(width: AppSpacingTokens.md),
+                  const SizedBox(width: AppSpacingTokens.level4),
                   _TimelineImageThumbnail(
                     imageUrl: entry.imageUrl!,
                     label: label,
                   ),
                 ] else if (entry.imagePlaceholderKey != null && !dense) ...[
-                  const SizedBox(width: AppSpacingTokens.md),
+                  const SizedBox(width: AppSpacingTokens.level4),
                   AppImagePlaceholder(
                     label: recordCopy(l10n, entry.imagePlaceholderKey!),
                     width: 96,
@@ -274,7 +274,7 @@ class _TimelineCard extends StatelessWidget {
                     icon: FLucideIcons.utensils,
                   ),
                 ],
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
                 Icon(_trailingIcon(), color: _trailingColor(colors), size: 18),
               ],
             ),
@@ -312,7 +312,7 @@ class _TimelineImageThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
       child: SizedBox(
         width: 96,
         height: 72,

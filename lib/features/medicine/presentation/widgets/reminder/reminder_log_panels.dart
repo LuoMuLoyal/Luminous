@@ -25,25 +25,25 @@ class ReminderTodayLogPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: AppSpacingTokens.xs),
+          padding: const EdgeInsets.only(left: AppSpacingTokens.level2),
           child: Text(
             l10n.medicineReminderTodayLogsTitle,
             style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           child: visibleLogs.isEmpty
               ? Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.md),
+                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
                   child: Row(
                     children: [
                       Icon(
                         FLucideIcons.clipboardList,
                         color: colors.mutedForeground,
-                        size: AppSpacingTokens.lg,
+                        size: AppSpacingTokens.level5,
                       ),
-                      const SizedBox(width: AppSpacingTokens.sm),
+                      const SizedBox(width: AppSpacingTokens.level3),
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoTodayLogs,
@@ -86,25 +86,25 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: AppSpacingTokens.xs),
+          padding: const EdgeInsets.only(left: AppSpacingTokens.level2),
           child: Text(
             l10n.medicineReminderDeliveryLogsTitle,
             style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           child: visibleLogs.isEmpty
               ? Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.md),
+                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
                   child: Row(
                     children: [
                       Icon(
                         FLucideIcons.receiptText,
                         color: colors.mutedForeground,
-                        size: AppSpacingTokens.lg,
+                        size: AppSpacingTokens.level5,
                       ),
-                      const SizedBox(width: AppSpacingTokens.sm),
+                      const SizedBox(width: AppSpacingTokens.level3),
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoDeliveryLogs,
@@ -149,13 +149,13 @@ class _DeliveryLogRow extends StatelessWidget {
     );
     final row = Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       child: Row(
         children: [
           Icon(deliveryStatusIcon(log.status), color: color, size: 18),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +166,7 @@ class _DeliveryLogRow extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   deliveryChannelLabel(l10n, log.channel),
                   style: textTheme.labelSmall?.copyWith(
@@ -176,7 +176,7 @@ class _DeliveryLogRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           AppStatusPill(
             label: deliveryStatusLabel(l10n, log.status),
             color: color,
@@ -191,7 +191,7 @@ class _DeliveryLogRow extends StatelessWidget {
         Divider(
           height: 1,
           thickness: 1,
-          indent: AppSpacingTokens.md + AppSpacingTokens.lg,
+          indent: AppSpacingTokens.level4 + AppSpacingTokens.level5,
           color: colors.border,
         ),
       ],
@@ -225,13 +225,13 @@ class _TodayLogRow extends StatelessWidget {
 
     final row = Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       child: Row(
         children: [
           Icon(FLucideIcons.badgeCheck, color: color, size: 18),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           Expanded(
             child: Text(
               dateTimeTimeLabel(log.scheduledFor),
@@ -251,7 +251,7 @@ class _TodayLogRow extends StatelessWidget {
         Divider(
           height: 1,
           thickness: 1,
-          indent: AppSpacingTokens.md + AppSpacingTokens.lg,
+          indent: AppSpacingTokens.level4 + AppSpacingTokens.level5,
           color: colors.border,
         ),
       ],

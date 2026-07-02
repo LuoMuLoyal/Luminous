@@ -25,17 +25,17 @@ class MineHeaderActionChip extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: onTap == null
                   ? colors.background.withValues(alpha: 0.72)
                   : colors.background,
-              borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+              borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
               border: Border.all(color: colors.border),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.sm),
+              padding: const EdgeInsets.all(AppSpacingTokens.level3),
               child: Icon(
                 icon,
                 size: 18,
@@ -75,16 +75,16 @@ class MineSettingRow extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.sm,
-            vertical: AppSpacingTokens.md,
+            horizontal: AppSpacingTokens.level3,
+            vertical: AppSpacingTokens.level4,
           ),
           child: Row(
             children: [
               Icon(icon, size: 18, color: colors.foreground),
-              const SizedBox(width: AppSpacingTokens.md),
+              const SizedBox(width: AppSpacingTokens.level4),
               Expanded(
                 child: Text(
                   title,
@@ -94,7 +94,7 @@ class MineSettingRow extends StatelessWidget {
                 ),
               ),
               if (value != null) ...[
-                const SizedBox(width: AppSpacingTokens.sm),
+                const SizedBox(width: AppSpacingTokens.level3),
                 Text(
                   value!,
                   style: textTheme.bodySmall?.copyWith(
@@ -102,7 +102,7 @@ class MineSettingRow extends StatelessWidget {
                   ),
                 ),
               ],
-              const SizedBox(width: AppSpacingTokens.xs),
+              const SizedBox(width: AppSpacingTokens.level2),
               Icon(
                 FLucideIcons.chevronRight,
                 size: 18,

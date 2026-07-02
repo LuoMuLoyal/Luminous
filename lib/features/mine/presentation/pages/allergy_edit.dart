@@ -171,7 +171,7 @@ class AllergyEditPage extends HookConsumerWidget {
       leading: const AppBackButton(),
       children: [
         Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.md),
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -181,20 +181,20 @@ class AllergyEditPage extends HookConsumerWidget {
                 values: HealthAllergyKind.values,
                 onChanged: (v) => kind.value = v,
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 key: const Key('allergy-label-field'),
                 controller: labelController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldLabel),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: reactionController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldReaction,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               DropdownButtonFormField<HealthAllergySeverity>(
                 initialValue: severity.value,
                 decoration: InputDecoration(
@@ -209,20 +209,20 @@ class AllergyEditPage extends HookConsumerWidget {
                   if (v != null) severity.value = v;
                 },
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: noteController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
                 maxLines: 3,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               ElevatedButton(
                 key: const Key('allergy-save-button'),
                 onPressed: onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
               if (!isNew) ...[
-                const SizedBox(height: AppSpacingTokens.sm),
+                const SizedBox(height: AppSpacingTokens.level3),
                 OutlinedButton(
                   key: const Key('allergy-delete-button'),
                   onPressed: onDelete,

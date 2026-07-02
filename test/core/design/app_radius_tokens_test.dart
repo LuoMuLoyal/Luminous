@@ -3,40 +3,51 @@ import 'package:luminous/core/design/app_radius_tokens.dart';
 
 void main() {
   group('AppRadiusTokens', () {
-    test('none is 0', () {
-      expect(AppRadiusTokens.none, equals(0));
+    test('level0 is 0', () {
+      expect(AppRadiusTokens.level0, equals(0));
     });
 
-    test('xs is 4', () {
-      expect(AppRadiusTokens.xs, equals(4));
+    test('level1 is 4', () {
+      expect(AppRadiusTokens.level1, equals(4));
     });
 
-    test('sm is 6', () {
-      expect(AppRadiusTokens.sm, equals(6));
+    test('level2 is 8', () {
+      expect(AppRadiusTokens.level2, equals(8));
     });
 
-    test('md is 8', () {
-      expect(AppRadiusTokens.md, equals(8));
+    test('level3 is 12', () {
+      expect(AppRadiusTokens.level3, equals(12));
     });
 
-    test('lg is 12', () {
-      expect(AppRadiusTokens.lg, equals(12));
+    test('level4 is 16', () {
+      expect(AppRadiusTokens.level4, equals(16));
     });
 
-    test('xl is 16', () {
-      expect(AppRadiusTokens.xl, equals(16));
+    test('level5 is 20', () {
+      expect(AppRadiusTokens.level5, equals(20));
     });
 
-    test('pillSm is 64', () {
-      expect(AppRadiusTokens.pillSm, equals(64));
+    test('levelFull is 9999', () {
+      expect(AppRadiusTokens.levelFull, equals(9999));
     });
 
-    test('pill is 100', () {
-      expect(AppRadiusTokens.pill, equals(100));
+    test('values are non-negative', () {
+      expect(AppRadiusTokens.level0, greaterThanOrEqualTo(0));
+      expect(AppRadiusTokens.level1, greaterThanOrEqualTo(0));
+      expect(AppRadiusTokens.level2, greaterThanOrEqualTo(0));
+      expect(AppRadiusTokens.level3, greaterThanOrEqualTo(0));
+      expect(AppRadiusTokens.level4, greaterThanOrEqualTo(0));
+      expect(AppRadiusTokens.level5, greaterThanOrEqualTo(0));
+      expect(AppRadiusTokens.levelFull, greaterThanOrEqualTo(0));
     });
 
-    test('full is 9999', () {
-      expect(AppRadiusTokens.full, equals(9999));
+    test('values are weakly increasing', () {
+      expect(AppRadiusTokens.level0, lessThanOrEqualTo(AppRadiusTokens.level1));
+      expect(AppRadiusTokens.level1, lessThanOrEqualTo(AppRadiusTokens.level2));
+      expect(AppRadiusTokens.level2, lessThanOrEqualTo(AppRadiusTokens.level3));
+      expect(AppRadiusTokens.level3, lessThanOrEqualTo(AppRadiusTokens.level4));
+      expect(AppRadiusTokens.level4, lessThanOrEqualTo(AppRadiusTokens.level5));
+      expect(AppRadiusTokens.level5, lessThanOrEqualTo(AppRadiusTokens.levelFull));
     });
   });
 }

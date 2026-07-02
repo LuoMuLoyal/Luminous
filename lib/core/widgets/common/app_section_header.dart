@@ -23,7 +23,7 @@ class AppSectionHeader extends StatelessWidget {
       children: [
         if (leading != null) ...[
           leading!,
-          const SizedBox(width: AppSpacingTokens.xs),
+          const SizedBox(width: AppSpacingTokens.level2),
         ],
         Expanded(
           child: Text(
@@ -35,7 +35,7 @@ class AppSectionHeader extends StatelessWidget {
           ),
         ),
         if (trailing != null) ...[
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           trailing!,
         ],
       ],

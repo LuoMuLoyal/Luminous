@@ -62,7 +62,7 @@ class AppSettingRow extends StatelessWidget {
       children: [
         if (trailing != null) trailing!,
         if (showChevron) ...[
-          if (trailing != null) const SizedBox(width: AppSpacingTokens.xs),
+          if (trailing != null) const SizedBox(width: AppSpacingTokens.level2),
           const Icon(FLucideIcons.chevronRight),
         ],
       ],

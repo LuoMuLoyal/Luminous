@@ -8,8 +8,8 @@ class AppIconBadge extends StatelessWidget {
     required this.icon,
     required this.color,
     this.backgroundColor,
-    this.size = AppSpacingTokens.x3l,
-    this.iconSize = AppSpacingTokens.lg,
+    this.size = AppSpacingTokens.level8,
+    this.iconSize = AppSpacingTokens.level5,
     this.shape = BoxShape.rectangle,
   });
 
@@ -34,7 +34,7 @@ class AppIconBadge extends StatelessWidget {
         color: backgroundColor ?? color.withValues(alpha: 0.1),
         shape: shape,
         borderRadius: shape == BoxShape.rectangle
-            ? BorderRadius.circular(AppRadiusTokens.lg)
+            ? BorderRadius.circular(AppRadiusTokens.level4)
             : null,
       ),
       child: SizedBox.square(

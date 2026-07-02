@@ -67,7 +67,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacingTokens.lg),
+                  const SizedBox(height: AppSpacingTokens.level5),
                   IgnorePointer(
                     ignoring: !settings.sleepReminderEnabled,
                     child: Opacity(

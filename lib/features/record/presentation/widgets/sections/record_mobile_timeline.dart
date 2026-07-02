@@ -33,7 +33,7 @@ class RecordMobileTimeline extends StatelessWidget {
           l10n.recordTodayEntriesTitle(totalCount),
           style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           child: Column(
             children: [
@@ -48,8 +48,8 @@ class RecordMobileTimeline extends StatelessWidget {
                   Divider(
                     height: 1,
                     thickness: 1,
-                    indent: AppSpacingTokens.x6l + AppSpacingTokens.md,
-                    endIndent: AppSpacingTokens.md,
+                    indent: AppSpacingTokens.level11 + AppSpacingTokens.level4,
+                    endIndent: AppSpacingTokens.level4,
                     color: colors.border,
                   ),
               ],
@@ -106,13 +106,13 @@ class _TimelineRow extends StatelessWidget {
             : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
+            horizontal: AppSpacingTokens.level4,
+            vertical: AppSpacingTokens.level3,
           ),
           child: Row(
             children: [
               SizedBox(
-                width: AppSpacingTokens.x3l,
+                width: AppSpacingTokens.level8,
                 child: AppSkeletonText(
                   text: entry.time,
                   style: textTheme.bodySmall?.copyWith(
@@ -123,7 +123,7 @@ class _TimelineRow extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: AppSpacingTokens.lg,
+                width: AppSpacingTokens.level5,
                 child: Column(
                   children: [
                     DecoratedBox(
@@ -132,16 +132,16 @@ class _TimelineRow extends StatelessWidget {
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: colors.background,
-                          width: AppSpacingTokens.xxs,
+                          width: AppSpacingTokens.level1,
                         ),
                       ),
                       child: const SizedBox.square(
-                        dimension: AppSpacingTokens.sm,
+                        dimension: AppSpacingTokens.level3,
                       ),
                     ),
                     if (!isLast)
                       SizedBox(
-                        height: AppSpacingTokens.x3l,
+                        height: AppSpacingTokens.level8,
                         child: VerticalDivider(
                           width: 1,
                           thickness: 1,
@@ -151,15 +151,15 @@ class _TimelineRow extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               AppIconBadge(
                 icon: entry.icon,
                 color: entry.accent,
                 backgroundColor: entry.softColor,
-                size: AppSpacingTokens.x3l,
-                iconSize: AppSpacingTokens.lg,
+                size: AppSpacingTokens.level8,
+                iconSize: AppSpacingTokens.level5,
               ),
-              const SizedBox(width: AppSpacingTokens.md),
+              const SizedBox(width: AppSpacingTokens.level4),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +174,7 @@ class _TimelineRow extends StatelessWidget {
                       widthFactor: 0.64,
                     ),
                     if (subtitle.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacingTokens.xxs),
+                      const SizedBox(height: AppSpacingTokens.level1),
                       AppSkeletonText(
                         text: subtitle,
                         style: textTheme.bodySmall?.copyWith(
@@ -189,12 +189,12 @@ class _TimelineRow extends StatelessWidget {
                 ),
               ),
               if (entry.badgeKey != null) ...[
-                const SizedBox(width: AppSpacingTokens.xs),
+                const SizedBox(width: AppSpacingTokens.level2),
                 AppSkeletonSlot(
                   skeleton: AppInlineSkeletonBlock(
                     height: (textTheme.bodySmall?.fontSize ?? 14) + 8,
                     widthFactor: 0.16,
-                    radius: AppRadiusTokens.sm,
+                    radius: AppRadiusTokens.level2,
                   ),
                   child: AppStatusPill(
                     label: recordCopy(l10n, entry.badgeKey!),
@@ -202,11 +202,11 @@ class _TimelineRow extends StatelessWidget {
                   ),
                 ),
               ],
-              const SizedBox(width: AppSpacingTokens.xs),
+              const SizedBox(width: AppSpacingTokens.level2),
               Icon(
                 FLucideIcons.chevronRight,
                 color: colors.mutedForeground,
-                size: AppSpacingTokens.lg,
+                size: AppSpacingTokens.level5,
               ),
             ],
           ),

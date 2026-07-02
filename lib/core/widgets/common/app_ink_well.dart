@@ -12,9 +12,9 @@ import 'package:luminous/core/design/app_design.dart';
 /// ```dart
 /// AppInkWell(
 ///   onTap: () => context.push('/details'),
-///   borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+///   borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
 ///   child: Padding(
-///     padding: const EdgeInsets.all(AppSpacingTokens.md),
+///     padding: const EdgeInsets.all(AppSpacingTokens.level4),
 ///     child: Text('查看详情'),
 ///   ),
 /// )
@@ -45,7 +45,7 @@ class AppInkWell extends StatelessWidget {
     final effectiveSplash = Color(0xFF111827);
     final effectiveHighlight = Color(0xFF111827);
     final effectiveBorderRadius =
-        borderRadius ?? BorderRadius.circular(AppRadiusTokens.md);
+        borderRadius ?? BorderRadius.circular(AppRadiusTokens.level3);
 
     Widget content = Material(
       color: Colors.transparent,

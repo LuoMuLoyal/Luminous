@@ -6,8 +6,8 @@ class TodayGlyphTile extends StatelessWidget {
     super.key,
     required this.icon,
     required this.color,
-    this.size = AppSpacingTokens.x3l + AppSpacingTokens.xs,
-    this.radius = AppRadiusTokens.md,
+    this.size = AppSpacingTokens.level8 + AppSpacingTokens.level2,
+    this.radius = AppRadiusTokens.level3,
     this.gradient = true,
   });
 
@@ -53,7 +53,7 @@ class TodayLinearProgress extends StatelessWidget {
     super.key,
     required this.progress,
     required this.color,
-    this.height = AppSpacingTokens.xs,
+    this.height = AppSpacingTokens.level2,
   });
 
   final double progress;
@@ -65,7 +65,7 @@ class TodayLinearProgress extends StatelessWidget {
     final value = progress.clamp(0, 1).toDouble();
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+      borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
       child: Stack(
         children: [
           DecoratedBox(
@@ -94,7 +94,7 @@ class TodayMiniTrendChart extends StatelessWidget {
     super.key,
     required this.points,
     required this.color,
-    this.height = AppSpacingTokens.x4l,
+    this.height = AppSpacingTokens.level9,
   });
 
   final List<double> points;
@@ -108,14 +108,14 @@ class TodayMiniTrendChart extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
       ),
       child: SizedBox(
         height: height,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.xs,
-            vertical: AppSpacingTokens.xs,
+            horizontal: AppSpacingTokens.level2,
+            vertical: AppSpacingTokens.level2,
           ),
           child: Column(
             children: [
@@ -124,7 +124,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                   child: Icon(
                     Icons.show_chart_rounded,
                     color: color.withValues(alpha: 0.74),
-                    size: AppSpacingTokens.lg,
+                    size: AppSpacingTokens.level5,
                   ),
                 ),
               ),
@@ -136,14 +136,14 @@ class TodayMiniTrendChart extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: index == 3 ? color : Color(0xFFD1D5DB),
                           borderRadius: BorderRadius.circular(
-                            AppRadiusTokens.pill,
+                            AppRadiusTokens.levelFull,
                           ),
                         ),
-                        child: const SizedBox(height: AppSpacingTokens.xxs),
+                        child: const SizedBox(height: AppSpacingTokens.level1),
                       ),
                     ),
                     if (index < tickCount - 1)
-                      const SizedBox(width: AppSpacingTokens.xxs),
+                      const SizedBox(width: AppSpacingTokens.level1),
                   ],
                 ],
               ),

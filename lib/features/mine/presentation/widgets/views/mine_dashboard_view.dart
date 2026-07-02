@@ -50,23 +50,23 @@ class MineDashboardView extends StatelessWidget {
       children: [
         if (!dashboard.account.isAuthenticated) ...[
           const MineSignedOutNotice(key: Key('mine-signed-out-notice')),
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
         ],
         MineAccountHero(
           key: const Key('mine-account-header'),
           dashboard: dashboard,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         MineStatusOverview(
           key: const Key('mine-status-overview'),
           dashboard: dashboard,
         ),
-        const SizedBox(height: AppSpacingTokens.lg),
+        const SizedBox(height: AppSpacingTokens.level5),
         MineArchiveSection(
           key: const Key('mine-archive-section'),
           dashboard: dashboard,
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         MinePrivacyNoticeSection(
           key: const Key('mine-privacy-notice'),
           notice: dashboard.privacyNotice,
@@ -86,18 +86,18 @@ class MineDashboardView extends StatelessWidget {
             children: [
               if (!dashboard.account.isAuthenticated) ...[
                 const MineSignedOutNotice(key: Key('mine-signed-out-notice')),
-                const SizedBox(height: AppSpacingTokens.lg),
+                const SizedBox(height: AppSpacingTokens.level5),
               ],
               MineAccountHero(
                 key: const Key('mine-account-header'),
                 dashboard: dashboard,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               MineArchiveSection(
                 key: const Key('mine-archive-section'),
                 dashboard: dashboard,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               MinePrivacyNoticeSection(
                 key: const Key('mine-privacy-notice'),
                 notice: dashboard.privacyNotice,
@@ -105,7 +105,7 @@ class MineDashboardView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.lg),
+        const SizedBox(width: AppSpacingTokens.level5),
         Expanded(
           flex: 5,
           child: Column(

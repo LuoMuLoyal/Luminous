@@ -25,7 +25,7 @@ class Categories extends StatelessWidget {
           l10n.medicineSearchCategoryTitle,
           style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.md),
+        const SizedBox(height: AppSpacingTokens.level4),
         Row(
           children: categories
               .map(
@@ -59,9 +59,9 @@ class _CategoryItem extends StatelessWidget {
         onTap:
             onTap ??
             () => AppToast.show(context, categoryLabel(l10n, category.type)),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
           child: Column(
             children: [
               DecoratedBox(
@@ -70,11 +70,11 @@ class _CategoryItem extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.sm),
+                  padding: const EdgeInsets.all(AppSpacingTokens.level3),
                   child: Icon(category.icon, color: category.accent),
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 categoryLabel(l10n, category.type),
                 style: textTheme.labelSmall,

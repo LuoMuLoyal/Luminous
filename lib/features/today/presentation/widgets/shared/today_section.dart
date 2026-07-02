@@ -28,7 +28,7 @@ class TodaySection extends StatelessWidget {
               ? null
               : AppTextAction(label: actionLabel!, onTap: onAction ?? () {}),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         child,
       ],
     );

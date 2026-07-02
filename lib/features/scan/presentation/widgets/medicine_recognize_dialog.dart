@@ -48,7 +48,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.lg),
+          padding: const EdgeInsets.all(AppSpacingTokens.level5),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(width: AppSpacingTokens.md),
+                  const SizedBox(width: AppSpacingTokens.level4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,13 +82,13 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
 
               if (top != null) ...[
                 // Top result card
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(AppSpacingTokens.md),
+                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
@@ -99,7 +99,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       _infoRow('药品', top.name),
                       if (top.approvalNumber != null)
                         _infoRow('批准文号', top.approvalNumber!),
-                      const SizedBox(height: AppSpacingTokens.xs),
+                      const SizedBox(height: AppSpacingTokens.level2),
                       Text(
                         '置信度: ${(top.confidence * 100).toInt()}%',
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -113,7 +113,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                 Text('未能识别到药品信息', style: theme.textTheme.bodyLarge),
               ],
 
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
 
               // Candidate list expander
               if (sorted.length > 1)
@@ -122,7 +122,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       setState(() => _showCandidateList = !_showCandidateList),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacingTokens.sm,
+                      vertical: AppSpacingTokens.level3,
                     ),
                     child: Row(
                       children: [
@@ -170,7 +170,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                   ),
                 ),
 
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
 
               // Actions
               Row(
@@ -181,7 +181,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       child: const Text('重新拍照'),
                     ),
                   ),
-                  const SizedBox(width: AppSpacingTokens.sm),
+                  const SizedBox(width: AppSpacingTokens.level3),
                   Expanded(
                     child: FilledButton(
                       onPressed: top != null || _selectedIndex != null

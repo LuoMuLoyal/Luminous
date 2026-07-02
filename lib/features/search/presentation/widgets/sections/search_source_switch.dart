@@ -29,19 +29,19 @@ class SourceSwitch extends StatelessWidget {
                 padding: EdgeInsets.only(
                   right: source == MedicineSearchSource.values.last
                       ? 0
-                      : AppSpacingTokens.sm,
+                      : AppSpacingTokens.level3,
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => onChanged(source),
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: source == selectedSource
                             ? colors.primary.withValues(alpha: 0.1)
                             : colors.background,
-                        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+                        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
                         border: Border.all(
                           color: source == selectedSource
                               ? colors.primary
@@ -50,8 +50,8 @@ class SourceSwitch extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacingTokens.md,
-                          vertical: AppSpacingTokens.sm,
+                          horizontal: AppSpacingTokens.level4,
+                          vertical: AppSpacingTokens.level3,
                         ),
                         child: Text(
                           sourceLabel(l10n, source),

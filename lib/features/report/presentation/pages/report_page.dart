@@ -280,7 +280,7 @@ class ReportPage extends ConsumerWidget {
                   children: [
                     if (isConfirmedSignedOut) ...[
                       _ReportSignedOutNotice(),
-                      const SizedBox(height: AppSpacingTokens.md),
+                      const SizedBox(height: AppSpacingTokens.level4),
                     ],
                     ReportDashboardView(
                       dashboard: dashboard,
@@ -358,7 +358,7 @@ class ReportPage extends ConsumerWidget {
                   children: [
                     if (isConfirmedSignedOut) ...[
                       _ReportSignedOutNotice(),
-                      const SizedBox(height: AppSpacingTokens.md),
+                      const SizedBox(height: AppSpacingTokens.level4),
                     ],
                     ReportDashboardView(
                       dashboard: dashboard,
@@ -471,10 +471,10 @@ class _ReportSignedOutNotice extends StatelessWidget {
       key: const Key('report-signed-out-notice'),
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         border: Border.all(color: colors.border),
       ),
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
+      padding: const EdgeInsets.all(AppSpacingTokens.level4),
       child: Row(
         children: [
           Container(
@@ -482,11 +482,11 @@ class _ReportSignedOutNotice extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: colors.secondary.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+              borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
             ),
             child: Icon(FLucideIcons.lock, color: colors.primary),
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -497,7 +497,7 @@ class _ReportSignedOutNotice extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   l10n.reportSignedOutInlineHint,
                   style: textTheme.bodySmall?.copyWith(
@@ -507,7 +507,7 @@ class _ReportSignedOutNotice extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.sm),
+          const SizedBox(width: AppSpacingTokens.level3),
           OutlinedButton(
             key: const Key('report-signed-out-login-action'),
             onPressed: () => pushAuthRequiredRoute(context, '/report'),
@@ -552,14 +552,14 @@ class _ReportDesktopShell extends StatelessWidget {
             key: const PageStorageKey<String>('report-desktop-scroll'),
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
-              AppSpacingTokens.xl,
-              AppSpacingTokens.xl,
-              AppSpacingTokens.xl,
-              AppSpacingTokens.xl,
+              AppSpacingTokens.level6,
+              AppSpacingTokens.level6,
+              AppSpacingTokens.level6,
+              AppSpacingTokens.level6,
             ),
             children: [
               topBar,
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               child,
             ],
           ),
@@ -602,14 +602,14 @@ class _ReportMobileShell extends StatelessWidget {
             key: const PageStorageKey<String>('report-mobile-scroll'),
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
-              AppSpacingTokens.md,
-              AppSpacingTokens.md,
-              AppSpacingTokens.md,
-              AppSpacingTokens.x5l,
+              AppSpacingTokens.level4,
+              AppSpacingTokens.level4,
+              AppSpacingTokens.level4,
+              AppSpacingTokens.level10,
             ),
             children: [
               topBar,
-              const SizedBox(height: AppSpacingTokens.md),
+              const SizedBox(height: AppSpacingTokens.level4),
               child,
             ],
           ),

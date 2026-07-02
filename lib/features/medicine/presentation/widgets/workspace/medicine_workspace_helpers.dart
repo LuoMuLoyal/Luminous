@@ -29,7 +29,7 @@ class SectionTextAction extends StatelessWidget {
     return FTappable(
       onPress: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.xxs),
+        padding: const EdgeInsets.all(AppSpacingTokens.level1),
         child: Text(
           label,
           style: textTheme.bodySmall?.copyWith(

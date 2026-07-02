@@ -28,14 +28,14 @@ class AppImagePlaceholder extends StatelessWidget {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.sm,
-              vertical: AppSpacingTokens.xs,
+              horizontal: AppSpacingTokens.level3,
+              vertical: AppSpacingTokens.level2,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(icon, size: 22, color: colors.mutedForeground),
-                const SizedBox(height: AppSpacingTokens.xxs),
+                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   label,
                   style: textTheme.labelSmall?.copyWith(

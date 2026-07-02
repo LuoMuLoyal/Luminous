@@ -45,7 +45,7 @@ class RecordMonthCalendarPanel extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-calendar-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: Column(
           children: [
             Row(
@@ -70,7 +70,7 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Row(
               children: weekdayKeys
                   .map(
@@ -86,15 +86,15 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                   )
                   .toList(),
             ),
-            const SizedBox(height: AppSpacingTokens.sm),
+            const SizedBox(height: AppSpacingTokens.level3),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7,
                 childAspectRatio: 0.86,
-                mainAxisSpacing: AppSpacingTokens.xs,
-                crossAxisSpacing: AppSpacingTokens.xs,
+                mainAxisSpacing: AppSpacingTokens.level2,
+                crossAxisSpacing: AppSpacingTokens.level2,
               ),
               itemCount: days.length,
               itemBuilder: (context, index) => _MonthDayCell(
@@ -128,7 +128,7 @@ class RecordFilterPanel extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-filter-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.lg),
+        padding: const EdgeInsets.all(AppSpacingTokens.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -149,13 +149,13 @@ class RecordFilterPanel extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             Column(
               children: filters
                   .map(
                     (filter) => Padding(
                       padding: const EdgeInsets.only(
-                        bottom: AppSpacingTokens.sm,
+                        bottom: AppSpacingTokens.level3,
                       ),
                       child: _FilterRow(
                         filter: filter,
@@ -203,7 +203,7 @@ class _MonthDayCell extends StatelessWidget {
         onTap: onTap == null
             ? null
             : () => onTap!(_dateForDay(day, selectedDate)),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -275,9 +275,9 @@ class _FilterRow extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.xs),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
           child: Row(
             children: [
               Icon(
@@ -289,9 +289,9 @@ class _FilterRow extends StatelessWidget {
                     : colors.mutedForeground,
                 size: 18,
               ),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               Icon(filter.icon, color: filter.accent, size: 18),
-              const SizedBox(width: AppSpacingTokens.sm),
+              const SizedBox(width: AppSpacingTokens.level3),
               Expanded(
                 child: Text(
                   label,
@@ -305,12 +305,12 @@ class _FilterRow extends StatelessWidget {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: colors.secondary.withValues(alpha: 0.22),
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacingTokens.sm,
-                      vertical: AppSpacingTokens.xs,
+                      horizontal: AppSpacingTokens.level3,
+                      vertical: AppSpacingTokens.level2,
                     ),
                     child: Text(
                       l10n.recordNotEnabledLabel,

@@ -273,7 +273,7 @@ class AssistantPage extends HookConsumerWidget {
             statusSummary: statusSummaryText(l10n, capabilities),
           ),
           if (chatState.conversationError != null) ...[
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             AppStateMessageView(
               title: l10n.assistantLoadErrorTitle,
               description: chatState.conversationError!,
@@ -285,7 +285,7 @@ class AssistantPage extends HookConsumerWidget {
                   .loadLatestConversation(),
             ),
           ],
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           Expanded(
             child: AssistantConversationSurface(
               state: chatState,
@@ -315,7 +315,7 @@ class AssistantPage extends HookConsumerWidget {
             ),
           ),
           if (chatState.recentConversationError != null) ...[
-            const SizedBox(height: AppSpacingTokens.md),
+            const SizedBox(height: AppSpacingTokens.level4),
             AppStateMessageView(
               title: l10n.assistantRecentConversationsTitle,
               description: chatState.recentConversationError!,
@@ -327,7 +327,7 @@ class AssistantPage extends HookConsumerWidget {
                   .loadRecentConversations(),
             ),
           ],
-          const SizedBox(height: AppSpacingTokens.md),
+          const SizedBox(height: AppSpacingTokens.level4),
           AssistantControlsPanel(
             settings: settings,
             fallbackContext: effectiveContext,

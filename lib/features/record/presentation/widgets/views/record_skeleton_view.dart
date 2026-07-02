@@ -33,15 +33,15 @@ class _MobileRecordSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _DateBarPlaceholder(),
-        SizedBox(height: AppSpacingTokens.md),
+        SizedBox(height: AppSpacingTokens.level4),
         _AiInputPlaceholder(),
-        SizedBox(height: AppSpacingTokens.md),
+        SizedBox(height: AppSpacingTokens.level4),
         _QuickEntryPlaceholder(),
-        SizedBox(height: AppSpacingTokens.md),
+        SizedBox(height: AppSpacingTokens.level4),
         _FilterPlaceholder(),
-        SizedBox(height: AppSpacingTokens.md),
+        SizedBox(height: AppSpacingTokens.level4),
         _TimelinePlaceholder(itemCount: 5),
-        SizedBox(height: AppSpacingTokens.md),
+        SizedBox(height: AppSpacingTokens.level4),
         _GuidePlaceholder(),
       ],
     );
@@ -62,22 +62,22 @@ class _DesktopRecordSkeleton extends StatelessWidget {
             height: 420,
             children: [
               AppInlineSkeletonBlock(height: 18, widthFactor: 0.6),
-              SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.level4),
               AppInlineSkeletonBlock(height: 280),
-              SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.level4),
               AppInlineSkeletonBlock(height: 72),
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.md),
+        const SizedBox(width: AppSpacingTokens.level4),
         const Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _AiInputPlaceholder(),
-              SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.level4),
               _QuickEntryPlaceholder(),
-              SizedBox(height: AppSpacingTokens.md),
+              SizedBox(height: AppSpacingTokens.level4),
               _TimelinePlaceholder(itemCount: 6),
             ],
           ),
@@ -97,20 +97,20 @@ class _DateBarPlaceholder extends StatelessWidget {
         AppInlineSkeletonBlock(
           height: 40,
           width: 40,
-          radius: AppRadiusTokens.pill,
+          radius: AppRadiusTokens.levelFull,
         ),
-        SizedBox(width: AppSpacingTokens.xs),
+        SizedBox(width: AppSpacingTokens.level2),
         Expanded(
           child: AppInlineSkeletonBlock(
             height: 44,
-            radius: AppRadiusTokens.pill,
+            radius: AppRadiusTokens.levelFull,
           ),
         ),
-        SizedBox(width: AppSpacingTokens.xs),
+        SizedBox(width: AppSpacingTokens.level2),
         AppInlineSkeletonBlock(
           height: 40,
           width: 40,
-          radius: AppRadiusTokens.pill,
+          radius: AppRadiusTokens.levelFull,
         ),
       ],
     );
@@ -122,7 +122,7 @@ class _AiInputPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonBlock(height: 52, radius: AppRadiusTokens.lg);
+    return const AppInlineSkeletonBlock(height: 52, radius: AppRadiusTokens.level4);
   }
 }
 
@@ -134,11 +134,11 @@ class _QuickEntryPlaceholder extends StatelessWidget {
     return Row(
       children: [
         for (var i = 0; i < 4; i += 1) ...[
-          if (i > 0) const SizedBox(width: AppSpacingTokens.sm),
+          if (i > 0) const SizedBox(width: AppSpacingTokens.level3),
           const Expanded(
             child: AppInlineSkeletonBlock(
               height: 72,
-              radius: AppRadiusTokens.lg,
+              radius: AppRadiusTokens.level4,
             ),
           ),
         ],
@@ -153,14 +153,14 @@ class _FilterPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: AppSpacingTokens.sm,
-      runSpacing: AppSpacingTokens.sm,
+      spacing: AppSpacingTokens.level3,
+      runSpacing: AppSpacingTokens.level3,
       children: List.generate(
         5,
         (_) => const AppInlineSkeletonBlock(
           height: 36,
           width: 72,
-          radius: AppRadiusTokens.pill,
+          radius: AppRadiusTokens.levelFull,
         ),
       ),
     );
@@ -177,21 +177,21 @@ class _TimelinePlaceholder extends StatelessWidget {
     return AppInlineSkeletonSection(
       children: [
         const AppInlineSkeletonBlock(height: 20, widthFactor: 0.45),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         for (var i = 0; i < itemCount; i += 1) ...[
-          if (i > 0) const SizedBox(height: AppSpacingTokens.md),
+          if (i > 0) const SizedBox(height: AppSpacingTokens.level4),
           Row(
             children: [
               const AppInlineSkeletonBlock(height: 14, width: 40),
-              const SizedBox(width: AppSpacingTokens.md),
-              const AppInlineSkeletonCircle(size: AppSpacingTokens.sm),
-              const SizedBox(width: AppSpacingTokens.md),
+              const SizedBox(width: AppSpacingTokens.level4),
+              const AppInlineSkeletonCircle(size: AppSpacingTokens.level3),
+              const SizedBox(width: AppSpacingTokens.level4),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const AppInlineSkeletonBlock(height: 16, widthFactor: 0.55),
-                    const SizedBox(height: AppSpacingTokens.xs),
+                    const SizedBox(height: AppSpacingTokens.level2),
                     AppInlineSkeletonBlock(
                       height: 14,
                       widthFactor: i == itemCount - 1 ? 0.4 : 0.72,
@@ -215,7 +215,7 @@ class _GuidePlaceholder extends StatelessWidget {
     return const Row(
       children: [
         AppInlineSkeletonCircle(size: 16),
-        SizedBox(width: AppSpacingTokens.xs),
+        SizedBox(width: AppSpacingTokens.level2),
         Expanded(child: AppInlineSkeletonBlock(height: 14)),
       ],
     );

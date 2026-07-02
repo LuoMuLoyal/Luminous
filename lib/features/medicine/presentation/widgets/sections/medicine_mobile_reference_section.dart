@@ -11,15 +11,15 @@ class _ReferenceNotice extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Row(
           children: [
             const Icon(
               FLucideIcons.triangleAlert,
               color: Color(0xFFB45309),
-              size: AppSpacingTokens.xl,
+              size: AppSpacingTokens.level6,
             ),
-            const SizedBox(width: AppSpacingTokens.sm),
+            const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +31,7 @@ class _ReferenceNotice extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.xxs),
+                  const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     l10n.medicineReferenceNoticeBody,
                     style: textTheme.bodySmall?.copyWith(
@@ -44,7 +44,7 @@ class _ReferenceNotice extends StatelessWidget {
             const Icon(
               FLucideIcons.chevronRight,
               color: Color(0xFFB45309),
-              size: AppSpacingTokens.lg,
+              size: AppSpacingTokens.level5,
             ),
           ],
         ),
@@ -71,7 +71,7 @@ class _SafetyTipsSection extends ConsumerWidget {
           leading: const Icon(
             FLucideIcons.lightbulb,
             color: Color(0xFFB45309),
-            size: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level5,
           ),
           compact: true,
           trailing: AppTextAction(
@@ -85,7 +85,7 @@ class _SafetyTipsSection extends ConsumerWidget {
                       .refresh(),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.sm),
+        const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           child: tipsAsync.when(
             data: (tips) => _buildTipList(context, tips),
@@ -110,7 +110,7 @@ class _SafetyTipsSection extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     if (tips.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Text(
           l10n.medicineSafetyTipsTitle,
           style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
@@ -133,9 +133,9 @@ class _SafetyTipsSection extends ConsumerWidget {
               height: 1,
               thickness: 1,
               indent:
-                  AppSpacingTokens.md +
-                  AppSpacingTokens.x3l +
-                  AppSpacingTokens.md,
+                  AppSpacingTokens.level4 +
+                  AppSpacingTokens.level8 +
+                  AppSpacingTokens.level4,
               color: colors.border,
             ),
         ],
@@ -150,8 +150,8 @@ class _SafetyTipsSection extends ConsumerWidget {
         for (var index = 0; index < 4; index += 1) ...[
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.md,
-              vertical: AppSpacingTokens.sm,
+              horizontal: AppSpacingTokens.level4,
+              vertical: AppSpacingTokens.level3,
             ),
             child: Row(
               children: [
@@ -159,17 +159,17 @@ class _SafetyTipsSection extends ConsumerWidget {
                   baseColor: colors.border,
                   highlightColor: colors.background,
                   child: Container(
-                    width: AppSpacingTokens.x3l,
-                    height: AppSpacingTokens.x3l,
+                    width: AppSpacingTokens.level8,
+                    height: AppSpacingTokens.level8,
                     decoration: BoxDecoration(
                       color: colors.border,
-                      borderRadius: BorderRadius.circular(AppSpacingTokens.md),
+                      borderRadius: BorderRadius.circular(AppSpacingTokens.level4),
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.md),
+                const SizedBox(width: AppSpacingTokens.level4),
                 const Expanded(
-                  child: AppInlineSkeletonBlock(height: AppSpacingTokens.lg),
+                  child: AppInlineSkeletonBlock(height: AppSpacingTokens.level5),
                 ),
               ],
             ),
@@ -179,9 +179,9 @@ class _SafetyTipsSection extends ConsumerWidget {
               height: 1,
               thickness: 1,
               indent:
-                  AppSpacingTokens.md +
-                  AppSpacingTokens.x3l +
-                  AppSpacingTokens.md,
+                  AppSpacingTokens.level4 +
+                  AppSpacingTokens.level8 +
+                  AppSpacingTokens.level4,
               color: colors.border,
             ),
         ],
@@ -201,8 +201,8 @@ class _SafetyTipRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.md,
-        vertical: AppSpacingTokens.sm,
+        horizontal: AppSpacingTokens.level4,
+        vertical: AppSpacingTokens.level3,
       ),
       child: Row(
         children: [
@@ -210,10 +210,10 @@ class _SafetyTipRow extends StatelessWidget {
             icon: tip.icon,
             color: tip.color,
             backgroundColor: tip.color.withValues(alpha: 0.08),
-            size: AppSpacingTokens.x3l,
-            iconSize: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level8,
+            iconSize: AppSpacingTokens.level5,
           ),
-          const SizedBox(width: AppSpacingTokens.md),
+          const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Text(
               tip.text,
@@ -227,7 +227,7 @@ class _SafetyTipRow extends StatelessWidget {
           Icon(
             FLucideIcons.chevronRight,
             color: colors.mutedForeground,
-            size: AppSpacingTokens.lg,
+            size: AppSpacingTokens.level5,
           ),
         ],
       ),

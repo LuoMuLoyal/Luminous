@@ -33,19 +33,19 @@ class MedicineHeaderActionChip extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
           border: Border.all(color: emphasized ? emphasisColor : colors.border),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.md,
-            vertical: AppSpacingTokens.sm,
+            horizontal: AppSpacingTokens.level4,
+            vertical: AppSpacingTokens.level3,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(icon, size: 18, color: foreground),
-              const SizedBox(width: AppSpacingTokens.xs),
+              const SizedBox(width: AppSpacingTokens.level2),
               Text(
                 label,
                 style: textTheme.labelLarge?.copyWith(

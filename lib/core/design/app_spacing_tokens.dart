@@ -11,17 +11,4 @@ abstract final class AppSpacingTokens {
   static const double level10 = 72;
   static const double level11 = 96;
   static const double level12 = 128;
-
-  static const double xxs = level1;
-  static const double xs = level2;
-  static const double sm = level3;
-  static const double md = level4;
-  static const double lg = level5;
-  static const double xl = level6;
-  static const double x2l = level7;
-  static const double x3l = level8;
-  static const double x4l = level9;
-  static const double x5l = level10;
-  static const double x6l = level11;
-  static const double section = level12;
 }

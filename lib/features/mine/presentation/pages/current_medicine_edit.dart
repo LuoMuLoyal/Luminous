@@ -208,7 +208,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
       leading: const AppBackButton(),
       children: [
         Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.md),
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -218,14 +218,14 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                 values: HealthMedicineSource.values,
                 onChanged: (v) => source.value = v,
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: sourceRefIdController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldSourceRefId,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 key: const Key('medicine-displayname-field'),
                 controller: displayNameController,
@@ -233,46 +233,46 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                   labelText: l10n.mineEditFieldDisplayName,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: strengthTextController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldStrengthText,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: doseTextController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldDoseText,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: routeController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldRoute),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: startedAtController,
                 decoration: InputDecoration(
                   labelText: l10n.mineEditFieldStartedAt,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.sm),
+              const SizedBox(height: AppSpacingTokens.level3),
               TextField(
                 controller: noteController,
                 decoration: InputDecoration(labelText: l10n.mineEditFieldNote),
                 maxLines: 3,
               ),
-              const SizedBox(height: AppSpacingTokens.lg),
+              const SizedBox(height: AppSpacingTokens.level5),
               ElevatedButton(
                 key: const Key('medicine-save-button'),
                 onPressed: onSave,
                 child: Text(l10n.mineEditSaveAction),
               ),
               if (!isNew) ...[
-                const SizedBox(height: AppSpacingTokens.sm),
+                const SizedBox(height: AppSpacingTokens.level3),
                 OutlinedButton(
                   key: const Key('medicine-delete-button'),
                   onPressed: onDelete,
