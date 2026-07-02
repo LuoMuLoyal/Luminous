@@ -5,6 +5,7 @@ import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SleepReminderSettingsPage extends ConsumerWidget {
@@ -26,6 +27,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
       leading: const AppBackButton(),
       children: [
         FTileGroup(
+          style: settingsSubpageTileGroupStyle(context.theme),
           children: [
             FTile(
               title: Text(l10n.settingsNotificationsSleepReminderTitle),
@@ -52,6 +54,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
           child: Opacity(
             opacity: settings.sleepReminderEnabled ? 1 : 0.45,
             child: FTileGroup(
+              style: settingsSubpageTileGroupStyle(context.theme),
               children: [
                 FTile(
                   title: Text(l10n.settingsNotificationsSleepBedtime),

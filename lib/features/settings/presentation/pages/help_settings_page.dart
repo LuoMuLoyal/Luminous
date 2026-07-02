@@ -10,6 +10,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
+import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -33,6 +34,7 @@ class HelpSettingsPage extends ConsumerWidget {
               return _EmptyState(message: l10n.settingsHelpEmpty);
             }
             return FTileGroup(
+              style: settingsSubpageTileGroupStyle(context.theme),
               children: [
                 for (final resource in actionable)
                   FTile(

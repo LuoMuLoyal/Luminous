@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
@@ -32,10 +32,6 @@ class AssistantPage extends HookConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final surface = theme.extension<AppThemeSurface>()!;
-    final width = MediaQuery.sizeOf(context).width;
-    final typography = width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
     final session = ref.watch(authSessionProvider);
     final chatState = ref.watch(assistantControllerProvider);
     final settingsAsync = session.canAccessProtectedData
@@ -230,7 +226,7 @@ class AssistantPage extends HookConsumerWidget {
                     chatState.isOpeningConversation
                 ? null
                 : openRecentConversationsDrawer,
-            icon: const Icon(Icons.history_rounded),
+            icon: const Icon(FLucideIcons.clock4),
           ),
           IconButton(
             key: const Key('assistant-new-conversation-action'),
@@ -242,7 +238,7 @@ class AssistantPage extends HookConsumerWidget {
                     chatState.isOpeningConversation
                 ? null
                 : handleStartNewConversation,
-            icon: const Icon(Icons.add_rounded),
+            icon: const Icon(FLucideIcons.ellipsis),
           ),
         ],
         children: [
@@ -252,7 +248,7 @@ class AssistantPage extends HookConsumerWidget {
             AssistantStateCard(
               title: l10n.authNotSignedIn,
               description: l10n.assistantSignedOutDescription,
-              icon: Icons.lock_outline_rounded,
+              icon: FLucideIcons.circleAlert,
               actionLabel: l10n.authGoLogin,
               onAction: () => context.go(loginRouteForReturnTo('/assistant')),
             ),
@@ -269,7 +265,7 @@ class AssistantPage extends HookConsumerWidget {
               title: l10n.assistantLoadErrorTitle,
               description:
                   chatState.capabilityError ?? l10n.assistantLoadErrorFallback,
-              icon: Icons.cloud_off_rounded,
+              icon: FLucideIcons.circleAlert,
               tone: AppStateTone.warning,
               actionLabel: l10n.todayRetryAction,
               onAction: () => ref
@@ -286,7 +282,7 @@ class AssistantPage extends HookConsumerWidget {
               AppStateMessageView(
                 title: l10n.assistantLoadErrorTitle,
                 description: chatState.conversationError!,
-                icon: Icons.history_toggle_off_rounded,
+                icon: FLucideIcons.circleAlert,
                 tone: AppStateTone.warning,
                 actionLabel: l10n.todayRetryAction,
                 onAction: () => ref
@@ -329,7 +325,7 @@ class AssistantPage extends HookConsumerWidget {
               AppStateMessageView(
                 title: l10n.assistantRecentConversationsTitle,
                 description: chatState.recentConversationError!,
-                icon: Icons.history_toggle_off_rounded,
+                icon: FLucideIcons.circleAlert,
                 tone: AppStateTone.warning,
                 actionLabel: l10n.todayRetryAction,
                 onAction: () => ref
@@ -339,8 +335,6 @@ class AssistantPage extends HookConsumerWidget {
             ],
             const SizedBox(height: AppSpacingTokens.md),
             AssistantControlsPanel(
-              surface: surface,
-              typography: typography,
               settings: settings,
               fallbackContext: effectiveContext,
               capabilities: capabilities,

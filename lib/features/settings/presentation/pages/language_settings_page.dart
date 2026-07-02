@@ -9,6 +9,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
+import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LanguageSettingsPage extends ConsumerWidget {
@@ -27,6 +28,7 @@ class LanguageSettingsPage extends ConsumerWidget {
       leading: const AppBackButton(),
       children: [
         FTileGroup(
+          style: settingsSubpageTileGroupStyle(context.theme),
           children: [
             FTile(
               key: const Key('language-row-system'),
