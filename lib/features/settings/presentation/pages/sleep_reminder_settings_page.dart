@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_spacing_tokens.dart';
+import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
-import 'package:luminous/features/settings/presentation/widgets/app_settings_master_toggle_page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SleepReminderSettingsPage extends ConsumerWidget {
@@ -13,8 +13,6 @@ class SleepReminderSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
     final settingsAsync = ref.watch(notificationSettingsControllerProvider);
     final settings =
         settingsAsync.asData?.value ?? const NotificationSettingsState();
@@ -22,58 +20,77 @@ class SleepReminderSettingsPage extends ConsumerWidget {
       notificationSettingsControllerProvider.notifier,
     );
 
-    return AppSettingsMasterTogglePage(
+    return PageScaffoldShell(
       title: l10n.settingsNotificationsSleepReminderTitle,
-      masterTitle: l10n.settingsNotificationsSleepReminderTitle,
-      masterSubtitle: l10n.settingsNotificationsSleepReminderSubtitle,
-      masterValue: settings.sleepReminderEnabled,
-      onMasterChanged: settingsAsync.isLoading
-          ? (_) {}
-          : (value) => controller.setSleepReminderEnabled(value),
+      centerTitle: true,
+      leading: const AppBackButton(),
       children: [
-        AppSectionSurface(
-          surface: surface,
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              AppSettingsNavigationRow(
-                title: l10n.settingsNotificationsSleepBedtime,
-                value: _formatTimeOfDay(settings.sleepBedtime),
-                onTap: settings.sleepReminderEnabled
-                    ? () async {
-                        final selected = await showTimePicker(
-                          context: context,
-                          initialTime:
-                              settings.sleepBedtime ??
-                              const TimeOfDay(hour: 23, minute: 0),
-                        );
-                        if (selected != null) {
-                          await controller.setSleepBedtime(selected);
-                        }
-                      }
-                    : () {},
-                enabled: settings.sleepReminderEnabled,
-                showDivider: true,
+        FTileGroup(
+          children: [
+            FTile(
+              title: Text(l10n.settingsNotificationsSleepReminderTitle),
+              subtitle: Text(l10n.settingsNotificationsSleepReminderSubtitle),
+              enabled: !settingsAsync.isLoading,
+              onPress: !settingsAsync.isLoading
+                  ? () => controller.setSleepReminderEnabled(
+                      !settings.sleepReminderEnabled,
+                    )
+                  : null,
+              suffix: FSwitch(
+                value: settings.sleepReminderEnabled,
+                enabled: !settingsAsync.isLoading,
+                onChange: settingsAsync.isLoading
+                    ? null
+                    : (value) => controller.setSleepReminderEnabled(value),
               ),
-              AppSettingsNavigationRow(
-                title: l10n.settingsNotificationsSleepWakeTime,
-                value: _formatTimeOfDay(settings.sleepWakeTime),
-                onTap: settings.sleepReminderEnabled
-                    ? () async {
-                        final selected = await showTimePicker(
-                          context: context,
-                          initialTime:
-                              settings.sleepWakeTime ??
-                              const TimeOfDay(hour: 7, minute: 0),
-                        );
-                        if (selected != null) {
-                          await controller.setSleepWakeTime(selected);
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacingTokens.lg),
+        IgnorePointer(
+          ignoring: !settings.sleepReminderEnabled,
+          child: Opacity(
+            opacity: settings.sleepReminderEnabled ? 1 : 0.45,
+            child: FTileGroup(
+              children: [
+                FTile(
+                  title: Text(l10n.settingsNotificationsSleepBedtime),
+                  details: Text(_formatTimeOfDay(settings.sleepBedtime)),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: settings.sleepReminderEnabled
+                      ? () async {
+                          final selected = await showTimePicker(
+                            context: context,
+                            initialTime:
+                                settings.sleepBedtime ??
+                                const TimeOfDay(hour: 23, minute: 0),
+                          );
+                          if (selected != null) {
+                            await controller.setSleepBedtime(selected);
+                          }
                         }
-                      }
-                    : () {},
-                enabled: settings.sleepReminderEnabled,
-              ),
-            ],
+                      : null,
+                ),
+                FTile(
+                  title: Text(l10n.settingsNotificationsSleepWakeTime),
+                  details: Text(_formatTimeOfDay(settings.sleepWakeTime)),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: settings.sleepReminderEnabled
+                      ? () async {
+                          final selected = await showTimePicker(
+                            context: context,
+                            initialTime:
+                                settings.sleepWakeTime ??
+                                const TimeOfDay(hour: 7, minute: 0),
+                          );
+                          if (selected != null) {
+                            await controller.setSleepWakeTime(selected);
+                          }
+                        }
+                      : null,
+                ),
+              ],
+            ),
           ),
         ),
       ],

@@ -2,13 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -35,19 +32,19 @@ class HelpSettingsPage extends ConsumerWidget {
             if (actionable.isEmpty) {
               return _EmptyState(message: l10n.settingsHelpEmpty);
             }
-            return AppSectionSurface(
-              child: Column(
-                children: [
-                  for (var i = 0; i < actionable.length; i++) ...[
-                    AppSettingsNavigationRow(
-                      title: actionable[i].title,
-                      subtitle: actionable[i].subtitle,
-                      onTap: () => _openResource(context, actionable[i]),
-                      showDivider: i < actionable.length - 1,
-                    ),
-                  ],
-                ],
-              ),
+            return FTileGroup(
+              children: [
+                for (final resource in actionable)
+                  FTile(
+                    title: Text(resource.title),
+                    subtitle:
+                        resource.subtitle == null || resource.subtitle!.isEmpty
+                        ? null
+                        : Text(resource.subtitle!),
+                    suffix: const Icon(FLucideIcons.chevronRight),
+                    onPress: () => _openResource(context, resource),
+                  ),
+              ],
             );
           },
           loading: () => const AppInlineSkeleton(
@@ -93,25 +90,16 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = _typography(context);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacingTokens.lg),
       child: Text(
         message,
-        style: typography.bodyMd.copyWith(color: surface.mute),
+        style: textTheme.bodyMedium?.copyWith(color: colors.mutedForeground),
         textAlign: TextAlign.center,
       ),
     );
-  }
-
-  AppTypographyScale _typography(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
-    return width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
   }
 }

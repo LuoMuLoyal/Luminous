@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
@@ -18,40 +15,42 @@ class AboutSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = _typography(context);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final infoAsync = ref.watch(appInfoProvider);
     final description = infoAsync.asData?.value?.description;
+    final supportEmail = infoAsync.asData?.value?.supportEmail;
 
     return PageScaffoldShell(
       title: l10n.mineSettingAboutTitle,
       centerTitle: true,
       leading: const AppBackButton(),
       children: [
-        AppSectionSurface(
-          surface: surface,
+        FCard.raw(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 40,
-                backgroundColor: surface.canvasSoft2,
+              FAvatar.raw(
+                size: 80,
                 child: Icon(
-                  Icons.local_hospital_outlined,
-                  size: 40,
-                  color: theme.colorScheme.primary,
+                  FLucideIcons.heartPulse,
+                  size: 36,
+                  color: colors.primary,
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.md),
               Text(
                 infoAsync.asData?.value?.name ?? 'Luminous',
-                style: typography.displaySm,
+                style: textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: AppSpacingTokens.xs),
               Text(
                 '${l10n.mineSettingAboutValue} ${infoAsync.asData?.value?.version ?? ''}',
-                style: typography.bodySm.copyWith(color: surface.mute),
+                style: textTheme.bodySmall?.copyWith(
+                  color: colors.mutedForeground,
+                ),
               ),
               if (infoAsync.asData?.value?.buildDate.isNotEmpty ?? false) ...[
                 const SizedBox(height: AppSpacingTokens.xxs),
@@ -59,14 +58,18 @@ class AboutSettingsPage extends ConsumerWidget {
                   l10n.settingsAboutBuildNumberLabel(
                     infoAsync.asData!.value!.buildDate,
                   ),
-                  style: typography.bodySm.copyWith(color: surface.mute),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
               if (description != null && description.isNotEmpty) ...[
                 const SizedBox(height: AppSpacingTokens.sm),
                 Text(
                   description,
-                  style: typography.bodySm.copyWith(color: surface.body),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.foreground,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -74,44 +77,43 @@ class AboutSettingsPage extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.lg),
-        AppSectionSurface(
-          surface: surface,
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              AppSettingsNavigationRow(
-                title: l10n.settingsAboutPrivacyPolicy,
-                onTap: () => _openUrl(
-                  context,
-                  infoAsync.asData?.value?.privacyPolicyUrl ??
-                      'https://luminous.app/privacy',
-                ),
-                showDivider: true,
+        FTileGroup(
+          children: [
+            FTile(
+              title: Text(l10n.settingsAboutPrivacyPolicy),
+              suffix: const Icon(FLucideIcons.chevronRight),
+              onPress: () => _openUrl(
+                context,
+                infoAsync.asData?.value?.privacyPolicyUrl ??
+                    'https://luminous.app/privacy',
               ),
-              AppSettingsNavigationRow(
-                title: l10n.settingsAboutTermsOfService,
-                onTap: () => _openUrl(
-                  context,
-                  infoAsync.asData?.value?.termsOfServiceUrl ??
-                      'https://luminous.app/terms',
-                ),
-                showDivider: true,
+            ),
+            FTile(
+              title: Text(l10n.settingsAboutTermsOfService),
+              suffix: const Icon(FLucideIcons.chevronRight),
+              onPress: () => _openUrl(
+                context,
+                infoAsync.asData?.value?.termsOfServiceUrl ??
+                    'https://luminous.app/terms',
               ),
-              AppSettingsNavigationRow(
-                title: l10n.settingsAboutLicenses,
-                onTap: () => showLicensePage(
-                  context: context,
-                  applicationName: infoAsync.asData?.value?.name ?? 'Luminous',
-                ),
-                showDivider: true,
+            ),
+            FTile(
+              title: Text(l10n.settingsAboutLicenses),
+              suffix: const Icon(FLucideIcons.chevronRight),
+              onPress: () => showLicensePage(
+                context: context,
+                applicationName: infoAsync.asData?.value?.name ?? 'Luminous',
               ),
-              AppSettingsNavigationRow(
-                title: l10n.settingsAboutSupport,
-                subtitle: infoAsync.asData?.value?.supportEmail,
-                onTap: () => _openSupport(context, infoAsync.asData?.value),
-              ),
-            ],
-          ),
+            ),
+            FTile(
+              title: Text(l10n.settingsAboutSupport),
+              subtitle: supportEmail == null || supportEmail.isEmpty
+                  ? null
+                  : Text(supportEmail),
+              suffix: const Icon(FLucideIcons.chevronRight),
+              onPress: () => _openSupport(context, infoAsync.asData?.value),
+            ),
+          ],
         ),
       ],
     );
@@ -133,13 +135,5 @@ class AboutSettingsPage extends ConsumerWidget {
       return;
     }
     await _openUrl(context, 'https://luminous.app/support');
-  }
-
-  AppTypographyScale _typography(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
-    return width < AppBreakpoints.mobile
-        ? AppTypographyTokens.mobile(theme.colorScheme.onSurface)
-        : AppTypographyTokens.desktop(theme.colorScheme.onSurface);
   }
 }
