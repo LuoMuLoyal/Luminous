@@ -10,7 +10,6 @@ class AppStatusPill extends StatelessWidget {
     this.icon,
     this.backgroundAlpha = 0.12,
     this.radius = AppRadiusTokens.sm,
-    this.typography,
     this.padding = const EdgeInsets.symmetric(
       horizontal: AppSpacingTokens.xs,
       vertical: AppSpacingTokens.xxs,
@@ -23,15 +22,12 @@ class AppStatusPill extends StatelessWidget {
   final IconData? icon;
   final double backgroundAlpha;
   final double radius;
-  final AppTypographyScale? typography;
   final EdgeInsetsGeometry padding;
   final bool large;
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTypography =
-        typography ??
-        AppTypographyTokens.mobile(Theme.of(context).colorScheme.onSurface);
+    final textTheme = Theme.of(context).textTheme;
     final foreground = backgroundAlpha > 0.5 ? Colors.white : color;
 
     return FBadge.raw(
@@ -54,11 +50,11 @@ class AppStatusPill extends StatelessWidget {
               Text(
                 label,
                 style: large
-                    ? effectiveTypography.bodySmStrong.copyWith(
+                    ? textTheme.labelMedium?.copyWith(
                         color: foreground,
                         fontWeight: FontWeight.w600,
                       )
-                    : effectiveTypography.caption.copyWith(
+                    : textTheme.labelSmall?.copyWith(
                         color: foreground,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0,

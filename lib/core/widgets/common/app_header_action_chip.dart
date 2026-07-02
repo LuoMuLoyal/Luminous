@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class AppHeaderActionChip extends StatelessWidget {
   const AppHeaderActionChip({
     super.key,
     required this.label,
     required this.icon,
-    required this.typography,
-    required this.surface,
     required this.onTap,
     this.emphasized = false,
     this.iconOnly = false,
   });
   final String label;
   final IconData icon;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final VoidCallback onTap;
   final bool emphasized;
   final bool iconOnly;
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final foreground = emphasized
         ? colors.primaryForeground
         : colors.foreground;
@@ -43,7 +39,10 @@ class AppHeaderActionChip extends StatelessWidget {
               const SizedBox(width: AppSpacingTokens.xs),
               Text(
                 label,
-                style: typography.buttonMd.copyWith(color: foreground),
+                style: textTheme.labelLarge?.copyWith(
+                  color: foreground,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ],
