@@ -15,18 +15,6 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 
 ## Remaining Phases
 
-### Root Removal Layer
-
-- Files:
-  - `lib/core/theme/app_theme_extensions.dart`
-  - `lib/core/design/app_typography_tokens.dart`
-  - `lib/core/widgets/common/app_section_surface.dart`
-  - `lib/core/widgets/settings/*`
-- Action:
-  - Replace the remaining wrapper/bridge surfaces with official Forui components where possible, and use `dart run forui style create ...` only when a generated style file is genuinely needed.
-  - Feature-level call sites are now cleared from `lib`, and the three bridge files have been shrunk to compatibility-only shims. The remaining work is to clean matching tests and decide whether those shims can be deleted outright afterward.
-  - Sweep references after the reduction.
-
 ### Final Cleanup
 
 - Action:
