@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
@@ -243,9 +242,9 @@ class _MedicineSafeGuardPill extends StatelessWidget {
 
     return Tooltip(
       message: l10n.medicineSafetyGuardLabel,
-      child: AppInkWell(
-        onTap: () => context.push('/medicine/risk-check'),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+      child: FTappable(
+      onPress: () => context.push('/medicine/risk-check'),
+      child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level2,
           vertical: AppSpacingTokens.level2,
@@ -269,6 +268,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }
@@ -322,9 +322,8 @@ class _MedicineMobileSearchBar extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return AppInkWell(
-      onTap: () => context.push('/medicine/search'),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+    return FTappable(
+      onPress: () => context.push('/medicine/search'),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
@@ -111,13 +110,12 @@ class _PromisePanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
-    return AppInkWell(
-      onTap: () => showPlannedAction(
+    return FTappable(
+      onPress: () => showPlannedAction(
         context,
         l10n.medicinePromiseTitle,
         l10n.medicineOpenPromiseToast,
       ),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Color(0xFFCCFBF1),

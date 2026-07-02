@@ -83,8 +83,8 @@ class _QuickOperationRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
-    return AppInkWell(
-      onTap: operation.onTap,
+    return FTappable(
+      onPress: operation.onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level4,

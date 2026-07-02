@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
@@ -72,10 +71,9 @@ class _MedicationPlanTile extends StatelessWidget {
     final stateText = item.rawState ?? medicineCopy(l10n, item.stateKey);
     final currentMedicineId = item.currentMedicineId;
 
-    return AppInkWell(
-      onTap: () =>
+    return FTappable(
+      onPress: () =>
           showPlannedAction(context, nameText, l10n.medicineOpenPlanItemToast),
-      borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,

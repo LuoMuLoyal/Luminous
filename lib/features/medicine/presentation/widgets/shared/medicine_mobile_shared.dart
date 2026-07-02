@@ -47,9 +47,8 @@ class _DoseActionButton extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final foreground = filled ? Color(0xFFFFFFFF) : color;
 
-    return AppInkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+    return FTappable(
+      onPress: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: filled ? color : color.withValues(alpha: 0.08),
