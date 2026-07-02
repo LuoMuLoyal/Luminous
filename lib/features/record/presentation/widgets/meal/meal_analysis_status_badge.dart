@@ -9,13 +9,11 @@ class MealAnalysisStatusBadge extends StatelessWidget {
     super.key,
     required this.status,
     this.coverage,
-    this.typography,
     this.large = false,
   });
 
   final String? status;
   final String? coverage;
-  final AppTypographyScale? typography;
   final bool large;
 
   @override
