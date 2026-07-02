@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class MedicineRiskMetricChip extends StatelessWidget {
   const MedicineRiskMetricChip({
@@ -14,15 +14,14 @@ class MedicineRiskMetricChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: surface.canvasSoft,
+        color: colors.secondary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-        border: Border.all(color: surface.hairline),
+        border: Border.all(color: colors.border),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -33,11 +32,18 @@ class MedicineRiskMetricChip extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(label, style: typography.bodySm.copyWith(color: surface.mute)),
+            Text(
+              label,
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.mutedForeground,
+              ),
+            ),
             const SizedBox(height: AppSpacingTokens.xxs),
             Text(
               value,
-              style: typography.bodyLg.copyWith(fontWeight: FontWeight.w800),
+              style: textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ],
         ),

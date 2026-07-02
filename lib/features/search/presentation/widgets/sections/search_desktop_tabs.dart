@@ -1,69 +1,83 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class DesktopTabs extends StatelessWidget {
-  const DesktopTabs({
-    super.key,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const DesktopTabs({super.key, required this.l10n});
+
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
+
   @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Row(
-        children: [
-          const Icon(Icons.favorite_rounded, color: AppColorTokens.link),
-          const SizedBox(width: AppSpacingTokens.sm),
-          Text(
-            l10n.medicineSearchAssistantTitle,
-            style: typography.bodyMdStrong,
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Row(
+      children: [
+        Row(
+          children: [
+            Icon(FLucideIcons.heartPulse, color: colors.primary, size: 18),
+            const SizedBox(width: AppSpacingTokens.sm),
+            Text(
+              l10n.medicineSearchAssistantTitle,
+              style: textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+        const Spacer(),
+        _TopTab(label: l10n.medicineSearchPageTitle, active: true),
+        _TopTab(label: l10n.medicineSearchMyBoxTab, active: false),
+        const SizedBox(width: AppSpacingTokens.lg),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: colors.primary.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
           ),
-        ],
-      ),
-      const Spacer(),
-      _TopTab(label: l10n.medicineSearchPageTitle, active: true),
-      _TopTab(label: l10n.medicineSearchMyBoxTab, active: false),
-      const SizedBox(width: AppSpacingTokens.lg),
-      const CircleAvatar(
-        radius: 14,
-        backgroundColor: AppColorTokens.linkSoft,
-        child: Icon(Icons.person_outline_rounded, size: 16),
-      ),
-    ],
-  );
+          child: SizedBox(
+            width: 28,
+            height: 28,
+            child: Icon(
+              FLucideIcons.userRound,
+              size: 16,
+              color: colors.primary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _TopTab extends StatelessWidget {
   const _TopTab({required this.label, required this.active});
+
   final String label;
   final bool active;
+
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(
-      Theme.of(context).colorScheme.onSurface,
-    );
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.md),
       child: Column(
         children: [
           Text(
             label,
-            style: typography.bodySmStrong.copyWith(
-              color: active ? surface.link : surface.body,
+            style: textTheme.labelLarge?.copyWith(
+              color: active ? colors.primary : colors.foreground,
+              fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: AppSpacingTokens.xs),
           Container(
             width: 42,
             height: 2,
-            color: active ? surface.link : Colors.transparent,
+            color: active ? colors.primary : Colors.transparent,
           ),
         ],
       ),

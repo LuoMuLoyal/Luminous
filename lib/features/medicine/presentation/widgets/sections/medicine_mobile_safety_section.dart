@@ -1,20 +1,14 @@
 part of '../views/medicine_mobile_dashboard_view.dart';
 
 class _SafetyEngineSection extends StatelessWidget {
-  const _SafetyEngineSection({
-    required this.alerts,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const _SafetyEngineSection({required this.alerts, required this.l10n});
 
   final List<MedicineAlert> alerts;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final visibleAlerts = alerts.take(3).toList(growable: false);
 
     return Column(
@@ -29,17 +23,11 @@ class _SafetyEngineSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        AppSectionSurface(
-          padding: EdgeInsets.zero,
+        FCard.raw(
           child: Column(
             children: [
               for (var index = 0; index < visibleAlerts.length; index += 1) ...[
-                _SafetyAlertRow(
-                  alert: visibleAlerts[index],
-                  l10n: l10n,
-                  typography: typography,
-                  surface: surface,
-                ),
+                _SafetyAlertRow(alert: visibleAlerts[index], l10n: l10n),
                 if (index < visibleAlerts.length - 1)
                   Divider(
                     height: 1,
@@ -48,7 +36,7 @@ class _SafetyEngineSection extends StatelessWidget {
                         AppSpacingTokens.md +
                         AppSpacingTokens.x3l +
                         AppSpacingTokens.sm,
-                    color: surface.hairline,
+                    color: colors.border,
                   ),
               ],
             ],
@@ -60,20 +48,15 @@ class _SafetyEngineSection extends StatelessWidget {
 }
 
 class _SafetyAlertRow extends StatelessWidget {
-  const _SafetyAlertRow({
-    required this.alert,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const _SafetyAlertRow({required this.alert, required this.l10n});
 
   final MedicineAlert alert;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     return AppInkWell(
       onTap: () => context.push('/medicine/risk-check'),
       borderRadius: BorderRadius.circular(AppRadiusTokens.md),
@@ -89,7 +72,7 @@ class _SafetyAlertRow extends StatelessWidget {
               color: alert.color,
               backgroundColor: Color.alphaBlend(
                 alert.softColor.withValues(alpha: 0.18),
-                surface.canvas,
+                colors.background,
               ),
               shape: BoxShape.circle,
               size: AppSpacingTokens.x3l,
@@ -102,9 +85,8 @@ class _SafetyAlertRow extends StatelessWidget {
                 children: [
                   AppSkeletonText(
                     text: medicineAlertTitle(l10n, alert),
-                    style: typography.bodyMdStrong.copyWith(
+                    style: textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -113,9 +95,8 @@ class _SafetyAlertRow extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.xxs),
                   AppSkeletonText(
                     text: medicineAlertBody(l10n, alert),
-                    style: typography.bodySm.copyWith(
-                      color: surface.body,
-                      letterSpacing: 0,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -137,8 +118,8 @@ class _SafetyAlertRow extends StatelessWidget {
               ),
             ),
             Icon(
-              Icons.chevron_right_rounded,
-              color: surface.mute,
+              FLucideIcons.chevronRight,
+              color: colors.mutedForeground,
               size: AppSpacingTokens.lg,
             ),
           ],

@@ -14,22 +14,6 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 
 ## Remaining Phases
 
-### Medicine / Reminder / Risk / Search
-
-- Files:
-  - `lib/features/medicine/presentation/widgets/views/medicine_workspace_view.dart`
-  - `lib/features/medicine/presentation/widgets/views/medicine_mobile_dashboard_view.dart`
-  - `lib/features/medicine/presentation/widgets/sections/medicine_mobile_*_section.dart`
-  - `lib/features/medicine/presentation/widgets/reminder/medicine_reminder_form_body.dart`
-  - `lib/features/medicine/presentation/widgets/reminder/reminder_rows.dart`
-  - `lib/features/medicine/presentation/widgets/reminder/reminder_log_panels.dart`
-  - `lib/features/medicine/presentation/widgets/risk/medicine_risk_*`
-  - `lib/features/search/presentation/pages/search_view.dart`
-  - `lib/features/search/presentation/widgets/search_result_widgets.dart`
-  - `lib/features/medicine/presentation/widgets/dialogs/medicine_add_precheck_dialog.dart`
-- Action:
-  - Remove the `AppSectionSurface + AppThemeSurface + AppTypographyTokens` trio from the largest remaining shared medical UI surface.
-
 ### Record
 
 - Files:

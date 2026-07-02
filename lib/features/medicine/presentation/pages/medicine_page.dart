@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
@@ -26,7 +26,7 @@ class MedicinePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final workspaceAsync = ref.watch(medicineWorkspaceProvider);
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
@@ -57,7 +57,7 @@ class MedicinePage extends ConsumerWidget {
             ? const _MedicineDesktopShell(child: MedicineSkeletonView())
             : const _MedicineMobileShell(child: MedicineSkeletonView()),
         error: (_, __) => DecoratedBox(
-          decoration: BoxDecoration(color: surface.canvasSoft),
+          decoration: BoxDecoration(color: colors.background),
           child: SafeArea(
             bottom: false,
             child: MedicineErrorView(
@@ -149,10 +149,10 @@ class _MedicineMobileShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
+      decoration: BoxDecoration(color: colors.background),
       child: SafeArea(
         bottom: false,
         child: ListView(
@@ -183,10 +183,10 @@ class _MedicineDesktopShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
+      decoration: BoxDecoration(color: colors.background),
       child: SafeArea(
         bottom: false,
         child: ListView(
@@ -210,8 +210,7 @@ class _MedicineMobileTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,9 +218,8 @@ class _MedicineMobileTopBar extends StatelessWidget {
         Expanded(
           child: Text(
             l10n.tabMedicine,
-            style: typography.displayXl.copyWith(
+            style: textTheme.headlineLarge?.copyWith(
               fontWeight: FontWeight.w800,
-              letterSpacing: 0,
             ),
           ),
         ),
@@ -240,8 +238,8 @@ class _MedicineSafeGuardPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Tooltip(
       message: l10n.medicineSafetyGuardLabel,
@@ -256,16 +254,16 @@ class _MedicineSafeGuardPill extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
-              Icons.gpp_good_outlined,
+              FLucideIcons.shieldCheck,
               color: AppColorTokens.cyanDeep,
               size: AppSpacingTokens.lg,
             ),
             const SizedBox(width: AppSpacingTokens.xs),
             Text(
               l10n.medicineSafetyGuardLabel,
-              style: typography.bodySmStrong.copyWith(
-                color: Theme.of(context).extension<AppThemeSurface>()!.body,
-                letterSpacing: 0,
+              style: textTheme.labelMedium?.copyWith(
+                color: colors.foreground,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ],
@@ -291,7 +289,7 @@ class _MedicineNotificationButton extends StatelessWidget {
           IconButton(
             onPressed: () =>
                 pushAuthRequiredRoute(context, '/medicine/reminders/new'),
-            icon: const Icon(Icons.notifications_none_rounded),
+            icon: const Icon(FLucideIcons.bell),
             color: theme.colorScheme.onSurface,
             visualDensity: VisualDensity.compact,
             style: const ButtonStyle(
@@ -321,18 +319,17 @@ class _MedicineMobileSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return AppInkWell(
       onTap: () => context.push('/medicine/search'),
       borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: surface.canvas,
+          color: colors.background,
           borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-          border: Border.all(color: surface.hairline),
+          border: Border.all(color: colors.border),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -342,17 +339,16 @@ class _MedicineMobileSearchBar extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                Icons.search_rounded,
-                color: surface.mute,
+                FLucideIcons.search,
+                color: colors.mutedForeground,
                 size: AppSpacingTokens.lg,
               ),
               const SizedBox(width: AppSpacingTokens.sm),
               Expanded(
                 child: Text(
                   l10n.medicineHomeSearchHint,
-                  style: typography.bodyMd.copyWith(
-                    color: surface.mute,
-                    letterSpacing: 0,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

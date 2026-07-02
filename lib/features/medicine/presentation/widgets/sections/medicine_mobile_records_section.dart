@@ -4,81 +4,74 @@ class _MedicineRecordsSection extends ConsumerWidget {
   const _MedicineRecordsSection({
     required this.items,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.onMarkDose,
   });
 
   final List<MedicinePlanItem> items;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final void Function(String currentMedicineId, MedicineDoseAction action)?
   onMarkDose;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final rows = _recordRowsFor(
-      l10n,
-      items,
-      surface,
-    ).take(4).toList(growable: false);
+    final colors = context.theme.colors;
+    final rows = _recordRowsFor(l10n, items).take(4).toList(growable: false);
 
-    return AppSectionSurface(
+    return FCard.raw(
       key: const Key('medicine-today-plan'),
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppSectionHeader(
-            title: l10n.medicineRecordsTitle,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _FilterText(label: l10n.medicineAllMedicinesFilter),
-                const SizedBox(width: AppSpacingTokens.sm),
-                _FilterText(label: l10n.medicineLastSevenDaysFilter),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacingTokens.md),
-          if (rows.isEmpty)
-            _DrugBoxEmpty(l10n: l10n, typography: typography, surface: surface)
-          else
-            Column(
-              children: [
-                for (var index = 0; index < rows.length; index += 1) ...[
-                  _MedicineRecordRow(
-                    row: rows[index],
-                    isLast: index == rows.length - 1,
-                    typography: typography,
-                    surface: surface,
-                    l10n: l10n,
-                    onMarkDose: onMarkDose,
-                  ),
-                  if (index < rows.length - 1)
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                      indent: AppSpacingTokens.x6l + AppSpacingTokens.sm,
-                      color: surface.hairline,
-                    ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSectionHeader(
+              title: l10n.medicineRecordsTitle,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _FilterText(label: l10n.medicineAllMedicinesFilter),
+                  const SizedBox(width: AppSpacingTokens.sm),
+                  _FilterText(label: l10n.medicineLastSevenDaysFilter),
                 ],
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacingTokens.md,
-                  ),
-                  child: Center(
-                    child: AppTextAction(
-                      label: l10n.medicineViewMoreRecordsAction,
-                      color: surface.link,
-                      onTap: () => context.go('/record'),
+              ),
+            ),
+            const SizedBox(height: AppSpacingTokens.md),
+            if (rows.isEmpty)
+              _DrugBoxEmpty(l10n: l10n)
+            else
+              Column(
+                children: [
+                  for (var index = 0; index < rows.length; index += 1) ...[
+                    _MedicineRecordRow(
+                      row: rows[index],
+                      isLast: index == rows.length - 1,
+                      l10n: l10n,
+                      onMarkDose: onMarkDose,
+                    ),
+                    if (index < rows.length - 1)
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        indent: AppSpacingTokens.x6l + AppSpacingTokens.sm,
+                        color: colors.border,
+                      ),
+                  ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacingTokens.md,
+                    ),
+                    child: Center(
+                      child: AppTextAction(
+                        label: l10n.medicineViewMoreRecordsAction,
+                        color: AppColorTokens.gradientDevelopStart,
+                        onTap: () => context.go('/record'),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-        ],
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -88,22 +81,20 @@ class _MedicineRecordRow extends StatelessWidget {
   const _MedicineRecordRow({
     required this.row,
     required this.isLast,
-    required this.typography,
-    required this.surface,
     required this.l10n,
     required this.onMarkDose,
   });
 
   final _RecordRow row;
   final bool isLast;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final AppLocalizations l10n;
   final void Function(String currentMedicineId, MedicineDoseAction action)?
   onMarkDose;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final canMark =
         row.item.currentMedicineId != null &&
         onMarkDose != null &&
@@ -124,13 +115,13 @@ class _MedicineRecordRow extends StatelessWidget {
               children: [
                 AppSkeletonText(
                   text: row.date,
-                  style: typography.bodySm.copyWith(letterSpacing: 0),
+                  style: textTheme.bodySmall,
                   width: 34,
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 AppSkeletonText(
                   text: row.time,
-                  style: typography.bodySm.copyWith(letterSpacing: 0),
+                  style: textTheme.bodySmall,
                   width: 32,
                 ),
               ],
@@ -155,7 +146,7 @@ class _MedicineRecordRow extends StatelessWidget {
                     child: VerticalDivider(
                       width: 1,
                       thickness: 1,
-                      color: surface.hairline,
+                      color: colors.border,
                     ),
                   ),
               ],
@@ -170,9 +161,8 @@ class _MedicineRecordRow extends StatelessWidget {
               children: [
                 AppSkeletonText(
                   text: row.name,
-                  style: typography.bodyMdStrong.copyWith(
+                  style: textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -186,9 +176,8 @@ class _MedicineRecordRow extends StatelessWidget {
                   children: [
                     AppSkeletonText(
                       text: row.detail,
-                      style: typography.bodySm.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.mutedForeground,
                       ),
                       width: 94,
                     ),
@@ -213,8 +202,8 @@ class _MedicineRecordRow extends StatelessWidget {
                         child: _DoseActionButton(
                           key: const Key('medicine-record-dose-action-taken'),
                           label: l10n.medicineDoseActionTaken,
-                          icon: Icons.check_rounded,
-                          color: surface.teal,
+                          icon: FLucideIcons.check,
+                          color: AppColorTokens.cyanDeep,
                           filled: true,
                           onTap: () => onMarkDose!(
                             row.item.currentMedicineId!,
@@ -227,8 +216,8 @@ class _MedicineRecordRow extends StatelessWidget {
                         child: _DoseActionButton(
                           key: const Key('medicine-record-dose-action-skipped'),
                           label: l10n.medicineDoseActionSkipped,
-                          icon: Icons.remove_done_rounded,
-                          color: surface.warningDeep,
+                          icon: FLucideIcons.ban,
+                          color: AppColorTokens.warningDeep,
                           onTap: () => onMarkDose!(
                             row.item.currentMedicineId!,
                             MedicineDoseAction.skipped,
@@ -243,8 +232,8 @@ class _MedicineRecordRow extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacingTokens.xs),
           Icon(
-            Icons.event_note_outlined,
-            color: surface.body,
+            FLucideIcons.notebookText,
+            color: colors.mutedForeground,
             size: AppSpacingTokens.lg,
           ),
         ],

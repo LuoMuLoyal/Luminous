@@ -1,77 +1,62 @@
 part of '../views/medicine_mobile_dashboard_view.dart';
 
 class _ReferenceNotice extends StatelessWidget {
-  const _ReferenceNotice({
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const _ReferenceNotice({required this.l10n});
 
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    return AppSectionSurface(
-      color: Color.alphaBlend(
-        surface.warningSoft.withValues(alpha: 0.44),
-        surface.canvas,
-      ),
-      borderColor: surface.warning.withValues(alpha: 0.24),
-      padding: const EdgeInsets.all(AppSpacingTokens.md),
-      child: Row(
-        children: [
-          Icon(
-            Icons.warning_amber_rounded,
-            color: surface.warning,
-            size: AppSpacingTokens.xl,
-          ),
-          const SizedBox(width: AppSpacingTokens.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.medicineReferenceNoticeTitle,
-                  style: typography.bodyMdStrong.copyWith(
-                    color: surface.warningDeep,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
-                  ),
-                ),
-                const SizedBox(height: AppSpacingTokens.xxs),
-                Text(
-                  l10n.medicineReferenceNoticeBody,
-                  style: typography.bodySm.copyWith(
-                    color: surface.body,
-                    letterSpacing: 0,
-                  ),
-                ),
-              ],
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+    return FCard.raw(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.md),
+        child: Row(
+          children: [
+            const Icon(
+              FLucideIcons.triangleAlert,
+              color: AppColorTokens.warningDeep,
+              size: AppSpacingTokens.xl,
             ),
-          ),
-          Icon(
-            Icons.chevron_right_rounded,
-            color: surface.warningDeep,
-            size: AppSpacingTokens.lg,
-          ),
-        ],
+            const SizedBox(width: AppSpacingTokens.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.medicineReferenceNoticeTitle,
+                    style: textTheme.titleSmall?.copyWith(
+                      color: AppColorTokens.warningDeep,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.xxs),
+                  Text(
+                    l10n.medicineReferenceNoticeBody,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              FLucideIcons.chevronRight,
+              color: AppColorTokens.warningDeep,
+              size: AppSpacingTokens.lg,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class _SafetyTipsSection extends ConsumerWidget {
-  const _SafetyTipsSection({
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const _SafetyTipsSection({required this.l10n});
 
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -83,16 +68,16 @@ class _SafetyTipsSection extends ConsumerWidget {
       children: [
         AppSectionHeader(
           title: l10n.medicineSafetyTipsTitle,
-          leading: Icon(
-            Icons.lightbulb_outline_rounded,
-            color: surface.warning,
+          leading: const Icon(
+            FLucideIcons.lightbulb,
+            color: AppColorTokens.warningDeep,
             size: AppSpacingTokens.lg,
           ),
           compact: true,
           trailing: AppTextAction(
             label: l10n.medicineSafetyTipsRefreshAction,
-            icon: Icons.refresh_rounded,
-            color: surface.link,
+            icon: FLucideIcons.refreshCw,
+            color: AppColorTokens.gradientDevelopStart,
             onTap: tipsAsync.isLoading
                 ? () {}
                 : () => ref
@@ -101,15 +86,14 @@ class _SafetyTipsSection extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        AppSectionSurface(
-          padding: EdgeInsets.zero,
+        FCard.raw(
           child: tipsAsync.when(
-            data: (tips) => _buildTipList(tips),
-            loading: () => _buildSkeleton(),
+            data: (tips) => _buildTipList(context, tips),
+            loading: () => _buildSkeleton(context),
             error: (error, _) => AppStateMessageView(
               title: l10n.medicineErrorTitle,
               description: l10n.medicineErrorDescription,
-              icon: Icons.error_outline_rounded,
+              icon: FLucideIcons.circleAlert,
               actionLabel: l10n.medicineSafetyTipsRefreshAction,
               onAction: () =>
                   ref.read(medicineSafetyTipListProvider.notifier).refresh(),
@@ -121,13 +105,15 @@ class _SafetyTipsSection extends ConsumerWidget {
     );
   }
 
-  Widget _buildTipList(List<MedicineSafetyTip> tips) {
+  Widget _buildTipList(BuildContext context, List<MedicineSafetyTip> tips) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     if (tips.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.md),
         child: Text(
           l10n.medicineSafetyTipsTitle,
-          style: typography.bodySm.copyWith(color: surface.body),
+          style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
         ),
       );
     }
@@ -138,11 +124,9 @@ class _SafetyTipsSection extends ConsumerWidget {
           _SafetyTipRow(
             tip: _SafetyTip(
               icon: medicineSafetyTipIcon(tips[index].category),
-              color: medicineSafetyTipColor(tips[index].category, surface),
+              color: medicineSafetyTipColor(tips[index].category, colors),
               text: tips[index].text,
             ),
-            typography: typography,
-            surface: surface,
           ),
           if (index < tips.length - 1)
             Divider(
@@ -152,14 +136,15 @@ class _SafetyTipsSection extends ConsumerWidget {
                   AppSpacingTokens.md +
                   AppSpacingTokens.x3l +
                   AppSpacingTokens.md,
-              color: surface.hairline,
+              color: colors.border,
             ),
         ],
       ],
     );
   }
 
-  Widget _buildSkeleton() {
+  Widget _buildSkeleton(BuildContext context) {
+    final colors = context.theme.colors;
     return Column(
       children: [
         for (var index = 0; index < 4; index += 1) ...[
@@ -171,13 +156,13 @@ class _SafetyTipsSection extends ConsumerWidget {
             child: Row(
               children: [
                 Shimmer.fromColors(
-                  baseColor: surface.hairline,
-                  highlightColor: surface.canvas,
+                  baseColor: colors.border,
+                  highlightColor: colors.background,
                   child: Container(
                     width: AppSpacingTokens.x3l,
                     height: AppSpacingTokens.x3l,
                     decoration: BoxDecoration(
-                      color: surface.hairline,
+                      color: colors.border,
                       borderRadius: BorderRadius.circular(AppSpacingTokens.md),
                     ),
                   ),
@@ -197,7 +182,7 @@ class _SafetyTipsSection extends ConsumerWidget {
                   AppSpacingTokens.md +
                   AppSpacingTokens.x3l +
                   AppSpacingTokens.md,
-              color: surface.hairline,
+              color: colors.border,
             ),
         ],
       ],
@@ -206,18 +191,14 @@ class _SafetyTipsSection extends ConsumerWidget {
 }
 
 class _SafetyTipRow extends StatelessWidget {
-  const _SafetyTipRow({
-    required this.tip,
-    required this.typography,
-    required this.surface,
-  });
+  const _SafetyTipRow({required this.tip});
 
   final _SafetyTip tip;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacingTokens.md,
@@ -236,17 +217,16 @@ class _SafetyTipRow extends StatelessWidget {
           Expanded(
             child: Text(
               tip.text,
-              style: typography.bodySm.copyWith(
-                color: surface.body,
-                letterSpacing: 0,
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.mutedForeground,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
           Icon(
-            Icons.chevron_right_rounded,
-            color: surface.mute,
+            FLucideIcons.chevronRight,
+            color: colors.mutedForeground,
             size: AppSpacingTokens.lg,
           ),
         ],

@@ -1,30 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 IconData medicineSafetyTipIcon(String category) {
   return switch (category) {
-    'alcohol' => Icons.local_drink_outlined,
-    'caffeine' => Icons.coffee_rounded,
-    'timing' => Icons.schedule_rounded,
-    'storage' => Icons.thermostat_rounded,
-    'food' => Icons.restaurant_rounded,
-    'pregnancy' => Icons.pregnant_woman_rounded,
-    'allergy' => Icons.healing_rounded,
-    'driving' => Icons.drive_eta_rounded,
-    _ => Icons.lightbulb_outline_rounded,
+    'alcohol' => FLucideIcons.wine,
+    'caffeine' => FLucideIcons.coffee,
+    'timing' => FLucideIcons.clock3,
+    'storage' => FLucideIcons.thermometer,
+    'food' => FLucideIcons.utensils,
+    'pregnancy' => FLucideIcons.heartPulse,
+    'allergy' => FLucideIcons.syringe,
+    'driving' => FLucideIcons.car,
+    _ => FLucideIcons.lightbulb,
   };
 }
 
-Color medicineSafetyTipColor(String category, AppThemeSurface surface) {
+Color medicineSafetyTipColor(String category, Object palette) {
+  final success = switch (palette) {
+    FColors colors => colors.primary,
+    AppThemeSurface surface => surface.success,
+    _ => AppColorTokens.cyanDeep,
+  };
+  final warning = switch (palette) {
+    FColors colors => colors.primaryForeground,
+    AppThemeSurface surface => surface.warning,
+    _ => AppColorTokens.warning,
+  };
+  final destructive = switch (palette) {
+    FColors colors => colors.destructive,
+    AppThemeSurface surface => surface.error,
+    _ => AppColorTokens.warningDeep,
+  };
   return switch (category) {
-    'alcohol' => surface.link,
-    'caffeine' => surface.warningDeep,
-    'timing' => surface.link,
-    'storage' => surface.teal,
-    'food' => surface.success,
-    'pregnancy' => surface.warning,
-    'allergy' => surface.error,
-    'driving' => surface.accent,
-    _ => surface.link,
+    'alcohol' => AppColorTokens.gradientDevelopStart,
+    'caffeine' => AppColorTokens.warningDeep,
+    'timing' => AppColorTokens.gradientDevelopStart,
+    'storage' => AppColorTokens.cyanDeep,
+    'food' => success,
+    'pregnancy' => warning,
+    'allergy' => destructive,
+    'driving' => AppColorTokens.gradientDevelopEnd,
+    _ => AppColorTokens.gradientDevelopStart,
   };
 }

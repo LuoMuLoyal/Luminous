@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
@@ -15,20 +15,19 @@ class ReminderInfoRow extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.value,
-    required this.typography,
-    required this.surface,
     this.showDivider = false,
   });
 
   final IconData icon;
   final String label;
   final String value;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     final row = Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacingTokens.md,
@@ -37,14 +36,13 @@ class ReminderInfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
+          Icon(icon, color: colors.mutedForeground, size: AppSpacingTokens.lg),
           const SizedBox(width: AppSpacingTokens.md),
           Expanded(
             child: Text(
               label,
-              style: typography.bodyMd.copyWith(
+              style: textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                letterSpacing: 0,
               ),
             ),
           ),
@@ -53,9 +51,8 @@ class ReminderInfoRow extends StatelessWidget {
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: typography.bodySm.copyWith(
-                color: surface.body,
-                letterSpacing: 0,
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.mutedForeground,
               ),
             ),
           ),
@@ -72,7 +69,7 @@ class ReminderInfoRow extends StatelessWidget {
           thickness: 1,
           indent:
               AppSpacingTokens.md + AppSpacingTokens.lg + AppSpacingTokens.md,
-          color: surface.hairline,
+          color: colors.border,
         ),
       ],
     );
@@ -86,8 +83,6 @@ class ValueActionRow extends StatelessWidget {
     required this.title,
     required this.value,
     required this.onTap,
-    required this.typography,
-    required this.surface,
     this.onClear,
   });
 
@@ -96,11 +91,12 @@ class ValueActionRow extends StatelessWidget {
   final String value;
   final VoidCallback onTap;
   final VoidCallback? onClear;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     return AppInkWell(
       onTap: onTap,
       child: Padding(
@@ -110,12 +106,18 @@ class ValueActionRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
+            Icon(
+              icon,
+              color: colors.mutedForeground,
+              size: AppSpacingTokens.lg,
+            ),
             const SizedBox(width: AppSpacingTokens.md),
             Expanded(
               child: Text(
                 title,
-                style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+                style: textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             const SizedBox(width: AppSpacingTokens.sm),
@@ -123,9 +125,8 @@ class ValueActionRow extends StatelessWidget {
               child: Text(
                 value,
                 textAlign: TextAlign.right,
-                style: typography.bodySm.copyWith(
-                  color: surface.body,
-                  letterSpacing: 0,
+                style: textTheme.bodySmall?.copyWith(
+                  color: colors.mutedForeground,
                 ),
               ),
             ),
@@ -137,13 +138,13 @@ class ValueActionRow extends StatelessWidget {
                 )!.medicineReminderClearDateAction,
                 visualDensity: VisualDensity.compact,
                 onPressed: onClear,
-                icon: const Icon(Icons.close_rounded, size: 18),
+                icon: const Icon(FLucideIcons.x, size: 18),
               ),
             ] else ...[
               const SizedBox(width: AppSpacingTokens.xs),
               Icon(
-                Icons.chevron_right_rounded,
-                color: surface.mute,
+                FLucideIcons.chevronRight,
+                color: colors.mutedForeground,
                 size: AppSpacingTokens.lg,
               ),
             ],
@@ -161,19 +162,18 @@ class SwitchRow extends StatelessWidget {
     required this.subtitle,
     required this.value,
     required this.onChanged,
-    required this.typography,
-    required this.surface,
   });
 
   final String title;
   final String subtitle;
   final bool value;
   final ValueChanged<bool> onChanged;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacingTokens.md,
@@ -182,8 +182,8 @@ class SwitchRow extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            Icons.notifications_none_rounded,
-            color: surface.body,
+            FLucideIcons.bellRing,
+            color: colors.mutedForeground,
             size: AppSpacingTokens.lg,
           ),
           const SizedBox(width: AppSpacingTokens.md),
@@ -193,14 +193,15 @@ class SwitchRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+                  style: textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   subtitle,
-                  style: typography.bodySm.copyWith(
-                    color: surface.mute,
-                    letterSpacing: 0,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                 ),
               ],
@@ -220,19 +221,18 @@ class UnavailableMethodRow extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.status,
-    required this.typography,
-    required this.surface,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final String status;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacingTokens.md,
@@ -240,7 +240,7 @@ class UnavailableMethodRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: surface.body, size: AppSpacingTokens.lg),
+          Icon(icon, color: colors.mutedForeground, size: AppSpacingTokens.lg),
           const SizedBox(width: AppSpacingTokens.md),
           Expanded(
             child: Column(
@@ -248,21 +248,22 @@ class UnavailableMethodRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+                  style: textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   subtitle,
-                  style: typography.bodySm.copyWith(
-                    color: surface.mute,
-                    letterSpacing: 0,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(width: AppSpacingTokens.sm),
-          AppStatusPill(label: status, color: surface.mute),
+          AppStatusPill(label: status, color: colors.mutedForeground),
         ],
       ),
     );
@@ -274,18 +275,16 @@ class SoundPreferenceRow extends StatelessWidget {
     super.key,
     required this.value,
     required this.onChanged,
-    required this.typography,
-    required this.surface,
   });
 
   final MedicineReminderSoundPreference value;
   final ValueChanged<MedicineReminderSoundPreference> onChanged;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -295,8 +294,8 @@ class SoundPreferenceRow extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            Icons.volume_up_outlined,
-            color: surface.body,
+            FLucideIcons.volume2,
+            color: colors.mutedForeground,
             size: AppSpacingTokens.lg,
           ),
           const SizedBox(width: AppSpacingTokens.md),
@@ -306,14 +305,15 @@ class SoundPreferenceRow extends StatelessWidget {
               children: [
                 Text(
                   l10n.medicineReminderSoundLabel,
-                  style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+                  style: textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   l10n.medicineReminderSoundLocalHint,
-                  style: typography.bodySm.copyWith(
-                    color: surface.mute,
-                    letterSpacing: 0,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                 ),
               ],
@@ -343,28 +343,23 @@ class SoundPreferenceRow extends StatelessWidget {
 }
 
 class SelectedMedicineRow extends StatelessWidget {
-  const SelectedMedicineRow({
-    super.key,
-    required this.medicine,
-    required this.typography,
-    required this.surface,
-  });
+  const SelectedMedicineRow({super.key, required this.medicine});
 
   final CurrentMedicineItem medicine;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       child: Row(
         children: [
-          AppIconBadge(
-            icon: Icons.medication_rounded,
-            color: surface.teal,
+          const AppIconBadge(
+            icon: FLucideIcons.pill,
+            color: AppColorTokens.cyanDeep,
             shape: BoxShape.circle,
           ),
           const SizedBox(width: AppSpacingTokens.md),
@@ -374,9 +369,8 @@ class SelectedMedicineRow extends StatelessWidget {
               children: [
                 Text(
                   medicine.displayName,
-                  style: typography.bodyMdStrong.copyWith(
+                  style: textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -384,9 +378,8 @@ class SelectedMedicineRow extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   medicineDoseText(l10n, medicine),
-                  style: typography.bodySm.copyWith(
-                    color: surface.body,
-                    letterSpacing: 0,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

@@ -1,7 +1,7 @@
 import 'package:luminous/core/widgets/common/app_ink_well.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 enum MedicineDoseAction { taken, skipped }
 
@@ -10,23 +10,21 @@ class MedicineHeaderActionChip extends StatelessWidget {
     super.key,
     required this.label,
     required this.icon,
-    required this.typography,
-    required this.surface,
     this.onTap,
     this.emphasized = false,
   });
 
   final String label;
   final IconData icon;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final VoidCallback? onTap;
   final bool emphasized;
 
   @override
   Widget build(BuildContext context) {
     const emphasisColor = AppColorTokens.cyanDeep;
-    final background = emphasized ? emphasisColor : surface.canvas;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+    final background = emphasized ? emphasisColor : colors.background;
     final foreground = emphasized
         ? Colors.white
         : Theme.of(context).colorScheme.onSurface;
@@ -38,9 +36,7 @@ class MedicineHeaderActionChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: background,
           borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
-          border: Border.all(
-            color: emphasized ? emphasisColor : surface.hairline,
-          ),
+          border: Border.all(color: emphasized ? emphasisColor : colors.border),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -54,7 +50,10 @@ class MedicineHeaderActionChip extends StatelessWidget {
               const SizedBox(width: AppSpacingTokens.xs),
               Text(
                 label,
-                style: typography.buttonMd.copyWith(color: foreground),
+                style: textTheme.labelLarge?.copyWith(
+                  color: foreground,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),

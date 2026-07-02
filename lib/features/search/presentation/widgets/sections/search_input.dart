@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SearchInput extends HookWidget {
   const SearchInput({
     super.key,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     required this.query,
     required this.onChanged,
   });
+
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final String query;
   final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
     final controller = useTextEditingController(text: query);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     useEffect(() {
       if (query != controller.text) {
@@ -32,11 +31,9 @@ class SearchInput extends HookWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: surface.canvas,
+        color: colors.background,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(
-          color: surface.hairlineStrong.withValues(alpha: 0.28),
-        ),
+        border: Border.all(color: colors.border),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -45,19 +42,21 @@ class SearchInput extends HookWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.search_rounded, color: surface.mute),
+            Icon(FLucideIcons.search, color: colors.mutedForeground, size: 18),
             const SizedBox(width: AppSpacingTokens.sm),
             Expanded(
               child: TextField(
                 controller: controller,
                 decoration: InputDecoration(
                   hintText: l10n.medicineSearchFieldHint,
-                  hintStyle: typography.bodySm.copyWith(color: surface.mute),
+                  hintStyle: textTheme.bodyMedium?.copyWith(
+                    color: colors.mutedForeground,
+                  ),
                   border: InputBorder.none,
                   isDense: true,
                   contentPadding: EdgeInsets.zero,
                 ),
-                style: typography.bodySm,
+                style: textTheme.bodyMedium,
                 onChanged: onChanged,
                 textInputAction: TextInputAction.search,
                 onSubmitted: onChanged,
@@ -70,8 +69,8 @@ class SearchInput extends HookWidget {
                   onChanged('');
                 },
                 child: Icon(
-                  Icons.cancel_rounded,
-                  color: surface.mute,
+                  FLucideIcons.circleX,
+                  color: colors.mutedForeground,
                   size: 18,
                 ),
               ),

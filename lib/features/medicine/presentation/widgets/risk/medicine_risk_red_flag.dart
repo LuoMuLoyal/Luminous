@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -10,16 +10,15 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
     super.key,
     required this.alerts,
     required this.l10n,
-    required this.typography,
-    required this.surface,
   });
+
   final List<RedFlagAlert> alerts;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       decoration: BoxDecoration(
@@ -33,14 +32,14 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
           Row(
             children: [
               const Icon(
-                Icons.warning_amber_rounded,
+                FLucideIcons.triangleAlert,
                 color: AppColorTokens.error,
                 size: 20,
               ),
               const SizedBox(width: AppSpacingTokens.sm),
               Text(
                 redFlagBannerTitle(l10n),
-                style: typography.bodyMdStrong.copyWith(
+                style: textTheme.labelLarge?.copyWith(
                   color: AppColorTokens.error,
                   fontWeight: FontWeight.w800,
                 ),
@@ -50,12 +49,7 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.sm),
           for (var i = 0; i < alerts.length; i += 1) ...[
             if (i > 0) const SizedBox(height: AppSpacingTokens.sm),
-            MedicineRiskRedFlagAlertRow(
-              alert: alerts[i],
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-            ),
+            MedicineRiskRedFlagAlertRow(alert: alerts[i], l10n: l10n),
           ],
         ],
       ),
@@ -68,21 +62,20 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
     super.key,
     required this.alert,
     required this.l10n,
-    required this.typography,
-    required this.surface,
   });
+
   final RedFlagAlert alert;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacingTokens.sm),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface.withValues(alpha: 0.64),
+        color: colors.background.withValues(alpha: 0.84),
         borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
       ),
       child: Row(
@@ -94,14 +87,16 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
               children: [
                 Text(
                   redFlagAlertCopy(l10n, alert),
-                  style: typography.bodySm.copyWith(color: surface.body),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.foreground,
+                  ),
                 ),
                 const SizedBox(height: AppSpacingTokens.sm),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Icon(
-                      Icons.error_outline_rounded,
+                      FLucideIcons.siren,
                       color: AppColorTokens.error,
                       size: 16,
                     ),
@@ -109,7 +104,7 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                     Expanded(
                       child: Text(
                         redFlagActionCopy(l10n, alert),
-                        style: typography.bodySm.copyWith(
+                        style: textTheme.bodySmall?.copyWith(
                           color: AppColorTokens.error,
                           fontWeight: FontWeight.w700,
                         ),
